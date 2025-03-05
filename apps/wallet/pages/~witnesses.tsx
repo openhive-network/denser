@@ -21,6 +21,9 @@ import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getServerSidePropsDefault } from '../lib/get-translations';
+import { useWitnessVoteMutation } from '../components/hooks/use-vote-witness-mutation';
+import WitnessRemoveVote from '../components/witness-remove-vote';
+import { CircleSpinner } from 'react-spinners-kit';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
@@ -54,8 +57,7 @@ function WitnessesPage() {
   const {
     data: dynamicData,
     isSuccess: dynamicSuccess,
-    isLoading: dynamicLoading,
-    isError: dynamicError
+    isLoading: dynamicLoading
   } = useQuery(['dynamicGlobalProperties'], () => getDynamicGlobalProperties(), {
     select: (data) => {
       return {
@@ -65,23 +67,13 @@ function WitnessesPage() {
       };
     }
   });
-  const {
-    data: observerData,
-    isLoading: observerLoading,
-    isSuccess: observerIsSuccess,
-    isError: observerError
-  } = useQuery(
+  const { data: observerData } = useQuery(
     ['accountData', user?.username || ''],
     () => getAccount(user?.username || ''),
 
     { enabled: user?.isLoggedIn }
   );
-
-  const {
-    isLoading: listWitnessVotesIsLoading,
-    error: listWitnessVotesError,
-    data: listWitnessVotesData
-  } = useQuery(
+  const { data: listWitnessVotesData } = useQuery(
     ['listWitnessVotesData', user?.username || ''],
     () => getListWitnessVotes(user?.username, 30, 'by_account_witness'),
     {
@@ -96,30 +88,25 @@ function WitnessesPage() {
   const {
     data: witnessesData,
     isLoading: witnessesLoading,
-    isSuccess: witnessesSuccess,
-    isError: witnessError
-  } = useQuery(['wintesses'], () => getWitnessesByVote('', 250), {
+    isSuccess: witnessesSuccess
+  } = useQuery(['witnesses'], () => getWitnessesByVote('', 250), {
     select: (witnesses) => {
-      // TODO: check this logic to be good!
       const witnessVotes = listWitnessVotesData?.votes
         .filter((vote) => {
           if (vote.witness === user?.username) return vote;
         })
         .map((witnessObj) => witnessObj.witness);
-      return witnesses.map(mapWitnesses(totalVesting, totalShares, headBlock, witnessVotes)).filter(
-        (witness) =>
-          witness.rank <= 101 || witness.witnessLastBlockAgeInSecs <= LAST_BLOCK_AGE_THRESHOLD_IN_SEC
-        //&& !myVote need LOGIN
-      );
+      return witnesses
+        .map(mapWitnesses(totalVesting, totalShares, headBlock, witnessVotes))
+        .filter(
+          (witness) =>
+            witness.rank <= 101 || witness.witnessLastBlockAgeInSecs <= LAST_BLOCK_AGE_THRESHOLD_IN_SEC
+        );
     },
     enabled: dynamicSuccess
   });
 
-  const {
-    data: accountData,
-    isLoading: accountLoading,
-    isError: accountError
-  } = useQuery(
+  const { data: accountData, isLoading: accountLoading } = useQuery(
     ['accountsData'],
     async () => {
       const res = await getAccounts(witnessesData!.map((wit) => wit.owner));
@@ -131,7 +118,16 @@ function WitnessesPage() {
     { enabled: witnessesSuccess || Boolean(witnessesData) }
   );
   const router = useRouter();
-
+  const voteMutation = useWitnessVoteMutation();
+  const onVote = (witness: string, approve: boolean) => {
+    if (observerData && user) {
+      voteMutation.mutate({
+        account: user.username,
+        witness: witness,
+        approve: approve
+      });
+    }
+  };
   useEffect(() => {
     if (Array.isArray(router.query.highlight)) {
       setVoteInput(router.query.highlight[0]);
@@ -186,10 +182,14 @@ function WitnessesPage() {
           ) : (
             witnessesData.map((element) => (
               <WitnessListItem
+                onVote={(approve) => onVote(element.owner, approve)}
                 data={element}
                 witnessAccount={accountData?.get(element.owner)}
                 key={element.id}
                 headBlock={headBlock}
+                voteEnabled={user?.isLoggedIn}
+                isVoted={observerData?.witness_votes.includes(element.owner) ?? false}
+                voteLoading={voteMutation.isLoading && voteMutation.variables?.witness === element.owner}
               />
             ))
           )}
@@ -208,11 +208,31 @@ function WitnessesPage() {
               onChange={(e) => setVoteInput(e.target.value)}
             />
             <div className="items absolute bottom-0.5 right-0.5">
-              <DialogLogin>
-                <Button className="h-fit" variant="destructive">
-                  {t('witnesses_page.vote')}
+              {!observerData?.witness_votes.includes(voteInput) ? (
+                <Button className="h-fit" variant="destructive" onClick={() => onVote(voteInput, true)}>
+                  {voteMutation.isLoading ? (
+                    <CircleSpinner loading={voteMutation.isLoading} size={20} color="#fff" />
+                  ) : (
+                    t('witnesses_page.vote')
+                  )}
                 </Button>
-              </DialogLogin>
+              ) : observerData?.witness_votes.includes(voteInput) ? (
+                <WitnessRemoveVote onVote={() => onVote(voteInput, false)}>
+                  <Button className="h-fit" variant="destructive" disabled={voteMutation.isLoading}>
+                    {voteMutation.isLoading ? (
+                      <CircleSpinner loading={voteMutation.isLoading} size={20} color="#fff" />
+                    ) : (
+                      t('witnesses_page.vote')
+                    )}
+                  </Button>
+                </WitnessRemoveVote>
+              ) : (
+                <DialogLogin>
+                  <Button className="h-fit" variant="destructive">
+                    {t('witnesses_page.vote')}
+                  </Button>
+                </DialogLogin>
+              )}
             </div>
           </div>
         </div>

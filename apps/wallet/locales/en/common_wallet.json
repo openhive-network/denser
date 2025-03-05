@@ -237,6 +237,10 @@
       "one": "You have 1 vote remaining.",
       "other": "You have {{value}} votes remaining."
     },
+    "confirm_account_witness_vote": "Confirm Account Witness Vote",
+    "you_are_about_remove_vote": "You are about to remove your vote for this witness",
+    "cancel_button": "Cancel",
+    "ok": "OK",
     "you_can_vote_for_maximum_of_witnesses": "You can vote for a maximum of 30 witnesses",
     "witness_list_notes": "Notes: in the list below, the first 100 witnesses are unfiltered, this includes active and inactive witnesses. Past the rank of 100, witnesses will be filtered out of the list if they have not produced any block for the last 30 days.",
     "rank": "Rank",
