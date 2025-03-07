@@ -61,6 +61,7 @@ export function useUpdateProfileMutation() {
     onSuccess: (data) => {
       const { username } = user;
       queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+      queryClient.invalidateQueries({ queryKey: ['user', username] });
       logger.info('useUpdateProfileMutation onSuccess data: %o', data);
     }
   });

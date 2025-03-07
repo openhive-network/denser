@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { IListItemProps } from '@/wallet/lib/hive';
-import { cn, getRoundedAbbreveration, handleError, numberWithCommas } from '@hive/ui/lib/utils';
+import { cn, getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import moment from 'moment';
 import { dateToFullRelative } from '@ui/lib/parse-date';
@@ -15,6 +15,7 @@ import { useUpdateProposalVotesMutation } from '@hive/wallet/components/hooks/us
 import env from '@beam-australia/react-env';
 import Loading from '@ui/components/loading';
 import { useState } from 'react';
+import { handleError } from '@ui/lib/handle-error';
 
 function titleSetter(
   daysStart: string,

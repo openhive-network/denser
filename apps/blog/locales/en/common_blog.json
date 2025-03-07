@@ -110,6 +110,7 @@
     },
     "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "Unclaimed rewards: ",
+      "no_notifications_yet": "No notifications yet",
       "redeem": "Redeem",
       "mark_all": "Mark all as read",
       "all": "All",

@@ -4,9 +4,8 @@ import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
 export class YoutubeEmbedder extends AbstractEmbedder {
     public type = 'youtube';
 
-    private static readonly linkRegex =
-        /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/watch\?v=|youtu.be\/[^watch]|youtube\.com\/(embed|shorts)\/)([A-Za-z0-9_-]+)[^ ]*/i;
-    private static readonly idRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/watch\?v=|youtu.be\/|youtube\.com\/(embed|shorts)\/)([A-Za-z0-9_-]+)/i;
+    private static readonly linkRegex = /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/(embed|shorts)\/)([A-Za-z0-9_-]+)[^ ]*/i;
+    private static readonly idRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/(embed|shorts)\/)([A-Za-z0-9_-]+)/i;
 
     public static getYoutubeMetadataFromLink(data: string): {id: string; url: string; thumbnail: string} | undefined {
         if (!data) {

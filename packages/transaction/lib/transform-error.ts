@@ -1,26 +1,7 @@
 import { getLogger } from '@hive/ui/lib/logging';
-
-// TODO
-// Debug why the import
-// ```
-// import { WaxChainApiError } from '@hiveio/wax';
-// ```
-// causes following error in e2e playwright tests in Wallet application:
-// ```
-// Error: No "exports" main defined in /home/syncad/src/denser/node_modules/@hiveio/wax/package.json
-// ```
-
-// import { WaxChainApiError } from '@hiveio/wax';
-
-declare const WaxChainApiError: any;
+import { isJSON } from '@ui/lib/utils';
 
 const logger = getLogger('app');
-
-/**
- * Default error description, used when trying to get smarter
- * description fails
- */
-const errorDescription = 'Transaction broadcast error';
 
 /**
  * Strings to look for in error's stuff. When found, we can assume
@@ -32,7 +13,8 @@ const wellKnownErrorDescriptions = [
   'Account does not have enough mana to downvote',
   'You may only post once every 5 minutes',
   'Vote weight cannot be 0',
-  'You may only comment once every 3 seconds'
+  'You may only comment once every 3 seconds',
+  'Invalid credentials'
 ];
 
 // TODO: Refactor this function to use the new error handling mechanism
@@ -47,33 +29,22 @@ const wellKnownErrorDescriptions = [
  */
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   logger.error('in transformError: got error (will be swallowed): %o on %o', e, ctx);
-  const apiMessage = e.apiError?.data.message.charAt(0).toUpperCase() + e.apiError?.data.message.slice(1);
 
-  let description =
-    apiMessage && apiMessage.toLowerCase() !== 'assert exception' ? apiMessage : 'Operation failed';
+  let description = 'Error';
+  let isWellKnownError = false;
+
+  if (e instanceof Error) {
+    e = `${e.name}: ${e.message}`;
+  } else if (isJSON(e)) {
+    e = JSON.stringify(e);
+  }
 
   if (!defaultDescription) {
-    let errorDescription = '';
-    // TODO Look at the top of this file. We have issue with failing
-    // import of WaxChainApiError.
-
-    // if (e instanceof WaxChainApiError) {
-    if (false) {
-      const error = e as any;
-      if (error?.apiError?.code === -32003) {
-        errorDescription = error?.apiError?.data?.stack[0]?.format;
-      } else {
-        errorDescription = error?.message ?? errorDescription;
-      }
-    } else if (e instanceof Error) {
-      errorDescription = e.message;
-    } else if (typeof e === 'string') {
-      errorDescription = e;
-    }
+    let errorDescription = 'Error';
 
     let wellKnownErrorDescription;
     for (const wked of wellKnownErrorDescriptions) {
-      if (errorDescription.includes(wked)) {
+      if (e.includes(wked)) {
         wellKnownErrorDescription = wked;
         break;
       }
@@ -81,10 +52,15 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
 
     if (wellKnownErrorDescription) {
       description = wellKnownErrorDescription;
+      isWellKnownError = true;
     } else {
       description = errorDescription;
     }
   }
 
-  return defaultDescription ?? description;
+  return {
+    errorTitle: defaultDescription ?? description,
+    fullError: e.toString(),
+    isWellKnownError
+  };
 }

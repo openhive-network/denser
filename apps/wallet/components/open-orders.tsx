@@ -6,7 +6,7 @@ import { dateToFormatted } from '@ui/lib/parse-date';
 import { useState } from 'react';
 import Loading from '@ui/components/loading';
 import { useCancelMarketOrder } from './hooks/use-market-mutation';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface OpenOrderProps {

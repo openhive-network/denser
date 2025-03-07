@@ -20,6 +20,8 @@ import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
+import env from '@beam-australia/react-env';
+import { getAccount } from '@transaction/lib/hive';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -36,6 +38,11 @@ const SiteHeader: FC = () => {
     {
       enabled: !!user.username
     }
+  );
+  const { data: profile, isLoading: profileLoading } = useQuery(
+    ['user', user.username],
+    () => getAccount(user.username),
+    { enabled: user?.isLoggedIn }
   );
   const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
   const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
@@ -203,7 +210,10 @@ const SiteHeader: FC = () => {
                         <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
                           <AvatarImage
                             className="h-full w-full object-cover"
-                            src={user.avatarUrl}
+                            src={
+                              profile?.profile?.profile_image ||
+                              `${env('IMAGES_ENDPOINT')}/u/${user.username}/avatar`
+                            }
                             alt="Profile picture"
                           />
                           <AvatarFallback>

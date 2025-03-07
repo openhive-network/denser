@@ -14,7 +14,7 @@ import { Entry } from '@transaction/lib/bridge';
 import { Slider } from '@ui/components/slider';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
 import { useLoggedUserContext } from './common/logged-user';
-import { handleError } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { useUpVoteStore, useDownVoteStore } from './hooks/use-vote-store';
 
 const logger = getLogger('app');
@@ -112,12 +112,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             sideOffset={offsetSlider.popoverSideOffset}
             align="start"
             alignOffset={offsetSlider.popoverAlignOfset}
+            data-testid='upvote-slider-modal'
           >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
                 loading={voteMutation.isLoading}
                 text={t('cards.post_card.upvote')}
-                dataTestId="upvote-button"
+                dataTestId="upvote-button-slider"
               >
                 <Icons.arrowUpCircle
                   className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1"
@@ -130,13 +131,14 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 />
               </TooltipContainer>
               <Slider
+                dataTestId="upvote-slider"
                 defaultValue={sliderUpvote}
                 value={sliderUpvote}
                 min={1}
                 className="w-36"
                 onValueChange={(e: number[]) => setSliderUpvote(e)}
               />
-              <div className="w-fit">{sliderUpvote}%</div>
+              <div className="w-fit" data-testid="upvote-slider-percentage-value">{sliderUpvote}%</div>
             </div>
           </PopoverContent>
         </Popover>
@@ -213,12 +215,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             sideOffset={offsetSlider.popoverSideOffset}
             align="start"
             alignOffset={offsetSlider.popoverAlignOfset}
+            data-testid='downvote-slider-modal'
           >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
                 loading={voteMutation.isLoading}
                 text={t('cards.post_card.downvote')}
-                dataTestId="downvote-button"
+                dataTestId="downvote-button-slider"
               >
                 <Icons.arrowDownCircle
                   className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
@@ -231,15 +234,16 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 />
               </TooltipContainer>
               <Slider
+                dataTestId="downvote-slider"
                 defaultValue={sliderDownvote}
                 value={sliderDownvote}
                 min={1}
                 className="w-36"
                 onValueChange={(e: number[]) => setSliderDownvote(e)}
               />
-              <div className="w-fit text-destructive">-{sliderDownvote}%</div>
+              <div className="w-fit text-destructive" data-testid="downvote-slider-percentage-value">-{sliderDownvote}%</div>
             </div>
-            <div className="flex flex-col gap-1 pt-2 text-sm">
+            <div className="flex flex-col gap-1 pt-2 text-sm" data-testid="downvote-description-content">
               <p>{t('cards.post_card.downvote_warning')}</p>
               <ul>
                 <li>{t('cards.post_card.reason_1')}</li>
