@@ -38,6 +38,8 @@ import { handleError } from '@ui/lib/handle-error';
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
+// User can vote only for 30 witnesses
+const MAX_VOTES = 30;
 
 const mapWitnesses =
   (totalVesting: Big, totalShares: Big, headBlock: number, observer?: string[]) =>
@@ -62,6 +64,7 @@ export type ExtendWitness = ReturnType<ReturnType<typeof mapWitnesses>>;
 function WitnessesPage() {
   const { user } = useUser();
   const { t } = useTranslation('common_wallet');
+  // value of input field for voting witness by name, not included in the list
   const [voteInput, setVoteInput] = useState('');
   const {
     data: dynamicData,
@@ -82,6 +85,7 @@ function WitnessesPage() {
 
     { enabled: user?.isLoggedIn }
   );
+  // value of input field for set proxy witness by name
   const [proxy, setProxy] = useState('');
   const { data: listWitnessVotesData } = useQuery(
     ['listWitnessVotesData', user?.username || ''],
@@ -128,9 +132,14 @@ function WitnessesPage() {
     { enabled: witnessesSuccess || Boolean(witnessesData) }
   );
   const router = useRouter();
+  // Mutation for handle voting witness
   const voteMutation = useWitnessVoteMutation();
+  // Mutation for handle set proxy
   const proxyMutation = useSetProxyMutation();
+
+  // Function for handle voting witness
   const onVote = async (witness: string, approve: boolean) => {
+    // Check if user is logged in and observerData is loaded
     if (observerData && user) {
       try {
         await voteMutation.mutateAsync({
@@ -146,6 +155,8 @@ function WitnessesPage() {
       }
     }
   };
+
+  // Function for handle set proxy
   const onSetProxy = async (witness: string) => {
     try {
       await proxyMutation.mutateAsync({
@@ -163,6 +174,10 @@ function WitnessesPage() {
       setVoteInput(router.query.highlight ?? '');
     }
   }, [router.query.highlight]);
+
+  // Calculate how many votes user have left
+  const votesLeft = MAX_VOTES - (observerData?.witness_votes.length ?? 0);
+
   return !observerData || observerData.proxy === '' ? (
     <div className="mx-auto max-w-5xl">
       <div className="mx-2 flex flex-col gap-4">
@@ -171,7 +186,7 @@ function WitnessesPage() {
         </div>
         <p className="text-xs sm:text-sm" data-testid="witness-header-vote">
           <span className="font-semibold " data-testid="witness-header-vote-remaining">
-            {t('witnesses_page.you_have_votes_remaining.other', { value: 30 })}
+            {t('witnesses_page.you_have_votes_remaining.other', { value: votesLeft })}
           </span>{' '}
           {t('witnesses_page.you_can_vote_for_maximum_of_witnesses')}
         </p>
