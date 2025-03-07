@@ -179,7 +179,7 @@ export class SignerHbauth extends Signer {
       }
     }
     if (requiredKeyType && requiredKeyType !== keyType) {
-      signature = await this.requireOtherKey(requiredKeyType, username, digest);
+      signature = await this.requireOtherKey(requiredKeyType, username, digest, password);
     } else {
       signature = await authClient.sign(username, digest, keyType);
     }
@@ -227,7 +227,12 @@ export class SignerHbauth extends Signer {
     }
   }
   // This method is used to sign with a different key than the one that is currently unlocked
-  async requireOtherKey(keyType: KeyAuthorityType, username: string, digest: string): Promise<string> {
+  async requireOtherKey(
+    keyType: KeyAuthorityType,
+    username: string,
+    digest: string,
+    password: string
+  ): Promise<string> {
     const authClient = await hbauthService.getOnlineClient();
     const auths = await authClient.getRegisteredUserByUsername(username);
     if (!auths) throw new Error('User not found');
@@ -249,7 +254,7 @@ export class SignerHbauth extends Signer {
           passwordFormOptions
         });
         // Import other key to safe storage
-        await authClient.importKey(username, keyToUse, keyType);
+        await authClient.register(username, password, keyToUse, keyType);
       } catch (error) {
         logger.error('Error in getPasswordFromUser: %o', error);
         throw new Error('Invalid key');
