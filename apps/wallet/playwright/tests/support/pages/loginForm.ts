@@ -87,7 +87,7 @@ export class LoginForm {
     await expect(this.loginFormDescription).toHaveText('Save your active key by filling form below');
     await expect(this.usernameInput).toHaveAttribute('placeholder', 'Username');
     await expect(this.passwordInput).toHaveAttribute('placeholder', 'Safe storage password');
-    await expect(this.wifInput).toHaveAttribute('placeholder', 'WIF posting private key');
+    await expect(this.wifInput).toHaveAttribute('placeholder', 'WIF active private key');
     await expect(this.saveSignInButton).toBeVisible();
     await expect(this.otherSignInOptionsButton).toBeVisible();
   }
