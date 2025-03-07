@@ -234,16 +234,27 @@ function WitnessesPage() {
               value={voteInput}
               onChange={(e) => setVoteInput(e.target.value)}
             />
-            <div className="items absolute bottom-0.5 right-0.5">
-              {!observerData?.witness_votes.includes(voteInput) ? (
-                <Button className="h-fit" variant="destructive" onClick={() => onVote(voteInput, true)}>
+            <div className="items absolute bottom-[1px] right-[1px]">
+              {!user.isLoggedIn ? (
+                <DialogLogin>
+                  <Button className="h-fit" variant="destructive">
+                    {t('witnesses_page.vote')}
+                  </Button>
+                </DialogLogin>
+              ) : !observerData?.witness_votes.includes(voteInput) ? (
+                <Button
+                  className="h-fit"
+                  variant="destructive"
+                  onClick={() => onVote(voteInput, true)}
+                  disabled={voteMutation.isLoading}
+                >
                   {voteMutation.isLoading ? (
                     <CircleSpinner loading={voteMutation.isLoading} size={20} color="#fff" />
                   ) : (
                     t('witnesses_page.vote')
                   )}
                 </Button>
-              ) : observerData?.witness_votes.includes(voteInput) ? (
+              ) : (
                 <WitnessRemoveVote onVote={() => onVote(voteInput, false)}>
                   <Button className="h-fit" variant="destructive" disabled={voteMutation.isLoading}>
                     {voteMutation.isLoading ? (
@@ -253,12 +264,6 @@ function WitnessesPage() {
                     )}
                   </Button>
                 </WitnessRemoveVote>
-              ) : (
-                <DialogLogin>
-                  <Button className="h-fit" variant="destructive">
-                    {t('witnesses_page.vote')}
-                  </Button>
-                </DialogLogin>
               )}
             </div>
           </div>
@@ -274,7 +279,7 @@ function WitnessesPage() {
               onChange={(e) => setProxy(e.target.value)}
               className="block p-4 pl-10 pr-28 text-sm"
             />
-            <div className="items absolute bottom-0.5 right-0.5">
+            <div className="items absolute bottom-[1px] right-[1px]">
               {!user.isLoggedIn ? (
                 <DialogLogin>
                   <Button className="h-fit" variant="destructive">
@@ -309,7 +314,7 @@ function WitnessesPage() {
           <Icons.atSign />
         </div>
         <Input value={observerData?.proxy} disabled className="block p-4 pl-10 pr-28 text-sm" />
-        <div className="items absolute bottom-0.5 right-0.5">
+        <div className="items absolute bottom-[1px] right-[1px]">
           <ProxyDialog
             loading={proxyMutation.isLoading}
             onSetProxy={() => onSetProxy('')}
