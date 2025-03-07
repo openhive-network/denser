@@ -232,6 +232,8 @@
   },
   "witnesses_page": {
     "title": "Witness Voting",
+    "setted_proxy_description": "You have set a voting proxy. If you would like to re-enable manual voting, please clear your proxy.",
+    "current_proxy": "Your current proxy is: {{value}}",
     "you_have_votes_remaining": {
       "zero": "You have no votes remaining.",
       "one": "You have 1 vote remaining.",
@@ -259,6 +261,7 @@
     "vote_description": "If you would like to vote for a witness outside of the top 200, enter the account name below to cast a vote.",
     "proxy_description": "You can also choose a proxy that will vote for witnesses for you. This will reset your current witness selection.",
     "set_proxy": "Set proxy",
+    "clear_proxy": "Clear proxy",
     "disabled": "Disabled ",
     "no_url_provided": "No URL provided",
     "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",
