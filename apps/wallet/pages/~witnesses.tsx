@@ -19,7 +19,7 @@ import DialogLogin from '../components/dialog-login';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getServerSidePropsDefault, getTranslations } from '../lib/get-translations';
+import { getServerSidePropsDefault } from '../lib/get-translations';
 import { useWitnessVoteMutation } from '../components/hooks/use-vote-witness-mutation';
 import WitnessRemoveVote from '../components/witness-remove-vote';
 import { CircleSpinner } from 'react-spinners-kit';
@@ -33,6 +33,7 @@ import {
   DialogTrigger,
   Separator
 } from '@ui/components';
+import { handleError } from '@ui/lib/handle-error';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
@@ -129,19 +130,30 @@ function WitnessesPage() {
   const router = useRouter();
   const voteMutation = useWitnessVoteMutation();
   const proxyMutation = useSetProxyMutation();
-  const onVote = (witness: string, approve: boolean) => {
+  const onVote = async (witness: string, approve: boolean) => {
     if (observerData && user) {
-      voteMutation.mutate({
-        account: user.username,
-        witness: witness,
-        approve: approve
-      });
+      try {
+        await voteMutation.mutateAsync({
+          account: user.username,
+          witness: witness,
+          approve: approve
+        });
+      } catch (error) {
+        handleError(error, {
+          method: 'voteWitness',
+          params: { account: user.username, witness: witness, approve: approve }
+        });
+      }
     }
   };
-  const onSetProxy = (witness: string) => {
-    proxyMutation.mutate({
-      witness: witness
-    });
+  const onSetProxy = async (witness: string) => {
+    try {
+      await proxyMutation.mutateAsync({
+        witness: witness
+      });
+    } catch (error) {
+      handleError(error, { method: 'setProxy', params: { witness: witness } });
+    }
   };
 
   useEffect(() => {
