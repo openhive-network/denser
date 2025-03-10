@@ -64,12 +64,17 @@ include:
       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
-  script: scripts/ci-helpers/docker-build-template-script.sh
+  script:
+    - |
+      # Create a default env file in case the build fails
+      echo "${TURBO_APP_NAME}_IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}" > ${TURBO_APP_NAME}-docker-build.env
+      scripts/ci-helpers/docker-build-template-script.sh
   artifacts:
     paths:
       - ${TURBO_APP_NAME}-docker-build.env
     reports:
       dotenv: ${TURBO_APP_NAME}-docker-build.env
+    when: always  # This ensures artifacts are created even if job fails
   tags:
     - public-runner-docker
     - hived-for-tests
@@ -308,8 +313,6 @@ mirrornet-based-tests:
         - --from=https://caddy-blog
         - --to=denser-blog:3000
         - --internal-certs
-        # - --debug
-        # - --access-log
     - name: $WALLET_IMAGE_NAME
       alias: denser-wallet
       variables:
@@ -327,8 +330,6 @@ mirrornet-based-tests:
         - --from=https://caddy-wallet
         - --to=denser-wallet:4000
         - --internal-certs
-        # - --debug
-        # - --access-log
     - name: $AUTH_IMAGE_NAME
       alias: denser-auth
       variables:
@@ -345,8 +346,6 @@ mirrornet-based-tests:
         - --from=https://caddy-auth
         - --to=denser-auth:5000
         - --internal-certs
-        # - --debug
-        # - --access-log
   variables:
     GIT_STRATEGY: 'clone'
     CI_DEBUG_SERVICES: 'false'
@@ -372,11 +371,11 @@ mirrornet-based-tests:
       - '*.log'
       - 'logs/'
       - '*.env'
-      - 'apps/blog/playwright-report/'
-      - 'apps/blog/test-results/'
-      - 'apps/blog/junit/'
+      - 'playwright-report/'
+      - 'test-results/'
+      - 'junit/'
     reports:
-      junit: 'apps/blog/junit/results.xml'
+      junit: 'junit/results.xml'
   tags:
     - data-cache-storage
 
@@ -556,6 +555,7 @@ main:deploy-blog-mainnet:
   extends: .deploy_template_mainnet
   needs:
     - docker-build-blog
+    - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-main-blog
     PORT: 9111
@@ -577,6 +577,7 @@ main:deploy-wallet-mainnet:
   extends: .deploy_template_mainnet
   needs:
     - docker-build-wallet
+    - e2e-tests-wallet
   variables:
     CONTAINER_NAME: denser-main-wallet
     PORT: 9122
@@ -618,6 +619,7 @@ main:deploy-blog-mirrornet:
   extends: .deploy_template_mirrornet
   needs:
     - docker-build-blog
+    - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-main-blog-mirror
     PORT: 9211
@@ -639,6 +641,7 @@ main:deploy-wallet-mirrornet:
   extends: .deploy_template_mirrornet
   needs:
     - docker-build-wallet
+    - e2e-tests-wallet
   variables:
     CONTAINER_NAME: denser-main-wallet-mirror
     PORT: 9222
@@ -784,6 +787,7 @@ develop:deploy-blog-mainnet:
   extends: .deploy_template_mainnet
   needs:
     - docker-build-blog
+    - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-dev-blog
     PORT: 8111
@@ -804,6 +808,7 @@ develop:deploy-wallet-mainnet:
   extends: .deploy_template_mainnet
   needs:
     - docker-build-wallet
+    - e2e-tests-wallet
   variables:
     CONTAINER_NAME: denser-dev-wallet
     PORT: 8122
@@ -843,6 +848,7 @@ develop:deploy-blog-mirrornet:
   extends: .deploy_template_mirrornet
   needs:
     - docker-build-blog
+    - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-dev-blog-mirror
     PORT: 8211
@@ -863,6 +869,7 @@ develop:deploy-wallet-mirrornet:
   extends: .deploy_template_mirrornet
   needs:
     - docker-build-wallet
+    - e2e-tests-wallet
   variables:
     CONTAINER_NAME: denser-dev-wallet-mirror
     PORT: 8222

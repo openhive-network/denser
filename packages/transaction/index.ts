@@ -822,6 +822,16 @@ export class TransactionService {
     }, transactionOptions);
   }
 
+  async witnessProxy(proxy: string, transactionOptions: TransactionOptions = {}) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        account_witness_proxy: {
+          account: this.signerOptions.username,
+          proxy: proxy
+        }
+      });
+    }, transactionOptions);
+  }
   async transferToSavings(
     amount: asset,
     fromAccount: string,

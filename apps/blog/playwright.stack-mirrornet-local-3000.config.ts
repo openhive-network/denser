@@ -10,7 +10,7 @@ require('dotenv').config({ path: './test.env' });
 // require('dotenv').config();
 
 /* The same default value as in site.ts */
-process.env.REACT_APP_API_ENDPOINT = "https://14.bc.fqdn.pl:8083/";
+process.env.REACT_APP_API_ENDPOINT = `https://14.bc.fqdn.pl:8083/`;
 if (process.env.REACT_APP_API_ENDPOINT.substr(-1) != '/') process.env.REACT_APP_API_ENDPOINT += '/';
 
 
@@ -56,8 +56,7 @@ export default defineConfig({
     actionTimeout: 0,
 
     /* Base URL to use in actions like `await page.goto('/')`. */
-    /* baseURL: process.env.DENSER_URL || `https://${process.env.PUBLIC_HOSTNAME}:${process.env.BLOG_PORT}/`,*/
-    baseURL: `https://14.bc.fqdn.pl:3000/`,
+    baseURL: "https://14.bc.fqdn.pl:3000/",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'retain-on-failure',
@@ -85,10 +84,10 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: 'setup',
-      testMatch: /auth\.setup\.ts/
-    },
+    // {
+    //   name: 'setup',
+    //   testMatch: /auth\.setup\.ts/
+    // },
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },

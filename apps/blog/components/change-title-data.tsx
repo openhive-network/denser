@@ -1,13 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  Input,
-  Separator
-} from '@ui/components';
+import { Button, Input } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';

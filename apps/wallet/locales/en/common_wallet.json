@@ -232,11 +232,17 @@
   },
   "witnesses_page": {
     "title": "Witness Voting",
+    "setted_proxy_description": "You have set a voting proxy. If you would like to re-enable manual voting, please clear your proxy.",
+    "current_proxy": "Your current proxy is: {{value}}",
     "you_have_votes_remaining": {
       "zero": "You have no votes remaining.",
       "one": "You have 1 vote remaining.",
       "other": "You have {{value}} votes remaining."
     },
+    "confirm_account_witness_vote": "Confirm Account Witness Vote",
+    "you_are_about_remove_vote": "You are about to remove your vote for this witness",
+    "cancel_button": "Cancel",
+    "ok": "OK",
     "you_can_vote_for_maximum_of_witnesses": "You can vote for a maximum of 30 witnesses",
     "witness_list_notes": "Notes: in the list below, the first 100 witnesses are unfiltered, this includes active and inactive witnesses. Past the rank of 100, witnesses will be filtered out of the list if they have not produced any block for the last 30 days.",
     "rank": "Rank",
@@ -255,6 +261,7 @@
     "vote_description": "If you would like to vote for a witness outside of the top 200, enter the account name below to cast a vote.",
     "proxy_description": "You can also choose a proxy that will vote for witnesses for you. This will reset your current witness selection.",
     "set_proxy": "Set proxy",
+    "clear_proxy": "Clear proxy",
     "disabled": "Disabled ",
     "no_url_provided": "No URL provided",
     "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",

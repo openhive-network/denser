@@ -84,7 +84,7 @@ export class LoginHelper {
     await this.loginFormDefaut.passwordInput.fill(safeStoragePassword);
     await this.loginFormDefaut.wifInput.fill(privatePostingKey);
     await this.loginFormDefaut.saveSignInButton.click();
-    await this.loginFormDefaut.page.waitForTimeout(3000);
+    await this.loginFormDefaut.page.waitForTimeout(5000);
     await this.homePage.profileAvatarButton.click();
     // Validate User is logged in
     await this.page.waitForSelector(this.profileMenu.profileMenuContent['_selector']);

@@ -7,9 +7,11 @@ import { Icons } from '@hive/ui/components/icons';
 import { FullAccount } from '@transaction/lib/app-types';
 import { dateToFullRelative, dateToRelative } from '@hive/ui/lib/parse-date';
 import { useRouter } from 'next/router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
+import { CircleSpinner } from 'react-spinners-kit';
+import WitnessRemoveVote from './witness-remove-vote';
 
 const getOwnersString = (owners?: string) => {
   if (!owners) return '';
@@ -23,11 +25,23 @@ interface WitnessListItemProps {
   data: ExtendWitness;
   witnessAccount?: FullAccount;
   headBlock: number;
+  onVote: (approve: boolean) => void;
+  voteEnabled: boolean;
+  isVoted: boolean;
+  voteLoading: boolean;
 }
 
 const ONE_WEEK_IN_SEC = 604800;
 
-function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemProps) {
+function WitnessListItem({
+  data,
+  headBlock,
+  witnessAccount,
+  onVote,
+  voteEnabled,
+  isVoted,
+  voteLoading
+}: WitnessListItemProps) {
   const { t } = useTranslation('common_wallet');
   const disableUser = data.signing_key === DISABLED_SIGNING_KEY;
   const witnessDescription = witnessAccount?.profile?.witness_description;
@@ -74,7 +88,7 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
   const router = useRouter();
 
   const ref = useRef<HTMLTableRowElement>(null);
-
+  const markedWitness = router.query.highlight === data.owner;
   useEffect(() => {
     let highlight = '';
     if (Array.isArray(router.query.highlight)) {
@@ -90,37 +104,60 @@ function WitnessListItem({ data, headBlock, witnessAccount }: WitnessListItemPro
   return (
     <tr
       className={clsx({
-        'bg-rose-200  dark:bg-rose-800': router.query.highlight === data.owner,
-        'even:bg-zinc-100 dark:even:bg-slate-900': router.query.highlight !== data.owner
+        'bg-rose-200  dark:bg-rose-800': markedWitness,
+        'even:bg-zinc-100 dark:even:bg-slate-900': !markedWitness
       })}
       ref={ref}
     >
       <td>
         <div className="flex flex-col-reverse items-center gap-1 sm:flex-row sm:p-2">
           <span className="sm:text-sm">{data.rank < 10 ? `0${data.rank}` : data.rank}</span>
-          <DialogLogin>
+          {voteEnabled ? (
             <div title={t('witnesses_page.vote')} className="group relative flex" data-testid="witness-vote">
-              <span
-                className={clsx(
-                  'opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400',
-                  {
-                    'bg-white': data.observer
-                  }
-                )}
-              ></span>
-              <Icons.arrowUpCircle
-                viewBox="1.7 1.7 20.7 20.7"
-                className={clsx(
-                  'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
-                  {
-                    'bg-slate-100 dark:bg-slate-900': router.query.highlight !== data.owner,
-                    'bg-rose-200  dark:bg-rose-800': router.query.highlight === data.owner,
-                    'bg-rose-600 text-white': data.observer
-                  }
-                )}
-              />
+              <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
+              {voteLoading ? (
+                <span className="relative rounded-full bg-white dark:bg-slate-900">
+                  <CircleSpinner loading={voteLoading} size={20} color="#dc2626" />
+                </span>
+              ) : !isVoted ? (
+                <Icons.arrowUpCircle
+                  onClick={() => onVote(true)}
+                  viewBox="1.7 1.7 20.7 20.7"
+                  className={clsx(
+                    'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
+                    {
+                      'bg-slate-100 dark:bg-slate-900': !markedWitness,
+                      'bg-rose-200  dark:bg-rose-800': markedWitness
+                    }
+                  )}
+                />
+              ) : (
+                <WitnessRemoveVote onVote={onVote}>
+                  <Icons.arrowUpCircle className="relative inline-flex h-5 w-5 cursor-pointer rounded-full bg-rose-600 stroke-1 text-white dark:bg-rose-600 dark:text-white" />
+                </WitnessRemoveVote>
+              )}
             </div>
-          </DialogLogin>
+          ) : (
+            <DialogLogin>
+              <div
+                title={t('witnesses_page.vote')}
+                className="group relative flex"
+                data-testid="witness-vote"
+              >
+                <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
+                <Icons.arrowUpCircle
+                  viewBox="1.7 1.7 20.7 20.7"
+                  className={clsx(
+                    'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
+                    {
+                      'bg-slate-100 dark:bg-slate-900': !markedWitness,
+                      'bg-rose-200  dark:bg-rose-800': markedWitness
+                    }
+                  )}
+                />
+              </div>
+            </DialogLogin>
+          )}
         </div>
       </td>
       <td className="font-light md:font-normal">

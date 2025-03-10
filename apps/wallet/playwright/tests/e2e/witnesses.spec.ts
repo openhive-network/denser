@@ -1,6 +1,6 @@
 import { Locator, expect, test } from '@playwright/test';
 import { WitnessesPage } from '../support/pages/witnessesPage';
-import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { LoginForm } from '../support/pages/loginForm';
 import { ApiHelper } from '../support/apiHelper';
 import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
 import { WitnessPage } from '../../../../blog/playwright/tests/support/pages/witnessesPage';
@@ -410,15 +410,16 @@ test.describe('Witnesses page tests', () => {
   //   await expect(witnessesPage.witnessTableBody).toBeVisible();
   // });
 
-  test('move to the confirm account witness proxy dialog by clicking Set proxy button', async ({ page }) => {
+  test('move to the login form dialog by clicking Set proxy button', async ({ page }) => {
     let confirmAccountWitnessProxyDialog = new ConfirmAccountWitnessProxyDialog(page);
+    const loginForm: LoginForm = new LoginForm(page);
 
     const proxyBoxButton = await witnessesPage.witnessSetProxyBox.locator('div button');
 
     await witnessesPage.goToWitnessesPage();
     await proxyBoxButton.click();
-    await confirmAccountWitnessProxyDialog.validateConfirmProxyDialogIsVisible();
-    await confirmAccountWitnessProxyDialog.closeConfirmProxyDialog();
+    await loginForm.validateDefaultLoginFormIsLoaded();
+    await loginForm.closeLoginForm();
     await expect(witnessesPage.witnessTitle).toHaveText('Witness Voting');
     await expect(witnessesPage.witnessTableBody).toBeVisible();
   });
