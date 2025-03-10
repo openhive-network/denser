@@ -245,10 +245,12 @@ export class SignerHbauth extends Signer {
         inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
       }
     };
-
     // If key is not registered in safe storage, ask user to enter it
     if (!auths.registeredKeyTypes.includes(keyType)) {
+      // If password is not provided, ask user to enter it
+      if (!password) password = await this.getPasswordFromUser();
       try {
+        // Ask user to enter key for required keyType
         const { password: keyToUse } = await PasswordDialogModalPromise({
           isOpen: true,
           passwordFormOptions
