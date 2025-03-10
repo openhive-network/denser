@@ -19,6 +19,7 @@ export class ProfileUserMenu {
     readonly walletLink: Locator;
     readonly logoutLink: Locator;
     readonly headerPostList: Locator;
+    readonly profileLinkString: string;
 
     constructor(page: Page) {
         this.page = page;
@@ -38,6 +39,7 @@ export class ProfileUserMenu {
         this.walletLink = page.locator('[data-testid="user-profile-menu-wallet-link"]');
         this.logoutLink = page.locator('[data-testid="user-profile-menu-logout-link"]');
         this.headerPostList = page.getByTestId('community-name').locator('..').locator('..');
+        this.profileLinkString = '[data-testid="user-profile-menu-profile-link"]'
     }
 
     async validateUserProfileManuIsOpen() {
