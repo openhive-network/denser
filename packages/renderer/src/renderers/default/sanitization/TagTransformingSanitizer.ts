@@ -44,6 +44,7 @@ export class TagTransformingSanitizer {
                 // style is subject to attack, filtering more below
                 td: ['style'],
                 th: ['style'],
+                table: ['style'],
                 img: ['src', 'alt'],
 
                 // title is only set in the case of an external link warning
@@ -121,6 +122,16 @@ export class TagTransformingSanitizer {
                     if (validClass === 'phishy' && attribs.title === this.localization.phishingWarning) {
                         attys.title = attribs.title;
                     }
+                    const retTag: sanitize.Tag = {
+                        tagName,
+                        attribs: attys
+                    };
+                    return retTag;
+                },
+                table: (tagName) => {
+                    const attys: sanitize.Attributes = {};
+                    attys.style = 'width: 100%; display: block; overflow-x: auto;';
+
                     const retTag: sanitize.Tag = {
                         tagName,
                         attribs: attys
