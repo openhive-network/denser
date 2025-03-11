@@ -18,7 +18,6 @@ const logger = getLogger('app');
  * @extends {Signer}
  */
 export class SignerHbauth extends Signer {
-
   /**
    * Pending promise, returning output from dialog asking user for
    * password, or null. Intended for awaiting by any requests for
@@ -30,10 +29,7 @@ export class SignerHbauth extends Signer {
    */
   passwordPromise: Promise<any> | null;
 
-  constructor(
-    signerOptions: SignerOptions,
-    pack: TTransactionPackType = TTransactionPackType.HF_26
-    ) {
+  constructor(signerOptions: SignerOptions, pack: TTransactionPackType = TTransactionPackType.HF_26) {
     super(signerOptions, pack);
     this.passwordPromise = null;
   }
@@ -55,8 +51,8 @@ export class SignerHbauth extends Signer {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
       i18nKeysForCaptions: {
-        inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder',
-      },
+        inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder'
+      }
     };
 
     try {
@@ -66,9 +62,7 @@ export class SignerHbauth extends Signer {
           passwordFormOptions
         });
       }
-      const {
-        password
-      } = await this.passwordPromise;
+      const { password } = await this.passwordPromise;
       return password;
     } catch (error) {
       logger.error('Error in getPasswordFromUser: %o', error);
@@ -77,28 +71,34 @@ export class SignerHbauth extends Signer {
   }
 
   async signChallenge(
-    { password = '', message }: SignChallenge,  
-    singleSignKeyType?: KeyAuthorityType
-    ): Promise<string> {
+    { password = '', message }: SignChallenge,
+    singleSignKeyType?: KeyAuthorityType,
+    requiredKeyType?: KeyAuthorityType
+  ): Promise<string> {
     const digest = cryptoUtils.sha256(message).toString('hex');
-    return this.signDigest(digest, password, singleSignKeyType);
+    return this.signDigest(digest, password, singleSignKeyType, requiredKeyType);
   }
 
-  async signTransaction({ digest, transaction, singleSignKeyType }: SignTransaction) {
+  async signTransaction({ digest, transaction, singleSignKeyType, requiredKeyType }: SignTransaction) {
     const wax = await createWaxFoundation({ chainId: this.chainId });
 
     // When transaction is string, e.g. got from transaction.toApi().
     // const txBuilder = wax.TransactionBuilder.fromApi(transaction);
-    
+
     const txBuilder = wax.createTransactionFromProto(transaction);
     if (digest !== txBuilder.sigDigest) {
       throw new Error('Digests do not match');
     }
 
-    return this.signDigest(digest, '', singleSignKeyType);
+    return this.signDigest(digest, '', singleSignKeyType, requiredKeyType);
   }
 
-  async signDigest(digest: THexString, password: string, singleSignKeyType?: KeyAuthorityType) {
+  async signDigest(
+    digest: THexString,
+    password: string,
+    singleSignKeyType?: KeyAuthorityType,
+    requiredKeyType?: KeyAuthorityType
+  ) {
     const { username, keyType } = this;
     logger.info('signDigest args: %o', { password, digest, username, keyType });
 
@@ -106,25 +106,21 @@ export class SignerHbauth extends Signer {
     if (!validKeyTypes.includes(keyType)) {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
-    
-    const authClient = await hbauthService.getOnlineClient();
 
+    const authClient = await hbauthService.getOnlineClient();
     const checkAuthResult = await this.checkAuth(username, keyType);
+
     if (!checkAuthResult) {
       if (!password) {
         password = await this.getPasswordFromUser();
       }
       if (!password) throw new Error('No password to unlock key');
 
-      let authStatus: AuthStatus = {ok: false};
+      let authStatus: AuthStatus = { ok: false };
       try {
-        authStatus = await authClient.authenticate(
-          username,
-          password,
-          keyType
-        );
+        authStatus = await authClient.authenticate(username, password, keyType);
       } catch (error) {
-        logger.error("Error in signDigest, when trying to authenticate user: %o", error);
+        logger.error('Error in signDigest, when trying to authenticate user: %o', error);
 
         //
         // TODO AuthorizationError is not exported in hb-auth yet (issue
@@ -134,7 +130,7 @@ export class SignerHbauth extends Signer {
 
         // if (error instanceof AuthorizationError)
 
-        if (error && `${error}` === "AuthorizationError: User is already logged in") {
+        if (error && `${error}` === 'AuthorizationError: User is already logged in') {
           logger.info('Swallowing error: AuthorizationError: User is already logged in');
           // Swallow this error, it's OK.
           authStatus.ok = true;
@@ -152,7 +148,6 @@ export class SignerHbauth extends Signer {
     let signature = '';
 
     if (singleSignKeyType) {
-      console.log('singleSignKeyType', singleSignKeyType);
       if (!validKeyTypes.includes(singleSignKeyType)) {
         throw new Error(`Unsupported singleSignKeyType: ${singleSignKeyType}`);
       }
@@ -163,8 +158,8 @@ export class SignerHbauth extends Signer {
         showInputStorePassword: false,
         i18nKeysForCaptions: {
           title: `login_form.this_operation_requires_your_key_for_single_sign_${singleSignKeyType}`,
-          inputPasswordPlaceholder: 'login_form.title_wif_dialog_password',
-        },
+          inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
+        }
       };
 
       try {
@@ -177,22 +172,16 @@ export class SignerHbauth extends Signer {
           throw new Error('No key provided for single sign');
         }
 
-        signature = await authClient.singleSign(
-          username,
-          digest,
-          singleSignPassword,
-          singleSignKeyType,
-        );
+        signature = await authClient.singleSign(username, digest, singleSignPassword, singleSignKeyType);
       } catch (error) {
         logger.error('Error in single sign: %o', error);
         throw error;
       }
+    }
+    if (requiredKeyType && requiredKeyType !== keyType) {
+      signature = await this.requireOtherKey(requiredKeyType, username, digest, password);
     } else {
-      signature = await authClient.sign(
-        username,
-        digest,
-        keyType
-      );
+      signature = await authClient.sign(username, digest, keyType);
     }
 
     logger.info('hbauth: %o', { digest, signature });
@@ -219,8 +208,9 @@ export class SignerHbauth extends Signer {
         } else {
           logger.info(
             'User %s is authorized, but with incorrect keyType: %s. It is OK anyway.',
-            username, auth.loggedInKeyType
-            );
+            username,
+            auth.loggedInKeyType
+          );
           // This should not disturb. Wallet is unlocked.
           return true;
         }
@@ -236,5 +226,43 @@ export class SignerHbauth extends Signer {
       throw new Error(message);
     }
   }
+  // This method is used to sign with a different key than the one that is currently unlocked
+  async requireOtherKey(
+    keyType: KeyAuthorityType,
+    username: string,
+    digest: string,
+    password: string
+  ): Promise<string> {
+    const authClient = await hbauthService.getOnlineClient();
+    const auths = await authClient.getRegisteredUserByUsername(username);
+    if (!auths) throw new Error('User not found');
 
+    const passwordFormOptions: PasswordFormOptions = {
+      mode: PasswordFormMode.HBAUTH,
+      showInputStorePassword: false,
+      i18nKeysForCaptions: {
+        title: `login_form.this_operation_requires_your_${keyType}_key_enter_key_and_keep_it_in_safe_storage`,
+        inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
+      }
+    };
+    // If key is not registered in safe storage, ask user to enter it
+    if (!auths.registeredKeyTypes.includes(keyType)) {
+      // If password is not provided, ask user to enter it
+      if (!password) password = await this.getPasswordFromUser();
+      try {
+        // Ask user to enter key for required keyType
+        const { password: keyToUse } = await PasswordDialogModalPromise({
+          isOpen: true,
+          passwordFormOptions
+        });
+        // Import other key to safe storage
+        await authClient.register(username, password, keyToUse, keyType);
+      } catch (error) {
+        logger.error('Error in getPasswordFromUser: %o', error);
+        throw new Error('Invalid key');
+      }
+    }
+    // Sign with the required key
+    return await authClient.sign(username, digest, keyType);
+  }
 }

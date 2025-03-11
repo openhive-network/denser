@@ -10,8 +10,9 @@ export interface SignTransaction {
   digest: THexString;
   transaction: transaction;
   // if singleSign is defined, this is required
-  // so we need to get the private key from the user 
-  singleSignKeyType?: 'owner' | 'active' | 'posting'; 
+  // so we need to get the private key from the user
+  singleSignKeyType?: 'owner' | 'active' | 'posting';
+  requiredKeyType?: 'owner' | 'active' | 'posting';
 }
 export interface SignChallenge {
   message: string | Buffer;
@@ -49,9 +50,8 @@ export abstract class Signer {
   constructor(
     { username, loginType, keyType, apiEndpoint, storageType, chainId }: SignerOptions,
     pack: TTransactionPackType
-    ) {
-    logger.info('Starting Signer constructor with options: %o and pack: %s',
-        arguments[0], arguments[1]);
+  ) {
+    logger.info('Starting Signer constructor with options: %o and pack: %s', arguments[0], arguments[1]);
     if (pack) {
       this.pack = pack;
     } else {
