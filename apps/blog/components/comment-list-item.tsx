@@ -31,6 +31,7 @@ import { CircleSpinner } from 'react-spinners-kit';
 import MutePostDialog from './mute-post-dialog';
 import ChangeTitleDialog from './change-title-dialog';
 import { AlertDialogFlag } from './alert-window-flag';
+import FlagTooltip from './flag-icon';
 interface CommentListProps {
   permissionToMute: Boolean;
   comment: Entry;
@@ -191,14 +192,18 @@ const CommentListItem = ({
                           </div>
                           {!hiddenComment ? (
                             <div className="flex items-center">
-                              {flagText && comment.community ? (
+                              {flagText && comment.community && !user.isLoggedIn ? (
+                                <DialogLogin>
+                                  <FlagTooltip onClick={() => {}} />
+                                </DialogLogin>
+                              ) : flagText && comment.community && user.isLoggedIn ? (
                                 <AlertDialogFlag
                                   community={comment.community}
                                   username={username}
                                   permlink={comment.permlink}
                                   flagText={flagText}
                                 >
-                                  <Icons.flag className="m-2 h-4 w-4 cursor-pointer hover:text-destructive" />
+                                  <FlagTooltip onClick={() => {}} />
                                 </AlertDialogFlag>
                               ) : null}
                               <AccordionTrigger
@@ -225,14 +230,18 @@ const CommentListItem = ({
                                 {t('cards.comment_card.reveal_comment')}{' '}
                               </span>
                             </AccordionTrigger>
-                            {flagText && comment.community ? (
+                            {flagText && comment.community && !user.isLoggedIn ? (
+                              <DialogLogin>
+                                <FlagTooltip onClick={() => {}} />
+                              </DialogLogin>
+                            ) : flagText && comment.community && user.isLoggedIn ? (
                               <AlertDialogFlag
                                 community={comment.community}
                                 username={username}
                                 permlink={comment.permlink}
                                 flagText={flagText}
                               >
-                                <Icons.flag className="m-2 h-4 w-4 cursor-pointer hover:text-destructive" />
+                                <FlagTooltip onClick={() => {}} />
                               </AlertDialogFlag>
                             ) : null}
                           </div>

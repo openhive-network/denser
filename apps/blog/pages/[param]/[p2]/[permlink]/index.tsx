@@ -55,6 +55,7 @@ import ChangeTitleDialog from '@/blog/components/change-title-dialog';
 import moment from 'moment';
 import { PostDeleteDialog } from '@/blog/components/post-delete-dialog';
 import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation';
+import FlagIcon from '@/blog/components/flag-icon';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -223,16 +224,22 @@ function PostPage({
       <Head>{canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}</Head>
       <div className="py-8">
         <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
-          {communityData ? (
-            <AlertDialogFlag
-              community={community}
-              username={username}
-              permlink={permlink}
-              flagText={communityData.flag_text}
-            >
-              <Icons.flag className="absolute right-0 m-2 cursor-pointer hover:text-destructive" />
-            </AlertDialogFlag>
-          ) : null}
+          <div className="absolute right-0 top-1 cursor-pointer hover:text-destructive">
+            {communityData && !user.isLoggedIn ? (
+              <DialogLogin>
+                <FlagIcon onClick={() => {}} />
+              </DialogLogin>
+            ) : communityData && user.isLoggedIn ? (
+              <AlertDialogFlag
+                community={community}
+                username={username}
+                permlink={permlink}
+                flagText={communityData.flag_text}
+              >
+                <FlagIcon onClick={() => {}} />
+              </AlertDialogFlag>
+            ) : null}
+          </div>
           {!isLoadingPost && post ? (
             <div>
               {!commentSite ? (
