@@ -1,5 +1,5 @@
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation, vote, transfer, ApiOperation, ApiTransaction } from '@hiveio/wax';
+import { operation, vote, transfer, ApiOperation, ApiTransaction, custom_json } from '@hiveio/wax';
 import { KeyType } from '@smart-signer/types/common';
 
 /**
@@ -12,32 +12,42 @@ import { KeyType } from '@smart-signer/types/common';
  * @returns {Promise<operation>}
  */
 export async function getOperationForLogin(
-    username: string,
-    keyType: KeyType,
-    loginChallenge: string
+  username: string,
+  keyType: KeyType,
+  loginChallenge: string
 ): Promise<operation> {
-    const hiveChain = await hiveChainService.getHiveChain();
-    let operation: operation;
-    if (keyType === KeyType.posting) {
-        const voteLoginChallenge: vote = vote.create({
-            voter: username,
-            author: "author",
-            permlink: loginChallenge,
-            weight: 10000,
-        });
-        operation = { vote: voteLoginChallenge };
-    } else if (keyType === KeyType.active) {
-        const transferLoginChallenge: transfer = transfer.create({
-            from_account: username,
-            to_account: username,
-            amount: hiveChain.hive(1),
-            memo: loginChallenge,
-        });
-        operation = { transfer: transferLoginChallenge };
-    } else {
-        throw new Error('Unsupported keyType');
-    }
-    return operation;
+  const hiveChain = await hiveChainService.getHiveChain();
+  let operation: operation;
+  if (keyType === KeyType.posting) {
+    const customJsonLoginChallenge: custom_json = custom_json.create({
+      id: 'denser_login_with_posting_key',
+      json: JSON.stringify({
+        username: username,
+        keyType: keyType,
+        description: 'You are logging in to Denser using Hive Keychain by signing this transaction',
+        loginChallenge: loginChallenge
+      }),
+      required_auths: [],
+      required_posting_auths: [username]
+    });
+    operation = { custom_json: customJsonLoginChallenge };
+  } else if (keyType === KeyType.active) {
+    const customJsonLoginChallenge: custom_json = custom_json.create({
+      id: 'denser_login_with_active_key',
+      json: JSON.stringify({
+        username: username,
+        keyType: keyType,
+        description: 'You are logging in to Denser using Hive Keychain by signing this transaction',
+        loginChallenge: loginChallenge
+      }),
+      required_auths: [username],
+      required_posting_auths: []
+    });
+    operation = { custom_json: customJsonLoginChallenge };
+  } else {
+    throw new Error('Unsupported keyType');
+  }
+  return operation;
 }
 
 /**
@@ -48,12 +58,9 @@ export async function getOperationForLogin(
  * @param {KeyType} keyType
  * @returns {string}
  */
-export function getLoginChallengeFromTransactionForLogin(
-    tx: ApiTransaction,
-    keyType: KeyType
-): string {
-    const operation: ApiOperation = tx.operations[0];
-    return getLoginChallengeFromOperationForLogin(operation, keyType);
+export function getLoginChallengeFromTransactionForLogin(tx: ApiTransaction, keyType: KeyType): string {
+  const operation: ApiOperation = tx.operations[0];
+  return getLoginChallengeFromOperationForLogin(operation, keyType);
 }
 
 /**
@@ -64,17 +71,14 @@ export function getLoginChallengeFromTransactionForLogin(
  * @param {KeyType} keyType
  * @returns {string}
  */
-export function getLoginChallengeFromOperationForLogin(
-    operation: ApiOperation,
-    keyType: KeyType
-): string {
-    let loginChallenge = '';
-    if (keyType === KeyType.posting) {
-        loginChallenge = (operation as any).value['permlink'];
-    } else if (keyType === KeyType.active) {
-        loginChallenge = (operation as any).value['memo'];
-    } else {
-        throw new Error('Unsupported keyType');
-    }
-    return loginChallenge;
+export function getLoginChallengeFromOperationForLogin(operation: ApiOperation, keyType: KeyType): string {
+  let loginChallenge = '';
+  if (keyType === KeyType.posting) {
+    loginChallenge = (operation as any).value['permlink'];
+  } else if (keyType === KeyType.active) {
+    loginChallenge = (operation as any).value['memo'];
+  } else {
+    throw new Error('Unsupported keyType');
+  }
+  return loginChallenge;
 }

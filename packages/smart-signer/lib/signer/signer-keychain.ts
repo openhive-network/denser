@@ -77,7 +77,6 @@ export class SignerKeychain extends Signer {
   async destroy(): Promise<void> {}
 
   async signChallenge({ message }: SignChallenge): Promise<string> {
-    console.log;
     const { username, keyType } = this;
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
@@ -110,24 +109,14 @@ export class SignerKeychain extends Signer {
       const provider = KeychainProvider.for(this.username, this.keyType);
 
       const authTx = await (await hiveChainService.getHiveChain()).createTransaction();
-
-      authTx.pushOperation({
-        custom_json: {
-          id: 'login',
-          json: JSON.stringify({
-            username: this.username,
-            keyType: this.keyType,
-            description: 'You are logging in to Denser using Hive Keychain'
-          }),
-          required_auths: [],
-          required_posting_auths: [this.username] // in case
-        }
-      });
+      authTx.pushOperation(transaction.operations[0]);
 
       await authTx.sign(provider);
 
-      console.log('authTx', authTx);
 
+      // This is quicker way to verify authority, isntead of 
+      // authority-checker.ts
+      // we will use only this method to verify authority soon
       await (
         await hiveChainService.getHiveChain()
       ).api.database_api.verify_authority({
@@ -135,7 +124,7 @@ export class SignerKeychain extends Signer {
         pack: TTransactionPackType.LEGACY
       });
 
-      return authTx.sigDigest;
+      return authTx.transaction.signatures[0];
     } catch (error) {
       logger.error('SignerKeychain.signTransaction error: %o', error);
       throw error;

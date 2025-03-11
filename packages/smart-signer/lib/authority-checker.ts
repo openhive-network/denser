@@ -24,7 +24,7 @@ const authorityStrictChecker = async (
   hiveChain: IHiveChainInterface
 ): Promise<boolean> => {
   try {
-    const findAccountsResponse = await hiveChain.api.database_api.find_accounts({ accounts: [signer] });
+    const findAccountsResponse = await hiveChain.api.database_api.find_accounts({ accounts: [signer], delayed_votes_active: true });
     const foundAccountInfo = findAccountsResponse.accounts;
     // logger.info(`Found # ${foundAccountInfo.length} account info(s): %o`, foundAccountInfo);
 
@@ -79,10 +79,8 @@ export const authorityChecker = async (
     });
 
     const hiveChain: IHiveChainInterface = await hiveChainService.getHiveChain();
-    const txBuilder = hiveChain.createTransactionFromJson(txJSON);
-
     const authorityVerificationResult = await hiveChain.api.database_api.verify_authority({
-      trx: txBuilder.toApiJson(),
+      trx: txJSON,
       pack
     });
 
@@ -106,9 +104,9 @@ export const authorityChecker = async (
     // Extract public keys from signatures.
     let signatureKeys: string[] = [];
     if (pack === TTransactionPackType.HF_26) {
-      signatureKeys = txBuilder.signatureKeys;
+      signatureKeys = txJSON.signatures;
     } else if (pack === TTransactionPackType.LEGACY) {
-      signatureKeys = txBuilder.legacy_signatureKeys;
+      signatureKeys = txJSON.signatures;
     }
 
     // Below is some additional code just to make a reverse check for
