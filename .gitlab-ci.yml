@@ -313,8 +313,6 @@ mirrornet-based-tests:
         - --from=https://caddy-blog
         - --to=denser-blog:3000
         - --internal-certs
-        # - --debug
-        # - --access-log
     - name: $WALLET_IMAGE_NAME
       alias: denser-wallet
       variables:
@@ -332,8 +330,6 @@ mirrornet-based-tests:
         - --from=https://caddy-wallet
         - --to=denser-wallet:4000
         - --internal-certs
-        # - --debug
-        # - --access-log
     - name: $AUTH_IMAGE_NAME
       alias: denser-auth
       variables:
@@ -350,8 +346,6 @@ mirrornet-based-tests:
         - --from=https://caddy-auth
         - --to=denser-auth:5000
         - --internal-certs
-        # - --debug
-        # - --access-log
   variables:
     GIT_STRATEGY: 'clone'
     CI_DEBUG_SERVICES: 'false'
@@ -377,11 +371,11 @@ mirrornet-based-tests:
       - '*.log'
       - 'logs/'
       - '*.env'
-      - 'apps/blog/playwright-report/'
-      - 'apps/blog/test-results/'
-      - 'apps/blog/junit/'
+      - 'playwright-report/'
+      - 'test-results/'
+      - 'junit/'
     reports:
-      junit: 'apps/blog/junit/results.xml'
+      junit: 'junit/results.xml'
   tags:
     - data-cache-storage
 
