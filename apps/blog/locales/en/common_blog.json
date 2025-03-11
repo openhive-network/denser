@@ -55,10 +55,14 @@
       "out_dapps": "Our dApps",
       "login": "Login",
       "sign_up": "Sign up",
-      "search": "Search...",
+      "search": "Search",
       "light": "Light",
       "dark": "Dark",
-      "system": "System"
+      "system": "System",
+      "create_post": "Create Post",
+      "theme": "Theme",
+      "language": "Language",
+      "menu_panel": "Menu Panel"
     },
     "sidebar": {
       "welcome": "Welcome",

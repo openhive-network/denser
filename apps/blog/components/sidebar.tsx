@@ -12,6 +12,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import version from '../version.json';
 import { siteConfig } from '@ui/config/site';
+import TooltipContainer from './tooltip-container';
 
 const Item = ({
   href,
@@ -25,9 +26,7 @@ const Item = ({
   disabled?: boolean;
 }) => {
   return (
-    <li
-      className='cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive'
-    >
+    <li className="cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive">
       {disabled ? (
         <div className="flex h-full w-full cursor-not-allowed items-center gap-1 p-4 text-sm font-semibold opacity-50 hover:border-border">
           {children}
@@ -52,9 +51,11 @@ const Sidebar = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-sidebar-menu-button">
-          <Icons.sidebarOpen className="h-5 w-5" />
-        </Button>
+        <TooltipContainer title={t('navigation.main_nav_bar.menu_panel')}>
+          <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-sidebar-menu-button">
+            <Icons.sidebarOpen className="h-5 w-5" />
+          </Button>
+        </TooltipContainer>
       </SheetTrigger>
       <SheetContent
         position="right"
