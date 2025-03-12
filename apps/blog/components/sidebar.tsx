@@ -12,7 +12,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import version from '../version.json';
 import { siteConfig } from '@ui/config/site';
-import TooltipContainer from './tooltip-container';
+import TooltipContainer from '@ui/components/tooltip-container';
 
 const Item = ({
   href,

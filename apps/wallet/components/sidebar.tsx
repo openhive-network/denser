@@ -11,6 +11,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
 import version from '../version.json';
 import { siteConfig } from '@ui/config/site';
+import TooltipContainer from '@ui/components/tooltip-container';
 
 const Item = ({
   href,
@@ -40,9 +41,11 @@ const Sidebar = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-sidebar-menu-button">
-          <Icons.sidebarOpen className="h-5 w-5" />
-        </Button>
+        <TooltipContainer title={t('navigation.main_nav_bar.menu_panel')}>
+          <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-sidebar-menu-button">
+            <Icons.sidebarOpen className="h-5 w-5" />
+          </Button>
+        </TooltipContainer>
       </SheetTrigger>
       <SheetContent
         position="right"

@@ -22,7 +22,7 @@ import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 import env from '@beam-australia/react-env';
 import { getAccount } from '@transaction/lib/hive';
-import TooltipContainer from './tooltip-container';
+import TooltipContainer from '@ui/components/tooltip-container';
 
 const SiteHeader: FC = () => {
   const router = useRouter();

@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { getCookie } from '@smart-signer/lib/utils';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
-import TooltipContainer from './tooltip-container';
+import TooltipContainer from '@ui/components/tooltip-container';
 
 export default function LangToggle({ logged }: { logged: Boolean }) {
   const router = useRouter();
