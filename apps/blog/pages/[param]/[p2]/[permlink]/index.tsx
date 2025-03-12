@@ -643,7 +643,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (community === 'undefined' || !community || community === '[param]') {
     return {
       redirect: {
-        destination: `/${post?.community}/@${username}/${permlink}`,
+        destination: `/${post?.community ?? post?.category}/@${username}/${permlink}`,
         permanent: false
       }
     };
