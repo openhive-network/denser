@@ -18,7 +18,10 @@ export function useClaimRewardsMutation() {
     mutationFn: async (params: { account: ApiAccount }) => {
       const { account } = params;
 
-      const broadcstResult = await transactionService.claimRewards(account, { observe: true });
+      const broadcstResult = await transactionService.claimRewards(account, {
+        observe: true,
+        requiredKeyType: 'posting'
+      });
       const response = { ...params, broadcstResult };
 
       logger.info('Done claim reward tranasaction: %o', response);

@@ -101,6 +101,15 @@ export class HomePage {
   readonly languageMenu: Locator;
   readonly languageMenuPl: Locator;
   readonly themeMode: Locator;
+  readonly articleBodyString: string;
+  readonly articleAuthor: string;
+  readonly userPopoverCardContent: string;
+  readonly profileFollowBtn: string;
+  readonly commentCard: string;
+  readonly commentListItem: string;
+  readonly postsImages: string;
+  readonly postAuthor: string;
+  readonly profileAvatar: string;
 
   // for logged in user
   readonly profileAvatarButton: Locator;
@@ -212,6 +221,15 @@ export class HomePage {
     this.languageMenu = page.locator('[role="menuitem"]');
     this.languageMenuPl = page.locator('[data-testid="pl"]').locator('..');
     this.themeMode = page.locator('[data-testid="theme-mode"]');
+    this.articleBodyString = '#articleBody';
+    this.articleAuthor = '[data-testid="author-name-link"]';
+    this.userPopoverCardContent = '[data-testid="user-popover-card-content"]';
+    this.profileFollowBtn = '[data-testid="profile-follow-button"]';
+    this.commentCard = '[data-testid="comment-card-description"]';
+    this.commentListItem = '[data-testid="comment-list-item"]';
+    this.postsImages = '[data-testid="post-image"]';
+    this.postAuthor = '[data-testid="post-author"]';
+    this.profileAvatar = '[data-testid="profile-avatar-button"]'
 
     // for logged in user
     this.profileAvatarButton = page.locator('[data-testid="profile-avatar-button"]');

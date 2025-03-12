@@ -32,6 +32,7 @@ export type TransactionBroadcastCallback = (txBuilder: ITransaction) => Promise<
 export interface TransactionOptions {
   observe?: boolean;
   singleSignKeyType?: SignTransaction['singleSignKeyType'];
+  requiredKeyType?: SignTransaction['requiredKeyType'];
 }
 
 export interface TransactionBroadcastResult {
@@ -98,10 +99,11 @@ export class TransactionService {
   ): Promise<TransactionBroadcastResult> {
     const defaultTransactionOptions = {
       observe: false,
-      singleSignKeyType: undefined
+      singleSignKeyType: undefined,
+      transactionOptions: undefined
     };
 
-    const { observe, singleSignKeyType } = {
+    const { observe, singleSignKeyType, requiredKeyType } = {
       ...defaultTransactionOptions,
       ...transactionOptions
     };
@@ -114,7 +116,7 @@ export class TransactionService {
     // Validate transaction
     txBuilder.validate();
 
-    const signature = await this.signTransaction(txBuilder, singleSignKeyType);
+    const signature = await this.signTransaction(txBuilder, singleSignKeyType, requiredKeyType);
 
     // Add signature to transaction
     txBuilder.sign(signature);
@@ -135,13 +137,15 @@ export class TransactionService {
    */
   signTransaction(
     txBuilder: ITransaction,
-    singleSignKeyType?: SignTransaction['singleSignKeyType']
+    singleSignKeyType?: SignTransaction['singleSignKeyType'],
+    requiredKeyType?: SignTransaction['requiredKeyType']
   ): Promise<string> {
     const signer = getSigner(this.signerOptions);
     return signer.signTransaction({
       digest: txBuilder.sigDigest,
       transaction: txBuilder.transaction,
-      singleSignKeyType
+      singleSignKeyType,
+      requiredKeyType
     });
   }
 
