@@ -36,8 +36,8 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <TooltipContainer title={t('navigation.main_nav_bar.language')}>
+      <TooltipContainer title={t('navigation.main_nav_bar.language')}>
+        <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="sm"
@@ -47,8 +47,8 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
             <span>{lang ? languages.filter((language) => language.locale === lang)[0].label : null}</span>
             {logged ? <span className="ml-2 w-full">{t('navigation.user_menu.toggle_lang')}</span> : null}
           </Button>
-        </TooltipContainer>
-      </DropdownMenuTrigger>
+        </DropdownMenuTrigger>
+      </TooltipContainer>
       <DropdownMenuContent align="end">
         {languages.map(({ locale, label }) => (
           <DropdownMenuItem

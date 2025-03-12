@@ -17,9 +17,9 @@ export default function ModeToggle({ children }: { children: React.ReactNode }) 
   const { t } = useTranslation('common_blog');
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <TooltipContainer title={t('navigation.main_nav_bar.theme')}>{children}</TooltipContainer>
-      </DropdownMenuTrigger>
+      <TooltipContainer title={t('navigation.main_nav_bar.theme')}>
+        <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      </TooltipContainer>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme('light')} data-testid="theme-mode-item">
           <Icons.sun className="mr-2 h-4 w-4" />

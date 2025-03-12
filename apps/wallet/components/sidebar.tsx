@@ -40,13 +40,13 @@ const Sidebar = () => {
   const envURL = siteConfig.url;
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <TooltipContainer title={t('navigation.main_nav_bar.menu_panel')}>
+      <TooltipContainer title={t('navigation.main_nav_bar.menu_panel')}>
+        <SheetTrigger asChild>
           <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-sidebar-menu-button">
             <Icons.sidebarOpen className="h-5 w-5" />
           </Button>
-        </TooltipContainer>
-      </SheetTrigger>
+        </SheetTrigger>
+      </TooltipContainer>
       <SheetContent
         position="right"
         size="sm"
