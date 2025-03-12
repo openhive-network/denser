@@ -1,7 +1,7 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, TransferOperation } from '@hiveio/dhive';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { createWaxFoundation, operation, TTransactionPackType } from '@hiveio/wax';
+import { operation, TTransactionPackType } from '@hiveio/wax';
 import KeychainProvider from '@hiveio/wax-signers-keychain';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -104,17 +104,15 @@ export class SignerKeychain extends Signer {
     }
   }
 
-  async signTransaction({ digest, transaction }: SignTransaction): Promise<string> {
+  async signTransaction({ transaction }: SignTransaction): Promise<string> {
     try {
-      const provider = KeychainProvider.for(this.username, this.keyType);
-
       const authTx = await (await hiveChainService.getHiveChain()).createTransaction();
-      authTx.pushOperation(transaction.operations[0]);
+      console.log(transaction);
+      transaction.operations.forEach((op) => authTx.pushOperation(op));
 
-      await authTx.sign(provider);
+      await authTx.sign(this.keychainProvider);
 
-
-      // This is quicker way to verify authority, isntead of 
+      // This is quicker way to verify authority, isntead of
       // authority-checker.ts
       // we will use only this method to verify authority soon
       await (
@@ -123,7 +121,7 @@ export class SignerKeychain extends Signer {
         trx: authTx.toApiJson(),
         pack: TTransactionPackType.LEGACY
       });
-
+      console.log('authTx.transaction.signatures', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
       logger.error('SignerKeychain.signTransaction error: %o', error);
