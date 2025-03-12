@@ -1,7 +1,7 @@
 import {DefaultRenderer} from './renderers/default/DefaultRenderer';
 import {InstagramPlugin} from './renderers/default/plugins/InstagramPlugin';
-import {TablePlugin} from './renderers/default/plugins/TablePlugin';
 import {SpoilerPlugin} from './renderers/default/plugins/SpoilerPlugin';
+import {TablePlugin} from './renderers/default/plugins/TablePlugin';
 import {TwitterPlugin} from './renderers/default/plugins/TwitterPlugin';
 
 export {DefaultRenderer} from './renderers/default/DefaultRenderer';
