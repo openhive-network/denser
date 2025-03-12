@@ -12,6 +12,7 @@ import { getLogger } from '@ui/lib/logging';
 import version from '../version.json';
 import { siteConfig } from '@ui/config/site';
 import TooltipContainer from '@ui/components/tooltip-container';
+import env from '@beam-australia/react-env';
 
 const Item = ({
   href,
@@ -37,7 +38,7 @@ const logger = getLogger('app');
 const Sidebar = () => {
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
-  const envURL = siteConfig.url;
+  const envURL = env('BLOG_DOMAIN');
   return (
     <Sheet>
       <TooltipContainer title={t('navigation.main_nav_bar.menu_panel')}>
