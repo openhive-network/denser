@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@hive/smart-signer": "workspace:*",
-    "@hiveio/wax": "1.27.6-rc6-stable.250109151100",
+    "@hiveio/wax": "1.27.6-rc7-250227151219",
     "@hiveio/workerbee": "1.27.6-rc9-stable.240920064516",
     "secure-random": "^1.1.2",
     "set-interval-async": "^3.0.3",
