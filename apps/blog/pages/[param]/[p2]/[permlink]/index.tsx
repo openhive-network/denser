@@ -191,12 +191,6 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  useEffect(() => {
-    if (router.query.param === '[param]' && !!post) {
-      router.replace(`/${post.community ?? post.category}/@${username}/${permlink}`);
-    }
-  }, [isLoadingDiscussion]);
-
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
 
@@ -638,12 +632,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       getPost(username, String(permlink))
     );
   }
+  let post;
   let mutedStatus = false;
   try {
-    const post = await getPost(username, String(permlink));
+    post = await getPost(username, String(permlink));
     mutedStatus = post?.stats?.gray ?? false;
   } catch (error) {
     logger.error('Failed to fetch post:', error);
+  }
+  if (community === 'undefined' || !community || community === '[param]') {
+    return {
+      redirect: {
+        destination: `/${post?.community}/@${username}/${permlink}`,
+        permanent: false
+      }
+    };
   }
   return {
     props: {
