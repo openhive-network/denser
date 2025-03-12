@@ -714,8 +714,8 @@ importers:
         specifier: 1.27.6-rc7-250227151219
         version: 1.27.6-rc7-250227151219
       '@hiveio/workerbee':
-        specifier: 1.27.6-rc9-stable.240920064516
-        version: 1.27.6-rc9-stable.240920064516
+        specifier: 1.27.6-rc9-250312132107
+        version: 1.27.6-rc9-250312132107
       secure-random:
         specifier: ^1.1.2
         version: 1.1.2
@@ -1787,13 +1787,13 @@ packages:
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
 
-  '@hiveio/beekeeper@1.27.6-rc3':
-    resolution: {integrity: sha1-+tV/0zANMNTgBA7WJAT5DKO9Bk0=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.6-rc3.tgz}
-    engines: {node: '>= 18'}
-
   '@hiveio/beekeeper@1.27.6-rc4':
     resolution: {integrity: sha1-mj3k3qAgTdIrc6IxzC5VOprhWZs=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.6-rc4.tgz}
     engines: {node: '>= 18'}
+
+  '@hiveio/beekeeper@1.27.8-stable.250131103618':
+    resolution: {integrity: sha1-0IYuFBbxIIKfRTrI6ZZc7Jf+qLA=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.8-stable.250131103618.tgz}
+    engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/beekeeper@1.27.9-stable.250219154236':
     resolution: {integrity: sha1-6fL+OgTwp6MSp0Xm3fwj+kFLzD8=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.9-stable.250219154236.tgz}
@@ -1811,10 +1811,6 @@ packages:
   '@hiveio/wax-signers-keychain@1.27.6-rc7-250227151219':
     resolution: {integrity: sha1-KQNWKn4hv0jvSvNpJ09tJbKl9s4=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-keychain/-/@hiveio/wax-signers-keychain-1.27.6-rc7-250227151219.tgz}
 
-  '@hiveio/wax@1.27.6-rc4':
-    resolution: {integrity: sha1-NZnSU6P8zkdBvnkHsWG1uswa6Es=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc4.tgz}
-    engines: {node: '>= 18'}
-
   '@hiveio/wax@1.27.6-rc6-241220084915':
     resolution: {integrity: sha1-+k17yp3C+Zo+StyEYDFYtCg5jy4=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc6-241220084915.tgz}
     engines: {node: '>= 18'}
@@ -1823,9 +1819,13 @@ packages:
     resolution: {integrity: sha1-gzuNvAAqCfSTD9pH1YiM/8IbM/E=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc7-250227151219.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/workerbee@1.27.6-rc9-stable.240920064516':
-    resolution: {integrity: sha1-tBpWnO1FDCdINDBoXneC2RGfGwM=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.27.6-rc9-stable.240920064516.tgz}
-    engines: {node: '>= 18'}
+  '@hiveio/wax@1.27.6-rc7-stable.250131113706':
+    resolution: {integrity: sha1-Xi2VV8y9T6MdBHOBSzxZNpmGnF8=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc7-stable.250131113706.tgz}
+    engines: {node: ^20.11 || >= 21.2}
+
+  '@hiveio/workerbee@1.27.6-rc9-250312132107':
+    resolution: {integrity: sha1-YA1H2YGacbnRmx+ZRVjtayeJi74=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.27.6-rc9-250312132107.tgz}
+    engines: {node: ^20.11 || >= 21.2}
 
   '@hookform/resolvers@3.10.0':
     resolution: {integrity: sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==}
@@ -11452,9 +11452,9 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
-  '@hiveio/beekeeper@1.27.6-rc3': {}
-
   '@hiveio/beekeeper@1.27.6-rc4': {}
+
+  '@hiveio/beekeeper@1.27.8-stable.250131103618': {}
 
   '@hiveio/beekeeper@1.27.9-stable.250219154236': {}
 
@@ -11493,15 +11493,6 @@ snapshots:
       - debug
       - encoding
 
-  '@hiveio/wax@1.27.6-rc4':
-    dependencies:
-      '@hiveio/beekeeper': 1.27.6-rc3
-      class-transformer: 0.5.1
-      class-validator: 0.14.1
-      events: 3.3.0
-      long: 5.2.4
-      reflect-metadata: 0.1.14
-
   '@hiveio/wax@1.27.6-rc6-241220084915':
     dependencies:
       '@hiveio/beekeeper': 1.27.6-rc4
@@ -11517,12 +11508,16 @@ snapshots:
       events: 3.3.0
       long: 5.2.4
 
-  '@hiveio/workerbee@1.27.6-rc9-stable.240920064516':
+  '@hiveio/wax@1.27.6-rc7-stable.250131113706':
     dependencies:
-      '@hiveio/beekeeper': 1.27.6-rc3
-      '@hiveio/wax': 1.27.6-rc4
+      '@hiveio/beekeeper': 1.27.8-stable.250131103618
       events: 3.3.0
-      rxjs: 7.8.1
+      long: 5.2.4
+
+  '@hiveio/workerbee@1.27.6-rc9-250312132107':
+    dependencies:
+      '@hiveio/beekeeper': 1.27.8-stable.250131103618
+      '@hiveio/wax': 1.27.6-rc7-stable.250131113706
 
   '@hookform/resolvers@3.10.0(react-hook-form@7.54.2(react@18.3.0))':
     dependencies:

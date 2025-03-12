@@ -20,7 +20,7 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
-import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
+import WorkerBee, { IBroadcastData, ITransactionData, IWorkerBee } from '@hiveio/workerbee';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -193,8 +193,6 @@ export class TransactionService {
         this.bot = new WorkerBee({
           explicitChain: hiveChain as any // TODO: replace this after workerbee is updated
         });
-        this.bot.on('error', (error) => logger.error(error));
-        this.bot.on('block', (data) => logger.info('Bot is scanning block no. %o', data.number));
       }
       // Start bot
       if (this.observedTransactionsCounter++ === 0) {
@@ -213,7 +211,7 @@ export class TransactionService {
       logger.info('Starting observing transaction id: %o', transactionId);
       const result: TransactionBroadcastResult = await new Promise((resolve, reject) => {
         const subscription = observer.subscribe({
-          next: (data: ITransactionData) => {
+          next: (data: IBroadcastData) => {
             const {
               block: { number: blockNumber }
             } = data;
@@ -623,7 +621,7 @@ export class TransactionService {
 
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation(reply);
-    }, transactionOptions);
+    });
   }
 
   async post(
