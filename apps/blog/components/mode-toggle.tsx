@@ -10,13 +10,16 @@ import {
 } from '@ui/components/dropdown-menu';
 import { Icons } from '@ui/components/icons';
 import { useTranslation } from 'next-i18next';
+import TooltipContainer from '@ui/components/tooltip-container';
 
 export default function ModeToggle({ children }: { children: React.ReactNode }) {
   const { setTheme } = useTheme();
   const { t } = useTranslation('common_blog');
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      <TooltipContainer title={t('navigation.main_nav_bar.theme')}>
+        <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      </TooltipContainer>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme('light')} data-testid="theme-mode-item">
           <Icons.sun className="mr-2 h-4 w-4" />

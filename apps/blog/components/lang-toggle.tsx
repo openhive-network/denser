@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { getCookie } from '@smart-signer/lib/utils';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
+import TooltipContainer from '@ui/components/tooltip-container';
 
 export default function LangToggle({ logged }: { logged: Boolean }) {
   const router = useRouter();
@@ -35,17 +36,19 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={clsx('flex h-10 w-full p-0 text-start font-normal', { 'h-6': logged })}
-          data-testid="toggle-language"
-        >
-          <span>{lang ? languages.filter((language) => language.locale === lang)[0].label : null}</span>
-          {logged ? <span className="ml-2 w-full">{t('navigation.user_menu.toggle_lang')}</span> : null}
-        </Button>
-      </DropdownMenuTrigger>
+      <TooltipContainer title={t('navigation.main_nav_bar.language')}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={clsx('flex h-10 w-full p-0 text-start font-normal', { 'h-6': logged })}
+            data-testid="toggle-language"
+          >
+            <span>{lang ? languages.filter((language) => language.locale === lang)[0].label : null}</span>
+            {logged ? <span className="ml-2 w-full">{t('navigation.user_menu.toggle_lang')}</span> : null}
+          </Button>
+        </DropdownMenuTrigger>
+      </TooltipContainer>
       <DropdownMenuContent align="end">
         {languages.map(({ locale, label }) => (
           <DropdownMenuItem

@@ -55,6 +55,7 @@ import ChangeTitleDialog from '@/blog/components/change-title-dialog';
 import moment from 'moment';
 import { PostDeleteDialog } from '@/blog/components/post-delete-dialog';
 import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation';
+import FlagIcon from '@/blog/components/flag-icon';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -190,12 +191,6 @@ function PostPage({
     }
   }, [discussion, router.query.sort]);
 
-  useEffect(() => {
-    if (router.query.param === '[param]' && !!post) {
-      router.replace(`/${post.community ?? post.category}/@${username}/${permlink}`);
-    }
-  }, [isLoadingDiscussion]);
-
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
 
@@ -223,16 +218,22 @@ function PostPage({
       <Head>{canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}</Head>
       <div className="py-8">
         <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
-          {communityData ? (
-            <AlertDialogFlag
-              community={community}
-              username={username}
-              permlink={permlink}
-              flagText={communityData.flag_text}
-            >
-              <Icons.flag className="absolute right-0 m-2 cursor-pointer hover:text-destructive" />
-            </AlertDialogFlag>
-          ) : null}
+          <div className="absolute right-0 top-1 cursor-pointer hover:text-destructive">
+            {communityData && !user.isLoggedIn ? (
+              <DialogLogin>
+                <FlagIcon onClick={() => {}} />
+              </DialogLogin>
+            ) : communityData && user.isLoggedIn ? (
+              <AlertDialogFlag
+                community={community}
+                username={username}
+                permlink={permlink}
+                flagText={communityData.flag_text}
+              >
+                <FlagIcon onClick={() => {}} />
+              </AlertDialogFlag>
+            ) : null}
+          </div>
           {!isLoadingPost && post ? (
             <div>
               {!commentSite ? (
@@ -631,12 +632,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       getPost(username, String(permlink))
     );
   }
+  let post;
   let mutedStatus = false;
   try {
-    const post = await getPost(username, String(permlink));
+    post = await getPost(username, String(permlink));
     mutedStatus = post?.stats?.gray ?? false;
   } catch (error) {
     logger.error('Failed to fetch post:', error);
+  }
+  if (community === 'undefined' || !community || community === '[param]') {
+    return {
+      redirect: {
+        destination: `/${post?.community ?? post?.category}/@${username}/${permlink}`,
+        permanent: false
+      }
+    };
   }
   return {
     props: {
