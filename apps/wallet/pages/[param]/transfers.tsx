@@ -643,23 +643,25 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                           >
                             <span>{t('profil.delegate')}</span>
                           </TransferDialog>
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
-                                <span>{t('profil.cancel_power_down')}</span>
-                              </div>
-                            </DialogTrigger>
-                            <DialogContent className="text-left sm:max-w-[425px]">
-                              {t('profil.cancel_power_down_prompt')}
-                              <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-                                <DialogTrigger asChild>
-                                  <Button variant="redHover" onClick={cancelPowerDown}>
-                                    {t('profil.cancel_power_down')}
-                                  </Button>
-                                </DialogTrigger>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
+                          {accountData.to_withdraw === 0 || cancelPowerDownMutation.isLoading ? null : (
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
+                                  <span>{t('profil.cancel_power_down')}</span>
+                                </div>
+                              </DialogTrigger>
+                              <DialogContent className="text-left sm:max-w-[425px]">
+                                {t('profil.cancel_power_down_prompt')}
+                                <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
+                                  <DialogTrigger asChild>
+                                    <Button variant="redHover" onClick={cancelPowerDown}>
+                                      {t('profil.cancel_power_down')}
+                                    </Button>
+                                  </DialogTrigger>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+                          )}
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
