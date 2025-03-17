@@ -11,7 +11,7 @@ import {
   getAccountReputations
 } from '@transaction/lib/hive';
 import { accountReputation } from '@/blog/lib/utils';
-import { delegatedHive, numberWithCommas, vestingHive } from '@hive/ui/lib/utils';
+import { convertToHP, numberWithCommas } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
@@ -29,6 +29,7 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '../custom-error';
 import ButtonsContainer from '../buttons-container';
 import clsx from 'clsx';
+import { convertStringToBig } from '@ui/lib/helpers';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -60,35 +61,34 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
   const userFromGDPRList = gdprUserList.includes(username);
-  const {
-    isLoading: profileDataIsLoading,
-    error: errorProfileData,
-    data: profileData
-  } = useQuery(['profileData', username], () => getAccountFull(username), {
-    enabled: !!username
-  });
-  const {
-    isLoading: accountDataIsLoading,
-    error: accountDataError,
-    data: accountData
-  } = useQuery(['accountData', username], () => getAccount(username), {
-    enabled: !!username
-  });
+  const { isLoading: profileDataIsLoading, data: profileData } = useQuery(
+    ['profileData', username],
+    () => getAccountFull(username),
+    {
+      enabled: !!username
+    }
+  );
+  const { isLoading: accountDataIsLoading, data: accountData } = useQuery(
+    ['accountData', username],
+    () => getAccount(username),
+    {
+      enabled: !!username
+    }
+  );
   const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
 
-  const {
-    isLoading: dynamicGlobalDataIsLoading,
-    error: dynamicGlobalDataError,
-    data: dynamicGlobalData
-  } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
+  const { isLoading: dynamicGlobalDataIsLoading, data: dynamicGlobalData } = useQuery(
+    ['dynamicGlobalData'],
+    () => getDynamicGlobalProperties()
+  );
 
-  const {
-    isLoading: accountReputationIsLoading,
-    error: accountReputationError,
-    data: accountReputationData
-  } = useQuery(['accountReputationData', username], () => getAccountReputations(username, 1), {
-    enabled: !!username
-  });
+  const { data: accountReputationData } = useQuery(
+    ['accountReputationData', username],
+    () => getAccountReputations(username, 1),
+    {
+      enabled: !!username
+    }
+  );
 
   const { data: twitterData } = useQuery(['twitterData', username], () => getTwitterInfo(username), {
     enabled: !!username,
@@ -103,8 +103,18 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   if (!accountData || !dynamicGlobalData || !profileData) {
     return <p className="my-32 text-center text-3xl">Something went wrong</p>;
   }
-  const delegated_hive = delegatedHive(accountData, dynamicGlobalData);
-  const vesting_hive = vestingHive(accountData, dynamicGlobalData);
+  const delegated_hive = convertToHP(
+    convertStringToBig(accountData.delegated_vesting_shares).minus(
+      convertStringToBig(accountData.received_vesting_shares)
+    ),
+    dynamicGlobalData.total_vesting_shares,
+    dynamicGlobalData.total_vesting_fund_hive
+  );
+  const vesting_hive = convertToHP(
+    convertStringToBig(accountData.vesting_shares),
+    dynamicGlobalData.total_vesting_shares,
+    dynamicGlobalData.total_vesting_fund_hive
+  );
   const hp = vesting_hive.minus(delegated_hive);
   const legalBlockedUser = userIllegalContent.includes(username);
   if (userFromGDPRList) {

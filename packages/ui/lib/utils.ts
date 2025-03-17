@@ -8,8 +8,6 @@ import type { IDynamicGlobalProperties, IVote } from '@hive/transaction/lib/hive
 import { NaiAsset } from '@hiveio/wax';
 import { Entry } from '@hive/transaction/lib/bridge';
 import { parseDate2 } from './parse-date';
-import { Toast, toast } from '@ui/components/hooks/use-toast';
-import { transformError } from '@hive/transaction/lib/transform-error';
 
 export const isCommunity = (s: string): boolean => s.match(/^hive-\d+/) !== null;
 
@@ -109,39 +107,18 @@ export function getRoundedAbbreveration(
 }
 
 export const numberWithCommas = (x: string) => x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-export function vestingHive(accountData: FullAccount, dynamicData: IDynamicGlobalProperties) {
-  const vests = convertStringToBig(accountData.vesting_shares);
-  const total_vests = convertStringToBig(dynamicData.total_vesting_shares);
-  const total_vest_hive = convertStringToBig(dynamicData.total_vesting_fund_hive);
-  const vesting_hivef = total_vest_hive.times(vests).div(total_vests);
-  return vesting_hivef;
-}
-export function delegatedHive(accountData: FullAccount, dynamicData: IDynamicGlobalProperties) {
-  const delegated_vests = convertStringToBig(accountData.delegated_vesting_shares);
-  const received_vests = convertStringToBig(accountData.received_vesting_shares);
-  const vests = delegated_vests.minus(received_vests);
-  const total_vests = convertStringToBig(dynamicData.total_vesting_shares);
-  const total_vest_hive = convertStringToBig(dynamicData.total_vesting_fund_hive);
-  const vesting_hivef = total_vest_hive.times(vests.div(total_vests));
-  return vesting_hivef;
-}
 
-export function accountDelegatedHive(accountData: FullAccount, dynamicData: IDynamicGlobalProperties) {
-  const vests = convertStringToBig(accountData.delegated_vesting_shares);
-  const total_vests = convertStringToBig(dynamicData.total_vesting_shares);
-  const total_vest_hive = convertStringToBig(dynamicData.total_vesting_fund_hive);
+export function convertToHP(
+  vests: Big,
+  totalVestingShares: string,
+  totalVestingFundHive: string,
+  div: number = 1
+) {
+  const total_vests = convertStringToBig(totalVestingShares);
+  const total_vest_hive = convertStringToBig(totalVestingFundHive);
   const vesting_hivef = total_vest_hive.times(vests.div(total_vests));
-  return vesting_hivef;
+  return vesting_hivef.div(div);
 }
-
-export function withdrawHive(withdraw: number, dynamicData: IDynamicGlobalProperties) {
-  const vests = Big(withdraw);
-  const total_vests = convertStringToBig(dynamicData.total_vesting_shares);
-  const total_vest_hive = convertStringToBig(dynamicData.total_vesting_fund_hive);
-  const vesting_hivef = total_vest_hive.times(vests.div(total_vests));
-  return vesting_hivef.div(1000000);
-}
-
 export function powerdownHive(accountData: FullAccount, dynamicData: IDynamicGlobalProperties) {
   const withdraw_rate_vests = parseFloat(accountData.vesting_withdraw_rate.split(' ')[0]);
   const to_withdraw =

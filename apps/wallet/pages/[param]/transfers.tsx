@@ -9,15 +9,7 @@ import {
 import moment from 'moment';
 import { getAccountHistory, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
 import { getAmountFromWithdrawal, getCurrentHpApr, getFilter } from '@/wallet/lib/utils';
-import {
-  delegatedHive,
-  vestingHive,
-  powerdownHive,
-  cn,
-  accountDelegatedHive,
-  withdrawHive
-} from '@ui/lib/utils';
-import { numberWithCommas } from '@ui/lib/utils';
+import { powerdownHive, cn, convertToHP, numberWithCommas } from '@ui/lib/utils';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { AccountHistory } from '@/wallet/store/app-types';
@@ -117,6 +109,11 @@ type TransferToVesting = {
   memo?: string;
   to?: string;
 };
+type WithdrawVesting = {
+  type: 'withdraw_vesting';
+  amount: string;
+  memo?: string;
+};
 
 type Operation =
   | Transfer
@@ -126,7 +123,8 @@ type Operation =
   | Interest
   | CancelTransferFromSavings
   | TransferToVesting
-  | FillOrder;
+  | FillOrder
+  | WithdrawVesting;
 
 const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
   const { op, ...rest } = data;
@@ -189,6 +187,9 @@ const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
         break;
       case 'fill_order':
         operation = { type: 'fill_order', current_pays: op[1].current_pays, open_pays: op[1].open_pays };
+        break;
+      case 'withdraw_vesting':
+        operation = { type: 'withdraw_vesting', amount: op[1]?.vesting_shares ?? '0' };
         break;
     }
   }
@@ -276,7 +277,6 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       />
     );
   }
-
   const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive);
   const price_per_hive = Big(
     Number(historyFeedData?.current_median_history.base.amount) *
@@ -284,8 +284,18 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   );
   const totalDays = moment(accountData.next_vesting_withdrawal).diff(moment(), `d`);
   const totalShares = convertStringToBig(dynamicData.total_vesting_shares);
-  const vesting_hive = vestingHive(accountData, dynamicData);
-  const delegated_hive = delegatedHive(accountData, dynamicData);
+  const vesting_hive = convertToHP(
+    convertStringToBig(accountData.vesting_shares),
+    dynamicData.total_vesting_shares,
+    dynamicData.total_vesting_fund_hive
+  );
+  const delegated_hive = convertToHP(
+    convertStringToBig(accountData.delegated_vesting_shares).minus(
+      convertStringToBig(accountData.received_vesting_shares)
+    ),
+    dynamicData.total_vesting_shares,
+    dynamicData.total_vesting_fund_hive
+  );
   const powerdown_hive = powerdownHive(accountData, dynamicData);
   const received_power_balance =
     (delegated_hive.lt(0) ? '+' : '') + numberWithCommas((-delegated_hive).toFixed(3));
@@ -309,7 +319,11 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     .plus(savings_pending)
     .plus(hiveOrders);
   const total_value = numberWithCommas(total_hive.times(price_per_hive).plus(total_hbd).toFixed(2));
-  const delegatedVesting = accountDelegatedHive(accountData, dynamicData);
+  const delegatedVesting = convertToHP(
+    convertStringToBig(accountData.delegated_vesting_shares),
+    dynamicData.total_vesting_shares,
+    dynamicData.total_vesting_fund_hive
+  );
   const hp = numberWithCommas(vesting_hive.toFixed(3)) + ' HIVE';
   const filteredHistoryList = accountHistoryData?.filter(
     getFilter({ filter, totalFund, username, totalShares })
@@ -322,8 +336,18 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     savingsHive: saving_balance_hive.toFixed(3) + ' HIVE',
     savingsHbd: '$' + numberWithCommas(hbd_balance_savings.toFixed(3)),
     delegatedVesting: delegatedVesting,
-    to_withdraw: withdrawHive(accountData.to_withdraw, dynamicData),
-    withdraw: withdrawHive(accountData.withdrawn, dynamicData)
+    to_withdraw: convertToHP(
+      Big(accountData.to_withdraw),
+      dynamicData.total_vesting_shares,
+      dynamicData.total_vesting_fund_hive,
+      1000000
+    ),
+    withdraw: convertToHP(
+      Big(accountData.withdrawn),
+      dynamicData.total_vesting_shares,
+      dynamicData.total_vesting_fund_hive,
+      1000000
+    )
   };
 
   const claimRewards = async () => {
@@ -428,6 +452,22 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       case 'fill_order':
         return (
           <span>{t('profil.paid_for', { value1: operation.current_pays, value2: operation.open_pays })}</span>
+        );
+      case 'withdraw_vesting':
+        return (
+          <span>
+            {convertStringToBig(operation.amount).gt(0) && dynamicData
+              ? t('profil.start_power_down', {
+                  amount: numberWithCommas(
+                    convertToHP(
+                      convertStringToBig(operation.amount),
+                      dynamicData.total_vesting_shares,
+                      dynamicData.total_vesting_fund_hive
+                    ).toFixed(3)
+                  )
+                })
+              : t('profil.stop_power_down')}
+          </span>
         );
       default:
         return <div>error</div>;

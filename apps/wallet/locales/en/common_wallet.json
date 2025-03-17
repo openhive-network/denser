@@ -191,7 +191,9 @@
     "newer": "Newer",
     "older": "Older",
     "estimated_curation_rewards_last_week": "Estimated curation rewards last week:",
-    "curation_rewards_history": "Curation Rewards History"
+    "curation_rewards_history": "Curation Rewards History",
+    "start_power_down": "Start power down of {{amount}} HIVE",
+    "stop_power_down": "Stop power down"
   },
   "market_page": {
     "last_price": "Last price",
