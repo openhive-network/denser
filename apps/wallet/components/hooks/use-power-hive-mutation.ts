@@ -26,6 +26,7 @@ export function usePowerUpMutation() {
     },
     onSuccess: (data) => {
       const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
       queryClient.invalidateQueries({ queryKey: ['accountData', username] });
       logger.info('usePowerUpMutation onSuccess data: %o', data);
     }
@@ -55,6 +56,7 @@ export function usePowerDownMutation() {
     },
     onSuccess: (data) => {
       const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
       queryClient.invalidateQueries({ queryKey: ['accountData', username] });
       logger.info('usePowerDownMutation onSuccess data: %o', data);
     }
@@ -88,6 +90,7 @@ export function useCancelPowerDownMutation() {
     },
     onSuccess: (data) => {
       const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
       queryClient.invalidateQueries({ queryKey: ['accountData', username] });
       logger.info('useCancelPowerDownMutation onSucces data: %o', data);
     }
