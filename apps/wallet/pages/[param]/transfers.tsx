@@ -282,7 +282,13 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     Number(historyFeedData?.current_median_history.base.amount) *
       10 ** -historyFeedData?.current_median_history.base.precision
   );
-  const totalDays = moment(accountData.next_vesting_withdrawal).diff(moment(), `d`);
+  const hours = moment(accountData.next_vesting_withdrawal).diff(moment(), 'hours');
+  const days = Math.floor(hours / 24);
+  const remainingHours = hours % 24;
+  const totalTime =
+    days === 0
+      ? `${remainingHours} ${t('global.time.hours')}`
+      : `${days} ${t('global.time.days')} ${remainingHours} ${t('global.time.hours')}`;
   const totalShares = convertStringToBig(dynamicData.total_vesting_shares);
   const vesting_hive = convertToHP(
     convertStringToBig(accountData.vesting_shares),
@@ -828,10 +834,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
         </div>
         {powerdown_hive.gt(0) ? (
           <div className="p-2 text-sm sm:p-4">
-            {' '}
-            {t('profil.the_next_power_down')} {totalDays}{' '}
-            {totalDays !== 1 ? t('global.time.days') : t('global.time.day')} (~
-            {numberWithCommas(powerdown_hive.toFixed(3))} HIVE)
+            {`${t('profil.the_next_power_down')} ${totalTime} (~${numberWithCommas(powerdown_hive.toFixed(3))} HIVE)`}
           </div>
         ) : null}
         <div className="w-full max-w-6xl">
