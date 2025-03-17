@@ -5,6 +5,8 @@ import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { SavingsWithdrawals } from './hive';
+import { numberWithCommas } from '@ui/lib/utils';
+import Big from 'big.js';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -98,6 +100,19 @@ export const getFilter =
 
 const ASSET_PRECISION = 3;
 const VEST_PRECISION = 6;
+
+export const transformWithdraw = (
+  withdraw: Big,
+  total_vest_hive: Big,
+  total_vests: Big,
+  format: 'string' | 'big' | 'number'
+) => {
+  const divide = withdraw.div(total_vest_hive);
+  const multiplication = total_vests.times(divide);
+  if (format === 'big') return multiplication;
+  if (format === 'number') return multiplication.toNumber();
+  return numberWithCommas(multiplication.toFixed(VEST_PRECISION));
+};
 
 export const getAsset = async (value: string, curr: 'hive' | 'hbd') => {
   if (value.slice(value.indexOf('.')).length > ASSET_PRECISION + 1) {

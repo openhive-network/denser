@@ -9,7 +9,14 @@ import {
 import moment from 'moment';
 import { getAccountHistory, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
 import { getAmountFromWithdrawal, getCurrentHpApr, getFilter } from '@/wallet/lib/utils';
-import { delegatedHive, vestingHive, powerdownHive, cn } from '@ui/lib/utils';
+import {
+  delegatedHive,
+  vestingHive,
+  powerdownHive,
+  cn,
+  accountDelegatedHive,
+  withdrawHive
+} from '@ui/lib/utils';
 import { numberWithCommas } from '@ui/lib/utils';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -302,17 +309,21 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     .plus(savings_pending)
     .plus(hiveOrders);
   const total_value = numberWithCommas(total_hive.times(price_per_hive).plus(total_hbd).toFixed(2));
-
+  const delegatedVesting = accountDelegatedHive(accountData, dynamicData);
+  const hp = numberWithCommas(vesting_hive.toFixed(3)) + ' HIVE';
   const filteredHistoryList = accountHistoryData?.filter(
     getFilter({ filter, totalFund, username, totalShares })
   );
 
   const amount = {
-    hive: numberWithCommas(balance_hive.toFixed(3)) + ' Hive',
+    hive: numberWithCommas(balance_hive.toFixed(3)) + ' HIVE',
     hbd: '$' + numberWithCommas(hbd_balance.toFixed(3)),
-    hp: numberWithCommas(vesting_hive.toFixed(3)) + ' Hive',
-    savingsHive: saving_balance_hive.toFixed(3) + ' Hive',
-    savingsHbd: '$' + numberWithCommas(hbd_balance_savings.toFixed(3))
+    reducedHP: vesting_hive.minus(delegatedVesting).toFixed(3),
+    savingsHive: saving_balance_hive.toFixed(3) + ' HIVE',
+    savingsHbd: '$' + numberWithCommas(hbd_balance_savings.toFixed(3)),
+    delegatedVesting: delegatedVesting,
+    to_withdraw: withdrawHive(accountData.to_withdraw, dynamicData),
+    withdraw: withdrawHive(accountData.withdrawn, dynamicData)
   };
 
   const claimRewards = async () => {
@@ -472,7 +483,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost">
                           <div>
-                            <span className="text-destructive">{amount.hive.toUpperCase()}</span>
+                            <span className="text-destructive">{amount.hive}</span>
                             <span className="m-1 text-xl">▾</span>
                           </div>
                         </Button>
@@ -563,7 +574,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost">
                           <div>
-                            <span className="text-destructive">{amount.hp.toUpperCase()}</span>
+                            <span className="text-destructive">{hp}</span>
                             <span className="m-1 text-xl">▾</span>
                           </div>
                         </Button>
@@ -607,7 +618,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       </DropdownMenuContent>
                     </DropdownMenu>
                   ) : (
-                    <div className="px-4 py-2">{amount.hp.toUpperCase()}</div>
+                    <div className="px-4 py-2">{hp}</div>
                   )}
                   {Number(received_power_balance) !== 0 && (
                     <div className="px-4">({received_power_balance + ' HIVE'})</div>
@@ -706,7 +717,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost">
                             <div>
-                              <span className="text-destructive">{amount.savingsHive.toUpperCase()}</span>
+                              <span className="text-destructive">{amount.savingsHive}</span>
                               <span className="m-1 text-xl">▾</span>
                             </div>
                           </Button>
