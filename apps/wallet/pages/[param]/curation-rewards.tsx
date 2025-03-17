@@ -20,19 +20,19 @@ function CurationRewardsPage({ username }: InferGetServerSidePropsType<typeof ge
     <ProfileLayout>
       <div>
         <div className="flex flex-col border-b-2 p-2 text-sm sm:flex-row sm:justify-between sm:p-4">
-          <div>{t('profil.estimated_curation_rewards_last_week')}</div>
+          <div>{t('profile.estimated_curation_rewards_last_week')}</div>
           <div className="flex flex-col">
             <span>0.000 HIVE POWER</span>
           </div>
         </div>
         <div className="flex flex-col gap-4 p-2 sm:p-4">
-          <h4 className="text-lg">{t('profil.curation_rewards_history')}</h4>
+          <h4 className="text-lg">{t('profile.curation_rewards_history')}</h4>
           <div className="flex justify-between">
             <Button variant="outlineRed" size="sm" disabled>
-              {t('profil.newer')}
+              {t('profile.newer')}
             </Button>
             <Button variant="outlineRed" size="sm" disabled>
-              {t('profil.older')}
+              {t('profile.older')}
             </Button>
           </div>
         </div>

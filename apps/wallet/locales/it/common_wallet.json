@@ -133,7 +133,7 @@
       "seeks_price_stability": "Seeks price stability with USD"
     }
   },
-  "profil": {
+  "profile": {
     "joined": "Connesso",
     "hive_description": "Token scambiabili che possono essere trasferiti ovunque in qualsiasi momento. HIVE possono essere convertiti in HIVE POWER con un processo chiamato powering up.",
     "hp_description": "Token che ti danno più controllo sui pagamenti dei post e ti consentono di guadagnare sulle ricompense da curatore. Parte del tuo HIVE POWER ti è attualmente delegato. La delegazione è donata per l'influenza o per aiutare i nuovi utenti ad eseguire le azioni su hive.blog. Il quantitativo delegato può fluttuare. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",

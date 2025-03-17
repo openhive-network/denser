@@ -133,7 +133,7 @@
       "seeks_price_stability": "Seeks price stability with USD"
     }
   },
-  "profil": {
+  "profile": {
     "joined": "加入",
     "hive_description": "可交易代币可以在任何时候发送到任何地方。HIVE可以在一个被称为Power Up的过程中被转换成HIVE POWER",
     "hp_description": "代币的影响力可以使你对文章的赏金有更大的控制权，并可以获得审查奖励。 有一部分HIVE POWER是代理给你使用的。代理的HIVE POWER是为了帮助新用户在hive.blog上进行操作。你被代理的数量可能会有波动。HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",

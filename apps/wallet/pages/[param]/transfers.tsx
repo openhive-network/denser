@@ -21,7 +21,17 @@ import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
-import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@ui/components';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -392,11 +402,13 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
         const displayHIVE = operation.reward_hive.gt(0);
         return (
           <span>
-            {t('profil.claim_rewards')}
+            {t('profile.claim_rewards')}
             {displayHBD && (
-              <span>{operation.reward_hbd.toString() + ' HBD ' + (displayHIVE ? ',' : t('profil.and'))}</span>
+              <span>
+                {operation.reward_hbd.toString() + ' HBD ' + (displayHIVE ? ',' : t('profile.and'))}
+              </span>
             )}
-            {displayHIVE && <span>{operation.reward_hive.toString() + ' HIVE' + t('profil.and')}</span>}
+            {displayHIVE && <span>{operation.reward_hive.toString() + ' HIVE' + t('profile.and')}</span>}
             {powerHP.toFixed(3)}
             {' HIVE POWER'}
           </span>
@@ -404,18 +416,18 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       case 'transfer_from_savings':
         return (
           <span>
-            {t('profil.transfer_from_savings_to', { value: operation.amount?.toString() })}
+            {t('profile.transfer_from_savings_to', { value: operation.amount?.toString() })}
             <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
               {operation.to}
             </Link>
-            {t('profil.request_id', { value: operation.request_id })}
+            {t('profile.request_id', { value: operation.request_id })}
           </span>
         );
       case 'transfer':
         if (operation.to === username)
           return (
             <span>
-              {t('profil.received_from_user', { value: operation.amount?.toString() })}
+              {t('profile.received_from_user', { value: operation.amount?.toString() })}
               <Link
                 href={`/@${operation.from}`}
                 className="font-semibold text-primary hover:text-destructive"
@@ -427,7 +439,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
         if (operation.from === username)
           return (
             <span>
-              {t('profil.transfer_to_user', { value: operation.amount?.toString() })}
+              {t('profile.transfer_to_user', { value: operation.amount?.toString() })}
               <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
                 {operation.to}
               </Link>
@@ -436,7 +448,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       case 'transfer_to_savings':
         return (
           <span>
-            {t('profil.transfer_to_savings_to', { value: operation.amount?.toString() })}
+            {t('profile.transfer_to_savings_to', { value: operation.amount?.toString() })}
             <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
               {operation.to}
             </Link>
@@ -445,25 +457,27 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       case 'transfer_to_vesting':
         return (
           <span>
-            {t('profil.transfer_to', { value: operation.amount?.toString() })}
+            {t('profile.transfer_to', { value: operation.amount?.toString() })}
             <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
               {operation.to}
             </Link>
           </span>
         );
       case 'interest':
-        return <span>{t('profil.cancel_transfer_from_savings', { number: operation.interest })}</span>;
+        return <span>{t('profile.cancel_transfer_from_savings', { number: operation.interest })}</span>;
       case 'cancel_transfer_from_savings':
-        return <span>{t('profil.cancel_transfer_from_savings', { number: operation.request_id })}</span>;
+        return <span>{t('profile.cancel_transfer_from_savings', { number: operation.request_id })}</span>;
       case 'fill_order':
         return (
-          <span>{t('profil.paid_for', { value1: operation.current_pays, value2: operation.open_pays })}</span>
+          <span>
+            {t('profile.paid_for', { value1: operation.current_pays, value2: operation.open_pays })}
+          </span>
         );
       case 'withdraw_vesting':
         return (
           <span>
             {convertStringToBig(operation.amount).gt(0) && dynamicData
-              ? t('profil.start_power_down', {
+              ? t('profile.start_power_down', {
                   amount: numberWithCommas(
                     convertToHP(
                       convertStringToBig(operation.amount),
@@ -472,7 +486,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                     ).toFixed(3)
                   )
                 })
-              : t('profil.stop_power_down')}
+              : t('profile.stop_power_down')}
           </span>
         );
       default:
@@ -507,7 +521,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           {user?.username === username && (
             <Link href="https://blocktrades.us" target="_blank">
               <Button variant="outlineRed" className="mx-2 my-8 border-destructive text-destructive">
-                {t('profil.buy_hive_or_hive_power')}
+                {t('profile.buy_hive_or_hive_power')}
               </Button>
             </Link>
           )}
@@ -520,7 +534,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                     className="text-xs leading-relaxed text-primary/70"
                     data-testid="wallet-hive-description"
                   >
-                    {t('profil.hive_description')}
+                    {t('profile.hive_description')}
                   </p>
                 </td>
                 <td className="whitespace-nowrap font-semibold" data-testid="wallet-hive-value">
@@ -542,7 +556,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             type="transfers"
                             username={user?.username}
                           >
-                            {t('profil.transfer')}
+                            {t('profile.transfer')}
                           </TransferDialog>
                           <TransferDialog
                             currency={'hive'}
@@ -550,7 +564,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             type="transferTo"
                             username={user?.username}
                           >
-                            {t('profil.transfer_to_savings')}
+                            {t('profile.transfer_to_savings')}
                           </TransferDialog>
                           <TransferDialog
                             currency={'hive'}
@@ -558,11 +572,11 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             type="powerUp"
                             username={user?.username}
                           >
-                            {t('profil.power_up')}
+                            {t('profile.power_up')}
                           </TransferDialog>
                           <DropdownMenuItem className="p-0">
                             <Link href="/market" className="w-full px-2 py-1.5">
-                              {t('profil.market')}
+                              {t('profile.market')}
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem className="p-0">
@@ -571,7 +585,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                               target="_blank"
                               className="w-full px-2 py-1.5"
                             >
-                              {t('profil.buy')}
+                              {t('profile.buy')}
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem className="p-0">
@@ -580,7 +594,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                               target="_blank"
                               className="w-full px-2 py-1.5"
                             >
-                              {t('profil.sell')}
+                              {t('profile.sell')}
                             </Link>
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
@@ -598,7 +612,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                     className="text-xs leading-relaxed text-primary/70"
                     data-testid="wallet-hive-power-description"
                   >
-                    {t('profil.hp_description', {
+                    {t('profile.hp_description', {
                       username: accountData.name,
                       value: getCurrentHpApr(dynamicData).toFixed(2)
                     })}
@@ -606,7 +620,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <Link
                         href={`https:/${blogURL}/faq.html#How_many_new_tokens_are_generated_by_the_blockchain`}
                       >
-                        {t('profil.see_faq_for_details')}
+                        {t('profile.see_faq_for_details')}
                       </Link>
                     </span>
                   </p>
@@ -633,7 +647,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             type="powerDown"
                             username={user?.username}
                           >
-                            <span>{t('profil.power_down')}</span>
+                            <span>{t('profile.power_down')}</span>
                           </TransferDialog>
                           <TransferDialog
                             currency={'hive'}
@@ -641,21 +655,21 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             type="delegate"
                             username={user?.username}
                           >
-                            <span>{t('profil.delegate')}</span>
+                            <span>{t('profile.delegate')}</span>
                           </TransferDialog>
                           {accountData.to_withdraw === 0 || cancelPowerDownMutation.isLoading ? null : (
                             <Dialog>
                               <DialogTrigger asChild>
                                 <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
-                                  <span>{t('profil.cancel_power_down')}</span>
+                                  <span>{t('profile.cancel_power_down')}</span>
                                 </div>
                               </DialogTrigger>
                               <DialogContent className="text-left sm:max-w-[425px]">
-                                {t('profil.cancel_power_down_prompt')}
+                                {t('profile.cancel_power_down_prompt')}
                                 <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
                                   <DialogTrigger asChild>
                                     <Button variant="redHover" onClick={cancelPowerDown}>
-                                      {t('profil.cancel_power_down')}
+                                      {t('profile.cancel_power_down')}
                                     </Button>
                                   </DialogTrigger>
                                 </DialogFooter>
@@ -668,9 +682,18 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                   ) : (
                     <div className="px-4 py-2">{hp}</div>
                   )}
-                  {Number(received_power_balance) !== 0 && (
-                    <div className="px-4">({received_power_balance + ' HIVE'})</div>
-                  )}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        {Number(received_power_balance) !== 0 && (
+                          <div className="px-4">({received_power_balance + ' HIVE'})</div>
+                        )}
+                      </TooltipTrigger>
+                      <TooltipContent className="font-normal">
+                        {t('profile.delegated_tooltip')}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </td>
               </tr>
               <tr className="flex flex-col py-2 sm:table-row">
@@ -680,7 +703,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                     className="text-xs leading-relaxed text-primary/70"
                     data-testid="wallet-hive-dollars-description"
                   >
-                    {t('profil.hive_dolar_description')}
+                    {t('profile.hive_dolar_description')}
                   </p>
                 </td>
                 <td className="whitespace-nowrap font-semibold" data-testid="wallet-hive-dallars-value">
@@ -702,7 +725,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             type="transfers"
                             username={user?.username}
                           >
-                            {t('profil.transfer')}
+                            {t('profile.transfer')}
                           </TransferDialog>
                           <TransferDialog
                             currency={'hbd'}
@@ -710,12 +733,12 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             type="transferTo"
                             username={user?.username}
                           >
-                            {t('profil.transfer_to_savings')}
+                            {t('profile.transfer_to_savings')}
                           </TransferDialog>
 
                           <DropdownMenuItem className="p-0">
                             <Link href="/market" className="w-full px-2 py-1.5">
-                              {t('profil.market')}
+                              {t('profile.market')}
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem className="p-0">
@@ -724,7 +747,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                               target="_blank"
                               className="w-full px-2 py-1.5"
                             >
-                              {t('profil.buy')}
+                              {t('profile.buy')}
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem className="p-0">
@@ -733,7 +756,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                               target="_blank"
                               className="w-full px-2 py-1.5"
                             >
-                              {t('profil.sell')}
+                              {t('profile.sell')}
                             </Link>
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
@@ -746,14 +769,14 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
               </tr>
               <tr className=" flex flex-col bg-background-secondary sm:table-row">
                 <td className="px-2 sm:px-4 sm:py-4">
-                  <div className="font-semibold">{t('profil.savings_title')}</div>
+                  <div className="font-semibold">{t('profile.savings_title')}</div>
                   <p
                     className="text-xs leading-relaxed text-primary/70"
                     data-testid="wallet-savings-description"
                   >
-                    {t('profil.savings_description')}
+                    {t('profile.savings_description')}
                     <span className="font-semibold text-primary hover:text-destructive">
-                      {<Link href={`/~witnesses`}>{t('profil.witnesses')}</Link>}
+                      {<Link href={`/~witnesses`}>{t('profile.witnesses')}</Link>}
                     </span>
                     {')'}
                   </p>
@@ -778,7 +801,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                               type="withdrawHive"
                               username={user?.username}
                             >
-                              <span>{t('profil.withdraw_hive')}</span>
+                              <span>{t('profile.withdraw_hive')}</span>
                             </TransferDialog>
                           </DropdownMenuGroup>
                         </DropdownMenuContent>
@@ -800,7 +823,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                               type="withdrawHiveDollars"
                               username={user?.username}
                             >
-                              <span>{t('profil.withdraw_hive_dollars')}</span>
+                              <span>{t('profile.withdraw_hive_dollars')}</span>
                             </TransferDialog>
                           </DropdownMenuGroup>
                         </DropdownMenuContent>
@@ -816,12 +839,12 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
               </tr>
               <tr className="flex flex-col py-2 sm:table-row">
                 <td className="px-2 sm:px-4 sm:py-4">
-                  <div className="font-semibold">{t('profil.estimated_account_value_title')}</div>
+                  <div className="font-semibold">{t('profile.estimated_account_value_title')}</div>
                   <p
                     className="text-xs leading-relaxed text-primary/70"
                     data-testid="wallet-estimated-account-value-description"
                   >
-                    {t('profil.estimated_account_value_description')}
+                    {t('profile.estimated_account_value_description')}
                   </p>
                 </td>
                 <td
@@ -836,7 +859,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
         </div>
         {powerdown_hive.gt(0) ? (
           <div className="p-2 text-sm sm:p-4">
-            {`${t('profil.the_next_power_down')} ${totalTime} (~${numberWithCommas(powerdown_hive.toFixed(3))} HIVE)`}
+            {`${t('profile.the_next_power_down')} ${totalTime} (~${numberWithCommas(powerdown_hive.toFixed(3))} HIVE)`}
           </div>
         ) : null}
         <div className="w-full max-w-6xl">
@@ -901,12 +924,12 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
             value={rawFilter}
           />
           <div className="p-2 sm:p-4">
-            <div className="font-semibold">{t('profil.account_history_title')}</div>
+            <div className="font-semibold">{t('profile.account_history_title')}</div>
             <p
               className="text-xs leading-relaxed text-primary/70"
               data-testid="wallet-account-history-description"
             >
-              {t('profil.account_history_description')}
+              {t('profile.account_history_description')}
             </p>
             <HistoryTable
               isLoading={accountHistoryLoading}
@@ -936,7 +959,7 @@ const HistoryTable = ({ t, isLoading, historyList = [], historyItemDescription }
         className="py-12 text-center text-3xl text-red-300"
         data-testid="wallet-account-history-no-transacions-found"
       >
-        {t('profil.no_transactions_found')}
+        {t('profile.no_transactions_found')}
       </div>
     );
 

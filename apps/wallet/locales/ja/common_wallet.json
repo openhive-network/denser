@@ -131,7 +131,7 @@
       "seeks_price_stability": "Seeks price stability with USD"
     }
   },
-  "profil": {
+  "profile": {
     "joined": "登録年月：",
     "hive_description": "いつでもどこへでも送ることができる取引可能なトークンです。HIVEはパワーアップによってHIVE POWERに変換できます。",
     "hp_description": "投稿への支払額の制御権を持ち、キュレーション報酬を得ることが可能になる、プラットフォームにおける影響力を持つトークンです。現在のHIVE POWERの一部は委託されたものです。委託は影響力の寄付や、新規ユーザーがHiveでアクションを起こしやすくするために行われます。委託された額は変動する可能性があります。 HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
