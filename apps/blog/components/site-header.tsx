@@ -22,6 +22,7 @@ import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 import env from '@beam-australia/react-env';
 import { getAccount } from '@transaction/lib/hive';
+import TooltipContainer from '@ui/components/tooltip-container';
 
 const SiteHeader: FC = () => {
   const router = useRouter();
@@ -111,26 +112,32 @@ const SiteHeader: FC = () => {
                 </Link>
               </div>
             )}
-            <Link href="/search" data-testid="navbar-search-link">
-              <Button variant="ghost" size="sm" className="h-10 w-10 px-0 ">
-                <Icons.search className="h-5 w-5 rotate-90" />
-              </Button>
-            </Link>
-            <Link href="/submit.html">
-              <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
-                <Icons.pencil className="h-5 w-5" />
-              </Button>
-            </Link>
+            <TooltipContainer title={t('navigation.main_nav_bar.search')}>
+              <Link href="/search" data-testid="navbar-search-link">
+                <Button variant="ghost" size="sm" className="h-10 w-10 px-0 ">
+                  <Icons.search className="h-5 w-5 rotate-90" />
+                </Button>
+              </Link>
+            </TooltipContainer>
+            <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
+              <Link href="/submit.html">
+                <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
+                  <Icons.pencil className="h-5 w-5" />
+                </Button>
+              </Link>
+            </TooltipContainer>
             {isClient && !user.isLoggedIn ? (
               <ModeToggle>
                 <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">
                   <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                   <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="hidden">Toggle theme</span>
+                  <span className="hidden">Language</span>
                 </Button>
               </ModeToggle>
             ) : null}
+
             {isClient && !user.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
+
             {isClient && user.isLoggedIn ? (
               <TooltipProvider>
                 <Tooltip>

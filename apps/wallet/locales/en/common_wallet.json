@@ -71,7 +71,10 @@
       "sign_up": "Sign up",
       "light": "Light",
       "dark": "Dark",
-      "system": "System"
+      "system": "System",
+      "menu_panel": "Menu Panel",
+      "language": "Language",
+      "theme": "Theme"
     },
     "sidebar": {
       "welcome": "Welcome",
