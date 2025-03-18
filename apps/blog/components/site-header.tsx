@@ -11,7 +11,7 @@ import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
-import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
+import { Avatar, AvatarFallback, AvatarImage, Input } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
 import { getUnreadNotifications } from '@transaction/lib/bridge';
 import ModeToggle from './mode-toggle';
@@ -33,7 +33,7 @@ const SiteHeader: FC = () => {
   }, []);
   const { user } = useUser();
   const { manabarsData } = useManabars(user.username);
-  const { data, isLoading, isError } = useQuery(
+  const { data } = useQuery(
     ['unreadNotifications', user.username],
     () => getUnreadNotifications(user.username),
     {
@@ -52,7 +52,7 @@ const SiteHeader: FC = () => {
   const [input, setInput] = useState('');
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      router.push(`/search?q=${encodeURIComponent(input)}&s=newest`);
+      router.push(`/search?q=${encodeURIComponent(input)}`);
     }
   };
   const [isNavHidden, setIsNavHidden] = useState(false);
@@ -112,10 +112,26 @@ const SiteHeader: FC = () => {
                 </Link>
               </div>
             )}
-            <TooltipContainer title={t('navigation.main_nav_bar.search')}>
-              <Link href="/search" data-testid="navbar-search-link">
-                <Button variant="ghost" size="sm" className="h-10 w-10 px-0 ">
+            <div className="hidden lg:block">
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <Icons.search className="h-5 w-5 rotate-90" />
+                </div>
+                <Input
+                  type="search"
+                  className="block w-[200px] rounded-full p-4 pl-10 text-sm"
+                  placeholder="AI Search"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => handleEnter(e)}
+                />
+              </div>
+            </div>
+            <TooltipContainer title="AI Search">
+              <Link href="/search" data-testid="navbar-search-link">
+                <Button variant="ghost" size="sm" className="relative h-10 w-10 px-0 lg:hidden">
+                  <Icons.search className="h-5 w-5 rotate-90" />
+                  <span className="absolute bottom-0 right-2 text-[10px] font-bold">AI</span>
                 </Button>
               </Link>
             </TooltipContainer>

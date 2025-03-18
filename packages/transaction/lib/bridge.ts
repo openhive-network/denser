@@ -234,6 +234,24 @@ export const getPostsRanked = async (
     });
 };
 
+export const getSimilarPosts = async (
+  pattern: string,
+  tr_body: number = 0,
+  limit: number = 20
+): Promise<Entry[] | null> => {
+  try {
+    const response = await fetch(
+      `https://hive-3.pl.syncad.com/hivesense-api/similarposts?pattern=${encodeURIComponent(pattern)}&tr_body=${tr_body}&limit=${limit}`
+    );
+    if (!response.ok) {
+      throw new Error(`Similar posts API Error: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
 interface IGetAccountPosts {
   sort: string;
   account: string;
