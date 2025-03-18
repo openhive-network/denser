@@ -53,7 +53,8 @@ export function TransferDialog({
   type,
   amount,
   currency,
-  username
+  username,
+  suggestedUsers
 }: {
   children: ReactNode;
   type:
@@ -67,6 +68,7 @@ export function TransferDialog({
   amount: Amount;
   currency: 'hive' | 'hbd';
   username: string;
+  suggestedUsers: { username: string; about: string }[];
 }) {
   const { t } = useTranslation('common_wallet');
   const defaultValue = {
@@ -294,6 +296,7 @@ export function TransferDialog({
                     {t('transfers_page.to')}
                     <div className="col-span-3">
                       <Autocompleter
+                        items={suggestedUsers}
                         value={data.to}
                         onChange={(e) => {
                           setData({ ...data, to: e });
@@ -406,7 +409,7 @@ export function TransferDialog({
                     onChange: (e) => setValue(e.target.value)
                   })}
                   placeholder="Amount"
-                  className="text-stale-900 block w-full px-3 py-2.5"
+                  className="text-stale-900 z-10 block w-full px-3 py-2.5"
                   type="number"
                   step="any"
                   defaultValue={0}
@@ -417,7 +420,9 @@ export function TransferDialog({
               <div className="flex flex-col gap-2 text-xs">
                 <p>
                   {t('transfers_page.per_week', {
-                    amount: convertStringToBig(value).div(HIVE_VESTING_WITHDRAW_INTERVALS).toFixed(1)
+                    amount: convertStringToBig(value === '' ? '0' : value)
+                      .div(HIVE_VESTING_WITHDRAW_INTERVALS)
+                      .toFixed(1)
                   })}
                 </p>
                 {withdrawinformation ? (

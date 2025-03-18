@@ -4,11 +4,17 @@ import {
   getAccount,
   getDynamicGlobalProperties,
   getFeedHistory,
-  getFindAccounts
+  getFindAccounts,
+  getFollowing
 } from '@transaction/lib/hive';
 import moment from 'moment';
 import { getAccountHistory, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
-import { getAmountFromWithdrawal, getCurrentHpApr, getFilter } from '@/wallet/lib/utils';
+import {
+  createListWithSuggestions,
+  getAmountFromWithdrawal,
+  getCurrentHpApr,
+  getFilter
+} from '@/wallet/lib/utils';
 import { powerdownHive, cn, convertToHP, numberWithCommas } from '@ui/lib/utils';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -230,6 +236,11 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalProperties'], () =>
     getDynamicGlobalProperties()
   );
+  // const following = useFollowingInfiniteQuery(user.username || '', 50, 'blog', ['blog']);
+
+  const { data: followingData } = useQuery(['following', username], () =>
+    getFollowing({ account: username })
+  );
   const { data: accountHistoryData, isLoading: accountHistoryLoading } = useQuery(
     ['accountHistory', username],
     () => getAccountHistory(username, -1, 500),
@@ -245,6 +256,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
     getSavingsWithdrawals(username)
   );
 
+  const listOfAccounts = createListWithSuggestions(username, t, accountHistoryData, followingData);
   const claimRewardsMutation = useClaimRewardsMutation();
   const cancelPowerDownMutation = useCancelPowerDownMutation();
   const cancelTransferFromSavingsMutation = useCancelTransferFromSavingsMutation();
@@ -551,6 +563,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuContent className="w-56">
                         <DropdownMenuGroup>
                           <TransferDialog
+                            suggestedUsers={listOfAccounts}
                             currency={'hive'}
                             amount={amount}
                             type="transfers"
@@ -559,6 +572,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             {t('profile.transfer')}
                           </TransferDialog>
                           <TransferDialog
+                            suggestedUsers={listOfAccounts}
                             currency={'hive'}
                             amount={amount}
                             type="transferTo"
@@ -567,6 +581,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             {t('profile.transfer_to_savings')}
                           </TransferDialog>
                           <TransferDialog
+                            suggestedUsers={listOfAccounts}
                             currency={'hive'}
                             amount={amount}
                             type="powerUp"
@@ -642,6 +657,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuContent className="w-56">
                         <DropdownMenuGroup>
                           <TransferDialog
+                            suggestedUsers={listOfAccounts}
                             currency={'hive'}
                             amount={amount}
                             type="powerDown"
@@ -650,6 +666,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             <span>{t('profile.power_down')}</span>
                           </TransferDialog>
                           <TransferDialog
+                            suggestedUsers={listOfAccounts}
                             currency={'hive'}
                             amount={amount}
                             type="delegate"
@@ -720,6 +737,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       <DropdownMenuContent className="w-56">
                         <DropdownMenuGroup>
                           <TransferDialog
+                            suggestedUsers={listOfAccounts}
                             currency={'hbd'}
                             amount={amount}
                             type="transfers"
@@ -728,6 +746,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                             {t('profile.transfer')}
                           </TransferDialog>
                           <TransferDialog
+                            suggestedUsers={listOfAccounts}
                             currency={'hbd'}
                             amount={amount}
                             type="transferTo"
@@ -796,6 +815,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                         <DropdownMenuContent className="w-56">
                           <DropdownMenuGroup>
                             <TransferDialog
+                              suggestedUsers={listOfAccounts}
                               currency={'hive'}
                               amount={amount}
                               type="withdrawHive"
@@ -818,6 +838,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                         <DropdownMenuContent className="w-56">
                           <DropdownMenuGroup>
                             <TransferDialog
+                              suggestedUsers={listOfAccounts}
                               currency={'hbd'}
                               amount={amount}
                               type="withdrawHiveDollars"

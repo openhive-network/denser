@@ -194,7 +194,9 @@
     "curation_rewards_history": "Curation Rewards History",
     "start_power_down": "Start power down of {{amount}} HIVE",
     "stop_power_down": "Stop power down",
-    "delegated_tooltip": "HIVE POWER delegated to/from this account"
+    "delegated_tooltip": "HIVE POWER delegated to/from this account",
+    "previous_transfers": "Previous transfers",
+    "following": "Following"
   },
   "market_page": {
     "last_price": "Last price",
