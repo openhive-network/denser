@@ -95,6 +95,8 @@ export const getFilter =
 
       case 'cancel_transfer_from_savings':
         if (!filter.others || filter.exlude) return false;
+      case 'withdraw_vesting':
+        if (!filter.others || filter.exlude) return false;
     }
     return true;
   };
