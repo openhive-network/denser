@@ -20,8 +20,12 @@ export default function SearchPage() {
     }
   };
 
-  const { data, isLoading } = useQuery(['posts', router.query.q as string], () =>
-    getSimilarPosts(router.query.q as string)
+  const { data, isLoading } = useQuery(
+    ['posts', router.query.q as string],
+    () => getSimilarPosts(router.query.q as string),
+    {
+      enabled: !!value
+    }
   );
 
   return (
