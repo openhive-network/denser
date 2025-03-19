@@ -448,7 +448,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     const firstCommentAuthorName = await postPage.userPopoverCardName.first().textContent();
     await postPage.userPopoverCardName.click();
-    await profilePage.page.waitForLoadState('networkidle');
+    await profilePage.page.waitForLoadState('load');
     await profilePage.profileNameIsEqual(firstCommentAuthorName || '');
   });
 
@@ -464,7 +464,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     const firstCommentAuthorName = await postPage.userPopoverCardName.first().textContent();
     await postPage.userPopoverCardNickName.click();
-    await profilePage.page.waitForLoadState('networkidle');
+    await profilePage.page.waitForLoadState('load');
     await profilePage.profileNameIsEqual(firstCommentAuthorName || '');
   });
 
@@ -480,7 +480,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     const firstCommentAuthorName = await postPage.userPopoverCardName.first().textContent();
     await postPage.userPopoverCardAvatar.click();
-    await profilePage.page.waitForLoadState('networkidle');
+    await profilePage.page.waitForLoadState('load');
     await profilePage.profileNameIsEqual(firstCommentAuthorName || '');
   });
 

@@ -445,7 +445,8 @@ export class HomePage {
   async changeThemeMode(thememode: string) {
     await this.getThemeModeButton.click();
     await this.getThemeModeItem.locator(`span:text(\"${thememode}\")`).click();
-    await this.page.waitForLoadState('networkidle');
+    // await this.page.waitForLoadState('networkidle');
+    await this.page.waitForTimeout(9000);
   }
 
   async validateThemeModeIsLight() {
@@ -461,7 +462,8 @@ export class HomePage {
   }
 
   async validateThemeModeIsDark() {
-    await this.page.waitForLoadState('networkidle');
+    // await this.page.waitForLoadState('networkidle');
+    await this.page.waitForTimeout(5000);
     expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(44, 48, 53)');
   }
 
