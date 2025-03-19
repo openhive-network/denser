@@ -67,11 +67,8 @@ export function waxToKeychainOperation(operation: operation | operation[]) {
  * @extends {Signer}
  */
 export class SignerKeychain extends Signer {
-  private keychainProvider: KeychainProvider;
-
   constructor(signerOptions: SignerOptions, pack: TTransactionPackType = TTransactionPackType.LEGACY) {
     super(signerOptions, pack);
-    this.keychainProvider = KeychainProvider.for(signerOptions.username, signerOptions.keyType);
   }
 
   async destroy(): Promise<void> {}
@@ -104,13 +101,14 @@ export class SignerKeychain extends Signer {
     }
   }
 
-  async signTransaction({ transaction }: SignTransaction): Promise<string> {
+  async signTransaction({ transaction, requiredKeyType }: SignTransaction): Promise<string> {
     try {
       const authTx = await (await hiveChainService.getHiveChain()).createTransaction();
-      console.log(transaction);
+
       transaction.operations.forEach((op) => authTx.pushOperation(op));
 
-      await authTx.sign(this.keychainProvider);
+      const provider = KeychainProvider.for(this.username, requiredKeyType ?? this.keyType);
+      await authTx.sign(provider);
 
       // This is quicker way to verify authority, isntead of
       // authority-checker.ts
