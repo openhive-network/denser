@@ -249,7 +249,8 @@ export const getSimilarPosts = async (
     const data = await response.json();
     return data;
   } catch (error) {
-    return null;
+    logger.error('Error in getSimilarPosts', error);
+    throw new Error('Error in getSimilarPosts');
   }
 };
 interface IGetAccountPosts {
