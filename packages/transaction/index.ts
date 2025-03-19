@@ -1,7 +1,6 @@
 import {
   ApiAccount,
   BlogPostOperation,
-  BroadcastTransactionRequest,
   CommunityOperation,
   EFollowBlogAction,
   FollowOperation,
@@ -158,14 +157,13 @@ export class TransactionService {
    * @memberof TransactionService
    */
   async broadcastTransaction(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
-    // Create broadcast request
-    const broadcastReq = new BroadcastTransactionRequest(txBuilder);
+
     // Do broadcast
     const transactionId = txBuilder.id;
     logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
     await (
       await hiveChainService.getHiveChain()
-    ).api.network_broadcast_api.broadcast_transaction(broadcastReq);
+    ).api.network_broadcast_api.broadcast_transaction({max_block_age: 50, trx: txBuilder.toApiJson()});
     return { transactionId };
   }
 
