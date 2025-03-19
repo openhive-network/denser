@@ -216,7 +216,7 @@ export class PostPage {
   async gotoPostPage(communityCategoryName: string, author: string, permlink: string) {
     await this.page.goto(`/${communityCategoryName}/@${author}/${permlink}/`);
     // await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(5000);
+    await this.page.waitForTimeout(9000);
     await this.page.waitForSelector(this.articleFooter['_selector']);
   }
 
