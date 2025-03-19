@@ -155,7 +155,7 @@ type GetFindsAccountsData = {
 };
 
 export const getFindAccounts = (username: string): Promise<{ accounts: ApiAccount[] }> => {
-  return chain.extend<GetFindsAccountsData>().api.database_api.find_accounts({ accounts: [username] });
+  return chain.extend<GetFindsAccountsData>().api.database_api.find_accounts({ accounts: [username], delayed_votes_active: false });
 };
 export interface IFeedHistory {
   current_median_history: {
