@@ -16,7 +16,7 @@ const RecoveryStep1 = () => {
 
   const accountSearch = async (accountName: string) => {
     const chain = await hiveChainService.getHiveChain();
-    const res = await chain.api.database_api.find_accounts({ accounts: [accountName] });
+    const res = await chain.api.database_api.find_accounts({ accounts: [accountName], delayed_votes_active: false });
     if (!res.accounts.length) {
       setAccountSearchResult('error');
       setNameError('Account not found');

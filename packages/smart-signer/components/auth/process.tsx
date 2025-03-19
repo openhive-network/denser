@@ -72,6 +72,7 @@ export const useProcessAuth = (
         digest: txBuilder.sigDigest,
         transaction: tx
       });
+      
       logger.info('signature: %s', signature);
       txBuilder.sign(signature);
       signatures[keyType] = signature;

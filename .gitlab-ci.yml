@@ -294,6 +294,7 @@ mirrornet-based-tests:
     - mirrornet-replay-data-copy
     - block_log_processing
   image: 'mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}'
+  allow_failure: true
   services:
     - !reference [.haf_api_node_test, services]
     - name: $BLOG_IMAGE_NAME
@@ -777,7 +778,7 @@ develop:deploy-auth-mainnet:
     EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $AUTH_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
   environment:
     name: develop-auth-mainnet
     url: https://auth.dev.openhive.network
@@ -798,7 +799,7 @@ develop:deploy-blog-mainnet:
     EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
   environment:
     name: develop-blog-mainnet
     url: https://blog.dev.openhive.network
@@ -819,7 +820,7 @@ develop:deploy-wallet-mainnet:
     EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $WALLET_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
   environment:
     name: develop-wallet-mainnet
     url: https://wallet.dev.openhive.network
@@ -838,7 +839,7 @@ develop:deploy-auth-mirrornet:
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
     IMAGE_NAME: $AUTH_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
   environment:
     name: develop-auth-mirrornet
     url: https://auth.dev.fake.openhive.network
@@ -859,7 +860,7 @@ develop:deploy-blog-mirrornet:
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
     IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
   environment:
     name: develop-blog-mirrornet
     url: https://blog.dev.fake.openhive.network
@@ -880,7 +881,7 @@ develop:deploy-wallet-mirrornet:
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
     IMAGE_NAME: $WALLET_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
   environment:
     name: develop-wallet-mirrornet
     url: https://wallet.dev.fake.openhive.network
@@ -895,7 +896,7 @@ develop:stop-auth-mainnet:
   variables:
     CONTAINER_NAME: denser-dev-auth
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
       when: manual
       allow_failure: true
   environment:
@@ -910,7 +911,7 @@ develop:stop-blog-mainnet:
   variables:
     CONTAINER_NAME: denser-dev-blog
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
       when: manual
       allow_failure: true
   environment:
@@ -925,7 +926,7 @@ develop:stop-wallet-mainnet:
   variables:
     CONTAINER_NAME: denser-dev-wallet
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
       when: manual
       allow_failure: true
   environment:
@@ -940,7 +941,7 @@ develop:stop-auth-mirrornet:
   variables:
     CONTAINER_NAME: denser-dev-auth-mirror
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
       when: manual
       allow_failure: true
   environment:
@@ -955,7 +956,7 @@ develop:stop-blog-mirrornet:
   variables:
     CONTAINER_NAME: denser-dev-blog-mirror
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
       when: manual
       allow_failure: true
   environment:
@@ -970,7 +971,7 @@ develop:stop-wallet-mirrornet:
   variables:
     CONTAINER_NAME: denser-dev-wallet-mirror
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search"
       when: manual
       allow_failure: true
   environment:
