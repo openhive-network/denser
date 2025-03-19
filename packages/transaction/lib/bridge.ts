@@ -253,6 +253,28 @@ export const getSimilarPosts = async (
     throw new Error('Error in getSimilarPosts');
   }
 };
+
+export const getSuggestions = async (
+  author: string,
+  permlink: string,
+  tr_body: number = 0,
+  posts_limit: number = 5
+): Promise<Entry[] | null> => {
+  try {
+    const response = await fetch(
+      `https://hive-3.pl.syncad.com/hivesense-api/similarpostsbypost?author=${author}&permlink=${permlink}&tr_body=${tr_body}&posts_limit=${posts_limit}`
+    );
+    if (!response.ok) {
+      throw new Error(`Similar posts API Error: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    logger.error('Error in getSuggestions', error);
+    throw new Error('Error in getSuggestions');
+  }
+};
+
 interface IGetAccountPosts {
   sort: string;
   account: string;
