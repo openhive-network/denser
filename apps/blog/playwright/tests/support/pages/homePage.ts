@@ -462,8 +462,7 @@ export class HomePage {
   }
 
   async validateThemeModeIsDark() {
-    // await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(5000);
+    await this.page.waitForLoadState('domcontentloaded');
     expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(44, 48, 53)');
   }
 

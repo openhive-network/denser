@@ -411,26 +411,26 @@ export class ProfilePage {
 
   async gotoProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}`);
-    await this.page.waitForLoadState('load');
+    await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
   }
 
   async gotoRepliesProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/replies`);
-    await this.page.waitForLoadState('load');
+    await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
     await this.page.waitForSelector(this.repliesCommentListItem['_selector']);
   }
 
   async gotoNotificationsProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/notifications`);
-    await this.page.waitForLoadState('load');
+    await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
   }
 
   async gotoSocialProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/communities`);
-    await this.page.waitForLoadState('load');
+    await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForTimeout(1000);
     await this.page.waitForSelector(this.profileInfo['_selector']);
     await this.page.waitForSelector(this.socialBadgesAchievemntsMenuBar['_selector']);

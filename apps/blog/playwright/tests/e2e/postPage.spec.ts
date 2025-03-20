@@ -295,7 +295,7 @@ test.describe('Post page tests', () => {
 
   test('Post Header/Footer - Affiliation tag', async ({ page }) => {
     await page.goto('/hive-160391/@gtg/gtg-witness-update-upcoming-changes-in-hbd-apr');
-    await page.waitForLoadState('load');
+    await page.waitForLoadState('domcontentloaded');
 
     const labelText = await postPage.postLabel.innerText();
     const labelFooterText = await postPage.postLabelFooter.innerText();
