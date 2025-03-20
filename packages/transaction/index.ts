@@ -163,7 +163,7 @@ export class TransactionService {
     logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
     await (
       await hiveChainService.getHiveChain()
-    ).api.network_broadcast_api.broadcast_transaction({max_block_age: 50, trx: txBuilder.toApiJson()});
+    ).api.network_broadcast_api.broadcast_transaction({max_block_age: -1, trx: txBuilder.toApiJson()});
     return { transactionId };
   }
 
