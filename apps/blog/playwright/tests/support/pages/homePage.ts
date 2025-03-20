@@ -445,8 +445,7 @@ export class HomePage {
   async changeThemeMode(thememode: string) {
     await this.getThemeModeButton.click();
     await this.getThemeModeItem.locator(`span:text(\"${thememode}\")`).click();
-    // await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(9000);
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async validateThemeModeIsLight() {
