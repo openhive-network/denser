@@ -30,13 +30,22 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
 import { getAccount } from '@transaction/lib/hive';
+import { Slider } from '@ui/components/slider';
+import Big from 'big.js';
+import { convertStringToBig } from '@ui/lib/helpers';
+
+// After applying this operation, vesting_shares will be withdrawn at a rate of vesting_shares/13 per week for 13 weeks starting one week after this operation is included in the blockchain.
+const HIVE_VESTING_WITHDRAW_INTERVALS = 13;
 
 type Amount = {
   hive: string;
   hbd: string;
-  hp: string;
+  reducedHP: string;
   savingsHive: string;
   savingsHbd: string;
+  delegatedVesting: Big;
+  to_withdraw: Big;
+  withdraw: Big;
 };
 
 export function TransferDialog({
@@ -44,7 +53,8 @@ export function TransferDialog({
   type,
   amount,
   currency,
-  username
+  username,
+  suggestedUsers
 }: {
   children: ReactNode;
   type:
@@ -58,6 +68,7 @@ export function TransferDialog({
   amount: Amount;
   currency: 'hive' | 'hbd';
   username: string;
+  suggestedUsers: { username: string; about: string }[];
 }) {
   const { t } = useTranslation('common_wallet');
   const defaultValue = {
@@ -73,7 +84,7 @@ export function TransferDialog({
     requestId: 0
   };
   const [curr, setCurr] = useState<'hive' | 'hbd'>(currency);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState('0');
   const [advanced, setAdvanced] = useState(false);
   const [data, setData] = useState(defaultValue);
   const badActors = badActorList.includes(data.to);
@@ -157,7 +168,7 @@ export function TransferDialog({
       data.title = t('transfers_page.power_down');
       data.description = '';
       data.buttonTitle = t('transfers_page.power_down');
-      data.amount = amount.hp;
+      data.amount = amount.reducedHP;
       data.onSubmit = async () => {
         const params = { account: username, vestingShares: await getVests(value) };
         transfersTransaction('powerDown', params, powerDownMutation.mutateAsync);
@@ -167,7 +178,7 @@ export function TransferDialog({
     case 'delegate':
       data.title = t('transfers_page.delegate');
       data.description = '';
-      data.amount = amount.hp;
+      data.amount = amount.reducedHP;
       data.onSubmit = async () => {
         const params = { delegator: username, delegatee: data.to, vestingShares: await getVests(value) };
         transfersTransaction('delegate', params, delegateMutation.mutateAsync);
@@ -239,7 +250,6 @@ export function TransferDialog({
       to: data.to
     }
   });
-
   const onSubmit: SubmitHandler<z.infer<typeof transferSchema>> = () => {
     setNextOpen(true);
   };
@@ -250,7 +260,8 @@ export function TransferDialog({
     triggerRef.current.click();
     setNextOpen(false);
   };
-
+  const delegated = amount.delegatedVesting.gt(0);
+  const withdrawinformation = amount.to_withdraw.minus(amount.withdraw).gt(0);
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -259,124 +270,184 @@ export function TransferDialog({
         </div>
       </DialogTrigger>
       <DialogContent className="text-left sm:max-w-[425px]">
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form>
           <DialogHeader>
-            <DialogTitle className="text-left">{data.title}</DialogTitle>
+            <DialogTitle className="text-left text-2xl">{data.title}</DialogTitle>
             <DialogDescription className="text-left">{data.description} </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4 ">
-            <div className="grid grid-cols-4 items-center gap-4">
-              {t('transfers_page.from')}
-              <div className="relative col-span-3">
-                <Input
-                  disabled
-                  defaultValue={username}
-                  className="text-stale-900 block w-full px-3 py-2.5 pl-11"
-                />
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Icons.atSign className="h-5 w-5" />
+          {type !== 'powerDown' ? (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                {t('transfers_page.from')}
+                <div className="relative col-span-3">
+                  <Input
+                    disabled
+                    defaultValue={username}
+                    className="text-stale-900 block w-full px-3 py-2.5 pl-11"
+                  />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icons.atSign className="h-5 w-5" />
+                  </div>
                 </div>
               </div>
-            </div>
-            {(advanced || !data.advancedBtn) && (
-              <>
+              {(advanced || !data.advancedBtn) && (
+                <>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    {t('transfers_page.to')}
+                    <div className="col-span-3">
+                      <Autocompleter
+                        items={suggestedUsers}
+                        value={data.to}
+                        onChange={(e) => {
+                          setData({ ...data, to: e });
+                          form.setValue('to', e);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {badActors ? (
+                    <div className="p-2 text-sm text-red-500">{t('transfers_page.bad_actors_info')}</div>
+                  ) : null}
+                </>
+              )}
+              {type === 'powerUp' && advanced ? (
                 <div className="grid grid-cols-4 items-center gap-4">
-                  {t('transfers_page.to')}
-                  <div className="col-span-3">
-                    <Autocompleter
-                      value={data.to}
-                      onChange={(e) => {
-                        setData({ ...data, to: e });
-                        form.setValue('to', e);
-                      }}
+                  <div className=" col-span-1"></div>
+                  <div className="col-span-3 w-fit pl-0 text-xs">{t('transfers_page.power_up_info')}</div>
+                </div>
+              ) : null}
+              <div className="grid grid-cols-4 items-center gap-4">
+                {t('transfers_page.amount')}
+                <div className="relative col-span-3">
+                  {data.selectCurr && (
+                    <div className="absolute right-0">
+                      <Select value={curr} onValueChange={(e: 'hive' | 'hbd') => setCurr(e)}>
+                        <SelectTrigger
+                          disabled={type === 'delegate'}
+                          className="my-[1.5px] mr-[1px] h-9 w-fit border-none focus:ring-0 focus:ring-offset-0"
+                          onSelect={() => setCurr('hive')}
+                        >
+                          <SelectValue placeholder={curr} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="hive">HIVE</SelectItem>
+                            <SelectItem value="hbd">HBD</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  <Input
+                    {...form.register('amount', {
+                      valueAsNumber: true,
+                      onChange: (e) => setValue(e.target.value)
+                    })}
+                    placeholder="Amount"
+                    className="text-stale-900 block w-full px-3 py-2.5"
+                    type="number"
+                    step="any"
+                  />
+                </div>
+              </div>
+              <div>
+                {form.formState.errors.amount && (
+                  <div className="text-sm text-destructive">{form.formState.errors.amount.message}</div>
+                )}
+                {form.formState.errors.to && (
+                  <div className="text-sm text-destructive">{form.formState.errors.to.message}</div>
+                )}
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className=" col-span-1"></div>
+                <Button
+                  variant="link"
+                  className="col-span-3 w-fit pl-0 underline underline-offset-4 hover:text-destructive"
+                  onClick={() => {
+                    form.setValue('amount', Number(data.amount.replace(/[^0-9.]/g, '')));
+                    setValue(data.amount.replace(/[^0-9.]/g, ''));
+                  }}
+                >
+                  {t('transfers_page.balance')}: {data.amount}
+                </Button>
+              </div>
+              {type === 'transfers' && (
+                <div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="col-span-1"></div>
+                    <div className="col-span-3 text-xs">{t('transfers_page.memo_public')}</div>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    {t('transfers_page.memo')}
+                    <Input
+                      placeholder="Memo"
+                      className="col-span-3"
+                      value={data.memo}
+                      onChange={(e) => setData({ ...data, memo: e.target.value })}
                     />
                   </div>
                 </div>
-                {badActors ? (
-                  <div className="p-2 text-sm text-red-500">{t('transfers_page.bad_actors_info')}</div>
-                ) : null}
-              </>
-            )}
-            {type === 'powerUp' && advanced ? (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <div className=" col-span-1"></div>
-                <div className="col-span-3 w-fit pl-0 text-xs">{t('transfers_page.power_up_info')}</div>
-              </div>
-            ) : null}
-            <div className="grid grid-cols-4 items-center gap-4">
-              {t('transfers_page.amount')}
-              <div className="relative col-span-3">
-                {data.selectCurr && (
-                  <div className="absolute right-0">
-                    <Select
-                      name="amout right-0"
-                      value={curr}
-                      onValueChange={(e: 'hive' | 'hbd') => setCurr(e)}
-                    >
-                      <SelectTrigger className="w-fit" onSelect={() => setCurr('hive')}>
-                        <SelectValue placeholder={curr} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value="hive">HIVE</SelectItem>
-                          <SelectItem value="hbd">HBD</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
+              )}
+            </div>
+          ) : (
+            <div className="grid gap-4 py-4">
+              <Slider
+                dataTestId="downvote-slider"
+                defaultValue={[0]}
+                max={Number(data.amount.replace(/[^0-9.]/g, ''))}
+                step={0.001}
+                onValueChange={(e) => {
+                  setValue(e[0].toString());
+                  form.setValue('amount', e[0]);
+                }}
+              />
+              <p>Amount</p>
+              <div className="flex items-center gap-4">
                 <Input
                   {...form.register('amount', {
                     valueAsNumber: true,
                     onChange: (e) => setValue(e.target.value)
                   })}
                   placeholder="Amount"
-                  className="text-stale-900 block w-full px-3 py-2.5"
+                  className="text-stale-900 z-10 block w-full px-3 py-2.5"
                   type="number"
                   step="any"
+                  defaultValue={0}
+                  max={Number(data.amount.replace(/[^0-9.]/g, ''))}
                 />
+                <span>HIVE</span>
+              </div>
+              <div className="flex flex-col gap-2 text-xs">
+                <p>
+                  {t('transfers_page.per_week', {
+                    amount: convertStringToBig(value === '' ? '0' : value)
+                      .div(HIVE_VESTING_WITHDRAW_INTERVALS)
+                      .toFixed(1)
+                  })}
+                </p>
+                {withdrawinformation ? (
+                  <p>
+                    {t('transfers_page.already_power_down', {
+                      amount: amount.to_withdraw.toFixed(3),
+                      withdrawn: amount.withdraw.toFixed(3)
+                    })}
+                  </p>
+                ) : null}
+                {delegated ? (
+                  <p>{t('transfers_page.delegating', { amount: amount.delegatedVesting.toFixed(3) })}</p>
+                ) : null}
               </div>
             </div>
-            <div>
-              {form.formState.errors.amount && (
-                <div className="text-sm text-destructive">{form.formState.errors.amount.message}</div>
-              )}
-              {form.formState.errors.to && (
-                <div className="text-sm text-destructive">{form.formState.errors.to.message}</div>
-              )}
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <div className=" col-span-1"></div>
-              <Button
-                variant="link"
-                className="col-span-3 w-fit pl-0"
-                onClick={() => setValue(data.amount.replace(/[^0-9.]/g, ''))}
-              >
-                {t('transfers_page.balance')}: {data.amount.toUpperCase()}
-              </Button>
-            </div>
-            {type === 'transfers' && (
-              <div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <div className="col-span-1"></div>
-                  <div className="col-span-3 text-xs">{t('transfers_page.memo_public')}</div>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  {t('transfers_page.memo')}
-                  <Input
-                    placeholder="Memo"
-                    className="col-span-3"
-                    value={data.memo}
-                    onChange={(e) => setData({ ...data, memo: e.target.value })}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
+          )}
           <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
             <DialogTrigger ref={triggerRef} className="absolute"></DialogTrigger>
 
-            <Button variant="redHover" className="w-fit" disabled={badActors} type="submit">
+            <Button
+              variant="redHover"
+              className="w-fit"
+              disabled={badActors}
+              onClick={type === 'powerDown' ? onConfirm : form.handleSubmit(onSubmit)}
+            >
               {data.buttonTitle}
             </Button>
             {data.advancedBtn && (

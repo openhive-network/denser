@@ -15,7 +15,8 @@ export type OpType =
   | 'interest'
   | 'proposal_pay'
   | 'sps_fund'
-  | 'transfer';
+  | 'transfer'
+  | 'withdraw_vesting';
 
 export type AccountHistory = [
   number,
@@ -43,6 +44,7 @@ export type AccountHistory = [
         reward_hbd?: string;
         reward_hive?: string;
         reward_vests?: string;
+        vesting_shares?: string;
       }
     ];
   }

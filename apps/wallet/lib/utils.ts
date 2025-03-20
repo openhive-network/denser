@@ -1,10 +1,13 @@
+import { TFunction } from 'i18next';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
-import { IDynamicGlobalProperties } from '@transaction/lib/hive';
+import { IDynamicGlobalProperties, IFollow } from '@transaction/lib/hive';
 import { AccountHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { SavingsWithdrawals } from './hive';
+import { numberWithCommas } from '@ui/lib/utils';
+import Big from 'big.js';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -92,12 +95,27 @@ export const getFilter =
 
       case 'cancel_transfer_from_savings':
         if (!filter.others || filter.exlude) return false;
+      case 'withdraw_vesting':
+        if (!filter.others || filter.exlude) return false;
     }
     return true;
   };
 
 const ASSET_PRECISION = 3;
 const VEST_PRECISION = 6;
+
+export const transformWithdraw = (
+  withdraw: Big,
+  total_vest_hive: Big,
+  total_vests: Big,
+  format: 'string' | 'big' | 'number'
+) => {
+  const divide = withdraw.div(total_vest_hive);
+  const multiplication = total_vests.times(divide);
+  if (format === 'big') return multiplication;
+  if (format === 'number') return multiplication.toNumber();
+  return numberWithCommas(multiplication.toFixed(VEST_PRECISION));
+};
 
 export const getAsset = async (value: string, curr: 'hive' | 'hbd') => {
   if (value.slice(value.indexOf('.')).length > ASSET_PRECISION + 1) {
@@ -196,4 +214,61 @@ export function transformKeyAuths(authority: { [keyOrAccount: string]: number })
     keyOrAccount,
     thresholdWeight
   }));
+}
+
+export function createListWithSuggestions(
+  username: string,
+  t: TFunction<'common_wallet', undefined>,
+  transferHistory?: AccountHistoryData[],
+  followingList?: IFollow[]
+): { username: string; about: string }[] {
+  const following =
+    followingList?.map((e) => ({ username: e.following, about: t('profile.following') })) ?? [];
+  const transfers =
+    transferHistory
+      ?.map((e) => {
+        let accountName;
+
+        switch (e.operation?.type) {
+          case 'transfer':
+            if (e.operation?.to !== username) accountName = e.operation?.to;
+            if (e.operation?.from !== username) accountName = e.operation?.from;
+            break;
+          case 'claim_reward_balance':
+            if (e.operation?.account !== username) accountName = e.operation?.account;
+            break;
+          case 'transfer_from_savings':
+          case 'transfer_to_savings':
+            if (e.operation?.to !== username) accountName = e.operation?.to;
+            if (e.operation?.from !== username) accountName = e.operation?.from;
+            break;
+          case 'interest':
+            if (e.operation?.owner !== username) accountName = e.operation?.owner;
+            break;
+          case 'cancel_transfer_from_savings':
+            if (e.operation?.from !== username) accountName = e.operation?.from;
+            break;
+          case 'fill_order':
+            if (e.operation?.current_owner !== username) accountName = e.operation?.current_owner;
+            break;
+          case 'transfer_to_vesting':
+            if (e.operation?.to !== username) accountName = e.operation?.to;
+            if (e.operation?.from !== username) accountName = e.operation?.from;
+            break;
+        }
+        return accountName ? { username: accountName } : undefined;
+      })
+      .filter((item) => item !== undefined)
+      .reduce((acc: { username: string; about: string; counter: number }[], curr) => {
+        const existing = acc.find((item) => item.username === curr!.username);
+        if (existing) {
+          existing.counter += 1;
+        } else {
+          acc.push({ username: curr!.username, about: t('profile.previous_transfers'), counter: 1 });
+        }
+        return acc;
+      }, [])
+      .sort((a, b) => b.counter - a.counter)
+      .map((e) => ({ username: e.username, about: `${e.counter} ${e.about}` })) ?? [];
+  return [...transfers, ...following];
 }

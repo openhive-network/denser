@@ -1,5 +1,6 @@
 import { asset } from '@hiveio/wax';
-import { useMutation } from '@tanstack/react-query';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { logger } from '@ui/lib/logger';
@@ -11,6 +12,8 @@ import { logger } from '@ui/lib/logger';
  * @returns {*}
  */
 export function usePowerUpMutation() {
+  const queryClient = useQueryClient();
+  const { user } = useUser();
   const powerUpMutation = useMutation({
     mutationFn: async (params: { account: string; amount: asset }) => {
       const { amount, account } = params;
@@ -22,6 +25,9 @@ export function usePowerUpMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
+      queryClient.invalidateQueries({ queryKey: ['accountData', username] });
       logger.info('usePowerUpMutation onSuccess data: %o', data);
     }
   });
@@ -36,6 +42,8 @@ export function usePowerUpMutation() {
  * @returns {*}
  */
 export function usePowerDownMutation() {
+  const queryClient = useQueryClient();
+  const { user } = useUser();
   const powerDownMutation = useMutation({
     mutationFn: async (params: { account: string; vestingShares: asset }) => {
       const { account, vestingShares } = params;
@@ -47,6 +55,9 @@ export function usePowerDownMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
+      queryClient.invalidateQueries({ queryKey: ['accountData', username] });
       logger.info('usePowerDownMutation onSuccess data: %o', data);
     }
   });
@@ -61,6 +72,8 @@ export function usePowerDownMutation() {
  * @returns {*}
  */
 export function useCancelPowerDownMutation() {
+  const queryClient = useQueryClient();
+  const { user } = useUser();
   const cancelPowerDownMutation = useMutation({
     mutationFn: async (params: { account: string }) => {
       const { account } = params;
@@ -76,6 +89,9 @@ export function useCancelPowerDownMutation() {
       return response;
     },
     onSuccess: (data) => {
+      const { username } = user;
+      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
+      queryClient.invalidateQueries({ queryKey: ['accountData', username] });
       logger.info('useCancelPowerDownMutation onSucces data: %o', data);
     }
   });

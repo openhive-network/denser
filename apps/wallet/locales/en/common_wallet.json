@@ -150,7 +150,7 @@
       "seeks_price_stability": "Seeks price stability with USD"
     }
   },
-  "profil": {
+  "profile": {
     "transfer": "Transfer",
     "transfer_to_savings": "Transfer to savings",
     "power_up": "Power up",
@@ -194,7 +194,12 @@
     "newer": "Newer",
     "older": "Older",
     "estimated_curation_rewards_last_week": "Estimated curation rewards last week:",
-    "curation_rewards_history": "Curation Rewards History"
+    "curation_rewards_history": "Curation Rewards History",
+    "start_power_down": "Start power down of {{amount}} HIVE",
+    "stop_power_down": "Stop power down",
+    "delegated_tooltip": "HIVE POWER delegated to/from this account",
+    "previous_transfers": "Previous transfers",
+    "following": "Following"
   },
   "market_page": {
     "last_price": "Last price",
@@ -364,6 +369,9 @@
     "add_item_title": "Add new {{id}} entry"
   },
   "transfers_page": {
+    "already_power_down": "You are already powering down {{amount}} HIVE({{withdrawn}} HIVE paid out so far). Note that if you change the power down amount the payout schedule will reset.",
+    "delegating": "You are delegating {{amount}} HIVE. That amount is locked up and not available to power down until the delegation is removed and 5 days have passed",
+    "per_week": "That's ~{{amount}} HIVE per week.",
     "financial_report": "Financial Report",
     "financial_report_description": "Use this to generate a CSV file containing financial transactions from your history within the selected date range. Depending on how active your account is, it might take a little while to complete.",
     "generate_report": "GENERATE REPORT",

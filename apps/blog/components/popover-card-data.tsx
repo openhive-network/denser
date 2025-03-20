@@ -2,7 +2,7 @@ import { dateToShow, dateToFullRelative } from '@ui/lib/parse-date';
 import Link from 'next/link';
 import { useAccountQuery } from './hooks/use-account';
 import { useFollowsQuery } from './hooks/use-follows';
-import { delegatedHive, numberWithCommas, vestingHive } from '@ui/lib/utils';
+import { convertToHP, numberWithCommas } from '@ui/lib/utils';
 import Big from 'big.js';
 import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
 import { useTranslation } from 'next-i18next';
@@ -11,36 +11,51 @@ import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import ButtonsContainer from './buttons-container';
+import { convertStringToBig } from '@ui/lib/helpers';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const follows = useFollowsQuery(author);
-  const account = useAccountQuery(author);
+  const { data: account, isLoading } = useAccountQuery(author);
   const following = useFollowingInfiniteQuery(user.username || '', 50, 'blog', ['blog']);
   const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
   const about =
-    account.data && account.data.posting_json_metadata
-      ? JSON.parse(account.data.posting_json_metadata)?.profile?.about
+    account && account.posting_json_metadata
+      ? JSON.parse(account.posting_json_metadata)?.profile?.about
       : null;
-  const dynamicData = useDynamicGlobalData();
+  const { data: dynamicData } = useDynamicGlobalData();
   const delegated_hive =
-    dynamicData.data && account.data ? delegatedHive(account.data, dynamicData.data) : Big(0);
+    dynamicData && account
+      ? convertToHP(
+          convertStringToBig(account.delegated_vesting_shares).minus(
+            convertStringToBig(account.received_vesting_shares)
+          ),
+          dynamicData.total_vesting_shares,
+          dynamicData.total_vesting_fund_hive
+        )
+      : Big(0);
   const vesting_hive =
-    dynamicData.data && account.data ? vestingHive(account.data, dynamicData.data) : Big(0);
+    dynamicData && account
+      ? convertToHP(
+          convertStringToBig(account.vesting_shares),
+          dynamicData.total_vesting_shares,
+          dynamicData.total_vesting_fund_hive
+        )
+      : Big(0);
   const hp = vesting_hive.minus(delegated_hive);
-  const legalBlockedUser = userIllegalContent.some((e) => e === account.data?.name);
+  const legalBlockedUser = userIllegalContent.some((e) => e === account?.name);
 
   return (
     <div className="space-y-2">
-      {account.data && !account.isLoading && follows.data && !follows.isLoading ? (
+      {account && !isLoading && follows.data && !follows.isLoading ? (
         <>
           <div className="flex">
             <Link href={`/@${author}`} data-testid="popover-card-user-avatar">
               <Avatar className="flex h-[75px] w-[75px] items-center justify-center overflow-hidden rounded-full">
                 <AvatarImage
                   className="h-full w-full object-cover"
-                  src={account.data.profile?.profile_image}
+                  src={account.profile?.profile_image}
                   alt="Profile picture"
                 />
                 <AvatarFallback>
@@ -58,8 +73,8 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
                 className="block font-bold hover:cursor-pointer"
                 data-testid="popover-card-user-name"
               >
-                {account.data.posting_json_metadata
-                  ? JSON.parse(account.data.posting_json_metadata)?.profile?.name
+                {account.posting_json_metadata
+                  ? JSON.parse(account.posting_json_metadata)?.profile?.name
                   : null}
               </Link>
               <Link
@@ -106,9 +121,9 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
                 {about ? about.slice(0, 157) + (157 < about.length ? '...' : '') : null}
               </p>
               <div className="flex justify-center text-xs">
-                {t('post_content.header.hover_author.joined')} {dateToShow(account.data.created, t)}
+                {t('post_content.header.hover_author.joined')} {dateToShow(account.created, t)}
                 <span className="mx-1">•</span>
-                {t('user_profile.active') + ' ' + dateToFullRelative(account.data.last_vote_time, t)}
+                {t('user_profile.active') + ' ' + dateToFullRelative(account.last_vote_time, t)}
               </div>
             </>
           ) : null}
