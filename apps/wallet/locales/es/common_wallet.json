@@ -133,7 +133,7 @@
       "seeks_price_stability": "Seeks price stability with USD"
     }
   },
-  "profil": {
+  "profile": {
     "joined": "Unió",
     "hive_description": "Tokens canjeables pueden ser transferidos a cualquier sitio en cualquier momento.1 HIVE y pueden ser convertidos a HIVE POWER en un proceso llamado power up.",
     "hp_description": "Tokens con influencia te dan más control sobre los pagos de los posts y te permiten ganar recompensas de curación. Part of {{username}}'s HIVE POWER is currently delegated. Delegation is donated for influence or to help new users perform actions on hive.blog. Your delegation amount can fluctuate. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",

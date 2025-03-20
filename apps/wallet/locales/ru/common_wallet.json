@@ -133,7 +133,7 @@
       "seeks_price_stability": "Seeks price stability with USD"
     }
   },
-  "profil": {
+  "profile": {
     "joined": "Присоединился",
     "hive_description": "Ликвидные цифровые токены, которые могут переданы куда угодно в любой момент. HIVE может быть конвертирован в HIVE POWER, этот процесс называется \"увеличение Силы Голоса\".",
     "hp_description": "Токены дают вам возможность влиять на вознаграждения за контент, а также возможность зарабатывать на курации контента. Часть HIVE POWER вам делегирована, это увеличивает ваше влияние на платформе. Количество делегированных токенов со временем может изменяться. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",

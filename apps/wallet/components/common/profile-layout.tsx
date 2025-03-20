@@ -100,7 +100,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <li className="flex items-center">
                 <Icons.calendarHeart className="m-1" />
                 <span data-testid="user-joined">
-                  {t('profil.joined')} {profileData?.created ? dateToShow(profileData.created, t) : null}
+                  {t('profile.joined')} {profileData?.created ? dateToShow(profileData.created, t) : null}
                 </span>
               </li>
             </ul>

@@ -47,8 +47,8 @@ export interface FullAccount {
   delegated_vesting_shares: string;
   received_vesting_shares: string;
   vesting_withdraw_rate: string;
-  to_withdraw: string;
-  withdrawn: string;
+  to_withdraw: number;
+  withdrawn: number;
   witness_votes: string[];
   proxy: string;
   proxied_vsf_votes: number[] | string[];
