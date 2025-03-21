@@ -233,7 +233,7 @@ export const getPostsRanked = async (
       return resp;
     });
 };
-
+const apiDevOrigin = 'https://api.dev.openhive.network';
 export const getSimilarPosts = async (
   pattern: string,
   tr_body: number = 100,
@@ -241,7 +241,7 @@ export const getSimilarPosts = async (
 ): Promise<Entry[] | null> => {
   try {
     const response = await fetch(
-      `https://hive-3.pl.syncad.com/hivesense-api/similarposts?pattern=${encodeURIComponent(pattern)}&tr_body=${tr_body}&posts_limit=${limit}`
+      `${apiDevOrigin}/hivesense-api/similarposts?pattern=${encodeURIComponent(pattern)}&tr_body=${tr_body}&posts_limit=${limit}`
     );
     if (!response.ok) {
       throw new Error(`Similar posts API Error: ${response.status}`);
@@ -262,7 +262,7 @@ export const getSuggestions = async (
 ): Promise<Entry[] | null> => {
   try {
     const response = await fetch(
-      `https://hive-3.pl.syncad.com/hivesense-api/similarpostsbypost?author=${author}&permlink=${permlink}&tr_body=${tr_body}&posts_limit=${posts_limit}`
+      `${apiDevOrigin}/hivesense-api/similarpostsbypost?author=${author}&permlink=${permlink}&tr_body=${tr_body}&posts_limit=${posts_limit}`
     );
     if (!response.ok) {
       throw new Error(`Similar posts API Error: ${response.status}`);
