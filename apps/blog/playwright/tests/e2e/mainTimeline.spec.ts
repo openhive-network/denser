@@ -643,11 +643,11 @@ test.describe('Home page tests', () => {
     // Type test and press Enter
     await homePage.getNavSearchAIInput.fill('test');
     await homePage.page.keyboard.press('Enter');
-    await homePage.page.waitForTimeout(10000);
+    await homePage.page.waitForTimeout(5000);
     // validate url was changed to /search
     await expect(homePage.page).toHaveURL('/search?q=test');
-    // validate that input search is visible on the page
-    await expect(homePage.getNavSearchInput.nth(1)).toBeVisible();
+    // validate the first post card
+    await expect(homePage.getFirstPostListItem).toBeVisible();
   });
 
   test('navigation Login link is visible', async ({ page }) => {
