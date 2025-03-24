@@ -502,7 +502,7 @@ function PostPage({
                             >
                             {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
                           </button> */}
-                              {/* TODO swap two button to one when api return stats.is_pinned, 
+                              {/* TODO swap two button to one when api return stats.is_pinned,
                             temprary use two button to unpin and pin
                             */}
                               <button className="ml-2 flex items-center text-destructive" onClick={pin}>
@@ -614,7 +614,7 @@ function PostPage({
               <Loading loading={isLoadingPost} />
             )}
           </div>
-          <div id="comments" className="mx-auto flex max-w-4xl" />
+          <div id="comments" className="flex" />
           <div>
             {reply && post && user.isLoggedIn ? (
               <ReplyTextbox
@@ -628,7 +628,7 @@ function PostPage({
             ) : null}
           </div>
           {!isLoadingDiscussion && discussion && discussionState && !isLoadingPost && post ? (
-            <div className="pr-2">
+            <div className="mx-auto max-w-4xl pr-2">
               <div className="my-1 flex items-center justify-end" translate="no">
                 <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
                 <CommentSelectFilter />

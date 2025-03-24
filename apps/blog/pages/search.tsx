@@ -21,7 +21,7 @@ export default function SearchPage() {
   });
 
   return (
-    <div className="flex flex-col gap-12 px-4 py-8">
+    <div className="flex flex-col gap-12 px-4 py-8 max-w-4xl m-auto">
       <div className="flex flex-col gap-4 lg:hidden">
         <AISearchInput />
       </div>
