@@ -628,7 +628,7 @@ function PostPage({
             ) : null}
           </div>
           {!isLoadingDiscussion && discussion && discussionState && !isLoadingPost && post ? (
-            <div className="mx-auto max-w-4xl pr-2">
+            <div className="max-w-4xl pr-2">
               <div className="my-1 flex items-center justify-end" translate="no">
                 <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
                 <CommentSelectFilter />
