@@ -11,7 +11,7 @@
     "@hiveio/dhive": "^1.3.0",
     "@hiveio/wax": "1.27.6-rc7-stable.250314151849",
     "@hiveio/wax-signers-keychain": "1.27.6-rc7-stable.250314151849",
-    "@hiveio/hb-auth": "0.0.1-stable.241220110655",
+    "@hiveio/hb-auth": "0.0.1-stable.250131124251",
     "@tanstack/react-query": "^4.36.1",
     "change-case": "^5.4.3",
     "cors": "^2.8.5",
