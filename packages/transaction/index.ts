@@ -19,7 +19,7 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
-import WorkerBee, { IBroadcastData, ITransactionData, IWorkerBee } from '@hiveio/workerbee';
+import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -209,7 +209,7 @@ export class TransactionService {
       logger.info('Starting observing transaction id: %o', transactionId);
       const result: TransactionBroadcastResult = await new Promise((resolve, reject) => {
         const subscription = observer.subscribe({
-          next: (data: IBroadcastData) => {
+          next: (data: ITransactionData) => {
             const {
               block: { number: blockNumber }
             } = data;
