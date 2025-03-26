@@ -10,11 +10,11 @@ test.describe('Follow user - tests', () => {
   let profilePage: ProfilePage;
   let postPage: PostPage;
 
-  test.beforeEach(async ({ denserAutoTest0Page, page }) => {
-    profileUserMenu = new ProfileUserMenu(page);
-    homePage = new HomePage(page);
-    profilePage = new ProfilePage(page);
-    postPage = new PostPage(page);
+  test.beforeEach(async ({ denserAutoTest0Page }) => {
+    profileUserMenu = new ProfileUserMenu(denserAutoTest0Page.page);
+    homePage = new HomePage(denserAutoTest0Page.page);
+    profilePage = new ProfilePage(denserAutoTest0Page.page);
+    postPage = new PostPage(denserAutoTest0Page.page);
   });
 
   test('Add user to follow list - user account', async ({ denserAutoTest0Page }) => {
@@ -34,13 +34,13 @@ test.describe('Follow user - tests', () => {
     await expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).toBeVisible()
     await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow')
     await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
-    expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).not.toBeVisible()
+    await expect(await denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).not.toBeVisible()
     await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
   });
 
   test('Add user to follow list from post', async ({ denserAutoTest0Page }) => {
     const postAuthor = await denserAutoTest0Page.page.locator(homePage.postAuthor).first().innerText()
-    
+
     await expect(denserAutoTest0Page.page.locator(homePage.postsImages).first()).toBeVisible()
     await denserAutoTest0Page.page.locator(homePage.postsImages).first().click({force: true})
     await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString).first()).toBeVisible()
@@ -53,10 +53,10 @@ test.describe('Follow user - tests', () => {
     await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click()
     await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('1 following')
     await denserAutoTest0Page.page.getByText('1 following').click()
-    expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })).toBeVisible()
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })).toBeVisible()
 
     await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
-    expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })).not.toBeVisible()
+    await expect(await denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })).not.toBeVisible()
     await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
   });
 
