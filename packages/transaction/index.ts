@@ -1061,6 +1061,26 @@ export class TransactionService {
       );
     }, transactionOptions);
   }
+
+  async updateCommunityProps(
+    communityName: string,
+    title: string,
+    about: string,
+    is_nsfw: boolean,
+    lang: ESupportedLanguages,
+    flag_text: string,
+    description: string,
+    admin: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation(async (builder) => {
+      builder.pushOperation(
+        new CommunityOperation()
+          .updateProps(communityName, { title, about, is_nsfw, lang, flag_text, description })
+          .authorize(admin)
+      );
+    }, transactionOptions);
+  }
   async limitOrderCreate(
     amountToSell: asset,
     owner: string,

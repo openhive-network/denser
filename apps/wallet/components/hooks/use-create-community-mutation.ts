@@ -55,7 +55,6 @@ export function useCreateCommunityMutation() {
         key_auths: Object.fromEntries(posting.map((key) => [String(key[0]), key[1]])),
         account_auths: {}
       };
-      console.log(activeAuthority, ownerAuthority, postingAuthority);
       const createAccountResult = await transactionService.accountCreate(
         fee,
         memoKey,

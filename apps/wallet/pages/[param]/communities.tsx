@@ -64,7 +64,6 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
   useEffect(() => {
     generateCommunity();
   }, []);
-
   const createCommunitySchema = z.object({
     title: z
       .string()
