@@ -615,7 +615,10 @@ test.describe('Communities page tests', () => {
       }
     });
 
-    const languageApi = (await response.json()).result[0].lang;
+    const languageApi = (await response.json())
+                            .result
+                            .map( (item) => (item.title === 'LeoFinance' ? item : null ))
+                            .find( (item) => item !== null ).lang;
 
     expect(communityChoosenLanguageText).toBe(languageApi);
   });
