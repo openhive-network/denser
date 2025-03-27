@@ -28,24 +28,28 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { handleError } from '@ui/lib/handle-error';
-import { getAccount } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import Loading from '@ui/components/loading';
 import Link from 'next/link';
 import env from '@beam-australia/react-env';
+import { getAccount } from '@/wallet/lib/hive';
 
 const getCommmunityName = () => {
   return `hive-${Math.floor(Math.random() * 100000) + 100000}`;
 };
 
+const COST_TOKEN = 1;
+const COST_HIVE = 3;
+
 function Communities({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { user } = useUser();
   const { data, isLoading } = useQuery(
-    ['getAccounts', username],
+    ['findAccounts', username],
     async () => await getAccount(user?.username),
     { enabled: user.isLoggedIn }
   );
+
   const { t } = useTranslation('common_wallet');
   const [advanced, setAdvanced] = useState(false);
   const createCommunityMutation = useCreateCommunityMutation();
@@ -60,6 +64,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
       }
     })();
     setCommunityTag(generatedName);
+    return;
   };
 
   useEffect(() => {
@@ -87,10 +92,11 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
     nsfw: z.boolean(),
     flagText: z.string(),
     description: z.string(),
-    claimed: z.enum(['claimed', 'regular']),
-    confirmFee: z.boolean().refine((value) => value === true, {
-      message: t('communities.errors.required')
-    }),
+    claimed: z
+      .enum(['claimed', 'hive', ''], {
+        message: t('communities.errors.pick_one')
+      })
+      .refine((value) => value !== ''),
     saved_password: z.boolean().refine((value) => value === true, {
       message: t('communities.errors.required')
     })
@@ -107,8 +113,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
       nsfw: false,
       flagText: '',
       description: '',
-      claimed: 'regular',
-      confirmFee: false,
+      claimed: undefined,
       saved_password: false
     }
   });
@@ -280,23 +285,33 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{t('communities.fee_type')}</FormLabel>
-                        <div className="flex gap-6">
+                        <FormMessage />
+                        <div className="flex flex-col gap-6">
                           <div className="flex items-center space-x-2">
                             <FormControl>
                               <Input
+                                // multiply by 1000 to convert to hive
+                                disabled={COST_HIVE * 1000 > Number(data?.balance.amount ?? 0)}
                                 type="radio"
-                                id="regular"
-                                value="regular"
-                                checked={field.value === 'regular'}
+                                id="hive"
+                                value="hive"
+                                checked={field.value === 'hive'}
                                 onChange={(e) => field.onChange(e.target.value)}
                                 className="h-4 w-4"
                               />
                             </FormControl>
-                            <Label htmlFor="regular">{t('communities.owned_tokens')}</Label>
+                            <Label htmlFor="hive">
+                              {t('communities.payment_confirm', {
+                                amount: COST_HIVE,
+                                // 1000 is the precision of hive
+                                owned_hives: Number(data?.balance.amount) / 1000
+                              })}
+                            </Label>
                           </div>
                           <div className="flex items-center space-x-2">
                             <FormControl>
                               <Input
+                                disabled={COST_TOKEN > Number(data?.pending_claimed_accounts)}
                                 type="radio"
                                 id="claimed"
                                 value="claimed"
@@ -305,28 +320,18 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                                 className="h-4 w-4"
                               />
                             </FormControl>
-                            <Label htmlFor="claimed">{t('communities.claim_tokens')}</Label>
+                            <Label htmlFor="claimed">
+                              {t('communities.claim_tokens', {
+                                amount: COST_TOKEN,
+                                owned_tokens: data?.pending_claimed_accounts ?? 0
+                              })}
+                            </Label>
                           </div>
                         </div>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="confirmFee"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="flex items-center gap-2">
-                          <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                          </FormControl>
-                          <FormLabel>{t('communities.payment_confirm')}</FormLabel>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+
                   <FormField
                     control={form.control}
                     name="saved_password"
@@ -350,7 +355,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                   <div className="flex w-full items-center justify-between">
                     <Button type="submit">{t('communities.create_community')}</Button>
                     <Button type="button" variant="outline" onClick={() => setAdvanced((prev) => !prev)}>
-                      {advanced ? 'Basic' : 'Advanced'}
+                      {advanced ? t('communities.basic') : t('communities.advanced')}
                     </Button>
                   </div>
                 </form>

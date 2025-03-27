@@ -331,6 +331,7 @@
   "communities": {
     "set_title_for_user": "Set Title for @{{username}}",
     "mute": "Mute",
+    "save": "Save",
     "unmute": "Unmute",
     "post_comment": " post/comment",
     "please_provide_a_note": "Please provide a note regarding your decision to mute this content.",

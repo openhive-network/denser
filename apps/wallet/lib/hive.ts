@@ -2,7 +2,7 @@ import Big from 'big.js';
 import { AccountHistory } from '@/wallet/store/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import { TWaxApiRequest, RcAccount, asset } from '@hiveio/wax';
+import { TWaxApiRequest, RcAccount, asset, FindAccountsResponse, ApiAccount } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 const chain = await hiveChainService.getHiveChain();
@@ -336,4 +336,17 @@ type GetOwnerHistoryData = {
 
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
   return chain.extend<GetOwnerHistoryData>().api.condenser_api.get_owner_history([account]);
+};
+
+type GetAccountData = {
+  database_api: {
+    find_accounts: TWaxApiRequest<{ accounts: string[] }, { accounts: FindAccountsResponse[] }>;
+  };
+};
+
+export const getAccount = async (account: string): Promise<ApiAccount> => {
+  const response = await chain
+    .extend<GetAccountData>()
+    .api.database_api.find_accounts({ accounts: [account] });
+  return response.accounts[0];
 };

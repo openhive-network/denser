@@ -487,9 +487,7 @@
     "create_community": "Create a community",
     "title": "Title*",
     "about": "About",
-    "fee_type": "Fee type",
-    "claim_tokens": "Claim token",
-    "owned_tokens": "Owned tokens",
+    "fee_type": "Pay with:*",
     "description": "Description",
     "flag_text": "Rules(one per line)",
     "lang": "Language",
@@ -497,9 +495,12 @@
     "communities_are_built": "Communities are built on top a special Hive account",
     "next": "Next",
     "nsfw": "NSFW",
+    "advanced": "Advanced",
+    "basic": "Basic",
     "i_have_saved_password": "I have securely saved my owner name and password.",
-    "payment_confirm": "This operation will cost 3 HIVE. I understand*",
-    "manage_confirm": "I understand, to manage {{communityName}} account I have to use {{username}} keys*",
+    "claim_tokens": "Account creation token ({{amount}} of your {{owned_tokens}} tokens)",
+    "payment_confirm": "{{amount}} HIVE ({{amount}} of your {{owned_hives}} HIVE)",
+    "manage_confirm": "I understand, to manage {{communityName}} account I have to use {{username}} authority*",
     "go_to_community": "Go to your community ",
     "community_created": "Community created!!!",
     "languages": {
@@ -518,7 +519,8 @@
     "errors": {
       "required": "Required",
       "maximum_characters": "Maximum {{value}} characters",
-      "minimum_characters": "Minimum {{value}} characters"
+      "minimum_characters": "Minimum {{value}} characters",
+      "pick_one": "Pick one"
     }
   },
   "settings": {

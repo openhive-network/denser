@@ -14,7 +14,7 @@ interface CreateCommunityMutationParams {
   nsfw: boolean;
   flagText: string;
   description: string;
-  claimed: 'claimed' | 'regular';
+  claimed: 'claimed' | 'hive';
 }
 
 export function useCreateCommunityMutation() {
@@ -65,7 +65,7 @@ export function useCreateCommunityMutation() {
           );
           break;
         }
-        case 'regular': {
+        case 'hive': {
           createAccountResult = await transactionService.accountCreate(
             fee,
             memoKey,
