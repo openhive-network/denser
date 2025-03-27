@@ -33,6 +33,7 @@ import { getAccount } from '@transaction/lib/hive';
 import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
 import { convertStringToBig } from '@ui/lib/helpers';
+import { TNaiAssetSource } from '@hiveio/wax';
 
 // After applying this operation, vesting_shares will be withdrawn at a rate of vesting_shares/13 per week for 13 weeks starting one week after this operation is included in the blockchain.
 const HIVE_VESTING_WITHDRAW_INTERVALS = 13;
@@ -46,6 +47,8 @@ type Amount = {
   delegatedVesting: Big;
   to_withdraw: Big;
   withdraw: Big;
+  totalVestingFundHive?: TNaiAssetSource;
+  totalVestingShares?: TNaiAssetSource;
 };
 
 export function TransferDialog({
@@ -170,7 +173,15 @@ export function TransferDialog({
       data.buttonTitle = t('transfers_page.power_down');
       data.amount = amount.reducedHP;
       data.onSubmit = async () => {
-        const params = { account: username, vestingShares: await getVests(value) };
+        if (!amount.totalVestingFundHive || !amount.totalVestingShares) {
+          return;
+        }
+        const params = {
+          account: username,
+          hp: await getAsset(value, 'hive'),
+          totalVestingFundHive: amount.totalVestingFundHive,
+          totalVestingShares: amount.totalVestingShares
+        };
         transfersTransaction('powerDown', params, powerDownMutation.mutateAsync);
       };
       break;

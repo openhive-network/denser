@@ -2,7 +2,13 @@ import Big from 'big.js';
 import { AccountHistory } from '@/wallet/store/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import { TWaxApiRequest, RcAccount, asset } from '@hiveio/wax';
+import {
+  TWaxApiRequest,
+  RcAccount,
+  asset,
+  GetDynamicGlobalPropertiesResponse,
+  GetDynamicGlobalPropertiesRequest
+} from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 const chain = await hiveChainService.getHiveChain();
@@ -336,4 +342,17 @@ type GetOwnerHistoryData = {
 
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
   return chain.extend<GetOwnerHistoryData>().api.condenser_api.get_owner_history([account]);
+};
+
+interface GetDynamicGlobalProperties {
+  database_api: {
+    get_dynamic_global_properties: TWaxApiRequest<
+      GetDynamicGlobalPropertiesRequest,
+      GetDynamicGlobalPropertiesResponse
+    >;
+  };
+}
+
+export const getDynamicGlobalPropertiesData = async (): Promise<GetDynamicGlobalPropertiesResponse> => {
+  return chain.extend<GetDynamicGlobalProperties>().api.database_api.get_dynamic_global_properties({});
 };

@@ -8,7 +8,12 @@ import {
   getFollowing
 } from '@transaction/lib/hive';
 import moment from 'moment';
-import { getAccountHistory, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
+import {
+  getAccountHistory,
+  getDynamicGlobalPropertiesData,
+  getOpenOrder,
+  getSavingsWithdrawals
+} from '@/wallet/lib/hive';
 import {
   createListWithSuggestions,
   getAmountFromWithdrawal,
@@ -233,10 +238,12 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       enabled: Boolean(user?.username)!
     }
   );
-  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalProperties'], () =>
+  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalPropertiesData'], () =>
     getDynamicGlobalProperties()
   );
-  // const following = useFollowingInfiniteQuery(user.username || '', 50, 'blog', ['blog']);
+  const { data: dynamicGlobalProperties } = useQuery(['dynamicGlobalProperties'], () =>
+    getDynamicGlobalPropertiesData()
+  );
 
   const { data: followingData } = useQuery(['following', username], () =>
     getFollowing({ account: username })
@@ -375,7 +382,9 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       dynamicData.total_vesting_shares,
       dynamicData.total_vesting_fund_hive,
       1000000
-    )
+    ),
+    totalVestingFundHive: dynamicGlobalProperties?.total_vesting_fund_hive,
+    totalVestingShares: dynamicGlobalProperties?.total_vesting_shares
   };
 
   const claimRewards = async () => {

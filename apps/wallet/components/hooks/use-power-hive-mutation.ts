@@ -1,4 +1,4 @@
-import { asset } from '@hiveio/wax';
+import { asset, TNaiAssetSource } from '@hiveio/wax';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
@@ -45,9 +45,16 @@ export function usePowerDownMutation() {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const powerDownMutation = useMutation({
-    mutationFn: async (params: { account: string; vestingShares: asset }) => {
-      const { account, vestingShares } = params;
-      const broadcastResult = await transactionService.withdrawFromVesting(account, vestingShares, {
+    mutationFn: async (params: {
+      account: string;
+      hp: asset;
+      totalVestingFundHive: TNaiAssetSource;
+      totalVestingShares: TNaiAssetSource;
+    }) => {
+      const { account, hp, totalVestingFundHive, totalVestingShares } = params;
+      const chain = await hiveChainService.getHiveChain();
+      const vestingSharesAmount = chain.hpToVests(hp, totalVestingFundHive, totalVestingShares);
+      const broadcastResult = await transactionService.withdrawFromVesting(account, vestingSharesAmount, {
         observe: true
       });
       const response = { ...params, broadcastResult };
