@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  Label,
   Select,
   SelectContent,
   SelectItem,
@@ -86,6 +87,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
     nsfw: z.boolean(),
     flagText: z.string(),
     description: z.string(),
+    claimed: z.enum(['claimed', 'regular']),
     confirmFee: z.boolean().refine((value) => value === true, {
       message: t('communities.errors.required')
     }),
@@ -105,6 +107,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
       nsfw: false,
       flagText: '',
       description: '',
+      claimed: 'regular',
       confirmFee: false,
       saved_password: false
     }
@@ -112,13 +115,10 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
 
   const onSubmit = async (values: CreateCommunityFormValues) => {
     if (data) {
-      const { title, about, lang, nsfw, flagText, description } = values;
+      const { title, about, lang, nsfw, flagText, description, claimed } = values;
       try {
         await createCommunityMutation.mutateAsync({
           memoKey: data?.memo_key,
-          owner: data?.owner.key_auths,
-          active: data?.active.key_auths,
-          posting: data?.posting.key_auths,
           communityTag: communityTag,
           title: title,
           about: about,
@@ -126,7 +126,8 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
           description: description,
           creator: user.username,
           lang: lang,
-          nsfw: nsfw
+          nsfw: nsfw,
+          claimed: claimed
         });
       } catch (error) {
         handleError(error, {
@@ -273,6 +274,44 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                       />
                     </>
                   ) : null}
+                  <FormField
+                    control={form.control}
+                    name="claimed"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('communities.fee_type')}</FormLabel>
+                        <div className="flex gap-6">
+                          <div className="flex items-center space-x-2">
+                            <FormControl>
+                              <Input
+                                type="radio"
+                                id="regular"
+                                value="regular"
+                                checked={field.value === 'regular'}
+                                onChange={(e) => field.onChange(e.target.value)}
+                                className="h-4 w-4"
+                              />
+                            </FormControl>
+                            <Label htmlFor="regular">{t('communities.owned_tokens')}</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <FormControl>
+                              <Input
+                                type="radio"
+                                id="claimed"
+                                value="claimed"
+                                checked={field.value === 'claimed'}
+                                onChange={(e) => field.onChange(e.target.value)}
+                                className="h-4 w-4"
+                              />
+                            </FormControl>
+                            <Label htmlFor="claimed">{t('communities.claim_tokens')}</Label>
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="confirmFee"

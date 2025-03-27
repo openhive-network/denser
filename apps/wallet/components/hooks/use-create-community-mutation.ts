@@ -3,14 +3,10 @@ import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { toast } from '@ui/components/hooks/use-toast';
 import { logger } from '@ui/lib/logger';
-import { PublicKey } from '@hiveio/dhive';
 
 interface CreateCommunityMutationParams {
   memoKey: string;
   communityTag: string;
-  active: [string | PublicKey, number][];
-  owner: [string | PublicKey, number][];
-  posting: [string | PublicKey, number][];
   title: string;
   about: string;
   creator: string;
@@ -18,6 +14,7 @@ interface CreateCommunityMutationParams {
   nsfw: boolean;
   flagText: string;
   description: string;
+  claimed: 'claimed' | 'regular';
 }
 
 export function useCreateCommunityMutation() {
@@ -25,47 +22,65 @@ export function useCreateCommunityMutation() {
     mutationFn: async ({
       memoKey,
       communityTag,
-      active,
-      owner,
-      posting,
       title,
       about,
       creator,
       lang,
       nsfw,
       flagText,
-      description
+      description,
+      claimed
     }: CreateCommunityMutationParams) => {
       const fee = (await createHiveChain()).hive(3000);
       const jsonMetadata = '';
       const activeAuthority = {
         weight_threshold: 1,
-        key_auths: Object.fromEntries(active.map((key) => [String(key[0]), key[1]])),
-        account_auths: {}
+        key_auths: {},
+        account_auths: { [creator]: 1 }
       };
 
       const ownerAuthority = {
         weight_threshold: 1,
-        key_auths: Object.fromEntries(owner.map((key) => [String(key[0]), key[1]])),
-        account_auths: {}
+        key_auths: {},
+        account_auths: { [creator]: 1 }
       };
 
       const postingAuthority = {
         weight_threshold: 1,
-        key_auths: Object.fromEntries(posting.map((key) => [String(key[0]), key[1]])),
-        account_auths: {}
+        key_auths: {},
+        account_auths: { [creator]: 1 }
       };
-      const createAccountResult = await transactionService.accountCreate(
-        fee,
-        memoKey,
-        communityTag,
-        creator,
-        jsonMetadata,
-        activeAuthority,
-        ownerAuthority,
-        postingAuthority,
-        { observe: true }
-      );
+      let createAccountResult;
+      switch (claimed) {
+        case 'claimed': {
+          createAccountResult = await transactionService.createClaimedAccount(
+            creator,
+            memoKey,
+            communityTag,
+            jsonMetadata,
+            activeAuthority,
+            ownerAuthority,
+            postingAuthority,
+            { observe: true }
+          );
+          break;
+        }
+        case 'regular': {
+          createAccountResult = await transactionService.accountCreate(
+            fee,
+            memoKey,
+            communityTag,
+            creator,
+            jsonMetadata,
+            activeAuthority,
+            ownerAuthority,
+            postingAuthority,
+            { observe: true }
+          );
+          break;
+        }
+      }
+
       const communityActions = await transactionService.newCommunityUpdate(
         communityTag,
         title,
