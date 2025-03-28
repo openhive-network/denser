@@ -314,7 +314,7 @@ export function TransferDialog({
                 <>
                   <div className="grid grid-cols-4 items-center gap-4">
                     {t('transfers_page.to')}
-                    <div className="col-span-3">
+                    <div className="col-span-3 mb-6">
                       <Autocompleter
                         items={suggestedUsers}
                         value={data.to}
@@ -471,7 +471,28 @@ export function TransferDialog({
               {data.buttonTitle}
             </Button>
             {data.advancedBtn && (
-              <Button className="w-fit" variant="ghost" onClick={() => setAdvanced(!advanced)} type="button">
+              <Button
+                className="w-fit"
+                variant="ghost"
+                onClick={() => {
+                  setAdvanced((prev) => !prev);
+                  switch (type) {
+                    case 'transferTo':
+                      setData({ ...data, to: advanced ? username : data.to });
+                      break;
+                    case 'powerUp':
+                      setData({ ...data, to: advanced ? username : data.to });
+                      break;
+                    case 'withdrawHive':
+                      setData({ ...data, to: advanced ? username : data.to });
+                      break;
+                    case 'withdrawHiveDollars':
+                      setData({ ...data, to: advanced ? username : data.to });
+                      break;
+                  }
+                }}
+                type="button"
+              >
                 {advanced ? (
                   <span>{t('transfers_page.basic')}</span>
                 ) : (
