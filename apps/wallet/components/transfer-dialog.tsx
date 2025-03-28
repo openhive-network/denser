@@ -146,7 +146,7 @@ export function TransferDialog({
       data.onSubmit = async () => {
         const params = {
           amount: await getAsset(value, curr),
-          fromAccount: data.to,
+          fromAccount: username,
           toAccount: data.to,
           memo: data.memo
         };
