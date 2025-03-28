@@ -181,6 +181,8 @@
     "receive_interest": "'Receive interest of {{number}}",
     "transfer_to": "Transfer {{value}} to ",
     "transfer_to_savings_to": "Transfer to savings {{value}} to ",
+    "transfer_hp_to": "Transfer {{value}} POWER to ",
+    "transfer_hp_from": "Receive {{value}} POWER from ",
     "transfer_from_savings_to": "Transfer from savings {{value}} to ",
     "request_id": "Request ID: {{value}}",
     "transfer_to_user": "Transfer {{value}} to ",

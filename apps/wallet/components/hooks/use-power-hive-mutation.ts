@@ -15,9 +15,9 @@ export function usePowerUpMutation() {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const powerUpMutation = useMutation({
-    mutationFn: async (params: { account: string; amount: asset }) => {
-      const { amount, account } = params;
-      const broadcastResult = await transactionService.transferToVesting(amount, account, account, {
+    mutationFn: async (params: { fromAccount: string; toAccount: string; amount: asset }) => {
+      const { amount, fromAccount, toAccount } = params;
+      const broadcastResult = await transactionService.transferToVesting(amount, fromAccount, toAccount, {
         observe: true
       });
       const response = { ...params, broadcastResult };

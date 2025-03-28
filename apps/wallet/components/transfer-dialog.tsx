@@ -162,7 +162,7 @@ export function TransferDialog({
       data.selectCurr = false;
       data.buttonTitle = t('transfers_page.power_up');
       data.onSubmit = async () => {
-        const params = { account: username, amount: await getAsset(value, curr) };
+        const params = { fromAccount: username, toAccount: data.to, amount: await getAsset(value, curr) };
         transfersTransaction('powerUp', params, powerUpMutation.mutateAsync);
       };
       break;

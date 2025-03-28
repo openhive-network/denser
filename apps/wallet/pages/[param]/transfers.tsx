@@ -439,7 +439,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           <span>
             {t('profile.transfer_from_savings_to', { value: operation.amount?.toString() })}
             <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
-              {operation.to}
+              {`${operation.to} `}
             </Link>
             {t('profile.request_id', { value: operation.request_id })}
           </span>
@@ -476,11 +476,18 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           </span>
         );
       case 'transfer_to_vesting':
-        return (
+        return operation.from === username ? (
           <span>
-            {t('profile.transfer_to', { value: operation.amount?.toString() })}
+            {t('profile.transfer_hp_to', { value: operation.amount?.toString() })}
             <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
               {operation.to}
+            </Link>
+          </span>
+        ) : (
+          <span>
+            {t('profile.transfer_hp_from', { value: operation.amount?.toString() })}
+            <Link href={`/@${operation.from}`} className="font-semibold text-primary hover:text-destructive">
+              {operation.from}
             </Link>
           </span>
         );
