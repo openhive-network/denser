@@ -33,7 +33,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import Loading from '@ui/components/loading';
 import Link from 'next/link';
 import env from '@beam-australia/react-env';
-import { getAccount } from '@/wallet/lib/hive';
+import { getAccount, getFindAccounts } from '@transaction/lib/hive';
 
 const getCommmunityName = () => {
   return `hive-${Math.floor(Math.random() * 100000) + 100000}`;
@@ -46,9 +46,10 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
   const { user } = useUser();
   const { data, isLoading } = useQuery(
     ['findAccounts', username],
-    async () => await getAccount(user?.username),
+    async () => await getFindAccounts(user?.username),
     { enabled: user.isLoggedIn }
   );
+  const account = data?.accounts[0];
 
   const { t } = useTranslation('common_wallet');
   const [advanced, setAdvanced] = useState(false);
@@ -93,10 +94,10 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
     flagText: z.string(),
     description: z.string(),
     claimed: z
-      .enum(['claimed', 'hive', ''], {
+      .enum(['claimed', 'hive'], {
         message: t('communities.errors.pick_one')
       })
-      .refine((value) => value !== ''),
+      .refine((value) => value === 'claimed' || value === 'hive'),
     saved_password: z.boolean().refine((value) => value === true, {
       message: t('communities.errors.required')
     })
@@ -119,11 +120,11 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
   });
 
   const onSubmit = async (values: CreateCommunityFormValues) => {
-    if (data) {
+    if (account) {
       const { title, about, lang, nsfw, flagText, description, claimed } = values;
       try {
         await createCommunityMutation.mutateAsync({
-          memoKey: data?.memo_key,
+          memoKey: account?.memo_key,
           communityTag: communityTag,
           title: title,
           about: about,
@@ -291,7 +292,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                             <FormControl>
                               <Input
                                 // multiply by 1000 to convert to hive
-                                disabled={COST_HIVE * 1000 > Number(data?.balance.amount ?? 0)}
+                                disabled={COST_HIVE * 1000 > Number(account?.balance.amount ?? 0)}
                                 type="radio"
                                 id="hive"
                                 value="hive"
@@ -304,14 +305,14 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                               {t('communities.payment_confirm', {
                                 amount: COST_HIVE,
                                 // 1000 is the precision of hive
-                                owned_hives: Number(data?.balance.amount) / 1000
+                                owned_hives: Number(account?.balance.amount) / 1000
                               })}
                             </Label>
                           </div>
                           <div className="flex items-center space-x-2">
                             <FormControl>
                               <Input
-                                disabled={COST_TOKEN > Number(data?.pending_claimed_accounts)}
+                                disabled={COST_TOKEN > Number(account?.pending_claimed_accounts)}
                                 type="radio"
                                 id="claimed"
                                 value="claimed"
@@ -323,7 +324,7 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
                             <Label htmlFor="claimed">
                               {t('communities.claim_tokens', {
                                 amount: COST_TOKEN,
-                                owned_tokens: data?.pending_claimed_accounts ?? 0
+                                owned_tokens: account?.pending_claimed_accounts ?? 0
                               })}
                             </Label>
                           </div>
