@@ -605,8 +605,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.2
       '@hiveio/hb-auth':
-        specifier: 0.0.1-stable.241220110655
-        version: 0.0.1-stable.241220110655
+        specifier: 0.0.1-stable.250131124251
+        version: 0.0.1-stable.250131124251
       '@hiveio/wax':
         specifier: 1.27.6-rc7-stable.250314151849
         version: 1.27.6-rc7-stable.250314151849
@@ -714,8 +714,8 @@ importers:
         specifier: 1.27.6-rc7-stable.250314151849
         version: 1.27.6-rc7-stable.250314151849
       '@hiveio/workerbee':
-        specifier: 1.27.6-rc9-stable.250314184948
-        version: 1.27.6-rc9-stable.250314184948
+        specifier: 1.27.6-rc9
+        version: 1.27.6-rc9
       secure-random:
         specifier: ^1.1.2
         version: 1.1.2
@@ -1791,19 +1791,19 @@ packages:
     resolution: {integrity: sha1-mPx0QrDh3NSPSOYGyR1SUyi3lyA=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.10-stable.250305202831.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/beekeeper@1.27.10-stable.250310202833':
-    resolution: {integrity: sha1-RIuA9M6LrJkf/2HuNmiavT9bUyI=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.10-stable.250310202833.tgz}
-    engines: {node: ^20.11 || >= 21.2}
-
-  '@hiveio/beekeeper@1.27.6-rc4':
-    resolution: {integrity: sha1-mj3k3qAgTdIrc6IxzC5VOprhWZs=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.6-rc4.tgz}
+  '@hiveio/beekeeper@1.27.6-rc3':
+    resolution: {integrity: sha1-+tV/0zANMNTgBA7WJAT5DKO9Bk0=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.6-rc3.tgz}
     engines: {node: '>= 18'}
+
+  '@hiveio/beekeeper@1.27.8-stable.250131103618':
+    resolution: {integrity: sha1-0IYuFBbxIIKfRTrI6ZZc7Jf+qLA=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.27.8-stable.250131103618.tgz}
+    engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/dhive@1.3.2':
     resolution: {integrity: sha512-kJjp3TbpIlODxjJX4BWwvOf+cMxT8CFH/mNQ40RRjR2LP0a4baSWae1G+U/q/NtgjsIQz6Ja40tvnw6KF12I+g==, tarball: https://registry.npmjs.org/@hiveio/dhive/-/dhive-1.3.2.tgz}
 
-  '@hiveio/hb-auth@0.0.1-stable.241220110655':
-    resolution: {integrity: sha1-IxccJaFFnpA4jDlwePXU3nayaCM=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-0.0.1-stable.241220110655.tgz}
+  '@hiveio/hb-auth@0.0.1-stable.250131124251':
+    resolution: {integrity: sha1-HX9GbxRjpo+ezDR5SAvuEIVr6II=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-0.0.1-stable.250131124251.tgz}
 
   '@hiveio/hivescript@1.3.3':
     resolution: {integrity: sha512-nOeGespwSujSaEl4R09u9FXGgMyOywtWWQiJdiWsmJDknCUqXXxTfs3KICssPTjkDlbGp2gkg3WjUyrlxm28Qg==, tarball: https://registry.npmjs.org/@hiveio/hivescript/-/hivescript-1.3.3.tgz}
@@ -1811,21 +1811,21 @@ packages:
   '@hiveio/wax-signers-keychain@1.27.6-rc7-stable.250314151849':
     resolution: {integrity: sha1-8HTCTsNn2vvVB6tyLi+1miB/YXw=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-keychain/-/@hiveio/wax-signers-keychain-1.27.6-rc7-stable.250314151849.tgz}
 
-  '@hiveio/wax@1.27.6-rc6-241220084915':
-    resolution: {integrity: sha1-+k17yp3C+Zo+StyEYDFYtCg5jy4=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc6-241220084915.tgz}
+  '@hiveio/wax@1.27.6-rc4':
+    resolution: {integrity: sha1-NZnSU6P8zkdBvnkHsWG1uswa6Es=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc4.tgz}
     engines: {node: '>= 18'}
+
+  '@hiveio/wax@1.27.6-rc7-stable.250131113706':
+    resolution: {integrity: sha1-Xi2VV8y9T6MdBHOBSzxZNpmGnF8=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc7-stable.250131113706.tgz}
+    engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/wax@1.27.6-rc7-stable.250314151849':
     resolution: {integrity: sha1-qkI3WlmARRzTCZOMLDaDw2zNKx8=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc7-stable.250314151849.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/wax@1.27.6-rc7-stable.250314180436':
-    resolution: {integrity: sha1-/NkHF9IjJixN2LUTiUo/6KeQxUY=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc7-stable.250314180436.tgz}
-    engines: {node: ^20.11 || >= 21.2}
-
-  '@hiveio/workerbee@1.27.6-rc9-stable.250314184948':
-    resolution: {integrity: sha1-3wFwvN+VugsZqtH+DsJI97I9w8o=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.27.6-rc9-stable.250314184948.tgz}
-    engines: {node: ^20.11 || >= 21.2}
+  '@hiveio/workerbee@1.27.6-rc9':
+    resolution: {integrity: sha1-w4GYKWKihjlOau951Ufu5VSBXmo=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.27.6-rc9.tgz}
+    engines: {node: '>= 18'}
 
   '@hookform/resolvers@3.10.0':
     resolution: {integrity: sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==}
@@ -11454,9 +11454,9 @@ snapshots:
 
   '@hiveio/beekeeper@1.27.10-stable.250305202831': {}
 
-  '@hiveio/beekeeper@1.27.10-stable.250310202833': {}
+  '@hiveio/beekeeper@1.27.6-rc3': {}
 
-  '@hiveio/beekeeper@1.27.6-rc4': {}
+  '@hiveio/beekeeper@1.27.8-stable.250131103618': {}
 
   '@hiveio/dhive@1.3.2':
     dependencies:
@@ -11476,12 +11476,10 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@hiveio/hb-auth@0.0.1-stable.241220110655':
+  '@hiveio/hb-auth@0.0.1-stable.250131124251':
     dependencies:
-      '@hiveio/beekeeper': 1.27.6-rc4
-      '@hiveio/wax': 1.27.6-rc6-241220084915
+      '@hiveio/wax': 1.27.6-rc7-stable.250131113706
       comlink: 4.4.2
-      idb: 7.1.1
 
   '@hiveio/hivescript@1.3.3': {}
 
@@ -11493,14 +11491,20 @@ snapshots:
       - debug
       - encoding
 
-  '@hiveio/wax@1.27.6-rc6-241220084915':
+  '@hiveio/wax@1.27.6-rc4':
     dependencies:
-      '@hiveio/beekeeper': 1.27.6-rc4
+      '@hiveio/beekeeper': 1.27.6-rc3
       class-transformer: 0.5.1
       class-validator: 0.14.1
       events: 3.3.0
       long: 5.2.4
       reflect-metadata: 0.1.14
+
+  '@hiveio/wax@1.27.6-rc7-stable.250131113706':
+    dependencies:
+      '@hiveio/beekeeper': 1.27.8-stable.250131103618
+      events: 3.3.0
+      long: 5.2.4
 
   '@hiveio/wax@1.27.6-rc7-stable.250314151849':
     dependencies:
@@ -11508,16 +11512,12 @@ snapshots:
       events: 3.3.0
       long: 5.2.4
 
-  '@hiveio/wax@1.27.6-rc7-stable.250314180436':
+  '@hiveio/workerbee@1.27.6-rc9':
     dependencies:
-      '@hiveio/beekeeper': 1.27.10-stable.250305202831
+      '@hiveio/beekeeper': 1.27.6-rc3
+      '@hiveio/wax': 1.27.6-rc4
       events: 3.3.0
-      long: 5.2.4
-
-  '@hiveio/workerbee@1.27.6-rc9-stable.250314184948':
-    dependencies:
-      '@hiveio/beekeeper': 1.27.10-stable.250310202833
-      '@hiveio/wax': 1.27.6-rc7-stable.250314180436
+      rxjs: 7.8.1
 
   '@hookform/resolvers@3.10.0(react-hook-form@7.54.2(react@18.3.0))':
     dependencies:
