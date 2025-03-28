@@ -648,9 +648,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       value: getCurrentHpApr(dynamicData).toFixed(2)
                     })}
                     <span className="font-semibold text-primary hover:text-destructive">
-                      <Link
-                        href={`https:/${blogURL}/faq.html#How_many_new_tokens_are_generated_by_the_blockchain`}
-                      >
+                      <Link href={`${blogURL}/faq.html#How_many_new_tokens_are_generated_by_the_blockchain`}>
                         {t('profile.see_faq_for_details')}
                       </Link>
                     </span>

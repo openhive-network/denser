@@ -191,7 +191,16 @@ export function TransferDialog({
       data.description = '';
       data.amount = amount.reducedHP;
       data.onSubmit = async () => {
-        const params = { delegator: username, delegatee: data.to, vestingShares: await getVests(value) };
+        if (!amount.totalVestingFundHive || !amount.totalVestingShares) {
+          return;
+        }
+        const params = {
+          delegator: username,
+          delegatee: data.to,
+          hp: await getAsset(value, 'hive'),
+          totalVestingFundHive: amount.totalVestingFundHive,
+          totalVestingShares: amount.totalVestingShares
+        };
         transfersTransaction('delegate', params, delegateMutation.mutateAsync);
       };
       break;
