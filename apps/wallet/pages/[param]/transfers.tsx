@@ -62,6 +62,7 @@ import env from '@beam-australia/react-env';
 import { useCancelTransferFromSavingsMutation } from '@/wallet/components/hooks/use-cancel-transfer-from-savings-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
+import { toast } from '@ui/components/hooks/use-toast';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -389,6 +390,12 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       await claimRewardsMutation.mutateAsync(params);
     } catch (error) {
       handleError(error, { method: 'claim_reward_balance', params });
+    } finally {
+      toast({
+        title: t('transfers_page.transaction_success'),
+        description: t('transfers_page.redeem_rewards'),
+        variant: 'success'
+      });
     }
   };
 
@@ -400,6 +407,11 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       handleError(error, { method: 'withdraw_vesting', params });
     } finally {
       setOpen(false);
+      toast({
+        title: t('transfers_page.transaction_success'),
+        description: t('transfers_page.cancel_power_down'),
+        variant: 'success'
+      });
     }
   };
 
@@ -411,6 +423,11 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       handleError(error, { method: 'cancel_transfer_from_savings', params });
     } finally {
       setOpenCancelTransfer(false);
+      toast({
+        title: t('transfers_page.transaction_success'),
+        description: t('transfers_page.cancel__transfer_from_savings'),
+        variant: 'success'
+      });
     }
   };
 

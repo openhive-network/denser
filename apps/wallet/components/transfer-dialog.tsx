@@ -35,6 +35,7 @@ import Big from 'big.js';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { TNaiAssetSource } from '@hiveio/wax';
 import { CircleSpinner } from 'react-spinners-kit';
+import { toast } from '@ui/components/hooks/use-toast';
 
 // After applying this operation, vesting_shares will be withdrawn at a rate of vesting_shares/13 per week for 13 weeks starting one week after this operation is included in the blockchain.
 const HIVE_VESTING_WITHDRAW_INTERVALS = 13;
@@ -289,6 +290,11 @@ export function TransferDialog({
     ) {
       setOpen(false);
       setNextOpen(false);
+      toast({
+        title: t('transfers_page.transaction_success'),
+        description: data.title,
+        variant: 'success'
+      });
     }
   }, [
     transferMutation.isSuccess,
@@ -300,6 +306,11 @@ export function TransferDialog({
 
   useEffect(() => {
     if (powerDownMutation.isSuccess) {
+      toast({
+        title: t('transfers_page.transaction_success'),
+        description: data.title,
+        variant: 'success'
+      });
       setOpen(false);
     }
   }, [powerDownMutation.isSuccess]);
