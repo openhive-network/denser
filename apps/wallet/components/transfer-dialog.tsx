@@ -580,7 +580,7 @@ export function TransferDialog({
               </div>
               {(type === 'withdrawHive' || type === 'withdrawHiveDollars') && (
                 <div className="grid grid-cols-4 items-center gap-4">
-                  request_id
+                  {t('transfers_page.request_id')}
                   <div className="relative col-span-3">
                     <Input
                       defaultValue={data.requestId}

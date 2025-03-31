@@ -24,6 +24,10 @@ export function useCancelTransferFromSavingsMutation() {
       logger.info('useCancelTransferFromSavingsMutation onSuccess data: %o', data);
       const { username } = user;
       queryClient.invalidateQueries({ queryKey: ['savingsWithdrawalsFrom', username] });
+      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+      queryClient.invalidateQueries({ queryKey: ['accountData', username] });
+      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
+      
     }
   });
 

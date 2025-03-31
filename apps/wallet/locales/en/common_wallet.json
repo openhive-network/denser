@@ -371,6 +371,7 @@
     "add_item_title": "Add new {{id}} entry"
   },
   "transfers_page": {
+    "request_id": "Request ID",
     "already_power_down": "You are already powering down {{amount}} HIVE({{withdrawn}} HIVE paid out so far). Note that if you change the power down amount the payout schedule will reset.",
     "delegating": "You are delegating {{amount}} HIVE. That amount is locked up and not available to power down until the delegation is removed and 5 days have passed",
     "per_week": "That's ~{{amount}} HIVE per week.",

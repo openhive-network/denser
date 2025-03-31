@@ -225,6 +225,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
   const { user } = useUser();
   const [open, setOpen] = useState(false);
+  const [openCancelTransfer, setOpenCancelTransfer] = useState(false);
   const { data: accountData, isLoading: accountLoading } = useQuery(
     ['accountData', username],
     () => getAccount(username),
@@ -408,6 +409,8 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       await cancelTransferFromSavingsMutation.mutateAsync(params);
     } catch (error) {
       handleError(error, { method: 'cancel_transfer_from_savings', params });
+    } finally {
+      setOpenCancelTransfer(false);
     }
   };
 
@@ -700,7 +703,11 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                                     disabled={cancelPowerDownMutation.isLoading}
                                   >
                                     {cancelPowerDownMutation.isLoading ? (
-                                      <CircleSpinner loading={cancelPowerDownMutation.isLoading} />
+                                      <CircleSpinner
+                                        loading={cancelPowerDownMutation.isLoading}
+                                        size={18}
+                                        color="#dc2626"
+                                      />
                                     ) : (
                                       t('profile.cancel_power_down')
                                     )}
@@ -919,7 +926,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                         </td>
                         <td className="flex flex-row items-center px-2 sm:px-4 sm:py-2">
                           <div>{withdrawMessage}</div>
-                          <Dialog>
+                          <Dialog open={openCancelTransfer} onOpenChange={setOpenCancelTransfer}>
                             <DialogTrigger asChild>
                               <Button variant="link" className="text-destructive hover:no-underline">
                                 {t('transfers_page.cancel')}
@@ -931,14 +938,21 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                                 <div>{withdrawMessage}</div>
                               </div>
                               <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-                                <DialogTrigger asChild>
-                                  <Button
-                                    variant="redHover"
-                                    onClick={() => cancelTransferFromSavings(withdrawal.request_id)}
-                                  >
-                                    {t('transfers_page.cancel_withdraw_from_savings')}
-                                  </Button>
-                                </DialogTrigger>
+                                <Button
+                                  variant="redHover"
+                                  onClick={() => cancelTransferFromSavings(withdrawal.request_id)}
+                                  disabled={cancelTransferFromSavingsMutation.isLoading}
+                                >
+                                  {cancelTransferFromSavingsMutation.isLoading ? (
+                                    <CircleSpinner
+                                      loading={cancelTransferFromSavingsMutation.isLoading}
+                                      size={18}
+                                      color="#dc2626"
+                                    />
+                                  ) : (
+                                    t('transfers_page.cancel_withdraw_from_savings')
+                                  )}
+                                </Button>
                               </DialogFooter>
                             </DialogContent>
                           </Dialog>
