@@ -231,13 +231,6 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       enabled: Boolean(username)
     }
   );
-  const { data: openOrdersData, isLoading: openOrdersLoading } = useQuery(
-    ['openOrders', user?.username],
-    () => getOpenOrder(user!.username),
-    {
-      enabled: Boolean(user?.username)!
-    }
-  );
   const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalPropertiesData'], () =>
     getDynamicGlobalProperties()
   );

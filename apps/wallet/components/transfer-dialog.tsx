@@ -11,7 +11,7 @@ import {
 } from '@ui/components/dialog';
 import { Icons } from '@ui/components/icons';
 import { Input } from '@ui/components/input';
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Autocompleter } from './autocompleter';
 import badActorList from '@ui/config/lists/bad-actor-list';
 import {
@@ -34,6 +34,7 @@ import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { TNaiAssetSource } from '@hiveio/wax';
+import { CircleSpinner } from 'react-spinners-kit';
 
 // After applying this operation, vesting_shares will be withdrawn at a rate of vesting_shares/13 per week for 13 weeks starting one week after this operation is included in the blockchain.
 const HIVE_VESTING_WITHDRAW_INTERVALS = 13;
@@ -278,8 +279,27 @@ export function TransferDialog({
     data.onSubmit();
     // @ts-expect-error
     triggerRef.current.click();
-    setNextOpen(false);
   };
+  useEffect(() => {
+    if (
+      transferMutation.isSuccess ||
+      transferToSavingsMutation.isSuccess ||
+      powerUpMutation.isSuccess ||
+      powerDownMutation.isSuccess ||
+      delegateMutation.isSuccess ||
+      withdrawFromSavingsMutation.isSuccess
+    ) {
+      setNextOpen(false);
+    }
+  }, [
+    transferMutation.isSuccess,
+    transferToSavingsMutation.isSuccess,
+    powerUpMutation.isSuccess,
+    powerDownMutation.isSuccess,
+    delegateMutation.isSuccess,
+    withdrawFromSavingsMutation.isSuccess
+  ]);
+
   const delegated = amount.delegatedVesting.gt(0);
   const withdrawinformation = amount.to_withdraw.minus(amount.withdraw).gt(0);
   return (
@@ -600,8 +620,40 @@ export function TransferDialog({
             </>
           )}
           <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-            <Button variant="redHover" className="w-fit" onClick={onConfirm}>
-              {t('transfers_page.ok')}
+            <Button
+              variant="redHover"
+              className="w-fit"
+              onClick={onConfirm}
+              disabled={
+                transferMutation.isLoading ||
+                transferToSavingsMutation.isLoading ||
+                powerUpMutation.isLoading ||
+                powerDownMutation.isLoading ||
+                delegateMutation.isLoading ||
+                withdrawFromSavingsMutation.isLoading
+              }
+            >
+              {transferMutation.isLoading ||
+              transferToSavingsMutation.isLoading ||
+              powerUpMutation.isLoading ||
+              powerDownMutation.isLoading ||
+              delegateMutation.isLoading ||
+              withdrawFromSavingsMutation.isLoading ? (
+                <CircleSpinner
+                  loading={
+                    transferMutation.isLoading ||
+                    transferToSavingsMutation.isLoading ||
+                    powerUpMutation.isLoading ||
+                    powerDownMutation.isLoading ||
+                    delegateMutation.isLoading ||
+                    withdrawFromSavingsMutation.isLoading
+                  }
+                  size={18}
+                  color="#dc2626"
+                />
+              ) : (
+                t('transfers_page.ok')
+              )}
             </Button>
             <Button variant="ghost" className="w-fit" onClick={() => setNextOpen(false)}>
               {t('transfers_page.cancel')}
