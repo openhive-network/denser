@@ -100,6 +100,7 @@ export function TransferDialog({
   const withdrawFromSavingsMutation = useWithdrawFromSavingsMutation();
   const triggerRef = useRef(null);
   const [nextOpen, setNextOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const invalidateData = useCallback(() => {
@@ -277,33 +278,36 @@ export function TransferDialog({
 
   const onConfirm = () => {
     data.onSubmit();
-    // @ts-expect-error
-    triggerRef.current.click();
   };
   useEffect(() => {
     if (
       transferMutation.isSuccess ||
       transferToSavingsMutation.isSuccess ||
       powerUpMutation.isSuccess ||
-      powerDownMutation.isSuccess ||
       delegateMutation.isSuccess ||
       withdrawFromSavingsMutation.isSuccess
     ) {
+      setOpen(false);
       setNextOpen(false);
     }
   }, [
     transferMutation.isSuccess,
     transferToSavingsMutation.isSuccess,
     powerUpMutation.isSuccess,
-    powerDownMutation.isSuccess,
     delegateMutation.isSuccess,
     withdrawFromSavingsMutation.isSuccess
   ]);
 
+  useEffect(() => {
+    if (powerDownMutation.isSuccess) {
+      setOpen(false);
+    }
+  }, [powerDownMutation.isSuccess]);
+
   const delegated = amount.delegatedVesting.gt(0);
   const withdrawinformation = amount.to_withdraw.minus(amount.withdraw).gt(0);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
           {children}
@@ -485,10 +489,14 @@ export function TransferDialog({
             <Button
               variant="redHover"
               className="w-fit"
-              disabled={badActors}
+              disabled={badActors || powerDownMutation.isLoading}
               onClick={type === 'powerDown' ? onConfirm : form.handleSubmit(onSubmit)}
             >
-              {data.buttonTitle}
+              {powerDownMutation.isLoading ? (
+                <CircleSpinner loading={powerDownMutation.isLoading} size={18} color="#dc2626" />
+              ) : (
+                data.buttonTitle
+              )}
             </Button>
             {data.advancedBtn && (
               <Button
@@ -628,7 +636,6 @@ export function TransferDialog({
                 transferMutation.isLoading ||
                 transferToSavingsMutation.isLoading ||
                 powerUpMutation.isLoading ||
-                powerDownMutation.isLoading ||
                 delegateMutation.isLoading ||
                 withdrawFromSavingsMutation.isLoading
               }
@@ -636,7 +643,6 @@ export function TransferDialog({
               {transferMutation.isLoading ||
               transferToSavingsMutation.isLoading ||
               powerUpMutation.isLoading ||
-              powerDownMutation.isLoading ||
               delegateMutation.isLoading ||
               withdrawFromSavingsMutation.isLoading ? (
                 <CircleSpinner
@@ -644,7 +650,6 @@ export function TransferDialog({
                     transferMutation.isLoading ||
                     transferToSavingsMutation.isLoading ||
                     powerUpMutation.isLoading ||
-                    powerDownMutation.isLoading ||
                     delegateMutation.isLoading ||
                     withdrawFromSavingsMutation.isLoading
                   }
