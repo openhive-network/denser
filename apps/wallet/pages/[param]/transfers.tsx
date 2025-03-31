@@ -56,7 +56,7 @@ import useFilters from '@/wallet/components/hooks/use-filters';
 import { getTranslations } from '../../lib/get-translations';
 import FinancialReport from '@/wallet/components/financial-report';
 import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-hive-mutation';
 import env from '@beam-australia/react-env';
 import { useCancelTransferFromSavingsMutation } from '@/wallet/components/hooks/use-cancel-transfer-from-savings-mutation';
@@ -224,6 +224,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   const blogURL = env('BLOG_DOMAIN');
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
   const { user } = useUser();
+  const [open, setOpen] = useState(false);
   const { data: accountData, isLoading: accountLoading } = useQuery(
     ['accountData', username],
     () => getAccount(username),
@@ -396,6 +397,8 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       await cancelPowerDownMutation.mutateAsync(params);
     } catch (error) {
       handleError(error, { method: 'withdraw_vesting', params });
+    } finally {
+      setOpen(false);
     }
   };
 
@@ -681,8 +684,8 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                           >
                             <span>{t('profile.delegate')}</span>
                           </TransferDialog>
-                          {accountData.to_withdraw === 0 || cancelPowerDownMutation.isLoading ? null : (
-                            <Dialog>
+                          {accountData.to_withdraw === 0 ? null : (
+                            <Dialog open={open} onOpenChange={setOpen}>
                               <DialogTrigger asChild>
                                 <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
                                   <span>{t('profile.cancel_power_down')}</span>
@@ -691,11 +694,17 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                               <DialogContent className="text-left sm:max-w-[425px]">
                                 {t('profile.cancel_power_down_prompt')}
                                 <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-                                  <DialogTrigger asChild>
-                                    <Button variant="redHover" onClick={cancelPowerDown}>
-                                      {t('profile.cancel_power_down')}
-                                    </Button>
-                                  </DialogTrigger>
+                                  <Button
+                                    variant="redHover"
+                                    onClick={cancelPowerDown}
+                                    disabled={cancelPowerDownMutation.isLoading}
+                                  >
+                                    {cancelPowerDownMutation.isLoading ? (
+                                      <CircleSpinner loading={cancelPowerDownMutation.isLoading} />
+                                    ) : (
+                                      t('profile.cancel_power_down')
+                                    )}
+                                  </Button>
                                 </DialogFooter>
                               </DialogContent>
                             </Dialog>
