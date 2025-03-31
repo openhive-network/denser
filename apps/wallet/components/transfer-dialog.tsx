@@ -445,7 +445,7 @@ export function TransferDialog({
                   form.setValue('amount', e[0]);
                 }}
               />
-              <p>Amount</p>
+              <p> {t('transfers_page.amount')}</p>
               <div className="flex items-center gap-4">
                 <Input
                   {...form.register('amount', {
