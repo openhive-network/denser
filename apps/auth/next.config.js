@@ -51,6 +51,10 @@ const nextConfig = {
             to: path.join(__dirname, 'public/auth/')
           },
           {
+            from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/assets'),
+            to: path.join(__dirname, 'public/auth/assets')
+          },
+          {
             from: path.join(__dirname, './locales'),
             to: path.join(__dirname, 'public/locales/')
           },

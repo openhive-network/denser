@@ -181,6 +181,8 @@
     "receive_interest": "'Receive interest of {{number}}",
     "transfer_to": "Transfer {{value}} to ",
     "transfer_to_savings_to": "Transfer to savings {{value}} to ",
+    "transfer_hp_to": "Transfer {{value}} POWER to ",
+    "transfer_hp_from": "Receive {{value}} POWER from ",
     "transfer_from_savings_to": "Transfer from savings {{value}} to ",
     "request_id": "Request ID: {{value}}",
     "transfer_to_user": "Transfer {{value}} to ",
@@ -369,6 +371,10 @@
     "add_item_title": "Add new {{id}} entry"
   },
   "transfers_page": {
+    "request_id": "Request ID",
+    "cancel_power_down": "Cancel Power Down",
+    "transaction_success": "Transaction Success",
+    "cancel__transfer_from_savings": "Cancel Transfer From Savings",
     "already_power_down": "You are already powering down {{amount}} HIVE({{withdrawn}} HIVE paid out so far). Note that if you change the power down amount the payout schedule will reset.",
     "delegating": "You are delegating {{amount}} HIVE. That amount is locked up and not available to power down until the delegation is removed and 5 days have passed",
     "per_week": "That's ~{{amount}} HIVE per week.",

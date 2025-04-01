@@ -11,7 +11,7 @@ import {
 } from '@ui/components/dialog';
 import { Icons } from '@ui/components/icons';
 import { Input } from '@ui/components/input';
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Autocompleter } from './autocompleter';
 import badActorList from '@ui/config/lists/bad-actor-list';
 import {
@@ -33,6 +33,9 @@ import { getAccount } from '@transaction/lib/hive';
 import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
 import { convertStringToBig } from '@ui/lib/helpers';
+import { TNaiAssetSource } from '@hiveio/wax';
+import { CircleSpinner } from 'react-spinners-kit';
+import { toast } from '@ui/components/hooks/use-toast';
 
 // After applying this operation, vesting_shares will be withdrawn at a rate of vesting_shares/13 per week for 13 weeks starting one week after this operation is included in the blockchain.
 const HIVE_VESTING_WITHDRAW_INTERVALS = 13;
@@ -46,6 +49,8 @@ type Amount = {
   delegatedVesting: Big;
   to_withdraw: Big;
   withdraw: Big;
+  totalVestingFundHive?: TNaiAssetSource;
+  totalVestingShares?: TNaiAssetSource;
 };
 
 export function TransferDialog({
@@ -96,6 +101,7 @@ export function TransferDialog({
   const withdrawFromSavingsMutation = useWithdrawFromSavingsMutation();
   const triggerRef = useRef(null);
   const [nextOpen, setNextOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const invalidateData = useCallback(() => {
@@ -143,7 +149,7 @@ export function TransferDialog({
       data.onSubmit = async () => {
         const params = {
           amount: await getAsset(value, curr),
-          fromAccount: data.to,
+          fromAccount: username,
           toAccount: data.to,
           memo: data.memo
         };
@@ -159,7 +165,7 @@ export function TransferDialog({
       data.selectCurr = false;
       data.buttonTitle = t('transfers_page.power_up');
       data.onSubmit = async () => {
-        const params = { account: username, amount: await getAsset(value, curr) };
+        const params = { fromAccount: username, toAccount: data.to, amount: await getAsset(value, curr) };
         transfersTransaction('powerUp', params, powerUpMutation.mutateAsync);
       };
       break;
@@ -170,7 +176,15 @@ export function TransferDialog({
       data.buttonTitle = t('transfers_page.power_down');
       data.amount = amount.reducedHP;
       data.onSubmit = async () => {
-        const params = { account: username, vestingShares: await getVests(value) };
+        if (!amount.totalVestingFundHive || !amount.totalVestingShares) {
+          return;
+        }
+        const params = {
+          account: username,
+          hp: await getAsset(value, 'hive'),
+          totalVestingFundHive: amount.totalVestingFundHive,
+          totalVestingShares: amount.totalVestingShares
+        };
         transfersTransaction('powerDown', params, powerDownMutation.mutateAsync);
       };
       break;
@@ -180,7 +194,16 @@ export function TransferDialog({
       data.description = '';
       data.amount = amount.reducedHP;
       data.onSubmit = async () => {
-        const params = { delegator: username, delegatee: data.to, vestingShares: await getVests(value) };
+        if (!amount.totalVestingFundHive || !amount.totalVestingShares) {
+          return;
+        }
+        const params = {
+          delegator: username,
+          delegatee: data.to,
+          hp: await getAsset(value, 'hive'),
+          totalVestingFundHive: amount.totalVestingFundHive,
+          totalVestingShares: amount.totalVestingShares
+        };
         transfersTransaction('delegate', params, delegateMutation.mutateAsync);
       };
       break;
@@ -256,14 +279,46 @@ export function TransferDialog({
 
   const onConfirm = () => {
     data.onSubmit();
-    // @ts-expect-error
-    triggerRef.current.click();
-    setNextOpen(false);
   };
+  useEffect(() => {
+    if (
+      transferMutation.isSuccess ||
+      transferToSavingsMutation.isSuccess ||
+      powerUpMutation.isSuccess ||
+      delegateMutation.isSuccess ||
+      withdrawFromSavingsMutation.isSuccess
+    ) {
+      setOpen(false);
+      setNextOpen(false);
+      toast({
+        title: t('transfers_page.transaction_success'),
+        description: data.title,
+        variant: 'success'
+      });
+    }
+  }, [
+    transferMutation.isSuccess,
+    transferToSavingsMutation.isSuccess,
+    powerUpMutation.isSuccess,
+    delegateMutation.isSuccess,
+    withdrawFromSavingsMutation.isSuccess
+  ]);
+
+  useEffect(() => {
+    if (powerDownMutation.isSuccess) {
+      toast({
+        title: t('transfers_page.transaction_success'),
+        description: data.title,
+        variant: 'success'
+      });
+      setOpen(false);
+    }
+  }, [powerDownMutation.isSuccess]);
+
   const delegated = amount.delegatedVesting.gt(0);
   const withdrawinformation = amount.to_withdraw.minus(amount.withdraw).gt(0);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
           {children}
@@ -294,7 +349,7 @@ export function TransferDialog({
                 <>
                   <div className="grid grid-cols-4 items-center gap-4">
                     {t('transfers_page.to')}
-                    <div className="col-span-3">
+                    <div className="col-span-3 mb-6">
                       <Autocompleter
                         items={suggestedUsers}
                         value={data.to}
@@ -401,7 +456,7 @@ export function TransferDialog({
                   form.setValue('amount', e[0]);
                 }}
               />
-              <p>Amount</p>
+              <p> {t('transfers_page.amount')}</p>
               <div className="flex items-center gap-4">
                 <Input
                   {...form.register('amount', {
@@ -445,13 +500,38 @@ export function TransferDialog({
             <Button
               variant="redHover"
               className="w-fit"
-              disabled={badActors}
+              disabled={badActors || powerDownMutation.isLoading}
               onClick={type === 'powerDown' ? onConfirm : form.handleSubmit(onSubmit)}
             >
-              {data.buttonTitle}
+              {powerDownMutation.isLoading ? (
+                <CircleSpinner loading={powerDownMutation.isLoading} size={18} color="#dc2626" />
+              ) : (
+                data.buttonTitle
+              )}
             </Button>
             {data.advancedBtn && (
-              <Button className="w-fit" variant="ghost" onClick={() => setAdvanced(!advanced)} type="button">
+              <Button
+                className="w-fit"
+                variant="ghost"
+                onClick={() => {
+                  setAdvanced((prev) => !prev);
+                  switch (type) {
+                    case 'transferTo':
+                      setData({ ...data, to: advanced ? username : data.to });
+                      break;
+                    case 'powerUp':
+                      setData({ ...data, to: advanced ? username : data.to });
+                      break;
+                    case 'withdrawHive':
+                      setData({ ...data, to: advanced ? username : data.to });
+                      break;
+                    case 'withdrawHiveDollars':
+                      setData({ ...data, to: advanced ? username : data.to });
+                      break;
+                  }
+                }}
+                type="button"
+              >
                 {advanced ? (
                   <span>{t('transfers_page.basic')}</span>
                 ) : (
@@ -511,7 +591,7 @@ export function TransferDialog({
               </div>
               {(type === 'withdrawHive' || type === 'withdrawHiveDollars') && (
                 <div className="grid grid-cols-4 items-center gap-4">
-                  request_id
+                  {t('transfers_page.request_id')}
                   <div className="relative col-span-3">
                     <Input
                       defaultValue={data.requestId}
@@ -559,8 +639,37 @@ export function TransferDialog({
             </>
           )}
           <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-            <Button variant="redHover" className="w-fit" onClick={onConfirm}>
-              {t('transfers_page.ok')}
+            <Button
+              variant="redHover"
+              className="w-fit"
+              onClick={onConfirm}
+              disabled={
+                transferMutation.isLoading ||
+                transferToSavingsMutation.isLoading ||
+                powerUpMutation.isLoading ||
+                delegateMutation.isLoading ||
+                withdrawFromSavingsMutation.isLoading
+              }
+            >
+              {transferMutation.isLoading ||
+              transferToSavingsMutation.isLoading ||
+              powerUpMutation.isLoading ||
+              delegateMutation.isLoading ||
+              withdrawFromSavingsMutation.isLoading ? (
+                <CircleSpinner
+                  loading={
+                    transferMutation.isLoading ||
+                    transferToSavingsMutation.isLoading ||
+                    powerUpMutation.isLoading ||
+                    delegateMutation.isLoading ||
+                    withdrawFromSavingsMutation.isLoading
+                  }
+                  size={18}
+                  color="#dc2626"
+                />
+              ) : (
+                t('transfers_page.ok')
+              )}
             </Button>
             <Button variant="ghost" className="w-fit" onClick={() => setNextOpen(false)}>
               {t('transfers_page.cancel')}

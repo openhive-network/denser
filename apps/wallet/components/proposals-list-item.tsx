@@ -78,14 +78,14 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
   async function updateProposalVotes(e: React.MouseEvent<HTMLOrSVGElement>) {
     const params = {
       proposal_ids: [String(proposalData.proposal_id)],
-      approve: true,
+      approve: !voteSuccess,
       extensions: []
     };
 
     try {
       setLoading(true);
       await updateProposalVotesMutation.mutateAsync(params);
-      setVotesSuccess(true);
+      setVotesSuccess((prev) => !prev);
     } catch (error) {
       handleError(error, {
         method: 'updateProposalVotes',

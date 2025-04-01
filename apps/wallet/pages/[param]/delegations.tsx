@@ -1,7 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useQuery } from '@tanstack/react-query';
 import { IDynamicGlobalProperties, getDynamicGlobalProperties } from '@transaction/lib/hive';
-import { getVestingDelegations } from '@/wallet/lib/hive';
+import { getDynamicGlobalPropertiesData, getVestingDelegations } from '@/wallet/lib/hive';
 import { numberWithCommas } from '@ui/lib/utils';
 import { dateToFullRelative } from '@ui/lib/parse-date';
 import Loading from '@ui/components/loading';
@@ -24,6 +24,9 @@ function DelegationsPage({ username }: InferGetServerSidePropsType<typeof getSer
   const accoutOwner = user.isLoggedIn && user.username === username;
   const { data: vestingData, isLoading: vestingLoading } = useQuery(['vestingDelegation', username], () =>
     getVestingDelegations(username, '', 50)
+  );
+  const { data: dynamicGlobalProperties } = useQuery(['dynamicGlobalPropertiesData'], () =>
+    getDynamicGlobalPropertiesData()
   );
   const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalProperties'], () =>
     getDynamicGlobalProperties()
@@ -53,8 +56,12 @@ function DelegationsPage({ username }: InferGetServerSidePropsType<typeof getSer
                 <td className="px-1 py-2 sm:px-4">{element.delegatee}</td>
                 <td className="px-1 py-2 sm:px-4">{dateToFullRelative(element.min_delegation_time, t)}</td>
                 <td className="px-1 py-2 sm:px-4">
-                  {accoutOwner ? (
-                    <RevokeDialog delegator={element.delegator} delegatee={element.delegatee} />
+                  {accoutOwner && dynamicGlobalProperties ? (
+                    <RevokeDialog
+                      delegator={element.delegator}
+                      delegatee={element.delegatee}
+                      dynamicGlobalProperties={dynamicGlobalProperties}
+                    />
                   ) : null}
                 </td>
               </tr>

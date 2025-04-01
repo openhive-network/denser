@@ -7,12 +7,13 @@
   "scripts": {
     "clean": "rm -rf ./public/auth/* && rm -rf ./public/locales/* && rm -rf ./public/smart-signer/*",
     "copy:worker": "cp ../../node_modules/@hiveio/hb-auth/dist/worker.js ./public/auth/",
+    "copy:assets": "cp -r ../../node_modules/@hiveio/hb-auth/dist/assets ./public/auth/assets",
     "predev": "pnpm run clean",
     "dev": "react-env -- next dev -p 5000 | pnpm dlx pino-pretty --colorize",
     "devssl": "react-env -- next dev --port 5000 --experimental-https --experimental-https-key ../../ssl/server-key.pem --experimental-https-cert ../../ssl/server-cert.pem | pnpm dlx pino-pretty --colorize",
     "prebuild": "pnpm run clean",
     "build": "react-env -- next build",
-    "postbuild": "pnpm run copy:worker",
+    "postbuild": "pnpm run copy:worker && pnpm run copy:assets",
     "start": "react-env -- next start -p 5000",
     "lint": "eslint .",
     "test:jest": "jest --watch"
@@ -25,7 +26,7 @@
     "@hive/transaction": "workspace:*",
     "@hive/tsconfig": "workspace:*",
     "@hive/ui": "workspace:*",
-    "@hiveio/wax": "1.27.6-rc7-stable.250314151849",
+    "@hiveio/wax": "1.27.6-rc7-stable.250325163032",
     "@hookform/resolvers": "^3.3.1",
     "@tanstack/react-query": "^4.36.1",
     "http-errors": "^2.0.0",
