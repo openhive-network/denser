@@ -32,11 +32,11 @@ const Item = ({
           {children}
         </div>
       ) : (
-        <Link href={href} target={clsx(target ? '_blank' : '')}>
+        <a href={href} target={clsx(target ? '_blank' : '')}>
           <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
             {children}
           </SheetClose>
-        </Link>
+        </a>
       )}
     </li>
   );

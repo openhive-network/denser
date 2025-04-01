@@ -8,7 +8,12 @@ import {
   getFollowing
 } from '@transaction/lib/hive';
 import moment from 'moment';
-import { getAccountHistory, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
+import {
+  getAccountHistory,
+  getDynamicGlobalPropertiesData,
+  getOpenOrder,
+  getSavingsWithdrawals
+} from '@/wallet/lib/hive';
 import {
   createListWithSuggestions,
   getAmountFromWithdrawal,
@@ -51,12 +56,13 @@ import useFilters from '@/wallet/components/hooks/use-filters';
 import { getTranslations } from '../../lib/get-translations';
 import FinancialReport from '@/wallet/components/financial-report';
 import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-hive-mutation';
 import env from '@beam-australia/react-env';
 import { useCancelTransferFromSavingsMutation } from '@/wallet/components/hooks/use-cancel-transfer-from-savings-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
+import { toast } from '@ui/components/hooks/use-toast';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -219,6 +225,8 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
   const blogURL = env('BLOG_DOMAIN');
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
   const { user } = useUser();
+  const [open, setOpen] = useState(false);
+  const [openCancelTransfer, setOpenCancelTransfer] = useState(false);
   const { data: accountData, isLoading: accountLoading } = useQuery(
     ['accountData', username],
     () => getAccount(username),
@@ -226,17 +234,12 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       enabled: Boolean(username)
     }
   );
-  const { data: openOrdersData, isLoading: openOrdersLoading } = useQuery(
-    ['openOrders', user?.username],
-    () => getOpenOrder(user!.username),
-    {
-      enabled: Boolean(user?.username)!
-    }
-  );
-  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalProperties'], () =>
+  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalPropertiesData'], () =>
     getDynamicGlobalProperties()
   );
-  // const following = useFollowingInfiniteQuery(user.username || '', 50, 'blog', ['blog']);
+  const { data: dynamicGlobalProperties } = useQuery(['dynamicGlobalProperties'], () =>
+    getDynamicGlobalPropertiesData()
+  );
 
   const { data: followingData } = useQuery(['following', username], () =>
     getFollowing({ account: username })
@@ -375,7 +378,9 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       dynamicData.total_vesting_shares,
       dynamicData.total_vesting_fund_hive,
       1000000
-    )
+    ),
+    totalVestingFundHive: dynamicGlobalProperties?.total_vesting_fund_hive,
+    totalVestingShares: dynamicGlobalProperties?.total_vesting_shares
   };
 
   const claimRewards = async () => {
@@ -385,6 +390,12 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       await claimRewardsMutation.mutateAsync(params);
     } catch (error) {
       handleError(error, { method: 'claim_reward_balance', params });
+    } finally {
+      toast({
+        title: t('transfers_page.transaction_success'),
+        description: t('transfers_page.redeem_rewards'),
+        variant: 'success'
+      });
     }
   };
 
@@ -394,6 +405,13 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       await cancelPowerDownMutation.mutateAsync(params);
     } catch (error) {
       handleError(error, { method: 'withdraw_vesting', params });
+    } finally {
+      setOpen(false);
+      toast({
+        title: t('transfers_page.transaction_success'),
+        description: t('transfers_page.cancel_power_down'),
+        variant: 'success'
+      });
     }
   };
 
@@ -403,6 +421,13 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
       await cancelTransferFromSavingsMutation.mutateAsync(params);
     } catch (error) {
       handleError(error, { method: 'cancel_transfer_from_savings', params });
+    } finally {
+      setOpenCancelTransfer(false);
+      toast({
+        title: t('transfers_page.transaction_success'),
+        description: t('transfers_page.cancel__transfer_from_savings'),
+        variant: 'success'
+      });
     }
   };
 
@@ -430,7 +455,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           <span>
             {t('profile.transfer_from_savings_to', { value: operation.amount?.toString() })}
             <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
-              {operation.to}
+              {`${operation.to} `}
             </Link>
             {t('profile.request_id', { value: operation.request_id })}
           </span>
@@ -467,11 +492,18 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
           </span>
         );
       case 'transfer_to_vesting':
-        return (
+        return operation.from === username ? (
           <span>
-            {t('profile.transfer_to', { value: operation.amount?.toString() })}
+            {t('profile.transfer_hp_to', { value: operation.amount?.toString() })}
             <Link href={`/@${operation.to}`} className="font-semibold text-primary hover:text-destructive">
               {operation.to}
+            </Link>
+          </span>
+        ) : (
+          <span>
+            {t('profile.transfer_hp_from', { value: operation.amount?.toString() })}
+            <Link href={`/@${operation.from}`} className="font-semibold text-primary hover:text-destructive">
+              {operation.from}
             </Link>
           </span>
         );
@@ -632,9 +664,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                       value: getCurrentHpApr(dynamicData).toFixed(2)
                     })}
                     <span className="font-semibold text-primary hover:text-destructive">
-                      <Link
-                        href={`https:/${blogURL}/faq.html#How_many_new_tokens_are_generated_by_the_blockchain`}
-                      >
+                      <Link href={`${blogURL}/faq.html#How_many_new_tokens_are_generated_by_the_blockchain`}>
                         {t('profile.see_faq_for_details')}
                       </Link>
                     </span>
@@ -674,8 +704,8 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                           >
                             <span>{t('profile.delegate')}</span>
                           </TransferDialog>
-                          {accountData.to_withdraw === 0 || cancelPowerDownMutation.isLoading ? null : (
-                            <Dialog>
+                          {accountData.to_withdraw === 0 ? null : (
+                            <Dialog open={open} onOpenChange={setOpen}>
                               <DialogTrigger asChild>
                                 <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
                                   <span>{t('profile.cancel_power_down')}</span>
@@ -684,11 +714,21 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                               <DialogContent className="text-left sm:max-w-[425px]">
                                 {t('profile.cancel_power_down_prompt')}
                                 <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-                                  <DialogTrigger asChild>
-                                    <Button variant="redHover" onClick={cancelPowerDown}>
-                                      {t('profile.cancel_power_down')}
-                                    </Button>
-                                  </DialogTrigger>
+                                  <Button
+                                    variant="redHover"
+                                    onClick={cancelPowerDown}
+                                    disabled={cancelPowerDownMutation.isLoading}
+                                  >
+                                    {cancelPowerDownMutation.isLoading ? (
+                                      <CircleSpinner
+                                        loading={cancelPowerDownMutation.isLoading}
+                                        size={18}
+                                        color="#dc2626"
+                                      />
+                                    ) : (
+                                      t('profile.cancel_power_down')
+                                    )}
+                                  </Button>
                                 </DialogFooter>
                               </DialogContent>
                             </Dialog>
@@ -903,7 +943,7 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                         </td>
                         <td className="flex flex-row items-center px-2 sm:px-4 sm:py-2">
                           <div>{withdrawMessage}</div>
-                          <Dialog>
+                          <Dialog open={openCancelTransfer} onOpenChange={setOpenCancelTransfer}>
                             <DialogTrigger asChild>
                               <Button variant="link" className="text-destructive hover:no-underline">
                                 {t('transfers_page.cancel')}
@@ -915,14 +955,21 @@ function TransfersPage({ username }: InferGetServerSidePropsType<typeof getServe
                                 <div>{withdrawMessage}</div>
                               </div>
                               <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-                                <DialogTrigger asChild>
-                                  <Button
-                                    variant="redHover"
-                                    onClick={() => cancelTransferFromSavings(withdrawal.request_id)}
-                                  >
-                                    {t('transfers_page.cancel_withdraw_from_savings')}
-                                  </Button>
-                                </DialogTrigger>
+                                <Button
+                                  variant="redHover"
+                                  onClick={() => cancelTransferFromSavings(withdrawal.request_id)}
+                                  disabled={cancelTransferFromSavingsMutation.isLoading}
+                                >
+                                  {cancelTransferFromSavingsMutation.isLoading ? (
+                                    <CircleSpinner
+                                      loading={cancelTransferFromSavingsMutation.isLoading}
+                                      size={18}
+                                      color="#dc2626"
+                                    />
+                                  ) : (
+                                    t('transfers_page.cancel_withdraw_from_savings')
+                                  )}
+                                </Button>
                               </DialogFooter>
                             </DialogContent>
                           </Dialog>

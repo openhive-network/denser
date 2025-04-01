@@ -32,6 +32,7 @@ export function useClaimRewardsMutation() {
       const { username } = user;
       queryClient.invalidateQueries({ queryKey: ['profileData', username] });
       queryClient.invalidateQueries({ queryKey: ['accountData', username] });
+      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
     }
   });
 

@@ -145,8 +145,6 @@ export class SignerHbauth extends Signer {
       }
     }
 
-    let signature = '';
-
     if (singleSignKeyType) {
       if (!validKeyTypes.includes(singleSignKeyType)) {
         throw new Error(`Unsupported singleSignKeyType: ${singleSignKeyType}`);
@@ -171,21 +169,27 @@ export class SignerHbauth extends Signer {
         if (!singleSignPassword) {
           throw new Error('No key provided for single sign');
         }
-
-        signature = await authClient.singleSign(username, digest, singleSignPassword, singleSignKeyType);
+        const signature = await authClient.singleSign(
+          username,
+          digest,
+          singleSignPassword,
+          singleSignKeyType
+        );
+        return signature;
       } catch (error) {
         logger.error('Error in single sign: %o', error);
         throw error;
       }
     }
-    if (requiredKeyType && requiredKeyType !== keyType) {
-      signature = await this.requireOtherKey(requiredKeyType, username, digest, password);
-    } else {
-      signature = await authClient.sign(username, digest, keyType);
-    }
 
-    logger.info('hbauth: %o', { digest, signature });
-    return signature;
+    if (requiredKeyType && requiredKeyType !== keyType) {
+      const signature = await this.requireOtherKey(requiredKeyType, username, digest, password);
+      return signature;
+    } else {
+      const signature = await authClient.sign(username, digest, keyType);
+      logger.info('hbauth: %o', { digest, signature });
+      return signature;
+    }
   }
 
   async checkAuth(username: string, keyType: string): Promise<boolean> {
