@@ -331,6 +331,7 @@
   "communities": {
     "set_title_for_user": "Set Title for @{{username}}",
     "mute": "Mute",
+    "save": "Save",
     "unmute": "Unmute",
     "post_comment": " post/comment",
     "please_provide_a_note": "Please provide a note regarding your decision to mute this content.",
@@ -338,8 +339,8 @@
     "pin": "Pin",
     "unpin": "Unpin",
     "edit_title": "Edit Title",
-
     "edit_roles": "Edit Roles",
+    "edit_props": "Settings",
     "roles": "Roles",
     "user_roles": "User roles",
     "account": "Account",
@@ -349,7 +350,6 @@
     "add_user_role": "Add User Role",
     "set_the_role_of_a_user_in_this_community": "Set the role of a user in this community.",
     "username": "Username",
-    "save": "Save",
     "role_permissions": "Role Permissions",
     "owner": "Owner",
     "moderator": "Moderator",
@@ -388,6 +388,45 @@
       "description": "Description",
       "rules": "Rules",
       "language": "Language"
+    },
+    "edit_props_dialog": {
+      "community_settings": "Community Settings",
+      "title": "Title*",
+      "save": "Save",
+      "cancel": "Cancel",
+      "about": "About",
+      "description": "Description",
+      "flag_text": "Rules(one per line)",
+      "lang": "Language",
+      "sav": "Save",
+      "community_settings_description": "What does your community stand for?",
+      "assigned_owner_account": "Assigned owner account",
+      "communities_are_built": "Communities are built on top a special Hive account",
+      "next": "Next",
+      "nsfw": "NSFW",
+      "i_have_saved_password": "I have securely saved my owner name and password.",
+      "payment_confirm": "This operation will cost 3 HIVE. I understand*",
+      "manage_confirm": "I understand, to manage {{communityName}} account I have to use {{username}} keys*",
+      "go_to_community": "Go to your community ",
+      "community_created": "Community created!!!",
+      "languages": {
+        "en": "English",
+        "kr": "Korean",
+        "zh": "Chinese",
+        "ms": "Malay",
+        "pl": "Polish",
+        "pt": "Portuguese",
+        "ru": "Russian",
+        "it": "Italian",
+        "de": "German",
+        "es": "Spanish",
+        "sv": "Swedish"
+      },
+      "errors": {
+        "required": "Required",
+        "maximum_characters": "Maximum {{value}} characters",
+        "minimum_characters": "Minimum {{value}} characters"
+      }
     }
   },
   "post_content": {

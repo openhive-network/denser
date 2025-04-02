@@ -8,8 +8,9 @@ import SubscribeCommunity from './subscribe-community';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import NewPost from './new-post-button';
 import { useEffect, useState } from 'react';
-import { Badge } from '@ui/components';
+import { Badge, Separator } from '@ui/components';
 import Link from 'next/link';
+import EditCommunityDialog from './edit-community-dialog';
 
 const CommunitySimpleDescription = ({
   data,
@@ -32,6 +33,7 @@ const CommunitySimpleDescription = ({
 
   const userRole = data.team.find((e) => e[0] === user.username);
   const userCanModerate = data.team.find((e) => e[0] === user.username);
+  const adminRole = data.team.find((e) => e[0] === user.username && e[1] === 'admin');
 
   return (
     <Card
@@ -64,14 +66,22 @@ const CommunitySimpleDescription = ({
             <ActivityLogDialog username={username} data={notificationData}>
               {t('communities.buttons.activity_log')}
             </ActivityLogDialog>
-            {userRole ? (
-              <div>
-                <span>{userRole[1].charAt(0).toUpperCase() + userRole[1].slice(1)}:</span>{' '}
-                <Link href={`/roles/${username}`} className="text-destructive">
-                  {t('communities.roles')}
-                </Link>
-              </div>
-            ) : null}
+            <div className="flex items-center gap-1">
+              {userRole ? (
+                <>
+                  <span>{userRole[1].charAt(0).toUpperCase() + userRole[1].slice(1)}:</span>{' '}
+                  <Link href={`/roles/${username}`} className="text-destructive">
+                    {t('communities.roles')}
+                  </Link>
+                </>
+              ) : null}
+              {adminRole ? (
+                <>
+                  <Separator orientation="vertical" className="h-6" />
+                  <EditCommunityDialog data={data} />
+                </>
+              ) : null}
+            </div>
           </div>
         </div>
         <span className="text-sm">{data.about}</span>

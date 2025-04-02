@@ -12,174 +12,357 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  Label
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Textarea
 } from '@ui/components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getTranslations } from '../../lib/get-translations';
-import { createWaxFoundation } from '@hiveio/wax';
+import { ESupportedLanguages } from '@hiveio/wax';
 import { useCreateCommunityMutation } from '@/wallet/components/hooks/use-create-community-mutation';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { handleError } from '@ui/lib/handle-error';
-import { getAccount, getAccounts } from '@transaction/lib/hive';
-
-const createCommunitySchema = z.object({
-  title: z.string().min(1, 'Required'),
-  about: z.string().min(1, 'Required'),
-  saved_password: z.boolean().refine((value) => value === true, {
-    message: 'Required'
-  })
-});
-
-type CreateCommunityFormValues = z.infer<typeof createCommunitySchema>;
+import { useQuery } from '@tanstack/react-query';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import Loading from '@ui/components/loading';
+import Link from 'next/link';
+import env from '@beam-australia/react-env';
+import { getAccount, getFindAccounts } from '@transaction/lib/hive';
 
 const getCommmunityName = () => {
   return `hive-${Math.floor(Math.random() * 100000) + 100000}`;
 };
 
+const COST_TOKEN = 1;
+const COST_HIVE = 3;
+
 function Communities({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { user } = useUser();
+  const { data, isLoading } = useQuery(
+    ['findAccounts', username],
+    async () => await getFindAccounts(user?.username),
+    { enabled: user.isLoggedIn }
+  );
+  const account = data?.accounts[0];
+
   const { t } = useTranslation('common_wallet');
-  const [nextStep, setNextStep] = useState(false);
-  const [generatedName, setGeneratedName] = useState<string>();
-  const [generatedPassword, setGeneratedPassword] = useState<string>();
-  const [publicKeys, setPublicKeys] = useState<{
-    active: string;
-    owner: string;
-    posting: string;
-    memoKey: string;
-  }>();
-  const createCommunityMutation = useCreateCommunityMutation(false);
+  const [advanced, setAdvanced] = useState(false);
+  const createCommunityMutation = useCreateCommunityMutation();
+  const [communityTag, setCommunityTag] = useState<string>('');
+
+  const generateCommunity = async () => {
+    let generatedName = getCommmunityName();
+    await (async function generateName() {
+      const existentAccount = await getAccount(generatedName);
+      if (!!existentAccount) {
+        generateName();
+      }
+    })();
+    setCommunityTag(generatedName);
+    return;
+  };
+
+  useEffect(() => {
+    generateCommunity();
+  }, []);
+  const createCommunitySchema = z.object({
+    title: z
+      .string()
+      .min(3, {
+        message: t('communities.errors.minimum_characters', {
+          value: 3
+        })
+      })
+      .max(20, {
+        message: t('communities.errors.maximum_characters', {
+          value: 20
+        })
+      }),
+    about: z.string().max(120, {
+      message: t('communities.errors.maximum_characters', {
+        value: 120
+      })
+    }),
+    lang: z.nativeEnum(ESupportedLanguages),
+    nsfw: z.boolean(),
+    flagText: z.string(),
+    description: z.string(),
+    claimed: z
+      .enum(['claimed', 'hive'], {
+        message: t('communities.errors.pick_one')
+      })
+      .refine((value) => value === 'claimed' || value === 'hive'),
+    saved_password: z.boolean().refine((value) => value === true, {
+      message: t('communities.errors.required')
+    })
+  });
+  type CreateCommunityFormValues = z.infer<typeof createCommunitySchema>;
 
   const form = useForm<CreateCommunityFormValues>({
     resolver: zodResolver(createCommunitySchema),
     mode: 'onSubmit',
     defaultValues: {
       title: '',
-      about: ''
+      about: '',
+      lang: ESupportedLanguages.ENGLISH,
+      nsfw: false,
+      flagText: '',
+      description: '',
+      claimed: undefined,
+      saved_password: false
     }
   });
 
-  const handleNext = async () => {
-    let generatedName = getCommmunityName();
-
-    await (async function generateName() {
-      const existentAccount = await getAccount(generatedName);
-
-      if (!!existentAccount) {
-        generateName();
-      }
-    })();
-
-    setGeneratedName(generatedName);
-
-    const wax = await createWaxFoundation();
-    // generate password
-    const brainKeyData = wax.suggestBrainKey();
-    const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
-    setGeneratedPassword(passwordToBeSavedByUser);
-
-    // private keys for account authorities
-    const owner = wax.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
-    const active = wax.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
-    const posting = wax.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
-    const memoKey = wax.getPrivateKeyFromPassword(username, 'memo', passwordToBeSavedByUser);
-
-    setPublicKeys({
-      active: active.associatedPublicKey,
-      owner: owner.associatedPublicKey,
-      posting: posting.associatedPublicKey,
-      memoKey: memoKey.associatedPublicKey
-    });
-
-    setNextStep(true);
-  };
-
-  async function onSubmit(_data: CreateCommunityFormValues) {
-    if (publicKeys) {
-      const params = {
-        memoKey: publicKeys?.memoKey,
-        owner: publicKeys?.owner,
-        active: publicKeys?.active,
-        posting: publicKeys?.posting,
-        newAccountName: generatedName!,
-        creator: username
-      };
+  const onSubmit = async (values: CreateCommunityFormValues) => {
+    if (account) {
+      const { title, about, lang, nsfw, flagText, description, claimed } = values;
       try {
-        await createCommunityMutation.mutateAsync(params);
+        await createCommunityMutation.mutateAsync({
+          memoKey: account?.memo_key,
+          communityTag: communityTag,
+          title: title,
+          about: about,
+          flagText: flagText,
+          description: description,
+          creator: user.username,
+          lang: lang,
+          nsfw: nsfw,
+          claimed: claimed
+        });
       } catch (error) {
-        handleError(error, { method: 'create_community', params });
+        handleError(error, {
+          method: 'create_community',
+          params: {
+            title: title,
+            about: about,
+            creator: username,
+            lang: lang,
+            nsfw: nsfw,
+            flagText: flagText,
+            description: description
+          }
+        });
       }
     }
-  }
+  };
 
   return (
     <ProfileLayout>
-      <div className="flex flex-col gap-8 ">
-        <div className="flex gap-6">
-          <WalletMenu username={username} />
-        </div>
-        <div className="flex flex-col gap-4 p-4">
-          <h4>{t('communities.create_community')}</h4>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('communities.title')}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="about"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('communities.about')}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {!nextStep ? (
-                <Button onClick={() => handleNext()} className="mt-2 w-fit">
-                  {t('communities.next')}
-                </Button>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-col border-2 bg-white p-2 text-red-700">
-                    <span>{generatedName}</span> <span>{generatedPassword}</span>
-                  </div>
+      <div className="flex flex-col">
+        <WalletMenu username={username} />
+        <div className=" mx-auto my-4 flex max-w-2xl flex-col gap-4 p-4">
+          {isLoading ? (
+            <Loading loading={isLoading} />
+          ) : createCommunityMutation.isLoading ? (
+            <Loading loading={createCommunityMutation.isLoading} />
+          ) : createCommunityMutation.isSuccess ? (
+            <div className="flex flex-col gap-6">
+              <h4 className="text-2xl font-bold">{t('communities.community_created')}</h4>
+              <div>
+                {t('communities.go_to_community')}
+                <Link
+                  className="text-destructive underline"
+                  target="_blank"
+                  href={`${env('BLOG_DOMAIN')}/trending/${communityTag}`}
+                >
+                  {communityTag}
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <>
+              <h4 className="text-2xl font-bold">{t('communities.create_community')}</h4>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
                   <FormField
                     control={form.control}
-                    name="saved_password"
+                    name="title"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormItem>
+                        <FormLabel>{t('communities.title')}</FormLabel>
                         <FormControl>
-                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                          <Input {...field} />
                         </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel className="text-xs">{t('communities.i_have_saved_password')}</FormLabel>{' '}
-                          <FormMessage />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="about"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('communities.about')}</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div>
+                    <h3 className="text-sm">{t('communities.assigned_owner_account')}</h3>
+                    <Input value={communityTag} />
+                    <p className="text-xs">{t('communities.communities_are_built')}</p>
+                  </div>
+                  {advanced ? (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('communities.description')}</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="flagText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('communities.flag_text')}</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="lang"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('communities.lang')}</FormLabel>
+                            <FormControl>
+                              <Select {...field} onValueChange={field.onChange} defaultValue={field.value}>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Object.entries(ESupportedLanguages).map(([key, value]) => (
+                                    <SelectItem key={key} value={value}>
+                                      {t(`communities.languages.${value}`)}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="nsfw"
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="flex items-center gap-2">
+                              <FormControl>
+                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              </FormControl>
+                              <FormLabel>{t('communities.nsfw')}</FormLabel>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  ) : null}
+                  <FormField
+                    control={form.control}
+                    name="claimed"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('communities.fee_type')}</FormLabel>
+                        <FormMessage />
+                        <div className="flex flex-col gap-6">
+                          <div className="flex items-center space-x-2">
+                            <FormControl>
+                              <Input
+                                // multiply by 1000 to convert to hive
+                                disabled={COST_HIVE * 1000 > Number(account?.balance.amount ?? 0)}
+                                type="radio"
+                                id="hive"
+                                value="hive"
+                                checked={field.value === 'hive'}
+                                onChange={(e) => field.onChange(e.target.value)}
+                                className="h-4 w-4"
+                              />
+                            </FormControl>
+                            <Label htmlFor="hive">
+                              {t('communities.payment_confirm', {
+                                amount: COST_HIVE,
+                                // 1000 is the precision of hive
+                                owned_hives: Number(account?.balance.amount) / 1000
+                              })}
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <FormControl>
+                              <Input
+                                disabled={COST_TOKEN > Number(account?.pending_claimed_accounts)}
+                                type="radio"
+                                id="claimed"
+                                value="claimed"
+                                checked={field.value === 'claimed'}
+                                onChange={(e) => field.onChange(e.target.value)}
+                                className="h-4 w-4"
+                              />
+                            </FormControl>
+                            <Label htmlFor="claimed">
+                              {t('communities.claim_tokens', {
+                                amount: COST_TOKEN,
+                                owned_tokens: account?.pending_claimed_accounts ?? 0
+                              })}
+                            </Label>
+                          </div>
                         </div>
                       </FormItem>
                     )}
                   />
-                  <Button className="w-fit" type="submit">
-                    {t('communities.create_community')}
-                  </Button>
-                </div>
-              )}
-            </form>
-          </Form>
+
+                  <FormField
+                    control={form.control}
+                    name="saved_password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-center gap-2">
+                          <FormControl>
+                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
+                          <FormLabel>
+                            {t('communities.manage_confirm', {
+                              communityName: communityTag,
+                              username: user.username
+                            })}
+                          </FormLabel>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex w-full items-center justify-between">
+                    <Button type="submit">{t('communities.create_community')}</Button>
+                    <Button type="button" variant="outline" onClick={() => setAdvanced((prev) => !prev)}>
+                      {advanced ? t('communities.basic') : t('communities.advanced')}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </>
+          )}
         </div>
       </div>
     </ProfileLayout>
