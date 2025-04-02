@@ -55,6 +55,7 @@ const SubscribeCommunity = ({
               size="sm"
               variant="outline"
               className="group relative w-full border-blue-600 text-center text-blue-600 hover:border-destructive hover:bg-transparent hover:text-destructive"
+              data-testid="community-join-leave-button"
               disabled={unsubscribeMutation.isLoading}
               onClick={async () => {
                 try {

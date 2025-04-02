@@ -241,6 +241,11 @@ export class HomePage {
     await this.page.waitForSelector(this.getMainTimeLineOfPosts['_selector']);
   }
 
+  async gotoSpecificUrl(url: string) {
+    await this.page.goto(`${url}`);
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
   async moveToHomePage() {
     await this.getHomeNavLink.click();
     await expect(this.getHeaderAllCommunities).toBeVisible();
