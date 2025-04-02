@@ -13,7 +13,8 @@ import {
   authority,
   future_extensions,
   EAvailableCommunityRoles,
-  AccountAuthorityUpdateOperation
+  AccountAuthorityUpdateOperation,
+  ESupportedLanguages
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
@@ -1010,10 +1011,10 @@ export class TransactionService {
 
   async accountCreate(
     fee: asset,
-    memoKey: string,
-    newAccountName: string,
-    jsonMetadata: string,
+    memo_key: string,
+    new_account_name: string,
     creator: string,
+    json_metadata: string,
     active?: authority,
     owner?: authority,
     posting?: authority,
@@ -1028,9 +1029,9 @@ export class TransactionService {
             owner,
             posting,
             creator,
-            memo_key: memoKey,
-            new_account_name: newAccountName,
-            json_metadata: jsonMetadata
+            memo_key,
+            new_account_name,
+            json_metadata
           }
         });
       }),
@@ -1038,6 +1039,48 @@ export class TransactionService {
     );
   }
 
+  async newCommunityUpdate(
+    communityTag: string,
+    title: string,
+    about: string,
+    creator: string,
+    lang: ESupportedLanguages,
+    is_nsfw: boolean,
+    flag_text: string,
+    description: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation(async (builder) => {
+      builder.pushOperation(
+        new CommunityOperation()
+          .updateProps(communityTag, { title, about, is_nsfw, lang, description, flag_text })
+          .setRole(communityTag, creator, EAvailableCommunityRoles.ADMIN)
+          .authorize(communityTag)
+          .subscribe(communityTag)
+          .authorize(creator)
+      );
+    }, transactionOptions);
+  }
+
+  async updateCommunityProps(
+    communityName: string,
+    title: string,
+    about: string,
+    is_nsfw: boolean,
+    lang: ESupportedLanguages,
+    flag_text: string,
+    description: string,
+    admin: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation(async (builder) => {
+      builder.pushOperation(
+        new CommunityOperation()
+          .updateProps(communityName, { title, about, is_nsfw, lang, flag_text, description })
+          .authorize(admin)
+      );
+    }, transactionOptions);
+  }
   async limitOrderCreate(
     amountToSell: asset,
     owner: string,
