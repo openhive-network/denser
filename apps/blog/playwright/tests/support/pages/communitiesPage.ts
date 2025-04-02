@@ -11,6 +11,7 @@ export class CommunitiesPage {
   readonly communityActivePosters: Locator;
   readonly communitySubscribeButton: Locator;
   readonly communitySubscribeButtonMobilePage: Locator;
+  readonly communityJoinedLeaveButton: Locator;
   readonly communityNewPostButton: Locator;
   readonly communityNewPostButtonMobilePage: Locator;
   readonly communityLeadership: Locator;
@@ -55,6 +56,8 @@ export class CommunitiesPage {
 
     this.communitySubscribeButton = page.locator('[data-testid="community-info-sidebar"] [data-testid="community-subscribe-button"]');
     this.communitySubscribeButtonMobilePage = page.locator('[data-testid="community-simple-description-sidebar"] [data-testid="community-subscribe-button"]');
+
+    this.communityJoinedLeaveButton = page.locator('[data-testid="community-info-sidebar"] [data-testid="community-join-leave-button"]');
 
     this.communityNewPostButton = page.locator('[data-testid="community-info-sidebar"] [data-testid="community-new-post-button"]');
     this.communityNewPostButtonMobilePage = page.locator('[data-testid="community-simple-description-sidebar"] [data-testid="community-new-post-button"]');
