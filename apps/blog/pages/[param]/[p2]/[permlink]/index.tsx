@@ -91,7 +91,7 @@ function PostPage({
     enabled: !!username && !!permlink
   });
   const { isLoading: isLoadingDiscussion, data: discussion } = useQuery(
-    ['discussionData', username, permlink, user.username],
+    ['discussionData', permlink],
     () => getDiscussion(username, String(permlink), user.username),
     {
       enabled: !!username && !!permlink

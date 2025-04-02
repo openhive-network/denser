@@ -157,13 +157,12 @@ export class TransactionService {
    * @memberof TransactionService
    */
   async broadcastTransaction(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
-
     // Do broadcast
     const transactionId = txBuilder.id;
     logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
     await (
       await hiveChainService.getHiveChain()
-    ).api.network_broadcast_api.broadcast_transaction({max_block_age: 50, trx: txBuilder.toApiJson()});
+    ).api.network_broadcast_api.broadcast_transaction({ max_block_age: 50, trx: txBuilder.toApiJson() });
     return { transactionId };
   }
 
@@ -619,7 +618,7 @@ export class TransactionService {
 
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation(reply);
-    });
+    }, transactionOptions);
   }
 
   async post(
