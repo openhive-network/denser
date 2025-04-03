@@ -5,6 +5,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getTranslations } from '../lib/get-translations';
 import { useTranslation } from 'next-i18next';
 import { useMemo } from 'react';
+import Head from 'next/head';
 
 export const getServerSideProps: GetServerSideProps<{
   data: string;
@@ -19,6 +20,7 @@ export const getServerSideProps: GetServerSideProps<{
     }
   };
 };
+const TAB_TITLE = 'Welcome - Hive';
 function Welcome({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   useTranslation('common_blog');
   const renderer = new Remarkable({
@@ -29,15 +31,20 @@ function Welcome({ data }: InferGetServerSidePropsType<typeof getServerSideProps
   });
   const content = useMemo(() => renderer.render(data), []);
   return (
-    <div className="mx-auto my-12 max-w-3xl px-4">
-      <div
-        id="articleBody"
-        className="prose"
-        dangerouslySetInnerHTML={{
-          __html: content
-        }}
-      />
-    </div>
+    <>
+      <Head>
+        <title>{TAB_TITLE}</title>
+      </Head>
+      <div className="mx-auto my-12 max-w-3xl px-4">
+        <div
+          id="articleBody"
+          className="prose"
+          dangerouslySetInnerHTML={{
+            __html: content
+          }}
+        />
+      </div>
+    </>
   );
 }
 

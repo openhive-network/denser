@@ -23,6 +23,7 @@ import {
   getSubscriptions
 } from '@transaction/lib/bridge';
 import { getDefaultProps } from '@/blog/lib/get-translations';
+import Head from 'next/head';
 
 const roles = [
   { name: 'owner', value: 6 },
@@ -33,6 +34,7 @@ const roles = [
   { name: 'muted', value: 1 }
 ];
 
+const TAB_TITLE = 'Community Roles - Hive';
 const RolesPage: FC = () => {
   const router = useRouter();
   const { user } = useUser();
@@ -95,99 +97,106 @@ const RolesPage: FC = () => {
   if (isLoading) return <Loading loading={isLoading} />;
   if (isError) return <CustomError />;
 
-  return client ? (
-    <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
-      <div className="grid grid-cols-12 md:gap-4">
-        <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-          {user?.isLoggedIn ? (
-            <CommunitiesMybar data={mySubsData} username={user.username} />
-          ) : (
-            <CommunitiesSidebar />
-          )}
-        </div>
-        <div className="col-span-12 md:col-span-9 xl:col-span-8">
-          <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
-            {communityData && subsData && (
-              <CommunitySimpleDescription
-                data={communityData}
-                subs={subsData}
-                username={tag || ' '}
-                notificationData={notificationData}
-              />
-            )}
-          </div>
-          <div>
-            <div className="mx-2 text-lg xl:mt-4">
-              <Link className="text-destructive" href={`/trending/${communityData?.name}`}>
-                {communityData?.title}
-              </Link>
+  return (
+    <>
+      <Head>
+        <title>{TAB_TITLE}</title>
+      </Head>
+      {client ? (
+        <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
+          <div className="grid grid-cols-12 md:gap-4">
+            <div className="hidden md:col-span-3 md:flex xl:col-span-2">
+              {user?.isLoggedIn ? (
+                <CommunitiesMybar data={mySubsData} username={user.username} />
+              ) : (
+                <CommunitiesSidebar />
+              )}
             </div>
-            <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
-              <div className="my-4 flex w-full items-center justify-between" translate="no">
-                <div className="m-2 w-full bg-background px-8 py-6">
-                  <h2 className="mb-1 text-2xl">{t('communities.user_roles')}</h2>
-                  <Table className="w-full border-[1px] border-solid border-secondary">
-                    <TableHeader className="text-">
-                      <TableRow className="bg-secondary">
-                        <TableHead className="px-2">{t('communities.account')}</TableHead>
-                        <TableHead className="px-2">{t('communities.role')}</TableHead>
-                        <TableHead className="px-2">{t('communities.title')}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {rolesValue?.map((e) =>
-                        e ? (
-                          <TableRow key={e.name}>
-                            <TableCell className="p-2">
-                              <Link href={`/@${e.name}`} className="text-destructive">
-                                @{e.name}
-                              </Link>
-                            </TableCell>
-                            {roleValue ? (
-                              <TableCell className="border-x-[1px] border-solid border-secondary p-2">
-                                {roleValue.value >= 4 && e.value < roleValue.value ? (
-                                  <AddRole user={roleValue} community={tag} targetedUser={e}>
-                                    <span className="cursor-pointer text-destructive">{e.role}</span>
-                                  </AddRole>
-                                ) : (
-                                  <span>{e.role}</span>
-                                )}
-                              </TableCell>
-                            ) : (
-                              <TableCell>{e.role}</TableCell>
-                            )}
-                            <TableCell className="p-2">{e.title}</TableCell>
+            <div className="col-span-12 md:col-span-9 xl:col-span-8">
+              <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
+                {communityData && subsData && (
+                  <CommunitySimpleDescription
+                    data={communityData}
+                    subs={subsData}
+                    username={tag || ' '}
+                    notificationData={notificationData}
+                  />
+                )}
+              </div>
+              <div>
+                <div className="mx-2 text-lg xl:mt-4">
+                  <Link className="text-destructive" href={`/trending/${communityData?.name}`}>
+                    {communityData?.title}
+                  </Link>
+                </div>
+                <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
+                  <div className="my-4 flex w-full items-center justify-between" translate="no">
+                    <div className="m-2 w-full bg-background px-8 py-6">
+                      <h2 className="mb-1 text-2xl">{t('communities.user_roles')}</h2>
+                      <Table className="w-full border-[1px] border-solid border-secondary">
+                        <TableHeader className="text-">
+                          <TableRow className="bg-secondary">
+                            <TableHead className="px-2">{t('communities.account')}</TableHead>
+                            <TableHead className="px-2">{t('communities.role')}</TableHead>
+                            <TableHead className="px-2">{t('communities.title')}</TableHead>
                           </TableRow>
-                        ) : null
+                        </TableHeader>
+                        <TableBody>
+                          {rolesValue?.map((e) =>
+                            e ? (
+                              <TableRow key={e.name}>
+                                <TableCell className="p-2">
+                                  <Link href={`/@${e.name}`} className="text-destructive">
+                                    @{e.name}
+                                  </Link>
+                                </TableCell>
+                                {roleValue ? (
+                                  <TableCell className="border-x-[1px] border-solid border-secondary p-2">
+                                    {roleValue.value >= 4 && e.value < roleValue.value ? (
+                                      <AddRole user={roleValue} community={tag} targetedUser={e}>
+                                        <span className="cursor-pointer text-destructive">{e.role}</span>
+                                      </AddRole>
+                                    ) : (
+                                      <span>{e.role}</span>
+                                    )}
+                                  </TableCell>
+                                ) : (
+                                  <TableCell>{e.role}</TableCell>
+                                )}
+                                <TableCell className="p-2">{e.title}</TableCell>
+                              </TableRow>
+                            ) : null
+                          )}
+                        </TableBody>
+                      </Table>
+                      {roleValue && roleValue.value >= 3 && (
+                        <AddRole user={roleValue} community={tag}>
+                          <Button variant="outlineRed" className="m-10 mx-0 mt-4 font-normal" size="xs">
+                            {t('communities.add_user')}
+                          </Button>
+                        </AddRole>
                       )}
-                    </TableBody>
-                  </Table>
-                  {roleValue && roleValue.value >= 3 && (
-                    <AddRole user={roleValue} community={tag}>
-                      <Button variant="outlineRed" className="m-10 mx-0 mt-4 font-normal" size="xs">
-                        {t('communities.add_user')}
-                      </Button>
-                    </AddRole>
-                  )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
+              {communityData && subsData && (
+                <CommunityDescription
+                  data={communityData}
+                  subs={subsData}
+                  notificationData={notificationData}
+                  username={tag}
+                />
+              )}
+            </div>
           </div>
         </div>
-        <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-          {communityData && subsData && (
-            <CommunityDescription
-              data={communityData}
-              subs={subsData}
-              notificationData={notificationData}
-              username={tag}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  ) : (
-    <Loading loading />
+      ) : (
+        <Loading loading />
+      )}
+    </>
   );
 };
 

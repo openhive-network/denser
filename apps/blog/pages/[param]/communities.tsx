@@ -12,16 +12,20 @@ import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-h
 import { getLogger } from '@ui/lib/logging';
 import Error from 'next/error';
 import { getTranslations } from '../../lib/get-translations';
+import { getAccountFull } from '@transaction/lib/hive';
+import Head from 'next/head';
 
 const logger = getLogger('app');
 
 const UserCommunities = ({
   hivebuzz,
   peakd,
+  tabTitle,
   errorCode = 0
 }: {
   hivebuzz: Badge[];
   peakd: Badge[];
+  tabTitle: string;
   errorCode: number;
 }) => {
   const { username } = useSiteParams();
@@ -37,43 +41,48 @@ const UserCommunities = ({
   if (isLoading) return <Loading loading={isLoading} />;
 
   return (
-    <ProfileLayout>
-      <div className="flex flex-col py-8">
-        <h2 className="text-xl font-semibold" data-testid="community-subscriptions-label">
-          {t('user_profile.social_tab.community_subscriptions_title')}
-        </h2>
-        <p data-testid="community-subscriptions-description">
-          {t('user_profile.social_tab.the_author_has_subscribed_to_the_following')}
-        </p>
-        {data && data.length > 0 ? (
-          <SubscriptionList data={data} />
-        ) : (
-          <div
-            key="empty"
-            className="bg-card-noContent border-card-empty-border my-12 border-2 border-solid  px-4 py-6 text-sm"
-            data-testid="user-does-not-have-any-subscriptions-yet"
-          >
-            {t('user_profile.social_tab.you_dont_have_any_subscriptions')}
-          </div>
-        )}
-        <h2 className="text-xl font-semibold" data-testid="badges-achievements-label">
-          {t('user_profile.social_tab.badges_and_achievements_title')}
-        </h2>
-        <p data-testid="badges-achievements-description">
-          {t('user_profile.social_tab.these_are_badges_received_by_the_author')}
-          <Link href="https://peakd.com/" className="text-destructive hover:underline" target="_blank">
-            Peakd
-          </Link>
-          {` & `}
-          <Link href="https://hivebuzz.me/" className="text-destructive hover:underline" target="_blank">
-            Hivebuzz
-          </Link>
-          .
-        </p>
+    <>
+      <Head>
+        <title>{tabTitle}</title>
+      </Head>
+      <ProfileLayout>
+        <div className="flex flex-col py-8">
+          <h2 className="text-xl font-semibold" data-testid="community-subscriptions-label">
+            {t('user_profile.social_tab.community_subscriptions_title')}
+          </h2>
+          <p data-testid="community-subscriptions-description">
+            {t('user_profile.social_tab.the_author_has_subscribed_to_the_following')}
+          </p>
+          {data && data.length > 0 ? (
+            <SubscriptionList data={data} />
+          ) : (
+            <div
+              key="empty"
+              className="border-card-empty-border my-12 border-2 border-solid bg-card-noContent  px-4 py-6 text-sm"
+              data-testid="user-does-not-have-any-subscriptions-yet"
+            >
+              {t('user_profile.social_tab.you_dont_have_any_subscriptions')}
+            </div>
+          )}
+          <h2 className="text-xl font-semibold" data-testid="badges-achievements-label">
+            {t('user_profile.social_tab.badges_and_achievements_title')}
+          </h2>
+          <p data-testid="badges-achievements-description">
+            {t('user_profile.social_tab.these_are_badges_received_by_the_author')}
+            <Link href="https://peakd.com/" className="text-destructive hover:underline" target="_blank">
+              Peakd
+            </Link>
+            {` & `}
+            <Link href="https://hivebuzz.me/" className="text-destructive hover:underline" target="_blank">
+              Hivebuzz
+            </Link>
+            .
+          </p>
 
-        <SocialActivities data={hivebuzz} peakd={peakd} username={username} />
-      </div>
-    </ProfileLayout>
+          <SocialActivities data={hivebuzz} peakd={peakd} username={username} />
+        </div>
+      </ProfileLayout>
+    </>
   );
 };
 
@@ -112,12 +121,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (error) {
     logger.error('Error in getServerSideProps: %o', error);
   }
+  const firstParam = (context.params?.param as string) ?? '';
 
+  let tabTitle;
+  if (firstParam.startsWith('@')) {
+    try {
+      // Fetch account data
+      const data = await getAccountFull(firstParam.split('@')[1]);
+      if (data) {
+        // If the account data exists, set the username to the account name
+        const username = data?.profile?.name ?? data.name;
+        tabTitle = '@' + username === firstParam ? `${username} - Hive` : `${username}(${firstParam}) - Hive`;
+      }
+    } catch (error) {
+      console.error('Error fetching account:', error);
+    }
+  }
   return {
     props: {
       errorCode,
       hivebuzz: hivebuzzJsonStateOn,
       peakd: peakdJsonMapedWithURL,
+      tabTitle,
       ...(await getTranslations(context))
     }
   };

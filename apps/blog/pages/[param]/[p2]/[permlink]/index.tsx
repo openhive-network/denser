@@ -70,12 +70,14 @@ function PostPage({
   community,
   username,
   permlink,
-  mutedStatus
+  mutedStatus,
+  tabTitle
 }: {
   community: string;
   username: string;
   permlink: string;
   mutedStatus: boolean;
+  tabTitle: string;
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
@@ -215,7 +217,10 @@ function PostPage({
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   return (
     <>
-      <Head>{canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}</Head>
+      <Head>
+        {canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}
+        <title>{tabTitle}</title>
+      </Head>
       <div className="py-8">
         <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
           <div className="absolute right-0 top-1 cursor-pointer hover:text-destructive">
@@ -634,9 +639,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   let post;
   let mutedStatus = false;
+  let tabTitle = '';
   try {
     post = await getPost(username, String(permlink));
     mutedStatus = post?.stats?.gray ?? false;
+    tabTitle = `${post?.title} - Hive`;
   } catch (error) {
     logger.error('Failed to fetch post:', error);
   }
@@ -655,6 +662,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       community,
       username,
       permlink,
+      tabTitle,
       ...(await getTranslations(ctx))
     }
   };

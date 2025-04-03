@@ -3,17 +3,17 @@ import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import { getAccountPosts, DATA_LIMIT as PER_PAGE } from '@transaction/lib/bridge';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import RepliesList from '@/blog/components/replies-list';
-import { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { PostSkeleton } from '../[...param]';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getDefaultProps } from '../../lib/get-translations';
+import { getTranslations } from '../../lib/get-translations';
+import { getAccountFull } from '@transaction/lib/hive';
+import Head from 'next/head';
 
-export const getServerSideProps: GetServerSideProps = getDefaultProps;
-
-export default function UserReplies() {
+const UserReplies: FC<{ tabTitle: string }> = ({ tabTitle }) => {
   const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
   const { ref, inView } = useInView();
@@ -50,35 +50,71 @@ export default function UserReplies() {
   }, [fetchNextPage, inView]);
 
   return (
-    <ProfileLayout>
-      {!isLoading && data ? (
-        <div className="flex flex-col">
-          {data.pages.map((page, index) => {
-            return page && page.length > 0 ? (
-              <RepliesList data={page} key={`replies-${index}`} />
-            ) : (
-              <div
-                key="empty"
-                className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
-                data-testid="user-has-not-had-any-replies-yet"
-              >
-                {t('user_profile.no_replies_yet', { username: username })}
-              </div>
-            );
-          })}
-          <div>
-            <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
-              {isFetchingNextPage ? (
-                <PostSkeleton />
-              ) : hasNextPage ? (
-                t('user_profile.load_newer')
-              ) : data.pages[0] && data.pages[0].length > 0 ? (
-                t('user_profile.nothing_more_to_load')
-              ) : null}
-            </button>
+    <>
+      <Head>
+        <title>{tabTitle}</title>
+      </Head>
+      <ProfileLayout>
+        {!isLoading && data ? (
+          <div className="flex flex-col">
+            {data.pages.map((page, index) => {
+              return page && page.length > 0 ? (
+                <RepliesList data={page} key={`replies-${index}`} />
+              ) : (
+                <div
+                  key="empty"
+                  className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
+                  data-testid="user-has-not-had-any-replies-yet"
+                >
+                  {t('user_profile.no_replies_yet', { username: username })}
+                </div>
+              );
+            })}
+            <div>
+              <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
+                {isFetchingNextPage ? (
+                  <PostSkeleton />
+                ) : hasNextPage ? (
+                  t('user_profile.load_newer')
+                ) : data.pages[0] && data.pages[0].length > 0 ? (
+                  t('user_profile.nothing_more_to_load')
+                ) : null}
+              </button>
+            </div>
           </div>
-        </div>
-      ) : null}
-    </ProfileLayout>
+        ) : null}
+      </ProfileLayout>
+    </>
   );
-}
+};
+
+export default UserReplies;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const firstParam = (ctx.params?.param as string) ?? '';
+
+  let tabTitle;
+  if (firstParam.startsWith('@')) {
+    try {
+      // Fetch account data
+      const data = await getAccountFull(firstParam.split('@')[1]);
+      if (data) {
+        // If the account data exists, set the username to the account name
+        const username = data?.profile?.name ?? data.name;
+        tabTitle =
+          '@' + username === firstParam
+            ? `Replies to ${username} - Hive`
+            : `Replies to ${username}(${firstParam}) - Hive`;
+      }
+    } catch (error) {
+      console.error('Error fetching account:', error);
+    }
+  }
+
+  return {
+    props: {
+      tabTitle,
+      ...(await getTranslations(ctx))
+    }
+  };
+};
