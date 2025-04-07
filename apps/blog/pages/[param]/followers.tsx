@@ -10,13 +10,16 @@ import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { useFollowingInfiniteQuery } from '@/blog/components/hooks/use-following-infinitequery';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getTranslations } from '../../lib/get-translations';
+import { getAccountMetadata, getTranslations } from '@/blog/lib/get-translations';
 import ButtonsContainer from '@/blog/components/buttons-container';
-import { getAccountFull } from '@transaction/lib/hive';
 import Head from 'next/head';
 
 const LIMIT = 50;
-export default function Followers({ tabTitle }: { tabTitle: string }) {
+export default function Followers({
+  metadata
+}: {
+  metadata: { tabTitle: string; description: string; image: string; title: string };
+}) {
   const { username } = useSiteParams();
   const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
@@ -41,7 +44,10 @@ export default function Followers({ tabTitle }: { tabTitle: string }) {
   return (
     <>
       <Head>
-        <title>{tabTitle}</title>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
       </Head>
       <ProfileLayout>
         <div className="flex flex-col gap-2 p-2">
@@ -103,29 +109,9 @@ export default function Followers({ tabTitle }: { tabTitle: string }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const firstParam = (ctx.params?.param as string) ?? '';
-
-  let tabTitle;
-  if (firstParam.startsWith('@')) {
-    try {
-      // Fetch account data
-      const data = await getAccountFull(firstParam.split('@')[1]);
-      if (data) {
-        // If the account data exists, set the username to the account name
-        const username = data?.profile?.name ?? data.name;
-        tabTitle =
-          '@' + username === firstParam
-            ? `People following ${username} - Hive`
-            : `People following ${username}(${firstParam}) - Hive`;
-      }
-    } catch (error) {
-      console.error('Error fetching account:', error);
-    }
-  }
-
   return {
     props: {
-      tabTitle,
+      metadata: await getAccountMetadata((ctx.params?.param as string) ?? '', 'Followers of'),
       ...(await getTranslations(ctx))
     }
   };

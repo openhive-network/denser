@@ -44,7 +44,7 @@ import CustomError from '@/blog/components/custom-error';
 import RendererContainer from '@/blog/components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
-import { getTranslations } from '@/blog/lib/get-translations';
+import { getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
 import env from '@beam-australia/react-env';
 import { usePinMutation, useUnpinMutation } from '@/blog/components/hooks/use-pin-mutations';
@@ -71,13 +71,13 @@ function PostPage({
   username,
   permlink,
   mutedStatus,
-  tabTitle
+  metadata
 }: {
   community: string;
   username: string;
   permlink: string;
   mutedStatus: boolean;
-  tabTitle: string;
+  metadata: MetadataProps;
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
@@ -219,7 +219,10 @@ function PostPage({
     <>
       <Head>
         {canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}
-        <title>{tabTitle}</title>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
       </Head>
       <div className="py-8">
         <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
@@ -639,11 +642,23 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   let post;
   let mutedStatus = false;
-  let tabTitle = '';
+  let metadata = {
+    tabTitle: '',
+    description: '',
+    image: '',
+    title: ''
+  };
+
   try {
     post = await getPost(username, String(permlink));
     mutedStatus = post?.stats?.gray ?? false;
-    tabTitle = `${post?.title} - Hive`;
+    metadata.tabTitle = `${post?.title} - Hive`;
+    metadata.description = (post?.json_metadata?.summary || post?.json_metadata.description) ?? '';
+    metadata.image =
+      post?.json_metadata?.image[0] ||
+      post?.json_metadata.images[0] ||
+      'https://hive.blog/images/hive-blog-share.png';
+    metadata.title = post?.title ?? '';
   } catch (error) {
     logger.error('Failed to fetch post:', error);
   }
@@ -662,7 +677,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       community,
       username,
       permlink,
-      tabTitle,
+      metadata,
       ...(await getTranslations(ctx))
     }
   };

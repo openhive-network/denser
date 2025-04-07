@@ -6,14 +6,14 @@ import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import Loading from '@ui/components/loading';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
-import { getDefaultProps, getTranslations } from '../../lib/get-translations';
+import { getAccountMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
 import { getAccountFull } from '@transaction/lib/hive';
 
-export default function UserNotifications({ tabTitle }: { tabTitle: string }) {
+export default function UserNotifications({ metadata }: { metadata: MetadataProps }) {
   const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
-  const { isLoading, error, data } = useQuery(
+  const { isLoading, data } = useQuery(
     ['AccountNotification', username],
     () => getAccountNotifications(username),
     {
@@ -25,7 +25,10 @@ export default function UserNotifications({ tabTitle }: { tabTitle: string }) {
   return (
     <>
       <Head>
-        <title>{tabTitle}</title>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
       </Head>
       <LayoutProfile>
         <div className="flex w-full flex-col">
@@ -66,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      tabTitle,
+      metadata: await getAccountMetadata((ctx.params?.param as string) ?? '', 'Account Notifications'),
       ...(await getTranslations(ctx))
     }
   };

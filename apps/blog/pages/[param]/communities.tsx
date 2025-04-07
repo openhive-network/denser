@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next';
 import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
 import { getLogger } from '@ui/lib/logging';
 import Error from 'next/error';
-import { getTranslations } from '../../lib/get-translations';
+import { getAccountMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import { getAccountFull } from '@transaction/lib/hive';
 import Head from 'next/head';
 
@@ -20,21 +20,19 @@ const logger = getLogger('app');
 const UserCommunities = ({
   hivebuzz,
   peakd,
-  tabTitle,
+  metadata,
   errorCode = 0
 }: {
   hivebuzz: Badge[];
   peakd: Badge[];
-  tabTitle: string;
+  metadata: MetadataProps;
   errorCode: number;
 }) => {
   const { username } = useSiteParams();
   const { t } = useTranslation('common_blog');
-  const { isLoading, error, data } = useQuery(
-    ['listAllSubscription', username],
-    () => getSubscriptions(username),
-    { enabled: errorCode === 0 && !!username }
-  );
+  const { isLoading, data } = useQuery(['listAllSubscription', username], () => getSubscriptions(username), {
+    enabled: errorCode === 0 && !!username
+  });
 
   if (errorCode) return <Error statusCode={errorCode} />;
 
@@ -43,7 +41,10 @@ const UserCommunities = ({
   return (
     <>
       <Head>
-        <title>{tabTitle}</title>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
       </Head>
       <ProfileLayout>
         <div className="flex flex-col py-8">
@@ -142,7 +143,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       errorCode,
       hivebuzz: hivebuzzJsonStateOn,
       peakd: peakdJsonMapedWithURL,
-      tabTitle,
+      metadata: await getAccountMetadata((context.params?.param as string) ?? '', 'Communities of'),
       ...(await getTranslations(context))
     }
   };

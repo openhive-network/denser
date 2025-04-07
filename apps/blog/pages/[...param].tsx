@@ -29,9 +29,14 @@ import { GetServerSideProps } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
-import { getTranslations } from '../lib/get-translations';
+import {
+  getAccountMetadata,
+  getCommunityMetadata,
+  getTranslations,
+  MetadataProps
+} from '../lib/get-translations';
 import Head from 'next/head';
-import { getAccountFull } from '@transaction/lib/hive';
+import { sortToTitle, sortTypes } from '../lib/utils';
 
 export const PostSkeleton = () => {
   return (
@@ -45,7 +50,7 @@ export const PostSkeleton = () => {
   );
 };
 
-const ParamPage: FC<{ tabTitle: string }> = ({ tabTitle }) => {
+const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const { sort, username, tag } = useSiteParams();
@@ -200,6 +205,10 @@ const ParamPage: FC<{ tabTitle: string }> = ({ tabTitle }) => {
       />
     );
   }
+  const tabTitle =
+    Array.isArray(router.query.param) && router.query.param.length > 1
+      ? `${metadata.title} / ${sortToTitle(router.query.param[0] as sortTypes)}`
+      : sortToTitle((router.query.param?.[0] ?? 'trending') as sortTypes);
 
   if (username && router.query.param ? router.query.param.length > 1 : false) {
     return <CustomError />;
@@ -208,7 +217,10 @@ const ParamPage: FC<{ tabTitle: string }> = ({ tabTitle }) => {
     return (
       <>
         <Head>
-          <title>{tabTitle}</title>
+          <title>{`${tabTitle} - posts Hive`}</title>
+          <meta property="og:title" content={metadata.title} />
+          <meta property="og:description" content={metadata.description} />
+          <meta property="og:image" content={metadata.image} />
         </Head>
         <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
           <div className="grid grid-cols-12 md:gap-4">
@@ -318,7 +330,10 @@ const ParamPage: FC<{ tabTitle: string }> = ({ tabTitle }) => {
   return (
     <ProfileLayout>
       <Head>
-        <title>{tabTitle}</title>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
       </Head>
       {!legalBlockedUser ? (
         <>
@@ -371,47 +386,27 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const firstParam = ctx.params?.param?.[0] ?? '';
   const secondParam = ctx.params?.param?.[1] || '';
 
-  let tabTitle = '';
+  let metadata = {
+    tabTitle: '',
+    description: '',
+    image: 'https://hive.blog/images/hive-blog-share.png',
+    title: firstParam
+  };
 
   // Check if the first parameter is a username
   if (firstParam.startsWith('@')) {
-    try {
-      // Fetch account data
-      const data = await getAccountFull(firstParam.split('@')[1]);
-      if (data) {
-        // If the account data exists, set the username to the account name
-        const username = data?.profile?.name ?? data.name;
-        tabTitle =
-          '@' + username === firstParam
-            ? `${username} - posts Hive`
-            : `${username}(${firstParam}) - posts Hive`;
-      }
-    } catch (error) {
-      console.error('Error fetching account:', error);
-    }
-  }
-
-  if (!firstParam.startsWith('@') && secondParam === '') {
-    tabTitle = `${firstParam} - posts Hive`;
+    // If it is, fetch the account data
+    metadata = await getAccountMetadata((ctx.params?.param as string) ?? '', 'Posts');
   }
   // Check if second parameter exists
   if (secondParam !== '') {
-    try {
-      // Fetch community data
-      const data = await getCommunity(secondParam);
-      if (data) {
-        // If the community data exists, set the username to the community title or name
-        const communityName = data?.title ?? data.name;
-        tabTitle = `${communityName} / ${secondParam} - Hive`;
-      } else {
-      }
-    } catch (error) {
-      console.error('Error fetching account:', error);
-    }
+    // If second parameter exists, that means it's a community
+    metadata = await getCommunityMetadata(firstParam, secondParam, 'Posts');
   }
+
   return {
     props: {
-      tabTitle,
+      metadata,
       ...(await getTranslations(ctx))
     }
   };

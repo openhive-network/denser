@@ -9,11 +9,10 @@ import { PostSkeleton } from '../[...param]';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getTranslations } from '../../lib/get-translations';
-import { getAccountFull } from '@transaction/lib/hive';
+import { getAccountMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
 
-const UserReplies: FC<{ tabTitle: string }> = ({ tabTitle }) => {
+const UserReplies: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
   const { ref, inView } = useInView();
@@ -52,7 +51,10 @@ const UserReplies: FC<{ tabTitle: string }> = ({ tabTitle }) => {
   return (
     <>
       <Head>
-        <title>{tabTitle}</title>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
       </Head>
       <ProfileLayout>
         {!isLoading && data ? (
@@ -91,29 +93,9 @@ const UserReplies: FC<{ tabTitle: string }> = ({ tabTitle }) => {
 export default UserReplies;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const firstParam = (ctx.params?.param as string) ?? '';
-
-  let tabTitle;
-  if (firstParam.startsWith('@')) {
-    try {
-      // Fetch account data
-      const data = await getAccountFull(firstParam.split('@')[1]);
-      if (data) {
-        // If the account data exists, set the username to the account name
-        const username = data?.profile?.name ?? data.name;
-        tabTitle =
-          '@' + username === firstParam
-            ? `Replies to ${username} - Hive`
-            : `Replies to ${username}(${firstParam}) - Hive`;
-      }
-    } catch (error) {
-      console.error('Error fetching account:', error);
-    }
-  }
-
   return {
     props: {
-      tabTitle,
+      metadata: await getAccountMetadata((ctx.params?.param as string) ?? '', 'Replies to'),
       ...(await getTranslations(ctx))
     }
   };

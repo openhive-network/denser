@@ -33,7 +33,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
 import { useUpdateProfileMutation } from '@/blog/components/hooks/use-update-profile-mutation';
 import { z } from 'zod';
-import { getTranslations } from '../../lib/get-translations';
+import { getAccountMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { handleError } from '@ui/lib/handle-error';
@@ -110,7 +110,6 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
 
     data = await data;
     const prefix = Buffer.from('ImageSigningChallenge');
-    // @ts-expect-error
     const buf = Buffer.concat([prefix, data as unknown as Uint8Array]);
 
     const sig = await signer.signChallenge({
@@ -162,7 +161,7 @@ function validation(values: Settings, t: TFunction<'common_blog'>) {
   };
 }
 
-export default function UserSettings({ tabTitle }: { tabTitle: string }) {
+export default function UserSettings({ metadata }: { metadata: MetadataProps }) {
   const { user } = useUser();
   const { isLoading, error, data } = useQuery(
     ['profileData', user.username],
@@ -267,11 +266,13 @@ export default function UserSettings({ tabTitle }: { tabTitle: string }) {
       setSettings((prev) => ({ ...prev, cover_image: url }));
     }
   };
-
   return (
     <>
       <Head>
-        <title>{tabTitle}</title>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
       </Head>
       <ProfileLayout>
         <div className="flex flex-col" data-testid="public-profile-settings">
@@ -682,29 +683,9 @@ export default function UserSettings({ tabTitle }: { tabTitle: string }) {
   );
 }
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const firstParam = (ctx.params?.param as string) ?? '';
-
-  let tabTitle;
-  if (firstParam.startsWith('@')) {
-    try {
-      // Fetch account data
-      const data = await getAccountFull(firstParam.split('@')[1]);
-      if (data) {
-        // If the account data exists, set the username to the account name
-        const username = data?.profile?.name ?? data.name;
-        tabTitle =
-          '@' + username === firstParam
-            ? `Settings ${username} - Hive`
-            : `Settings ${username}(${firstParam}) - Hive`;
-      }
-    } catch (error) {
-      console.error('Error fetching account:', error);
-    }
-  }
-
   return {
     props: {
-      tabTitle,
+      metadata: await getAccountMetadata((ctx.params?.param as string) ?? '', 'Settings'),
       ...(await getTranslations(ctx))
     }
   };

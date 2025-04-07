@@ -29,16 +29,18 @@ import { handleError } from '@ui/lib/handle-error';
 
 import { CircleSpinner } from 'react-spinners-kit';
 import Head from 'next/head';
+import { MetadataProps } from '@/blog/lib/get-translations';
 
-const TAB_TITLE = 'Manage Lists - Hive';
 export default function ProfileLists({
   username,
   variant,
-  data
+  data,
+  metadata
 }: {
   username: string;
   variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute';
   data: IFollowList[] | undefined;
+  metadata: MetadataProps;
 }) {
   const { user } = useUser();
   const { data: profilData } = useQuery(['profileData', user.username], () => getAccountFull(username));
@@ -235,7 +237,10 @@ export default function ProfileLists({
   return (
     <>
       <Head>
-        <title>{TAB_TITLE}</title>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
       </Head>
       <ProfileLayout>
         <div className="flex  flex-col items-center gap-4 p-4">

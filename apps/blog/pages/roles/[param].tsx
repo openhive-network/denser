@@ -22,7 +22,7 @@ import {
   getSubscribers,
   getSubscriptions
 } from '@transaction/lib/bridge';
-import { getDefaultProps } from '@/blog/lib/get-translations';
+import { getCommunityMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
 
 const roles = [
@@ -34,8 +34,7 @@ const roles = [
   { name: 'muted', value: 1 }
 ];
 
-const TAB_TITLE = 'Community Roles - Hive';
-const RolesPage: FC = () => {
+const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const router = useRouter();
   const { user } = useUser();
   const [client, setClient] = useState(false);
@@ -100,7 +99,10 @@ const RolesPage: FC = () => {
   return (
     <>
       <Head>
-        <title>{TAB_TITLE}</title>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
       </Head>
       {client ? (
         <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
@@ -202,4 +204,12 @@ const RolesPage: FC = () => {
 
 export default RolesPage;
 
-export const getServerSideProps: GetServerSideProps = getDefaultProps;
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const firstParam = (ctx.params?.param as string) ?? '';
+  return {
+    props: {
+      metadata: await getCommunityMetadata('Roles', firstParam, ''),
+      ...(await getTranslations(ctx))
+    }
+  };
+};
