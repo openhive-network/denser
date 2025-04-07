@@ -59,7 +59,7 @@ export const getAccountMetadata = async (
         ...metadata,
         image: data.profile?.profile_image || defaultImage,
         tabTitle:
-          data.profile?.name === username
+          displayName === username
             ? `${descriptionText} ${displayName} - Hive`
             : `${descriptionText} ${displayName} (${firstParam}) - Hive`,
         description:

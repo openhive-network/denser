@@ -396,7 +396,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // Check if the first parameter is a username
   if (firstParam.startsWith('@')) {
     // If it is, fetch the account data
-    metadata = await getAccountMetadata((ctx.params?.param as string) ?? '', 'Posts');
+    metadata = await getAccountMetadata(firstParam, 'Posts');
   }
   // Check if second parameter exists
   if (secondParam !== '') {

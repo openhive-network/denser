@@ -12,16 +12,25 @@ import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import WalletMenu from '@/wallet/components/wallet-menu';
-import { getServerSidePropsDefault } from '../../lib/get-translations';
+import { getAccountMetadata, getTranslations, MetadataProps } from '@/wallet/lib/get-translations';
 import { createWaxFoundation } from '@hiveio/wax';
 import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-password-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@ui/components/icons';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import Head from 'next/head';
 
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const username = ctx.params?.param as string;
+  return {
+    props: {
+      metadata: await getAccountMetadata(username, 'Change Password'),
+      ...(await getTranslations(ctx))
+    }
+  };
+};
 
-export default function PostForm() {
+export default function PostForm({ metadata }: { metadata: MetadataProps }) {
   const { t } = useTranslation('common_wallet');
   const [isKeyGenerated, setIsKeyGenerated] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -148,153 +157,161 @@ export default function PostForm() {
   }
 
   return (
-    <ProfileLayout>
-      <WalletMenu username={username} />
-      <div className="m-auto flex max-w-2xl flex-col gap-4 bg-background p-2 pb-8">
-        <div className="text-2xl font-bold">{t('change_password_page.change_password')}</div>
-        <Separator />
-        <p className="text-sm leading-relaxed text-primary/60">
-          {t('change_password_page.the_rules.one')}
-          <br />
-          {t('change_password_page.the_rules.second')}
-          <br />
-          {t('change_password_page.the_rules.third')}
-          <br />
-          {t('change_password_page.the_rules.fourth')}
-          <br />
-          {t('change_password_page.the_rules.fifth')}
-          <br />
-          {t('change_password_page.the_rules.sixth')}
-          <br />
-          {t('change_password_page.the_rules.seventh')}
-        </p>
-        <Separator />
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('change_password_page.account_name')}</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled value={username} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="curr_password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex justify-between">
-                    <span>{t('change_password_page.current_password')}</span>{' '}
-                    <Link
-                      className="pointer-events-none text-destructive opacity-70"
-                      href="/recover_account_step_1"
-                    >
-                      {t('change_password_page.recover_password')}
-                    </Link>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder={t('change_password_page.current_password')}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div>
-              <div className="text-sm font-semibold">
-                {t('change_password_page.generated_password')}
-                <span className="font-light">({t('change_password_page.new')})</span>
-              </div>
-              {isKeyGenerated ? (
-                <div>
-                  <code className="my-1 block bg-background px-1 py-2 text-center text-destructive">
-                    {generatedPassword}
-                  </code>
-                  <div className="text-center text-xs font-bold">
-                    {t('change_password_page.backup_password_by_storing_it')}
-                  </div>
+    <>
+      <Head>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
+      </Head>
+      <ProfileLayout>
+        <WalletMenu username={username} />
+        <div className="m-auto flex max-w-2xl flex-col gap-4 bg-background p-2 pb-8">
+          <div className="text-2xl font-bold">{t('change_password_page.change_password')}</div>
+          <Separator />
+          <p className="text-sm leading-relaxed text-primary/60">
+            {t('change_password_page.the_rules.one')}
+            <br />
+            {t('change_password_page.the_rules.second')}
+            <br />
+            {t('change_password_page.the_rules.third')}
+            <br />
+            {t('change_password_page.the_rules.fourth')}
+            <br />
+            {t('change_password_page.the_rules.fifth')}
+            <br />
+            {t('change_password_page.the_rules.sixth')}
+            <br />
+            {t('change_password_page.the_rules.seventh')}
+          </p>
+          <Separator />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('change_password_page.account_name')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled value={username} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="curr_password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex justify-between">
+                      <span>{t('change_password_page.current_password')}</span>{' '}
+                      <Link
+                        className="pointer-events-none text-destructive opacity-70"
+                        href="/recover_account_step_1"
+                      >
+                        {t('change_password_page.recover_password')}
+                      </Link>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="password"
+                        placeholder={t('change_password_page.current_password')}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div>
+                <div className="text-sm font-semibold">
+                  {t('change_password_page.generated_password')}
+                  <span className="font-light">({t('change_password_page.new')})</span>
                 </div>
-              ) : (
-                <Button
-                  className="my-1"
-                  variant="outlineRed"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleKey();
-                  }}
-                >
-                  {t('change_password_page.click_to_generate_password')}
-                </Button>
-              )}
-            </div>
-            <FormField
-              control={form.control}
-              name="genereted_password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('change_password_page.re_enter_generate_password')}</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="understand"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel className="text-xs">{t('change_password_page.understand_that')} </FormLabel>{' '}
-                    <FormMessage />
+                {isKeyGenerated ? (
+                  <div>
+                    <code className="my-1 block bg-background px-1 py-2 text-center text-destructive">
+                      {generatedPassword}
+                    </code>
+                    <div className="text-center text-xs font-bold">
+                      {t('change_password_page.backup_password_by_storing_it')}
+                    </div>
                   </div>
-                </FormItem>
-              )}
-            />{' '}
-            <FormField
-              control={form.control}
-              name="saved_password"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
+                ) : (
+                  <Button
+                    className="my-1"
+                    variant="outlineRed"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleKey();
+                    }}
+                  >
+                    {t('change_password_page.click_to_generate_password')}
+                  </Button>
+                )}
+              </div>
+              <FormField
+                control={form.control}
+                name="genereted_password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('change_password_page.re_enter_generate_password')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="understand"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-xs">{t('change_password_page.understand_that')} </FormLabel>{' '}
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />{' '}
+              <FormField
+                control={form.control}
+                name="saved_password"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
 
-                  <div className="space-y-1 leading-none">
-                    <FormLabel className="text-xs">{t('change_password_page.i_saved_password')}</FormLabel>{' '}
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              variant="redHover"
-              disabled={loading || !form.formState.isValid}
-              className="flex w-[164px] justify-center"
-            >
-              {loading ? (
-                <Icons.spinner className="h-4 w-4 animate-spin" />
-              ) : (
-                t('change_password_page.update_password')
-              )}
-            </Button>
-          </form>
-        </Form>
-      </div>
-    </ProfileLayout>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-xs">{t('change_password_page.i_saved_password')}</FormLabel>{' '}
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                variant="redHover"
+                disabled={loading || !form.formState.isValid}
+                className="flex w-[164px] justify-center"
+              >
+                {loading ? (
+                  <Icons.spinner className="h-4 w-4 animate-spin" />
+                ) : (
+                  t('change_password_page.update_password')
+                )}
+              </Button>
+            </form>
+          </Form>
+        </div>
+      </ProfileLayout>
+    </>
   );
 }

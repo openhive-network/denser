@@ -7,6 +7,7 @@ import TradeHive from '@/wallet/components/trade-hive';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { getServerSidePropsDefault } from '../lib/get-translations';
+import Head from 'next/head';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
@@ -46,6 +47,7 @@ const Box = ({
   );
 };
 
+const TAB_TITLE = 'Hive Wallet - Market';
 function Market() {
   const { t } = useTranslation('common_wallet');
   const { data: tickerData, isLoading: tickerLoading } = useMarket();
@@ -60,26 +62,31 @@ function Market() {
       .div(tickerData.highest_bid.plus(tickerData.lowest_ask))
   );
   return (
-    <div className="flex flex-col items-center gap-4 px-4 pb-8">
-      <div className="flex w-full flex-wrap justify-center gap-1">
-        <Box
-          label={t('market_page.last_price')}
-          value={convertStringToBig(tickerData.latest).toFixed(6)}
-          diff={convertStringToBig(tickerData.percent_change).toFixed(2)}
-          dollar
-        />
-        <Box
-          label={t('market_page.volume')}
-          value={convertStringToBig(tickerData?.hbd_volume).toFixed(2)}
-          dollar
-        />
-        <Box label={t('market_page.bid')} value={tickerData.highest_bid.toFixed(6)} dollar />
-        <Box label={t('market_page.ask')} value={tickerData.lowest_ask.toFixed(6)} dollar />
+    <>
+      <Head>
+        <title>{TAB_TITLE}</title>
+      </Head>
+      <div className="flex flex-col items-center gap-4 px-4 pb-8">
+        <div className="flex w-full flex-wrap justify-center gap-1">
+          <Box
+            label={t('market_page.last_price')}
+            value={convertStringToBig(tickerData.latest).toFixed(6)}
+            diff={convertStringToBig(tickerData.percent_change).toFixed(2)}
+            dollar
+          />
+          <Box
+            label={t('market_page.volume')}
+            value={convertStringToBig(tickerData?.hbd_volume).toFixed(2)}
+            dollar
+          />
+          <Box label={t('market_page.bid')} value={tickerData.highest_bid.toFixed(6)} dollar />
+          <Box label={t('market_page.ask')} value={tickerData.lowest_ask.toFixed(6)} dollar />
 
-        <Box label={t('market_page.spread')} value={spread.toFixed(3)} percent />
+          <Box label={t('market_page.spread')} value={spread.toFixed(3)} percent />
+        </div>
+        <TradeHive tickerData={tickerData} />
       </div>
-      <TradeHive tickerData={tickerData} />
-    </div>
+    </>
   );
 }
 
