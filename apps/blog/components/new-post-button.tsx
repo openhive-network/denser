@@ -21,7 +21,7 @@ const defaultValues = {
 };
 const NewPost = ({ name, disabled }: { name: string; disabled: boolean }) => {
   const { t } = useTranslation('common_blog');
-  const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData', defaultValues);
+  const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData-new', defaultValues);
   return (
     <Button
       size="sm"

@@ -150,9 +150,10 @@ export default function PostForm({
     () =>
       getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
     {
-      enabled: Boolean(storedPost.category) && storedPost.category !== 'blog'
+      enabled: Boolean(router.query.category) || Boolean(storedPost.category)
     }
   );
+
   const accountFormSchema = z.object({
     title: z
       .string()
@@ -180,7 +181,7 @@ export default function PostForm({
     postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
     tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
     author: post_s?.json_metadata?.author || storedPost?.author || '',
-    category: post_s?.category || storedPost?.category || '',
+    category: (router.query.category as string) ?? storedPost?.category ?? post_s?.category ?? '',
     beneficiaries: storedPost?.beneficiaries || [],
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
@@ -193,7 +194,6 @@ export default function PostForm({
     resolver: zodResolver(accountFormSchema),
     defaultValues: entryValues
   });
-
   const { postArea, ...restFields } = useWatch({
     control: form.control
   });
@@ -498,7 +498,8 @@ export default function PostForm({
                           }
                           onValueChange={(e) => {
                             form.setValue('category', e);
-                            storePost({ ...storedPost, category: e })}}
+                            storePost({ ...storedPost, category: e });
+                          }}
                         >
                           <FormControl>
                             <SelectTrigger data-testid="posting-to-list-trigger">
@@ -517,7 +518,9 @@ export default function PostForm({
                             storedPost.category !== 'blog' ? (
                               <>
                                 <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>
-                                <SelectItem value={storedPost.category}>{communityData?.title}</SelectItem>
+                                <SelectItem value={communityData?.name ?? storedPost.category}>
+                                  {communityData?.title}
+                                </SelectItem>
                               </>
                             ) : null}
                           </SelectContent>
