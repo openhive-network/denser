@@ -122,4 +122,44 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle2, postSummary2);
   });
+
+  test('Attempting to create a post without a title', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postContentText: string = '1 Content of the testing post POM';
+    const postSummary: string = '1 My testing post POM';
+    const postTag: string = 'test';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getPostSummaryInput.fill(postSummary);
+    await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    await denserAutoTest0Page.page.mouse.wheel(0, 2000)
+    await expect(postEditorPage.getSubmitPostButton).toBeDisabled()
+  });
+
+  test('Attempt to create a post with no content', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const postSummary: string = '1 My testing post POM';
+    const postTag: string = 'test';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await postEditorPage.getPostTitleInput.fill(postTitle)
+    // await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getPostSummaryInput.fill(postSummary);
+    await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    await denserAutoTest0Page.page.mouse.wheel(0, 2000)
+    await expect(postEditorPage.getSubmitPostButton).toBeEnabled()
+    await postEditorPage.getSubmitPostButton.click()
+    // await denserAutoTest0Page.page.waitForTimeout(5000)
+    await expect(postEditorPage.getFormContainer).toContainText('String must contain at least 1 character(s)')
+    
+  });
 });
