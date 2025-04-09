@@ -43,8 +43,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@hiveio/wax':
-        specifier: 1.27.6-rc7-stable.250325163032
-        version: 1.27.6-rc7-stable.250325163032
+        specifier: 1.27.6-rc7-250404091259
+        version: 1.27.6-rc7-250404091259
       '@hookform/resolvers':
         specifier: ^3.3.1
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.0))
@@ -167,8 +167,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@hiveio/wax':
-        specifier: 1.27.6-rc7-stable.250325163032
-        version: 1.27.6-rc7-stable.250325163032
+        specifier: 1.27.6-rc7-250404091259
+        version: 1.27.6-rc7-250404091259
       '@hookform/resolvers':
         specifier: ^3.1.1
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.0))
@@ -360,8 +360,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@hiveio/wax':
-        specifier: 1.27.6-rc7-stable.250325163032
-        version: 1.27.6-rc7-stable.250325163032
+        specifier: 1.27.6-rc7-250404091259
+        version: 1.27.6-rc7-250404091259
       '@hookform/resolvers':
         specifier: ^3.3.2
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.0))
@@ -608,8 +608,8 @@ importers:
         specifier: 0.0.1-stable.250402093900
         version: 0.0.1-stable.250402093900
       '@hiveio/wax':
-        specifier: 1.27.6-rc7-stable.250325163032
-        version: 1.27.6-rc7-stable.250325163032
+        specifier: 1.27.6-rc7-250404091259
+        version: 1.27.6-rc7-250404091259
       '@hiveio/wax-signers-keychain':
         specifier: 1.27.6-rc7-stable.250314151849
         version: 1.27.6-rc7-stable.250314151849
@@ -711,8 +711,8 @@ importers:
         specifier: workspace:*
         version: link:../smart-signer
       '@hiveio/wax':
-        specifier: 1.27.6-rc7-stable.250325163032
-        version: 1.27.6-rc7-stable.250325163032
+        specifier: 1.27.6-rc7-250404091259
+        version: 1.27.6-rc7-250404091259
       '@hiveio/workerbee':
         specifier: 1.27.6-rc9
         version: 1.27.6-rc9
@@ -762,8 +762,8 @@ importers:
         specifier: ^1.3.1
         version: 1.3.3
       '@hiveio/wax':
-        specifier: 1.27.6-rc7-stable.250325163032
-        version: 1.27.6-rc7-stable.250325163032
+        specifier: 1.27.6-rc7-250404091259
+        version: 1.27.6-rc7-250404091259
       '@radix-ui/react-accordion':
         specifier: ^1.1.2
         version: 1.2.2(@types/react-dom@18.3.0)(@types/react@18.3.0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -1815,16 +1815,16 @@ packages:
     resolution: {integrity: sha1-NZnSU6P8zkdBvnkHsWG1uswa6Es=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc4.tgz}
     engines: {node: '>= 18'}
 
+  '@hiveio/wax@1.27.6-rc7-250404091259':
+    resolution: {integrity: sha1-+6C6oDv+CJTtQTeJCtCJslS877Y=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc7-250404091259.tgz}
+    engines: {node: ^20.11 || >= 21.2}
+
   '@hiveio/wax@1.27.6-rc7-stable.250131113706':
     resolution: {integrity: sha1-Xi2VV8y9T6MdBHOBSzxZNpmGnF8=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc7-stable.250131113706.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/wax@1.27.6-rc7-stable.250314151849':
     resolution: {integrity: sha1-qkI3WlmARRzTCZOMLDaDw2zNKx8=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc7-stable.250314151849.tgz}
-    engines: {node: ^20.11 || >= 21.2}
-
-  '@hiveio/wax@1.27.6-rc7-stable.250325163032':
-    resolution: {integrity: sha1-kjzf2TNeN8+tDsV9gk9TMIiLnPk=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc7-stable.250325163032.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/workerbee@1.27.6-rc9':
@@ -11504,6 +11504,12 @@ snapshots:
       long: 5.2.4
       reflect-metadata: 0.1.14
 
+  '@hiveio/wax@1.27.6-rc7-250404091259':
+    dependencies:
+      '@hiveio/beekeeper': 1.27.10-stable.250305202831
+      events: 3.3.0
+      long: 5.2.4
+
   '@hiveio/wax@1.27.6-rc7-stable.250131113706':
     dependencies:
       '@hiveio/beekeeper': 1.27.8-stable.250131103618
@@ -11511,12 +11517,6 @@ snapshots:
       long: 5.2.4
 
   '@hiveio/wax@1.27.6-rc7-stable.250314151849':
-    dependencies:
-      '@hiveio/beekeeper': 1.27.10-stable.250305202831
-      events: 3.3.0
-      long: 5.2.4
-
-  '@hiveio/wax@1.27.6-rc7-stable.250325163032':
     dependencies:
       '@hiveio/beekeeper': 1.27.10-stable.250305202831
       events: 3.3.0

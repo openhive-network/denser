@@ -29,7 +29,14 @@ import { GetServerSideProps } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import CommunitiesMybar from '../components/communities-mybar';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
-import { getDefaultProps } from '../lib/get-translations';
+import {
+  getAccountMetadata,
+  getCommunityMetadata,
+  getTranslations,
+  MetadataProps
+} from '../lib/get-translations';
+import Head from 'next/head';
+import { sortToTitle, sortTypes } from '../lib/utils';
 
 export const PostSkeleton = () => {
   return (
@@ -43,7 +50,7 @@ export const PostSkeleton = () => {
   );
 };
 
-const ParamPage: FC = () => {
+const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const { sort, username, tag } = useSiteParams();
@@ -55,9 +62,7 @@ const ParamPage: FC = () => {
     data: entriesData,
     isLoading: entriesDataIsLoading,
     isFetching: entriesDataIsFetching,
-    error: entriesDataError,
     isError: entriesDataIsError,
-    status,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage
@@ -84,41 +89,34 @@ const ParamPage: FC = () => {
       enabled: Boolean(sort)
     }
   );
-  const {
-    data: mySubsData,
-    isLoading: mySubsIsLoading,
-    isError: mySubsIsError
-  } = useQuery(['subscriptions', user?.username], () => getSubscriptions(user.username), {
-    enabled: Boolean(user?.username)
-  });
+  const { data: mySubsData } = useQuery(
+    ['subscriptions', user?.username],
+    () => getSubscriptions(user.username),
+    {
+      enabled: Boolean(user?.username)
+    }
+  );
   const {
     isFetching: AccountNotificationIsFetching,
     isLoading: AccountNotificationIsLoading,
-    error: AccountNotificationError,
     data: dataAccountNotification
   } = useQuery(['AccountNotification', tag], () => getAccountNotifications(tag || ''), {
     enabled: !!tag
   });
-  const {
-    data: communityData,
-    isLoading: communityDataIsLoading,
-    isFetching: communityDataIsFetching,
-    error: communityDataError
-  } = useQuery(['community', tag, ''], () => getCommunity(tag || '', user.username), {
-    enabled: !!tag
-  });
-  const {
-    data: subsData,
-    isLoading: subsIsLoading,
-    isError: subsIsError
-  } = useQuery(['subscribers', tag], () => getSubscribers(tag || ''), {
+  const { data: communityData } = useQuery(
+    ['community', tag, ''],
+    () => getCommunity(tag || '', user.username),
+    {
+      enabled: !!tag
+    }
+  );
+  const { data: subsData } = useQuery(['subscribers', tag], () => getSubscribers(tag || ''), {
     enabled: !!tag
   });
   const {
     data: accountEntriesData,
     isLoading: accountEntriesIsLoading,
     isFetching: accountEntriesIsFetching,
-    error: accountEntriesError,
     isError: accountEntriesIsError,
     isFetchingNextPage: accountIsFetchingNextPage,
     fetchNextPage: accountFetchNextPage,
@@ -162,7 +160,31 @@ const ParamPage: FC = () => {
       accountFetchNextPage();
     }
   }, [accountFetchNextPage, accountHasNextPage, inViewAcc]);
+  useEffect(() => {
+    // Save scroll position when leaving the page
+    const handleRouteChange = () => {
+      sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+    };
 
+    // Restore scroll position when returning to the page
+    const restoreScrollPosition = () => {
+      const scrollPosition = sessionStorage.getItem('scrollPosition');
+      if (scrollPosition) {
+        window.scrollTo(0, parseInt(scrollPosition));
+        handleRouteChange();
+      }
+    };
+    router.events.on('routeChangeStart', handleRouteChange);
+    // Restore scroll position after the page content is loaded
+    if (typeof window !== 'undefined') {
+      // Wait for content to be rendered
+      setTimeout(restoreScrollPosition, 500);
+    }
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router.events]);
   if (accountEntriesIsError || entriesDataIsError) return <CustomError />;
 
   if (
@@ -183,118 +205,136 @@ const ParamPage: FC = () => {
       />
     );
   }
+  const tabTitle =
+    Array.isArray(router.query.param) && router.query.param.length > 1
+      ? `${metadata.title} / ${sortToTitle(router.query.param[0] as sortTypes)}`
+      : sortToTitle((router.query.param?.[0] ?? 'trending') as sortTypes);
 
   if (username && router.query.param ? router.query.param.length > 1 : false) {
     return <CustomError />;
   }
   if (!entriesDataIsLoading && entriesData) {
     return (
-      <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
-        <div className="grid grid-cols-12 md:gap-4">
-          <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-            {user?.isLoggedIn ? (
-              <CommunitiesMybar data={mySubsData} username={user.username} />
-            ) : (
-              <CommunitiesSidebar />
-            )}{' '}
-          </div>
-          <div className="col-span-12 md:col-span-9 xl:col-span-8">
-            <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
-              {communityData && subsData ? (
-                <CommunitySimpleDescription
-                  data={communityData}
-                  subs={subsData}
-                  username={tag ? tag : ' '}
-                  notificationData={dataAccountNotification}
-                />
-              ) : null}
+      <>
+        <Head>
+          <title>{`${tabTitle} - posts Hive`}</title>
+          <meta property="og:title" content={metadata.title} />
+          <meta property="og:description" content={metadata.description} />
+          <meta property="og:image" content={metadata.image} />
+        </Head>
+        <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
+          <div className="grid grid-cols-12 md:gap-4">
+            <div className="hidden md:col-span-3 md:flex xl:col-span-2">
+              {user?.isLoggedIn ? (
+                <CommunitiesMybar data={mySubsData} username={user.username} />
+              ) : (
+                <CommunitiesSidebar />
+              )}{' '}
             </div>
-            <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
-              <div className="my-4 flex w-full items-center justify-between" translate="no">
-                <div className="mr-2 flex w-[320px] flex-col">
-                  <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                    {tag
-                      ? communityData
-                        ? `${communityData?.title}`
-                        : `#${tag}`
-                      : t('navigation.communities_nav.all_posts')}
-                  </span>
-                  {tag ? (
-                    <span
-                      className="hidden text-xs font-light md:block"
-                      data-testid="community-name-unmoderated"
-                    >
+            <div className="col-span-12 md:col-span-9 xl:col-span-8">
+              <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
+                {communityData && subsData ? (
+                  <CommunitySimpleDescription
+                    data={communityData}
+                    subs={subsData}
+                    username={tag ? tag : ' '}
+                    notificationData={dataAccountNotification}
+                  />
+                ) : null}
+              </div>
+              <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
+                <div className="my-4 flex w-full items-center justify-between" translate="no">
+                  <div className="mr-2 flex w-[320px] flex-col">
+                    <span className="text-md hidden font-medium md:block" data-testid="community-name">
                       {tag
                         ? communityData
-                          ? t('communities.community')
-                          : t('communities.unmoderated_tag')
-                        : ''}
+                          ? `${communityData?.title}`
+                          : `#${tag}`
+                        : t('navigation.communities_nav.all_posts')}
                     </span>
-                  ) : null}
-                  <span className="md:hidden">
-                    <CommunitiesSelect
-                      mySubsData={mySubsData}
-                      username={user?.username ? user.username : undefined}
-                      title={
-                        tag
+                    {tag ? (
+                      <span
+                        className="hidden text-xs font-light md:block"
+                        data-testid="community-name-unmoderated"
+                      >
+                        {tag
                           ? communityData
-                            ? `${communityData?.title}`
-                            : `#${tag}`
-                          : t('navigation.communities_nav.all_posts')
-                      }
-                    />
-                  </span>
+                            ? t('communities.community')
+                            : t('communities.unmoderated_tag')
+                          : ''}
+                      </span>
+                    ) : null}
+                    <span className="md:hidden">
+                      <CommunitiesSelect
+                        mySubsData={mySubsData}
+                        username={user?.username ? user.username : undefined}
+                        title={
+                          tag
+                            ? communityData
+                              ? `${communityData?.title}`
+                              : `#${tag}`
+                            : t('navigation.communities_nav.all_posts')
+                        }
+                      />
+                    </span>
+                  </div>
+                  <div className="w-[180px]">
+                    <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
+                  </div>
                 </div>
-                <div className="w-[180px]">
-                  <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
-                </div>
+                <>
+                  {entriesData.pages.map((page, index) => {
+                    return page ? (
+                      <PostList data={page} key={`f-${index}`} isCommunityPage={!!communityData} />
+                    ) : null;
+                  })}
+                  <div>
+                    <button
+                      ref={ref}
+                      onClick={() => fetchNextPage()}
+                      disabled={!hasNextPage || isFetchingNextPage}
+                    >
+                      {isFetchingNextPage ? (
+                        <PostSkeleton />
+                      ) : hasNextPage ? (
+                        t('user_profile.load_newer')
+                      ) : (
+                        t('user_profile.nothing_more_to_load')
+                      )}
+                    </button>
+                  </div>
+                  <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+                </>
               </div>
-              <>
-                {entriesData.pages.map((page, index) => {
-                  return page ? (
-                    <PostList data={page} key={`f-${index}`} isCommunityPage={!!communityData} />
-                  ) : null;
-                })}
-                <div>
-                  <button
-                    ref={ref}
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage || isFetchingNextPage}
-                  >
-                    {isFetchingNextPage ? (
-                      <PostSkeleton />
-                    ) : hasNextPage ? (
-                      t('user_profile.load_newer')
-                    ) : (
-                      t('user_profile.nothing_more_to_load')
-                    )}
-                  </button>
-                </div>
-                <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
-              </>
+            </div>
+            <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
+              {communityData && subsData ? (
+                <CommunityDescription
+                  data={communityData}
+                  subs={subsData}
+                  notificationData={dataAccountNotification}
+                  username={tag ? tag : ' '}
+                />
+              ) : user?.isLoggedIn ? (
+                <CommunitiesSidebar />
+              ) : (
+                <ExploreHive />
+              )}
             </div>
           </div>
-          <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-            {communityData && subsData ? (
-              <CommunityDescription
-                data={communityData}
-                subs={subsData}
-                notificationData={dataAccountNotification}
-                username={tag ? tag : ' '}
-              />
-            ) : user?.isLoggedIn ? (
-              <CommunitiesSidebar />
-            ) : (
-              <ExploreHive />
-            )}
-          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
     <ProfileLayout>
+      <Head>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
+      </Head>
       {!legalBlockedUser ? (
         <>
           {' '}
@@ -342,4 +382,32 @@ const ParamPage: FC = () => {
 
 export default ParamPage;
 
-export const getServerSideProps: GetServerSideProps = getDefaultProps;
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const firstParam = ctx.params?.param?.[0] ?? '';
+  const secondParam = ctx.params?.param?.[1] || '';
+
+  let metadata = {
+    tabTitle: '',
+    description: '',
+    image: 'https://hive.blog/images/hive-blog-share.png',
+    title: firstParam
+  };
+
+  // Check if the first parameter is a username
+  if (firstParam.startsWith('@')) {
+    // If it is, fetch the account data
+    metadata = await getAccountMetadata(firstParam, 'Posts');
+  }
+  // Check if second parameter exists
+  if (secondParam !== '') {
+    // If second parameter exists, that means it's a community
+    metadata = await getCommunityMetadata(firstParam, secondParam, 'Posts');
+  }
+
+  return {
+    props: {
+      metadata,
+      ...(await getTranslations(ctx))
+    }
+  };
+};

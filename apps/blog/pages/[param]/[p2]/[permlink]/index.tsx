@@ -44,7 +44,7 @@ import CustomError from '@/blog/components/custom-error';
 import RendererContainer from '@/blog/components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
-import { getTranslations } from '@/blog/lib/get-translations';
+import { getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
 import env from '@beam-australia/react-env';
 import { usePinMutation, useUnpinMutation } from '@/blog/components/hooks/use-pin-mutations';
@@ -70,12 +70,14 @@ function PostPage({
   community,
   username,
   permlink,
-  mutedStatus
+  mutedStatus,
+  metadata
 }: {
   community: string;
   username: string;
   permlink: string;
   mutedStatus: boolean;
+  metadata: MetadataProps;
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
@@ -91,7 +93,7 @@ function PostPage({
     enabled: !!username && !!permlink
   });
   const { isLoading: isLoadingDiscussion, data: discussion } = useQuery(
-    ['discussionData', username, permlink, user.username],
+    ['discussionData', permlink],
     () => getDiscussion(username, String(permlink), user.username),
     {
       enabled: !!username && !!permlink
@@ -215,7 +217,13 @@ function PostPage({
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   return (
     <>
-      <Head>{canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}</Head>
+      <Head>
+        {canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
+      </Head>
       <div className="py-8">
         <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
           <div className="absolute right-0 top-1 cursor-pointer hover:text-destructive">
@@ -634,9 +642,23 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   let post;
   let mutedStatus = false;
+  let metadata = {
+    tabTitle: '',
+    description: '',
+    image: '',
+    title: ''
+  };
+
   try {
     post = await getPost(username, String(permlink));
     mutedStatus = post?.stats?.gray ?? false;
+    metadata.tabTitle = `${post?.title} - Hive`;
+    metadata.description = (post?.json_metadata?.summary || post?.json_metadata.description) ?? '';
+    metadata.image =
+      post?.json_metadata?.image[0] ||
+      post?.json_metadata.images[0] ||
+      'https://hive.blog/images/hive-blog-share.png';
+    metadata.title = post?.title ?? '';
   } catch (error) {
     logger.error('Failed to fetch post:', error);
   }
@@ -655,6 +677,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       community,
       username,
       permlink,
+      metadata,
       ...(await getTranslations(ctx))
     }
   };

@@ -23,8 +23,8 @@ export function usePinMutation() {
     },
     onSuccess: (data) => {
       logger.info('usePinMutation onSuccess data: %o', data);
-      const { username, permlink } = data;
-      queryClient.invalidateQueries({ queryKey: ['discussionData', username, permlink] });
+      const { permlink } = data;
+      queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
     }
   });
 
@@ -45,8 +45,8 @@ export function useUnpinMutation() {
     },
     onSuccess: (data) => {
       logger.info('useUnpinMutation onSuccess data: %o', data);
-      const { username, permlink } = data;
-      queryClient.invalidateQueries({ queryKey: ['discussionData', username, permlink] });
+      const { permlink } = data;
+      queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
     }
   });
 

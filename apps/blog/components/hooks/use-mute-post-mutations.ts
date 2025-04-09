@@ -31,10 +31,10 @@ export function useMutePostMutation() {
     },
     onSuccess: (data) => {
       logger.info('useMutePostMutation onSuccess data: %o', data);
-      const { username, permlink, discussionPermlink, discussionAuthor } = data;
+      const { username, permlink, discussionPermlink } = data;
       queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
       queryClient.invalidateQueries({
-        queryKey: ['discussionData', discussionAuthor, discussionPermlink]
+        queryKey: ['discussionData', discussionPermlink]
       });
     }
   });
@@ -63,10 +63,10 @@ export function useUnmutePostMutation() {
     },
     onSuccess: (data) => {
       logger.info('useUnmutePostMutation onSuccess data: %o', data);
-      const { username, permlink, discussionPermlink, discussionAuthor } = data;
+      const { username, permlink, discussionPermlink } = data;
       queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
       queryClient.invalidateQueries({
-        queryKey: ['discussionData', discussionAuthor, discussionPermlink]
+        queryKey: ['discussionData', discussionPermlink]
       });
     }
   });

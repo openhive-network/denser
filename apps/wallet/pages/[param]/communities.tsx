@@ -21,7 +21,7 @@ import {
   Textarea
 } from '@ui/components';
 import { useEffect, useState } from 'react';
-import { getTranslations } from '../../lib/get-translations';
+import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translations';
 import { ESupportedLanguages } from '@hiveio/wax';
 import { useCreateCommunityMutation } from '@/wallet/components/hooks/use-create-community-mutation';
 import { z } from 'zod';
@@ -34,6 +34,7 @@ import Loading from '@ui/components/loading';
 import Link from 'next/link';
 import env from '@beam-australia/react-env';
 import { getAccount, getFindAccounts } from '@transaction/lib/hive';
+import Head from 'next/head';
 
 const getCommmunityName = () => {
   return `hive-${Math.floor(Math.random() * 100000) + 100000}`;
@@ -42,7 +43,7 @@ const getCommmunityName = () => {
 const COST_TOKEN = 1;
 const COST_HIVE = 3;
 
-function Communities({ username }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function Communities({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { user } = useUser();
   const { data, isLoading } = useQuery(
     ['findAccounts', username],
@@ -153,219 +154,227 @@ function Communities({ username }: InferGetServerSidePropsType<typeof getServerS
   };
 
   return (
-    <ProfileLayout>
-      <div className="flex flex-col">
-        <WalletMenu username={username} />
-        <div className=" mx-auto my-4 flex max-w-2xl flex-col gap-4 p-4">
-          {isLoading ? (
-            <Loading loading={isLoading} />
-          ) : createCommunityMutation.isLoading ? (
-            <Loading loading={createCommunityMutation.isLoading} />
-          ) : createCommunityMutation.isSuccess ? (
-            <div className="flex flex-col gap-6">
-              <h4 className="text-2xl font-bold">{t('communities.community_created')}</h4>
-              <div>
-                {t('communities.go_to_community')}
-                <Link
-                  className="text-destructive underline"
-                  target="_blank"
-                  href={`${env('BLOG_DOMAIN')}/trending/${communityTag}`}
-                >
-                  {communityTag}
-                </Link>
+    <>
+      <Head>
+        <title>{metadata.tabTitle}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
+      </Head>
+      <ProfileLayout>
+        <div className="flex flex-col">
+          <WalletMenu username={username} />
+          <div className=" mx-auto my-4 flex max-w-2xl flex-col gap-4 p-4">
+            {isLoading ? (
+              <Loading loading={isLoading} />
+            ) : createCommunityMutation.isLoading ? (
+              <Loading loading={createCommunityMutation.isLoading} />
+            ) : createCommunityMutation.isSuccess ? (
+              <div className="flex flex-col gap-6">
+                <h4 className="text-2xl font-bold">{t('communities.community_created')}</h4>
+                <div>
+                  {t('communities.go_to_community')}
+                  <Link
+                    className="text-destructive underline"
+                    target="_blank"
+                    href={`${env('BLOG_DOMAIN')}/trending/${communityTag}`}
+                  >
+                    {communityTag}
+                  </Link>
+                </div>
               </div>
-            </div>
-          ) : (
-            <>
-              <h4 className="text-2xl font-bold">{t('communities.create_community')}</h4>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('communities.title')}</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="about"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('communities.about')}</FormLabel>
-                        <FormControl>
-                          <Textarea {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div>
-                    <h3 className="text-sm">{t('communities.assigned_owner_account')}</h3>
-                    <Input value={communityTag} />
-                    <p className="text-xs">{t('communities.communities_are_built')}</p>
-                  </div>
-                  {advanced ? (
-                    <>
-                      <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t('communities.description')}</FormLabel>
-                            <FormControl>
-                              <Textarea {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="flagText"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t('communities.flag_text')}</FormLabel>
-                            <FormControl>
-                              <Textarea {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="lang"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t('communities.lang')}</FormLabel>
-                            <FormControl>
-                              <Select {...field} onValueChange={field.onChange} defaultValue={field.value}>
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {Object.entries(ESupportedLanguages).map(([key, value]) => (
-                                    <SelectItem key={key} value={value}>
-                                      {t(`communities.languages.${value}`)}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="nsfw"
-                        render={({ field }) => (
-                          <FormItem>
-                            <div className="flex items-center gap-2">
-                              <FormControl>
-                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                              </FormControl>
-                              <FormLabel>{t('communities.nsfw')}</FormLabel>
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </>
-                  ) : null}
-                  <FormField
-                    control={form.control}
-                    name="claimed"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('communities.fee_type')}</FormLabel>
-                        <FormMessage />
-                        <div className="flex flex-col gap-6">
-                          <div className="flex items-center space-x-2">
-                            <FormControl>
-                              <Input
-                                // multiply by 1000 to convert to hive
-                                disabled={COST_HIVE * 1000 > Number(account?.balance.amount ?? 0)}
-                                type="radio"
-                                id="hive"
-                                value="hive"
-                                checked={field.value === 'hive'}
-                                onChange={(e) => field.onChange(e.target.value)}
-                                className="h-4 w-4"
-                              />
-                            </FormControl>
-                            <Label htmlFor="hive">
-                              {t('communities.payment_confirm', {
-                                amount: COST_HIVE,
-                                // 1000 is the precision of hive
-                                owned_hives: Number(account?.balance.amount) / 1000
-                              })}
-                            </Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <FormControl>
-                              <Input
-                                disabled={COST_TOKEN > Number(account?.pending_claimed_accounts)}
-                                type="radio"
-                                id="claimed"
-                                value="claimed"
-                                checked={field.value === 'claimed'}
-                                onChange={(e) => field.onChange(e.target.value)}
-                                className="h-4 w-4"
-                              />
-                            </FormControl>
-                            <Label htmlFor="claimed">
-                              {t('communities.claim_tokens', {
-                                amount: COST_TOKEN,
-                                owned_tokens: account?.pending_claimed_accounts ?? 0
-                              })}
-                            </Label>
-                          </div>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="saved_password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="flex items-center gap-2">
+            ) : (
+              <>
+                <h4 className="text-2xl font-bold">{t('communities.create_community')}</h4>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t('communities.title')}</FormLabel>
                           <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                            <Input {...field} />
                           </FormControl>
-                          <FormLabel>
-                            {t('communities.manage_confirm', {
-                              communityName: communityTag,
-                              username: user.username
-                            })}
-                          </FormLabel>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex w-full items-center justify-between">
-                    <Button type="submit">{t('communities.create_community')}</Button>
-                    <Button type="button" variant="outline" onClick={() => setAdvanced((prev) => !prev)}>
-                      {advanced ? t('communities.basic') : t('communities.advanced')}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </>
-          )}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="about"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t('communities.about')}</FormLabel>
+                          <FormControl>
+                            <Textarea {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div>
+                      <h3 className="text-sm">{t('communities.assigned_owner_account')}</h3>
+                      <Input value={communityTag} />
+                      <p className="text-xs">{t('communities.communities_are_built')}</p>
+                    </div>
+                    {advanced ? (
+                      <>
+                        <FormField
+                          control={form.control}
+                          name="description"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('communities.description')}</FormLabel>
+                              <FormControl>
+                                <Textarea {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="flagText"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('communities.flag_text')}</FormLabel>
+                              <FormControl>
+                                <Textarea {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="lang"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('communities.lang')}</FormLabel>
+                              <FormControl>
+                                <Select {...field} onValueChange={field.onChange} defaultValue={field.value}>
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {Object.entries(ESupportedLanguages).map(([key, value]) => (
+                                      <SelectItem key={key} value={value}>
+                                        {t(`communities.languages.${value}`)}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="nsfw"
+                          render={({ field }) => (
+                            <FormItem>
+                              <div className="flex items-center gap-2">
+                                <FormControl>
+                                  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                </FormControl>
+                                <FormLabel>{t('communities.nsfw')}</FormLabel>
+                              </div>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </>
+                    ) : null}
+                    <FormField
+                      control={form.control}
+                      name="claimed"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t('communities.fee_type')}</FormLabel>
+                          <FormMessage />
+                          <div className="flex flex-col gap-6">
+                            <div className="flex items-center space-x-2">
+                              <FormControl>
+                                <Input
+                                  // multiply by 1000 to convert to hive
+                                  disabled={COST_HIVE * 1000 > Number(account?.balance.amount ?? 0)}
+                                  type="radio"
+                                  id="hive"
+                                  value="hive"
+                                  checked={field.value === 'hive'}
+                                  onChange={(e) => field.onChange(e.target.value)}
+                                  className="h-4 w-4"
+                                />
+                              </FormControl>
+                              <Label htmlFor="hive">
+                                {t('communities.payment_confirm', {
+                                  amount: COST_HIVE,
+                                  // 1000 is the precision of hive
+                                  owned_hives: Number(account?.balance.amount) / 1000
+                                })}
+                              </Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <FormControl>
+                                <Input
+                                  disabled={COST_TOKEN > Number(account?.pending_claimed_accounts)}
+                                  type="radio"
+                                  id="claimed"
+                                  value="claimed"
+                                  checked={field.value === 'claimed'}
+                                  onChange={(e) => field.onChange(e.target.value)}
+                                  className="h-4 w-4"
+                                />
+                              </FormControl>
+                              <Label htmlFor="claimed">
+                                {t('communities.claim_tokens', {
+                                  amount: COST_TOKEN,
+                                  owned_tokens: account?.pending_claimed_accounts ?? 0
+                                })}
+                              </Label>
+                            </div>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="saved_password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-center gap-2">
+                            <FormControl>
+                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                            </FormControl>
+                            <FormLabel>
+                              {t('communities.manage_confirm', {
+                                communityName: communityTag,
+                                username: user.username
+                              })}
+                            </FormLabel>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex w-full items-center justify-between">
+                      <Button type="submit">{t('communities.create_community')}</Button>
+                      <Button type="button" variant="outline" onClick={() => setAdvanced((prev) => !prev)}>
+                        {advanced ? t('communities.basic') : t('communities.advanced')}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </ProfileLayout>
+      </ProfileLayout>
+    </>
   );
 }
 
@@ -383,6 +392,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       username: username.replace('@', ''),
+      metadata: await getAccountMetadata(username, 'Create Communities'),
       ...(await getTranslations(ctx))
     }
   };

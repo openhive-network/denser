@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { getTranslations } from '../lib/get-translations';
 import { useMemo } from 'react';
+import Head from 'next/head';
 
 export const getServerSideProps: GetServerSideProps<{
   data: string;
@@ -18,6 +19,7 @@ export const getServerSideProps: GetServerSideProps<{
     }
   };
 };
+const TAB_TITLE = 'Terms of Service - Hive';
 function TOS({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const renderer = new Remarkable({
     html: true,
@@ -27,16 +29,21 @@ function TOS({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   });
   const content = useMemo(() => renderer.render(data), []);
   return (
-    <div className="mx-auto my-12 max-w-3xl px-4">
-      <div className="text-2xl sm:text-5xl">Terms of Service</div>
-      <div
-        id="articleBody"
-        className="prose"
-        dangerouslySetInnerHTML={{
-          __html: content
-        }}
-      />
-    </div>
+    <>
+      <Head>
+        <title>{TAB_TITLE}</title>
+      </Head>
+      <div className="mx-auto my-12 max-w-3xl px-4">
+        <div className="text-2xl sm:text-5xl">Terms of Service</div>
+        <div
+          id="articleBody"
+          className="prose"
+          dangerouslySetInnerHTML={{
+            __html: content
+          }}
+        />
+      </div>
+    </>
   );
 }
 
