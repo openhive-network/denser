@@ -619,7 +619,7 @@ export class TransactionService {
 
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation(reply);
-    });
+    }, transactionOptions);
   }
 
   async post(

@@ -17,6 +17,7 @@ import Link from 'next/link';
 import env from '@beam-australia/react-env';
 import { getLogger } from '@ui/lib/logging';
 import { getDefaultProps } from '../lib/get-translations';
+import Head from 'next/head';
 
 const logger = getLogger('app');
 
@@ -60,61 +61,66 @@ const CommunitiesPage = () => {
   if (showLoading) return <Loading loading={showLoading} />;
 
   return (
-    <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
-      <div className="grid grid-cols-12 md:gap-4">
-        <div className="hidden md:col-span-4 md:flex xl:col-span-2">
-          {user.isLoggedIn ? (
-            <CommunitiesMybar data={mySubsData} username={user.username} />
-          ) : (
-            <CommunitiesSidebar />
-          )}
-        </div>
-        <div className="col-span-12 md:col-span-8">
-          <div className="mt-4 flex items-center justify-between" data-testid="communities-header-title">
-            <span className="text-sm font-medium sm:text-xl" data-testid="communities-header">
-              {t('communities.communities')}
-            </span>
+    <>
+      <Head>
+        <title>Communities - Hive</title>
+      </Head>
+      <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2 pt-8">
+        <div className="grid grid-cols-12 md:gap-4">
+          <div className="hidden md:col-span-4 md:flex xl:col-span-2">
             {user.isLoggedIn ? (
-              <Link
-                className="text-sm font-medium text-red-600 dark:hover:text-red-800"
-                href={`${walletHost}/@${user.username}/communities`}
-              >
-                Create a Community
-              </Link>
-            ) : null}
+              <CommunitiesMybar data={mySubsData} username={user.username} />
+            ) : (
+              <CommunitiesSidebar />
+            )}
           </div>
-          <div className="mt-4 flex w-full items-center justify-between gap-4" translate="no">
-            <div className="relative w-full max-w-md">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Icons.search className="h-5 w-5 rotate-90" />
+          <div className="col-span-12 md:col-span-8">
+            <div className="mt-4 flex items-center justify-between" data-testid="communities-header-title">
+              <span className="text-sm font-medium sm:text-xl" data-testid="communities-header">
+                {t('communities.communities')}
+              </span>
+              {user.isLoggedIn ? (
+                <Link
+                  className="text-sm font-medium text-red-600 dark:hover:text-red-800"
+                  href={`${walletHost}/@${user.username}/communities`}
+                >
+                  Create a Community
+                </Link>
+              ) : null}
+            </div>
+            <div className="mt-4 flex w-full items-center justify-between gap-4" translate="no">
+              <div className="relative w-full max-w-md">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <Icons.search className="h-5 w-5 rotate-90" />
+                </div>
+                <Input
+                  type="search"
+                  id="search"
+                  value={inputQuery}
+                  placeholder={t('communities.search')}
+                  autoComplete="off"
+                  className="block rounded-full bg-white p-4 pl-10 text-sm dark:bg-background/95 dark:text-white"
+                  onChange={(e) => setInputQuery(e.target.value)}
+                  onKeyDown={(e) => handleSearchCommunity(e)}
+                />
               </div>
-              <Input
-                type="search"
-                id="search"
-                value={inputQuery}
-                placeholder={t('communities.search')}
-                autoComplete="off"
-                className="block rounded-full bg-white p-4 pl-10 text-sm dark:bg-background/95 dark:text-white"
-                onChange={(e) => setInputQuery(e.target.value)}
-                onKeyDown={(e) => handleSearchCommunity(e)}
-              />
+              <CommunitiesSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
             </div>
-            <CommunitiesSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
+            <Separator className="my-4" />
+            {communitiesData && communitiesData?.length > 0 ? (
+              <CommunitiesList data={communitiesData} />
+            ) : (
+              <div className="w-full py-4" data-testid="communities-search-no-results-msg">
+                {t('communities.no_results')}
+              </div>
+            )}
           </div>
-          <Separator className="my-4" />
-          {communitiesData && communitiesData?.length > 0 ? (
-            <CommunitiesList data={communitiesData} />
-          ) : (
-            <div className="w-full py-4" data-testid="communities-search-no-results-msg">
-              {t('communities.no_results')}
-            </div>
-          )}
-        </div>
-        <div className="hidden lg:flex xl:col-span-2">
-          {user.isLoggedIn ? <CommunitiesSidebar /> : <ExploreHive />}{' '}
+          <div className="hidden lg:flex xl:col-span-2">
+            {user.isLoggedIn ? <CommunitiesSidebar /> : <ExploreHive />}{' '}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 export default CommunitiesPage;

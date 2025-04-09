@@ -27,7 +27,7 @@ export function useUserTitleMutation() {
       const { community, username, permlink } = data;
       queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
       queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
-      queryClient.invalidateQueries({ queryKey: ['discussionData', username, permlink] });
+      queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
     }
   });
 

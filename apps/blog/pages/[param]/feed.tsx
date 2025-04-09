@@ -20,6 +20,7 @@ import dynamic from 'next/dynamic';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getDefaultProps } from '../../lib/get-translations';
+import Head from 'next/head';
 const CommunitiesSidebar = dynamic(() => import('@/blog/components/communities-sidebar'), { ssr: false });
 const CommunitiesMybar = dynamic(() => import('@/blog/components/communities-mybar'), { ssr: false });
 const ExploreHive = dynamic(() => import('@/blog/components/explore-hive'), { ssr: false });
@@ -38,6 +39,7 @@ export const PostSkeleton = () => {
   );
 };
 
+const TAB_TITLE = 'My Friends - Hive';
 const FeedPage: FC = () => {
   const { t } = useTranslation('common_blog');
   const { username, tag } = useSiteParams();
@@ -106,85 +108,90 @@ const FeedPage: FC = () => {
   }
 
   return (
-    <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
-      <div className="grid grid-cols-12 md:gap-4">
-        <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-          {user?.isLoggedIn ? (
-            <CommunitiesMybar data={mySubsData} username={user?.username || ''} />
-          ) : (
-            <CommunitiesSidebar />
-          )}
-        </div>
-        <div className="col-span-12 pt-4 md:col-span-9 xl:col-span-8 xl:pt-0">
-          <span className="text-md mt-4 hidden text-xl font-medium xl:block">
-            {t('navigation.communities_nav.my_friends')}
-          </span>
-          <span className="xl:hidden" translate="no">
-            <CommunitiesSelect
-              username={user?.username || undefined}
-              mySubsData={mySubsData}
-              title={
-                tag
-                  ? communityData
-                    ? `${communityData?.title}`
-                    : `#${tag}`
-                  : t('navigation.communities_nav.my_friends')
-              }
-            />
-          </span>
+    <>
+      <Head>
+        <title>{TAB_TITLE}</title>
+      </Head>
+      <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
+        <div className="grid grid-cols-12 md:gap-4">
+          <div className="hidden md:col-span-3 md:flex xl:col-span-2">
+            {user?.isLoggedIn ? (
+              <CommunitiesMybar data={mySubsData} username={user?.username || ''} />
+            ) : (
+              <CommunitiesSidebar />
+            )}
+          </div>
+          <div className="col-span-12 pt-4 md:col-span-9 xl:col-span-8 xl:pt-0">
+            <span className="text-md mt-4 hidden text-xl font-medium xl:block">
+              {t('navigation.communities_nav.my_friends')}
+            </span>
+            <span className="xl:hidden" translate="no">
+              <CommunitiesSelect
+                username={user?.username || undefined}
+                mySubsData={mySubsData}
+                title={
+                  tag
+                    ? communityData
+                      ? `${communityData?.title}`
+                      : `#${tag}`
+                    : t('navigation.communities_nav.my_friends')
+                }
+              />
+            </span>
 
-          <div className="col-span-12 mb-5 flex flex-col py-4 md:col-span-10 lg:col-span-8">
-            {!accountEntriesIsLoading && accountEntriesData ? (
-              <>
-                {accountEntriesData.pages[0]?.length !== 0 && user?.username ? (
-                  accountEntriesData.pages.map((page, index) => {
-                    return page ? <PostList data={page} key={`x-${index}`} /> : null;
-                  })
-                ) : (
-                  <div
-                    className="border-card-empty-border flex flex-col gap-6 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
-                    data-testid="user-has-not-started-blogging-yet"
-                  >
-                    <span>You haven&apos;t followed anyone yet!</span>
-                    <span style={{ fontSize: '1.1rem' }}>
-                      <Link href="/" className="w-fit text-destructive">
-                        Explore Trending
-                      </Link>
-                    </span>
-                    <Link href="/welcome" className="w-fit text-destructive">
-                      New users guide
-                    </Link>
-                  </div>
-                )}
-                <div>
-                  {user?.username ? (
-                    <button
-                      ref={refAcc}
-                      onClick={() => accountFetchNextPage()}
-                      disabled={!accountHasNextPage || accountIsFetchingNextPage}
+            <div className="col-span-12 mb-5 flex flex-col py-4 md:col-span-10 lg:col-span-8">
+              {!accountEntriesIsLoading && accountEntriesData ? (
+                <>
+                  {accountEntriesData.pages[0]?.length !== 0 && user?.username ? (
+                    accountEntriesData.pages.map((page, index) => {
+                      return page ? <PostList data={page} key={`x-${index}`} /> : null;
+                    })
+                  ) : (
+                    <div
+                      className="border-card-empty-border flex flex-col gap-6 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
+                      data-testid="user-has-not-started-blogging-yet"
                     >
-                      {accountIsFetchingNextPage ? (
-                        <PostSkeleton />
-                      ) : accountHasNextPage ? (
-                        t('user_profile.load_newer')
-                      ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
-                        t('user_profile.nothing_more_to_load')
-                      ) : null}
-                    </button>
-                  ) : null}
-                </div>
-                <div>
-                  {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
-                </div>
-              </>
-            ) : null}
+                      <span>You haven&apos;t followed anyone yet!</span>
+                      <span style={{ fontSize: '1.1rem' }}>
+                        <Link href="/" className="w-fit text-destructive">
+                          Explore Trending
+                        </Link>
+                      </span>
+                      <Link href="/welcome" className="w-fit text-destructive">
+                        New users guide
+                      </Link>
+                    </div>
+                  )}
+                  <div>
+                    {user?.username ? (
+                      <button
+                        ref={refAcc}
+                        onClick={() => accountFetchNextPage()}
+                        disabled={!accountHasNextPage || accountIsFetchingNextPage}
+                      >
+                        {accountIsFetchingNextPage ? (
+                          <PostSkeleton />
+                        ) : accountHasNextPage ? (
+                          t('user_profile.load_newer')
+                        ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
+                          t('user_profile.nothing_more_to_load')
+                        ) : null}
+                      </button>
+                    ) : null}
+                  </div>
+                  <div>
+                    {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
+          <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
+            {user?.isLoggedIn ? <CommunitiesSidebar /> : <ExploreHive />}
           </div>
         </div>
-        <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-          {user?.isLoggedIn ? <CommunitiesSidebar /> : <ExploreHive />}
-        </div>
       </div>
-    </div>
+    </>
   );
 };
 

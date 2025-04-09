@@ -144,7 +144,6 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
     try {
       follow_stats = await getFollowCount(username);
     } catch (e) {}
-
     return { ...account, follow_stats };
   });
 

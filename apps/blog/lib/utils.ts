@@ -20,6 +20,24 @@ export enum NaiMap {
   '@@000000037' = 'VESTS'
 }
 
+export type sortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted';
+export const sortToTitle = (sort: sortTypes) => {
+  switch (sort) {
+    case 'trending':
+      return 'Trending';
+    case 'hot':
+      return 'Hot';
+    case 'created':
+      return 'New';
+    case 'payout':
+      return 'Pending';
+    case 'muted':
+      return 'Muted';
+    default:
+      return 'Trending';
+  }
+};
+
 export const debounce = (fn: Function, delay: number) => {
   let timer: ReturnType<typeof setTimeout>;
   return function (...args: any[]) {
