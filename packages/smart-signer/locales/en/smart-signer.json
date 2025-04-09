@@ -88,7 +88,18 @@
       "button_sign_auth": "Sign auth tx",
       "button_signin_unlocked": "Sign in with signed tx",
       "strict_mode": "Direct Authority Mode",
-      "strict_mode_tooltip": "When enabled, the app will only allow adding keys with account's own authority. If you want to add keys with other authority, please disable this mode."
+      "strict_mode_tooltip": "When enabled, the app will only allow adding keys with account's own authority. If you want to add keys with other authority, please disable this mode.",
+      "key_update": "Update existing saved key",
+      "update_key_title": "Update Key in Safe Storage",
+      "update_key_description": "Update {{keyType}} key for user {{username}}",
+      "update_key_button": "Update Key",
+      "key_updated_title": "Key Updated",
+      "key_updated_description": "Your key has been updated successfully",
+      "key_updated_success": "Key updated successfully! Now you can sign in again.",
+      "user_not_found": "User not found in safe storage",
+      "back": "Back",
+      "authenticated_title": "Authentication Successful",
+      "authenticated_description": "You have been authenticated successfully"
     },
     "zod_error": {
       "password_length": "Password length should be more than 6 characters",
@@ -96,7 +107,9 @@
       "keytype_required": "keyType is required",
       "invalid_wif": "Invalid WIF key",
       "no_wif": "No WIF key from user",
-      "no_wif_key": "No WIF key"
+      "no_wif_key": "No WIF key",
+      "password_required": "Password is required",
+      "wif_required": "WIF key is required"
     },
     "signin_with_keychain": "Hive Keychain extension",
     "signin_with_wif": "Sign in with WIF (Legacy)",
