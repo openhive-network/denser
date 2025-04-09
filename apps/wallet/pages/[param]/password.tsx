@@ -120,7 +120,12 @@ export default function PostForm() {
   async function resolveChangePasswordComponents(password: string): Promise<{
     account: string;
     keys: Record<string, { old: string; new: string }>;
+    wifs: Record<string, string>;
   }> {
+    if (!generatedPassword) {
+      throw new Error('Generated password is required');
+    }
+
     const hiveChain = await hiveChainService.getHiveChain();
 
     // password !== WIF
@@ -128,14 +133,10 @@ export default function PostForm() {
     const oldActive = hiveChain.getPrivateKeyFromPassword(username, 'active', password);
     const oldPosting = hiveChain.getPrivateKeyFromPassword(username, 'posting', password);
 
-    // generate password
-    const brainKeyData = hiveChain.suggestBrainKey();
-    const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
-
     // private keys for account authorities
-    const newOwner = hiveChain.getPrivateKeyFromPassword(username, 'owner', passwordToBeSavedByUser);
-    const newActive = hiveChain.getPrivateKeyFromPassword(username, 'active', passwordToBeSavedByUser);
-    const newPosting = hiveChain.getPrivateKeyFromPassword(username, 'posting', passwordToBeSavedByUser);
+    const newOwner = hiveChain.getPrivateKeyFromPassword(username, 'owner', generatedPassword);
+    const newActive = hiveChain.getPrivateKeyFromPassword(username, 'active', generatedPassword);
+    const newPosting = hiveChain.getPrivateKeyFromPassword(username, 'posting', generatedPassword);
 
     return {
       account: username,
@@ -152,6 +153,11 @@ export default function PostForm() {
           old: oldPosting.associatedPublicKey,
           new: newPosting.associatedPublicKey
         }
+      },
+      wifs: {
+        owner: newOwner.wifPrivateKey,
+        active: newActive.wifPrivateKey,
+        posting: newPosting.wifPrivateKey
       }
     };
   }
