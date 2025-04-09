@@ -6,6 +6,7 @@ import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useProcessAuth, LoginFormSchema } from './process';
 import { useLocalStorage } from 'usehooks-ts';
 import Methods from './methods/methods';
+import SafeStorageKeyUpdate from './methods/safestorage-key-update';
 
 export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
@@ -19,7 +20,8 @@ export type SignInFormRef = { cancel: () => Promise<void> };
 
 export enum Steps {
   SAFE_STORAGE_LOGIN = 1,
-  OTHER_LOGIN_OPTIONS
+  SAFE_STORAGE_KEY_UPDATE,
+  OTHER_LOGIN_OPTIONS,
 }
 
 const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
@@ -87,6 +89,16 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             onUsernameChange={(username) => setUsername(username)}
             sign={sign}
             submit={submit}
+          />
+        )}
+
+        {step === Steps.SAFE_STORAGE_KEY_UPDATE && (
+          <SafeStorageKeyUpdate
+            onSetStep={setStep}
+            i18nNamespace={i18nNamespace}
+            preferredKeyTypes={preferredKeyTypes}
+            username={username}
+            onUsernameChange={(username) => setUsername(username)}
           />
         )}
       </div>
