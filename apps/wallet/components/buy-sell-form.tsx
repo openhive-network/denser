@@ -7,10 +7,10 @@ import { useTranslation } from 'next-i18next';
 import { useCreateMarketOrder } from './hooks/use-market-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getAsset } from '../lib/utils';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAccount } from '@transaction/lib/hive';
+import { getAsset } from '@transaction/lib/utils';
 
 enum ActionType {
   ChangeCostValue = 'changeCostValue',

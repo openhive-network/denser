@@ -24,7 +24,6 @@ import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult } from '@transaction/index';
-import { getAsset } from '../lib/utils';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,9 +32,9 @@ import { getAccount } from '@transaction/lib/hive';
 import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
 import { convertStringToBig } from '@ui/lib/helpers';
-import { TNaiAssetSource } from '@hiveio/wax';
 import { CircleSpinner } from 'react-spinners-kit';
 import { toast } from '@ui/components/hooks/use-toast';
+import { getAsset } from '@transaction/lib/utils';
 
 // After applying this operation, vesting_shares will be withdrawn at a rate of vesting_shares/13 per week for 13 weeks starting one week after this operation is included in the blockchain.
 const HIVE_VESTING_WITHDRAW_INTERVALS = 13;

@@ -7,13 +7,7 @@ import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-upd
 import { SavingsWithdrawals } from './hive';
 import { numberWithCommas } from '@ui/lib/utils';
 import Big from 'big.js';
-import {
-  createAsset,
-  HBD_PRECISION,
-  HIVE_NAI_STRING,
-  HIVE_PRECISION,
-  VESTS_PRECISION
-} from '@transaction/lib/utils';
+import { HIVE_NAI_STRING, VESTS_PRECISION } from '@transaction/lib/utils';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -118,29 +112,6 @@ export const transformWithdraw = (
   if (format === 'big') return multiplication;
   if (format === 'number') return multiplication.toNumber();
   return numberWithCommas(multiplication.toFixed(VESTS_PRECISION));
-};
-
-export const getAsset = async (value: string, curr: 'HIVE' | 'HBD' | 'VESTS') => {
-  switch (curr) {
-    case 'HIVE':
-      if (value.slice(value.indexOf('.')).length > HIVE_PRECISION + 1) {
-        throw new Error('There should be maximum of 3 decimal places in amount');
-      }
-      const hiveAmount = Number(value).toFixed(HIVE_PRECISION).replace('.', '');
-      return createAsset(hiveAmount, curr);
-    case 'HBD':
-      if (value.slice(value.indexOf('.')).length > HBD_PRECISION + 1) {
-        throw new Error('There should be maximum of 3 decimal places in amount');
-      }
-      const hbdAmount = Number(value).toFixed(HBD_PRECISION).replace('.', '');
-      return createAsset(hbdAmount, curr);
-    case 'VESTS':
-      if (value.slice(value.indexOf('.')).length > VESTS_PRECISION + 1) {
-        throw new Error('There should be maximum of 3 decimal places in amount');
-      }
-      const vestsAmount = Number(value).toFixed(VESTS_PRECISION).replace('.', '');
-      return createAsset(vestsAmount, curr);
-  }
 };
 
 export const getAmountFromWithdrawal = (withdrawal: SavingsWithdrawals['withdrawals'][number]) => {
