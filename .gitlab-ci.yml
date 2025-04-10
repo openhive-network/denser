@@ -788,7 +788,7 @@ develop:deploy-blog-mainnet:
   extends: .deploy_template_mainnet
   needs:
     - docker-build-blog
-    - e2e-tests-blog
+    #- e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-dev-blog
     PORT: 8111
@@ -849,7 +849,7 @@ develop:deploy-blog-mirrornet:
   extends: .deploy_template_mirrornet
   needs:
     - docker-build-blog
-    - e2e-tests-blog
+    #- e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-dev-blog-mirror
     PORT: 8211

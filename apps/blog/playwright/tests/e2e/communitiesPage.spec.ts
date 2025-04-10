@@ -165,7 +165,14 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
-    const rangedPostsOfLeoFinance = await apiHelper.getRankedPostsAPI('trending', '', '', 1, 'hive-167922', '');
+    const rangedPostsOfLeoFinance = await apiHelper.getRankedPostsAPI(
+      'trending',
+      '',
+      '',
+      1,
+      'hive-167922',
+      ''
+    );
     const firstPostTitle = rangedPostsOfLeoFinance.result[0].title;
     const firstPostIsPinned = rangedPostsOfLeoFinance.result[0].stats.is_pinned;
 
@@ -615,10 +622,10 @@ test.describe('Communities page tests', () => {
       }
     });
 
-    const languageApi = (await response.json())
-                            .result
-                            .map( (item) => (item.title === 'LeoFinance' ? item : null ))
-                            .find( (item) => item !== null ).lang;
+    // const languageApi = (await response.json()).result[0].lang;
+    const languageApi = (await response.json()).result
+      .map((item) => (item.title === 'LeoFinance' ? item : null))
+      .find((item) => item !== null).lang;
 
     expect(communityChoosenLanguageText).toBe(languageApi);
   });

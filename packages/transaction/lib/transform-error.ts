@@ -28,6 +28,7 @@ const wellKnownErrorDescriptions = [
  * @returns error description
  */
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
+  console.trace('DEBUG: in transformError: got error (will be swallowed): %o on %o', e, ctx, defaultDescription);
   logger.error('in transformError: got error (will be swallowed): %o on %o', e, ctx);
 
   let description = 'Error';

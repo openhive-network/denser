@@ -1,86 +1,35 @@
-import {
-  Input,
-  Label,
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@hive/ui';
-import { Icons } from '@ui/components/icons';
 import { useRouter } from 'next/router';
-import { useState, KeyboardEvent, useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { getDefaultProps } from '../lib/get-translations';
-import { getSearch } from '@transaction/lib/bridge';
-import SearchCard from '../components/search-card';
-import { useLocalStorage } from 'usehooks-ts';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useFollowListQuery } from '../components/hooks/use-follow-list';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import Loading from '@ui/components/loading';
 import { PostSkeleton } from './[...param]';
 import { useInView } from 'react-intersection-observer';
 import Head from 'next/head';
+import PostList from '../components/post-list';
+import { getSimilarPosts } from '@transaction/lib/bridge';
+import AISearchInput from '../components/ai-search-input';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 const TAB_TITLE = 'Search - Hive';
 export default function SearchPage() {
   const router = useRouter();
-  const { t } = useTranslation('common_blog');
-  const { ref, inView } = useInView();
-  const [values, setValues] = useState({
-    sort: 'newest',
-    input: ''
-  });
-  const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      router.push(`/search?q=${encodeURIComponent(values.input)}&sort=${encodeURIComponent(values.sort)}`);
-    }
-  };
-  const { user } = useUser();
+  const query = router.query.q as string;
 
-  const {
-    data: entriesData,
-    isLoading: entriesDataIsLoading,
-    isFetching: entriesDataIsFetching,
-    isError: entriesDataIsError,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage
-  } = useInfiniteQuery(
-    ['infiniteSearch', router.query.q, router.query.sort],
-    (lastPage) => getSearch(router.query.q as string, lastPage.pageParam, router.query.sort as string),
-    {
-      getNextPageParam: (lastPage) => lastPage.scroll_id,
-      enabled: Boolean(router.query.sort) && Boolean(router.query.q)
-    }
-  );
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, hasNextPage, inView]);
-  const handleSelect = (e: string) => {
-    setValues({ ...values, sort: e });
-    router.push(`/search?q=${encodeURIComponent(values.input)}&s=${encodeURIComponent(e)}`);
-  };
-  const [preferences] = useLocalStorage<Preferences>(
-    `user-preferences-${user.username}`,
-    DEFAULT_PREFERENCES
-  );
-  const { data: blacklist } = useFollowListQuery(user.username, 'blacklisted');
+  const { data, isLoading } = useQuery(['posts', query], () => getSimilarPosts(query), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    enabled: !!router.query.q
+  });
 
   return (
     <>
       <Head>
         <title>{TAB_TITLE}</title>
       </Head>
-      <div className="flex flex-col gap-12 px-4 py-8">
+      {/* <div className="flex flex-col gap-12 px-4 py-8">
         <div className="flex flex-col gap-4">
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -136,6 +85,12 @@ export default function SearchPage() {
             )}
           </button>
         </div>
+      </div> */}
+      <div className="m-auto flex max-w-4xl flex-col gap-12 px-4 py-8">
+        <div className="flex flex-col gap-4 lg:hidden">
+          <AISearchInput />
+        </div>
+        {!query ? null : isLoading ? <Loading loading={isLoading} /> : data ? <PostList data={data} /> : null}
       </div>
     </>
   );

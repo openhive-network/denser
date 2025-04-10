@@ -607,6 +607,8 @@ importers:
       '@hiveio/hb-auth':
         specifier: 0.0.1-stable.250402093900
         version: 0.0.1-stable.250402093900
+        specifier: 0.0.1-stable.250131124251
+        version: 0.0.1-stable.250131124251
       '@hiveio/wax':
         specifier: 1.27.6-rc7-250404091259
         version: 1.27.6-rc7-250404091259
@@ -1804,6 +1806,8 @@ packages:
 
   '@hiveio/hb-auth@0.0.1-stable.250402093900':
     resolution: {integrity: sha1-EO9bnyAYIPojMH/77xq9f79X+gQ=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-0.0.1-stable.250402093900.tgz}
+  '@hiveio/hb-auth@0.0.1-stable.250131124251':
+    resolution: {integrity: sha1-HX9GbxRjpo+ezDR5SAvuEIVr6II=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-0.0.1-stable.250131124251.tgz}
 
   '@hiveio/hivescript@1.3.3':
     resolution: {integrity: sha512-nOeGespwSujSaEl4R09u9FXGgMyOywtWWQiJdiWsmJDknCUqXXxTfs3KICssPTjkDlbGp2gkg3WjUyrlxm28Qg==, tarball: https://registry.npmjs.org/@hiveio/hivescript/-/hivescript-1.3.3.tgz}
@@ -6856,8 +6860,8 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  libphonenumber-js@1.11.17:
-    resolution: {integrity: sha512-Jr6v8thd5qRlOlc6CslSTzGzzQW03uiscab7KHQZX1Dfo4R6n6FDhZ0Hri6/X7edLIDv9gl4VMZXhxTjLnl0VQ==}
+  libphonenumber-js@1.12.6:
+    resolution: {integrity: sha512-PJiS4ETaUfCOFLpmtKzAbqZQjCCKVu2OhTV4SVNNE7c2nu/dACvtCqj4L0i/KWNnIgRv7yrILvBj5Lonv5Ncxw==}
 
   lie@3.3.0:
     resolution: {integrity: sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==}
@@ -9875,8 +9879,8 @@ packages:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  validator@13.12.0:
-    resolution: {integrity: sha512-c1Q0mCiPlgdTVVVIJIrBuxNicYE+t/7oKeI9MWLj3fh/uq2Pxh/3eeWbVZ4OcGW1TUf53At0njHw5SMdA3tmMg==}
+  validator@13.15.0:
+    resolution: {integrity: sha512-36B2ryl4+oL5QxZ3AzD0t5SsMNGvTtQHpjgFO5tbNxfXbMFkY822ktCDe1MnlqV3301QQI9SLHDNJokDI+Z9pA==}
     engines: {node: '>= 0.10'}
 
   varint@5.0.2:
@@ -11481,6 +11485,7 @@ snapshots:
       - encoding
 
   '@hiveio/hb-auth@0.0.1-stable.250402093900':
+  '@hiveio/hb-auth@0.0.1-stable.250131124251':
     dependencies:
       '@hiveio/wax': 1.27.6-rc7-stable.250131113706
       comlink: 4.4.2
@@ -14493,8 +14498,8 @@ snapshots:
   class-validator@0.14.1:
     dependencies:
       '@types/validator': 13.12.2
-      libphonenumber-js: 1.11.17
-      validator: 13.12.0
+      libphonenumber-js: 1.12.6
+      validator: 13.15.0
 
   class-variance-authority@0.6.1:
     dependencies:
@@ -17680,7 +17685,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  libphonenumber-js@1.11.17: {}
+  libphonenumber-js@1.12.6: {}
 
   lie@3.3.0:
     dependencies:
@@ -21065,7 +21070,7 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  validator@13.12.0: {}
+  validator@13.15.0: {}
 
   varint@5.0.2: {}
 
