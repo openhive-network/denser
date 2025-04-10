@@ -152,14 +152,39 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     await homePage.getNavCreatePost.click();
     await expect(postEditorPage.getPostTitleInput).toBeVisible()
     await postEditorPage.getPostTitleInput.fill(postTitle)
-    // await postEditorPage.getEditorContentTextarea.fill(postContentText);
     await postEditorPage.getPostSummaryInput.fill(postSummary);
     await postEditorPage.getEnterYourTagsInput.fill(postTag);
     await denserAutoTest0Page.page.mouse.wheel(0, 2000)
     await expect(postEditorPage.getSubmitPostButton).toBeEnabled()
     await postEditorPage.getSubmitPostButton.click()
-    // await denserAutoTest0Page.page.waitForTimeout(5000)
     await expect(postEditorPage.getFormContainer).toContainText('String must contain at least 1 character(s)')
-    
+  });
+
+  test('Attempt to create a post with no tags', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const postSummary: string = '1 My testing post POM';
+    const postTag: string = 'test';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await postEditorPage.getPostTitleInput.fill(postTitle)
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getPostSummaryInput.fill(postSummary);
+    await expect(postEditorPage.getFormContainer).toContainText('Required when post to My Blog')
+  });
+
+  test('Attempt to create a post with no post summary', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const postSummary: string = '1 My testing post POM';
+    const postTag: string = 'test';
+
   });
 });
