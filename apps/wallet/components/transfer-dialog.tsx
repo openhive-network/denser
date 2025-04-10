@@ -24,7 +24,7 @@ import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult } from '@transaction/index';
-import { getVests, getAsset } from '../lib/utils';
+import { getAsset } from '../lib/utils';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -49,8 +49,6 @@ type Amount = {
   delegatedVesting: Big;
   to_withdraw: Big;
   withdraw: Big;
-  totalVestingFundHive?: TNaiAssetSource;
-  totalVestingShares?: TNaiAssetSource;
 };
 
 export function TransferDialog({
@@ -71,7 +69,7 @@ export function TransferDialog({
     | 'withdrawHiveDollars'
     | 'powerDown';
   amount: Amount;
-  currency: 'hive' | 'hbd';
+  currency: 'HIVE' | 'HBD';
   username: string;
   suggestedUsers: { username: string; about: string }[];
 }) {
@@ -88,7 +86,7 @@ export function TransferDialog({
     memo: '',
     requestId: 0
   };
-  const [curr, setCurr] = useState<'hive' | 'hbd'>(currency);
+  const [curr, setCurr] = useState<'HIVE' | 'HBD'>(currency);
   const [value, setValue] = useState('0');
   const [advanced, setAdvanced] = useState(false);
   const [data, setData] = useState(defaultValue);
@@ -129,7 +127,7 @@ export function TransferDialog({
     case 'transfers':
       data.title = t('transfers_page.transfer_to_account');
       data.description = t('transfers_page.transfer_to_account_desc');
-      data.amount = curr === 'hive' ? amount.hive : amount.hbd;
+      data.amount = curr === 'HIVE' ? amount.hive : amount.hbd;
       data.onSubmit = async () => {
         const params = {
           fromAccount: username,
@@ -144,7 +142,7 @@ export function TransferDialog({
     case 'transferTo':
       data.title = t('transfers_page.transfer_to');
       data.description = t('transfers_page.transfer_to_desc');
-      data.amount = curr === 'hive' ? amount.hive : amount.hbd;
+      data.amount = curr === 'HIVE' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
       data.onSubmit = async () => {
         const params = {
@@ -160,7 +158,7 @@ export function TransferDialog({
     case 'powerUp':
       data.title = t('transfers_page.power_up');
       data.description = t('transfers_page.power_up_desc');
-      data.amount = curr === 'hive' ? amount.hive : amount.hbd;
+      data.amount = curr === 'HIVE' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
       data.selectCurr = false;
       data.buttonTitle = t('transfers_page.power_up');
@@ -176,14 +174,9 @@ export function TransferDialog({
       data.buttonTitle = t('transfers_page.power_down');
       data.amount = amount.reducedHP;
       data.onSubmit = async () => {
-        if (!amount.totalVestingFundHive || !amount.totalVestingShares) {
-          return;
-        }
         const params = {
           account: username,
-          hp: await getAsset(value, 'hive'),
-          totalVestingFundHive: amount.totalVestingFundHive,
-          totalVestingShares: amount.totalVestingShares
+          hp: await getAsset(value, 'HIVE')
         };
         transfersTransaction('powerDown', params, powerDownMutation.mutateAsync);
       };
@@ -194,15 +187,10 @@ export function TransferDialog({
       data.description = '';
       data.amount = amount.reducedHP;
       data.onSubmit = async () => {
-        if (!amount.totalVestingFundHive || !amount.totalVestingShares) {
-          return;
-        }
         const params = {
           delegator: username,
           delegatee: data.to,
-          hp: await getAsset(value, 'hive'),
-          totalVestingFundHive: amount.totalVestingFundHive,
-          totalVestingShares: amount.totalVestingShares
+          hp: await getAsset(value, 'HIVE')
         };
         transfersTransaction('delegate', params, delegateMutation.mutateAsync);
       };
@@ -376,18 +364,18 @@ export function TransferDialog({
                 <div className="relative col-span-3">
                   {data.selectCurr && (
                     <div className="absolute right-0">
-                      <Select value={curr} onValueChange={(e: 'hive' | 'hbd') => setCurr(e)}>
+                      <Select value={curr} onValueChange={(e: 'HIVE' | 'HBD') => setCurr(e)}>
                         <SelectTrigger
                           disabled={type === 'delegate'}
                           className="my-[1.5px] mr-[1px] h-9 w-fit border-none focus:ring-0 focus:ring-offset-0"
-                          onSelect={() => setCurr('hive')}
+                          onSelect={() => setCurr('HIVE')}
                         >
                           <SelectValue placeholder={curr} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectItem value="hive">HIVE</SelectItem>
-                            <SelectItem value="hbd">HBD</SelectItem>
+                            <SelectItem value="HIVE">HIVE</SelectItem>
+                            <SelectItem value="HBD">HBD</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>

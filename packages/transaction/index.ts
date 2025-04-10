@@ -14,16 +14,29 @@ import {
   future_extensions,
   EAvailableCommunityRoles,
   AccountAuthorityUpdateOperation,
-  ESupportedLanguages
+  ESupportedLanguages,
+  IHiveChainInterface,
+  GetDynamicGlobalPropertiesResponse,
+  GetDynamicGlobalPropertiesRequest,
+  TWaxApiRequest
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
 import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
-
 import { getLogger } from '@hive/ui/lib/logging';
+import { COST_CREATE_ACCOUNT, createAsset } from './lib/utils';
 const logger = getLogger('app');
+
+interface GetDynamicGlobalProperties {
+  database_api: {
+    get_dynamic_global_properties: TWaxApiRequest<
+      GetDynamicGlobalPropertiesRequest,
+      GetDynamicGlobalPropertiesResponse
+    >;
+  };
+}
 
 export type TransactionErrorCallback = (error: any) => any;
 
@@ -167,6 +180,16 @@ export class TransactionService {
     return { transactionId };
   }
 
+  async getChain(): Promise<IHiveChainInterface> {
+    return await hiveChainService.getHiveChain();
+  }
+
+  async getDynamicGlobalProperties(): Promise<GetDynamicGlobalPropertiesResponse> {
+    return (await this.getChain())
+      .extend<GetDynamicGlobalProperties>()
+      .api.database_api.get_dynamic_global_properties({});
+  }
+
   /**
    * Create and start bot (block scanner) if needed, broadcast
    * transaction, wait until bot reports applying transaction into Hive
@@ -187,7 +210,7 @@ export class TransactionService {
       // Create bot
       if (!this.bot) {
         logger.info('Creating bot');
-        const hiveChain = await hiveChainService.getHiveChain();
+        const hiveChain = await this.getChain();
         this.bot = new WorkerBee({
           explicitChain: hiveChain as any // TODO: replace this after workerbee is updated
         });
@@ -574,8 +597,6 @@ export class TransactionService {
     preferences: Preferences,
     transactionOptions: TransactionOptions = {}
   ) {
-    const chain = await hiveChainService.getHiveChain();
-
     const replyOperationData: IReplyData = {
       parentAuthor,
       parentPermlink,
@@ -591,7 +612,7 @@ export class TransactionService {
       replyOperationData.percentHbd = 10000;
     }
     if (preferences.comment_rewards === '0%') {
-      replyOperationData.maxAcceptedPayout = chain.hbd(0);
+      replyOperationData.maxAcceptedPayout = createAsset('0', 'HBD');
     }
 
     const reply = new ReplyOperation(replyOperationData);
@@ -637,8 +658,6 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {},
     editMode = false
   ) {
-    const chain = await hiveChainService.getHiveChain();
-
     const postData: IArticle = {
       category: category !== 'blog' ? category : tags[0],
       tags,
@@ -663,7 +682,7 @@ export class TransactionService {
         postData.percentHbd = 10000;
       }
       if (payoutType === '0%') {
-        postData.maxAcceptedPayout = chain.hbd(0);
+        postData.maxAcceptedPayout = createAsset('0', 'HBD');
       }
 
       postData.beneficiaries = beneficiaries.map(({ account, weight }) => ({
@@ -908,11 +927,14 @@ export class TransactionService {
     }, transactionOptions);
   }
 
-  async withdrawFromVesting(
-    account: string,
-    vestingShares: asset,
-    transactionOptions: TransactionOptions = {}
-  ) {
+  async withdrawFromVesting(account: string, hp: asset, transactionOptions: TransactionOptions = {}) {
+    const { total_vesting_fund_hive, total_vesting_shares } = await this.getDynamicGlobalProperties();
+    const vestingShares = (await this.getChain()).hpToVests(
+      hp,
+      total_vesting_fund_hive,
+      total_vesting_shares
+    );
+
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
         withdraw_vesting: {
@@ -926,9 +948,15 @@ export class TransactionService {
   async delegateVestingShares(
     delegator: string,
     delegatee: string,
-    vestingShares: asset,
+    hp: asset,
     transactionOptions: TransactionOptions = {}
   ) {
+    const { total_vesting_fund_hive, total_vesting_shares } = await this.getDynamicGlobalProperties();
+    const vestingShares = (await this.getChain()).hpToVests(
+      hp,
+      total_vesting_fund_hive,
+      total_vesting_shares
+    );
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
         delegate_vesting_shares: {
@@ -1010,7 +1038,6 @@ export class TransactionService {
   }
 
   async accountCreate(
-    fee: asset,
     memo_key: string,
     new_account_name: string,
     creator: string,
@@ -1020,6 +1047,7 @@ export class TransactionService {
     posting?: authority,
     transactionOptions: TransactionOptions = {}
   ) {
+    const fee = createAsset(COST_CREATE_ACCOUNT, 'HIVE');
     return (
       await this.processHiveAppOperation((builder) => {
         builder.pushOperation({

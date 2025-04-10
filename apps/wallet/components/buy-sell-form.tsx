@@ -102,8 +102,8 @@ export default function BuyOrSellForm({
     const DEFAULT_EXPIRE = new Date(Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 27) * 1000)
       .toISOString()
       .split('.')[0];
-    const hbd = await getAsset(state.total, 'hbd');
-    const hive = await getAsset(state.amount, 'hive');
+    const hbd = await getAsset(state.total, 'HBD');
+    const hive = await getAsset(state.amount, 'HIVE');
     const params = {
       owner: user.username,
       amountToSell: transaction === 'buy' ? hbd : hive,

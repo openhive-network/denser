@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { logger } from '@ui/lib/logger';
+import { createAsset } from '@transaction/lib/utils';
 
 /**
  * Makes transfer to vesting transaction
@@ -45,18 +46,9 @@ export function usePowerDownMutation() {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const powerDownMutation = useMutation({
-    mutationFn: async (params: {
-      account: string;
-      hp: asset;
-      totalVestingFundHive: TNaiAssetSource;
-      totalVestingShares: TNaiAssetSource;
-    }) => {
-      const { account, hp, totalVestingFundHive, totalVestingShares } = params;
-      const chain = await hiveChainService.getHiveChain();
-      const vestingSharesAmount = chain.hpToVests(hp, totalVestingFundHive, totalVestingShares);
-      const broadcastResult = await transactionService.withdrawFromVesting(account, vestingSharesAmount, {
-        observe: true
-      });
+    mutationFn: async (params: { account: string; hp: asset }) => {
+      const { account, hp } = params;
+      const broadcastResult = await transactionService.withdrawFromVesting(account, hp, { observe: true });
       const response = { ...params, broadcastResult };
       logger.info('Done withdraw from vesting trasaction: %o', response);
       return response;
@@ -85,8 +77,7 @@ export function useCancelPowerDownMutation() {
     mutationFn: async (params: { account: string }) => {
       const { account } = params;
 
-      const chain = await hiveChainService.getHiveChain();
-      const vestingShares = chain.vests(0);
+      const vestingShares = createAsset('0', 'VESTS');
 
       const broadcastResult = await transactionService.withdrawFromVesting(account, vestingShares, {
         observe: true

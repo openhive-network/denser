@@ -14,26 +14,15 @@ import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { getAsset } from '../lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
 import { toast } from '@ui/components/hooks/use-toast';
-import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 
-const RevokeDialog = ({
-  delegator,
-  delegatee,
-  dynamicGlobalProperties
-}: {
-  delegator: string;
-  delegatee: string;
-  dynamicGlobalProperties: GetDynamicGlobalPropertiesResponse;
-}) => {
+const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: string }) => {
   const [open, setOpen] = useState(false);
   const delegateMutation = useDelegateMutation();
   const onRevoke = async () => {
     delegateMutation.mutate({
       delegator: delegator,
       delegatee: delegatee,
-      hp: await getAsset('0', 'hive'),
-      totalVestingFundHive: dynamicGlobalProperties.total_vesting_fund_hive,
-      totalVestingShares: dynamicGlobalProperties.total_vesting_shares
+      hp: await getAsset('0', 'HIVE')
     });
     delegateMutation.isError &&
       toast({
