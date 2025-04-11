@@ -605,8 +605,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.2
       '@hiveio/hb-auth':
-        specifier: 0.0.1-stable.250402093900
-        version: 0.0.1-stable.250402093900
+        specifier: 0.0.1-stable.250409065242
+        version: 0.0.1-stable.250409065242
       '@hiveio/wax':
         specifier: 1.27.6-rc7-250404091259
         version: 1.27.6-rc7-250404091259
@@ -1802,8 +1802,8 @@ packages:
   '@hiveio/dhive@1.3.2':
     resolution: {integrity: sha512-kJjp3TbpIlODxjJX4BWwvOf+cMxT8CFH/mNQ40RRjR2LP0a4baSWae1G+U/q/NtgjsIQz6Ja40tvnw6KF12I+g==, tarball: https://registry.npmjs.org/@hiveio/dhive/-/dhive-1.3.2.tgz}
 
-  '@hiveio/hb-auth@0.0.1-stable.250402093900':
-    resolution: {integrity: sha1-EO9bnyAYIPojMH/77xq9f79X+gQ=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-0.0.1-stable.250402093900.tgz}
+  '@hiveio/hb-auth@0.0.1-stable.250409065242':
+    resolution: {integrity: sha1-+Nz3A92RilnvseHCF4gRfOxnaag=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-0.0.1-stable.250409065242.tgz}
 
   '@hiveio/hivescript@1.3.3':
     resolution: {integrity: sha512-nOeGespwSujSaEl4R09u9FXGgMyOywtWWQiJdiWsmJDknCUqXXxTfs3KICssPTjkDlbGp2gkg3WjUyrlxm28Qg==, tarball: https://registry.npmjs.org/@hiveio/hivescript/-/hivescript-1.3.3.tgz}
@@ -11480,7 +11480,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@hiveio/hb-auth@0.0.1-stable.250402093900':
+  '@hiveio/hb-auth@0.0.1-stable.250409065242':
     dependencies:
       '@hiveio/wax': 1.27.6-rc7-stable.250131113706
       comlink: 4.4.2
