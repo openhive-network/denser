@@ -327,12 +327,14 @@
   "change_password_page": {
     "change_password": "Change Password",
     "account_name": "Account Name",
-    "current_password": "Current Password",
+    "current_password": "Current Master Password",
     "recover_password": "Recover Account",
-    "generated_password": "Generated Password",
+    "generated_password": "Generated Password and Keys",
     "new": "New",
-    "click_to_generate_password": "Click to generate password",
-    "re_enter_generate_password": "Re-enter Generated Password",
+    "hide": "Hide",
+    "show": "Show",
+    "click_to_generate_password": "Click to generate new master password",
+    "re_enter_generate_password": "Re-enter Generated Master Password",
     "understand_that": "I understand that Hive cannot recover lost passwords",
     "i_saved_password": "I have securely saved my generated password",
     "update_password": "Update Password",
@@ -340,15 +342,23 @@
     "account_name_should_be_longer": "Account name should be longer.",
     "backup_password_by_storing_it": "Back it up by storing in your password manager or a text file",
     "passwords_do_not_match": "Passwords do not match",
-    "the_rules": {
-      "one": "The first rule of Hive is: Do not lose your password.",
-      "second": "The second rule of Hive is: Do not lose your password.",
-      "third": "The third rule of Hive is: We cannot recover your password.",
-      "fourth": "The fourth rule: If you can remember the password, it's not secure.",
-      "fifth": "The fifth rule: Use only randomly-generated passwords.",
-      "sixth": "The sixth rule: Do not tell anyone your password.",
-      "seventh": "The seventh rule: Always back up your password."
-    }
+    "key_titles": {
+      "master": "Master Password",
+      "owner": "Owner Key",
+      "active": "Active Key",
+      "posting": "Posting Key",
+      "memo": "Memo Key"
+    },
+    "new_keys": "New Keys",
+    "security_notes": {
+      "title": "Security Notes",
+      "m1": "Save these keys immediately in a secure password manager",
+      "m2": "The master password can derive all other keys",
+      "m3": "Lost keys cannot be recovered",
+      "m4": "Never share your private keys",
+      "confirm_security": "I understand and accept these security implications"
+    },
+    "save_all": "Save All"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Sorry! This page does not exist.",

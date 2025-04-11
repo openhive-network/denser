@@ -35,6 +35,7 @@ import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { TFunction } from 'i18next';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
+import { useRouter } from 'next/router';
 
 function getFormSchema(t: TFunction<'smart-signer', undefined>) {
   return z
@@ -112,6 +113,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         strict: true
       }
     });
+    const router = useRouter();
 
     async function onSave(values: SafeStorageForm) {
       const { username, password, wif, keyType, strict } = values;
@@ -135,7 +137,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         await authClient.current?.authenticate(username, password, keyType);
         await finalize(values);
       } catch (error) {
-        setError((error as AuthorizationError).message);
+        const authError = error as AuthorizationError;
+        if (authError.message.includes('Not authorized') || authError.message.includes('Authentication failed')) {
+          onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE);
+        }
+        setError(authError.message);
         setLoading(false);
       }
     }
@@ -416,6 +422,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   </div>
                 )}
               />
+            )}
+            {authUsers?.length > 0 && (
+              <div className="flex justify-end">
+                <span onClick={() => onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE)} className="max-w-max cursor-pointer text-xs text-destructive hover:opacity-80 active:opacity-60">
+                  {t('login_form.signin_safe_storage.key_update')}
+                </span>
+              </div>
             )}
             {/* Show this for new user, otherwise show unlock then authorize */}
             <div className="flex">
