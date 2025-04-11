@@ -77,7 +77,7 @@ export function useCancelPowerDownMutation() {
     mutationFn: async (params: { account: string }) => {
       const { account } = params;
 
-      const vestingShares = createAsset('0', 'VESTS');
+      const vestingShares = createAsset('0', 'HIVE');
 
       const broadcastResult = await transactionService.withdrawFromVesting(account, vestingShares, {
         observe: true
