@@ -918,3 +918,33 @@ export const getPrivateKeys = async (
   );
   return keys;
 };
+
+export interface IWitnessSchedule {
+  id: number;
+  current_virtual_time: string;
+  next_shuffle_block_num: number;
+  current_shuffled_witnesses: string[];
+  num_scheduled_witnesses: number;
+  top19_weight: number;
+  timeshare_weight: number;
+  miner_weight: number;
+  witness_pay_normalization_factor: number;
+  median_props: {
+    account_creation_fee: string;
+    maximum_block_size: number;
+    hbd_interest_rate: number;
+  };
+  majority_version: string;
+  max_voted_witnesses: number;
+  max_miner_witnesses: number;
+  max_runner_witnesses: number;
+  hardfork_required_witnesses: number;
+}
+export type GetWitnessSchedule = {
+  condenser_api: {
+    get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
+  };
+};
+export const getWitnessSchedule = async (): Promise<IWitnessSchedule> => {
+  return chain.extend<GetWitnessSchedule>().api.condenser_api.get_witness_schedule([]);
+};

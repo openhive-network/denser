@@ -20,11 +20,10 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
 import { useTranslation } from 'next-i18next';
-import { createPermlink } from '@transaction/lib/utils';
+import { createAsset, createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { Entry, getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { TFunction } from 'i18next';
 import { debounce } from '../lib/utils';
 import { Icons } from '@ui/components/icons';
@@ -232,9 +231,8 @@ export default function PostForm({
   }, [selectedImg, watchedValues.postArea]);
 
   async function onSubmit(data: AccountFormValues) {
-    const chain = await hiveChainService.getHiveChain();
     const tags = data.tags.replace(/#/g, '').split(' ') ?? [];
-    const maxAcceptedPayout = await chain.hbd(Number(data.maxAcceptedPayout * 1000));
+    const maxAcceptedPayout = createAsset((data.maxAcceptedPayout * 1000).toString(), 'HBD');
     const postPermlink = await createPermlink(data?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
     try {

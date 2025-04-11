@@ -7,10 +7,10 @@ import { useTranslation } from 'next-i18next';
 import { useCreateMarketOrder } from './hooks/use-market-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getAsset } from '../lib/utils';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAccount } from '@transaction/lib/hive';
+import { getAsset } from '@transaction/lib/utils';
 
 enum ActionType {
   ChangeCostValue = 'changeCostValue',
@@ -102,8 +102,8 @@ export default function BuyOrSellForm({
     const DEFAULT_EXPIRE = new Date(Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 27) * 1000)
       .toISOString()
       .split('.')[0];
-    const hbd = await getAsset(state.total, 'hbd');
-    const hive = await getAsset(state.amount, 'hive');
+    const hbd = await getAsset(state.total, 'HBD');
+    const hive = await getAsset(state.amount, 'HIVE');
     const params = {
       owner: user.username,
       amountToSell: transaction === 'buy' ? hbd : hive,
