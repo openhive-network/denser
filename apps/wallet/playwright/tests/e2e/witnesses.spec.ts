@@ -451,6 +451,7 @@ test.describe('Witnesses page tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     await expect(witnessPage.witnessHeaderTitle).toBeVisible();
+    await homePage.page.waitForTimeout(3000);
     await expect(await witnessPage.witnessHeaderTitle.textContent()).toBe('Głosowanie na delegatów');
     await expect(await witnessPage.witnessHeaderDescription.textContent()).toBe(
       'Na poniższej liście znajduje sie 100 pierwszych delegatów, aktywnych jak również nieaktywnych. Każdy delegat powyżej 100 pozycji jest filtrowany i nie wyświetlany jeśli nie wyprodukował bloku w ostatnich 30 dniach.'
