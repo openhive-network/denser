@@ -8,7 +8,7 @@ import {
   getFollowing
 } from '@transaction/lib/hive';
 import moment from 'moment';
-import { getAccountHistory, getDynamicGlobalPropertiesData, getSavingsWithdrawals } from '@/wallet/lib/hive';
+import { getAccountHistory, getSavingsWithdrawals } from '@/wallet/lib/hive';
 import {
   createListWithSuggestions,
   getAmountFromWithdrawal,
@@ -233,9 +233,6 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
   const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalPropertiesData'], () =>
     getDynamicGlobalProperties()
   );
-  const { data: dynamicGlobalProperties } = useQuery(['dynamicGlobalProperties'], () =>
-    getDynamicGlobalPropertiesData()
-  );
 
   const { data: followingData } = useQuery(['following', username], () =>
     getFollowing({ account: username })
@@ -374,9 +371,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
       dynamicData.total_vesting_shares,
       dynamicData.total_vesting_fund_hive,
       1000000
-    ),
-    totalVestingFundHive: dynamicGlobalProperties?.total_vesting_fund_hive,
-    totalVestingShares: dynamicGlobalProperties?.total_vesting_shares
+    )
   };
 
   const claimRewards = async () => {
@@ -599,7 +594,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                           <DropdownMenuGroup>
                             <TransferDialog
                               suggestedUsers={listOfAccounts}
-                              currency={'hive'}
+                              currency={'HIVE'}
                               amount={amount}
                               type="transfers"
                               username={user?.username}
@@ -608,7 +603,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                             </TransferDialog>
                             <TransferDialog
                               suggestedUsers={listOfAccounts}
-                              currency={'hive'}
+                              currency={'HIVE'}
                               amount={amount}
                               type="transferTo"
                               username={user?.username}
@@ -617,7 +612,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                             </TransferDialog>
                             <TransferDialog
                               suggestedUsers={listOfAccounts}
-                              currency={'hive'}
+                              currency={'HIVE'}
                               amount={amount}
                               type="powerUp"
                               username={user?.username}
@@ -693,7 +688,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                           <DropdownMenuGroup>
                             <TransferDialog
                               suggestedUsers={listOfAccounts}
-                              currency={'hive'}
+                              currency={'HIVE'}
                               amount={amount}
                               type="powerDown"
                               username={user?.username}
@@ -702,7 +697,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                             </TransferDialog>
                             <TransferDialog
                               suggestedUsers={listOfAccounts}
-                              currency={'hive'}
+                              currency={'HIVE'}
                               amount={amount}
                               type="delegate"
                               username={user?.username}
@@ -783,7 +778,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                           <DropdownMenuGroup>
                             <TransferDialog
                               suggestedUsers={listOfAccounts}
-                              currency={'hbd'}
+                              currency={'HBD'}
                               amount={amount}
                               type="transfers"
                               username={user?.username}
@@ -792,7 +787,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                             </TransferDialog>
                             <TransferDialog
                               suggestedUsers={listOfAccounts}
-                              currency={'hbd'}
+                              currency={'HBD'}
                               amount={amount}
                               type="transferTo"
                               username={user?.username}
@@ -861,7 +856,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                             <DropdownMenuGroup>
                               <TransferDialog
                                 suggestedUsers={listOfAccounts}
-                                currency={'hive'}
+                                currency={'HIVE'}
                                 amount={amount}
                                 type="withdrawHive"
                                 username={user?.username}
@@ -884,7 +879,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                             <DropdownMenuGroup>
                               <TransferDialog
                                 suggestedUsers={listOfAccounts}
-                                currency={'hbd'}
+                                currency={'HBD'}
                                 amount={amount}
                                 type="withdrawHiveDollars"
                                 username={user?.username}
