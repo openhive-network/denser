@@ -1,4 +1,4 @@
-import { createHiveChain, ESupportedLanguages } from '@hiveio/wax';
+import { ESupportedLanguages } from '@hiveio/wax';
 import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -31,7 +31,6 @@ export function useCreateCommunityMutation() {
       description,
       claimed
     }: CreateCommunityMutationParams) => {
-      const fee = (await createHiveChain()).hive(3000);
       const jsonMetadata = '';
       const activeAuthority = {
         weight_threshold: 1,
@@ -67,7 +66,6 @@ export function useCreateCommunityMutation() {
         }
         case 'hive': {
           createAccountResult = await transactionService.accountCreate(
-            fee,
             memoKey,
             communityTag,
             creator,

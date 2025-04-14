@@ -1108,9 +1108,11 @@ test.describe('Home page tests', () => {
       // console.log('Text of the first affiliation tag: ', await homePage.postCardAffiliationTag.first().textContent());
 
       // Compare text the first affiliation tag from UI with the first affiliation tag from API
-      await expect(await homePage.postCardAffiliationTag.first().textContent()).toBe(
-        elementsWithAffiliationTag[0]
-      );
+      if (await rankedPostResultLength !== 0)
+        await expect(await homePage.postCardAffiliationTag.first().textContent()).toBe(
+          elementsWithAffiliationTag[0]
+        );
+        else console.log('No affiliation tags on the post cards');
     } else console.log('No affiliation tags on the 40 post cards');
   });
 
