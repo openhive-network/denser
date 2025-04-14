@@ -5,15 +5,14 @@ import { MainNav } from './main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
 import Link from 'next/link';
-import React, { useState, KeyboardEvent, FC, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import React, { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
-import { Avatar, AvatarFallback, AvatarImage, Input } from '@ui/components';
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
-import { getUnreadNotifications } from '@transaction/lib/bridge';
+import { getHiveSenseStatus, getUnreadNotifications } from '@transaction/lib/bridge';
 import ModeToggle from './mode-toggle';
 import UserMenu from '@/blog/components/user-menu';
 import LangToggle from './lang-toggle';
@@ -23,10 +22,13 @@ import { hoursAndMinutes } from '../lib/utils';
 import env from '@beam-australia/react-env';
 import { getAccount } from '@transaction/lib/hive';
 import TooltipContainer from '@ui/components/tooltip-container';
+import { ModeSwitchInput } from '@ui/components/mode-switch-input';
+import { useRouter } from 'next/router';
+import { cn } from '@ui/lib/utils';
 
 const SiteHeader: FC = () => {
-  const router = useRouter();
   const { t } = useTranslation('common_blog');
+  const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
@@ -40,21 +42,22 @@ const SiteHeader: FC = () => {
       enabled: !!user.username
     }
   );
-  const { data: profile, isLoading: profileLoading } = useQuery(
-    ['user', user.username],
-    () => getAccount(user.username),
-    { enabled: user?.isLoggedIn }
+  const { data: profile } = useQuery(['user', user.username], () => getAccount(user.username), {
+    enabled: user?.isLoggedIn
+  });
+  const { data: hiveSense, isLoading: hiveSenseLoading } = useQuery(
+    ['hivesense-api'],
+    () => getHiveSenseStatus(),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false
+    }
   );
   const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
   const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
   const rcAngle = (360 * (manabarsData ? manabarsData?.rc.percentageValue : 0)) / 100;
   const chart = [{ name: '', value: 1 }];
-  const [input, setInput] = useState('');
-  const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      router.push(`/search?q=${encodeURIComponent(input)}`);
-    }
-  };
+
   const [isNavHidden, setIsNavHidden] = useState(false);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
   useEffect(() => {
@@ -113,28 +116,15 @@ const SiteHeader: FC = () => {
               </div>
             )}
             <div className="hidden lg:block">
-              <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Icons.search className="h-5 w-5 rotate-90" />
+              {router.pathname === '/search' ? (
+                <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
+              ) : (
+                <div className="w-full">
+                  <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
                 </div>
-                <Input
-                  type="search"
-                  className="block w-[200px] rounded-full p-4 pl-10 text-sm"
-                  placeholder="AI Search"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => handleEnter(e)}
-                />
-              </div>
+              )}
             </div>
-            <TooltipContainer title="AI Search">
-              <Link href="/search" data-testid="navbar-search-link">
-                <Button variant="ghost" size="sm" className="relative h-10 w-10 px-0 lg:hidden">
-                  <Icons.search className="h-5 w-5 rotate-90" />
-                  <span className="absolute bottom-0 right-2 text-[10px] font-bold">AI</span>
-                </Button>
-              </Link>
-            </TooltipContainer>
+            <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" />
             <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
               <Link href="/submit.html">
                 <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
@@ -285,3 +275,16 @@ const SiteHeader: FC = () => {
 };
 
 export default SiteHeader;
+
+const SearchButton = ({ aiTag, className }: { aiTag: boolean; className?: string }) => {
+  return (
+    <TooltipContainer title={`${aiTag ? 'AI ' : ''}Search`}>
+      <Link href="/search" data-testid="navbar-search-link">
+        <Button variant="ghost" size="sm" className={cn('relative h-10 w-10 px-0', className)}>
+          <Icons.search className="h-5 w-5 rotate-90" />
+          {aiTag ? <span className="absolute bottom-0 right-2 text-[10px] font-bold">AI</span> : null}
+        </Button>
+      </Link>
+    </TooltipContainer>
+  );
+};

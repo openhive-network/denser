@@ -1,6 +1,7 @@
 import { TWaxApiRequest } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
+import env from '@beam-australia/react-env';
 
 const logger = getLogger('app');
 
@@ -213,7 +214,6 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  // logger.info('Running getPostsRanked', { sort, tag, start_author, start_permlink, observer, limit });
   return chain
     .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({
@@ -233,11 +233,12 @@ export const getPostsRanked = async (
       return resp;
     });
 };
+// const apiDevOrigin = env('AI_DOMAIN');
 const apiDevOrigin = 'https://api.dev.openhive.network';
 export const getSimilarPosts = async (
   pattern: string,
   tr_body: number = 100,
-  limit: number = 20
+  limit: number = 50
 ): Promise<Entry[] | null> => {
   try {
     const response = await fetch(
@@ -251,6 +252,18 @@ export const getSimilarPosts = async (
   } catch (error) {
     logger.error('Error in getSimilarPosts', error);
     throw new Error('Error in getSimilarPosts');
+  }
+};
+
+export const getHiveSenseStatus = async (): Promise<boolean> => {
+  try {
+    const response = await fetch(`${apiDevOrigin}/hivesense-api/`);
+    if (!response.ok) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
   }
 };
 
@@ -662,7 +675,6 @@ export const getSearch = async (q: string, scroll_id: string, sort: string): Pro
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error in /search api call', error);
     throw new Error('Error in /search api call');
   }
 };
