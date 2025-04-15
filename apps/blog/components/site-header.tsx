@@ -119,7 +119,7 @@ const SiteHeader: FC = () => {
               {router.pathname === '/search' ? (
                 <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
               ) : (
-                <div className="w-full">
+                <div className="w-full min-w-56">
                   <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
                 </div>
               )}
