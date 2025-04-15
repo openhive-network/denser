@@ -12,7 +12,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
-import { getHiveSenseStatus, getUnreadNotifications } from '@transaction/lib/bridge';
+import { getUnreadNotifications } from '@transaction/lib/bridge';
 import ModeToggle from './mode-toggle';
 import UserMenu from '@/blog/components/user-menu';
 import LangToggle from './lang-toggle';
@@ -25,6 +25,7 @@ import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { useRouter } from 'next/router';
 import { cn } from '@ui/lib/utils';
+import { getHiveSenseStatus } from '../lib/get-data';
 
 const SiteHeader: FC = () => {
   const { t } = useTranslation('common_blog');

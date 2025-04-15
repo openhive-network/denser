@@ -7,7 +7,7 @@ import { PostSkeleton } from './[...param]';
 import { useInView } from 'react-intersection-observer';
 import Head from 'next/head';
 import PostList from '../components/post-list';
-import { getHiveSenseStatus, getSearch, getSimilarPosts } from '@transaction/lib/bridge';
+import { getSearch } from '@transaction/lib/bridge';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { useLocalStorage } from 'usehooks-ts';
 import { useEffect } from 'react';
@@ -18,6 +18,7 @@ import { useFollowListQuery } from '../components/hooks/use-follow-list';
 import { useTranslation } from 'next-i18next';
 import SearchCard from '../components/search-card';
 import { toast } from '@ui/components/hooks/use-toast';
+import { getHiveSenseStatus, getSimilarPosts } from '../lib/get-data';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 

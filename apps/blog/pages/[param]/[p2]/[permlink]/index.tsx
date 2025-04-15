@@ -3,14 +3,7 @@ import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
-import {
-  Entry,
-  getCommunity,
-  getDiscussion,
-  getListCommunityRoles,
-  getPost,
-  getSuggestions
-} from '@transaction/lib/bridge';
+import { Entry, getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
@@ -64,6 +57,7 @@ import { PostDeleteDialog } from '@/blog/components/post-delete-dialog';
 import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation';
 import FlagIcon from '@/blog/components/flag-icon';
 import SuggestionsCard from '@/blog/components/suggestions-card';
+import { getSuggestions } from '@/blog/lib/get-data';
 
 const logger = getLogger('app');
 export const postClassName =
