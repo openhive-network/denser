@@ -249,7 +249,7 @@ function PostPage({
             </div>
           ) : null}
         </div>
-        <div className="col-span-8 mx-auto flex flex-col py-8">
+        <div className="py-8 sm:col-span-8 sm:mx-auto sm:flex sm:flex-col">
           <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
             <div className="absolute right-0 top-1 cursor-pointer hover:text-destructive">
               {communityData && !user.isLoggedIn ? (
