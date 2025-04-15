@@ -120,9 +120,7 @@ const SiteHeader: FC = () => {
               {router.pathname === '/search' ? (
                 <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
               ) : (
-                <div className="w-full min-w-56">
-                  <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
-                </div>
+                <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
               )}
             </div>
             <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" />
@@ -134,16 +132,22 @@ const SiteHeader: FC = () => {
               </Link>
             </TooltipContainer>
             {isClient && !user.isLoggedIn ? (
-              <ModeToggle>
-                <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">
-                  <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="hidden">Language</span>
-                </Button>
-              </ModeToggle>
+              <div>
+                <ModeToggle>
+                  <Button variant="ghost" size="sm" className="h-10 w-full px-2" data-testid="theme-mode">
+                    <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="hidden">Language</span>
+                  </Button>
+                </ModeToggle>
+              </div>
             ) : null}
 
-            {isClient && !user.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
+            {isClient && !user.isLoggedIn ? (
+              <div>
+                <LangToggle logged={user ? user?.isLoggedIn : false} className="px-2" />
+              </div>
+            ) : null}
 
             {isClient && user.isLoggedIn ? (
               <TooltipProvider>
