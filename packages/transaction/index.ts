@@ -226,14 +226,17 @@ export class TransactionService {
       logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
 
       // First broadcast and wait for it to complete
-      await this.bot.broadcast(txBuilder, {});
+      await this.bot.broadcast(txBuilder, { verifySignatures: true });
+
+      // Small delay to ensure that UI is ready to trigger update
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       return { transactionId };
     } catch (error) {
       logger.error('Got error, logging and rethrowing it: %o', error);
       throw error;
     } finally {
-      if (--this.observedTransactionsCounter === 0) {
+      if (this.observedTransactionsCounter === 0) {
         // Stop bot
         if (this.bot) {
           logger.info('Stopping bot');
