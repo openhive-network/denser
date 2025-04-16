@@ -50,7 +50,6 @@ export interface TransactionOptions {
 }
 
 export interface TransactionBroadcastResult {
-  blockNumber?: number;
   transactionId: string;
 }
 
@@ -226,25 +225,22 @@ export class TransactionService {
       const transactionId = txBuilder.id;
       logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
       const startedAt = Date.now();
-      const observer = await this.bot.broadcast(txBuilder, { throwAfter });
 
-      // Observe if transaction has been applied into blockchain (scan
-      // blocks and look for transactionId).
-      logger.info('Starting observing transaction id: %o', transactionId);
-      const result: TransactionBroadcastResult = await new Promise((resolve, reject) => {
-        const subscription = observer.subscribe({
-          next: (data: ITransactionData) => {
-            const {
-              block: { number: blockNumber }
-            } = data;
+      // First broadcast and wait for it to complete
+      await this.bot.broadcast(txBuilder, {});
+
+      // Then start observing
+      logger.info('Starting observation for transaction id: %o', transactionId);
+      return await new Promise<TransactionBroadcastResult>((resolve, reject) => {
+        const sub = this.bot?.observe.onTransactionId(transactionId).subscribe({
+          next: (data) => {
             logger.info(
-              'Transaction id: %o applied on block: %o, found after %sms',
+              'Transaction id: %o applied, found after %sms',
               transactionId,
-              blockNumber,
               Date.now() - startedAt
             );
-            subscription.unsubscribe();
-            resolve({ transactionId, blockNumber });
+            sub?.unsubscribe();
+            resolve({ transactionId });
           },
           error(error) {
             logger.error(
@@ -253,12 +249,11 @@ export class TransactionService {
               txBuilder.toApi(),
               error
             );
-            subscription.unsubscribe();
+            sub?.unsubscribe();
             reject(error);
           }
         });
       });
-      return result;
     } catch (error) {
       logger.error('Got error, logging and rethrowing it: %o', error);
       throw error;
