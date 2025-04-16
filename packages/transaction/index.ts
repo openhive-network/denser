@@ -50,7 +50,6 @@ export interface TransactionOptions {
 }
 
 export interface TransactionBroadcastResult {
-  blockNumber?: number;
   transactionId: string;
 }
 
@@ -225,49 +224,23 @@ export class TransactionService {
       // Do broadcast
       const transactionId = txBuilder.id;
       logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
-      const startedAt = Date.now();
-      const observer = await this.bot.broadcast(txBuilder, { throwAfter });
 
-      // Observe if transaction has been applied into blockchain (scan
-      // blocks and look for transactionId).
-      logger.info('Starting observing transaction id: %o', transactionId);
-      const result: TransactionBroadcastResult = await new Promise((resolve, reject) => {
-        const subscription = observer.subscribe({
-          next: (data: ITransactionData) => {
-            const {
-              block: { number: blockNumber }
-            } = data;
-            logger.info(
-              'Transaction id: %o applied on block: %o, found after %sms',
-              transactionId,
-              blockNumber,
-              Date.now() - startedAt
-            );
-            subscription.unsubscribe();
-            resolve({ transactionId, blockNumber });
-          },
-          error(error) {
-            logger.error(
-              'Transaction id: %o observation time expired: %o',
-              transactionId,
-              txBuilder.toApi(),
-              error
-            );
-            subscription.unsubscribe();
-            reject(error);
-          }
-        });
-      });
-      return result;
+      // First broadcast and wait for it to complete
+      await this.bot.broadcast(txBuilder, { verifySignatures: true });
+
+      // Small delay to ensure that UI is ready to trigger update
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      return { transactionId };
     } catch (error) {
       logger.error('Got error, logging and rethrowing it: %o', error);
       throw error;
     } finally {
-      if (--this.observedTransactionsCounter === 0) {
+      if (this.observedTransactionsCounter === 0) {
         // Stop bot
         if (this.bot) {
           logger.info('Stopping bot');
-          await this.bot.stop();
+          this.bot.stop();
         }
         // Destroy bot
         logger.info('Destroying bot');
