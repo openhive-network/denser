@@ -224,36 +224,11 @@ export class TransactionService {
       // Do broadcast
       const transactionId = txBuilder.id;
       logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
-      const startedAt = Date.now();
 
       // First broadcast and wait for it to complete
       await this.bot.broadcast(txBuilder, {});
 
-      // Then start observing
-      logger.info('Starting observation for transaction id: %o', transactionId);
-      return await new Promise<TransactionBroadcastResult>((resolve, reject) => {
-        const sub = this.bot?.observe.onTransactionId(transactionId).subscribe({
-          next: (data) => {
-            logger.info(
-              'Transaction id: %o applied, found after %sms',
-              transactionId,
-              Date.now() - startedAt
-            );
-            sub?.unsubscribe();
-            resolve({ transactionId });
-          },
-          error(error) {
-            logger.error(
-              'Transaction id: %o observation time expired: %o',
-              transactionId,
-              txBuilder.toApi(),
-              error
-            );
-            sub?.unsubscribe();
-            reject(error);
-          }
-        });
-      });
+      return { transactionId };
     } catch (error) {
       logger.error('Got error, logging and rethrowing it: %o', error);
       throw error;
@@ -262,7 +237,7 @@ export class TransactionService {
         // Stop bot
         if (this.bot) {
           logger.info('Stopping bot');
-          await this.bot.stop();
+          this.bot.stop();
         }
         // Destroy bot
         logger.info('Destroying bot');
