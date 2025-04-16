@@ -18,10 +18,10 @@ const ModeSwitch = forwardRef<
     >
       <SwitchPrimitives.Thumb
         className={cn(
-          'pointer-events-none flex h-8 w-8 items-center justify-center rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-10 data-[state=unchecked]:translate-x-0'
+          'pointer-events-none flex h-7 w-7 items-center justify-center rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-6 data-[state=unchecked]:translate-x-0'
         )}
       >
-        {props.checked ? <Search className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+        {props.checked ? <Search className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
       </SwitchPrimitives.Thumb>
     </SwitchPrimitives.Root>
   );

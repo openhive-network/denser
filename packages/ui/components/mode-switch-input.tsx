@@ -29,7 +29,7 @@ export function ModeSwitchInput({ className, aiAvailable, isLoading, searchPage 
             disabled={!aiAvailable || isLoading}
             checked={mode === 'search'}
             onCheckedChange={() => setMode((prev) => (prev === 'ai' ? 'search' : 'ai'))}
-            className="h-10 w-20 px-[2px]"
+            className="h-8 w-14 px-0"
           />
         </div>
         <input
@@ -39,11 +39,10 @@ export function ModeSwitchInput({ className, aiAvailable, isLoading, searchPage 
           placeholder={mode === 'ai' ? 'AI Search' : 'Search'}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className="z-10 block h-10 w-full bg-transparent p-4 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className="z-10 block h-8 w-full bg-transparent p-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           onKeyDown={onKeyDown}
         />
       </div>
-
       {searchPage && mode === 'search' && <SearchSortSelect value={inputValue} />}
     </div>
   );
