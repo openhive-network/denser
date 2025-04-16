@@ -37,7 +37,6 @@ export class TwitterPlugin implements RendererPlugin {
             if (container && window?.twttr?.widgets) {
                 container.innerHTML = '';
                 const isDarkMode = container.closest('.dark') !== null;
-                console.log(isDarkMode);
                 window.twttr.widgets
                     .createTweet(id, container, {
                         theme: isDarkMode ? 'dark' : 'light'
