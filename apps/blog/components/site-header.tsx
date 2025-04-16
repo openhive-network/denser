@@ -89,10 +89,12 @@ const SiteHeader: FC = () => {
       <div className="container flex h-16 w-full items-center justify-between">
         <Link href="/trending" className="flex items-center space-x-2">
           <Icons.hive className="h-6 w-6" />
-          <span className="font-bold sm:inline-block">{siteConfig.name}</span>
-          {siteConfig.chainEnv !== 'mainnet' && (
-            <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
-          )}
+          <div className='flex flex-col md:flex-row'>
+            <span className="font-bold sm:inline-block">{siteConfig.name}</span>
+            {siteConfig.chainEnv !== 'mainnet' && (
+              <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
+            )}
+          </div>
         </Link>
 
         <MainNav />
