@@ -73,8 +73,8 @@ export class InstagramPlugin implements RendererPlugin {
 
     // Pre-process the text before rendering
     preProcess = (text: string): string => {
-        // Match Instagram URLs
-        return text.replace(/(https?:\/\/(www\.)?instagram\.com\/[^\s]+)/g, (match) => {
+        // Match Instagram URLs not wrapped in parentheses
+        return text.replace(/(?<!\()(https?:\/\/(www\.)?instagram\.com\/[^\s)]+)/g, (match) => {
             const embedUrl = this.getInstagramMetadataFromLink(match);
             return embedUrl ? `<div>instagram-url-${encodeURIComponent(embedUrl)}</div>` : match;
         });
