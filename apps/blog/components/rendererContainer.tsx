@@ -82,15 +82,17 @@ const RendererContainer = ({
     <Loading loading={false} />
   ) : (
     <>
-      <div
-        id="articleBody"
-        ref={ref}
-        className={cn('prose', className)}
-        data-testid={dataTestid}
-        dangerouslySetInnerHTML={{
-          __html: htmlBody
-        }}
-      />
+      <div className="flex h-fit">
+        <div
+          id="articleBody"
+          ref={ref}
+          className={cn('prose', className)}
+          data-testid={dataTestid}
+          dangerouslySetInnerHTML={{
+            __html: htmlBody
+          }}
+        />
+      </div>
       <LeavePageDialog link={link} open={open} setOpen={setOpen} />
       {mainPost ? <ScrollToElement rendererRef={ref} /> : null}
     </>
