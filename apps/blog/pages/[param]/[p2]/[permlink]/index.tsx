@@ -71,20 +71,23 @@ function PostPage({
   username,
   permlink,
   mutedStatus,
-  metadata
+  metadata,
+  crosspost
 }: {
   community: string;
   username: string;
   permlink: string;
   mutedStatus: boolean;
   metadata: MetadataProps;
+  crosspost: {
+    community: string;
+    body: string;
+  };
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
-
   const { data: mutedList } = useFollowListQuery(user.username, 'muted');
   const deletePostMutation = useDeletePostMutation();
-
   const {
     isLoading: isLoadingPost,
     data: post,
@@ -215,6 +218,7 @@ function PostPage({
   };
   const canonical_url = post ? new URL(post.url, env('SITE_DOMAIN')).href : undefined;
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
+  const crossedPost = post?.json_metadata.tags?.includes('cross-post');
   return (
     <>
       <Head>
@@ -226,6 +230,27 @@ function PostPage({
       </Head>
       <div className="py-8">
         <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
+          {crossedPost ? (
+            <div className="mb-4 flex items-center gap-2 bg-background-secondary p-5 text-sm">
+              <Icons.crossPost className="h-4 w-4" />
+              <span>
+                <Link href={`/@${post?.author}`} className="font-bold hover:text-destructive">
+                  {post?.author}{' '}
+                </Link>
+                cross-posted{' '}
+                <Link
+                  href={`/@${post?.json_metadata.original_author}/${post?.json_metadata.original_permlink}`}
+                  className="font-bold hover:text-destructive"
+                >
+                  this post{' '}
+                </Link>
+                in{' '}
+                <Link href={`/created/${post?.community}`} className="font-bold hover:text-destructive">
+                  {post?.community_title ?? post?.community}
+                </Link>
+              </span>
+            </div>
+          ) : null}
           <div className="absolute right-0 top-1 cursor-pointer hover:text-destructive">
             {communityData && !user.isLoggedIn ? (
               <DialogLogin>
@@ -284,7 +309,7 @@ function PostPage({
                 author_reputation={post.author_reputation}
                 author_title={post.author_title}
                 authored={post.json_metadata?.author}
-                community_title={communityData?.title || ''}
+                community_title={crossedPost ? crosspost.community : communityData?.title || ''}
                 community={community}
                 category={post.category}
                 created={post.created}
@@ -329,7 +354,7 @@ function PostPage({
                 <ImageGallery>
                   <RendererContainer
                     mainPost={post.depth === 0}
-                    body={post.body}
+                    body={crossedPost ? crosspost.body : post.body}
                     author={post.author}
                     className={postClassName}
                   />
@@ -586,6 +611,15 @@ function PostPage({
                   </div>
                 </div>
               </div>
+              {crossedPost ? (
+                <div className="mb-12 flex w-full justify-center">
+                  <Link
+                    href={`/@${post.json_metadata.original_author}/${post.json_metadata.original_permlink}`}
+                  >
+                    <Button variant="redHover">{`Browse to the original post by @${post.json_metadata.original_author}`}</Button>
+                  </Link>
+                </div>
+              ) : null}
             </div>
           ) : (
             <Loading loading={isLoadingPost} />
@@ -648,6 +682,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     image: '',
     title: ''
   };
+  let crosspost = {
+    community: '',
+    body: ''
+  };
 
   try {
     post = await getPost(username, String(permlink));
@@ -670,6 +708,20 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       }
     };
   }
+  if (post?.json_metadata.tags?.includes('cross-post')) {
+    try {
+      const crossedPost = await getPost(
+        post.json_metadata.original_author,
+        String(post.json_metadata.original_permlink)
+      );
+      crosspost = {
+        community: crossedPost?.community_title ?? crossedPost?.community ?? '',
+        body: crossedPost?.body ?? ''
+      };
+    } catch (error) {
+      logger.error('Failed to fetch crosspost:', error);
+    }
+  }
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
@@ -678,6 +730,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       username,
       permlink,
       metadata,
+      crosspost,
       ...(await getTranslations(ctx))
     }
   };
