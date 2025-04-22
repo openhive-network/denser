@@ -714,8 +714,8 @@ importers:
         specifier: 1.27.6-rc7-250404091259
         version: 1.27.6-rc7-250404091259
       '@hiveio/workerbee':
-        specifier: 1.27.6-rc9-250414150315
-        version: 1.27.6-rc9-250414150315
+        specifier: 1.27.6-rc9-250416141721
+        version: 1.27.6-rc9-250416141721
       secure-random:
         specifier: ^1.1.2
         version: 1.1.2
@@ -1827,8 +1827,8 @@ packages:
     resolution: {integrity: sha1-/tmWZEuiYG32Tua91de5cfKAf10=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc7-stable.250407204822.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/workerbee@1.27.6-rc9-250414150315':
-    resolution: {integrity: sha1-XKqmaATLRaA4XB4JpOAzEhRCiYo=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.27.6-rc9-250414150315.tgz}
+  '@hiveio/workerbee@1.27.6-rc9-250416141721':
+    resolution: {integrity: sha1-zmUZuhCyMwk9PhgPGvv5YAm/9WE=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.27.6-rc9-250416141721.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
   '@hookform/resolvers@3.10.0':
@@ -11489,13 +11489,13 @@ snapshots:
     dependencies:
       '@hiveio/beekeeper': 1.27.8-stable.250131103618
       events: 3.3.0
-      long: 5.2.4
+      long: 5.3.1
 
   '@hiveio/wax@1.27.6-rc7-stable.250314151849':
     dependencies:
       '@hiveio/beekeeper': 1.27.10-stable.250305202831
       events: 3.3.0
-      long: 5.2.4
+      long: 5.3.1
 
   '@hiveio/wax@1.27.6-rc7-stable.250407204822':
     dependencies:
@@ -11503,7 +11503,7 @@ snapshots:
       events: 3.3.0
       long: 5.3.1
 
-  '@hiveio/workerbee@1.27.6-rc9-250414150315':
+  '@hiveio/workerbee@1.27.6-rc9-250416141721':
     dependencies:
       '@hiveio/beekeeper': 1.27.10-stable.250310202833
       '@hiveio/wax': 1.27.6-rc7-stable.250407204822
