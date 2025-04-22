@@ -1,19 +1,17 @@
 import { Entry } from '@transaction/lib/bridge';
 import { find_first_img } from './post-img';
 import Link from 'next/link';
-import clsx from 'clsx';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
+
+const truncateTitle = (title: string, maxLength: number = 50) => {
+  return title.length > maxLength ? `${title.substring(0, maxLength)}...` : title;
+};
 
 const SuggestionsCard = ({ entry }: { entry: Entry }) => {
   const cardImage = find_first_img(entry);
-
   return (
     <div className="m-4 flex flex-col rounded-lg bg-background shadow-md">
-      <Link
-        href={`/${entry.category}/@${entry.author}/${entry.permlink}`}
-        data-testid="post-image"
-        className={clsx({ hidden: entry.stats?.gray })}
-      >
+      <Link href={`/${entry.category}/@${entry.author}/${entry.permlink}`} data-testid="post-image">
         <>
           {cardImage ? (
             <div className="flex h-24 items-center overflow-hidden rounded-t-lg bg-transparent">
@@ -27,7 +25,7 @@ const SuggestionsCard = ({ entry }: { entry: Entry }) => {
             </div>
           ) : null}
         </>
-        <h2 className="p-1 text-xs font-semibold">{entry.title}</h2>
+        <h2 className="p-1 text-xs font-semibold">{truncateTitle(entry.title)}</h2>
       </Link>
       <div className="flex flex-col p-1 text-sm text-gray-500">
         <Link href={`/${entry.category}/@${entry.author}/${entry.permlink}`}>{entry.author}</Link>

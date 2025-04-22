@@ -56,8 +56,8 @@ import moment from 'moment';
 import { PostDeleteDialog } from '@/blog/components/post-delete-dialog';
 import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation';
 import FlagIcon from '@/blog/components/flag-icon';
-import SuggestionsCard from '@/blog/components/suggestions-card';
 import { getSuggestions } from '@/blog/lib/get-data';
+import SuggestionsList from '@/blog/components/suggestions-list';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -86,7 +86,6 @@ function PostPage({
 
   const { data: mutedList } = useFollowListQuery(user.username, 'muted');
   const deletePostMutation = useDeletePostMutation();
-
   const {
     isLoading: isLoadingPost,
     data: post,
@@ -238,14 +237,8 @@ function PostPage({
         <div className="col-span-2">
           {suggestions ? (
             <div className="flex flex-col overflow-x-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)] md:overflow-y-auto">
-              {suggestions ? (
-                <h2 className="mb-4 mt-2 px-4 font-sanspro text-xl font-bold md:mt-0">You Might Also Like</h2>
-              ) : null}
-              <div className="flex md:flex-col">
-                {suggestions.map((suggestion, i) => (
-                  <SuggestionsCard entry={suggestion} key={i} />
-                ))}
-              </div>
+              <h2 className="mb-4 mt-2 px-4 font-sanspro text-xl font-bold md:mt-0">You Might Also Like</h2>
+              <SuggestionsList suggestions={suggestions} />
             </div>
           ) : null}
         </div>
