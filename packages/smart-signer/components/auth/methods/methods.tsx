@@ -22,7 +22,7 @@ import { Steps } from '../form';
 import Step from '../step';
 import { username } from '@smart-signer/lib/auth/utils';
 import { KeyType, LoginType } from '@smart-signer/types/common';
-
+import { handleError } from '@ui/lib/handle-error';
 export interface MethodsProps {
   onSetStep: (step: Steps) => void;
   i18nNamespace: string;
@@ -56,7 +56,6 @@ const Methods: FC<MethodsProps> = ({
 }) => {
   const { t } = useTranslation(i18nNamespace);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -85,7 +84,6 @@ const Methods: FC<MethodsProps> = ({
 
   async function onSubmit(_loginType: LoginType) {
     try {
-      setError(null);
       setLoading(true);
       form.setValue('loginType', _loginType);
 
@@ -94,7 +92,7 @@ const Methods: FC<MethodsProps> = ({
       await sign(loginType, username, keyType);
       await submit(username);
     } catch (error: unknown) {
-      setError((error as Error).message);
+      handleError(error);
     } finally {
       setLoading(false);
     }
@@ -109,11 +107,6 @@ const Methods: FC<MethodsProps> = ({
           <div data-testid="other-signin-options-description">
             {t('login_form.other_signing_options_description')}
           </div>
-          {error && (
-            <div className="text-sm text-destructive" data-testid="other-signin-options-error-msg">
-              {t(error)}
-            </div>
-          )}
         </div>
       }
     >
