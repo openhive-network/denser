@@ -40,6 +40,10 @@ export class LoginForm {
   readonly passwordToUnlockKeySubmitButton: Locator;
   readonly passwordToUnlockKeyResetButton: Locator;
 
+  readonly errorToastContent: Locator;
+  readonly errorToastContentTrigger: Locator;
+  readonly errorToastContentMessage: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.loginDialog = page.getByTestId('login-dialog');
@@ -80,6 +84,10 @@ export class LoginForm {
     this.passwordToUnlockKeyInput = page.getByTestId('posting-private-key-input');
     this.passwordToUnlockKeySubmitButton = page.getByTestId('password-submit-button');
     this.passwordToUnlockKeyResetButton = page.getByTestId('password-reset-button');
+
+    this.errorToastContent = page.getByTestId('error-toast-content');
+    this.errorToastContentTrigger = page.getByTestId('error-toast-content-trigger');
+    this.errorToastContentMessage = page.getByTestId('error-toast-content-message');
   }
 
   async validateDefaultLoginFormIsLoaded() {

@@ -285,7 +285,9 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.closeDialog.last().click();
     // Validate other sign in options form with error message is loaded
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);
-    await expect(loginForm.otherSignInOptionsErrorMessage).toHaveText('No WIF key from user');
+    await expect(loginForm.errorToastContent).toBeVisible();
+    await loginForm.errorToastContentTrigger.click();
+    await expect(loginForm.errorToastContentMessage).toHaveText('Error: No WIF key from user');
   });
 
   // Invalid WIF checksum. - in Enter your WIF key
@@ -308,7 +310,9 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.closeDialog.last().click();
     // Validate other sign in options form with error message is loaded
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);
-    await expect(loginForm.otherSignInOptionsErrorMessage).toHaveText('No WIF key from user');
+    await expect(loginForm.errorToastContent).toBeVisible();
+    await loginForm.errorToastContentTrigger.click();
+    await expect(loginForm.errorToastContentMessage).toHaveText('Error: No WIF key from user');
   });
 
   test('Check if Sign in with safe storage styles are correct in the light mode', async ({ page }) => {
