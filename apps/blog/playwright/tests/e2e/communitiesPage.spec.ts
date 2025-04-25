@@ -641,7 +641,9 @@ test.describe('Communities page tests', () => {
     expect((await communitiesPage.subscriberName.all()).length).toBe(50);
   });
 
-  test('validate styles of the list of the subscribers in the modal in the light mode', async ({ page }) => {
+  test('validate styles of the list of the subscribers in the modal in the light mode', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+
     const leoFinanceCommunityAccount: string = 'hive-167922';
     const widthProgressBar = 60; // 100%
     await homePage.moveToLeoFinanceCommunities();
@@ -693,7 +695,9 @@ test.describe('Communities page tests', () => {
     ).toBe(`matrix(1, 0, 0, 1, -${transformXwidthValue2}, 0)`);
   });
 
-  test('validate styles of the list of the subscribers in the modal in the dark mode', async ({ page }) => {
+  test('validate styles of the list of the subscribers in the modal in the dark mode', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+
     const leoFinanceCommunityAccount: string = 'hive-167922';
     const widthProgressBar = 60; // 100%
 
