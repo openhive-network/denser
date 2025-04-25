@@ -799,7 +799,7 @@ develop:deploy-blog-mainnet:
     EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search" || $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-blog-mainnet
     url: https://blog.dev.openhive.network
