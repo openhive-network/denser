@@ -425,6 +425,7 @@ export class ProfilePage {
   async gotoNotificationsProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/notifications`);
     await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForTimeout(1000);
     await this.page.waitForSelector(this.profileInfo['_selector']);
   }
 
