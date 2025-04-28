@@ -488,6 +488,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
       50,
       lastNotificationId
     );
+    await profilePage.page.waitForTimeout(3000);
     await profilePage.notificationLoadMoreButtonInAll.click();
     await profilePage.page.waitForTimeout(3000);
     const notificationListItemInAllArrayAfterLoadMoreClicked =
