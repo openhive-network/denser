@@ -105,7 +105,7 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       return wif;
     } catch (error) {
       logger.error('Error in getPasswordFromUser: %o', error);
-      throw new Error('login_form.zod_error.no_wif');
+      throw new Error('No WIF key from user');
     }
   }
 
