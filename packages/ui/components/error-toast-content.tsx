@@ -25,12 +25,12 @@ const ErrorToastContent: React.FC<ErrorToastContentProps> = ({
   };
 
   return (
-    <div className={cn('text-white', className)}>
+    <div className={cn('text-white', className)} data-testid="error-toast-content">
       <div className="flex flex-row items-center justify-between gap-x-16">
         <h1 className="mr-6 font-semibold">{errorTitle}</h1>
         {displayControls && (
           <div className="top-0 flex flex-row gap-x-2">
-            <Button onClick={() => setShowMoreOpen(!showMoreOpen)} variant="link" className="p-0">
+            <Button onClick={() => setShowMoreOpen(!showMoreOpen)} variant="link" className="p-0" data-testid="error-toast-content-trigger">
               <ChevronDown
                 className={cn({
                   'rotate-180': showMoreOpen
@@ -49,6 +49,7 @@ const ErrorToastContent: React.FC<ErrorToastContentProps> = ({
           className={cn('h-0 w-0 overflow-hidden text-wrap break-words', {
             'h-full max-h-[60vh] w-full overflow-y-auto px-4 md:max-h-[80vh]': showMoreOpen
           })}
+          data-testid="error-toast-content-message"
         >
           {fullError}
         </pre>
