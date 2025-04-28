@@ -74,7 +74,7 @@ include:
       - ${TURBO_APP_NAME}-docker-build.env
     reports:
       dotenv: ${TURBO_APP_NAME}-docker-build.env
-    when: always  # This ensures artifacts are created even if job fails
+    when: always # This ensures artifacts are created even if job fails
   tags:
     - public-runner-docker
     - hived-for-tests
@@ -788,7 +788,7 @@ develop:deploy-blog-mainnet:
   extends: .deploy_template_mainnet
   needs:
     - docker-build-blog
-    #- e2e-tests-blog
+    # - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-dev-blog
     PORT: 8111
@@ -799,7 +799,7 @@ develop:deploy-blog-mainnet:
     EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "feature/new-search" || $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-blog-mainnet
     url: https://blog.dev.openhive.network

@@ -285,7 +285,9 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.closeDialog.last().click();
     // Validate other sign in options form with error message is loaded
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);
-    await expect(loginForm.otherSignInOptionsErrorMessage).toHaveText('No WIF key from user');
+    await expect(loginForm.errorToastContent).toBeVisible();
+    await loginForm.errorToastContentTrigger.click();
+    await expect(loginForm.errorToastContentMessage).toHaveText('Error: No WIF key from user');
   });
 
   // Invalid WIF checksum. - in Enter your WIF key
@@ -308,7 +310,9 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.closeDialog.last().click();
     // Validate other sign in options form with error message is loaded
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);
-    await expect(loginForm.otherSignInOptionsErrorMessage).toHaveText('No WIF key from user');
+    await expect(loginForm.errorToastContent).toBeVisible();
+    await loginForm.errorToastContentTrigger.click();
+    await expect(loginForm.errorToastContentMessage).toHaveText('Error: No WIF key from user');
   });
 
   test('Check if Sign in with safe storage styles are correct in the light mode', async ({ page }) => {
@@ -544,7 +548,9 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.closeDialog.last().click();
     // Validate other sign in options form with error message is loaded
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);
-    expect(await homePage.getElementCssPropertyValue(await loginForm.otherSignInOptionsErrorMessage, 'color')).toBe("rgb(218, 43, 43)");
+    await expect(loginForm.errorToastContent).toBeVisible();
+    await loginForm.errorToastContentTrigger.click();
+    expect(await homePage.getElementCssPropertyValue(await loginForm.errorToastContentMessage, 'color')).toBe("rgb(255, 255, 255)");
   });
 
   test('Validate styles during Unlock user with password in the Denser App in the light mode', async ({page}) =>{
