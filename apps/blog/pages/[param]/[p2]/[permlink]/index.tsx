@@ -84,6 +84,8 @@ function PostPage({
   crosspost: {
     community: string;
     body: string;
+    communityTag: string;
+    authorReputation: number;
   };
 }) {
   const { t } = useTranslation('common_blog');
@@ -98,7 +100,7 @@ function PostPage({
     enabled: !!username && !!permlink
   });
 
-  const { data: suggestions, isLoading: isLoadingSuggestions } = useQuery(
+  const { data: suggestions } = useQuery(
     ['suggestions', username, permlink],
     () => getSuggestions(username, String(permlink)),
     {
@@ -326,11 +328,11 @@ function PostPage({
                   permlink={permlink}
                   moderateEnabled={userCanModerate}
                   author={post.author}
-                  author_reputation={post.author_reputation}
+                  author_reputation={crossedPost ? crosspost.authorReputation : post.author_reputation}
                   author_title={post.author_title}
                   authored={post.json_metadata?.author}
                   community_title={crossedPost ? crosspost.community : communityData?.title || ''}
-                  community={community}
+                  community={crossedPost ? crosspost.communityTag : community}
                   category={post.category}
                   created={post.created}
                   blacklist={firstPost ? firstPost.blacklists : post.blacklists}
@@ -412,7 +414,7 @@ function PostPage({
                       <span className="px-1 text-destructive">
                         {post.community_title ? (
                           <Link
-                            href={`/trending/${crossedPost ? crosspost.community : post.community_title}`}
+                            href={`/trending/${crossedPost ? crosspost.communityTag : post.community}`}
                             className="hover:cursor-pointer"
                             data-testid="footer-comment-community-category-link"
                           >
@@ -432,7 +434,9 @@ function PostPage({
                       <div className="flex">
                         <UserPopoverCard
                           author={post.json_metadata.original_author ?? post.author}
-                          author_reputation={post.author_reputation}
+                          author_reputation={
+                            crossedPost ? crosspost.authorReputation : post.author_reputation
+                          }
                           blacklist={firstPost ? firstPost.blacklists : post.blacklists}
                         />
                         {post.author_title ? (
@@ -706,7 +710,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
   let crosspost = {
     community: '',
-    body: ''
+    body: '',
+    communityTag: '',
+    authorReputation: 0
   };
 
   try {
@@ -738,7 +744,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       );
       crosspost = {
         community: crossedPost?.community_title ?? crossedPost?.community ?? '',
-        body: crossedPost?.body ?? ''
+        body: crossedPost?.body ?? '',
+        communityTag: crossedPost?.community ?? '',
+        authorReputation: crossedPost?.author_reputation ?? 0
       };
     } catch (error) {
       logger.error('Failed to fetch crosspost:', error);
