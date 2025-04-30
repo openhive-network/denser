@@ -13,7 +13,7 @@ import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import TooltipContainer from '@ui/components/tooltip-container';
 
-export default function LangToggle({ logged }: { logged: Boolean }) {
+export default function LangToggle({ logged, className }: { logged: Boolean; className?: string }) {
   const router = useRouter();
   const [lang, setLang] = useState<string | null>(null);
   const { t } = useTranslation('common_blog');
@@ -41,7 +41,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
           <Button
             variant="ghost"
             size="sm"
-            className={clsx('flex h-10 w-full p-0 text-start font-normal', { 'h-6': logged })}
+            className={clsx('flex h-10 w-full p-0 text-start font-normal', className, { 'h-6': logged })}
             data-testid="toggle-language"
           >
             <span>{lang ? languages.filter((language) => language.locale === lang)[0].label : null}</span>

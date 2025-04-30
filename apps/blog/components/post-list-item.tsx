@@ -230,7 +230,7 @@ const PostListItem = ({
                       ) : null}
                       <Link
                         href={`/${post.category}/@${post.author}/${post.permlink}`}
-                        className="visited:text-gray-500 dark:visited:text-gray-400"
+                        className="whitespace-normal break-words visited:text-gray-500 dark:visited:text-gray-400"
                       >
                         {post.title}
                       </Link>

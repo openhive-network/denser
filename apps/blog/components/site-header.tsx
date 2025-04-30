@@ -5,8 +5,7 @@ import { MainNav } from './main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
 import Link from 'next/link';
-import React, { useState, KeyboardEvent, FC, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import React, { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -23,38 +22,43 @@ import { hoursAndMinutes } from '../lib/utils';
 import env from '@beam-australia/react-env';
 import { getAccount } from '@transaction/lib/hive';
 import TooltipContainer from '@ui/components/tooltip-container';
+import { ModeSwitchInput } from '@ui/components/mode-switch-input';
+import { useRouter } from 'next/router';
+import { cn } from '@ui/lib/utils';
+import { getHiveSenseStatus } from '../lib/get-data';
 
 const SiteHeader: FC = () => {
-  const router = useRouter();
   const { t } = useTranslation('common_blog');
+  const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
   }, []);
   const { user } = useUser();
   const { manabarsData } = useManabars(user.username);
-  const { data, isLoading, isError } = useQuery(
+  const { data } = useQuery(
     ['unreadNotifications', user.username],
     () => getUnreadNotifications(user.username),
     {
       enabled: !!user.username
     }
   );
-  const { data: profile, isLoading: profileLoading } = useQuery(
-    ['user', user.username],
-    () => getAccount(user.username),
-    { enabled: user?.isLoggedIn }
+  const { data: profile } = useQuery(['user', user.username], () => getAccount(user.username), {
+    enabled: user?.isLoggedIn
+  });
+  const { data: hiveSense, isLoading: hiveSenseLoading } = useQuery(
+    ['hivesense-api'],
+    () => getHiveSenseStatus(),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false
+    }
   );
   const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
   const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
   const rcAngle = (360 * (manabarsData ? manabarsData?.rc.percentageValue : 0)) / 100;
   const chart = [{ name: '', value: 1 }];
-  const [input, setInput] = useState('');
-  const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      router.push(`/search?q=${encodeURIComponent(input)}&s=newest`);
-    }
-  };
+
   const [isNavHidden, setIsNavHidden] = useState(false);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
   useEffect(() => {
@@ -85,10 +89,12 @@ const SiteHeader: FC = () => {
       <div className="container flex h-16 w-full items-center justify-between">
         <Link href="/trending" className="flex items-center space-x-2">
           <Icons.hive className="h-6 w-6" />
-          <span className="font-bold sm:inline-block">{siteConfig.name}</span>
-          {siteConfig.chainEnv !== 'mainnet' && (
-            <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
-          )}
+          <div className='flex flex-col md:flex-row'>
+            <span className="font-bold sm:inline-block">{siteConfig.name}</span>
+            {siteConfig.chainEnv !== 'mainnet' && (
+              <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
+            )}
+          </div>
         </Link>
 
         <MainNav />
@@ -112,13 +118,14 @@ const SiteHeader: FC = () => {
                 </Link>
               </div>
             )}
-            <TooltipContainer title={t('navigation.main_nav_bar.search')}>
-              <Link href="/search" data-testid="navbar-search-link">
-                <Button variant="ghost" size="sm" className="h-10 w-10 px-0 ">
-                  <Icons.search className="h-5 w-5 rotate-90" />
-                </Button>
-              </Link>
-            </TooltipContainer>
+            <div className="hidden lg:block">
+              {router.pathname === '/search' ? (
+                <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
+              ) : (
+                <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
+              )}
+            </div>
+            <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" />
             <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
               <Link href="/submit.html">
                 <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
@@ -127,16 +134,22 @@ const SiteHeader: FC = () => {
               </Link>
             </TooltipContainer>
             {isClient && !user.isLoggedIn ? (
-              <ModeToggle>
-                <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">
-                  <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="hidden">Language</span>
-                </Button>
-              </ModeToggle>
+              <div>
+                <ModeToggle>
+                  <Button variant="ghost" size="sm" className="h-10 w-full px-2" data-testid="theme-mode">
+                    <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="hidden">Language</span>
+                  </Button>
+                </ModeToggle>
+              </div>
             ) : null}
 
-            {isClient && !user.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
+            {isClient && !user.isLoggedIn ? (
+              <div>
+                <LangToggle logged={user ? user?.isLoggedIn : false} className="px-2" />
+              </div>
+            ) : null}
 
             {isClient && user.isLoggedIn ? (
               <TooltipProvider>
@@ -269,3 +282,16 @@ const SiteHeader: FC = () => {
 };
 
 export default SiteHeader;
+
+const SearchButton = ({ aiTag, className }: { aiTag: boolean; className?: string }) => {
+  return (
+    <TooltipContainer title={`${aiTag ? 'AI ' : ''}Search`}>
+      <Link href="/search" data-testid="navbar-search-link">
+        <Button variant="ghost" size="sm" className={cn('relative h-10 w-10 px-0', className)}>
+          <Icons.search className="h-5 w-5 rotate-90" />
+          {aiTag ? <span className="absolute bottom-0 right-2 text-[10px] font-bold">AI</span> : null}
+        </Button>
+      </Link>
+    </TooltipContainer>
+  );
+};

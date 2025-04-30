@@ -175,7 +175,7 @@ const CommentListItem = ({
                               />
                             )}
                             <Link
-                              href={`/${router.query.param}/${router.query.p2}/${router.query.permlink}#@${username}/${comment.permlink}`}
+                              href={`#@${username}/${comment.permlink}`}
                               className="hover:text-destructive md:text-sm"
                               title={String(parseDate(comment.created))}
                               data-testid="comment-timestamp-link"

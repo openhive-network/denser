@@ -18,108 +18,153 @@ test.describe('Follow user - tests', () => {
   });
 
   test('Add user to follow list - user account', async ({ denserAutoTest0Page }) => {
-    const secondPostAuthor = await denserAutoTest0Page.page.locator(homePage.postAuthor).nth(1).innerText()
+    const secondPostAuthor = await denserAutoTest0Page.page.locator(homePage.postAuthor).nth(1).innerText();
 
-    await denserAutoTest0Page.page.locator(homePage.postAuthor).nth(1).click()
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileNameString)).toBeVisible()
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toBeVisible()
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Follow')
-    await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow')
+    await denserAutoTest0Page.page.locator(homePage.postAuthor).nth(1).click();
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileNameString)).toBeVisible();
+    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toBeVisible();
+    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Follow');
+    await denserAutoTest0Page.page.locator(profilePage.followBtn).click();
+    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow');
 
-    await denserAutoTest0Page.page.locator(homePage.profileAvatar).click()
-    await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click()
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('1 following')
-    await denserAutoTest0Page.page.getByText('1 following').click()
-    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).toBeVisible()
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow')
-    await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
-    await denserAutoTest0Page.page.waitForTimeout(5000)
-    await denserAutoTest0Page.page.reload({ waitUntil: 'load' });
-    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).not.toBeVisible()
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
+    await denserAutoTest0Page.page.locator(homePage.profileAvatar).click();
+    await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click();
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText(
+      '1 following'
+    );
+    await denserAutoTest0Page.page.getByText('1 following').click();
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).toBeVisible();
+    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow');
+    await denserAutoTest0Page.page.locator(profilePage.followBtn).click();
+    await expect(
+      await denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })
+    ).not.toBeVisible();
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText(
+      'Not following anybody'
+    );
   });
 
   test('Add user to follow list from post', async ({ denserAutoTest0Page }) => {
-    const postAuthor = await denserAutoTest0Page.page.locator(homePage.postAuthor).first().innerText()
+    const postAuthor = await denserAutoTest0Page.page.locator(homePage.postAuthor).first().innerText();
 
-    await expect(denserAutoTest0Page.page.locator(homePage.postsImages).first()).toBeVisible()
-    await denserAutoTest0Page.page.locator(homePage.postsImages).first().click({force: true})
-    await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString).first()).toBeVisible()
-    await denserAutoTest0Page.page.locator(postPage.articleAuthor).first().click()
-    await expect(denserAutoTest0Page.page.locator(postPage.userPopoverCardContent)).toBeVisible()
-    await denserAutoTest0Page.page.locator(postPage.profileFollowBtn).click()
-    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toContainText('Unfollow')
+    await expect(denserAutoTest0Page.page.locator(homePage.postsImages).first()).toBeVisible();
+    await denserAutoTest0Page.page.locator(homePage.postsImages).first().click({ force: true });
+    await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString).first()).toBeVisible();
+    await denserAutoTest0Page.page.locator(postPage.articleAuthor).first().click();
+    await expect(denserAutoTest0Page.page.locator(postPage.userPopoverCardContent)).toBeVisible();
+    await denserAutoTest0Page.page.locator(postPage.profileFollowBtn).click();
+    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toContainText('Unfollow');
 
-    await denserAutoTest0Page.page.locator(homePage.profileAvatar).click()
-    await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click()
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('1 following')
-    await denserAutoTest0Page.page.getByText('1 following').click()
-    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })).toBeVisible()
+    await denserAutoTest0Page.page.locator(homePage.profileAvatar).click();
+    await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click();
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText(
+      '1 following'
+    );
+    await denserAutoTest0Page.page.getByText('1 following').click();
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })).toBeVisible();
 
-    await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
-    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })).not.toBeVisible()
-    await denserAutoTest0Page.page.reload({ waitUntil: 'load' });
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
+    await denserAutoTest0Page.page.locator(profilePage.followBtn).click();
+    await expect(
+      await denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })
+    ).not.toBeVisible();
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText(
+      'Not following anybody'
+    );
   });
 
   test('Add user to follow list from comment', async ({ denserAutoTest0Page }) => {
-    await expect(denserAutoTest0Page.page.locator(homePage.postsImages).first()).toBeVisible()
-    await denserAutoTest0Page.page.locator(homePage.postsImages).first().click({force: true})
-    await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString).first()).toBeVisible()
-    await denserAutoTest0Page.page.mouse.wheel(0, 2000)
-    await expect(denserAutoTest0Page.page.locator(postPage.commentCard).first()).toBeVisible()
+    await expect(denserAutoTest0Page.page.locator(homePage.postsImages).first()).toBeVisible();
+    await denserAutoTest0Page.page.locator(homePage.postsImages).first().click({ force: true });
+    await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString).first()).toBeVisible();
+    await denserAutoTest0Page.page.mouse.wheel(0, 2000);
+    await expect(denserAutoTest0Page.page.locator(postPage.commentCard).first()).toBeVisible();
 
-    const commentAuthorName = await denserAutoTest0Page.page.locator(postPage.commentListItem).first().locator(postPage.articleAuthor).first()
-    const commentAuthorNameText = await commentAuthorName.innerText()
+    const commentAuthorName = await denserAutoTest0Page.page
+      .locator(postPage.commentListItem)
+      .first()
+      .locator(postPage.articleAuthor)
+      .first();
+    const commentAuthorNameText = await commentAuthorName.innerText();
 
-    await denserAutoTest0Page.page.locator(postPage.commentListItem).first().locator(postPage.articleAuthor).first().click()
+    await denserAutoTest0Page.page
+      .locator(postPage.commentListItem)
+      .first()
+      .locator(postPage.articleAuthor)
+      .first()
+      .click();
 
-    await denserAutoTest0Page.page.locator(postPage.profileFollowBtn).click()
-    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toContainText('Unfollow')
+    await denserAutoTest0Page.page.locator(postPage.profileFollowBtn).click();
+    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toContainText('Unfollow');
 
-    await denserAutoTest0Page.page.locator(homePage.profileAvatar).click()
-    await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click()
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('1 following')
-    await denserAutoTest0Page.page.getByText('1 following').click()
-    expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).toBeVisible()
+    await denserAutoTest0Page.page.locator(homePage.profileAvatar).click();
+    await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click();
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText(
+      '1 following'
+    );
+    await denserAutoTest0Page.page.getByText('1 following').click();
+    expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).toBeVisible();
 
-    await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
-    await denserAutoTest0Page.page.waitForTimeout(5000)
-    expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).not.toBeVisible()
-    await denserAutoTest0Page.page.waitForSelector(profilePage.profileStatsString)
-    await denserAutoTest0Page.page.reload({ waitUntil: 'load' });
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
+    await denserAutoTest0Page.page.locator(profilePage.followBtn).click();
+    expect(
+      denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })
+    ).not.toBeVisible();
+    await denserAutoTest0Page.page.waitForSelector(profilePage.profileStatsString);
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText(
+      'Not following anybody'
+    );
   });
 
   test('Check colors', async ({ denserAutoTest0Page }) => {
-    const followButtonTextColor = 'rgb(248, 250, 252)'
-    const followButtonTextHoverColor = 'rgb(218, 43, 43)'
+    const followButtonTextColor = 'rgb(248, 250, 252)';
+    const followButtonTextHoverColor = 'rgb(218, 43, 43)';
 
     // check colors
 
-    await denserAutoTest0Page.page.locator(homePage.postAuthor).nth(1).click()
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileNameString)).toBeVisible()
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toBeVisible()
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toHaveCSS('color', followButtonTextColor)
-    await denserAutoTest0Page.page.locator(profilePage.followBtn).hover()
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toHaveCSS('color', followButtonTextHoverColor)
+    await denserAutoTest0Page.page.locator(homePage.postAuthor).nth(1).click();
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileNameString)).toBeVisible();
+    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toBeVisible();
+    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toHaveCSS(
+      'color',
+      followButtonTextColor
+    );
+    await denserAutoTest0Page.page.locator(profilePage.followBtn).hover();
+    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toHaveCSS(
+      'color',
+      followButtonTextHoverColor
+    );
 
-    await denserAutoTest0Page.page.getByRole('link', { name: 'Hive Blog testnet' }).click()
-    await expect(denserAutoTest0Page.page.locator(homePage.postsImages).first()).toBeVisible()
-    await denserAutoTest0Page.page.locator(homePage.postsImages).first().click({force: true})
-    await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString).first()).toBeVisible()
-    await denserAutoTest0Page.page.locator(postPage.articleAuthor).first().click()
-    await expect(denserAutoTest0Page.page.locator(postPage.userPopoverCardContent)).toBeVisible()
-    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toHaveCSS('color', followButtonTextColor)
-    await denserAutoTest0Page.page.locator(postPage.profileFollowBtn).hover()
-    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toHaveCSS('color', followButtonTextHoverColor)
+    await denserAutoTest0Page.page.getByRole('link', { name: 'Hive Blog testnet' }).click();
+    await expect(denserAutoTest0Page.page.locator(homePage.postsImages).first()).toBeVisible();
+    await denserAutoTest0Page.page.locator(homePage.postsImages).first().click({ force: true });
+    await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString).first()).toBeVisible();
+    await denserAutoTest0Page.page.locator(postPage.articleAuthor).first().click();
+    await expect(denserAutoTest0Page.page.locator(postPage.userPopoverCardContent)).toBeVisible();
+    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toHaveCSS(
+      'color',
+      followButtonTextColor
+    );
+    await denserAutoTest0Page.page.locator(postPage.profileFollowBtn).hover();
+    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toHaveCSS(
+      'color',
+      followButtonTextHoverColor
+    );
 
-    await denserAutoTest0Page.page.mouse.wheel(0, 2000)
-    await expect(denserAutoTest0Page.page.locator(postPage.commentCard).first()).toBeVisible()
-    await denserAutoTest0Page.page.locator(postPage.commentListItem).first().locator(postPage.articleAuthor).first().click()
-    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toHaveCSS('color', followButtonTextColor)
-    await denserAutoTest0Page.page.locator(postPage.profileFollowBtn).hover()
-    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toHaveCSS('color', followButtonTextHoverColor)
+    await denserAutoTest0Page.page.mouse.wheel(0, 2000);
+    await expect(denserAutoTest0Page.page.locator(postPage.commentCard).first()).toBeVisible();
+    await denserAutoTest0Page.page
+      .locator(postPage.commentListItem)
+      .first()
+      .locator(postPage.articleAuthor)
+      .first()
+      .click();
+    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toHaveCSS(
+      'color',
+      followButtonTextColor
+    );
+    await denserAutoTest0Page.page.locator(postPage.profileFollowBtn).hover();
+    await expect(denserAutoTest0Page.page.locator(postPage.profileFollowBtn)).toHaveCSS(
+      'color',
+      followButtonTextHoverColor
+    );
   });
 });
