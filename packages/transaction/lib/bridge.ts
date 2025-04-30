@@ -213,7 +213,6 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  // logger.info('Running getPostsRanked', { sort, tag, start_author, start_permlink, observer, limit });
   return chain
     .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({
@@ -621,7 +620,6 @@ export const getSearch = async (q: string, scroll_id: string, sort: string): Pro
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error in /search api call', error);
     throw new Error('Error in /search api call');
   }
 };

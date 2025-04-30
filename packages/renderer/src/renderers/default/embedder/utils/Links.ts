@@ -32,8 +32,8 @@ export default {
     remote: remote(),
     image: image(),
     imageFile: imageFile(),
-    vimeo: /https?:\/\/(?:vimeo.com\/|player.vimeo.com\/video\/)([0-9]+)\/*/,
-    vimeoId: /(?:vimeo.com\/|player.vimeo.com\/video\/)([0-9]+)/,
-    twitch: /https?:\/\/(?:www.)?twitch.tv\/(?:(videos)\/)?([a-zA-Z0-9][\w]{3,24})/i,
+    vimeo: /https?:\/\/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)([0-9]+)\/?(#t=((\d+)s?))?\/?/,
+    vimeoId: /(?:vimeo\.com\/|player\.vimeo\.com\/video\/)([0-9]+)/,
+    twitch: /https?:\/\/(?:www.)?twitch\.tv\/(?:(videos)\/)?([a-zA-Z0-9][\w]{3,24})/i,
     ipfsProtocol: /^((\/\/?ipfs\/)|(ipfs:\/\/))/
 };

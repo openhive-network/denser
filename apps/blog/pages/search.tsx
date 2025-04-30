@@ -1,49 +1,51 @@
-import {
-  Input,
-  Label,
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@hive/ui';
-import { Icons } from '@ui/components/icons';
 import { useRouter } from 'next/router';
-import { useState, KeyboardEvent, useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { getDefaultProps } from '../lib/get-translations';
-import { getSearch } from '@transaction/lib/bridge';
-import SearchCard from '../components/search-card';
-import { useLocalStorage } from 'usehooks-ts';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useFollowListQuery } from '../components/hooks/use-follow-list';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import Loading from '@ui/components/loading';
 import { PostSkeleton } from './[...param]';
 import { useInView } from 'react-intersection-observer';
 import Head from 'next/head';
+import PostList from '../components/post-list';
+import { getSearch } from '@transaction/lib/bridge';
+import { ModeSwitchInput } from '@ui/components/mode-switch-input';
+import { useLocalStorage } from 'usehooks-ts';
+import { useEffect } from 'react';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { Preferences } from '@transaction/lib/app-types';
+import { DEFAULT_PREFERENCES } from './[param]/settings';
+import { useFollowListQuery } from '../components/hooks/use-follow-list';
+import { useTranslation } from 'next-i18next';
+import SearchCard from '../components/search-card';
+import { toast } from '@ui/components/hooks/use-toast';
+import { getHiveSenseStatus, getSimilarPosts } from '../lib/get-data';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
 const TAB_TITLE = 'Search - Hive';
 export default function SearchPage() {
   const router = useRouter();
-  const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();
-  const [values, setValues] = useState({
-    sort: 'newest',
-    input: ''
-  });
-  const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      router.push(`/search?q=${encodeURIComponent(values.input)}&sort=${encodeURIComponent(values.sort)}`);
-    }
-  };
   const { user } = useUser();
-
+  const { t } = useTranslation('common_blog');
+  const query = router.query.q as string;
+  const sort = router.query.s as string;
+  const aiSearch = !!query && !sort;
+  const { data: hiveSense, isLoading: hiveSenseLoading } = useQuery(
+    ['hivesense-api'],
+    () => getHiveSenseStatus(),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false
+    }
+  );
+  const { data, isLoading } = useQuery(['posts', query], () => getSimilarPosts(query), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    enabled: aiSearch
+  });
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
@@ -53,11 +55,11 @@ export default function SearchPage() {
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery(
-    ['infiniteSearch', router.query.q, router.query.sort],
-    (lastPage) => getSearch(router.query.q as string, lastPage.pageParam, router.query.sort as string),
+    ['infiniteSearch', query, sort],
+    (lastPage) => getSearch(query, lastPage.pageParam, sort),
     {
       getNextPageParam: (lastPage) => lastPage.scroll_id,
-      enabled: Boolean(router.query.sort) && Boolean(router.query.q)
+      enabled: Boolean(sort) && Boolean(query)
     }
   );
   useEffect(() => {
@@ -65,77 +67,65 @@ export default function SearchPage() {
       fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, inView]);
-  const handleSelect = (e: string) => {
-    setValues({ ...values, sort: e });
-    router.push(`/search?q=${encodeURIComponent(values.input)}&s=${encodeURIComponent(e)}`);
-  };
+
   const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
   const { data: blacklist } = useFollowListQuery(user.username, 'blacklisted');
-
+  useEffect(() => {
+    if (entriesDataIsError) {
+      toast({
+        title: 'Error',
+        description: 'There was an error fetching the data.',
+        variant: 'destructive'
+      });
+    }
+  }, [entriesDataIsError]);
   return (
     <>
       <Head>
         <title>{TAB_TITLE}</title>
       </Head>
-      <div className="flex flex-col gap-12 px-4 py-8">
+      <div className="m-auto flex max-w-4xl flex-col gap-12 px-4 py-8">
         <div className="flex flex-col gap-4">
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <Icons.search className="h-5 w-5 rotate-90" />
-            </div>
-            <Input
-              type="search"
-              className="block rounded-full p-4 pl-10 text-sm "
-              placeholder="Search..."
-              value={values.input}
-              onChange={(e) => setValues({ ...values, input: e.target.value })}
-              onKeyDown={(e) => handleEnter(e)}
-            />
-          </div>
-          <div>
-            <Select defaultValue="newest" value={values.sort} onValueChange={handleSelect}>
-              <Label>Sort by:</Label>
-              <SelectTrigger className="w-[180px]" data-testid="search-sort-by-dropdown-list">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="newest">{t('select_sort.search_sorter.newest')}</SelectItem>
-                  <SelectItem value="popularity">{t('select_sort.search_sorter.popularity')}</SelectItem>
-                  <SelectItem value="relevance">{t('select_sort.search_sorter.relevance')}</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+          <div className="w-full">
+            <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} searchPage />
           </div>
         </div>
-
-        {entriesDataIsError ? null : entriesDataIsLoading ? (
-          <Loading loading={entriesDataIsLoading && entriesDataIsFetching} />
-        ) : !entriesData ? (
-          'Nothing was found.'
-        ) : (
-          entriesData.pages.map((data, i) => (
-            <ul key={i}>
-              {data.results.map((post) => (
-                <SearchCard post={post} key={post.id} nsfw={preferences.nsfw} blacklist={blacklist} />
-              ))}
-            </ul>
-          ))
-        )}
-        <div>
-          <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
-            {isFetchingNextPage ? (
-              <PostSkeleton />
-            ) : hasNextPage ? (
-              t('user_profile.load_newer')
+        {!aiSearch || !query ? null : isLoading ? (
+          <Loading loading={isLoading} />
+        ) : data ? (
+          <PostList data={data} />
+        ) : null}
+        {!!sort ? (
+          <>
+            {entriesDataIsError ? null : entriesDataIsLoading ? (
+              <Loading loading={entriesDataIsLoading && entriesDataIsFetching} />
+            ) : !entriesData ? (
+              'Nothing was found.'
             ) : (
-              t('user_profile.nothing_more_to_load')
+              entriesData.pages.map((data, i) => (
+                <ul key={i}>
+                  {data.results.map((post) => (
+                    <SearchCard post={post} key={post.id} nsfw={preferences.nsfw} blacklist={blacklist} />
+                  ))}
+                </ul>
+              ))
             )}
-          </button>
-        </div>
+            <div>
+              <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
+                {isFetchingNextPage ? (
+                  <PostSkeleton />
+                ) : hasNextPage ? (
+                  t('user_profile.load_newer')
+                ) : (
+                  t('user_profile.nothing_more_to_load')
+                )}
+              </button>
+            </div>
+          </>
+        ) : null}
       </div>
     </>
   );

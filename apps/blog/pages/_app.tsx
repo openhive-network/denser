@@ -15,12 +15,12 @@ function App({ Component, pageProps }: AppProps) {
     }
   }, []);
 
-  function getDirection(language:string){
+  function getDirection(language: string) {
     return language === 'ar' ? 'rtl' : 'ltr';
   }
 
-  useEffect(() => { 
-    document.body.setAttribute("dir", getDirection(getCookie('NEXT_LOCALE'))); 
+  useEffect(() => {
+    document.body.setAttribute('dir', getDirection(getCookie('NEXT_LOCALE')));
   }, []);
 
   return (

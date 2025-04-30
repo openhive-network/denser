@@ -633,22 +633,21 @@ test.describe('Home page tests', () => {
   test('navigation search link is visible', async ({ page }) => {
     await homePage.goto();
 
-    await expect(homePage.getNavSearchLink).toBeVisible();
+    await expect(homePage.getNavSearchAIInput).toBeVisible();
   });
 
   test('move to the search page', async ({ page }) => {
     await homePage.goto();
 
-    await expect(homePage.getNavSearchLink).toBeVisible();
-    // click search link in navbar
-    await homePage.getNavSearchLink.click();
+    await expect(homePage.getNavSearchAIInput).toBeVisible();
+    // Type test and press Enter
+    await homePage.getNavSearchAIInput.fill('test');
+    await homePage.page.keyboard.press('Enter');
+    await homePage.page.waitForTimeout(5000);
     // validate url was changed to /search
-    await expect(homePage.page).toHaveURL('/search');
-    // validate that input search is visible on the page
-    await expect(homePage.getNavSearchInput).toBeVisible();
-    await expect(homePage.getNavSearchInput).toHaveAttribute('placeholder', 'Search...');
-    // validate the 'sort by' dropdown list is visible
-    await expect(page.locator('[data-testid="search-sort-by-dropdown-list"]')).toBeVisible();
+    await expect(homePage.page).toHaveURL('/search?q=test');
+    // validate the first post card
+    await expect(homePage.getFirstPostListItem).toBeVisible();
   });
 
   test('navigation Login link is visible', async ({ page }) => {
