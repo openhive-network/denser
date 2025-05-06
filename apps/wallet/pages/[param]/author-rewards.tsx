@@ -14,6 +14,10 @@ import { useMemo, useState } from 'react';
 import Big from 'big.js';
 import { Table, TableBody, TableCell, TableRow } from '@ui/components/table';
 import { Button } from '@ui/components/button';
+import { InfoIcon } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+
+const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
@@ -99,13 +103,31 @@ function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<t
                       <TableRow key={index} className="text-sm">
                         <TableCell>{dateToFullRelative(reward.timestamp, t)}</TableCell>
                         <TableCell>
-                          Author Rewards from:{' '}
-                          <Link
-                            href={`${env('BLOG_DOMAIN')}/@${reward.op.author}/${reward.op.permlink}`}
-                            className="text-destructive"
-                          >
-                            {reward.op.permlink}
-                          </Link>
+                          <div className="flex items-center gap-1">
+                            {new Date(reward.timestamp) > new Date(Date.now() - WEEK_IN_MILLISECONDS) ? (
+                              <span className="flex items-center gap-1">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <InfoIcon className="h-4 w-4" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p className="max-w-xs">{t('profile.potential_author_rewards_info')}</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                                {t('profile.potential_author_rewards_title')}
+                              </span>
+                            ) : (
+                              t('profile.author_rewards_title')
+                            )}
+                            <Link
+                              href={`${env('BLOG_DOMAIN')}/@${reward.op.author}/${reward.op.permlink}`}
+                              className="text-destructive"
+                            >
+                              {reward.op.permlink}
+                            </Link>
+                          </div>
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex flex-col items-end">
@@ -173,39 +195,3 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   };
 };
-
-{
-  /* <ul className="divide-y">
-{data?.map((reward, index) => (
-  <li
-    key={index}
-    className="flex flex-col py-3 text-sm sm:flex-row sm:items-center sm:justify-between"
-  >
-    <div>{dateToFullRelative(reward.timestamp, t)}</div>
-    <div>
-      {'Author Rewards from: '}
-      <Link
-        href={`${env('BLOG_DOMAIN')}/@${reward.op.author}/${reward.op.permlink}`}
-        className="text-destructive"
-      >
-        {`/@${reward.op.author}/${reward.op.permlink}`}
-      </Link>
-    </div>
-    <div className="flex flex-col items-end">
-      <span>
-        {reward.op.vesting_payout && dynamicData
-          ? convertToHP(
-              convertStringToBig(reward.op.vesting_payout),
-              dynamicData.total_vesting_shares,
-              dynamicData.total_vesting_fund_hive
-            ).toFixed(3)
-          : '0'}{' '}
-        HP
-      </span>
-      <span>{reward.op.hive_payout}</span>
-      <span>{reward.op.hbd_payout}</span>
-    </div>
-  </li>
-))}
-</ul> */
-}

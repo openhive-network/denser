@@ -1,7 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useTranslation } from 'next-i18next';
-import { getAccountMetadata, getTranslations } from '../../lib/get-translations';
+import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translations';
 import Head from 'next/head';
 import { useRewardsHistory } from '@/wallet/components/hooks/use-rewards-history';
 import Loading from '@ui/components/loading';
@@ -90,14 +90,14 @@ function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType
                       <TableRow key={index} className="text-sm">
                         <TableCell>{dateToFullRelative(reward.timestamp, t)}</TableCell>
                         <TableCell>
-                          Curation reward for{' '}
+                          {t('profile.curation_reward_title')}
                           <Link
                             href={`${env('BLOG_DOMAIN')}/@${reward.op.author}/${reward.op.permlink}`}
                             className="text-destructive"
                           >
                             {reward.op.permlink}
                           </Link>
-                          {' by '}
+                          {t('profile.by')}
                           <Link className="text-destructive" href={`/@${reward.op.author}`}>
                             {reward.op.author}
                           </Link>
