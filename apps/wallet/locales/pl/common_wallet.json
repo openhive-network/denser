@@ -195,7 +195,8 @@
     "potential_author_rewards_info": "Te nagrody nie zostały jeszcze dodane do salda. Podczas 7-dniowego okresu społeczność decyduje o ostatecznym podziale nagród poprzez głosowanie.",
     "potential_author_rewards_title": "Potencjalne nagrody dla autora z: ",
     "author_rewards_title": "Nagrody dla autora z: ",
-    "curation_reward_title": "Nagroda za kurację za ",
+    "curation_reward_title": "Nagroda za kurację za: ",
+    "potential_curation_reward_title": "Potencjalna nagroda kuratorska za: ",
     "by": " od "
   },
   "market_page": {

@@ -14,6 +14,10 @@ import { useState, useMemo } from 'react';
 import { Button } from '@ui/components/button';
 import { Table, TableBody, TableCell, TableRow } from '@ui/components/table';
 import Big from 'big.js';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@ui/components/tooltip';
+import { InfoIcon } from 'lucide-react';
+
+const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
@@ -90,7 +94,23 @@ function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType
                       <TableRow key={index} className="text-sm">
                         <TableCell>{dateToFullRelative(reward.timestamp, t)}</TableCell>
                         <TableCell>
-                          {t('profile.curation_reward_title')}
+                          {new Date(reward.timestamp) > new Date(Date.now() - WEEK_IN_MILLISECONDS) ? (
+                            <span className="flex items-center gap-1">
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <InfoIcon className="h-4 w-4" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="max-w-xs">{t('profile.potential_author_rewards_info')}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                              {t('profile.potential_curation_reward_title')}
+                            </span>
+                          ) : (
+                            t('profile.curation_reward_title')
+                          )}
                           <Link
                             href={`${env('BLOG_DOMAIN')}/@${reward.op.author}/${reward.op.permlink}`}
                             className="text-destructive"
