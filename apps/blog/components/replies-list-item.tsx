@@ -1,5 +1,5 @@
 import { Icons } from '@hive/ui/components/icons';
-import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
+import parseDate from '@hive/ui/lib/parse-date';
 import {
   Card,
   CardContent,
@@ -9,7 +9,6 @@ import {
   CardTitle
 } from '@hive/ui/components/card';
 import { getPostSummary } from '@/blog/lib/utils';
-import { cn } from '@ui/lib/utils';
 import Link from 'next/link';
 import { Separator } from '@ui/components/separator';
 import accountReputation from '@/blog/lib/account-reputation';
@@ -24,6 +23,7 @@ import VotesComponent from './votes';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
+import TimeAgo from '@hive/ui/components/time-ago';
 
 const RepliesListItem = ({
   comment,
@@ -118,7 +118,7 @@ const RepliesListItem = ({
                     data-testid="comment-timestamp"
                     title={String(parseDate(comment.created))}
                   >
-                    {dateToFullRelative(comment.created, t)}
+                    <TimeAgo date={comment.created} />
                   </Link>
                 </span>
               </div>

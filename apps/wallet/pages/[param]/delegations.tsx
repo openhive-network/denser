@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { IDynamicGlobalProperties, getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { getVestingDelegations } from '@/wallet/lib/hive';
 import { numberWithCommas } from '@ui/lib/utils';
-import { dateToFullRelative } from '@ui/lib/parse-date';
 import Loading from '@ui/components/loading';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useTranslation } from 'next-i18next';
@@ -12,6 +11,7 @@ import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translatio
 import RevokeDialog from '@/wallet/components/revoke-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import Head from 'next/head';
+import TimeAgo from '@ui/components/time-ago';
 
 const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalProperties) => {
   const totalFund = parseFloat(dynamicData.total_vesting_fund_hive);
@@ -60,7 +60,9 @@ function DelegationsPage({ username, metadata }: InferGetServerSidePropsType<typ
                     HP
                   </td>
                   <td className="px-1 py-2 sm:px-4">{element.delegatee}</td>
-                  <td className="px-1 py-2 sm:px-4">{dateToFullRelative(element.min_delegation_time, t)}</td>
+                  <td className="px-1 py-2 sm:px-4">
+                    <TimeAgo date={element.min_delegation_time} />
+                  </td>
                   <td className="px-1 py-2 sm:px-4">
                     {accoutOwner ? (
                       <RevokeDialog delegator={element.delegator} delegatee={element.delegatee} />

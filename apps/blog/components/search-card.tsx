@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import { extractBodySummary } from '@/blog/lib/utils';
 import ReblogTrigger from '../components/reblog-trigger';
-import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
+import parseDate from '@ui/lib/parse-date';
 import { useTranslation } from 'next-i18next';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
@@ -25,6 +25,7 @@ import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
+import TimeAgo from '@hive/ui/components/time-ago';
 
 interface SearchCardProps {
   post: SearchResult;
@@ -96,7 +97,9 @@ const SearchCard = ({ post, nsfw, blacklist }: SearchCardProps) => {
                   className="hover:cursor-pointer hover:text-destructive"
                   data-testid="post-card-timestamp"
                 >
-                  <span title={String(parseDate(post.created))}>{dateToFullRelative(post.created, t)}</span>
+                  <span title={String(parseDate(post.created))}>
+                    <TimeAgo date={post.created} />
+                  </span>
                 </Link>
               </div>
             </div>

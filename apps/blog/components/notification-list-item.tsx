@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
-import { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import { IAccountNotificationEx } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
@@ -11,6 +10,7 @@ import { getLogger } from '@ui/lib/logging';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import env from '@beam-australia/react-env';
 import Image from 'next/image';
+import TimeAgo from '@hive/ui/components/time-ago';
 
 const logger = getLogger('app');
 const usernamePattern = /\B@[a-z0-9.-]+/gi;
@@ -78,7 +78,7 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
               data-testid="notification-timestamp"
             >
               {icon}
-              {`${dateToFullRelative(date, t)}`}
+              <TimeAgo date={date} />
             </span>
           </div>
         </div>

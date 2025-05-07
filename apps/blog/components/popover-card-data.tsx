@@ -1,4 +1,4 @@
-import { dateToShow, dateToFullRelative } from '@ui/lib/parse-date';
+import { dateToShow } from '@ui/lib/parse-date';
 import Link from 'next/link';
 import { useAccountQuery } from './hooks/use-account';
 import { useFollowsQuery } from './hooks/use-follows';
@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import ButtonsContainer from './buttons-container';
 import { convertStringToBig } from '@ui/lib/helpers';
+import TimeAgo from '@hive/ui/components/time-ago';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');
@@ -122,8 +123,9 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
               </p>
               <div className="flex justify-center text-xs">
                 {t('post_content.header.hover_author.joined')} {dateToShow(account.created, t)}
-                <span className="mx-1">•</span>
-                {t('user_profile.active') + ' ' + dateToFullRelative(account.last_vote_time, t)}
+                <span className="mx-1 flex flex-col">
+                  •{t('user_profile.active')} <TimeAgo date={account.last_vote_time} />
+                </span>
               </div>
             </>
           ) : null}

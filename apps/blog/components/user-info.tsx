@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
+import parseDate from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
 import { UserPopoverCard, UserPopoverCardProps } from './user-popover-card';
 import ChangeTitleDialog from './change-title-dialog';
+import TimeAgo from '@hive/ui/components/time-ago';
 
 interface UserInfoProps extends UserPopoverCardProps {
   permlink: string;
@@ -83,7 +84,9 @@ function UserInfo({
         <span className="mx-1" translate="no">
           •
         </span>
-        <span title={String(parseDate(created))}>{dateToFullRelative(created, t)}</span>
+        <span title={String(parseDate(created))}>
+          <TimeAgo date={created} />
+        </span>
       </div>
       {authored ? (
         <span className="ml-1 text-xs">

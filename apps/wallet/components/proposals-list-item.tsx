@@ -4,7 +4,6 @@ import { IListItemProps } from '@/wallet/lib/hive';
 import { cn, getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import moment from 'moment';
-import { dateToFullRelative } from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
 import VoteProposals from './votes-proposals-dialog';
 import { useTranslation } from 'next-i18next';
@@ -13,27 +12,35 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { useUpdateProposalVotesMutation } from '@hive/wallet/components/hooks/use-update-proposal-votes-mutation';
 import env from '@beam-australia/react-env';
-import Loading from '@ui/components/loading';
 import { useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
+import TimeAgo from '@ui/components/time-ago';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
-function titleSetter(
-  daysStart: string,
-  datsEnd: string,
-  status: string,
-  t: TFunction<'common_wallet', undefined>
-) {
+const TitleSetter = ({ start, end, status }: { start: string; end: string; status: string }) => {
   switch (status) {
     case 'started':
-      return `Started ${dateToFullRelative(daysStart, t)} and finish ${dateToFullRelative(datsEnd, t)}`;
+      return (
+        <div>
+          Started <TimeAgo date={start} /> and finish <TimeAgo date={end} />
+        </div>
+      );
     case 'not started':
-      return `Start ${dateToFullRelative(daysStart, t)} and finish ${dateToFullRelative(datsEnd, t)}`;
+      return (
+        <div>
+          Start <TimeAgo date={start} /> and finish <TimeAgo date={end} />
+        </div>
+      );
     case `finished`:
-      return `Finished ${dateToFullRelative(datsEnd, t)}`;
+      return (
+        <div>
+          Finished <TimeAgo date={end} />
+        </div>
+      );
     default:
-      return '';
+      return <div></div>;
   }
-}
+};
 function translateShorDate(data: string, t: TFunction<'common_wallet', undefined>) {
   const dd = data
     .replace('Jan', t('global.months_short_form.first'))
@@ -102,23 +109,35 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
       data-testid="proposal-list-item"
     >
       <div className="w-3/4">
-        <Link
-          href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}/${proposalData.permlink}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          title={titleSetter(proposalData.start_date, proposalData.end_date, proposalData.status, t)}
-        >
-          <span
-            className="text-red-500 hover:text-red-300 dark:hover:text-red-400 md:text-lg"
-            data-testid="proposal-title"
-          >
-            {proposalData.subject}
-            <span className="text-slate-500" data-testid="proposal-id">
-              {' #'}
-              {proposalData.proposal_id}
-            </span>
-          </span>
-        </Link>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}/${proposalData.permlink}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span
+                  className="text-red-500 hover:text-red-300 dark:hover:text-red-400 md:text-lg"
+                  data-testid="proposal-title"
+                >
+                  {proposalData.subject}
+                  <span className="text-slate-500" data-testid="proposal-id">
+                    {' #'}
+                    {proposalData.proposal_id}
+                  </span>
+                </span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <TitleSetter
+                start={proposalData.start_date}
+                end={proposalData.end_date}
+                status={proposalData.status}
+              />
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <div className="flex w-fit flex-col gap-3 py-3 text-xs min-[900px]:flex-row min-[900px]:items-center">
           <span className="whitespace-nowrap text-slate-500" data-testid="proposal-date">
             {translateShorDate(proposalData.start_date, t)}
@@ -139,11 +158,23 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
             {' HBD)'}
           </div>
           <div className="flex gap-2">
-            <span title={titleSetter(proposalData.start_date, proposalData.end_date, proposalData.status, t)}>
-              <Badge variant="red" data-testid="proposal-status-badge">
-                {proposalData.status}
-              </Badge>
-            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Badge variant="red" data-testid="proposal-status-badge">
+                    {proposalData.status}
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <TitleSetter
+                    start={proposalData.start_date}
+                    end={proposalData.end_date}
+                    status={proposalData.status}
+                  />
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
             {getFundingType()}
           </div>
         </div>
