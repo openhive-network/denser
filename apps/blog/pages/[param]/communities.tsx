@@ -90,8 +90,8 @@ const UserCommunities = ({
 export default UserCommunities;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let hivebuzzJsonStateOn = [];
-  let peakdJsonMapedWithURL = [];
+  let hivebuzzJsonStateOn: Badge[] = [];
+  let peakdJsonMapedWithURL: Badge[] = [];
   let errorCode = 0;
 
   try {
@@ -104,20 +104,53 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       throw new Error({ statusCode: 404 });
     }
 
-    const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${username}`);
-    if (hivebuzzRes.ok) {
-      const hivebuzzJson = await hivebuzzRes.json();
-      hivebuzzJsonStateOn = hivebuzzJson.filter((badge: Badge) => badge.state === 'on');
+    // Additional validation for username format
+    if (!/^[a-z][a-z0-9-.]{2,15}$/.test(username)) {
+      errorCode = 400;
+      throw new Error({ statusCode: 400 });
     }
 
-    const peakdRes = await fetch(`https://peakd.com/api/public/badge/${username}`);
-    if (peakdRes.ok) {
-      const peakdJson = await peakdRes.json();
-      peakdJsonMapedWithURL = peakdJson?.map((obj: Badge) => ({
-        id: obj.title,
-        url: `https://images.hive.blog/u/${obj.name}/avatar`,
-        title: obj.title
-      }));
+    // Encode username for URL safety
+    const encodedUsername = encodeURIComponent(username);
+
+    try {
+      const hivebuzzRes = await fetch(`https://hivebuzz.me/api/badges/${encodedUsername}`, {
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'HiveBlog/1.0'
+        }
+      });
+      
+      if (hivebuzzRes.ok) {
+        const hivebuzzJson = await hivebuzzRes.json();
+        if (Array.isArray(hivebuzzJson)) {
+          hivebuzzJsonStateOn = hivebuzzJson.filter((badge: Badge) => badge.state === 'on');
+        }
+      }
+
+      const peakdRes = await fetch(`https://peakd.com/api/public/badge/${encodedUsername}`, {
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'HiveBlog/1.0'
+        }
+      });
+      
+      if (peakdRes.ok) {
+        const peakdJson = await peakdRes.json();
+        if (Array.isArray(peakdJson)) {
+          peakdJsonMapedWithURL = peakdJson?.map((obj: any) => ({
+            id: obj.title,
+            url: `https://images.hive.blog/u/${encodeURIComponent(obj.name)}/avatar`,
+            title: obj.title,
+            name: obj.name,
+            state: 'on',
+            type: 'badge'
+          }));
+        }
+      }
+    } catch (error) {
+      logger.error('Error fetching badges: %o', error);
+      // Don't throw here, just log the error and continue with empty arrays
     }
   } catch (error) {
     logger.error('Error in getServerSideProps: %o', error);
