@@ -100,14 +100,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const validationResult = validateHiveAccountName(username);
     logger.info('validationResult: %s', validationResult);
     if (validationResult !== null) {
-      errorCode = 404;
-      throw new Error({ statusCode: 404 });
-    }
-
-    // Additional validation for username format
-    if (!/^[a-z][a-z0-9-.]{2,15}$/.test(username)) {
       errorCode = 400;
-      throw new Error({ statusCode: 400 });
+      throw new Error({ statusCode: 400, message: validationResult });
     }
 
     // Encode username for URL safety
