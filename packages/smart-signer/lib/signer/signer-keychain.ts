@@ -1,7 +1,7 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { Operation, TransferOperation } from '@hiveio/dhive';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { operation, TTransactionPackType } from '@hiveio/wax';
+import { operation, TTransactionPackType, IOnlineSignatureProvider } from '@hiveio/wax';
 import KeychainProvider from '@hiveio/wax-signers-keychain';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -107,8 +107,8 @@ export class SignerKeychain extends Signer {
 
       transaction.operations.forEach((op) => authTx.pushOperation(op));
 
-      const provider = KeychainProvider.for(this.username, requiredKeyType ?? this.keyType);
-      authTx.sign(provider as any);
+      const provider: IOnlineSignatureProvider = KeychainProvider.for(this.username, requiredKeyType ?? this.keyType);
+      await authTx.sign(provider);
 
       // This is quicker way to verify authority, isntead of
       // authority-checker.ts
