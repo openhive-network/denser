@@ -1,4 +1,4 @@
-import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
+import parseDate from '@ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
@@ -58,6 +58,7 @@ import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation
 import FlagIcon from '@/blog/components/flag-icon';
 import { getSuggestions } from '@/blog/lib/get-data';
 import SuggestionsList from '@/blog/components/suggestions-list';
+import TimeAgo from '@ui/components/time-ago';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -408,7 +409,7 @@ function PostPage({
                     <div className="flex flex-wrap items-center">
                       <Clock className="h-4 w-4" />
                       <span className="px-1" title={String(parseDate(post.created))}>
-                        {dateToFullRelative(post.created, t)}
+                        <TimeAgo date={post.created} />
                       </span>
                       {t('post_content.footer.in')}
                       <span className="px-1 text-destructive">

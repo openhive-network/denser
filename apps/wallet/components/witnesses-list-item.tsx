@@ -5,13 +5,14 @@ import { DISABLED_SIGNING_KEY } from '@/wallet/lib/constants';
 import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import { FullAccount } from '@transaction/lib/app-types';
-import { dateToFullRelative, dateToRelative } from '@hive/ui/lib/parse-date';
+import { dateToRelative } from '@hive/ui/lib/parse-date';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { CircleSpinner } from 'react-spinners-kit';
 import WitnessRemoveVote from './witness-remove-vote';
+import TimeAgo from '@ui/components/time-ago';
 
 const getOwnersString = (owners?: string) => {
   if (!owners) return '';
@@ -271,7 +272,9 @@ function WitnessListItem({
         <div className="font-medium" data-testid="witness-price-feed">
           ${parseFloat(data.hbd_exchange_rate.base)}
         </div>
-        <div className="font-light">{dateToFullRelative(data.last_hbd_exchange_update, t)}</div>
+        <div className="font-light">
+          <TimeAgo date={data.last_hbd_exchange_update} />
+        </div>
       </td>
     </tr>
   );
