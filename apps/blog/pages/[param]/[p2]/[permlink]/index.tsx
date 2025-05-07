@@ -102,7 +102,12 @@ function PostPage({
 
   const { data: suggestions } = useQuery(
     ['suggestions', username, permlink],
-    () => getSuggestions(username, String(permlink)),
+    () =>
+      getSuggestions({
+        author: username,
+        permlink,
+        observer: user.username !== '' ? user.username : 'hive.blog'
+      }),
     {
       enabled: !!username && !!permlink
     }

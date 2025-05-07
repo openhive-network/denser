@@ -40,12 +40,20 @@ export default function SearchPage() {
       refetchOnMount: false
     }
   );
-  const { data, isLoading } = useQuery(['posts', query], () => getSimilarPosts(query), {
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: aiSearch
-  });
+  const { data, isLoading } = useQuery(
+    ['posts', query],
+    () =>
+      getSimilarPosts({
+        pattern: query,
+        observer: user.username !== '' ? user.username : 'hive.blog'
+      }),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      enabled: aiSearch
+    }
+  );
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
