@@ -16,7 +16,6 @@ import {
   getFilter
 } from '@/wallet/lib/utils';
 import { powerdownHive, cn, convertToHP, numberWithCommas } from '@ui/lib/utils';
-import { dateToFullRelative } from '@ui/lib/parse-date';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { AccountHistory } from '@/wallet/store/app-types';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
@@ -59,6 +58,7 @@ import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { toast } from '@ui/components/hooks/use-toast';
 import Head from 'next/head';
+import TimeAgo from '@hive/ui/components/time-ago';
 
 const initialFilters: TransferFilters = {
   search: '',
@@ -939,7 +939,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                           key={withdrawal.id}
                         >
                           <td className="px-2 sm:px-4 sm:py-2">
-                            {dateToFullRelative(withdrawal.complete.toString(), t)}
+                            <TimeAgo date={withdrawal.complete} />
                           </td>
                           <td className="flex flex-row items-center px-2 sm:px-4 sm:py-2">
                             <div>{withdrawMessage}</div>
@@ -1043,7 +1043,9 @@ const HistoryTable = ({ t, isLoading, historyList = [], historyItemDescription }
                 className="m-0 w-full p-0 text-xs even:bg-background-tertiary sm:text-sm"
                 data-testid="wallet-account-history-row"
               >
-                <td className="px-4 py-2 sm:min-w-[150px]">{dateToFullRelative(element.timestamp, t)}</td>
+                <td className="px-4 py-2 sm:min-w-[150px]">
+                  <TimeAgo date={element.timestamp} />
+                </td>
                 <td className="px-4 py-2 sm:min-w-[300px]">{historyItemDescription(element.operation)}</td>
                 {element.operation.memo ? (
                   <td className="hidden break-all px-4 py-2 sm:block">{element.operation.memo}</td>

@@ -7,32 +7,34 @@ import {
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { getCookie } from '@smart-signer/lib/utils';
+import { useState } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import TooltipContainer from '@ui/components/tooltip-container';
+import { getLanguage, setLanguage } from '../utils/language';
+
+const languages = [
+  { locale: 'ar', label: 'عر' },
+  { locale: 'en', label: '🇬🇧' },
+  { locale: 'es', label: '🇪🇸' },
+  { locale: 'fr', label: '🇫🇷' },
+  { locale: 'it', label: '🇮🇹' },
+  { locale: 'ja', label: '🇯🇵' },
+  { locale: 'pl', label: '🇵🇱' },
+  { locale: 'ru', label: '🇷🇺' },
+  { locale: 'zh', label: '🇨🇳' }
+];
 
 export default function LangToggle({ logged, className }: { logged: Boolean; className?: string }) {
   const router = useRouter();
-  const [lang, setLang] = useState<string | null>(null);
+  const [lang, setLang] = useState(getLanguage());
   const { t } = useTranslation('common_blog');
 
-  useEffect(() => {
-    setLang(getCookie('NEXT_LOCALE') || 'en');
-  }, []);
-
-  const languages = [
-    { locale: 'ar', label: 'عر' },
-    { locale: 'en', label: '🇬🇧' },
-    { locale: 'es', label: '🇪🇸' },
-    { locale: 'fr', label: '🇫🇷' },
-    { locale: 'it', label: '🇮🇹' },
-    { locale: 'ja', label: '🇯🇵' },
-    { locale: 'pl', label: '🇵🇱' },
-    { locale: 'ru', label: '🇷🇺' },
-    { locale: 'zh', label: '🇨🇳' }
-  ];
+  const handleLanguageChange = (locale: string) => {
+    setLanguage(locale);
+    setLang(locale);
+    router.reload();
+  };
 
   return (
     <DropdownMenu>
@@ -44,20 +46,14 @@ export default function LangToggle({ logged, className }: { logged: Boolean; cla
             className={clsx('flex h-10 w-full p-0 text-start font-normal', className, { 'h-6': logged })}
             data-testid="toggle-language"
           >
-            <span>{lang ? languages.filter((language) => language.locale === lang)[0].label : null}</span>
+            <span>{lang ? languages.find((language) => language.locale === lang)?.label : null}</span>
             {logged ? <span className="ml-2 w-full">{t('navigation.user_menu.toggle_lang')}</span> : null}
           </Button>
         </DropdownMenuTrigger>
       </TooltipContainer>
       <DropdownMenuContent align="end">
         {languages.map(({ locale, label }) => (
-          <DropdownMenuItem
-            key={label}
-            onClick={() => {
-              document.cookie = `NEXT_LOCALE=${locale}; SameSite=Lax`;
-              router.reload();
-            }}
-          >
+          <DropdownMenuItem key={label} onClick={() => handleLanguageChange(locale)}>
             {label}
             <span data-testid={locale}>&nbsp;{locale}</span>
           </DropdownMenuItem>

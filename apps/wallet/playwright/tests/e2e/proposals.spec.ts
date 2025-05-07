@@ -509,10 +509,7 @@ test.describe('Proposals page tests', () => {
         await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
       ).toBe('rgb(239, 68, 68)');
       // Proposal Status tooltip
-      await expect(proposalsPage.proposalStatusBadge.first().locator('..')).toHaveAttribute(
-        'title',
-        /^Started/
-      );
+      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText(/^started/);
       // Creator and/or receiver colors
       if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
         expect(
@@ -591,10 +588,7 @@ test.describe('Proposals page tests', () => {
         await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
       ).toBe('rgb(239, 68, 68)');
       // Proposal Status tooltip
-      await expect(proposalsPage.proposalStatusBadge.first().locator('..')).toHaveAttribute(
-        'title',
-        /^Started/
-      );
+      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText(/^started/);
       // Creator and/or receiver colors
       if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
         expect(

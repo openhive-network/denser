@@ -1,5 +1,5 @@
 import { Icons } from '@hive/ui/components/icons';
-import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
+import parseDate from '@hive/ui/lib/parse-date';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@hive/ui/components/card';
 import { cn } from '@hive/ui/lib/utils';
 import Link from 'next/link';
@@ -32,6 +32,7 @@ import MutePostDialog from './mute-post-dialog';
 import ChangeTitleDialog from './change-title-dialog';
 import { AlertDialogFlag } from './alert-window-flag';
 import FlagTooltip from './flag-icon';
+import TimeAgo from '@hive/ui/components/time-ago';
 interface CommentListProps {
   permissionToMute: Boolean;
   comment: Entry;
@@ -180,7 +181,7 @@ const CommentListItem = ({
                               title={String(parseDate(comment.created))}
                               data-testid="comment-timestamp-link"
                             >
-                              {dateToFullRelative(comment.created, t)}
+                              <TimeAgo date={comment.created} />
                             </Link>
                             <Link
                               className="p-1 sm:p-2"
