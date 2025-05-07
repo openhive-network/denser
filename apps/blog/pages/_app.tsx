@@ -24,11 +24,9 @@ function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <Suspense fallback={<span>Loading...</span>}>
-      <Providers>
-        <Component {...pageProps} />
-      </Providers>
-    </Suspense>
+    <Providers>
+      <Component {...pageProps} />
+    </Providers>
   );
 }
 

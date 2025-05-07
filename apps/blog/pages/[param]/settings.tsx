@@ -110,7 +110,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
 
     data = await data;
     const prefix = Buffer.from('ImageSigningChallenge');
-    const buf = Buffer.concat([prefix, data as unknown as Uint8Array]);
+    const buf = Buffer.concat([prefix as unknown as Uint8Array, data as unknown as Uint8Array]);
 
     const sig = await signer.signChallenge({
       message: buf,
@@ -276,7 +276,7 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
       </Head>
       <ProfileLayout>
         <div className="flex flex-col" data-testid="public-profile-settings">
-          {isClient && user?.isLoggedIn && user?.username === params.param.slice(1) ? (
+          {isClient && user?.isLoggedIn && params.param && user?.username === params.param.slice(1) ? (
             <>
               <div className="py-8">
                 <h2 className="py-4 text-lg font-semibold leading-5">

@@ -2,7 +2,7 @@ import parseDate, { dateToFullRelative } from '@ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, QueryClient, dehydrate, Hydrate } from '@tanstack/react-query';
 import { Entry, getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
@@ -33,7 +33,6 @@ import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '@/blog/components/dialog-login';
 import { UserPopoverCard } from '@/blog/components/user-popover-card';
-import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
@@ -64,7 +63,7 @@ export const postClassName =
   'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
-  loading: () => <Loading loading={true} />,
+  loading: () => null,
   ssr: false
 });
 
@@ -74,7 +73,8 @@ function PostPage({
   permlink,
   mutedStatus,
   metadata,
-  crosspost
+  crosspost,
+  dehydratedState
 }: {
   community: string;
   username: string;
@@ -87,49 +87,72 @@ function PostPage({
     communityTag: string;
     authorReputation: number;
   };
+  dehydratedState: any;
 }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
+  const queryClient = useQueryClient();
+  
   const { data: mutedList } = useFollowListQuery(user.username, 'muted');
   const deletePostMutation = useDeletePostMutation();
-  const {
-    isLoading: isLoadingPost,
-    data: post,
-    isError: postError
-  } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
-    enabled: !!username && !!permlink
+  
+  // Use initialData from SSR for immediate render
+  const { data: post } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
+    enabled: !!username && !!permlink,
+    initialData: dehydratedState?.queries?.find((q: any) => q.queryKey[0] === 'postData')?.state?.data,
+    staleTime: 30000,
+    refetchOnWindowFocus: false
   });
 
+  // Use initialData for all queries to avoid loading states
   const { data: suggestions } = useQuery(
     ['suggestions', username, permlink],
     () => getSuggestions(username, String(permlink)),
     {
-      enabled: !!username && !!permlink
+      enabled: !!username && !!permlink,
+      initialData: dehydratedState?.queries?.find((q: any) => q.queryKey[0] === 'suggestions')?.state?.data,
+      staleTime: 30000,
+      refetchOnWindowFocus: false
     }
   );
-  const { isLoading: isLoadingDiscussion, data: discussion } = useQuery(
+
+  const { data: discussion } = useQuery(
     ['discussionData', permlink],
     () => getDiscussion(username, String(permlink), user.username),
     {
-      enabled: !!username && !!permlink
+      enabled: !!username && !!permlink,
+      initialData: dehydratedState?.queries?.find((q: any) => q.queryKey[0] === 'discussionData')?.state?.data,
+      staleTime: 30000,
+      refetchOnWindowFocus: false
     }
   );
+
   const { data: communityData } = useQuery(['communityData', community], () => getCommunity(community), {
-    enabled: !!username && !!community && community.startsWith('hive-')
+    enabled: !!username && !!community && community.startsWith('hive-'),
+    initialData: dehydratedState?.queries?.find((q: any) => q.queryKey[0] === 'communityData')?.state?.data,
+    staleTime: 30000,
+    refetchOnWindowFocus: false
   });
 
-  const { data: activeVotesData, isLoading: isActiveVotesLoading } = useQuery(
-    ['activeVotes'],
+  const { data: activeVotesData } = useQuery(
+    ['activeVotes', username, permlink],
     () => getActiveVotes(username, permlink),
     {
-      enabled: !!username && !!permlink
+      enabled: !!username && !!permlink,
+      initialData: dehydratedState?.queries?.find((q: any) => q.queryKey[0] === 'activeVotes')?.state?.data,
+      staleTime: 30000,
+      refetchOnWindowFocus: false
     }
   );
+
   const { data: rolesData } = useQuery(['rolesList', community], () => getListCommunityRoles(community), {
-    enabled: Boolean(community)
+    enabled: Boolean(community),
+    initialData: dehydratedState?.queries?.find((q: any) => q.queryKey[0] === 'rolesList')?.state?.data,
+    staleTime: 30000,
+    refetchOnWindowFocus: false
   });
 
-  const userRole = rolesData?.find((e) => e[0] === user.username);
+  const userRole = rolesData?.find((e: any) => e[0] === user.username);
   const userCanModerate = userRole
     ? userRole[1] === 'mod' || userRole[1] === 'admin' || userRole[1] === 'owner'
     : false;
@@ -159,7 +182,7 @@ function PostPage({
   const copyRightCheck = dmcaList.includes(
     `/${router.query.param}/${router.query.p2}/${router.query.permlink}`
   );
-  const userFromDMCA = dmcaUserList.some((e) => e === post?.author);
+  const userFromDMCA = dmcaUserList.some((e: string) => e === post?.author);
   const legalBlockedUser = userIllegalContent.some((e) => e === post?.author);
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
@@ -172,7 +195,7 @@ function PostPage({
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
 
-  const userFromGDPR = gdprUserList.some((e) => e === post?.author);
+  const userFromGDPR = gdprUserList.some((e: string) => e === post?.author);
   const refreshPage = () => {
     router.replace(router.asPath);
   };
@@ -182,13 +205,14 @@ function PostPage({
       storeBox(reply);
     }
   }, [reply, storeBox]);
+
   useEffect(() => {
     if (discussion) {
       const list = [...Object.keys(discussion).map((key) => discussion[key])];
       sorter(list, SortOrder[defaultSort]);
       setDiscussionState(list);
     }
-  }, [isLoadingDiscussion, discussion, defaultSort]);
+  }, [discussion, defaultSort]);
 
   useEffect(() => {
     if (router.query.sort === 'trending' && discussion) {
@@ -211,7 +235,7 @@ function PostPage({
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
 
-  if (userFromGDPR || (postError && !post)) {
+  if (userFromGDPR) {
     return <CustomError />;
   }
   const deleteComment = async (permlink: string) => {
@@ -232,7 +256,7 @@ function PostPage({
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   const crossedPost = post?.json_metadata.tags?.includes('cross-post');
   return (
-    <>
+    <Hydrate state={dehydratedState}>
       <Head>
         {canonical_url ? <link rel="canonical" href={canonical_url} key="canonical" /> : null}
         <title>{metadata.tabTitle}</title>
@@ -242,12 +266,12 @@ function PostPage({
       </Head>
       <div className="grid grid-cols-1 md:grid-cols-12">
         <div className="col-span-2">
-          {suggestions ? (
+          {suggestions && (
             <div className="flex flex-col overflow-x-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)] md:overflow-y-auto">
               <h2 className="mb-4 mt-2 px-4 font-sanspro text-xl font-bold md:mt-0">You Might Also Like</h2>
               <SuggestionsList suggestions={suggestions} />
             </div>
-          ) : null}
+          )}
         </div>
         <div className="py-8 sm:col-span-8 sm:mx-auto sm:flex sm:flex-col">
           <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
@@ -289,7 +313,7 @@ function PostPage({
               ) : null}
             </div>
 
-            {!isLoadingPost && post ? (
+            {post && (
               <div>
                 {!commentSite ? (
                   <h1
@@ -337,9 +361,7 @@ function PostPage({
                   created={post.created}
                   blacklist={firstPost ? firstPost.blacklists : post.blacklists}
                 />
-                {isLoadingPost ? (
-                  <Loading loading={isLoadingPost} />
-                ) : edit && commentSite && post.parent_author && post.parent_permlink ? (
+                {edit && commentSite && post.parent_author && post.parent_permlink ? (
                   <ReplyTextbox
                     editMode={edit}
                     onSetReply={setEdit}
@@ -383,10 +405,10 @@ function PostPage({
                   </ImageGallery>
                 )}
                 <div className="clear-both">
-                  {!commentSite ? (
+                  {!commentSite && (
                     <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
                       {post.json_metadata.tags
-                        ?.filter((e) => e !== (post.community_title ?? post.category) && e !== '')
+                        ?.filter((tag: string) => tag !== (post.community_title ?? post.category) && tag !== '')
                         .map((tag: string) => (
                           <li key={tag}>
                             <Link
@@ -398,7 +420,7 @@ function PostPage({
                           </li>
                         ))}
                     </ul>
-                  ) : null}
+                  )}
                 </div>
                 <div
                   className="flex flex-col items-start text-sm text-primary sm:flex-row sm:justify-between"
@@ -479,7 +501,7 @@ function PostPage({
                           ${post.payout?.toFixed(2)}
                         </span>
                       </DetailsCardHover>
-                      {!isActiveVotesLoading && activeVotesData ? (
+                      {!activeVotesData ? (
                         <DetailsCardVoters post={post}>
                           {post.stats?.total_votes && post.stats?.total_votes !== 0 ? (
                             <span className="text-xs text-destructive sm:text-sm">
@@ -645,8 +667,6 @@ function PostPage({
                   </div>
                 ) : null}
               </div>
-            ) : (
-              <Loading loading={isLoadingPost} />
             )}
           </div>
           <div id="comments" className="flex" />
@@ -662,7 +682,7 @@ function PostPage({
               />
             ) : null}
           </div>
-          {!isLoadingDiscussion && discussion && discussionState && !isLoadingPost && post ? (
+          {discussion && discussionState && post ? (
             <div className="max-w-4xl pr-2">
               <div className="my-1 flex items-center justify-end" translate="no">
                 <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
@@ -679,13 +699,11 @@ function PostPage({
                 parent_depth={post.depth}
               />
             </div>
-          ) : (
-            <Loading loading={isLoadingDiscussion} />
-          )}
+          ) : null}
         </div>
         <div className="col-span-2" />
       </div>
-    </>
+    </Hydrate>
   );
 }
 
@@ -695,12 +713,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const permlink = String(ctx.query.permlink);
 
   const queryClient = new QueryClient();
-  if (!queryClient.getQueryData(['postData', username, permlink])) {
-    await queryClient.prefetchQuery(['postData', username, permlink], () =>
-      getPost(username, String(permlink))
-    );
-  }
-  let post;
+  
+  // Prefetch all required data in parallel
+  await Promise.all([
+    queryClient.prefetchQuery(['postData', username, permlink], () => getPost(username, String(permlink))),
+    queryClient.prefetchQuery(['suggestions', username, permlink], () => getSuggestions(username, String(permlink))),
+    queryClient.prefetchQuery(['discussionData', permlink], () => getDiscussion(username, String(permlink), '')),
+    queryClient.prefetchQuery(['communityData', community], () => getCommunity(community)),
+    queryClient.prefetchQuery(['activeVotes', username, permlink], () => getActiveVotes(username, permlink)),
+    queryClient.prefetchQuery(['rolesList', community], () => getListCommunityRoles(community))
+  ]);
+
+  const postData = queryClient.getQueryData(['postData', username, permlink]);
+  const post = postData as Entry | undefined;
   let mutedStatus = false;
   let metadata = {
     tabTitle: '',
@@ -715,19 +740,17 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     authorReputation: 0
   };
 
-  try {
-    post = await getPost(username, String(permlink));
-    mutedStatus = post?.stats?.gray ?? false;
-    metadata.tabTitle = `${post?.title} - Hive`;
-    metadata.description = (post?.json_metadata?.summary || post?.json_metadata.description) ?? '';
+  if (post) {
+    mutedStatus = post.stats?.gray ?? false;
+    metadata.tabTitle = `${post.title} - Hive`;
+    metadata.description = (post.json_metadata?.summary || post.json_metadata.description) ?? '';
     metadata.image =
-      post?.json_metadata?.image[0] ||
-      post?.json_metadata.images[0] ||
+      (post.json_metadata?.image && post.json_metadata.image[0]) ||
+      (post.json_metadata?.images && post.json_metadata.images[0]) ||
       'https://hive.blog/images/hive-blog-share.png';
-    metadata.title = post?.title ?? '';
-  } catch (error) {
-    logger.error('Failed to fetch post:', error);
+    metadata.title = post.title ?? '';
   }
+
   if (community === 'undefined' || !community || community === '[param]') {
     return {
       redirect: {
@@ -736,6 +759,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       }
     };
   }
+
   if (post?.json_metadata.tags?.includes('cross-post')) {
     try {
       const crossedPost = await getPost(
@@ -752,6 +776,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       logger.error('Failed to fetch crosspost:', error);
     }
   }
+
   return {
     props: {
       dehydratedState: dehydrate(queryClient),

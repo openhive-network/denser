@@ -5,7 +5,7 @@ const SITE_DESC =
   'Communities without borders. A social network owned and operated by its users, powered by Hive.';
 export default function Document() {
   return (
-    <Html>
+    <Html suppressHydrationWarning={true}>
       <Head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
 

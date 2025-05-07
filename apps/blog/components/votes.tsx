@@ -72,7 +72,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
     if (userVote && userVote.vote_percent < 0) {
       setSliderDownvote([-userVote.vote_percent / 100]);
     }
-  }, [userVotes]);
+  }, [userVote]);
 
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
