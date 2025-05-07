@@ -74,7 +74,19 @@ function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<t
             </div>
           </div>
           <div className="flex flex-col gap-4 p-2 sm:p-4">
-            <h4 className="text-lg">{t('profile.author_rewards_history')}</h4>
+            <h4 className="text-lg">
+              {t('profile.author_rewards_history')}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <InfoIcon className="ml-1 h-4 w-4" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">{t('profile.potential_author_rewards_info')}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </h4>
             {isLoading ? (
               <Loading loading={isLoading} />
             ) : (
@@ -104,23 +116,9 @@ function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<t
                         <TableCell>{dateToFullRelative(reward.timestamp, t)}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
-                            {new Date(reward.timestamp) > new Date(Date.now() - WEEK_IN_MILLISECONDS) ? (
-                              <span className="flex items-center gap-1">
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger>
-                                      <InfoIcon className="h-4 w-4" />
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p className="max-w-xs">{t('profile.potential_author_rewards_info')}</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                                {t('profile.potential_author_rewards_title')}
-                              </span>
-                            ) : (
-                              t('profile.author_rewards_title')
-                            )}
+                            {new Date(reward.timestamp) > new Date(Date.now() - WEEK_IN_MILLISECONDS)
+                              ? t('profile.potential_author_rewards_title')
+                              : t('profile.author_rewards_title')}
                             <Link
                               href={`${env('BLOG_DOMAIN')}/@${reward.op.author}/${reward.op.permlink}`}
                               className="text-destructive"
