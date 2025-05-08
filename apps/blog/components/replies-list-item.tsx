@@ -148,7 +148,7 @@ const RepliesListItem = ({
           </div>
           <CardFooter>
             <div className="flex h-5 items-center space-x-4 text-sm" data-testid="comment-card-footer">
-              <VotesComponent post={comment} />
+              <VotesComponent post={comment} type="comment" />
               <DetailsCardHover
                 post={comment}
                 decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}

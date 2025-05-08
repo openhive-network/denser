@@ -468,7 +468,7 @@ function PostPage({
                       </div>
                     </div>
                     <div className="flex items-center gap-2 sm:gap-4">
-                      <VotesComponent post={post} />
+                      <VotesComponent post={post} type="post" />
                       <DetailsCardHover
                         post={post}
                         decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}
