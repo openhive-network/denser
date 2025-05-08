@@ -642,7 +642,8 @@ export class TransactionService {
       alternativeAuthor: altAuthor,
       images: [image ? image : ''],
       jsonMetadata: {
-        summary
+        summary,
+        app: 'hive.blog/0.9'
       }
     };
 

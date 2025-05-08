@@ -398,7 +398,9 @@ function preprocessDetails(html: string): string {
 
 function preprocessCenter(html: string): string {
     // Remove wrapping <p> from center
-    html = html.replace(/<p>(?=[\s\S]*?<\/center>)/g, '');
+    html = html.replace(/<p>\s*(<center>[\s\S]*?<\/center>)\s*<\/p>/g, '$1');
+    // Move content after center outside of it
+    html = html.replace(/(<center>[\s\S]*?<\/pre>)([\s\S]*?)(<\/center>)/g, '$1$3$2');
     return html;
 }
 

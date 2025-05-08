@@ -178,6 +178,66 @@ export const getAccountHistory = async (
     .api.condenser_api.get_account_history([username, start, limit, ...wallet_operations_bitmask]);
 };
 
+export type IAuthorReward = {
+  author: string;
+  curators_vesting_payout: string;
+  hbd_payout: string;
+  hive_payout: string;
+  payout_must_be_claimed: boolean;
+  permlink: string;
+  vesting_payout: string;
+  author_rewards?: string;
+  beneficiary_payout_value?: string;
+  curator_payout_value?: string;
+  payout?: string;
+  reward?: string;
+  total_payout_value?: string;
+  curator?: string;
+};
+export type ICurationReward = {
+  author_rewards: string;
+  beneficiary_payout_value: string;
+  curator_payout_value: string;
+  payout: string;
+  total_payout_value: string;
+  reward: string;
+  curator: string;
+  author?: string;
+  curators_vesting_payout?: string;
+  hbd_payout?: string;
+  hive_payout?: string;
+  payout_must_be_claimed?: boolean;
+  permlink?: string;
+  vesting_payout?: string;
+};
+type AccountRewardsHistory = [
+  number,
+  {
+    trx_id: string;
+    block: number;
+    trx_in_block: number;
+    op_in_trx: number;
+    virtual_op: boolean;
+    timestamp: string;
+    op: ['author_reward' | 'curation_reward', IAuthorReward | ICurationReward];
+  }
+];
+type GetAccountRewardsHistoryData = {
+  condenser_api: {
+    get_account_history: TWaxApiRequest<(string | number)[], AccountRewardsHistory[]>;
+  };
+};
+const wallet_rewards_history_bitmask = makeBitMaskFilter([op.author_reward, op.curation_reward]);
+
+export const getAccountRewardsHistory = async (
+  username: string,
+  start: number = -1,
+  limit: number = 20
+): Promise<AccountRewardsHistory[]> => {
+  return chain
+    .extend<GetAccountRewardsHistoryData>()
+    .api.condenser_api.get_account_history([username, start, limit, ...wallet_rewards_history_bitmask]);
+};
 export interface IProposalVote {
   id: number;
   proposal: IProposal;
