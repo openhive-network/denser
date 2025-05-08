@@ -5,6 +5,7 @@ import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { getCookie } from '@smart-signer/lib/utils';
 import i18nConfig from '../next-i18next.config';
+import { getLanguage } from '../utils/language';
 
 const Providers = lazy(() => import('@/blog/components/common/providers'));
 
@@ -21,6 +22,13 @@ function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     document.body.setAttribute('dir', getDirection(getCookie('NEXT_LOCALE')));
+  }, []);
+
+  useEffect(() => {
+    const savedLang = getLanguage();
+    if (savedLang) {
+      document.documentElement.lang = savedLang;
+    }
   }, []);
 
   return (

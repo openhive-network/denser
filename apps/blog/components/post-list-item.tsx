@@ -11,7 +11,6 @@ import {
 } from '@hive/ui/components/card';
 import { Separator } from '@hive/ui/components/separator';
 import { Badge } from '@hive/ui/components/badge';
-import parseDate, { dateToFullRelative } from '@hive/ui/lib/parse-date';
 import accountReputation from '@/blog/lib/account-reputation';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
@@ -34,6 +33,7 @@ import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardHidden from './post-card-hidden';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
+import TimeAgo from '@hive/ui/components/time-ago';
 
 const logger = getLogger('app');
 
@@ -174,7 +174,7 @@ const PostListItem = ({
                     className="hover:cursor-pointer hover:text-destructive"
                     data-testid="post-card-timestamp"
                   >
-                    <span title={String(parseDate(post.created))}>{dateToFullRelative(post.created, t)}</span>
+                    <TimeAgo date={post.created} />
                   </Link>
                   {post.percent_hbd === 0 ? (
                     <span className="ml-1 flex items-center">

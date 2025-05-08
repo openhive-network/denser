@@ -14,7 +14,7 @@ import { accountReputation } from '@/blog/lib/utils';
 import { convertToHP, numberWithCommas } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
 import { Icons } from '@hive/ui/components/icons';
-import { dateToFullRelative, dateToShow } from '@hive/ui/lib/parse-date';
+import { dateToShow } from '@hive/ui/lib/parse-date';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { getTwitterInfo } from '@transaction/lib/bridge';
 import moment from 'moment';
@@ -30,6 +30,7 @@ import CustomError from '../custom-error';
 import ButtonsContainer from '../buttons-container';
 import clsx from 'clsx';
 import { convertStringToBig } from '@ui/lib/helpers';
+import TimeAgo from '@hive/ui/components/time-ago';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -50,8 +51,7 @@ function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undef
     }
   });
 
-  const closestDateString = closestDate.format('YYYY-MM-DDTHH:mm:ss');
-  return dateToFullRelative(closestDateString, t);
+  return closestDate.format('YYYY-MM-DDTHH:mm:ss');
 }
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
@@ -337,10 +337,12 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     <Icons.calendarActive className="m-1" />
                     <span data-testid="user-last-time-active">
                       {t('user_profile.active')}{' '}
-                      {compareDates(
-                        [profileData.created, profileData.last_vote_time, profileData.last_post],
-                        t
-                      )}
+                      <TimeAgo
+                        date={compareDates(
+                          [profileData.created, profileData.last_vote_time, profileData.last_post],
+                          t
+                        )}
+                      />
                     </span>
                   </li>
                 </ul>
