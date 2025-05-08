@@ -34,6 +34,8 @@ test.describe('Follow user - tests', () => {
     await expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).toBeVisible()
     await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow')
     await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
+    await denserAutoTest0Page.page.waitForTimeout(5000)
+    await denserAutoTest0Page.page.reload({ waitUntil: 'load' });
     await expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).not.toBeVisible()
     await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
   });
@@ -57,6 +59,7 @@ test.describe('Follow user - tests', () => {
 
     await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
     await expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })).not.toBeVisible()
+    await denserAutoTest0Page.page.reload({ waitUntil: 'load' });
     await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
   });
 
@@ -82,8 +85,10 @@ test.describe('Follow user - tests', () => {
     expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).toBeVisible()
 
     await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
+    await denserAutoTest0Page.page.waitForTimeout(5000)
     expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).not.toBeVisible()
     await denserAutoTest0Page.page.waitForSelector(profilePage.profileStatsString)
+    await denserAutoTest0Page.page.reload({ waitUntil: 'load' });
     await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
   });
 

@@ -186,5 +186,33 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     const postSummary: string = '1 My testing post POM';
     const postTag: string = 'test';
 
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await postEditorPage.getPostTitleInput.fill(postTitle)
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    await expect(postEditorPage.getSubmitPostButton).toBeVisible()
+    await postEditorPage.getSubmitPostButton.click();
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: 'Content of the testing post POM' }).first()).toBeVisible()
+  });
+
+  test('Attempt to create a post with post summary longer than 140 characters', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const LongPostSummary: string = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Donec vulputate, elit nec porta sodales, lacus justo.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Donec vulputate, elit nec porta sodales, lacus justo.';
+    const postTag: string = 'test';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await postEditorPage.getPostTitleInput.fill(postTitle)
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    await postEditorPage.getPostSummaryInput.fill(LongPostSummary);
+    await expect(postEditorPage.getSubmitPostButton).toBeVisible()
+    await postEditorPage.getSubmitPostButton.click();
+    await expect(denserAutoTest0Page.page.getByText('Maximum 140 characters')).toBeVisible()
   });
 });
