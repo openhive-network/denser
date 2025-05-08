@@ -1,7 +1,7 @@
 import { IHiveChainInterface } from '@hiveio/wax';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { getManabar } from '@transaction/lib/hive';
-import { hiveChainService } from '@transaction/lib/hive-chain-service'
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useEffect, useState } from 'react';
 
 interface SingleManabar {
@@ -20,17 +20,17 @@ interface Manabars {
 const useManabars = (accountName?: string) => {
   const [hiveChain, setHiveChain] = useState<IHiveChainInterface | null>();
 
-useEffect(() => {
-  (async () => {
-    try {
-      // await async "fetchBooks()" function
-      const chain = await hiveChainService.getHiveChain()
-      setHiveChain(chain);
-    } catch (err) {
-      console.log('Error occured when awaiting hiveChainService');
-    }
-  })();
-}, []);
+  useEffect(() => {
+    (async () => {
+      try {
+        // await async "fetchBooks()" function
+        const chain = await hiveChainService.getHiveChain();
+        setHiveChain(chain);
+      } catch (err) {
+        console.log('Error occured when awaiting hiveChainService');
+      }
+    })();
+  }, []);
 
   const {
     data: manabarsData,
@@ -40,9 +40,9 @@ useEffect(() => {
     queryKey: ['manabars', accountName],
     queryFn: () => getManabar(accountName!, hiveChain!),
     enabled: !!accountName && !!hiveChain,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    refetchInterval: 900000 // 15 minutes in milliseconds
   });
-
   return { manabarsData, manabarsDataLoading, manabarsDataError };
 };
 
