@@ -41,7 +41,7 @@ const useManabars = (accountName?: string) => {
     queryFn: () => getManabar(accountName!, hiveChain!),
     enabled: !!accountName && !!hiveChain,
     refetchOnWindowFocus: false,
-    refetchInterval: 900000 // 15 minutes in milliseconds
+    refetchInterval: 60000 // 1 minute in milliseconds
   });
   return { manabarsData, manabarsDataLoading, manabarsDataError };
 };
