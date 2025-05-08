@@ -27,21 +27,17 @@ test.describe('Follow user - tests', () => {
     await denserAutoTest0Page.page.locator(profilePage.followBtn).click();
     await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow');
 
-    await denserAutoTest0Page.page.locator(homePage.profileAvatar).click();
-    await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click();
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText(
-      '1 following'
-    );
-    await denserAutoTest0Page.page.getByText('1 following').click();
-    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).toBeVisible();
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow');
-    await denserAutoTest0Page.page.locator(profilePage.followBtn).click();
-    await expect(
-      await denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })
-    ).not.toBeVisible();
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText(
-      'Not following anybody'
-    );
+    await denserAutoTest0Page.page.locator(homePage.profileAvatar).click()
+    await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click()
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('1 following')
+    await denserAutoTest0Page.page.getByText('1 following').click()
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).toBeVisible()
+    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow')
+    await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
+    await denserAutoTest0Page.page.waitForTimeout(5000)
+    await denserAutoTest0Page.page.reload({ waitUntil: 'load' });
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${secondPostAuthor}` })).not.toBeVisible()
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
   });
 
   test('Add user to follow list from post', async ({ denserAutoTest0Page }) => {
@@ -63,13 +59,10 @@ test.describe('Follow user - tests', () => {
     await denserAutoTest0Page.page.getByText('1 following').click();
     await expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })).toBeVisible();
 
-    await denserAutoTest0Page.page.locator(profilePage.followBtn).click();
-    await expect(
-      await denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })
-    ).not.toBeVisible();
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText(
-      'Not following anybody'
-    );
+    await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthor}` })).not.toBeVisible()
+    await denserAutoTest0Page.page.reload({ waitUntil: 'load' });
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
   });
 
   test('Add user to follow list from comment', async ({ denserAutoTest0Page }) => {
@@ -104,14 +97,12 @@ test.describe('Follow user - tests', () => {
     await denserAutoTest0Page.page.getByText('1 following').click();
     expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).toBeVisible();
 
-    await denserAutoTest0Page.page.locator(profilePage.followBtn).click();
-    expect(
-      denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })
-    ).not.toBeVisible();
-    await denserAutoTest0Page.page.waitForSelector(profilePage.profileStatsString);
-    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText(
-      'Not following anybody'
-    );
+    await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
+    await denserAutoTest0Page.page.waitForTimeout(5000)
+    expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).not.toBeVisible()
+    await denserAutoTest0Page.page.waitForSelector(profilePage.profileStatsString)
+    await denserAutoTest0Page.page.reload({ waitUntil: 'load' });
+    await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
   });
 
   test('Check colors', async ({ denserAutoTest0Page }) => {
