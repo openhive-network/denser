@@ -255,7 +255,7 @@ const PostListItem = ({
               </CardContent>
               <CardFooter className="pb-2">
                 <div className="flex h-5 items-center space-x-2 text-sm" data-testid="post-card-footer">
-                  <VotesComponent post={post} />
+                  <VotesComponent post={post} type="post" />
 
                   <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
                     <div

@@ -15,7 +15,7 @@ import { Slider } from '@ui/components/slider';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
 import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/handle-error';
-import { useUpVoteStore, useDownVoteStore } from './hooks/use-vote-store';
+import { useLocalStorage } from 'usehooks-ts';
 
 const logger = getLogger('app');
 
@@ -26,24 +26,34 @@ const offsetSlider = {
   popoverAlignOfset: -19
 };
 
-const VotesComponent = ({ post }: { post: Entry }) => {
+const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' }) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
-  const changeUpvote = useUpVoteStore((state) => state.changeVote);
-  const upvote = useUpVoteStore((state) => state.vote);
-  const changeDownvote = useDownVoteStore((state) => state.changeVote);
-  const downvote = useDownVoteStore((state) => state.vote);
-  const [sliderUpvote, setSliderUpvote] = useState(upvote);
-  const [sliderDownvote, setSliderDownvote] = useState(downvote);
+  const [storedVotesValues, storeVotesValues] = useLocalStorage('votesValues', {
+    post: {
+      upvote: [100],
+      downvote: [100]
+    },
+    comment: {
+      upvote: [100],
+      downvote: [100]
+    }
+  });
+  const [sliderUpvote, setSliderUpvote] = useState(
+    type === 'post' ? storedVotesValues.post.upvote : storedVotesValues.comment.upvote
+  );
+  const [sliderDownvote, setSliderDownvote] = useState(
+    type === 'post' ? storedVotesValues.post.downvote : storedVotesValues.comment.downvote
+  );
   const voter = user.username;
   useEffect(() => {
-    setSliderUpvote(upvote);
-  }, [upvote]);
+    setSliderUpvote(type === 'post' ? storedVotesValues.post.upvote : storedVotesValues.comment.upvote);
+  }, [type, storedVotesValues.post.upvote, storedVotesValues.comment.upvote]);
   useEffect(() => {
-    setSliderDownvote(downvote);
-  }, [downvote]);
+    setSliderDownvote(type === 'post' ? storedVotesValues.post.downvote : storedVotesValues.comment.downvote);
+  }, [type, storedVotesValues.post.downvote, storedVotesValues.comment.downvote]);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -112,7 +122,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             sideOffset={offsetSlider.popoverSideOffset}
             align="start"
             alignOffset={offsetSlider.popoverAlignOfset}
-            data-testid='upvote-slider-modal'
+            data-testid="upvote-slider-modal"
           >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
@@ -126,7 +136,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                     if (voteMutation.isLoading) return;
                     setClickedVoteButton('up');
                     submitVote(sliderUpvote[0] * 100);
-                    changeUpvote(sliderUpvote);
+                    storeVotesValues((prev) => ({
+                      ...prev,
+                      [type]: {
+                        ...prev[type],
+                        upvote: sliderUpvote
+                      }
+                    }));
                   }}
                 />
               </TooltipContainer>
@@ -138,7 +154,9 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 className="w-36"
                 onValueChange={(e: number[]) => setSliderUpvote(e)}
               />
-              <div className="w-fit" data-testid="upvote-slider-percentage-value">{sliderUpvote}%</div>
+              <div className="w-fit" data-testid="upvote-slider-percentage-value">
+                {sliderUpvote}%
+              </div>
             </div>
           </PopoverContent>
         </Popover>
@@ -215,7 +233,7 @@ const VotesComponent = ({ post }: { post: Entry }) => {
             sideOffset={offsetSlider.popoverSideOffset}
             align="start"
             alignOffset={offsetSlider.popoverAlignOfset}
-            data-testid='downvote-slider-modal'
+            data-testid="downvote-slider-modal"
           >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
@@ -229,7 +247,13 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                     if (voteMutation.isLoading) return;
                     setClickedVoteButton('down');
                     submitVote(-sliderDownvote[0] * 100);
-                    changeDownvote(sliderDownvote);
+                    storeVotesValues((prev) => ({
+                      ...prev,
+                      [type]: {
+                        ...prev[type],
+                        downvote: sliderDownvote
+                      }
+                    }));
                   }}
                 />
               </TooltipContainer>
@@ -241,7 +265,9 @@ const VotesComponent = ({ post }: { post: Entry }) => {
                 className="w-36"
                 onValueChange={(e: number[]) => setSliderDownvote(e)}
               />
-              <div className="w-fit text-destructive" data-testid="downvote-slider-percentage-value">-{sliderDownvote}%</div>
+              <div className="w-fit text-destructive" data-testid="downvote-slider-percentage-value">
+                -{sliderDownvote}%
+              </div>
             </div>
             <div className="flex flex-col gap-1 pt-2 text-sm" data-testid="downvote-description-content">
               <p>{t('cards.post_card.downvote_warning')}</p>
