@@ -52,6 +52,7 @@ export function useVoteMutation() {
       queryClient.invalidateQueries({ queryKey: [permlink, voter, 'ActiveVotes'] });
       queryClient.invalidateQueries({ queryKey: ['postData', author, permlink] });
       queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+      queryClient.invalidateQueries({ queryKey: ['manabars', voter] });
     }
   });
   return voteMutation;
