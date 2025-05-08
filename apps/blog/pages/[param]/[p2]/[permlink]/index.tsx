@@ -103,7 +103,12 @@ function PostPage({
 
   const { data: suggestions } = useQuery(
     ['suggestions', username, permlink],
-    () => getSuggestions(username, String(permlink)),
+    () =>
+      getSuggestions({
+        author: username,
+        permlink,
+        observer: user.username !== '' ? user.username : 'hive.blog'
+      }),
     {
       enabled: !!username && !!permlink
     }
@@ -242,9 +247,9 @@ function PostPage({
         <meta property="og:image" content={metadata.image} />
       </Head>
       <div className="grid grid-cols-1 md:grid-cols-12">
-        <div className="col-span-2">
+        <div className="col-span-2 hidden md:block">
           {suggestions ? (
-            <div className="flex flex-col overflow-x-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)] md:overflow-y-auto">
+            <div className="flex flex-col overflow-x-auto overflow-y-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)]">
               <h2 className="mb-4 mt-2 px-4 font-sanspro text-xl font-bold md:mt-0">You Might Also Like</h2>
               <SuggestionsList suggestions={suggestions} />
             </div>
@@ -645,6 +650,16 @@ function PostPage({
                     </Link>
                   </div>
                 ) : null}
+                <div className="col-span-2 md:hidden">
+                  {suggestions ? (
+                    <div className="flex flex-col overflow-x-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)]">
+                      <h2 className="mb-4 mt-2 px-4 font-sanspro text-xl font-bold md:mt-0">
+                        You Might Also Like
+                      </h2>
+                      <SuggestionsList suggestions={suggestions} />
+                    </div>
+                  ) : null}
+                </div>
               </div>
             ) : (
               <Loading loading={isLoadingPost} />
