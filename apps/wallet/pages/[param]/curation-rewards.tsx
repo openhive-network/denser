@@ -107,7 +107,7 @@ function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType
                         <TableCell>
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
+                              <TooltipTrigger className="text-left">
                                 <TimeAgo date={reward.timestamp} />
                               </TooltipTrigger>
                               <TooltipContent>

@@ -116,7 +116,7 @@ function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<t
                         <TableCell>
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
+                              <TooltipTrigger className="text-left">
                                 <TimeAgo date={reward.timestamp} />
                               </TooltipTrigger>
                               <TooltipContent>
