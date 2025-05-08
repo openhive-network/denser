@@ -5,7 +5,6 @@ import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translatio
 import Head from 'next/head';
 import { useRewardsHistory } from '@/wallet/components/hooks/use-rewards-history';
 import Loading from '@ui/components/loading';
-import { dateToFullRelative } from '@ui/lib/parse-date';
 import Link from 'next/link';
 import { convertToHP } from '@ui/lib/utils';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -16,6 +15,7 @@ import { Table, TableBody, TableCell, TableRow } from '@ui/components/table';
 import Big from 'big.js';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@ui/components/tooltip';
 import { InfoIcon } from 'lucide-react';
+import TimeAgo from '@ui/components/time-ago';
 
 const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
@@ -104,7 +104,18 @@ function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType
                   <TableBody className="divide-y">
                     {currentItems?.map((reward, index) => (
                       <TableRow key={index} className="text-sm">
-                        <TableCell>{dateToFullRelative(reward.timestamp, t)}</TableCell>
+                        <TableCell>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <TimeAgo date={reward.timestamp} />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="max-w-xs">{reward.timestamp}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </TableCell>
                         <TableCell>
                           {new Date(reward.timestamp) > new Date(Date.now() - WEEK_IN_MILLISECONDS)
                             ? t('profile.potential_curation_reward_title')

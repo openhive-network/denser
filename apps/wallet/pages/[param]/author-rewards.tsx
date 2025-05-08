@@ -8,7 +8,6 @@ import Link from 'next/link';
 import env from '@beam-australia/react-env';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { convertToHP } from '@ui/lib/utils';
-import { dateToFullRelative } from '@ui/lib/parse-date';
 import Loading from '@ui/components/loading';
 import { useMemo, useState } from 'react';
 import Big from 'big.js';
@@ -16,6 +15,7 @@ import { Table, TableBody, TableCell, TableRow } from '@ui/components/table';
 import { Button } from '@ui/components/button';
 import { InfoIcon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import TimeAgo from '@ui/components/time-ago';
 
 const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
@@ -113,7 +113,18 @@ function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<t
                   <TableBody className="divide-y">
                     {currentItems?.map((reward, index) => (
                       <TableRow key={index} className="text-sm">
-                        <TableCell>{dateToFullRelative(reward.timestamp, t)}</TableCell>
+                        <TableCell>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <TimeAgo date={reward.timestamp} />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="max-w-xs">{reward.timestamp}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
                             {new Date(reward.timestamp) > new Date(Date.now() - WEEK_IN_MILLISECONDS)
