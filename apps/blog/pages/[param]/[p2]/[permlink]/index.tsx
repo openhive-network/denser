@@ -392,7 +392,7 @@ function PostPage({
                   {!commentSite ? (
                     <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
                       {post.json_metadata.tags
-                        ?.filter((e) => e !== (post.community_title ?? post.category) && e !== '')
+                        ?.filter((e) => e !== post.category && e !== '' && e !== post.community)
                         .map((tag: string) => (
                           <li key={tag}>
                             <Link
