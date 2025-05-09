@@ -1,3 +1,12 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+catalogs:
+  # Can be referenced through "catalog:hiveio-toolset"
+  hiveio-toolset:
+    "@hiveio/beekeeper": 1.27.11-250509105319
+    "@hiveio/wax": 1.27.6-rc7-250509110811
+    "@hiveio/wax-signers-keychain": 1.27.6-rc7-250509110811
+    "@hiveio/workerbee": 1.27.6-rc9-250509113105
+    "@hiveio/hb-auth": 0.0.1-250509113229
