@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "@hive/smart-signer": "workspace:*",
-    "@hiveio/wax": "1.27.6-rc7-250404091259",
-    "@hiveio/workerbee": "1.27.6-rc9-250506123928",
+    "@hiveio/wax": "catalog:hiveio-toolset",
+    "@hiveio/workerbee": "catalog:hiveio-toolset",
     "secure-random": "^1.1.2",
     "set-interval-async": "^3.0.3",
     "speakingurl": "^14.0.1"
