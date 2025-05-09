@@ -122,4 +122,97 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle2, postSummary2);
   });
+
+  test('Attempting to create a post without a title', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postContentText: string = '1 Content of the testing post POM';
+    const postSummary: string = '1 My testing post POM';
+    const postTag: string = 'test';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getPostSummaryInput.fill(postSummary);
+    await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    await denserAutoTest0Page.page.mouse.wheel(0, 2000)
+    await expect(postEditorPage.getSubmitPostButton).toBeDisabled()
+  });
+
+  test('Attempt to create a post with no content', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const postSummary: string = '1 My testing post POM';
+    const postTag: string = 'test';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await postEditorPage.getPostTitleInput.fill(postTitle)
+    await postEditorPage.getPostSummaryInput.fill(postSummary);
+    await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    await denserAutoTest0Page.page.mouse.wheel(0, 2000)
+    await expect(postEditorPage.getSubmitPostButton).toBeEnabled()
+    await postEditorPage.getSubmitPostButton.click()
+    await expect(postEditorPage.getFormContainer).toContainText('String must contain at least 1 character(s)')
+  });
+
+  test('Attempt to create a post with no tags', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const postSummary: string = '1 My testing post POM';
+    const postTag: string = 'test';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await postEditorPage.getPostTitleInput.fill(postTitle)
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getPostSummaryInput.fill(postSummary);
+    await expect(postEditorPage.getFormContainer).toContainText('Required when post to My Blog')
+  });
+
+  test('Attempt to create a post with no post summary', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const postSummary: string = '1 My testing post POM';
+    const postTag: string = 'test';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await postEditorPage.getPostTitleInput.fill(postTitle)
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    await expect(postEditorPage.getSubmitPostButton).toBeVisible()
+    await postEditorPage.getSubmitPostButton.click();
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: 'Content of the testing post POM' }).first()).toBeVisible()
+  });
+
+  test('Attempt to create a post with post summary longer than 140 characters', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const LongPostSummary: string = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Donec vulputate, elit nec porta sodales, lacus justo.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Donec vulputate, elit nec porta sodales, lacus justo.';
+    const postTag: string = 'test';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await postEditorPage.getPostTitleInput.fill(postTitle)
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    await postEditorPage.getPostSummaryInput.fill(LongPostSummary);
+    await expect(postEditorPage.getSubmitPostButton).toBeVisible()
+    await postEditorPage.getSubmitPostButton.click();
+    await expect(denserAutoTest0Page.page.getByText('Maximum 140 characters')).toBeVisible()
+  });
 });
