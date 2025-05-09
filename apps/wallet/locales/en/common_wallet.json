@@ -207,7 +207,11 @@
     "author_rewards_title": "Author Rewards from: ",
     "curation_reward_title": "Curation Reward for: ",
     "potential_curation_reward_title": "Potential Curation Reward for: ",
-    "by": " by "
+    "by": " by ",
+    "governanceExpiryWarning": "Witness votes auto-expire {{duration}} after your last governance transaction. Your present votes will expire on {{date}}. Please ",
+    "governanceExpired": "Your Witnesses votes have expired on {{date}}. Please ",
+    "to_reset": " to reset.",
+    "pleaseVoteForWitnesses": "It looks like you have not yet voted for Witnesses, you can do so on the "
   },
   "market_page": {
     "last_price": "Last price",

@@ -17,6 +17,8 @@ import { findRcAccounts } from '../lib/hive';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import { RcAccount } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
+import WitnessVoteExpiryWarning from './witness-vote-expiry-warning';
+import { getAccount } from '@transaction/lib/hive';
 
 const logger = getLogger('app');
 
@@ -48,13 +50,20 @@ const SiteHeader: FC = () => {
   useEffect(() => {
     setIsClient(true);
   }, []);
-  const {
-    data: rcData,
-    isLoading: rcLoading,
-    isError: rcError
-  } = useQuery([['findRcAcconut', user?.username]], () => findRcAccounts(user?.username || ''), {
-    enabled: !!user?.username
-  });
+  const { data: rcData } = useQuery(
+    [['findRcAcconut', user?.username]],
+    () => findRcAccounts(user?.username || ''),
+    {
+      enabled: !!user?.username
+    }
+  );
+  const { data: accountData } = useQuery(
+    [['accountData', user?.username]],
+    () => getAccount(user?.username || ''),
+    {
+      enabled: !!user?.username
+    }
+  );
   const stats = rcData
     ? calculateRcStats(rcData.rc_accounts)
     : {
@@ -106,48 +115,51 @@ const SiteHeader: FC = () => {
             ) : null}
             {isClient && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
             {isClient && user?.isLoggedIn ? (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger data-testid="profile-avatar-button">
-                    <UserMenu user={user}>
-                      <div className="relative inline-flex w-fit cursor-pointer items-center justify-center">
-                        <div className="absolute cursor-pointer">
-                          <PieChart width={50} height={50}>
-                            <Pie
-                              data={chart}
-                              cx={20}
-                              cy={20}
-                              startAngle={90}
-                              endAngle={-chartAngle + 90}
-                              innerRadius={17}
-                              outerRadius={23}
-                              fill="#0088FE"
-                              paddingAngle={0}
-                              dataKey="value"
-                            ></Pie>
-                          </PieChart>
+              <div className="relative inline-flex w-fit cursor-pointer items-center justify-center">
+                <WitnessVoteExpiryWarning expirationTime={accountData?.governance_vote_expiration_ts} />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger data-testid="profile-avatar-button">
+                      <UserMenu user={user}>
+                        <div className="relative inline-flex w-fit cursor-pointer items-center justify-center">
+                          <div className="absolute cursor-pointer">
+                            <PieChart width={50} height={50}>
+                              <Pie
+                                data={chart}
+                                cx={20}
+                                cy={20}
+                                startAngle={90}
+                                endAngle={-chartAngle + 90}
+                                innerRadius={17}
+                                outerRadius={23}
+                                fill="#0088FE"
+                                paddingAngle={0}
+                                dataKey="value"
+                              ></Pie>
+                            </PieChart>
+                          </div>
+                          <Avatar>
+                            <AvatarImage
+                              src={`https://images.hive.blog/u/${user?.username}/avatar/small`}
+                              alt="Profile picture"
+                            />
+                            <AvatarFallback>
+                              <Icons.user />
+                            </AvatarFallback>
+                          </Avatar>
                         </div>
-                        <Avatar>
-                          <AvatarImage
-                            src={`https://images.hive.blog/u/${user?.username}/avatar/small`}
-                            alt="Profile picture"
-                          />
-                          <AvatarFallback>
-                            <Icons.user />
-                          </AvatarFallback>
-                        </Avatar>
-                      </div>
-                    </UserMenu>
-                  </TooltipTrigger>
-                  <TooltipContent className="flex flex-col">
-                    <span>Resource Credits</span>
-                    <span>(RC) level: {stats.resourceCreditsPercent}%</span>
-                    {stats.resourceCreditsWaitTime !== 0 ? (
-                      <span>Full in {stats.resourceCreditsWaitTime / 3600}h</span>
-                    ) : null}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                      </UserMenu>
+                    </TooltipTrigger>
+                    <TooltipContent className="flex flex-col">
+                      <span>Resource Credits</span>
+                      <span>(RC) level: {stats.resourceCreditsPercent}%</span>
+                      {stats.resourceCreditsWaitTime !== 0 ? (
+                        <span>Full in {stats.resourceCreditsWaitTime / 3600}h</span>
+                      ) : null}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             ) : null}
             <Sidebar />
           </nav>
