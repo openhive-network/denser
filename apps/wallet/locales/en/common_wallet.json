@@ -208,10 +208,12 @@
     "curation_reward_title": "Curation Reward for: ",
     "potential_curation_reward_title": "Potential Curation Reward for: ",
     "by": " by ",
-    "governanceExpiryWarning": "Witness votes auto-expire {{duration}} after your last governance transaction. Your present votes will expire on {{date}}. Please ",
-    "governanceExpired": "Your Witnesses votes have expired on {{date}}. Please ",
+    "governance_expiry_warning": "Witness votes auto-expire {{duration}} after your last governance transaction. Your present votes will expire on {{date}}. Please ",
+    "update_your_witness_votes": "update your Witness votes",
+    "governance_expired": "Your Witnesses votes have expired on {{date}}. Please ",
     "to_reset": " to reset.",
-    "pleaseVoteForWitnesses": "It looks like you have not yet voted for Witnesses, you can do so on the "
+    "witnesses_page": "Witnesses page",
+    "please_vote_for_witnesses": "It looks like you have not yet voted for Witnesses, you can do so on the "
   },
   "market_page": {
     "last_price": "Last price",

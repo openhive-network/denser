@@ -3,6 +3,8 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import HoverClickTooltip from './hover-click-tooltip';
 
+const NULL_DATE = 1970;
+
 const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string }) => {
   const { t } = useTranslation('common_wallet');
   const governanceVoteExpirationTime =
@@ -17,46 +19,43 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
   if (expiryDiff > 3 || !expiryDiff || !expiryDate) {
     return null;
   }
-  const showWarning = expiryYear >= 2016 && expiryDiff > 0 && expiryDiff <= 3;
-  const showExpired = expiryYear >= 2016 && expiryDiff <= 0;
-  const showVoteForWitnesses = expiryYear < 2016;
 
   return (
     <HoverClickTooltip
       triggerChildren={'!'}
-      buttonStyle={`absolute bottom-auto left-auto right-9 top-1.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive px-2 py-1 text-center align-baseline text-xs font-bold leading-none text-white ${showWarning || showExpired || showVoteForWitnesses ? 'block' : 'hidden'}`}
+      buttonStyle="absolute bottom-auto left-auto right-9 top-1.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive px-2 py-1 text-center align-baseline text-xs font-bold leading-none text-white"
       contentStyle="w-72"
     >
       <>
-        {expiryYear >= 2016 && expiryDiff > 0 && (
+        {expiryYear >= NULL_DATE && expiryDiff > 0 && (
           <span>
-            {t('profile.governanceExpiryWarning', {
+            {t('profile.governance_expiry_warning', {
               date: expiryDate.format('ll'),
               duration: '1 year'
             })}
             <Link className="text-destructive" href="/~witnesses">
-              update your Witness votes
+              {t('profile.update_your_witness_votes')}
             </Link>
             {t('profile.to_reset')}
           </span>
         )}
-        {expiryYear >= 2016 && expiryDiff <= 0 && (
+        {expiryYear >= NULL_DATE && expiryDiff <= 0 && (
           <span>
-            {t('profile.governanceExpired', {
+            {t('profile.governance_expired', {
               date: expiryDate.format('ll'),
               duration: '1 year'
             })}
             <Link className="text-destructive" href="/~witnesses">
-              update your Witness votes
+              {t('profile.update_your_witness_votes')}
             </Link>
             {t('profile.to_reset')}
           </span>
         )}
-        {expiryYear < 2016 && (
+        {expiryYear < NULL_DATE && (
           <span>
-            {t('profile.pleaseVoteForWitnesses')}
+            {t('profile.please_vote_for_witnesses')}
             <Link className="text-destructive" href="/~witnesses">
-              Witnesses page
+              {t('profile.witnesses_page')}
             </Link>
           </span>
         )}
