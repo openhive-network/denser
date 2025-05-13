@@ -14,6 +14,38 @@ const nextConfig = {
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..')
   },
+  /// According to notes: https://nextjs.org/docs/app/guides/progressive-web-apps#8-securing-your-application
+  async headers() {
+    return [
+      {
+        source: '/sw.js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate, max-age=0',
+          }
+        ]
+      },
+      {
+        source: '/auth/worker.js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate, max-age=0',
+          }
+        ]
+      }
+    ];
+  },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = { fs: false };
