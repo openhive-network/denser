@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import HoverClickTooltip from './hover-click-tooltip';
 
-const NULL_DATE = 1970;
+const HIVE_NULL_DATE = 2016; // The year when the Hive blockchain was created
 
 const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string }) => {
   const { t } = useTranslation('common_wallet');
@@ -27,7 +27,7 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
       contentStyle="w-72"
     >
       <>
-        {expiryYear >= NULL_DATE && expiryDiff > 0 && (
+        {expiryYear >= HIVE_NULL_DATE && expiryDiff > 0 && (
           <span>
             {t('profile.governance_expiry_warning', {
               date: expiryDate.format('ll'),
@@ -39,7 +39,7 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
             {t('profile.to_reset')}
           </span>
         )}
-        {expiryYear >= NULL_DATE && expiryDiff <= 0 && (
+        {expiryYear >= HIVE_NULL_DATE && expiryDiff <= 0 && (
           <span>
             {t('profile.governance_expired', {
               date: expiryDate.format('ll'),
@@ -51,7 +51,7 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
             {t('profile.to_reset')}
           </span>
         )}
-        {expiryYear < NULL_DATE && (
+        {expiryYear < HIVE_NULL_DATE && (
           <span>
             {t('profile.please_vote_for_witnesses')}
             <Link className="text-destructive" href="/~witnesses">
