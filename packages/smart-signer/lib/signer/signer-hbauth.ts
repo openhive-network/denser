@@ -204,7 +204,7 @@ export class SignerHbauth extends Signer {
 
     if (auth) {
       logger.info('Found auth for user %s: %o', username, auth);
-      if (auth.authorized) {
+      if (auth.unlocked) {
         if (auth.loggedInKeyType === keyType) {
           logger.info('User %s is authorized and we are ready to proceed', username);
           // Everything is OK.
