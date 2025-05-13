@@ -647,7 +647,7 @@ export class TransactionService {
       }
     };
 
-    if (!editMode) {
+    if (!editMode || payoutType !== '100%') {
       postData.maxAcceptedPayout = maxAcceptedPayout;
 
       if (payoutType === '100%') {
@@ -660,10 +660,14 @@ export class TransactionService {
         postData.maxAcceptedPayout = createAsset('0', 'HBD');
       }
 
-      postData.beneficiaries = beneficiaries.map(({ account, weight }) => ({
-        account,
-        weight: Number(weight) * 100
-      }));
+      const filteredBeneficiaries = beneficiaries.filter(({ account, weight }) => Number(weight) !== 10000);
+
+      if (filteredBeneficiaries.length > 0) {
+        postData.beneficiaries = filteredBeneficiaries.map(({ account, weight }) => ({
+          account,
+          weight: Number(weight) * 100
+        }));
+      }
     }
 
     const blogPost = new BlogPostOperation(postData);
