@@ -9,7 +9,7 @@ export class InternalLinkPlugin implements RendererPlugin {
         return (
             text
                 // Handle @user
-                .replace(/(^|\s)@([a-zA-Z0-9_]+)/g, (_match, prefix, username) => {
+                .replace(/(^|\s)@([a-zA-Z0-9_.]+)/g, (_match, prefix, username) => {
                     return `${prefix}<a href="/@${username}">@${username}</a>`;
                 })
                 // Handle #tag

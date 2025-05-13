@@ -82,6 +82,7 @@ export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> =
           reward_hive_balance: x.reward_hive_balance,
           reward_hbd_balance: x.reward_hbd_balance,
           reward_vesting_hive: x.reward_vesting_hive,
+          governance_vote_expiration_ts: x.governance_vote_expiration_ts,
           reward_vesting_balance: x.reward_vesting_balance,
           balance: x.balance,
           hbd_balance: x.hbd_balance,

@@ -39,6 +39,7 @@ export interface FullAccount {
   reward_vesting_hive: string;
   reward_hive_balance: string;
   reward_vesting_balance: string;
+  governance_vote_expiration_ts: string;
   balance: string;
   vesting_shares: string;
   hbd_balance: string;
