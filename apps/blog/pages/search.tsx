@@ -142,9 +142,9 @@ export default function SearchPage() {
                 <PostSkeleton />
               ) : hasNextPage ? (
                 t('user_profile.load_newer')
-              ) : (
+              ) : !isLoading ? (
                 t('user_profile.nothing_more_to_load')
-              )}
+              ) : null}
             </button>
           </div>
           <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
