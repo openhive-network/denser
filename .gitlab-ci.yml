@@ -778,7 +778,7 @@ develop:deploy-auth-mainnet:
     EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $AUTH_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-auth-mainnet
     url: https://auth.dev.openhive.network
@@ -799,7 +799,7 @@ develop:deploy-blog-mainnet:
     EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search" || $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-blog-mainnet
     url: https://blog.dev.openhive.network
@@ -820,7 +820,7 @@ develop:deploy-wallet-mainnet:
     EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $WALLET_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-wallet-mainnet
     url: https://wallet.dev.openhive.network
@@ -839,7 +839,7 @@ develop:deploy-auth-mirrornet:
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
     IMAGE_NAME: $AUTH_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-auth-mirrornet
     url: https://auth.dev.fake.openhive.network
@@ -849,7 +849,7 @@ develop:deploy-blog-mirrornet:
   extends: .deploy_template_mirrornet
   needs:
     - docker-build-blog
-    #- e2e-tests-blog
+    - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-dev-blog-mirror
     PORT: 8211
@@ -860,7 +860,7 @@ develop:deploy-blog-mirrornet:
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
     IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-blog-mirrornet
     url: https://blog.dev.fake.openhive.network
@@ -881,7 +881,7 @@ develop:deploy-wallet-mirrornet:
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
     IMAGE_NAME: $WALLET_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-wallet-mirrornet
     url: https://wallet.dev.fake.openhive.network
@@ -896,7 +896,7 @@ develop:stop-auth-mainnet:
   variables:
     CONTAINER_NAME: denser-dev-auth
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
       when: manual
       allow_failure: true
   environment:
@@ -911,7 +911,7 @@ develop:stop-blog-mainnet:
   variables:
     CONTAINER_NAME: denser-dev-blog
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
       when: manual
       allow_failure: true
   environment:
@@ -926,7 +926,7 @@ develop:stop-wallet-mainnet:
   variables:
     CONTAINER_NAME: denser-dev-wallet
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
       when: manual
       allow_failure: true
   environment:
@@ -941,7 +941,7 @@ develop:stop-auth-mirrornet:
   variables:
     CONTAINER_NAME: denser-dev-auth-mirror
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
       when: manual
       allow_failure: true
   environment:
@@ -956,7 +956,7 @@ develop:stop-blog-mirrornet:
   variables:
     CONTAINER_NAME: denser-dev-blog-mirror
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
       when: manual
       allow_failure: true
   environment:
@@ -971,7 +971,7 @@ develop:stop-wallet-mirrornet:
   variables:
     CONTAINER_NAME: denser-dev-wallet-mirror
   rules:
-    - if: $CI_COMMIT_BRANCH == "feature/new-search"
+    - if: $CI_COMMIT_BRANCH == "develop"
       when: manual
       allow_failure: true
   environment:
