@@ -769,7 +769,6 @@ develop:deploy-auth-mainnet:
   extends: .deploy_template_mainnet
   needs:
     - docker-build-auth
-    - e2e-tests-auth
   variables:
     CONTAINER_NAME: denser-dev-auth
     PORT: 8133
@@ -831,7 +830,6 @@ develop:deploy-auth-mirrornet:
   extends: .deploy_template_mirrornet
   needs:
     - docker-build-auth
-    - e2e-tests-auth
   variables:
     CONTAINER_NAME: denser-dev-auth-mirror
     PORT: 8233
