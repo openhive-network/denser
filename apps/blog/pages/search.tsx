@@ -86,6 +86,31 @@ export default function SearchPage() {
     }
   );
   useEffect(() => {
+    // Save scroll position when leaving the page
+    const handleRouteChange = () => {
+      sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+    };
+
+    // Restore scroll position when returning to the page
+    const restoreScrollPosition = () => {
+      const scrollPosition = sessionStorage.getItem('scrollPosition');
+      if (scrollPosition) {
+        window.scrollTo(0, parseInt(scrollPosition));
+        handleRouteChange();
+      }
+    };
+    router.events.on('routeChangeStart', handleRouteChange);
+    // Restore scroll position after the page content is loaded
+    if (typeof window !== 'undefined') {
+      // Wait for content to be rendered
+      setTimeout(restoreScrollPosition, 500);
+    }
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router.events]);
+  useEffect(() => {
     if (inView && hasNextPageEntry) {
       fetchNextPageEntry();
     }
