@@ -10,7 +10,6 @@ import {
   getSubscriptions,
   getPostsRanked
 } from '@transaction/lib/bridge';
-import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components/skeleton';
@@ -188,24 +187,6 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   }, [router.events]);
   if (accountEntriesIsError || entriesDataIsError) return <CustomError />;
 
-  if (
-    (entriesDataIsLoading && entriesDataIsFetching) ||
-    (accountEntriesIsLoading && accountEntriesIsFetching) ||
-    (AccountNotificationIsLoading && AccountNotificationIsFetching)
-  ) {
-    return (
-      <Loading
-        loading={
-          entriesDataIsLoading ||
-          entriesDataIsFetching ||
-          accountEntriesIsLoading ||
-          accountEntriesIsFetching ||
-          AccountNotificationIsLoading ||
-          AccountNotificationIsFetching
-        }
-      />
-    );
-  }
   const tabTitle =
     Array.isArray(router.query.param) && router.query.param.length > 1
       ? `${metadata.title} / ${sortToTitle(router.query.param[0] as sortTypes)}`
@@ -423,7 +404,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         '' // No user context on SSR
       );
     },
-    { getNextPageParam: (lastPage) => {
+    {
+      getNextPageParam: (lastPage) => {
         if (lastPage && lastPage.length === PER_PAGE) {
           return {
             author: lastPage[lastPage.length - 1].author,
@@ -443,7 +425,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // Utility to replace undefined with null for Next.js serialization
   function replaceUndefinedWithNull(obj: any): any {
     if (Array.isArray(obj)) {
-      return obj.map((v) => v === undefined ? null : replaceUndefinedWithNull(v));
+      return obj.map((v) => (v === undefined ? null : replaceUndefinedWithNull(v)));
     } else if (obj && typeof obj === 'object') {
       return Object.fromEntries(
         Object.entries(obj).map(([k, v]) => [k, v === undefined ? null : replaceUndefinedWithNull(v)])
