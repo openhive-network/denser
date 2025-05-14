@@ -21,11 +21,12 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { getHiveSenseStatus, getSimilarPosts } from '../lib/get-data';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
-
+const PER_PAGE = 20;
 const TAB_TITLE = 'Search - Hive';
 export default function SearchPage() {
   const router = useRouter();
   const { ref, inView } = useInView();
+  const { ref: aiRef, inView: aiInView } = useInView();
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const query = router.query.q as string;
@@ -40,14 +41,28 @@ export default function SearchPage() {
       refetchOnMount: false
     }
   );
-  const { data, isLoading } = useQuery(
-    ['posts', query],
-    () =>
-      getSimilarPosts({
+
+  const { data, isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery(
+    ['similarPosts', query],
+    async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
+      return await getSimilarPosts({
         pattern: query,
-        observer: user.username !== '' ? user.username : 'hive.blog'
-      }),
+        observer: user.username !== '' ? user.username : 'hive.blog',
+        start_permlink: pageParam?.permlink ?? '',
+        start_author: pageParam?.author ?? '',
+        limit: PER_PAGE
+      });
+    },
     {
+      getNextPageParam: (lastPage) => {
+        if (lastPage && lastPage.length === PER_PAGE) {
+          return {
+            author: lastPage[lastPage.length - 1].author,
+            permlink: lastPage[lastPage.length - 1].permlink
+          };
+        }
+      },
+
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,
@@ -59,9 +74,9 @@ export default function SearchPage() {
     isLoading: entriesDataIsLoading,
     isFetching: entriesDataIsFetching,
     isError: entriesDataIsError,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage
+    isFetchingNextPage: isFetchingNextPageEntry,
+    fetchNextPage: fetchNextPageEntry,
+    hasNextPage: hasNextPageEntry
   } = useInfiniteQuery(
     ['infiniteSearch', query, sort],
     (lastPage) => getSearch(query, lastPage.pageParam, sort),
@@ -71,10 +86,41 @@ export default function SearchPage() {
     }
   );
   useEffect(() => {
-    if (inView && hasNextPage) {
+    // Save scroll position when leaving the page
+    const handleRouteChange = () => {
+      sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+    };
+
+    // Restore scroll position when returning to the page
+    const restoreScrollPosition = () => {
+      const scrollPosition = sessionStorage.getItem('scrollPosition');
+      if (scrollPosition) {
+        window.scrollTo(0, parseInt(scrollPosition));
+        handleRouteChange();
+      }
+    };
+    router.events.on('routeChangeStart', handleRouteChange);
+    // Restore scroll position after the page content is loaded
+    if (typeof window !== 'undefined') {
+      // Wait for content to be rendered
+      setTimeout(restoreScrollPosition, 500);
+    }
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router.events]);
+  useEffect(() => {
+    if (inView && hasNextPageEntry) {
+      fetchNextPageEntry();
+    }
+  }, [isFetchingNextPageEntry, hasNextPageEntry, inView]);
+
+  useEffect(() => {
+    if (aiInView && hasNextPage) {
       fetchNextPage();
     }
-  }, [fetchNextPage, hasNextPage, inView]);
+  }, [isFetchingNextPage, hasNextPage, aiInView]);
 
   const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
@@ -101,11 +147,34 @@ export default function SearchPage() {
             <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} searchPage />
           </div>
         </div>
-        {!aiSearch || !query ? null : isLoading ? (
-          <Loading loading={isLoading} />
-        ) : data ? (
-          <PostList data={data} />
-        ) : null}
+        <div>
+          {!aiSearch || !query ? null : isLoading ? (
+            <Loading loading={isLoading} />
+          ) : data ? (
+            data.pages.map((page, index) => {
+              return page ? <PostList data={page} key={`ai-${index}`} /> : null;
+            })
+          ) : null}
+          <div>
+            <button
+              ref={aiRef}
+              onClick={() => {
+                fetchNextPage(), console.log('fetchNextPage');
+              }}
+              disabled={!hasNextPage || isFetchingNextPage}
+            >
+              {isFetchingNextPage ? (
+                <PostSkeleton />
+              ) : hasNextPage ? (
+                t('user_profile.load_newer')
+              ) : !isLoading ? (
+                t('user_profile.nothing_more_to_load')
+              ) : null}
+            </button>
+          </div>
+          <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+        </div>
+
         {!!sort ? (
           <>
             {entriesDataIsError ? null : entriesDataIsLoading ? (
@@ -122,10 +191,14 @@ export default function SearchPage() {
               ))
             )}
             <div>
-              <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
-                {isFetchingNextPage ? (
+              <button
+                ref={ref}
+                onClick={() => fetchNextPageEntry()}
+                disabled={!hasNextPageEntry || isFetchingNextPageEntry}
+              >
+                {isFetchingNextPageEntry ? (
                   <PostSkeleton />
-                ) : hasNextPage ? (
+                ) : hasNextPageEntry ? (
                   t('user_profile.load_newer')
                 ) : (
                   t('user_profile.nothing_more_to_load')
