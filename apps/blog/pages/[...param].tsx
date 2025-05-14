@@ -37,6 +37,7 @@ import {
 } from '../lib/get-translations';
 import Head from 'next/head';
 import { sortToTitle, sortTypes } from '../lib/utils';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 
 export const PostSkeleton = () => {
   return (
@@ -404,10 +405,58 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     metadata = await getCommunityMetadata(firstParam, secondParam, 'Posts');
   }
 
+  // React Query SSR: Prefetch main queries
+  const queryClient = new QueryClient();
+  let sort = ctx.query.sort || 'trending';
+  if (Array.isArray(sort)) sort = sort[0];
+  let tag = secondParam || '';
+  if (Array.isArray(tag)) tag = tag[0];
+  // Prefetch posts (first page)
+  await queryClient.prefetchInfiniteQuery(
+    ['entriesInfinite', sort, tag],
+    async ({ pageParam }) => {
+      return await getPostsRanked(
+        sort,
+        tag,
+        pageParam?.author,
+        pageParam?.permlink,
+        '' // No user context on SSR
+      );
+    },
+    { getNextPageParam: (lastPage) => {
+        if (lastPage && lastPage.length === PER_PAGE) {
+          return {
+            author: lastPage[lastPage.length - 1].author,
+            permlink: lastPage[lastPage.length - 1].permlink
+          };
+        }
+      }
+    }
+  );
+  // Prefetch community data
+  if (tag) {
+    await queryClient.prefetchQuery(['community', tag, ''], () => getCommunity(tag, ''));
+    await queryClient.prefetchQuery(['subscribers', tag], () => getSubscribers(tag));
+    await queryClient.prefetchQuery(['AccountNotification', tag], () => getAccountNotifications(tag));
+  }
+
+  // Utility to replace undefined with null for Next.js serialization
+  function replaceUndefinedWithNull(obj: any): any {
+    if (Array.isArray(obj)) {
+      return obj.map((v) => v === undefined ? null : replaceUndefinedWithNull(v));
+    } else if (obj && typeof obj === 'object') {
+      return Object.fromEntries(
+        Object.entries(obj).map(([k, v]) => [k, v === undefined ? null : replaceUndefinedWithNull(v)])
+      );
+    }
+    return obj;
+  }
+
   return {
     props: {
       metadata,
-      ...(await getTranslations(ctx))
+      ...(await getTranslations(ctx)),
+      dehydratedState: replaceUndefinedWithNull(dehydrate(queryClient))
     }
   };
 };

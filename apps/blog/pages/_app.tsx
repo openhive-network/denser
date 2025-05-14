@@ -33,7 +33,7 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <Suspense fallback={<span>Loading...</span>}>
-      <Providers>
+      <Providers dehydratedState={pageProps.dehydratedState}>
         <Component {...pageProps} />
       </Providers>
     </Suspense>
