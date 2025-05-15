@@ -38,6 +38,13 @@ export class AssetEmbedder {
         ow(o.usertagUrlFn, 'AssetEmbedderOptions.usertagUrlFn', ow.function);
     }
 
+    /**
+     * Processes the input string and embeds media assets like videos, music, etc.
+     * Uses the configured width and height from the embedder options.
+     *
+     * @param input - The input string containing URLs or markdown content to process
+     * @returns The processed string with embedded media assets replacing the original URLs
+     */
     public insertAssets(input: string): string {
         const size = {
             width: this.options.width,
@@ -46,6 +53,16 @@ export class AssetEmbedder {
         return this.insertMarkedEmbedsToRenderedOutput(input, size);
     }
 
+    /**
+     * Processes input text that contains embed markers and replaces them with actual embedded content.
+     * This method is typically used after initial markdown rendering to handle any special embed markers.
+     *
+     * @param input - The input string containing embed markers to be processed
+     * @param size - Object containing width and height dimensions for the embedded content
+     * @param size.width - The width to use for embedded content
+     * @param size.height - The height to use for embedded content
+     * @returns The processed string with embed markers replaced by actual embedded content
+     */
     public insertMarkedEmbedsToRenderedOutput(input: string, size: {width: number; height: number}): string {
         return AbstractEmbedder.insertAllEmbeds(this.embedders, input, size);
     }
