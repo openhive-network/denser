@@ -579,14 +579,16 @@ export default function PostForm({
             </Link>
           </div>
           {previewContent ? (
-            <RendererContainer
-              body={previewContent}
-              author=""
-              className={
-                postClassName +
-                ' w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2'
-              }
-            />
+            <div className="flex h-full overflow-y-scroll">
+              <RendererContainer
+                body={previewContent}
+                author=""
+                className={
+                  postClassName +
+                  ' w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2'
+                }
+              />
+            </div>
           ) : null}
         </div>
       </div>
