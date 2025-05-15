@@ -6,18 +6,32 @@ declare global {
     }
 }
 
+/**
+ * Plugin for handling Twitter/X embedded tweets in the renderer.
+ * Converts tweet URLs into embedded tweet widgets using Twitter's widget API.
+ */
 export class TwitterPlugin implements RendererPlugin {
+    /** Set of container IDs for tweets that have been rendered to prevent duplicate rendering */
     private renderedTweets = new Set<string>();
+    /** Flag indicating whether the Twitter widget script has been loaded */
     private scriptLoaded = false;
 
+    /** Plugin identifier */
     name = 'twitter';
 
+    /**
+     * Initializes the Twitter plugin and loads the Twitter widget script if in browser environment
+     */
     constructor() {
         if (typeof window !== 'undefined') {
             this.loadTwitterScript();
         }
     }
 
+    /**
+     * Loads the Twitter widget script if it hasn't been loaded already.
+     * The script is required for rendering embedded tweets.
+     */
     private loadTwitterScript() {
         if (!this.scriptLoaded && !window?.twttr) {
             const script = document.createElement('script');
@@ -28,6 +42,12 @@ export class TwitterPlugin implements RendererPlugin {
         }
     }
 
+    /**
+     * Renders a tweet in the specified container using Twitter's widget API
+     *
+     * @param id - The tweet ID to render
+     * @param containerId - The ID of the container element where the tweet should be rendered
+     */
     private renderTweet(id: string, containerId: string) {
         if (typeof window === 'undefined') return;
 
@@ -47,6 +67,13 @@ export class TwitterPlugin implements RendererPlugin {
             }
         }
     }
+    /**
+     * Pre-processes text to convert Twitter/X URLs into temporary placeholder elements.
+     * Matches both twitter.com and x.com URLs and extracts the tweet ID and author.
+     *
+     * @param text - The input text containing potential Twitter/X URLs
+     * @returns Text with Twitter/X URLs replaced with placeholder div elements
+     */
     preProcess: (text: string) => string = (text: string) => {
         return text.replace(
             /(?<!\()(https?:\/\/)?(?:www\.)?(twitter|x)\.com\/(?:#!\/)?(\w+)\/status(es)?\/(\d+)[^)\s]*/g,
@@ -54,6 +81,13 @@ export class TwitterPlugin implements RendererPlugin {
         );
     };
 
+    /**
+     * Post-processes text by replacing placeholder elements with actual tweet embeds.
+     * Creates unique container IDs for each tweet and triggers the tweet rendering process.
+     *
+     * @param text - The text containing Twitter placeholder elements
+     * @returns Text with placeholder elements replaced with tweet embed containers
+     */
     postProcess: (text: string) => string = (text: string) => {
         return text.replace(/<div>twitter-id-(\d+)-author-(\w+)<\/div>/g, (_match, id, author) => {
             const containerId = `tweet-${id}-${Math.random().toString(36).substring(7)}`;

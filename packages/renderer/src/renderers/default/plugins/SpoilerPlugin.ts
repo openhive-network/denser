@@ -1,8 +1,33 @@
 import {RendererPlugin} from './RendererPlugin';
 
+/**
+ * Plugin for handling spoiler blocks in markdown text.
+ * Converts blocks starting with >! into HTML details/summary elements.
+ *
+ * Syntax:
+ * >! [Optional Title] Content
+ * > Additional content on new lines
+ * > More content
+ *
+ * @example
+ * >! [Spoiler] Hidden content
+ * > More hidden content
+ *
+ * Becomes:
+ * <details class="spoiler">
+ *   <summary>Spoiler</summary>
+ *   <p>Hidden content\nMore hidden content</p>
+ * </details>
+ */
 export class SpoilerPlugin implements RendererPlugin {
+    /** Plugin identifier */
     name = 'spoiler';
 
+    /**
+     * Processes markdown text and converts spoiler blocks to HTML details elements
+     * @param text - The markdown text to process
+     * @returns The processed text with spoiler blocks converted to HTML
+     */
     preProcess(text: string): string {
         // Matches spoiler blocks with optional title and multiple lines
         return text.replace(/^>!(?:\s*\[(.*?)\])?\s*(.*?)(?:\n|$)((?:\n> ?.*)*)$/gm, (_, title, firstLine, rest) => {
