@@ -43,6 +43,7 @@ export class CommunitiesPage {
   readonly subscribersRowsEven: Locator;
   readonly subscribersRowsOdd: Locator;
   readonly subscribersLoadMoreButton: Locator;
+  readonly unmoderatedName: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -91,6 +92,7 @@ export class CommunitiesPage {
     this.subscribersRowsEven = this.subscribersNotificationContent.locator('tr:nth-of-type(even)');
     this.subscribersRowsOdd =  this.subscribersNotificationContent.locator('tr:nth-of-type(odd)');
     this.subscribersLoadMoreButton = this.subscribersNotificationContent.getByText('Load more');
+    this.unmoderatedName = page.getByTestId('community-name-unmoderated');
   }
 
   async validataCommunitiesPageIsLoaded(communityName: string) {
