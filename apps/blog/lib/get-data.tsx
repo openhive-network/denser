@@ -8,16 +8,20 @@ export const getSimilarPosts = async ({
   pattern,
   tr_body = 100,
   limit = 50,
-  observer
+  observer,
+  start_author,
+  start_permlink
 }: {
   pattern: string;
   tr_body?: number;
   limit?: number;
   observer: string;
+  start_author: string;
+  start_permlink: string;
 }): Promise<Entry[] | null> => {
   try {
     const response = await fetch(
-      `${apiDevOrigin}/hivesense-api/similarposts?pattern=${encodeURIComponent(pattern)}&tr_body=${tr_body}&posts_limit=${limit}&observer=${observer}`
+      `${apiDevOrigin}/hivesense-api/similarposts?pattern=${encodeURIComponent(pattern)}&tr_body=${tr_body}&posts_limit=${limit}&observer=${observer}&start_author=${start_author}&start_permlink=${start_permlink}`
     );
     if (!response.ok) {
       throw new Error(`Similar posts API Error: ${response.status}`);
