@@ -10,7 +10,7 @@ import {
   getAccountFull,
   getAccountReputations
 } from '@transaction/lib/hive';
-import { accountReputation } from '@/blog/lib/utils';
+import { accountReputation, compareDates } from '@/blog/lib/utils';
 import { convertToHP, numberWithCommas } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
 import { Icons } from '@hive/ui/components/icons';
@@ -19,7 +19,6 @@ import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { getTwitterInfo } from '@transaction/lib/bridge';
 import moment from 'moment';
 import { useTranslation } from 'next-i18next';
-import { TFunction } from 'i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
@@ -34,24 +33,6 @@ import TimeAgo from '@hive/ui/components/time-ago';
 
 interface IProfileLayout {
   children: React.ReactNode;
-}
-
-function compareDates(dateStrings: string[], t: TFunction<'common_wallet', undefined>) {
-  const dates = dateStrings.map((dateStr) => moment(dateStr));
-
-  const today = moment();
-  let closestDate = dates[0];
-  let minDiff = Math.abs(today.diff(dates[0], 'days'));
-
-  dates.forEach((date) => {
-    const diff = Math.abs(date.diff(today, 'days'));
-    if (diff < minDiff) {
-      minDiff = diff;
-      closestDate = date;
-    }
-  });
-
-  return closestDate.format('YYYY-MM-DDTHH:mm:ss');
 }
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
@@ -338,10 +319,11 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     <span data-testid="user-last-time-active">
                       {t('user_profile.active')}{' '}
                       <TimeAgo
-                        date={compareDates(
-                          [profileData.created, profileData.last_vote_time, profileData.last_post],
-                          t
-                        )}
+                        date={compareDates([
+                          profileData.created,
+                          profileData.last_vote_time,
+                          profileData.last_post
+                        ])}
                       />
                     </span>
                   </li>

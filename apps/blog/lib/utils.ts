@@ -357,3 +357,21 @@ export function netVests(account: FullAccount) {
   const received = parseFloat(account.received_vesting_shares);
   return vests - delegated + received;
 }
+
+export function compareDates(dateStrings: string[]) {
+  const dates = dateStrings.map((dateStr) => moment(dateStr));
+
+  const today = moment();
+  let closestDate = dates[0];
+  let minDiff = Math.abs(today.diff(dates[0], 'days'));
+
+  dates.forEach((date) => {
+    const diff = Math.abs(date.diff(today, 'days'));
+    if (diff < minDiff) {
+      minDiff = diff;
+      closestDate = date;
+    }
+  });
+
+  return closestDate.format('YYYY-MM-DDTHH:mm:ss');
+}

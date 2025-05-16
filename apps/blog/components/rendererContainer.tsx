@@ -82,11 +82,11 @@ const RendererContainer = ({
     <Loading loading={false} />
   ) : (
     <>
-      <div className="flex h-fit">
+      <div className="flex h-fit w-full">
         <div
           id="articleBody"
           ref={ref}
-          className={cn('prose', className)}
+          className={cn('prose w-full', className)}
           data-testid={dataTestid}
           dangerouslySetInnerHTML={{
             __html: htmlBody

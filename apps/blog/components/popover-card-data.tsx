@@ -13,6 +13,7 @@ import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import ButtonsContainer from './buttons-container';
 import { convertStringToBig } from '@ui/lib/helpers';
 import TimeAgo from '@hive/ui/components/time-ago';
+import { compareDates } from '../lib/utils';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');
@@ -124,7 +125,10 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
               <div className="flex justify-center text-xs">
                 {t('post_content.header.hover_author.joined')} {dateToShow(account.created, t)}
                 <span className="mx-1 flex flex-col">
-                  •{t('user_profile.active')} <TimeAgo date={account.last_vote_time} />
+                  •{t('user_profile.active')}
+                  <TimeAgo
+                    date={compareDates([account.created, account.last_vote_time, account.last_post])}
+                  />
                 </span>
               </div>
             </>
