@@ -86,7 +86,7 @@ const RendererContainer = ({
         <div
           id="articleBody"
           ref={ref}
-          className={cn('prose', className)}
+          className={cn('prose w-full', className)}
           data-testid={dataTestid}
           dangerouslySetInnerHTML={{
             __html: htmlBody
