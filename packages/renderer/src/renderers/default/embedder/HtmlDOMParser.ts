@@ -341,6 +341,51 @@ export class HtmlDOMParser {
         }
     }
 
+    /**
+     * Processes text content to convert various elements into clickable links.
+     *
+     * This method handles three types of conversions:
+     * 1. Plain text URLs into clickable links or images
+     * 2. Hashtags (#tag) into links to tag pages
+     * 3. User mentions (@user) into links to user profiles
+     *
+     * Processing rules:
+     * - URLs:
+     *   - Image URLs are converted to <img> tags
+     *   - .exe and .zip URLs are left as plain text
+     *   - Suspicious URLs are wrapped in warning divs
+     *   - Other URLs become clickable links
+     *
+     * - Hashtags:
+     *   - Must start with # followed by letters/numbers
+     *   - Pure numbers (e.g., #123) are not converted
+     *   - Converted to links using hashtagUrlFn
+     *
+     * - User mentions:
+     *   - Must be valid account names
+     *   - Converted to links using usertagUrlFn
+     *   - Invalid usernames remain as plain text
+     *
+     * @param content - The text content to process
+     * @returns Processed content with converted links
+     *
+     * @example
+     * // Plain URL
+     * linkify("Check https://example.com")
+     * // Returns: 'Check <a href="https://example.com">https://example.com</a>'
+     *
+     * // Image URL
+     * linkify("See https://example.com/img.jpg")
+     * // Returns: 'See <img src="https://example.com/img.jpg" />'
+     *
+     * // Hashtag
+     * linkify("Check #hive")
+     * // Returns: 'Check <a href="/tag/hive">#hive</a>'
+     *
+     * // User mention
+     * linkify("Hello @user")
+     * // Returns: 'Hello <a href="/@user">@user</a>'
+     */
     private linkify(content: string) {
         // plaintext links
         content = content.replace(linksAny('gi'), (ln) => {

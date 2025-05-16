@@ -3,6 +3,23 @@
  *  - https://github.com/openhive-network/condenser/blob/master/src/app/utils/SanitizeConfig.js
  */
 
+/**
+ * Static configuration class for content sanitization and iframe handling.
+ *
+ * This class provides configuration settings for:
+ * - Whitelisted iframe sources with their validation and transformation rules
+ * - Text to display when images are hidden due to low ratings
+ * - Allowed HTML tags for content rendering
+ *
+ * The iframe whitelist includes support for:
+ * - Twitter/X.com embedded tweets
+ * - Vimeo video embeds
+ * - YouTube video embeds
+ * - SoundCloud audio players
+ * - Twitch.tv video players
+ * - Spotify embeds (playlists, shows, episodes, albums, tracks, artists)
+ * - 3speak video embeds
+ */
 export class StaticConfig {
     public static sanitization = {
         iframeWhitelist: [

@@ -68,6 +68,20 @@ export class LinkSanitizer {
         return url;
     }
 
+    /**
+     * Checks if a URL might be attempting a pseudo-local phishing attack.
+     * A pseudo-local URL is one where the display text (urlTitle) contains the base domain
+     * but the actual URL points to a different domain, potentially deceiving users.
+     *
+     * For example:
+     * - Base domain: example.com
+     * - Display text: "Click here to visit example.com!"
+     * - Actual URL: "https://malicious-site.com"
+     *
+     * @param url - The actual URL to check
+     * @param urlTitle - The display text or title associated with the URL
+     * @returns true if the URL appears to be a pseudo-local phishing attempt, false otherwise
+     */
     private isPseudoLocalUrl(url: string, urlTitle: string): boolean {
         if (url.indexOf('#') === 0) return false;
         url = url.toLowerCase();
