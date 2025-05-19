@@ -3,7 +3,6 @@ import {JSDOM} from 'jsdom';
 import 'mocha';
 import {Log} from '../../Log';
 import {DefaultRenderer, RendererOptions} from './DefaultRenderer';
-import {SpoilerPlugin} from './plugins/SpoilerPlugin';
 
 describe('DefaultRender', () => {
     const defaultOptions: RendererOptions = {
@@ -23,7 +22,7 @@ describe('DefaultRender', () => {
         hashtagUrlFn: (hashtag: string) => `/trending/${hashtag}`,
         isLinkSafeFn: (_url: string) => true, // !!url.match(/^(\/(?!\/)|https:\/\/hive.blog)/),
         addExternalCssClassToMatchingLinksFn: (url: string) => !url.match(/^(\/(?!\/)|https:\/\/hive.blog)/),
-        plugins: [new SpoilerPlugin()]
+        plugins: []
     };
 
     const tests = [

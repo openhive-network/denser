@@ -1,4 +1,4 @@
-import { DefaultRenderer, InstagramPlugin, SpoilerPlugin, TablePlugin, TwitterPlugin } from '@hive/renderer';
+import { DefaultRenderer, InstagramPlugin, TablePlugin, TwitterPlugin } from '@hive/renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 import env from '@beam-australia/react-env';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
@@ -17,7 +17,7 @@ const renderDefaultOptions = {
   ipfsPrefix: '',
   assetsWidth: 640,
   assetsHeight: 480,
-  plugins: [new SpoilerPlugin(), new TwitterPlugin(), new InstagramPlugin(), new TablePlugin()],
+  plugins: [new TwitterPlugin(), new InstagramPlugin(), new TablePlugin()],
   imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
   usertagUrlFn: (account: string) => '/@' + account,
   hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,

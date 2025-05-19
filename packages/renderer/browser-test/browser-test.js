@@ -27,28 +27,25 @@ const renderInBrowser = ClientFunction((options, markup) => {
     const spoilerPlugin = {
         name: 'spoiler',
         preProcess: (text) => {
-            return text.replace(
-                /^>! *\[(.*?)\] *([\s\S]*?)(?=^>! *\[|$)/gm,
-                (_, title, content) => {
-                    const cleanContent = content
-                        .split('\n')
-                        .map(line => line.replace(/^> ?/, '').trim())
-                        .join('\n')
-                        .trim();
+            return text.replace(/^>! *\[(.*?)\] *([\s\S]*?)(?=^>! *\[|$)/gm, (_, title, content) => {
+                const cleanContent = content
+                    .split('\n')
+                    .map((line) => line.replace(/^> ?/, '').trim())
+                    .join('\n')
+                    .trim();
 
-                    return `<details class="spoiler">
+                return `<details class="spoiler">
                         <summary>${title}</summary>
                         ${cleanContent}
                     </details>`;
-                }
-            );
+            });
         }
     };
 
     const mergedOptions = Object.assign({}, options, {
         plugins: [spoilerPlugin]
     });
-    
+
     const renderer = new HiveContentRenderer.DefaultRenderer(mergedOptions);
     return renderer.render(markup);
 });

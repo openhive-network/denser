@@ -6,6 +6,8 @@ import {Localization, LocalizationOptions} from './Localization';
 import type {RendererPlugin} from './plugins/RendererPlugin';
 import {PreliminarySanitizer} from './sanitization/PreliminarySanitizer';
 import {TagTransformingSanitizer} from './sanitization/TagTransformingSanitizer';
+import remarkableSpoiler from './plugins/SpoilerPlugin';
+import '../../styles.css';
 
 /**
  * DefaultRenderer is a configurable HTML/Markdown renderer that provides:
@@ -138,6 +140,8 @@ export class DefaultRenderer {
             typographer: false,
             quotes: '“”‘’'
         });
+        renderer.use(remarkableSpoiler as any);
+
         return renderer.render(text);
     }
 
