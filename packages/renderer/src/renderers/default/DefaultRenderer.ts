@@ -4,9 +4,9 @@ import {SecurityChecker} from '../../security/SecurityChecker';
 import {HtmlDOMParser} from './embedder/HtmlDOMParser';
 import {Localization, LocalizationOptions} from './Localization';
 import type {RendererPlugin} from './plugins/RendererPlugin';
+import remarkableSpoiler from './plugins/SpoilerPlugin';
 import {PreliminarySanitizer} from './sanitization/PreliminarySanitizer';
 import {TagTransformingSanitizer} from './sanitization/TagTransformingSanitizer';
-import remarkableSpoiler from './plugins/SpoilerPlugin';
 import '../../styles.css';
 
 /**
