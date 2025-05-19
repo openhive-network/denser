@@ -5,7 +5,8 @@ module.exports = {
     // apps content
     `**/*.{jsx,tsx}`,
     // include packages if not transpiling
-    '../../packages/**/*.{jsx,tsx}'
+    '../../packages/**/*.{jsx,tsx}',
+    "../../node_modules/@hiveio/healthchecker-component/**/*.{ts,tsx,js,jsx}"
   ],
   theme: {
     container: {

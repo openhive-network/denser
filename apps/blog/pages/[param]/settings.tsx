@@ -1,9 +1,8 @@
-import { Icons } from '@ui/components/icons';
+
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';
-import { RadioGroup, RadioGroupItem } from '@ui/components/radio-group';
 import {
   Select,
   SelectContent,
@@ -12,12 +11,12 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/components/select';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components';
 import { siteConfig } from '@ui/config/site';
 import { useLocalStorage } from 'usehooks-ts';
 import { GetServerSideProps } from 'next';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { cn } from '@ui/lib/utils';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
@@ -39,6 +38,9 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { handleError } from '@ui/lib/handle-error';
 import Head from 'next/head';
+import {HealthCheckerService, ApiChecker, HealthCheckerComponent } from "@hiveio/healthchecker-component"
+import { HealthChecker } from '@hiveio/wax';
+
 
 const logger = getLogger('app');
 interface Settings {
@@ -189,12 +191,12 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
-  const [endpoints, setEndpoints] = useLocalStorage('hive-blog-endpoints', DEFAULTS_ENDPOINTS);
   const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
-  const [newEndpoint, setNewEndpoint] = useState('');
-  const [errorEndpoint, setErrorEndpoint] = useState('');
+  const [aiSearchEndpoint, setAiSearchEndpoint] = useLocalStorage('ai-search-endpoint', siteConfig.endpoint);
   const [isClient, setIsClient] = useState(false);
   const [insertImg, setInsertImg] = useState('');
+  const [hcService, setHcService] = useState<HealthCheckerService | undefined>(undefined);
+  const [hcServiceForSearch, setHcServiceForSearch] = useState<HealthCheckerService | undefined>(undefined);
   const params = useParams();
   const mutedQuery = useFollowListQuery(user.username, 'muted');
   const { t } = useTranslation('common_blog');
@@ -215,8 +217,86 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
   const unmuteMutation = useUnmuteMutation();
   const updateProfileMutation = useUpdateProfileMutation();
 
+  const changeApiEndpoint = async (newEndpoint: string) => {
+    setEndpoint(newEndpoint);
+    await hiveChainService.setHiveChainEndpoint(newEndpoint);
+    await hbauthService.setOnlineClient({ node: newEndpoint });
+  }
+
+  const changeNode = (node: string | null) => {
+    if (node)
+    changeApiEndpoint(node);
+  }
+
+  const startHealthcheckerService = async () => {
+    const hiveChain = await hiveChainService.getHiveChain();
+    const healthChecker = new HealthChecker();
+      const apiCheckers: ApiChecker[] = [
+    {
+      title: "Condenser - Get accounts",
+      method: hiveChain.api.condenser_api.get_accounts,
+      params: [["ocdb"]],
+      validatorFunction: data => data[0].name === "ocdb" ? true : "Get block error",
+    },
+    {
+      title: "Bridge - Get post",
+      method: hiveChain.api.bridge.get_post,
+      params: {author: "crimsonclad", permlink: "the-eerie-beauty-of-knowth-and-dowth-ancient-spirits-spiraling-through-time", observer: ""},
+      validatorFunction: data => data.author === "crimsonclad" ? true : "Get post error",
+    },
+  ]
+    const hcService = new HealthCheckerService(
+      "node-api",
+      apiCheckers,
+      DEFAULTS_ENDPOINTS,
+      healthChecker,
+      endpoint,
+      changeNode,
+      true
+    );
+    setHcService(hcService);
+
+
+  }
+    const changeSearchEndpoint = async (newEndpoint: string | null) => {
+    if (newEndpoint) {
+      setAiSearchEndpoint(newEndpoint);
+      await hiveChainService.setAiSearchEndpoint(newEndpoint);
+    }
+  }
+
+  const startHealthchecherServiceForSearch = async () => {
+    const hiveChain = await hiveChainService.getHiveChain();
+    const healthChecker = new HealthChecker();
+      const apiCheckers: ApiChecker[] = [
+    {
+      title: "AI search",
+      method: hiveChain.restApi['hivesense-api'].similarposts,
+      params: {
+        pattern: "test",
+        tr_body: 100,
+        posts_limit: 20,
+      },
+      validatorFunction: data => data.length === 20 ? true : "AI search error",
+    },
+  ]
+    const hcService = new HealthCheckerService(
+      "ai-search",
+      apiCheckers,
+      DEFAULTS_ENDPOINTS,
+      healthChecker,
+      aiSearchEndpoint,
+      changeSearchEndpoint,
+      true
+    );
+    setHcServiceForSearch(hcService);
+
+  }
+
   useEffect(() => {
     setIsClient(true);
+    startHealthcheckerService();
+    startHealthchecherServiceForSearch();
   }, []);
   useEffect(() => {
     setSettings(profileSettings);
@@ -545,98 +625,19 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
           ) : null}
 
           <div className="py-8">
-            <h2 className="py-4 text-lg font-semibold leading-5">{t('settings_page.advanced')}</h2>
-            <h4 className="text-md py-2 font-semibold leading-5">
-              {t('settings_page.api_endpoint_options')}
-            </h4>
-            <RadioGroup
-              defaultValue={endpoint}
-              className="w-full gap-0 md:w-8/12"
-              data-testid="api-endpoint-radiogroup"
-              onValueChange={async (newEndpoint) => {
-                setEndpoint(newEndpoint);
-                await hiveChainService.setHiveChainEndpoint(newEndpoint);
-                await hbauthService.setOnlineClient({ node: newEndpoint });
-              }}
-              value={endpoint}
-            >
-              <div className="grid grid-cols-[160px_80px_80px] lg:grid-cols-3">
-                <span>{t('settings_page.endpoint')}</span>
-                <span className="text-right lg:text-left">{t('settings_page.preferred')}</span>
-                <span className="text-right lg:text-left">{t('settings_page.remove')}</span>
-              </div>
-              {endpoints?.map((endp, index) => (
-                <div
-                  key={endp}
-                  className="grid grid-cols-[220px_50px_50px] items-center p-2 odd:bg-background even:bg-background-tertiary lg:grid-cols-3"
-                >
-                  <Label htmlFor={`e#{index}`}>{endp}</Label>
-                  <RadioGroupItem value={endp} id={`e#{index}`} className="border-destructive" />
-                  <Icons.trash
-                    id={`t#{index}`}
-                    onClick={() => {
-                      if (endpoint === endp) {
-                        setErrorEndpoint(
-                          "You Can't Remove The Current Preferred Endpoint. Please Select A New Preferred Endpoint First"
-                        );
-                      } else {
-                        setEndpoints((endpoints) => endpoints.filter((e) => e !== endp));
-                        setErrorEndpoint('');
-                      }
-                    }}
-                  />
-                </div>
-              ))}
-            </RadioGroup>
-
-            <div
-              className={cn('my-4 flex w-full max-w-sm items-center space-x-2', errorEndpoint && 'max-w-xl')}
-              data-testid="add-api-endpoint"
-            >
-              <Input
-                id="newEndpoint"
-                name="newEndpoint"
-                type="text"
-                placeholder="Add API Endpoint"
-                value={newEndpoint}
-                onChange={(e) => setNewEndpoint(e.target.value)}
-                required
-              />
-              <Button
-                type="submit"
-                onClick={() => {
-                  try {
-                    const urlOnTheList = endpoints.filter((e) => e === newEndpoint);
-                    if (urlOnTheList && urlOnTheList.length > 0) {
-                      setErrorEndpoint('This Endpoint Is Already In The List');
-                    } else {
-                      urlSchema.parse(newEndpoint);
-                      setEndpoints(
-                        endpoints ? [...endpoints, newEndpoint] : [...DEFAULTS_ENDPOINTS, newEndpoint]
-                      );
-                      setNewEndpoint('');
-                      setErrorEndpoint('');
-                    }
-                  } catch (e: any) {
-                    if (e.errors[1]) {
-                      setErrorEndpoint(e.errors[1].message);
-                    } else {
-                      setErrorEndpoint(e.errors[0].message);
-                    }
-                  }
-                }}
-              >
-                {t('settings_page.add_api_endpoint')}
-              </Button>
-              {errorEndpoint && (
-                <span className="error" style={{ color: 'red' }}>
-                  {errorEndpoint}
-                </span>
-              )}
-            </div>
-            <Button className="my-4 w-44" onClick={() => setEndpoints([...DEFAULTS_ENDPOINTS])}>
-              {t('settings_page.reset_endpoints')}
-            </Button>
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue='main-hc'>
+              <AccordionItem value="main-hc">
+                <AccordionTrigger>API Endpoint</AccordionTrigger>
+                <AccordionContent>{!!hcService && <HealthCheckerComponent healthCheckerService={hcService} />}</AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="search-hc">
+                <AccordionTrigger>Endpoint for AI search</AccordionTrigger>
+                <AccordionContent>{!!hcServiceForSearch && <HealthCheckerComponent healthCheckerService={hcServiceForSearch} />}</AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
           {mutedQuery.data ? (
             <div>

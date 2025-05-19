@@ -1,6 +1,11 @@
+import env from '@beam-australia/react-env';
 import { Entry } from '@transaction/lib/extended-hive.chain';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { configuredAIDomain } from '@ui/config/public-vars';
 import { logger } from '@ui/lib/logger';
+
+const apiDevOrigin = env('AI_DOMAIN') || process.env.AI_DOMAIN;
+const chain = await hiveChainService.getHiveChain();
 
 // FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getSimilarPosts = async ({
@@ -30,6 +35,9 @@ export const getSimilarPosts = async ({
     if ('error' in data) {
       throw new Error(data.error);
     }
+
+    // const response = await chain.restApi['hivesense-api'].similarposts({posts_limit: limit, tr_body, pattern, observer, start_author, start_permlink})
+
 
     return data;
   } catch (error) {
