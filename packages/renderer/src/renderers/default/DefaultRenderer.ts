@@ -7,7 +7,6 @@ import type {RendererPlugin} from './plugins/RendererPlugin';
 import remarkableSpoiler from './plugins/SpoilerPlugin';
 import {PreliminarySanitizer} from './sanitization/PreliminarySanitizer';
 import {TagTransformingSanitizer} from './sanitization/TagTransformingSanitizer';
-import '../../styles.css';
 
 /**
  * DefaultRenderer is a configurable HTML/Markdown renderer that provides:
