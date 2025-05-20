@@ -248,10 +248,11 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     await expect(communityPage.communityNameTitle).toContainText(communityNameText)
   });
 
-  test.skip('Attempt to create a post with links', async ({ denserAutoTest0Page }) => {
+  test('Attempt to create a post with links', async ({ denserAutoTest0Page }) => {
     const homePage = new HomePage(denserAutoTest0Page.page);
     const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
     const postPage = new PostPage(denserAutoTest0Page.page);
+    
 
     const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
     const postContentText: string = 'Post with link http://example.com" Example';
@@ -267,12 +268,39 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     await postEditorPage.getEnterYourTagsInput.fill(postTag);
     await denserAutoTest0Page.page.mouse.wheel(0, 2000)
     await postEditorPage.getSubmitPostButton.click()
-    await expect(homePage.getFirstPostListItem).toBeVisible()
+    await expect(postPage.postImage.first()).toBeVisible()
+
+    await postPage.postImage.first().click()
     
-    await homePage.getFirstPostListItem.click()
-    await denserAutoTest0Page.page.waitForTimeout(4000)
-    await expect(postPage.articleBody).toBeVisible()
-    await expect(postPage.articleBody).toHaveClass('link-external')
-    await expect(postPage.articleBody).toContainText('http://example.com')
+    await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString)).toBeVisible()
+    await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString)).toContainText(postContentText)
+   
+  });
+
+  test('Creating post in the community by clicking the pencil icone and select Post to name of the community', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+    const postPage = new PostPage(denserAutoTest0Page.page);
+    
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const postSummary: string = '1 My testing post POM';
+    const postTag: string = 'test';
+    
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    
+    await postEditorPage.getPostTitleInput.fill(postTitle);
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getPostSummaryInput.fill(postSummary);
+    // await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    await denserAutoTest0Page.page.mouse.wheel(0, 2000)
+    await postPage.postingToDropdown.click()
+    await expect(denserAutoTest0Page.page.getByLabel('Test wizard')).toBeVisible()
+    await denserAutoTest0Page.page.getByLabel('Test wizard').click()
+    await postEditorPage.getSubmitPostButton.click()
+    await denserAutoTest0Page.page.waitForTimeout(3000)
+    await expect(postPage.postImage.first()).toBeVisible()
   });
 });
