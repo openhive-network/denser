@@ -83,7 +83,7 @@ export class HtmlDOMParser {
      */
     public parse(html: string): HtmlDOMParser {
         try {
-            const doc: Document = this.domParser.parseFromString(preprocessHtml(html), 'text/xml');
+            const doc: Document = this.domParser.parseFromString(preprocessHtml(html), 'text/html');
             this.traverseDOMNode(doc);
             if (this.mutate) this.postprocessDOM(doc);
 

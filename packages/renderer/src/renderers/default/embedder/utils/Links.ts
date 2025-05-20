@@ -4,7 +4,7 @@
  */
 const urlChar = '[^\\s"<>\\]\\[\\(\\)]';
 const urlCharEnd = urlChar.replace(/\]$/, ".,']"); // insert bad chars to end on
-const imagePath = '(?:(?:\\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs/[a-z\\d]{40,}))';
+const imagePath = '(?:(?:\\.(?:tiff?|jpe?g|gif|png|svg|ico|webp)|ipfs/[a-z\\d]{40,}))';
 const domainPath = '(?:[-a-zA-Z0-9\\._]*[-a-zA-Z0-9])';
 const urlChars = '(?:' + urlChar + '*' + urlCharEnd + ')?';
 
