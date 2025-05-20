@@ -1,13 +1,12 @@
 import '@hive/tailwindcss-config/globals.css';
 import type { AppProps } from 'next/app';
-import { lazy, Suspense, useEffect, useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { getCookie } from '@smart-signer/lib/utils';
 import i18nConfig from '../next-i18next.config';
 import { getLanguage } from '../utils/language';
-
-const Providers = lazy(() => import('@/blog/components/common/providers'));
+import Providers from '@/blog/components/common/providers';
 
 function App({ Component, pageProps }: AppProps) {
   useLayoutEffect(() => {
@@ -32,11 +31,9 @@ function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <Suspense fallback={<span>Loading...</span>}>
-      <Providers dehydratedState={pageProps.dehydratedState}>
-        <Component {...pageProps} />
-      </Providers>
-    </Suspense>
+    <Providers dehydratedState={pageProps.dehydratedState}>
+      <Component {...pageProps} />
+    </Providers>
   );
 }
 

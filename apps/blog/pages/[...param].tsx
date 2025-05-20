@@ -58,6 +58,8 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { ref: refAcc, inView: inViewAcc } = useInView();
   const { user } = useUser();
   const legalBlockedUser = userIllegalContent.includes(username);
+  const routerSort = Array.isArray(router.query.sort) ? router.query.sort[0] : router.query.sort || 'trending';
+  const routerTag = Array.isArray(router.query.tag) ? router.query.tag[0] : router.query.tag || '';
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
@@ -67,11 +69,11 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery(
-    ['entriesInfinite', sort, tag],
+    ['entriesInfinite', routerSort, routerTag],
     async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
       return await getPostsRanked(
-        sort || 'trending',
-        tag,
+        routerSort,
+        routerTag,
         pageParam?.author,
         pageParam?.permlink,
         user.username
@@ -86,7 +88,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
           };
         }
       },
-      enabled: Boolean(sort)
+      enabled: Boolean(routerSort)
     }
   );
   const { data: mySubsData } = useQuery(
@@ -100,18 +102,18 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     isFetching: AccountNotificationIsFetching,
     isLoading: AccountNotificationIsLoading,
     data: dataAccountNotification
-  } = useQuery(['AccountNotification', tag], () => getAccountNotifications(tag || ''), {
-    enabled: !!tag
+  } = useQuery(['AccountNotification', routerTag], () => getAccountNotifications(routerTag || ''), {
+    enabled: !!routerTag
   });
   const { data: communityData } = useQuery(
-    ['community', tag, ''],
-    () => getCommunity(tag || '', user.username),
+    ['community', routerTag, ''],
+    () => getCommunity(routerTag || '', user.username),
     {
-      enabled: !!tag
+      enabled: !!routerTag
     }
   );
-  const { data: subsData } = useQuery(['subscribers', tag], () => getSubscribers(tag || ''), {
-    enabled: !!tag
+  const { data: subsData } = useQuery(['subscribers', routerTag], () => getSubscribers(routerTag || ''), {
+    enabled: !!routerTag
   });
   const {
     data: accountEntriesData,
@@ -141,13 +143,13 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
 
   const handleChangeFilter = useCallback(
     (e: string) => {
-      if (tag) {
-        router.push(`/${e}/${tag}`, undefined, { shallow: true });
+      if (routerTag) {
+        router.push(`/${e}/${routerTag}`, undefined, { shallow: true });
       } else {
         router.push(`/${e}`, undefined, { shallow: true });
       }
     },
-    [router, tag]
+    [router, routerTag]
   );
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -195,7 +197,18 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   if (username && router.query.param ? router.query.param.length > 1 : false) {
     return <CustomError />;
   }
-  if (!entriesDataIsLoading && entriesData) {
+  if (entriesData && entriesData.pages) {
+    // Debug: log data and user
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-console
+      console.log('[ParamPage] entriesData:', entriesData, 'accountEntriesData:', accountEntriesData, 'user:', user);
+    }
+
+    // Only show loading if main data is strictly undefined (not hydrated)
+    if (typeof entriesData === 'undefined' && typeof accountEntriesData === 'undefined') {
+      return <div>Loading...</div>;
+    }
+
     return (
       <>
         <Head>
@@ -219,7 +232,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                   <CommunitySimpleDescription
                     data={communityData}
                     subs={subsData}
-                    username={tag ? tag : ' '}
+                    username={routerTag ? routerTag : ' '}
                     notificationData={dataAccountNotification}
                   />
                 ) : null}
@@ -228,18 +241,18 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                 <div className="my-4 flex w-full items-center justify-between" translate="no">
                   <div className="mr-2 flex w-[320px] flex-col">
                     <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                      {tag
+                      {routerTag
                         ? communityData
                           ? `${communityData?.title}`
-                          : `#${tag}`
+                          : `#${routerTag}`
                         : t('navigation.communities_nav.all_posts')}
                     </span>
-                    {tag ? (
+                    {routerTag ? (
                       <span
                         className="hidden text-xs font-light md:block"
                         data-testid="community-name-unmoderated"
                       >
-                        {tag
+                        {routerTag
                           ? communityData
                             ? t('communities.community')
                             : t('communities.unmoderated_tag')
@@ -251,17 +264,17 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                         mySubsData={mySubsData}
                         username={user?.username ? user.username : undefined}
                         title={
-                          tag
+                          routerTag
                             ? communityData
                               ? `${communityData?.title}`
-                              : `#${tag}`
+                              : `#${routerTag}`
                             : t('navigation.communities_nav.all_posts')
                         }
                       />
                     </span>
                   </div>
                   <div className="w-[180px]">
-                    <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
+                    <PostSelectFilter filter={routerSort} handleChangeFilter={handleChangeFilter} />
                   </div>
                 </div>
                 <>
@@ -276,7 +289,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                       onClick={() => fetchNextPage()}
                       disabled={!hasNextPage || isFetchingNextPage}
                     >
-                      {isFetchingNextPage ? (
+                      {isFetchingNextPage && entriesData.pages.length > 0 ? (
                         <PostSkeleton />
                       ) : hasNextPage ? (
                         t('user_profile.load_newer')
@@ -295,7 +308,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                   data={communityData}
                   subs={subsData}
                   notificationData={dataAccountNotification}
-                  username={tag ? tag : ' '}
+                  username={routerTag ? routerTag : ' '}
                 />
               ) : user?.isLoggedIn ? (
                 <CommunitiesSidebar />
@@ -310,7 +323,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   }
 
   return (
-    <ProfileLayout>
+    <>
       <Head>
         <title>{metadata.tabTitle}</title>
         <meta property="og:title" content={metadata.title} />
@@ -320,7 +333,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       {!legalBlockedUser ? (
         <>
           {' '}
-          {!accountEntriesIsLoading && accountEntriesData ? (
+          {accountEntriesData && accountEntriesData.pages ? (
             <>
               {accountEntriesData.pages[0]?.length !== 0 ? (
                 accountEntriesData.pages.map((page, index) => {
@@ -340,7 +353,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                   onClick={() => accountFetchNextPage()}
                   disabled={!accountHasNextPage || accountIsFetchingNextPage}
                 >
-                  {accountIsFetchingNextPage ? (
+                  {accountIsFetchingNextPage && accountEntriesData.pages.length > 0 ? (
                     <PostSkeleton />
                   ) : accountHasNextPage ? (
                     t('user_profile.load_newer')
@@ -358,7 +371,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       ) : (
         <div className="p-10">{t('global.unavailable_for_legal_reasons')}</div>
       )}
-    </ProfileLayout>
+    </>
   );
 };
 
@@ -377,12 +390,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   // Check if the first parameter is a username
   if (firstParam.startsWith('@')) {
-    // If it is, fetch the account data
     metadata = await getAccountMetadata(firstParam, 'Posts');
   }
-  // Check if second parameter exists
   if (secondParam !== '') {
-    // If second parameter exists, that means it's a community
     metadata = await getCommunityMetadata(firstParam, secondParam, 'Posts');
   }
 
@@ -392,13 +402,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (Array.isArray(sort)) sort = sort[0];
   let tag = secondParam || '';
   if (Array.isArray(tag)) tag = tag[0];
+
   // Prefetch posts (first page)
   await queryClient.prefetchInfiniteQuery(
     ['entriesInfinite', sort, tag],
     async ({ pageParam }) => {
       return await getPostsRanked(
-        sort,
-        tag,
+        sort as string,
+        tag as string,
         pageParam?.author,
         pageParam?.permlink,
         '' // No user context on SSR
