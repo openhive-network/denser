@@ -51,7 +51,7 @@ export class ProfileUserMenu {
     }
 
     async clickCloseProfileMenu() {
-        this.headerPostList.click({force: true});
+        await this.headerPostList.click({force: true});
     }
 
     async setTheme(thememode: string) {
