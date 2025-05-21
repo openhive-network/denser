@@ -1,6 +1,6 @@
 import '@hive/tailwindcss-config/globals.css';
 import type { AppProps } from 'next/app';
-import { useEffect, useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
 import { getCookie } from '@smart-signer/lib/utils';
@@ -9,21 +9,17 @@ import { getLanguage } from '../utils/language';
 import Providers from '@/blog/components/common/providers';
 
 function App({ Component, pageProps }: AppProps) {
-  useLayoutEffect(() => {
-    if (!getCookie('NEXT_LOCALE')) {
+  useEffect(() => {
+    // Handle locale cookie setting
+    if (typeof window !== 'undefined' && !getCookie('NEXT_LOCALE')) {
       document.cookie = `NEXT_LOCALE=${i18n.defaultLocale}; SameSite=Lax`;
     }
-  }, []);
 
-  function getDirection(language: string) {
-    return language === 'ar' ? 'rtl' : 'ltr';
-  }
+    // Handle direction setting
+    const locale = getCookie('NEXT_LOCALE');
+    document.body.setAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr');
 
-  useEffect(() => {
-    document.body.setAttribute('dir', getDirection(getCookie('NEXT_LOCALE')));
-  }, []);
-
-  useEffect(() => {
+    // Handle language setting
     const savedLang = getLanguage();
     if (savedLang) {
       document.documentElement.lang = savedLang;

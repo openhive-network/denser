@@ -1,5 +1,5 @@
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAccountNotifications } from '@transaction/lib/bridge';
 import {
   DATA_LIMIT as PER_PAGE,
@@ -57,9 +57,19 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { ref, inView } = useInView();
   const { ref: refAcc, inView: inViewAcc } = useInView();
   const { user } = useUser();
+  const queryClient = useQueryClient();
   const legalBlockedUser = userIllegalContent.includes(username);
-  const routerSort = Array.isArray(router.query.sort) ? router.query.sort[0] : router.query.sort || 'trending';
+  const routerSort = Array.isArray(router.query.param) ? router.query.param[0] : router.query.param || 'trending';
   const routerTag = Array.isArray(router.query.tag) ? router.query.tag[0] : router.query.tag || '';
+
+  // Single effect to handle sort changes
+  useEffect(() => {
+    if (routerSort) {
+      // Instead of removing queries, just invalidate them
+      queryClient.invalidateQueries(['entriesInfinite']);
+    }
+  }, [routerSort, queryClient]);
+
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
@@ -67,7 +77,8 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     isError: entriesDataIsError,
     isFetchingNextPage,
     fetchNextPage,
-    hasNextPage
+    hasNextPage,
+    refetch
   } = useInfiniteQuery(
     ['entriesInfinite', routerSort, routerTag],
     async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
@@ -88,9 +99,17 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
           };
         }
       },
-      enabled: Boolean(routerSort)
+      enabled: Boolean(routerSort),
+      // Add staleTime to prevent unnecessary refetches
+      staleTime: 30000, // 30 seconds
+      // Add cacheTime to keep data in cache longer
+      cacheTime: 300000, // 5 minutes
+      // Add retry logic
+      retry: 2,
+      retryDelay: 1000
     }
   );
+
   const { data: mySubsData } = useQuery(
     ['subscriptions', user?.username],
     () => getSubscriptions(user.username),
@@ -143,14 +162,26 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
 
   const handleChangeFilter = useCallback(
     (e: string) => {
+      // Prefetch the new sort data before changing routes
+      queryClient.prefetchInfiniteQuery(['entriesInfinite', e, routerTag], 
+        async () => getPostsRanked(e, routerTag, undefined, undefined, user.username)
+      );
+
       if (routerTag) {
-        router.push(`/${e}/${routerTag}`, undefined, { shallow: true });
+        router.push(`/${e}/${routerTag}`, undefined, { 
+          shallow: true,
+          scroll: false // Prevent scroll jump
+        });
       } else {
-        router.push(`/${e}`, undefined, { shallow: true });
+        router.push(`/${e}`, undefined, { 
+          shallow: true,
+          scroll: false // Prevent scroll jump
+        });
       }
     },
-    [router, routerTag]
+    [router, routerTag, queryClient, user.username]
   );
+
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
@@ -388,68 +419,114 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     title: firstParam
   };
 
-  // Check if the first parameter is a username
-  if (firstParam.startsWith('@')) {
-    metadata = await getAccountMetadata(firstParam, 'Posts');
-  }
-  if (secondParam !== '') {
-    metadata = await getCommunityMetadata(firstParam, secondParam, 'Posts');
-  }
-
-  // React Query SSR: Prefetch main queries
-  const queryClient = new QueryClient();
-  let sort = ctx.query.sort || 'trending';
-  if (Array.isArray(sort)) sort = sort[0];
-  let tag = secondParam || '';
-  if (Array.isArray(tag)) tag = tag[0];
-
-  // Prefetch posts (first page)
-  await queryClient.prefetchInfiniteQuery(
-    ['entriesInfinite', sort, tag],
-    async ({ pageParam }) => {
-      return await getPostsRanked(
-        sort as string,
-        tag as string,
-        pageParam?.author,
-        pageParam?.permlink,
-        '' // No user context on SSR
-      );
-    },
-    {
-      getNextPageParam: (lastPage) => {
-        if (lastPage && lastPage.length === PER_PAGE) {
-          return {
-            author: lastPage[lastPage.length - 1].author,
-            permlink: lastPage[lastPage.length - 1].permlink
-          };
-        }
+  try {
+    // Check if the first parameter is a username
+    if (firstParam.startsWith('@')) {
+      metadata = await getAccountMetadata(firstParam, 'Posts');
+    }
+    // Check if this is a special route that shouldn't trigger community fetching
+    else if (
+      firstParam === 'lists' || 
+      firstParam.startsWith('lists/') ||
+      firstParam === 'blacklisted' ||
+      firstParam === 'followed_blacklists' ||
+      firstParam === 'followed_muted_lists'
+    ) {
+      // For special routes, just set a basic title
+      metadata = {
+        ...metadata,
+        tabTitle: `${firstParam} - Hive`,
+        description: `${firstParam} on Hive: Communities Without Borders.`
+      };
+    }
+    // Only try to get community metadata if we have valid parameters and it's not a special route
+    else if (secondParam && !secondParam.startsWith('@') && secondParam.length > 0) {
+      try {
+        metadata = await getCommunityMetadata(firstParam, secondParam, 'Posts');
+      } catch (error) {
+        console.error('Error fetching community metadata:', error);
+        // Keep default metadata on error
       }
     }
-  );
-  // Prefetch community data
-  if (tag) {
-    await queryClient.prefetchQuery(['community', tag, ''], () => getCommunity(tag, ''));
-    await queryClient.prefetchQuery(['subscribers', tag], () => getSubscribers(tag));
-    await queryClient.prefetchQuery(['AccountNotification', tag], () => getAccountNotifications(tag));
-  }
 
-  // Utility to replace undefined with null for Next.js serialization
-  function replaceUndefinedWithNull(obj: any): any {
-    if (Array.isArray(obj)) {
-      return obj.map((v) => (v === undefined ? null : replaceUndefinedWithNull(v)));
-    } else if (obj && typeof obj === 'object') {
-      return Object.fromEntries(
-        Object.entries(obj).map(([k, v]) => [k, v === undefined ? null : replaceUndefinedWithNull(v)])
-      );
-    }
-    return obj;
-  }
+    // React Query SSR: Prefetch main queries
+    const queryClient = new QueryClient();
+    let sort = ctx.query.sort || 'trending';
+    if (Array.isArray(sort)) sort = sort[0];
+    let tag = secondParam || '';
+    if (Array.isArray(tag)) tag = tag[0];
 
-  return {
-    props: {
-      metadata,
-      ...(await getTranslations(ctx)),
-      dehydratedState: replaceUndefinedWithNull(dehydrate(queryClient))
+    // Prefetch posts (first page)
+    await queryClient.prefetchInfiniteQuery(
+      ['entriesInfinite', sort, tag],
+      async ({ pageParam }) => {
+        return await getPostsRanked(
+          sort as string,
+          tag as string,
+          pageParam?.author,
+          pageParam?.permlink,
+          '' // No user context on SSR
+        );
+      },
+      {
+        getNextPageParam: (lastPage) => {
+          if (lastPage && lastPage.length === PER_PAGE) {
+            return {
+              author: lastPage[lastPage.length - 1].author,
+              permlink: lastPage[lastPage.length - 1].permlink
+            };
+          }
+        }
+      }
+    );
+
+    // Only prefetch community data if we have a valid tag and it's not a special route
+    if (
+      tag && 
+      !tag.startsWith('@') && 
+      tag.length > 0 && 
+      !firstParam.startsWith('lists/') && 
+      firstParam !== 'lists' &&
+      !['blacklisted', 'followed_blacklists', 'followed_muted_lists'].includes(firstParam)
+    ) {
+      try {
+        await queryClient.prefetchQuery(['community', tag, ''], () => getCommunity(tag, ''));
+        await queryClient.prefetchQuery(['subscribers', tag], () => getSubscribers(tag));
+        await queryClient.prefetchQuery(['AccountNotification', tag], () => getAccountNotifications(tag));
+      } catch (error) {
+        console.error('Error prefetching community data:', error);
+        // Continue without community data
+      }
     }
-  };
+
+    // Utility to replace undefined with null for Next.js serialization
+    function replaceUndefinedWithNull(obj: any): any {
+      if (Array.isArray(obj)) {
+        return obj.map((v) => (v === undefined ? null : replaceUndefinedWithNull(v)));
+      } else if (obj && typeof obj === 'object') {
+        return Object.fromEntries(
+          Object.entries(obj).map(([k, v]) => [k, v === undefined ? null : replaceUndefinedWithNull(v)])
+        );
+      }
+      return obj;
+    }
+
+    return {
+      props: {
+        metadata,
+        ...(await getTranslations(ctx)),
+        dehydratedState: replaceUndefinedWithNull(dehydrate(queryClient))
+      }
+    };
+  } catch (error) {
+    console.error('Error in getServerSideProps:', error);
+    // Return default props on error
+    return {
+      props: {
+        metadata,
+        ...(await getTranslations(ctx)),
+        dehydratedState: null
+      }
+    };
+  }
 };
