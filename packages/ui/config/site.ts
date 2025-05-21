@@ -1,5 +1,7 @@
 import env from '@beam-australia/react-env';
 
+import { configuredApiEndpoint, configuredSiteDomain } from '@hive/ui/config/public-vars';
+
 const SERVER_VAR_PREFIX = 'DENSER_SERVER_';
 
 const MAINNET_CHAIN_ID = 'beeab0de00000000000000000000000000000000000000000000000000000000';
@@ -16,8 +18,8 @@ const chainEnv: Record<string, ChainEnv> = {
 const chainId = env('CHAIN_ID') ? env('CHAIN_ID') : MAINNET_CHAIN_ID;
 export const siteConfig = {
   name: 'Hive Blog',
-  url: env('SITE_DOMAIN') || 'https://hive.blog',
-  endpoint: `${env('API_ENDPOINT') ? env('API_ENDPOINT') : 'https://api.hive.blog'}`,
+  url: configuredSiteDomain,
+  endpoint: configuredApiEndpoint,
   chainId,
   chainEnv: chainEnv[chainId] || chainEnv['testnet'],
   ogImage: '',

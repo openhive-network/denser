@@ -1,4 +1,4 @@
-import env from '@beam-australia/react-env';
+import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 
 /**
  * this regular expression should capture all possible proxy domains
@@ -15,7 +15,7 @@ const NATURAL_SIZE = '0x0/';
 const CAPPED_SIZE = '768x0/';
 const DOUBLE_CAPPED_SIZE = '1536x0/';
 
-export const imageProxy = () => `${env('IMAGES_ENDPOINT')}`;
+export const imageProxy = () => `${configuredImagesEndpoint}`;
 export const defaultSrcSet = (url: string) => {
   return `${url} 1x, ${url.replace(CAPPED_SIZE, DOUBLE_CAPPED_SIZE)} 2x`;
 };
@@ -46,7 +46,7 @@ export const proxifyImageUrl = (url: string, dimensions: string | boolean) => {
     const lastProxy = proxyList[proxyList.length - 1];
     respUrl = url.substring(url.lastIndexOf(lastProxy) + lastProxy.length);
   }
-  if (dimensions && `${env('IMAGES_ENDPOINT')}`) {
+  if (dimensions && `${configuredImagesEndpoint}`) {
     let dims = dimensions + '/';
     if (typeof dimensions !== 'string') {
       // @ts-ignore
@@ -60,7 +60,7 @@ export const proxifyImageUrl = (url: string, dimensions: string | boolean) => {
     }
 
     if ((NATURAL_SIZE !== dims && CAPPED_SIZE !== dims) || !rProxyDomain.test(respUrl)) {
-      return `${env('IMAGES_ENDPOINT')}` + dims + respUrl;
+      return `${configuredImagesEndpoint}` + dims + respUrl;
     }
   }
   return respUrl;

@@ -18,6 +18,7 @@ import { GetServerSideProps } from 'next';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { cn } from '@ui/lib/utils';
+import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
@@ -26,7 +27,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import env from '@beam-australia/react-env';
+
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { getLogger } from '@ui/lib/logging';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -117,7 +118,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
       password: ''
     });
 
-    const postUrl = `${env('IMAGES_ENDPOINT')}${username}/${sig}`;
+    const postUrl = `${configuredImagesEndpoint}${username}/${sig}`;
 
     const response = await fetch(postUrl, { method: 'POST', body: formData });
     const resJSON = await response.json();
