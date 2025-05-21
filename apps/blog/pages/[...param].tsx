@@ -10,7 +10,7 @@ import {
   getSubscriptions,
   getPostsRanked
 } from '@transaction/lib/bridge';
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components/skeleton';
 import CommunitiesSidebar from '@/blog/components/communities-sidebar';
@@ -59,8 +59,11 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const legalBlockedUser = userIllegalContent.includes(username);
-  const routerSort = Array.isArray(router.query.param) ? router.query.param[0] : router.query.param || 'trending';
-  const routerTag = Array.isArray(router.query.tag) ? router.query.tag[0] : router.query.tag || '';
+  const paramArr = Array.isArray(router.query.param) ? router.query.param : [router.query.param];
+  const routerSort = paramArr[0] || 'trending';
+  const routerTag = paramArr[1] || '';
+
+  const effectiveUsername = typeof window !== 'undefined' && user?.username ? user.username : '';
 
   // Single effect to handle sort changes
   useEffect(() => {
@@ -69,6 +72,26 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       queryClient.invalidateQueries(['entriesInfinite']);
     }
   }, [routerSort, queryClient]);
+
+  useEffect(() => {
+    if (routerTag) {
+      queryClient.invalidateQueries(['entriesInfinite']);
+      // Optionally, prefetch the new data for instant feel
+      queryClient.prefetchInfiniteQuery(['entriesInfinite', routerSort, routerTag], 
+        async () => getPostsRanked(routerSort, routerTag, undefined, undefined, effectiveUsername)
+      );
+    }
+  }, [routerTag, routerSort, queryClient, effectiveUsername]);
+
+  useEffect(() => {
+    // When the community (tag) changes, refetch the posts
+    if (routerTag) {
+      queryClient.invalidateQueries(['entriesInfinite']);
+      refetch();
+    }
+  }, [routerTag]);
+
+  const isClient = typeof window !== 'undefined';
 
   const {
     data: entriesData,
@@ -80,14 +103,14 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     hasNextPage,
     refetch
   } = useInfiniteQuery(
-    ['entriesInfinite', routerSort, routerTag],
+    ['entriesInfinite', routerSort, routerTag, effectiveUsername],
     async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
       return await getPostsRanked(
         routerSort,
         routerTag,
         pageParam?.author,
         pageParam?.permlink,
-        user.username
+        effectiveUsername
       );
     },
     {
@@ -101,7 +124,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       },
       enabled: Boolean(routerSort),
       // Add staleTime to prevent unnecessary refetches
-      staleTime: 30000, // 30 seconds
+      staleTime: 0,
       // Add cacheTime to keep data in cache longer
       cacheTime: 300000, // 5 minutes
       // Add retry logic
@@ -164,7 +187,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     (e: string) => {
       // Prefetch the new sort data before changing routes
       queryClient.prefetchInfiniteQuery(['entriesInfinite', e, routerTag], 
-        async () => getPostsRanked(e, routerTag, undefined, undefined, user.username)
+        async () => getPostsRanked(e, routerTag, undefined, undefined, effectiveUsername)
       );
 
       if (routerTag) {
@@ -179,7 +202,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
         });
       }
     },
-    [router, routerTag, queryClient, user.username]
+    [router, routerTag, queryClient, effectiveUsername]
   );
 
   useEffect(() => {
@@ -251,11 +274,11 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
         <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
           <div className="grid grid-cols-12 md:gap-4">
             <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-              {user?.isLoggedIn ? (
+              {isClient && user?.isLoggedIn ? (
                 <CommunitiesMybar data={mySubsData} username={user.username} />
               ) : (
                 <CommunitiesSidebar />
-              )}{' '}
+              )}
             </div>
             <div className="col-span-12 md:col-span-9 xl:col-span-8">
               <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
@@ -341,7 +364,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                   notificationData={dataAccountNotification}
                   username={routerTag ? routerTag : ' '}
                 />
-              ) : user?.isLoggedIn ? (
+              ) : isClient && user?.isLoggedIn ? (
                 <CommunitiesSidebar />
               ) : (
                 <ExploreHive />
