@@ -13,7 +13,8 @@ const nextConfig = {
   output: 'standalone',
   swcMinify: false,
   experimental: {
-    outputFileTracingRoot: path.join(__dirname, '../..')
+    outputFileTracingRoot: path.join(__dirname, '../..'),
+    instrumentationHook: true
   },
   /// According to notes: https://nextjs.org/docs/app/guides/progressive-web-apps#8-securing-your-application
   async headers() {
