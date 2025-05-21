@@ -17,7 +17,6 @@ import { Icons } from '@hive/ui/components/icons';
 import { dateToShow } from '@hive/ui/lib/parse-date';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { getTwitterInfo } from '@transaction/lib/bridge';
-import moment from 'moment';
 import { useTranslation } from 'next-i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';

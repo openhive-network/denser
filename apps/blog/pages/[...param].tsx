@@ -65,23 +65,29 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
 
   const effectiveUsername = typeof window !== 'undefined' && user?.username ? user.username : '';
 
+  // Validate sort parameter
+  const validSorts = ['trending', 'hot', 'created', 'payout', 'payout_comments', 'muted'];
+  const isValidSort = validSorts.includes(routerSort);
+
   // Single effect to handle sort changes
   useEffect(() => {
-    if (routerSort) {
+    if (routerSort && !username) {  // Only run for non-profile pages
       // Instead of removing queries, just invalidate them
       queryClient.invalidateQueries(['entriesInfinite']);
     }
-  }, [routerSort, queryClient]);
+  }, [routerSort, queryClient, username]);
 
   useEffect(() => {
-    if (routerTag) {
+    if (routerTag && !username) {  // Only run for non-profile pages
       queryClient.invalidateQueries(['entriesInfinite']);
       // Optionally, prefetch the new data for instant feel
-      queryClient.prefetchInfiniteQuery(['entriesInfinite', routerSort, routerTag], 
-        async () => getPostsRanked(routerSort, routerTag, undefined, undefined, effectiveUsername)
-      );
+      if (isValidSort) {
+        queryClient.prefetchInfiniteQuery(['entriesInfinite', routerSort, routerTag], 
+          async () => getPostsRanked(routerSort, routerTag, undefined, undefined, effectiveUsername)
+        );
+      }
     }
-  }, [routerTag, routerSort, queryClient, effectiveUsername]);
+  }, [routerTag, routerSort, queryClient, effectiveUsername, username, isValidSort]);
 
   useEffect(() => {
     // When the community (tag) changes, refetch the posts
@@ -105,6 +111,9 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   } = useInfiniteQuery(
     ['entriesInfinite', routerSort, routerTag, effectiveUsername],
     async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
+      if (!isValidSort) {
+        throw new Error(`Invalid sort parameter: ${routerSort}. Valid sorts are: ${validSorts.join(', ')}`);
+      }
       return await getPostsRanked(
         routerSort,
         routerTag,
@@ -122,7 +131,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
           };
         }
       },
-      enabled: Boolean(routerSort),
+      enabled: Boolean(routerSort) && !username && isValidSort, // Only enable for valid sorts and non-profile pages
       // Add staleTime to prevent unnecessary refetches
       staleTime: 0,
       // Add cacheTime to keep data in cache longer
@@ -185,6 +194,11 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
 
   const handleChangeFilter = useCallback(
     (e: string) => {
+      if (!validSorts.includes(e)) {
+        console.error(`Invalid sort parameter: ${e}`);
+        return;
+      }
+      
       // Prefetch the new sort data before changing routes
       queryClient.prefetchInfiniteQuery(['entriesInfinite', e, routerTag], 
         async () => getPostsRanked(e, routerTag, undefined, undefined, effectiveUsername)
@@ -262,6 +276,8 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     if (typeof entriesData === 'undefined' && typeof accountEntriesData === 'undefined') {
       return <div>Loading...</div>;
     }
+
+    console.log('paramArr', paramArr, 'username', username, 'entriesData', entriesData, 'accountEntriesData', accountEntriesData);
 
     return (
       <>
@@ -385,43 +401,44 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
         <meta property="og:image" content={metadata.image} />
       </Head>
       {!legalBlockedUser ? (
-        <>
-          {' '}
-          {accountEntriesData && accountEntriesData.pages ? (
-            <>
-              {accountEntriesData.pages[0]?.length !== 0 ? (
-                accountEntriesData.pages.map((page, index) => {
-                  return page ? <PostList data={page} key={`x-${index}`} /> : null;
-                })
-              ) : (
-                <div
-                  className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
-                  data-testid="user-has-not-started-blogging-yet"
-                >
-                  {t('user_profile.no_blogging_yet', { username: username })}
+        <ProfileLayout>
+          <>
+            {accountEntriesData && accountEntriesData.pages ? (
+              <>
+                {accountEntriesData.pages[0]?.length !== 0 ? (
+                  accountEntriesData.pages.map((page, index) => {
+                    return page ? <PostList data={page} key={`x-${index}`} /> : null;
+                  })
+                ) : (
+                  <div
+                    className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
+                    data-testid="user-has-not-started-blogging-yet"
+                  >
+                    {t('user_profile.no_blogging_yet', { username: username })}
+                  </div>
+                )}
+                <div>
+                  <button
+                    ref={refAcc}
+                    onClick={() => accountFetchNextPage()}
+                    disabled={!accountHasNextPage || accountIsFetchingNextPage}
+                  >
+                    {accountIsFetchingNextPage && accountEntriesData.pages.length > 0 ? (
+                      <PostSkeleton />
+                    ) : accountHasNextPage ? (
+                      t('user_profile.load_newer')
+                    ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
+                      t('user_profile.nothing_more_to_load')
+                    ) : null}
+                  </button>
                 </div>
-              )}
-              <div>
-                <button
-                  ref={refAcc}
-                  onClick={() => accountFetchNextPage()}
-                  disabled={!accountHasNextPage || accountIsFetchingNextPage}
-                >
-                  {accountIsFetchingNextPage && accountEntriesData.pages.length > 0 ? (
-                    <PostSkeleton />
-                  ) : accountHasNextPage ? (
-                    t('user_profile.load_newer')
-                  ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
-                    t('user_profile.nothing_more_to_load')
-                  ) : null}
-                </button>
-              </div>
-              <div>
-                {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
-              </div>
-            </>
-          ) : null}
-        </>
+                <div>
+                  {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
+                </div>
+              </>
+            ) : null}
+          </>
+        </ProfileLayout>
       ) : (
         <div className="p-10">{t('global.unavailable_for_legal_reasons')}</div>
       )}
