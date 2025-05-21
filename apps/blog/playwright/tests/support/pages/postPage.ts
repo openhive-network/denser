@@ -271,4 +271,12 @@ export class PostPage {
       .first();
     await expect(postWithLabel).toBeVisible();
   }
+
+  async validatePostTitle(title: string) {
+    await expect(this.articleTitle).toHaveText(title);
+  }
+
+  async validatePostContantContainText(textContentLocator: string, textContentExpected: string) {
+    await expect(this.page.locator(`#articleBody:has-text("${textContentLocator}")`)).toHaveText(textContentExpected);
+  }
 }
