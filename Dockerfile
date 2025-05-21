@@ -7,7 +7,7 @@ ENV TURBO_VERSION=2.1.1
 # Install and configure corepack/pnpm
 RUN apk add --no-cache libc6-compat && \
     corepack enable && \
-    corepack prepare pnpm@9.6.0 --activate && \
+    corepack prepare pnpm@10.0.0 --activate && \
     pnpm config set store-dir /pnpm/store
 
 FROM base AS builder
@@ -42,6 +42,9 @@ RUN pnpm dlx turbo run build --filter=${TURBO_APP_SCOPE}
 FROM base AS runner
 ARG TURBO_APP_PATH
 ARG TURBO_APP_NAME
+ENV TURBO_APP_PATH=${TURBO_APP_PATH}
+ENV TURBO_APP_NAME=${TURBO_APP_NAME}
+
 ARG BUILD_TIME
 ARG GIT_COMMIT_SHA
 ARG GIT_CURRENT_BRANCH
@@ -85,8 +88,10 @@ ENV PATH="/app/node_modules/.bin:$PATH"
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/public .${TURBO_APP_PATH}/public
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.next/static .${TURBO_APP_PATH}/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.env* ./
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/li[b]/markdown[s]/ .${TURBO_APP_PATH}/lib/markdowns/
+
+RUN touch /app/apps/.env && \
+    ln -sf /app/apps/.env /app${TURBO_APP_PATH}/.env
 
 ENV BLOG_PORT=3000
 ENV WALLET_PORT=4000
