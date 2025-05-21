@@ -4,6 +4,7 @@ import Sidebar from './sidebar';
 import { MainNav } from './main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
+import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import Link from 'next/link';
 import React, { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
@@ -19,7 +20,7 @@ import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
-import env from '@beam-australia/react-env';
+
 import { getAccount } from '@transaction/lib/hive';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
@@ -232,7 +233,7 @@ const SiteHeader: FC = () => {
                             className="h-full w-full object-cover"
                             src={
                               profile?.profile?.profile_image ||
-                              `${env('IMAGES_ENDPOINT')}/u/${user.username}/avatar`
+                              `${configuredImagesEndpoint}/u/${user.username}/avatar`
                             }
                             alt="Profile picture"
                           />
