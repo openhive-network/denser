@@ -4,7 +4,6 @@ import { setLoginChallengeCookies } from '@smart-signer/lib/middleware-challenge
 import { configuredApiEndpoint } from '@hive/ui/config/public-vars';
 
 export async function commonMiddleware(request: NextRequest) {
-
   const { pathname } = request.nextUrl;
   const res = NextResponse.next();
 
