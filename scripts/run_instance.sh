@@ -22,6 +22,7 @@ OPTIONS:
   --app-path=PATH                       App path (eg. '/apps/auth)
   --port=PORT                           Port to be exposed (default: 3000)
   --name=NAME                           Container name to be used (default: denser)
+  --env-file=overriden.env              Path to a file containing environment variables to override i.e. deployment secrets
   --detach                              Run in detached mode 
   --help|-h|-?                          Display this help screen and exit
 EOF
@@ -42,6 +43,8 @@ TURBO_APP_PATH=${TURBO_APP_PATH:-}
 PORT=${PORT:-"3000"}
 CONTAINER_NAME=${CONTAINER_NAME:-"denser"}
 DETACH=${DETACH:-false}
+
+CUSTOM_ENV_FILE=''
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -103,7 +106,16 @@ while [ $# -gt 0 ]; do
         ;;
     --detach)
         DETACH=true
-        ;;    
+        ;;
+    --env-file=*)
+        arg="${1#*=}"
+        if [ -f "${arg}" ]; then
+            CUSTOM_ENV_FILE="${arg}"
+        else
+            echo "ERROR: File '${arg}' not found"
+            exit 2
+        fi
+        ;;
     --help|-?)
         print_help
         exit 0
@@ -133,10 +145,12 @@ RUN_OPTIONS=(
     "--env" "REACT_APP_OPENHIVE_CHAT_URI=$OPENHIVE_CHAT_URI"
     "--env" "REACT_APP_SITE_DOMAIN=$SITE_DOMAIN"
     "--env" "REACT_APP_CHAIN_ID=$CHAIN_ID"
-    "--env" "TURBO_APP_SCOPE=$TURBO_APP_SCOPE"
-    "--env" "TURBO_APP_PATH=$TURBO_APP_PATH"
     "--name" "$CONTAINER_NAME"
 )
+
+if [ -n "${CUSTOM_ENV_FILE}" ]; then
+    RUN_OPTIONS+=("-v" "${CUSTOM_ENV_FILE}:/app/apps/.env")
+fi
 
 if [[ "$DETACH" == "true" ]]; then
     RUN_OPTIONS+=("--detach")
