@@ -199,3 +199,20 @@
 .dark .w-md-editor-text .token.title {
   color: #fff !important;
 }
+
+details {
+  padding: 10px 10px;
+  outline-offset: 2px;
+  background-color: #f8f8f8;
+  outline: dotted 1px #f8f8f8;
+  margin: 10px 0;
+}
+
+.dark details {
+  background-color: #2c2c2c;
+  outline: dotted 1px #2c2c2c;
+}
+summary {
+  text-align: right;
+  cursor: pointer;
+}

@@ -6,19 +6,29 @@ declare global {
     }
 }
 
-// Instagram plugin
+/**
+ * Plugin for rendering Instagram embeds in the document.
+ * Handles both posts and profile URLs, with support for dark mode.
+ */
 export class InstagramPlugin implements RendererPlugin {
     private renderedPosts = new Set<string>();
     private scriptLoaded = false;
     // Plugin name
     name = 'instagram';
 
+    /**
+     * Initializes the Instagram plugin and loads the embed script if in browser environment
+     */
     constructor() {
         if (typeof window !== 'undefined') {
             this.loadInstagramScript();
         }
     }
-    // Load Instagram embed script
+
+    /**
+     * Loads the Instagram embed script asynchronously
+     * @private
+     */
     private loadInstagramScript() {
         if (this.scriptLoaded || window?.instgrm) return;
 
@@ -32,12 +42,20 @@ export class InstagramPlugin implements RendererPlugin {
         document.head.appendChild(script);
     }
 
-    // Process queued Instagram posts
+    /**
+     * Triggers Instagram's embed processing for queued posts
+     * @private
+     */
     private processQueuedPosts() {
         window.instgrm?.Embeds?.process();
     }
 
-    // Render Instagram post
+    /**
+     * Renders an Instagram post in the specified container
+     * @param url - The Instagram post URL to embed
+     * @param containerId - The DOM element ID where the post should be rendered
+     * @private
+     */
     private renderPost(url: string, containerId: string) {
         if (typeof window === 'undefined') return;
         if (this.renderedPosts.has(containerId)) return;
@@ -71,7 +89,11 @@ export class InstagramPlugin implements RendererPlugin {
         }
     }
 
-    // Pre-process the text before rendering
+    /**
+     * Pre-processes text to identify Instagram URLs and marks them for embedding
+     * @param text - The input text to process
+     * @returns The processed text with Instagram URLs marked for embedding
+     */
     preProcess = (text: string): string => {
         // Match Instagram URLs not wrapped in parentheses
         return text.replace(/(?<!\()(https?:\/\/(www\.)?instagram\.com\/[^\s)]+)/g, (match) => {
@@ -80,7 +102,11 @@ export class InstagramPlugin implements RendererPlugin {
         });
     };
 
-    // Post-process the text after rendering
+    /**
+     * Post-processes text by replacing marked Instagram URLs with actual embeds
+     * @param text - The pre-processed text
+     * @returns The final text with Instagram embeds
+     */
     postProcess = (text: string): string => {
         // Replace Instagram URLs with embeds
         return text.replace(/<div>instagram-url-(.*?)<\/div>/g, (_match, encodedUrl) => {
@@ -92,7 +118,12 @@ export class InstagramPlugin implements RendererPlugin {
         });
     };
 
-    // Get Instagram metadata from the link
+    /**
+     * Extracts and normalizes Instagram URLs from links
+     * @param link - The Instagram URL to process
+     * @returns Normalized Instagram URL or undefined if invalid
+     * @private
+     */
     private getInstagramMetadataFromLink(link: string): string | undefined {
         if (!link) return undefined;
         // Match profile URLs

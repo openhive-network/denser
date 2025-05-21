@@ -20,6 +20,13 @@ export class TagTransformingSanitizer {
         this.options = options;
     }
 
+    /**
+     * Sanitizes HTML content by removing unsafe tags and attributes while transforming allowed tags according to configuration.
+     * Uses the sanitize-html library with custom configuration for tag transformation.
+     *
+     * @param text - The HTML content to sanitize
+     * @returns A sanitized version of the HTML content with transformed tags and removed unsafe content
+     */
     public sanitize(text: string): string {
         return sanitize(text, this.generateSanitizeConfig());
     }
@@ -28,6 +35,22 @@ export class TagTransformingSanitizer {
         return this.sanitizationErrors;
     }
 
+    /**
+     * Generates configuration for the sanitize-html library.
+     *
+     * @returns Configuration object for sanitize-html containing:
+     * - Allowed HTML tags
+     * - Allowed attributes for specific tags
+     * - Allowed URL schemes
+     * - Tag transformation rules for iframe, img, div, td, th, and a tags
+     *
+     * The configuration ensures:
+     * - iframes are only allowed from whitelisted sources
+     * - images are properly handled based on noImage setting
+     * - div classes are restricted to a whitelist
+     * - table cell alignment is preserved when valid
+     * - links are processed for safety with optional nofollow and target attributes
+     */
     private generateSanitizeConfig(): sanitize.IOptions {
         return {
             allowedTags: StaticConfig.sanitization.allowedTags,
