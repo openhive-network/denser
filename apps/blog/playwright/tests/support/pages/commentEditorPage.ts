@@ -35,10 +35,29 @@ export class CommentEditorPage {
         await expect(this.getCancelButton).toBeEnabled();
     }
 
+    async validateCommentEditorIsLoadedByEdit() {
+        await expect(this.getReplayEditorElement).toBeVisible();
+        await expect(this.getDisableSideBySideEditorHeader).toBeVisible();
+        await expect(this.getTextAreaCommentEditor).toBeVisible();
+        await expect(this.getNotEmptyPreview).toBeVisible();
+        await expect(this.getPostButton).toBeEnabled();
+        await expect(this.getCancelButton).toBeEnabled();
+    }
+
     async createSimpleComment(commentContent: string) {
         await this.getTextAreaCommentEditor.fill(commentContent);
         // Validate the content is displayed in the comment preview
         await expect(this.getNotEmptyPreview).toHaveText(commentContent);
+        // Validate the Post button is clickable
+        await expect(this.getPostButton).toBeEnabled();
+        // Click the Post button
+        await this.getPostButton.click();
+    }
+
+    async editSimpleComment(newCommentContent: string) {
+        await this.getTextAreaCommentEditor.fill(newCommentContent);
+        // Validate the content is displayed in the comment preview
+        await expect(this.getNotEmptyPreview).toHaveText(newCommentContent);
         // Validate the Post button is clickable
         await expect(this.getPostButton).toBeEnabled();
         // Click the Post button
