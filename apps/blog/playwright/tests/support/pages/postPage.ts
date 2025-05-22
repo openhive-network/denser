@@ -40,6 +40,8 @@ export class PostPage {
   readonly commentCardsFooterVotes: Locator;
   readonly commentCardsFooterReply: Locator;
   readonly commentCardsFooterReplyEditor: Locator;
+  readonly commentCardsFooterEditButton: Locator;
+  readonly firstNestedCommentEditButton: Locator;
   readonly commentShowButton: Locator;
   readonly postVoterList: Locator;
   readonly reputationValue: Locator;
@@ -155,6 +157,8 @@ export class PostPage {
       '[data-testid="comment-card-footer-reply"]'
     );
     this.commentCardsFooterReplyEditor = page.locator('[data-testid="reply-editor"]');
+    this.commentCardsFooterEditButton = page.getByTestId('comment-card-footer-edit');
+    this.firstNestedCommentEditButton = page.locator('ul ul').first().getByTestId('comment-card-footer-edit');
     this.commentShowButton = page.locator('[data-testid="comment-show-button"]');
     this.reputationValue = page.locator('[data-testid="post-author-reputation"]').first();
     this.commentPageLink = page.locator('[data-testid="comment-page-link"]');
@@ -270,5 +274,13 @@ export class PostPage {
       .locator('.inline-flex.items-center.border.rounded-full')
       .first();
     await expect(postWithLabel).toBeVisible();
+  }
+
+  async validatePostTitle(title: string) {
+    await expect(this.articleTitle).toHaveText(title);
+  }
+
+  async validatePostContantContainText(textContentLocator: string, textContentExpected: string) {
+    await expect(this.page.locator(`#articleBody:has-text("${textContentLocator}")`)).toHaveText(textContentExpected);
   }
 }
