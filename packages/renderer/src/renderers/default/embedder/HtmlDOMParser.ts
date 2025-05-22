@@ -391,7 +391,7 @@ export class HtmlDOMParser {
         content = content.replace(linksAny('gi'), (ln) => {
             if (linksRe.image.test(ln)) {
                 this.state.images.add(ln);
-                return `<img src="${this.normalizeUrl(ln)}" />`;
+                return `<img src="${this.normalizeUrl(ln)}" alt="Embedded Image" />`;
             }
 
             // do not linkify .exe or .zip urls

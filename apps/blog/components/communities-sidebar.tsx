@@ -14,7 +14,8 @@ const CommunitiesSidebar: FC = () => {
     getCommunities(sort, query)
   );
 
-  if (isLoading) return <p>{t('global.loading')}...</p>;
+  // Only show a fallback if data is truly missing (not hydrated)
+  if (!data) return null;
 
   return (
     <Card

@@ -7,8 +7,9 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { useTranslation } from 'next-i18next';
+import { memo, useCallback, useEffect, useState } from 'react';
 
-const PostSelectFilter = ({
+const PostSelectFilter = memo(({
   filter,
   handleChangeFilter
 }: {
@@ -17,16 +18,30 @@ const PostSelectFilter = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const defaultValue = 'trending';
+  const [currentValue, setCurrentValue] = useState(filter || defaultValue);
+
+  // Keep local state in sync with prop using useCallback
+  const updateCurrentValue = useCallback((newFilter: string | null) => {
+    setCurrentValue(newFilter || defaultValue);
+  }, [defaultValue]);
+
+  useEffect(() => {
+    updateCurrentValue(filter);
+  }, [filter, updateCurrentValue]);
+
+  const handleValueChange = useCallback((value: string) => {
+    setCurrentValue(value);
+    handleChangeFilter(value);
+  }, [handleChangeFilter]);
+
   return (
     <Select
+      value={currentValue}
+      onValueChange={handleValueChange}
       defaultValue={defaultValue}
-      value={filter ? filter : defaultValue}
-      onValueChange={(e) => {
-        handleChangeFilter(e);
-      }}
     >
       <SelectTrigger className="bg-background" data-testid="posts-filter">
-        <SelectValue placeholder="Select a filter" />
+        <SelectValue placeholder={t('select_sort.posts_sort.trending')} />
       </SelectTrigger>
       <SelectContent data-testid="posts-filter-list">
         <SelectGroup>
@@ -39,6 +54,8 @@ const PostSelectFilter = ({
       </SelectContent>
     </Select>
   );
-};
+});
+
+PostSelectFilter.displayName = 'PostSelectFilter';
 
 export default PostSelectFilter;

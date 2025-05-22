@@ -1,5 +1,5 @@
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAccountNotifications } from '@transaction/lib/bridge';
 import {
   DATA_LIMIT as PER_PAGE,
@@ -10,8 +10,7 @@ import {
   getSubscriptions,
   getPostsRanked
 } from '@transaction/lib/bridge';
-import Loading from '@hive/ui/components/loading';
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components/skeleton';
 import CommunitiesSidebar from '@/blog/components/communities-sidebar';
@@ -37,6 +36,7 @@ import {
 } from '../lib/get-translations';
 import Head from 'next/head';
 import { sortToTitle, sortTypes } from '../lib/utils';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 
 export const PostSkeleton = () => {
   return (
@@ -57,7 +57,48 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { ref, inView } = useInView();
   const { ref: refAcc, inView: inViewAcc } = useInView();
   const { user } = useUser();
+  const queryClient = useQueryClient();
   const legalBlockedUser = userIllegalContent.includes(username);
+  const paramArr = Array.isArray(router.query.param) ? router.query.param : [router.query.param];
+  const routerSort = paramArr[0] || 'trending';
+  const routerTag = paramArr[1] || '';
+
+  const effectiveUsername = typeof window !== 'undefined' && user?.username ? user.username : '';
+
+  // Validate sort parameter
+  const validSorts = ['trending', 'hot', 'created', 'payout', 'payout_comments', 'muted'];
+  const isValidSort = validSorts.includes(routerSort);
+
+  // Single effect to handle sort changes
+  useEffect(() => {
+    if (routerSort && !username) {  // Only run for non-profile pages
+      // Instead of removing queries, just invalidate them
+      queryClient.invalidateQueries(['entriesInfinite']);
+    }
+  }, [routerSort, queryClient, username]);
+
+  useEffect(() => {
+    if (routerTag && !username) {  // Only run for non-profile pages
+      queryClient.invalidateQueries(['entriesInfinite']);
+      // Optionally, prefetch the new data for instant feel
+      if (isValidSort) {
+        queryClient.prefetchInfiniteQuery(['entriesInfinite', routerSort, routerTag], 
+          async () => getPostsRanked(routerSort, routerTag, undefined, undefined, effectiveUsername)
+        );
+      }
+    }
+  }, [routerTag, routerSort, queryClient, effectiveUsername, username, isValidSort]);
+
+  useEffect(() => {
+    // When the community (tag) changes, refetch the posts
+    if (routerTag) {
+      queryClient.invalidateQueries(['entriesInfinite']);
+      refetch();
+    }
+  }, [routerTag]);
+
+  const isClient = typeof window !== 'undefined';
+
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
@@ -65,16 +106,20 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     isError: entriesDataIsError,
     isFetchingNextPage,
     fetchNextPage,
-    hasNextPage
+    hasNextPage,
+    refetch
   } = useInfiniteQuery(
-    ['entriesInfinite', sort, tag],
+    ['entriesInfinite', routerSort, routerTag, effectiveUsername],
     async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
+      if (!isValidSort) {
+        throw new Error(`Invalid sort parameter: ${routerSort}. Valid sorts are: ${validSorts.join(', ')}`);
+      }
       return await getPostsRanked(
-        sort || 'trending',
-        tag,
+        routerSort,
+        routerTag,
         pageParam?.author,
         pageParam?.permlink,
-        user.username
+        effectiveUsername
       );
     },
     {
@@ -86,9 +131,17 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
           };
         }
       },
-      enabled: Boolean(sort)
+      enabled: Boolean(routerSort) && !username && isValidSort, // Only enable for valid sorts and non-profile pages
+      // Add staleTime to prevent unnecessary refetches
+      staleTime: 0,
+      // Add cacheTime to keep data in cache longer
+      cacheTime: 300000, // 5 minutes
+      // Add retry logic
+      retry: 2,
+      retryDelay: 1000
     }
   );
+
   const { data: mySubsData } = useQuery(
     ['subscriptions', user?.username],
     () => getSubscriptions(user.username),
@@ -100,18 +153,18 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     isFetching: AccountNotificationIsFetching,
     isLoading: AccountNotificationIsLoading,
     data: dataAccountNotification
-  } = useQuery(['AccountNotification', tag], () => getAccountNotifications(tag || ''), {
-    enabled: !!tag
+  } = useQuery(['AccountNotification', routerTag], () => getAccountNotifications(routerTag || ''), {
+    enabled: !!routerTag
   });
   const { data: communityData } = useQuery(
-    ['community', tag, ''],
-    () => getCommunity(tag || '', user.username),
+    ['community', routerTag, ''],
+    () => getCommunity(routerTag || '', user.username),
     {
-      enabled: !!tag
+      enabled: !!routerTag
     }
   );
-  const { data: subsData } = useQuery(['subscribers', tag], () => getSubscribers(tag || ''), {
-    enabled: !!tag
+  const { data: subsData } = useQuery(['subscribers', routerTag], () => getSubscribers(routerTag || ''), {
+    enabled: !!routerTag
   });
   const {
     data: accountEntriesData,
@@ -141,14 +194,31 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
 
   const handleChangeFilter = useCallback(
     (e: string) => {
-      if (tag) {
-        router.push(`/${e}/${tag}`, undefined, { shallow: true });
+      if (!validSorts.includes(e)) {
+        console.error(`Invalid sort parameter: ${e}`);
+        return;
+      }
+      
+      // Prefetch the new sort data before changing routes
+      queryClient.prefetchInfiniteQuery(['entriesInfinite', e, routerTag], 
+        async () => getPostsRanked(e, routerTag, undefined, undefined, effectiveUsername)
+      );
+
+      if (routerTag) {
+        router.push(`/${e}/${routerTag}`, undefined, { 
+          shallow: true,
+          scroll: false // Prevent scroll jump
+        });
       } else {
-        router.push(`/${e}`, undefined, { shallow: true });
+        router.push(`/${e}`, undefined, { 
+          shallow: true,
+          scroll: false // Prevent scroll jump
+        });
       }
     },
-    [router, tag]
+    [router, routerTag, queryClient, effectiveUsername]
   );
+
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
@@ -187,24 +257,6 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   }, [router.events]);
   if (accountEntriesIsError || entriesDataIsError) return <CustomError />;
 
-  if (
-    (entriesDataIsLoading && entriesDataIsFetching) ||
-    (accountEntriesIsLoading && accountEntriesIsFetching) ||
-    (AccountNotificationIsLoading && AccountNotificationIsFetching)
-  ) {
-    return (
-      <Loading
-        loading={
-          entriesDataIsLoading ||
-          entriesDataIsFetching ||
-          accountEntriesIsLoading ||
-          accountEntriesIsFetching ||
-          AccountNotificationIsLoading ||
-          AccountNotificationIsFetching
-        }
-      />
-    );
-  }
   const tabTitle =
     Array.isArray(router.query.param) && router.query.param.length > 1
       ? `${metadata.title} / ${sortToTitle(router.query.param[0] as sortTypes)}`
@@ -213,7 +265,20 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   if (username && router.query.param ? router.query.param.length > 1 : false) {
     return <CustomError />;
   }
-  if (!entriesDataIsLoading && entriesData) {
+  if (entriesData && entriesData.pages) {
+    // Debug: log data and user
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-console
+      console.log('[ParamPage] entriesData:', entriesData, 'accountEntriesData:', accountEntriesData, 'user:', user);
+    }
+
+    // Only show loading if main data is strictly undefined (not hydrated)
+    if (typeof entriesData === 'undefined' && typeof accountEntriesData === 'undefined') {
+      return <div>Loading...</div>;
+    }
+
+    console.log('paramArr', paramArr, 'username', username, 'entriesData', entriesData, 'accountEntriesData', accountEntriesData);
+
     return (
       <>
         <Head>
@@ -225,11 +290,11 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
         <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
           <div className="grid grid-cols-12 md:gap-4">
             <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-              {user?.isLoggedIn ? (
+              {isClient && user?.isLoggedIn ? (
                 <CommunitiesMybar data={mySubsData} username={user.username} />
               ) : (
                 <CommunitiesSidebar />
-              )}{' '}
+              )}
             </div>
             <div className="col-span-12 md:col-span-9 xl:col-span-8">
               <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
@@ -237,7 +302,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                   <CommunitySimpleDescription
                     data={communityData}
                     subs={subsData}
-                    username={tag ? tag : ' '}
+                    username={routerTag ? routerTag : ' '}
                     notificationData={dataAccountNotification}
                   />
                 ) : null}
@@ -246,18 +311,18 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                 <div className="my-4 flex w-full items-center justify-between" translate="no">
                   <div className="mr-2 flex w-[320px] flex-col">
                     <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                      {tag
+                      {routerTag
                         ? communityData
                           ? `${communityData?.title}`
-                          : `#${tag}`
+                          : `#${routerTag}`
                         : t('navigation.communities_nav.all_posts')}
                     </span>
-                    {tag ? (
+                    {routerTag ? (
                       <span
                         className="hidden text-xs font-light md:block"
                         data-testid="community-name-unmoderated"
                       >
-                        {tag
+                        {routerTag
                           ? communityData
                             ? t('communities.community')
                             : t('communities.unmoderated_tag')
@@ -269,17 +334,17 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                         mySubsData={mySubsData}
                         username={user?.username ? user.username : undefined}
                         title={
-                          tag
+                          routerTag
                             ? communityData
                               ? `${communityData?.title}`
-                              : `#${tag}`
+                              : `#${routerTag}`
                             : t('navigation.communities_nav.all_posts')
                         }
                       />
                     </span>
                   </div>
                   <div className="w-[180px]">
-                    <PostSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
+                    <PostSelectFilter filter={routerSort} handleChangeFilter={handleChangeFilter} />
                   </div>
                 </div>
                 <>
@@ -294,7 +359,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                       onClick={() => fetchNextPage()}
                       disabled={!hasNextPage || isFetchingNextPage}
                     >
-                      {isFetchingNextPage ? (
+                      {isFetchingNextPage && entriesData.pages.length > 0 ? (
                         <PostSkeleton />
                       ) : hasNextPage ? (
                         t('user_profile.load_newer')
@@ -313,9 +378,9 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                   data={communityData}
                   subs={subsData}
                   notificationData={dataAccountNotification}
-                  username={tag ? tag : ' '}
+                  username={routerTag ? routerTag : ' '}
                 />
-              ) : user?.isLoggedIn ? (
+              ) : isClient && user?.isLoggedIn ? (
                 <CommunitiesSidebar />
               ) : (
                 <ExploreHive />
@@ -328,7 +393,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   }
 
   return (
-    <ProfileLayout>
+    <>
       <Head>
         <title>{metadata.tabTitle}</title>
         <meta property="og:title" content={metadata.title} />
@@ -336,47 +401,48 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
         <meta property="og:image" content={metadata.image} />
       </Head>
       {!legalBlockedUser ? (
-        <>
-          {' '}
-          {!accountEntriesIsLoading && accountEntriesData ? (
-            <>
-              {accountEntriesData.pages[0]?.length !== 0 ? (
-                accountEntriesData.pages.map((page, index) => {
-                  return page ? <PostList data={page} key={`x-${index}`} /> : null;
-                })
-              ) : (
-                <div
-                  className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
-                  data-testid="user-has-not-started-blogging-yet"
-                >
-                  {t('user_profile.no_blogging_yet', { username: username })}
+        <ProfileLayout>
+          <>
+            {accountEntriesData && accountEntriesData.pages ? (
+              <>
+                {accountEntriesData.pages[0]?.length !== 0 ? (
+                  accountEntriesData.pages.map((page, index) => {
+                    return page ? <PostList data={page} key={`x-${index}`} /> : null;
+                  })
+                ) : (
+                  <div
+                    className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
+                    data-testid="user-has-not-started-blogging-yet"
+                  >
+                    {t('user_profile.no_blogging_yet', { username: username })}
+                  </div>
+                )}
+                <div>
+                  <button
+                    ref={refAcc}
+                    onClick={() => accountFetchNextPage()}
+                    disabled={!accountHasNextPage || accountIsFetchingNextPage}
+                  >
+                    {accountIsFetchingNextPage && accountEntriesData.pages.length > 0 ? (
+                      <PostSkeleton />
+                    ) : accountHasNextPage ? (
+                      t('user_profile.load_newer')
+                    ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
+                      t('user_profile.nothing_more_to_load')
+                    ) : null}
+                  </button>
                 </div>
-              )}
-              <div>
-                <button
-                  ref={refAcc}
-                  onClick={() => accountFetchNextPage()}
-                  disabled={!accountHasNextPage || accountIsFetchingNextPage}
-                >
-                  {accountIsFetchingNextPage ? (
-                    <PostSkeleton />
-                  ) : accountHasNextPage ? (
-                    t('user_profile.load_newer')
-                  ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (
-                    t('user_profile.nothing_more_to_load')
-                  ) : null}
-                </button>
-              </div>
-              <div>
-                {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
-              </div>
-            </>
-          ) : null}
-        </>
+                <div>
+                  {accountEntriesIsFetching && !accountIsFetchingNextPage ? 'Background Updating...' : null}
+                </div>
+              </>
+            ) : null}
+          </>
+        </ProfileLayout>
       ) : (
         <div className="p-10">{t('global.unavailable_for_legal_reasons')}</div>
       )}
-    </ProfileLayout>
+    </>
   );
 };
 
@@ -393,21 +459,114 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     title: firstParam
   };
 
-  // Check if the first parameter is a username
-  if (firstParam.startsWith('@')) {
-    // If it is, fetch the account data
-    metadata = await getAccountMetadata(firstParam, 'Posts');
-  }
-  // Check if second parameter exists
-  if (secondParam !== '') {
-    // If second parameter exists, that means it's a community
-    metadata = await getCommunityMetadata(firstParam, secondParam, 'Posts');
-  }
-
-  return {
-    props: {
-      metadata,
-      ...(await getTranslations(ctx))
+  try {
+    // Check if the first parameter is a username
+    if (firstParam.startsWith('@')) {
+      metadata = await getAccountMetadata(firstParam, 'Posts');
     }
-  };
+    // Check if this is a special route that shouldn't trigger community fetching
+    else if (
+      firstParam === 'lists' || 
+      firstParam.startsWith('lists/') ||
+      firstParam === 'blacklisted' ||
+      firstParam === 'followed_blacklists' ||
+      firstParam === 'followed_muted_lists'
+    ) {
+      // For special routes, just set a basic title
+      metadata = {
+        ...metadata,
+        tabTitle: `${firstParam} - Hive`,
+        description: `${firstParam} on Hive: Communities Without Borders.`
+      };
+    }
+    // Only try to get community metadata if we have valid parameters and it's not a special route
+    else if (secondParam && !secondParam.startsWith('@') && secondParam.length > 0) {
+      try {
+        metadata = await getCommunityMetadata(firstParam, secondParam, 'Posts');
+      } catch (error) {
+        console.error('Error fetching community metadata:', error);
+        // Keep default metadata on error
+      }
+    }
+
+    // React Query SSR: Prefetch main queries
+    const queryClient = new QueryClient();
+    let sort = ctx.query.sort || 'trending';
+    if (Array.isArray(sort)) sort = sort[0];
+    let tag = secondParam || '';
+    if (Array.isArray(tag)) tag = tag[0];
+
+    // Prefetch posts (first page)
+    await queryClient.prefetchInfiniteQuery(
+      ['entriesInfinite', sort, tag],
+      async ({ pageParam }) => {
+        return await getPostsRanked(
+          sort as string,
+          tag as string,
+          pageParam?.author,
+          pageParam?.permlink,
+          '' // No user context on SSR
+        );
+      },
+      {
+        getNextPageParam: (lastPage) => {
+          if (lastPage && lastPage.length === PER_PAGE) {
+            return {
+              author: lastPage[lastPage.length - 1].author,
+              permlink: lastPage[lastPage.length - 1].permlink
+            };
+          }
+        }
+      }
+    );
+
+    // Only prefetch community data if we have a valid tag and it's not a special route
+    if (
+      tag && 
+      !tag.startsWith('@') && 
+      tag.length > 0 && 
+      !firstParam.startsWith('lists/') && 
+      firstParam !== 'lists' &&
+      !['blacklisted', 'followed_blacklists', 'followed_muted_lists'].includes(firstParam)
+    ) {
+      try {
+        await queryClient.prefetchQuery(['community', tag, ''], () => getCommunity(tag, ''));
+        await queryClient.prefetchQuery(['subscribers', tag], () => getSubscribers(tag));
+        await queryClient.prefetchQuery(['AccountNotification', tag], () => getAccountNotifications(tag));
+      } catch (error) {
+        console.error('Error prefetching community data:', error);
+        // Continue without community data
+      }
+    }
+
+    // Utility to replace undefined with null for Next.js serialization
+    function replaceUndefinedWithNull(obj: any): any {
+      if (Array.isArray(obj)) {
+        return obj.map((v) => (v === undefined ? null : replaceUndefinedWithNull(v)));
+      } else if (obj && typeof obj === 'object') {
+        return Object.fromEntries(
+          Object.entries(obj).map(([k, v]) => [k, v === undefined ? null : replaceUndefinedWithNull(v)])
+        );
+      }
+      return obj;
+    }
+
+    return {
+      props: {
+        metadata,
+        ...(await getTranslations(ctx)),
+        dehydratedState: replaceUndefinedWithNull(dehydrate(queryClient))
+      }
+    };
+  } catch (error) {
+    console.error('Error in getServerSideProps:', error);
+    // Return default props on error
+    return {
+      props: {
+        metadata,
+        ...(await getTranslations(ctx)),
+        dehydratedState: null
+      }
+    };
+  }
 };

@@ -22,6 +22,10 @@ import Head from 'next/head';
 const logger = getLogger('app');
 
 const CommunitiesPage = () => {
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.log('[CommunitiesPage] Component rendered on client');
+  }
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
@@ -57,8 +61,21 @@ const CommunitiesPage = () => {
     setSort(e);
   }
 
-  const showLoading = communitiesDataIsLoading || (Boolean(user?.username) && mySubsIsLoading);
-  if (showLoading) return <Loading loading={showLoading} />;
+  // Debug: log data and user
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.log('communitiesData:', communitiesData, 'mySubsData:', mySubsData, 'user:', user);
+  }
+
+  // Only show loading if both are strictly undefined (not hydrated)
+  if (typeof communitiesData === 'undefined' && typeof mySubsData === 'undefined') {
+    return <Loading loading={true} />;
+  }
+
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.log('[CommunitiesPage] Rendering main content');
+  }
 
   return (
     <>
