@@ -77,12 +77,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   });
   const following = useFollowingInfiniteQuery(user.username, 1000, 'blog', ['blog']);
 
-  if (accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading) {
-    return <Loading loading={accountDataIsLoading || dynamicGlobalDataIsLoading || profileDataIsLoading} />;
-  }
   if (!accountData || !dynamicGlobalData || !profileData) {
-    return <p className="my-32 text-center text-3xl">Something went wrong</p>;
+    return children;
   }
+
   const delegated_hive = convertToHP(
     convertStringToBig(accountData.delegated_vesting_shares).minus(
       convertStringToBig(accountData.received_vesting_shares)
@@ -100,7 +98,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   if (userFromGDPRList) {
     return <CustomError />;
   }
-  return username ? (
+  return (
     <div>
       <div
         className=" w-full bg-gray-600 text-sm leading-6 sm:h-fit"
@@ -415,8 +413,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         <main className="container mx-auto max-w-screen-xl pt-4">{children}</main>
       </div>
     </div>
-  ) : (
-    <Loading loading={true} />
   );
 };
 

@@ -10,7 +10,7 @@ import {
   getSubscriptions,
   getPostsRanked
 } from '@transaction/lib/bridge';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components/skeleton';
 import CommunitiesSidebar from '@/blog/components/communities-sidebar';
