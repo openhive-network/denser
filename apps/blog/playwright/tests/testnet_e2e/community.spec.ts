@@ -4,6 +4,7 @@ import { HomePage } from '../support/pages/homePage';
 import { LoginForm } from '../support/pages/loginForm';
 import { PostEditorPage } from '../support/pages/postEditorPage';
 import { users } from '../support/loginHelper';
+import { CommunitiesExplorePage } from '../support/pages/communitiesExplorerPage';
 
 test.describe('Test for commonities in the blog app', () => {
     const communityName: string = 'Photography Lovers';
@@ -132,6 +133,37 @@ test.describe('Test for commonities in the blog app', () => {
         await expect(await communityPage.communityNameTitle).toHaveText(unsubscribedCommunityName);
         // Validate the new post was created
         await expect(communityPage.page.getByText(postTitle)).toBeVisible();
+    });
+
+    test('Validate that denserAutoTest3Page joins and leaves the new community by explore communities page', async ({ denserAutoTest3Page }) => {
+        const loginForm: LoginForm = new LoginForm(denserAutoTest3Page.page);
+        const communityPage: CommunitiesPage = new CommunitiesPage(denserAutoTest3Page.page);
+        const communityExplorerPage: CommunitiesExplorePage = new CommunitiesExplorePage(denserAutoTest3Page.page);
+        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('[href="/trending/hive-100006"]');
+
+        // Validate the Photography Lovers link is in My subscriptions
+        await expect(photographyLoversCommunityLocator).toHaveText(communityName);
+        // Click Explore communities...
+        await denserAutoTest3Page.page.getByText('Explore communities...').click();
+        // Validate the Explore communities page i loaded
+        await communityExplorerPage.validataExplorerCommunitiesPageIsLoaded();
+        // Click first subscribe button of the community
+        await communityExplorerPage.communityListItemSubscribeButton.first().click();
+        await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
+        // Wait until optimistic ui is finished - Subscribe button shouled change to Joined button
+        await communityExplorerPage.communityListItemJoinedLeaveButton.first().waitFor({ state: 'visible' });
+        // JoindedLeave content means that user subscribes that community
+        await expect(communityExplorerPage.communityListItemJoinedLeaveButton.first()).toHaveText('JoinedLeave');
+        // Validate that name of subscribed community is displaying on the My communities list (Lifestyle)
+        await expect(denserAutoTest3Page.page.getByTestId('card-trending-comunities').getByText('Lifestyle')).toBeVisible();
+        // Click first subscribed community on the list of communities to leave it
+        await communityExplorerPage.communityListItemJoinedLeaveButton.first().click();
+        await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
+        // Wait until optimistic ui is finished - Joined button shouled change to Subscribe button
+        await communityExplorerPage.communityListItemSubscribeButton.first().waitFor({ state: 'visible' });
+        await expect(communityExplorerPage.communityListItemSubscribeButton.first()).toHaveText('Subscribe');
+        // Validate that name of subscribed community is not displaying on the My communities list (Lifestyle)
+        await expect(denserAutoTest3Page.page.getByTestId('card-trending-comunities').getByText('Lifestyle')).not.toBeVisible();
     });
 
 });

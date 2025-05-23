@@ -14,6 +14,7 @@ export class CommunitiesExplorePage{
     readonly communityListItemAbout: Locator;
     readonly communityListItemFooter: Locator;
     readonly communityListItemSubscribeButton: Locator;
+    readonly communityListItemJoinedLeaveButton : Locator;
     readonly noResultsForYourSearch: Locator;
     readonly communitiesHeaderPage: Locator;
     readonly communitiesHeaderTitle: Locator;
@@ -31,7 +32,8 @@ export class CommunitiesExplorePage{
         this.communityListItemTitle = page.locator('[data-testid="community-list-item-title"]');
         this.communityListItemAbout = page.locator('[data-testid="community-list-item-about"]');
         this.communityListItemFooter = page.locator('[data-testid="community-list-item-footer"]');
-        this.communityListItemSubscribeButton = page.locator('[data-testid="community-subscribe-button"]');
+        this.communityListItemSubscribeButton = this.communityListItem.locator('[data-testid="community-subscribe-button"]');
+        this.communityListItemJoinedLeaveButton = this.communityListItem.locator('[data-testid="community-join-leave-button"]');
         this.noResultsForYourSearch = page.locator('[data-testid="communities-search-no-results-msg"]');
         this.communitiesHeaderPage = page.locator('[data-testid="communities-header"]');
         this.communitiesHeaderTitle = page.locator('[data-testid="communities-header-title"]');
@@ -42,7 +44,7 @@ export class CommunitiesExplorePage{
         await expect(this.combobox).toBeVisible();
         await expect(this.comboboxDefaultValue).toHaveText('Rank');
 
-        const apiHelper = await new ApiHelper(this.page);
+        const apiHelper = new ApiHelper(this.page);
         const firstCommunity = await apiHelper.getListCommunitiesAPI();
         const firstCommunityTitle = await firstCommunity.result[0].title;
         await expect(this.firstCommunityDefault).toHaveText(firstCommunityTitle);
