@@ -27,8 +27,8 @@ const dumpStartupEnvironment = () => {
   console.log('Denser startup environment variables dump finsihed');
 };
 
-export async function register() {
-  console.log('Starting up an application server...');
+export async function commonRegister(appName: string): Promise<void> {
+  console.log(`Starting up the '${appName}' application server...`);
   dumpStartupEnvironment();
 }
 

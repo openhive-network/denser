@@ -32,6 +32,10 @@ export async function commonMiddleware(request: NextRequest) {
     }
   }
 
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL('/trending', request.url));
+  }
+
   /*
   Set cookies with loginChallenge value set to random string (UID).
   * Match all request paths except for the ones starting with:
