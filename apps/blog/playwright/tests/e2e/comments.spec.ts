@@ -822,6 +822,7 @@ test.describe('Load more... comments in the post', () => {
     await postPage.gotoPostPage('leofinance', 'leo-curation', 'organic-curation-report-week-25');
     await expect(await postPage.articleTitle).toHaveText('Organic Curation report - Week 25, 2023');
     // Validate the number of visible posts
+    await postPage.page.waitForTimeout(3000);
     await expect((await postPage.commentListItems.all()).length).toBe(12);
     // Validate the author and content of the first post in the Trending filter
     await expect(await postPage.commentAuthorLink.first()).toHaveText('infinity0');
