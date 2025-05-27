@@ -112,7 +112,7 @@ export class CommentViewPage {
   }
 
   async validataCommentViewPageIsLoaded(postTitle: string) {
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.getReArticleTitle['_selector']);
     await expect(this.page.getByText('You are viewing a single comment')).toBeVisible();
     // await expect(this.getReArticleTitle.textContent).toContain(postTitle);

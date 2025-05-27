@@ -213,13 +213,13 @@ export class PostPage {
 
   async gotoHomePage() {
     await this.page.goto('/');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.postListItemOnHomePage['_selector']);
   }
 
   async gotoPostPage(communityCategoryName: string, author: string, permlink: string) {
     await this.page.goto(`/${communityCategoryName}/@${author}/${permlink}/`);
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.articleFooter['_selector']);
   }
 

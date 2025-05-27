@@ -181,7 +181,7 @@ test.describe('Communities page tests', () => {
       await expect(firstPostIsPinned).toBeTruthy();
       // Click the last pinned tag of the community articles
       await communitiesPage.communityPinnedPost.first().click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForSelector(postPage.articleFooter['_selector']);
       await expect(postPage.articleTitle).toHaveText(firstPostTitle);
     } else await console.log('There are not any pinned posts!!!');

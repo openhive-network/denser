@@ -69,7 +69,7 @@ export class ProposalsPage {
 
   async goToProposalsPage() {
     await this.page.goto("/proposals");
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState("domcontentloaded");
     await expect(this.proposalsHeaderName).toHaveText("Proposals");
     await expect(this.proposalsBody).toBeVisible();
     await this.page.waitForTimeout(3000);

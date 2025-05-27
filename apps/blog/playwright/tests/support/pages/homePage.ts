@@ -239,7 +239,7 @@ export class HomePage {
 
   async goto() {
     await this.page.goto('/');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.getMainTimeLineOfPosts['_selector']);
   }
 
@@ -450,7 +450,7 @@ export class HomePage {
   async changeThemeMode(thememode: string) {
     await this.getThemeModeButton.click();
     await this.getThemeModeItem.locator(`span:text(\"${thememode}\")`).click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async validateThemeModeIsLight() {
@@ -466,7 +466,7 @@ export class HomePage {
   }
 
   async validateThemeModeIsDark() {
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
     expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(44, 48, 53)');
   }
 

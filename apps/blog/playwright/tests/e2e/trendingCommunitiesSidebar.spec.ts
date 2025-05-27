@@ -21,9 +21,9 @@ test.describe('Home page tests - All posts', () => {
     await homePage.moveToWorldmappinCommunities();
     // move from Pinmapple to Home page
     await page.goBack();
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     await page.goBack();
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
     await expect(homePage.getTrandingCommunitiesHeader).toContainText('All posts');
   });

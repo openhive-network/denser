@@ -79,14 +79,14 @@ export class WalletPage {
 
   async goToWalletPage() {
     await this.page.goto("/");
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState("domcontentloaded");
     await this.page.waitForSelector(this.hiveWalletLoginLabel["_selector"]);
     await expect(this.hiveWalletLoginLabel).toBeVisible();
   }
 
   async goToWalletPageOfUser(user: string) {
     await this.page.goto(`/${user}/transfers`);
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState("domcontentloaded");
     await this.page.waitForSelector(this.userProfileInfo["_selector"]);
     await expect(this.userProfileInfo).toBeVisible();
   }

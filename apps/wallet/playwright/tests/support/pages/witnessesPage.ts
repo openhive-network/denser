@@ -47,7 +47,7 @@ export class WitnessesPage {
 
   async goToWitnessesPage() {
     await this.page.goto("/~witnesses");
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
     await expect(this.witnessTitle).toHaveText('Witness Voting');
     await expect(this.witnessTableBody).toBeVisible();
     await this.page.waitForTimeout(5000);
