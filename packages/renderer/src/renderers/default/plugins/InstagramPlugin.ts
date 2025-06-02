@@ -108,7 +108,7 @@ export class InstagramPlugin implements RendererPlugin {
             this.linkCounts.set(match, count);
             const indexSuffix = count > 1 ? `${count}` : '';
             const embedUrl = this.getInstagramMetadataFromLink(match);
-            return embedUrl ? `<div>instagram-url-${encodeURIComponent(embedUrl)}-count-${indexSuffix}</div>\n` : match;
+            return embedUrl ? `&nbsp;<div>instagram-url-${encodeURIComponent(embedUrl)}-count-${indexSuffix}</div>&nbsp;` : match;
         });
     };
 

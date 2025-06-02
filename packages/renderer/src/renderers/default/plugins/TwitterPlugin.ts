@@ -86,7 +86,7 @@ export class TwitterPlugin implements RendererPlugin {
                 const count = (this.tweetCounts.get(id) || 0) + 1;
                 this.tweetCounts.set(id, count);
                 const indexSuffix = count > 1 ? `${count}` : '';
-                return `<div>twitter-id-${id}-author-${author}-count-${indexSuffix}</div>\n`;
+                return `&nbsp;<div>twitter-id-${id}-author-${author}-count-${indexSuffix}</div>&nbsp;`;
             }
         );
     };
