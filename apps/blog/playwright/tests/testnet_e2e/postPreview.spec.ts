@@ -346,4 +346,151 @@ https://www.youtube.com/watch?v=a3ICNMQW7Ok`;
 
     expect(preview).toContain(previewContent);
   });
+
+  test.skip('Check if Footnotes are displayed correctly', async ({ denserAutoTest0Page }) => {
+    
+    const postContentText: string = `Footnotes[^1] have a label[^@#$%] and the footnote's content.
+
+[^1]: This is a footnote content.
+[^@#$%]: A footnote on the label: "@#$%".`;
+
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await expect(postPage.articleBody).toBeVisible()
+
+    const preview = await postPage.articleBody.innerHTML();
+
+    // await denserAutoTest0Page.page.waitForTimeout(3000)
+
+    const previewContent: string =       `<p class=\"my-0\">Footnotes<sup><a href=\"#fn1\" id=\"fnref1\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\">[1]</a></sup> have a label<sup><a href=\"#fn2\" id=\"fnref2\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\">[2]</a></sup> and the footnote's content.</p>
+<hr>·
+<ol>
+<li><p class=\"my-0\">This is a footnote content. <a href=\"#fnref1\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\">↩</a></p>
+</li>
+<li><p class=\"my-0\">A footnote on the label: \"@#$%\". <a href=\"#fnref2\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\">↩</a></p>
+</li>
+</ol>·
+`
+
+    expect(preview).toContain(previewContent);
+  });
+
+  test('Check if Text inside center tags is displayed correctly', async ({ denserAutoTest0Page }) => {
+    
+    const postContentText: string = `<center>
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
+</center>`;
+
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await expect(postPage.articleBody).toBeVisible()
+
+    const preview = await postPage.articleBody.innerHTML();
+
+    // await denserAutoTest0Page.page.waitForTimeout(3000)
+
+    const previewContent: string =      `<center><br>
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
+<p class=\"my-0\"></p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text<br>
+</center>`
+
+    expect(preview).toContain(previewContent);
+  });
+
+  test('Check if Link inside the blockquote and Hive User links are displayed correctly', async ({ denserAutoTest0Page }) => {
+    
+    const postContentText: string = `Link inside the blockquote should be visible.
+> Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. [source](https://peakd.com/silvergoldstackers/@silverd510/on-the-first-day-of)
+
+Hive User links:
+Hello Mr. @sketch.and.jam, how are you?`;
+
+
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await expect(postPage.articleBody).toBeVisible()
+
+    const preview = await postPage.articleBody.innerHTML();
+
+    // await denserAutoTest0Page.page.waitForTimeout(3000)
+
+    const previewContent: string =    `<p class=\"my-0\">Link inside the blockquote should be visible.</p>
+<blockquote>
+<p class=\"my-0\">Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. <a href=\"https://peakd.com/silvergoldstackers/@silverd510/on-the-first-day-of\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\">source</a></p>
+</blockquote>
+<p class=\"my-0\">Hive User links:<br>
+Hello Mr. <a href=\"/@sketch.and.jam\">@sketch.and.jam</a>, how are you?</p>
+`
+
+    expect(preview).toContain(previewContent);
+  });
+
+  test('Check if able with html special characters:<br> displayed correctly', async ({ denserAutoTest0Page }) => {
+    
+    const postContentText: string = `| Kod HTML   | Znak | Znaczenie                       |
+| ---------- | ---- | ------------------------------- |
+| &nbsp;     |      | Niełamliwa spacja               |
+| &lt;       | <    | Mniejszość (less than)          |
+| &gt;       | >    | Większość (greater than)        |
+| &amp;      | &    | Ampersand (znak „i” logiczne)   |
+| &quot;     | "    | Cudzysłów (podwójny)            |
+| &apos;     | '    | Apostrof (pojedynczy cudzysłów) |
+| &copy;     | ©    | Symbol praw autorskich          |
+| &reg;      | ®    | Znak zarejestrowany             |
+| &euro;     | €    | Symbol euro                     |
+| &mdash;    | —    | Długa pauza (myślnik)           |
+| &hellip;   | …    | Wielokropek                     |
+| &times;    | ×    | Znak mnożenia                   |
+| &divide;   | ÷    | Znak dzielenia                  |
+| &deg;      | °    | Stopień (np. 30°C → 30°C)       |
+| &cent;     | ¢    | Cent                            |
+| &para;     | ¶    | Znak akapitu                    |`;
+
+
+
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await expect(postPage.articleBody).toBeVisible()
+
+    const preview = await postPage.articleBody.innerHTML();
+
+    // await denserAutoTest0Page.page.waitForTimeout(3000)
+
+    const previewContent: string =    `<div style=\"overflow-x: auto; width: 100%; display: block;\"><table>
+<thead>
+<tr><th>Kod HTML</th><th>Znak</th><th>Znaczenie</th></tr>
+</thead>
+<tbody>
+<tr><td>&nbsp;</td><td></td><td>Niełamliwa spacja</td></tr>
+<tr><td>&lt;</td><td>&lt;</td><td>Mniejszość (less than)</td></tr>
+<tr><td>&gt;</td><td>&gt;</td><td>Większość (greater than)</td></tr>
+<tr><td>&amp;</td><td>&amp;</td><td>Ampersand (znak „i” logiczne)</td></tr>
+<tr><td>\"</td><td>\"</td><td>Cudzysłów (podwójny)</td></tr>
+<tr><td>'</td><td>'</td><td>Apostrof (pojedynczy cudzysłów)</td></tr>
+<tr><td>©</td><td>©</td><td>Symbol praw autorskich</td></tr>
+<tr><td>®</td><td>®</td><td>Znak zarejestrowany</td></tr>
+<tr><td>€</td><td>€</td><td>Symbol euro</td></tr>
+<tr><td>—</td><td>—</td><td>Długa pauza (myślnik)</td></tr>
+<tr><td>…</td><td>…</td><td>Wielokropek</td></tr>
+<tr><td>×</td><td>×</td><td>Znak mnożenia</td></tr>
+<tr><td>÷</td><td>÷</td><td>Znak dzielenia</td></tr>
+<tr><td>°</td><td>°</td><td>Stopień (np. 30°C → 30°C)</td></tr>
+<tr><td>¢</td><td>¢</td><td>Cent</td></tr>
+<tr><td>¶</td><td>¶</td><td>Znak akapitu</td></tr>
+</tbody>
+</table></div>
+`
+
+    expect(preview).toContain(previewContent);
+  });
 });
