@@ -17,7 +17,6 @@ export class TwitterPlugin implements RendererPlugin {
     private scriptLoaded = false;
     /** Map to track the count of each tweet ID for handling duplicates */
     private tweetCounts = new Map<string, number>();
-
     /** Plugin identifier */
     name = 'twitter';
 
