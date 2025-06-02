@@ -77,7 +77,10 @@ export class TwitterPlugin implements RendererPlugin {
      * @returns Text with Twitter/X URLs replaced with placeholder div elements
      */
     preProcess: (text: string) => string = (text: string) => {
-        this.tweetCounts.clear(); // Reset counts for each new text processing
+        if (typeof window === 'undefined') {
+            this.tweetCounts.clear(); // Clear counts in non-browser environments
+        }
+
         return text.replace(
             /(?<!\()(https?:\/\/)?(?:www\.)?(twitter|x)\.com\/(?:#!\/)?(\w+)\/status(es)?\/(\d+)[^)\s]*/g,
             (_match, _protocol, _domain, author, _status, id) => {
