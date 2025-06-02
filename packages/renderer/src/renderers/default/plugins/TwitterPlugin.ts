@@ -15,6 +15,8 @@ export class TwitterPlugin implements RendererPlugin {
     private renderedTweets = new Set<string>();
     /** Flag indicating whether the Twitter widget script has been loaded */
     private scriptLoaded = false;
+    /** Map to track the count of each tweet ID for handling duplicates */
+    private tweetCounts = new Map<string, number>();
 
     /** Plugin identifier */
     name = 'twitter';
@@ -75,9 +77,15 @@ export class TwitterPlugin implements RendererPlugin {
      * @returns Text with Twitter/X URLs replaced with placeholder div elements
      */
     preProcess: (text: string) => string = (text: string) => {
+        this.tweetCounts.clear(); // Reset counts for each new text processing
         return text.replace(
             /(?<!\()(https?:\/\/)?(?:www\.)?(twitter|x)\.com\/(?:#!\/)?(\w+)\/status(es)?\/(\d+)[^)\s]*/g,
-            (_match, _protocol, _domain, author, _status, id) => `<div>twitter-id-${id}-author-${author}</div>`
+            (_match, _protocol, _domain, author, _status, id) => {
+                const count = (this.tweetCounts.get(id) || 0) + 1;
+                this.tweetCounts.set(id, count);
+                const indexSuffix = count > 1 ? `${count}` : '';
+                return `<div>twitter-id-${id}-author-${author}-count-${indexSuffix}</div>\n`;
+            }
         );
     };
 
@@ -89,13 +97,13 @@ export class TwitterPlugin implements RendererPlugin {
      * @returns Text with placeholder elements replaced with tweet embed containers
      */
     postProcess: (text: string) => string = (text: string) => {
-        return text.replace(/<div>twitter-id-(\d+)-author-(\w+)<\/div>/g, (_match, id, author) => {
-            const containerId = `tweet-${id}-${Math.random().toString(36).substring(7)}`;
+        return text.replace(/<div>twitter-id-(\d+)-author-(\w+)-count-([^<]*)<\/div>/g, (_match, id, author, indexSuffix) => {
+            const containerId = `tweet-${id}-${indexSuffix}`;
             const url = `https://x.com/${author}/status/${id}`;
-
-            if (window.twttr?.ready) {
-                setTimeout(() => this.renderTweet(id, containerId), 0);
+            if (typeof window !== 'undefined' && window.twttr?.ready) {
+                setTimeout(() => this.renderTweet(id, containerId), 1000);
             }
+
             return `<div id="${containerId}" class="twitter-tweet"><a href="${url}" target="_blank">${url}</a></div>`;
         });
     };
