@@ -90,10 +90,6 @@ COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.next/standalo
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/.next/static .${TURBO_APP_PATH}/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app${TURBO_APP_PATH}/li[b]/markdown[s]/ .${TURBO_APP_PATH}/lib/markdowns/
 
-ENV APP_ENV_FILE_PATH=/app/apps/.env
-
-RUN touch "${APP_ENV_FILE_PATH}"
-
 ENV BLOG_PORT=3000
 ENV WALLET_PORT=4000
 ENV AUTH_PORT=5000
