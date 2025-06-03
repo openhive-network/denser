@@ -1,5 +1,4 @@
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation, vote, transfer, ApiOperation, ApiTransaction, custom_json } from '@hiveio/wax';
+import { operation, ApiOperation, ApiTransaction, custom_json } from '@hiveio/wax';
 import { KeyType } from '@smart-signer/types/common';
 
 /**
@@ -16,7 +15,6 @@ export async function getOperationForLogin(
   keyType: KeyType,
   loginChallenge: string
 ): Promise<operation> {
-  const hiveChain = await hiveChainService.getHiveChain();
   let operation: operation;
   if (keyType === KeyType.posting) {
     const customJsonLoginChallenge: custom_json = custom_json.create({
