@@ -45,6 +45,10 @@ const FeedPage: FC = () => {
   const { username, tag } = useSiteParams();
   const { ref: refAcc, inView: inViewAcc } = useInView();
   const { user } = useUser();
+
+  // Only enable community query if tag is a valid community name (not a username)
+  const isValidCommunityTag = tag && !tag.startsWith('@');
+
   const {
     data: accountEntriesData,
     isLoading: accountEntriesIsLoading,
@@ -90,7 +94,7 @@ const FeedPage: FC = () => {
     isFetching: communityDataIsFetching,
     error: communityDataError
   } = useQuery(['community', tag, ''], () => getCommunity(tag || '', ''), {
-    enabled: !!tag
+    enabled: !!isValidCommunityTag
   });
   useEffect(() => {
     if (inViewAcc && accountHasNextPage) {
@@ -142,7 +146,7 @@ const FeedPage: FC = () => {
             <div className="col-span-12 mb-5 flex flex-col py-4 md:col-span-10 lg:col-span-8">
               {!accountEntriesIsLoading && accountEntriesData ? (
                 <>
-                  {accountEntriesData.pages[0]?.length !== 0 && user?.username ? (
+                  {accountEntriesData.pages[0]?.length !== 0 ? (
                     accountEntriesData.pages.map((page, index) => {
                       return page ? <PostList data={page} key={`x-${index}`} /> : null;
                     })

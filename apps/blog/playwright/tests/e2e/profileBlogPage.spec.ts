@@ -41,11 +41,12 @@ test.describe('Profile page of @gtg', () => {
   test('validate amount of post items before and after loading more cards', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
+    await page.waitForTimeout(3000);
     const postListItemsBeforeLoadMore = await profilePage.postBlogItem.all();
     expect(await postListItemsBeforeLoadMore.length).toBe(20);
 
     await profilePage.page.keyboard.down('End');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
     const postListItemsAfterScrollDown = await profilePage.postBlogItem.all();
     expect(await postListItemsAfterScrollDown.length).toBe(40);
   });
