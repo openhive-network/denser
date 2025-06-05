@@ -97,6 +97,8 @@ export class PostPage {
   readonly profileFollowBtn: string;
   readonly commentCard: string;
   readonly commentListItem: string;
+  readonly articleBodyParagraph: string;
+  readonly postingToDropdown: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -109,6 +111,7 @@ export class PostPage {
     this.articleTitle = page.locator('[data-testid="article-title"]');
     this.articleBody = page.locator('#articleBody').first();
     this.articleBodyString = '#articleBody';
+    this.articleBodyParagraph = '#articleBody > p';
     this.articleAuthorData = page.locator('[data-testid="author-data"]');
     this.articleAuthor = '[data-testid="author-name-link"]'
     this.articleAuthorName = this.articleAuthorData
@@ -209,6 +212,7 @@ export class PostPage {
     this.postFooterUpvoteTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
     this.postFooterDownvoteTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
     this.firstPostAffiliationTag = page.locator('[data-testid="affiliation-tag-badge"]').first();
+    this.postingToDropdown = page.locator('[data-testid="posting-to-list-trigger"]');
   }
 
   async gotoHomePage() {
