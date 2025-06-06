@@ -3,7 +3,6 @@ import { Button, Input, Separator } from '@ui/components';
 import { ChangeEvent, useState } from 'react';
 import { useDebounce } from '../components/hooks/use-debounce';
 import { getOwnerHistory } from '../lib/hive';
-import { createWaxFoundation } from '@hiveio/wax';
 
 const RecoveryStep1 = () => {
   const [accountName, setAccountName] = useState('');
@@ -43,7 +42,7 @@ const RecoveryStep1 = () => {
   };
 
   const validateAccountOwner = async () => {
-    const wax = await createWaxFoundation();
+    const wax = await hiveChainService.getHiveChain();
     const pubKey = wax.getPrivateKeyFromPassword(accountName, 'owner', password).associatedPublicKey;
     const history = await getOwnerHistory(accountName);
     const owners = history.filter((h) => {

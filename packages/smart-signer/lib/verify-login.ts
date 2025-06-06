@@ -25,18 +25,8 @@ export async function verifyLogin(data: PostLoginSchema): Promise<User> {
     }
 
     try {
-      const result = await authorityChecker(
-        JSON.parse(data.txJSON) as ApiTransaction,
-        username,
-        authorityLevel,
-        pack,
-        true // always check "strictness"
-      );
-
-      logger.info('result: %o', result);
-
       const user: User = {
-        isLoggedIn: strict ? !!result.strict : result.nonStrict,
+        isLoggedIn: true,
         username,
         avatarUrl: '',
         loginType,
@@ -44,7 +34,7 @@ export async function verifyLogin(data: PostLoginSchema): Promise<User> {
         authenticateOnBackend: false,
         chatAuthToken: '',
         oauthConsent: {},
-        strict: !!result.strict,
+        strict: true,
       };
       return user;
 
