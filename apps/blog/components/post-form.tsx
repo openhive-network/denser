@@ -36,6 +36,10 @@ import { usePostMutation } from './hooks/use-post-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { postClassName } from '../pages/[param]/[p2]/[permlink]';
+import DenserMdEditor from '../features/renderer/editor';
+import { Label } from '@ui/components';
+import EditorSwitch from '../features/renderer/editor-switch';
+import MarkdownRenderer from '../features/renderer/markdown';
 
 const logger = getLogger('app');
 
@@ -133,6 +137,7 @@ export default function PostForm({
     });
   }, [preferences.blog_rewards]);
   const [preview, setPreview] = useState(true);
+  const [denserEditor, setDenserEditor] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const [imagePickerState, setImagePickerState] = useState('');
@@ -362,14 +367,34 @@ export default function PostForm({
                 <FormItem>
                   <FormControl>
                     <>
-                      <MdEditor
-                        windowheight={500}
-                        htmlMode={editMode}
-                        onChange={(value) => {
-                          form.setValue('postArea', value);
-                        }}
-                        persistedValue={field.value}
-                      />
+                      <div className="flex items-center gap-2">
+                        <EditorSwitch
+                          checked={denserEditor}
+                          onCheckedChange={(checked) => setDenserEditor(checked)}
+                          id="switch"
+                        />
+                        <Label htmlFor="switch">
+                          {denserEditor === true ? 'Denser Editor' : 'Classic Editor'}
+                        </Label>
+                      </div>
+                      {denserEditor ? (
+                        <DenserMdEditor
+                          text={field.value}
+                          onChange={(value) => {
+                            form.setValue('postArea', value);
+                          }}
+                          data-testid="post-area-editor"
+                        />
+                      ) : (
+                        <MdEditor
+                          windowheight={500}
+                          htmlMode={editMode}
+                          onChange={(value) => {
+                            form.setValue('postArea', value);
+                          }}
+                          persistedValue={field.value}
+                        />
+                      )}
                     </>
                   </FormControl>
                   <div className="flex items-center border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
@@ -580,14 +605,24 @@ export default function PostForm({
           </div>
           {previewContent ? (
             <div className="flex h-full overflow-y-scroll">
-              <RendererContainer
-                body={previewContent}
-                author=""
-                className={
-                  postClassName +
-                  ' w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2'
-                }
-              />
+              {denserEditor ? (
+                <MarkdownRenderer
+                  content={previewContent}
+                  className={
+                    postClassName +
+                    ' w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2'
+                  }
+                />
+              ) : (
+                <RendererContainer
+                  body={previewContent}
+                  author=""
+                  className={
+                    postClassName +
+                    ' w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2'
+                  }
+                />
+              )}
             </div>
           ) : null}
         </div>
