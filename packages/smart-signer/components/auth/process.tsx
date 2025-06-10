@@ -11,7 +11,7 @@ import { useSigner } from '@smart-signer/lib/use-signer';
 import { LoginFormSchema as SignInFormSchema } from '../signin-form';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation } from '@hiveio/wax';
+import { IOnlineTransaction, operation } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -21,6 +21,7 @@ export interface LoginFormSchema extends SignInFormSchema {
 
 export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, strict: boolean) => {
   const authDataRef = useRef<PostLoginSchema | null>(null) as MutableRefObject<PostLoginSchema | null>;
+  const cookieRef = useRef<string | null>(null) as MutableRefObject<string | null>;
   const [loginChallenge, setLoginChallenge] = useState('');
   const [isSigned, setIsSigned] = useState(false);
   const { signerOptions } = useSigner();
@@ -85,14 +86,22 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
         signatures,
         authenticateOnBackend
       };
+
+      cookieRef.current = getAuthCookieString(txBuilder);
+      console.log('cookieRef.current', cookieRef.current);
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       return Promise.reject(error);
     }
 
     authDataRef.current = signInData;
+
     setIsSigned(true);
     return Promise.resolve();
+  };
+
+  const getAuthCookieString = (tx: IOnlineTransaction) => {
+    return `data=${tx.toBinaryForm()};path=/;secure;samesite=strict`;
   };
 
   const submitAuth = async () => {

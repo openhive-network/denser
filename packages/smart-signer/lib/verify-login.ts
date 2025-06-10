@@ -1,7 +1,5 @@
 import { PostLoginSchema } from '@smart-signer/lib/auth/utils';
-import { User, KeyType } from '@smart-signer/types/common';
-import { authorityChecker, AuthorityLevel } from '@smart-signer/lib/authority-checker';
-import { ApiTransaction } from '@hiveio/wax';
+import { User } from '@smart-signer/types/common';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -13,34 +11,25 @@ const logger = getLogger('app');
  * @returns {Promise<User>}
  */
 export async function verifyLogin(data: PostLoginSchema): Promise<User> {
-    const { username, keyType, pack, strict, loginType } = data;
-    logger.info('verifyLogin argument data: %o', data);
-    let authorityLevel: AuthorityLevel;
-    if (keyType === KeyType.posting) {
-      authorityLevel = AuthorityLevel.POSTING;
-    } else if (keyType === KeyType.active) {
-      authorityLevel = AuthorityLevel.ACTIVE;
-    } else {
-      throw new Error('Unsupported keyType');
-    }
+  const { username, keyType, strict, loginType } = data;
+  logger.info('verifyLogin argument data: %o', data);
 
-    try {
-      const user: User = {
-        isLoggedIn: true,
-        username,
-        avatarUrl: '',
-        loginType,
-        keyType,
-        authenticateOnBackend: false,
-        chatAuthToken: '',
-        oauthConsent: {},
-        strict: true,
-      };
-      return user;
-
-    } catch (error) {
-      logger.error('error in verifyLogin', error);
-      throw error;
-    }
+  try {
+    // this basically saves the user to the local storage
+    const user: User = {
+      isLoggedIn: true,
+      username,
+      avatarUrl: '',
+      loginType,
+      keyType,
+      authenticateOnBackend: false,
+      chatAuthToken: '',
+      oauthConsent: {},
+      strict
+    };
+    return user;
+  } catch (error) {
+    logger.error('error in verifyLogin', error);
+    throw error;
   }
-
+}
