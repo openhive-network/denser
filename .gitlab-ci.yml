@@ -544,17 +544,13 @@ publish:
       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
     - |
+      # credits of solution for gitlab bug: https://gitlab.com/gitlab-org/gitlab/-/issues/294292#note_1070210709
       export DEPLOYMENT_ENV_FILE=${!DEPLOYMENT_ENV_FILE}
-      cat "${DEPLOYMENT_ENV_FILE}"
-      echo -e "\nValue of DEPLOYMENT_ENV_FILE is ${DEPLOYMENT_ENV_FILE}"
+      # Make visible all vars in the bash env
+      source "${DEPLOYMENT_ENV_FILE}"
 
       scripts/run_instance.sh \
         --image="$IMAGE_NAME" \
-        --app-scope="$TURBO_APP_SCOPE" \
-        --app-path="$TURBO_APP_PATH" \
-        --api-endpoint="https://api.hive.blog" \
-        --chain-id="beeab0de00000000000000000000000000000000000000000000000000000000" \
-        --images-endpoint="https://images.hive.blog/" \
         --name="$CONTAINER_NAME" \
         --port=$PORT \
         --env-file="${DEPLOYMENT_ENV_FILE}" \
