@@ -54,6 +54,9 @@ export default function rehypeLinkHandler() {
         // If URL parsing fails, treat as unknown link
         node.properties.className = 'unknown-external-link';
         node.properties['data-confirm-navigation'] = true;
+        if (!href.startsWith('https://')) {
+          node.properties.href = `https://${href}`;
+        }
       }
     });
   };
