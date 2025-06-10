@@ -8,17 +8,19 @@ import { KeyType } from '@smart-signer/types/common';
  * @param {string} username
  * @param {KeyType} keyType
  * @param {string} loginChallenge
+ * @param {string} loginType
  * @returns {Promise<operation>}
  */
 export async function getOperationForLogin(
   username: string,
   keyType: KeyType,
-  loginChallenge: string
+  loginChallenge: string,
+  loginType: string
 ): Promise<operation> {
   let operation: operation;
   if (keyType === KeyType.posting) {
     const customJsonLoginChallenge: custom_json = custom_json.create({
-      id: 'denser',
+      id: `denser_${loginType}`,
       json: JSON.stringify(loginChallenge),
       required_auths: [],
       required_posting_auths: [username]
@@ -26,7 +28,7 @@ export async function getOperationForLogin(
     operation = { custom_json: customJsonLoginChallenge };
   } else if (keyType === KeyType.active) {
     const customJsonLoginChallenge: custom_json = custom_json.create({
-      id: 'denser',
+      id: `denser_${loginType}`,
       json: JSON.stringify(loginChallenge),
       required_auths: [username],
       required_posting_auths: []

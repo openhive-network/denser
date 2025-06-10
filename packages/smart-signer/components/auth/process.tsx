@@ -48,10 +48,10 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
 
     try {
       const hiveChain = await hiveChainService.getHiveChain();
-      const operation: operation = await getOperationForLogin(username, keyType, loginChallenge);
-      
-        const expr = new Date();
-        expr.setHours(expr.getHours() + 1);
+      const operation: operation = await getOperationForLogin(username, keyType, loginChallenge, loginType);
+
+      const expr = new Date();
+      expr.setHours(expr.getHours() + 1);
       const txBuilder = await hiveChain.createTransaction(expr);
       txBuilder.pushOperation(operation);
       txBuilder.validate();
@@ -98,8 +98,8 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
   const submitAuth = async () => {
     try {
       if (authDataRef.current) {
-        // TODO: 
-        await signIn.mutateAsync({ data: authDataRef.current }); 
+        // TODO:
+        await signIn.mutateAsync({ data: authDataRef.current });
       } else {
         throw new Error('Unexpected error while processing authorization');
       }
