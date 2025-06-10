@@ -12,6 +12,7 @@ import rehypeKatex from 'rehype-katex';
 import remarkAlert from 'remark-github-blockquote-alert';
 import remarkParse from 'remark-parse';
 import rehypeMathjax from 'rehype-mathjax';
+import rehypeSanitize from 'rehype-sanitize';
 
 export default function MarkdownRenderer({ content, className }: { content: string; className?: string }) {
   return (
@@ -33,7 +34,50 @@ export default function MarkdownRenderer({ content, className }: { content: stri
             }
           ]
         ]}
-        rehypePlugins={[rehypeRaw, rehypeKatex, rehypeHighlight, rehypeMathjax]}
+        rehypePlugins={[
+          rehypeRaw,
+          rehypeKatex,
+          rehypeHighlight,
+          rehypeMathjax,
+          [
+            rehypeSanitize,
+            {
+              attributes: {
+                '*': ['className', 'style'],
+                a: ['href', 'title'],
+                img: ['src', 'alt']
+              },
+              tagNames: [
+                'span',
+                'div',
+                'p',
+                'a',
+                'ul',
+                'ol',
+                'li',
+                'h1',
+                'h2',
+                'h3',
+                'h4',
+                'h5',
+                'h6',
+                'u',
+                'strong',
+                'em',
+                'blockquote',
+                'code',
+                'pre',
+                'img',
+                'table',
+                'thead',
+                'tbody',
+                'tr',
+                'th',
+                'td'
+              ]
+            }
+          ]
+        ]}
       />
     </div>
   );
