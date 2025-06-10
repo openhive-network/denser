@@ -13,6 +13,8 @@ import remarkAlert from 'remark-github-blockquote-alert';
 import remarkParse from 'remark-parse';
 import rehypeMathjax from 'rehype-mathjax';
 import rehypeSanitize from 'rehype-sanitize';
+import remarkFlexibleParagraphs from 'remark-flexible-paragraphs';
+import remarkFlexibleMarkers from 'remark-flexible-markers';
 
 export default function MarkdownRenderer({ content, className }: { content: string; className?: string }) {
   return (
@@ -21,6 +23,8 @@ export default function MarkdownRenderer({ content, className }: { content: stri
         children={content}
         remarkPlugins={[
           remarkParse,
+          remarkFlexibleParagraphs,
+          remarkFlexibleMarkers,
           remarkAlert,
           remarkMath,
           remarkSubSup,
@@ -73,7 +77,10 @@ export default function MarkdownRenderer({ content, className }: { content: stri
                 'tbody',
                 'tr',
                 'th',
-                'td'
+                'td',
+                'sub',
+                'sup',
+                'mark'
               ]
             }
           ]

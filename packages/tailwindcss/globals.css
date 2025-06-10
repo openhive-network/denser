@@ -216,3 +216,219 @@ summary {
   text-align: right;
   cursor: pointer;
 }
+
+.flexible-marker {
+  padding: 2px 4px;
+  border-radius: 3px;
+  opacity: 0.8;
+}
+
+.flexible-marker-amber {
+  background-color: rgb(255, 191, 0);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-blue {
+  background-color: rgb(0, 0, 255);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-cyan {
+  background-color: rgb(0, 255, 255);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-brown {
+  background-color: rgb(165, 42, 42);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-espresso {
+  background-color: rgb(99, 57, 33);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-fuchsia {
+  background-color: rgb(255, 0, 255);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-green {
+  background-color: rgb(0, 128, 0);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-hotpink {
+  background-color: rgb(255, 105, 180);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-indigo {
+  background-color: rgb(75, 0, 130);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-jade {
+  background-color: rgb(0, 168, 107);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-kiwi {
+  background-color: rgb(142, 229, 63);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-lime {
+  background-color: rgb(0, 255, 0);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-magenta {
+  background-color: rgb(255, 0, 255);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-navyblue {
+  background-color: rgb(0, 0, 128);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-orange {
+  background-color: rgb(255, 165, 0);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-purple {
+  background-color: rgb(128, 0, 128);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-pink {
+  background-color: rgb(255, 192, 203);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-red {
+  background-color: rgb(255, 0, 0);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-silver {
+  background-color: rgb(192, 192, 192);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-teal {
+  background-color: rgb(0, 128, 128);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-umber {
+  background-color: rgb(99, 81, 71);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-violet {
+  background-color: rgb(238, 130, 238);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-white {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-gray {
+  background-color: rgb(128, 128, 128);
+  color: rgb(255, 255, 255);
+}
+.flexible-marker-yellow {
+  background-color: rgb(255, 255, 0);
+  color: rgb(0, 0, 0);
+}
+.flexible-marker-black {
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+}
+
+.dark .flexible-marker-amber {
+  background-color: rgb(153, 115, 0);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-blue {
+  background-color: rgb(0, 0, 153);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-cyan {
+  background-color: rgb(0, 153, 153);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-brown {
+  background-color: rgb(102, 26, 26);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-espresso {
+  background-color: rgb(61, 35, 20);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-fuchsia {
+  background-color: rgb(153, 0, 153);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-green {
+  background-color: rgb(0, 77, 0);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-hotpink {
+  background-color: rgb(153, 63, 108);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-indigo {
+  background-color: rgb(45, 0, 78);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-jade {
+  background-color: rgb(0, 101, 64);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-kiwi {
+  background-color: rgb(85, 137, 38);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-lime {
+  background-color: rgb(0, 153, 0);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-magenta {
+  background-color: rgb(153, 0, 153);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-navyblue {
+  background-color: rgb(0, 0, 77);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-orange {
+  background-color: rgb(153, 99, 0);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-purple {
+  background-color: rgb(77, 0, 77);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-pink {
+  background-color: rgb(153, 115, 122);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-red {
+  background-color: rgb(153, 0, 0);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-silver {
+  background-color: rgb(115, 115, 115);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-teal {
+  background-color: rgb(0, 77, 77);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-umber {
+  background-color: rgb(59, 49, 43);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-violet {
+  background-color: rgb(143, 78, 143);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-white {
+  background-color: rgb(153, 153, 153);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-gray {
+  background-color: rgb(77, 77, 77);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-yellow {
+  background-color: rgb(153, 153, 0);
+  color: rgb(255, 255, 255);
+}
+.dark .flexible-marker-black {
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+}
