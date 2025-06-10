@@ -49,7 +49,8 @@ export abstract class AbstractEmbedder {
 
         // HtmlReady inserts ~~~ embed:${id} type ~~~
         for (let section of input.split('~~~ embed:')) {
-            const match = section.match(/^([A-Za-z0-9?/=_-]+) ([^ ]*) ~~~/);
+            const match = section.match(/^([\w/?=.-]+) ([^ ]*) ~~~/);
+
             if (match && match.length >= 3) {
                 const id = match[1];
                 const type = match[2];

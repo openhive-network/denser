@@ -11,9 +11,13 @@ declare global {
  * Handles both posts and profile URLs, with support for dark mode.
  */
 export class InstagramPlugin implements RendererPlugin {
+    /** Set of container IDs for Instagram posts that have been rendered to prevent duplicate rendering */
     private renderedPosts = new Set<string>();
+    /** Flag indicating whether the Instagram embed script has been loaded */
     private scriptLoaded = false;
-    // Plugin name
+    /** Identifier for the plugin, used to register and identify the plugin in the renderer */
+    private linkCounts = new Map<string, number>();
+    /** Plugin identifier */
     name = 'instagram';
 
     /**
@@ -26,20 +30,20 @@ export class InstagramPlugin implements RendererPlugin {
     }
 
     /**
-     * Loads the Instagram embed script asynchronously
+     * Loads the Instagram embed script if it hasn't been loaded already.
      * @private
      */
     private loadInstagramScript() {
-        if (this.scriptLoaded || window?.instgrm) return;
-
-        const script = document.createElement('script');
-        script.src = 'https://www.instagram.com/embed.js';
-        script.async = true;
-        script.onload = () => {
-            this.scriptLoaded = true;
-            this.processQueuedPosts();
-        };
-        document.head.appendChild(script);
+        if (!this.scriptLoaded || !window?.instgrm) {
+            const script = document.createElement('script');
+            script.src = 'https://www.instagram.com/embed.js';
+            script.async = true;
+            script.onload = () => {
+                this.scriptLoaded = true;
+                this.processQueuedPosts();
+            };
+            document.head.appendChild(script);
+        }
     }
 
     /**
@@ -95,10 +99,16 @@ export class InstagramPlugin implements RendererPlugin {
      * @returns The processed text with Instagram URLs marked for embedding
      */
     preProcess = (text: string): string => {
+        if (typeof window === 'undefined') {
+            this.linkCounts.clear(); // Clear counts in non-browser environments
+        }
         // Match Instagram URLs not wrapped in parentheses
         return text.replace(/(?<!\()(https?:\/\/(www\.)?instagram\.com\/[^\s)]+)/g, (match) => {
+            const count = (this.linkCounts.get(match) || 0) + 1;
+            this.linkCounts.set(match, count);
+            const indexSuffix = count > 1 ? `${count}` : '';
             const embedUrl = this.getInstagramMetadataFromLink(match);
-            return embedUrl ? `<div>instagram-url-${encodeURIComponent(embedUrl)}</div>` : match;
+            return embedUrl ? `&nbsp;<div>instagram-url-${encodeURIComponent(embedUrl)}-count-${indexSuffix}</div>&nbsp;` : match;
         });
     };
 
@@ -109,12 +119,12 @@ export class InstagramPlugin implements RendererPlugin {
      */
     postProcess = (text: string): string => {
         // Replace Instagram URLs with embeds
-        return text.replace(/<div>instagram-url-(.*?)<\/div>/g, (_match, encodedUrl) => {
+        return text.replace(/<div>instagram-url-(.*?)-count-(.*?)<\/div>/g, (_match, encodedUrl, count) => {
             const url = decodeURIComponent(encodedUrl);
-            const containerId = `instagram-${Math.random().toString(36).substring(7)}`;
-
-            setTimeout(() => this.renderPost(url, containerId), 0);
-            return `<div id="${containerId}" class="instagram-embed"></div>`;
+            const match = url.match(/\/(p|reel|reels)\/([^/?]+)/);
+            const containerId = `instagram-${match}-${count}`;
+            setTimeout(() => this.renderPost(url, containerId), 1000);
+            return `<div id="${containerId}" class="instagram-embed"><a href="${url}" target="_blank">${url}</a></div>`;
         });
     };
 
