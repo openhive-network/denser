@@ -544,6 +544,10 @@ publish:
       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
     - |
+      export DEPLOYMENT_ENV_FILE=${!DEPLOYMENT_ENV_FILE}
+      cat "${DEPLOYMENT_ENV_FILE}"
+      echo -e "\nValue of DEPLOYMENT_ENV_FILE is ${DEPLOYMENT_ENV_FILE}"
+
       scripts/run_instance.sh \
         --image="$IMAGE_NAME" \
         --app-scope="$TURBO_APP_SCOPE" \
@@ -553,6 +557,7 @@ publish:
         --images-endpoint="https://images.hive.blog/" \
         --name="$CONTAINER_NAME" \
         --port=$PORT \
+        --env-file="${DEPLOYMENT_ENV_FILE}" \
         --detach
   tags:
     - hs-denser
@@ -746,12 +751,8 @@ develop:deploy-blog-mainnet:
   variables:
     CONTAINER_NAME: denser-dev-blog
     PORT: 8111
-    TURBO_APP_SCOPE: '@hive/blog'
-    TURBO_APP_PATH: '/apps/blog'
-    SITE_DOMAIN: https://blog.dev.openhive.network
-    WALLET_ENDPOINT: https://wallet.dev.openhive.network
-    EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $BLOG_IMAGE_NAME
+    DEPLOYMENT_ENV_FILE: "MAINNET_DEV_DEPLOYMENT_ENV"
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
   environment:
