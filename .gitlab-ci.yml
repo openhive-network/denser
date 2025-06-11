@@ -3,8 +3,7 @@ stages:
   - replay-and-sync
   - test
   - test-report-aggregate
-  - deploy-mainnet
-  - deploy-mirrornet
+  - deploy
   - publish
   - cleanup
 
@@ -534,9 +533,9 @@ publish:
   tags:
     - public-runner-docker
 
-.deploy_template_mainnet:
+.deploy_template:
   extends: .job-defaults
-  stage: deploy-mainnet
+  stage: deploy
   before_script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
@@ -558,25 +557,9 @@ publish:
   tags:
     - hs-denser
 
-.deploy_template_mirrornet:
-  extends: .deploy_template_mainnet
-  stage: deploy-mirrornet
-  script:
-    - |
-      scripts/run_instance.sh \
-        --image="$IMAGE_NAME" \
-        --app-scope="$TURBO_APP_SCOPE" \
-        --app-path="$TURBO_APP_PATH" \
-        --api-endpoint="https://api.fake.openhive.network/" \
-        --chain-id="42" \
-        --images-endpoint="https://images.hive.blog/" \
-        --name="$CONTAINER_NAME" \
-        --port=$PORT \
-        --detach
-
 # Main branch deployments (manual)
 main:deploy-blog-mainnet:
-  extends: .deploy_template_mainnet
+  extends: .deploy_template
   needs:
     - docker-build-blog
     - e2e-tests-blog
@@ -598,7 +581,7 @@ main:deploy-blog-mainnet:
     on_stop: main:stop-blog-mainnet
 
 main:deploy-wallet-mainnet:
-  extends: .deploy_template_mainnet
+  extends: .deploy_template
   needs:
     - docker-build-wallet
     - e2e-tests-wallet
@@ -620,7 +603,7 @@ main:deploy-wallet-mainnet:
     on_stop: main:stop-wallet-mainnet
 
 main:deploy-blog-mirrornet:
-  extends: .deploy_template_mirrornet
+  extends: .deploy_template
   needs:
     - docker-build-blog
     - e2e-tests-blog
@@ -642,7 +625,7 @@ main:deploy-blog-mirrornet:
     on_stop: main:stop-blog-mirrornet
 
 main:deploy-wallet-mirrornet:
-  extends: .deploy_template_mirrornet
+  extends: .deploy_template
   needs:
     - docker-build-wallet
     - e2e-tests-wallet
@@ -740,7 +723,7 @@ main:stop-wallet-mirrornet:
 # Develop branch deployments
 
 develop:deploy-blog-mainnet:
-  extends: .deploy_template_mainnet
+  extends: .deploy_template
   needs:
     - docker-build-blog
     - e2e-tests-blog
@@ -757,7 +740,7 @@ develop:deploy-blog-mainnet:
     on_stop: develop:stop-blog-mainnet
 
 develop:deploy-wallet-mainnet:
-  extends: .deploy_template_mainnet
+  extends: .deploy_template
   needs:
     - docker-build-wallet
     - e2e-tests-wallet
@@ -774,19 +757,15 @@ develop:deploy-wallet-mainnet:
     on_stop: develop:stop-wallet-mainnet
 
 develop:deploy-blog-mirrornet:
-  extends: .deploy_template_mirrornet
+  extends: .deploy_template
   needs:
     - docker-build-blog
     - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-dev-blog-mirror
     PORT: 8211
-    TURBO_APP_SCOPE: '@hive/blog'
-    TURBO_APP_PATH: '/apps/blog'
-    SITE_DOMAIN: https://blog.dev.fake.openhive.network
-    WALLET_ENDPOINT: https://wallet.dev.fake.openhive.network
-    EXPLORER_DOMAIN: https://testexplorer.openhive.network
     IMAGE_NAME: $BLOG_IMAGE_NAME
+    DEPLOYMENT_ENV_FILE: "MIRRORNET_DEV_DEPLOYMENT_ENV"
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
   environment:
@@ -795,19 +774,15 @@ develop:deploy-blog-mirrornet:
     on_stop: develop:stop-blog-mirrornet
 
 develop:deploy-wallet-mirrornet:
-  extends: .deploy_template_mirrornet
+  extends: .deploy_template
   needs:
     - docker-build-wallet
     - e2e-tests-wallet
   variables:
     CONTAINER_NAME: denser-dev-wallet-mirror
     PORT: 8222
-    TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
-    SITE_DOMAIN: https://wallet.dev.fake.openhive.network
-    BLOG_DOMAIN: https://blog.dev.fake.openhive.network
-    EXPLORER_DOMAIN: https://testexplorer.openhive.network
     IMAGE_NAME: $WALLET_IMAGE_NAME
+    DEPLOYMENT_ENV_FILE: "MIRRORNET_DEV_DEPLOYMENT_ENV"
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
   environment:
