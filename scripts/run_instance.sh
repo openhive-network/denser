@@ -66,6 +66,8 @@ done
 
 (docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop "$CONTAINER_NAME") || true
 
+docker container rm --force "$CONTAINER_NAME" || true
+
 RUN_OPTIONS=(
     "--rm"
     "--publish" "$PORT:$PORT"
