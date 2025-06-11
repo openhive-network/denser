@@ -566,12 +566,8 @@ main:deploy-blog-mainnet:
   variables:
     CONTAINER_NAME: denser-main-blog
     PORT: 9111
-    TURBO_APP_SCOPE: '@hive/blog'
-    TURBO_APP_PATH: '/apps/blog'
-    SITE_DOMAIN: https://blog.openhive.network
-    WALLET_ENDPOINT: https://wallet.openhive.network
-    EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $BLOG_IMAGE_NAME
+    DEPLOYMENT_ENV_FILE: "MAINNET_PROD_DEPLOYMENT_ENV"
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
@@ -588,12 +584,8 @@ main:deploy-wallet-mainnet:
   variables:
     CONTAINER_NAME: denser-main-wallet
     PORT: 9122
-    TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
-    SITE_DOMAIN: https://wallet.openhive.network
-    BLOG_DOMAIN: https://blog.openhive.network
-    EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $WALLET_IMAGE_NAME
+    DEPLOYMENT_ENV_FILE: "MAINNET_PROD_DEPLOYMENT_ENV"
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
