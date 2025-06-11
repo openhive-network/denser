@@ -12,7 +12,7 @@ const DenserMdEditor = ({ text, onChange }: { text: string; onChange: (text: str
       onChange={onChange}
       preview={false}
       theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
-      toolbarsExclude={['github', 'previewOnly', 'preview', 'save', 'mermaid']}
+      toolbarsExclude={['github', 'previewOnly', 'preview', 'save', 'mermaid', '=']}
     />
   );
 };

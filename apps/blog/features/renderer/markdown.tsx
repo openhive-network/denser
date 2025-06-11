@@ -76,7 +76,8 @@ export default function MarkdownRenderer({ content, className }: { content: stri
                 attributes: {
                   '*': ['className', 'style', 'id'],
                   a: ['href', 'title'],
-                  img: ['src', 'alt']
+                  img: ['src', 'alt'],
+                  input: ['checked']
                 },
                 tagNames: [
                   'span',
@@ -108,7 +109,8 @@ export default function MarkdownRenderer({ content, className }: { content: stri
                   'sub',
                   'sup',
                   'mark',
-                  'br'
+                  'br',
+                  'input'
                 ]
               }
             ],
