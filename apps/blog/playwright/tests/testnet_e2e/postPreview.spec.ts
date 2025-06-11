@@ -264,8 +264,7 @@ X/Twitter:
 <p class=\"my-0\"><a href=\"https://www.example.com/my%20great%20page\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">link1</a></p>
 <p class=\"my-0\"><a href=\"https://www.example.com/my great page\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">link2</a></p>
 <p class=\"my-0\">X/Twitter:<br>
-<a href=\"https://<div>twitter-id-1889804218132832323-author-ShouldHaveCat</div>\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">X link</a></p>`;
-
+<a href=\"https://&amp;nbsp;<div>twitter-id-1889804218132832323-author-ShouldHaveCat-count-4</div>&amp;nbsp;\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">X link</a></p>`
     expect(preview).toContain(previewContent);
   });
 
@@ -422,13 +421,13 @@ Hello Mr. @sketch.and.jam, how are you?`;
 
     // await denserAutoTest0Page.page.waitForTimeout(3000)
 
-    const previewContent: string =    `<p class=\"my-0\">Link inside the blockquote should be visible.</p>
+    const previewContent: string =`<p class=\"my-0\">Link inside the blockquote should be visible.</p>
 <blockquote>
-<p class=\"my-0\">Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. <a href=\"https://peakd.com/silvergoldstackers/@silverd510/on-the-first-day-of\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\">source</a></p>
+<p class=\"my-0\">Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. <a href=\"https://peakd.com/silvergoldstackers/@silverd510/on-the-first-day-of\">source</a></p>
 </blockquote>
 <p class=\"my-0\">Hive User links:<br>
-Hello Mr. <a href=\"/@sketch.and.jam\">@sketch.and.jam</a>, how are you?</p>
-`
+Hello Mr. <a href=\"/@sketch.and.jam\">@sketch.and.jam</a>, how are you?</p>`
+
 
     expect(preview).toContain(previewContent);
   });
