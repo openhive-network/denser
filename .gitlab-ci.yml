@@ -725,7 +725,7 @@ develop:deploy-blog-mainnet:
     IMAGE_NAME: $BLOG_IMAGE_NAME
     DEPLOYMENT_ENV_FILE: "MAINNET_DEV_DEPLOYMENT_ENV"
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "bw_eliminate_private_secrets"
   environment:
     name: develop-blog-mainnet
     url: https://blog.dev.openhive.network
@@ -759,7 +759,7 @@ develop:deploy-blog-mirrornet:
     IMAGE_NAME: $BLOG_IMAGE_NAME
     DEPLOYMENT_ENV_FILE: "MIRRORNET_DEV_DEPLOYMENT_ENV"
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "bw_eliminate_private_secrets"
   environment:
     name: develop-blog-mirrornet
     url: https://blog.dev.fake.openhive.network
@@ -792,7 +792,7 @@ develop:stop-blog-mainnet:
   variables:
     CONTAINER_NAME: denser-dev-blog
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "bw_eliminate_private_secrets"
       when: manual
       allow_failure: true
   environment:
