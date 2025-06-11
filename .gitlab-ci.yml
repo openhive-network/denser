@@ -764,12 +764,8 @@ develop:deploy-wallet-mainnet:
   variables:
     CONTAINER_NAME: denser-dev-wallet
     PORT: 8122
-    TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
-    SITE_DOMAIN: https://wallet.dev.openhive.network
-    BLOG_DOMAIN: https://blog.dev.openhive.network
-    EXPLORER_DOMAIN: https://explore.openhive.network
     IMAGE_NAME: $WALLET_IMAGE_NAME
+    DEPLOYMENT_ENV_FILE: "MAINNET_DEV_DEPLOYMENT_ENV"
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
   environment:
