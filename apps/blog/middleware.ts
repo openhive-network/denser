@@ -1,8 +1,20 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@smart-signer/lib/middleware-challenge-cookies';
+import { createWaxFoundation } from '@hiveio/wax';
+
+const wax = await createWaxFoundation();
+
+const parseAuthCookie = (cookie: string) => {
+  const binary = Buffer.from(cookie, 'base64').toString('utf-8');
+  const tx = wax.convertTransactionFromBinaryForm(binary);
+  return tx;
+};
 
 export async function middleware(request: NextRequest) {
+  console.log('middleware', request.cookies.get('data')?.value);
+  const tx = parseAuthCookie(request.cookies.get('data')?.value || '');
+  console.log('tx:', tx);
 
   const { pathname } = request.nextUrl;
   const res = NextResponse.next();

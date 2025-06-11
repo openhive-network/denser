@@ -88,7 +88,7 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
       };
 
       cookieRef.current = getAuthCookieString(txBuilder);
-      console.log('cookieRef.current', cookieRef.current);
+      document.cookie = getAuthCookieString(txBuilder);
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       return Promise.reject(error);
@@ -101,7 +101,9 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
   };
 
   const getAuthCookieString = (tx: IOnlineTransaction) => {
-    return `data=${tx.toBinaryForm()};path=/;secure;samesite=strict`;
+    const binaryData = tx.toBinaryForm();
+    const base64Data = Buffer.from(binaryData).toString('base64');
+    return `data=${base64Data};path=/;secure;samesite=strict`;
   };
 
   const submitAuth = async () => {
