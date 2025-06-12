@@ -36,10 +36,10 @@ import { usePostMutation } from './hooks/use-post-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { postClassName } from '../pages/[param]/[p2]/[permlink]';
-import DenserMdEditor from '../features/renderer/editor';
+import DenserMdEditor from '../features/md-editor/editor';
 import { Label } from '@ui/components';
-import EditorSwitch from '../features/renderer/editor-switch';
-import MarkdownRenderer from '../features/renderer/markdown';
+import EditorSwitch from '../features/post-form/editor-switch';
+import MarkdownRenderer from '../features/renderer/renderer';
 
 const logger = getLogger('app');
 

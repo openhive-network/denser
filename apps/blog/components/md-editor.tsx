@@ -66,7 +66,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
       message: buf,
       password: ''
     });
-    
+
     const imageOwner = signer.authorityUsername || signer.username;
 
     const postUrl = `${env('IMAGES_ENDPOINT')}${imageOwner}/${sig}`;
@@ -112,7 +112,6 @@ export const onImageDrop = async (
     const file = dataTransfer.files.item(index);
     if (file) files.push(file);
   }
-
   await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode)));
 };
 
@@ -146,7 +145,13 @@ interface MdEditorProps {
   windowheight: number;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, htmlMode, windowheight }) => {
+const MdEditor: FC<MdEditorProps> = ({
+  onChange,
+  persistedValue = '',
+  placeholder,
+  htmlMode,
+  windowheight
+}) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
@@ -192,6 +197,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
+      console.log(event.dataTransfer);
       await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer, htmlMode);
     },
     [htmlMode, setFormValue, signer]
@@ -242,15 +248,12 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   });
 
   const spoilerBtn = (): commands.ICommand => ({
-    name: "Add Spoiler",
-    keyCommand: "spoiler",
+    name: 'Add Spoiler',
+    keyCommand: 'spoiler',
     render: (
       command: commands.ICommand,
       disabled: boolean | undefined,
-      executeCommand: (
-        arg0: commands.ICommand<string>,
-        arg1: string | undefined
-      ) => void
+      executeCommand: (arg0: commands.ICommand<string>, arg1: string | undefined) => void
     ) => {
       return (
         <Button
@@ -263,15 +266,13 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       );
     },
     execute: (_: commands.ExecuteState, api: TextAreaTextApi) => {
-      const spoilerTemplate = ">! [Click to reveal] Your spoiler content";
+      const spoilerTemplate = '>! [Click to reveal] Your spoiler content';
       const newState = api.replaceSelection(spoilerTemplate);
       api.setSelectionRange({
-        start:
-          newState.selection.start +
-          spoilerTemplate.indexOf("Your spoiler content"),
-        end: newState.selection.end,
+        start: newState.selection.start + spoilerTemplate.indexOf('Your spoiler content'),
+        end: newState.selection.end
       });
-    },
+    }
   });
 
   return !imageUserBlocklist?.includes(user.username) ? (
