@@ -19,10 +19,14 @@ import remarkInternalLinks from './plugins/remark-internal-links';
 import rehypeStringify from 'rehype-stringify';
 import remarkRehype from 'remark-rehype';
 import rehypeLinkHandler from './plugins/rehype-link-handler';
-import { getXMetadataFromLink, TwitterEmbedder } from './components/embed-x';
+import { getXMetadataFromLink, TwitterEmbedder } from './embeds/twitter-x';
 import { LeavePageDialog } from './leave-page-dialog';
 import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import { getYoutubeaFromLink, YoutubeEmbed } from './embeds/youtube';
+import { getTwitchMetadataFromLink, TwitchEmbed } from './embeds/twitch';
+import { getThreespeakMetadataFromLink, ThreeSpeakEmbed } from './embeds/threespeak';
+import { getInstagramMetadataFromLink, InstagramEmbedder } from './embeds/instagram';
 
 export default function MarkdownRenderer({ content, className }: { content: string; className?: string }) {
   return (
@@ -111,6 +115,41 @@ export default function MarkdownRenderer({ content, className }: { content: stri
 const components: Components = {
   a: ({ href, children, download, type, className, ...props }) => {
     const url = href ?? '';
+    const twitch = getTwitchMetadataFromLink(url);
+    if (twitch) {
+      return (
+        <div key={`twitter-embed-${twitch}`} suppressHydrationWarning>
+          <TwitchEmbed url={twitch} />
+        </div>
+      );
+    }
+
+    const threeSpeak = getThreespeakMetadataFromLink(url);
+    if (threeSpeak) {
+      return (
+        <div key={`twitter-embed-${threeSpeak}`} suppressHydrationWarning>
+          <ThreeSpeakEmbed id={threeSpeak} />
+        </div>
+      );
+    }
+
+    const instagram = getInstagramMetadataFromLink(url);
+    if (instagram) {
+      return (
+        <div key={`twitter-embed-${instagram}`} suppressHydrationWarning>
+          <InstagramEmbedder href={instagram} />
+        </div>
+      );
+    }
+
+    const youtube = getYoutubeaFromLink(url);
+    if (youtube) {
+      return (
+        <div key={`twitter-embed-${youtube.id}`} suppressHydrationWarning>
+          <YoutubeEmbed url={youtube.url} id={youtube.id} />
+        </div>
+      );
+    }
 
     const x = getXMetadataFromLink(url);
     if (x) {
@@ -120,6 +159,7 @@ const components: Components = {
         </div>
       );
     }
+
     if (className?.includes('link-external')) {
       if (className?.includes('safe-external-link')) {
         return (
