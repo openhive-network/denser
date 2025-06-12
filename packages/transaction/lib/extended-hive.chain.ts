@@ -3,8 +3,10 @@ import {
   RcAccount,
   GetDynamicGlobalPropertiesResponse,
   GetDynamicGlobalPropertiesRequest,
-  asset
+  asset,
+  NaiAsset
 } from '@hiveio/wax';
+import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -248,6 +250,154 @@ export type SavingsWithdrawals = {
   }[];
 };
 
+export interface IPost {
+  active_votes: {
+    rshares: number;
+    voter: string;
+  };
+  author: string;
+  author_payout_value: string;
+  author_reputation: number;
+  author_role: string;
+  author_title: string;
+  beneficiaries: Array<unknown>;
+  blacklists: Array<unknown>;
+  body: string;
+  category: string;
+  children: number;
+  community: string;
+  community_title: string;
+  created: string;
+  curator_payout_value: string;
+  depth: number;
+  is_paidout: boolean;
+  json_metadata: {
+    app: string;
+    description: string;
+    format: string;
+    image: [string];
+    tags: string[];
+    users: Array<unknown>;
+  };
+  max_accepted_payout: string;
+  net_rshares: number;
+  payout: number;
+  payout_at: string;
+  pending_payout_value: string;
+  percent_hbd: number;
+  permlink: string;
+  post_id: number;
+  promoted: string;
+  replies: Array<unknown>;
+  stats: {
+    flag_weight: number;
+    gray: boolean;
+    hide: boolean;
+    total_votes: number;
+  };
+  title: string;
+  updated: string;
+  url: string;
+}
+
+export interface IVote {
+  percent: number;
+  reputation: number;
+  rshares: string;
+  time: string;
+  timestamp?: number;
+  voter: string;
+  weight: number;
+  reward?: number;
+}
+
+export interface BlogEntry {
+  blog: string;
+  entry_id: number;
+  author: string;
+  permlink: string;
+  reblogged_on: string;
+}
+
+export interface IWitnessSchedule {
+  id: number;
+  current_virtual_time: string;
+  next_shuffle_block_num: number;
+  current_shuffled_witnesses: string[];
+  num_scheduled_witnesses: number;
+  top19_weight: number;
+  timeshare_weight: number;
+  miner_weight: number;
+  witness_pay_normalization_factor: number;
+  median_props: {
+    account_creation_fee: string;
+    maximum_block_size: number;
+    hbd_interest_rate: number;
+  };
+  majority_version: string;
+  max_voted_witnesses: number;
+  max_miner_witnesses: number;
+  max_runner_witnesses: number;
+  hardfork_required_witnesses: number;
+}
+
+export interface IFeedHistory {
+  current_median_history: {
+    base: NaiAsset;
+    quote: NaiAsset;
+  };
+  price_history: [
+    {
+      base: NaiAsset;
+      quote: NaiAsset;
+    }
+  ];
+}
+
+export interface IRewardFund {
+  recent_claims: string;
+  reward_balance: string;
+}
+
+export interface WithdrawRoute {
+  auto_vest: boolean;
+  from_account: string;
+  id: number;
+  percent: number;
+  to_account: string;
+}
+
+export interface IConversionRequest {
+  amount: string;
+  conversion_date: string;
+  id: number;
+  owner: string;
+  requestid: number;
+}
+
+export interface SavingsWithdrawRequest {
+  id: number;
+  from: string;
+  to: string;
+  memo: string;
+  request_id: number;
+  amount: string;
+  complete: string;
+}
+
+class VerifySignaturesRequest {
+  hash!: string;
+  signatures!: string[];
+  required_other!: string[];
+  required_active!: string[];
+  required_owner!: string[];
+  required_posting!: string[];
+}
+
+class VerifySignaturesResponse {
+  public valid!: boolean;
+}
+
 export type ExtendedNodeApi = {
   bridge: {
     get_post_header: TWaxApiRequest<
@@ -309,6 +459,13 @@ export type ExtendedNodeApi = {
     get_trade_history: TWaxApiRequest<(string | number)[], IOrdersDataItem[]>;
     get_recent_trades: TWaxApiRequest<number[], IRecentTradesData[]>;
     get_owner_history: TWaxApiRequest<string[], OwnerHistory>;
+    get_follow_count: TWaxApiRequest<string[], AccountFollowStats>;
+    get_content: TWaxApiRequest<string[], IPost>;
+    get_market_history_buckets: TWaxApiRequest<void[], number[]>;
+    get_active_votes: TWaxApiRequest<string[], IVote[]>;
+    get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
+    get_reblogged_by: TWaxApiRequest<[string, string], string[]>;
+    get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
   };
   rc_api: {
     find_rc_accounts: TWaxApiRequest<string[], { rc_accounts: RcAccount[] }>;
@@ -320,5 +477,15 @@ export type ExtendedNodeApi = {
       GetDynamicGlobalPropertiesRequest,
       GetDynamicGlobalPropertiesResponse
     >;
+    get_feed_history: TWaxApiRequest<void, IFeedHistory>;
+    lookup_accounts: TWaxApiRequest<(string | number)[], string[]>;
+    get_reward_fund: TWaxApiRequest<string[], IRewardFund>;
+    get_withdraw_routes: TWaxApiRequest<string[], WithdrawRoute[]>;
+    get_conversion_requests: TWaxApiRequest<string[], IConversionRequest[]>;
+    get_savings_withdraw_from: TWaxApiRequest<string[], SavingsWithdrawRequest[]>;
+    verify_signatures: {
+      params: VerifySignaturesRequest;
+      result: VerifySignaturesResponse;
+    };
   };
 };
