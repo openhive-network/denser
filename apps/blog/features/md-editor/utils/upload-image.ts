@@ -23,7 +23,7 @@ const readFileAsBuffer = (file: File): Promise<Buffer> => {
 const createImageSignature = async (file: File, signer: Signer): Promise<string> => {
   const data = await readFileAsBuffer(file);
   const prefix = Buffer.from('ImageSigningChallenge');
-  // @ts-expect-error
+  // @ts-ignore-next-line
   const buf = Buffer.concat([prefix, data]);
 
   return signer.signChallenge({
