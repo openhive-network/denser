@@ -49,11 +49,9 @@ export default function rehypeLinkHandler() {
 
         // Unknown domains - use confirmation dialog
         node.properties.className = 'unknown-external-link link-external';
-        node.properties['data-confirm-navigation'] = true;
       } catch {
         // If URL parsing fails, treat as unknown link
         node.properties.className = 'unknown-external-link';
-        node.properties['data-confirm-navigation'] = true;
         if (!href.startsWith('https://')) {
           node.properties.href = `https://${href}`;
         }

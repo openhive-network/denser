@@ -1,6 +1,6 @@
 import 'highlight.js/styles/github.css';
 import 'remark-github-blockquote-alert/alert.css';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import rehypeHighlight from 'rehype-highlight';
@@ -19,31 +19,17 @@ import remarkInternalLinks from './plugins/remark-internal-links';
 import rehypeStringify from 'rehype-stringify';
 import remarkRehype from 'remark-rehype';
 import rehypeLinkHandler from './plugins/rehype-link-handler';
-import { LeavePageDialog } from '@/blog/components/leave-page-dialog';
-import { useEffect, useState } from 'react';
+import { getXMetadataFromLink, TwitterEmbedder } from './components/embed-x';
+import { LeavePageDialog } from './leave-page-dialog';
+import { ExternalLink } from 'lucide-react';
+import Link from 'next/link';
 
 export default function MarkdownRenderer({ content, className }: { content: string; className?: string }) {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [pendingUrl, setPendingUrl] = useState<string>('');
-
-  useEffect(() => {
-    const handleLinkClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a[data-confirm-navigation]');
-      if (link) {
-        e.preventDefault();
-        setPendingUrl(link.getAttribute('href') || '');
-        setDialogOpen(true);
-      }
-    };
-    document.addEventListener('click', handleLinkClick);
-    return () => document.removeEventListener('click', handleLinkClick);
-  }, []);
-
   return (
     <>
       <div className={cn('prose h-full max-w-none p-2 dark:prose-invert', className)}>
         <ReactMarkdown
+          components={components}
           children={content}
           remarkPlugins={[
             remarkParse,
@@ -118,7 +104,45 @@ export default function MarkdownRenderer({ content, className }: { content: stri
           ]}
         />
       </div>
-      <LeavePageDialog link={pendingUrl} open={dialogOpen} setOpen={setDialogOpen} />
     </>
   );
 }
+
+const components: Components = {
+  a: ({ href, children, download, type, className, ...props }) => {
+    const url = href ?? '';
+
+    const x = getXMetadataFromLink(url);
+    if (x) {
+      return (
+        <div key={`twitter-embed-${x.id}`} suppressHydrationWarning>
+          <TwitterEmbedder id={x.id} username={x.username} />
+        </div>
+      );
+    }
+    if (className?.includes('link-external')) {
+      if (className?.includes('safe-external-link')) {
+        return (
+          <Link href={url} target="_blank">
+            <span>{children}</span>
+            <ExternalLink className="inline h-4 w-4 cursor-pointer pl-1 text-destructive" />
+          </Link>
+        );
+      }
+      if (className?.includes('unknown-external-link')) {
+        return (
+          <>
+            <LeavePageDialog link={url} {...props} children={children} />
+            <ExternalLink className="inline h-4 w-4 cursor-pointer pl-1 text-destructive" />
+          </>
+        );
+      }
+    }
+
+    return (
+      <Link href={url} {...props}>
+        {children}
+      </Link>
+    );
+  }
+};
