@@ -29,6 +29,7 @@ import { getThreespeakMetadataFromLink, ThreeSpeakEmbed } from './embeds/threesp
 import { getInstagramMetadataFromLink, InstagramEmbedder } from './embeds/instagram';
 import LinkHeader from './link-header';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
+import { useState, useEffect } from 'react';
 
 export default function Renderer({ content, className }: { content: string; className?: string }) {
   return (
@@ -101,7 +102,8 @@ export default function Renderer({ content, className }: { content: string; clas
                   'sup',
                   'mark',
                   'br',
-                  'input'
+                  'input',
+                  'center'
                 ]
               }
             ],
@@ -153,10 +155,29 @@ const components: Components = {
   ),
   a: ({ href, children, download, type, className, ...props }) => {
     const url = href ?? '';
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+      setIsClient(true);
+    }, []);
+
+    if (!isClient) {
+      return (
+        <Link href={url} {...props}>
+          {children}
+        </Link>
+      );
+    }
+    const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.bmp'];
+    if (imageExtensions.some((ext) => url.toLowerCase().endsWith(ext))) {
+      const imageProxy = getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20'));
+      return <img src={imageProxy} alt={children?.toString()} />;
+    }
+
     const twitch = getTwitchMetadataFromLink(url);
     if (twitch) {
       return (
-        <div key={`twitter-embed-${twitch}`} suppressHydrationWarning>
+        <div key={`twitch-embed-${twitch}`}>
           <TwitchEmbed url={twitch} />
         </div>
       );
@@ -165,7 +186,7 @@ const components: Components = {
     const threeSpeak = getThreespeakMetadataFromLink(url);
     if (threeSpeak) {
       return (
-        <div key={`twitter-embed-${threeSpeak}`} suppressHydrationWarning>
+        <div key={`threespeak-embed-${threeSpeak}`} suppressHydrationWarning>
           <ThreeSpeakEmbed id={threeSpeak} />
         </div>
       );
@@ -174,7 +195,7 @@ const components: Components = {
     const instagram = getInstagramMetadataFromLink(url);
     if (instagram) {
       return (
-        <div key={`twitter-embed-${instagram}`} suppressHydrationWarning>
+        <div key={`instagram-embed-${instagram}`} suppressHydrationWarning>
           <InstagramEmbedder href={instagram} />
         </div>
       );
@@ -183,7 +204,7 @@ const components: Components = {
     const youtube = getYoutubeaFromLink(url);
     if (youtube) {
       return (
-        <div key={`twitter-embed-${youtube.id}`} suppressHydrationWarning>
+        <div key={`youtube-embed-${youtube.id}`} suppressHydrationWarning>
           <YoutubeEmbed url={youtube.url} id={youtube.id} />
         </div>
       );
