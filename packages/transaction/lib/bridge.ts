@@ -25,7 +25,7 @@ type GetPostHeaderData = {
 };
 
 export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
-  return chain.extend<GetPostHeaderData>().api.bridge.get_post_header({
+  return chain.api.bridge.get_post_header({
     author,
     permlink
   });

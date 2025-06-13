@@ -401,8 +401,8 @@ class VerifySignaturesResponse {
 export type ExtendedNodeApi = {
   bridge: {
     get_post_header: TWaxApiRequest<
-      { author: string; permlink: string; category: string; depth: number },
-      { author: string; permlink: string }
+      { author: string; permlink: string },
+      { author: string; permlink: string; category: string; depth: number }
     >;
     get_ranked_posts: TWaxApiRequest<
       {
