@@ -17,7 +17,7 @@ import {
 } from '@/wallet/lib/utils';
 import { powerdownHive, cn, convertToHP, numberWithCommas } from '@ui/lib/utils';
 import { convertStringToBig } from '@ui/lib/helpers';
-import { AccountHistory } from '@/wallet/store/app-types';
+import { AccountHistory } from '@transaction/lib/extended-hive.chain';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import Loading from '@ui/components/loading';

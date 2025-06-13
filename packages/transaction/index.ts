@@ -17,8 +17,6 @@ import {
   ESupportedLanguages,
   IHiveChainInterface,
   GetDynamicGlobalPropertiesResponse,
-  GetDynamicGlobalPropertiesRequest,
-  TWaxApiRequest
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
@@ -27,17 +25,7 @@ import { Beneficiarie, Preferences } from './lib/app-types';
 import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
-import { GetWitnessSchedule } from './lib/hive';
 const logger = getLogger('app');
-
-interface GetDynamicGlobalProperties {
-  database_api: {
-    get_dynamic_global_properties: TWaxApiRequest<
-      GetDynamicGlobalPropertiesRequest,
-      GetDynamicGlobalPropertiesResponse
-    >;
-  };
-}
 
 export type TransactionErrorCallback = (error: any) => any;
 

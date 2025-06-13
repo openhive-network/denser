@@ -7,34 +7,36 @@ import {
   transaction,
   NaiAsset,
   ApiAccount,
-  AccountAuthorityUpdateOperation
+  AccountAuthorityUpdateOperation,
 } from '@hiveio/wax';
 import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
 import { DATA_LIMIT } from './bridge';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
+import {
+  IVoteListItem,
+  IListWitnessVotes,
+  ICollateralizedConversionRequest,
+  ITrendingTag,
+  SavingsWithdrawRequest,
+  IConversionRequest,
+  WithdrawRoute,
+  IRewardFund,
+  IFeedHistory,
+  IFollow,
+  IMarketCandlestickDataItem,
+  IAccountReputations,
+  IDynamicGlobalProperties,
+  IWitnessSchedule,
+  BlogEntry,
+  IVote,
+  IPost
+} from './extended-hive.chain';
 
 const logger = getLogger('app');
 
 const chain = await hiveChainService.getHiveChain();
-
-export interface IDynamicGlobalProperties {
-  hbd_print_rate: number;
-  total_vesting_fund_hive: string;
-  total_vesting_shares: string;
-  hbd_interest_rate: number;
-  head_block_number: number;
-  head_block_id: string;
-  vesting_reward_percent: number;
-  virtual_supply: string;
-}
-
-type GetDynamicGlobalProperties = {
-  condenser_api: {
-    get_dynamic_global_properties: TWaxApiRequest<[], IDynamicGlobalProperties>;
-  };
-};
 
 export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProperties> => {
   return chain
@@ -146,28 +148,10 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
     return { ...account, follow_stats };
   });
 
-type GetFindsAccountsData = {
-  database_api: {
-    find_accounts: TWaxApiRequest<string, { accounts: ApiAccount[] }>;
-  };
-};
-
 export const getFindAccounts = (username: string): Promise<{ accounts: ApiAccount[] }> => {
   return chain
     .api.database_api.find_accounts({ accounts: [username], delayed_votes_active: false });
 };
-export interface IFeedHistory {
-  current_median_history: {
-    base: NaiAsset;
-    quote: NaiAsset;
-  };
-  price_history: [
-    {
-      base: NaiAsset;
-      quote: NaiAsset;
-    }
-  ];
-}
 
 type GetFeedHistoryData = {
   database_api: {
@@ -189,13 +173,6 @@ export const getFollowCount = async (username: string): Promise<AccountFollowSta
   return chain.api.condenser_api.get_follow_count([username]);
 };
 
-export interface ITrendingTag {
-  comments: number;
-  name: string;
-  top_posts: number;
-  total_payouts: string;
-}
-
 export interface IDynamicProps {
   hivePerMVests: number;
   base: number;
@@ -211,103 +188,11 @@ export interface IDynamicProps {
   vestingRewardPercent: number;
 }
 
-export interface IVote {
-  percent: number;
-  reputation: number;
-  rshares: string;
-  time: string;
-  timestamp?: number;
-  voter: string;
-  weight: number;
-  reward?: number;
-}
-
-export interface IRewardFund {
-  recent_claims: string;
-  reward_balance: string;
-}
-
-export interface IMarketCandlestickDataItem {
-  hive: {
-    high: number;
-    low: number;
-    open: number;
-    close: number;
-    volume: number;
-  };
-  id: number;
-  non_hive: {
-    high: number;
-    low: number;
-    open: number;
-    close: number;
-    volume: number;
-  };
-  open: string;
-  seconds: number;
-}
-
 export interface ITradeDataItem {
   current_pays: string;
   date: number;
   open_pays: string;
 }
-
-export interface IPost {
-  active_votes: {
-    rshares: number;
-    voter: string;
-  };
-  author: string;
-  author_payout_value: string;
-  author_reputation: number;
-  author_role: string;
-  author_title: string;
-  beneficiaries: Array<unknown>;
-  blacklists: Array<unknown>;
-  body: string;
-  category: string;
-  children: number;
-  community: string;
-  community_title: string;
-  created: string;
-  curator_payout_value: string;
-  depth: number;
-  is_paidout: boolean;
-  json_metadata: {
-    app: string;
-    description: string;
-    format: string;
-    image: [string];
-    tags: string[];
-    users: Array<unknown>;
-  };
-  max_accepted_payout: string;
-  net_rshares: number;
-  payout: number;
-  payout_at: string;
-  pending_payout_value: string;
-  percent_hbd: number;
-  permlink: string;
-  post_id: number;
-  promoted: string;
-  replies: Array<unknown>;
-  stats: {
-    flag_weight: number;
-    gray: boolean;
-    hide: boolean;
-    total_votes: number;
-  };
-  title: string;
-  updated: string;
-  url: string;
-}
-
-type GetPostData = {
-  condenser_api: {
-    get_content: TWaxApiRequest<string[], IPost>;
-  };
-};
 
 export const getPost = async (username: string, permlink: string): Promise<IPost> => {
   return chain.api.condenser_api.get_content([username, permlink]);
@@ -322,17 +207,6 @@ interface IAccountReputation {
   account: string;
   reputation: number;
 }
-
-interface IAccountReputations {
-  account: string;
-  reputation: number;
-}
-
-type GetAccountReputationData = {
-  condenser_api: {
-    get_account_reputations: TWaxApiRequest<IAccountReputationParams, IAccountReputations[]>;
-  };
-};
 
 export const getAccountReputations = async (
   account_lower_bound: string,
@@ -352,12 +226,6 @@ export const getMarketBucketSizes = async (): Promise<number[]> => {
   return chain.api.condenser_api.get_market_history_buckets([]);
 };
 
-type GetMarketHistoryData = {
-  condenser_api: {
-    get_market_history: TWaxApiRequest<(string | number)[], IMarketCandlestickDataItem[]>;
-  };
-};
-
 export const getMarketHistory = async (
   seconds: number,
   startDate: Moment,
@@ -369,20 +237,8 @@ export const getMarketHistory = async (
     .api.condenser_api.get_market_history([seconds, todayEarlier, todayNow]);
 };
 
-type GetActiveVotesData = {
-  condenser_api: {
-    get_active_votes: TWaxApiRequest<string[], IVote[]>;
-  };
-};
-
 export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
   return chain.api.condenser_api.get_active_votes([author, permlink]);
-};
-
-type GetTrendingTagsData = {
-  database_api: {
-    get_trending_tags: TWaxApiRequest<(string | number)[], ITrendingTag[]>;
-  };
 };
 
 export const getTrendingTags = async (afterTag: string = '', limit: number = 250): Promise<string[]> => {
@@ -419,12 +275,6 @@ type LookupAccountsData = {
 export const lookupAccounts = async (q: string, limit = 50): Promise<string[]> => {
   return chain.api.database_api.lookup_accounts([q, limit]);
 };
-
-export interface IFollow {
-  follower: string;
-  following: string;
-  what: string[];
-}
 
 export interface IGetFollowParams {
   account: string;
@@ -479,11 +329,6 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
   }
 };
 
-type GetRewardFundData = {
-  database_api: {
-    get_reward_fund: TWaxApiRequest<string[], IRewardFund>;
-  };
-};
 export const getRewardFund = async (): Promise<IRewardFund> => {
   return chain.api.database_api.get_reward_fund(['post']);
 };
@@ -525,19 +370,6 @@ export const getDynamicProps = async (): Promise<IDynamicProps> => {
   };
 };
 
-export interface WithdrawRoute {
-  auto_vest: boolean;
-  from_account: string;
-  id: number;
-  percent: number;
-  to_account: string;
-}
-
-type GetWithdrawRoutesData = {
-  database_api: {
-    get_withdraw_routes: TWaxApiRequest<string[], WithdrawRoute[]>;
-  };
-};
 export const getWithdrawRoutes = async (account: string): Promise<WithdrawRoute[]> => {
   return chain.api.database_api.get_withdraw_routes([account, 'outgoing']);
 };
@@ -595,37 +427,10 @@ export const downVotingPower = (account: FullAccount): number => {
   return currentManaPerc;
 };
 
-export interface IConversionRequest {
-  amount: string;
-  conversion_date: string;
-  id: number;
-  owner: string;
-  requestid: number;
-}
-
-export interface ICollateralizedConversionRequest {
-  collateral_amount: string;
-  conversion_date: string;
-  converted_amount: string;
-  id: number;
-  owner: string;
-  requestid: number;
-}
-
-type GetConversionRequestsData = {
-  database_api: {
-    get_conversion_requests: TWaxApiRequest<string[], IConversionRequest[]>;
-  };
-};
 export const getConversionRequests = async (account: string): Promise<IConversionRequest[]> => {
   return chain.api.database_api.get_conversion_requests([account]);
 };
 
-type GetCollateralizedConversionRequestsData = {
-  database_api: {
-    get_collateralized_conversion_requests: TWaxApiRequest<string[], ICollateralizedConversionRequest[]>;
-  };
-};
 export const getCollateralizedConversionRequests = async (
   account: string
 ): Promise<ICollateralizedConversionRequest[]> => {
@@ -633,38 +438,10 @@ export const getCollateralizedConversionRequests = async (
     .api.database_api.get_collateralized_conversion_requests([account]);
 };
 
-export interface SavingsWithdrawRequest {
-  id: number;
-  from: string;
-  to: string;
-  memo: string;
-  request_id: number;
-  amount: string;
-  complete: string;
-}
-
-type GetSavingsWithdrawFromData = {
-  database_api: {
-    get_savings_withdraw_from: TWaxApiRequest<string[], SavingsWithdrawRequest[]>;
-  };
-};
 export const getSavingsWithdrawFrom = async (account: string): Promise<SavingsWithdrawRequest[]> => {
   return chain.api.database_api.get_savings_withdraw_from([account]);
 };
 
-export interface BlogEntry {
-  blog: string;
-  entry_id: number;
-  author: string;
-  permlink: string;
-  reblogged_on: string;
-}
-
-type GetBlogEntriesData = {
-  condenser_api: {
-    get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
-  };
-};
 export const getBlogEntries = async (username: string, limit: number = DATA_LIMIT): Promise<BlogEntry[]> => {
   return chain.api.condenser_api.get_blog_entries([username, 0, limit]);
 };
@@ -800,20 +577,7 @@ export const getManabar = async (
   return processedManabars;
 };
 
-interface IWitnessVote {
-  id: number;
-  witness: string;
-  account: string;
-}
 
-interface IListWitnessVotes {
-  votes: IWitnessVote[];
-}
-type GetListWitnessVotesData = {
-  database_api: {
-    list_witness_votes: TWaxApiRequest<{ start: string[]; limit: number; order: string }, IListWitnessVotes>;
-  };
-};
 
 export const getListWitnessVotes = async (
   username: string,
@@ -823,18 +587,6 @@ export const getListWitnessVotes = async (
   return chain
     .api.database_api.list_witness_votes({ start: [username, ''], limit, order });
 };
-
-export interface IVoteListItem {
-  id: number;
-  voter: string;
-  author: string;
-  permlink: string;
-  weight: string;
-  rshares: number;
-  vote_percent: number;
-  last_update: string;
-  num_changes: number;
-}
 
 type GetListVotesData = {
   database_api: {
@@ -906,32 +658,6 @@ export const getPrivateKeys = async (
   return keys;
 };
 
-export interface IWitnessSchedule {
-  id: number;
-  current_virtual_time: string;
-  next_shuffle_block_num: number;
-  current_shuffled_witnesses: string[];
-  num_scheduled_witnesses: number;
-  top19_weight: number;
-  timeshare_weight: number;
-  miner_weight: number;
-  witness_pay_normalization_factor: number;
-  median_props: {
-    account_creation_fee: string;
-    maximum_block_size: number;
-    hbd_interest_rate: number;
-  };
-  majority_version: string;
-  max_voted_witnesses: number;
-  max_miner_witnesses: number;
-  max_runner_witnesses: number;
-  hardfork_required_witnesses: number;
-}
-export type GetWitnessSchedule = {
-  condenser_api: {
-    get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
-  };
-};
 export const getWitnessSchedule = async (): Promise<IWitnessSchedule> => {
   return chain.api.condenser_api.get_witness_schedule([]);
 };

@@ -1,5 +1,4 @@
 import Big from 'big.js';
-import { AccountHistory } from '@/wallet/store/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
 import {
@@ -10,28 +9,12 @@ import {
   GetDynamicGlobalPropertiesRequest
 } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { SavingsWithdrawals, IProposal, IGetProposalsParams, IProposalVote, AccountHistory, AccountRewardsHistory, IDelegatedVestingShare } from '@transaction/lib/extended-hive.chain';
 
 const chain = await hiveChainService.getHiveChain();
 
 export declare type Bignum = string;
 
-export interface IProposal {
-  creator: string;
-  daily_pay: {
-    amount: string;
-    nai: string;
-    precision: number;
-  };
-  end_date: string;
-  id: number;
-  permlink: string;
-  proposal_id: number;
-  receiver: string;
-  start_date: string;
-  status: string;
-  subject: string;
-  total_votes: string;
-}
 
 export type ProposalData = Omit<IProposal, 'daily_pay' | 'total_votes'> & {
   total_votes: Big;
@@ -70,12 +53,6 @@ export const getWitnessesByVote = async (from: string, limit: number): Promise<I
   return chain.api.condenser_api.get_witnesses_by_vote([from, limit]);
 };
 
-type GetFindRcAccountsData = {
-  rc_api: {
-    find_rc_accounts: TWaxApiRequest<string[], { rc_accounts: RcAccount[] }>;
-  };
-};
-
 export const findRcAccounts = async (username: string): Promise<{ rc_accounts: RcAccount[] }> => {
   return chain.api.rc_api.find_rc_accounts({ accounts: [username] });
 };
@@ -86,19 +63,6 @@ export const DEFAULT_PARAMS_FOR_PROPOSALS: IGetProposalsParams = {
   order: 'by_total_votes',
   order_direction: 'descending',
   status: 'votable'
-};
-export interface IGetProposalsParams {
-  start: Array<number | string>;
-  limit: number;
-  order: 'by_creator' | 'by_total_votes' | 'by_start_date' | 'by_end_date';
-  order_direction: 'descending' | 'ascending';
-  status: 'all' | 'inactive' | 'active' | 'votable' | 'expired';
-  last_id?: number;
-}
-type GetProposalsData = {
-  database_api: {
-    list_proposals: TWaxApiRequest<Partial<IGetProposalsParams>, { proposals: IProposal[] }>;
-  };
 };
 
 export const getProposals = async (params?: Partial<IGetProposalsParams>): Promise<IProposal[]> => {
@@ -120,12 +84,6 @@ export interface IListItemProps {
   totalVestingFund: Big;
 }
 
-type GetVestingDelegationsData = {
-  condenser_api: {
-    get_vesting_delegations: TWaxApiRequest<(string | number)[], IDelegatedVestingShare[]>;
-  };
-};
-
 export const getVestingDelegations = async (
   username: string,
   from: string = '',
@@ -135,13 +93,6 @@ export const getVestingDelegations = async (
     .api.condenser_api.get_vesting_delegations([username, from, limit]);
 };
 
-export interface IDelegatedVestingShare {
-  id: number;
-  delegatee: string;
-  delegator: string;
-  min_delegation_time: string;
-  vesting_shares: string;
-}
 const op = operationOrders;
 const wallet_operations_bitmask = makeBitMaskFilter([
   op.transfer,
@@ -160,12 +111,6 @@ const wallet_operations_bitmask = makeBitMaskFilter([
   op.fill_order,
   op.claim_reward_balance
 ]);
-
-type GetAccountHistoryData = {
-  condenser_api: {
-    get_account_history: TWaxApiRequest<(string | number)[], AccountHistory[]>;
-  };
-};
 
 export const getAccountHistory = async (
   username: string,
@@ -208,23 +153,6 @@ export type ICurationReward = {
   permlink?: string;
   vesting_payout?: string;
 };
-type AccountRewardsHistory = [
-  number,
-  {
-    trx_id: string;
-    block: number;
-    trx_in_block: number;
-    op_in_trx: number;
-    virtual_op: boolean;
-    timestamp: string;
-    op: ['author_reward' | 'curation_reward', IAuthorReward | ICurationReward];
-  }
-];
-type GetAccountRewardsHistoryData = {
-  condenser_api: {
-    get_account_history: TWaxApiRequest<(string | number)[], AccountRewardsHistory[]>;
-  };
-};
 const wallet_rewards_history_bitmask = makeBitMaskFilter([op.author_reward, op.curation_reward]);
 
 export const getAccountRewardsHistory = async (
@@ -234,17 +162,6 @@ export const getAccountRewardsHistory = async (
 ): Promise<AccountRewardsHistory[]> => {
   return chain
     .api.condenser_api.get_account_history([username, start, limit, ...wallet_rewards_history_bitmask]) as Promise<AccountRewardsHistory[]>;
-};
-export interface IProposalVote {
-  id: number;
-  proposal: IProposal;
-  voter: string;
-}
-
-type GetProposalVotesData = {
-  condenser_api: {
-    list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
-  };
 };
 
 export const getProposalVotes = async (
@@ -352,24 +269,6 @@ type GetRecentTradesyData = {
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
   return chain.api.condenser_api.get_recent_trades([limit]);
-};
-
-export type SavingsWithdrawals = {
-  withdrawals: {
-    amount: asset;
-    complete: Date;
-    from: string;
-    id: number;
-    memo: string;
-    request_id: number;
-    to: string;
-  }[];
-};
-
-type GetSavingsWithdrawalsData = {
-  database_api: {
-    find_savings_withdrawals: TWaxApiRequest<{ account: string }, SavingsWithdrawals>;
-  };
 };
 
 export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {

@@ -8,7 +8,7 @@ import {
   ApiAccount,
   transaction
 } from '@hiveio/wax';
-import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
+import { AccountFollowStats, FullAccount } from './app-types';
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -126,12 +126,6 @@ export interface Community {
 }
 
 export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
-
-export interface IFollowList {
-  name: string;
-  blacklist_description: string;
-  muted_list_description: string;
-}
 
 export interface IMarketStatistics {
   hbd_volume: string;
@@ -387,7 +381,7 @@ export interface SavingsWithdrawRequest {
   complete: string;
 }
 
-class VerifySignaturesRequest {
+export class VerifySignaturesParams {
   hash!: string;
   signatures!: string[];
   required_other!: string[];
@@ -396,7 +390,7 @@ class VerifySignaturesRequest {
   required_posting!: string[];
 }
 
-class VerifySignaturesResponse {
+export class VerifySignaturesResponse {
   public valid!: boolean;
 }
 
@@ -493,7 +487,7 @@ export type AccountHistory = [
   }
 ];
 
-type AccountRewardsHistory = [
+export type AccountRewardsHistory = [
   number,
   {
     trx_id: string;
@@ -523,7 +517,7 @@ export interface IDynamicGlobalProperties {
   virtual_supply: string;
 }
 
-interface IAccountReputations {
+export interface IAccountReputations {
   account: string;
   reputation: number;
 }
@@ -576,7 +570,7 @@ interface IWitnessVote {
   account: string;
 }
 
-interface IListWitnessVotes {
+export interface IListWitnessVotes {
   votes: IWitnessVote[];
 }
 
@@ -601,11 +595,19 @@ export interface IAccountNotification {
   url: string;
 }
 
+export interface IGetPostHeader {
+  author: string;
+  permlink: string;
+  category: string;
+  depth: number;
+}
+
+
 export type ExtendedNodeApi = {
   bridge: {
     get_post_header: TWaxApiRequest<
       { author: string; permlink: string },
-      { author: string; permlink: string; category: string; depth: number }
+      IGetPostHeader
     >;
     get_ranked_posts: TWaxApiRequest<
       {
@@ -702,7 +704,7 @@ export type ExtendedNodeApi = {
     get_conversion_requests: TWaxApiRequest<string[], IConversionRequest[]>;
     get_savings_withdraw_from: TWaxApiRequest<string[], SavingsWithdrawRequest[]>;
     verify_signatures: {
-      params: VerifySignaturesRequest;
+      params: VerifySignaturesParams;
       result: VerifySignaturesResponse;
     };
     find_accounts: TWaxApiRequest<string, { accounts: ApiAccount[] }>;

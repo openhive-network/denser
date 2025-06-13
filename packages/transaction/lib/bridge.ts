@@ -1,28 +1,11 @@
 import { TWaxApiRequest } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
+import { IGetPostHeader } from './extended-hive.chain';
 
 const logger = getLogger('app');
 
 const chain = await hiveChainService.getHiveChain();
-
-interface IGetPostHeader {
-  author: string;
-  permlink: string;
-  category: string;
-  depth: number;
-}
-
-interface IGetPostHeaderParams {
-  author: string;
-  permlink: string;
-}
-
-type GetPostHeaderData = {
-  bridge: {
-    get_post_header: TWaxApiRequest<IGetPostHeaderParams, IGetPostHeader>;
-  };
-};
 
 export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
   return chain.api.bridge.get_post_header({
@@ -230,21 +213,6 @@ export const getPostsRanked = async (
 
       return resp;
     });
-};
-
-interface IGetAccountPosts {
-  sort: string;
-  account: string;
-  start_author: string;
-  start_permlink: string;
-  limit: number;
-  observer: string;
-}
-
-type GetAccountPostsData = {
-  bridge: {
-    get_account_posts: TWaxApiRequest<IGetAccountPosts, Entry[] | null>;
-  };
 };
 
 export const getAccountPosts = async (

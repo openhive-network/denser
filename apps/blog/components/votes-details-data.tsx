@@ -1,4 +1,4 @@
-import { IVote } from '@transaction/lib/hive';
+import { IVote } from '@transaction/lib/extended-hive.chain';
 import { prepareVotes } from '@ui/lib/utils';
 import type { Entry } from '@transaction/lib/bridge';
 import Link from 'next/link';

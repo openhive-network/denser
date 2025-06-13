@@ -4,10 +4,10 @@ import Big from 'big.js';
 import { convertStringToBig } from './helpers';
 import { TFunction } from 'i18next';
 import type { FullAccount } from '@hive/transaction/lib/app-types';
-import type { IDynamicGlobalProperties, IVote } from '@hive/transaction/lib/hive';
 import { NaiAsset } from '@hiveio/wax';
 import { Entry } from '@hive/transaction/lib/bridge';
 import { parseDate2 } from './parse-date';
+import { IDynamicGlobalProperties, IVote } from '@hive/transaction/lib/extended-hive.chain';
 
 export const isCommunity = (s: string): boolean => s.match(/^hive-\d+/) !== null;
 
