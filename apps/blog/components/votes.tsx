@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Icons } from '@ui/components/icons';
@@ -29,7 +30,6 @@ const offsetSlider = {
 const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' }) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const [isClient, setIsClient] = useState(false);
   const [clickedVoteButton, setClickedVoteButton] = useState('');
   const [storedVotesValues, storeVotesValues] = useLocalStorage('votesValues', {
     post: {
@@ -54,10 +54,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
   useEffect(() => {
     setSliderDownvote(type === 'post' ? storedVotesValues.post.downvote : storedVotesValues.comment.downvote);
   }, [type, storedVotesValues.post.downvote, storedVotesValues.comment.downvote]);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  const checkVote = isClient && post.active_votes.find((e) => e.voter === user?.username);
+  const checkVote = post.active_votes.find((e) => e.voter === user?.username);
 
   const { data: userVotes } = useQuery(
     ['votes', post.author, post.permlink, user?.username],
@@ -330,7 +327,13 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
   );
 };
 
-export default VotesComponent;
+// Create a client-side only version of the component
+const VotesComponentNoSSR = dynamic(() => Promise.resolve(VotesComponent), {
+  ssr: false
+});
+
+// Export the client-side only version
+export default VotesComponentNoSSR;
 
 const TooltipContainer = ({
   children,

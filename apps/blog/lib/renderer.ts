@@ -22,8 +22,11 @@ const renderDefaultOptions = {
   usertagUrlFn: (account: string) => '/@' + account,
   hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
   isLinkSafeFn: (url: string) =>
-    (!!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) && !!url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`)) ||
-    (!!url.match(`^(/(?!/)|#)`) && isUrlWhitelisted(url)),
+    !!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) ||
+    !!url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`) ||
+    !!url.match(`^(/(?!/)|#)`) ||
+    isUrlWhitelisted(url),
+
   addExternalCssClassToMatchingLinksFn: (url: string) =>
     !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
     !url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`) &&
