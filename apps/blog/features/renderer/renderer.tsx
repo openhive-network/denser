@@ -34,7 +34,6 @@ export default function MarkdownRenderer({ content, className }: { content: stri
       <div className={cn('prose h-full max-w-none p-2 dark:prose-invert', className)}>
         <ReactMarkdown
           components={components}
-          children={content}
           remarkPlugins={[
             remarkParse,
             remarkBreaks,
@@ -106,7 +105,9 @@ export default function MarkdownRenderer({ content, className }: { content: stri
             ],
             rehypeLinkHandler
           ]}
-        />
+        >
+          {content}
+        </ReactMarkdown>
       </div>
     </>
   );
@@ -172,7 +173,9 @@ const components: Components = {
       if (className?.includes('unknown-external-link')) {
         return (
           <>
-            <LeavePageDialog link={url} {...props} children={children} />
+            <LeavePageDialog link={url} {...props}>
+              {children}
+            </LeavePageDialog>
             <ExternalLink className="inline h-4 w-4 cursor-pointer pl-1 text-destructive" />
           </>
         );
