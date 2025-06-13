@@ -30,7 +30,7 @@ import { getInstagramMetadataFromLink, InstagramEmbedder } from './embeds/instag
 import LinkHeader from './link-header';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 
-export default function MarkdownRenderer({ content, className }: { content: string; className?: string }) {
+export default function Renderer({ content, className }: { content: string; className?: string }) {
   return (
     <>
       <div className={cn('prose h-full max-w-none p-2 dark:prose-invert', className)}>

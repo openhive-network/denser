@@ -39,7 +39,7 @@ import { postClassName } from '../pages/[param]/[p2]/[permlink]';
 import DenserMdEditor from '../features/md-editor/editor';
 import { Label } from '@ui/components';
 import EditorSwitch from '../features/post-form/editor-switch';
-import MarkdownRenderer from '../features/renderer/renderer';
+import Renderer from '../features/renderer/renderer';
 
 const logger = getLogger('app');
 
@@ -606,7 +606,7 @@ export default function PostForm({
           {previewContent ? (
             <div className="flex h-full overflow-y-scroll">
               {denserEditor ? (
-                <MarkdownRenderer
+                <Renderer
                   content={previewContent}
                   className={
                     postClassName +
