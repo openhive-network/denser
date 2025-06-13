@@ -28,6 +28,7 @@ import { getTwitchMetadataFromLink, TwitchEmbed } from './embeds/twitch';
 import { getThreespeakMetadataFromLink, ThreeSpeakEmbed } from './embeds/threespeak';
 import { getInstagramMetadataFromLink, InstagramEmbedder } from './embeds/instagram';
 import LinkHeader from './link-header';
+import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 
 export default function MarkdownRenderer({ content, className }: { content: string; className?: string }) {
   return (
@@ -115,6 +116,11 @@ export default function MarkdownRenderer({ content, className }: { content: stri
 }
 
 const components: Components = {
+  img: ({ src, ...props }) => {
+    if (!src) return;
+    const imageProxy = getDoubleSize(proxifyImageUrl(src, true).replace(/ /g, '%20'));
+    return <img src={imageProxy} {...props} />;
+  },
   h1: ({ children, ...props }) => (
     <LinkHeader id={children?.toString()}>
       <h1 {...props}>{children}</h1>
