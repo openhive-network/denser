@@ -1,6 +1,6 @@
 import { IVote } from '@transaction/lib/extended-hive.chain';
 import { prepareVotes } from '@ui/lib/utils';
-import type { Entry } from '@transaction/lib/bridge';
+import { Entry } from '@transaction/lib/extended-hive.chain'; 
 import Link from 'next/link';
 import { useActiveVotesQuery } from './hooks/use-active-votes';
 import { useTranslation } from 'next-i18next';

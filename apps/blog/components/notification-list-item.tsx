@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
-import { IAccountNotificationEx } from '@transaction/lib/bridge';
+import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -15,7 +15,7 @@ import TimeAgo from '@hive/ui/components/time-ago';
 const logger = getLogger('app');
 const usernamePattern = /\B@[a-z0-9.-]+/gi;
 
-const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccountNotificationEx) => {
+const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccountNotification & {lastRead: number}) => {
   const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
   const { user } = useUser();

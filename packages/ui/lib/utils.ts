@@ -5,7 +5,7 @@ import { convertStringToBig } from './helpers';
 import { TFunction } from 'i18next';
 import type { FullAccount } from '@hive/transaction/lib/app-types';
 import { NaiAsset } from '@hiveio/wax';
-import { Entry } from '@hive/transaction/lib/bridge';
+import { Entry } from '@hive/transaction/lib/extended-hive.chain'; 
 import { parseDate2 } from './parse-date';
 import { IDynamicGlobalProperties, IVote } from '@hive/transaction/lib/extended-hive.chain';
 

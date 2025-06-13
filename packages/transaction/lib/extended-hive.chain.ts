@@ -602,6 +602,44 @@ export interface IGetPostHeader {
   depth: number;
 }
 
+export interface IAccountRelationship {
+  follows: boolean;
+  ignores: boolean;
+  is_blacklisted: boolean;
+  follows_blacklists: boolean;
+}
+
+export interface IUnreadNotifications {
+  lastread: string;
+  unread: number;
+}
+
+export interface EntryBeneficiaryRoute {
+  account: string;
+  weight: number;
+}
+
+export interface EntryVote {
+  voter: string;
+  rshares: number;
+}
+
+export interface EntryStat {
+  flag_weight: number;
+  gray: boolean;
+  hide: boolean;
+  total_votes: number;
+  is_pinned?: boolean;
+}
+
+export type Badge = {
+  name: string;
+  state: string;
+  type: string;
+  id: string;
+  title: string;
+  url: string;
+};
 
 export type ExtendedNodeApi = {
   bridge: {
@@ -649,10 +687,10 @@ export type ExtendedNodeApi = {
     normalize_post: TWaxApiRequest<{ post: Entry }, Entry | null>;
     list_all_subscriptions: TWaxApiRequest<{ account: string }, string[][] | null>;
     list_subscribers: TWaxApiRequest<{ community: string }, string[][] | null>;
-    unread_notifications: TWaxApiRequest<{ account: string }, { lastread: string; unread: number } | null>;
+    unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
     get_relationship_between_accounts: TWaxApiRequest<
       string[],
-      { follows: boolean; ignores: boolean; is_blacklisted: boolean; follows_blacklists: boolean } | null
+      IAccountRelationship | null
     >;
     get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
   };

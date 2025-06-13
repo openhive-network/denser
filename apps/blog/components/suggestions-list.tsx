@@ -1,4 +1,4 @@
-import { Entry } from '@transaction/lib/bridge';
+import { Entry } from '@transaction/lib/extended-hive.chain'; 
 import { useState } from 'react';
 import SuggestionsCard from './suggestions-card';
 import { Button } from '@ui/components';

@@ -1,5 +1,5 @@
 import env from '@beam-australia/react-env';
-import { Entry } from '@transaction/lib/bridge';
+import { Entry } from '@transaction/lib/extended-hive.chain'; 
 import { logger } from '@ui/lib/logger';
 
 const apiDevOrigin = env('AI_DOMAIN') || process.env.AI_DOMAIN;

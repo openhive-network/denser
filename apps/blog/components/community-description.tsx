@@ -2,7 +2,8 @@ import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
 import ln2list from '@/blog/lib/ln2list';
-import { type Community, type Subscription, IAccountNotification } from '@transaction/lib/bridge';
+import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
+import { Community } from '@transaction/lib/extended-hive.chain';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import { Badge } from '@ui/components/badge';
@@ -25,7 +26,7 @@ const CommunityDescription = ({
   username
 }: {
   data: Community;
-  subs: Subscription[];
+  subs: string[][];
   notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {

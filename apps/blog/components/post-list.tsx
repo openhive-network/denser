@@ -1,6 +1,6 @@
 import PostListItem from '@/blog/components/post-list-item';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import type { Entry } from '@transaction/lib/bridge';
+import { Entry } from '@transaction/lib/extended-hive.chain'; 
 import { useFollowListQuery } from './hooks/use-follow-list';
 
 const PostList = ({ data, isCommunityPage }: { data: Entry[]; isCommunityPage?: boolean }) => {

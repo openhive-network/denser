@@ -1,6 +1,6 @@
 import RepliesListItem from '@/blog/components/replies-list-item';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import type { Entry } from '@transaction/lib/bridge';
+import { Entry } from '@transaction/lib/extended-hive.chain'; 
 import { useFollowListQuery } from './hooks/use-follow-list';
 
 const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; parent?: Entry }) => {

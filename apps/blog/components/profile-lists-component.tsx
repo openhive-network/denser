@@ -4,7 +4,7 @@ import { Input } from '@ui/components/input';
 import Link from 'next/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import clsx from 'clsx';
-import { IFollowList } from '@transaction/lib/bridge';
+import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';

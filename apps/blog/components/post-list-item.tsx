@@ -16,7 +16,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import DetailsCardHover from './details-card-hover';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import type { Entry, IFollowList } from '@transaction/lib/bridge';
+import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';

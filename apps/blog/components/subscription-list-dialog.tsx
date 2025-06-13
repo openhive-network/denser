@@ -16,7 +16,7 @@ export function SubsListDialog({
   community: string;
   moderateEnabled: boolean;
   children: ReactNode;
-  subs: Subscription[];
+  subs: string[][];
   title: string;
 }) {
   return (
