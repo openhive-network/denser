@@ -14,33 +14,6 @@ export const getPostHeader = async (author: string, permlink: string): Promise<I
   });
 };
 
-export interface EntryBeneficiaryRoute {
-  account: string;
-  weight: number;
-}
-
-export interface EntryVote {
-  voter: string;
-  rshares: number;
-}
-
-export interface EntryStat {
-  flag_weight: number;
-  gray: boolean;
-  hide: boolean;
-  total_votes: number;
-  is_pinned?: boolean;
-}
-
-export type Badge = {
-  name: string;
-  state: string;
-  type: string;
-  id: string;
-  title: string;
-  url: string;
-};
-
 export type Subscription = Array<string>;
 
 export const DATA_LIMIT = 20;
