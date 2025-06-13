@@ -4,7 +4,9 @@ import {
   GetDynamicGlobalPropertiesResponse,
   GetDynamicGlobalPropertiesRequest,
   asset,
-  NaiAsset
+  NaiAsset,
+  ApiAccount,
+  transaction
 } from '@hiveio/wax';
 import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
 
@@ -398,6 +400,207 @@ class VerifySignaturesResponse {
   public valid!: boolean;
 }
 
+export interface IDelegatedVestingShare {
+  id: number;
+  delegatee: string;
+  delegator: string;
+  min_delegation_time: string;
+  vesting_shares: string;
+}
+
+export type OpType =
+  | 'claim_reward_balance'
+  | 'transfer'
+  | 'transfer_from_savings'
+  | 'transfer_to_savings'
+  | 'interest'
+  | 'cancel_transfer_from_savings'
+  | 'fill_order'
+  | 'transfer_to_vesting'
+  | 'curation_reward'
+  | 'author_reward'
+  | 'producer_reward'
+  | 'comment_reward'
+  | 'comment_benefactor_reward'
+  | 'interest'
+  | 'proposal_pay'
+  | 'sps_fund'
+  | 'transfer'
+  | 'withdraw_vesting';
+
+  export type IAuthorReward = {
+    author: string;
+    curators_vesting_payout: string;
+    hbd_payout: string;
+    hive_payout: string;
+    payout_must_be_claimed: boolean;
+    permlink: string;
+    vesting_payout: string;
+    author_rewards?: string;
+    beneficiary_payout_value?: string;
+    curator_payout_value?: string;
+    payout?: string;
+    reward?: string;
+    total_payout_value?: string;
+    curator?: string;
+  };
+  export type ICurationReward = {
+    author_rewards: string;
+    beneficiary_payout_value: string;
+    curator_payout_value: string;
+    payout: string;
+    total_payout_value: string;
+    reward: string;
+    curator: string;
+    author?: string;
+    curators_vesting_payout?: string;
+    hbd_payout?: string;
+    hive_payout?: string;
+    payout_must_be_claimed?: boolean;
+    permlink?: string;
+    vesting_payout?: string;
+  };
+
+export type AccountHistory = [
+  number,
+  {
+    trx_id: string;
+    block: number;
+    trx_in_block: number;
+    op_in_trx: number;
+    virtual_op: boolean;
+    timestamp: string;
+    op: [
+      OpType,
+      {
+        open_pays?: string;
+        current_pays?: string;
+        owner?: string;
+        is_saved_into_hbd_balance?: boolean;
+        interest: string;
+        request_id?: number;
+        amount?: string;
+        from?: string;
+        memo?: string;
+        to?: string;
+        account?: string;
+        reward_hbd?: string;
+        reward_hive?: string;
+        reward_vests?: string;
+        vesting_shares?: string;
+      }
+    ];
+  }
+];
+
+type AccountRewardsHistory = [
+  number,
+  {
+    trx_id: string;
+    block: number;
+    trx_in_block: number;
+    op_in_trx: number;
+    virtual_op: boolean;
+    timestamp: string;
+    op: ['author_reward' | 'curation_reward', IAuthorReward | ICurationReward];
+  }
+];
+
+export interface IProposalVote {
+  id: number;
+  proposal: IProposal;
+  voter: string;
+}
+
+export interface IDynamicGlobalProperties {
+  hbd_print_rate: number;
+  total_vesting_fund_hive: string;
+  total_vesting_shares: string;
+  hbd_interest_rate: number;
+  head_block_number: number;
+  head_block_id: string;
+  vesting_reward_percent: number;
+  virtual_supply: string;
+}
+
+interface IAccountReputations {
+  account: string;
+  reputation: number;
+}
+
+export interface IMarketCandlestickDataItem {
+  hive: {
+    high: number;
+    low: number;
+    open: number;
+    close: number;
+    volume: number;
+  };
+  id: number;
+  non_hive: {
+    high: number;
+    low: number;
+    open: number;
+    close: number;
+    volume: number;
+  };
+  open: string;
+  seconds: number;
+}
+
+export interface ITrendingTag {
+  comments: number;
+  name: string;
+  top_posts: number;
+  total_payouts: string;
+}
+
+export interface IFollow {
+  follower: string;
+  following: string;
+  what: string[];
+}
+
+export interface ICollateralizedConversionRequest {
+  collateral_amount: string;
+  conversion_date: string;
+  converted_amount: string;
+  id: number;
+  owner: string;
+  requestid: number;
+}
+
+interface IWitnessVote {
+  id: number;
+  witness: string;
+  account: string;
+}
+
+interface IListWitnessVotes {
+  votes: IWitnessVote[];
+}
+
+export interface IVoteListItem {
+  id: number;
+  voter: string;
+  author: string;
+  permlink: string;
+  weight: string;
+  rshares: number;
+  vote_percent: number;
+  last_update: string;
+  num_changes: number;
+}
+
+export interface IAccountNotification {
+  date: string;
+  id?: number;
+  msg: string;
+  score: number;
+  type: string;
+  url: string;
+}
+
 export type ExtendedNodeApi = {
   bridge: {
     get_post_header: TWaxApiRequest<
@@ -428,8 +631,8 @@ export type ExtendedNodeApi = {
     >;
     get_post: TWaxApiRequest<{ author: string; permlink: string; observer: string }, Entry | null>;
     account_notifications: TWaxApiRequest<
-      { date: string; id?: number; msg: string; score: number; type: string; url: string },
-      { lastRead: number }[] | null
+      { account: string; lastId?: number; limit: number },
+      IAccountNotification[] | null
     >;
     get_discussion: TWaxApiRequest<
       { author: string; permlink: string; observer?: string },
@@ -466,6 +669,21 @@ export type ExtendedNodeApi = {
     get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
     get_reblogged_by: TWaxApiRequest<[string, string], string[]>;
     get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
+    get_vesting_delegations: TWaxApiRequest<(string | number)[], IDelegatedVestingShare[]>;
+    get_account_history: TWaxApiRequest<(string | number)[], AccountHistory[] | AccountRewardsHistory[]>;
+    list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
+    get_dynamic_global_properties: TWaxApiRequest<[], IDynamicGlobalProperties>;
+    get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
+    get_account_reputations: TWaxApiRequest<
+      {
+        account_lower_bound: string;
+        limit: number;
+      },
+      IAccountReputations[]
+    >;
+    get_market_history: TWaxApiRequest<(string | number)[], IMarketCandlestickDataItem[]>;
+    get_followers: TWaxApiRequest<(string | number | null)[], IFollow[]>;
+    get_following: TWaxApiRequest<(string | number | null)[], IFollow[]>;
   };
   rc_api: {
     find_rc_accounts: TWaxApiRequest<string[], { rc_accounts: RcAccount[] }>;
@@ -487,5 +705,20 @@ export type ExtendedNodeApi = {
       params: VerifySignaturesRequest;
       result: VerifySignaturesResponse;
     };
+    find_accounts: TWaxApiRequest<string, { accounts: ApiAccount[] }>;
+    get_trending_tags: TWaxApiRequest<(string | number)[], ITrendingTag[]>;
+    get_collateralized_conversion_requests: TWaxApiRequest<string[], ICollateralizedConversionRequest[]>;
+    list_witness_votes: TWaxApiRequest<{ start: string[]; limit: number; order: string }, IListWitnessVotes>;
+    list_votes: TWaxApiRequest<
+      {
+        start: [string, string, string] | null;
+        limit: number;
+        order: 'by_comment_voter' | 'by_voter_comment';
+      },
+      { votes: IVoteListItem[] }
+    >;
+  };
+  network_broadcast_api: {
+    broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
   };
 };

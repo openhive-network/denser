@@ -263,9 +263,8 @@ export async function verifySignature(
   }
 
   const hiveChain = await hiveChainService.getHiveChain();
-  const extendedChain: TExtendedHiveChain = hiveChain.extend(DatabaseApiExtensions);
 
-  const { valid } = await extendedChain.api.database_api.verify_signatures(params);
+  const { valid } = await hiveChain.api.database_api.verify_signatures(params);
 
   if (!valid) {
     logger.info('Signature is invalid');

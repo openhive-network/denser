@@ -67,7 +67,7 @@ type GetWitnessesByVoteData = {
 };
 
 export const getWitnessesByVote = async (from: string, limit: number): Promise<IWitness[]> => {
-  return chain.extend<GetWitnessesByVoteData>().api.condenser_api.get_witnesses_by_vote([from, limit]);
+  return chain.api.condenser_api.get_witnesses_by_vote([from, limit]);
 };
 
 type GetFindRcAccountsData = {
@@ -77,7 +77,7 @@ type GetFindRcAccountsData = {
 };
 
 export const findRcAccounts = async (username: string): Promise<{ rc_accounts: RcAccount[] }> => {
-  return chain.extend<GetFindRcAccountsData>().api.rc_api.find_rc_accounts({ accounts: [username] });
+  return chain.api.rc_api.find_rc_accounts({ accounts: [username] });
 };
 
 export const DEFAULT_PARAMS_FOR_PROPOSALS: IGetProposalsParams = {
@@ -103,7 +103,7 @@ type GetProposalsData = {
 
 export const getProposals = async (params?: Partial<IGetProposalsParams>): Promise<IProposal[]> => {
   try {
-    const response = await chain.extend<GetProposalsData>().api.database_api.list_proposals({
+    const response = await chain.api.database_api.list_proposals({
       ...DEFAULT_PARAMS_FOR_PROPOSALS,
       ...params
     });
@@ -132,7 +132,6 @@ export const getVestingDelegations = async (
   limit: number = 50
 ): Promise<IDelegatedVestingShare[]> => {
   return chain
-    .extend<GetVestingDelegationsData>()
     .api.condenser_api.get_vesting_delegations([username, from, limit]);
 };
 
@@ -172,10 +171,9 @@ export const getAccountHistory = async (
   username: string,
   start: number = -1,
   limit: number = 20
-): Promise<AccountHistory[]> => {
+): Promise<AccountHistory[]> => { 
   return chain
-    .extend<GetAccountHistoryData>()
-    .api.condenser_api.get_account_history([username, start, limit, ...wallet_operations_bitmask]);
+    .api.condenser_api.get_account_history([username, start, limit, ...wallet_operations_bitmask]) as Promise<AccountHistory[]>;
 };
 
 export type IAuthorReward = {
@@ -235,8 +233,7 @@ export const getAccountRewardsHistory = async (
   limit: number = 20
 ): Promise<AccountRewardsHistory[]> => {
   return chain
-    .extend<GetAccountRewardsHistoryData>()
-    .api.condenser_api.get_account_history([username, start, limit, ...wallet_rewards_history_bitmask]);
+    .api.condenser_api.get_account_history([username, start, limit, ...wallet_rewards_history_bitmask]) as Promise<AccountRewardsHistory[]>;
 };
 export interface IProposalVote {
   id: number;
@@ -256,7 +253,6 @@ export const getProposalVotes = async (
   limit: number = 1000
 ): Promise<IProposalVote[]> => {
   return chain
-    .extend<GetProposalVotesData>()
     .api.condenser_api.list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
     .then((r) => r.filter((x: IProposalVote) => x.proposal.proposal_id === proposalId));
 };
@@ -276,7 +272,7 @@ type GetMarketStatisticsData = {
 };
 
 export const getMarketStatistics = async (): Promise<IMarketStatistics> => {
-  return chain.extend<GetMarketStatisticsData>().api.condenser_api.get_ticker([]);
+  return chain.api.condenser_api.get_ticker([]);
 };
 
 export interface IOrdersData {
@@ -317,7 +313,7 @@ type GetOrderBookData = {
 };
 
 export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> => {
-  return chain.extend<GetOrderBookData>().api.condenser_api.get_order_book([limit]);
+  return chain.api.condenser_api.get_order_book([limit]);
 };
 
 type GetOpenOrderData = {
@@ -327,7 +323,7 @@ type GetOpenOrderData = {
 };
 
 export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => {
-  return chain.extend<GetOpenOrderData>().api.condenser_api.get_open_orders([user]);
+  return chain.api.condenser_api.get_open_orders([user]);
 };
 
 type GetTradeHistoryData = {
@@ -340,7 +336,6 @@ export const getTradeHistory = async (limit: number = 1000): Promise<IOrdersData
   let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
   let todayNow = moment(Date.now()).format().split('+')[0];
   return chain
-    .extend<GetTradeHistoryData>()
     .api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
 };
 export interface IRecentTradesData {
@@ -356,7 +351,7 @@ type GetRecentTradesyData = {
 };
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
-  return chain.extend<GetRecentTradesyData>().api.condenser_api.get_recent_trades([limit]);
+  return chain.api.condenser_api.get_recent_trades([limit]);
 };
 
 export type SavingsWithdrawals = {
@@ -379,7 +374,6 @@ type GetSavingsWithdrawalsData = {
 
 export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {
   return chain
-    .extend<GetSavingsWithdrawalsData>()
     .api.database_api.find_savings_withdrawals({ account: account });
 };
 
@@ -401,7 +395,7 @@ type GetOwnerHistoryData = {
 };
 
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
-  return chain.extend<GetOwnerHistoryData>().api.condenser_api.get_owner_history([account]);
+  return chain.api.condenser_api.get_owner_history([account]);
 };
 
 interface GetDynamicGlobalProperties {
@@ -414,5 +408,5 @@ interface GetDynamicGlobalProperties {
 }
 
 export const getDynamicGlobalPropertiesData = async (): Promise<GetDynamicGlobalPropertiesResponse> => {
-  return chain.extend<GetDynamicGlobalProperties>().api.database_api.get_dynamic_global_properties({});
+  return chain.api.database_api.get_dynamic_global_properties({});
 };

@@ -186,7 +186,6 @@ export class TransactionService {
 
   async getDynamicGlobalProperties(): Promise<GetDynamicGlobalPropertiesResponse> {
     return (await this.getChain())
-      .extend<GetDynamicGlobalProperties>()
       .api.database_api.get_dynamic_global_properties({});
   }
 
@@ -1026,9 +1025,7 @@ export class TransactionService {
     posting?: authority,
     transactionOptions: TransactionOptions = {}
   ) {
-    const { median_props } = await (await this.getChain())
-      .extend<GetWitnessSchedule>()
-      .api.condenser_api.get_witness_schedule([]);
+    const { median_props } = await (await hiveChainService.getHiveChain()).api.condenser_api.get_witness_schedule([]);
     const fee = await getAsset(median_props.account_creation_fee.split(' ')[0], 'HIVE');
     return (
       await this.processHiveAppOperation((builder) => {

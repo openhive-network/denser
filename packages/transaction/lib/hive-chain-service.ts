@@ -9,8 +9,8 @@ import { ExtendedNodeApi } from './extended-hive.chain';
 const logger = getLogger('app');
 
 export class HiveChainService {
-  static hiveChain: IHiveChainInterface;
-  static extendedHiveChain: TWaxExtended<ExtendedNodeApi, IHiveChainInterface>;
+  static hiveChain: TWaxExtended<ExtendedNodeApi, IHiveChainInterface>;
+
   storage: Storage;
   storageType: StorageType;
 
@@ -56,7 +56,7 @@ export class HiveChainService {
         // Set promise result in this class' static property and return
         // it here as well.
         await this.setHiveChain({ apiEndpoint, chainId: siteConfig.chainId});
-        return HiveChainService.extendedHiveChain;
+        return HiveChainService.hiveChain;
       };
 
       // Set promise to pending.
@@ -66,13 +66,13 @@ export class HiveChainService {
     }
     // If we have not empty existing static property, just return it.
     // logger.info('Returning existing instance of HiveChainService.HiveChain');
-    return HiveChainService.extendedHiveChain;
+    return HiveChainService.hiveChain;
   }
 
   async setHiveChain(options?: Partial<IWaxOptionsChain>) {
     logger.info('Creating instance of HiveChainService.hiveChain with options: %o', options);
-    HiveChainService.hiveChain = await createHiveChain(options);
-    HiveChainService.extendedHiveChain = HiveChainService.hiveChain.extend<ExtendedNodeApi>();
+    const hiveChain = await createHiveChain(options)
+    HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>();
   }
 
   async setHiveChainEndpoint(newEndpoint: string) {

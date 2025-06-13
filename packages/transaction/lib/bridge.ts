@@ -214,7 +214,6 @@ export const getPostsRanked = async (
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
   return chain
-    .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({
       sort,
       start_author,
@@ -257,7 +256,6 @@ export const getAccountPosts = async (
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
   return chain
-    .extend<GetAccountPostsData>()
     .api.bridge.get_account_posts({
       sort,
       account,
@@ -293,7 +291,6 @@ export const getPost = async (
   observer: string = ''
 ): Promise<Entry | null> => {
   return chain
-    .extend<GetPostData>()
     .api.bridge.get_post({
       author,
       permlink,
@@ -347,7 +344,7 @@ export const getAccountNotifications = async (
   if (lastId) {
     params.last_id = lastId;
   }
-  return chain.extend<GetAccountNotificationsData>().api.bridge.account_notifications(params);
+  return chain.api.bridge.account_notifications(params);
 };
 
 interface IGetDiscussion {
@@ -367,7 +364,7 @@ export const getDiscussion = async (
   permlink: string,
   observer?: string
 ): Promise<Record<string, Entry> | null> => {
-  return chain.extend<GetDiscussionData>().api.bridge.get_discussion({
+  return chain.api.bridge.get_discussion({
     author,
     permlink,
     observer
@@ -389,7 +386,7 @@ export const getCommunity = async (
   name: string,
   observer: string | undefined = ''
 ): Promise<Community | null> => {
-  return chain.extend<GetCommunityData>().api.bridge.get_community({ name, observer });
+  return chain.api.bridge.get_community({ name, observer });
 };
 
 type GetCommunityRolesData = {
@@ -402,7 +399,7 @@ type IGetCommunityRoles = {
 };
 
 export const getListCommunityRoles = async (community: string): Promise<CommunityTeam | null> => {
-  return chain.extend<GetCommunityRolesData>().api.bridge.list_community_roles({ community });
+  return chain.api.bridge.list_community_roles({ community });
 };
 
 interface IGetCommunities {
@@ -424,7 +421,7 @@ export const getCommunities = async (
   // limit: number = 100,
   observer: string = 'hive.blog'
 ): Promise<Community[] | null> => {
-  return chain.extend<GetCommunitiesData>().api.bridge.list_communities({
+  return chain.api.bridge.list_communities({
     // limit,
     query,
     sort,
@@ -443,7 +440,7 @@ type GetNormalizePost = {
 };
 
 export const normalizePost = async (post: Entry): Promise<Entry | null> => {
-  return chain.extend<GetNormalizePost>().api.bridge.normalize_post({
+  return chain.api.bridge.normalize_post({
     post
   });
 };
@@ -459,7 +456,7 @@ type GetSubscriptions = {
 };
 
 export const getSubscriptions = async (account: string): Promise<Subscription[] | null> => {
-  return chain.extend<GetSubscriptions>().api.bridge.list_all_subscriptions({
+  return chain.api.bridge.list_all_subscriptions({
     account
   });
 };
@@ -475,7 +472,7 @@ type GetSubscribers = {
 };
 
 export const getSubscribers = async (community: string): Promise<Subscription[] | null> => {
-  return chain.extend<GetSubscribers>().api.bridge.list_subscribers({
+  return chain.api.bridge.list_subscribers({
     community
   });
 };
@@ -496,7 +493,7 @@ type GetUnreadNotifications = {
 };
 
 export const getUnreadNotifications = async (account: string): Promise<IUnreadNotifications | null> => {
-  return chain.extend<GetUnreadNotifications>().api.bridge.unread_notifications({
+  return chain.api.bridge.unread_notifications({
     account
   });
 };
@@ -519,7 +516,6 @@ export const getRelationshipBetweenAccounts = async (
   following: string
 ): Promise<IAccountRelationship | null> => {
   return chain
-    .extend<GetAccountRelationship>()
     .api.bridge.get_relationship_between_accounts([follower, following]);
 };
 
@@ -545,7 +541,7 @@ export const getFollowList = async (
   observer: string,
   follow_type: FollowListType
 ): Promise<IFollowList[]> => {
-  return chain.extend<GetFollowListData>().api.bridge.get_follow_list({
+  return chain.api.bridge.get_follow_list({
     observer,
     follow_type
   });
