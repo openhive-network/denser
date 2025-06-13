@@ -9,7 +9,22 @@ import {
   GetDynamicGlobalPropertiesRequest
 } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { SavingsWithdrawals, IProposal, IGetProposalsParams, IProposalVote, AccountHistory, AccountRewardsHistory, IDelegatedVestingShare } from '@transaction/lib/extended-hive.chain';
+import {
+  SavingsWithdrawals,
+  IProposal,
+  IGetProposalsParams,
+  IProposalVote,
+  AccountHistory,
+  AccountRewardsHistory,
+  IDelegatedVestingShare,
+  OwnerHistory,
+  IRecentTradesData,
+  IOrdersDataItem,
+  IOpenOrdersData,
+  IOrdersData,
+  IMarketStatistics,
+  IWitness
+} from '@transaction/lib/extended-hive.chain';
 
 const chain = await hiveChainService.getHiveChain();
 
@@ -19,34 +34,6 @@ export declare type Bignum = string;
 export type ProposalData = Omit<IProposal, 'daily_pay' | 'total_votes'> & {
   total_votes: Big;
   daily_pay: { amount: Big };
-};
-export interface IWitness {
-  created: string;
-  id: number;
-  total_missed: number;
-  url: string;
-  props: {
-    account_creation_fee: string;
-    account_subsidy_budget: number;
-    maximum_block_size: number;
-  };
-  hbd_exchange_rate: {
-    base: string;
-    quote: string;
-  };
-  available_witness_account_subsidies: number;
-  running_version: string;
-  owner: string;
-  signing_key: string;
-  last_hbd_exchange_update: string;
-  votes: number;
-  last_confirmed_block_num: number;
-}
-
-type GetWitnessesByVoteData = {
-  condenser_api: {
-    get_witnesses_by_vote: TWaxApiRequest<(string | number)[], IWitness[]>;
-  };
 };
 
 export const getWitnessesByVote = async (from: string, limit: number): Promise<IWitness[]> => {
@@ -173,60 +160,9 @@ export const getProposalVotes = async (
     .api.condenser_api.list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
     .then((r) => r.filter((x: IProposalVote) => x.proposal.proposal_id === proposalId));
 };
-export interface IMarketStatistics {
-  hbd_volume: string;
-  highest_bid: string;
-  hive_volume: string;
-  latest: string;
-  lowest_ask: string;
-  percent_change: string;
-}
-
-type GetMarketStatisticsData = {
-  condenser_api: {
-    get_ticker: TWaxApiRequest<void[], IMarketStatistics>;
-  };
-};
 
 export const getMarketStatistics = async (): Promise<IMarketStatistics> => {
   return chain.api.condenser_api.get_ticker([]);
-};
-
-export interface IOrdersData {
-  bids: IOrdersDataItem[];
-  asks: IOrdersDataItem[];
-  trading: IOrdersDataItem[];
-}
-export interface IOpenOrdersData {
-  id: number;
-  created: string;
-  expiration: string;
-  seller: string;
-  orderid: number;
-  for_sale: number;
-  sell_price: {
-    base: string;
-    quote: string;
-  };
-  real_price: string;
-  rewarded: boolean;
-}
-
-export interface IOrdersDataItem {
-  created: string;
-  hbd: number;
-  hive: number;
-  order_price: {
-    base: string;
-    quote: string;
-  };
-  real_price: string;
-}
-
-type GetOrderBookData = {
-  condenser_api: {
-    get_order_book: TWaxApiRequest<number[], IOrdersData>;
-  };
 };
 
 export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> => {
@@ -255,17 +191,6 @@ export const getTradeHistory = async (limit: number = 1000): Promise<IOrdersData
   return chain
     .api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
 };
-export interface IRecentTradesData {
-  date: string;
-  current_pays: string;
-  open_pays: string;
-}
-
-type GetRecentTradesyData = {
-  condenser_api: {
-    get_recent_trades: TWaxApiRequest<number[], IRecentTradesData[]>;
-  };
-};
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
   return chain.api.condenser_api.get_recent_trades([limit]);
@@ -274,23 +199,6 @@ export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTrad
 export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {
   return chain
     .api.database_api.find_savings_withdrawals({ account: account });
-};
-
-type OwnerHistory = {
-  account: string;
-  id: number;
-  last_valid_time: string;
-  previous_owner_authority: {
-    account_auths: unknown[];
-    key_auths: [string, number][];
-    weight_threshold: number;
-  };
-}[];
-
-type GetOwnerHistoryData = {
-  condenser_api: {
-    get_owner_history: TWaxApiRequest<string[], OwnerHistory>;
-  };
 };
 
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {

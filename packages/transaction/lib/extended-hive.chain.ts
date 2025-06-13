@@ -196,7 +196,7 @@ export interface IRecentTradesData {
   open_pays: string;
 }
 
-type OwnerHistory = {
+export type OwnerHistory = {
   account: string;
   id: number;
   last_valid_time: string;
