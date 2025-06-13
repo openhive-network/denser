@@ -27,6 +27,7 @@ import { getYoutubeaFromLink, YoutubeEmbed } from './embeds/youtube';
 import { getTwitchMetadataFromLink, TwitchEmbed } from './embeds/twitch';
 import { getThreespeakMetadataFromLink, ThreeSpeakEmbed } from './embeds/threespeak';
 import { getInstagramMetadataFromLink, InstagramEmbedder } from './embeds/instagram';
+import LinkHeader from './link-header';
 
 export default function MarkdownRenderer({ content, className }: { content: string; className?: string }) {
   return (
@@ -114,6 +115,36 @@ export default function MarkdownRenderer({ content, className }: { content: stri
 }
 
 const components: Components = {
+  h1: ({ children, ...props }) => (
+    <LinkHeader id={children?.toString()}>
+      <h1 {...props}>{children}</h1>
+    </LinkHeader>
+  ),
+  h2: ({ children, ...props }) => (
+    <LinkHeader id={children?.toString()}>
+      <h2 {...props}>{children}</h2>
+    </LinkHeader>
+  ),
+  h3: ({ children, ...props }) => (
+    <LinkHeader id={children?.toString()}>
+      <h3 {...props}>{children}</h3>
+    </LinkHeader>
+  ),
+  h4: ({ children, ...props }) => (
+    <LinkHeader id={children?.toString()}>
+      <h4 {...props}>{children}</h4>
+    </LinkHeader>
+  ),
+  h5: ({ children, ...props }) => (
+    <LinkHeader id={children?.toString()}>
+      <h5 {...props}>{children}</h5>
+    </LinkHeader>
+  ),
+  h6: ({ children, ...props }) => (
+    <LinkHeader id={children?.toString()}>
+      <h6 {...props}>{children}</h6>
+    </LinkHeader>
+  ),
   a: ({ href, children, download, type, className, ...props }) => {
     const url = href ?? '';
     const twitch = getTwitchMetadataFromLink(url);
