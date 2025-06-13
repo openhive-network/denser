@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { type Badge, getSubscriptions } from '@transaction/lib/bridge';
+import { getSubscriptions } from '@transaction/lib/bridge';
+import { Badge } from '@transaction/lib/extended-hive.chain';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import SocialActivities from '@/blog/components/social-activities';
 import SubscriptionList from '@/blog/components/subscription-list';

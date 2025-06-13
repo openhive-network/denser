@@ -41,32 +41,6 @@ export type Badge = {
   url: string;
 };
 
-export interface JsonMetadata {
-  image: string;
-  links?: string[];
-  flow?: {
-    pictures: {
-      caption: string;
-      id: number;
-      mime: string;
-      name: string;
-      tags: string[];
-      url: string;
-    }[];
-    tags: string[];
-  };
-  images: string[];
-  author: string | undefined;
-  tags?: string[];
-  description?: string | null;
-  app?: string;
-  canonical_url?: string;
-  format?: string;
-  original_author?: string;
-  original_permlink?: string;
-  summary?: string;
-}
-
 export type Subscription = Array<string>;
 
 export const DATA_LIMIT = 20;
