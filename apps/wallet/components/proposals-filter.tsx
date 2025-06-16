@@ -9,7 +9,7 @@ import {
   SelectValue
 } from '@hive/ui/components/select';
 import { Icons } from '@hive/ui/components/icons';
-import { IGetProposalsParams } from '../lib/hive';
+import { IGetProposalsParams } from '@transaction/lib/extended-hive.chain';
 import { useTranslation } from 'next-i18next';
 
 export interface FilterProposalsProps {
