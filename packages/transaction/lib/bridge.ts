@@ -59,6 +59,7 @@ export type Badge = {
 };
 
 export interface JsonMetadata {
+  denserEditor?: boolean;
   image: string;
   links?: string[];
   flow?: {

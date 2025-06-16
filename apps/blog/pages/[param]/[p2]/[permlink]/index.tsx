@@ -59,6 +59,7 @@ import FlagIcon from '@/blog/components/flag-icon';
 import { getSuggestions } from '@/blog/lib/get-data';
 import SuggestionsList from '@/blog/components/suggestions-list';
 import TimeAgo from '@ui/components/time-ago';
+import Renderer from '@/blog/features/renderer/renderer';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -380,12 +381,19 @@ function PostPage({
                   </>
                 ) : (
                   <ImageGallery>
-                    <RendererContainer
-                      mainPost={post.depth === 0}
-                      body={crossedPost ? crosspost.body : post.body}
-                      author={post.author}
-                      className={postClassName}
-                    />
+                    {!!post.json_metadata.denserEditor ? (
+                      <Renderer
+                        content={crossedPost ? crosspost.body : post.body}
+                        className={postClassName}
+                      />
+                    ) : (
+                      <RendererContainer
+                        mainPost={post.depth === 0}
+                        body={crossedPost ? crosspost.body : post.body}
+                        author={post.author}
+                        className={postClassName}
+                      />
+                    )}
                   </ImageGallery>
                 )}
                 <div className="clear-both">

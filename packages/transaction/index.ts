@@ -628,6 +628,7 @@ export class TransactionService {
     summary: string,
     altAuthor: string,
     payoutType: string,
+    denserEditor: boolean,
     image?: string,
     transactionOptions: TransactionOptions = {},
     editMode = false
@@ -643,7 +644,8 @@ export class TransactionService {
       images: [image ? image : ''],
       jsonMetadata: {
         summary,
-        app: 'hive.blog/0.9'
+        app: 'hive.blog/0.9',
+        denserEditor: denserEditor
       }
     };
 

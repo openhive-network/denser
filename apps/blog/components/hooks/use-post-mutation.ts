@@ -30,6 +30,7 @@ export function usePostMutation() {
       payoutType: string;
       image?: string;
       editMode: boolean;
+      denserEditor: boolean;
     }) => {
       const {
         permlink,
@@ -43,7 +44,8 @@ export function usePostMutation() {
         altAuthor,
         payoutType,
         image,
-        editMode
+        editMode,
+        denserEditor
       } = params;
       const broadcastResult = await transactionService.post(
         permlink,
@@ -56,6 +58,7 @@ export function usePostMutation() {
         summary,
         altAuthor,
         payoutType,
+        denserEditor,
         image,
         { observe: true },
         editMode

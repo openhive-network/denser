@@ -257,7 +257,8 @@ export default function PostForm({
         altAuthor: data.author,
         payoutType: data.payoutType ?? preferences.blog_rewards,
         image: imagePickerState,
-        editMode
+        editMode,
+        denserEditor
       };
 
       try {
