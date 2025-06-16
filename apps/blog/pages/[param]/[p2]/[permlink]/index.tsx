@@ -1,5 +1,5 @@
 import parseDate from '@ui/lib/parse-date';
-import { Clock, Link2 } from 'lucide-react';
+import { Check, Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
@@ -24,7 +24,13 @@ import RedditShare from '@/blog/components/share-post-reddit';
 import TwitterShare from '@/blog/components/share-post-twitter';
 import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
-import { Separator } from '@ui/components';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Separator
+} from '@ui/components';
 import { useTranslation } from 'next-i18next';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
@@ -60,7 +66,7 @@ import { getSuggestions } from '@/blog/lib/get-data';
 import SuggestionsList from '@/blog/components/suggestions-list';
 import TimeAgo from '@ui/components/time-ago';
 import Renderer from '@/blog/features/renderer/renderer';
-
+import { MoreHorizontal } from 'lucide-react';
 const logger = getLogger('app');
 export const postClassName =
   'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer';
@@ -101,6 +107,9 @@ function PostPage({
   } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
     enabled: !!username && !!permlink
   });
+  const [renderMethod, setRenderMethod] = useState<'legacy' | 'denser' | 'raw'>(
+    !!post?.json_metadata.denserEditor ? 'denser' : 'legacy'
+  );
 
   const { data: suggestions } = useQuery(
     ['suggestions', username, permlink],
@@ -279,21 +288,55 @@ function PostPage({
                 </span>
               </div>
             ) : null}
-            <div className="absolute right-0 top-1 cursor-pointer hover:text-destructive">
-              {communityData && !user.isLoggedIn ? (
-                <DialogLogin>
-                  <FlagIcon onClick={() => {}} />
-                </DialogLogin>
-              ) : communityData && user.isLoggedIn ? (
-                <AlertDialogFlag
-                  community={community}
-                  username={username}
-                  permlink={permlink}
-                  flagText={communityData.flag_text}
-                >
-                  <FlagIcon onClick={() => {}} />
-                </AlertDialogFlag>
-              ) : null}
+            <div className="absolute right-0 top-1">
+              <DropdownMenu>
+                <DropdownMenuTrigger className="cursor-pointer hover:text-destructive">
+                  <MoreHorizontal />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {communityData && !user.isLoggedIn ? (
+                    <DialogLogin>
+                      <div className="flex cursor-pointer items-center gap-2 pl-2 text-sm">
+                        Flag Post
+                        <Icons.flag className="h-4" />
+                      </div>
+                    </DialogLogin>
+                  ) : communityData && user.isLoggedIn ? (
+                    <AlertDialogFlag
+                      community={community}
+                      username={username}
+                      permlink={permlink}
+                      flagText={communityData.flag_text}
+                    >
+                      <div className="flex cursor-pointer items-center gap-2 p-2 text-sm hover:bg-background hover:text-accent-foreground">
+                        Flag Post
+                        <Icons.flag className="h-4" />
+                      </div>
+                    </AlertDialogFlag>
+                  ) : null}
+                  <DropdownMenuItem
+                    className="cursor-pointer gap-2 hover:bg-background"
+                    onClick={() => setRenderMethod('legacy')}
+                  >
+                    Legacy Renderer
+                    {renderMethod === 'legacy' ? <Check /> : null}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer gap-2 hover:bg-background"
+                    onClick={() => setRenderMethod('denser')}
+                  >
+                    Denser Renderer
+                    {renderMethod === 'denser' ? <Check /> : null}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer gap-2 hover:bg-background"
+                    onClick={() => setRenderMethod('raw')}
+                  >
+                    Raw Connetent
+                    {renderMethod === 'raw' ? <Check /> : null}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             {!isLoadingPost && post ? (
@@ -381,11 +424,17 @@ function PostPage({
                   </>
                 ) : (
                   <ImageGallery>
-                    {!!post.json_metadata.denserEditor ? (
+                    {renderMethod === 'denser' ? (
                       <Renderer
                         content={crossedPost ? crosspost.body : post.body}
                         className={postClassName}
                       />
+                    ) : renderMethod === 'raw' ? (
+                      <div className="mb-4 bg-secondary px-4 py-2">
+                        <pre className="w-full overflow-x-scroll text-sm">
+                          {crossedPost ? crosspost.body : post.body}
+                        </pre>
+                      </div>
                     ) : (
                       <RendererContainer
                         mainPost={post.depth === 0}

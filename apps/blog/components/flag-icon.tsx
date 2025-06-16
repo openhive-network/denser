@@ -1,12 +1,12 @@
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
-const FlagTooltip = ({ onClick }: { onClick: () => void }) => {
+const FlagTooltip = () => {
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger>
-          <Icons.flag className="h-4" onClick={onClick} />
+          <Icons.flag className="h-4" />
         </TooltipTrigger>
         <TooltipContent>Flag post</TooltipContent>
       </Tooltip>
