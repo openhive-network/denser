@@ -368,22 +368,6 @@ mirrornet-based-tests:
         - --from=https://caddy-wallet
         - --to=denser-wallet:4000
         - --internal-certs
-    - name: $AUTH_IMAGE_NAME
-      alias: denser-auth
-      variables:
-        HEALTHCHECK_TCP_PORT: '5000'
-        PORT: '5000'
-        REACT_APP_SITE_DOMAIN: 'https://caddy-auth.local'
-        TURBO_APP_SCOPE: '@hive/auth'
-        TURBO_APP_PATH: '/apps/auth'
-    - name: caddy:${CADDY_TAG}
-      alias: caddy-auth
-      command:
-        - caddy
-        - reverse-proxy
-        - --from=https://caddy-auth
-        - --to=denser-auth:5000
-        - --internal-certs
   variables:
     GIT_STRATEGY: 'clone'
     CI_DEBUG_SERVICES: 'false'
