@@ -417,11 +417,11 @@ mirrornet-based-tests:
       - '*.log'
       - 'logs/'
       - '*.env'
-      - 'playwright-report/'
-      - 'test-results/'
-      - 'junit/'
+      - './apps/blog/playwright-report/'
+      - './apps/blog/test-results/'
+      - './apps/blog/junit/'
     reports:
-      junit: 'junit/results.xml'
+      junit: 'apps/blog/junit/results.xml'
   tags:
     - data-cache-storage
 
