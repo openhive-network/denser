@@ -1,48 +1,103 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@smart-signer/lib/middleware-challenge-cookies';
+import { createWaxFoundation } from '@hiveio/wax';
+
+export const config = {
+  runtime: 'nodejs'
+};
+
+// Initialize WAX lazily only when needed
+let waxInstance: any = null;
+const getWax = async () => {
+  if (!waxInstance) {
+    try {
+      waxInstance = await createWaxFoundation();
+    } catch (error) {
+      console.error('Failed to initialize WAX:', error);
+      return null;
+    }
+  }
+  return waxInstance;
+};
+
+const parseAuthCookie = async (cookie: string) => {
+  if (!cookie) return null;
+  
+  const wax = await getWax();
+  if (!wax) return null;
+
+  try {
+    const binary = Buffer.from(cookie, 'base64').toString('utf-8');
+    return wax.convertTransactionFromBinaryForm(binary);
+  } catch (error) {
+    console.error('Failed to parse auth cookie:', error);
+    return null;
+  }
+};
 
 export async function middleware(request: NextRequest) {
-
   const { pathname } = request.nextUrl;
+
+  // Early return for static files and API routes
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/static') ||
+    pathname.includes('favicon.ico')
+  ) {
+    return NextResponse.next();
+  }
+
+  // Handle root redirect
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL('/trending', request.url));
+  }
+
   const res = NextResponse.next();
 
+  // Handle auth cookie parsing
+  try {
+    const authCookie = request.cookies.get('data')?.value;
+    if (authCookie) {
+      const tx = await parseAuthCookie(authCookie);
+      console.log('tx:', tx);
+    }
+  } catch (error) {
+    console.error('Auth cookie parsing error:', error);
+  }
+
+  // Handle @username/permlink redirects
   const tempArr = pathname.split('/');
-  let entry: any = null;
   if (tempArr.length === 3 && tempArr[1].startsWith('@')) {
-    let author = tempArr[1].slice(1);
-    let permlink = tempArr[2];
+    const author = tempArr[1].slice(1);
+    const permlink = tempArr[2];
+    
     try {
       const resp = await fetch('https://api.hive.blog', {
         method: 'POST',
         body: JSON.stringify({
           jsonrpc: '2.0',
           method: 'bridge.get_post',
-          params: { author: author, permlink: permlink, observer: '' },
+          params: { author, permlink, observer: '' },
           id: 1
         })
       });
-      entry = await resp.json();
-      return NextResponse.redirect(
-        new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url)
-      );
-    } catch (e: any) {
-      console.log(e.message);
+      
+      const entry = await resp.json();
+      if (entry?.result?.community) {
+        const newUrl = new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url);
+        // Check if we're not already at the target URL to prevent loops
+        if (newUrl.pathname !== pathname) {
+          return NextResponse.redirect(newUrl);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch post:', error);
     }
   }
 
-  if (pathname === '/') {
-    return NextResponse.redirect(new URL('/trending', request.url));
-  }
-
-  /*
-  Set cookies with loginChallenge value set to random string (UID).
-  * Match all request paths except for the ones starting with:
-  * - api (API routes)
-  * - _next/static (static files)
-  * - _next/image (image optimization files)
-  * - favicon.ico (favicon file)
-  */
+  // Set login challenge cookies for non-excluded paths
   if (pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {
     setLoginChallengeCookies(request, res);
   }

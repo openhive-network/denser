@@ -79,7 +79,7 @@ export function LoginPanel(
     try {
       const hiveChain = await hiveChainService.getHiveChain();
       const operation: operation =
-        await getOperationForLogin(username, keyType, loginChallenge);
+        await getOperationForLogin(username, keyType, loginChallenge, loginType);
       const txBuilder = await hiveChain.createTransaction();
       txBuilder.pushOperation(operation);
       txBuilder.validate();

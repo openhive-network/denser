@@ -79,6 +79,7 @@ export const authorityChecker = async (
     });
 
     const hiveChain: IHiveChainInterface = await hiveChainService.getHiveChain();
+    console.log('to verify',txJSON);
     const authorityVerificationResult = await hiveChain.api.database_api.verify_authority({
       trx: txJSON,
       pack

@@ -11,7 +11,7 @@ import { useSigner } from '@smart-signer/lib/use-signer';
 import { LoginFormSchema as SignInFormSchema } from '../signin-form';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation } from '@hiveio/wax';
+import { IOnlineTransaction, operation } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -21,6 +21,7 @@ export interface LoginFormSchema extends SignInFormSchema {
 
 export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, strict: boolean) => {
   const authDataRef = useRef<PostLoginSchema | null>(null) as MutableRefObject<PostLoginSchema | null>;
+  const cookieRef = useRef<string | null>(null) as MutableRefObject<string | null>;
   const [loginChallenge, setLoginChallenge] = useState('');
   const [isSigned, setIsSigned] = useState(false);
   const { signerOptions } = useSigner();
@@ -48,8 +49,11 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
 
     try {
       const hiveChain = await hiveChainService.getHiveChain();
-      const operation: operation = await getOperationForLogin(username, keyType, loginChallenge);
-      const txBuilder = await hiveChain.createTransaction();
+      const operation: operation = await getOperationForLogin(username, keyType, loginChallenge, loginType);
+
+      const expr = new Date();
+      expr.setHours(expr.getHours() + 1);
+      const txBuilder = await hiveChain.createTransaction(expr);
       txBuilder.pushOperation(operation);
       txBuilder.validate();
       const tx = txBuilder.transaction;
@@ -82,19 +86,30 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
         signatures,
         authenticateOnBackend
       };
+
+      cookieRef.current = getAuthCookieString(txBuilder);
+      document.cookie = getAuthCookieString(txBuilder);
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       return Promise.reject(error);
     }
 
     authDataRef.current = signInData;
+
     setIsSigned(true);
     return Promise.resolve();
+  };
+
+  const getAuthCookieString = (tx: IOnlineTransaction) => {
+    const binaryData = tx.toBinaryForm();
+    const base64Data = Buffer.from(binaryData).toString('base64');
+    return `data=${base64Data};path=/;secure;samesite=strict`;
   };
 
   const submitAuth = async () => {
     try {
       if (authDataRef.current) {
+        // TODO:
         await signIn.mutateAsync({ data: authDataRef.current });
       } else {
         throw new Error('Unexpected error while processing authorization');
