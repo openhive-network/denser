@@ -58,15 +58,11 @@ export default function Renderer({ content, className }: { content: string; clas
           ]}
           rehypePlugins={[
             rehypeStringify,
-            rehypeRaw,
-            rehypeKatex,
-            rehypeHighlight,
-            rehypeMathjax,
             [
               rehypeSanitize,
               {
-                attributes: {
-                  '*': ['className', 'style', 'id'],
+                allowedAttributes: {
+                  '*': ['style', 'className', 'class', 'id'],
                   a: ['href', 'title'],
                   img: ['src', 'alt'],
                   input: ['checked']
@@ -107,6 +103,10 @@ export default function Renderer({ content, className }: { content: string; clas
                 ]
               }
             ],
+            rehypeRaw,
+            rehypeKatex,
+            rehypeHighlight,
+            rehypeMathjax,
             rehypeLinkHandler
           ]}
         >

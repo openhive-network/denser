@@ -214,6 +214,12 @@ importers:
       '@uiw/react-md-editor':
         specifier: ^3.25.6
         version: 3.25.6(@types/react@18.3.0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
+      '@vavt/cm-extension':
+        specifier: ^1.10.1
+        version: 1.10.1
+      '@vavt/rt-extension':
+        specifier: ^3.0.0
+        version: 3.0.0(md-editor-rt@5.6.1(react-dom@18.3.0(react@18.3.0))(react@18.3.0))
       big.js:
         specifier: ^6.2.1
         version: 6.2.2
@@ -3843,8 +3849,16 @@ packages:
   '@ungap/structured-clone@1.2.1':
     resolution: {integrity: sha512-fEzPV3hSkSMltkw152tJKNARhOupqbH96MZWyRjNaYZOMIzbrTeQDG+MTc6Mr2pgzFQzFxAfmhGDNP5QK++2ZA==}
 
+  '@vavt/cm-extension@1.10.1':
+    resolution: {integrity: sha512-gCY/DV3ckwpWvFRov6vB018iL0pY4SLobUf0BNdGxhrVanBHYd63yDuGHdqeELgKUzC2vjX234CET4S/ehqw5w==}
+
   '@vavt/copy2clipboard@1.0.3':
     resolution: {integrity: sha512-HtG48r2FBYp9eRvGB3QGmtRBH1zzRRAVvFbGgFstOwz4/DDaNiX0uZc3YVKPydqgOav26pibr9MtoCaWxn7aeA==}
+
+  '@vavt/rt-extension@3.0.0':
+    resolution: {integrity: sha512-6KxYg7ES/qfYhXhwUmAX1vODJNIYJtGy3UaNflXiIrwHqpiHzOmy5fPrTwjxP4jqccbTBD6qA5bR1DrtJ7lJng==}
+    peerDependencies:
+      md-editor-rt: '>=5.2.0'
 
   '@vavt/util@2.1.0':
     resolution: {integrity: sha512-YIfAvArSFVXmWvoF+DEGD0FhkhVNcCtVWWkfYtj76eSrwHh/wuEEFhiEubg1XLNM3tChO8FH8xJCT/hnizjgFQ==}
@@ -14657,7 +14671,13 @@ snapshots:
 
   '@ungap/structured-clone@1.2.1': {}
 
+  '@vavt/cm-extension@1.10.1': {}
+
   '@vavt/copy2clipboard@1.0.3': {}
+
+  '@vavt/rt-extension@3.0.0(md-editor-rt@5.6.1(react-dom@18.3.0(react@18.3.0))(react@18.3.0))':
+    dependencies:
+      md-editor-rt: 5.6.1(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
 
   '@vavt/util@2.1.0': {}
 

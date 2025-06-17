@@ -49,6 +49,8 @@
     "@types/remarkable": "^2.0.8",
     "@types/sanitize-html": "^2.9.5",
     "@uiw/react-md-editor": "^3.25.6",
+    "@vavt/cm-extension": "^1.10.1",
+    "@vavt/rt-extension": "^3.0.0",
     "big.js": "^6.2.1",
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
