@@ -445,3 +445,9 @@ summary {
   align-items: center;
   padding: 0.25rem 0.5rem;
 }
+.md-editor-modal-mask {
+  z-index: 9 !important;
+}
+.md-editor-modal {
+  z-index: 10 !important;
+}

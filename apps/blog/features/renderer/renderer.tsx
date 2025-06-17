@@ -1,24 +1,8 @@
 import 'highlight.js/styles/github.css';
 import 'remark-github-blockquote-alert/alert.css';
+import { useState, useEffect, createElement } from 'react';
 import ReactMarkdown, { Components } from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import remarkBreaks from 'remark-breaks';
-import rehypeHighlight from 'rehype-highlight';
-import rehypeRaw from 'rehype-raw';
 import { cn } from '@ui/lib/utils';
-import remarkSubSup from './plugins/remark-sub-sup';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import remarkAlert from 'remark-github-blockquote-alert';
-import remarkParse from 'remark-parse';
-import rehypeMathjax from 'rehype-mathjax';
-import rehypeSanitize from 'rehype-sanitize';
-import remarkFlexibleParagraphs from 'remark-flexible-paragraphs';
-import remarkFlexibleMarkers from 'remark-flexible-markers';
-import remarkInternalLinks from './plugins/remark-internal-links';
-import rehypeStringify from 'rehype-stringify';
-import remarkRehype from 'remark-rehype';
-import rehypeLinkHandler from './plugins/rehype-link-handler';
 import { getXMetadataFromLink, TwitterEmbedder } from './embeds/twitter-x';
 import { LeavePageDialog } from './leave-page-dialog';
 import { ExternalLink } from 'lucide-react';
@@ -29,7 +13,25 @@ import { getThreespeakMetadataFromLink, ThreeSpeakEmbed } from './embeds/threesp
 import { getInstagramMetadataFromLink, InstagramEmbedder } from './embeds/instagram';
 import LinkHeader from './link-header';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
-import { useState, useEffect } from 'react';
+
+import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
+import remarkSubSup from './plugins/remark-sub-sup';
+import remarkMath from 'remark-math';
+import remarkAlert from 'remark-github-blockquote-alert';
+import remarkParse from 'remark-parse';
+import remarkFlexibleParagraphs from 'remark-flexible-paragraphs';
+import remarkFlexibleMarkers from 'remark-flexible-markers';
+import remarkInternalLinks from './plugins/remark-internal-links';
+import remarkRehype from 'remark-rehype';
+
+import rehypeHighlight from 'rehype-highlight';
+import rehypeRaw from 'rehype-raw';
+import rehypeKatex from 'rehype-katex';
+import rehypeMathjax from 'rehype-mathjax';
+import rehypeSanitize from 'rehype-sanitize';
+import rehypeStringify from 'rehype-stringify';
+import rehypeLinkHandler from './plugins/rehype-link-handler';
 
 export default function Renderer({ content, className }: { content: string; className?: string }) {
   return (
@@ -46,26 +48,30 @@ export default function Renderer({ content, className }: { content: string; clas
             remarkAlert,
             remarkMath,
             remarkSubSup,
-            [
-              remarkGfm,
-              {
-                singleTilde: false,
-                subscript: true,
-                superscript: true
-              }
-            ],
+            [remarkGfm, { singleTilde: false, subscript: true, superscript: true }],
             remarkRehype
           ]}
           rehypePlugins={[
             rehypeStringify,
+            rehypeRaw,
+            rehypeKatex,
+            rehypeHighlight,
+            rehypeMathjax,
+            rehypeLinkHandler,
             [
               rehypeSanitize,
               {
-                allowedAttributes: {
+                attributes: {
                   '*': ['style', 'className', 'class', 'id'],
                   a: ['href', 'title'],
                   img: ['src', 'alt'],
-                  input: ['checked']
+                  input: ['checked'],
+                  th: ['align', 'style'],
+                  td: ['align', 'style'],
+                  table: ['style'],
+                  thead: ['style'],
+                  tbody: ['style'],
+                  tr: ['style']
                 },
                 tagNames: [
                   'span',
@@ -102,12 +108,7 @@ export default function Renderer({ content, className }: { content: string; clas
                   'center'
                 ]
               }
-            ],
-            rehypeRaw,
-            rehypeKatex,
-            rehypeHighlight,
-            rehypeMathjax,
-            rehypeLinkHandler
+            ]
           ]}
         >
           {content}
@@ -118,41 +119,17 @@ export default function Renderer({ content, className }: { content: string; clas
 }
 
 const components: Components = {
+  ...(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const).reduce((acc, tag) => {
+    acc[tag] = ({ children, ...props }: any) => (
+      <LinkHeader id={children?.toString()}>{createElement(tag, props, children)}</LinkHeader>
+    );
+    return acc;
+  }, {} as Components),
   img: ({ src, ...props }) => {
     if (!src) return;
     const imageProxy = getDoubleSize(proxifyImageUrl(src, true).replace(/ /g, '%20'));
     return <img src={imageProxy} {...props} />;
   },
-  h1: ({ children, ...props }) => (
-    <LinkHeader id={children?.toString()}>
-      <h1 {...props}>{children}</h1>
-    </LinkHeader>
-  ),
-  h2: ({ children, ...props }) => (
-    <LinkHeader id={children?.toString()}>
-      <h2 {...props}>{children}</h2>
-    </LinkHeader>
-  ),
-  h3: ({ children, ...props }) => (
-    <LinkHeader id={children?.toString()}>
-      <h3 {...props}>{children}</h3>
-    </LinkHeader>
-  ),
-  h4: ({ children, ...props }) => (
-    <LinkHeader id={children?.toString()}>
-      <h4 {...props}>{children}</h4>
-    </LinkHeader>
-  ),
-  h5: ({ children, ...props }) => (
-    <LinkHeader id={children?.toString()}>
-      <h5 {...props}>{children}</h5>
-    </LinkHeader>
-  ),
-  h6: ({ children, ...props }) => (
-    <LinkHeader id={children?.toString()}>
-      <h6 {...props}>{children}</h6>
-    </LinkHeader>
-  ),
   a: ({ href, children, download, type, className, ...props }) => {
     const url = href ?? '';
     const [isClient, setIsClient] = useState(false);

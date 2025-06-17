@@ -129,6 +129,7 @@ const DenserMdEditor = ({ text, onChange }: { text: string; onChange: (text: str
         />
       ]}
       toolbars={[
+        'title',
         'bold',
         'underline',
         'italic',
