@@ -102,24 +102,28 @@ mirrornet-haf-binaries-extraction:
   variables:
     TURBO_APP_NAME: ""
     BASE_IMAGE_NAME: ""
-
+    ENV_FILE_PATHNAME: "./apps/${TURBO_APP_NAME}/.env.testing"
+    IMAGE_SUFFIX: "testenv"
   script:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
       echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
+
+      export NEW_IMAGE_TAGNAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-${IMAGE_SUFFIX}:${CI_COMMIT_SHA}"
+
       docker buildx build \
         --push \
-        -t "${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-testenv:${CI_COMMIT_SHA}" -f- . << EOF
+        -t "${NEW_IMAGE_TAGNAME}" -f- . << EOF
         FROM $BASE_IMAGE_NAME AS production
-        COPY ./apps/${TURBO_APP_NAME}/.env.testing /app/apps/.env
+        COPY "${ENV_FILE_PATHNAME}" /app/apps/.env
       EOF
-      echo "DENSER_IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-testenv:${CI_COMMIT_SHA}" > docker-build-testenv-image.env
+      echo "DENSER_${TURBO_APP_NAME^^}_IMAGE_NAME=${NEW_IMAGE_TAGNAME}" > docker-build-testenv-${TURBO_APP_NAME}-image.env
   artifacts:
     paths:
-      - docker-build-testenv-image.env
+      - docker-build-testenv-${TURBO_APP_NAME}-image.env
     reports:
-      dotenv: docker-build-testenv-image.env
+      dotenv: docker-build-testenv-${TURBO_APP_NAME}-image.env
     when: always # This ensures artifacts are created even if job fails
   tags:
     - public-runner-docker
@@ -154,6 +158,26 @@ docker-build-wallet-testenv:
   variables:
     TURBO_APP_NAME: 'wallet'
     BASE_IMAGE_NAME: ${WALLET_IMAGE_NAME}
+
+docker-build-blog-mirrornet-testenv:
+  extends: .docker-build-testenv-image
+  needs:
+    - docker-build-blog
+  variables:
+    TURBO_APP_NAME: 'blog'
+    BASE_IMAGE_NAME: ${BLOG_IMAGE_NAME}
+    ENV_FILE_PATHNAME: "./apps/${TURBO_APP_NAME}/.env.mirrornet-testing"
+    IMAGE_SUFFIX: "mirrornet-testenv"
+
+docker-build-wallet-mirrornet-testenv:
+  extends: .docker-build-testenv-image
+  needs:
+    - docker-build-wallet
+  variables:
+    TURBO_APP_NAME: 'wallet'
+    BASE_IMAGE_NAME: ${WALLET_IMAGE_NAME}
+    ENV_FILE_PATHNAME: "./apps/${TURBO_APP_NAME}/.env.mirrornet-testing"
+    IMAGE_SUFFIX: "mirrornet-testenv"
 
 # Hived binary built as a part of HAF requires an additional
 # library to function. This library has to be extracted from
@@ -326,15 +350,15 @@ mirrornet-based-tests:
     - .node-job
   needs:
     - mirrornet-haf-binaries-extraction
-    - docker-build-blog
-    - docker-build-wallet
+    - docker-build-blog-mirrornet-testenv
+    - docker-build-wallet-mirrornet-testenv
     - mirrornet-replay-data-copy
     - block_log_processing
   image: 'mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}'
   allow_failure: true
   services:
     - !reference [.haf_api_node_test, services]
-    - name: $BLOG_IMAGE_NAME
+    - name: $DENSER_BLOG_IMAGE_NAME
       alias: denser-blog
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
@@ -351,7 +375,7 @@ mirrornet-based-tests:
         - --from=https://caddy-blog
         - --to=denser-blog:3000
         - --internal-certs
-    - name: $WALLET_IMAGE_NAME
+    - name: $DENSER_WALLET_IMAGE_NAME
       alias: denser-wallet
       variables:
         HEALTHCHECK_TCP_PORT: '4000'
@@ -407,7 +431,7 @@ e2e-tests-blog:
     - docker-build-blog-testenv
 
   services:
-    - name: $DENSER_IMAGE_NAME
+    - name: $DENSER_BLOG_IMAGE_NAME
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '3000'
@@ -430,7 +454,7 @@ e2e-tests-wallet:
     - docker-build-wallet-testenv
 
   services:
-    - name: $DENSER_IMAGE_NAME
+    - name: $DENSER_WALLET_IMAGE_NAME
       alias: denser
       variables:
         HEALTHCHECK_TCP_PORT: '4000'
