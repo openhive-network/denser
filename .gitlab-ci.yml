@@ -9,7 +9,7 @@ stages:
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: 'e74d7109838ff05fdc239bced6a726aa7ad46a9b'
+  CI_COMMON_JOB_VERSION: '5748d218bce6541d4c7f932fbe65f8ef46a3df45'
   DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
   DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
   IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
@@ -43,7 +43,7 @@ variables:
 include:
   - template: Workflows/Branch-Pipelines.gitlab-ci.yml
   - project: 'hive/common-ci-configuration'
-    ref: e74d7109838ff05fdc239bced6a726aa7ad46a9b # develop
+    ref: 5748d218bce6541d4c7f932fbe65f8ef46a3df45 # develop
     file:
       - '/templates/docker_image_jobs.gitlab-ci.yml'
       - '/templates/cache_cleanup.gitlab-ci.yml'
@@ -542,28 +542,8 @@ publish:
     - public-runner-docker
 
 .deploy_template:
-  extends: .job-defaults
+  extends: .webapp_deploy_template # ccc template
   stage: deploy
-  before_script:
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-      echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
-  script:
-    - |
-      # credits of solution for gitlab bug: https://gitlab.com/gitlab-org/gitlab/-/issues/294292#note_1070210709
-      export DEPLOYMENT_ENV_FILE=${!DEPLOYMENT_ENV_FILE}
-      # Make visible all vars in the bash env
-      source "${DEPLOYMENT_ENV_FILE}"
-
-      scripts/run_instance.sh \
-        --image="$IMAGE_NAME" \
-        --name="$CONTAINER_NAME" \
-        --port=$PORT \
-        --env-file="${DEPLOYMENT_ENV_FILE}" \
-        --detach
-  tags:
-    - hs-denser
 
 # Main branch deployments (manual)
 main:deploy-blog-mainnet:
@@ -648,16 +628,8 @@ main:deploy-wallet-mirrornet:
 
 # Stop jobs template
 .stop_template:
-  extends: .job-defaults
+  extends: .webapp_stop_template
   stage: cleanup
-  script:
-    - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: manual
-      allow_failure: true
-  tags:
-    - hs-denser
 
 # Stop jobs for main deployments
 main:stop-blog-mainnet:
