@@ -5,6 +5,7 @@ import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeyType } from '@smart-signer/types/common';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
+import { VerifySignaturesParams, VerifySignaturesResponse } from '@hive/transaction/lib/extended-hive.chain';
 
 const logger = getLogger('app');
 
@@ -202,14 +203,10 @@ class VerifySignaturesRequest {
   required_posting!: string[];
 }
 
-class VerifySignaturesResponse {
-  public valid!: boolean;
-}
-
 const DatabaseApiExtensions = {
   database_api: {
     verify_signatures: {
-      params: VerifySignaturesRequest,
+      params: VerifySignaturesParams,
       result: VerifySignaturesResponse
     }
   }
@@ -247,7 +244,7 @@ export async function verifySignature(
     }
   }
 
-  const params: VerifySignaturesRequest = {
+  const params: VerifySignaturesParams = {
     hash: digest,
     signatures: [signature],
     required_other: [],
@@ -263,9 +260,8 @@ export async function verifySignature(
   }
 
   const hiveChain = await hiveChainService.getHiveChain();
-  const extendedChain: TExtendedHiveChain = hiveChain.extend(DatabaseApiExtensions);
 
-  const { valid } = await extendedChain.api.database_api.verify_signatures(params);
+  const { valid } = await hiveChain.api.database_api.verify_signatures(params);
 
   if (!valid) {
     logger.info('Signature is invalid');

@@ -9,7 +9,7 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { useQuery } from '@tanstack/react-query';
-import { type Subscription, getCommunities } from '@transaction/lib/bridge';
+import { getCommunities } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -20,7 +20,7 @@ export function CommunitiesSelect({
   username
 }: {
   title: string;
-  mySubsData: Subscription[] | null | undefined;
+  mySubsData: string[][] | null | undefined;
   username?: string;
 }) {
   const { user } = useUser();

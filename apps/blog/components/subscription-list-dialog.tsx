@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 
-import type { Subscription } from '@transaction/lib/bridge';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 import { Badge } from '@ui/components';
@@ -16,7 +15,7 @@ export function SubsListDialog({
   community: string;
   moderateEnabled: boolean;
   children: ReactNode;
-  subs: Subscription[];
+  subs: string[][];
   title: string;
 }) {
   return (
@@ -27,7 +26,7 @@ export function SubsListDialog({
       <DialogContent className=" h-5/6 overflow-auto sm:max-w-[425px]">
         <div>Latest {title} Subscribers</div>
         <ul>
-          {subs.map((e: Subscription) => (
+          {subs.map((e: string[]) => (
             <li key={e[0]} className="flex items-center gap-1 p-[1.5px] text-sm">
               <Link href={`/@${e[0]}`} className="text-destructive">
                 @{e[0]}

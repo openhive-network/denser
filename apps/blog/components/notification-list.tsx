@@ -1,5 +1,5 @@
 import NotificationListItem from '@/blog/components/notification-list-item';
-import { IAccountNotification } from '@transaction/lib/bridge';
+import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 
 const NotificationList = ({
   data,

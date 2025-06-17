@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import { DEFAULT_PARAMS_FOR_PROPOSALS, IGetProposalsParams, getProposals } from '@/wallet/lib/hive';
+import { DEFAULT_PARAMS_FOR_PROPOSALS, getProposals } from '@/wallet/lib/hive';
+import { IGetProposalsParams } from '@transaction/lib/extended-hive.chain';
 import { getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { ProposalsFilter } from '@/wallet/components/proposals-filter';
 import moment from 'moment';

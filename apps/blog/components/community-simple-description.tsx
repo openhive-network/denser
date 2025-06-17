@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
-import type { Community, Subscription } from '@transaction/lib/bridge';
-import { IAccountNotification } from '@transaction/lib/bridge';
+import { Community } from '@transaction/lib/extended-hive.chain';
+import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from './activity-log-dialog';
 import { useTranslation } from 'next-i18next';
@@ -19,7 +19,7 @@ const CommunitySimpleDescription = ({
   username
 }: {
   data: Community;
-  subs: Subscription[];
+  subs: string[][];
   notificationData: IAccountNotification[] | null | undefined;
   username: string;
 }) => {

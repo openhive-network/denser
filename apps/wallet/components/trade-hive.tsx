@@ -9,7 +9,7 @@ import moment from 'moment';
 import Chart from './chart';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getOpenOrder, IOpenOrdersData } from '../lib/hive';
+import { getOpenOrder } from '../lib/hive';
 import OpenOrders from './open-orders';
 import { useQuery } from '@tanstack/react-query';
 
