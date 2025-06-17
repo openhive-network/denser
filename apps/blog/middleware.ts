@@ -3,6 +3,10 @@ import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@smart-signer/lib/middleware-challenge-cookies';
 import { createWaxFoundation } from '@hiveio/wax';
 
+export const config = {
+  runtime: 'nodejs'
+};
+
 const wax = await createWaxFoundation();
 
 const parseAuthCookie = (cookie: string) => {
