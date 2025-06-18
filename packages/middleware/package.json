@@ -1,8 +1,8 @@
 {
   "name": "@hive/middleware",
   "version": "0.1.0",
-  "main": "./lib/index.ts",
-  "types": "./lib/index.ts",
+  "main": "./lib/common.ts",
+  "types": "./lib/common.ts",
   "scripts": {
     "lint": "eslint ."
   },
@@ -10,7 +10,9 @@
     "@hive/smart-signer": "workspace:*",
     "@hive/ui": "workspace:*",
     "@tanstack/react-query": "^4.36.1",
-    "next": "^14.2.5"
+    "next": "^14.2.5",
+    "pino": "^8.17.1",
+    "pino-pretty": "^10.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",

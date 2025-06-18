@@ -495,6 +495,12 @@ importers:
       next:
         specifier: ^14.2.5
         version: 14.2.23(@babel/core@7.26.0)(@playwright/test@1.49.1)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
+      pino:
+        specifier: ^8.17.1
+        version: 8.21.0
+      pino-pretty:
+        specifier: ^10.2.0
+        version: 10.3.1
     devDependencies:
       '@types/node':
         specifier: ^20.10.4
@@ -912,6 +918,9 @@ importers:
       pino:
         specifier: ^8.17.1
         version: 8.21.0
+      pino-pretty:
+        specifier: ^10.2.0
+        version: 10.3.1
       react:
         specifier: 18.3.0
         version: 18.3.0

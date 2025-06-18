@@ -494,32 +494,38 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const queryClient = new QueryClient();
     let sort = ctx.query.sort || 'trending';
     if (Array.isArray(sort)) sort = sort[0];
-    let tag = secondParam || '';
-    if (Array.isArray(tag)) tag = tag[0];
+    
+    // Handle tag parameter - don't use it for user profiles
+    let tag = '';
+    if (secondParam && !firstParam.startsWith('@') && !secondParam.startsWith('@')) {
+      tag = secondParam;
+    }
 
-    // Prefetch posts (first page)
-    await queryClient.prefetchInfiniteQuery(
-      ['entriesInfinite', sort, tag],
-      async ({ pageParam }) => {
-        return await getPostsRanked(
-          sort as string,
-          tag as string,
-          pageParam?.author,
-          pageParam?.permlink,
-          '' // No user context on SSR
-        );
-      },
-      {
-        getNextPageParam: (lastPage) => {
-          if (lastPage && lastPage.length === PER_PAGE) {
-            return {
-              author: lastPage[lastPage.length - 1].author,
-              permlink: lastPage[lastPage.length - 1].permlink
-            };
+    // Prefetch posts (first page) only if not a user profile page
+    if (!firstParam.startsWith('@')) {
+      await queryClient.prefetchInfiniteQuery(
+        ['entriesInfinite', sort, tag],
+        async ({ pageParam }) => {
+          return await getPostsRanked(
+            sort as string,
+            tag,
+            pageParam?.author,
+            pageParam?.permlink,
+            '' // No user context on SSR
+          );
+        },
+        {
+          getNextPageParam: (lastPage) => {
+            if (lastPage && lastPage.length === PER_PAGE) {
+              return {
+                author: lastPage[lastPage.length - 1].author,
+                permlink: lastPage[lastPage.length - 1].permlink
+              };
+            }
           }
         }
-      }
-    );
+      );
+    }
 
     // Only prefetch community data if we have a valid tag and it's not a special route
     if (
