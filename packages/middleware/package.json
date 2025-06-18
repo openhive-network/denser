@@ -1,0 +1,19 @@
+{
+  "name": "@hive/middleware",
+  "version": "0.1.0",
+  "main": "./lib/index.ts",
+  "types": "./lib/index.ts",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@hive/smart-signer": "workspace:*",
+    "@hive/ui": "workspace:*",
+    "@tanstack/react-query": "^4.36.1",
+    "next": "^14.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "typescript": "5.3.3"
+  }
+}
