@@ -4,6 +4,7 @@ import { HomePage } from '../support/pages/homePage';
 import { LoginForm } from '../support/pages/loginForm';
 import { PostEditorPage } from '../support/pages/postEditorPage';
 import { users } from '../support/loginHelper';
+import { waitForElementVisible } from '../support/utils';
 
 test.describe('Test for commonities in the blog app', () => {
     const communityName: string = 'Photography Lovers';
@@ -59,16 +60,17 @@ test.describe('Test for commonities in the blog app', () => {
         await communityPage.communityJoinedLeaveButton.click();
         await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
         // Wait until optimistic ui is finished
-        await communityPage.communitySubscribeButton.waitFor({ state: 'visible' });
+        await waitForElementVisible(denserAutoTest3Page.page, communityPage.communitySubscribeButton['_selector'],20000, 4000);
         // Validate thet Joined button changed to Subscribe button
         await expect(communityPage.communitySubscribeButton).toBeVisible();
         await expect(communityPage.communitySubscribeButton).toHaveText('Subscribe');
         await expect(photographyLoversCommunityLocator).not.toBeVisible();
         // Click subscribe button
         await communityPage.communitySubscribeButton.click();
+        await communityPage.page.waitForTimeout(2000);
         await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
         // Wait until optimistic ui is finished
-        await communityPage.communityJoinedLeaveButton.waitFor({ state: 'visible' });
+        await waitForElementVisible(denserAutoTest3Page.page, communityPage.communityJoinedLeaveButton['_selector'], 30000, 3000);
         // JoindedLeave content means that user subscribes that community
         await expect(communityPage.communityJoinedLeaveButton).toHaveText('JoinedLeave');
     });
@@ -98,7 +100,8 @@ test.describe('Test for commonities in the blog app', () => {
         const postTag: string = 'test';
         await postEditorPage.createSimplePost(postTitle, postContentText, postSummary, postTag);
         await expect(await communityPage.communityNameTitle).toHaveText(communityName);
-        await communityPage.page.waitForTimeout(1000);
+        // Wait until optimistic ui is finished
+        await waitForElementVisible(denserAutoTest3Page.page, communityPage.page.getByText(postTitle)['_selector'],20000, 4000);
         // Validate the new post was created
         await expect(communityPage.page.getByText(postTitle)).toBeVisible();
     });
@@ -130,6 +133,8 @@ test.describe('Test for commonities in the blog app', () => {
         await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
         await communityPage.page.waitForTimeout(3000);
         await expect(await communityPage.communityNameTitle).toHaveText(unsubscribedCommunityName);
+        // Wait until optimistic ui is finished
+        await waitForElementVisible(denserAutoTest3Page.page, communityPage.page.getByText(postTitle)['_selector'],20000, 4000);
         // Validate the new post was created
         await expect(communityPage.page.getByText(postTitle)).toBeVisible();
     });
