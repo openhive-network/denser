@@ -154,7 +154,7 @@ const components: Components = {
     const twitch = getTwitchMetadataFromLink(url);
     if (twitch) {
       return (
-        <div key={`twitch-embed-${twitch}`}>
+        <div key={`twitch-embed-${twitch}`} className="flex w-full justify-center">
           <TwitchEmbed url={twitch} />
         </div>
       );
@@ -163,7 +163,11 @@ const components: Components = {
     const threeSpeak = getThreespeakMetadataFromLink(url);
     if (threeSpeak) {
       return (
-        <div key={`threespeak-embed-${threeSpeak}`} suppressHydrationWarning>
+        <div
+          key={`threespeak-embed-${threeSpeak}`}
+          suppressHydrationWarning
+          className="flex w-full justify-center"
+        >
           <ThreeSpeakEmbed id={threeSpeak} />
         </div>
       );
@@ -172,7 +176,11 @@ const components: Components = {
     const instagram = getInstagramMetadataFromLink(url);
     if (instagram) {
       return (
-        <div key={`instagram-embed-${instagram}`} suppressHydrationWarning>
+        <div
+          key={`instagram-embed-${instagram}`}
+          suppressHydrationWarning
+          className="flex w-full justify-center"
+        >
           <InstagramEmbedder href={instagram} />
         </div>
       );
@@ -181,7 +189,11 @@ const components: Components = {
     const youtube = getYoutubeaFromLink(url);
     if (youtube) {
       return (
-        <div key={`youtube-embed-${youtube.id}`} suppressHydrationWarning>
+        <div
+          key={`youtube-embed-${youtube.id}`}
+          suppressHydrationWarning
+          className="flex w-full justify-center"
+        >
           <YoutubeEmbed url={youtube.url} id={youtube.id} />
         </div>
       );
@@ -190,7 +202,7 @@ const components: Components = {
     const x = getXMetadataFromLink(url);
     if (x) {
       return (
-        <div key={`twitter-embed-${x.id}`} suppressHydrationWarning>
+        <div key={`twitter-embed-${x.id}`} suppressHydrationWarning className="flex w-full justify-center">
           <TwitterEmbedder id={x.id} username={x.username} />
         </div>
       );
