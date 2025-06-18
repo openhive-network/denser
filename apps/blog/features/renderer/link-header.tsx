@@ -7,7 +7,7 @@ const LinkHeader = ({ children, id = '' }: { children: ReactNode; id?: string })
     .replace(/\s+/g, '-')
     .replace(/[^\w-]/g, '');
   return (
-    <Link href={`#${headerId}`} id={headerId} className="text-primary hover:underline">
+    <Link href={`#${headerId}`} id={headerId} className="w-full text-primary hover:underline">
       {children}
     </Link>
   );
