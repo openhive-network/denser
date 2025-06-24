@@ -39,7 +39,7 @@ export const sortToTitle = (sort: sortTypes) => {
 };
 
 export const debounce = (fn: Function, delay: number) => {
-  let timer: ReturnType<typeof setTimeout>;
+  let timer: ReturnType;
   return function (...args: any[]) {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -101,6 +101,7 @@ export const getHivePower = (
 
 export function extractBodySummary(body: string, stripQuotes = false) {
   let desc = body;
+  const MAX_SIZE = 255;
 
   if (stripQuotes) desc = desc.replace(/(^(\n|\r|\s)*)>([\s\S]*?).*\s*/g, '');
   desc = remarkableStripper.render(desc); // render markdown to html
@@ -114,12 +115,12 @@ export function extractBodySummary(body: string, stripQuotes = false) {
   // eslint-disable-next-line prefer-destructuring
   desc = desc.trim().split('\n')[0];
 
-  if (desc.length > 200) {
-    desc = desc.substring(0, 200).trim();
+  if (desc.length > MAX_SIZE) {
+    desc = desc.substring(0, MAX_SIZE).trim();
 
     // Truncate, remove the last (likely partial) word (along with random punctuation), and add ellipses
     desc = desc
-      .substring(0, 180)
+      .substring(0, MAX_SIZE - 20)
       .trim()
       .replace(/[,!?]?\s+[^\s]+$/, '…');
   }
@@ -298,7 +299,7 @@ export function extractPictureFromPostBody(urls: string[]): string[] {
   return picturesFromPostBody;
 }
 
-export function hoursAndMinutes(date: Date, t: TFunction<'common_blog', undefined>) {
+export function hoursAndMinutes(date: Date, t: TFunction) {
   const today = moment();
   const cooldownMin = moment(date).diff(today, 'minutes') % 60;
   const cooldownH = moment(date).diff(today, 'hours');
@@ -318,7 +319,7 @@ export function hoursAndMinutes(date: Date, t: TFunction<'common_blog', undefine
   );
 }
 
-export function getRewardsString(account: FullAccount, t: TFunction<'common_blog', undefined>): string {
+export function getRewardsString(account: FullAccount, t: TFunction): string {
   const nothingToClaim = t('global.no_rewards');
   const reward_hive =
     parseFloat(account.reward_hive_balance.split(' ')[0]) > 0 ? account.reward_hive_balance : null;

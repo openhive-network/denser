@@ -318,12 +318,12 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     <Icons.calendarActive className="m-1" />
                     <span data-testid="user-last-time-active">
                       {t('user_profile.active')}{' '}
-                      <TimeAgo
+                      {/* <TimeAgo
                         date={compareDates([
                           profileData.created,
                           profileData.last_vote_time,
                           profileData.last_post
-                        ])}
+                        ])} */}
                       />
                     </span>
                   </li>

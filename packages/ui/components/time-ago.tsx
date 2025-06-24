@@ -40,7 +40,7 @@ const getTimeAgoString = (date: Date, lang: string = 'en'): string => {
   }
 };
 
-const TimeAgo: FC<TimeAgoProps> = ({ date }) => {
+const TimeAgo: FC = ({ date }: any) => {
   const [timeAgo, setTimeAgo] = useState<string>('');
   const userLang = getCookie('NEXT_LOCALE') || 'en';
 
@@ -55,7 +55,7 @@ const TimeAgo: FC<TimeAgoProps> = ({ date }) => {
     return () => clearInterval(interval);
   }, [date, userLang]);
 
-  return <span>{timeAgo}</span>;
+  return <span className="text-xs text-gray-400">{timeAgo}</span>;
 };
 
 export default TimeAgo;

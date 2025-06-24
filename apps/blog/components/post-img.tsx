@@ -84,7 +84,8 @@ export default function PostImage({ post }: { post: Entry }) {
           data-testid="post-image"
           className={clsx({ hidden: post.stats?.gray })}
         >
-          <div className="relative flex h-[210px] items-center overflow-hidden bg-transparent sm:h-[360px] md:mr-3.5 md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
+          {/*mt-1.5 lg:mt-0 ml-1 sm:ml-4 float-right object-cover w-28 h-20 sm:w-40 sm:h-28 lg:w-40 lg:h-28 xl:w-48 xl:h-32 */}
+          <div className="relative flex h-24 w-32 items-center overflow-hidden bg-transparent sm:h-28 sm:w-40 lg:h-32 lg:w-48 xl:h-40 xl:w-56">
             <picture className="articles__feature-img h-ful w-full">
               <source
                 srcSet={proxifyImageUrl(cardImage, '256x512').replace(/ /g, '%20')}

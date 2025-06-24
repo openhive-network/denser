@@ -1,7 +1,7 @@
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from 'next-i18next';
-import { FC } from 'react';
+// import { FC } from 'react';
 
 const PostCardUpvotesTooltip = ({ votes }: { votes: number }) => {
   const { t } = useTranslation('common_blog');

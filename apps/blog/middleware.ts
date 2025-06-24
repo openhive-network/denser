@@ -3,7 +3,6 @@ import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@smart-signer/lib/middleware-challenge-cookies';
 
 export async function middleware(request: NextRequest) {
-
   const { pathname } = request.nextUrl;
   const res = NextResponse.next();
 
@@ -32,7 +31,8 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname === '/') {
-    return NextResponse.redirect(new URL('/trending', request.url));
+    // return NextResponse.redirect(new URL('/trending', request.url));
+    return NextResponse.redirect(new URL('/hot', request.url));
   }
 
   /*

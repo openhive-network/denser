@@ -7,16 +7,16 @@ const MIRRORNET_CHAIN_ID = '42';
 
 export type ChainEnv = 'mainnet' | 'mirrornet' | 'testnet';
 
-const chainEnv: Record<string, ChainEnv> = {
+const chainEnv: Record = {
   [MAINNET_CHAIN_ID]: 'mainnet',
   [MIRRORNET_CHAIN_ID]: 'mirrornet',
-  'testnet': 'testnet'
+  testnet: 'testnet'
 };
 
 const chainId = env('CHAIN_ID') ? env('CHAIN_ID') : MAINNET_CHAIN_ID;
 export const siteConfig = {
-  name: 'Hive Blog',
-  url: env('SITE_DOMAIN') || 'https://hive.blog',
+  name: 'suseona',
+  url: env('SITE_DOMAIN') || 'https://blog.suseona.com',
   endpoint: `${env('API_ENDPOINT') ? env('API_ENDPOINT') : 'https://api.hive.blog'}`,
   chainId,
   chainEnv: chainEnv[chainId] || chainEnv['testnet'],
@@ -45,11 +45,16 @@ export const siteConfig = {
   openhiveChatUri: env('OPENHIVE_CHAT_URI') || 'https://openhive.chat',
   openhiveChatIframeIntegrationEnable: env('OPENHIVE_CHAT_IFRAME_INTEGRATION_ENABLE') || 'no',
   openhiveChatIframeVisible: env('OPENHIVE_CHAT_IFRAME_VISIBLE') || 'yes',
-  openhiveChatAllowNonStrictLogin: env('OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN')
-    && env('OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN') === 'yes' ? true : false,
+  openhiveChatAllowNonStrictLogin:
+    env('OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN') && env('OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN') === 'yes'
+      ? true
+      : false,
   openhiveChatIframeCreateUsers: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_IFRAME_CREATE_USERS`] || 'no',
-  openhiveChatAdminUserId: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_ID`] || 'DaMHvraiQbNBxi7W5',
-  openhiveChatAdminUserToken: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_TOKEN`] || 'VZhTOE20q3Xe9xTgA9QqjbQAYxYEhAfkUZpAm7xrQgd',
+  openhiveChatAdminUserId:
+    process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_ID`] || 'DaMHvraiQbNBxi7W5',
+  openhiveChatAdminUserToken:
+    process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_TOKEN`] ||
+    'VZhTOE20q3Xe9xTgA9QqjbQAYxYEhAfkUZpAm7xrQgd'
 };
 
 export type SiteConfig = typeof siteConfig;
