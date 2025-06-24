@@ -1,0 +1,12 @@
+{
+  "extends": "@hive/tsconfig/base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@smart-signer/*": ["../smart-signer/*"],
+      "@ui/*": ["../ui/*"]
+    }
+  },
+  "include": ["lib/**/*.ts", "lib/**/*.tsx"],
+  "exclude": ["node_modules"]
+}

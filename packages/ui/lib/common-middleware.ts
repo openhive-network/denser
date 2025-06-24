@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { setLoginChallengeCookies } from '@smart-signer/lib/middleware-challenge-cookies';
+import { setLoginChallengeCookies } from '@hive/smart-signer/lib/middleware-challenge-cookies';
 import { configuredApiEndpoint } from '@hive/ui/config/public-vars';
 
 export async function commonMiddleware(request: NextRequest) {
-
   const { pathname } = request.nextUrl;
   const res = NextResponse.next();
 

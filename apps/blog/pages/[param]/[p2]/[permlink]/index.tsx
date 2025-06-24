@@ -235,7 +235,7 @@ function PostPage({
       deleteComment(permlink);
     }
   };
-  const canonical_url = post ? new URL(post.url, env('SITE_DOMAIN')).href : undefined;
+  const canonical_url = post ? new URL(post.url.startsWith('http') ? post.url : `https://${env('SITE_DOMAIN')}${post.url}`).href : undefined;
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   const crossedPost = post?.json_metadata.tags?.includes('cross-post');
   return (

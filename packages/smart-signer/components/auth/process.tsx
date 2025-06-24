@@ -103,7 +103,7 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
   const getAuthCookieString = (tx: IOnlineTransaction) => {
     const binaryData = tx.toBinaryForm();
     const base64Data = Buffer.from(binaryData).toString('base64');
-    return `data=${base64Data};path=/;secure;samesite=strict`;
+    return `auth_proof=${base64Data};path=/;secure;samesite=strict`;
   };
 
   const submitAuth = async () => {

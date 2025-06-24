@@ -160,6 +160,9 @@ importers:
       '@hive/eslint-config-custom':
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
+      '@hive/middleware':
+        specifier: workspace:*
+        version: link:../../packages/middleware
       '@hive/prettier-config-custom':
         specifier: workspace:*
         version: link:../../packages/prettier-config-custom
@@ -359,6 +362,9 @@ importers:
       '@hive/eslint-config-custom':
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
+      '@hive/middleware':
+        specifier: workspace:*
+        version: link:../../packages/middleware
       '@hive/smart-signer':
         specifier: workspace:*
         version: link:../../packages/smart-signer
@@ -474,6 +480,34 @@ importers:
       pino:
         specifier: ^8.17.1
         version: 8.21.0
+
+  packages/middleware:
+    dependencies:
+      '@hive/smart-signer':
+        specifier: workspace:*
+        version: link:../smart-signer
+      '@hive/ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@tanstack/react-query':
+        specifier: ^4.36.1
+        version: 4.36.1(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
+      next:
+        specifier: ^14.2.5
+        version: 14.2.23(@babel/core@7.26.0)(@playwright/test@1.49.1)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
+      pino:
+        specifier: ^8.17.1
+        version: 8.21.0
+      pino-pretty:
+        specifier: ^10.2.0
+        version: 10.3.1
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.4
+        version: 20.14.10
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
 
   packages/prettier-config-custom:
     dependencies:
@@ -884,6 +918,9 @@ importers:
       pino:
         specifier: ^8.17.1
         version: 8.21.0
+      pino-pretty:
+        specifier: ^10.2.0
+        version: 10.3.1
       react:
         specifier: 18.3.0
         version: 18.3.0
