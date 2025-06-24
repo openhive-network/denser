@@ -118,6 +118,112 @@ export default function Renderer({ content, className }: { content: string; clas
   );
 }
 
+const LinkComponent = ({ href, children, download, type, className, ...props }: any) => {
+  const url = href ?? '';
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <Link href={url} {...props}>
+        {children}
+      </Link>
+    );
+  }
+  const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.bmp'];
+  if (imageExtensions.some((ext) => url.toLowerCase().endsWith(ext))) {
+    const imageProxy = getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20'));
+    return <img src={imageProxy} alt={children?.toString()} />;
+  }
+
+  const twitch = getTwitchMetadataFromLink(url);
+  if (twitch) {
+    return (
+      <div key={`twitch-embed-${twitch}`} className="flex w-full justify-center">
+        <TwitchEmbed url={twitch} />
+      </div>
+    );
+  }
+
+  const threeSpeak = getThreespeakMetadataFromLink(url);
+  if (threeSpeak) {
+    return (
+      <div
+        key={`threespeak-embed-${threeSpeak}`}
+        suppressHydrationWarning
+        className="flex w-full justify-center"
+      >
+        <ThreeSpeakEmbed id={threeSpeak} />
+      </div>
+    );
+  }
+
+  const instagram = getInstagramMetadataFromLink(url);
+  if (instagram) {
+    return (
+      <div
+        key={`instagram-embed-${instagram}`}
+        suppressHydrationWarning
+        className="flex w-full justify-center"
+      >
+        <InstagramEmbedder href={instagram} />
+      </div>
+    );
+  }
+
+  const youtube = getYoutubeaFromLink(url);
+  if (youtube) {
+    return (
+      <div
+        key={`youtube-embed-${youtube.id}`}
+        suppressHydrationWarning
+        className="flex w-full justify-center"
+      >
+        <YoutubeEmbed url={youtube.url} id={youtube.id} />
+      </div>
+    );
+  }
+
+  const x = getXMetadataFromLink(url);
+  if (x) {
+    return (
+      <div key={`twitter-embed-${x.id}`} suppressHydrationWarning className="flex w-full justify-center">
+        <TwitterEmbedder id={x.id} username={x.username} />
+      </div>
+    );
+  }
+
+  if (className?.includes('link-external')) {
+    if (className?.includes('safe-external-link')) {
+      return (
+        <Link href={url} target="_blank">
+          <span>{children}</span>
+          <ExternalLink className="inline h-4 w-4 cursor-pointer pl-1 text-destructive" />
+        </Link>
+      );
+    }
+    if (className?.includes('unknown-external-link')) {
+      return (
+        <>
+          <LeavePageDialog link={url} {...props}>
+            {children}
+          </LeavePageDialog>
+          <ExternalLink className="inline h-4 w-4 cursor-pointer pl-1 text-destructive" />
+        </>
+      );
+    }
+  }
+
+  return (
+    <Link href={url} {...props}>
+      {children}
+    </Link>
+  );
+};
+
 const components: Components = {
   ...(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const).reduce((acc, tag) => {
     acc[tag] = ({ children, ...props }: any) => (
@@ -130,109 +236,5 @@ const components: Components = {
     const imageProxy = getDoubleSize(proxifyImageUrl(src, true).replace(/ /g, '%20'));
     return <img src={imageProxy} {...props} />;
   },
-  a: ({ href, children, download, type, className, ...props }) => {
-    const url = href ?? '';
-    const [isClient, setIsClient] = useState(false);
-
-    useEffect(() => {
-      setIsClient(true);
-    }, []);
-
-    if (!isClient) {
-      return (
-        <Link href={url} {...props}>
-          {children}
-        </Link>
-      );
-    }
-    const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.bmp'];
-    if (imageExtensions.some((ext) => url.toLowerCase().endsWith(ext))) {
-      const imageProxy = getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20'));
-      return <img src={imageProxy} alt={children?.toString()} />;
-    }
-
-    const twitch = getTwitchMetadataFromLink(url);
-    if (twitch) {
-      return (
-        <div key={`twitch-embed-${twitch}`} className="flex w-full justify-center">
-          <TwitchEmbed url={twitch} />
-        </div>
-      );
-    }
-
-    const threeSpeak = getThreespeakMetadataFromLink(url);
-    if (threeSpeak) {
-      return (
-        <div
-          key={`threespeak-embed-${threeSpeak}`}
-          suppressHydrationWarning
-          className="flex w-full justify-center"
-        >
-          <ThreeSpeakEmbed id={threeSpeak} />
-        </div>
-      );
-    }
-
-    const instagram = getInstagramMetadataFromLink(url);
-    if (instagram) {
-      return (
-        <div
-          key={`instagram-embed-${instagram}`}
-          suppressHydrationWarning
-          className="flex w-full justify-center"
-        >
-          <InstagramEmbedder href={instagram} />
-        </div>
-      );
-    }
-
-    const youtube = getYoutubeaFromLink(url);
-    if (youtube) {
-      return (
-        <div
-          key={`youtube-embed-${youtube.id}`}
-          suppressHydrationWarning
-          className="flex w-full justify-center"
-        >
-          <YoutubeEmbed url={youtube.url} id={youtube.id} />
-        </div>
-      );
-    }
-
-    const x = getXMetadataFromLink(url);
-    if (x) {
-      return (
-        <div key={`twitter-embed-${x.id}`} suppressHydrationWarning className="flex w-full justify-center">
-          <TwitterEmbedder id={x.id} username={x.username} />
-        </div>
-      );
-    }
-
-    if (className?.includes('link-external')) {
-      if (className?.includes('safe-external-link')) {
-        return (
-          <Link href={url} target="_blank">
-            <span>{children}</span>
-            <ExternalLink className="inline h-4 w-4 cursor-pointer pl-1 text-destructive" />
-          </Link>
-        );
-      }
-      if (className?.includes('unknown-external-link')) {
-        return (
-          <>
-            <LeavePageDialog link={url} {...props}>
-              {children}
-            </LeavePageDialog>
-            <ExternalLink className="inline h-4 w-4 cursor-pointer pl-1 text-destructive" />
-          </>
-        );
-      }
-    }
-
-    return (
-      <Link href={url} {...props}>
-        {children}
-      </Link>
-    );
-  }
+  a: LinkComponent
 };
