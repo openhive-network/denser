@@ -81,14 +81,14 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const isLoading = communityDataIsLoading || subsIsLoading || notificationIsLoading || rolesIsLoading;
   const isError = mySubsIsError || communityIsError || subsIsError || notificationIsError || rolesIsError;
 
-  const userRole = rolesData?.find((e) => e[0] === user.username);
+  const userRole = rolesData?.find((e: any) => e[0] === user.username);
   const roleValue = userRole
     ? (() => {
         const role = roles.find((e) => e.name === userRole[1]);
         return role ? { value: role.value, role: role.name, name: userRole[0], title: userRole[2] } : null;
       })()
     : null;
-  const rolesValue = rolesData?.map((e) => {
+  const rolesValue = rolesData?.map((e: any) => {
     const role = roles.find((r) => r.name === e[1]);
     return role ? { value: role.value, role: role.name, name: e[0], title: e[2] } : null;
   });
@@ -144,7 +144,7 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {rolesValue?.map((e) =>
+                          {rolesValue?.map((e: any) =>
                             e ? (
                               <TableRow key={e.name}>
                                 <TableCell className="p-2">

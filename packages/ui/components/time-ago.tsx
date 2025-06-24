@@ -1,5 +1,6 @@
 import { getCookie } from '@ui/lib/utils';
 import { FC, useEffect, useState } from 'react';
+import { IAccountNotificationEx } from '@transaction/lib/bridge';
 
 interface TimeAgoProps {
   date: string | number | Date;
@@ -40,7 +41,7 @@ const getTimeAgoString = (date: Date, lang: string = 'en'): string => {
   }
 };
 
-const TimeAgo: FC = ({ date }: any) => {
+const TimeAgo: FC<TimeAgoProps> = ({ date }) => {
   const [timeAgo, setTimeAgo] = useState<string>('');
   const userLang = getCookie('NEXT_LOCALE') || 'en';
 

@@ -20,11 +20,11 @@ interface IGetPostHeaderParams {
 
 type GetPostHeaderData = {
   bridge: {
-    get_post_header: TWaxApiRequest;
+    get_post_header: TWaxApiRequest<any, any>;
   };
 };
 
-export const getPostHeader = async (author: string, permlink: string): Promise => {
+export const getPostHeader = async (author: string, permlink: string): Promise<any> => {
   return chain.extend<GetPostHeaderData>().api.bridge.get_post_header({
     author,
     permlink
@@ -117,7 +117,7 @@ export interface Entry {
   id?: number;
   promoted: string;
   reblogged_by?: string[];
-  replies: Array;
+  replies: Array<any>;
   stats?: EntryStat;
   title: string;
   updated: string;
@@ -125,7 +125,7 @@ export interface Entry {
   original_entry?: Entry;
 }
 
-export type CommunityTeam = Array;
+export type CommunityTeam = Array<any>;
 
 export interface Community {
   about: string;
@@ -155,16 +155,16 @@ export interface Community {
 
 export type Communities = Community[];
 
-export type Subscription = Array;
+export type Subscription = Array<any>;
 
 export const DATA_LIMIT = 10;
 
-const resolvePost = (post: Entry, observer: string): Promise => {
+const resolvePost = (post: Entry, observer: string): Promise<any> => {
   const { json_metadata: json } = post;
 
   if (json.original_author && json.original_permlink && json.tags && json.tags[0] === 'cross-post') {
     return getPost(json.original_author, json.original_permlink, observer)
-      .then((resp) => {
+      .then((resp: any) => {
         if (resp) {
           return {
             ...post,
@@ -184,7 +184,7 @@ const resolvePost = (post: Entry, observer: string): Promise => {
   });
 };
 
-const resolvePosts = (posts: Entry[], observer: string): Promise => {
+const resolvePosts = (posts: Entry[], observer: string): Promise<any> => {
   const promises = posts.map((p) => resolvePost(p, observer));
 
   return Promise.all(promises);
@@ -201,7 +201,7 @@ interface IGetPostsRanked {
 
 type GetPostsRankedData = {
   bridge: {
-    get_ranked_posts: TWaxApiRequest;
+    get_ranked_posts: TWaxApiRequest<any, any>;
   };
 };
 
@@ -212,7 +212,7 @@ export const getPostsRanked = async (
   start_permlink: string = '',
   observer: string,
   limit: number = DATA_LIMIT
-): Promise => {
+): Promise<any> => {
   return chain
     .extend<GetPostsRankedData>()
     .api.bridge.get_ranked_posts({
@@ -244,7 +244,7 @@ interface IGetAccountPosts {
 
 type GetAccountPostsData = {
   bridge: {
-    get_account_posts: TWaxApiRequest;
+    get_account_posts: TWaxApiRequest<any, any>;
   };
 };
 
@@ -255,7 +255,7 @@ export const getAccountPosts = async (
   start_author: string = '',
   start_permlink: string = '',
   limit: number = DATA_LIMIT
-): Promise => {
+): Promise<any> => {
   return chain
     .extend<GetAccountPostsData>()
     .api.bridge.get_account_posts({
@@ -283,11 +283,15 @@ interface IGetPost {
 
 type GetPostData = {
   bridge: {
-    get_post: TWaxApiRequest;
+    get_post: TWaxApiRequest<any, any>;
   };
 };
 
-export const getPost = async (author: string = '', permlink: string = '', observer: string = ''): Promise => {
+export const getPost = async (
+  author: string = '',
+  permlink: string = '',
+  observer: string = ''
+): Promise<any> => {
   return chain
     .extend<GetPostData>()
     .api.bridge.get_post({
@@ -325,7 +329,7 @@ export interface IAccountNotificationEx extends IAccountNotification {
 
 type GetAccountNotificationsData = {
   bridge: {
-    account_notifications: TWaxApiRequest;
+    account_notifications: TWaxApiRequest<any, any>;
   };
 };
 
@@ -334,7 +338,7 @@ export const getAccountNotifications = async (
   account: string,
   lastId: number | null = null,
   limit = 50
-): Promise => {
+): Promise<any> => {
   const params: { account: string; last_id?: number; limit: number } = {
     account,
     limit
@@ -354,11 +358,11 @@ interface IGetDiscussion {
 
 type GetDiscussionData = {
   bridge: {
-    get_discussion: TWaxApiRequest;
+    get_discussion: TWaxApiRequest<any, any>;
   };
 };
 
-export const getDiscussion = async (author: string, permlink: string, observer?: string): Promise => {
+export const getDiscussion = async (author: string, permlink: string, observer?: string): Promise<any> => {
   return chain.extend<GetDiscussionData>().api.bridge.get_discussion({
     author,
     permlink,
@@ -373,24 +377,24 @@ interface IGetCommunity {
 
 type GetCommunityData = {
   bridge: {
-    get_community: TWaxApiRequest;
+    get_community: TWaxApiRequest<any, any>;
   };
 };
 
-export const getCommunity = async (name: string, observer: string | undefined = ''): Promise => {
+export const getCommunity = async (name: string, observer: string | undefined = ''): Promise<any> => {
   return chain.extend<GetCommunityData>().api.bridge.get_community({ name, observer });
 };
 
 type GetCommunityRolesData = {
   bridge: {
-    list_community_roles: TWaxApiRequest;
+    list_community_roles: TWaxApiRequest<any, any>;
   };
 };
 type IGetCommunityRoles = {
   community: string;
 };
 
-export const getListCommunityRoles = async (community: string): Promise => {
+export const getListCommunityRoles = async (community: string): Promise<any> => {
   return chain.extend<GetCommunityRolesData>().api.bridge.list_community_roles({ community });
 };
 
@@ -402,7 +406,7 @@ interface IGetCommunities {
 
 type GetCommunitiesData = {
   bridge: {
-    list_communities: TWaxApiRequest;
+    list_communities: TWaxApiRequest<any, any>;
   };
 };
 
@@ -412,7 +416,7 @@ export const getCommunities = async (
   // last: string = '',
   // limit: number = 100,
   observer: string = 'hive.blog'
-): Promise => {
+): Promise<any> => {
   return chain.extend<GetCommunitiesData>().api.bridge.list_communities({
     // limit,
     query,
@@ -427,11 +431,11 @@ interface IGetNormalizePost {
 
 type GetNormalizePost = {
   bridge: {
-    normalize_post: TWaxApiRequest;
+    normalize_post: TWaxApiRequest<any, any>;
   };
 };
 
-export const normalizePost = async (post: Entry): Promise => {
+export const normalizePost = async (post: Entry): Promise<any> => {
   return chain.extend<GetNormalizePost>().api.bridge.normalize_post({
     post
   });
@@ -443,11 +447,11 @@ interface IGetSubscriptions {
 
 type GetSubscriptions = {
   bridge: {
-    list_all_subscriptions: TWaxApiRequest;
+    list_all_subscriptions: TWaxApiRequest<any, any>;
   };
 };
 
-export const getSubscriptions = async (account: string): Promise => {
+export const getSubscriptions = async (account: string): Promise<any> => {
   return chain.extend<GetSubscriptions>().api.bridge.list_all_subscriptions({
     account
   });
@@ -459,11 +463,11 @@ interface IGetSubscribers {
 
 type GetSubscribers = {
   bridge: {
-    list_subscribers: TWaxApiRequest;
+    list_subscribers: TWaxApiRequest<any, any>;
   };
 };
 
-export const getSubscribers = async (community: string): Promise => {
+export const getSubscribers = async (community: string): Promise<any> => {
   return chain.extend<GetSubscribers>().api.bridge.list_subscribers({
     community
   });
@@ -480,11 +484,11 @@ export interface IUnreadNotifications {
 
 type GetUnreadNotifications = {
   bridge: {
-    unread_notifications: TWaxApiRequest;
+    unread_notifications: TWaxApiRequest<any, any>;
   };
 };
 
-export const getUnreadNotifications = async (account: string): Promise => {
+export const getUnreadNotifications = async (account: string): Promise<any> => {
   return chain.extend<GetUnreadNotifications>().api.bridge.unread_notifications({
     account
   });
@@ -499,11 +503,11 @@ export interface IAccountRelationship {
 
 type GetAccountRelationship = {
   bridge: {
-    get_relationship_between_accounts: TWaxApiRequest;
+    get_relationship_between_accounts: TWaxApiRequest<any, any>;
   };
 };
 
-export const getRelationshipBetweenAccounts = async (follower: string, following: string): Promise => {
+export const getRelationshipBetweenAccounts = async (follower: string, following: string): Promise<any> => {
   return chain
     .extend<GetAccountRelationship>()
     .api.bridge.get_relationship_between_accounts([follower, following]);
@@ -523,11 +527,11 @@ export interface IFollowList {
 
 type GetFollowListData = {
   bridge: {
-    get_follow_list: TWaxApiRequest;
+    get_follow_list: TWaxApiRequest<any, any>;
   };
 };
 
-export const getFollowList = async (observer: string, follow_type: FollowListType): Promise => {
+export const getFollowList = async (observer: string, follow_type: FollowListType): Promise<any> => {
   return chain.extend<GetFollowListData>().api.bridge.get_follow_list({
     observer,
     follow_type
@@ -587,7 +591,7 @@ export interface SearchResult {
   depth: number;
 }
 
-export const getSearch = async (q: string, scroll_id: string, sort: string): Promise => {
+export const getSearch = async (q: string, scroll_id: string, sort: string): Promise<any> => {
   try {
     const response = await fetch('/api/search', {
       method: 'POST',

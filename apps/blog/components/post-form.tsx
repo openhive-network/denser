@@ -206,8 +206,8 @@ export default function PostForm({
   const summaryCheck = validateSummaryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
   const communityPosting =
-    mySubsData && mySubsData?.filter((e) => e[0] === router.query.category).length > 0
-      ? mySubsData?.filter((e) => e[0] === router.query.category)[0][0]
+    mySubsData && mySubsData?.filter((e: any) => e[0] === router.query.category).length > 0
+      ? mySubsData?.filter((e: any) => e[0] === router.query.category)[0][0]
       : undefined;
 
   useEffect(() => {
@@ -507,12 +507,12 @@ export default function PostForm({
                           <SelectContent>
                             <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
                             <SelectGroup>{t('submit_page.my_communities')}</SelectGroup>
-                            {mySubsData?.map((e) => (
+                            {mySubsData?.map((e: any) => (
                               <SelectItem key={e[0]} value={e[0]}>
                                 {e[1]}
                               </SelectItem>
                             ))}
-                            {!mySubsData?.some((e) => e[0] === storedPost.category) &&
+                            {!mySubsData?.some((e: any) => e[0] === storedPost.category) &&
                             storedPost.category !== 'blog' ? (
                               <>
                                 <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>

@@ -641,7 +641,7 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
             <div>
               <div>{t('settings_page.muted_users')}</div>
               <ul>
-                {mutedQuery.data.map((mutedUser, index) => {
+                {mutedQuery.data.map((mutedUser: any, index: number) => {
                   const mute_item =
                     unmuteMutation.isLoading && unmuteMutation.variables?.username === mutedUser.name;
                   return (

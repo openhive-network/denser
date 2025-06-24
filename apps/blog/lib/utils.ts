@@ -39,7 +39,7 @@ export const sortToTitle = (sort: sortTypes) => {
 };
 
 export const debounce = (fn: Function, delay: number) => {
-  let timer: ReturnType;
+  let timer: ReturnType<typeof setTimeout>;
   return function (...args: any[]) {
     clearTimeout(timer);
     timer = setTimeout(() => {

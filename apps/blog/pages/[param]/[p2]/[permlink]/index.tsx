@@ -135,7 +135,7 @@ function PostPage({
     enabled: Boolean(community)
   });
 
-  const userRole = rolesData?.find((e) => e[0] === user.username);
+  const userRole = rolesData?.find((e: any) => e[0] === user.username);
   const userCanModerate = userRole
     ? userRole[1] === 'mod' || userRole[1] === 'admin' || userRole[1] === 'owner'
     : false;
@@ -319,7 +319,7 @@ function PostPage({
                     >
                       • {t('post_content.if_comment.view_the_full_context')}
                     </Link>
-                    {discussionState && !discussionState.some((e) => e.depth === 1) ? (
+                    {discussionState && !discussionState.some((e: any) => e.depth === 1) ? (
                       <Link
                         className="text-sm hover:text-destructive"
                         href={`/${post.category}/@${post.parent_author}/${post.parent_permlink}`}
@@ -392,7 +392,7 @@ function PostPage({
                   {!commentSite ? (
                     <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
                       {post.json_metadata.tags
-                        ?.filter((e) => e !== post.category && e !== '' && e !== post.community)
+                        ?.filter((e: any) => e !== post.category && e !== '' && e !== post.community)
                         .map((tag: string) => (
                           <li key={tag}>
                             <Link

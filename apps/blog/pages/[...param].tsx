@@ -50,7 +50,7 @@ export const PostSkeleton = () => {
   );
 };
 
-const ParamPage: FC = ({ metadata }) => {
+const ParamPage: FC = ({ metadata }: any) => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const { sort, username, tag } = useSiteParams();

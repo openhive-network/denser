@@ -32,9 +32,9 @@ const CommunityDescription = ({
   const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const userRole = data.team.find((e) => e[0] === user.username);
-  const adminRole = data.team.find((e) => e[0] === user.username && e[1] === 'admin');
-  const userCanModerate = data.team.find((e) => e[0] === user.username);
+  const userRole = data.team.find((e: any) => e[0] === user.username);
+  const adminRole = data.team.find((e: any) => e[0] === user.username && e[1] === 'admin');
+  const userCanModerate = data.team.find((e: any) => e[0] === user.username);
   useEffect(() => {
     setIsSubscribed(data.context.subscribed);
   }, [data.context.subscribed]);

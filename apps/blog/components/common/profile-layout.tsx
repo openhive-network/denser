@@ -323,8 +323,8 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                           profileData.created,
                           profileData.last_vote_time,
                           profileData.last_post
-                        ])} */}
-                      />
+                        ])} 
+                      />*/}
                     </span>
                   </li>
                 </ul>

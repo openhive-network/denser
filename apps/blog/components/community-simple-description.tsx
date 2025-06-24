@@ -31,9 +31,9 @@ const CommunitySimpleDescription = ({
     setIsSubscribed(data.context.subscribed);
   }, [data.context.subscribed]);
 
-  const userRole = data.team.find((e) => e[0] === user.username);
-  const userCanModerate = data.team.find((e) => e[0] === user.username);
-  const adminRole = data.team.find((e) => e[0] === user.username && e[1] === 'admin');
+  const userRole = data.team.find((e: any) => e[0] === user.username);
+  const userCanModerate = data.team.find((e: any) => e[0] === user.username);
+  const adminRole = data.team.find((e: any) => e[0] === user.username && e[1] === 'admin');
 
   return (
     <Card

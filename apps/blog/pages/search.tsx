@@ -184,7 +184,7 @@ export default function SearchPage() {
             ) : (
               entriesData.pages.map((data, i) => (
                 <ul key={i}>
-                  {data.results.map((post) => (
+                  {data.results.map((post: any) => (
                     <SearchCard post={post} key={post.id} nsfw={preferences.nsfw} blacklist={blacklist} />
                   ))}
                 </ul>

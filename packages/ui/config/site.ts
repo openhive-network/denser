@@ -7,7 +7,7 @@ const MIRRORNET_CHAIN_ID = '42';
 
 export type ChainEnv = 'mainnet' | 'mirrornet' | 'testnet';
 
-const chainEnv: Record = {
+const chainEnv: Record<any, any> = {
   [MAINNET_CHAIN_ID]: 'mainnet',
   [MIRRORNET_CHAIN_ID]: 'mirrornet',
   testnet: 'testnet'
