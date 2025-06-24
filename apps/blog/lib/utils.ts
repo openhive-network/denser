@@ -1,7 +1,7 @@
 import Big from 'big.js';
 import sanitize from 'sanitize-html';
 import remarkableStripper from '../lib/remmarkable-stripper';
-import { JsonMetadata } from '@transaction/lib/bridge';
+import { JsonMetadata } from '@transaction/lib/extended-hive.chain';
 import moment from 'moment';
 import { TFunction } from 'i18next';
 import { FullAccount } from '@transaction/lib/app-types';

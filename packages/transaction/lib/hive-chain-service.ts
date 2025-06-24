@@ -1,14 +1,16 @@
-import { createHiveChain, IHiveChainInterface, IWaxOptionsChain } from '@hiveio/wax';
+import { createHiveChain, IHiveChainInterface, IWaxOptionsChain, TWaxExtended } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
 import { StorageType, StorageBaseOptions } from '@smart-signer/lib/storage-mixin';
 import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { memoryStorage } from '@smart-signer/lib/memory-storage';
 import { getLogger } from '@ui/lib/logging';
+import { ExtendedNodeApi } from './extended-hive.chain';
 
 const logger = getLogger('app');
 
 export class HiveChainService {
-  static hiveChain: IHiveChainInterface;
+  static hiveChain: TWaxExtended<ExtendedNodeApi, IHiveChainInterface>;
+
   storage: Storage;
   storageType: StorageType;
 
@@ -16,10 +18,10 @@ export class HiveChainService {
    * Pending promise, returning Hbauth OnlineCLient. Intended for
    * awaiting by any requests arrived when it is pending.
    *
-   * @type {(Promise<IHiveChainInterface> | null)}
+   * @type {(Promise<TWaxExtended<ExtendedNodeApi, IHiveChainInterface>> | null)}
    * @memberof HiveChainService
    */
-  hiveChainPromise: Promise<IHiveChainInterface> | null;
+  hiveChainPromise: Promise<TWaxExtended<ExtendedNodeApi, IHiveChainInterface>> | null;
 
   constructor({ storageType = 'localStorage' }: StorageBaseOptions) {
     this.hiveChainPromise = null;
@@ -38,7 +40,7 @@ export class HiveChainService {
     }
   }
 
-  async getHiveChain(): Promise<IHiveChainInterface> {
+  async getHiveChain(): Promise<TWaxExtended<ExtendedNodeApi, IHiveChainInterface>> {
     if (!HiveChainService.hiveChain) {
 
       // If we have pending promise, return its result.
@@ -69,7 +71,8 @@ export class HiveChainService {
 
   async setHiveChain(options?: Partial<IWaxOptionsChain>) {
     logger.info('Creating instance of HiveChainService.hiveChain with options: %o', options);
-    HiveChainService.hiveChain = await createHiveChain(options);
+    const hiveChain = await createHiveChain(options)
+    HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>();
   }
 
   async setHiveChainEndpoint(newEndpoint: string) {

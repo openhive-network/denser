@@ -1,10 +1,10 @@
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
-  IAccountNotification,
   getAccountNotifications,
   getUnreadNotifications
 } from '@transaction/lib/bridge';
+import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import NotificationList from '@/blog/components/notification-list';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';

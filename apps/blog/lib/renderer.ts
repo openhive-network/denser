@@ -1,11 +1,13 @@
 import { DefaultRenderer, InstagramPlugin, TablePlugin, TwitterPlugin } from '@hive/renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
-import env from '@beam-australia/react-env';
+
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
 
+import { configuredSiteDomain, configuredImagesEndpoint } from '@hive/ui/config/public-vars';
+
 const renderDefaultOptions = {
-  baseUrl: `${env('SITE_DOMAIN')}/`,
+  baseUrl: `${configuredSiteDomain}/`,
   breaks: true,
   skipSanitization: false,
   allowInsecureScriptTags: false,
@@ -22,14 +24,14 @@ const renderDefaultOptions = {
   usertagUrlFn: (account: string) => '/@' + account,
   hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
   isLinkSafeFn: (url: string) =>
-    !!url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) ||
-    !!url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`) ||
+    !!url.match(`^(/(?!/)|${configuredImagesEndpoint})`) ||
+    !!url.match(`^(/(?!/)|${configuredSiteDomain})`) ||
     !!url.match(`^(/(?!/)|#)`) ||
     isUrlWhitelisted(url),
 
   addExternalCssClassToMatchingLinksFn: (url: string) =>
-    !url.match(`^(/(?!/)|${env('IMAGES_ENDPOINT')})`) &&
-    !url.match(`^(/(?!/)|${env('SITE_DOMAIN')})`) &&
+    !url.match(`^(/(?!/)|${configuredImagesEndpoint})`) &&
+    !url.match(`^(/(?!/)|${configuredSiteDomain})`) &&
     !url.match(`^(/(?!/)|#)`) &&
     !isUrlWhitelisted(url)
 };

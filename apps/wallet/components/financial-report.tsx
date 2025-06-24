@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
 import { getAccountHistory } from '../lib/hive';
-import { AccountHistory, OpType } from '../store/app-types';
+import { AccountHistory, OpType } from '@transaction/lib/extended-hive.chain';
 
 interface FinancialReportProps {
   username: string;

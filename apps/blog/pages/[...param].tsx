@@ -3,13 +3,14 @@ import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-quer
 import { getAccountNotifications } from '@transaction/lib/bridge';
 import {
   DATA_LIMIT as PER_PAGE,
-  Entry,
   getAccountPosts,
   getCommunity,
   getSubscribers,
   getSubscriptions,
   getPostsRanked
 } from '@transaction/lib/bridge';
+import { Entry } from '@transaction/lib/extended-hive.chain';
+import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components/skeleton';
@@ -82,7 +83,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       queryClient.invalidateQueries(['entriesInfinite']);
       // Optionally, prefetch the new data for instant feel
       if (isValidSort) {
-        queryClient.prefetchInfiniteQuery(['entriesInfinite', routerSort, routerTag], 
+        queryClient.prefetchInfiniteQuery(['entriesInfinite', routerSort, routerTag],
           async () => getPostsRanked(routerSort, routerTag, undefined, undefined, effectiveUsername)
         );
       }
@@ -198,19 +199,19 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
         console.error(`Invalid sort parameter: ${e}`);
         return;
       }
-      
+
       // Prefetch the new sort data before changing routes
-      queryClient.prefetchInfiniteQuery(['entriesInfinite', e, routerTag], 
+      queryClient.prefetchInfiniteQuery(['entriesInfinite', e, routerTag],
         async () => getPostsRanked(e, routerTag, undefined, undefined, effectiveUsername)
       );
 
       if (routerTag) {
-        router.push(`/${e}/${routerTag}`, undefined, { 
+        router.push(`/${e}/${routerTag}`, undefined, {
           shallow: true,
           scroll: false // Prevent scroll jump
         });
       } else {
-        router.push(`/${e}`, undefined, { 
+        router.push(`/${e}`, undefined, {
           shallow: true,
           scroll: false // Prevent scroll jump
         });
@@ -466,7 +467,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
     // Check if this is a special route that shouldn't trigger community fetching
     else if (
-      firstParam === 'lists' || 
+      firstParam === 'lists' ||
       firstParam.startsWith('lists/') ||
       firstParam === 'blacklisted' ||
       firstParam === 'followed_blacklists' ||
@@ -522,10 +523,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     // Only prefetch community data if we have a valid tag and it's not a special route
     if (
-      tag && 
-      !tag.startsWith('@') && 
-      tag.length > 0 && 
-      !firstParam.startsWith('lists/') && 
+      tag &&
+      !tag.startsWith('@') &&
+      tag.length > 0 &&
+      !firstParam.startsWith('lists/') &&
       firstParam !== 'lists' &&
       !['blacklisted', 'followed_blacklists', 'followed_muted_lists'].includes(firstParam)
     ) {

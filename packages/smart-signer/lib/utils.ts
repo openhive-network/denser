@@ -1,11 +1,11 @@
-import { createWaxFoundation, operation, THexString, ITransaction, TWaxExtended } from '@hiveio/wax';
+import { operation, THexString, ITransaction, TWaxExtended } from '@hiveio/wax';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { isBrowser } from '@ui/lib/logger';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeyType } from '@smart-signer/types/common';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { siteConfig } from '@ui/config/site';
 import { getLogger } from '@ui/lib/logging';
+import { VerifySignaturesParams, VerifySignaturesResponse } from '@hive/transaction/lib/extended-hive.chain';
 
 const logger = getLogger('app');
 
@@ -132,15 +132,11 @@ export async function subtleCryptoDigestHex(message: string | Buffer) {
     msgUint8 = message;
   }
   // hash the message
-  const hashArrayBuffer = await crypto.subtle.digest(
-    'SHA-256', msgUint8
-    );
+  const hashArrayBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
   // convert ArrayBuffer to byte array
   const hashArray = Array.from(new Uint8Array(hashArrayBuffer));
   // convert bytes to hex string
-  const hashHex = hashArray.map(
-    (b) => b.toString(16).padStart(2, '0')
-    ).join('');
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
   return hashHex;
 }
 
@@ -160,7 +156,7 @@ export async function getTransactionDigest(
   txString: string = '',
   hiveApiUrl = 'https://api.hive.blog'
 ): Promise<{ txString: string; digest: THexString }> {
-  const wax = await createWaxFoundation({ chainId: siteConfig.chainId });
+  const wax = await hiveChainService.getHiveChain();
 
   let txBuilder: ITransaction;
   if (txString) {
@@ -205,16 +201,12 @@ class VerifySignaturesRequest {
   required_active!: string[];
   required_owner!: string[];
   required_posting!: string[];
-};
-
-class VerifySignaturesResponse {
-  public valid!: boolean;
-};
+}
 
 const DatabaseApiExtensions = {
   database_api: {
     verify_signatures: {
-      params: VerifySignaturesRequest,
+      params: VerifySignaturesParams,
       result: VerifySignaturesResponse
     }
   }
@@ -252,7 +244,7 @@ export async function verifySignature(
     }
   }
 
-  const params: VerifySignaturesRequest = {
+  const params: VerifySignaturesParams = {
     hash: digest,
     signatures: [signature],
     required_other: [],
@@ -268,9 +260,8 @@ export async function verifySignature(
   }
 
   const hiveChain = await hiveChainService.getHiveChain();
-  const extendedChain: TExtendedHiveChain = hiveChain.extend(DatabaseApiExtensions);
 
-  const { valid } = await extendedChain.api.database_api.verify_signatures(params);
+  const { valid } = await hiveChain.api.database_api.verify_signatures(params);
 
   if (!valid) {
     logger.info('Signature is invalid');
@@ -291,8 +282,7 @@ export async function verifyPrivateKey(
   const digestBuf = cryptoUtils.sha256(crypto.randomUUID());
   const signature = privateKey.sign(digestBuf).toString();
   const publicKey = privateKey.createPublic('STM');
-  logger.info('verifyPrivateKey generated public key: %s',
-    publicKey.toString());
+  logger.info('verifyPrivateKey generated public key: %s', publicKey.toString());
 
   // Verify signature.
   const valid: boolean = await verifySignature(
@@ -313,8 +303,7 @@ export async function verifyPrivateKey(
   const hiveChain = await hiveChainService.getHiveChain();
 
   const [referencedAccounts] = (
-    await hiveChain.api.account_by_key_api
-      .get_key_references({ keys: [publicKey.toString()] })
+    await hiveChain.api.account_by_key_api.get_key_references({ keys: [publicKey.toString()] })
   ).accounts;
   logger.info('verifyPrivateKey referencedAccounts: %o', referencedAccounts);
   if (referencedAccounts.includes(username)) {
@@ -332,8 +321,8 @@ export async function verifyPrivateKey(
  */
 export function inIframe(): boolean {
   try {
-      return window.self !== window.top;
+    return window.self !== window.top;
   } catch (e) {
-      return true;
+    return true;
   }
 }

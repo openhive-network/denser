@@ -11,11 +11,12 @@ import {
   useState
 } from 'react';
 import * as commands from '@uiw/react-md-editor/commands';
-import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 import { getLogger } from '@ui/lib/logging';
+import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from 'next-i18next';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
@@ -69,7 +70,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
 
     const imageOwner = signer.authorityUsername || signer.username;
 
-    const postUrl = `${env('IMAGES_ENDPOINT')}${imageOwner}/${sig}`;
+    const postUrl = `${configuredImagesEndpoint}${imageOwner}/${sig}`;
 
     const response = await fetch(postUrl, { method: 'POST', body: formData });
     const resJSON = await response.json();

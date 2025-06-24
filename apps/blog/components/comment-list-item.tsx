@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
 import DetailsCardHover from './details-card-hover';
-import type { Entry, IFollowList } from '@transaction/lib/bridge';
+import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';

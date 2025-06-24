@@ -1,160 +1,27 @@
 import { TWaxApiRequest } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
+import {
+  IGetPostHeader,
+  IFollowList,
+  IAccountRelationship,
+  Entry,
+  IUnreadNotifications,
+  Community,
+  IAccountNotification,
+  FollowListType
+} from './extended-hive.chain';
 
 const logger = getLogger('app');
 
 const chain = await hiveChainService.getHiveChain();
 
-interface IGetPostHeader {
-  author: string;
-  permlink: string;
-  category: string;
-  depth: number;
-}
-
-interface IGetPostHeaderParams {
-  author: string;
-  permlink: string;
-}
-
-type GetPostHeaderData = {
-  bridge: {
-    get_post_header: TWaxApiRequest<IGetPostHeaderParams, IGetPostHeader>;
-  };
-};
-
 export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
-  return chain.extend<GetPostHeaderData>().api.bridge.get_post_header({
+  return chain.api.bridge.get_post_header({
     author,
     permlink
   });
 };
-
-export interface EntryBeneficiaryRoute {
-  account: string;
-  weight: number;
-}
-
-export interface EntryVote {
-  voter: string;
-  rshares: number;
-}
-
-export interface EntryStat {
-  flag_weight: number;
-  gray: boolean;
-  hide: boolean;
-  total_votes: number;
-  is_pinned?: boolean;
-}
-
-export type Badge = {
-  name: string;
-  state: string;
-  type: string;
-  id: string;
-  title: string;
-  url: string;
-};
-
-export interface JsonMetadata {
-  denserEditor?: boolean;
-  image: string;
-  links?: string[];
-  flow?: {
-    pictures: {
-      caption: string;
-      id: number;
-      mime: string;
-      name: string;
-      tags: string[];
-      url: string;
-    }[];
-    tags: string[];
-  };
-  images: string[];
-  author: string | undefined;
-  tags?: string[];
-  description?: string | null;
-  app?: string;
-  canonical_url?: string;
-  format?: string;
-  original_author?: string;
-  original_permlink?: string;
-  summary?: string;
-}
-
-export interface Entry {
-  active_votes: EntryVote[];
-  author: string;
-  author_payout_value: string;
-  author_reputation: number;
-  author_role?: string;
-  author_title?: string;
-  beneficiaries: EntryBeneficiaryRoute[];
-  blacklists: string[];
-  body: string;
-  category: string;
-  children: number;
-  community?: string;
-  community_title?: string;
-  created: string;
-  total_votes?: number;
-  curator_payout_value: string;
-  depth: number;
-  is_paidout: boolean;
-  json_metadata: JsonMetadata;
-  max_accepted_payout: string;
-  net_rshares: number;
-  parent_author?: string;
-  parent_permlink?: string;
-  payout: number;
-  payout_at: string;
-  pending_payout_value: string;
-  percent_hbd: number;
-  permlink: string;
-  post_id: number;
-  id?: number;
-  promoted: string;
-  reblogged_by?: string[];
-  replies: Array<unknown>;
-  stats?: EntryStat;
-  title: string;
-  updated: string;
-  url: string;
-  original_entry?: Entry;
-}
-
-export type CommunityTeam = Array<Array<string>>;
-
-export interface Community {
-  about: string;
-  admins?: string[];
-  avatar_url: string;
-  created_at: string;
-  description: string;
-  flag_text: string;
-  id: number;
-  is_nsfw: boolean;
-  lang: string;
-  name: string;
-  num_authors: number;
-  num_pending: number;
-  subscribers: number;
-  sum_pending: number;
-  settings?: object;
-  team: CommunityTeam;
-  title: string;
-  type_id: number;
-  context: {
-    role: string;
-    subscribed: Boolean;
-    title: string;
-  };
-}
-
-export type Communities = Community[];
 
 export type Subscription = Array<string>;
 
@@ -191,21 +58,6 @@ const resolvePosts = (posts: Entry[], observer: string): Promise<Entry[]> => {
   return Promise.all(promises);
 };
 
-interface IGetPostsRanked {
-  sort: string;
-  tag: string;
-  start_author: string;
-  start_permlink: string;
-  limit: number;
-  observer: string;
-}
-
-type GetPostsRankedData = {
-  bridge: {
-    get_ranked_posts: TWaxApiRequest<IGetPostsRanked, Entry[] | null>;
-  };
-};
-
 export const getPostsRanked = async (
   sort: string,
   tag: string = '',
@@ -214,9 +66,8 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return chain
-    .extend<GetPostsRankedData>()
-    .api.bridge.get_ranked_posts({
+  return chain.api.bridge
+    .get_ranked_posts({
       sort,
       start_author,
       start_permlink,
@@ -234,21 +85,6 @@ export const getPostsRanked = async (
     });
 };
 
-interface IGetAccountPosts {
-  sort: string;
-  account: string;
-  start_author: string;
-  start_permlink: string;
-  limit: number;
-  observer: string;
-}
-
-type GetAccountPostsData = {
-  bridge: {
-    get_account_posts: TWaxApiRequest<IGetAccountPosts, Entry[] | null>;
-  };
-};
-
 export const getAccountPosts = async (
   sort: string,
   account: string,
@@ -257,9 +93,8 @@ export const getAccountPosts = async (
   start_permlink: string = '',
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return chain
-    .extend<GetAccountPostsData>()
-    .api.bridge.get_account_posts({
+  return chain.api.bridge
+    .get_account_posts({
       sort,
       account,
       start_author,
@@ -276,26 +111,13 @@ export const getAccountPosts = async (
     });
 };
 
-interface IGetPost {
-  author: string;
-  permlink: string;
-  observer: string;
-}
-
-type GetPostData = {
-  bridge: {
-    get_post: TWaxApiRequest<IGetPost, Entry | null>;
-  };
-};
-
 export const getPost = async (
   author: string = '',
   permlink: string = '',
   observer: string = ''
 ): Promise<Entry | null> => {
-  return chain
-    .extend<GetPostData>()
-    .api.bridge.get_post({
+  return chain.api.bridge
+    .get_post({
       author,
       permlink,
       observer
@@ -307,31 +129,6 @@ export const getPost = async (
 
       return resp;
     });
-};
-
-interface IGetAccountNotifications {
-  account: string;
-  lastId?: number;
-  limit: number;
-}
-
-export interface IAccountNotification {
-  date: string;
-  id?: number;
-  msg: string;
-  score: number;
-  type: string;
-  url: string;
-}
-
-export interface IAccountNotificationEx extends IAccountNotification {
-  lastRead: number;
-}
-
-type GetAccountNotificationsData = {
-  bridge: {
-    account_notifications: TWaxApiRequest<IGetAccountNotifications, IAccountNotification[] | null>;
-  };
 };
 
 // I have problem with this func, I pass good account name but RPC call it with empty string
@@ -348,19 +145,7 @@ export const getAccountNotifications = async (
   if (lastId) {
     params.last_id = lastId;
   }
-  return chain.extend<GetAccountNotificationsData>().api.bridge.account_notifications(params);
-};
-
-interface IGetDiscussion {
-  author: string;
-  permlink: string;
-  observer?: string;
-}
-
-type GetDiscussionData = {
-  bridge: {
-    get_discussion: TWaxApiRequest<IGetDiscussion, Record<string, Entry> | null>;
-  };
+  return chain.api.bridge.account_notifications(params);
 };
 
 export const getDiscussion = async (
@@ -368,54 +153,22 @@ export const getDiscussion = async (
   permlink: string,
   observer?: string
 ): Promise<Record<string, Entry> | null> => {
-  return chain.extend<GetDiscussionData>().api.bridge.get_discussion({
+  return chain.api.bridge.get_discussion({
     author,
     permlink,
     observer
   });
 };
 
-interface IGetCommunity {
-  name: string;
-  observer?: string;
-}
-
-type GetCommunityData = {
-  bridge: {
-    get_community: TWaxApiRequest<IGetCommunity, Community | null>;
-  };
-};
-
 export const getCommunity = async (
   name: string,
   observer: string | undefined = ''
 ): Promise<Community | null> => {
-  return chain.extend<GetCommunityData>().api.bridge.get_community({ name, observer });
+  return chain.api.bridge.get_community({ name, observer });
 };
 
-type GetCommunityRolesData = {
-  bridge: {
-    list_community_roles: TWaxApiRequest<IGetCommunityRoles, CommunityTeam | null>;
-  };
-};
-type IGetCommunityRoles = {
-  community: string;
-};
-
-export const getListCommunityRoles = async (community: string): Promise<CommunityTeam | null> => {
-  return chain.extend<GetCommunityRolesData>().api.bridge.list_community_roles({ community });
-};
-
-interface IGetCommunities {
-  sort: string;
-  query?: string | null;
-  observer: string;
-}
-
-type GetCommunitiesData = {
-  bridge: {
-    list_communities: TWaxApiRequest<IGetCommunities, Community[] | null>;
-  };
+export const getListCommunityRoles = async (community: string): Promise<string[][] | null> => {
+  return chain.api.bridge.list_community_roles({ community });
 };
 
 export const getCommunities = async (
@@ -425,7 +178,7 @@ export const getCommunities = async (
   // limit: number = 100,
   observer: string = 'hive.blog'
 ): Promise<Community[] | null> => {
-  return chain.extend<GetCommunitiesData>().api.bridge.list_communities({
+  return chain.api.bridge.list_communities({
     // limit,
     query,
     sort,
@@ -433,120 +186,42 @@ export const getCommunities = async (
   });
 };
 
-interface IGetNormalizePost {
-  post: Entry;
-}
-
-type GetNormalizePost = {
-  bridge: {
-    normalize_post: TWaxApiRequest<IGetNormalizePost, Entry | null>;
-  };
-};
-
 export const normalizePost = async (post: Entry): Promise<Entry | null> => {
-  return chain.extend<GetNormalizePost>().api.bridge.normalize_post({
+  return chain.api.bridge.normalize_post({
     post
   });
 };
 
-interface IGetSubscriptions {
-  account: string;
-}
-
-type GetSubscriptions = {
-  bridge: {
-    list_all_subscriptions: TWaxApiRequest<IGetSubscriptions, Subscription[] | null>;
-  };
-};
-
-export const getSubscriptions = async (account: string): Promise<Subscription[] | null> => {
-  return chain.extend<GetSubscriptions>().api.bridge.list_all_subscriptions({
+export const getSubscriptions = async (account: string): Promise<string[][] | null> => {
+  return chain.api.bridge.list_all_subscriptions({
     account
   });
 };
 
-interface IGetSubscribers {
-  community: string;
-}
-
-type GetSubscribers = {
-  bridge: {
-    list_subscribers: TWaxApiRequest<IGetSubscribers, Subscription[] | null>;
-  };
-};
-
-export const getSubscribers = async (community: string): Promise<Subscription[] | null> => {
-  return chain.extend<GetSubscribers>().api.bridge.list_subscribers({
+export const getSubscribers = async (community: string): Promise<string[][] | null> => {
+  return chain.api.bridge.list_subscribers({
     community
   });
 };
 
-export interface IUnreadNotificationsParams {
-  account: string;
-}
-
-export interface IUnreadNotifications {
-  lastread: string;
-  unread: number;
-}
-
-type GetUnreadNotifications = {
-  bridge: {
-    unread_notifications: TWaxApiRequest<IUnreadNotificationsParams, IUnreadNotifications | null>;
-  };
-};
-
 export const getUnreadNotifications = async (account: string): Promise<IUnreadNotifications | null> => {
-  return chain.extend<GetUnreadNotifications>().api.bridge.unread_notifications({
+  return chain.api.bridge.unread_notifications({
     account
   });
-};
-
-export interface IAccountRelationship {
-  follows: boolean;
-  ignores: boolean;
-  is_blacklisted: boolean;
-  follows_blacklists: boolean;
-}
-
-type GetAccountRelationship = {
-  bridge: {
-    get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
-  };
 };
 
 export const getRelationshipBetweenAccounts = async (
   follower: string,
   following: string
 ): Promise<IAccountRelationship | null> => {
-  return chain
-    .extend<GetAccountRelationship>()
-    .api.bridge.get_relationship_between_accounts([follower, following]);
-};
-
-export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
-export interface IFollowListParams {
-  observer: string;
-  follow_type: FollowListType;
-}
-
-export interface IFollowList {
-  name: string;
-  blacklist_description: string;
-  muted_list_description: string;
-}
-
-type GetFollowListData = {
-  bridge: {
-    get_follow_list: TWaxApiRequest<IFollowListParams, IFollowList[]>;
-  };
+  return chain.api.bridge.get_relationship_between_accounts([follower, following]);
 };
 
 export const getFollowList = async (
   observer: string,
   follow_type: FollowListType
 ): Promise<IFollowList[]> => {
-  return chain.extend<GetFollowListData>().api.bridge.get_follow_list({
+  return chain.api.bridge.get_follow_list({
     observer,
     follow_type
   });

@@ -2,13 +2,12 @@ import Link from 'next/link';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from 'next-i18next';
-import type { Subscription } from '@transaction/lib/bridge';
 
 const CommunitiesMybar = ({
   data,
   username
 }: {
-  data: Subscription[] | null | undefined;
+  data: string[][] | null | undefined;
   username: string;
 }) => {
   const { t } = useTranslation('common_blog');

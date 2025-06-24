@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useQuery } from '@tanstack/react-query';
-import { IDynamicGlobalProperties, getDynamicGlobalProperties } from '@transaction/lib/hive';
+import { getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { getVestingDelegations } from '@/wallet/lib/hive';
 import { numberWithCommas } from '@ui/lib/utils';
 import Loading from '@ui/components/loading';
@@ -12,6 +12,7 @@ import RevokeDialog from '@/wallet/components/revoke-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import Head from 'next/head';
 import TimeAgo from '@ui/components/time-ago';
+import { IDynamicGlobalProperties } from '@transaction/lib/extended-hive.chain';
 
 const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalProperties) => {
   const totalFund = parseFloat(dynamicData.total_vesting_fund_hive);

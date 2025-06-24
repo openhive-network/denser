@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { customEndsWith } from '../lib/ends-with';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import { extractPictureFromPostBody, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
-import type { Entry } from '@transaction/lib/bridge';
+import { Entry } from '@transaction/lib/extended-hive.chain'; 
 import clsx from 'clsx';
 
 export function find_first_img(post: Entry) {

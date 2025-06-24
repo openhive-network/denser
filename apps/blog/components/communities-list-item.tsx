@@ -1,7 +1,7 @@
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
-import type { Community } from '@transaction/lib/bridge';
+import { Community } from '@transaction/lib/extended-hive.chain';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import SubscribeCommunity from './subscribe-community';

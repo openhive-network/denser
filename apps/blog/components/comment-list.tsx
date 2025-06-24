@@ -1,5 +1,6 @@
 import CommentListItem from '@/blog/components/comment-list-item';
-import { Entry, IFollowList } from '@transaction/lib/bridge';
+import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 

@@ -1,4 +1,4 @@
-import { Entry } from '@transaction/lib/bridge';
+import { Entry } from '@transaction/lib/extended-hive.chain'; 
 import { find_first_img } from './post-img';
 import Link from 'next/link';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';

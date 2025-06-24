@@ -1,5 +1,4 @@
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { operation, vote, transfer, ApiOperation, ApiTransaction, custom_json } from '@hiveio/wax';
+import { operation, ApiOperation, ApiTransaction, custom_json } from '@hiveio/wax';
 import { KeyType } from '@smart-signer/types/common';
 
 /**
@@ -9,37 +8,28 @@ import { KeyType } from '@smart-signer/types/common';
  * @param {string} username
  * @param {KeyType} keyType
  * @param {string} loginChallenge
+ * @param {string} loginType
  * @returns {Promise<operation>}
  */
 export async function getOperationForLogin(
   username: string,
   keyType: KeyType,
-  loginChallenge: string
+  loginChallenge: string,
+  loginType: string
 ): Promise<operation> {
-  const hiveChain = await hiveChainService.getHiveChain();
   let operation: operation;
   if (keyType === KeyType.posting) {
     const customJsonLoginChallenge: custom_json = custom_json.create({
-      id: 'denser_login_with_posting_key',
-      json: JSON.stringify({
-        username: username,
-        keyType: keyType,
-        description: 'You are logging in to Denser using Hive Keychain by signing this transaction',
-        loginChallenge: loginChallenge
-      }),
+      id: `denser_${loginType}`,
+      json: JSON.stringify(loginChallenge),
       required_auths: [],
       required_posting_auths: [username]
     });
     operation = { custom_json: customJsonLoginChallenge };
   } else if (keyType === KeyType.active) {
     const customJsonLoginChallenge: custom_json = custom_json.create({
-      id: 'denser_login_with_active_key',
-      json: JSON.stringify({
-        username: username,
-        keyType: keyType,
-        description: 'You are logging in to Denser using Hive Keychain by signing this transaction',
-        loginChallenge: loginChallenge
-      }),
+      id: `denser_${loginType}`,
+      json: JSON.stringify(loginChallenge),
       required_auths: [username],
       required_posting_auths: []
     });

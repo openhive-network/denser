@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import NotificationActivities from './notification-activities';
 import type { ReactNode } from 'react';
-import { IAccountNotification } from '@transaction/lib/bridge';
+import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 
 export function ActivityLogDialog({
   children,

@@ -1,4 +1,4 @@
-import type { Entry } from '@transaction/lib/bridge';
+import { Entry } from '@transaction/lib/extended-hive.chain'; 
 import { parseAsset } from '@ui/lib/utils';
 
 export enum SortOrder {

@@ -2,20 +2,22 @@
 import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
-import { IAccountNotificationEx } from '@transaction/lib/bridge';
+import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
+import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
-import env from '@beam-australia/react-env';
+
 import Image from 'next/image';
 import TimeAgo from '@hive/ui/components/time-ago';
 
 const logger = getLogger('app');
 const usernamePattern = /\B@[a-z0-9.-]+/gi;
 
-const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccountNotificationEx) => {
+const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccountNotification & {lastRead: number}) => {
   const { t } = useTranslation('common_blog');
   const { username } = useSiteParams();
   const { user } = useUser();
@@ -40,7 +42,7 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
     default:
       icon = <Icons.arrowUpCircle className="h-4 w-4" />;
   }
-  const imageHosterUrl = env('IMAGES_ENDPOINT');
+  const imageHosterUrl = configuredImagesEndpoint;
   const participants = mentions
     ? mentions.map((m: string) => (
         <a key={m} href={'/' + m} data-testid="notification-account-icon-link">

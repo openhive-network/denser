@@ -1,4 +1,4 @@
-import { IFollow } from '@transaction/lib/hive';
+import { IFollow } from '@transaction/lib/extended-hive.chain'; 
 import FollowButton from './follow-button';
 import MuteButton from './mute-button';
 import { User } from '@smart-signer/types/common';

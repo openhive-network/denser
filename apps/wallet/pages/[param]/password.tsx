@@ -13,7 +13,6 @@ import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import { getAccountMetadata, getTranslations, MetadataProps } from '@/wallet/lib/get-translations';
-import { createWaxFoundation } from '@hiveio/wax';
 import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-password-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@ui/components/icons';
@@ -163,7 +162,7 @@ export default function PostForm() {
   }
 
   async function handleKey() {
-    const wax = await createWaxFoundation();
+    const wax = await hiveChainService.getHiveChain();
     const brainKeyData = wax.suggestBrainKey();
     const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
 
