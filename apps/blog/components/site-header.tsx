@@ -1,10 +1,11 @@
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import Sidebar from './sidebar';
-import { MainNav } from './main-nav';
+// import { MainNav } from './main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
 import Link from 'next/link';
+import Image from 'next/image';
 import React, { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
@@ -86,18 +87,17 @@ const SiteHeader: FC = () => {
       )}
       translate="no"
     >
-      <div className="container flex h-16 w-full items-center justify-between">
+      <div className="container flex h-12 w-full items-center justify-between">
         <Link href="/trending" className="flex items-center space-x-2">
-          <Icons.hive className="h-6 w-6" />
-          <div className='flex flex-col md:flex-row'>
-            <span className="font-bold sm:inline-block">{siteConfig.name}</span>
-            {siteConfig.chainEnv !== 'mainnet' && (
-              <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
-            )}
+          {/* <Icons.hive className="h-6 w-6" /> */}
+          <Image width={36} height={36} alt="suseona" className="rounded-full" src="/suseona192.png" />
+          <div className="flex flex-col md:flex-row">
+            <span className="-ml-0.5 font-semibold sm:inline-block">{siteConfig.name}</span>
+            <span className="ml-0.5 text-xs font-thin text-gray-400">alpha</span>
           </div>
         </Link>
 
-        <MainNav />
+        {/* <MainNav /> */}
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
             {isClient && user.isLoggedIn ? null : (
@@ -122,7 +122,8 @@ const SiteHeader: FC = () => {
               {router.pathname === '/search' ? (
                 <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
               ) : (
-                <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
+                <></>
+                // <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
               )}
             </div>
             <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" />

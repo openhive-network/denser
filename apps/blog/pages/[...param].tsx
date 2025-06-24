@@ -14,10 +14,10 @@ import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components/skeleton';
-import CommunitiesSidebar from '@/blog/components/communities-sidebar';
+// import CommunitiesSidebar from '@/blog/components/communities-sidebar';
 import PostSelectFilter from '@/blog/components/post-select-filter';
 import { useRouter } from 'next/router';
-import ExploreHive from '@/blog/components/explore-hive';
+// import ExploreHive from '@/blog/components/explore-hive';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import CommunityDescription from '@/blog/components/community-description';
 import { useInView } from 'react-intersection-observer';
@@ -50,7 +50,7 @@ export const PostSkeleton = () => {
   );
 };
 
-const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
+const ParamPage: FC = ({ metadata }) => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const { sort, username, tag } = useSiteParams();
@@ -228,7 +228,8 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
               {user?.isLoggedIn ? (
                 <CommunitiesMybar data={mySubsData} username={user.username} />
               ) : (
-                <CommunitiesSidebar />
+                // <CommunitiesSidebar />
+                <></>
               )}{' '}
             </div>
             <div className="col-span-12 md:col-span-9 xl:col-span-8">
@@ -316,9 +317,11 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                   username={tag ? tag : ' '}
                 />
               ) : user?.isLoggedIn ? (
-                <CommunitiesSidebar />
+                // <CommunitiesSidebar />
+                <></>
               ) : (
-                <ExploreHive />
+                // <ExploreHive />
+                <></>
               )}
             </div>
           </div>

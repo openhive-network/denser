@@ -181,7 +181,8 @@ const CommentListItem = ({
                               title={String(parseDate(comment.created))}
                               data-testid="comment-timestamp-link"
                             >
-                              <TimeAgo date={comment.created} />
+                              {/* TODO hide */}
+                              {/* <TimeAgo date={comment.created} /> */}
                             </Link>
                             <Link
                               className="p-1 sm:p-2"

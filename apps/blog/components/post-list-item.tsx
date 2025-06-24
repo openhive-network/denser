@@ -11,7 +11,7 @@ import {
 } from '@hive/ui/components/card';
 import { Separator } from '@hive/ui/components/separator';
 import { Badge } from '@hive/ui/components/badge';
-import accountReputation from '@/blog/lib/account-reputation';
+// import accountReputation from '@/blog/lib/account-reputation';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
 import { useRouter } from 'next/router';
@@ -35,7 +35,7 @@ import PostCardHidden from './post-card-hidden';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import TimeAgo from '@hive/ui/components/time-ago';
 
-const logger = getLogger('app');
+// const logger = getLogger('app');
 
 const PostListItem = ({
   post,
@@ -107,12 +107,12 @@ const PostListItem = ({
               </span>
             </div>
           ) : null}
-          <CardHeader className="px-0 py-1">
+          <CardHeader className="px-1 pb-1 pt-2">
             <div className="md:text-md flex items-center text-sm">
               {!reveal && post.blacklists.length < 1 ? (
                 <Link href={`/@${post.author}`} data-testid="post-card-avatar">
                   <div
-                    className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
+                    className="mr-2 h-7 w-7 rounded-3xl bg-cover bg-no-repeat lg:h-8 lg:w-8"
                     style={{
                       backgroundImage: `url(https://images.hive.blog/u/${post.author}/avatar/small)`
                     }}
@@ -122,18 +122,18 @@ const PostListItem = ({
               <div className="flex flex-wrap items-center gap-0.5 md:flex-nowrap">
                 <Link
                   href={`/@${post.author}`}
-                  className="font-medium text-primary hover:cursor-pointer hover:text-destructive"
+                  className="text-sm font-semibold hover:cursor-pointer hover:text-yellow-500"
                   data-testid="post-author"
                 >
                   {post.author}
                 </Link>{' '}
-                <span
+                {/* <span
                   title={t('post_content.reputation_title')}
                   className="mr-1 block font-normal"
                   data-testid="post-author-reputation"
                 >
                   ({accountReputation(post.author_reputation)})
-                </span>
+                </span> */}
                 <PostCardBlacklistMark blacklistCheck={blacklistCheck} blacklists={post.blacklists} />
                 {(router.query.param ? router.query.param[1]?.startsWith('hive-') : false) &&
                 post.author_role &&
@@ -146,7 +146,7 @@ const PostListItem = ({
                   </Badge>
                 ) : null}
                 <span className="flex items-center text-xs md:text-sm">
-                  {!isCommunityPage ? (
+                  {/* {!isCommunityPage ? (
                     <>
                       &nbsp;{t('cards.post_card.in')}&nbsp;
                       {post.community ? (
@@ -168,14 +168,15 @@ const PostListItem = ({
                       )}
                       <span className="mx-1">•</span>
                     </>
-                  ) : null}
-                  <Link
+                  ) : null} */}
+                  {/* <Link
                     href={`/${post.category}/@${post.author}/${post.permlink}`}
                     className="hover:cursor-pointer hover:text-destructive"
                     data-testid="post-card-timestamp"
-                  >
-                    <TimeAgo date={post.created} />
-                  </Link>
+                  > */}
+                  <span className="mx-1 text-xs font-thin text-gray-400">•</span>
+                  <TimeAgo date={post.created} />
+                  {/* </Link> */}
                   {post.percent_hbd === 0 ? (
                     <span className="ml-1 flex items-center">
                       <TooltipProvider>
@@ -206,23 +207,12 @@ const PostListItem = ({
               </div>
             </div>
           </CardHeader>
-          <div className="flex flex-col md:flex-row">
-            <div>
-              {!reveal &&
-              post.blacklists.length < 1 &&
-              !userFromDMCA &&
-              !userFromImageBlockList &&
-              !legalBlockedUser ? (
-                <>
-                  <PostImage post={post} />
-                </>
-              ) : null}
-            </div>
+          <div className="flex flex-col justify-between md:flex-row">
             <div className="md:overflow-hidden">
               <CardContent>
                 {!reveal ? (
                   <>
-                    <CardTitle data-testid="post-title" className="text-md">
+                    <CardTitle data-testid="post-title" className="text-lg">
                       {post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw') ? (
                         <Badge variant="outline" className="mx-1 border-destructive text-destructive">
                           nsfw
@@ -235,7 +225,8 @@ const PostListItem = ({
                         {post.title}
                       </Link>
                     </CardTitle>
-                    <CardDescription className="block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
+                    {/* <CardDescription className="block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap"> */}
+                    <CardDescription className="mt-1.5 block w-auto">
                       <Link
                         href={`/${post.category}/@${post.author}/${post.permlink}`}
                         data-testid="post-description"
@@ -247,13 +238,13 @@ const PostListItem = ({
                             : getPostSummary(post.json_metadata, post.body)}
                       </Link>
                     </CardDescription>
-                    <Separator orientation="horizontal" className="my-1" />
+                    {/* <Separator orientation="horizontal" className="my-1" /> */}
                   </>
                 ) : (
                   <PostCardHidden user={user} revealPost={revealPost} />
                 )}
               </CardContent>
-              <CardFooter className="pb-2">
+              <CardFooter className="py-3">
                 <div className="flex h-5 items-center space-x-2 text-sm" data-testid="post-card-footer">
                   <VotesComponent post={post} type="post" />
 
@@ -288,6 +279,18 @@ const PostListItem = ({
                   ) : null}
                 </div>
               </CardFooter>
+              <Separator orientation="horizontal" className="my-1" />
+            </div>
+            <div>
+              {!reveal &&
+              post.blacklists.length < 1 &&
+              !userFromDMCA &&
+              !userFromImageBlockList &&
+              !legalBlockedUser ? (
+                <>
+                  <PostImage post={post} />
+                </>
+              ) : null}
             </div>
           </div>
         </Card>
