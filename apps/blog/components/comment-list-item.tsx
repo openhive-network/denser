@@ -8,7 +8,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@u
 import { useEffect, useRef, useState } from 'react';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
-import { useRouter } from 'next/router';
 import DetailsCardHover from './details-card-hover';
 import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import clsx from 'clsx';
@@ -33,6 +32,14 @@ import ChangeTitleDialog from './change-title-dialog';
 import { AlertDialogFlag } from './alert-window-flag';
 import FlagTooltip from './flag-icon';
 import TimeAgo from '@hive/ui/components/time-ago';
+import Renderer from '../features/renderer/renderer';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@ui/components/dropdown-menu';
+import { Check, MoreHorizontal } from 'lucide-react';
 interface CommentListProps {
   permissionToMute: Boolean;
   comment: Entry;
@@ -56,7 +63,6 @@ const CommentListItem = ({
 }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
-  const router = useRouter();
   const { user } = useUser();
   const ref = useRef<HTMLTableRowElement>(null);
   const [hiddenComment, setHiddenComment] = useState(
@@ -73,7 +79,9 @@ const CommentListItem = ({
   const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
   const userFromGDPR = gdprUserList.some((e) => e === comment.author);
   const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
-
+  const [renderMethod, setRenderMethod] = useState<'classic' | 'denser' | 'raw'>(
+    !!comment?.json_metadata.denserEditor ? 'denser' : 'classic'
+  );
   useEffect(() => {
     if (reply) {
       storeBox(reply);
@@ -213,6 +221,34 @@ const CommentListItem = ({
                               />
                             </div>
                           ) : null}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="cursor-pointer hover:text-destructive">
+                              <MoreHorizontal />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                className="cursor-pointer gap-2 hover:bg-background"
+                                onClick={() => setRenderMethod('classic')}
+                              >
+                                Legacy Renderer
+                                {renderMethod === 'classic' ? <Check /> : null}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="cursor-pointer gap-2 hover:bg-background"
+                                onClick={() => setRenderMethod('denser')}
+                              >
+                                Denser Renderer
+                                {renderMethod === 'denser' ? <Check /> : null}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="cursor-pointer gap-2 hover:bg-background"
+                                onClick={() => setRenderMethod('raw')}
+                              >
+                                Raw Connetent
+                                {renderMethod === 'raw' ? <Check /> : null}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                         {!hiddenComment && comment.stats?.gray && openState ? (
                           <span className="ml-4 text-xs">{t('cards.comment_card.will_be_hidden')}</span>
@@ -254,7 +290,6 @@ const CommentListItem = ({
                             data-testid="comment-card-footer"
                           >
                             <VotesComponent post={comment} type="comment" />
-
                             <DetailsCardHover
                               post={comment}
                               decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
@@ -302,14 +337,23 @@ const CommentListItem = ({
                           parentPermlink={comment.parent_permlink}
                           storageId={storageId}
                           comment={comment}
+                          denserEditor={comment.json_metadata?.denserEditor || false}
                         />
                       ) : (
                         <CardDescription data-testid="comment-card-description">
-                          <RendererContainer
-                            body={comment.body}
-                            author={comment.author}
-                            className={commentClassName}
-                          />
+                          {renderMethod === 'denser' ? (
+                            <Renderer content={comment.body} className={commentClassName} />
+                          ) : renderMethod === 'raw' ? (
+                            <div className="mb-4 bg-secondary px-4 py-2">
+                              <pre className="w-full overflow-x-scroll text-sm">{comment.body}</pre>
+                            </div>
+                          ) : (
+                            <RendererContainer
+                              body={comment.body}
+                              author={comment.author}
+                              className={commentClassName}
+                            />
+                          )}
                         </CardDescription>
                       )}
                     </CardContent>
@@ -448,6 +492,7 @@ const CommentListItem = ({
           permlink={comment.permlink}
           storageId={storageId}
           comment=""
+          denserEditor={comment.json_metadata?.denserEditor || false}
         />
       ) : null}
     </>

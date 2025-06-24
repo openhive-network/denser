@@ -19,13 +19,15 @@ export function useCommentMutation() {
       parentPermlink: string;
       body: string;
       preferences: Preferences;
+      denserEditor: boolean;
     }) => {
-      const { parentAuthor, parentPermlink, body, preferences } = params;
+      const { parentAuthor, parentPermlink, body, preferences, denserEditor } = params;
       const broadcastResult = await transactionService.comment(
         parentAuthor,
         parentPermlink,
         body,
         preferences,
+        denserEditor,
         { observe: true }
       );
       const response = { ...params, broadcastResult };

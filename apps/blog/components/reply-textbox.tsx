@@ -17,6 +17,8 @@ import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-commen
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { commentClassName } from './comment-list-item';
+import DenserMdEditor from '../features/md-editor/editor';
+import Renderer from '../features/renderer/renderer';
 
 const logger = getLogger('app');
 
@@ -27,7 +29,8 @@ export function ReplyTextbox({
   parentPermlink,
   storageId,
   editMode,
-  comment
+  comment,
+  denserEditor
 }: {
   onSetReply: (e: boolean) => void;
   username: string;
@@ -36,9 +39,11 @@ export function ReplyTextbox({
   storageId: string;
   editMode: boolean;
   comment: Entry | string;
+  denserEditor: boolean;
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
+  const [renderMethod, setRenderMethod] = useState<'denser' | 'classic'>('denser');
   const { manabarsData } = useManabars(user.username);
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
@@ -91,7 +96,8 @@ export function ReplyTextbox({
           parentAuthor: username,
           parentPermlink: permlink,
           body: text,
-          preferences
+          preferences,
+          denserEditor
         };
         try {
           await commentMutation.mutateAsync(commentParams);
@@ -125,20 +131,35 @@ export function ReplyTextbox({
           <h1 className="text-sm text-destructive">{t('post_content.footer.comment.disable_editor')}</h1>
         </Link>
         <div>
-          <MdEditor
-            windowheight={200}
-            htmlMode={editMode}
-            onChange={(value) => {
-              if (value === '') {
-                setText(value);
-                removePost();
-              } else {
-                setText(value);
-              }
-            }}
-            persistedValue={text}
-            placeholder={t('post_content.footer.comment.reply')}
-          />
+          {denserEditor ? (
+            <DenserMdEditor
+              text={text}
+              onChange={(value) => {
+                if (value === '') {
+                  setText(value);
+                  removePost();
+                } else {
+                  setText(value);
+                }
+              }}
+              data-testid="post-area-editor"
+            />
+          ) : (
+            <MdEditor
+              windowheight={200}
+              htmlMode={editMode}
+              onChange={(value) => {
+                if (value === '') {
+                  setText(value);
+                  removePost();
+                } else {
+                  setText(value);
+                }
+              }}
+              persistedValue={text}
+              placeholder={t('post_content.footer.comment.reply')}
+            />
+          )}
           <p className="flex items-center border-2 border-t-0 border-background-tertiary bg-background-secondary/70 p-1 text-xs font-light">
             {t('post_content.footer.comment.insert_images')} {t('post_content.footer.comment.selecting_them')}
             <TooltipProvider>
@@ -212,11 +233,16 @@ export function ReplyTextbox({
             </Link>
           </div>
         </div>
-        <RendererContainer
-          body={text}
-          author=""
-          className={commentClassName + ' max-w-full border-2 border-background-tertiary p-2'}
-        />
+
+        {renderMethod === 'denser' ? (
+          <Renderer content={text} className={commentClassName} />
+        ) : (
+          <RendererContainer
+            body={text}
+            author=""
+            className={commentClassName + ' max-w-full border-2 border-background-tertiary p-2'}
+          />
+        )}
       </div>
     </div>
   );

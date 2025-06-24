@@ -102,7 +102,8 @@ export default function PostForm({
   sideBySidePreview = true,
   post_s,
   setEditMode,
-  refreshPage
+  refreshPage,
+  editorType
 }: {
   username: string;
   editMode: boolean;
@@ -110,6 +111,7 @@ export default function PostForm({
   post_s?: Entry;
   setEditMode?: Dispatch<SetStateAction<boolean>>;
   refreshPage?: () => void;
+  editorType: 'classic' | 'denser';
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
@@ -137,7 +139,7 @@ export default function PostForm({
     });
   }, [preferences.blog_rewards]);
   const [preview, setPreview] = useState(true);
-  const [denserEditor, setDenserEditor] = useState(true);
+  const [denserEditor, setDenserEditor] = useState(editorType === 'denser');
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const [imagePickerState, setImagePickerState] = useState('');

@@ -569,6 +569,7 @@ export class TransactionService {
     parentPermlink: string,
     body: string,
     preferences: Preferences,
+    denserEditor: boolean,
     transactionOptions: TransactionOptions = {}
   ) {
     const replyOperationData: IReplyData = {
@@ -576,6 +577,10 @@ export class TransactionService {
       parentPermlink,
       author: this.signerOptions.username,
       body,
+      jsonMetadata: {
+        app: 'hive.blog/0.9',
+        denserEditor: denserEditor
+      },
       permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`
     };
 

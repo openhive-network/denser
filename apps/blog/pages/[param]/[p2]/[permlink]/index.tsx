@@ -107,8 +107,8 @@ function PostPage({
   } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
     enabled: !!username && !!permlink
   });
-  const [renderMethod, setRenderMethod] = useState<'legacy' | 'denser' | 'raw'>(
-    !!post?.json_metadata.denserEditor ? 'denser' : 'legacy'
+  const [renderMethod, setRenderMethod] = useState<'classic' | 'denser' | 'raw'>(
+    !!post?.json_metadata.denserEditor ? 'denser' : 'classic'
   );
 
   const { data: suggestions } = useQuery(
@@ -316,10 +316,10 @@ function PostPage({
                   ) : null}
                   <DropdownMenuItem
                     className="cursor-pointer gap-2 hover:bg-background"
-                    onClick={() => setRenderMethod('legacy')}
+                    onClick={() => setRenderMethod('classic')}
                   >
                     Legacy Renderer
-                    {renderMethod === 'legacy' ? <Check /> : null}
+                    {renderMethod === 'classic' ? <Check /> : null}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="cursor-pointer gap-2 hover:bg-background"
@@ -398,6 +398,7 @@ function PostPage({
                     parentPermlink={post.parent_permlink}
                     storageId={storageId}
                     comment={post}
+                    denserEditor={renderMethod === 'denser'}
                   />
                 ) : edit ? (
                   <PostForm
@@ -407,6 +408,7 @@ function PostPage({
                     sideBySidePreview={false}
                     post_s={post}
                     refreshPage={refreshPage}
+                    editorType={renderMethod === 'denser' ? 'denser' : 'classic'}
                   />
                 ) : legalBlockedUser ? (
                   <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
@@ -732,6 +734,7 @@ function PostPage({
                 permlink={permlink}
                 storageId={storageId}
                 comment={storedComment}
+                denserEditor={renderMethod === 'denser'}
               />
             ) : null}
           </div>
