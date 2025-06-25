@@ -1,10 +1,10 @@
 import clsx from 'clsx';
-import { TraceSpinner } from 'react-spinners-kit';
+import { ImpulseSpinner } from 'react-spinners-kit';
 
 const Loading = ({ loading, className }: { loading: boolean; className?: string }) => {
   return (
     <div className={clsx('flex h-full w-full items-center justify-center pt-16', className)}>
-      <TraceSpinner size={50} frontColor="#dc2626" backColor="#f67173" loading={loading} />
+      <ImpulseSpinner size={36} frontColor="#fde047" backColor="#fde047" loading={loading} />
     </div>
   );
 };
