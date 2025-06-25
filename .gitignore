@@ -20,3 +20,6 @@ stack/haf-datadir
 apps/blog/test.env
 stack/certs/cert.pem
 stack/certs/key.pem
+apps/.DS_Store
+packages/.DS_Store
+packages/ui/.DS_Store

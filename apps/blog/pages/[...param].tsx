@@ -27,7 +27,7 @@ import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import CommunitiesMybar from '../components/communities-mybar';
+// import CommunitiesMybar from '../components/communities-mybar';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import {
   getAccountMetadata,
@@ -217,7 +217,8 @@ const ParamPage: FC = ({ metadata }: any) => {
     return (
       <>
         <Head>
-          <title>{`${tabTitle} - posts Hive`}</title>
+          {/* <title>{`${tabTitle} posts - Suseona`}</title> */}
+          <title>{`Blog - Suseona`}</title>
           <meta property="og:title" content={metadata.title} />
           <meta property="og:description" content={metadata.description} />
           <meta property="og:image" content={metadata.image} />
@@ -226,7 +227,8 @@ const ParamPage: FC = ({ metadata }: any) => {
           <div className="grid grid-cols-12 md:gap-4">
             <div className="hidden md:col-span-3 md:flex xl:col-span-2">
               {user?.isLoggedIn ? (
-                <CommunitiesMybar data={mySubsData} username={user.username} />
+                // <CommunitiesMybar data={mySubsData} username={user.username} />
+                <></>
               ) : (
                 // <CommunitiesSidebar />
                 <></>

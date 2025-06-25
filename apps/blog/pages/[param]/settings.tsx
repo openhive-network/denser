@@ -73,11 +73,11 @@ const DEFAULT_SETTINGS: Settings = {
   muted_list_description: ''
 };
 const DEFAULTS_ENDPOINTS = [
+  'https://api.deathwing.me',
   'https://api.hive.blog',
   'https://api.openhive.network',
   'https://rpc.ausbit.dev',
-  'https://anyx.io',
-  'https://api.deathwing.me'
+  'https://anyx.io'
 ];
 
 const urlSchema = z

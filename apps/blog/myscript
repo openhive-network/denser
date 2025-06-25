@@ -1,0 +1,14 @@
+./scripts/run_instance.sh \
+    --image="pishdoc/blog:latest" \
+    --app-scope="@hive/blog" \
+    --app-path="/apps/blog" \
+    --api-endpoint="https://api.hive.blog" \
+    --images-endpoint="https://images.hive.blog/" \
+    --name="denser-blog" \
+    --port=3000 \
+    --detach
+
+
+
+
+./scripts/build_instance.sh --app-scope='@hive/blog' --app-path='/apps/blog' --app-name='blog' "$(pwd)"

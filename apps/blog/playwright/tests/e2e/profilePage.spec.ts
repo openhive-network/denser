@@ -118,7 +118,9 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.profileSocialTabIsNotSelected();
     await profilePage.moveToSocialTab();
-    await expect(await profilePage.thirdPartyAppHivebuzzLink.getAttribute('href')).toBe('https://hivebuzz.me/');
+    await expect(await profilePage.thirdPartyAppHivebuzzLink.getAttribute('href')).toBe(
+      'https://hivebuzz.me/'
+    );
     // await profilePage.moveToHivebuzzByLinkInSocialTab();
   });
 
@@ -128,16 +130,15 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.moveToNotificationsTab();
   });
 
-  test.skip('move to Wallet Page', async ({ page,context }) => {
+  test.skip('move to Wallet Page', async ({ page, context }) => {
     await profilePage.gotoProfilePage('@gtg');
     // await profilePage.moveToWalletPage();
     const [newWindow] = await Promise.all([
       context.waitForEvent('page'),
       await page.locator('[data-testid="profile-navigation"] ul:last-child').getByText('Wallet').click()
-    ])
-    await newWindow.waitForLoadState()
-    expect(newWindow.url()).toContain(`/transfers`)
-
+    ]);
+    await newWindow.waitForLoadState();
+    expect(newWindow.url()).toContain(`/transfers`);
   });
 
   // Skipped - Settings Tab is unavailable
@@ -199,10 +200,10 @@ test.describe('Profile page of @gtg', () => {
     expect((await profilePage.advancedSettingsApiEndpointList.all()).length).toBe(4);
 
     const expectedEndpoints: string[] = [
+      'https://api.deathwing.me',
       'https://api.hive.blog',
       'https://rpc.ausbit.dev',
-      'https://anyx.io',
-      'https://api.deathwing.me'
+      'https://anyx.io'
     ];
 
     (await profilePage.advancedSettingsApiEndpointList.all()).forEach(async (element, index) => {
@@ -236,7 +237,9 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.profileNavigationIsVisible();
   });
 
-  test('Move to the login modal after clicking the Follow button in the notifications tab', async ({ page }) => {
+  test('Move to the login modal after clicking the Follow button in the notifications tab', async ({
+    page
+  }) => {
     const loginDialog = new LoginForm(page);
     await profilePage.gotoProfilePage('@gtg');
     await profilePage.moveToNotificationsTab();
@@ -306,59 +309,59 @@ test.describe('Profile page of @gtg', () => {
     ).toBe('rgb(248, 250, 252)');
   });
 
-  test("User Banner Row - Description",async ({page}) =>{
+  test('User Banner Row - Description', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
-    await expect(profilePage.profileInfo).toBeVisible()
-    await expect(profilePage.profileAbout).toBeVisible()
+    await expect(profilePage.profileInfo).toBeVisible();
+    await expect(profilePage.profileAbout).toBeVisible();
 
-    const profileAboutText = await profilePage.profileAbout.innerText()
+    const profileAboutText = await profilePage.profileAbout.innerText();
 
-    await expect(profileAboutText).toEqual('IT Wizard, Hive Witness')
-  })
+    await expect(profileAboutText).toEqual('IT Wizard, Hive Witness');
+  });
 
-  test("User Banner Row - User Stats - Blacklisted Users", async ({page, request}) =>{
+  test('User Banner Row - User Stats - Blacklisted Users', async ({ page, request }) => {
     await profilePage.gotoProfilePage('@gtg');
-    await expect(profilePage.followedBlacklists).toBeVisible()
-    await profilePage.followedBlacklists.click()
-    await page.waitForURL('@gtg/lists/followed_blacklists')
-    await expect(page).toHaveURL('@gtg/lists/followed_blacklists')
-    await expect(profilePage.followedBlacklistsHeader).toBeVisible()
-    await expect(profilePage.followedBlacklistsHeader).toHaveText("Followed Blacklists")
-  })
+    await expect(profilePage.followedBlacklists).toBeVisible();
+    await profilePage.followedBlacklists.click();
+    await page.waitForURL('@gtg/lists/followed_blacklists');
+    await expect(page).toHaveURL('@gtg/lists/followed_blacklists');
+    await expect(profilePage.followedBlacklistsHeader).toBeVisible();
+    await expect(profilePage.followedBlacklistsHeader).toHaveText('Followed Blacklists');
+  });
 
-  test("User Banner Row - User Stats - Muted Users", async ({page, request}) =>{
+  test('User Banner Row - User Stats - Muted Users', async ({ page, request }) => {
     await profilePage.gotoProfilePage('@gtg');
-    await expect(profilePage.followedMutedLists).toBeVisible()
-    await profilePage.followedMutedLists.click()
-    await page.waitForURL('@gtg/lists/followed_muted_lists')
-    await expect(page).toHaveURL('@gtg/lists/followed_muted_lists')
-    await expect(profilePage.followedMutedListsHeader).toBeVisible()
-    await expect(profilePage.followedMutedListsHeader).toContainText("Followed Muted")
-  })
+    await expect(profilePage.followedMutedLists).toBeVisible();
+    await profilePage.followedMutedLists.click();
+    await page.waitForURL('@gtg/lists/followed_muted_lists');
+    await expect(page).toHaveURL('@gtg/lists/followed_muted_lists');
+    await expect(profilePage.followedMutedListsHeader).toBeVisible();
+    await expect(profilePage.followedMutedListsHeader).toContainText('Followed Muted');
+  });
 
-  test("User Banner Row - HiveBuzz program badge - @gtg user",async ({page}) =>{
+  test('User Banner Row - HiveBuzz program badge - @gtg user', async ({ page }) => {
     const titleAttribute: string = "This is gtg's level badged earned from Hivebuzz programs";
-    const imgSrc: string = "https://hivebuzz.me/api/level/gtg?dead";
+    const imgSrc: string = 'https://hivebuzz.me/api/level/gtg?dead';
 
     await profilePage.gotoProfilePage('@gtg');
-    await expect(profilePage.profileInfo).toBeVisible()
-    await expect(profilePage.profileAbout).toBeVisible()
+    await expect(profilePage.profileInfo).toBeVisible();
+    await expect(profilePage.profileAbout).toBeVisible();
 
     // validate the tooltip as title attribute
     await expect(profilePage.userBannerBadgeImg).toHaveAttribute('title', titleAttribute);
     // validate src attribute of the badge image
     await expect(profilePage.userBannerBadgeImg).toHaveAttribute('src', imgSrc);
-  })
+  });
 
-  test("User Banner Row - HiveBuzz program badge and twitter - @arcange user",async ({page}) =>{
+  test('User Banner Row - HiveBuzz program badge and twitter - @arcange user', async ({ page }) => {
     const titleAttribute: string = "This is arcange's level badged earned from Hivebuzz programs";
-    const imgSrc: string = "https://hivebuzz.me/api/level/arcange?dead";
-    const twitterTitleAttribute: string = "To get the Twitter badge, link your account at HivePosh.com";
-    const twitterHrefAttribute: string = "https://twitter.com/thearcange";
+    const imgSrc: string = 'https://hivebuzz.me/api/level/arcange?dead';
+    const twitterTitleAttribute: string = 'To get the Twitter badge, link your account at HivePosh.com';
+    const twitterHrefAttribute: string = 'https://twitter.com/thearcange';
 
     await profilePage.gotoProfilePage('@arcange');
-    await expect(profilePage.profileInfo).toBeVisible()
-    await expect(profilePage.profileAbout).toBeVisible()
+    await expect(profilePage.profileInfo).toBeVisible();
+    await expect(profilePage.profileAbout).toBeVisible();
 
     // validate the tooltip as title attribute
     await expect(profilePage.userBannerBadgeImg).toHaveAttribute('title', titleAttribute);
@@ -368,5 +371,5 @@ test.describe('Profile page of @gtg', () => {
     await expect(profilePage.userBannerTwitterBadgeLink).toHaveAttribute('title', twitterTitleAttribute);
     // validate the href attribute of the twitter badge
     await expect(profilePage.userBannerTwitterBadgeLink).toHaveAttribute('href', twitterHrefAttribute);
-  })
+  });
 });

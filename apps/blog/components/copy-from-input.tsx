@@ -1,4 +1,4 @@
-import { Label } from '@radix-ui/react-label';
+// import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
 import { Input } from '@ui/components/input';
 import { Button } from '@ui/components/button';
@@ -34,7 +34,7 @@ export default function ClipboardCopy({ copyText, label }: { copyText: string; l
 
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor="name">{label}</Label>
+      {/* <Label htmlFor="name">{label}</Label> */}
       <div className="flex w-full items-center gap-2">
         <Input readOnly value={copyText} className="col-span-3" />
         <Button onClick={handleCopyClick} type="submit" className="w-28">

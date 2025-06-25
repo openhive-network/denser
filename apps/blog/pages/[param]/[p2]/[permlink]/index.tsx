@@ -1,5 +1,5 @@
 import parseDate from '@ui/lib/parse-date';
-import { Clock, Link2 } from 'lucide-react';
+import { Clock, Share } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
@@ -18,10 +18,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { Icons } from '@ui/components/icons';
 import { ReplyTextbox } from '@/blog/components/reply-textbox';
 import { SharePost } from '@/blog/components/share-post-dialog';
-import LinkedInShare from '@/blog/components/share-post-linkedin';
-import FacebookShare from '@/blog/components/share-post-facebook';
-import RedditShare from '@/blog/components/share-post-reddit';
-import TwitterShare from '@/blog/components/share-post-twitter';
+// import LinkedInShare from '@/blog/components/share-post-linkedin';
+// import FacebookShare from '@/blog/components/share-post-facebook';
+// import RedditShare from '@/blog/components/share-post-reddit';
+// import TwitterShare from '@/blog/components/share-post-twitter';
 import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
 import { Separator } from '@ui/components';
@@ -58,7 +58,7 @@ import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation
 import FlagIcon from '@/blog/components/flag-icon';
 import { getSuggestions } from '@/blog/lib/get-data';
 import SuggestionsList from '@/blog/components/suggestions-list';
-import TimeAgo from '@ui/components/time-ago';
+// import TimeAgo from '@ui/components/time-ago';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -248,12 +248,12 @@ function PostPage({
       </Head>
       <div className="grid grid-cols-1 md:grid-cols-12">
         <div className="col-span-2 hidden md:block">
-          {suggestions ? (
+          {/* {suggestions ? (
             <div className="flex flex-col overflow-x-auto overflow-y-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)]">
               <h2 className="mb-4 mt-2 px-4 font-sanspro text-xl font-bold md:mt-0">You Might Also Like</h2>
               <SuggestionsList suggestions={suggestions} />
             </div>
-          ) : null}
+          ) : null} */}
         </div>
         <div className="py-8 sm:col-span-8 sm:mx-auto sm:flex sm:flex-col">
           <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
@@ -411,62 +411,6 @@ function PostPage({
                   data-testid="author-data-post-footer"
                 >
                   <div className="my-4 flex flex-wrap gap-4">
-                    <div className="flex flex-wrap items-center">
-                      <Clock className="h-4 w-4" />
-                      <span className="px-1" title={String(parseDate(post.created))}>
-                        <TimeAgo date={post.created} />
-                      </span>
-                      {t('post_content.footer.in')}
-                      <span className="px-1 text-destructive">
-                        {post.community_title ? (
-                          <Link
-                            href={`/trending/${crossedPost ? crosspost.communityTag : post.community}`}
-                            className="hover:cursor-pointer"
-                            data-testid="footer-comment-community-category-link"
-                          >
-                            {crossedPost ? crosspost.community : post.community_title}
-                          </Link>
-                        ) : (
-                          <Link
-                            href={`/trending/${post.category}`}
-                            className="hover:cursor-pointer"
-                            data-testid="footer-comment-community-category-link"
-                          >
-                            #{post.category}
-                          </Link>
-                        )}
-                      </span>
-                      {t('post_content.footer.by')}
-                      <div className="flex">
-                        <UserPopoverCard
-                          author={post.json_metadata.original_author ?? post.author}
-                          author_reputation={
-                            crossedPost ? crosspost.authorReputation : post.author_reputation
-                          }
-                          blacklist={firstPost ? firstPost.blacklists : post.blacklists}
-                        />
-                        {post.author_title ? (
-                          <Badge variant="outline" className="border-destructive text-slate-500">
-                            <span className="mr-1">{post.author_title}</span>
-                            <ChangeTitleDialog
-                              community={community}
-                              moderateEnabled={userCanModerate}
-                              userOnList={post.author}
-                              title={post.author_title ?? ''}
-                              permlink={permlink}
-                            />
-                          </Badge>
-                        ) : (
-                          <ChangeTitleDialog
-                            community={community}
-                            moderateEnabled={userCanModerate}
-                            userOnList={post.author}
-                            title={post.author_title ?? ''}
-                            permlink={permlink}
-                          />
-                        )}
-                      </div>
-                    </div>
                     <div className="flex items-center gap-2 sm:gap-4">
                       <VotesComponent post={post} type="post" />
                       <DetailsCardHover
@@ -498,7 +442,8 @@ function PostPage({
                       ) : null}
                     </div>
                   </div>
-                  <div className="my-4 flex items-end gap-4 sm:flex-col">
+
+                  <div className="my-4 flex flex-wrap gap-4">
                     <div className="flex items-center" data-testid="comment-respons-header">
                       <ReblogTrigger
                         author={post.author}
@@ -629,18 +574,48 @@ function PostPage({
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <FacebookShare url={post.url} />
-                      <TwitterShare title={post.title} url={post.url} />
-                      <LinkedInShare title={post.title} url={post.url} />
-                      <RedditShare title={post.title} url={post.url} />
+                      <span className="mx-1">|</span>
                       <SharePost path={router.asPath}>
-                        <Link2 className="cursor-pointer hover:text-destructive" data-testid="share-post" />
+                        <Share
+                          className="h-5 w-5 cursor-pointer hover:text-destructive"
+                          data-testid="share-post"
+                        />
                       </SharePost>
                     </div>
                   </div>
                 </div>
+
+                <div className="flex flex-wrap items-center">
+                  <span>Written by</span>
+                  <div className="flex">
+                    <UserPopoverCard
+                      author={post.json_metadata.original_author ?? post.author}
+                      author_reputation={crossedPost ? crosspost.authorReputation : post.author_reputation}
+                      blacklist={firstPost ? firstPost.blacklists : post.blacklists}
+                    />
+                    {post.author_title ? (
+                      <Badge variant="outline" className="border-destructive text-slate-500">
+                        <span className="mr-1">{post.author_title}</span>
+                        <ChangeTitleDialog
+                          community={community}
+                          moderateEnabled={userCanModerate}
+                          userOnList={post.author}
+                          title={post.author_title ?? ''}
+                          permlink={permlink}
+                        />
+                      </Badge>
+                    ) : (
+                      <ChangeTitleDialog
+                        community={community}
+                        moderateEnabled={userCanModerate}
+                        userOnList={post.author}
+                        title={post.author_title ?? ''}
+                        permlink={permlink}
+                      />
+                    )}
+                  </div>
+                </div>
+
                 {crossedPost ? (
                   <div className="mb-12 flex w-full justify-center">
                     <Link
@@ -650,19 +625,11 @@ function PostPage({
                     </Link>
                   </div>
                 ) : null}
-                <div className="col-span-2 md:hidden">
-                  {suggestions ? (
-                    <div className="flex flex-col overflow-x-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)]">
-                      <h2 className="mb-4 mt-2 px-4 font-sanspro text-xl font-bold md:mt-0">
-                        You Might Also Like
-                      </h2>
-                      <SuggestionsList suggestions={suggestions} />
-                    </div>
-                  ) : null}
-                </div>
               </div>
             ) : (
-              <Loading loading={isLoadingPost} />
+              <div className="mt-12">
+                <Loading loading={isLoadingPost} />
+              </div>
             )}
           </div>
           <div id="comments" className="flex" />
@@ -696,8 +663,18 @@ function PostPage({
               />
             </div>
           ) : (
-            <Loading loading={isLoadingDiscussion} />
+            <></>
+            // <Loading loading={isLoadingDiscussion} />
           )}
+
+          <div className="mt-12">
+            {suggestions ? (
+              <div className="flex flex-col overflow-x-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)]">
+                <h2 className="mb-4 mt-4 px-4 font-sanspro text-xl font-bold md:mt-0">Recommended posts</h2>
+                <SuggestionsList suggestions={suggestions} />
+              </div>
+            ) : null}
+          </div>
         </div>
         <div className="col-span-2" />
       </div>

@@ -74,7 +74,7 @@ const PostListItem = ({
       {post.json_metadata?.tags &&
       post.json_metadata?.tags.includes('nsfw') &&
       preferences.nsfw === 'hide' ? null : (
-        <Card className="mb-4 bg-background px-2 text-primary">
+        <Card className="mb-4 bg-background text-primary md:px-2">
           {post.original_entry ? (
             <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
@@ -107,7 +107,7 @@ const PostListItem = ({
               </span>
             </div>
           ) : null}
-          <CardHeader className="px-1 pb-1 pt-2">
+          <CardHeader className="px-0 pb-1 pt-2">
             <div className="md:text-md flex items-center text-sm">
               {!reveal && post.blacklists.length < 1 ? (
                 <Link href={`/@${post.author}`} data-testid="post-card-avatar">
@@ -207,39 +207,39 @@ const PostListItem = ({
               </div>
             </div>
           </CardHeader>
-          <div className="flex flex-col justify-between md:flex-row">
+
+          {!reveal && (
+            <CardTitle data-testid="post-title" className="text-lg">
+              {post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw') ? (
+                <Badge variant="outline" className="mx-1 border-destructive text-destructive">
+                  nsfw
+                </Badge>
+              ) : null}
+              <Link
+                href={`/${post.category}/@${post.author}/${post.permlink}`}
+                className="whitespace-normal break-words visited:text-gray-800 dark:visited:text-gray-400"
+              >
+                {post.title}
+              </Link>
+            </CardTitle>
+          )}
+
+          <div className="flex flex-row justify-between">
             <div className="md:overflow-hidden">
               <CardContent>
                 {!reveal ? (
-                  <>
-                    <CardTitle data-testid="post-title" className="text-lg">
-                      {post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw') ? (
-                        <Badge variant="outline" className="mx-1 border-destructive text-destructive">
-                          nsfw
-                        </Badge>
-                      ) : null}
-                      <Link
-                        href={`/${post.category}/@${post.author}/${post.permlink}`}
-                        className="whitespace-normal break-words visited:text-gray-500 dark:visited:text-gray-400"
-                      >
-                        {post.title}
-                      </Link>
-                    </CardTitle>
-                    {/* <CardDescription className="block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap"> */}
-                    <CardDescription className="mt-1.5 block w-auto">
-                      <Link
-                        href={`/${post.category}/@${post.author}/${post.permlink}`}
-                        data-testid="post-description"
-                      >
-                        {userFromDMCA
-                          ? t('cards.content_removed')
-                          : legalBlockedUser
-                            ? t('global.unavailable_for_legal_reasons')
-                            : getPostSummary(post.json_metadata, post.body)}
-                      </Link>
-                    </CardDescription>
-                    {/* <Separator orientation="horizontal" className="my-1" /> */}
-                  </>
+                  <CardDescription className="mt-1.5 block w-auto">
+                    <Link
+                      href={`/${post.category}/@${post.author}/${post.permlink}`}
+                      data-testid="post-description"
+                    >
+                      {userFromDMCA
+                        ? t('cards.content_removed')
+                        : legalBlockedUser
+                          ? t('global.unavailable_for_legal_reasons')
+                          : getPostSummary(post.json_metadata, post.body)}
+                    </Link>
+                  </CardDescription>
                 ) : (
                   <PostCardHidden user={user} revealPost={revealPost} />
                 )}

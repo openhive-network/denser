@@ -23,7 +23,7 @@ import { hoursAndMinutes } from '../lib/utils';
 import env from '@beam-australia/react-env';
 import { getAccount } from '@transaction/lib/hive';
 import TooltipContainer from '@ui/components/tooltip-container';
-import { ModeSwitchInput } from '@ui/components/mode-switch-input';
+// import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { useRouter } from 'next/router';
 import { cn } from '@ui/lib/utils';
 import { getHiveSenseStatus } from '../lib/get-data';
@@ -80,18 +80,18 @@ const SiteHeader: FC = () => {
   return (
     <header
       className={clsx(
-        'sticky top-0 z-40 w-full bg-background shadow-sm transition duration-500 ease-in-out',
+        'sticky top-0 z-40 w-full bg-background shadow-sm transition duration-300 ease-in-out',
         {
           'translate-y-[-56px]': isNavHidden
         }
       )}
       translate="no"
     >
-      <div className="container flex h-12 w-full items-center justify-between">
+      <div className="flex h-[50px] w-full items-center justify-between px-2">
         <Link href="/trending" className="flex items-center space-x-2">
           {/* <Icons.hive className="h-6 w-6" /> */}
           <Image width={36} height={36} alt="suseona" className="rounded-full" src="/suseona192.png" />
-          <div className="flex flex-col md:flex-row">
+          <div className="flex">
             <span className="-ml-0.5 font-semibold sm:inline-block">{siteConfig.name}</span>
             <span className="ml-0.5 text-xs font-thin text-gray-400">alpha</span>
           </div>
@@ -120,13 +120,14 @@ const SiteHeader: FC = () => {
             )}
             <div className="hidden lg:block">
               {router.pathname === '/search' ? (
-                <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
+                // <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
+                <></>
               ) : (
                 <></>
                 // <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
               )}
             </div>
-            <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" />
+            {/* <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" /> */}
             <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
               <Link href="/submit.html">
                 <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">

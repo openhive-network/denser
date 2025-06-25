@@ -42,6 +42,7 @@ target "local-build" {
   output = [
     "type=docker"
   ]
+  platforms = ["linux/amd64"]
 }
 
 target "ci-build" {
