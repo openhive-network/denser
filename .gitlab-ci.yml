@@ -615,6 +615,7 @@ main:deploy-blog-mirrornet:
     SITE_DOMAIN: https://blog.fake.openhive.network
     WALLET_ENDPOINT: https://wallet.fake.openhive.network
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
+    APP_SESSION_TIME: 64800
     IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

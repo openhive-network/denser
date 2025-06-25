@@ -3,10 +3,12 @@ import { siteConfig } from '@ui/config/site';
 import { StorageMixin, StorageBase, StorageBaseOptions } from '@smart-signer/lib/storage-mixin';
 
 import { getLogger } from '@hive/ui/lib/logging';
+import { configuredSessionTime } from '@ui/config/public-vars';
+
 const logger = getLogger('app');
 
 const defaultClientOptions: ClientOptions = {
-  sessionTimeout: 900,
+  sessionTimeout: Number(configuredSessionTime),
   chainId: 'beeab0de00000000000000000000000000000000000000000000000000000000',
   node: 'https://api.hive.blog',
   workerUrl: '/auth/worker.js'
