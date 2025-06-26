@@ -73,6 +73,7 @@ const DEFAULT_SETTINGS: Settings = {
   muted_list_description: ''
 };
 const DEFAULTS_ENDPOINTS = [
+  'https://techcoderx.com',
   'https://api.deathwing.me',
   'https://api.hive.blog',
   'https://api.openhive.network',

@@ -8,7 +8,24 @@
     --port=3000 \
     --detach
 
+./scripts/run_instance.sh \
+    --image="pishdoc/blog:latest" \
+    --app-scope="@hive/blog" \
+    --app-path="/apps/blog" \
+    --api-endpoint="https://techcoderx.com" \
+    --images-endpoint="https://images.hive.blog/" \
+    --name="denser-blog" \
+    --port=3000 \
+    --detach
 
 
+
+pnpm run lint --no-cache
 
 ./scripts/build_instance.sh --app-scope='@hive/blog' --app-path='/apps/blog' --app-name='blog' "$(pwd)"
+
+
+
+docker tag 727a757a5137 pishdoc/blog:latest
+docker login
+docker push pishdoc/blog:latest

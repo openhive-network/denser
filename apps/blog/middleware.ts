@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
     let author = tempArr[1].slice(1);
     let permlink = tempArr[2];
     try {
-      const resp = await fetch('https://api.hive.blog', {
+      const resp = await fetch('https://techcoderx.com', {
         method: 'POST',
         body: JSON.stringify({
           jsonrpc: '2.0',

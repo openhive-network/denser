@@ -1,6 +1,6 @@
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
-import Sidebar from './sidebar';
+// import Sidebar from './sidebar';
 // import { MainNav } from './main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
@@ -164,71 +164,7 @@ const SiteHeader: FC = () => {
                             {data.unread}
                           </div>
                         ) : null}
-                        <div className="absolute z-20 group-hover:invisible group-hover:delay-300 group-hover:duration-300 group-hover:animate-out group-hover:zoom-out-75">
-                          <PieChart width={50} height={50}>
-                            <Pie
-                              data={chart}
-                              cx={20}
-                              cy={20}
-                              startAngle={90}
-                              endAngle={-rcAngle + 90}
-                              innerRadius={18}
-                              outerRadius={24}
-                              fill="#0088FE"
-                              paddingAngle={0}
-                              dataKey="value"
-                            ></Pie>
-                          </PieChart>
-                        </div>
 
-                        <div className="invisible absolute z-20 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                          <PieChart width={50} height={50}>
-                            <Pie
-                              data={chart}
-                              cx={20}
-                              cy={20}
-                              startAngle={90}
-                              endAngle={-downvoteAngle + 90}
-                              innerRadius={18}
-                              outerRadius={21.5}
-                              fill="#C01000"
-                              paddingAngle={0}
-                              dataKey="value"
-                            ></Pie>
-                          </PieChart>
-                        </div>
-                        <div className="invisible absolute z-10 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                          <PieChart width={60} height={60}>
-                            <Pie
-                              data={chart}
-                              cx={25}
-                              cy={25}
-                              startAngle={90}
-                              endAngle={-upvoteAngle + 90}
-                              innerRadius={21.5}
-                              outerRadius={25}
-                              fill="#00C040"
-                              paddingAngle={0}
-                              dataKey="value"
-                            ></Pie>
-                          </PieChart>
-                        </div>
-                        <div className="invisible absolute group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                          <PieChart width={70} height={70}>
-                            <Pie
-                              data={chart}
-                              cx={30}
-                              cy={30}
-                              startAngle={90}
-                              endAngle={-rcAngle + 90}
-                              innerRadius={25}
-                              outerRadius={28.5}
-                              fill="#0088FE"
-                              paddingAngle={0}
-                              dataKey="value"
-                            ></Pie>
-                          </PieChart>
-                        </div>
                         <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
                           <AvatarImage
                             className="h-full w-full object-cover"
@@ -275,7 +211,7 @@ const SiteHeader: FC = () => {
                 </Tooltip>
               </TooltipProvider>
             ) : null}
-            <Sidebar />
+            {/* <Sidebar /> */}
           </nav>
         </div>
       </div>

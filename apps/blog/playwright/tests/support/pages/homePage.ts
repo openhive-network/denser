@@ -266,7 +266,6 @@ export class HomePage {
 
   async moveToLeoFinanceCommunities() {
     await this.getLeoFinanceCommunitiesLink.click();
-    // await this.page.waitForRequest('https://api.hive.blog/');
     await expect(this.getHeaderLeoCommunities).toBeVisible();
   }
 

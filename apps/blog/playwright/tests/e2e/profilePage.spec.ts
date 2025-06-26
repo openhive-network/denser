@@ -200,6 +200,7 @@ test.describe('Profile page of @gtg', () => {
     expect((await profilePage.advancedSettingsApiEndpointList.all()).length).toBe(4);
 
     const expectedEndpoints: string[] = [
+      'https://techcoderx.com',
       'https://api.deathwing.me',
       'https://api.hive.blog',
       'https://rpc.ausbit.dev',
