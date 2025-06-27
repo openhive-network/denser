@@ -1,5 +1,5 @@
 import env from '@beam-australia/react-env';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import { logger } from '@ui/lib/logger';
 
 const apiDevOrigin = env('AI_DOMAIN') || process.env.AI_DOMAIN;
@@ -71,5 +71,21 @@ export const getSuggestions = async ({
   } catch (error) {
     logger.error('Error in getSuggestions', error);
     throw new Error('Error in getSuggestions');
+  }
+};
+
+export const getThematicAuthors = async (thematic: string, observer: string): Promise<string[] | null> => {
+  try {
+    const response = await fetch(
+      `${apiDevOrigin}/hivesense-api/thematiccontributors?thematic=${encodeURIComponent(thematic)}&authors_limit=10&observer=${observer}`
+    );
+    if (!response.ok) {
+      throw new Error(`Authors API Error: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    logger.error('Error in getAuthors', error);
+    throw new Error('Error in getAuthors');
   }
 };

@@ -17,11 +17,21 @@ export function useSearch(aiAvailable: boolean) {
   }, [aiAvailable, sort]);
 
   const handleSearch = (value: string, currentMode: SearchMode) => {
-    const searchParams =
-      currentMode === 'search'
-        ? `q=${encodeURIComponent(value)}&s=${sort ?? 'newest'}`
-        : `q=${encodeURIComponent(value)}`;
-    router.push(`/search?${searchParams}`);
+    if (value.startsWith('/')) {
+      router.push(`/search?t=${encodeURIComponent(value.trim().slice(1))}`);
+      return;
+    }
+    if (value.startsWith('@')) {
+      router.push(`@${encodeURIComponent(value.trim().slice(1))}`);
+      return;
+    } else {
+      const searchParams =
+        currentMode === 'search'
+          ? `q=${encodeURIComponent(value)}&s=${sort ?? 'newest'}`
+          : `q=${encodeURIComponent(value)}`;
+      router.push(`/search?${searchParams}`);
+      return;
+    }
   };
 
   return {
