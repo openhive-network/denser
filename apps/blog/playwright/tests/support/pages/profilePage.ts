@@ -121,6 +121,7 @@ export class ProfilePage {
   readonly ppsMuteListDescriptionLabel: Locator;
   readonly ppsMuteListDescriptionInput: Locator;
   readonly ppsButtonUpdate: Locator;
+  readonly muteButton: Locator;
 
   readonly preferencesSettings: Locator;
   readonly preferencesSettingsChooseLanguage: Locator;
@@ -185,6 +186,7 @@ export class ProfilePage {
   readonly profileNameString: string;
   readonly followBtn: string;
   readonly profileStatsString: string;
+  readonly mutedUsersBtn: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -344,6 +346,7 @@ export class ProfilePage {
     this.ppsMuteListDescriptionLabel = this.publicProfileSettings.locator('[for="mutedListDescription"]');
     this.ppsMuteListDescriptionInput = this.publicProfileSettings.locator('#mutedListDescription');
     this.ppsButtonUpdate = this.publicProfileSettings.locator('[data-testid="pps-update-button"]');
+    this.muteButton = page.getByTestId('profile-mute-button');
 
     this.preferencesSettings = page.locator('[data-testid="settings-preferences"]');
     this.preferencesSettingsChooseLanguage = this.preferencesSettings.locator(
@@ -407,6 +410,7 @@ export class ProfilePage {
     this.userBannerBadgeLink = page.locator('[data-testid="profile-badge-link"]');
     this.userBannerBadgeImg = page.locator('[data-testid="profile-badge-image"]');
     this.userBannerTwitterBadgeLink = page.locator('[data-testid="profile-twitter-badge"]');
+    this.mutedUsersBtn = page.getByRole('link', { name: 'Muted Users' });
   }
 
   async gotoProfilePage(nickName: string) {

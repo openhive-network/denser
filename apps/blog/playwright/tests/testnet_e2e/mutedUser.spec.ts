@@ -18,15 +18,17 @@ test.describe('Muted user - tests', () => {
   });
 
   test('Add user to Muted list', async ({ denserAutoTest0Page }) => {
-    const secondPostAuthor = await denserAutoTest0Page.page.locator(homePage.postAuthor).nth(1).innerText();
+    const postAuthorName = await denserAutoTest0Page.page.locator(homePage.postAuthor).nth(1).innerText();
 
     await denserAutoTest0Page.page.locator(homePage.postAuthor).nth(1).click();
     await expect(denserAutoTest0Page.page.locator(profilePage.profileNameString)).toBeVisible();
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toBeVisible();
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Follow');
-    await denserAutoTest0Page.page.locator(profilePage.followBtn).click();
-    await expect(denserAutoTest0Page.page.locator(profilePage.followBtn)).toContainText('Unfollow');
-
-    
+    await profilePage.muteButton.click();
+    await denserAutoTest0Page.page.locator(homePage.profileAvatar).click()
+    await expect(denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString)).toBeVisible();
+    await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click()
+    await expect(denserAutoTest0Page.page.getByTestId('profile-name')).toContainText('denserautotest0')
+    await profilePage.mutedUsersBtn.click()
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthorName}` })).toBeVisible();
+    await denserAutoTest0Page.page.waitForTimeout(5000)
   });
 });
