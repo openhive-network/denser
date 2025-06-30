@@ -4,7 +4,7 @@ import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
@@ -235,7 +235,9 @@ function PostPage({
       deleteComment(permlink);
     }
   };
-  const canonical_url = post ? new URL(post.url.startsWith('http') ? post.url : `https://${env('SITE_DOMAIN')}${post.url}`).href : undefined;
+  const canonical_url = post
+    ? new URL(post.url.startsWith('http') ? post.url : `https://${env('SITE_DOMAIN')}${post.url}`).href
+    : undefined;
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   const crossedPost = post?.json_metadata.tags?.includes('cross-post');
   return (
@@ -636,7 +638,7 @@ function PostPage({
                       <TwitterShare title={post.title} url={post.url} />
                       <LinkedInShare title={post.title} url={post.url} />
                       <RedditShare title={post.title} url={post.url} />
-                      <SharePost path={router.asPath}>
+                      <SharePost path={router.asPath} title={post.title}>
                         <Link2 className="cursor-pointer hover:text-destructive" data-testid="share-post" />
                       </SharePost>
                     </div>
