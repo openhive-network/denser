@@ -235,7 +235,7 @@ const PostListItem = ({
                         {post.title}
                       </Link>
                     </CardTitle>
-                    <CardDescription className="block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
+                    <CardDescription className="block w-auto whitespace-pre-wrap break-words md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
                       <Link
                         href={`/${post.category}/@${post.author}/${post.permlink}`}
                         data-testid="post-description"
