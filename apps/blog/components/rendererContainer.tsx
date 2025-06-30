@@ -5,6 +5,7 @@ import { getRenderer } from '../lib/renderer';
 import { getLogger } from '@ui/lib/logging';
 import ScrollToElement from './scroll-to-element';
 import { cn } from '@ui/lib/utils';
+import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
 
 const logger = getLogger('app');
 
@@ -42,7 +43,14 @@ const RendererContainer = ({
 
   useEffect(() => {
     const nodes = ref.current?.querySelectorAll('a.link-external');
-    nodes?.forEach((n) => n.addEventListener('click', handleClick));
+    nodes?.forEach((n) => {
+      const href = (n as HTMLAnchorElement).href || (n.parentElement as HTMLAnchorElement)?.href;
+      if (isUrlWhitelisted(href)) {
+        n.setAttribute('target', '_blank');
+      } else {
+        n.addEventListener('click', handleClick);
+      }
+    });
     const sub = document.querySelectorAll('sub');
     sub?.forEach((e) => {
       e.classList.add('leading-[150%]');
