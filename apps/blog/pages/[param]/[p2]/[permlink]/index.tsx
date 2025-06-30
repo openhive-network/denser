@@ -177,6 +177,8 @@ function PostPage({
   );
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
+  const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);
+
   const [edit, setEdit] = useState(false);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
@@ -344,7 +346,9 @@ function PostPage({
                   community={crossedPost ? crosspost.communityTag : community}
                   category={post.category}
                   created={post.created}
-                  blacklist={firstPost ? firstPost.blacklists : post.blacklists}
+                  blacklist={
+                    firstPost ? firstPost.blacklists : thisPost ? thisPost.blacklists : post.blacklists
+                  }
                 />
                 {isLoadingPost ? (
                   <Loading loading={isLoadingPost} />
@@ -446,7 +450,13 @@ function PostPage({
                           author_reputation={
                             crossedPost ? crosspost.authorReputation : post.author_reputation
                           }
-                          blacklist={firstPost ? firstPost.blacklists : post.blacklists}
+                          blacklist={
+                            firstPost
+                              ? firstPost.blacklists
+                              : thisPost
+                                ? thisPost.blacklists
+                                : post.blacklists
+                          }
                         />
                         {post.author_title ? (
                           <Badge variant="outline" className="border-destructive text-slate-500">
