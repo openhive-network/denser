@@ -12,7 +12,7 @@ import {
 import { Separator } from '@hive/ui/components/separator';
 import { Badge } from '@hive/ui/components/badge';
 // import accountReputation from '@/blog/lib/account-reputation';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -27,7 +27,7 @@ import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
-import { getLogger } from '@ui/lib/logging';
+// import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from './reblog-trigger';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
@@ -177,22 +177,7 @@ const PostListItem = ({
                   <span className="mx-1 text-xs font-thin text-gray-400">•</span>
                   <TimeAgo date={post.created} />
                   {/* </Link> */}
-                  {post.percent_hbd === 0 ? (
-                    <span className="ml-1 flex items-center">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger data-testid="powered-up-100-trigger">
-                            <Link href={`/${post.category}/@${post.author}/${post.permlink}`}>
-                              <Icons.hive className="h-4 w-4" />
-                            </Link>
-                          </TooltipTrigger>
-                          <TooltipContent data-testid="powered-up-100-tooltip">
-                            Powered Up 100%
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </span>
-                  ) : null}
+
                   {post.stats && post.stats.is_pinned && isCommunityPage ? (
                     <Badge className="ml-1 bg-destructive text-white hover:bg-destructive">
                       <Link
@@ -229,6 +214,17 @@ const PostListItem = ({
               <CardContent>
                 {!reveal ? (
                   <CardDescription className="mt-1.5 block w-auto">
+                    <div className="float-right">
+                      {!reveal &&
+                      post.blacklists.length < 1 &&
+                      !userFromDMCA &&
+                      !userFromImageBlockList &&
+                      !legalBlockedUser ? (
+                        <>
+                          <PostImage post={post} />
+                        </>
+                      ) : null}
+                    </div>
                     <Link
                       href={`/${post.category}/@${post.author}/${post.permlink}`}
                       data-testid="post-description"
@@ -281,7 +277,7 @@ const PostListItem = ({
               </CardFooter>
               <Separator orientation="horizontal" className="my-1" />
             </div>
-            <div>
+            {/* <div>
               {!reveal &&
               post.blacklists.length < 1 &&
               !userFromDMCA &&
@@ -291,7 +287,7 @@ const PostListItem = ({
                   <PostImage post={post} />
                 </>
               ) : null}
-            </div>
+            </div> */}
           </div>
         </Card>
       )}

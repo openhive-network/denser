@@ -62,7 +62,7 @@ import SuggestionsList from '@/blog/components/suggestions-list';
 
 const logger = getLogger('app');
 export const postClassName =
-  'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer';
+  'text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer';
 
 const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
   loading: () => <Loading loading={true} />,
@@ -298,10 +298,7 @@ function PostPage({
             {!isLoadingPost && post ? (
               <div>
                 {!commentSite ? (
-                  <h1
-                    className="font-sanspro text-[21px] font-extrabold sm:text-[25.6px]"
-                    data-testid="article-title"
-                  >
+                  <h1 className="text-[24px] font-extrabold sm:text-[27px]" data-testid="article-title">
                     {post.title}
                   </h1>
                 ) : (
@@ -309,7 +306,7 @@ function PostPage({
                     <h4 className="text-sm">
                       {t('post_content.if_comment.you_are_viewing_a_single_comments_thread_from')}:
                     </h4>
-                    <h1 data-testid="article-title" className="text-2xl">
+                    <h1 data-testid="article-title" className="text-3xl">
                       {post.title}
                     </h1>
                     <Link
@@ -396,7 +393,7 @@ function PostPage({
                         .map((tag: string) => (
                           <li key={tag}>
                             <Link
-                              href={`/trending/${tag}`}
+                              href={`/hot/${tag}`}
                               className="my-2 rounded-md border-[1px] border-border bg-background-secondary px-2 py-1 text-[14px] hover:border-[#788187]"
                             >
                               #{tag}

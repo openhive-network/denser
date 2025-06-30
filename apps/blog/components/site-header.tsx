@@ -82,13 +82,13 @@ const SiteHeader: FC = () => {
       className={clsx(
         'sticky top-0 z-40 w-full bg-background shadow-sm transition duration-300 ease-in-out',
         {
-          'translate-y-[-56px]': isNavHidden
+          'translate-y-[-52px]': isNavHidden
         }
       )}
       translate="no"
     >
-      <div className="flex h-[50px] w-full items-center justify-between px-2">
-        <Link href="/trending" className="flex items-center space-x-2">
+      <div className="flex h-[52px] w-full items-center justify-between px-2 md:px-10">
+        <Link href="/hot" className="flex items-center space-x-2">
           {/* <Icons.hive className="h-6 w-6" /> */}
           <Image width={36} height={36} alt="suseona" className="rounded-full" src="/suseona192.png" />
           <div className="flex">
@@ -160,7 +160,7 @@ const SiteHeader: FC = () => {
                     <UserMenu user={user} notifications={data?.unread}>
                       <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
                         {data && data.unread !== 0 ? (
-                          <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+                          <div className="absolute bottom-auto left-auto right-2 top-1.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive px-1.5 py-1 text-center align-baseline text-[10px] leading-none text-white">
                             {data.unread}
                           </div>
                         ) : null}

@@ -384,7 +384,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 />
               </ul>
               <ul className="flex h-full flex-nowrap text-xs sm:text-base lg:flex lg:gap-4">
-                <li>
+                {/* <li>
                   <Link
                     href={`${walletHost}/@${username}/transfers`}
                     target="_blank"
@@ -393,7 +393,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   >
                     {t('navigation.profile_navbar.wallet')}
                   </Link>
-                </li>
+                </li> */}
                 {user.isLoggedIn && username === user.username ? (
                   <li>
                     <Link
@@ -413,7 +413,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
           </div>
         </div>
-        <main className="container mx-auto max-w-screen-xl pt-4">{children}</main>
+        <main className="px-2 pt-4 sm:w-8/12 sm:px-12">{children}</main>
       </div>
     </div>
   ) : (

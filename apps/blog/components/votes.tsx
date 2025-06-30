@@ -111,7 +111,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             >
               <Icons.arrowUpCircle
                 className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
+                  'h-[24px] w-[24px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
                   { 'bg-destructive text-white': userVote && userVote.vote_percent > 0 }
                 )}
               />
@@ -176,7 +176,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         >
           <Icons.arrowUpCircle
             className={clsx(
-              'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
+              'h-[20px] w-[20px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
               { 'bg-destructive text-white': userVote && userVote.vote_percent > 0 }
             )}
             onClick={() => {
@@ -201,7 +201,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               loading={voteMutation.isLoading}
               dataTestId="upvote-button"
             >
-              <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" />
+              <Icons.arrowUpCircle className="h-[20px] w-[20px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" />
             </TooltipContainer>
           </div>
         </DialogLogin>
@@ -222,7 +222,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             >
               <Icons.arrowDownCircle
                 className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                  'h-[20px] w-[20px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
                   { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 }
                 )}
               />
@@ -296,7 +296,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         >
           <Icons.arrowDownCircle
             className={clsx(
-              'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+              'h-[20px] w-[20px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
               { 'bg-destructive text-white opacity-80': userVote && userVote.vote_percent < 0 }
             )}
             onClick={() => {
@@ -321,7 +321,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               loading={voteMutation.isLoading}
               dataTestId="downvote-button"
             >
-              <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+              <Icons.arrowDownCircle className="h-[20px] w-[20px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
             </TooltipContainer>
           </div>
         </DialogLogin>

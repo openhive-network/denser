@@ -101,7 +101,7 @@ export const getHivePower = (
 
 export function extractBodySummary(body: string, stripQuotes = false) {
   let desc = body;
-  const MAX_SIZE = 255;
+  const MAX_SIZE = 270;
 
   if (stripQuotes) desc = desc.replace(/(^(\n|\r|\s)*)>([\s\S]*?).*\s*/g, '');
   desc = remarkableStripper.render(desc); // render markdown to html
