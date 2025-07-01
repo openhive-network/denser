@@ -3,7 +3,7 @@ import { HomePage } from '../support/pages/homePage';
 import { LoginForm } from '../support/pages/loginForm';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { users } from '../support/loginHelper';
-import { waitForElementColor } from '../support/utils';
+import { waitForProcessedUpvoteLightMode, waitForBroadcastedUpvoteLightMode } from '../support/waitHelper';
 
 test.describe('Voting tests', () =>{
   let homePage: HomePage;
@@ -35,8 +35,8 @@ test.describe('Voting tests', () =>{
       await page.getByTestId('community-name').locator('..').locator('..').click({force: true});
       const firstPostUpvoteButtonLocator = page.getByTestId('post-list-item').first().getByTestId('upvote-button').locator('svg');
       const firstPostUpvoteButtonLocatorToClick = page.getByTestId('post-list-item').first().getByTestId('upvote-button');
-      // Wait for expected color of upvote button
-      await waitForElementColor(page, firstPostUpvoteButtonLocator['_selector'], 'rgb(218, 43, 43)', 20000, 4000);
+      // Wait for expected color of upvote button - broadcasted button
+      await waitForBroadcastedUpvoteLightMode(page);
       // console.log('1 first upvote color: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color'));
       // console.log('1 first upvote bg: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color'));
       expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe('rgb(218, 43, 43)');
@@ -50,7 +50,7 @@ test.describe('Voting tests', () =>{
         console.log('denserautotest4 ', users.denserautotest4.safeStoragePassword)
       }
       // Wait until optimistic ui is finished and validate the color of the upvote button
-      await waitForElementColor(page, firstPostUpvoteButtonLocator['_selector'], 'rgb(255, 255, 255)', 20000, 4000);
+      await waitForProcessedUpvoteLightMode(page);
       // console.log('2 first upvote color: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color'));
       // console.log('2 first upvote bg: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color'));
       expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe('rgb(255, 255, 255)');
@@ -77,8 +77,8 @@ test.describe('Voting tests', () =>{
       await page.getByTestId('community-name').locator('..').locator('..').click({force: true});
       const firstPostUpvoteButtonLocator = page.getByTestId('post-list-item').first().getByTestId('upvote-button').locator('svg');
       const firstPostUpvoteButtonLocatorToClick = page.getByTestId('post-list-item').first().getByTestId('upvote-button');
-      // Wait for expected color of upvote button
-      await waitForElementColor(page, firstPostUpvoteButtonLocator['_selector'], 'rgb(255, 255, 255)', 20000, 4000);
+      // Wait for expected color of upvote button - processed upvote icon
+      await waitForProcessedUpvoteLightMode(page);
       // console.log('1 first upvote color: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color'));
       // console.log('1 first upvote bg: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color'));
       expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe('rgb(255, 255, 255)');
@@ -92,7 +92,7 @@ test.describe('Voting tests', () =>{
         console.log('denserautotest4 ', users.denserautotest4.safeStoragePassword)
       }
       // Wait until optimistic ui is finished and validate the color of the upvote button
-      await waitForElementColor(page, firstPostUpvoteButtonLocator['_selector'], 'rgb(218, 43, 43)', 20000, 4000);
+      await waitForBroadcastedUpvoteLightMode(page);
       // Move pointer from the upvote icon
       await page.getByTestId('community-name').locator('..').locator('..').click({force: true});
       // console.log('2 first upvote color: ', await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color'));
