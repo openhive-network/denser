@@ -4,7 +4,7 @@ import { LoginForm } from '../support/pages/loginForm';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { LoginHelper, users } from '../support/loginHelper';
 import { ApiHelper } from '../support/apiHelper';
-import { waitForElementColor, waitForElementVisible } from '../support/utils';
+import { waitForCircleSpinnerIsDetatched } from '../support/waitHelper';
 
 test.describe('Voting tests with fixture and POM', () =>{
   const url: string = process.env.REACT_APP_API_ENDPOINT || "";
@@ -48,7 +48,7 @@ test.describe('Voting tests with fixture and POM', () =>{
         expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(upvoteTooltipText);
       } else {
         // Wait until optimistic ui is finished and validate the color of the upvote button
-        await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+        await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe(lightModeWhiteColor);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe(lightModeRedColor);
         // Validate the upvote tooltips
@@ -61,7 +61,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       // If a password to unlock key is needed
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
-      await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+      await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
       if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == lightModeWhiteColor) {
         // Wait until optimistic ui is finished and validate the color of the upvote button
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe(lightModeWhiteColor);
@@ -104,7 +104,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the upvote button
-      await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+      await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
       // Move pointer from the upvote icon - click the main post list's header element
       await profileMenu.clickCloseProfileMenu();
       // await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
@@ -135,7 +135,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       // If a password to unlock key is needed
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
-      await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+      await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
 
       // wait for promise to resolve intercepted request
       const broadcastTransactionReq = await broadcastTransaction;
@@ -175,7 +175,7 @@ test.describe('Voting tests with fixture and POM', () =>{
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe(darkModeClearColor);
       } else {
         // Wait until optimistic ui is finished and validate the color of the upvote button
-        await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+        await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe(darkModeWhiteColor);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe(darkModeRedColor);
       }
@@ -184,7 +184,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       // If a password to unlock key is needed
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
-      await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+      await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
 
       if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == darkModeWhiteColor) {
         // Wait until optimistic ui is finished and validate the color of the upvote button
@@ -224,7 +224,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the upvote button
-      await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+      await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
       // Move pointer from the upvote icon - click the main post list's header element
       await profileMenu.clickCloseProfileMenu();
 
@@ -234,7 +234,7 @@ test.describe('Voting tests with fixture and POM', () =>{
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe(darkModeClearColor);
       } else {
         // Wait until optimistic ui is finished and validate the color of the upvote button
-        await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+        await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe(darkModeWhiteColor);
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe(darkModeRedColor);
       }
@@ -259,7 +259,7 @@ test.describe('Voting tests with fixture and POM', () =>{
         expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(downvoteTooltipText);
       } else {
         // Wait until optimistic ui is finished and validate the color of the downvote button
-        await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+        await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe(lightModeWhiteColor);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe(lightModeRedColor);
         // Validate the undo downvote tooltip text
@@ -272,7 +272,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       // If a password to unlock key is needed
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
-      await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+      await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
       await loginForm.page.waitForTimeout(2000);
       if (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color') == lightModeWhiteColor) {
         // Wait until optimistic ui is finished and validate the color of the upvote button
@@ -316,7 +316,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the downvote button
-      await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+      await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
       // Move pointer from the upvote icon - click the main post list's header element
       await profileMenu.clickCloseProfileMenu();
 
@@ -346,7 +346,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       // If a password to unlock key is needed
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
-      await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+      await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
       await loginForm.page.waitForTimeout(2000);
       // wait for promise to resolve intercepted request
       const broadcastTransactionReq = await broadcastTransaction;
@@ -387,7 +387,7 @@ test.describe('Voting tests with fixture and POM', () =>{
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe(darkModeClearColor);
       } else {
         // Wait until optimistic ui is finished and validate the color of the downvote button
-        await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+        await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe(darkModeWhiteColor);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe(darkModeRedColor);
       }
@@ -396,7 +396,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       // If a password to unlock key is needed
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
-      await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+      await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
       await loginForm.page.waitForTimeout(2000);
       if (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color') == darkModeWhiteColor) {
         // Wait until optimistic ui is finished and validate the color of the upvote button
@@ -436,7 +436,7 @@ test.describe('Voting tests with fixture and POM', () =>{
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the downvote button
-      await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+      await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
       // Move pointer from the upvote icon - click the main post list's header element
       await profileMenu.clickCloseProfileMenu();
 
@@ -446,7 +446,7 @@ test.describe('Voting tests with fixture and POM', () =>{
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe(darkModeClearColor);
       } else {
         // Wait until optimistic ui is finished and validate the color of the downvote button
-        await denserAutoTest4Page.page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+        await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe(darkModeWhiteColor);
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'background-color')).toBe(darkModeRedColor);
       }

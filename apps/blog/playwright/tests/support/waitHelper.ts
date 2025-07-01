@@ -64,3 +64,7 @@ export async function waitForProcessedUpvoteLightMode(page: Page) {
 
     await waitForElementColor(page, selectorFirstPostUpvoteButtonLocator, lightModeWhiteColor, timeout, interval);
  }
+
+ export async function waitForCircleSpinnerIsDetatched(page: Page) {
+    await page.waitForSelector(".circle__Wrapper-sc-16bbsoy-0",{state: 'detached'});
+ }
