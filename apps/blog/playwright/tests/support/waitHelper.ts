@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test';
+import { HomePage } from './pages/homePage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { CommentEditorPage } from './pages/commentEditorPage';
 import { waitForElementVisible, waitForElementColor, waitForCommentIsVisible } from './utils';
@@ -47,22 +48,25 @@ export async function waitForCreatedCommentIsVisible(page: Page, commentContent:
     await waitForCommentIsVisible(page, commentContent, timeout, interval);
 }
 
-export async function waitForBroadcastedUpvoteLightMode(page: Page) {
-    const selectorFirstPostUpvoteButtonLocator = page.getByTestId('post-list-item').first().getByTestId('upvote-button').locator('svg')['_selector'];
+export async function waitForFirstBroadcastedUpvoteLightMode(page: Page) {
+    const homePage = new HomePage(page);
+    const selectorFirstPostUpvoteButton = await homePage.firstPostCardUpvoteButtonLocator['_selector'];
+
     const timeout = 20000;
     const interval = 4000;
     const lightModeRedColor = 'rgb(218, 43, 43)'; // upvote icon's color not processed in the dark mode
 
-    await waitForElementColor(page, selectorFirstPostUpvoteButtonLocator, lightModeRedColor, timeout, interval);
+    await waitForElementColor(page, selectorFirstPostUpvoteButton, lightModeRedColor, timeout, interval);
 }
 
-export async function waitForProcessedUpvoteLightMode(page: Page) {
-    const selectorFirstPostUpvoteButtonLocator = page.getByTestId('post-list-item').first().getByTestId('upvote-button').locator('svg')['_selector'];
+export async function waitForFirstProcessedUpvoteLightMode(page: Page) {
+    const homePage = new HomePage(page);
+    const selectorFirstPostUpvoteButton = await homePage.firstPostCardUpvoteButtonLocator['_selector'];
     const timeout = 20000;
     const interval = 4000;
     const lightModeWhiteColor = 'rgb(255, 255, 255)'; // upvote icon's color processed in the light mode
 
-    await waitForElementColor(page, selectorFirstPostUpvoteButtonLocator, lightModeWhiteColor, timeout, interval);
+    await waitForElementColor(page, selectorFirstPostUpvoteButton, lightModeWhiteColor, timeout, interval);
  }
 
  export async function waitForCircleSpinnerIsDetatched(page: Page) {
