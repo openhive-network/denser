@@ -6,7 +6,7 @@ import { LoginForm } from '../support/pages/loginForm';
 import { UnmoderatedTagPage } from '../support/pages/unmoderatedTagPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { PostPage } from '../support/pages/postPage';
-import { waitForElementVisible } from '../support/utils';
+import { waitForPostIsVisibleInUnmoderatedTagPage } from '../support/waitHelper';
 
 test.describe('Creating post tests with POM and fixture users', () => {
 
@@ -41,7 +41,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     // Validate that user has been moved to the unmoderated tag page
     await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
     // Wait until optimistic ui is finished
-    await waitForElementVisible(denserAutoTest4Page.page, unmoderatedTagPage.page.getByText(postTitle)['_selector'] ,20000, 4000);
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest4Page.page, postTitle);
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle, postSummary);
     // After creating post with category user is moving to the created/new page with tag name and Unmoderated tag posts lists
@@ -78,7 +78,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     // Validate that user has been moved to the unmoderated tag page
     await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
     // Wait until optimistic ui is finished
-    await waitForElementVisible(denserAutoTest0Page.page, unmoderatedTagPage.page.getByText(postTitle)['_selector'] ,20000, 4000);
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest0Page.page, postTitle);
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest0.username, postTitle, postSummary);
   });
@@ -118,7 +118,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     // Validate that user has been moved to the unmoderated tag page
     await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
     // Wait until optimistic ui is finished
-    await waitForElementVisible(denserAutoTest4Page.page, unmoderatedTagPage.page.getByText(postTitle1)['_selector'] ,20000, 4000);
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest4Page.page, postTitle1);
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle1, postSummary1);
 
@@ -133,7 +133,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     // Validate that user has been moved to the unmoderated tag page
     await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
     // Wait until optimistic ui is finished
-    await waitForElementVisible(denserAutoTest4Page.page, unmoderatedTagPage.page.getByText(postTitle2)['_selector'] ,20000, 4000);
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest4Page.page, postTitle2);
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle2, postSummary2);
   });
