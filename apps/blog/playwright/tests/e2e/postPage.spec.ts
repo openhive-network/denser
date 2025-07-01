@@ -171,6 +171,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.articleAuthorName.click();
+    await postPage.page.waitForTimeout(1000);
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -446,6 +447,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.footerAuthorNameLink.click();
+    await postPage.page.waitForTimeout(1000);
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -492,6 +494,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.footerAuthorNameLink.click();
+    await postPage.page.waitForTimeout(1000);
 
     const userFollowersAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
       .follower_count;
@@ -521,6 +524,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.footerAuthorNameLink.click();
+    await postPage.page.waitForTimeout(1000);
 
     try {
       const userPostingJsonMetadata = await JSON.parse(
