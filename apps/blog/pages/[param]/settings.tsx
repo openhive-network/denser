@@ -191,8 +191,8 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
-  const [endpoint, setEndpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
-  const [aiSearchEndpoint, setAiSearchEndpoint] = useLocalStorage('ai-search-endpoint', siteConfig.endpoint);
+  const [endpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
+  const [aiSearchEndpoint] = useLocalStorage('ai-search-endpoint', siteConfig.endpoint);
   const [isClient, setIsClient] = useState(false);
   const [insertImg, setInsertImg] = useState('');
   const [hcService, setHcService] = useState<HealthCheckerService | undefined>(undefined);
@@ -217,15 +217,11 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
   const unmuteMutation = useUnmuteMutation();
   const updateProfileMutation = useUpdateProfileMutation();
 
-  const changeApiEndpoint = async (newEndpoint: string) => {
-    setEndpoint(newEndpoint);
-    await hiveChainService.setHiveChainEndpoint(newEndpoint);
-    await hbauthService.setOnlineClient({ node: newEndpoint });
-  }
-
-  const changeNode = (node: string | null) => {
-    if (node)
-    changeApiEndpoint(node);
+  const changeNode = async (node: string | null) => {
+    if (node) {
+      await hiveChainService.setHiveChainEndpoint(node);
+      await hbauthService.setOnlineClient({ node });
+    }
   }
 
   const startHealthcheckerService = async () => {
@@ -235,14 +231,14 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
     {
       title: "Condenser - Get accounts",
       method: hiveChain.api.condenser_api.get_accounts,
-      params: [["ocdb"]],
-      validatorFunction: data => data[0].name === "ocdb" ? true : "Get block error",
+      params: [["guest4test"]],
+      validatorFunction: data => data[0].name === "guest4test" ? true : "Get block error",
     },
     {
       title: "Bridge - Get post",
       method: hiveChain.api.bridge.get_post,
-      params: {author: "crimsonclad", permlink: "the-eerie-beauty-of-knowth-and-dowth-ancient-spirits-spiraling-through-time", observer: ""},
-      validatorFunction: data => data.author === "crimsonclad" ? true : "Get post error",
+      params: {author: "guest4test", permlink: "6wpmjy-test", observer: ""},
+      validatorFunction: data => data.author === "guest4test" ? true : "Get post error",
     },
   ]
     const hcService = new HealthCheckerService(
@@ -260,7 +256,6 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
   }
     const changeSearchEndpoint = async (newEndpoint: string | null) => {
     if (newEndpoint) {
-      setAiSearchEndpoint(newEndpoint);
       await hiveChainService.setAiSearchEndpoint(newEndpoint);
     }
   }

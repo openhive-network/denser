@@ -4,12 +4,12 @@ import { StorageType, StorageBaseOptions } from '@smart-signer/lib/storage-mixin
 import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { memoryStorage } from '@smart-signer/lib/memory-storage';
 import { getLogger } from '@ui/lib/logging';
-import { ExtendedNodeApi, extendedRestApi } from './extended-hive.chain';
+import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
 
 const logger = getLogger('app');
 
 export class HiveChainService {
-  static hiveChain: TWaxExtended<ExtendedNodeApi, TWaxRestExtended<typeof extendedRestApi>>;
+  static hiveChain: TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
 
   storage: Storage;
   storageType: StorageType;
@@ -21,7 +21,7 @@ export class HiveChainService {
    * @type {(Promise<TWaxExtended<ExtendedNodeApi, IHiveChainInterface>> | null)}
    * @memberof HiveChainService
    */
-  hiveChainPromise: Promise<TWaxExtended<ExtendedNodeApi, TWaxRestExtended<typeof extendedRestApi>>> | null;
+  hiveChainPromise: Promise<TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>> | null;
 
   constructor({ storageType = 'localStorage' }: StorageBaseOptions) {
     this.hiveChainPromise = null;
@@ -40,7 +40,7 @@ export class HiveChainService {
     }
   }
 
-  async getHiveChain(): Promise<TWaxExtended<ExtendedNodeApi, TWaxRestExtended<typeof extendedRestApi>>> {
+  async getHiveChain(): Promise<TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>> {
     if (!HiveChainService.hiveChain) {
 
       // If we have pending promise, return its result.
@@ -72,21 +72,27 @@ export class HiveChainService {
   async setHiveChain(options?: Partial<IWaxOptionsChain>) {
     logger.info('Creating instance of HiveChainService.hiveChain with options: %o', options);
     const hiveChain = await createHiveChain(options)
-    HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>().extendRest(extendedRestApi);
+    HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>().extendRest<ExtendedRestApi>();
     const storedAiSearchEndpoint = this.storage.getItem('ai-search-endpoint');
-    if (storedAiSearchEndpoint) HiveChainService.hiveChain.restApi['hivesense-api'].similarposts.endpointUrl = storedAiSearchEndpoint;
+    let apiEndpoint: string = storedAiSearchEndpoint ? JSON.parse(storedAiSearchEndpoint) : '';
+    if (!apiEndpoint) {
+      apiEndpoint = siteConfig.endpoint;
+    }
+    if (storedAiSearchEndpoint) HiveChainService.hiveChain.restApi['hivesense-api'].similarposts.endpointUrl = apiEndpoint;
   }
 
   async setHiveChainEndpoint(newEndpoint: string) {
     logger.info('Changing HiveChainService.HiveChain.endpointUrl with newEndpoint: %o', newEndpoint);
     await this.getHiveChain();
     HiveChainService.hiveChain.endpointUrl = newEndpoint;
+    this.storage.setItem('hive-blog-endpoint', JSON.stringify(newEndpoint));
   }
 
   async setAiSearchEndpoint(newEndpoint: string) {
     logger.info('Changing AI search with newEndpoint: %o', newEndpoint);
     await this.getHiveChain();
     HiveChainService.hiveChain.restApi['hivesense-api'].similarposts.endpointUrl = newEndpoint;
+    this.storage.setItem('ai-search-endpoint', JSON.stringify(newEndpoint));
   }
 }
 

@@ -6,7 +6,8 @@ import {
   asset,
   NaiAsset,
   ApiAccount,
-  transaction
+  transaction,
+  TWaxRestExtended
 } from '@hiveio/wax';
 import { AccountFollowStats, FullAccount } from './app-types';
 
@@ -32,44 +33,44 @@ export interface IFollowList {
   blacklist_description: string;
   muted_list_description: string;
 }
-export class Entry {
-  active_votes!: EntryVote[];
-  author!: string;
-  author_payout_value!: string;
-  author_reputation!: number;
+export interface Entry {
+  active_votes: EntryVote[];
+  author: string;
+  author_payout_value: string;
+  author_reputation: number;
   author_role?: string;
   author_title?: string;
-  beneficiaries!: EntryBeneficiaryRoute[];
-  blacklists!: string[];
-  body!: string;
-  category!: string;
-  children!: number;
+  beneficiaries: EntryBeneficiaryRoute[];
+  blacklists: string[];
+  body: string;
+  category: string;
+  children: number;
   community?: string;
   community_title?: string;
-  created!: string;
+  created: string;
   total_votes?: number;
-  curator_payout_value!: string;
-  depth!: number;
-  is_paidout!: boolean;
-  json_metadata!: JsonMetadata;
-  max_accepted_payout!: string;
-  net_rshares!: number;
+  curator_payout_value: string;
+  depth: number;
+  is_paidout: boolean;
+  json_metadata: JsonMetadata;
+  max_accepted_payout: string;
+  net_rshares: number;
   parent_author?: string;
   parent_permlink?: string;
-  payout!: number;
-  payout_at!: string;
-  pending_payout_value!: string;
-  percent_hbd!: number;
-  permlink!: string;
-  post_id!: number;
+  payout: number;
+  payout_at: string;
+  pending_payout_value: string;
+  percent_hbd: number;
+  permlink: string;
+  post_id: number;
   id?: number;
-  promoted!: string;
+  promoted: string;
   reblogged_by?: string[];
-  replies!: Array<unknown>;
+  replies: Array<unknown>;
   stats?: EntryStat;
-  title!: string;
-  updated!: string;
-  url!: string;
+  title: string;
+  updated: string;
+  url: string;
   original_entry?: Entry;
 }
 
@@ -667,7 +668,7 @@ export type Badge = {
   url: string;
 };
 
-export class SimilarPostParams {
+export interface SimilarPostParams {
   pattern?: string;
   tr_body?:number;
   posts_limit?: number;
@@ -780,7 +781,6 @@ export type ExtendedNodeApi = {
       params: VerifySignaturesParams;
       result: VerifySignaturesResponse;
     };
-    find_accounts: TWaxApiRequest<string[], { accounts: ApiAccount[] }>;
     get_trending_tags: TWaxApiRequest<(string | number)[], ITrendingTag[]>;
     get_collateralized_conversion_requests: TWaxApiRequest<string[], ICollateralizedConversionRequest[]>;
     list_witness_votes: TWaxApiRequest<{ start: string[]; limit: number; order: string }, IListWitnessVotes>;
@@ -798,12 +798,11 @@ export type ExtendedNodeApi = {
   };
 };
 
-export const extendedRestApi = {
+export type ExtendedRestApi = {
   "hivesense-api": {
     similarposts: {
-      params: SimilarPostParams,
-      result: Entry,
-      responseArray: true,
+      params: SimilarPostParams;
+      result: Entry[];
     }
-  },
+  }
 };
