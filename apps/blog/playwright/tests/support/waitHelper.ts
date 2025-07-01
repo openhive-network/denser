@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
+import { CommentEditorPage } from './pages/commentEditorPage';
 import { waitForElementVisible, waitForElementColor, waitForCommentIsVisible } from './utils';
 
 export async function waitForCommunitySubscribeButton(page: Page) {
@@ -27,4 +28,11 @@ export async function waitForCommunityCreatedPost(page:Page, postTitle: string) 
     const interval = 4000;
 
     await waitForElementVisible(page, selectorCreatedPost , timeout, interval);
+}
+
+export async function waitForCreatedCommentIsVisible(page: Page, commentContent: string) {
+    const timeout = 20000;
+    const interval = 4000;
+
+    await waitForCommentIsVisible(page, commentContent, timeout, interval);
 }
