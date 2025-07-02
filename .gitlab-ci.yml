@@ -615,6 +615,7 @@ main:deploy-blog-mirrornet:
     SITE_DOMAIN: https://blog.fake.openhive.network
     WALLET_ENDPOINT: https://wallet.fake.openhive.network
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
+    APP_SESSION_TIME: 64800
     IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -733,7 +734,7 @@ develop:deploy-blog-mainnet:
     IMAGE_NAME: $BLOG_IMAGE_NAME
     DEPLOYMENT_ENV_FILE: "MAINNET_DEV_DEPLOYMENT_ENV"
   rules:
-    - if: $CI_COMMIT_BRANCH == "bw_eliminate_private_secrets"
+    - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-blog-mainnet
     url: https://blog.dev.openhive.network
@@ -767,7 +768,7 @@ develop:deploy-blog-mirrornet:
     IMAGE_NAME: $BLOG_IMAGE_NAME
     DEPLOYMENT_ENV_FILE: "MIRRORNET_DEV_DEPLOYMENT_ENV"
   rules:
-    - if: $CI_COMMIT_BRANCH == "bw_eliminate_private_secrets"
+    - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-blog-mirrornet
     url: https://blog.dev.fake.openhive.network
@@ -800,7 +801,7 @@ develop:stop-blog-mainnet:
   variables:
     CONTAINER_NAME: denser-dev-blog
   rules:
-    - if: $CI_COMMIT_BRANCH == "bw_eliminate_private_secrets"
+    - if: $CI_COMMIT_BRANCH == "develop"
       when: manual
       allow_failure: true
   environment:

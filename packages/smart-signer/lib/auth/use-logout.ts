@@ -21,6 +21,9 @@ export function useLogout(redirect?: string) {
         await signer.destroy();
       }
       await signOut.mutateAsync({ user });
+      // Delete auth_proof cookie
+      document.cookie = 'auth_proof=; path=/; max-age=0';
+      
     } catch (error) {
       toast({
         title: 'Error!',
