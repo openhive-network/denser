@@ -1,15 +1,18 @@
 import 'md-editor-rt/lib/style.css';
+import '@vavt/rt-extension/lib/asset/Emoji.css';
+import '@vavt/rt-extension/lib/asset/Mark.css';
+
+import { useTheme } from 'next-themes';
+import { Highlighter } from 'lucide-react';
+
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+
 import { config, MdEditor } from 'md-editor-rt';
-import { useTheme } from 'next-themes';
 import { dropHandler, handleImageUpload } from './utils/upload-image';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { Emoji } from '@vavt/rt-extension';
 import { Mark } from '@vavt/rt-extension';
-import '@vavt/rt-extension/lib/asset/Emoji.css';
-import '@vavt/rt-extension/lib/asset/Mark.css';
-import { Highlighter } from 'lucide-react';
 
 config({
   codeMirrorExtensions(_theme, extensions) {
@@ -141,6 +144,7 @@ const DenserMdEditor = ({ text, onChange }: { text: string; onChange: (text: str
         'unorderedList',
         'orderedList',
         'task',
+        'mermaid',
         '-',
         'codeRow',
         'code',

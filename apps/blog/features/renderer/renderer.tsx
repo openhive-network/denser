@@ -32,11 +32,12 @@ import rehypeMathjax from 'rehype-mathjax';
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeStringify from 'rehype-stringify';
 import rehypeLinkHandler from './plugins/rehype-link-handler';
+import MermaidComponent from './mermaid-component';
 
 export default function Renderer({ content, className }: { content: string; className?: string }) {
   return (
     <>
-      <div className={cn('prose h-full max-w-none p-2 dark:prose-invert', className)}>
+      <div className={cn('prose relative h-full max-w-none p-2 dark:prose-invert', className)}>
         <ReactMarkdown
           components={components}
           remarkPlugins={[
@@ -235,6 +236,20 @@ const components: Components = {
     if (!src) return;
     const imageProxy = getDoubleSize(proxifyImageUrl(src, true).replace(/ /g, '%20'));
     return <img src={imageProxy} {...props} />;
+  },
+  code: ({ className, children, ...props }) => {
+    const match = /language-(\w+)/.exec(className || '');
+    const language = match ? match[1] : '';
+
+    if (language === 'mermaid') {
+      return <MermaidComponent>{String(children).replace(/\n$/, '')}</MermaidComponent>;
+    }
+
+    return (
+      <code className={className} {...props}>
+        {children}
+      </code>
+    );
   },
   a: LinkComponent
 };
