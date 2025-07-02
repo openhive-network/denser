@@ -133,7 +133,7 @@ export class PostPage {
     this.userFollowingPopoverCard = page.locator('[data-testid="user-following"]');
     this.userHpPopoverCard = page.locator('[data-testid="user-hp"]');
     this.userAboutPopoverCard = page.locator('[data-testid="user-about"]');
-    this.buttonFollowPopoverCard = page.locator('button').getByText('FOLLOW');
+    this.buttonFollowPopoverCard = page.getByTestId('user-popover-card-content').locator('button').getByText('Follow');
     this.buttonMutePopoverCard = page.locator('button').getByText('Mute');
     this.commentListItems = page.locator('[data-testid="comment-list-item"]');
     this.commentListItem = '[data-testid="comment-list-item"]'
