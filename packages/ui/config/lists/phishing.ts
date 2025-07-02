@@ -17,10 +17,12 @@ export const looksPhishy = (questionableUrl: string) => {
 };
 
 export const isUrlWhitelisted = (url: string) => {
-  for (let di = 0; di < GoodDomains.length; di += 1) {
-    const domain = GoodDomains[di];
+  const cleanUrl = url.toLocaleLowerCase().replace(/^https?:\/\//, '');
 
-    if (url.toLocaleLowerCase().indexOf(domain) !== -1) {
+  for (let di = 0; di < GoodDomains.length; di += 1) {
+    const domain = GoodDomains[di].toLocaleLowerCase();
+
+    if (cleanUrl.startsWith(domain)) {
       return true;
     }
   }
