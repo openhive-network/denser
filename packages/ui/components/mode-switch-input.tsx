@@ -33,7 +33,6 @@ export function ModeSwitchInput({ className, aiAvailable, isLoading, searchPage 
           />
         </div>
         <input
-          disabled={isLoading}
           ref={inputRef}
           type="text"
           placeholder={mode === 'ai' ? 'AI Search' : 'Search'}

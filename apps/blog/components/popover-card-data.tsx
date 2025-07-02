@@ -49,7 +49,7 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
   const legalBlockedUser = userIllegalContent.some((e) => e === account?.name);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 p-2">
       {account && !isLoading && follows.data && !follows.isLoading ? (
         <>
           <div className="flex">

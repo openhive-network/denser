@@ -18,15 +18,15 @@ import { useFollowListQuery } from '../components/hooks/use-follow-list';
 import { useTranslation } from 'next-i18next';
 import SearchCard from '../components/search-card';
 import { toast } from '@ui/components/hooks/use-toast';
-import { getHiveSenseStatus, getSimilarPosts, getThematicAuthors } from '../lib/get-data';
-import Link from 'next/link';
-import UserAvatar from '../components/user-avatar';
+import { getHiveSenseStatus, getSimilarPosts } from '../lib/get-data';
 import { PopoverCardData } from '../components/popover-card-data';
-import { Card, CardContent, CardHeader } from '@ui/components/card';
+import { Card } from '@ui/components/card';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
+
 const PER_PAGE = 20;
 const TAB_TITLE = 'Search - Hive';
+
 export default function SearchPage() {
   const router = useRouter();
   const { ref, inView } = useInView();
@@ -35,7 +35,8 @@ export default function SearchPage() {
   const { t } = useTranslation('common_blog');
   const query = router.query.q as string;
   const sort = router.query.s as string;
-  const thematic = router.query.t as string;
+  const searchedAuthor = router.query.a as string;
+  const searchedPost = router.query.p as string;
   const aiSearch = !!query && !sort;
   const { data: hiveSense, isLoading: hiveSenseLoading } = useQuery(
     ['hivesense-api'],
@@ -45,11 +46,6 @@ export default function SearchPage() {
       refetchOnReconnect: false,
       refetchOnMount: false
     }
-  );
-  const { data: thematicData, isLoading: thematicIsLoading } = useQuery(
-    ['thematic-authors', query],
-    () => getThematicAuthors(thematic, user.username !== '' ? user.username : 'hive.blog'),
-    { enabled: !!thematic }
   );
   const { data, isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery(
     ['similarPosts', query],
@@ -184,25 +180,17 @@ export default function SearchPage() {
           <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
         </div>
 
-        {!!thematic ? (
-          <>
+        {searchedAuthor && !!searchedPost ? (
+          <div className="flex flex-col items-center gap-4">
             <h2 className="text-center text-2xl font-bold">
-              Authors posting about <span className="text-primary">{thematic}</span>
+              {`Authors posting about ${searchedAuthor} about ${searchedPost}`}
             </h2>
-            {thematicIsLoading ? (
-              <Loading loading={thematicIsLoading} />
-            ) : thematicData && thematicData.length > 0 ? (
-              <div className="grid w-full grid-cols-1 flex-wrap gap-4 sm:grid-cols-2">
-                {thematicData.map((author) => (
-                  <Card className="flex p-2" key={author}>
-                    <CardContent>
-                      <PopoverCardData author={author} blacklist={[]} />
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : null}
-          </>
+            <Card className="w-fit">
+              <PopoverCardData author={searchedAuthor} blacklist={[]} />
+            </Card>
+
+            <div>Post List not available yet</div>
+          </div>
         ) : null}
         {!!sort ? (
           <>

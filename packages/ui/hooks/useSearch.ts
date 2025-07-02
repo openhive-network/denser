@@ -17,8 +17,10 @@ export function useSearch(aiAvailable: boolean) {
   }, [aiAvailable, sort]);
 
   const handleSearch = (value: string, currentMode: SearchMode) => {
+    if (value.startsWith('%')) setInputValue(value.slice(1));
     if (value.startsWith('/')) {
-      router.push(`/search?t=${encodeURIComponent(value.trim().slice(1))}`);
+      const [first_word, ...all_after] = value.trim().slice(1).split(' ');
+      router.push(`/search?a=${encodeURIComponent(first_word)}&p=${encodeURIComponent(all_after.join(' '))}`);
       return;
     }
     if (value.startsWith('@')) {
