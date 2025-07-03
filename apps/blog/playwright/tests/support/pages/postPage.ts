@@ -161,7 +161,7 @@ export class PostPage {
     );
     this.commentCardsFooterReplyEditor = page.locator('[data-testid="reply-editor"]');
     this.commentCardsFooterEditButton = page.getByTestId('comment-card-footer-edit');
-    this.firstNestedCommentEditButton = page.locator('ul ul').first().getByTestId('comment-card-footer-edit');
+    this.firstNestedCommentEditButton = page.locator('ul ul').first().getByTestId('comment-card-footer-edit').first();
     this.commentShowButton = page.locator('[data-testid="comment-show-button"]');
     this.reputationValue = page.locator('[data-testid="post-author-reputation"]').first();
     this.commentPageLink = page.locator('[data-testid="comment-page-link"]');
