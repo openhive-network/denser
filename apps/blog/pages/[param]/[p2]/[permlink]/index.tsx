@@ -4,7 +4,7 @@ import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry, JsonMetadata } from '@transaction/lib/extended-hive.chain';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
@@ -108,8 +108,8 @@ function PostPage({
   } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
     enabled: !!username && !!permlink
   });
-  const [renderMethod, setRenderMethod] = useState<'classic' | 'denser' | 'raw'>(
-    !!post?.json_metadata.denserEditor ? 'denser' : 'classic'
+  const [renderMethod, setRenderMethod] = useState<JsonMetadata['editorType'] | 'raw'>(
+    post?.json_metadata?.editorType || 'classic'
   );
 
   const { data: suggestions } = useQuery(
@@ -181,10 +181,7 @@ function PostPage({
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
-  const [storedComment, storeCommment, removeCommment] = useLocalStorage<string>(
-    `replyTo-/${username}/${permlink}`,
-    ''
-  );
+  const [storedComment] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const [edit, setEdit] = useState(false);
@@ -245,7 +242,9 @@ function PostPage({
       deleteComment(permlink);
     }
   };
-  const canonical_url = post ? new URL(post.url.startsWith('http') ? post.url : `https://${env('SITE_DOMAIN')}${post.url}`).href : undefined;
+  const canonical_url = post
+    ? new URL(post.url.startsWith('http') ? post.url : `https://${env('SITE_DOMAIN')}${post.url}`).href
+    : undefined;
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   const crossedPost = post?.json_metadata.tags?.includes('cross-post');
   return (
@@ -399,7 +398,6 @@ function PostPage({
                     parentPermlink={post.parent_permlink}
                     storageId={storageId}
                     comment={post}
-                    denserEditor={renderMethod === 'denser'}
                   />
                 ) : edit ? (
                   <PostForm
@@ -409,7 +407,7 @@ function PostPage({
                     sideBySidePreview={false}
                     post_s={post}
                     refreshPage={refreshPage}
-                    editorType={renderMethod === 'denser' ? 'denser' : 'classic'}
+                    renderType={renderMethod === 'denser' ? 'denser' : 'classic'}
                   />
                 ) : legalBlockedUser ? (
                   <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
@@ -735,7 +733,6 @@ function PostPage({
                 permlink={permlink}
                 storageId={storageId}
                 comment={storedComment}
-                denserEditor={renderMethod === 'denser'}
               />
             ) : null}
           </div>

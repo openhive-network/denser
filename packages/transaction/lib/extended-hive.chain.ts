@@ -75,7 +75,7 @@ export interface Entry {
 
 export interface JsonMetadata {
   image: string;
-  denserEditor?: boolean;
+  editorType?: 'classic' | 'denser';
   links?: string[];
   flow?: {
     pictures: {
@@ -99,7 +99,6 @@ export interface JsonMetadata {
   original_permlink?: string;
   summary?: string;
 }
-
 export interface Community {
   about: string;
   admins?: string[];
@@ -124,32 +123,6 @@ export interface Community {
     subscribed: Boolean;
     title: string;
   };
-}
-
-export interface JsonMetadata {
-  image: string;
-  links?: string[];
-  flow?: {
-    pictures: {
-      caption: string;
-      id: number;
-      mime: string;
-      name: string;
-      tags: string[];
-      url: string;
-    }[];
-    tags: string[];
-  };
-  images: string[];
-  author: string | undefined;
-  tags?: string[];
-  description?: string | null;
-  app?: string;
-  canonical_url?: string;
-  format?: string;
-  original_author?: string;
-  original_permlink?: string;
-  summary?: string;
 }
 
 export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';

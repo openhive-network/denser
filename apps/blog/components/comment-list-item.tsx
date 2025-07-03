@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
 import DetailsCardHover from './details-card-hover';
-import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
+import { IFollowList, Entry, JsonMetadata } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
@@ -79,8 +79,8 @@ const CommentListItem = ({
   const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
   const userFromGDPR = gdprUserList.some((e) => e === comment.author);
   const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
-  const [renderMethod, setRenderMethod] = useState<'classic' | 'denser' | 'raw'>(
-    !!comment?.json_metadata.denserEditor ? 'denser' : 'classic'
+  const [renderMethod, setRenderMethod] = useState<JsonMetadata['editorType'] | 'raw'>(
+    comment?.json_metadata?.editorType || 'classic'
   );
   useEffect(() => {
     if (reply) {
@@ -337,7 +337,6 @@ const CommentListItem = ({
                           parentPermlink={comment.parent_permlink}
                           storageId={storageId}
                           comment={comment}
-                          denserEditor={comment.json_metadata?.denserEditor || false}
                         />
                       ) : (
                         <CardDescription data-testid="comment-card-description">
@@ -492,7 +491,6 @@ const CommentListItem = ({
           permlink={comment.permlink}
           storageId={storageId}
           comment=""
-          denserEditor={comment.json_metadata?.denserEditor || false}
         />
       ) : null}
     </>

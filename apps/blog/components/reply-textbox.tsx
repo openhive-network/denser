@@ -10,7 +10,7 @@ import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry, JsonMetadata } from '@transaction/lib/extended-hive.chain';
 import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
@@ -29,8 +29,7 @@ export function ReplyTextbox({
   parentPermlink,
   storageId,
   editMode,
-  comment,
-  denserEditor
+  comment
 }: {
   onSetReply: (e: boolean) => void;
   username: string;
@@ -39,11 +38,12 @@ export function ReplyTextbox({
   storageId: string;
   editMode: boolean;
   comment: Entry | string;
-  denserEditor: boolean;
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
-  const [renderMethod, setRenderMethod] = useState<'denser' | 'classic'>('denser');
+  const [renderMethod, setRenderMethod] = useState<'denser' | 'classic'>(
+    (typeof comment !== 'string' && comment?.json_metadata?.editorType) || 'classic'
+  );
   const { manabarsData } = useManabars(user.username);
   const [preferences, setPreferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
@@ -97,7 +97,7 @@ export function ReplyTextbox({
           parentPermlink: permlink,
           body: text,
           preferences,
-          denserEditor
+          renderMethod
         };
         try {
           await commentMutation.mutateAsync(commentParams);
@@ -131,7 +131,7 @@ export function ReplyTextbox({
           <h1 className="text-sm text-destructive">{t('post_content.footer.comment.disable_editor')}</h1>
         </Link>
         <div>
-          {denserEditor ? (
+          {renderMethod === 'denser' ? (
             <DenserMdEditor
               text={text}
               onChange={(value) => {
@@ -144,7 +144,7 @@ export function ReplyTextbox({
               }}
               data-testid="post-area-editor"
             />
-          ) : (
+          ) : renderMethod === 'classic' ? (
             <MdEditor
               windowheight={200}
               htmlMode={editMode}
@@ -159,6 +159,10 @@ export function ReplyTextbox({
               persistedValue={text}
               placeholder={t('post_content.footer.comment.reply')}
             />
+          ) : (
+            <div className="mb-4 bg-secondary px-4 py-2">
+              <pre className="w-full overflow-x-scroll text-sm">{text}</pre>
+            </div>
           )}
           <p className="flex items-center border-2 border-t-0 border-background-tertiary bg-background-secondary/70 p-1 text-xs font-light">
             {t('post_content.footer.comment.insert_images')} {t('post_content.footer.comment.selecting_them')}

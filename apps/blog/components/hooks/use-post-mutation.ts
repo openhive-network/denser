@@ -3,6 +3,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Beneficiarie } from '@transaction/lib/app-types';
+import { JsonMetadata } from '@transaction/lib/extended-hive.chain';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -30,7 +31,7 @@ export function usePostMutation() {
       payoutType: string;
       image?: string;
       editMode: boolean;
-      denserEditor: boolean;
+      editorType: 'denser' | 'classic';
     }) => {
       const {
         permlink,
@@ -45,7 +46,7 @@ export function usePostMutation() {
         payoutType,
         image,
         editMode,
-        denserEditor
+        editorType
       } = params;
       const broadcastResult = await transactionService.post(
         permlink,
@@ -58,7 +59,7 @@ export function usePostMutation() {
         summary,
         altAuthor,
         payoutType,
-        denserEditor,
+        editorType,
         image,
         { observe: true },
         editMode

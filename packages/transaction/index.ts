@@ -16,7 +16,7 @@ import {
   AccountAuthorityUpdateOperation,
   ESupportedLanguages,
   IHiveChainInterface,
-  GetDynamicGlobalPropertiesResponse,
+  GetDynamicGlobalPropertiesResponse
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
@@ -25,6 +25,7 @@ import { Beneficiarie, Preferences } from './lib/app-types';
 import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
+
 const logger = getLogger('app');
 
 export type TransactionErrorCallback = (error: any) => any;
@@ -173,8 +174,7 @@ export class TransactionService {
   }
 
   async getDynamicGlobalProperties(): Promise<GetDynamicGlobalPropertiesResponse> {
-    return (await this.getChain())
-      .api.database_api.get_dynamic_global_properties({});
+    return (await this.getChain()).api.database_api.get_dynamic_global_properties({});
   }
 
   /**
@@ -556,7 +556,7 @@ export class TransactionService {
     parentPermlink: string,
     body: string,
     preferences: Preferences,
-    denserEditor: boolean,
+    editorType: 'denser' | 'classic',
     transactionOptions: TransactionOptions = {}
   ) {
     const replyOperationData: IReplyData = {
@@ -566,7 +566,7 @@ export class TransactionService {
       body,
       jsonMetadata: {
         app: 'hive.blog/0.9',
-        denserEditor: denserEditor
+        editorType
       },
       permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`
     };
@@ -620,7 +620,7 @@ export class TransactionService {
     summary: string,
     altAuthor: string,
     payoutType: string,
-    denserEditor: boolean,
+    editorType: 'denser' | 'classic',
     image?: string,
     transactionOptions: TransactionOptions = {},
     editMode = false
@@ -637,7 +637,7 @@ export class TransactionService {
       jsonMetadata: {
         summary,
         app: 'hive.blog/0.9',
-        denserEditor: denserEditor
+        editorType
       }
     };
 
@@ -1020,7 +1020,9 @@ export class TransactionService {
     posting?: authority,
     transactionOptions: TransactionOptions = {}
   ) {
-    const { median_props } = await (await hiveChainService.getHiveChain()).api.condenser_api.get_witness_schedule([]);
+    const { median_props } = await (
+      await hiveChainService.getHiveChain()
+    ).api.condenser_api.get_witness_schedule([]);
     const fee = await getAsset(median_props.account_creation_fee.split(' ')[0], 'HIVE');
     return (
       await this.processHiveAppOperation((builder) => {

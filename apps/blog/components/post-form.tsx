@@ -23,7 +23,7 @@ import { useTranslation } from 'next-i18next';
 import { createAsset, createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getSubscriptions } from '@transaction/lib/bridge';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry, JsonMetadata } from '@transaction/lib/extended-hive.chain';
 import { useRouter } from 'next/router';
 import { TFunction } from 'i18next';
 import { debounce } from '../lib/utils';
@@ -104,7 +104,7 @@ export default function PostForm({
   post_s,
   setEditMode,
   refreshPage,
-  editorType
+  renderType
 }: {
   username: string;
   editMode: boolean;
@@ -112,7 +112,7 @@ export default function PostForm({
   post_s?: Entry;
   setEditMode?: Dispatch<SetStateAction<boolean>>;
   refreshPage?: () => void;
-  editorType: 'classic' | 'denser';
+  renderType: 'denser' | 'classic';
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
@@ -140,7 +140,7 @@ export default function PostForm({
     });
   }, [preferences.blog_rewards]);
   const [preview, setPreview] = useState(true);
-  const [denserEditor, setDenserEditor] = useState(editorType === 'denser');
+  const [editorType, setEditorType] = useState<'denser' | 'classic'>(renderType);
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const [imagePickerState, setImagePickerState] = useState('');
@@ -261,7 +261,7 @@ export default function PostForm({
         payoutType: data.payoutType ?? preferences.blog_rewards,
         image: imagePickerState,
         editMode,
-        denserEditor
+        editorType
       };
 
       try {
@@ -373,15 +373,15 @@ export default function PostForm({
                     <>
                       <div className="flex items-center gap-2">
                         <EditorSwitch
-                          checked={denserEditor}
-                          onCheckedChange={(checked) => setDenserEditor(checked)}
+                          checked={editorType === 'denser'}
+                          onCheckedChange={(checked) => setEditorType(checked ? 'denser' : 'classic')}
                           id="switch"
                         />
                         <Label htmlFor="switch">
-                          {denserEditor === true ? 'Denser Editor' : 'Classic Editor'}
+                          {editorType === 'denser' ? 'Denser Editor' : 'Classic Editor'}
                         </Label>
                       </div>
-                      {denserEditor ? (
+                      {editorType === 'denser' ? (
                         <DenserMdEditor
                           text={field.value}
                           onChange={(value) => {
@@ -609,7 +609,7 @@ export default function PostForm({
           </div>
           {previewContent ? (
             <div className="flex h-full overflow-y-scroll">
-              {denserEditor ? (
+              {editorType === 'denser' ? (
                 <Renderer
                   content={previewContent}
                   className={

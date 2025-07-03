@@ -2,6 +2,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Preferences } from '@transaction/lib/app-types';
+import { JsonMetadata } from '@transaction/lib/extended-hive.chain';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
@@ -19,15 +20,15 @@ export function useCommentMutation() {
       parentPermlink: string;
       body: string;
       preferences: Preferences;
-      denserEditor: boolean;
+      renderMethod: 'denser' | 'classic';
     }) => {
-      const { parentAuthor, parentPermlink, body, preferences, denserEditor } = params;
+      const { parentAuthor, parentPermlink, body, preferences, renderMethod } = params;
       const broadcastResult = await transactionService.comment(
         parentAuthor,
         parentPermlink,
         body,
         preferences,
-        denserEditor,
+        renderMethod,
         { observe: true }
       );
       const response = { ...params, broadcastResult };
