@@ -10,7 +10,7 @@ import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
-import { Entry, JsonMetadata } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
@@ -19,6 +19,7 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { commentClassName } from './comment-list-item';
 import DenserMdEditor from '../features/md-editor/editor';
 import Renderer from '../features/renderer/renderer';
+import EditorSwitch from '../features/post-form/editor-switch';
 
 const logger = getLogger('app');
 
@@ -29,7 +30,8 @@ export function ReplyTextbox({
   parentPermlink,
   storageId,
   editMode,
-  comment
+  comment,
+  editorType
 }: {
   onSetReply: (e: boolean) => void;
   username: string;
@@ -38,14 +40,13 @@ export function ReplyTextbox({
   storageId: string;
   editMode: boolean;
   comment: Entry | string;
+  editorType: 'denser' | 'classic';
 }) {
   const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
-  const [renderMethod, setRenderMethod] = useState<'denser' | 'classic'>(
-    (typeof comment !== 'string' && comment?.json_metadata?.editorType) || 'classic'
-  );
+  const [renderMethod, setRenderMethod] = useState<'denser' | 'classic'>(editorType);
   const { manabarsData } = useManabars(user.username);
-  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+  const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
@@ -130,6 +131,15 @@ export function ReplyTextbox({
         <Link href={`#`}>
           <h1 className="text-sm text-destructive">{t('post_content.footer.comment.disable_editor')}</h1>
         </Link>
+        <div className="flex items-center gap-2">
+          <EditorSwitch
+            checked={renderMethod === 'denser'}
+            onCheckedChange={(checked) => setRenderMethod(checked ? 'denser' : 'classic')}
+          />
+          <span className="text-xs text-slate-500">
+            Change editor to mode: {renderMethod === 'denser' ? 'Classic' : 'Denser'}
+          </span>
+        </div>
         <div>
           {renderMethod === 'denser' ? (
             <DenserMdEditor
@@ -159,11 +169,11 @@ export function ReplyTextbox({
               persistedValue={text}
               placeholder={t('post_content.footer.comment.reply')}
             />
-          ) : (
+          ) : renderMethod === 'raw' ? (
             <div className="mb-4 bg-secondary px-4 py-2">
               <pre className="w-full overflow-x-scroll text-sm">{text}</pre>
             </div>
-          )}
+          ) : null}
           <p className="flex items-center border-2 border-t-0 border-background-tertiary bg-background-secondary/70 p-1 text-xs font-light">
             {t('post_content.footer.comment.insert_images')} {t('post_content.footer.comment.selecting_them')}
             <TooltipProvider>

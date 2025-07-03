@@ -337,6 +337,7 @@ const CommentListItem = ({
                           parentPermlink={comment.parent_permlink}
                           storageId={storageId}
                           comment={comment}
+                          editorType={comment.json_metadata?.editorType || 'classic'}
                         />
                       ) : (
                         <CardDescription data-testid="comment-card-description">
@@ -491,6 +492,7 @@ const CommentListItem = ({
           permlink={comment.permlink}
           storageId={storageId}
           comment=""
+          editorType="denser"
         />
       ) : null}
     </>

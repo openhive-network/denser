@@ -398,6 +398,7 @@ function PostPage({
                     parentPermlink={post.parent_permlink}
                     storageId={storageId}
                     comment={post}
+                    editorType={post.json_metadata?.editorType || 'classic'}
                   />
                 ) : edit ? (
                   <PostForm
@@ -733,6 +734,7 @@ function PostPage({
                 permlink={permlink}
                 storageId={storageId}
                 comment={storedComment}
+                editorType="denser"
               />
             ) : null}
           </div>
