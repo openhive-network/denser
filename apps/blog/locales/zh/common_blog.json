@@ -48,6 +48,13 @@
     }
   },
   "navigation": {
+    "wallet_nav": {
+      "balances": "Balances",
+      "delegations": "Delegations",
+      "keys_and_permissions": "Keys & Permissions",
+      "change_password": "Change Password",
+      "communities": "Communities"
+    },
     "main_nav_bar": {
       "posts": "文章",
       "proposals": "Proposals",
@@ -91,6 +98,7 @@
       "posts": "文章",
       "replies": "留言",
       "social": "Social",
+      "Communities": "社区",
       "notifications": "Notifications",
       "wallet": "钱包"
     },

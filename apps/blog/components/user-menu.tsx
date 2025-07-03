@@ -37,13 +37,6 @@ const UserMenu = ({
       <DropdownMenuContent className="w-56 bg-background-secondary" data-testid="user-profile-menu-content">
         <DropdownMenuLabel className="flex w-full items-center justify-between">
           <span data-testid="user-name-in-profile-menu">{user.username}</span>
-          <div className="flex items-center space-x-2" title="Logged in with Hive private key">
-            <Icons.hive className="h-4 w-4" />
-            <div className="flex flex-col text-sm font-semibold">
-              <span>Hive</span>
-              <span className="text-destructive">Blog</span>
-            </div>
-          </div>
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />

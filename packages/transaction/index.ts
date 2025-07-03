@@ -576,6 +576,9 @@ export class TransactionService {
       parentPermlink,
       author: this.signerOptions.username,
       body,
+      jsonMetadata: {
+        app: 'blog.suseona.com/0.1'
+      },
       permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`
     };
 
@@ -643,7 +646,7 @@ export class TransactionService {
       images: [image ? image : ''],
       jsonMetadata: {
         summary,
-        app: 'hive.blog/0.9'
+        app: 'blog.suseona.com/0.1'
       }
     };
 

@@ -48,6 +48,13 @@
     }
   },
   "navigation": {
+    "wallet_nav": {
+      "balances": "Balances",
+      "delegations": "Delegations",
+      "keys_and_permissions": "Keys & Permissions",
+      "change_password": "Change Password",
+      "communities": "Communities"
+    },
     "main_nav_bar": {
       "posts": "投稿数",
       "proposals": "Proposals",
@@ -91,6 +98,7 @@
       "posts": "投稿数",
       "replies": "返信",
       "social": "Social",
+      "Communities": "コミュニティ",
       "notifications": "Notifications",
       "wallet": "ウォレット"
     },

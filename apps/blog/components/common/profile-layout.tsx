@@ -352,12 +352,12 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         <div className="w-full">
           <div className="flex bg-gray-700" data-testid="profile-navigation">
             <div className="container mx-auto flex max-w-screen-xl justify-between p-0 text-white sm:pl-8">
-              <ul className="flex h-full flex-wrap gap-x-2 text-xs sm:text-base lg:flex lg:gap-8">
-                <ListItem
+              <ul className="flex h-full flex-wrap gap-x-2 text-xs sm:text-base lg:flex">
+                {/* <ListItem
                   href={`/@${username}`}
                   currentTab={router.asPath === `/@${username}`}
                   label={t('navigation.profile_navbar.blog')}
-                />
+                /> */}
                 <ListItem
                   href={`/@${username}/posts`}
                   currentTab={
@@ -375,7 +375,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <ListItem
                   href={`/@${username}/communities`}
                   currentTab={router.asPath === `/@${username}/communities`}
-                  label={t('navigation.profile_navbar.social')}
+                  label={t('navigation.profile_navbar.Communities')}
                 />
                 <ListItem
                   href={`/@${username}/notifications`}
@@ -384,7 +384,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 />
               </ul>
               <ul className="flex h-full flex-nowrap text-xs sm:text-base lg:flex lg:gap-4">
-                {/* <li>
+                <li>
                   <Link
                     href={`${walletHost}/@${username}/transfers`}
                     target="_blank"
@@ -393,7 +393,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   >
                     {t('navigation.profile_navbar.wallet')}
                   </Link>
-                </li> */}
+                </li>
                 {user.isLoggedIn && username === user.username ? (
                   <li>
                     <Link

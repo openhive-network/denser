@@ -48,12 +48,19 @@
     }
   },
   "navigation": {
+    "wallet_nav": {
+      "balances": "Balances",
+      "delegations": "Delegations",
+      "keys_and_permissions": "Keys & Permissions",
+      "change_password": "Change Password",
+      "communities": "Communities"
+    },
     "main_nav_bar": {
       "posts": "Posts",
       "proposals": "Proposals",
       "witnesses": "Witnesses",
       "out_dapps": "Our dApps",
-      "login": "Login",
+      "login": "Sign in",
       "sign_up": "Sign up",
       "search": "Search",
       "light": "Light",
@@ -96,6 +103,7 @@
       "posts": "Posts",
       "replies": "Replies",
       "social": "Social",
+      "Communities": "Communities",
       "notifications": "Notifications",
       "wallet": "Wallet",
       "settings": "Settings"

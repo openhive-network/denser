@@ -98,10 +98,10 @@ const SiteHeader: FC = () => {
         </Link>
 
         {/* <MainNav /> */}
-        <div className="flex items-center space-x-2 sm:space-x-4">
+        <div className="flex items-center sm:space-x-4">
           <nav className="flex items-center space-x-1">
             {isClient && user.isLoggedIn ? null : (
-              <div className="mx-1 hidden gap-1 sm:flex">
+              <div className="">
                 <DialogLogin>
                   <Button
                     variant="ghost"
@@ -111,11 +111,11 @@ const SiteHeader: FC = () => {
                     {t('navigation.main_nav_bar.login')}
                   </Button>
                 </DialogLogin>
-                <Link href="https://signup.hive.io/">
+                {/* <Link href="https://signup.hive.io/">
                   <Button variant="redHover" className="whitespace-nowrap" data-testid="signup-btn">
                     {t('navigation.main_nav_bar.sign_up')}
                   </Button>
-                </Link>
+                </Link> */}
               </div>
             )}
             <div className="hidden lg:block">
@@ -128,13 +128,16 @@ const SiteHeader: FC = () => {
               )}
             </div>
             {/* <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" /> */}
-            <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
-              <Link href="/submit.html">
-                <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
-                  <Icons.pencil className="h-5 w-5" />
-                </Button>
-              </Link>
-            </TooltipContainer>
+            {isClient && user.isLoggedIn && (
+              <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
+                <Link href="/submit.html">
+                  <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
+                    <Icons.pencil className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </TooltipContainer>
+            )}
+
             {isClient && !user.isLoggedIn ? (
               <div>
                 <ModeToggle>

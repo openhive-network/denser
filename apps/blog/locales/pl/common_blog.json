@@ -48,6 +48,13 @@
     }
   },
   "navigation": {
+    "wallet_nav": {
+      "balances": "Balances",
+      "delegations": "Delegations",
+      "keys_and_permissions": "Keys & Permissions",
+      "change_password": "Change Password",
+      "communities": "Communities"
+    },
     "main_nav_bar": {
       "posts": "Posty",
       "proposals": "Propozycje",
@@ -91,7 +98,8 @@
       "posts": "Posty",
       "replies": "Odpowiedzi",
       "social": "Społecznościowe",
-      "notifications": "Powiadomienia",
+      "Communities": "Communities",
+      "notifications": "Społeczności",
       "wallet": "Portfel",
       "settings": "Ustawienia"
     },
