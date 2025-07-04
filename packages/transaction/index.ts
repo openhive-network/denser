@@ -244,7 +244,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        vote: {
+        vote_operation: {
           voter: this.signerOptions.username,
           author,
           permlink,
@@ -262,7 +262,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        vote: {
+        vote_operation: {
           voter: this.signerOptions.username,
           author,
           permlink,
@@ -674,7 +674,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        account_update: {
+        account_update_operation: {
           account: username,
           memo_key: memo_key,
           json_metadata: json_metadata,
@@ -711,7 +711,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        account_update2: {
+        account_update2_operation: {
           account: this.signerOptions.username,
           extensions: [],
           json_metadata: '',
@@ -738,7 +738,7 @@ export class TransactionService {
   async deleteComment(permlink: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        delete_comment: {
+        delete_comment_operation: {
           author: this.signerOptions.username,
           permlink: permlink
         }
@@ -754,7 +754,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        update_proposal_votes: {
+        update_proposal_votes_operation: {
           voter: this.signerOptions.username,
           proposal_ids,
           approve,
@@ -767,7 +767,7 @@ export class TransactionService {
   async markAllNotificationAsRead(date: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        custom_json: {
+        custom_json_operation: {
           id: 'notify',
           json: JSON.stringify(['setLastRead', { date: date }]),
           required_auths: [],
@@ -780,7 +780,7 @@ export class TransactionService {
   async claimRewards(account: ApiAccount, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        claim_reward_balance: {
+        claim_reward_balance_operation: {
           account: this.signerOptions.username,
           reward_hive: account.reward_hive_balance,
           reward_hbd: account.reward_hbd_balance,
@@ -798,7 +798,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        account_witness_vote: {
+        account_witness_vote_operation: {
           account,
           witness,
           approve
@@ -810,7 +810,7 @@ export class TransactionService {
   async witnessProxy(proxy: string, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        account_witness_proxy: {
+        account_witness_proxy_operation: {
           account: this.signerOptions.username,
           proxy: proxy
         }
@@ -826,11 +826,11 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        transfer_to_savings: {
+        transfer_to_savings_operation: {
           amount,
-          from_account: fromAccount,
+          from: fromAccount,
           memo,
-          to_account: toAccount
+          to: toAccount
         }
       });
     }, transactionOptions);
@@ -846,11 +846,11 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        transfer_from_savings: {
+        transfer_from_savings_operation: {
           amount,
-          from_account: fromAccount,
+          from: fromAccount,
           memo,
-          to_account: toAccount,
+          to: toAccount,
           request_id: requestId
         }
       });
@@ -866,11 +866,11 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        transfer: {
+        transfer_operation: {
           amount,
-          from_account: fromAccount,
+          from: fromAccount,
           memo,
-          to_account: toAccount
+          to: toAccount
         }
       });
     }, transactionOptions);
@@ -884,10 +884,10 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        transfer_to_vesting: {
+        transfer_to_vesting_operation: {
           amount,
-          from_account: fromAccount,
-          to_account: toAccount
+          from: fromAccount,
+          to: toAccount
         }
       });
     }, transactionOptions);
@@ -903,7 +903,7 @@ export class TransactionService {
 
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        withdraw_vesting: {
+        withdraw_vesting_operation: {
           account,
           vesting_shares: vestingShares
         }
@@ -925,7 +925,7 @@ export class TransactionService {
     );
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        delegate_vesting_shares: {
+        delegate_vesting_shares_operation: {
           delegator,
           delegatee,
           vesting_shares: vestingShares
@@ -989,7 +989,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        create_claimed_account: {
+        create_claimed_account_operation: {
           creator,
           active,
           owner,
@@ -1018,7 +1018,7 @@ export class TransactionService {
     return (
       await this.processHiveAppOperation((builder) => {
         builder.pushOperation({
-          account_create: {
+          account_create_operation: {
             fee,
             active,
             owner,
@@ -1087,7 +1087,7 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        limit_order_create: {
+        limit_order_create_operation: {
           amount_to_sell: amountToSell,
           owner,
           min_to_receive: minToReceive,
@@ -1102,7 +1102,7 @@ export class TransactionService {
   async limitOrderCancel(owner: string, orderId: number, transactionOptions: TransactionOptions = {}) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        limit_order_cancel: {
+        limit_order_cancel_operation: {
           owner,
           orderid: orderId
         }
@@ -1117,8 +1117,8 @@ export class TransactionService {
   ) {
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
-        cancel_transfer_from_savings: {
-          from_account: fromAccount,
+        cancel_transfer_from_savings_operation: {
+          from: fromAccount,
           request_id: requestId
         }
       });
