@@ -206,7 +206,7 @@ const PostListItem = ({
               </div>
             </div>
           </CardHeader>
-          <div className="flex flex-col md:flex-row">
+          <div className="flex w-full flex-col md:flex-row ">
             <div>
               {!reveal &&
               post.blacklists.length < 1 &&
@@ -218,7 +218,7 @@ const PostListItem = ({
                 </>
               ) : null}
             </div>
-            <div className="md:overflow-hidden">
+            <div className="w-full md:overflow-hidden">
               <CardContent>
                 {!reveal ? (
                   <>
@@ -235,7 +235,7 @@ const PostListItem = ({
                         {post.title}
                       </Link>
                     </CardTitle>
-                    <CardDescription className="block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
+                    <CardDescription className="block w-auto whitespace-pre-wrap break-words md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
                       <Link
                         href={`/${post.category}/@${post.author}/${post.permlink}`}
                         data-testid="post-description"

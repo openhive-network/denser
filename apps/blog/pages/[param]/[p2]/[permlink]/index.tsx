@@ -4,7 +4,7 @@ import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import Loading from '@hive/ui/components/loading';
 import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
@@ -177,6 +177,8 @@ function PostPage({
   );
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
+  const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);
+
   const [edit, setEdit] = useState(false);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
@@ -235,7 +237,9 @@ function PostPage({
       deleteComment(permlink);
     }
   };
-  const canonical_url = post ? new URL(post.url.startsWith('http') ? post.url : `https://${env('SITE_DOMAIN')}${post.url}`).href : undefined;
+  const canonical_url = post
+    ? new URL(post.url.startsWith('http') ? post.url : `https://${env('SITE_DOMAIN')}${post.url}`).href
+    : undefined;
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   const crossedPost = post?.json_metadata.tags?.includes('cross-post');
   return (
@@ -342,7 +346,9 @@ function PostPage({
                   community={crossedPost ? crosspost.communityTag : community}
                   category={post.category}
                   created={post.created}
-                  blacklist={firstPost ? firstPost.blacklists : post.blacklists}
+                  blacklist={
+                    firstPost ? firstPost.blacklists : thisPost ? thisPost.blacklists : post.blacklists
+                  }
                 />
                 {isLoadingPost ? (
                   <Loading loading={isLoadingPost} />
@@ -444,7 +450,13 @@ function PostPage({
                           author_reputation={
                             crossedPost ? crosspost.authorReputation : post.author_reputation
                           }
-                          blacklist={firstPost ? firstPost.blacklists : post.blacklists}
+                          blacklist={
+                            firstPost
+                              ? firstPost.blacklists
+                              : thisPost
+                                ? thisPost.blacklists
+                                : post.blacklists
+                          }
                         />
                         {post.author_title ? (
                           <Badge variant="outline" className="border-destructive text-slate-500">
@@ -636,7 +648,7 @@ function PostPage({
                       <TwitterShare title={post.title} url={post.url} />
                       <LinkedInShare title={post.title} url={post.url} />
                       <RedditShare title={post.title} url={post.url} />
-                      <SharePost path={router.asPath}>
+                      <SharePost path={router.asPath} title={post.title}>
                         <Link2 className="cursor-pointer hover:text-destructive" data-testid="share-post" />
                       </SharePost>
                     </div>

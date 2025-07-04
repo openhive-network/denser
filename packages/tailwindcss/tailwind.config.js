@@ -92,6 +92,10 @@ module.exports = {
               marginBottom: '0.25rem',
               marginTop: '2.5rem'
             },
+            p: {
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word'
+            },
             a: {
               color: 'hsl(var(--destructive))',
               textDecoration: 'none',

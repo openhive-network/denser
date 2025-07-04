@@ -5,7 +5,7 @@ import ClipboardCopy from './copy-from-input';
 import { Icons } from '@ui/components/icons';
 import { useTranslation } from 'next-i18next';
 
-export function SharePost({ children, path }: { children: ReactNode; path: string }) {
+export function SharePost({ children, path, title }: { children: ReactNode; path: string; title: string }) {
   const { t } = useTranslation('common_blog');
   return (
     <Dialog>
@@ -24,7 +24,7 @@ export function SharePost({ children, path }: { children: ReactNode; path: strin
             label={t('post_content.footer.share_form.url_to_this_post')}
           />
           <ClipboardCopy
-            copyText={`[Call to Action! - Recording of the Last Meeting & Participate in SPK Proof of Access](https://hive.blog${path})`}
+            copyText={`[${title}](https://hive.blog${path})`}
             label={t('post_content.footer.share_form.markdown_code_for_a_link_to_this_post')}
           />
         </div>

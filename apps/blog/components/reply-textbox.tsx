@@ -10,7 +10,7 @@ import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
@@ -117,8 +117,9 @@ export function ReplyTextbox({
 
   return (
     <div
-      className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-background p-4 text-primary shadow-sm"
+      className="mx-8 mb-4 flex max-w-3xl flex-col gap-6 rounded-md border bg-background p-4 text-primary shadow-sm"
       data-testid="reply-editor"
+      suppressHydrationWarning
     >
       <div className="flex flex-col gap-4">
         <Link href={`#`}>
