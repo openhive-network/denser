@@ -107,7 +107,6 @@ test.describe('Voting tests with fixture and POM', () =>{
       await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
       // Move pointer from the upvote icon - click the main post list's header element
       await profileMenu.clickCloseProfileMenu();
-      // await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({force: true});
 
       if (await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color') == lightModeRedColor){
         // Validate that Upvote button of the first color red

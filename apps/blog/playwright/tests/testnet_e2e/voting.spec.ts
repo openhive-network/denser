@@ -43,6 +43,7 @@ test.describe('Voting tests', () =>{
       expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe('rgba(0, 0, 0, 0)');
       // Click Upvote button of the first post on the trending list
       await firstPostUpvoteButtonLocatorToClick.click();
+      await homePage.page.waitForTimeout(2000);
       // If a password to unlock key is needed
       if (await loginFormDefaut.enterYourPasswordForm.isVisible()) {
         await loginFormDefaut.passwordToUnlockKeyInput.fill(users.denserautotest4.safeStoragePassword);
@@ -85,6 +86,7 @@ test.describe('Voting tests', () =>{
       expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'background-color')).toBe('rgb(218, 43, 43)');
       // Click Upvote button of the first post on the trending list
       await firstPostUpvoteButtonLocatorToClick.click({force: true});
+      await homePage.page.waitForTimeout(2000);
       // If a password to unlock key is needed
       if (await loginFormDefaut.enterYourPasswordForm.isVisible()) {
         await loginFormDefaut.passwordToUnlockKeyInput.fill(users.denserautotest4.safeStoragePassword);
