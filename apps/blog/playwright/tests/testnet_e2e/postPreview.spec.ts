@@ -49,13 +49,13 @@ test.describe('Post preview - tests', () => {
     const preview = await postPage.articleBody.innerHTML();
 
     const previewContent: string = `<p class=\"my-0\"><em>italic</em><br>
-<strong>bold</strong><br>
-Love<strong>is</strong>bold<br>
-I just love <strong>bold text</strong>.<br>
-also <em>italic</em><br>
-<strong><em>bold-italic</em></strong><br>
-<del>strikethrough</del><br>
-<a href=\"http://example.com\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">link</a></p>`;
+    <strong>bold</strong><br>
+    Love<strong>is</strong>bold<br>
+    I just love <strong>bold text</strong>.<br>
+    also <em>italic</em><br>
+    <strong><em>bold-italic</em></strong><br>
+    <del>strikethrough</del><br>
+    <a href=\"http://example.com\" rel=\"nofollow noopener\" target=\"_blank\" class=\"link-external\">link</a></p>`
 
     expect(preview).toContain(previewContent);
   });
@@ -435,11 +435,11 @@ Hello Mr. @sketch.and.jam, how are you?`;
     // await denserAutoTest0Page.page.waitForTimeout(3000)
 
     const previewContent: string =`<p class=\"my-0\">Link inside the blockquote should be visible.</p>
-<blockquote>
-<p class=\"my-0\">Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. <a href=\"https://peakd.com/silvergoldstackers/@silverd510/on-the-first-day-of\">source</a></p>
-</blockquote>
-<p class=\"my-0\">Hive User links:<br>
-Hello Mr. <a href=\"/@sketch.and.jam\">@sketch.and.jam</a>, how are you?</p>`
+    <blockquote>
+    <p class=\"my-0\">Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. <a href=\"https://peakd.com/silvergoldstackers/@silverd510/on-the-first-day-of\" rel=\"nofollow noopener\" target=\"_blank\" class=\"link-external\">source</a></p>
+    </blockquote>
+    <p class=\"my-0\">Hive User links:<br>
+    Hello Mr. <a href=\"/@sketch.and.jam\">@sketch.and.jam</a>, how are you?</p>`
 
 
     expect(preview).toContain(previewContent);
