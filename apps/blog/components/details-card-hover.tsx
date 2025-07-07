@@ -16,17 +16,15 @@ export default function DetailsCardHover({ post, children, decline, post_page }:
   const isHovering = useRef(false);
 
   const handleMouseEnter = () => {
-    setTimeout(() => {
-      isHovering.current = true;
-      setOpen(true);
-    }, 400); // wait a bit before opening
+    isHovering.current = true;
+    setOpen(true);
   };
 
   const handleMouseLeave = () => {
     isHovering.current = false;
     setTimeout(() => {
       if (!isHovering.current) setOpen(false);
-    }, 100); // wait a bit before closing
+    }, 100);
   };
   if (decline) {
     return (
