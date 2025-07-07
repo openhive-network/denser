@@ -32,7 +32,10 @@ const NewPost = ({ name, disabled }: { name: string; disabled: boolean }) => {
     maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
     payoutType: preferences.blog_rewards
   };
-  const [storedPost, storePost] = useLocalStorage<AccountFormValues>('postData-new', defaultValues);
+  const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
+    `postData-new-${user.username}`,
+    defaultValues
+  );
   return (
     <Button
       size="sm"
