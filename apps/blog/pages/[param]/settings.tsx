@@ -12,7 +12,6 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components';
-import { siteConfig } from '@ui/config/site';
 import { useLocalStorage } from 'usehooks-ts';
 import { GetServerSideProps } from 'next';
 import { useParams } from 'next/navigation';
@@ -20,7 +19,6 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { getAccountFull } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
@@ -38,8 +36,8 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { handleError } from '@ui/lib/handle-error';
 import Head from 'next/head';
-import {HealthCheckerService, ApiChecker, HealthCheckerComponent } from "@hiveio/healthchecker-component"
-import { HealthChecker } from '@hiveio/wax';
+import {ApiChecker, HealthCheckerComponent } from "@hiveio/healthchecker-component";
+import {useHealthChecker} from "@ui/hooks/useHealthChecker";
 
 
 const logger = getLogger('app');
@@ -75,13 +73,6 @@ const DEFAULT_SETTINGS: Settings = {
   blacklist_description: '',
   muted_list_description: ''
 };
-const DEFAULTS_ENDPOINTS = [
-  'https://api.hive.blog',
-  'https://api.openhive.network',
-  'https://rpc.ausbit.dev',
-  'https://anyx.io',
-  'https://api.deathwing.me'
-];
 
 const urlSchema = z
   .string()
@@ -191,12 +182,10 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
-  const [endpoint] = useLocalStorage('hive-blog-endpoint', siteConfig.endpoint);
-  const [aiSearchEndpoint] = useLocalStorage('ai-search-endpoint', siteConfig.endpoint);
   const [isClient, setIsClient] = useState(false);
   const [insertImg, setInsertImg] = useState('');
-  const [hcService, setHcService] = useState<HealthCheckerService | undefined>(undefined);
-  const [hcServiceForSearch, setHcServiceForSearch] = useState<HealthCheckerService | undefined>(undefined);
+  const [nodeApiCheckers, setNodeApiCheckers] = useState<ApiChecker[] | undefined>(undefined);
+  const [aiSearchApiCheckers, setAiSearchApiCheckers] = useState<ApiChecker[] | undefined>(undefined);
   const params = useParams();
   const mutedQuery = useFollowListQuery(user.username, 'muted');
   const { t } = useTranslation('common_blog');
@@ -217,17 +206,14 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
   const unmuteMutation = useUnmuteMutation();
   const updateProfileMutation = useUpdateProfileMutation();
 
-  const changeNode = async (node: string | null) => {
-    if (node) {
-      await hiveChainService.setHiveChainEndpoint(node);
-      await hbauthService.setOnlineClient({ node });
-    }
-  }
 
-  const startHealthcheckerService = async () => {
+  const nodeHcService = useHealthChecker("node-api", nodeApiCheckers, 'node-endpoint', true, false);
+  const aiSearchHcService = useHealthChecker("ai-search", aiSearchApiCheckers, 'ai-search-endpoint', false, false);
+
+
+  const createApiCheckers = async () => {
     const hiveChain = await hiveChainService.getHiveChain();
-    const healthChecker = new HealthChecker();
-      const apiCheckers: ApiChecker[] = [
+    const nodeApiCheckers: ApiChecker[] = [
     {
       title: "Condenser - Get accounts",
       method: hiveChain.api.condenser_api.get_accounts,
@@ -241,29 +227,7 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
       validatorFunction: data => data.author === "guest4test" ? true : "Get post error",
     },
   ]
-    const hcService = new HealthCheckerService(
-      "node-api",
-      apiCheckers,
-      DEFAULTS_ENDPOINTS,
-      healthChecker,
-      endpoint,
-      changeNode,
-      true
-    );
-    setHcService(hcService);
-
-
-  }
-    const changeSearchEndpoint = async (newEndpoint: string | null) => {
-    if (newEndpoint) {
-      await hiveChainService.setAiSearchEndpoint(newEndpoint);
-    }
-  }
-
-  const startHealthchecherServiceForSearch = async () => {
-    const hiveChain = await hiveChainService.getHiveChain();
-    const healthChecker = new HealthChecker();
-      const apiCheckers: ApiChecker[] = [
+    const aiSearchApiCheckers: ApiChecker[] = [
     {
       title: "AI search",
       method: hiveChain.restApi['hivesense-api'].similarposts,
@@ -274,27 +238,18 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
       },
       validatorFunction: data => data.length === 20 ? true : "AI search error",
     },
-  ]
-    const hcService = new HealthCheckerService(
-      "ai-search",
-      apiCheckers,
-      DEFAULTS_ENDPOINTS,
-      healthChecker,
-      aiSearchEndpoint,
-      changeSearchEndpoint,
-      true
-    );
-    setHcServiceForSearch(hcService);
-
+    ]
+    setNodeApiCheckers(nodeApiCheckers);
+    setAiSearchApiCheckers(aiSearchApiCheckers);
   }
 
   useEffect(() => {
     setIsClient(true);
-    startHealthcheckerService();
-    startHealthchecherServiceForSearch();
+    createApiCheckers();
   }, []);
   useEffect(() => {
     setSettings(profileSettings);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
   async function onSubmit() {
     const updateProfileParams = {
@@ -626,11 +581,11 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
               defaultValue='main-hc'>
               <AccordionItem value="main-hc">
                 <AccordionTrigger>API Endpoint</AccordionTrigger>
-                <AccordionContent>{!!hcService && <HealthCheckerComponent healthCheckerService={hcService} />}</AccordionContent>
+                <AccordionContent>{!!nodeHcService && <HealthCheckerComponent healthCheckerService={nodeHcService} />}</AccordionContent>
               </AccordionItem>
               <AccordionItem value="search-hc">
                 <AccordionTrigger>Endpoint for AI search</AccordionTrigger>
-                <AccordionContent>{!!hcServiceForSearch && <HealthCheckerComponent healthCheckerService={hcServiceForSearch} />}</AccordionContent>
+                <AccordionContent>{!!aiSearchHcService && <HealthCheckerComponent healthCheckerService={aiSearchHcService} />}</AccordionContent>
               </AccordionItem>
             </Accordion>
           </div>

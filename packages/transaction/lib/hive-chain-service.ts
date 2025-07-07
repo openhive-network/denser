@@ -48,7 +48,7 @@ export class HiveChainService {
 
       // If we haven't pending promise, let's create one.
       const promise = async () => {
-        const storedApiEndpoint = this.storage.getItem('hive-blog-endpoint');
+        const storedApiEndpoint = this.storage.getItem('node-endpoint');
         let apiEndpoint: string = storedApiEndpoint ? JSON.parse(storedApiEndpoint) : '';
         if (!apiEndpoint) {
           apiEndpoint = siteConfig.endpoint;
@@ -85,7 +85,7 @@ export class HiveChainService {
     logger.info('Changing HiveChainService.HiveChain.endpointUrl with newEndpoint: %o', newEndpoint);
     await this.getHiveChain();
     HiveChainService.hiveChain.endpointUrl = newEndpoint;
-    this.storage.setItem('hive-blog-endpoint', JSON.stringify(newEndpoint));
+    this.storage.setItem('node-endpoint', JSON.stringify(newEndpoint));
   }
 
   async setAiSearchEndpoint(newEndpoint: string) {
