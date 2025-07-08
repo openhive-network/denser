@@ -3,6 +3,8 @@ import { useState } from 'react';
 import SuggestionsCard from './suggestions-card';
 import { Button } from '@ui/components';
 
+// FIXME: This is a temporary fix to avoid the error when suggestions is not an array
+// FIXME: Source of data should use Wax not direct hivesense API call via fetch
 const SuggestionsList = ({ suggestions }: { suggestions: Entry[] }) => {
   const [filteredSuggestions, setFilteredSuggestions] = useState<Entry[]>(
     Array.isArray(suggestions) ? suggestions.filter((e) => e.author_reputation >= 50 && !e.stats?.gray) : []
