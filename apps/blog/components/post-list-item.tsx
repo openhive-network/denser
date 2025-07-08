@@ -19,7 +19,7 @@ import { useState } from 'react';
 import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
-import VotesComponent from './votes';
+import VotesPostCard from './votes-post-card';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
@@ -30,10 +30,12 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 // import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from './reblog-trigger';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
-import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
+// import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardHidden from './post-card-hidden';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import TimeAgo from '@hive/ui/components/time-ago';
+
+import { CircleDollarSign } from 'lucide-react';
 
 // const logger = getLogger('app');
 
@@ -74,7 +76,7 @@ const PostListItem = ({
       {post.json_metadata?.tags &&
       post.json_metadata?.tags.includes('nsfw') &&
       preferences.nsfw === 'hide' ? null : (
-        <Card className="mb-4 bg-background text-primary md:px-2">
+        <Card className="mb-4 bg-background text-secondary md:px-2">
           {post.original_entry ? (
             <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
@@ -240,30 +242,21 @@ const PostListItem = ({
                   <PostCardHidden user={user} revealPost={revealPost} />
                 )}
               </CardContent>
-              <CardFooter className="py-3">
-                <div className="flex h-5 items-center space-x-2 text-sm" data-testid="post-card-footer">
-                  <VotesComponent post={post} type="post" />
+              <CardFooter className="justify-between py-3">
+                <div className="flex h-5 items-center space-x-5 text-sm" data-testid="post-card-footer">
+                  <VotesPostCard post={post} type="post" />
+                  {/* <Separator orientation="vertical" /> */}
 
-                  <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
-                    <div
-                      className={`flex items-center hover:cursor-pointer hover:text-destructive ${
-                        Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
-                      }`}
-                      data-testid="post-payout"
-                    >
-                      ${post.payout.toFixed(2)}
-                    </div>
-                  </DetailsCardHover>
-
-                  <Separator orientation="vertical" />
-                  {post.stats ? <PostCardUpvotesTooltip votes={post.stats.total_votes} /> : null}
-                  <Separator orientation="vertical" />
                   <PostCardCommentTooltip
                     comments={post.children}
                     url={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
                   />
-                  <Separator orientation="vertical" />
-                  {!post.title.includes('RE: ') ? (
+
+                  {/* <Separator orientation="vertical" /> */}
+                  {/* {post.stats ? <PostCardUpvotesTooltip votes={post.stats.total_votes} /> : null} */}
+
+                  {/* <Separator orientation="vertical" /> */}
+                  {/* {!post.title.includes('RE: ') ? (
                     <div className="flex items-center" data-testid="post-card-reblog">
                       <ReblogTrigger
                         author={post.author}
@@ -272,8 +265,20 @@ const PostListItem = ({
                         dataTestidTooltipIcon="post-card-reblog-icon"
                       />
                     </div>
-                  ) : null}
+                  ) : null} */}
                 </div>
+                <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
+                  <div
+                    className={`flex items-center text-sm font-light decoration-2 hover:cursor-pointer  hover:underline hover:decoration-primary ${
+                      Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
+                    }`}
+                    data-testid="post-payout"
+                  >
+                    <CircleDollarSign className="mr-1 h-4 w-4" strokeWidth={1} />
+
+                    {post.payout.toFixed(2)}
+                  </div>
+                </DetailsCardHover>
               </CardFooter>
               <Separator orientation="horizontal" className="my-1" />
             </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TransferFilters } from '@/wallet/components/transfers-history-filter';
+import { TransferFilters } from '@/blog/components/wallet/transfers-history-filter';
 
 const useFilters = (initialFilters: TransferFilters) => {
   const [rawfilter, setFilter] = useState<TransferFilters>(initialFilters);

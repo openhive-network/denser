@@ -31,11 +31,11 @@ export function MainNav() {
           Proposals
         </Link>
         <Link
-          href="/~witnesses"
+          href="/witnesses"
           rel="noopener noreferrer"
           className={cn(
             'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600',
-            pathname === '/~witnesses' ? 'text-red-600' : 'text-foreground/60'
+            pathname === '/witnesses' ? 'text-red-600' : 'text-foreground/60'
           )}
           data-testid="nav-witnesses-link"
         >

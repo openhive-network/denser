@@ -39,7 +39,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
   const userFromGDPRList = gdprUserList.includes(username);
   const { isLoading: profileDataIsLoading, data: profileData } = useQuery(
@@ -386,8 +385,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <ul className="flex h-full flex-nowrap text-xs sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
-                    href={`${walletHost}/@${username}/transfers`}
-                    target="_blank"
+                    href={`/@${username}/wallet`}
                     rel="noopener noreferrer"
                     className="mr-4 flex h-12 items-center px-2 hover:bg-background hover:text-primary"
                   >
@@ -413,7 +411,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
           </div>
         </div>
-        <main className="px-2 pt-4 sm:w-8/12 sm:px-12">{children}</main>
+        <main className="px-2 pt-4 sm:px-6 md:w-9/12 md:px-10 xl:px-20">{children}</main>
       </div>
     </div>
   ) : (

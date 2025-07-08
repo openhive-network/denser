@@ -22,7 +22,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import Loading from '@ui/components/loading';
 import TransfersHistoryFilter, { TransferFilters } from '@/blog/components/wallet/transfers-history-filter';
-import ProfileLayout from '@/blog/components/common/profile-layout';
+import ProfileLayout from '@/blog/components/wallet/common/profile-layout';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import WalletMenu from '@/blog/components/wallet/wallet-menu';
@@ -217,7 +217,7 @@ const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
 export type AccountHistoryData = ReturnType<typeof mapToAccountHistoryObject>;
 
 function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useTranslation('common_wallet');
   const blogURL = env('BLOG_DOMAIN');
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
   const { user } = useUser();
@@ -384,7 +384,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
     } finally {
       toast({
         title: t('transfers_page.transaction_success'),
-        description: t('transfers_page.claim'),
+        description: t('transfers_page.redeem_rewards'),
         variant: 'success'
       });
     }
@@ -545,7 +545,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
       </Head>
       <ProfileLayout>
         <div className="flex w-full flex-col items-center ">
-          {/* <WalletMenu username={username} /> */}
+          <WalletMenu username={username} />
           {!!rewardsStr.length && user?.username === username && (
             <div className="mx-auto w-full px-2 text-sm md:px-0 md:text-base">
               <div className="mx-auto mt-4 flex w-full max-w-6xl flex-col items-center justify-between gap-y-2 rounded-md bg-slate-600 px-4 py-4 text-white md:flex-row">
@@ -559,20 +559,20 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                   onClick={() => claimRewards()}
                   disabled={claimRewardsMutation.isLoading}
                 >
-                  {t('transfers_page.claim')}
+                  {t('transfers_page.redeem_rewards')}
                   {claimRewardsMutation.isLoading ? <CircleSpinner size={18} color="#dc2626" /> : null}
                 </Button>
               </div>
             </div>
           )}
           <div>
-            {/* {user?.username === username && (
+            {user?.username === username && (
               <Link href="https://blocktrades.us" target="_blank">
                 <Button variant="outlineRed" className="mx-2 my-8 border-destructive text-destructive">
                   {t('profile.buy_hive_or_hive_power')}
                 </Button>
               </Link>
-            )} */}
+            )}
             <table className="max-w-6xl text-sm">
               <tbody>
                 <tr className="flex flex-col py-2 sm:table-row">
@@ -841,7 +841,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                     >
                       {t('profile.savings_description')}
                       <span className="font-semibold text-secondary hover:text-destructive">
-                        {<Link href={`/witnesses`}>{t('profile.witnesses')}</Link>}
+                        {<Link href={`/~witnesses`}>{t('profile.witnesses')}</Link>}
                       </span>
                       {')'}
                     </p>
@@ -987,7 +987,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                 </table>
               </div>
             )}
-            {/* {user.username === username && <FinancialReport username={user.username} />} */}
+            {user.username === username && <FinancialReport username={user.username} />}
             <TransfersHistoryFilter
               onFiltersChange={(value) => {
                 setFilter((prevFilters) => ({

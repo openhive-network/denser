@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
-import { IListItemProps } from '@/wallet/lib/hive';
+import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/blog/lib/wallet/constants';
+import { IListItemProps } from '@/blog/lib/wallet/hive';
 import { cn, getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import moment from 'moment';
@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
-import { useUpdateProposalVotesMutation } from '@hive/wallet/components/hooks/use-update-proposal-votes-mutation';
+import { useUpdateProposalVotesMutation } from './hooks/use-update-proposal-votes-mutation';
 import env from '@beam-australia/react-env';
 import { useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';

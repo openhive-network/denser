@@ -19,13 +19,16 @@
     --detach
 
 
-
 pnpm run lint --no-cache
 
 ./scripts/build_instance.sh --app-scope='@hive/blog' --app-path='/apps/blog' --app-name='blog' "$(pwd)"
 
+docker tag registry.gitlab.syncad.com/hive/denser/blog pishdoc/blog:latest
 
 
-docker tag 727a757a5137 pishdoc/blog:latest
+docker tag 055c0b1f1129 pishdoc/blog:latest
 docker login
 docker push pishdoc/blog:latest
+
+
+docker pull pishdoc/blog:latest

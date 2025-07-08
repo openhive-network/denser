@@ -3,6 +3,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { FC } from 'react';
+import { MessageCircle } from 'lucide-react';
 
 interface PostCardCommentTooltipProps {
   comments: number;
@@ -18,16 +19,12 @@ const PostCardCommentTooltip = ({ comments, url }: PostCardCommentTooltipProps) 
           <TooltipTrigger className="flex items-center">
             <>
               <Link href={url} className="flex cursor-pointer items-center">
-                {comments > 1 ? (
-                  <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
-                ) : (
-                  <Icons.comment className="h-4 w-4 sm:mr-1" />
-                )}
+                <MessageCircle className="h-[18px] w-[18px] sm:mr-0.5" />
               </Link>
               <Link
                 // href={`/${category}/@${author}/${permlink}/#comments`}
                 href={url}
-                className="flex cursor-pointer items-center pl-1 hover:text-destructive"
+                className="flex cursor-pointer items-center pl-1 font-light"
                 data-testid="post-card-response-link"
               >
                 {comments}

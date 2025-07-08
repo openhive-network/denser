@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { AccountHistory } from '@/wallet/store/app-types';
+import { AccountHistory } from '@/blog/store/wallet/app-types';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
 import {

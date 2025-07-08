@@ -404,7 +404,7 @@ function PostPage({
                   ) : null}
                 </div>
                 <div
-                  className="flex flex-col items-start text-sm text-primary sm:flex-row sm:justify-between"
+                  className="flex flex-col items-start text-sm text-secondary sm:flex-row sm:justify-between"
                   data-testid="author-data-post-footer"
                 >
                   <div className="my-4 flex flex-wrap gap-4">

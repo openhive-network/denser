@@ -337,7 +337,7 @@ type GetAccountNotificationsData = {
 export const getAccountNotifications = async (
   account: string,
   lastId: number | null = null,
-  limit = 50
+  limit = 30
 ): Promise<any> => {
   const params: { account: string; last_id?: number; limit: number } = {
     account,
@@ -347,6 +347,10 @@ export const getAccountNotifications = async (
   if (lastId) {
     params.last_id = lastId;
   }
+
+  console.log('lastId', lastId);
+  console.log('params', params);
+
   return chain.extend<GetAccountNotificationsData>().api.bridge.account_notifications(params);
 };
 

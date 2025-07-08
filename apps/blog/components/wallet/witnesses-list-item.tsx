@@ -1,13 +1,13 @@
 import Link from 'next/link';
-import { ExtendWitness } from '@/wallet/pages/~witnesses';
+import { ExtendWitness } from '../../pages/witnesses';
 import clsx from 'clsx';
-import { DISABLED_SIGNING_KEY } from '@/wallet/lib/constants';
+import { DISABLED_SIGNING_KEY } from '@/blog/lib/wallet/constants';
 import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import { FullAccount } from '@transaction/lib/app-types';
 import { dateToRelative } from '@hive/ui/lib/parse-date';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { CircleSpinner } from 'react-spinners-kit';
@@ -66,10 +66,10 @@ function WitnessListItem({
           href={encodeURI(data.url)}
           target="_blank"
           rel="noreferrer noopener"
-          className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
+          className="flex items-center gap-2 text-xs font-light hover:text-red-400 dark:hover:text-red-400"
         >
           <span>{t('witnesses_page.open_witness_annoucement')}</span>
-          <Icons.forward className="text-red-600 dark:text-red-500" />
+          <Icons.forward className="h-4 w-4 text-gray-400 dark:text-gray-400" />
         </Link>
       );
 
@@ -78,10 +78,10 @@ function WitnessListItem({
         href={encodeURI(data.url)}
         target="_blank"
         rel="noreferrer noopener"
-        className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
+        className="flex items-center gap-2 text-xs font-light hover:text-red-400 dark:hover:text-red-400"
       >
         <span>{t('witnesses_page.open_external_site')}</span>
-        <Icons.forward className="text-red-600 dark:text-red-500" />
+        <Icons.forward className="h-4 w-4 text-gray-400 dark:text-gray-400" />
       </Link>
     );
   }
@@ -104,9 +104,9 @@ function WitnessListItem({
 
   return (
     <tr
-      className={clsx({
-        'bg-rose-200  dark:bg-rose-800': markedWitness,
-        'even:bg-zinc-100 dark:even:bg-slate-900': !markedWitness
+      className={clsx('border-b border-gray-200', {
+        'bg-yellow-200 dark:bg-zinc-800': markedWitness,
+        'even:bg-background dark:even:bg-background': !markedWitness
       })}
       ref={ref}
     >
@@ -115,7 +115,7 @@ function WitnessListItem({
           <span className="sm:text-sm">{data.rank < 10 ? `0${data.rank}` : data.rank}</span>
           {voteEnabled ? (
             <div title={t('witnesses_page.vote')} className="group relative flex" data-testid="witness-vote">
-              <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
+              <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-primary p-0 group-hover:animate-ping dark:bg-red-400"></span>
               {voteLoading ? (
                 <span className="relative rounded-full bg-white dark:bg-slate-900">
                   <CircleSpinner loading={voteLoading} size={20} color="#dc2626" />
@@ -125,16 +125,16 @@ function WitnessListItem({
                   onClick={() => onVote(true)}
                   viewBox="1.7 1.7 20.7 20.7"
                   className={clsx(
-                    'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
+                    'text-primary-forground relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1',
                     {
                       'bg-slate-100 dark:bg-slate-900': !markedWitness,
-                      'bg-rose-200  dark:bg-rose-800': markedWitness
+                      'bg-primary dark:bg-rose-800': markedWitness
                     }
                   )}
                 />
               ) : (
                 <WitnessRemoveVote onVote={onVote}>
-                  <Icons.arrowUpCircle className="relative inline-flex h-5 w-5 cursor-pointer rounded-full bg-rose-600 stroke-1 text-white dark:bg-rose-600 dark:text-white" />
+                  <Icons.arrowUpCircle className="text-primary-forground relative inline-flex h-5 w-5 cursor-pointer rounded-full bg-primary stroke-1 font-semibold dark:text-black" />
                 </WitnessRemoveVote>
               )}
             </div>
@@ -162,22 +162,21 @@ function WitnessListItem({
         </div>
       </td>
       <td className="font-light md:font-normal">
-        <div className="flex" data-testid="witness-list-item-info">
-          <div className="self hidden p-2 sm:block" title={t('witnesses_page.navigate_to_witness_profile')}>
-            <Link href={`/@${data.owner}`} target="_blank">
-              <img
-                className={clsx('mr-1 h-[47px] min-w-[47px] rounded-full', {
-                  'opacity-50': disableUser
-                })}
-                height="40"
-                width="40"
-                src={`https://images.hive.blog/u/${data.owner}/avatar`}
-                alt={`${data.owner} profile picture`}
-              />
-            </Link>
-          </div>
-          <div className="flex flex-col gap-1 py-1 sm:px-2">
+        <div className="flex py-1" data-testid="witness-list-item-info">
+          <div className="flex flex-col gap-1 sm:px-2">
             <div className="flex items-center gap-2">
+              <div className="self" title={t('witnesses_page.navigate_to_witness_profile')}>
+                <Link href={`/@${data.owner}`} target="_blank">
+                  <img
+                    className={clsx('h-[26px] min-w-[26px] rounded-full md:h-[32px] md:min-w-[32px]', {
+                      'opacity-50': disableUser
+                    })}
+                    src={`https://images.hive.blog/u/${data.owner}/avatar`}
+                    alt={`${data.owner} profile picture`}
+                  />
+                </Link>
+              </div>
+
               <Link
                 href={`/@${data.owner}`}
                 data-testid="witness-name-link"
@@ -187,12 +186,12 @@ function WitnessListItem({
                 {
                   <div
                     className={clsx(
-                      'font-semibold sm:text-sm',
+                      'md:text-md font-semibold',
                       {
                         'text-gray-500 line-through opacity-50 dark:text-gray-300': disableUser
                       },
                       {
-                        'font-bold text-red-500': !disableUser
+                        'font-bold text-secondary': !disableUser
                       }
                     )}
                   >
@@ -208,9 +207,7 @@ function WitnessListItem({
 
               <Link
                 href={
-                  router.query.highlight !== data.owner
-                    ? `/~witnesses?highlight=${data.owner}`
-                    : `/~witnesses`
+                  router.query.highlight !== data.owner ? `/witnesses?highlight=${data.owner}` : `/witnesses`
                 }
                 replace
                 scroll={false}
@@ -220,18 +217,20 @@ function WitnessListItem({
                 <Icons.link className="h-[1em] w-[1em]" />
               </Link>
             </div>
+
             {!disableUser && witnessDescription && (
-              <div className="mb-1 ml-4 hidden max-h-16 max-w-lg overflow-y-auto overflow-x-hidden border-b-[1px] border-dotted border-gray-400 p-1 italic sm:block">
-                {witnessDescription}
-              </div>
+              <div className="mb-1 p-1 text-xs italic">{witnessDescription}</div>
             )}
 
             {data.witnessLastBlockAgeInSecs > ONE_WEEK_IN_SEC && (
-              <span className="font-semibold" data-testid="witness-has-not-produced-blocks-warning">
+              <span
+                className="font-semibold text-red-600"
+                data-testid="witness-has-not-produced-blocks-warning"
+              >
                 {t('witnesses_page.has_not_produced_blocks')}
               </span>
             )}
-            <div>
+            {/* <div>
               {t('witnesses_page.last_block')}
               <Link
                 href={`https://hiveblocks.com/b/${data.last_confirmed_block_num}`}
@@ -240,12 +239,12 @@ function WitnessListItem({
               >
                 <span className="font-semibold ">#{data.last_confirmed_block_num}</span>
               </Link>{' '}
-              {blockGap(headBlock, data.last_confirmed_block_num, t)} v{data.running_version}
-            </div>
+              {blockGap(headBlock, data.last_confirmed_block_num, t)}
+            </div> */}
             {disableUser ? (
               <></>
             ) : (
-              <div data-testid="witness-created">
+              <div className="text-sm font-light text-gray-500" data-testid="witness-created">
                 {t('witnesses_page.witness_age')}
                 {dateToRelative(data.created, t).replace('ago', '')}
               </div>
@@ -255,24 +254,35 @@ function WitnessListItem({
           </div>
         </div>
       </td>
-      <td className="p-1 sm:p-2">
-        <div className="font-medium " data-testid="witness-votes-received">
+      <td>
+        <div className="text-sm">v{data.running_version}</div>
+      </td>
+
+      <td className=" p-1  sm:p-2">
+        <div className="text-sm" data-testid="witness-votes-received">
           {getRoundedAbbreveration(data.vestsToHp)}
-          {' HP'}
+          {/* {' HP'} */}
         </div>
-        {data.requiredHpToRankUp && (
-          <div className="font-light">
+        {/* {data.requiredHpToRankUp && (
+          <div className="text-xs font-light">
             {t('witnesses_page.hp_required_to_rank_up', {
               value: getRoundedAbbreveration(data.requiredHpToRankUp)
             })}
           </div>
-        )}
+        )} */}
       </td>
-      <td className=" sm:p-2">
-        <div className="font-medium" data-testid="witness-price-feed">
+      <td className="text-center">
+        <div className="text-sm">{data.last_confirmed_block_num}</div>
+        <div className="text-xs font-light text-gray-400">
+          {blockGap(headBlock, data.last_confirmed_block_num, t)}
+        </div>
+      </td>
+
+      <td className="text-center sm:p-2">
+        <div className="font-sm" data-testid="witness-price-feed">
           ${parseFloat(data.hbd_exchange_rate.base)}
         </div>
-        <div className="font-light">
+        <div className="text-xs font-light">
           <TimeAgo date={data.last_hbd_exchange_update} />
         </div>
       </td>

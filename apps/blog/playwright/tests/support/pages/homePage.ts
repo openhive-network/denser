@@ -427,7 +427,7 @@ export class HomePage {
     await this.page.$eval('[data-testid="nav-witnesses-link"]', (el) => el.removeAttribute('target'));
     const newPage = await pagePromise;
     // await this.page.waitForSelector(this.page.locator('[data-testid="witness-table-body"]')['_selector']);
-    await expect(newPage.url().includes(`/~witnesses`)).toBeTruthy();
+    await expect(newPage.url().includes(`/witnesses`)).toBeTruthy();
   }
 
   async moveToNavOurdAppsPage() {

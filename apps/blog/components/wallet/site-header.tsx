@@ -5,7 +5,7 @@ import Sidebar from './sidebar';
 import ModeToggle from './mode-toggle';
 import Link from 'next/link';
 import DialogLogin from './dialog-login';
-import LangToggle from '@/wallet/components/lang-toggle';
+import LangToggle from '@/blog/components/wallet/lang-toggle';
 import { useTranslation } from 'next-i18next';
 import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -13,7 +13,7 @@ import UserMenu from './user-menu';
 import { PieChart, Pie } from 'recharts';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
-import { findRcAccounts } from '../lib/hive';
+import { findRcAccounts } from '@/blog/lib/wallet/hive';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
 import { RcAccount } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
@@ -101,7 +101,7 @@ const SiteHeader: FC = () => {
             {isClient && user?.isLoggedIn && (
               <div className="mr-2 flex items-center gap-x-3 text-sm md:mr-4 md:text-base">
                 <Link href="/proposals">{t('global.proposals')}</Link>
-                <Link href="/~witnesses">{t('global.witnesses')}</Link>
+                <Link href="/witnesses">{t('global.witnesses')}</Link>
               </div>
             )}
             {isClient && !user?.isLoggedIn ? (

@@ -33,7 +33,7 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
               date: expiryDate.format('ll'),
               duration: '1 year'
             })}
-            <Link className="text-destructive" href="/~witnesses">
+            <Link className="text-destructive" href="/witnesses">
               {t('profile.update_your_witness_votes')}
             </Link>
             {t('profile.to_reset')}
@@ -45,7 +45,7 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
               date: expiryDate.format('ll'),
               duration: '1 year'
             })}
-            <Link className="text-destructive" href="/~witnesses">
+            <Link className="text-destructive" href="/witnesses">
               {t('profile.update_your_witness_votes')}
             </Link>
             {t('profile.to_reset')}
@@ -54,7 +54,7 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
         {expiryYear < HIVE_NULL_DATE && (
           <span>
             {t('profile.please_vote_for_witnesses')}
-            <Link className="text-destructive" href="/~witnesses">
+            <Link className="text-destructive" href="/witnesses">
               {t('profile.witnesses_page')}
             </Link>
           </span>

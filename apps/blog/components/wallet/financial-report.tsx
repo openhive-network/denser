@@ -126,7 +126,10 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
   return (
     <div className="border-t-2 border-zinc-500 p-2 sm:p-4">
       <div className="font-semibold">{t('transfers_page.financial_report')}</div>
-      <p className="text-xs leading-relaxed text-primary/70" data-testid="wallet-account-history-description">
+      <p
+        className="text-xs leading-relaxed text-secondary/70"
+        data-testid="wallet-account-history-description"
+      >
         {t('transfers_page.financial_report_description')}
       </p>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2">

@@ -1,4 +1,4 @@
-import { getMarketStatistics } from '@/wallet/lib/hive';
+import { getMarketStatistics } from '@/blog/lib/wallet/hive';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { useQuery } from '@tanstack/react-query';
 

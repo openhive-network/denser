@@ -124,7 +124,7 @@ const CommentListItem = ({
               loading="lazy"
             />
             <Card
-              className={cn(`mb-4 w-full bg-background text-primary depth-${comment.depth}`, {
+              className={cn(`mb-4 w-full bg-background text-secondary depth-${comment.depth}`, {
                 'opacity-50 hover:opacity-100': hiddenComment || tempraryHidden
               })}
             >

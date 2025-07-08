@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Button } from '@ui/components/button';
 import { FileKey, Trash, UserSquare } from 'lucide-react';
-import { cutPublicKey } from '@/wallet/lib/utils';
-import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
+import { cutPublicKey } from '@/blog/lib/wallet/utils';
+import CopyToKeyboard from '@/blog/components/wallet/copy-to-keyboard';
 import { Input } from '@ui/components';
 import Link from 'next/link';
 import ButtonTooltip from './button-tooltip';

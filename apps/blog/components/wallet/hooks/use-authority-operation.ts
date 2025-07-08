@@ -1,6 +1,6 @@
 import { Dispatch, useCallback, useEffect, useReducer } from 'react';
 import { useUpdateAuthorityOperationMutation } from './use-update-authority-mutation';
-import { handleAuthorityError, transformKeyAuths } from '@/wallet/lib/utils';
+import { handleAuthorityError, transformKeyAuths } from '@/blog/lib/wallet/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getAuthority, LevelAuthority } from '@transaction/lib/hive';
 import { AccountAuthorityUpdateOperation, WaxError } from '@hiveio/wax';

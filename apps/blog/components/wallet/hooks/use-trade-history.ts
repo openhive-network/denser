@@ -1,4 +1,4 @@
-import { getRecentTrades } from '@/wallet/lib/hive';
+import { getRecentTrades } from '@/blog/lib/wallet/hive';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { useQuery } from '@tanstack/react-query';
 interface useTradeHistoryOptions {

@@ -1,5 +1,5 @@
 import { Input } from '@ui/components/input';
-import { cutPublicKey } from '../lib/utils';
+import { cutPublicKey } from '@/blog/lib/wallet/utils';
 import CopyToKeyboard from './copy-to-keyboard';
 import { FileKey } from 'lucide-react';
 import { useEffect, useState } from 'react';

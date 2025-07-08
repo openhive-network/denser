@@ -1238,7 +1238,7 @@ The Hive blockchain requires a set of people to create blocks and uses a consens
 
 ## <span id="How_can_I_vote_for_witnesses">How can I vote for witnesses?</span>
 
-Visit https://wallet.hive.blog/~witnesses.
+Visit https://wallet.hive.blog/witnesses.
 
 <a href="#Table_of_Contents_Witnesses">^</a>
 

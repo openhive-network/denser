@@ -1,4 +1,4 @@
-import { getAccountRewardsHistory } from '@/wallet/lib/hive';
+import { getAccountRewardsHistory } from '@/blog/lib/wallet/hive';
 import { useQuery } from '@tanstack/react-query';
 import { getDynamicGlobalProperties } from '@transaction/lib/hive';
 import parseDate from '@ui/lib/parse-date';

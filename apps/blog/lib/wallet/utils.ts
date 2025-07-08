@@ -1,9 +1,9 @@
 import { TFunction } from 'i18next';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { IDynamicGlobalProperties, IFollow } from '@transaction/lib/hive';
-import { AccountHistoryData } from '../pages/[param]/transfers';
-import { TransferFilters } from '@/wallet/components/transfers-history-filter';
-import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
+import { AccountHistoryData } from '../../pages/[param]/transfers';
+import { TransferFilters } from '@/blog/components/wallet/transfers-history-filter';
+import { useUpdateAuthorityOperationMutation } from '@/blog/components/wallet/hooks/use-update-authority-mutation';
 import { SavingsWithdrawals } from './hive';
 import { numberWithCommas } from '@ui/lib/utils';
 import Big from 'big.js';

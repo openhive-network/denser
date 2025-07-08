@@ -113,13 +113,13 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         <div className="w-full">
           <div className="flex h-12 bg-background-tertiary" data-testid="profile-navigation">
             <div className="container mx-auto flex max-w-screen-xl justify-between p-0 sm:pl-8">
-              <ul className="flex h-full gap-2 text-xs text-primary sm:text-base lg:flex lg:gap-8">
+              <ul className="flex h-full gap-2 text-xs text-secondary sm:text-base lg:flex lg:gap-8">
                 <li>
                   <Link
                     href={getExternalLink(`/@${username}`)}
                     target="_blank"
                     className={`flex h-full items-center px-2 hover:bg-background hover:text-primary
-                    ${router.asPath === `/@${username}` ? 'bg-background text-primary' : ''}
+                    ${router.asPath === `/@${username}` ? 'bg-background text-secondary' : ''}
                     `}
                   >
                     {t('navigation.profile_navbar.blog')}
@@ -147,16 +147,16 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                   </DropdownMenu>
                 </li>
               </ul>
-              <ul className="flex h-full text-xs text-primary sm:text-base lg:flex lg:gap-4">
+              <ul className="flex h-full text-xs text-secondary sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
-                    href={`/@${username}/transfers`}
+                    href={`/@${username}/wallet`}
                     rel="noopener noreferrer"
                     className={clsx(
                       'mr-4 flex h-full items-center px-2 hover:bg-background hover:text-primary',
-                      router.asPath === `/@${username}/transfers` ||
+                      router.asPath === `/@${username}/wallet` ||
                         router.asPath === `/@${username}/delegations`
-                        ? 'bg-background text-primary'
+                        ? 'bg-background text-secondary'
                         : ''
                     )}
                   >

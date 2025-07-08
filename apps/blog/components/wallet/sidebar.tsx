@@ -9,7 +9,6 @@ import { useTranslation } from 'next-i18next';
 import DialogLogin from './dialog-login';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
-import version from '../version.json';
 import { siteConfig } from '@ui/config/site';
 import TooltipContainer from '@ui/components/tooltip-container';
 import env from '@beam-australia/react-env';
@@ -84,7 +83,7 @@ const Sidebar = () => {
             </Item>
             <Item href="/market">{t('navigation.sidebar.currency_market')}</Item>
             <Separator className="my-2" />
-            <Item href="/~witnesses">{t('navigation.sidebar.vote_for_witnesses')}</Item>
+            <Item href="/witnesses">{t('navigation.sidebar.vote_for_witnesses')}</Item>
             <Item href="/proposals">{t('navigation.sidebar.hive_proposals')}</Item>
             <Separator className="my-2" />
 
@@ -119,7 +118,7 @@ const Sidebar = () => {
             <Item href={`${envURL}/tos.html`} target>
               {t('navigation.sidebar.terms_of_service')}
             </Item>
-            <span className="text-center text-xs font-light">Version: {version.commithash.slice(0, 8)}</span>
+            <span className="text-center text-xs font-light">Version: 0.1</span>
           </ul>
         </div>
       </SheetContent>

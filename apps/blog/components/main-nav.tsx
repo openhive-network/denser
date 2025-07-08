@@ -35,12 +35,12 @@ export function MainNav() {
           {t('navigation.main_nav_bar.proposals')}
         </Link> */}
         {/* <Link
-          href={`${walletHost}/~witnesses`}
+          href={`${walletHost}/witnesses`}
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
             'flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
-            pathname === '/~witnesses' ? 'text-destructive' : 'text-primary'
+            pathname === '/witnesses' ? 'text-destructive' : 'text-primary'
           )}
           data-testid="nav-witnesses-link"
         >
