@@ -169,12 +169,9 @@ function PostPage({
   const userFromDMCA = dmcaUserList.some((e) => e === post?.author);
   const legalBlockedUser = userIllegalContent.some((e) => e === post?.author);
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
-  const storageId = `replybox-/${username}/${post?.permlink}`;
+  const storageId = `replybox-/${username}/${post?.permlink}-${user.username}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
-  const [storedComment, storeCommment, removeCommment] = useLocalStorage<string>(
-    `replyTo-/${username}/${permlink}`,
-    ''
-  );
+  const [storedComment] = useLocalStorage<string>(`replyTo-/${username}/${permlink}-${user.username}`, '');
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);

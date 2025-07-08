@@ -37,10 +37,13 @@ export function ReplyTextbox({
   editMode: boolean;
   comment: Entry | string;
 }) {
-  const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
+  const [storedPost, storePost, removePost] = useLocalStorage<string>(
+    `replyTo-/${username}/${permlink}-${user.username}`,
+    ''
+  );
   const { manabarsData } = useManabars(user.username);
-  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+  const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
