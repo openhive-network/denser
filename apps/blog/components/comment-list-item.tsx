@@ -124,7 +124,7 @@ const CommentListItem = ({
               loading="lazy"
             />
             <Card
-              className={cn(`mb-4 w-full bg-background text-primary depth-${comment.depth}`, {
+              className={cn(`mb-4 w-full bg-background text-secondary depth-${comment.depth}`, {
                 'opacity-50 hover:opacity-100': hiddenComment || tempraryHidden
               })}
             >
@@ -181,7 +181,8 @@ const CommentListItem = ({
                               title={String(parseDate(comment.created))}
                               data-testid="comment-timestamp-link"
                             >
-                              <TimeAgo date={comment.created} />
+                              {/* TODO hide */}
+                              {/* <TimeAgo date={comment.created} /> */}
                             </Link>
                             <Link
                               className="p-1 sm:p-2"

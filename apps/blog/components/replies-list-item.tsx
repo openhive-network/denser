@@ -49,7 +49,7 @@ const RepliesListItem = ({
         })}
         data-testid="comment-list-item"
       >
-        <Card className="mb-4 bg-background px-2 text-primary">
+        <Card className="mb-4 bg-background px-2 text-secondary">
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-xs">
               <Link href={`/@${comment.author}`} data-testid="comment-author-avatar-link">

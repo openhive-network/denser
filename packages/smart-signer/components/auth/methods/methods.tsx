@@ -201,9 +201,9 @@ const Methods: FC<MethodsProps> = ({
               </div>
             </Button>
 
-            <Separator className="my-1 w-full" />
+            {/* <Separator className="my-1 w-full" /> */}
 
-            <Button
+            {/* <Button
               disabled
               className="flex w-full py-6"
               type="button"
@@ -214,11 +214,11 @@ const Methods: FC<MethodsProps> = ({
                 <Icons.hiveauth className="mr-4 h-8 w-8" />
                 {t('login_form.signin_with_hiveauth')}
               </div>
-            </Button>
+            </Button> */}
 
-            <Separator className="my-1 w-full" />
+            {/* <Separator className="my-1 w-full" /> */}
 
-            <Button
+            {/* <Button
               disabled
               className="flex w-full justify-start py-6"
               type="button"
@@ -227,9 +227,9 @@ const Methods: FC<MethodsProps> = ({
             >
               <Icons.hivesigner className="mr-4 h-8 w-8" />
               {t('login_form.signin_with_hivesigner')}
-            </Button>
+            </Button> */}
 
-            <Button
+            {/* <Button
               className="mt-8 w-full"
               type="button"
               variant="secondary"
@@ -239,7 +239,7 @@ const Methods: FC<MethodsProps> = ({
               data-testid="go-back-button"
             >
               <Icons.chevronLeft className="mr-2 h-4 w-4" /> {t('login_form.go_back_button')}
-            </Button>
+            </Button> */}
           </div>
         </form>
       </Form>

@@ -34,7 +34,7 @@ export function CommunitiesSelect({
 
   const filteredCommunity = data
     ?.slice(0, 12)
-    .filter((c) => !mySubsData?.map((my) => my[0]).includes(c.name));
+    .filter((c: any) => !mySubsData?.map((my) => my[0]).includes(c.name));
 
   if (isLoading) return <p>{t('global.loading')}...</p>;
   return (
@@ -47,7 +47,7 @@ export function CommunitiesSelect({
         <SelectValue placeholder={title} />
       </SelectTrigger>
       <SelectContent
-      className="overflow-y-auto max-h-96"
+        className="max-h-96 overflow-y-auto"
         ref={(ref) => {
           if (!ref) return;
           ref.ontouchstart = (e) => {
@@ -81,12 +81,12 @@ export function CommunitiesSelect({
             {t('navigation.communities_nav.trending_communities')}
           </SelectItem>
           {user && user.isLoggedIn
-            ? filteredCommunity?.slice(0, 12).map((community) => (
+            ? filteredCommunity?.slice(0, 12).map((community: any) => (
                 <SelectItem key={community.id} value={community.name}>
                   {community.title}
                 </SelectItem>
               ))
-            : data?.slice(0, 12).map((community) => (
+            : data?.slice(0, 12).map((community: any) => (
                 <SelectItem key={community.id} value={community.name}>
                   {community.title}
                 </SelectItem>

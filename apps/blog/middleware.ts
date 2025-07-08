@@ -3,7 +3,6 @@ import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@smart-signer/lib/middleware-challenge-cookies';
 
 export async function middleware(request: NextRequest) {
-
   const { pathname } = request.nextUrl;
   const res = NextResponse.next();
 
@@ -13,7 +12,7 @@ export async function middleware(request: NextRequest) {
     let author = tempArr[1].slice(1);
     let permlink = tempArr[2];
     try {
-      const resp = await fetch('https://api.hive.blog', {
+      const resp = await fetch('https://techcoderx.com', {
         method: 'POST',
         body: JSON.stringify({
           jsonrpc: '2.0',
@@ -32,7 +31,8 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname === '/') {
-    return NextResponse.redirect(new URL('/trending', request.url));
+    // return NextResponse.redirect(new URL('/trending', request.url));
+    return NextResponse.redirect(new URL('/hot', request.url));
   }
 
   /*

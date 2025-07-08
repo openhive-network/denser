@@ -54,7 +54,7 @@ const ExploreHive: FC = () => {
           </li>
           <li>
             <Link
-              href={`${walletHost}/~witnesses`}
+              href={`${walletHost}/witnesses`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center hover:text-destructive"

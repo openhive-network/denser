@@ -100,7 +100,7 @@ const Sidebar = () => {
               {t('navigation.sidebar.change_account_password')}
               <Icons.forward className="w-4" />
             </Item>
-            <Item href={`${walletHost}/~witnesses`} target>
+            <Item href={`${walletHost}/witnesses`} target>
               {t('navigation.sidebar.vote_for_witnesses')}
               <Icons.forward className="w-4" />
             </Item>

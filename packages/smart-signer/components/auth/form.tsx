@@ -11,7 +11,7 @@ import SafeStorageKeyUpdate from './methods/safestorage-key-update';
 export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
   onComplete: (arg0: any) => Promise<any>;
-  authenticateOnBackend?: boolean,
+  authenticateOnBackend?: boolean;
   strict?: boolean; // if true use strict authentication
   i18nNamespace?: string;
 }
@@ -21,11 +21,20 @@ export type SignInFormRef = { cancel: () => Promise<void> };
 export enum Steps {
   SAFE_STORAGE_LOGIN = 1,
   SAFE_STORAGE_KEY_UPDATE,
-  OTHER_LOGIN_OPTIONS,
+  OTHER_LOGIN_OPTIONS
 }
 
 const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
-  ({ preferredKeyTypes, onComplete, authenticateOnBackend = false, strict = false, i18nNamespace = 'smart-signer' }: SignInFormProps, ref) => {
+  (
+    {
+      preferredKeyTypes,
+      onComplete,
+      authenticateOnBackend = false,
+      strict = false,
+      i18nNamespace = 'smart-signer'
+    }: SignInFormProps,
+    ref
+  ) => {
     // component controllers
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
     const { t } = useTranslation(i18nNamespace);
@@ -66,7 +75,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
 
     return (
       <div className="flex h-min max-h-[500px] pb-4">
-        {step === Steps.SAFE_STORAGE_LOGIN && (
+        {/* {step === Steps.SAFE_STORAGE_LOGIN && (
           <SafeStorage
             ref={safeStorageRef}
             preferredKeyTypes={preferredKeyTypes}
@@ -78,21 +87,19 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             username={username}
             onUsernameChange={(username) => setUsername(username)}
           />
-        )}
+        )} */}
 
-        {step === Steps.OTHER_LOGIN_OPTIONS && (
-          <Methods
-            onSetStep={setStep}
-            i18nNamespace={i18nNamespace}
-            preferredKeyTypes={preferredKeyTypes}
-            username={username}
-            onUsernameChange={(username) => setUsername(username)}
-            sign={sign}
-            submit={submit}
-          />
-        )}
+        <Methods
+          onSetStep={setStep}
+          i18nNamespace={i18nNamespace}
+          preferredKeyTypes={preferredKeyTypes}
+          username={username}
+          onUsernameChange={(username) => setUsername(username)}
+          sign={sign}
+          submit={submit}
+        />
 
-        {step === Steps.SAFE_STORAGE_KEY_UPDATE && (
+        {/* {step === Steps.SAFE_STORAGE_KEY_UPDATE && (
           <SafeStorageKeyUpdate
             onSetStep={setStep}
             i18nNamespace={i18nNamespace}
@@ -100,7 +107,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             username={username}
             onUsernameChange={(username) => setUsername(username)}
           />
-        )}
+        )} */}
       </div>
     );
   }

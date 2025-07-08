@@ -2,7 +2,7 @@ import { Html, Head, Main, NextScript } from 'next/document';
 import Script from 'next/script';
 
 const SITE_DESC =
-  'Communities without borders. A social network owned and operated by its users, powered by Hive.';
+  'Web3 blogging service. Publish your creations and get rewards on a fully decentralized platform. powered by Hive.';
 export default function Document() {
   return (
     <Html>
@@ -14,8 +14,8 @@ export default function Document() {
 
         {/* Open Graph Meta Tags */}
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Hive" />
-        <meta property="og:title" content="Hive" />
+        <meta property="og:site_name" content="Suseona" />
+        <meta property="og:title" content="Suseona" />
         <meta property="og:description" content={SITE_DESC} />
         <meta property="og:image" content="https://hive.blog/images/hive-blog-share.png" />
 
@@ -24,8 +24,8 @@ export default function Document() {
 
         {/* Twitter Meta Tags */}
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@hiveblocks" />
-        <meta name="twitter:title" content="#Hive.io" />
+        <meta name="twitter:site" content="blog.suseona.com" />
+        <meta name="twitter:title" content="#suseona" />
         <meta name="twitter:description" content={SITE_DESC} />
         <meta name="twitter:image" content="https://hive.blog/images/hive-blog-twshare.png" />
       </Head>

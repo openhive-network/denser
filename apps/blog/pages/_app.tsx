@@ -6,6 +6,7 @@ import { i18n } from 'next-i18next.config';
 import { getCookie } from '@smart-signer/lib/utils';
 import i18nConfig from '../next-i18next.config';
 import { getLanguage } from '../utils/language';
+import Script from 'next/script';
 
 const Providers = lazy(() => import('@/blog/components/common/providers'));
 
@@ -34,6 +35,15 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <Suspense fallback={<span>Loading...</span>}>
       <Providers>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-F8WEMX9K3Y" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-F8WEMX9K3Y');
+         `}
+        </Script>
         <Component {...pageProps} />
       </Providers>
     </Suspense>

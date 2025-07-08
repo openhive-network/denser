@@ -32,7 +32,7 @@ const CommunitiesSidebar: FC = () => {
       <CardContent>
         <span className="text-sm text-gray-400">{t('navigation.communities_nav.trending_communities')}</span>
         <ul>
-          {data?.slice(0, 12).map((community) => (
+          {data?.slice(0, 12).map((community: any) => (
             <li key={community.id}>
               <Link
                 href={`/trending/${community.name}`}

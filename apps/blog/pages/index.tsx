@@ -4,7 +4,7 @@ import { FC } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const TAB_TITLE = 'Hive Blog';
+const TAB_TITLE = 'suseona';
 const Home: FC = () => {
   return (
     <>

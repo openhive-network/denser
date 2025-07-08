@@ -16,6 +16,9 @@ import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover'
 import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/handle-error';
 import { useLocalStorage } from 'usehooks-ts';
+import PostCardUpvotesTooltipCount from './post-card-upvotes-tooltip-count';
+
+import { ThumbsUp, ThumbsDown } from 'lucide-react';
 
 const logger = getLogger('app');
 
@@ -104,21 +107,28 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
       ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
         <Popover>
           <PopoverTrigger>
-            <TooltipContainer
-              loading={voteMutation.isLoading}
-              text={t('cards.post_card.upvote')}
-              dataTestId="upvote-button"
-            >
-              <Icons.arrowUpCircle
-                className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
-                  { 'bg-destructive text-white': userVote && userVote.vote_percent > 0 }
-                )}
-              />
-            </TooltipContainer>
+            <div className="flex items-center">
+              <TooltipContainer
+                loading={voteMutation.isLoading}
+                text={t('cards.post_card.upvote')}
+                dataTestId="upvote-button"
+              >
+                <ThumbsUp
+                  className={clsx(
+                    'h-[26px] w-[26px] rounded-sm px-1 text-secondary hover:bg-primary sm:mr-1',
+                    {
+                      'bg-destructive text-white': userVote && userVote.vote_percent > 0
+                    }
+                  )}
+                />
+              </TooltipContainer>
+              <div className="">
+                {post.stats ? <PostCardUpvotesTooltipCount votes={post.stats.total_votes} /> : null}
+              </div>
+            </div>
           </PopoverTrigger>
           <PopoverContent
-            className="z-50 max-w-xs rounded-lg bg-background-secondary p-4 shadow-lg"
+            className="z-50 max-w-lg rounded-lg bg-background-secondary p-4"
             sideOffset={offsetSlider.popoverSideOffset}
             align="start"
             alignOffset={offsetSlider.popoverAlignOfset}
@@ -130,8 +140,8 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 text={t('cards.post_card.upvote')}
                 dataTestId="upvote-button-slider"
               >
-                <Icons.arrowUpCircle
-                  className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1"
+                <ThumbsUp
+                  className="h-[26px] w-[26px] cursor-pointer rounded-sm px-1 text-secondary hover:bg-primary sm:mr-1"
                   onClick={() => {
                     if (voteMutation.isLoading) return;
                     setClickedVoteButton('up');
@@ -151,7 +161,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 defaultValue={sliderUpvote}
                 value={sliderUpvote}
                 min={1}
-                className="w-36"
+                className="w-64"
                 onValueChange={(e: number[]) => setSliderUpvote(e)}
               />
               <div className="w-fit" data-testid="upvote-slider-percentage-value">
@@ -161,38 +171,41 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           </PopoverContent>
         </Popover>
       ) : user.isLoggedIn ? (
-        <TooltipContainer
-          loading={voteMutation.isLoading}
-          text={
-            userVote && userVote.vote_percent > 0
-              ? userVote.vote_percent === 10000 && !enable_slider
-                ? t('cards.post_card.undo_upvote')
-                : t('cards.post_card.undo_upvote_percent', {
-                    votePercent: (userVote.vote_percent / 100).toFixed(2)
-                  })
-              : t('cards.post_card.upvote')
-          }
-          dataTestId="upvote-button"
-        >
-          <Icons.arrowUpCircle
-            className={clsx(
-              'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
-              { 'bg-destructive text-white': userVote && userVote.vote_percent > 0 }
-            )}
-            onClick={() => {
-              if (voteMutation.isLoading) return;
-              setClickedVoteButton('up');
-              {
-                // We vote either 100% or 0%.
-                if (userVote && userVote.vote_percent > 0) {
-                  submitVote(0);
-                } else {
-                  submitVote(10000);
+        <div className="flex items-center">
+          <TooltipContainer
+            loading={voteMutation.isLoading}
+            text={
+              userVote && userVote.vote_percent > 0
+                ? userVote.vote_percent === 10000 && !enable_slider
+                  ? t('cards.post_card.undo_upvote')
+                  : t('cards.post_card.undo_upvote_percent', {
+                      votePercent: (userVote.vote_percent / 100).toFixed(2)
+                    })
+                : t('cards.post_card.upvote')
+            }
+            dataTestId="upvote-button"
+          >
+            <ThumbsUp
+              className={clsx('h-[26px] w-[26px] rounded-sm px-1 text-secondary hover:bg-primary sm:mr-1', {
+                '': userVote && userVote.vote_percent > 0
+              })}
+              fill={userVote && userVote.vote_percent > 0 ? '#fcd534' : ''}
+              onClick={() => {
+                {
+                  // We vote either 100% or 0%.
+                  if (userVote && userVote.vote_percent > 0) {
+                    submitVote(0);
+                  } else {
+                    submitVote(10000);
+                  }
                 }
-              }
-            }}
-          />
-        </TooltipContainer>
+              }}
+            />
+          </TooltipContainer>
+          <div className="">
+            {post.stats ? <PostCardUpvotesTooltipCount votes={post.stats.total_votes} /> : null}
+          </div>
+        </div>
       ) : (
         <DialogLogin>
           <div className="flex items-center">
@@ -201,7 +214,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               loading={voteMutation.isLoading}
               dataTestId="upvote-button"
             >
-              <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" />
+              <Icons.arrowUpCircle className="h-[20px] w-[20px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" />
             </TooltipContainer>
           </div>
         </DialogLogin>
@@ -220,16 +233,15 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               text={t('cards.post_card.downvote')}
               dataTestId="downvote-button"
             >
-              <Icons.arrowDownCircle
-                className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
-                  { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 }
-                )}
+              <ThumbsDown
+                className={clsx('h-[26px] w-[26px] rounded-sm px-1 text-secondary hover:bg-primary sm:mr-1', {
+                  'bg-gray-600 text-white': userVote && userVote.vote_percent < 0
+                })}
               />
             </TooltipContainer>
           </PopoverTrigger>
           <PopoverContent
-            className="z-50 max-w-xs rounded-lg bg-background-secondary p-4 shadow-lg"
+            className="z-50 rounded-lg bg-background-secondary p-4"
             sideOffset={offsetSlider.popoverSideOffset}
             align="start"
             alignOffset={offsetSlider.popoverAlignOfset}
@@ -241,8 +253,8 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 text={t('cards.post_card.downvote')}
                 dataTestId="downvote-button-slider"
               >
-                <Icons.arrowDownCircle
-                  className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
+                <ThumbsDown
+                  className="h-[26px] w-[26px] cursor-pointer rounded-sm px-1 text-secondary hover:bg-primary sm:mr-1"
                   onClick={() => {
                     if (voteMutation.isLoading) return;
                     setClickedVoteButton('down');
@@ -262,7 +274,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 defaultValue={sliderDownvote}
                 value={sliderDownvote}
                 min={1}
-                className="w-36"
+                className="w-64"
                 onValueChange={(e: number[]) => setSliderDownvote(e)}
               />
               <div className="w-fit text-destructive" data-testid="downvote-slider-percentage-value">
@@ -296,7 +308,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         >
           <Icons.arrowDownCircle
             className={clsx(
-              'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+              'h-[20px] w-[20px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
               { 'bg-destructive text-white opacity-80': userVote && userVote.vote_percent < 0 }
             )}
             onClick={() => {
@@ -321,7 +333,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               loading={voteMutation.isLoading}
               dataTestId="downvote-button"
             >
-              <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+              <Icons.arrowDownCircle className="h-[20px] w-[20px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
             </TooltipContainer>
           </div>
         </DialogLogin>

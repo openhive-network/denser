@@ -8,11 +8,11 @@ const SuggestionsList = ({ suggestions }: { suggestions: Entry[] }) => {
     suggestions.filter((e) => e.author_reputation >= 50 && !e.stats?.gray)
   );
   return (
-    <div className="flex md:flex-col">
+    <div className="grid grid-cols-3 gap-4 px-2">
       {filteredSuggestions.length > 0 ? (
         filteredSuggestions.map((suggestion, i) => <SuggestionsCard entry={suggestion} key={i} />)
       ) : (
-        <div className="flex flex-col items-center gap-2 p-4 text-sm">
+        <div className="flex flex-col items-center p-4 text-sm">
           <p>Sorry</p>
           <p>All suggested posts were hidden due to low ratings.</p>
           <Button onClick={() => setFilteredSuggestions(suggestions)} variant="outlineRed">

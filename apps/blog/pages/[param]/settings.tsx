@@ -73,11 +73,12 @@ const DEFAULT_SETTINGS: Settings = {
   muted_list_description: ''
 };
 const DEFAULTS_ENDPOINTS = [
+  'https://techcoderx.com',
+  'https://api.deathwing.me',
   'https://api.hive.blog',
   'https://api.openhive.network',
   'https://rpc.ausbit.dev',
-  'https://anyx.io',
-  'https://api.deathwing.me'
+  'https://anyx.io'
 ];
 
 const urlSchema = z
@@ -641,7 +642,7 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
             <div>
               <div>{t('settings_page.muted_users')}</div>
               <ul>
-                {mutedQuery.data.map((mutedUser, index) => {
+                {mutedQuery.data.map((mutedUser: any, index: number) => {
                   const mute_item =
                     unmuteMutation.isLoading && unmuteMutation.variables?.username === mutedUser.name;
                   return (

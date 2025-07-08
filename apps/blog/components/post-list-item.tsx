@@ -11,15 +11,15 @@ import {
 } from '@hive/ui/components/card';
 import { Separator } from '@hive/ui/components/separator';
 import { Badge } from '@hive/ui/components/badge';
-import accountReputation from '@/blog/lib/account-reputation';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+// import accountReputation from '@/blog/lib/account-reputation';
+// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import type { Entry, IFollowList } from '@transaction/lib/bridge';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
-import VotesComponent from './votes';
+import VotesPostCard from './votes-post-card';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
@@ -27,15 +27,17 @@ import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
-import { getLogger } from '@ui/lib/logging';
+// import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from './reblog-trigger';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
-import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
+// import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardHidden from './post-card-hidden';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import TimeAgo from '@hive/ui/components/time-ago';
 
-const logger = getLogger('app');
+import { CircleDollarSign } from 'lucide-react';
+
+// const logger = getLogger('app');
 
 const PostListItem = ({
   post,
@@ -74,7 +76,7 @@ const PostListItem = ({
       {post.json_metadata?.tags &&
       post.json_metadata?.tags.includes('nsfw') &&
       preferences.nsfw === 'hide' ? null : (
-        <Card className="mb-4 bg-background px-2 text-primary">
+        <Card className="mb-4 bg-background text-secondary md:px-2">
           {post.original_entry ? (
             <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
@@ -107,12 +109,12 @@ const PostListItem = ({
               </span>
             </div>
           ) : null}
-          <CardHeader className="px-0 py-1">
+          <CardHeader className="px-0 pb-1 pt-2">
             <div className="md:text-md flex items-center text-sm">
               {!reveal && post.blacklists.length < 1 ? (
                 <Link href={`/@${post.author}`} data-testid="post-card-avatar">
                   <div
-                    className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
+                    className="mr-2 h-7 w-7 rounded-3xl bg-cover bg-no-repeat lg:h-8 lg:w-8"
                     style={{
                       backgroundImage: `url(https://images.hive.blog/u/${post.author}/avatar/small)`
                     }}
@@ -122,18 +124,18 @@ const PostListItem = ({
               <div className="flex flex-wrap items-center gap-0.5 md:flex-nowrap">
                 <Link
                   href={`/@${post.author}`}
-                  className="font-medium text-primary hover:cursor-pointer hover:text-destructive"
+                  className="text-sm font-semibold hover:cursor-pointer hover:text-yellow-500"
                   data-testid="post-author"
                 >
                   {post.author}
                 </Link>{' '}
-                <span
+                {/* <span
                   title={t('post_content.reputation_title')}
                   className="mr-1 block font-normal"
                   data-testid="post-author-reputation"
                 >
                   ({accountReputation(post.author_reputation)})
-                </span>
+                </span> */}
                 <PostCardBlacklistMark blacklistCheck={blacklistCheck} blacklists={post.blacklists} />
                 {(router.query.param ? router.query.param[1]?.startsWith('hive-') : false) &&
                 post.author_role &&
@@ -146,7 +148,7 @@ const PostListItem = ({
                   </Badge>
                 ) : null}
                 <span className="flex items-center text-xs md:text-sm">
-                  {!isCommunityPage ? (
+                  {/* {!isCommunityPage ? (
                     <>
                       &nbsp;{t('cards.post_card.in')}&nbsp;
                       {post.community ? (
@@ -168,30 +170,16 @@ const PostListItem = ({
                       )}
                       <span className="mx-1">•</span>
                     </>
-                  ) : null}
-                  <Link
+                  ) : null} */}
+                  {/* <Link
                     href={`/${post.category}/@${post.author}/${post.permlink}`}
                     className="hover:cursor-pointer hover:text-destructive"
                     data-testid="post-card-timestamp"
-                  >
-                    <TimeAgo date={post.created} />
-                  </Link>
-                  {post.percent_hbd === 0 ? (
-                    <span className="ml-1 flex items-center">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger data-testid="powered-up-100-trigger">
-                            <Link href={`/${post.category}/@${post.author}/${post.permlink}`}>
-                              <Icons.hive className="h-4 w-4" />
-                            </Link>
-                          </TooltipTrigger>
-                          <TooltipContent data-testid="powered-up-100-tooltip">
-                            Powered Up 100%
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </span>
-                  ) : null}
+                  > */}
+                  <span className="mx-1 text-xs font-thin text-gray-400">•</span>
+                  <TimeAgo date={post.created} />
+                  {/* </Link> */}
+
                   {post.stats && post.stats.is_pinned && isCommunityPage ? (
                     <Badge className="ml-1 bg-destructive text-white hover:bg-destructive">
                       <Link
@@ -206,8 +194,95 @@ const PostListItem = ({
               </div>
             </div>
           </CardHeader>
-          <div className="flex flex-col md:flex-row">
-            <div>
+
+          {!reveal && (
+            <CardTitle data-testid="post-title" className="text-lg">
+              {post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw') ? (
+                <Badge variant="outline" className="mx-1 border-destructive text-destructive">
+                  nsfw
+                </Badge>
+              ) : null}
+              <Link
+                href={`/${post.category}/@${post.author}/${post.permlink}`}
+                className="whitespace-normal break-words visited:text-gray-800 dark:visited:text-gray-400"
+              >
+                {post.title}
+              </Link>
+            </CardTitle>
+          )}
+
+          <div className="flex flex-row justify-between">
+            <div className="md:overflow-hidden">
+              <CardContent>
+                {!reveal ? (
+                  <CardDescription className="mt-1.5 block w-auto">
+                    <div className="float-right">
+                      {!reveal &&
+                      post.blacklists.length < 1 &&
+                      !userFromDMCA &&
+                      !userFromImageBlockList &&
+                      !legalBlockedUser ? (
+                        <>
+                          <PostImage post={post} />
+                        </>
+                      ) : null}
+                    </div>
+                    <Link
+                      href={`/${post.category}/@${post.author}/${post.permlink}`}
+                      data-testid="post-description"
+                    >
+                      {userFromDMCA
+                        ? t('cards.content_removed')
+                        : legalBlockedUser
+                          ? t('global.unavailable_for_legal_reasons')
+                          : getPostSummary(post.json_metadata, post.body)}
+                    </Link>
+                  </CardDescription>
+                ) : (
+                  <PostCardHidden user={user} revealPost={revealPost} />
+                )}
+              </CardContent>
+              <CardFooter className="justify-between py-3">
+                <div className="flex h-5 items-center space-x-5 text-sm" data-testid="post-card-footer">
+                  <VotesPostCard post={post} type="post" />
+                  {/* <Separator orientation="vertical" /> */}
+
+                  <PostCardCommentTooltip
+                    comments={post.children}
+                    url={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
+                  />
+
+                  {/* <Separator orientation="vertical" /> */}
+                  {/* {post.stats ? <PostCardUpvotesTooltip votes={post.stats.total_votes} /> : null} */}
+
+                  {/* <Separator orientation="vertical" /> */}
+                  {/* {!post.title.includes('RE: ') ? (
+                    <div className="flex items-center" data-testid="post-card-reblog">
+                      <ReblogTrigger
+                        author={post.author}
+                        permlink={post.permlink}
+                        dataTestidTooltipContent="post-card-reblog-tooltip"
+                        dataTestidTooltipIcon="post-card-reblog-icon"
+                      />
+                    </div>
+                  ) : null} */}
+                </div>
+                <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
+                  <div
+                    className={`flex items-center text-sm font-light decoration-2 hover:cursor-pointer  hover:underline hover:decoration-primary ${
+                      Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
+                    }`}
+                    data-testid="post-payout"
+                  >
+                    <CircleDollarSign className="mr-1 h-4 w-4" strokeWidth={1} />
+
+                    {post.payout.toFixed(2)}
+                  </div>
+                </DetailsCardHover>
+              </CardFooter>
+              <Separator orientation="horizontal" className="my-1" />
+            </div>
+            {/* <div>
               {!reveal &&
               post.blacklists.length < 1 &&
               !userFromDMCA &&
@@ -217,78 +292,7 @@ const PostListItem = ({
                   <PostImage post={post} />
                 </>
               ) : null}
-            </div>
-            <div className="md:overflow-hidden">
-              <CardContent>
-                {!reveal ? (
-                  <>
-                    <CardTitle data-testid="post-title" className="text-md">
-                      {post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw') ? (
-                        <Badge variant="outline" className="mx-1 border-destructive text-destructive">
-                          nsfw
-                        </Badge>
-                      ) : null}
-                      <Link
-                        href={`/${post.category}/@${post.author}/${post.permlink}`}
-                        className="whitespace-normal break-words visited:text-gray-500 dark:visited:text-gray-400"
-                      >
-                        {post.title}
-                      </Link>
-                    </CardTitle>
-                    <CardDescription className="block w-auto md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
-                      <Link
-                        href={`/${post.category}/@${post.author}/${post.permlink}`}
-                        data-testid="post-description"
-                      >
-                        {userFromDMCA
-                          ? t('cards.content_removed')
-                          : legalBlockedUser
-                            ? t('global.unavailable_for_legal_reasons')
-                            : getPostSummary(post.json_metadata, post.body)}
-                      </Link>
-                    </CardDescription>
-                    <Separator orientation="horizontal" className="my-1" />
-                  </>
-                ) : (
-                  <PostCardHidden user={user} revealPost={revealPost} />
-                )}
-              </CardContent>
-              <CardFooter className="pb-2">
-                <div className="flex h-5 items-center space-x-2 text-sm" data-testid="post-card-footer">
-                  <VotesComponent post={post} type="post" />
-
-                  <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
-                    <div
-                      className={`flex items-center hover:cursor-pointer hover:text-destructive ${
-                        Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
-                      }`}
-                      data-testid="post-payout"
-                    >
-                      ${post.payout.toFixed(2)}
-                    </div>
-                  </DetailsCardHover>
-
-                  <Separator orientation="vertical" />
-                  {post.stats ? <PostCardUpvotesTooltip votes={post.stats.total_votes} /> : null}
-                  <Separator orientation="vertical" />
-                  <PostCardCommentTooltip
-                    comments={post.children}
-                    url={`/${post.category}/@${post.author}/${post.permlink}/#comments`}
-                  />
-                  <Separator orientation="vertical" />
-                  {!post.title.includes('RE: ') ? (
-                    <div className="flex items-center" data-testid="post-card-reblog">
-                      <ReblogTrigger
-                        author={post.author}
-                        permlink={post.permlink}
-                        dataTestidTooltipContent="post-card-reblog-tooltip"
-                        dataTestidTooltipIcon="post-card-reblog-icon"
-                      />
-                    </div>
-                  ) : null}
-                </div>
-              </CardFooter>
-            </div>
+            </div> */}
           </div>
         </Card>
       )}

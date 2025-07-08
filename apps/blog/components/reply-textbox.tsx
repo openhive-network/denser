@@ -117,7 +117,7 @@ export function ReplyTextbox({
 
   return (
     <div
-      className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-background p-4 text-primary shadow-sm"
+      className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-background p-4 text-secondary shadow-sm"
       data-testid="reply-editor"
     >
       <div className="flex flex-col gap-4">

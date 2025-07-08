@@ -1,10 +1,11 @@
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
-import Sidebar from './sidebar';
-import { MainNav } from './main-nav';
+// import Sidebar from './sidebar';
+// import { MainNav } from './main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
 import Link from 'next/link';
+import Image from 'next/image';
 import React, { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
@@ -22,7 +23,7 @@ import { hoursAndMinutes } from '../lib/utils';
 import env from '@beam-australia/react-env';
 import { getAccount } from '@transaction/lib/hive';
 import TooltipContainer from '@ui/components/tooltip-container';
-import { ModeSwitchInput } from '@ui/components/mode-switch-input';
+// import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { useRouter } from 'next/router';
 import { cn } from '@ui/lib/utils';
 import { getHiveSenseStatus } from '../lib/get-data';
@@ -79,29 +80,28 @@ const SiteHeader: FC = () => {
   return (
     <header
       className={clsx(
-        'sticky top-0 z-40 w-full bg-background shadow-sm transition duration-500 ease-in-out',
+        'sticky top-0 z-40 w-full bg-background shadow-sm transition duration-300 ease-in-out',
         {
-          'translate-y-[-56px]': isNavHidden
+          'translate-y-[-52px]': isNavHidden
         }
       )}
       translate="no"
     >
-      <div className="container flex h-16 w-full items-center justify-between">
-        <Link href="/trending" className="flex items-center space-x-2">
-          <Icons.hive className="h-6 w-6" />
-          <div className='flex flex-col md:flex-row'>
-            <span className="font-bold sm:inline-block">{siteConfig.name}</span>
-            {siteConfig.chainEnv !== 'mainnet' && (
-              <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
-            )}
+      <div className="flex h-[52px] w-full items-center justify-between px-2 md:px-10">
+        <Link href="/hot" className="flex items-center space-x-2">
+          {/* <Icons.hive className="h-6 w-6" /> */}
+          <Image width={36} height={36} alt="suseona" className="rounded-full" src="/suseona192.png" />
+          <div className="flex">
+            <span className="-ml-0.5 font-semibold sm:inline-block">{siteConfig.name}</span>
+            <span className="ml-0.5 text-xs font-thin text-gray-400">alpha</span>
           </div>
         </Link>
 
-        <MainNav />
-        <div className="flex items-center space-x-2 sm:space-x-4">
+        {/* <MainNav /> */}
+        <div className="flex items-center sm:space-x-4">
           <nav className="flex items-center space-x-1">
             {isClient && user.isLoggedIn ? null : (
-              <div className="mx-1 hidden gap-1 sm:flex">
+              <div className="">
                 <DialogLogin>
                   <Button
                     variant="ghost"
@@ -111,28 +111,33 @@ const SiteHeader: FC = () => {
                     {t('navigation.main_nav_bar.login')}
                   </Button>
                 </DialogLogin>
-                <Link href="https://signup.hive.io/">
+                {/* <Link href="https://signup.hive.io/">
                   <Button variant="redHover" className="whitespace-nowrap" data-testid="signup-btn">
                     {t('navigation.main_nav_bar.sign_up')}
                   </Button>
-                </Link>
+                </Link> */}
               </div>
             )}
             <div className="hidden lg:block">
               {router.pathname === '/search' ? (
-                <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
+                // <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
+                <></>
               ) : (
-                <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
+                <></>
+                // <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
               )}
             </div>
-            <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" />
-            <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
-              <Link href="/submit.html">
-                <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
-                  <Icons.pencil className="h-5 w-5" />
-                </Button>
-              </Link>
-            </TooltipContainer>
+            {/* <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" /> */}
+            {isClient && user.isLoggedIn && (
+              <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
+                <Link href="/submit.html">
+                  <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
+                    <Icons.pencil className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </TooltipContainer>
+            )}
+
             {isClient && !user.isLoggedIn ? (
               <div>
                 <ModeToggle>
@@ -158,75 +163,11 @@ const SiteHeader: FC = () => {
                     <UserMenu user={user} notifications={data?.unread}>
                       <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
                         {data && data.unread !== 0 ? (
-                          <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+                          <div className="absolute bottom-auto left-auto right-2 top-1.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive px-1.5 py-1 text-center align-baseline text-[10px] leading-none text-white">
                             {data.unread}
                           </div>
                         ) : null}
-                        <div className="absolute z-20 group-hover:invisible group-hover:delay-300 group-hover:duration-300 group-hover:animate-out group-hover:zoom-out-75">
-                          <PieChart width={50} height={50}>
-                            <Pie
-                              data={chart}
-                              cx={20}
-                              cy={20}
-                              startAngle={90}
-                              endAngle={-rcAngle + 90}
-                              innerRadius={18}
-                              outerRadius={24}
-                              fill="#0088FE"
-                              paddingAngle={0}
-                              dataKey="value"
-                            ></Pie>
-                          </PieChart>
-                        </div>
 
-                        <div className="invisible absolute z-20 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                          <PieChart width={50} height={50}>
-                            <Pie
-                              data={chart}
-                              cx={20}
-                              cy={20}
-                              startAngle={90}
-                              endAngle={-downvoteAngle + 90}
-                              innerRadius={18}
-                              outerRadius={21.5}
-                              fill="#C01000"
-                              paddingAngle={0}
-                              dataKey="value"
-                            ></Pie>
-                          </PieChart>
-                        </div>
-                        <div className="invisible absolute z-10 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                          <PieChart width={60} height={60}>
-                            <Pie
-                              data={chart}
-                              cx={25}
-                              cy={25}
-                              startAngle={90}
-                              endAngle={-upvoteAngle + 90}
-                              innerRadius={21.5}
-                              outerRadius={25}
-                              fill="#00C040"
-                              paddingAngle={0}
-                              dataKey="value"
-                            ></Pie>
-                          </PieChart>
-                        </div>
-                        <div className="invisible absolute group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                          <PieChart width={70} height={70}>
-                            <Pie
-                              data={chart}
-                              cx={30}
-                              cy={30}
-                              startAngle={90}
-                              endAngle={-rcAngle + 90}
-                              innerRadius={25}
-                              outerRadius={28.5}
-                              fill="#0088FE"
-                              paddingAngle={0}
-                              dataKey="value"
-                            ></Pie>
-                          </PieChart>
-                        </div>
                         <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
                           <AvatarImage
                             className="h-full w-full object-cover"
@@ -273,7 +214,7 @@ const SiteHeader: FC = () => {
                 </Tooltip>
               </TooltipProvider>
             ) : null}
-            <Sidebar />
+            {/* <Sidebar /> */}
           </nav>
         </div>
       </div>

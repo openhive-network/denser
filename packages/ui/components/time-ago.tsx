@@ -1,5 +1,6 @@
 import { getCookie } from '@ui/lib/utils';
 import { FC, useEffect, useState } from 'react';
+import { IAccountNotificationEx } from '@transaction/lib/bridge';
 
 interface TimeAgoProps {
   date: string | number | Date;
@@ -55,7 +56,7 @@ const TimeAgo: FC<TimeAgoProps> = ({ date }) => {
     return () => clearInterval(interval);
   }, [date, userLang]);
 
-  return <span>{timeAgo}</span>;
+  return <span className="text-xs text-gray-400">{timeAgo}</span>;
 };
 
 export default TimeAgo;

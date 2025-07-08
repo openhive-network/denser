@@ -23,11 +23,11 @@ function Layout({ children }: LayoutProps) {
   return (
     <>
       <Head>
-        <meta name="theme-color" content={resolvedTheme === 'dark' ? '#030711' : '#ffffff'} />
+        <meta name="theme-color" content={resolvedTheme === 'dark' ? '#000000' : '#ffffff'} />
       </Head>
       <div className="relative flex min-h-screen flex-col">
         <SiteHeader />
-        <div className="flex-1 bg-background-secondary">{children}</div>
+        <div className="bg-background">{children}</div>
       </div>
       {isClient && siteConfig.openhiveChatIframeIntegrationEnable === 'yes' && <RocketChatWidget />}
       <ModalContainer />

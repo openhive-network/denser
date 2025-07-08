@@ -16,7 +16,7 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
   }, [community.context.subscribed]);
   return (
     <Card
-      className={cn('hover my-4 flex justify-between bg-background text-primary')}
+      className={cn('hover my-4 flex justify-between bg-background text-secondary')}
       data-testid="community-list-item"
     >
       <div className="w-4/6">

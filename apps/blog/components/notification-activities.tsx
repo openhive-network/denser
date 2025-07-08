@@ -16,9 +16,9 @@ import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
-import { getLogger } from '@ui/lib/logging';
+// import { getLogger } from '@ui/lib/logging';
 
-const logger = getLogger('app');
+// const logger = getLogger('app');
 
 const NotificationActivities = ({
   data,
@@ -71,8 +71,9 @@ const NotificationActivities = ({
   } = useQuery(['apiAccount', username], () => getFindAccounts(username), {
     enabled: !!username
   });
-  const showButton = moreData?.length !== 0;
-  const noNotifications = !state || !state.length ||state.length === 0;
+  // const showButton = moreData?.length !== 0;
+  const showButton = false;
+  const noNotifications = !state || !state.length || state.length === 0;
   useEffect(() => {
     if (state) {
       setLastStateElementId(state[state.length - 1].id);

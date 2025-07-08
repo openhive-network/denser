@@ -14,10 +14,10 @@ import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components/skeleton';
-import CommunitiesSidebar from '@/blog/components/communities-sidebar';
+// import CommunitiesSidebar from '@/blog/components/communities-sidebar';
 import PostSelectFilter from '@/blog/components/post-select-filter';
 import { useRouter } from 'next/router';
-import ExploreHive from '@/blog/components/explore-hive';
+// import ExploreHive from '@/blog/components/explore-hive';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import CommunityDescription from '@/blog/components/community-description';
 import { useInView } from 'react-intersection-observer';
@@ -27,7 +27,7 @@ import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import CommunitiesMybar from '../components/communities-mybar';
+// import CommunitiesMybar from '../components/communities-mybar';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import {
   getAccountMetadata,
@@ -50,7 +50,7 @@ export const PostSkeleton = () => {
   );
 };
 
-const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
+const ParamPage: FC = ({ metadata }: any) => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const { sort, username, tag } = useSiteParams();
@@ -217,21 +217,16 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     return (
       <>
         <Head>
-          <title>{`${tabTitle} - posts Hive`}</title>
+          {/* <title>{`${tabTitle} posts - Suseona`}</title> */}
+          <title>{`Blog - Suseona`}</title>
           <meta property="og:title" content={metadata.title} />
           <meta property="og:description" content={metadata.description} />
           <meta property="og:image" content={metadata.image} />
         </Head>
-        <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
+        <div className="container mx-auto max-w-screen-2xl flex-grow px-2.5 pb-2 sm:px-4">
           <div className="grid grid-cols-12 md:gap-4">
-            <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-              {user?.isLoggedIn ? (
-                <CommunitiesMybar data={mySubsData} username={user.username} />
-              ) : (
-                <CommunitiesSidebar />
-              )}{' '}
-            </div>
-            <div className="col-span-12 md:col-span-9 xl:col-span-8">
+            <div className="hidden lg:col-span-1 lg:flex 2xl:col-span-2"></div>
+            <div className="col-span-12 md:col-span-9 lg:col-span-8 xl:col-span-7 2xl:col-span-6">
               <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
                 {communityData && subsData ? (
                   <CommunitySimpleDescription
@@ -316,9 +311,11 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                   username={tag ? tag : ' '}
                 />
               ) : user?.isLoggedIn ? (
-                <CommunitiesSidebar />
+                // <CommunitiesSidebar />
+                <></>
               ) : (
-                <ExploreHive />
+                // <ExploreHive />
+                <></>
               )}
             </div>
           </div>

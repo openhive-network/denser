@@ -1,18 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
-import { Progress } from '@hive/ui/components/progress';
+// import { Progress } from '@hive/ui/components/progress';
 import { IAccountNotificationEx } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getLogger } from '@ui/lib/logging';
+// import { getLogger } from '@ui/lib/logging';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import env from '@beam-australia/react-env';
 import Image from 'next/image';
 import TimeAgo from '@hive/ui/components/time-ago';
 
-const logger = getLogger('app');
+// const logger = getLogger('app');
 const usernamePattern = /\B@[a-z0-9.-]+/gi;
 
 const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccountNotificationEx) => {
@@ -82,11 +82,11 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
             </span>
           </div>
         </div>
-        <Progress
+        {/* <Progress
           value={score}
           className="h-[10px] w-[60px] rounded text-destructive"
           data-testid="notification-progress-bar"
-        />
+        /> */}
       </td>
     </tr>
   );

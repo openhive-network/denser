@@ -85,9 +85,9 @@ module.exports = {
         DEFAULT: {
           css: {
             maxWidth: '100%',
-            color: 'hsl(var(--primary))',
+            color: 'hsl(var(--secondary))',
             'h1, h2, h3, h4, h5, h6': {
-              color: 'hsl(var(--primary))',
+              color: 'hsl(var(--secondary))',
               fontWeight: '600',
               marginBottom: '0.25rem',
               marginTop: '2.5rem'
@@ -99,7 +99,7 @@ module.exports = {
               wordBreak: 'break-word'
             },
             blockquote: {
-              color: 'hsl(var(--primary), 0.7)',
+              color: 'hsl(var(--secondary), 0.7)',
               fontWeight: '400',
               margin: '0',
               marginBottom: '1rem',
@@ -108,11 +108,11 @@ module.exports = {
               textIndent: '-3px'
             },
             strong: {
-              color: 'hsl(var(--primary))'
+              color: 'hsl(var(--secondary))'
             },
             code: {
               backgroundColor: 'hsl(var(--background-secondary))',
-              color: 'hsl(var(--primary), 0.7)',
+              color: 'hsl(var(--secondary), 0.7)',
               fontFamily: 'Consolas, monospace',
               fontWeight: '400',
               padding: '5px',
@@ -122,7 +122,7 @@ module.exports = {
               lineHeight: '19px'
             },
             pre: {
-              color: 'hsl(var(--primary), 0.7)',
+              color: 'hsl(var(--secondary), 0.7)',
               backgroundColor: 'hsl(var(--background-secondary))',
               margin: '0',
               padding: '7px'
@@ -135,7 +135,7 @@ module.exports = {
               border: '1px solid hsl(var(--secondary))'
             },
             th: {
-              color: 'hsl(var(--primary))'
+              color: 'hsl(var(--secondary))'
             },
             tr: {
               backgroundColor: 'hsl(var(--background-secondary))',

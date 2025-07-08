@@ -39,7 +39,6 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const router = useRouter();
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
   const userFromGDPRList = gdprUserList.includes(username);
   const { isLoading: profileDataIsLoading, data: profileData } = useQuery(
@@ -318,13 +317,13 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     <Icons.calendarActive className="m-1" />
                     <span data-testid="user-last-time-active">
                       {t('user_profile.active')}{' '}
-                      <TimeAgo
+                      {/* <TimeAgo
                         date={compareDates([
                           profileData.created,
                           profileData.last_vote_time,
                           profileData.last_post
-                        ])}
-                      />
+                        ])} 
+                      />*/}
                     </span>
                   </li>
                 </ul>
@@ -352,12 +351,12 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         <div className="w-full">
           <div className="flex bg-gray-700" data-testid="profile-navigation">
             <div className="container mx-auto flex max-w-screen-xl justify-between p-0 text-white sm:pl-8">
-              <ul className="flex h-full flex-wrap gap-x-2 text-xs sm:text-base lg:flex lg:gap-8">
-                <ListItem
+              <ul className="flex h-full flex-wrap gap-x-2 text-xs sm:text-base lg:flex">
+                {/* <ListItem
                   href={`/@${username}`}
                   currentTab={router.asPath === `/@${username}`}
                   label={t('navigation.profile_navbar.blog')}
-                />
+                /> */}
                 <ListItem
                   href={`/@${username}/posts`}
                   currentTab={
@@ -375,7 +374,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 <ListItem
                   href={`/@${username}/communities`}
                   currentTab={router.asPath === `/@${username}/communities`}
-                  label={t('navigation.profile_navbar.social')}
+                  label={t('navigation.profile_navbar.Communities')}
                 />
                 <ListItem
                   href={`/@${username}/notifications`}
@@ -386,8 +385,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <ul className="flex h-full flex-nowrap text-xs sm:text-base lg:flex lg:gap-4">
                 <li>
                   <Link
-                    href={`${walletHost}/@${username}/transfers`}
-                    target="_blank"
+                    href={`/@${username}/wallet`}
                     rel="noopener noreferrer"
                     className="mr-4 flex h-12 items-center px-2 hover:bg-background hover:text-primary"
                   >
@@ -413,7 +411,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
             </div>
           </div>
         </div>
-        <main className="container mx-auto max-w-screen-xl pt-4">{children}</main>
+        <main className="px-2 pt-4 sm:px-6 md:w-9/12 md:px-10 xl:px-20">{children}</main>
       </div>
     </div>
   ) : (
