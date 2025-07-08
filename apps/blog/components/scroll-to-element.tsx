@@ -1,7 +1,10 @@
-import { FC, RefObject, useLayoutEffect, useRef } from 'react';
+import { FC, RefObject, useLayoutEffect, useEffect, useRef } from 'react';
+
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 const ScrollToElement: FC<{ rendererRef: RefObject<HTMLDivElement> }> = ({ rendererRef }) => {
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const hash = window.location.hash.slice(1);
     const handleScroll = async () => {
       if (!rendererRef.current) return;
