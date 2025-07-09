@@ -3,32 +3,43 @@ import { useTranslation } from 'next-i18next';
 import { CircleSpinner } from 'react-spinners-kit';
 import { Roles, User } from './lib/utils';
 import RolesSelect from './roles-select';
+import { useSetRoleMutation } from '@/blog/components/hooks/use-set-role-mutations';
+import { useState } from 'react';
+import { EAvailableCommunityRoles } from '@hiveio/wax';
+import { handleError } from '@ui/lib/handle-error';
 
-const AddRole = ({
-  user,
-  onClick,
-  isLoading,
-  inputValue,
-  selectValue,
-  openValue,
-  onInputChange,
-  onSelectChange,
-  onOpenValueChange
-}: {
-  user: User;
-  onClick: () => void;
-  isLoading: boolean;
-  inputValue: string;
-  selectValue: Roles;
-  openValue: string;
-  onInputChange: (value: string) => void;
-  onSelectChange: (value: Roles) => void;
-  onOpenValueChange: (value: string) => void;
-}) => {
+const AddRole = ({ community, loggedUserLevel }: { loggedUserLevel: number; community: string }) => {
   const { t } = useTranslation('common_blog');
+  const setRoleMutation = useSetRoleMutation();
+  const [inputValue, setInputChange] = useState('');
+  const [selectValue, setSelectValue] = useState<Roles>('member');
+  const [open, setOpen] = useState('');
 
+  const onUpdateRole = async () => {
+    try {
+      await setRoleMutation.mutateAsync({
+        community,
+        username: inputValue,
+        role: selectValue as EAvailableCommunityRoles
+      });
+    } catch (error) {
+      handleError(error, {
+        method: 'setRole',
+        params: { community, username: inputValue, role: selectValue as EAvailableCommunityRoles }
+      });
+    } finally {
+      setOpen('');
+      setInputChange('');
+      setSelectValue('member');
+    }
+  };
   return (
-    <Accordion type="single" collapsible value={openValue} onValueChange={onOpenValueChange}>
+    <Accordion
+      type="single"
+      collapsible
+      value={open}
+      onValueChange={(value) => setOpen((prev) => (prev === 'role-item' ? '' : value))}
+    >
       <AccordionItem value="role-item">
         <AccordionTrigger>{t('communities.add_user')}</AccordionTrigger>
         <AccordionContent>
@@ -37,24 +48,25 @@ const AddRole = ({
 
             <div>
               <span>{t('communities.username')}</span>
-              <Input value={inputValue} onChange={(e) => onInputChange(e.target.value)} />
+              <Input value={inputValue} onChange={(e) => setInputChange(e.target.value)} />
             </div>
             <div>
               <span>{t('communities.role')}</span>
               <RolesSelect
-                userLevel={user.value}
+                disabled={setRoleMutation.isLoading}
+                loggedUserLevel={loggedUserLevel}
                 value={selectValue}
-                onValueChange={(e) => onSelectChange(e)}
+                onValueChange={(e) => setSelectValue(e)}
               />
             </div>
             <Button
-              onClick={onClick}
+              onClick={onUpdateRole}
               variant="redHover"
               className="w-fit justify-self-end"
-              disabled={isLoading}
+              disabled={setRoleMutation.isLoading}
             >
-              {isLoading ? (
-                <CircleSpinner loading={isLoading} size={18} color="#dc2626" />
+              {setRoleMutation.isLoading ? (
+                <CircleSpinner loading={setRoleMutation.isLoading} size={18} color="#dc2626" />
               ) : (
                 t('communities.save')
               )}
