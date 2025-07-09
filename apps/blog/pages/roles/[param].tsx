@@ -12,24 +12,55 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getListCommunityRoles } from '@transaction/lib/bridge';
 import { getCommunityMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
-import { rolesLevels } from '@/blog/feature/community-roles/lib/utils';
+import { Roles, rolesLevels } from '@/blog/feature/community-roles/lib/utils';
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
+import { useSetRoleMutation } from '@/blog/components/hooks/use-set-role-mutations';
+import { EAvailableCommunityRoles } from '@hiveio/wax';
+import { handleError } from '@ui/lib/handle-error';
 
 const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const router = useRouter();
   const { user } = useUser();
   const [client, setClient] = useState(false);
   const { t } = useTranslation('common_blog');
+  const setRoleMutation = useSetRoleMutation();
+  const community = router.query.param as string;
+  const [selectedRole, setSelectedRole] = useState<Roles>('member');
+  const [userFromList, setUserFromList] = useState('');
+  const [open, setOpen] = useState('');
 
   useEffect(() => {
     setClient(true);
   }, []);
 
-  const tag = router.query.param as string;
+  const onUpdateRole = async () => {
+    try {
+      await setRoleMutation.mutateAsync({
+        community,
+        username: userFromList,
+        role: selectedRole as EAvailableCommunityRoles
+      });
+    } catch (error) {
+      handleError(error, {
+        method: 'setRole',
+        params: { community, username: userFromList, role: selectedRole as EAvailableCommunityRoles }
+      });
+    } finally {
+      if (open === 'role-item') {
+        setOpen('');
+        setUserFromList('');
+        setSelectedRole('member');
+      }
+    }
+  };
 
-  const { data, isLoading, isError } = useQuery(['rolesList', tag], () => getListCommunityRoles(tag), {
-    enabled: Boolean(tag)
-  });
+  const { data, isLoading, isError } = useQuery(
+    ['rolesList', community],
+    () => getListCommunityRoles(community),
+    {
+      enabled: Boolean(community)
+    }
+  );
 
   const userRole = data?.find((e) => e[0] === user.username);
   const roleValue = userRole
@@ -93,7 +124,19 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                   )}
                 </TableBody>
               </Table>
-              {roleValue && roleValue.value >= 3 && <AddRole user={roleValue} community={tag} />}
+              {roleValue && roleValue.value >= 3 && (
+                <AddRole
+                  user={roleValue}
+                  onClick={onUpdateRole}
+                  isLoading={setRoleMutation.isLoading}
+                  inputValue={userFromList}
+                  selectValue={selectedRole}
+                  onInputChange={setUserFromList}
+                  onSelectChange={setSelectedRole}
+                  openValue={open}
+                  onOpenValueChange={(value) => setOpen((prev) => (prev === 'role-item' ? '' : value))}
+                />
+              )}
               <div className="mt-12">
                 <h1>{t('communities.role_permissions')}</h1>
                 <div className="text-sm">

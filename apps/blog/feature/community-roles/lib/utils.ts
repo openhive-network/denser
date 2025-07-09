@@ -1,5 +1,7 @@
 export type User = { value: number; role: string; name: string; title: string };
 
+export type Roles = 'owner' | 'admin' | 'mod' | 'member' | 'guest' | 'muted';
+
 export const rolesLevels = [
   { name: 'owner', value: 6 },
   { name: 'admin', value: 5 },

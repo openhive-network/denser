@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/components/select';
-import { rolesLevels } from './lib/utils';
+import { Roles, rolesLevels } from './lib/utils';
 import { useTranslation } from 'next-i18next';
 
 const RolesSelect = ({
@@ -8,13 +8,13 @@ const RolesSelect = ({
   onValueChange
 }: {
   userLevel: number;
-  value: string;
-  onValueChange: (value: string) => void;
+  value: Roles;
+  onValueChange: (value: Roles) => void;
 }) => {
   const { t } = useTranslation('common_blog');
 
   return (
-    <Select value={value} onValueChange={(e) => onValueChange(e)}>
+    <Select value={value} onValueChange={(e: Roles) => onValueChange(e)}>
       <SelectTrigger>
         <SelectValue />
       </SelectTrigger>
