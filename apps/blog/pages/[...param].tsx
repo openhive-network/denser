@@ -19,10 +19,10 @@ import PostSelectFilter from '@/blog/components/post-select-filter';
 import { useRouter } from 'next/router';
 import ExploreHive from '@/blog/components/explore-hive';
 import ProfileLayout from '@/blog/components/common/profile-layout';
-import CommunityDescription from '@/blog/components/community-description';
+import CommunityDescription from '@/blog/feature/community-layout/community-description';
 import { useInView } from 'react-intersection-observer';
 import CustomError from '@/blog/components/custom-error';
-import CommunitySimpleDescription from '@/blog/components/community-simple-description';
+import CommunitySimpleDescription from '@/blog/feature/community-layout/community-simple-description';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
@@ -72,19 +72,21 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
 
   // Single effect to handle sort changes
   useEffect(() => {
-    if (routerSort && !username) {  // Only run for non-profile pages
+    if (routerSort && !username) {
+      // Only run for non-profile pages
       // Instead of removing queries, just invalidate them
       queryClient.invalidateQueries(['entriesInfinite']);
     }
   }, [routerSort, queryClient, username]);
 
   useEffect(() => {
-    if (routerTag && !username) {  // Only run for non-profile pages
+    if (routerTag && !username) {
+      // Only run for non-profile pages
       queryClient.invalidateQueries(['entriesInfinite']);
       // Optionally, prefetch the new data for instant feel
       if (isValidSort) {
-        queryClient.prefetchInfiniteQuery(['entriesInfinite', routerSort, routerTag],
-          async () => getPostsRanked(routerSort, routerTag, undefined, undefined, effectiveUsername)
+        queryClient.prefetchInfiniteQuery(['entriesInfinite', routerSort, routerTag], async () =>
+          getPostsRanked(routerSort, routerTag, undefined, undefined, effectiveUsername)
         );
       }
     }
@@ -201,8 +203,8 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       }
 
       // Prefetch the new sort data before changing routes
-      queryClient.prefetchInfiniteQuery(['entriesInfinite', e, routerTag],
-        async () => getPostsRanked(e, routerTag, undefined, undefined, effectiveUsername)
+      queryClient.prefetchInfiniteQuery(['entriesInfinite', e, routerTag], async () =>
+        getPostsRanked(e, routerTag, undefined, undefined, effectiveUsername)
       );
 
       if (routerTag) {
@@ -270,15 +272,20 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     // Debug: log data and user
     if (typeof window !== 'undefined') {
       // eslint-disable-next-line no-console
-      console.log('[ParamPage] entriesData:', entriesData, 'accountEntriesData:', accountEntriesData, 'user:', user);
+      console.log(
+        '[ParamPage] entriesData:',
+        entriesData,
+        'accountEntriesData:',
+        accountEntriesData,
+        'user:',
+        user
+      );
     }
 
     // Only show loading if main data is strictly undefined (not hydrated)
     if (typeof entriesData === 'undefined' && typeof accountEntriesData === 'undefined') {
       return <div>Loading...</div>;
     }
-
-    console.log('paramArr', paramArr, 'username', username, 'entriesData', entriesData, 'accountEntriesData', accountEntriesData);
 
     return (
       <>
@@ -494,7 +501,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const queryClient = new QueryClient();
     let sort = ctx.query.sort || 'trending';
     if (Array.isArray(sort)) sort = sort[0];
-    
+
     // Handle tag parameter - don't use it for user profiles
     let tag = '';
     if (secondParam && !firstParam.startsWith('@') && !secondParam.startsWith('@')) {
