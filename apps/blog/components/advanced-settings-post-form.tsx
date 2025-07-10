@@ -292,7 +292,7 @@ export function AdvancedSettingsPostForm({
             <div className="flex flex-col gap-1">
               <div className="my-8 flex justify-around">
                 {maxPayoutOptions.map((e) => (
-                  <div>
+                  <div key={e.value}>
                     <Checkbox id={e.value} className="hidden" onCheckedChange={() => setMaxPayout(e.value)} />
                     <Label
                       htmlFor={e.value}
@@ -327,7 +327,7 @@ export function AdvancedSettingsPostForm({
             <span>{t('submit_page.advanced_settings_dialog.what_type_of_tokens')}</span>
             <div className="my-8 flex justify-around">
               {authorRewardsOptions.map((e) => (
-                <div>
+                <div key={e.value}>
                   <Checkbox
                     id={e.value}
                     className="hidden"
