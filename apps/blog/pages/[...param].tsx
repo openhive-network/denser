@@ -10,24 +10,18 @@ import {
   getPostsRanked
 } from '@transaction/lib/bridge';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components/skeleton';
-import CommunitiesSidebar from '@/blog/components/communities-sidebar';
 import PostSelectFilter from '@/blog/components/post-select-filter';
 import { useRouter } from 'next/router';
-import ExploreHive from '@/blog/components/explore-hive';
 import ProfileLayout from '@/blog/components/common/profile-layout';
-import CommunityDescription from '@/blog/feature/community-layout/community-description';
 import { useInView } from 'react-intersection-observer';
 import CustomError from '@/blog/components/custom-error';
-import CommunitySimpleDescription from '@/blog/feature/community-layout/community-simple-description';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import CommunitiesMybar from '../components/communities-mybar';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import {
   getAccountMetadata,
@@ -38,6 +32,7 @@ import {
 import Head from 'next/head';
 import { sortToTitle, sortTypes } from '../lib/utils';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
+import CommunityLayout from '../feature/community-layout/community-layout';
 
 export const PostSkeleton = () => {
   return (
@@ -54,7 +49,7 @@ export const PostSkeleton = () => {
 const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
-  const { sort, username, tag } = useSiteParams();
+  const { username } = useSiteParams();
   const { ref, inView } = useInView();
   const { ref: refAcc, inView: inViewAcc } = useInView();
   const { user } = useUser();
@@ -100,11 +95,8 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     }
   }, [routerTag]);
 
-  const isClient = typeof window !== 'undefined';
-
   const {
     data: entriesData,
-    isLoading: entriesDataIsLoading,
     isFetching: entriesDataIsFetching,
     isError: entriesDataIsError,
     isFetchingNextPage,
@@ -152,13 +144,6 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       enabled: Boolean(user?.username)
     }
   );
-  const {
-    isFetching: AccountNotificationIsFetching,
-    isLoading: AccountNotificationIsLoading,
-    data: dataAccountNotification
-  } = useQuery(['AccountNotification', routerTag], () => getAccountNotifications(routerTag || ''), {
-    enabled: !!routerTag
-  });
   const { data: communityData } = useQuery(
     ['community', routerTag, ''],
     () => getCommunity(routerTag || '', user.username),
@@ -166,12 +151,8 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       enabled: !!routerTag
     }
   );
-  const { data: subsData } = useQuery(['subscribers', routerTag], () => getSubscribers(routerTag || ''), {
-    enabled: !!routerTag
-  });
   const {
     data: accountEntriesData,
-    isLoading: accountEntriesIsLoading,
     isFetching: accountEntriesIsFetching,
     isError: accountEntriesIsError,
     isFetchingNextPage: accountIsFetchingNextPage,
@@ -295,107 +276,74 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
           <meta property="og:description" content={metadata.description} />
           <meta property="og:image" content={metadata.image} />
         </Head>
-        <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
-          <div className="grid grid-cols-12 md:gap-4">
-            <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-              {isClient && user?.isLoggedIn ? (
-                <CommunitiesMybar data={mySubsData} username={user.username} />
-              ) : (
-                <CommunitiesSidebar />
-              )}
-            </div>
-            <div className="col-span-12 md:col-span-9 xl:col-span-8">
-              <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
-                {communityData && subsData ? (
-                  <CommunitySimpleDescription
-                    data={communityData}
-                    subs={subsData}
-                    username={routerTag ? routerTag : ' '}
-                    notificationData={dataAccountNotification}
-                  />
-                ) : null}
-              </div>
-              <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
-                <div className="my-4 flex w-full items-center justify-between" translate="no">
-                  <div className="mr-2 flex w-[320px] flex-col">
-                    <span className="text-md hidden font-medium md:block" data-testid="community-name">
+        <CommunityLayout community={routerTag}>
+          <div className="col-span-12 md:col-span-9 xl:col-span-8">
+            <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
+              <div className="my-4 flex w-full items-center justify-between" translate="no">
+                <div className="mr-2 flex w-[320px] flex-col">
+                  <span className="text-md hidden font-medium md:block" data-testid="community-name">
+                    {routerTag
+                      ? communityData
+                        ? `${communityData?.title}`
+                        : `#${routerTag}`
+                      : t('navigation.communities_nav.all_posts')}
+                  </span>
+                  {routerTag ? (
+                    <span
+                      className="hidden text-xs font-light md:block"
+                      data-testid="community-name-unmoderated"
+                    >
                       {routerTag
                         ? communityData
-                          ? `${communityData?.title}`
-                          : `#${routerTag}`
-                        : t('navigation.communities_nav.all_posts')}
+                          ? t('communities.community')
+                          : t('communities.unmoderated_tag')
+                        : ''}
                     </span>
-                    {routerTag ? (
-                      <span
-                        className="hidden text-xs font-light md:block"
-                        data-testid="community-name-unmoderated"
-                      >
-                        {routerTag
+                  ) : null}
+                  <span className="md:hidden">
+                    <CommunitiesSelect
+                      mySubsData={mySubsData}
+                      username={user?.username ? user.username : undefined}
+                      title={
+                        routerTag
                           ? communityData
-                            ? t('communities.community')
-                            : t('communities.unmoderated_tag')
-                          : ''}
-                      </span>
-                    ) : null}
-                    <span className="md:hidden">
-                      <CommunitiesSelect
-                        mySubsData={mySubsData}
-                        username={user?.username ? user.username : undefined}
-                        title={
-                          routerTag
-                            ? communityData
-                              ? `${communityData?.title}`
-                              : `#${routerTag}`
-                            : t('navigation.communities_nav.all_posts')
-                        }
-                      />
-                    </span>
-                  </div>
-                  <div className="w-[180px]">
-                    <PostSelectFilter filter={routerSort} handleChangeFilter={handleChangeFilter} />
-                  </div>
+                            ? `${communityData?.title}`
+                            : `#${routerTag}`
+                          : t('navigation.communities_nav.all_posts')
+                      }
+                    />
+                  </span>
                 </div>
-                <>
-                  {entriesData.pages.map((page, index) => {
-                    return page ? (
-                      <PostList data={page} key={`f-${index}`} isCommunityPage={!!communityData} />
-                    ) : null;
-                  })}
-                  <div>
-                    <button
-                      ref={ref}
-                      onClick={() => fetchNextPage()}
-                      disabled={!hasNextPage || isFetchingNextPage}
-                    >
-                      {isFetchingNextPage && entriesData.pages.length > 0 ? (
-                        <PostSkeleton />
-                      ) : hasNextPage ? (
-                        t('user_profile.load_newer')
-                      ) : (
-                        t('user_profile.nothing_more_to_load')
-                      )}
-                    </button>
-                  </div>
-                  <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
-                </>
+                <div className="w-[180px]">
+                  <PostSelectFilter filter={routerSort} handleChangeFilter={handleChangeFilter} />
+                </div>
               </div>
-            </div>
-            <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-              {communityData && subsData ? (
-                <CommunityDescription
-                  data={communityData}
-                  subs={subsData}
-                  notificationData={dataAccountNotification}
-                  username={routerTag ? routerTag : ' '}
-                />
-              ) : isClient && user?.isLoggedIn ? (
-                <CommunitiesSidebar />
-              ) : (
-                <ExploreHive />
-              )}
+              <>
+                {entriesData.pages.map((page, index) => {
+                  return page ? (
+                    <PostList data={page} key={`f-${index}`} isCommunityPage={!!communityData} />
+                  ) : null;
+                })}
+                <div>
+                  <button
+                    ref={ref}
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                  >
+                    {isFetchingNextPage && entriesData.pages.length > 0 ? (
+                      <PostSkeleton />
+                    ) : hasNextPage ? (
+                      t('user_profile.load_newer')
+                    ) : (
+                      t('user_profile.nothing_more_to_load')
+                    )}
+                  </button>
+                </div>
+                <div>{entriesDataIsFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+              </>
             </div>
           </div>
-        </div>
+        </CommunityLayout>
       </>
     );
   }

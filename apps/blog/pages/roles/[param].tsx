@@ -56,7 +56,7 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
         <meta property="og:description" content={metadata.description} />
         <meta property="og:image" content={metadata.image} />
       </Head>
-      <CommunityLayout>
+      <CommunityLayout community={community}>
         <div className="my-4 flex w-full items-center justify-between" translate="no">
           <div className="m-2 w-full bg-background px-8 py-6">
             <h2 className="mb-1 text-2xl">{t('communities.user_roles')}</h2>
@@ -70,7 +70,7 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
               </TableHeader>
               <TableBody>
                 {data.map((e) => (
-                  <TableItem loggedUserValue={loggedUser.value} item={e} community={community} />
+                  <TableItem loggedUserValue={loggedUser.value} item={e} community={community} key={e.name} />
                 ))}
               </TableBody>
             </Table>

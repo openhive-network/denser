@@ -1,10 +1,8 @@
-import Link from 'next/link';
 import { ReactNode } from 'react';
 import CommunitySimpleDescription from './community-simple-description';
 import CommunitiesMybar from '../../components/communities-mybar';
 import CommunitiesSidebar from '../../components/communities-sidebar';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/router';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import {
   getAccountNotifications,
@@ -15,11 +13,10 @@ import {
 import CommunityDescription from './community-description';
 import SimpleDescriptionSkeleton from '@/blog/feature/community-layout/simple-description-skeleton';
 import DescriptionSkeleton from './descripton-skeleton';
+import ExploreHive from '@/blog/components/explore-hive';
 
-const CommunityLayout = ({ children }: { children: ReactNode }) => {
-  const router = useRouter();
+const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
   const { user } = useUser();
-  const tag = router.query.param as string;
 
   const { data: mySubsData } = useQuery(
     ['subscriptions', user?.username],
@@ -30,23 +27,22 @@ const CommunityLayout = ({ children }: { children: ReactNode }) => {
   );
 
   const { data: communityData, isLoading: communityDataIsLoading } = useQuery(
-    ['community', tag, ''],
-    () => getCommunity(tag, user.username),
-    { enabled: !!tag }
+    ['community', community],
+    () => getCommunity(community, user.username),
+    { enabled: !!community }
   );
 
   const { data: subsData, isLoading: subsIsLoading } = useQuery(
-    ['subscribers', tag],
-    () => getSubscribers(tag),
-    { enabled: !!tag }
+    ['subscribers', community],
+    () => getSubscribers(community),
+    { enabled: !!community }
   );
 
   const { data: notificationData } = useQuery(
-    ['AccountNotification', tag],
-    () => getAccountNotifications(tag),
-    { enabled: !!tag }
+    ['AccountNotification', community],
+    () => getAccountNotifications(community),
+    { enabled: !!community }
   );
-
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
@@ -59,40 +55,35 @@ const CommunityLayout = ({ children }: { children: ReactNode }) => {
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div data-testid="card-explore-hive-mobile" className="md:col-span-10 md:flex xl:hidden">
-            {communityDataIsLoading || subsIsLoading ? (
+            {!community ? null : communityDataIsLoading || subsIsLoading ? (
               <SimpleDescriptionSkeleton />
             ) : communityData && subsData ? (
               <CommunitySimpleDescription
                 data={communityData}
                 subs={subsData}
-                username={tag || ' '}
+                username={community}
                 notificationData={notificationData}
               />
             ) : null}
           </div>
-          <div>
-            <div className="mx-2 text-lg xl:mt-4">
-              <Link className="text-destructive" href={`/trending/${communityData?.name}`}>
-                {communityData?.title}
-              </Link>
-            </div>
-            <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">{children}</div>
-          </div>
+
+          <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">{children}</div>
         </div>
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-          {communityDataIsLoading || subsIsLoading ? (
+          {!community && !user.username ? (
+            <ExploreHive />
+          ) : !community && (!communityData || !communityData) ? (
+            <CommunitiesSidebar />
+          ) : !!community && (communityDataIsLoading || subsIsLoading) ? (
             <DescriptionSkeleton />
-          ) : (
-            communityData &&
-            subsData && (
-              <CommunityDescription
-                data={communityData}
-                subs={subsData}
-                notificationData={notificationData}
-                username={tag}
-              />
-            )
-          )}
+          ) : communityData && subsData ? (
+            <CommunityDescription
+              data={communityData}
+              subs={subsData}
+              notificationData={notificationData}
+              username={community}
+            />
+          ) : null}
         </div>
       </div>
     </div>
