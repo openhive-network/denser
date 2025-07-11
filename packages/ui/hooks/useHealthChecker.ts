@@ -1,6 +1,5 @@
 
-import {HealthCheckerService, ApiChecker, HealthCheckerComponent } from "@hiveio/healthchecker-component";
-import { HealthChecker } from "@hiveio/wax";
+import {HealthCheckerService, ApiChecker } from "@hiveio/healthchecker-component";
 import { useEffect, useState } from "react";
 import {hiveChainService} from "@transaction/lib/hive-chain-service"
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
@@ -33,12 +32,10 @@ export const useHealthChecker = (key: string, apiCheckers: ApiChecker[] | undefi
 
   const startHealthCheckerService = async () => {
     if (apiCheckers) {
-      const healthChecker = new HealthChecker();
       const hcService = new HealthCheckerService(
         key,
         apiCheckers,
         DEFAULTS_ENDPOINTS,
-        healthChecker,
         endpoint,
         changeEndpoint,
         enableLogs

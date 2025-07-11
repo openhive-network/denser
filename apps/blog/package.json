@@ -41,7 +41,7 @@
     "@hive/ui": "workspace:*",
     "@hive/renderer": "workspace:*",
     "@hiveio/wax": "catalog:hiveio-toolset",
-    "@hiveio/healthchecker-component": "1.0.0-stable.250624095934",
+    "@hiveio/healthchecker-component": "1.0.0-stable.250711100411",
     "@hookform/resolvers": "^3.1.1",
     "@next/bundle-analyzer": "^14.2.2",
     "@tanstack/react-query": "^4.36.1",
