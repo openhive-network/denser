@@ -5,6 +5,11 @@ import { users } from '../support/loginHelper';
 import { VotingSlider } from '../support/pages/votingSlider';
 import { ApiHelper } from '../support/apiHelper';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
+import { waitForCircleSpinnerIsDetatched,
+         waitForFirstBroadcastedUpvoteLightMode,
+         waitForFirstProcessedUpvoteLightMode,
+         waitForFirstBroadcastedDownvoteLightMode,
+         waitForFirstProcessedDownvoteLightMode } from '../support/waitHelper';
 
 test.describe('Test for slider voting', () => {
   const url: string = process.env.REACT_APP_API_ENDPOINT || '';
@@ -113,7 +118,8 @@ test.describe('Test for slider voting', () => {
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the upvote button
-      await firstPostCardUpvoteButtonLocator.waitFor({ state: 'visible' });
+      // await waitForCircleSpinnerIsDetatched(denserAutoTest3Page.page);
+      await waitForFirstProcessedUpvoteLightMode(denserAutoTest3Page.page);
       expect(await homePage.getElementCssPropertyValue(firstPostCardUpvoteButtonLocator, 'color')).toBe(
         lightModeWhiteColor
       );
@@ -127,7 +133,8 @@ test.describe('Test for slider voting', () => {
       // Click Upvote button again to undo the upvote your vote
       await firstPostCardUpvoteButtonLocatorToClick.click();
       // Wait until optimistic ui is finished and validate the color of the upvote button
-      await firstPostCardUpvoteButtonLocator.waitFor({ state: 'visible' });
+      // await waitForCircleSpinnerIsDetatched(denserAutoTest3Page.page);
+      await waitForFirstBroadcastedUpvoteLightMode(denserAutoTest3Page.page);
       // Hovering the downvote button due to validate the real uncovered upvote button
       await firstPostCardDownvoteButtonLocator.hover();
       expect(await homePage.getElementCssPropertyValue(firstPostCardUpvoteButtonLocator, 'color')).toBe(
@@ -188,7 +195,8 @@ test.describe('Test for slider voting', () => {
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
       // Wait until optimistic ui is finished
-      await firstPostCardUpvoteButtonLocator.waitFor({ state: 'visible' });
+      await waitForFirstProcessedUpvoteLightMode(denserAutoTest3Page.page);
+      // await waitForCircleSpinnerIsDetatched(denserAutoTest3Page.page);
       // wait for promise to resolve intercepted request
       const broadcastTransactionReq = await broadcastTransaction;
       await denserAutoTest3Page.page.waitForTimeout(10000);
@@ -210,10 +218,11 @@ test.describe('Test for slider voting', () => {
       // Click Upvote button again to undo the upvote your vote
       await firstPostCardUpvoteButtonLocatorToClick.click();
       // Wait until optimistic ui is finished and validate the color of the upvote button
-      await firstPostCardUpvoteButtonLocator.waitFor({ state: 'visible' });
+      await waitForFirstBroadcastedUpvoteLightMode(denserAutoTest3Page.page);
+      // await waitForCircleSpinnerIsDetatched(denserAutoTest3Page.page);
       // wait for promise to resolve intercepted request
       const undoYourUpvoteBroadcastTransactionReq = await undoYourUpvoteBroadcastTransaction;
-      await denserAutoTest3Page.page.waitForTimeout(10000);
+      await denserAutoTest3Page.page.waitForTimeout(12000);
       const undoYourUpvoteBroadcastTransactionReqJson =
         await undoYourUpvoteBroadcastTransactionReq.postDataJSON();
       // console.log('operations >>>: ', await undoYourUpvoteBroadcastTransactionReqJson.params.trx.operations);
@@ -414,13 +423,8 @@ test.describe('Test for slider voting', () => {
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the downvote button
-      await firstPostCardDownvoteButtonLocator.waitFor({ state: 'visible' });
-      expect(await homePage.getElementCssPropertyValue(firstPostCardDownvoteButtonLocator, 'color')).toBe(
-        lightModeWhiteColor
-      );
-      expect(
-        await homePage.getElementCssPropertyValue(firstPostCardDownvoteButtonLocator, 'background-color')
-      ).toBe(lightModeGreyColor);
+      await waitForCircleSpinnerIsDetatched(denserAutoTest3Page.page);
+      await waitForFirstProcessedDownvoteLightMode(denserAutoTest3Page.page);
       // Hovering the upvote button due to validate the real uncovered downvote button after voting
       await firstPostCardUpvoteButtonLocator.hover();
       expect(await homePage.getElementCssPropertyValue(firstPostCardDownvoteButtonLocator, 'color')).toBe(
@@ -436,7 +440,8 @@ test.describe('Test for slider voting', () => {
       // Click Downvote button again to undo the downvote your vote
       await firstPostDownvoteButtonLocatorToClick.click();
       // Wait until optimistic ui is finished and validate the color of the downvote button
-      await firstPostCardDownvoteButtonLocator.waitFor({ state: 'visible' });
+      await waitForCircleSpinnerIsDetatched(denserAutoTest3Page.page);
+      await waitForFirstBroadcastedDownvoteLightMode(denserAutoTest3Page.page);
       // Hovering the upvote button due to validate the real uncovered downvote button
       await firstPostCardUpvoteButtonLocator.hover();
       expect(await homePage.getElementCssPropertyValue(firstPostCardDownvoteButtonLocator, 'color')).toBe(
@@ -498,7 +503,8 @@ test.describe('Test for slider voting', () => {
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the downvote button
-      await firstPostCardDownvoteButtonLocator.waitFor({ state: 'visible' });
+      // await waitForCircleSpinnerIsDetatched(denserAutoTest3Page.page);
+      await waitForFirstProcessedDownvoteLightMode(denserAutoTest3Page.page);
       // Wait for promise to resolve intercepted request
       const broadcastTransactionReq = await broadcastTransaction;
       await denserAutoTest3Page.page.waitForTimeout(10000);
@@ -520,7 +526,8 @@ test.describe('Test for slider voting', () => {
       // Click Downvote button again to undo the downvote your vote
       await firstPostDownvoteButtonLocatorToClick.click();
       // Wait until optimistic ui is finished and validate the color of the downvote button
-      await firstPostCardDownvoteButtonLocator.waitFor({ state: 'visible' });
+      // await waitForCircleSpinnerIsDetatched(denserAutoTest3Page.page);
+      await waitForFirstBroadcastedDownvoteLightMode(denserAutoTest3Page.page);
       // Wait for promise to resolve intercepted request
       const undoYourDownvoteBroadcastTransactionReq = await undoYourDownvoteBroadcastTransaction;
       await denserAutoTest3Page.page.waitForTimeout(10000);

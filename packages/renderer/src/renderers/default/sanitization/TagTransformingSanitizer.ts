@@ -187,7 +187,7 @@ export class TagTransformingSanitizer {
                     }
                     if (href && !this.options.isLinkSafeFn(href)) {
                         attys.rel = this.options.addNofollowToLinks ? 'nofollow noopener' : 'noopener';
-                        attys.title = this.localization.phishingWarning;
+                        // attys.title = this.localization.phishingWarning;
                         attys.target = this.options.addTargetBlankToLinks ? '_blank' : '_self';
                     }
                     if (href && this.options.addExternalCssClassToMatchingLinksFn(href)) {

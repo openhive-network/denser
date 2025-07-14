@@ -6,13 +6,15 @@ import { LoginForm } from '../support/pages/loginForm';
 import { UnmoderatedTagPage } from '../support/pages/unmoderatedTagPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { PostPage } from '../support/pages/postPage';
+import { waitForPostIsVisibleInUnmoderatedTagPage } from '../support/waitHelper';
 
-test.describe.serial('Creating post tests with POM and fixture users', () => {
+test.describe('Creating post tests with POM and fixture users', () => {
 
   test('Validate creating the new post by clicking the nav pencil icon for denserautotest4', async ({
     denserAutoTest4Page
   }) => {
-    const postTitle: string = `Testing post POM - ${users.denserautotest4.username}`;
+    const timestamp: string = new Date().toString();
+    const postTitle: string = `Testing post POM - ${users.denserautotest4.username} - ${timestamp}`;
     const postContentText: string = 'Content of the testing post POM';
     const postSummary: string = 'My testing post POM';
     const postTag: string = 'test';
@@ -34,10 +36,12 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     // Validate the post editor is open and create simple post
     await postEditorPage.createSimplePost(postTitle,postContentText,postSummary,postTag);
     // If a password to unlock key is needed
-    await loginForm.page.waitForTimeout(20000);
+    await loginForm.page.waitForTimeout(2000);
     await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword)
     // Validate that user has been moved to the unmoderated tag page
     await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
+    // Wait until optimistic ui is finished
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest4Page.page, postTitle);
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle, postSummary);
     // After creating post with category user is moving to the created/new page with tag name and Unmoderated tag posts lists
@@ -47,7 +51,8 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
   test('Validate creating the new post by clicking the nav pencil icon for denserautotest0', async ({
     denserAutoTest0Page
   }) => {
-    const postTitle: string = `Testing post POM - ${users.denserautotest0.username}`;
+    const timestamp: string = new Date().toString();
+    const postTitle: string = `Testing post POM - ${users.denserautotest0.username} + ${timestamp}`;
     const postContentText: string = 'Content of the testing post POM';
     const postSummary: string = 'My testing post POM';
     const postTag: string = 'test';
@@ -68,10 +73,12 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     // Validate the post editor is open and create simple post
     await postEditorPage.createSimplePost(postTitle,postContentText,postSummary,postTag);
     // If a password to unlock key is needed
-    await loginForm.page.waitForTimeout(20000);
+    await loginForm.page.waitForTimeout(2000);
     await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest0.safeStoragePassword)
     // Validate that user has been moved to the unmoderated tag page
     await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
+    // Wait until optimistic ui is finished
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest0Page.page, postTitle);
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest0.username, postTitle, postSummary);
   });
@@ -79,12 +86,13 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
   test('Validate creating the two posts one by one by clicking the nav pencil icon for denserautotest4', async ({
     denserAutoTest4Page
   }) => {
-    const postTitle1: string = `1 Testing post POM - ${users.denserautotest4.username}`;
+    const timestamp: string = new Date().toString();
+    const postTitle1: string = `1 Testing post POM - ${users.denserautotest4.username} + ${timestamp}`;
     const postContentText1: string = '1 Content of the testing post POM';
     const postSummary1: string = '1 My testing post POM';
     const postTag: string = 'test';
 
-    const postTitle2: string = `2 Testing post POM - ${users.denserautotest4.username}`;
+    const postTitle2: string = `2 Testing post POM - ${users.denserautotest4.username} + ${timestamp}`;
     const postContentText2: string = '2 Content of the testing post POM';
     const postSummary2: string = '2 My testing post POM';
 
@@ -105,10 +113,12 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     // Validate the post editor is open and create simple post
     await postEditorPage.createSimplePost(postTitle1,postContentText1,postSummary1,postTag);
     // If a password to unlock key is needed
-    await loginForm.page.waitForTimeout(20000);
+    await loginForm.page.waitForTimeout(2000);
     await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword)
     // Validate that user has been moved to the unmoderated tag page
     await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
+    // Wait until optimistic ui is finished
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest4Page.page, postTitle1);
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle1, postSummary1);
 
@@ -118,12 +128,12 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     // Validate the post editor is open and create simple post
     await postEditorPage.createSimplePost(postTitle2,postContentText2,postSummary2,postTag);
     // If a password to unlock key is needed
-    await loginForm.page.waitForTimeout(20000);
+    await loginForm.page.waitForTimeout(2000);
     await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword)
     // Validate that user has been moved to the unmoderated tag page
-    await loginForm.page.waitForTimeout(20000);
-    await unmoderatedTagPage.page.reload({waitUntil:'load'});
     await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
+    // Wait until optimistic ui is finished
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest4Page.page, postTitle2);
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle2, postSummary2);
   });
@@ -232,7 +242,7 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     const postTag: string = 'test';
 
     const communityNameText = await denserAutoTest0Page.page.getByRole('link', { name: 'Test wizard' }).innerText()
-    
+
     await denserAutoTest0Page.page.getByRole('link', { name: 'Test wizard' }).click()
     await communityPage.communityNewPostButton.click()
 
@@ -243,7 +253,7 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     await postEditorPage.getEnterYourTagsInput.fill(postTag);
     await denserAutoTest0Page.page.mouse.wheel(0, 2000)
     await postEditorPage.getSubmitPostButton.click()
-    
+
     await expect(communityPage.communityNameTitle).toBeVisible()
     await expect(communityPage.communityNameTitle).toContainText(communityNameText)
   });
@@ -252,16 +262,16 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     const homePage = new HomePage(denserAutoTest0Page.page);
     const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
     const postPage = new PostPage(denserAutoTest0Page.page);
-    
+
 
     const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
     const postContentText: string = 'Post with link http://example.com" Example';
     const postSummary: string = '1 My testing post POM';
     const postTag: string = 'test';
-    
+
     await homePage.getNavCreatePost.click();
     await expect(postEditorPage.getPostTitleInput).toBeVisible()
-    
+
     await postEditorPage.getPostTitleInput.fill(postTitle);
     await postEditorPage.getEditorContentTextarea.fill(postContentText);
     await postEditorPage.getPostSummaryInput.fill(postSummary);
@@ -271,10 +281,10 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     await expect(postPage.postImage.first()).toBeVisible()
 
     await postPage.postImage.first().click()
-    
+
     await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString)).toBeVisible()
     await expect(denserAutoTest0Page.page.locator(postPage.articleBodyString)).toContainText(postContentText)
-   
+
   });
 
   test('Creating post in the community by clicking the pencil icone and select Post to name of the community', async ({ denserAutoTest0Page }) => {
@@ -282,16 +292,16 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
     const postPage = new PostPage(denserAutoTest0Page.page);
     const communitiesPage = new CommunitiesPage(denserAutoTest0Page.page)
-    
+
 
     const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
     const postContentText: string = '1 Content of the testing post POM';
     const postSummary: string = '1 My testing post POM';
     const postTag: string = 'test';
-    
+
     await homePage.getNavCreatePost.click();
     await expect(postEditorPage.getPostTitleInput).toBeVisible()
-    
+
     await postEditorPage.getPostTitleInput.fill(postTitle);
     await postEditorPage.getEditorContentTextarea.fill(postContentText);
     await postEditorPage.getPostSummaryInput.fill(postSummary);
@@ -299,11 +309,11 @@ test.describe.serial('Creating post tests with POM and fixture users', () => {
     await postPage.postingToDropdown.click()
     await expect(denserAutoTest0Page.page.getByLabel('Test wizard')).toBeVisible()
     await denserAutoTest0Page.page.getByLabel('Test wizard').click()
-    await postEditorPage.getSubmitPostButton.click()   
+    await postEditorPage.getSubmitPostButton.click()
     await expect(postPage.postImage.first()).toBeVisible()
     await homePage.getTrendingCommunitiesSideBar.locator('a').getByText('Test wizard').click()
     await communitiesPage.validataCommunitiesPageIsLoaded('Test wizard')
-  
+
     const firstPostTitleText = await homePage.postTitle.first().innerText()
 
     await expect(firstPostTitleText).toContain(postTitle)

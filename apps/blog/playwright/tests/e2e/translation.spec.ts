@@ -61,10 +61,8 @@ test.describe('Translation tests', () => {
     await homePage.languageMenuPl.click();
     await expect(profilePage.profileInfo).toBeVisible();
 
-    await expect(page.getByRole('link', { name: /Liczba obserwujących:| Brak obserwujących/ })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Liczba obserwujących:| Brak obserwujących/ })).toContainText(
-      /Liczba obserwujących:| Brak obserwujących/
-    );
+    await expect(page.getByRole('link', { name: /^(Liczba obserwujących:|Brak obserwujących)/ })).toBeVisible();
+
     await expect(page.getByRole('link', { name: /Liczba wpisów:| Brak wpisów/ })).toBeVisible();
     await expect(page.getByRole('link', { name: /Liczba wpisów:| Brak wpisów/ })).toContainText(/Liczba wpisów:| Brak wpisów/);
     await expect(page.getByRole('link', { name: /Liczba obserwowanych:|Brak obserwowanych/gm })).toBeVisible();

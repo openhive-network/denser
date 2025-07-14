@@ -4,6 +4,7 @@ import { logger } from '@ui/lib/logger';
 
 const apiDevOrigin = env('AI_DOMAIN') || process.env.AI_DOMAIN;
 
+// FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getSimilarPosts = async ({
   pattern,
   tr_body = 100,
@@ -34,6 +35,7 @@ export const getSimilarPosts = async ({
   }
 };
 
+// FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
     const response = await fetch(`${apiDevOrigin}/hivesense-api/`);
@@ -46,6 +48,7 @@ export const getHiveSenseStatus = async (): Promise<boolean> => {
   }
 };
 
+// FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getSuggestions = async ({
   author,
   permlink,

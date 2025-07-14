@@ -84,6 +84,15 @@ export const getCommunityMetadata = async (
   };
 
   try {
+      if(secondParam === '') {
+        const defaultMetadata = {
+          tabTitle: '',
+          description: '',
+          image: 'https://hive.blog/images/hive-blog-share.png',
+          title: firstParam
+      };  
+      return defaultMetadata;
+    }
     // Fetch community data
     const data = await getCommunity(secondParam);
     // If the community data does not exist, throw an error

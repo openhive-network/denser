@@ -8,7 +8,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@u
 import { useEffect, useRef, useState } from 'react';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
-import { useRouter } from 'next/router';
 import DetailsCardHover from './details-card-hover';
 import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
@@ -56,7 +55,6 @@ const CommentListItem = ({
 }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
-  const router = useRouter();
   const { user } = useUser();
   const ref = useRef<HTMLTableRowElement>(null);
   const [hiddenComment, setHiddenComment] = useState(
@@ -65,7 +63,7 @@ const CommentListItem = ({
   const [openState, setOpenState] = useState<string>(comment.stats?.gray && hiddenComment ? '' : 'item-1');
   const [tempraryHidden, setTemporaryHidden] = useState(false);
   const commentId = `@${username}/${comment.permlink}`;
-  const storageId = `replybox-/${username}/${comment.permlink}`;
+  const storageId = `replybox-/${username}/${comment.permlink}-${user.username}`;
   const [edit, setEdit] = useState(false);
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
