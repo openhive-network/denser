@@ -20,13 +20,12 @@ import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
-
 import { getAccount } from '@transaction/lib/hive';
 import TooltipContainer from '@ui/components/tooltip-container';
-import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { useRouter } from 'next/router';
 import { cn } from '@ui/lib/utils';
 import { getHiveSenseStatus } from '../lib/get-data';
+import SearchBar from '../feature/search/search-bar';
 
 const SiteHeader: FC = () => {
   const { t } = useTranslation('common_blog');
@@ -90,7 +89,7 @@ const SiteHeader: FC = () => {
       <div className="container flex h-16 w-full items-center justify-between">
         <Link href="/trending" className="flex items-center space-x-2">
           <Icons.hive className="h-6 w-6" />
-          <div className='flex flex-col md:flex-row'>
+          <div className="flex flex-col md:flex-row">
             <span className="font-bold sm:inline-block">{siteConfig.name}</span>
             {siteConfig.chainEnv !== 'mainnet' && (
               <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
@@ -123,7 +122,7 @@ const SiteHeader: FC = () => {
               {router.pathname === '/search' ? (
                 <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
               ) : (
-                <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
+                <SearchBar aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
               )}
             </div>
             <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" />

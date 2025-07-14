@@ -1,44 +1,54 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
-type SearchMode = 'ai' | 'search';
+export type SearchMode = 'ai' | 'users' | 'userTopics' | 'tags' | 'community' | 'classic';
 
 export function useSearch(aiAvailable: boolean) {
   const router = useRouter();
-  const sort = router.query.s as string;
   const query = router.query.q as string;
-  const [inputValue, setInputValue] = useState(query ?? '');
-  const [mode, setMode] = useState<SearchMode>(!aiAvailable || !!sort ? 'search' : 'ai');
+  const secondQuery = router.query.p as string;
+  const aiQuery = router.query.ai as string;
+  const [inputValue, setInputValue] = useState(query ?? aiQuery ?? '');
+  const [secondInputValue, setSecondInputValue] = useState(secondQuery ?? '');
+  const [mode, setMode] = useState<SearchMode>(!aiAvailable ? 'classic' : 'ai');
 
   useEffect(() => {
-    if (aiAvailable && !sort) {
+    if (aiAvailable) {
       setMode('ai');
     }
-  }, [aiAvailable, sort]);
+  }, [aiAvailable]);
 
   const handleSearch = (value: string, currentMode: SearchMode) => {
-    if (value.startsWith('%')) setInputValue(value.slice(1));
-    if (value.startsWith('/')) {
-      const [first_word, ...all_after] = value.trim().slice(1).split(' ');
-      router.push(`/search?a=${encodeURIComponent(first_word)}&p=${encodeURIComponent(all_after.join(' '))}`);
-      return;
-    }
-    if (value.startsWith('@')) {
-      router.push(`@${encodeURIComponent(value.trim().slice(1))}`);
-      return;
-    } else {
-      const searchParams =
-        currentMode === 'search'
-          ? `q=${encodeURIComponent(value)}&s=${sort ?? 'newest'}`
-          : `q=${encodeURIComponent(value)}`;
-      router.push(`/search?${searchParams}`);
-      return;
+    switch (currentMode) {
+      case 'ai':
+        router.push(`/search?ai=${encodeURIComponent(value)}`);
+        break;
+      case 'users':
+        router.push(`@${encodeURIComponent(value)}`);
+        break;
+      case 'userTopics':
+        router.push(`/search?a=${encodeURIComponent(value)}&p=${encodeURIComponent(secondInputValue)}`);
+        break;
+      case 'tags':
+        router.push(`trending/${encodeURIComponent(value)}`);
+        break;
+      case 'community':
+        router.push(`trending/${encodeURIComponent(value)}`);
+        break;
+      case 'classic':
+        router.push(`/search?q=${encodeURIComponent(value)}&s=trending`);
+        break;
+      default:
+        router.push(`/search?q=${encodeURIComponent(value)}&s=trending`);
+        break;
     }
   };
 
   return {
     inputValue,
     setInputValue,
+    secondInputValue,
+    setSecondInputValue,
     mode,
     setMode,
     handleSearch

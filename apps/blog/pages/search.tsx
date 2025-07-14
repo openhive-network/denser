@@ -8,7 +8,6 @@ import { useInView } from 'react-intersection-observer';
 import Head from 'next/head';
 import PostList from '../components/post-list';
 import { getSearch } from '@transaction/lib/bridge';
-import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { useLocalStorage } from 'usehooks-ts';
 import { useEffect } from 'react';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -19,8 +18,7 @@ import { useTranslation } from 'next-i18next';
 import SearchCard from '../components/search-card';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getHiveSenseStatus, getSimilarPosts } from '../lib/get-data';
-import { PopoverCardData } from '../components/popover-card-data';
-import { Card } from '@ui/components/card';
+import SearchBar from '../feature/search/search-bar';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
@@ -35,9 +33,7 @@ export default function SearchPage() {
   const { t } = useTranslation('common_blog');
   const query = router.query.q as string;
   const sort = router.query.s as string;
-  const searchedAuthor = router.query.a as string;
-  const searchedPost = router.query.p as string;
-  const aiSearch = !!query && !sort;
+  const aiQuery = router.query.ai as string;
   const { data: hiveSense, isLoading: hiveSenseLoading } = useQuery(
     ['hivesense-api'],
     () => getHiveSenseStatus(),
@@ -48,10 +44,10 @@ export default function SearchPage() {
     }
   );
   const { data, isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    ['similarPosts', query],
+    ['similarPosts', aiQuery],
     async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
       return await getSimilarPosts({
-        pattern: query,
+        pattern: aiQuery,
         observer: user.username !== '' ? user.username : 'hive.blog',
         start_permlink: pageParam?.permlink ?? '',
         start_author: pageParam?.author ?? '',
@@ -71,7 +67,7 @@ export default function SearchPage() {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,
-      enabled: aiSearch
+      enabled: !!aiQuery
     }
   );
   const {
@@ -87,7 +83,7 @@ export default function SearchPage() {
     (lastPage) => getSearch(query, lastPage.pageParam, sort),
     {
       getNextPageParam: (lastPage) => lastPage.scroll_id,
-      enabled: Boolean(sort) && Boolean(query)
+      enabled: !!sort && !!query
     }
   );
   useEffect(() => {
@@ -149,11 +145,11 @@ export default function SearchPage() {
       <div className="m-auto flex max-w-4xl flex-col gap-12 px-4 py-8">
         <div className="flex flex-col gap-4">
           <div className="w-full">
-            <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} searchPage />
+            <SearchBar aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} searchPage />
           </div>
         </div>
         <div>
-          {!aiSearch || !query ? null : isLoading ? (
+          {!aiQuery ? null : isLoading ? (
             <Loading loading={isLoading} />
           ) : data ? (
             data.pages.map((page, index) => {
@@ -180,19 +176,7 @@ export default function SearchPage() {
           <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
         </div>
 
-        {searchedAuthor && !!searchedPost ? (
-          <div className="flex flex-col items-center gap-4">
-            <h2 className="text-center text-2xl font-bold">
-              {`Authors posting about ${searchedAuthor} about ${searchedPost}`}
-            </h2>
-            <Card className="w-fit">
-              <PopoverCardData author={searchedAuthor} blacklist={[]} />
-            </Card>
-
-            <div>Post List not available yet</div>
-          </div>
-        ) : null}
-        {!!sort ? (
+        {!!sort && !!query ? (
           <>
             {entriesDataIsError ? null : entriesDataIsLoading ? (
               <Loading loading={entriesDataIsLoading && entriesDataIsFetching} />
