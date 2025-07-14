@@ -122,7 +122,7 @@ const SiteHeader: FC = () => {
               {router.pathname === '/search' ? (
                 <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
               ) : (
-                <SearchBar aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
+                <SearchBar aiAvailable={!!hiveSense} />
               )}
             </div>
             <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" />

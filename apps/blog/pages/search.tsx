@@ -146,7 +146,7 @@ export default function SearchPage() {
       <div className="m-auto flex max-w-4xl flex-col gap-12 px-4 py-8">
         <div className="flex flex-col gap-4">
           <div className="w-full">
-            <SearchBar aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} searchPage />
+            <SearchBar aiAvailable={!!hiveSense} />
           </div>
         </div>
         <div>

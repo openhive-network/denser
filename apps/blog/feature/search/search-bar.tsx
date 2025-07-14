@@ -5,14 +5,7 @@ import { useSearch } from '@ui/hooks/useSearch';
 import { AutoComplete } from './autocompleter';
 import SmartSelect from './smart-select';
 
-interface ModeInputProps {
-  className?: string;
-  aiAvailable: boolean;
-  isLoading: boolean;
-  searchPage?: boolean;
-}
-
-const SearchBar = ({ className, aiAvailable, isLoading, searchPage }: ModeInputProps) => {
+const SearchBar = ({ aiAvailable }: { aiAvailable: boolean }) => {
   const { inputValue, setInputValue, mode, setMode, handleSearch, secondInputValue, setSecondInputValue } =
     useSearch(aiAvailable);
   const inputRef = useRef<HTMLInputElement>(null);
