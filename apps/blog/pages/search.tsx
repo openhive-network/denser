@@ -43,33 +43,34 @@ export default function SearchPage() {
       refetchOnMount: false
     }
   );
-  const { data, isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    ['similarPosts', aiQuery],
-    async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
-      return await getSimilarPosts({
-        pattern: aiQuery,
-        observer: user.username !== '' ? user.username : 'hive.blog',
-        start_permlink: pageParam?.permlink ?? '',
-        start_author: pageParam?.author ?? '',
-        limit: PER_PAGE
-      });
-    },
-    {
-      getNextPageParam: (lastPage) => {
-        if (lastPage && lastPage.length === PER_PAGE) {
-          return {
-            author: lastPage[lastPage.length - 1].author,
-            permlink: lastPage[lastPage.length - 1].permlink
-          };
-        }
+  const { data, isLoading, isFetching, isError, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useInfiniteQuery(
+      ['similarPosts', aiQuery],
+      async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
+        return await getSimilarPosts({
+          pattern: aiQuery,
+          observer: user.username !== '' ? user.username : 'hive.blog',
+          start_permlink: pageParam?.permlink ?? '',
+          start_author: pageParam?.author ?? '',
+          limit: PER_PAGE
+        });
       },
+      {
+        getNextPageParam: (lastPage) => {
+          if (lastPage && lastPage.length === PER_PAGE) {
+            return {
+              author: lastPage[lastPage.length - 1].author,
+              permlink: lastPage[lastPage.length - 1].permlink
+            };
+          }
+        },
 
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false,
-      enabled: !!aiQuery
-    }
-  );
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchOnMount: false,
+        enabled: !!aiQuery
+      }
+    );
   const {
     data: entriesData,
     isLoading: entriesDataIsLoading,
@@ -155,6 +156,8 @@ export default function SearchPage() {
             data.pages.map((page, index) => {
               return page ? <PostList data={page} key={`ai-${index}`} /> : null;
             })
+          ) : isError ? (
+            <div>Error loading AI search results.</div>
           ) : null}
           <div>
             <button
