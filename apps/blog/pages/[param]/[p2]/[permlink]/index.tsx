@@ -179,11 +179,13 @@ function PostPage({
   const userFromDMCA = dmcaUserList.some((e) => e === post?.author);
   const legalBlockedUser = userIllegalContent.some((e) => e === post?.author);
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
-  const storageId = `replybox-/${username}/${post?.permlink}`;
+  const storageId = `replybox-/${username}/${post?.permlink}-${user.username}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
-  const [storedComment] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
+  const [storedComment] = useLocalStorage<string>(`replyTo-/${username}/${permlink}-${user.username}`, '');
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
+  const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);
+
   const [edit, setEdit] = useState(false);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
@@ -385,7 +387,9 @@ function PostPage({
                   community={crossedPost ? crosspost.communityTag : community}
                   category={post.category}
                   created={post.created}
-                  blacklist={firstPost ? firstPost.blacklists : post.blacklists}
+                  blacklist={
+                    firstPost ? firstPost.blacklists : thisPost ? thisPost.blacklists : post.blacklists
+                  }
                 />
                 {isLoadingPost ? (
                   <Loading loading={isLoadingPost} />
@@ -502,7 +506,13 @@ function PostPage({
                           author_reputation={
                             crossedPost ? crosspost.authorReputation : post.author_reputation
                           }
-                          blacklist={firstPost ? firstPost.blacklists : post.blacklists}
+                          blacklist={
+                            firstPost
+                              ? firstPost.blacklists
+                              : thisPost
+                                ? thisPost.blacklists
+                                : post.blacklists
+                          }
                         />
                         {post.author_title ? (
                           <Badge variant="outline" className="border-destructive text-slate-500">
@@ -694,7 +704,7 @@ function PostPage({
                       <TwitterShare title={post.title} url={post.url} />
                       <LinkedInShare title={post.title} url={post.url} />
                       <RedditShare title={post.title} url={post.url} />
-                      <SharePost path={router.asPath}>
+                      <SharePost path={router.asPath} title={post.title}>
                         <Link2 className="cursor-pointer hover:text-destructive" data-testid="share-post" />
                       </SharePost>
                     </div>

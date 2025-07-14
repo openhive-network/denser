@@ -23,7 +23,7 @@ import { useTranslation } from 'next-i18next';
 import { createAsset, createPermlink } from '@transaction/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getSubscriptions } from '@transaction/lib/bridge';
-import { Entry, JsonMetadata } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import { useRouter } from 'next/router';
 import { TFunction } from 'i18next';
 import { debounce } from '../lib/utils';
@@ -129,7 +129,7 @@ export default function PostForm({
     payoutType: preferences.blog_rewards
   };
   const [storedPost, storePost, removePost] = useLocalStorage<AccountFormValues>(
-    editMode ? `postData-edit-${post_s?.permlink}` : 'postData-new',
+    editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
     defaultValues
   );
   useEffect(() => {

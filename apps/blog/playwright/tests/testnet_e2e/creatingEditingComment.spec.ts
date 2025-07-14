@@ -3,6 +3,7 @@ import { users, LoginHelper } from '../support/loginHelper';
 import { LoginForm } from '../support/pages/loginForm';
 import { CommentEditorPage } from '../support/pages/commentEditorPage';
 import { generateRandomString } from '../support/utils';
+import { waitForCreatedCommentIsVisible } from '../support/waitHelper';
 import { PostPage } from '../support/pages/postPage';
 
 test.describe.serial('Creating and editing comments with POM and fixture users', () => {
@@ -31,9 +32,7 @@ test.describe.serial('Creating and editing comments with POM and fixture users',
     await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
     // Validate the new comment was created
     // Be careful the optimistic ui doesn't always work well!!!
-    await commentEditorPage.getReplayEditorElement.waitFor({ state: 'detached' });
-    await denserAutoTest4Page.page.waitForTimeout(5000);
-    await denserAutoTest4Page.page.reload({ waitUntil: 'load' });
+    await waitForCreatedCommentIsVisible(denserAutoTest4Page.page, randomString);
     await expect(await commentEditorPage.findCreatedCommentContentByText(randomString)).toHaveText(
       commentContent
     );
@@ -65,9 +64,7 @@ test.describe.serial('Creating and editing comments with POM and fixture users',
     await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
     // Validate the new comment was created
     // Be careful the optimistic ui doesn't always work well!!!
-    await commentEditorPage.getReplayEditorElement.waitFor({ state: 'detached' });
-    await denserAutoTest4Page.page.waitForTimeout(5000);
-    await denserAutoTest4Page.page.reload({ waitUntil: 'load' });
+    await waitForCreatedCommentIsVisible(denserAutoTest4Page.page, randomString);
     await expect(await commentEditorPage.findCreatedCommentContentByText(randomString)).toHaveText(
       commentContent
     );
@@ -98,9 +95,7 @@ test.describe.serial('Creating and editing comments with POM and fixture users',
     await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
     // Validate the new comment was created
     // Be careful the optimistic ui doesn't always work well!!!
-    await commentEditorPage.getReplayEditorElement.waitFor({ state: 'detached' });
-    await denserAutoTest4Page.page.waitForTimeout(5000);
-    await denserAutoTest4Page.page.reload({ waitUntil: 'load' });
+    await waitForCreatedCommentIsVisible(denserAutoTest4Page.page, randomString);
     await expect(await commentEditorPage.findCreatedCommentContentByText(randomString)).toHaveText(
       commentContent
     );
@@ -132,12 +127,9 @@ test.describe.serial('Creating and editing comments with POM and fixture users',
     await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
     // Validate the new comment was created
     // Be careful the optimistic ui doesn't always work well!!!
-    await commentEditorPage.getReplayEditorElement.waitFor({ state: 'detached' });
-    await denserAutoTest4Page.page.waitForTimeout(5000);
-    await denserAutoTest4Page.page.reload({ waitUntil: 'load' });
+    await waitForCreatedCommentIsVisible(denserAutoTest4Page.page, randomString);
     await expect(await commentEditorPage.findCreatedCommentContentByText(randomString)).toHaveText(
       commentContent
     );
   });
-
 });

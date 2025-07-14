@@ -2,10 +2,11 @@ import { dateToRelative } from '@ui/lib/parse-date';
 import Link from 'next/link';
 import { amt, fmt } from '../lib/utils';
 import { useQuery } from '@tanstack/react-query';
+import Big from 'big.js';
 import Loading from '@hive/ui/components/loading';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { getFeedHistory } from '@transaction/lib/hive';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import moment from 'moment';
 import { useTranslation } from 'next-i18next';
 
@@ -42,6 +43,23 @@ export default function PayoutHoverContent({ post }: { post: Entry }) {
           {t('amount_hover_card.curators', {
             value: convertStringToBig(post.curator_payout_value).toFixed(2)
           })}
+        </span>
+        <span>
+          {post.beneficiaries.length > 0
+            ? post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
+                <Link
+                  href={`/@${beneficiary.account}`}
+                  className="hover:cursor-pointer hover:text-destructive"
+                  key={index}
+                >
+                  - {beneficiary.account}: $
+                  {Big(post.payout / 2)
+                    .times(beneficiary.weight)
+                    .div(10000)
+                    .toFixed(2)}
+                </Link>
+              ))
+            : null}
         </span>
       </>
     );

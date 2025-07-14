@@ -1,7 +1,7 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
 import { cn } from '@ui/lib/utils';
-import { ReactNode } from 'react';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { ReactNode, useRef, useState } from 'react';
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import PayoutHoverContent from './payout-hover-content';
 
 type DetailsCardHoverProps = {
@@ -12,6 +12,20 @@ type DetailsCardHoverProps = {
 };
 
 export default function DetailsCardHover({ post, children, decline, post_page }: DetailsCardHoverProps) {
+  const [open, setOpen] = useState(false);
+  const isHovering = useRef(false);
+
+  const handleMouseEnter = () => {
+    isHovering.current = true;
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    isHovering.current = false;
+    setTimeout(() => {
+      if (!isHovering.current) setOpen(false);
+    }, 100);
+  };
   if (decline) {
     return (
       <div
@@ -35,9 +49,21 @@ export default function DetailsCardHover({ post, children, decline, post_page }:
   }
 
   return (
-    <HoverCard>
-      <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-      <HoverCardContent className="flex w-auto flex-col" data-testid="payout-post-card-tooltip">
+    <HoverCard open={open}>
+      <HoverCardTrigger
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={() => setOpen(!open)}
+        asChild
+      >
+        {children}
+      </HoverCardTrigger>
+      <HoverCardContent
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="flex w-auto flex-col"
+        data-testid="payout-post-card-tooltip"
+      >
         <PayoutHoverContent post={post} />
       </HoverCardContent>
     </HoverCard>

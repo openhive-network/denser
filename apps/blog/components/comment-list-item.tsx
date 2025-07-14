@@ -71,7 +71,7 @@ const CommentListItem = ({
   const [openState, setOpenState] = useState<string>(comment.stats?.gray && hiddenComment ? '' : 'item-1');
   const [tempraryHidden, setTemporaryHidden] = useState(false);
   const commentId = `@${username}/${comment.permlink}`;
-  const storageId = `replybox-/${username}/${comment.permlink}`;
+  const storageId = `replybox-/${username}/${comment.permlink}-${user.username}`;
   const [edit, setEdit] = useState(false);
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);

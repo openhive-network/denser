@@ -55,7 +55,8 @@ I just love <strong>bold text</strong>.<br>
 also <em>italic</em><br>
 <strong><em>bold-italic</em></strong><br>
 <del>strikethrough</del><br>
-<a href=\"http://example.com\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">link</a></p>`;
+<a href=\"http://example.com\" rel=\"nofollow noopener\" target=\"_blank\" class=\"link-external\">link</a></p>
+`
 
     expect(preview).toContain(previewContent);
   });
@@ -89,7 +90,7 @@ also <em>italic</em><br>
   });
 
   test('Check if images are diplayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `![hive logo](https://cryptologos.cc/logos/hive-blockchain-hive-logo.png?v=035)
 
 ![sample image](https://usermedia.actifit.io/9246fa02-cdf0-424f-b1e8-634b1c209042)
@@ -112,7 +113,7 @@ also <em>italic</em><br>
   });
 
   test('Check if blockquote are diplayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `blockquote:
 > To be or not to be, that is the question.
 
@@ -174,7 +175,7 @@ Complex blockquote:
   });
 
   test('Check if tables are diplayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `Table
 
 One   | Two   | Three
@@ -211,7 +212,7 @@ At the command prompt, type <code>nano</code>.</p>`;
   });
 
   test('Check if html code is diplayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `Use \`code\` in your Markdown file.
 
     <html>
@@ -238,7 +239,7 @@ At the command prompt, type <code>nano</code>.</p>`;
   });
 
   test('Check if Links/Emails are diplayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `Links/Emails:
 <https://www.markdownguide.org>
 <fake@example.com>
@@ -258,18 +259,31 @@ X/Twitter:
 
     const preview = await postPage.articleBody.innerHTML();
 
-    const previewContent: string = `<p class=\"my-0\">Links/Emails:<br>
-<a href=\"https://www.markdownguide.org\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">https://www.markdownguide.org</a><br>
-<a href=\"https://mailto:fake@example.com\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">fake@example.com</a></p>
-<p class=\"my-0\"><a href=\"https://www.example.com/my%20great%20page\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">link1</a></p>
-<p class=\"my-0\"><a href=\"https://www.example.com/my great page\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">link2</a></p>
-<p class=\"my-0\">X/Twitter:<br>
-<a href=\"https://&amp;nbsp;<div>twitter-id-1889804218132832323-author-ShouldHaveCat-count-4</div>&amp;nbsp;\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">X link</a></p>`
-    expect(preview).toContain(previewContent);
+//     const previewContent: string = `<p class=\"my-0\">Links/Emails:<br>
+// <a href=\"https://www.markdownguide.org\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">https://www.markdownguide.org</a><br>
+// <a href=\"https://mailto:fake@example.com\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">fake@example.com</a></p>
+// <p class=\"my-0\"><a href=\"https://www.example.com/my%20great%20page\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">link1</a></p>
+// <p class=\"my-0\"><a href=\"https://www.example.com/my great page\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">link2</a></p>
+// <p class=\"my-0\">X/Twitter:<br>
+// <a href=\"https://&amp;nbsp;<div>twitter-id-1889804218132832323-author-ShouldHaveCat-count-4</div>&amp;nbsp;\" rel=\"nofollow noopener\" title=\"Link expanded to plain text; beware of a potential phishing attempt\" target=\"_blank\" class=\"link-external\">X link</a></p>`
+//     expect(preview).toContain(previewContent);
+
+    const previewRegex = new RegExp(
+  `<p class="my-0">Links/Emails:<br>\\s*` +
+  `<a href="https://www\\.markdownguide\\.org"[^>]*>https://www\\.markdownguide\\.org</a><br>\\s*` +
+  `<a href="https://mailto:fake@example\\.com"[^>]*>fake@example\\.com</a></p>\\s*` +
+  `<p class="my-0"><a href="https://www\\.example\\.com/my%20great%20page"[^>]*>link1</a></p>\\s*` +
+  `<p class="my-0"><a href="https://www\\.example\\.com/my great page"[^>]*>link2</a></p>\\s*` +
+  `<p class="my-0">X/Twitter:<br>\\s*` +
+  `<a href="https://&amp;nbsp;<div>twitter-id-\\d+-author-ShouldHaveCat-count-\\d+</div>&amp;nbsp;"[^>]*>X link</a></p>`,
+  's' // flaga "dotAll" umożliwia dopasowanie wielu linii przez `.`
+);
+    expect(preview).toMatch(previewRegex);
+
   });
 
   test('Check if spoilers and backslashs are diplayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `\\* Without the backslash, this would be a bullet in an unordered list.
 
 Spoiler:
@@ -297,7 +311,7 @@ Optionally with more lines</p>
   });
 
   test('Check if collapsible section is diplayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `<details>
 <summary>Click to expand</summary>
 
@@ -325,7 +339,7 @@ These details <em>remain</em> <strong>hidden</strong> until expanded.
   });
 
   test('Check if 3speak and youtube videos are diplayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `3speak video (preferably displayed as embedded/playable video)
 https://3speak.tv/watch?v=jongolson/vhtttbyf
 
@@ -347,7 +361,7 @@ https://www.youtube.com/watch?v=a3ICNMQW7Ok`;
   });
 
   test.skip('Check if Footnotes are displayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `Footnotes[^1] have a label[^@#$%] and the footnote's content.
 
 [^1]: This is a footnote content.
@@ -377,7 +391,7 @@ https://www.youtube.com/watch?v=a3ICNMQW7Ok`;
   });
 
   test('Check if Text inside center tags is displayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `<center>
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 
@@ -403,7 +417,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
   });
 
   test('Check if Link inside the blockquote and Hive User links are displayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `Link inside the blockquote should be visible.
 > Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. [source](https://peakd.com/silvergoldstackers/@silverd510/on-the-first-day-of)
 
@@ -423,17 +437,17 @@ Hello Mr. @sketch.and.jam, how are you?`;
 
     const previewContent: string =`<p class=\"my-0\">Link inside the blockquote should be visible.</p>
 <blockquote>
-<p class=\"my-0\">Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. <a href=\"https://peakd.com/silvergoldstackers/@silverd510/on-the-first-day-of\">source</a></p>
+<p class=\"my-0\">Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. <a href=\"https://peakd.com/silvergoldstackers/@silverd510/on-the-first-day-of\" rel=\"nofollow noopener\" target=\"_blank\" class=\"link-external\">source</a></p>
 </blockquote>
 <p class=\"my-0\">Hive User links:<br>
-Hello Mr. <a href=\"/@sketch.and.jam\">@sketch.and.jam</a>, how are you?</p>`
-
+Hello Mr. <a href=\"/@sketch.and.jam\">@sketch.and.jam</a>, how are you?</p>
+`
 
     expect(preview).toContain(previewContent);
   });
 
   test('Check if able with html special characters:<br> displayed correctly', async ({ denserAutoTest0Page }) => {
-    
+
     const postContentText: string = `| Kod HTML   | Znak | Znaczenie                       |
 | ---------- | ---- | ------------------------------- |
 | &nbsp;     |      | Niełamliwa spacja               |

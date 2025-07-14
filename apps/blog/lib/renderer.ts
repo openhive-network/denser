@@ -2,7 +2,6 @@ import { DefaultRenderer, InstagramPlugin, TablePlugin, TwitterPlugin } from '@h
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
-import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
 
 import { configuredSiteDomain, configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 
@@ -26,14 +25,12 @@ const renderDefaultOptions = {
   isLinkSafeFn: (url: string) =>
     !!url.match(`^(/(?!/)|${configuredImagesEndpoint})`) ||
     !!url.match(`^(/(?!/)|${configuredSiteDomain})`) ||
-    !!url.match(`^(/(?!/)|#)`) ||
-    isUrlWhitelisted(url),
+    !!url.match(`^(/(?!/)|#)`),
 
   addExternalCssClassToMatchingLinksFn: (url: string) =>
     !url.match(`^(/(?!/)|${configuredImagesEndpoint})`) &&
     !url.match(`^(/(?!/)|${configuredSiteDomain})`) &&
-    !url.match(`^(/(?!/)|#)`) &&
-    !isUrlWhitelisted(url)
+    !url.match(`^(/(?!/)|#)`)
 };
 
 const rendererRegular = new DefaultRenderer(renderDefaultOptions);

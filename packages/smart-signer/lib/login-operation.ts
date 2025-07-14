@@ -25,7 +25,7 @@ export async function getOperationForLogin(
       required_auths: [],
       required_posting_auths: [username]
     });
-    operation = { custom_json: customJsonLoginChallenge };
+    operation = { custom_json_operation: customJsonLoginChallenge };
   } else if (keyType === KeyType.active) {
     const customJsonLoginChallenge: custom_json = custom_json.create({
       id: `denser_${loginType}`,
@@ -33,7 +33,7 @@ export async function getOperationForLogin(
       required_auths: [username],
       required_posting_auths: []
     });
-    operation = { custom_json: customJsonLoginChallenge };
+    operation = { custom_json_operation: customJsonLoginChallenge };
   } else {
     throw new Error('Unsupported keyType');
   }

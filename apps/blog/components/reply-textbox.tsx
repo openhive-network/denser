@@ -42,9 +42,12 @@ export function ReplyTextbox({
   comment: Entry | string;
   editorType: 'denser' | 'classic';
 }) {
-  const [storedPost, storePost, removePost] = useLocalStorage<string>(`replyTo-/${username}/${permlink}`, '');
   const { user } = useUser();
   const [renderMethod, setRenderMethod] = useState<'denser' | 'classic'>(editorType);
+  const [storedPost, storePost, removePost] = useLocalStorage<string>(
+    `replyTo-/${username}/${permlink}-${user.username}`,
+    ''
+  );
   const { manabarsData } = useManabars(user.username);
   const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
@@ -124,8 +127,9 @@ export function ReplyTextbox({
 
   return (
     <div
-      className="mx-8 mb-4 flex flex-col gap-6 rounded-md border bg-background p-4 text-primary shadow-sm"
+      className="mx-8 mb-4 flex max-w-3xl flex-col gap-6 rounded-md border bg-background p-4 text-primary shadow-sm"
       data-testid="reply-editor"
+      suppressHydrationWarning
     >
       <div className="flex flex-col gap-4">
         <Link href={`#`}>
