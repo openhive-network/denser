@@ -152,12 +152,12 @@ export default function SearchPage() {
         <div>
           {!aiQuery ? null : isLoading ? (
             <Loading loading={isLoading} />
+          ) : isError ? (
+            <div>Error loading AI search results.</div>
           ) : data ? (
             data.pages.map((page, index) => {
               return page ? <PostList data={page} key={`ai-${index}`} /> : null;
             })
-          ) : isError ? (
-            <div>Error loading AI search results.</div>
           ) : null}
           <div>
             <button

@@ -28,7 +28,7 @@ const SmartSelect = ({
           <SelectItem value="users">
             <AtSign />
           </SelectItem>
-          <SelectItem value="userTopics">
+          <SelectItem value="userTopics" disabled={true}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
