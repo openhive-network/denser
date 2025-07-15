@@ -8,8 +8,6 @@ import { Separator } from '@radix-ui/react-dropdown-menu';
 
 interface ModeInputProps {
   className?: string;
-  aiAvailable: boolean;
-  isLoading: boolean;
   searchPage?: boolean;
 }
 export const getPlaceholder = (value: SearchMode) => {
@@ -29,7 +27,7 @@ export const getPlaceholder = (value: SearchMode) => {
   }
 };
 
-export function ModeSwitchInput({ className, aiAvailable, isLoading, searchPage }: ModeInputProps) {
+export function ModeSwitchInput({ className, searchPage }: ModeInputProps) {
   const { inputValue, setInputValue, secondInputValue, setSecondInputValue, mode, setMode, handleSearch } =
     useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,7 +44,6 @@ export function ModeSwitchInput({ className, aiAvailable, isLoading, searchPage 
       <div className="relative flex w-full items-center rounded-full border border-input bg-background ring-offset-background">
         <ModeSelect handleMode={(e) => setMode(e)} mode={mode} />
         <input
-          disabled={isLoading}
           ref={inputRef}
           type="text"
           placeholder={placeholder}
@@ -64,7 +61,6 @@ export function ModeSwitchInput({ className, aiAvailable, isLoading, searchPage 
           <>
             <Separator className="mx-1 h-4 w-px bg-primary" />
             <input
-              disabled={isLoading}
               ref={inputRef}
               type="text"
               placeholder="Topic..."
