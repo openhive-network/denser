@@ -20,9 +20,9 @@ export class CommunitiesExplorePage{
 
     constructor(page:Page){
         this.page = page;
-        this.searchInput = page.locator('#search');
-        this.combobox = page.locator('button[role="combobox"]');
-        this.comboboxDefaultValue = page.locator('button[role="combobox"] span');
+        this.searchInput = page.locator('#search');  
+        this.combobox = page.getByTestId('communities-filter');
+        this.comboboxDefaultValue = page.getByTestId('communities-filter');
         this.communitiesFilter = page.locator('[data-testid="communities-filter"]');
         this.communitiesFilterItems = page.locator('[data-testid="communities-filter-item"]');
         this.firstCommunityDefault = page.locator('div ul div div div h3').first();
