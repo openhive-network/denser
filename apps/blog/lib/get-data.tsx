@@ -24,22 +24,8 @@ export const getSimilarPosts = async ({
   start_permlink: string;
 }): Promise<Entry[] | null> => {
   try {
-    const response = await fetch(
-      `${configuredAIDomain}/hivesense-api/similarposts?pattern=${encodeURIComponent(pattern)}&tr_body=${tr_body}&posts_limit=${limit}&observer=${observer}&start_author=${start_author}&start_permlink=${start_permlink}`
-    );
-    if (!response.ok) {
-      throw new Error(`Similar posts API Error: ${response.status}`);
-    }
-    const data = await response.json();
-
-    if ('error' in data) {
-      throw new Error(data.error);
-    }
-
-    // const response = await chain.restApi['hivesense-api'].similarposts({posts_limit: limit, tr_body, pattern, observer, start_author, start_permlink})
-
-
-    return data;
+    const response = await chain.restApi['hivesense-api'].similarposts({posts_limit: limit, tr_body, pattern, observer, start_author, start_permlink})
+    return response;
   } catch (error) {
     logger.error('Error in getSimilarPosts', error);
     throw new Error('Error in getSimilarPosts');
