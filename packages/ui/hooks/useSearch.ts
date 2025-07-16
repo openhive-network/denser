@@ -12,7 +12,7 @@ const getMode = (
   if (aiQuery) return 'ai';
   if (query) return 'classic';
   if (userTopicQuery) return 'userTopic';
-  return 'classic';
+  return 'ai';
 };
 
 export function useSearch() {
@@ -25,7 +25,7 @@ export function useSearch() {
 
   const currentMode = getMode(query, aiQuery, userTopicQuery);
   const [inputValue, setInputValue] = useState(query ?? aiQuery ?? userTopicQuery ?? '');
-  const [mode, setMode] = useState<SearchMode>(currentMode ?? 'classic');
+  const [mode, setMode] = useState<SearchMode>(currentMode ?? 'ai');
   const [secondInputValue, setSecondInputValue] = useState(topicQuery ?? '');
 
   useEffect(() => {
@@ -52,6 +52,7 @@ export function useSearch() {
   }, [inputValue]);
 
   const handleSearch = (value: string, secondValue?: string, currenySort?: SearchSort) => {
+    if (!value) return;
     switch (mode) {
       case 'tag':
         router.push(`trending/${encodeURIComponent(value)}`);

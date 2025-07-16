@@ -44,7 +44,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
       <div className="relative flex w-full items-center rounded-full border border-input bg-background ring-offset-background">
         <ModeSelect handleMode={(e) => setMode(e)} mode={mode} aiAvailable={aiAvailable} />
         <input
-          disabled={!aiAvailable && mode === 'ai'}
+          disabled={(!aiAvailable && mode === 'ai') || mode === 'userTopic' || mode === 'classic'}
           ref={inputRef}
           type="text"
           placeholder={placeholder}
@@ -62,6 +62,8 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
           <>
             <Separator className="mx-1 h-4 w-px bg-primary" />
             <input
+              // Not supported yet
+              disabled={true}
               ref={inputRef}
               type="text"
               placeholder="Topic..."
