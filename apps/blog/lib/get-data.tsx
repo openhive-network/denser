@@ -1,8 +1,6 @@
-import env from '@beam-australia/react-env';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
+import { configuredAIDomain } from '@ui/config/public-vars';
 import { logger } from '@ui/lib/logger';
-
-const apiDevOrigin = env('AI_DOMAIN') || process.env.AI_DOMAIN;
 
 // FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getSimilarPosts = async ({
@@ -22,7 +20,7 @@ export const getSimilarPosts = async ({
 }): Promise<Entry[] | null> => {
   try {
     const response = await fetch(
-      `${apiDevOrigin}/hivesense-api/similarposts?pattern=${encodeURIComponent(pattern)}&tr_body=${tr_body}&posts_limit=${limit}&observer=${observer}&start_author=${start_author}&start_permlink=${start_permlink}`
+      `${configuredAIDomain}/hivesense-api/similarposts?pattern=${encodeURIComponent(pattern)}&tr_body=${tr_body}&posts_limit=${limit}&observer=${observer}&start_author=${start_author}&start_permlink=${start_permlink}`
     );
     if (!response.ok) {
       throw new Error(`Similar posts API Error: ${response.status}`);
@@ -43,10 +41,9 @@ export const getSimilarPosts = async ({
 // FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
-    const response = await fetch(`${apiDevOrigin}/hivesense-api/`);
-    if (!response.ok) {
-      return false;
-    }
+    const response = await fetch(`${configuredAIDomain}/hivesense-api/`);
+    const data = await response.json();
+    if ('error' in data || !response.ok) return false;
     return true;
   } catch {
     return false;
@@ -69,12 +66,15 @@ export const getSuggestions = async ({
 }): Promise<Entry[] | null> => {
   try {
     const response = await fetch(
-      `${apiDevOrigin}/hivesense-api/similarpostsbypost?author=${author}&permlink=${permlink}&tr_body=${tr_body}&posts_limit=${posts_limit}&observer=${observer}`
+      `${configuredAIDomain}/hivesense-api/similarpostsbypost?author=${author}&permlink=${permlink}&tr_body=${tr_body}&posts_limit=${posts_limit}&observer=${observer}`
     );
     if (!response.ok) {
       throw new Error(`Similar posts API Error: ${response.status}`);
     }
     const data = await response.json();
+    if ('error' in data) {
+      throw new Error(data.error);
+    }
     return data;
   } catch (error) {
     logger.error('Error in getSuggestions', error);

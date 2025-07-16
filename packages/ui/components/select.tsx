@@ -80,7 +80,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'focus:bg-background-tertiary relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-background-tertiary focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}
     {...props}
@@ -95,6 +95,48 @@ const SelectItem = React.forwardRef<
   </SelectPrimitive.Item>
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
+
+const CustomSelectItem = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
+>(({ className, children, ...props }, ref) => (
+  <SelectPrimitive.Item
+    ref={ref}
+    className={cn(
+      'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-background-tertiary focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      className
+    )}
+    {...props}
+  >
+    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+  </SelectPrimitive.Item>
+));
+CustomSelectItem.displayName = SelectPrimitive.Item.displayName;
+
+const CustomSelectContent = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+>(({ className, children, position = 'popper', ...props }, ref) => (
+  <SelectPrimitive.Portal>
+    <SelectPrimitive.Content
+      ref={(ref) => ref?.addEventListener('touchend', (e) => e.preventDefault())}
+      className={cn(
+        'relative z-50  overflow-hidden rounded-md border bg-background text-popover-foreground shadow-md animate-in fade-in-80',
+        position === 'popper' && 'translate-y-1',
+        className
+      )}
+      position={position}
+      {...props}
+    >
+      <SelectPrimitive.Viewport
+        className={cn('p-1', position === 'popper' && 'h-[var(--radix-select-trigger-height)] w-full')}
+      >
+        {children}
+      </SelectPrimitive.Viewport>
+    </SelectPrimitive.Content>
+  </SelectPrimitive.Portal>
+));
+CustomSelectContent.displayName = SelectPrimitive.Content.displayName;
 
 const SelectSeparator = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Separator>,
@@ -112,5 +154,7 @@ export {
   SelectContent,
   SelectLabel,
   SelectItem,
-  SelectSeparator
+  SelectSeparator,
+  CustomSelectItem,
+  CustomSelectContent
 };
