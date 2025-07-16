@@ -30,7 +30,7 @@ function Communities({ username, metadata }: InferGetServerSidePropsType<typeof 
      ]
       setWalletApiCheckers(apiCheckers);
     }
-  const healthCheckerService = useHealthChecker("wallet-api", walletApiCheckers, "node-endpoint", true, false );
+  const healthCheckerService = useHealthChecker("wallet-api", walletApiCheckers, "node-endpoint", hiveChainService.setAiSearchEndpoint, true, false );
   const { t } = useTranslation('common_wallet');
   useEffect(() => {
     createApiCheckers();

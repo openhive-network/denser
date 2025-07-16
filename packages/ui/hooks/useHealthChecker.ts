@@ -1,7 +1,7 @@
 
 import {HealthCheckerService, ApiChecker } from "@hiveio/healthchecker-component";
 import { useEffect, useState } from "react";
-import {hiveChainService} from "@transaction/lib/hive-chain-service"
+import { hiveChainService} from "@transaction/lib/hive-chain-service"
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { useLocalStorage } from 'usehooks-ts';
 import { siteConfig } from "@ui/config/site";
@@ -19,15 +19,16 @@ const DEFAULTS_ENDPOINTS = [
   "https://hiveapi.actifit.io",
 ];
 
-export const useHealthChecker = (key: string, apiCheckers: ApiChecker[] | undefined, endpointKey: string, shouldSetOnlineClient: boolean, enableLogs: boolean | undefined) => {
+export const useHealthChecker = (key: string, apiCheckers: ApiChecker[] | undefined, endpointKey: string, hiveChainServiceMethod: (newEndpoint: string) => Promise<void>, shouldSetOnlineClient: boolean, enableLogs: boolean | undefined) => {
   const [healthCheckerService, setHealthCheckerService] = useState<HealthCheckerService | undefined>(undefined);
   const [endpoint] = useLocalStorage(endpointKey, siteConfig.endpoint);
 
   const changeEndpoint = async (newEndpoint: string | null) => {
-  if (newEndpoint) {
-    await hiveChainService.setHiveChainEndpoint(newEndpoint);
-    if (shouldSetOnlineClient) await hbauthService.setOnlineClient({ node: newEndpoint });
-  }
+    if (newEndpoint) {
+      const bindedHiveChainServiceMethod = hiveChainServiceMethod.bind(hiveChainService);
+      await bindedHiveChainServiceMethod(newEndpoint);
+      if (shouldSetOnlineClient) await hbauthService.setOnlineClient({ node: newEndpoint });
+    }
   }
 
   const startHealthCheckerService = async () => {

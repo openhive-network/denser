@@ -83,14 +83,12 @@ export class HiveChainService {
 
   async setHiveChainEndpoint(newEndpoint: string) {
     logger.info('Changing HiveChainService.HiveChain.endpointUrl with newEndpoint: %o', newEndpoint);
-    await this.getHiveChain();
     HiveChainService.hiveChain.endpointUrl = newEndpoint;
     this.storage.setItem('node-endpoint', JSON.stringify(newEndpoint));
   }
 
   async setAiSearchEndpoint(newEndpoint: string) {
     logger.info('Changing AI search with newEndpoint: %o', newEndpoint);
-    await this.getHiveChain();
     HiveChainService.hiveChain.restApi['hivesense-api'].similarposts.endpointUrl = newEndpoint;
     this.storage.setItem('ai-search-endpoint', JSON.stringify(newEndpoint));
   }

@@ -207,8 +207,8 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
   const updateProfileMutation = useUpdateProfileMutation();
 
 
-  const nodeHcService = useHealthChecker("node-api", nodeApiCheckers, 'node-endpoint', true, false);
-  const aiSearchHcService = useHealthChecker("ai-search", aiSearchApiCheckers, 'ai-search-endpoint', false, false);
+  const nodeHcService = useHealthChecker("node-api", nodeApiCheckers, 'node-endpoint', hiveChainService.setHiveChainEndpoint, true, false);
+  const aiSearchHcService = useHealthChecker("ai-search", aiSearchApiCheckers, 'ai-search-endpoint', hiveChainService.setAiSearchEndpoint, false, false);
 
 
   const createApiCheckers = async () => {
@@ -236,7 +236,7 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
         tr_body: 100,
         posts_limit: 20,
       },
-      validatorFunction: data => data.length === 20 ? true : "AI search error",
+      validatorFunction: data => data[0]? true : "AI search error",
     },
     ]
     setNodeApiCheckers(nodeApiCheckers);
