@@ -9,6 +9,7 @@ import { Separator } from '@radix-ui/react-dropdown-menu';
 interface ModeInputProps {
   className?: string;
   searchPage?: boolean;
+  aiAvailable: boolean;
 }
 export const getPlaceholder = (value: SearchMode) => {
   switch (value) {
@@ -27,11 +28,10 @@ export const getPlaceholder = (value: SearchMode) => {
   }
 };
 
-export function ModeSwitchInput({ className, searchPage }: ModeInputProps) {
+export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInputProps) {
   const { inputValue, setInputValue, secondInputValue, setSecondInputValue, mode, setMode, handleSearch } =
     useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
-  console.log('ModeSelect', mode);
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -42,8 +42,9 @@ export function ModeSwitchInput({ className, searchPage }: ModeInputProps) {
   return (
     <div className={cn('w-full', className)}>
       <div className="relative flex w-full items-center rounded-full border border-input bg-background ring-offset-background">
-        <ModeSelect handleMode={(e) => setMode(e)} mode={mode} />
+        <ModeSelect handleMode={(e) => setMode(e)} mode={mode} aiAvailable={aiAvailable} />
         <input
+          disabled={!aiAvailable && mode === 'ai'}
           ref={inputRef}
           type="text"
           placeholder={placeholder}

@@ -47,14 +47,10 @@ const SiteHeader: FC = () => {
   const { data: profile } = useQuery(['user', user.username], () => getAccount(user.username), {
     enabled: user?.isLoggedIn
   });
-  const { data: hiveSense, isLoading: hiveSenseLoading } = useQuery(
-    ['hivesense-api'],
-    () => getHiveSenseStatus(),
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false
-    }
-  );
+  const { data: hiveSense } = useQuery(['hivesense-api'], () => getHiveSenseStatus(), {
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
+  });
   const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
   const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
   const rcAngle = (360 * (manabarsData ? manabarsData?.rc.percentageValue : 0)) / 100;
@@ -121,12 +117,12 @@ const SiteHeader: FC = () => {
             )}
             <div className="hidden lg:block">
               {router.pathname === '/search' ? (
-                <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
+                <SearchButton aiTag={!!hiveSense} />
               ) : (
-                <ModeSwitchInput />
+                <ModeSwitchInput aiAvailable={!!hiveSense} />
               )}
             </div>
-            <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" />
+            <SearchButton aiTag={!!hiveSense} className="lg:hidden" />
             <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
               <Link href="/submit.html">
                 <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">

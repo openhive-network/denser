@@ -8,10 +8,16 @@ import AIResult from '../feature/search/ai-result';
 import ClassicResult from '../feature/search/classic-result';
 import { SearchSort } from '@ui/hooks/useSearch';
 import AccountTopicResult from '../feature/search/account-topic-result';
+import { useQuery } from '@tanstack/react-query';
+import { getHiveSenseStatus } from '../lib/get-data';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 const TAB_TITLE = 'Search - Hive';
 export default function SearchPage() {
+  const { data: hiveSense } = useQuery(['hivesense-api'], () => getHiveSenseStatus(), {
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
+  });
   const router = useRouter();
   const aiQuery = router.query.ai as string | undefined;
   const classicQuery = router.query.q as string | undefined;
@@ -52,7 +58,7 @@ export default function SearchPage() {
       <div className="m-auto flex max-w-4xl flex-col gap-12 px-4 py-8">
         <div className="flex flex-col gap-4">
           <div className="w-full">
-            <ModeSwitchInput searchPage />
+            <ModeSwitchInput searchPage aiAvailable={!!hiveSense} />
           </div>
         </div>
         {!!aiQuery ? <AIResult query={aiQuery} /> : null}

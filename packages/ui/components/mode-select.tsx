@@ -2,7 +2,15 @@ import { SearchMode } from '@ui/hooks/useSearch';
 import { Select, CustomSelectContent, CustomSelectItem, SelectTrigger, SelectValue } from './select';
 import { Bot, Hash, Search, User } from 'lucide-react';
 
-const ModeSelect = ({ handleMode, mode }: { handleMode: (value: SearchMode) => void; mode: SearchMode }) => {
+const ModeSelect = ({
+  handleMode,
+  mode,
+  aiAvailable
+}: {
+  handleMode: (value: SearchMode) => void;
+  mode: SearchMode;
+  aiAvailable: boolean;
+}) => {
   return (
     <Select value={mode} onValueChange={handleMode}>
       <SelectTrigger className="w-fit rounded-full">
@@ -12,7 +20,7 @@ const ModeSelect = ({ handleMode, mode }: { handleMode: (value: SearchMode) => v
         <CustomSelectItem value="classic" className="p-2">
           <Search className="h-4 w-4" />
         </CustomSelectItem>
-        <CustomSelectItem value="ai" className="w-fit p-2">
+        <CustomSelectItem value="ai" className="w-fit p-2" disabled={!aiAvailable}>
           <Bot className="h-4 w-4" />
         </CustomSelectItem>
         <CustomSelectItem value="account" className="p-2">
