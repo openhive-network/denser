@@ -26,6 +26,11 @@ export const getSimilarPosts = async ({
       throw new Error(`Similar posts API Error: ${response.status}`);
     }
     const data = await response.json();
+
+    if ('error' in data) {
+      throw new Error(data.error);
+    }
+
     return data;
   } catch (error) {
     logger.error('Error in getSimilarPosts', error);
@@ -67,6 +72,9 @@ export const getSuggestions = async ({
       throw new Error(`Similar posts API Error: ${response.status}`);
     }
     const data = await response.json();
+    if ('error' in data) {
+      throw new Error(data.error);
+    }
     return data;
   } catch (error) {
     logger.error('Error in getSuggestions', error);
