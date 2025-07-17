@@ -677,6 +677,40 @@ export interface SimilarPostParams {
   start_permlink?: string;
 }
 
+// author=${author}&permlink=${permlink}&tr_body=${tr_body}&posts_limit=${posts_limit}&observer=${observer}
+
+export interface SimilarPostsByPostParams {
+  author: string;
+  permlink: string;
+  tr_body: number;
+  posts_limit: number;
+  observer: string;
+}
+
+export interface ApiTag {
+  description: string;
+  name: string;
+}
+
+export interface HivesenseStatusResponse {
+  externalDocs: {
+    description: string;
+    url: string;
+  }
+  info: {
+    description: string;
+    title: string;
+    version: string;
+    license: {
+      name: string;
+      url: string;
+    }
+  }
+  paths: unknown;
+  servers: string[];
+  tags: ApiTag[];
+}
+
 export type ExtendedNodeApi = {
   bridge: {
     get_post_header: TWaxApiRequest<
@@ -799,10 +833,16 @@ export type ExtendedNodeApi = {
 };
 
 export type ExtendedRestApi = {
-  "hivesense-api": {
+  'hivesense-api': {
+    params: undefined;
+    result: HivesenseStatusResponse;
     similarposts: {
       params: SimilarPostParams;
       result: Entry[];
-    }
-  }
+    };
+    similarpostsbypost: {
+      params: SimilarPostsByPostParams;
+      result: Entry[];
+    };
+  };
 };

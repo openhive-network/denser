@@ -72,13 +72,17 @@ export class HiveChainService {
   async setHiveChain(options?: Partial<IWaxOptionsChain>) {
     logger.info('Creating instance of HiveChainService.hiveChain with options: %o', options);
     const hiveChain = await createHiveChain(options)
-    HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>().extendRest<ExtendedRestApi>();
+    HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>().extendRest<ExtendedRestApi>({
+        'hivesense-api': {
+          urlPath: 'hivesense-api/'
+        }
+      });
     const storedAiSearchEndpoint = this.storage.getItem('ai-search-endpoint');
     let apiEndpoint: string = storedAiSearchEndpoint ? JSON.parse(storedAiSearchEndpoint) : '';
     if (!apiEndpoint) {
       apiEndpoint = siteConfig.endpoint;
     }
-    if (storedAiSearchEndpoint) HiveChainService.hiveChain.restApi['hivesense-api'].similarposts.endpointUrl = apiEndpoint;
+    if (storedAiSearchEndpoint) HiveChainService.hiveChain.restApi['hivesense-api'].endpointUrl = apiEndpoint;
   }
 
   async setHiveChainEndpoint(newEndpoint: string) {
@@ -89,7 +93,7 @@ export class HiveChainService {
 
   async setAiSearchEndpoint(newEndpoint: string) {
     logger.info('Changing AI search with newEndpoint: %o', newEndpoint);
-    HiveChainService.hiveChain.restApi['hivesense-api'].similarposts.endpointUrl = newEndpoint;
+    HiveChainService.hiveChain.restApi['hivesense-api'].endpointUrl = newEndpoint;
     this.storage.setItem('ai-search-endpoint', JSON.stringify(newEndpoint));
   }
 }

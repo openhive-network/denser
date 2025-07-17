@@ -4,10 +4,8 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { configuredAIDomain } from '@ui/config/public-vars';
 import { logger } from '@ui/lib/logger';
 
-const apiDevOrigin = env('AI_DOMAIN') || process.env.AI_DOMAIN;
 const chain = await hiveChainService.getHiveChain();
 
-// FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getSimilarPosts = async ({
   pattern,
   tr_body = 100,
@@ -35,16 +33,14 @@ export const getSimilarPosts = async ({
 // FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
-    const response = await fetch(`${configuredAIDomain}/hivesense-api/`);
-    const data = await response.json();
-    if ('error' in data || !response.ok) return false;
-    return true;
-  } catch {
-    return false;
+    const response = await chain.restApi['hivesense-api']();
+    return response.info.title === "Hivesense";
+  } catch (error) {
+    logger.error('Error in getStatus', error);
+    throw new Error('Error in getSimilarPosts');
   }
 };
 
-// FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getSuggestions = async ({
   author,
   permlink,
@@ -59,17 +55,8 @@ export const getSuggestions = async ({
   observer: string;
 }): Promise<Entry[] | null> => {
   try {
-    const response = await fetch(
-      `${configuredAIDomain}/hivesense-api/similarpostsbypost?author=${author}&permlink=${permlink}&tr_body=${tr_body}&posts_limit=${posts_limit}&observer=${observer}`
-    );
-    if (!response.ok) {
-      throw new Error(`Similar posts API Error: ${response.status}`);
-    }
-    const data = await response.json();
-    if ('error' in data) {
-      throw new Error(data.error);
-    }
-    return data;
+    const response = await chain.restApi['hivesense-api'].similarpostsbypost({author, tr_body, permlink, observer, posts_limit})
+    return response;
   } catch (error) {
     logger.error('Error in getSuggestions', error);
     throw new Error('Error in getSuggestions');

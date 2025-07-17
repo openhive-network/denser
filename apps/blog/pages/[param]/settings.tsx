@@ -237,7 +237,7 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
         posts_limit: 20,
       },
       validatorFunction: data => data[0]? true : "AI search error",
-    },
+    }
     ]
     setNodeApiCheckers(nodeApiCheckers);
     setAiSearchApiCheckers(aiSearchApiCheckers);

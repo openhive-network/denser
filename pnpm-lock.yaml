@@ -7,20 +7,20 @@ settings:
 catalogs:
   hiveio-toolset:
     '@hiveio/hb-auth':
-      specifier: 0.0.1-stable.250715111213
-      version: 0.0.1-stable.250715111213
+      specifier: 0.0.1-stable.250718112633
+      version: 0.0.1-stable.250718112633
     '@hiveio/healthchecker-component':
-      specifier: 1.0.0-stable.250715114224
-      version: 1.0.0-stable.250715114224
+      specifier: 1.0.0-stable.250721063034
+      version: 1.0.0-stable.250721063034
     '@hiveio/wax':
-      specifier: 1.27.6-rc10
-      version: 1.27.6-rc10
+      specifier: 1.27.6-rc10-stable.250718075612
+      version: 1.27.6-rc10-stable.250718075612
     '@hiveio/wax-signers-keychain':
-      specifier: 1.27.6-rc10
-      version: 1.27.6-rc10
+      specifier: 1.27.6-rc10-stable.250718075612
+      version: 1.27.6-rc10-stable.250718075612
     '@hiveio/workerbee':
-      specifier: 1.27.6-rc13
-      version: 1.27.6-rc13
+      specifier: 1.27.6-rc13-stable.250718112733
+      version: 1.27.6-rc13-stable.250718112733
 
 importers:
 
@@ -62,7 +62,7 @@ importers:
         version: link:../../packages/ui
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10
+        version: 1.27.6-rc10-stable.250718075612
       '@hookform/resolvers':
         specifier: ^3.3.1
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.0))
@@ -192,10 +192,10 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 1.0.0-stable.250715114224(@hiveio/wax@1.27.6-rc10)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
+        version: 1.0.0-stable.250721063034(@hiveio/wax@1.27.6-rc10-stable.250718075612)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10
+        version: 1.27.6-rc10-stable.250718075612
       '@hookform/resolvers':
         specifier: ^3.1.1
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.0))
@@ -394,10 +394,10 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 1.0.0-stable.250715114224(@hiveio/wax@1.27.6-rc10)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
+        version: 1.0.0-stable.250721063034(@hiveio/wax@1.27.6-rc10-stable.250718075612)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10
+        version: 1.27.6-rc10-stable.250718075612
       '@hookform/resolvers':
         specifier: ^3.3.2
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.0))
@@ -670,13 +670,13 @@ importers:
         version: 1.3.2
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 0.0.1-stable.250715111213
+        version: 0.0.1-stable.250718112633
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10
+        version: 1.27.6-rc10-stable.250718075612
       '@hiveio/wax-signers-keychain':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10
+        version: 1.27.6-rc10-stable.250718075612
       '@tanstack/react-query':
         specifier: ^4.36.1
         version: 4.36.1(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -776,10 +776,10 @@ importers:
         version: link:../smart-signer
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10
+        version: 1.27.6-rc10-stable.250718075612
       '@hiveio/workerbee':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc13
+        version: 1.27.6-rc13-stable.250718112733
       secure-random:
         specifier: ^1.1.2
         version: 1.1.2
@@ -827,7 +827,7 @@ importers:
         version: 1.3.3
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10
+        version: 1.27.6-rc10-stable.250718075612
       '@radix-ui/react-accordion':
         specifier: ^1.1.2
         version: 1.2.2(@types/react-dom@18.3.0)(@types/react@18.3.0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -1857,14 +1857,14 @@ packages:
   '@hiveio/dhive@1.3.2':
     resolution: {integrity: sha512-kJjp3TbpIlODxjJX4BWwvOf+cMxT8CFH/mNQ40RRjR2LP0a4baSWae1G+U/q/NtgjsIQz6Ja40tvnw6KF12I+g==, tarball: https://registry.npmjs.org/@hiveio/dhive/-/dhive-1.3.2.tgz}
 
-  '@hiveio/hb-auth@0.0.1-stable.250715111213':
-    resolution: {integrity: sha1-TrsZ51q7WIlpMcGp/nrQocLXhFk=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-0.0.1-stable.250715111213.tgz}
+  '@hiveio/hb-auth@0.0.1-stable.250718112633':
+    resolution: {integrity: sha1-m1VUs1q2VyPIbpY3ArJhQxSg3D8=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-0.0.1-stable.250718112633.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/healthchecker-component@1.0.0-stable.250715114224':
-    resolution: {integrity: sha1-q8gF/oxkj6zFEwHrnf1j8IiuPxA=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-1.0.0-stable.250715114224.tgz}
+  '@hiveio/healthchecker-component@1.0.0-stable.250721063034':
+    resolution: {integrity: sha1-6845retur7kMCLkA9DbO8akxxZE=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-1.0.0-stable.250721063034.tgz}
     peerDependencies:
-      '@hiveio/wax': 1.27.6-rc10
+      '@hiveio/wax': 1.27.6-rc10-stable.250718075612
       react: ^18.2.0
       react-dom: ^18.2.0
       tailwindcss: ^3.4.12
@@ -1872,15 +1872,15 @@ packages:
   '@hiveio/hivescript@1.3.3':
     resolution: {integrity: sha512-nOeGespwSujSaEl4R09u9FXGgMyOywtWWQiJdiWsmJDknCUqXXxTfs3KICssPTjkDlbGp2gkg3WjUyrlxm28Qg==, tarball: https://registry.npmjs.org/@hiveio/hivescript/-/hivescript-1.3.3.tgz}
 
-  '@hiveio/wax-signers-keychain@1.27.6-rc10':
-    resolution: {integrity: sha1-/NZr5jF7zGhMomFZg9hmVudMdyA=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-keychain/-/@hiveio/wax-signers-keychain-1.27.6-rc10.tgz}
+  '@hiveio/wax-signers-keychain@1.27.6-rc10-stable.250718075612':
+    resolution: {integrity: sha1-9RbwhsYHn+A/krVQLhBJSNDQ0rc=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-keychain/-/@hiveio/wax-signers-keychain-1.27.6-rc10-stable.250718075612.tgz}
 
-  '@hiveio/wax@1.27.6-rc10':
-    resolution: {integrity: sha1-Ie5tXlNXxkOMl9ijIa7oX4hFAu0=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc10.tgz}
+  '@hiveio/wax@1.27.6-rc10-stable.250718075612':
+    resolution: {integrity: sha1-TYKUMQ158pF6HL+KoE1ze7dYQ/M=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc10-stable.250718075612.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/workerbee@1.27.6-rc13':
-    resolution: {integrity: sha1-89P481VjXOp69V9kj0qMdPF9Jhc=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.27.6-rc13.tgz}
+  '@hiveio/workerbee@1.27.6-rc13-stable.250718112733':
+    resolution: {integrity: sha1-5gKTOYMvR/dUsdxX0bYHSptQ+88=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.27.6-rc13-stable.250718112733.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
   '@hookform/resolvers@3.10.0':
@@ -11507,36 +11507,36 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@hiveio/hb-auth@0.0.1-stable.250715111213':
+  '@hiveio/hb-auth@0.0.1-stable.250718112633':
     dependencies:
-      '@hiveio/wax': 1.27.6-rc10
+      '@hiveio/wax': 1.27.6-rc10-stable.250718075612
       comlink: 4.4.2
 
-  '@hiveio/healthchecker-component@1.0.0-stable.250715114224(@hiveio/wax@1.27.6-rc10)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))':
+  '@hiveio/healthchecker-component@1.0.0-stable.250721063034(@hiveio/wax@1.27.6-rc10-stable.250718075612)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))':
     dependencies:
-      '@hiveio/wax': 1.27.6-rc10
+      '@hiveio/wax': 1.27.6-rc10-stable.250718075612
       react: 18.3.0
       react-dom: 18.3.0(react@18.3.0)
       tailwindcss: 3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3))
 
   '@hiveio/hivescript@1.3.3': {}
 
-  '@hiveio/wax-signers-keychain@1.27.6-rc10':
+  '@hiveio/wax-signers-keychain@1.27.6-rc10-stable.250718075612':
     dependencies:
-      '@hiveio/wax': 1.27.6-rc10
+      '@hiveio/wax': 1.27.6-rc10-stable.250718075612
       keychain-sdk: 0.8.5
     transitivePeerDependencies:
       - debug
       - encoding
 
-  '@hiveio/wax@1.27.6-rc10':
+  '@hiveio/wax@1.27.6-rc10-stable.250718075612':
     dependencies:
       events: 3.3.0
       long: 5.3.1
 
-  '@hiveio/workerbee@1.27.6-rc13':
+  '@hiveio/workerbee@1.27.6-rc13-stable.250718112733':
     dependencies:
-      '@hiveio/wax': 1.27.6-rc10
+      '@hiveio/wax': 1.27.6-rc10-stable.250718075612
       long: 5.3.1
 
   '@hookform/resolvers@3.10.0(react-hook-form@7.54.2(react@18.3.0))':
