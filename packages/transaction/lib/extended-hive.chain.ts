@@ -31,6 +31,8 @@ export interface IFollowList {
   name: string;
   blacklist_description: string;
   muted_list_description: string;
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 export interface Entry {
   active_votes: EntryVote[];
@@ -448,38 +450,38 @@ export type OpType =
   | 'transfer'
   | 'withdraw_vesting';
 
-  export type IAuthorReward = {
-    author: string;
-    curators_vesting_payout: string;
-    hbd_payout: string;
-    hive_payout: string;
-    payout_must_be_claimed: boolean;
-    permlink: string;
-    vesting_payout: string;
-    author_rewards?: string;
-    beneficiary_payout_value?: string;
-    curator_payout_value?: string;
-    payout?: string;
-    reward?: string;
-    total_payout_value?: string;
-    curator?: string;
-  };
-  export type ICurationReward = {
-    author_rewards: string;
-    beneficiary_payout_value: string;
-    curator_payout_value: string;
-    payout: string;
-    total_payout_value: string;
-    reward: string;
-    curator: string;
-    author?: string;
-    curators_vesting_payout?: string;
-    hbd_payout?: string;
-    hive_payout?: string;
-    payout_must_be_claimed?: boolean;
-    permlink?: string;
-    vesting_payout?: string;
-  };
+export type IAuthorReward = {
+  author: string;
+  curators_vesting_payout: string;
+  hbd_payout: string;
+  hive_payout: string;
+  payout_must_be_claimed: boolean;
+  permlink: string;
+  vesting_payout: string;
+  author_rewards?: string;
+  beneficiary_payout_value?: string;
+  curator_payout_value?: string;
+  payout?: string;
+  reward?: string;
+  total_payout_value?: string;
+  curator?: string;
+};
+export type ICurationReward = {
+  author_rewards: string;
+  beneficiary_payout_value: string;
+  curator_payout_value: string;
+  payout: string;
+  total_payout_value: string;
+  reward: string;
+  curator: string;
+  author?: string;
+  curators_vesting_payout?: string;
+  hbd_payout?: string;
+  hive_payout?: string;
+  payout_must_be_claimed?: boolean;
+  permlink?: string;
+  vesting_payout?: string;
+};
 
 export type AccountHistory = [
   number,
@@ -669,10 +671,7 @@ export type Badge = {
 
 export type ExtendedNodeApi = {
   bridge: {
-    get_post_header: TWaxApiRequest<
-      { author: string; permlink: string },
-      IGetPostHeader
-    >;
+    get_post_header: TWaxApiRequest<{ author: string; permlink: string }, IGetPostHeader>;
     get_ranked_posts: TWaxApiRequest<
       {
         sort: string;
@@ -714,10 +713,7 @@ export type ExtendedNodeApi = {
     list_all_subscriptions: TWaxApiRequest<{ account: string }, string[][] | null>;
     list_subscribers: TWaxApiRequest<{ community: string }, string[][] | null>;
     unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
-    get_relationship_between_accounts: TWaxApiRequest<
-      string[],
-      IAccountRelationship | null
-    >;
+    get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
     get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
   };
   condenser_api: {

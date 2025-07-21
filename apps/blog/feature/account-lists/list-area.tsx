@@ -90,12 +90,19 @@ const ListArea = ({
               key={e.name}
               className="flex w-72 items-center justify-between bg-background p-1 font-semibold odd:bg-background-tertiary"
             >
-              <span className="px-2">
-                <Link className="text-destructive" href={`/@${e.name}`}>
+              {!e._temporary ? (
+                <span className="px-2">
+                  <Link className="text-destructive" href={`/@${e.name}`}>
+                    {e.name}
+                  </Link>
+                  {' ' + e.blacklist_description}
+                </span>
+              ) : (
+                <span className="px-2">
                   {e.name}
-                </Link>
-                {' ' + e.blacklist_description}
-              </span>
+                  {' ' + e.blacklist_description}
+                </span>
+              )}
               {accountOwner ? (
                 <Button
                   variant="outlineRed"
@@ -105,7 +112,8 @@ const ListArea = ({
                   disabled={
                     (deleteIsLoading && currentItem === e.name) ||
                     resetListIsLoading ||
-                    resetAllListsMutation.isLoading
+                    resetAllListsMutation.isLoading ||
+                    e._temporary
                   }
                 >
                   {(deleteIsLoading && currentItem === e.name) ||

@@ -14,7 +14,7 @@ const logger = getLogger('app');
  */
 export function useBlacklistBlogMutation() {
   const { user } = useUser();
-
+  //
   const queryClient = useQueryClient();
   const blacklistBlogMutation = useMutation({
     mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
@@ -30,14 +30,15 @@ export function useBlacklistBlogMutation() {
       const { prevData, otherBlogs } = data;
       const queryKey = ['blacklisted', username];
       if (prevData) {
-        queryClient.setQueryData(queryKey, () => [
-          {
-            blacklist_description: '',
-            muted_list_description: '',
-            name: otherBlogs
-          },
-          ...prevData
-        ]);
+        const newItem = prevData.find((e) => e.name === otherBlogs)
+          ? null
+          : {
+              name: otherBlogs,
+              blacklist_description: '',
+              muted_list_description: '',
+              _temporary: true
+            };
+        queryClient.setQueryData(queryKey, () => [newItem, ...prevData]);
       }
       toast({
         title: 'Blog blacklisted successfully',
