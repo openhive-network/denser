@@ -206,9 +206,15 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
   const unmuteMutation = useUnmuteMutation();
   const updateProfileMutation = useUpdateProfileMutation();
 
+  const DEFAULT_AI_ENDPOINTS = [
+    "https://api.hive.blog",
+    "https://api.syncad.com",
+    "https://api.openhive.network",
+    "https://api.dev.openhive.network",
+  ]
 
-  const nodeHcService = useHealthChecker("node-api", nodeApiCheckers, 'node-endpoint', hiveChainService.setHiveChainEndpoint, true, false);
-  const aiSearchHcService = useHealthChecker("ai-search", aiSearchApiCheckers, 'ai-search-endpoint', hiveChainService.setAiSearchEndpoint, false, false);
+  const nodeHcService = useHealthChecker("node-api", nodeApiCheckers, 'node-endpoint', hiveChainService.setHiveChainEndpoint);
+  const aiSearchHcService = useHealthChecker("ai-search", aiSearchApiCheckers, 'ai-search-endpoint', hiveChainService.setAiSearchEndpoint, DEFAULT_AI_ENDPOINTS);
 
 
   const createApiCheckers = async () => {

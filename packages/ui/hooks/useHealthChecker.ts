@@ -19,7 +19,24 @@ const DEFAULTS_ENDPOINTS = [
   "https://hiveapi.actifit.io",
 ];
 
-export const useHealthChecker = (key: string, apiCheckers: ApiChecker[] | undefined, endpointKey: string, hiveChainServiceMethod: (newEndpoint: string) => Promise<void>, shouldSetOnlineClient: boolean, enableLogs: boolean | undefined) => {
+/**
+ * React hook to prepare everything to call and get HC service. Put necessary params there and create HC for component.
+ * @param key identificator of HC instance
+ * @param apiCheckers list of checkers for HC
+ * @param endpointKey where your endpoint is stored in localstorage
+ * @param hiveChainServiceMethod name of hive chain service method to handle data change in Wax
+ * @param defaultEndpoints write this for custom list of default API providers
+ * @param enableLogs true for HC messages
+ * @returns
+ */
+export const useHealthChecker = (
+  key: string,
+  apiCheckers: ApiChecker[] | undefined,
+  endpointKey: string,
+  hiveChainServiceMethod: (newEndpoint: string) => Promise<void>,
+  defaultEndpoints: string[] = DEFAULTS_ENDPOINTS,
+  enableLogs: boolean = false
+) => {
   const [healthCheckerService, setHealthCheckerService] = useState<HealthCheckerService | undefined>(undefined);
   const [endpoint] = useLocalStorage(endpointKey, siteConfig.endpoint);
 
@@ -27,7 +44,6 @@ export const useHealthChecker = (key: string, apiCheckers: ApiChecker[] | undefi
     if (newEndpoint) {
       const bindedHiveChainServiceMethod = hiveChainServiceMethod.bind(hiveChainService);
       await bindedHiveChainServiceMethod(newEndpoint);
-      if (shouldSetOnlineClient) await hbauthService.setOnlineClient({ node: newEndpoint });
     }
   }
 
@@ -36,7 +52,7 @@ export const useHealthChecker = (key: string, apiCheckers: ApiChecker[] | undefi
       const hcService = new HealthCheckerService(
         key,
         apiCheckers,
-        DEFAULTS_ENDPOINTS,
+        defaultEndpoints,
         endpoint,
         changeEndpoint,
         enableLogs

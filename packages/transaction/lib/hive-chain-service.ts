@@ -5,6 +5,7 @@ import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { memoryStorage } from '@smart-signer/lib/memory-storage';
 import { getLogger } from '@ui/lib/logging';
 import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
+import { hbauthService } from '@smart-signer/lib/hbauth-service';
 
 const logger = getLogger('app');
 
@@ -89,6 +90,7 @@ export class HiveChainService {
     logger.info('Changing HiveChainService.HiveChain.endpointUrl with newEndpoint: %o', newEndpoint);
     HiveChainService.hiveChain.endpointUrl = newEndpoint;
     this.storage.setItem('node-endpoint', JSON.stringify(newEndpoint));
+    await hbauthService.setOnlineClient({ node: newEndpoint });
   }
 
   async setAiSearchEndpoint(newEndpoint: string) {
