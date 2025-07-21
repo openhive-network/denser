@@ -31,32 +31,6 @@ export function useResetBlogListMutation() {
 }
 
 /**
- * Makes reset blacklist blog transaction.
- *
- * @export
- * @return {*}
- */
-export function useResetBlacklistBlogMutation() {
-  const { user } = useUser();
-  const queryClient = useQueryClient();
-  const resetBlacklistBlogMutation = useMutation({
-    mutationFn: async () => {
-      const broadcastResult = await transactionService.resetBlacklistBlog({ observe: true });
-      const response = { broadcastResult };
-      logger.info('Done reset blacklist blog transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['blacklisted', username] });
-      logger.info('useResetBlacklistBlogMutation onSuccess: %o', data);
-    }
-  });
-
-  return resetBlacklistBlogMutation;
-}
-
-/**
  * Makes reset follow blacklist blog transaction.
  *
  * @export
