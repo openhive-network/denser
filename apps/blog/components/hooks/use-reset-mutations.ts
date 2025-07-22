@@ -4,32 +4,6 @@ import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
-/**
- * Makes reset follow muted blog transaction.
- *
- * @export
- * @return {*}
- */
-export function useResetFollowMutedBlogMutation() {
-  const { user } = useUser();
-  const queryClient = useQueryClient();
-  const resetFollowMutedBlogMutation = useMutation({
-    mutationFn: async () => {
-      const broadcastResult = await transactionService.resetFollowMutedBlog({ observe: true });
-      const response = { broadcastResult };
-      logger.info('Done reset follow muted blog transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['follow_muted', username] });
-      logger.info('useResetFollowMutedBlogMutation onSuccess: %o', data);
-    }
-  });
-
-  return resetFollowMutedBlogMutation;
-}
-
 export function useResetAllListsMutation() {
   const { user } = useUser();
   const queryClient = useQueryClient();

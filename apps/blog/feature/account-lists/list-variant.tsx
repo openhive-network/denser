@@ -9,21 +9,21 @@ import {
   useUnblacklistBlogMutation
 } from '@/blog/components/hooks/use-blacklist-mutations';
 import {
-  useFollowMutedBlogMutation,
-  useUnfollowMutedBlogMutation
-} from '@/blog/components/hooks/use-follow-mutations';
-import {
   useMuteMutation,
   useResetBlogListMutation,
   useUnmuteMutation
 } from '@/blog/components/hooks/use-mute-mutations';
-import { useResetFollowMutedBlogMutation } from '@/blog/components/hooks/use-reset-mutations';
 import { handleError } from '@ui/lib/handle-error';
 import {
   useFollowBlacklistBlogMutation,
   useResetFollowBlacklistBlogMutation,
   useUnfollowBlacklistBlogMutation
 } from '@/blog/components/hooks/use-follow-blacklist-mutation';
+import {
+  useFollowMutedBlogMutation,
+  useResetFollowMutedBlogMutation,
+  useUnfollowMutedBlogMutation
+} from '@/blog/components/hooks/use-follow-muted-list-mutation';
 
 interface ListVariantProps {
   variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute';
