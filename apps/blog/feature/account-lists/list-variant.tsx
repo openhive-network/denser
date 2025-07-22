@@ -10,8 +10,6 @@ import {
 } from '@/blog/components/hooks/use-blacklist-mutations';
 import {
   useFollowMutedBlogMutation,
-  useFollowBlacklistBlogMutation,
-  useUnfollowBlacklistBlogMutation,
   useUnfollowMutedBlogMutation
 } from '@/blog/components/hooks/use-follow-mutations';
 import {
@@ -19,11 +17,13 @@ import {
   useResetBlogListMutation,
   useUnmuteMutation
 } from '@/blog/components/hooks/use-mute-mutations';
-import {
-  useResetFollowBlacklistBlogMutation,
-  useResetFollowMutedBlogMutation
-} from '@/blog/components/hooks/use-reset-mutations';
+import { useResetFollowMutedBlogMutation } from '@/blog/components/hooks/use-reset-mutations';
 import { handleError } from '@ui/lib/handle-error';
+import {
+  useFollowBlacklistBlogMutation,
+  useResetFollowBlacklistBlogMutation,
+  useUnfollowBlacklistBlogMutation
+} from '@/blog/components/hooks/use-follow-blacklist-mutation';
 
 interface ListVariantProps {
   variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute';
@@ -135,7 +135,7 @@ const ListVariant = ({
       const resetFollowBlacklistBlogMutation = useResetFollowBlacklistBlogMutation();
       return (
         <ListArea
-          titleBy={t('user_profile.lists.list.followed_blacklists', { username: username })}
+          titleBy={t('user_profile.lists.followed_blacklists', { username: username })}
           listTitle={t('user_profile.lists.list.unfollow_blacklist')}
           resetTitle={t('user_profile.lists.list.reset_followed_blacklists')}
           data={data}
@@ -175,7 +175,7 @@ const ListVariant = ({
       const resetFollowMutedBlogMutation = useResetFollowMutedBlogMutation();
       return (
         <ListArea
-          titleBy={t('user_profile.lists.list.followed_muted_lists', { username: username })}
+          titleBy={t('user_profile.lists.followed_muted_lists', { username: username })}
           listTitle={t('user_profile.lists.list.unfollow_muted_list')}
           resetTitle={t('user_profile.lists.list.reset_followed_muted_list')}
           data={data}
