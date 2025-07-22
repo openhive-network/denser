@@ -38,7 +38,7 @@ export function useBlacklistBlogMutation() {
               muted_list_description: '',
               _temporary: true
             };
-        queryClient.setQueryData(queryKey, () => [newItem, ...prevData]);
+        queryClient.setQueryData(queryKey, () => (newItem ? [newItem, ...prevData] : prevData));
       }
       toast({
         title: 'Blog blacklisted successfully',
@@ -67,20 +67,24 @@ export function useUnblacklistBlogMutation() {
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
       const broadcastResult = await transactionService.unblacklistBlog(blog, { observe: true });
-      const prevData: IFollowList[] | undefined = queryClient.getQueryData(['blacklisted', user.username]);
-      const response = { ...params, broadcastResult, prevData };
+      const queryKey = ['blacklisted', user.username];
+
+      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+      const response = { ...params, broadcastResult, prevData, queryKey };
       logger.info('Done unblacklist blog transaction: %o', response);
 
       return response;
     },
-    onSuccess: (data) => {
-      logger.info('useUnblacklistBlogMutation onSuccess data: %o', data);
-      const { prevData, blog } = data;
-      const { username } = user;
-      const queryKey = ['blacklisted', username];
+    onSettled: (data) => {
+      if (!data) return;
+      const { prevData, blog, queryKey } = data;
       if (prevData) {
         queryClient.setQueryData(queryKey, () => prevData.filter((e) => e.name !== blog));
       }
+    },
+    onSuccess: (data) => {
+      const { blog, queryKey } = data;
+      logger.info('useUnblacklistBlogMutation onSuccess data: %o', data);
       toast({
         title: 'Blog unblacklisted successfully',
         description: `The blog ${blog} has been removed from your blacklist.`,
