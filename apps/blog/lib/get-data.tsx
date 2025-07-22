@@ -6,6 +6,11 @@ import { logger } from '@ui/lib/logger';
 
 const chain = await hiveChainService.getHiveChain();
 
+const logStandarizedError = (methodName: string, error: unknown): null => {
+    logger.error(`Error in ${methodName}`, error);
+    throw new Error(`Error in ${methodName}`);
+}
+
 export const getSimilarPosts = async ({
   pattern,
   tr_body = 100,
@@ -25,8 +30,7 @@ export const getSimilarPosts = async ({
     const response = await chain.restApi['hivesense-api'].similarposts({posts_limit: limit, tr_body, pattern, observer, start_author, start_permlink})
     return response;
   } catch (error) {
-    logger.error('Error in getSimilarPosts', error);
-    throw new Error('Error in getSimilarPosts');
+    return logStandarizedError("getSimilarPosts", error);
   }
 };
 
@@ -36,8 +40,7 @@ export const getHiveSenseStatus = async (): Promise<boolean> => {
     const response = await chain.restApi['hivesense-api']();
     return response.info.title === "Hivesense";
   } catch (error) {
-    logger.error('Error in getStatus', error);
-    throw new Error('Error in getSimilarPosts');
+    return !!logStandarizedError("getHiveSenseStatus", error);
   }
 };
 
@@ -58,7 +61,6 @@ export const getSuggestions = async ({
     const response = await chain.restApi['hivesense-api'].similarpostsbypost({author, tr_body, permlink, observer, posts_limit})
     return response;
   } catch (error) {
-    logger.error('Error in getSuggestions', error);
-    throw new Error('Error in getSuggestions');
+    return logStandarizedError("getSuggestions", error);
   }
 };
