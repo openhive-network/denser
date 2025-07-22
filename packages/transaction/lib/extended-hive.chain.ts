@@ -581,6 +581,8 @@ export interface IFollow {
   follower: string;
   following: string;
   what: string[];
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export interface ICollateralizedConversionRequest {

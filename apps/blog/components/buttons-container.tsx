@@ -1,4 +1,4 @@
-import { IFollow } from '@transaction/lib/extended-hive.chain'; 
+import { IFollow } from '@transaction/lib/extended-hive.chain';
 import FollowButton from './follow-button';
 import MuteButton from './mute-button';
 import { User } from '@smart-signer/types/common';
@@ -43,6 +43,9 @@ const ButtonsContainer = ({
 
   const isMute = Boolean(
     mute.data?.pages[0].some((f) => f.follower === user.username && f.following === username)
+  );
+  const temporaryDisabled = mute.data?.pages[0].some(
+    (f) => f._temporary && f.follower === user.username && f.following === username
   );
   const isFollow = Boolean(
     follow.data?.pages[0].some(
@@ -93,8 +96,20 @@ const ButtonsContainer = ({
     <>
       {user.isLoggedIn ? (
         <>
-          <FollowButton loading={loading} variant={variant} isFollow={isFollow} onClick={handlerFollow} />
-          <MuteButton loading={loading} variant={variant} isMute={isMute} onClick={handlerMute} />
+          <FollowButton
+            loading={loading}
+            variant={variant}
+            isFollow={isFollow}
+            onClick={handlerFollow}
+            disabled={temporaryDisabled}
+          />
+          <MuteButton
+            loading={loading}
+            variant={variant}
+            isMute={isMute}
+            onClick={handlerMute}
+            disabled={temporaryDisabled}
+          />
         </>
       ) : (
         <DialogLogin>

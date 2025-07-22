@@ -14,9 +14,12 @@ import {
   useUnfollowBlacklistBlogMutation,
   useUnfollowMutedBlogMutation
 } from '@/blog/components/hooks/use-follow-mutations';
-import { useMuteMutation, useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
 import {
+  useMuteMutation,
   useResetBlogListMutation,
+  useUnmuteMutation
+} from '@/blog/components/hooks/use-mute-mutations';
+import {
   useResetFollowBlacklistBlogMutation,
   useResetFollowMutedBlogMutation
 } from '@/blog/components/hooks/use-reset-mutations';

@@ -5,32 +5,6 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Makes reset blog list transaction.
- *
- * @export
- * @return {*}
- */
-export function useResetBlogListMutation() {
-  const { user } = useUser();
-  const queryClient = useQueryClient();
-  const resetBlogListMutation = useMutation({
-    mutationFn: async () => {
-      const broadcastResult = await transactionService.resetBlogList({ observe: true });
-      const response = { broadcastResult };
-      logger.info('Done reset blog list transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['muted', username] });
-      logger.info('useResetBlogListMutation onSuccess: %o', data);
-    }
-  });
-
-  return resetBlogListMutation;
-}
-
-/**
  * Makes reset follow blacklist blog transaction.
  *
  * @export
