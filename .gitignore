@@ -20,3 +20,4 @@ stack/haf-datadir
 apps/blog/test.env
 stack/certs/cert.pem
 stack/certs/key.pem
+Close

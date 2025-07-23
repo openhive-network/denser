@@ -160,6 +160,9 @@ importers:
       '@hive/eslint-config-custom':
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
+      '@hive/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@hive/middleware':
         specifier: workspace:*
         version: link:../../packages/middleware
@@ -362,6 +365,9 @@ importers:
       '@hive/eslint-config-custom':
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
+      '@hive/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@hive/middleware':
         specifier: workspace:*
         version: link:../../packages/middleware
