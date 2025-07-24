@@ -1,9 +1,6 @@
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import {
-  getAccountNotifications,
-  getUnreadNotifications
-} from '@transaction/lib/bridge';
+import { getAccountNotifications, getUnreadNotifications } from '@transaction/lib/bridge';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import NotificationList from '@/blog/components/notification-list';
 import { Button } from '@ui/components/button';
@@ -48,7 +45,6 @@ const NotificationActivities = ({
 
   const {
     isLoading,
-    error,
     refetch,
     data: moreData
   } = useQuery(
@@ -56,23 +52,19 @@ const NotificationActivities = ({
     () => getAccountNotifications(username, lastStateElementId, 50),
     { enabled: !!username }
   );
-  const {
-    isLoading: profileDataIsLoading,
-    error: errorProfileData,
-    data: profileData
-  } = useQuery(['profileData', user.username], () => getAccountFull(user.username), {
-    enabled: !!user.username
-  });
+  const { data: profileData } = useQuery(
+    ['profileData', user.username],
+    () => getAccountFull(user.username),
+    {
+      enabled: !!user.username
+    }
+  );
   const accountOwner = user.username === username;
-  const {
-    isLoading: apiAccountsIsLoading,
-    error: errorApiAccounts,
-    data: apiAccounts
-  } = useQuery(['apiAccount', username], () => getFindAccounts(username), {
+  const { data: apiAccounts } = useQuery(['apiAccount', username], () => getFindAccounts(username), {
     enabled: !!username
   });
   const showButton = moreData?.length !== 0;
-  const noNotifications = !state || !state.length ||state.length === 0;
+  const noNotifications = !state || !state.length || state.length === 0;
   useEffect(() => {
     if (state) {
       setLastStateElementId(state[state.length - 1].id);
