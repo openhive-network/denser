@@ -1,8 +1,16 @@
+import env from '@beam-australia/react-env';
 import { Entry } from '@transaction/lib/extended-hive.chain';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { configuredAIDomain } from '@ui/config/public-vars';
 import { logger } from '@ui/lib/logger';
 
-// FIXME: Source of data should use Wax not direct hivesense API call via fetch
+const chain = await hiveChainService.getHiveChain();
+
+const logStandarizedError = (methodName: string, error: unknown): null => {
+    logger.error(`Error in ${methodName}`, error);
+    throw new Error(`Error in ${methodName}`);
+}
+
 export const getSimilarPosts = async ({
   pattern,
   tr_body = 100,
@@ -19,38 +27,23 @@ export const getSimilarPosts = async ({
   start_permlink: string;
 }): Promise<Entry[] | null> => {
   try {
-    const response = await fetch(
-      `${configuredAIDomain}/hivesense-api/similarposts?pattern=${encodeURIComponent(pattern)}&tr_body=${tr_body}&posts_limit=${limit}&observer=${observer}&start_author=${start_author}&start_permlink=${start_permlink}`
-    );
-    if (!response.ok) {
-      throw new Error(`Similar posts API Error: ${response.status}`);
-    }
-    const data = await response.json();
-
-    if ('error' in data) {
-      throw new Error(data.error);
-    }
-
-    return data;
+    const response = await chain.restApi['hivesense-api'].similarposts({posts_limit: limit, tr_body, pattern, observer, start_author, start_permlink})
+    return response;
   } catch (error) {
-    logger.error('Error in getSimilarPosts', error);
-    throw new Error('Error in getSimilarPosts');
+    return logStandarizedError("getSimilarPosts", error);
   }
 };
 
 // FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
-    const response = await fetch(`${configuredAIDomain}/hivesense-api/`);
-    const data = await response.json();
-    if ('error' in data || !response.ok) return false;
-    return true;
-  } catch {
-    return false;
+    const response = await chain.restApi['hivesense-api']();
+    return response.info.title === "Hivesense";
+  } catch (error) {
+    return !!logStandarizedError("getHiveSenseStatus", error);
   }
 };
 
-// FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getSuggestions = async ({
   author,
   permlink,
@@ -65,19 +58,9 @@ export const getSuggestions = async ({
   observer: string;
 }): Promise<Entry[] | null> => {
   try {
-    const response = await fetch(
-      `${configuredAIDomain}/hivesense-api/similarpostsbypost?author=${author}&permlink=${permlink}&tr_body=${tr_body}&posts_limit=${posts_limit}&observer=${observer}`
-    );
-    if (!response.ok) {
-      throw new Error(`Similar posts API Error: ${response.status}`);
-    }
-    const data = await response.json();
-    if ('error' in data) {
-      throw new Error(data.error);
-    }
-    return data;
+    const response = await chain.restApi['hivesense-api'].similarpostsbypost({author, tr_body, permlink, observer, posts_limit})
+    return response;
   } catch (error) {
-    logger.error('Error in getSuggestions', error);
-    throw new Error('Error in getSuggestions');
+    return logStandarizedError("getSuggestions", error);
   }
 };

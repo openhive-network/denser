@@ -1,15 +1,16 @@
-import { createHiveChain, IHiveChainInterface, IWaxOptionsChain, TWaxExtended } from '@hiveio/wax';
+import { createHiveChain, IHiveChainInterface, IWaxOptionsChain, TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
 import { StorageType, StorageBaseOptions } from '@smart-signer/lib/storage-mixin';
 import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { memoryStorage } from '@smart-signer/lib/memory-storage';
 import { getLogger } from '@ui/lib/logging';
-import { ExtendedNodeApi } from './extended-hive.chain';
+import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
+import { hbauthService } from '@smart-signer/lib/hbauth-service';
 
 const logger = getLogger('app');
 
 export class HiveChainService {
-  static hiveChain: TWaxExtended<ExtendedNodeApi, IHiveChainInterface>;
+  static hiveChain: TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
 
   storage: Storage;
   storageType: StorageType;
@@ -21,7 +22,7 @@ export class HiveChainService {
    * @type {(Promise<TWaxExtended<ExtendedNodeApi, IHiveChainInterface>> | null)}
    * @memberof HiveChainService
    */
-  hiveChainPromise: Promise<TWaxExtended<ExtendedNodeApi, IHiveChainInterface>> | null;
+  hiveChainPromise: Promise<TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>> | null;
 
   constructor({ storageType = 'localStorage' }: StorageBaseOptions) {
     this.hiveChainPromise = null;
@@ -40,7 +41,7 @@ export class HiveChainService {
     }
   }
 
-  async getHiveChain(): Promise<TWaxExtended<ExtendedNodeApi, IHiveChainInterface>> {
+  async getHiveChain(): Promise<TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>> {
     if (!HiveChainService.hiveChain) {
 
       // If we have pending promise, return its result.
@@ -48,7 +49,7 @@ export class HiveChainService {
 
       // If we haven't pending promise, let's create one.
       const promise = async () => {
-        const storedApiEndpoint = this.storage.getItem('hive-blog-endpoint');
+        const storedApiEndpoint = this.storage.getItem('node-endpoint');
         let apiEndpoint: string = storedApiEndpoint ? JSON.parse(storedApiEndpoint) : '';
         if (!apiEndpoint) {
           apiEndpoint = siteConfig.endpoint;
@@ -72,13 +73,30 @@ export class HiveChainService {
   async setHiveChain(options?: Partial<IWaxOptionsChain>) {
     logger.info('Creating instance of HiveChainService.hiveChain with options: %o', options);
     const hiveChain = await createHiveChain(options)
-    HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>();
+    HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>().extendRest<ExtendedRestApi>({
+        'hivesense-api': {
+          urlPath: 'hivesense-api/'
+        }
+      });
+    const storedAiSearchEndpoint = this.storage.getItem('ai-search-endpoint');
+    let apiEndpoint: string = storedAiSearchEndpoint ? JSON.parse(storedAiSearchEndpoint) : '';
+    if (!apiEndpoint) {
+      apiEndpoint = siteConfig.endpoint;
+    }
+    if (storedAiSearchEndpoint) HiveChainService.hiveChain.restApi['hivesense-api'].endpointUrl = apiEndpoint;
   }
 
   async setHiveChainEndpoint(newEndpoint: string) {
     logger.info('Changing HiveChainService.HiveChain.endpointUrl with newEndpoint: %o', newEndpoint);
-    await this.getHiveChain();
     HiveChainService.hiveChain.endpointUrl = newEndpoint;
+    this.storage.setItem('node-endpoint', JSON.stringify(newEndpoint));
+    await hbauthService.setOnlineClient({ node: newEndpoint });
+  }
+
+  async setAiSearchEndpoint(newEndpoint: string) {
+    logger.info('Changing AI search with newEndpoint: %o', newEndpoint);
+    HiveChainService.hiveChain.restApi['hivesense-api'].endpointUrl = newEndpoint;
+    this.storage.setItem('ai-search-endpoint', JSON.stringify(newEndpoint));
   }
 }
 
