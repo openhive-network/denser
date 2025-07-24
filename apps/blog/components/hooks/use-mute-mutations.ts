@@ -150,16 +150,15 @@ export function useUnmuteMutation() {
 export function useResetBlogListMutation() {
   const { user } = useUser();
   const queryClient = useQueryClient();
+
   const resetBlogListMutation = useMutation({
     mutationFn: async () => {
       const broadcastResult = await transactionService.resetBlogList({ observe: true });
-      const prevData: IFollowList[] | undefined = queryClient.getQueryData(['muted', user.username]);
-      const response = { broadcastResult, prevData };
+      const response = { broadcastResult };
       logger.info('Done reset blog list transaction: %o', response);
       return response;
     },
-    onSettled(data) {
-      if (!data) return;
+    onSettled() {
       const { username } = user;
       queryClient.setQueryData(['muted', username], () => []);
     },

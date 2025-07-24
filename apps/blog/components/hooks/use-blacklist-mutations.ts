@@ -115,20 +115,16 @@ export function useResetBlacklistBlogMutation() {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const queryKey = ['blacklisted', user.username];
+
   const resetBlacklistBlogMutation = useMutation({
     mutationFn: async () => {
       const broadcastResult = await transactionService.resetBlacklistBlog({ observe: true });
-      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
-      const response = { broadcastResult, prevData };
+      const response = { broadcastResult };
       logger.info('Done reset blacklist blog transaction: %o', response);
       return response;
     },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevData } = data;
-      if (prevData) {
-        queryClient.setQueryData(queryKey, () => []);
-      }
+    onSettled: () => {
+      queryClient.setQueryData(queryKey, () => []);
     },
     onSuccess: (data) => {
       toast({
