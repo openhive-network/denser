@@ -4,6 +4,7 @@ import { transactionService } from '@transaction/index';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
 import { FullAccount } from '@transaction/lib/app-types';
+import { toast } from '@ui/components/hooks/use-toast';
 const logger = getLogger('app');
 
 /**
@@ -41,6 +42,11 @@ export function useClaimRewardsMutation() {
     },
     onSuccess: (data) => {
       logger.info('useClaimRewardMutation onSuccess data: %o', data);
+      toast({
+        title: 'Claim rewards',
+        description: 'Your rewards have been claimed successfully.',
+        variant: 'success'
+      });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
       }, 3000);
