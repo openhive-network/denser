@@ -1,8 +1,9 @@
 import CommentListItem from '@/blog/components/comment-list-item';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import { useMemo } from 'react';
 
 const CommentList = ({
   highestAuthor,
@@ -12,7 +13,8 @@ const CommentList = ({
   parent,
   parent_depth,
   mutedList,
-  flagText
+  flagText,
+  discussionPermlink
 }: {
   highestAuthor: string;
   highestPermlink: string;
@@ -22,20 +24,20 @@ const CommentList = ({
   parent_depth: number;
   mutedList: IFollowList[];
   flagText: string | undefined;
+  discussionPermlink: string;
 }) => {
-  let filtered = data.filter((x: Entry) => {
-    return x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink;
-  });
-
-  let mutedContent = filtered.filter(
-    (item: Entry) => parent && item.depth === 1 && item.parent_author === parent.author
-  );
-
-  let unmutedContent = filtered.filter((md: Entry) =>
-    mutedContent.every((fd: Entry) => fd.post_id !== md.post_id)
-  );
   const router = useRouter();
-  const arr = [...mutedContent, ...unmutedContent];
+  const arr = useMemo(() => {
+    const filtered = data.filter(
+      (x) => x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink
+    );
+
+    const mutedContent = filtered.filter(
+      (item) => parent && item.depth === 1 && item.parent_author === parent.author
+    );
+    const unmutedContent = filtered.filter((md) => mutedContent.every((fd) => fd.post_id !== md.post_id));
+    return [...mutedContent, ...unmutedContent];
+  }, [JSON.stringify(data), JSON.stringify(parent)]);
   return (
     <ul>
       <>
@@ -60,6 +62,7 @@ const CommentList = ({
               parent_depth={parent_depth}
               mutedList={mutedList}
               flagText={flagText}
+              discussionPermlink={discussionPermlink}
             />
             {comment.children > 0 ? (
               <CommentList
@@ -72,6 +75,7 @@ const CommentList = ({
                 parent={comment}
                 key={`${comment.post_id}-list-${comment.depth}-index-${index}`}
                 parent_depth={parent_depth}
+                discussionPermlink={discussionPermlink}
               />
             ) : null}
           </div>

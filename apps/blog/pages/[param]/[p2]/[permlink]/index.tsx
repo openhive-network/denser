@@ -6,7 +6,6 @@ import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import Loading from '@hive/ui/components/loading';
-import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
 import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
@@ -60,15 +59,11 @@ import FlagIcon from '@/blog/components/flag-icon';
 import { getSuggestions } from '@/blog/lib/get-data';
 import SuggestionsList from '@/blog/components/suggestions-list';
 import TimeAgo from '@ui/components/time-ago';
+import CommentList from '@/blog/components/comment-list';
 
 const logger = getLogger('app');
 export const postClassName =
   'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer';
-
-const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
-  loading: () => <Loading loading={true} />,
-  ssr: false
-});
 
 function PostPage({
   community,
@@ -358,6 +353,7 @@ function PostPage({
                     parentPermlink={post.parent_permlink}
                     storageId={storageId}
                     comment={post}
+                    discussionPermlink={permlink}
                   />
                 ) : edit ? (
                   <PostForm
@@ -685,6 +681,7 @@ function PostPage({
                 permlink={permlink}
                 storageId={storageId}
                 comment={storedComment}
+                discussionPermlink={permlink}
               />
             ) : null}
           </div>
@@ -694,7 +691,7 @@ function PostPage({
                 <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
                 <CommentSelectFilter />
               </div>
-              <DynamicComments
+              <CommentList
                 highestAuthor={post.author}
                 highestPermlink={post.permlink}
                 permissionToMute={userCanModerate}
@@ -703,6 +700,7 @@ function PostPage({
                 flagText={communityData?.flag_text}
                 parent={post}
                 parent_depth={post.depth}
+                discussionPermlink={permlink}
               />
             </div>
           ) : (

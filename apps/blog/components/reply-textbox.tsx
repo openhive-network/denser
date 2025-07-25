@@ -27,7 +27,8 @@ export function ReplyTextbox({
   parentPermlink,
   storageId,
   editMode,
-  comment
+  comment,
+  discussionPermlink
 }: {
   onSetReply: (e: boolean) => void;
   username: string;
@@ -36,6 +37,7 @@ export function ReplyTextbox({
   storageId: string;
   editMode: boolean;
   comment: Entry | string;
+  discussionPermlink: string;
 }) {
   const { user } = useUser();
   const [storedPost, storePost, removePost] = useLocalStorage<string>(
@@ -81,7 +83,8 @@ export function ReplyTextbox({
           parentAuthor: username,
           parentPermlink,
           permlink,
-          body: text
+          body: text,
+          discussionPermlink
         };
         try {
           await updateCommentMutation.mutateAsync(updateCommentParams);
@@ -94,7 +97,8 @@ export function ReplyTextbox({
           parentAuthor: username,
           parentPermlink: permlink,
           body: text,
-          preferences
+          preferences,
+          discussionPermlink
         };
         try {
           await commentMutation.mutateAsync(commentParams);
