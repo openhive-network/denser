@@ -632,23 +632,23 @@ test.describe('Home page tests', () => {
 
   test('navigation search link is visible', async ({ page }) => {
     await homePage.goto();
-    await page.getByRole('banner').getByRole('combobox').click()
-    await page.getByRole('option').nth(1).click();
+    // await page.getByRole('banner').getByRole('combobox').click()
+    // await page.getByRole('option').nth(1).click();
 
     await expect(homePage.getNavSearchAIInput).toBeVisible();
   });
 
-  test('move to the search page', async ({ page }) => {
+  test('move to the test trending page for searching by tags', async ({ page }) => {
     await homePage.goto();
-    await page.getByRole('banner').getByRole('combobox').click()
-    await page.getByRole('option').nth(1).click();
-    await expect(homePage.getNavSearchAIInput).toBeVisible();
+    await page.getByRole('banner').getByRole('combobox').click();
+    await page.getByRole('option').last().click();
+    await expect(homePage.getNavSearchTagsInput).toBeVisible();
     // Type test and press Enter
-    await homePage.getNavSearchAIInput.fill('test');
+    await homePage.getNavSearchTagsInput.fill('test');
     await homePage.page.keyboard.press('Enter');
     await homePage.page.waitForTimeout(5000);
     // validate url was changed to /search
-    await expect(homePage.page).toHaveURL('/search?ai=test');
+    await expect(homePage.page).toHaveURL('/trending/test');
     // validate the first post card
     // await expect(homePage.getFirstPostListItem).toBeVisible();
   });

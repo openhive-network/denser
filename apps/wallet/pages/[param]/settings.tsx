@@ -2,20 +2,42 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useTranslation } from 'next-i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@ui/components/select';
 import { Label } from '@ui/components/label';
 import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translations';
 import Head from 'next/head';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import {ApiChecker, HealthCheckerComponent } from "@hiveio/healthchecker-component";
+import { useEffect, useState } from 'react';
+import {useHealthChecker} from "@ui/hooks/useHealthChecker";
 
 function Communities({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const [walletApiCheckers, setWalletApiCheckers] = useState<ApiChecker[] | undefined>(undefined);
+    const createApiCheckers = async () => {
+      const hiveChain = await hiveChainService.getHiveChain();
+      const apiCheckers: ApiChecker[] = [
+        {
+          title: "Condenser - Get accounts",
+          method: hiveChain.api.condenser_api.get_accounts,
+          params: [["guest4test"]],
+          validatorFunction: data => data[0].name === "guest4test" ? true : "Get block error",
+        },
+        {
+          title: "Database - saving withdrawals",
+          method: hiveChain.api.database_api.find_savings_withdrawals,
+          params: {account: "guest4test"},
+          validatorFunction: data => !!data.withdrawals ? true : "Get post error",
+        },
+     ]
+      setWalletApiCheckers(apiCheckers);
+    }
+  const healthCheckerService = useHealthChecker("wallet-api", walletApiCheckers, "node-endpoint", hiveChainService.setAiSearchEndpoint );
   const { t } = useTranslation('common_wallet');
+  useEffect(() => {
+    createApiCheckers();
+  }, []);
+
+
+
   return (
     <>
       <Head>
@@ -35,16 +57,7 @@ function Communities({ username, metadata }: InferGetServerSidePropsType<typeof 
             </h2>
 
             <Label htmlFor="choose-api-node">{t('settings.choose_api')}</Label>
-            <Select defaultValue="api" name="choose-api-node">
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="api">https://api.openhive.network</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            { !!healthCheckerService && <HealthCheckerComponent healthCheckerService={healthCheckerService} />}
           </div>
         </div>
       </ProfileLayout>

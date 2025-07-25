@@ -38,7 +38,7 @@ class HbauthService extends StorageMixin(StorageBase) {
 
       // If we haven't pending promise. let's create one.
       const promise = async () => {
-        const storedNode = this.storage.getItem('hive-blog-endpoint');
+        const storedNode = this.storage.getItem('node-endpoint');
         let node: string = storedNode ? JSON.parse(storedNode) : '';
         if (!node) {
           node = siteConfig.endpoint;

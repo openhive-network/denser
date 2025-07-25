@@ -3,7 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@ui/*": ["./*"]
+      "@ui/*": ["./*"],
+      "@transaction/*": ["../../packages/transaction/*"],
+      "@smart-signer/*": ["../../packages/smart-signer/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

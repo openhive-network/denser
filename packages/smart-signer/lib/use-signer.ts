@@ -7,7 +7,7 @@ export const useSigner = () => {
   const { user } = useUser();
   const { username, loginType, keyType } = user;
   const [apiEndpoint] = useLocalStorage<string>(
-    'hive-blog-endpoint',
+    'node-endpoint',
     siteConfig.endpoint
     );
   const signerOptions: SignerOptions = {

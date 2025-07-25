@@ -21,7 +21,6 @@ export interface LoginFormSchema extends SignInFormSchema {
 
 export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, strict: boolean) => {
   const authDataRef = useRef<PostLoginSchema | null>(null) as MutableRefObject<PostLoginSchema | null>;
-  const cookieRef = useRef<string | null>(null) as MutableRefObject<string | null>;
   const [loginChallenge, setLoginChallenge] = useState('');
   const [isSigned, setIsSigned] = useState(false);
   const { signerOptions } = useSigner();
@@ -87,8 +86,18 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
         authenticateOnBackend
       };
 
-      cookieRef.current = getAuthCookieString(txBuilder);
-      document.cookie = getAuthCookieString(txBuilder);
+      const authProof = getAuthProof(txBuilder);
+
+      await fetch('/api/auth/login_account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          loginType,
+          loginChallenge,
+          authProof
+        })
+      });
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
       return Promise.reject(error);
@@ -100,10 +109,10 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
     return Promise.resolve();
   };
 
-  const getAuthCookieString = (tx: IOnlineTransaction) => {
+  const getAuthProof = (tx: IOnlineTransaction) => {
     const binaryData = tx.toBinaryForm();
     const base64Data = Buffer.from(binaryData).toString('base64');
-    return `auth_proof=${base64Data};path=/;secure;samesite=strict`;
+    return base64Data;
   };
 
   const submitAuth = async () => {

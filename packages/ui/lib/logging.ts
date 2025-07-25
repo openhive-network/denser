@@ -66,3 +66,21 @@ export function getLogger(name: string): Logger {
     ...config
   });
 }
+
+/**
+ * Log a login event in the required format, including optional serialized auth proof.
+ * @param ip - The user's IP address
+ * @param authProof - The serialized login auth proof (Transaction base64), optional
+ */
+export function logLoginEvent(ip: string | undefined, username: string, loginType: string, loginChallenge: string, authProof?: string) {
+  const now = new Date();
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  const dateStr = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  let logLine = `${dateStr} -- /login_account --> ip=${ip} account=${username} login_type=${loginType} login_challenge=${loginChallenge}`;
+  if (authProof) {
+    logLine += ` auth_proof=${authProof}`;
+  }
+  // Use the shared logger
+  const logger = getLogger('login_account');
+  logger.info(logLine);
+}
