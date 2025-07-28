@@ -32,7 +32,8 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
               name: e[0],
               value: getRoleValue(e[1] as Roles),
               role: e[1] as Roles,
-              title: e[2]
+              title: e[2],
+              temprary: !!e[3]
             }))
           : []
     }

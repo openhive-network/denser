@@ -146,7 +146,7 @@ export default function PostForm({
     enabled: Boolean(username)
   });
   const { data: communityData } = useQuery(
-    ['community', router.query.category, ''],
+    ['community', router.query.category],
     () =>
       getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
     {

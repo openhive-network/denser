@@ -1,4 +1,4 @@
-export type User = { value: number; role: Roles; name: string; title: string };
+export type User = { value: number; role: Roles; name: string; title: string; temprary: boolean };
 
 export type Roles = 'owner' | 'admin' | 'mod' | 'member' | 'guest' | 'muted';
 

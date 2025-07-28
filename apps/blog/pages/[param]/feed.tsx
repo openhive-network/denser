@@ -1,11 +1,6 @@
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import {
-  DATA_LIMIT as PER_PAGE,
-  getAccountPosts,
-  getSubscriptions,
-  getCommunity
-} from '@transaction/lib/bridge';
+import { DATA_LIMIT as PER_PAGE, getAccountPosts, getSubscriptions } from '@transaction/lib/bridge';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import Loading from '@hive/ui/components/loading';
 import { FC, useEffect } from 'react';
@@ -16,15 +11,11 @@ import CustomError from '@/blog/components/custom-error';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getDefaultProps } from '../../lib/get-translations';
 import Head from 'next/head';
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
-const CommunitiesSidebar = dynamic(() => import('@/blog/components/communities-sidebar'), { ssr: false });
-const CommunitiesMybar = dynamic(() => import('@/blog/components/communities-mybar'), { ssr: false });
-const ExploreHive = dynamic(() => import('@/blog/components/explore-hive'), { ssr: false });
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
@@ -54,7 +45,6 @@ const FeedPage: FC = () => {
     data: accountEntriesData,
     isLoading: accountEntriesIsLoading,
     isFetching: accountEntriesIsFetching,
-    error: accountEntriesError,
     isError: accountEntriesIsError,
     isFetchingNextPage: accountIsFetchingNextPage,
     fetchNextPage: accountFetchNextPage,
@@ -89,26 +79,15 @@ const FeedPage: FC = () => {
       enabled: Boolean(user?.username)
     }
   );
-  const {
-    data: communityData,
-    isLoading: communityDataIsLoading,
-    isFetching: communityDataIsFetching,
-    error: communityDataError
-  } = useQuery(['community', tag, ''], () => getCommunity(tag || '', ''), {
-    enabled: !!isValidCommunityTag
-  });
   useEffect(() => {
     if (inViewAcc && accountHasNextPage) {
       accountFetchNextPage();
     }
   }, [accountFetchNextPage, accountHasNextPage, inViewAcc]);
 
-  if (accountEntriesIsError || mySubsIsError || communityDataError) return <CustomError />;
+  if (accountEntriesIsError || mySubsIsError) return <CustomError />;
 
-  if (
-    (accountEntriesIsLoading && accountEntriesIsFetching) ||
-    (communityDataIsLoading && communityDataIsFetching)
-  ) {
+  if (accountEntriesIsLoading && accountEntriesIsFetching) {
     return <Loading loading={accountEntriesIsLoading || accountEntriesIsFetching} />;
   }
 
