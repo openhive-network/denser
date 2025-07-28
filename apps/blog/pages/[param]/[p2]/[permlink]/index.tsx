@@ -211,7 +211,9 @@ function PostPage({
 
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
-
+  useEffect(() => {
+    setMutedPost(post?.stats?.gray ?? false);
+  }, [post?.stats?.gray]);
   if (userFromGDPR || (postError && !post)) {
     return <CustomError />;
   }
@@ -534,20 +536,11 @@ function PostPage({
                             </div>
                           ) : userCanModerate && post.depth === 0 ? (
                             <div className="flex flex-col items-center">
-                              {/* <button
-                            className="ml-2 flex items-center text-destructive"
-                            onClick={post_is_pinned ? unpin : pin}
-                            >
-                            {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
-                          </button> */}
-                              {/* TODO swap two button to one when api return stats.is_pinned,
-                            temprary use two button to unpin and pin
-                            */}
-                              <button className="ml-2 flex items-center text-destructive" onClick={pin}>
-                                {t('communities.pin')}
-                              </button>
-                              <button className="ml-2 flex items-center text-destructive" onClick={unpin}>
-                                {t('communities.unpin')}
+                              <button
+                                className="ml-2 flex items-center text-destructive"
+                                onClick={post_is_pinned ? unpin : pin}
+                              >
+                                {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
                               </button>
                             </div>
                           ) : null}
@@ -560,6 +553,7 @@ function PostPage({
                               contentMuted={post.stats?.gray ?? false}
                               discussionPermlink={post.permlink}
                               discussionAuthor={post.author}
+                              temporaryDisable={post.stats?._temporary}
                             />
                           ) : null}
                         </>

@@ -23,7 +23,8 @@ const MutePostDialog = ({
   permlink,
   contentMuted,
   discussionAuthor,
-  discussionPermlink
+  discussionPermlink,
+  temporaryDisable
 }: {
   comment: Boolean;
   community: string;
@@ -32,6 +33,7 @@ const MutePostDialog = ({
   contentMuted: Boolean;
   discussionPermlink: string;
   discussionAuthor: string;
+  temporaryDisable?: boolean;
 }) => {
   const { t } = useTranslation('common_blog');
   const [text, setText] = useState<string>('');
@@ -75,7 +77,13 @@ const MutePostDialog = ({
   };
   return (
     <Dialog open={open} onOpenChange={(e) => setOpen(e)}>
-      <DialogTrigger asChild>
+      <DialogTrigger
+        asChild
+        disabled={temporaryDisable}
+        className={clsx('', {
+          'animate-pulse cursor-not-allowed text-destructive': temporaryDisable
+        })}
+      >
         {mutePost.isLoading || unmutePost.isLoading ? (
           <CircleSpinner loading={mutePost.isLoading || unmutePost.isLoading} size={18} color="#dc2626" />
         ) : (

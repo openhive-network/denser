@@ -438,6 +438,7 @@ const CommentListItem = ({
                               contentMuted={comment.stats?.gray ?? false}
                               discussionPermlink={parentPermlink}
                               discussionAuthor={parentAuthor}
+                              temporaryDisable={comment.stats?._temporary}
                             />
                           ) : null}
                         </div>

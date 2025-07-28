@@ -27,6 +27,8 @@ export interface EntryStat {
   hide: boolean;
   total_votes: number;
   is_pinned?: boolean;
+  // added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 export interface IFollowList {
   name: string;
@@ -676,7 +678,7 @@ export type Badge = {
 
 export interface SimilarPostParams {
   pattern?: string;
-  tr_body?:number;
+  tr_body?: number;
   posts_limit?: number;
   observer?: string;
   start_author?: string;
@@ -702,7 +704,7 @@ export interface HivesenseStatusResponse {
   externalDocs: {
     description: string;
     url: string;
-  }
+  };
   info: {
     description: string;
     title: string;
@@ -710,8 +712,8 @@ export interface HivesenseStatusResponse {
     license: {
       name: string;
       url: string;
-    }
-  }
+    };
+  };
   paths: unknown;
   servers: string[];
   tags: ApiTag[];
