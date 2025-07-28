@@ -31,7 +31,7 @@ export function useSetRoleMutation() {
     onSettled: (data) => {
       if (!data) return;
       const { community, username, prevRolesData, prevCommunityData, role } = data;
-      const newItem = [username, role, ''];
+      const newItem = [username, role, '', 'true'];
       if (!!prevRolesData) {
         const existingItem = prevRolesData.find((item) => item[0] === username);
         const updatedRoles = existingItem
