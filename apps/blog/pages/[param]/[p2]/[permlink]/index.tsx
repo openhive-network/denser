@@ -60,6 +60,7 @@ import { getSuggestions } from '@/blog/lib/get-data';
 import SuggestionsList from '@/blog/components/suggestions-list';
 import TimeAgo from '@ui/components/time-ago';
 import CommentList from '@/blog/components/comment-list';
+import clsx from 'clsx';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -537,7 +538,11 @@ function PostPage({
                           ) : userCanModerate && post.depth === 0 ? (
                             <div className="flex flex-col items-center">
                               <button
-                                className="ml-2 flex items-center text-destructive"
+                                disabled={post.stats?._temporary}
+                                className={clsx('ml-2 flex items-center text-destructive', {
+                                  'animate-pulse cursor-not-allowed text-destructive':
+                                    firstPost?.stats?._temporary
+                                })}
                                 onClick={post_is_pinned ? unpin : pin}
                               >
                                 {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
