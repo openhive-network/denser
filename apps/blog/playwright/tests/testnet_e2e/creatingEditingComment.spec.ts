@@ -6,7 +6,7 @@ import { generateRandomString } from '../support/utils';
 import { waitForCreatedCommentIsVisible } from '../support/waitHelper';
 import { PostPage } from '../support/pages/postPage';
 
-test.describe('Creating and editing comments with POM and fixture users', () => {
+test.describe.serial('Creating and editing comments with POM and fixture users', () => {
   test('Validate creating the new comment of the post of denserautotest4', async ({
     denserAutoTest4Page
   }) => {
