@@ -46,11 +46,22 @@ const ListVariant = ({
   const { user } = useUser();
   const userOwner = user.username === username && user.isLoggedIn;
 
+  // All hooks must be called at the top level, before any conditional logic
+  const blacklistBlogMutation = useBlacklistBlogMutation();
+  const resetBlacklistBlogMutation = useResetBlacklistBlogMutation();
+  const unblacklistBlogMutation = useUnblacklistBlogMutation();
+  const muteMutation = useMuteMutation();
+  const unmuteMutation = useUnmuteMutation();
+  const resetBlogListMutation = useResetBlogListMutation();
+  const followBlacklistBlogMutation = useFollowBlacklistBlogMutation();
+  const unfollowBlacklistBlogMutation = useUnfollowBlacklistBlogMutation();
+  const resetFollowBlacklistBlogMutation = useResetFollowBlacklistBlogMutation();
+  const followMutedBlogMutation = useFollowMutedBlogMutation();
+  const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
+  const resetFollowMutedBlogMutation = useResetFollowMutedBlogMutation();
+
   switch (variant) {
     case 'blacklisted':
-      const blacklistBlogMutation = useBlacklistBlogMutation();
-      const resetBlacklistBlogMutation = useResetBlacklistBlogMutation();
-      const unblacklistBlogMutation = useUnblacklistBlogMutation();
       return (
         <ListArea
           titleBy={t('user_profile.lists.list.accounts_blacklisted_by', { username: username })}
@@ -89,9 +100,6 @@ const ListVariant = ({
         />
       );
     case 'muted':
-      const muteMutation = useMuteMutation();
-      const unmuteMutation = useUnmuteMutation();
-      const resetBlogListMutation = useResetBlogListMutation();
       return (
         <ListArea
           titleBy={t('user_profile.lists.list.accounts_muted_by', { username: username })}
@@ -130,9 +138,6 @@ const ListVariant = ({
         />
       );
     case 'followedBlacklist':
-      const followBlacklistBlogMutation = useFollowBlacklistBlogMutation();
-      const unfollowBlacklistBlogMutation = useUnfollowBlacklistBlogMutation();
-      const resetFollowBlacklistBlogMutation = useResetFollowBlacklistBlogMutation();
       return (
         <ListArea
           titleBy={t('user_profile.lists.followed_blacklists', { username: username })}
@@ -170,9 +175,6 @@ const ListVariant = ({
         />
       );
     case 'followedMute':
-      const followMutedBlogMutation = useFollowMutedBlogMutation();
-      const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
-      const resetFollowMutedBlogMutation = useResetFollowMutedBlogMutation();
       return (
         <ListArea
           titleBy={t('user_profile.lists.followed_muted_lists', { username: username })}
