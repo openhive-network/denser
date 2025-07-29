@@ -70,6 +70,8 @@ export interface FullAccount {
   follow_stats?: AccountFollowStats;
   __loaded?: true;
   proxyVotes?: Array<unknown>;
+  // Temporary properties for UI purposes
+  _temporary?: boolean;
 }
 
 export interface Beneficiarie {

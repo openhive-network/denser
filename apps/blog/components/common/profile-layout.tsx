@@ -2,7 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
-import Loading from '@ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
 import {
   getAccount,
@@ -41,26 +40,15 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
   const userFromGDPRList = gdprUserList.includes(username);
-  const { isLoading: profileDataIsLoading, data: profileData } = useQuery(
-    ['profileData', username],
-    () => getAccountFull(username),
-    {
-      enabled: !!username
-    }
-  );
-  const { isLoading: accountDataIsLoading, data: accountData } = useQuery(
-    ['accountData', username],
-    () => getAccount(username),
-    {
-      enabled: !!username
-    }
-  );
+  const { data: profileData } = useQuery(['profileData', username], () => getAccountFull(username), {
+    enabled: !!username
+  });
+  const { data: accountData } = useQuery(['accountData', username], () => getAccount(username), {
+    enabled: !!username
+  });
   const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
 
-  const { isLoading: dynamicGlobalDataIsLoading, data: dynamicGlobalData } = useQuery(
-    ['dynamicGlobalData'],
-    () => getDynamicGlobalProperties()
-  );
+  const { data: dynamicGlobalData } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
 
   const { data: accountReputationData } = useQuery(
     ['accountReputationData', username],
@@ -101,7 +89,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   return (
     <div>
       <div
-        className=" w-full bg-gray-600 text-sm leading-6 sm:h-fit"
+        className={clsx('w-full bg-gray-600 text-sm leading-6 sm:h-fit', {
+          'animate-pulse': profileData._temporary
+        })}
         style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
         data-testid="profile-info"
       >
