@@ -61,6 +61,7 @@ import SuggestionsList from '@/blog/components/suggestions-list';
 import TimeAgo from '@ui/components/time-ago';
 import CommentList from '@/blog/components/comment-list';
 import clsx from 'clsx';
+import PostingLoader from '@/blog/components/posting-loader';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -169,6 +170,7 @@ function PostPage({
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [storedComment] = useLocalStorage<string>(`replyTo-/${username}/${permlink}-${user.username}`, '');
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);
 
@@ -220,10 +222,14 @@ function PostPage({
   }
   const deleteComment = async (permlink: string) => {
     try {
-      await deletePostMutation.mutateAsync({ permlink }).then(() => {
-        router.push(`/@${username}/posts`);
-      });
+      await deletePostMutation.mutateAsync({ permlink });
+      setIsSubmitting(true);
+      // Wait 2 seconds before redirecting
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      router.push(`/@${username}/posts`);
     } catch (error) {
+      setIsSubmitting(false);
       handleError(error, { method: 'deleteComment', params: { permlink } });
     }
   };
@@ -366,6 +372,7 @@ function PostPage({
                     sideBySidePreview={false}
                     post_s={post}
                     refreshPage={refreshPage}
+                    setIsSubmitting={setIsSubmitting}
                   />
                 ) : legalBlockedUser ? (
                   <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
@@ -708,6 +715,7 @@ function PostPage({
         </div>
         <div className="col-span-2" />
       </div>
+      <PostingLoader isSubmitting={isSubmitting} />
     </>
   );
 }
