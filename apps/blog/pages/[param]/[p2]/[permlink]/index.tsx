@@ -117,7 +117,7 @@ function PostPage({
       enabled: !!username && !!permlink
     }
   );
-  const { data: communityData } = useQuery(['communityData', community], () => getCommunity(community), {
+  const { data: communityData } = useQuery(['community', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
 

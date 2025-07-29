@@ -132,6 +132,8 @@ export interface Community {
     //  added only when using optimistic update, not backend property
     _temporary?: boolean;
   };
+  // added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export interface JsonMetadata {

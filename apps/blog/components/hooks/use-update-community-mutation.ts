@@ -1,6 +1,7 @@
 import { ESupportedLanguages } from '@hiveio/wax';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
+import { Community } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
 import { logger } from '@ui/lib/logger';
 
@@ -32,21 +33,37 @@ export function useUpdateCommunityMutation() {
         editor,
         { observe: true }
       );
+      const prevCommunityData: Community | undefined = queryClient.getQueryData(['community', communityName]);
+      return { ...response, ...params, prevCommunityData };
+    },
+    onSettled: (data) => {
+      if (!data) return;
+      const { communityName, prevCommunityData, title, about, lang, nsfw, description, flagText } = data;
+      if (!!prevCommunityData) {
+        const updatedCommunity = {
+          ...prevCommunityData,
+          title,
+          about,
+          lang,
+          description,
+          is_nsfw: nsfw,
+          flag_text: flagText,
+          _temporary: true
+        };
 
-      logger.info('Done update community transaction: %o', response);
-      return { ...response, ...params };
+        queryClient.setQueryData(['community', communityName], updatedCommunity);
+      }
     },
     onSuccess: (data) => {
       const { communityName } = data;
-      queryClient.invalidateQueries({ queryKey: ['community', communityName] });
-      queryClient.invalidateQueries({ queryKey: ['communityData', communityName] });
       toast({
         title: 'Community updated',
-        variant: 'success',
-        duration: 5000
+        description: `You have successfully updated the community ${communityName}.`,
+        variant: 'success'
       });
-
-      logger.info('useUpdateCommunityMutation onSuccess data: %o', data);
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['community', communityName] });
+      }, 3000);
     }
   });
 

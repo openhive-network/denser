@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
+import { Community } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
@@ -20,7 +21,7 @@ export function useSubscribeMutation() {
         'subscriptions',
         params.username
       ]);
-      const prevCommunityData = queryClient.getQueryData(['community', community]);
+      const prevCommunityData: Community | undefined = queryClient.getQueryData(['community', community]);
       const response = { ...params, broadcastResult, prevUserSubscriptionData, prevCommunityData };
       return response;
     },
