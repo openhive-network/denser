@@ -62,6 +62,8 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
           community={community.name}
           isSubscribed={isSubscribed}
           onIsSubscribed={(e) => setIsSubscribed(e)}
+          communityTitle={community.title}
+          temprary={community.context._temporary}
         />
       </div>
     </Card>

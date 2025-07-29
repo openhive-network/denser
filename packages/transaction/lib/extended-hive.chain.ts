@@ -129,6 +129,8 @@ export interface Community {
     role: string;
     subscribed: Boolean;
     title: string;
+    //  added only when using optimistic update, not backend property
+    _temporary?: boolean;
   };
 }
 

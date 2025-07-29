@@ -82,6 +82,8 @@ const CommunityDescription = ({
               community={data.name}
               isSubscribed={isSubscribed}
               onIsSubscribed={(e) => setIsSubscribed(e)}
+              communityTitle={data.title}
+              temprary={data.context._temporary}
             />
             <NewPost name={data.name} disabled={!isSubscribed} />
           </div>
