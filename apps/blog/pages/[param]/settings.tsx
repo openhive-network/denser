@@ -587,11 +587,11 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
               defaultValue='main-hc'>
               <AccordionItem value="main-hc">
                 <AccordionTrigger>API Endpoint</AccordionTrigger>
-                <AccordionContent>{!!nodeHcService && <HealthCheckerComponent healthCheckerService={nodeHcService} />}</AccordionContent>
+                <AccordionContent>{!!nodeHcService && <HealthCheckerComponent className='m-4' healthCheckerService={nodeHcService} />}</AccordionContent>
               </AccordionItem>
               <AccordionItem value="search-hc">
                 <AccordionTrigger>Endpoint for AI search</AccordionTrigger>
-                <AccordionContent>{!!aiSearchHcService && <HealthCheckerComponent healthCheckerService={aiSearchHcService} />}</AccordionContent>
+                <AccordionContent>{!!aiSearchHcService && <HealthCheckerComponent className='m-4' healthCheckerService={aiSearchHcService} />}</AccordionContent>
               </AccordionItem>
             </Accordion>
           </div>
