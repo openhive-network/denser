@@ -13,10 +13,17 @@ export class CommunitiesExplorePage{
     readonly communityListItemTitle: Locator;
     readonly communityListItemAbout: Locator;
     readonly communityListItemFooter: Locator;
+    readonly communityListItemFooterAdminLink: Locator;
     readonly communityListItemSubscribeButton: Locator;
+    readonly communityListItemJoinedLeaveButton : Locator;
     readonly noResultsForYourSearch: Locator;
     readonly communitiesHeaderPage: Locator;
     readonly communitiesHeaderTitle: Locator;
+    readonly getLifestyleCommunityTitle: Locator;
+    readonly getLifestyleCommunityButton: Locator;
+    readonly getPhotographyLoversCommunityTitle: Locator;
+    readonly getPhotographyLoversCommunityButton: Locator;
+    readonly getCreateACommunityLink: Locator;
 
     constructor(page:Page){
         this.page = page;
@@ -31,10 +38,20 @@ export class CommunitiesExplorePage{
         this.communityListItemTitle = page.locator('[data-testid="community-list-item-title"]');
         this.communityListItemAbout = page.locator('[data-testid="community-list-item-about"]');
         this.communityListItemFooter = page.locator('[data-testid="community-list-item-footer"]');
-        this.communityListItemSubscribeButton = page.locator('[data-testid="community-subscribe-button"]');
+        this.communityListItemFooterAdminLink = this.communityListItemFooter.locator('a');
+        this.communityListItemSubscribeButton = this.communityListItem.locator('[data-testid="community-subscribe-button"]');
+        this.communityListItemJoinedLeaveButton = this.communityListItem.locator('[data-testid="community-join-leave-button"]');
         this.noResultsForYourSearch = page.locator('[data-testid="communities-search-no-results-msg"]');
         this.communitiesHeaderPage = page.locator('[data-testid="communities-header"]');
         this.communitiesHeaderTitle = page.locator('[data-testid="communities-header-title"]');
+
+        this.getLifestyleCommunityTitle = page.getByTestId('community-list-item-title').getByText('Lifestyle');
+        this.getLifestyleCommunityButton = this.getLifestyleCommunityTitle.locator('..').locator('..').locator('..').locator('..').locator('div > button');
+
+        this.getPhotographyLoversCommunityTitle = page.getByTestId('community-list-item-title').getByText('Photography Lovers');
+        this.getPhotographyLoversCommunityButton = this.getPhotographyLoversCommunityTitle.locator('..').locator('..').locator('..').locator('..').locator('div > button');
+
+        this.getCreateACommunityLink = page.getByText('Create a Community');
     }
 
     async validataExplorerCommunitiesPageIsLoaded(){
@@ -42,7 +59,7 @@ export class CommunitiesExplorePage{
         await expect(this.combobox).toBeVisible();
         await expect(this.comboboxDefaultValue).toHaveText('Rank');
 
-        const apiHelper = await new ApiHelper(this.page);
+        const apiHelper = new ApiHelper(this.page);
         const firstCommunity = await apiHelper.getListCommunitiesAPI();
         const firstCommunityTitle = await firstCommunity.result[0].title;
         await expect(this.firstCommunityDefault).toHaveText(firstCommunityTitle);

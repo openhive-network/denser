@@ -12,6 +12,7 @@ export class HomePage {
   readonly getHeaderLeoCommunities: Locator;
   readonly getWorldmappinCommunitiesLink: Locator;
   readonly getHeaderWorldmappinCommunities: Locator;
+  readonly getLifestyleCommunityLink: Locator;
   readonly getHomeNavLink: Locator;
   readonly getNavPostsLink: Locator;
   readonly getNavProposalsLink: Locator;
@@ -131,6 +132,7 @@ export class HomePage {
     this.getHeaderWorldmappinCommunities = page
       .locator('[data-testid="community-name"]')
       .getByText('Worldmappin');
+    this.getLifestyleCommunityLink = page.getByTestId('card-trending-comunities').getByText('Lifestyle');
     this.getHomeNavLink = page.locator('header a span:text("Hive Blog")');
     this.getNavPostsLink = page.locator('[data-testid="nav-posts-link"]');
     this.getNavProposalsLink = page.locator('[data-testid="nav-proposals-link"]');
@@ -511,5 +513,12 @@ export class HomePage {
     await this.page.waitForTimeout(5000);
     await expect(this.page.locator('div').getByText('Terms of Service')).toBeVisible();
     await expect(this.page).toHaveURL('tos.html');
+  }
+
+  // Tranding All Posts
+  async validateAllPostspageIsLoaded() {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector(this.getMainTimeLineOfPosts['_selector']);
+    await expect(this.getFilterPosts).toHaveText('Trending');
   }
 }

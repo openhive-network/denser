@@ -417,9 +417,9 @@ mirrornet-based-tests:
       - '*.log'
       - 'logs/'
       - '*.env'
-      - './apps/blog/playwright-report/'
+      - '/apps/blog/playwright-report/'
       - './apps/blog/test-results/'
-      - './apps/blog/junit/'
+      - '/apps/blog/junit/'
     reports:
       junit: 'apps/blog/junit/results.xml'
   tags:
