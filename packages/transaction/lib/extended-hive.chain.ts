@@ -623,6 +623,8 @@ export interface IVoteListItem {
   vote_percent: number;
   last_update: string;
   num_changes: number;
+  // added only when using optimistic update, not backend property
+  _temporary: boolean;
 }
 
 export interface IAccountNotification {
