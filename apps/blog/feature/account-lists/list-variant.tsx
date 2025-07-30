@@ -5,24 +5,17 @@ import { FullAccount } from '@transaction/lib/app-types';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import {
   useBlacklistBlogMutation,
-  useResetBlacklistBlogMutation,
-  useUnblacklistBlogMutation
+  useResetBlacklistBlogMutation
 } from '@/blog/components/hooks/use-blacklist-mutations';
-import {
-  useMuteMutation,
-  useResetBlogListMutation,
-  useUnmuteMutation
-} from '@/blog/components/hooks/use-mute-mutations';
+import { useMuteMutation, useResetBlogListMutation } from '@/blog/components/hooks/use-mute-mutations';
 import { handleError } from '@ui/lib/handle-error';
 import {
   useFollowBlacklistBlogMutation,
-  useResetFollowBlacklistBlogMutation,
-  useUnfollowBlacklistBlogMutation
+  useResetFollowBlacklistBlogMutation
 } from '@/blog/components/hooks/use-follow-blacklist-mutation';
 import {
   useFollowMutedBlogMutation,
-  useResetFollowMutedBlogMutation,
-  useUnfollowMutedBlogMutation
+  useResetFollowMutedBlogMutation
 } from '@/blog/components/hooks/use-follow-muted-list-mutation';
 
 interface ListVariantProps {
@@ -46,18 +39,16 @@ const ListVariant = ({
   const { user } = useUser();
   const userOwner = user.username === username && user.isLoggedIn;
 
-  // All hooks must be called at the top level, before any conditional logic
   const blacklistBlogMutation = useBlacklistBlogMutation();
   const resetBlacklistBlogMutation = useResetBlacklistBlogMutation();
-  const unblacklistBlogMutation = useUnblacklistBlogMutation();
+
   const muteMutation = useMuteMutation();
-  const unmuteMutation = useUnmuteMutation();
   const resetBlogListMutation = useResetBlogListMutation();
+
   const followBlacklistBlogMutation = useFollowBlacklistBlogMutation();
-  const unfollowBlacklistBlogMutation = useUnfollowBlacklistBlogMutation();
   const resetFollowBlacklistBlogMutation = useResetFollowBlacklistBlogMutation();
+
   const followMutedBlogMutation = useFollowMutedBlogMutation();
-  const unfollowMutedBlogMutation = useUnfollowMutedBlogMutation();
   const resetFollowMutedBlogMutation = useResetFollowMutedBlogMutation();
 
   switch (variant) {
@@ -71,18 +62,10 @@ const ListVariant = ({
           data={data}
           splitArrays={splitArrays}
           isLoading={blacklistBlogMutation.isLoading}
-          deleteIsLoading={unblacklistBlogMutation.isLoading}
-          currentItem={unblacklistBlogMutation.variables?.blog}
           resetListIsLoading={resetBlacklistBlogMutation.isLoading}
           accountOwner={userOwner}
+          variant="blacklisted"
           onSearchChange={onSearchChange}
-          handleDetete={async (name: string) => {
-            try {
-              await unblacklistBlogMutation.mutateAsync({ blog: name });
-            } catch (error) {
-              handleError(error, { method: 'unblacklistBlog', params: { blog: name } });
-            }
-          }}
           handleAdd={async (name: string) => {
             try {
               await blacklistBlogMutation.mutateAsync({ otherBlogs: name });
@@ -109,18 +92,10 @@ const ListVariant = ({
           data={data}
           splitArrays={splitArrays}
           isLoading={muteMutation.isLoading}
-          deleteIsLoading={unmuteMutation.isLoading}
-          currentItem={unmuteMutation.variables?.username}
           resetListIsLoading={resetBlogListMutation.isLoading}
           accountOwner={userOwner}
+          variant="muted"
           onSearchChange={onSearchChange}
-          handleDetete={async (name: string) => {
-            try {
-              await unmuteMutation.mutateAsync({ username: name });
-            } catch (error) {
-              handleError(error, { method: 'unmute', params: { username: name } });
-            }
-          }}
           handleAdd={async (name: string) => {
             try {
               await muteMutation.mutateAsync({ username: name });
@@ -143,21 +118,13 @@ const ListVariant = ({
           titleBy={t('user_profile.lists.followed_blacklists', { username: username })}
           listTitle={t('user_profile.lists.list.unfollow_blacklist')}
           resetTitle={t('user_profile.lists.list.reset_followed_blacklists')}
+          variant="followBlacklist"
           data={data}
           splitArrays={splitArrays}
           isLoading={followBlacklistBlogMutation.isLoading}
-          deleteIsLoading={unfollowBlacklistBlogMutation.isLoading}
-          currentItem={unfollowBlacklistBlogMutation.variables?.blog}
           resetListIsLoading={resetFollowBlacklistBlogMutation.isLoading}
           accountOwner={userOwner}
           onSearchChange={onSearchChange}
-          handleDetete={async (name: string) => {
-            try {
-              await unfollowBlacklistBlogMutation.mutateAsync({ blog: name });
-            } catch (error) {
-              handleError(error, { method: 'unfollowBlacklistBlog', params: { blog: name } });
-            }
-          }}
           handleAdd={async (name: string) => {
             try {
               await followBlacklistBlogMutation.mutateAsync({ otherBlogs: name });
@@ -183,18 +150,10 @@ const ListVariant = ({
           data={data}
           splitArrays={splitArrays}
           isLoading={followMutedBlogMutation.isLoading}
-          deleteIsLoading={unfollowMutedBlogMutation.isLoading}
-          currentItem={unfollowMutedBlogMutation.variables?.blog}
           resetListIsLoading={resetFollowMutedBlogMutation.isLoading}
           accountOwner={userOwner}
           onSearchChange={onSearchChange}
-          handleDetete={async (name: string) => {
-            try {
-              await unfollowMutedBlogMutation.mutateAsync({ blog: name });
-            } catch (error) {
-              handleError(error, { method: 'unfollowMutedBlog', params: { blog: name } });
-            }
-          }}
+          variant="followMutedList"
           handleAdd={async (name: string) => {
             try {
               await followMutedBlogMutation.mutateAsync({ otherBlogs: name });

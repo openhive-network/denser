@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useResetAllListsMutation } from '@/blog/components/hooks/use-reset-mutations';
+import ListItem from './list-item';
 
 const ListArea = ({
   titleBy,
@@ -17,12 +18,10 @@ const ListArea = ({
   listDescription,
   data,
   isLoading,
-  deleteIsLoading,
-  currentItem,
   resetListIsLoading,
   accountOwner,
   splitArrays,
-  handleDetete,
+  variant,
   handleAdd,
   handleReset,
   onSearchChange
@@ -33,12 +32,10 @@ const ListArea = ({
   listDescription?: string;
   data: IFollowList[] | undefined;
   isLoading: boolean;
-  deleteIsLoading: boolean;
-  currentItem?: string;
   resetListIsLoading: boolean;
   accountOwner: boolean;
   splitArrays: IFollowList[][];
-  handleDetete: (name: string) => void;
+  variant: 'blacklisted' | 'muted' | 'followBlacklist' | 'followMutedList';
   handleAdd: (name: string) => void;
   handleReset: () => void;
   onSearchChange: (e: string) => void;
@@ -86,56 +83,14 @@ const ListArea = ({
           </li>
         ) : splitArrays.length > 0 ? (
           splitArrays[page].map((e: IFollowList) => (
-            <li
+            <ListItem
+              item={e}
+              loading={isLoading || resetListIsLoading}
+              accountOwner={accountOwner}
+              listTitle={listTitle}
+              variant={variant}
               key={e.name}
-              className="flex w-72 items-center justify-between bg-background p-1 font-semibold odd:bg-background-tertiary"
-            >
-              {!e._temporary ? (
-                <span className="px-2">
-                  <Link className="text-destructive" href={`/@${e.name}`}>
-                    {e.name}
-                  </Link>
-                  {' ' + e.blacklist_description}
-                </span>
-              ) : (
-                <span className="px-2">
-                  {e.name}
-                  {' ' + e.blacklist_description}
-                </span>
-              )}
-              {accountOwner ? (
-                <Button
-                  variant="outlineRed"
-                  className="whitespace-nowrap p-1"
-                  size="xs"
-                  onClick={() => handleDetete(e.name)}
-                  disabled={
-                    (deleteIsLoading && currentItem === e.name) ||
-                    resetListIsLoading ||
-                    resetAllListsMutation.isLoading ||
-                    e._temporary
-                  }
-                >
-                  {(deleteIsLoading && currentItem === e.name) ||
-                  resetListIsLoading ||
-                  resetAllListsMutation.isLoading ? (
-                    <span className="flex h-5 w-20 items-center justify-center">
-                      <CircleSpinner
-                        loading={
-                          (deleteIsLoading && currentItem === e.name) ||
-                          resetListIsLoading ||
-                          resetAllListsMutation.isLoading
-                        }
-                        size={18}
-                        color="#dc2626"
-                      />
-                    </span>
-                  ) : (
-                    listTitle
-                  )}
-                </Button>
-              ) : null}
-            </li>
+            />
           ))
         ) : null}
         {isLoading ? (
