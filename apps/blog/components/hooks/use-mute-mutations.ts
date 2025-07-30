@@ -20,47 +20,62 @@ export function useMuteMutation() {
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
       const broadcastResult = await transactionService.mute(username, '', { observe: true });
-      const prevMutedList: IFollowList[] | undefined = queryClient.getQueryData(['muted', user.username]);
-      const prevFollowingData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined =
-        queryClient.getQueryData(['followingData', user.username, 'ignore']);
+      const prevIgnoredData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData(
+        ['followingData', user.username, 'ignore']
+      );
+      const prevBlogData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData([
+        'followingData',
+        user.username,
+        'blog'
+      ]);
+      const prevFollowersData: UseInfiniteQueryResult<IFollow[]>['data'] = queryClient.getQueryData([
+        'followersData',
+        username
+      ]);
+      const prevMuteData: IFollowList[] | undefined = queryClient.getQueryData(['muted', username]);
 
       const response = {
         ...params,
         broadcastResult,
-        prevMutedList,
-        prevFollowingData
+        prevIgnoredData,
+        prevBlogData,
+        prevFollowersData,
+        prevMuteData
       };
-      logger.info('Done mute transaction: %o', response);
+
       return response;
     },
     onSettled: (data) => {
       const { username } = user;
       if (!data) return;
-      const { username: otherUsername, prevMutedList, prevFollowingData } = data;
-      if (prevMutedList) {
-        const newItem = prevMutedList.find((e) => e.name === otherUsername)
-          ? false
-          : {
-              name: otherUsername,
-              blacklist_description: '',
-              muted_list_description: '',
-              _temporary: true
-            };
-        queryClient.setQueryData(['muted', username], () =>
-          newItem ? [newItem, ...prevMutedList] : prevMutedList
-        );
+      const { username: otherUsername } = data;
+      const { prevIgnoredData, prevBlogData, prevFollowersData, prevMuteData } = data;
+      if (!!prevIgnoredData) {
+        const newItem = { follower: username, following: otherUsername, what: ['blog'], _temporary: true };
+        const newData = {
+          ...prevBlogData,
+          pages: [[newItem, ...prevIgnoredData.pages[0]]]
+        };
+        queryClient.setQueryData(['followingData', username, 'ignore'], newData);
       }
-      if (prevFollowingData) {
-        const newItem = prevFollowingData.pages[0].find((e) => e.following === otherUsername)
-          ? false
-          : { follower: username, following: otherUsername, what: ['ignore'], _temporary: true };
-        queryClient.setQueryData(['followingData', username, 'ignore'], () => {
-          const newData = {
-            ...prevFollowingData,
-            pages: newItem ? [[newItem, ...prevFollowingData.pages[0]]] : prevFollowingData.pages
-          };
-          return newData;
-        });
+      if (!!prevBlogData) {
+        const newData = {
+          ...prevIgnoredData,
+          pages: [prevBlogData.pages[0].filter((e) => e.following !== otherUsername)]
+        };
+        queryClient.setQueryData(['followingData', username, 'blog'], newData);
+      }
+      if (!!prevFollowersData) {
+        const newItem = { follower: username, following: otherUsername, what: ['blog'], _temporary: true };
+        const newData = {
+          ...prevFollowersData,
+          pages: [[newItem, ...prevFollowersData.pages[0]]]
+        };
+        queryClient.setQueryData(['followersData', otherUsername], newData);
+      }
+      if (!!prevMuteData) {
+        const newData = prevMuteData.filter((e) => e.name !== otherUsername);
+        queryClient.setQueryData(['muted', otherUsername], newData);
       }
     },
     onSuccess: (data) => {
@@ -72,11 +87,12 @@ export function useMuteMutation() {
         variant: 'success'
       });
       setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['followingData', otherUsername] });
+        queryClient.invalidateQueries({ queryKey: ['followingData', username] });
         queryClient.invalidateQueries({ queryKey: ['muted', username] });
-        queryClient.invalidateQueries({ queryKey: ['followingData', username, 'ignore'] });
+        queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
-        logger.info('useMuteMutation onSuccess data: %o', data);
       }, 3000);
     }
   });

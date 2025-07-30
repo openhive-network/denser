@@ -44,9 +44,14 @@ const ButtonsContainer = ({
   const isMute = Boolean(
     mute.data?.pages[0].some((f) => f.follower === user.username && f.following === username)
   );
-  const temporaryDisabled = mute.data?.pages[0].some(
-    (f) => f._temporary && f.follower === user.username && f.following === username
-  );
+  const temporaryDisabled =
+    mute.data?.pages[0].some(
+      (f) => f._temporary && f.follower === user.username && f.following === username
+    ) ||
+    follow.data?.pages[0].some(
+      (f) => f._temporary && f.follower === user.username && f.following === username
+    );
+
   const isFollow = Boolean(
     follow.data?.pages[0].some(
       (f: { follower: string; following: string }) => f.follower === user.username && f.following === username

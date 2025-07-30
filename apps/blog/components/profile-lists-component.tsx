@@ -22,7 +22,7 @@ export default function ProfileLists({
   metadata: MetadataProps;
 }) {
   const { user } = useUser();
-  const { data: profilData } = useQuery(['profileData', user.username], () => getAccountFull(username));
+  const { data: profilData } = useQuery(['profileData', username], () => getAccountFull(username));
   const [filter, setFilter] = useState('');
   const [splitArrays, setSplitArrays] = useState<IFollowList[][]>([]);
 

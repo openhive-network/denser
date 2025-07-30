@@ -1,6 +1,7 @@
 import { Button } from '@hive/ui';
 import { useTranslation } from 'next-i18next';
 import { CircleSpinner } from 'react-spinners-kit';
+import clsx from 'clsx';
 
 const MuteButton = ({
   variant,
@@ -30,7 +31,9 @@ const MuteButton = ({
 
   return (
     <Button
-      className=" hover:text-destructive"
+      className={clsx('hover:text-destructive', {
+        'text-destructive': disabled
+      })}
       variant={variant}
       size="sm"
       data-testid="profile-mute-button"

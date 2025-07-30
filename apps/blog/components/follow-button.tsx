@@ -1,4 +1,5 @@
 import { Button } from '@hive/ui';
+import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import { CircleSpinner } from 'react-spinners-kit';
 
@@ -30,7 +31,9 @@ const FollowButton = ({
 
   return (
     <Button
-      className="hover:text-destructive"
+      className={clsx('hover:text-destructive', {
+        'text-destructive': disabled
+      })}
       variant={variant}
       size="sm"
       data-testid="profile-follow-button"
