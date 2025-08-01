@@ -93,7 +93,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
     const [registeredUser, setRegisteredUser] = useState<AuthUser | null>(null);
     const [availableKeyTypes, setAvailableKeyTypes] = useState<KeyType[]>([]);
     const [updateSuccess, setUpdateSuccess] = useState(false);
-
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const form = useForm<SafeStorageKeyUpdateForm>({
       mode: 'onChange',
       resolver: zodResolver(getFormSchema(t)),
@@ -280,12 +280,23 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder={t('login_form.signin_safe_storage.placeholder_password')}
-                      data-testid="login-form-password"
-                    />
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        type="password"
+                        placeholder={t('login_form.signin_safe_storage.placeholder_password')}
+                        data-testid="login-form-password"
+                      />
+                      <Button
+                        variant="ghost"
+                        className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0"
+                        onClick={() => {
+                          setShowPassword((prev) => !prev);
+                        }}
+                      >
+                        {showPassword ? <Icons.eyeOff /> : <Icons.eye />}
+                      </Button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
