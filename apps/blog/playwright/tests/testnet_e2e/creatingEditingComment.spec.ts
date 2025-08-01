@@ -62,6 +62,7 @@ test.describe.serial('Creating and editing comments with POM and fixture users',
     // If a password to unlock key is needed
     await loginForm.page.waitForTimeout(2000);
     await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
+    await loginForm.page.waitForTimeout(2000);
     // Validate the new comment was created
     // Be careful the optimistic ui doesn't always work well!!!
     await waitForCreatedCommentIsVisible(denserAutoTest4Page.page, randomString);
