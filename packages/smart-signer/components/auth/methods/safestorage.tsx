@@ -331,7 +331,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                       />
                       <Button
                         variant="ghost"
-                        className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0"
+                        className="absolute right-2 top-1/2 h-7 w-7 -translate-y-1/2 p-1 hover:bg-transparent"
                         onClick={() => {
                           setShow((prev) => ({ ...prev, password: !prev.password }));
                         }}
@@ -365,7 +365,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                         />
                         <Button
                           variant="ghost"
-                          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0"
+                          className="absolute right-2 top-1/2 h-7 w-7 -translate-y-1/2 p-1 hover:bg-transparent"
                           onClick={() => {
                             setShow((prev) => ({ ...prev, wif: !prev.wif }));
                           }}
