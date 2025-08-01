@@ -57,7 +57,7 @@ function Communities({ username, metadata }: InferGetServerSidePropsType<typeof 
             </h2>
 
             <Label htmlFor="choose-api-node">{t('settings.choose_api')}</Label>
-            { !!healthCheckerService && <HealthCheckerComponent healthCheckerService={healthCheckerService} />}
+            { !!healthCheckerService && <HealthCheckerComponent className='m-4' healthCheckerService={healthCheckerService} />}
           </div>
         </div>
       </ProfileLayout>
