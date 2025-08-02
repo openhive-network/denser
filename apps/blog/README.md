@@ -50,7 +50,7 @@ Please note, that environment variables set in shell before application
 start, this way for instance:
 
 ```bash
-export REACT_APP_API_ENDPOINT="https://api.ha.deathwing.me"
+export REACT_APP_API_ENDPOINT="https://api.openhive.network"
 ```
 
 will override everything set in any `*.env` files described below.
@@ -171,7 +171,7 @@ This will run a single instance of the application on port 3000, connected to [t
 You can change the port and the default API endpoint by using environment variables like so:
 
 ```bash
-docker run --detach --publish 80:80 --env PORT=80 --env REACT_APP_API_ENDPOINT="https://api.deathwing.me" --env REACT_APP_IMAGES_ENDPOINT="https://images.hive.blog/" registry.gitlab.syncad.com/hive/denser:latest
+docker run --detach --publish 80:80 --env PORT=80 --env REACT_APP_API_ENDPOINT="https://api.hive.blog" --env REACT_APP_IMAGES_ENDPOINT="https://images.hive.blog/" registry.gitlab.syncad.com/hive/denser:latest
 ```
 
 Finally, there are example [Composefile](docker/docker-compose.yml) and accompanying [dotenv](docker/.env) files available if you prefer to go that route.
