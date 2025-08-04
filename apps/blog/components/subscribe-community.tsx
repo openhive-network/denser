@@ -13,12 +13,16 @@ const SubscribeCommunity = ({
   user,
   community,
   isSubscribed,
-  onIsSubscribed
+  onIsSubscribed,
+  communityTitle,
+  temprary
 }: {
   user: User;
   community: string;
   isSubscribed: Boolean;
   onIsSubscribed: (e: boolean) => void;
+  communityTitle: string;
+  temprary?: boolean;
 }) => {
   const { t } = useTranslation('common_blog');
   const subscribeMutation = useSubscribeMutation();
@@ -34,13 +38,16 @@ const SubscribeCommunity = ({
               size="sm"
               className="w-full bg-blue-600 text-center text-slate-50 hover:bg-blue-700"
               data-testid="community-subscribe-button"
-              disabled={subscribeMutation.isLoading}
+              disabled={subscribeMutation.isLoading || temprary}
               onClick={async () => {
                 try {
-                  await subscribeMutation.mutateAsync({ community, username });
+                  await subscribeMutation.mutateAsync({ community, username, communityTitle });
                   onIsSubscribed(true);
                 } catch (error) {
-                  handleError(error, { method: 'subscribe', params: { community, username } });
+                  handleError(error, {
+                    method: 'subscribe',
+                    params: { community, username, communityTitle }
+                  });
                 }
               }}
             >
@@ -56,7 +63,7 @@ const SubscribeCommunity = ({
               variant="outline"
               className="group relative w-full border-blue-600 text-center text-blue-600 hover:border-destructive hover:bg-transparent hover:text-destructive"
               data-testid="community-join-leave-button"
-              disabled={unsubscribeMutation.isLoading}
+              disabled={unsubscribeMutation.isLoading || temprary}
               onClick={async () => {
                 try {
                   await unsubscribeMutation.mutateAsync({ community, username });

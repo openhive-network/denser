@@ -44,7 +44,7 @@ const SiteHeader: FC = () => {
       enabled: !!user.username
     }
   );
-  const { data: profile } = useQuery(['user', user.username], () => getAccount(user.username), {
+  const { data: profile } = useQuery(['profileData', user.username], () => getAccount(user.username), {
     enabled: user?.isLoggedIn
   });
   const { data: hiveSense } = useQuery(['hivesense-api'], () => getHiveSenseStatus(), {

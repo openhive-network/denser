@@ -145,7 +145,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     }
   );
   const { data: communityData } = useQuery(
-    ['community', routerTag, ''],
+    ['community', routerTag],
     () => getCommunity(routerTag || '', user.username),
     {
       enabled: !!routerTag

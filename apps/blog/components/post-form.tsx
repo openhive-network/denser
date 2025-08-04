@@ -99,7 +99,8 @@ export default function PostForm({
   sideBySidePreview = true,
   post_s,
   setEditMode,
-  refreshPage
+  refreshPage,
+  setIsSubmitting
 }: {
   username: string;
   editMode: boolean;
@@ -107,6 +108,7 @@ export default function PostForm({
   post_s?: Entry;
   setEditMode?: Dispatch<SetStateAction<boolean>>;
   refreshPage?: () => void;
+  setIsSubmitting: (submitting: boolean) => void;
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
@@ -146,7 +148,7 @@ export default function PostForm({
     enabled: Boolean(username)
   });
   const { data: communityData } = useQuery(
-    ['community', router.query.category, ''],
+    ['community', router.query.category],
     () =>
       getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
     {
@@ -240,7 +242,6 @@ export default function PostForm({
       if (btnRef.current) {
         btnRef.current.disabled = true;
       }
-
       const postParams = {
         permlink: editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
         title: data.title,
@@ -255,10 +256,13 @@ export default function PostForm({
         image: imagePickerState,
         editMode
       };
-
       try {
         await postMutation.mutateAsync(postParams);
+        setIsSubmitting(true);
+        // Wait 2 seconds before redirecting
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (error) {
+        setIsSubmitting(false);
         handleError(error, { method: 'post', params: postParams });
         throw error;
       }
@@ -268,6 +272,7 @@ export default function PostForm({
       removePost();
       if (editMode) {
         if (refreshPage && setEditMode) {
+          setIsSubmitting(false);
           setEditMode(!editMode);
           refreshPage();
         }

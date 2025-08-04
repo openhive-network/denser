@@ -6,13 +6,12 @@ import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import Loading from '@hive/ui/components/loading';
-import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
 import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -60,15 +59,13 @@ import FlagIcon from '@/blog/components/flag-icon';
 import { getSuggestions } from '@/blog/lib/get-data';
 import SuggestionsList from '@/blog/components/suggestions-list';
 import TimeAgo from '@ui/components/time-ago';
+import CommentList from '@/blog/components/comment-list';
+import clsx from 'clsx';
+import PostingLoader from '@/blog/components/posting-loader';
 
 const logger = getLogger('app');
 export const postClassName =
   'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer';
-
-const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
-  loading: () => <Loading loading={true} />,
-  ssr: false
-});
 
 function PostPage({
   community,
@@ -121,7 +118,7 @@ function PostPage({
       enabled: !!username && !!permlink
     }
   );
-  const { data: communityData } = useQuery(['communityData', community], () => getCommunity(community), {
+  const { data: communityData } = useQuery(['community', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
 
@@ -157,7 +154,6 @@ function PostPage({
       handleError(error, { method: 'unpin', params: { community, username, permlink } });
     }
   };
-  const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
     return Object.values(SortOrder).includes(token as SortOrder);
@@ -173,8 +169,7 @@ function PostPage({
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [storedComment] = useLocalStorage<string>(`replyTo-/${username}/${permlink}-${user.username}`, '');
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
-  const firstPost = discussionState?.find((post) => post.depth === 0);
-  const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [edit, setEdit] = useState(false);
 
@@ -188,44 +183,35 @@ function PostPage({
       storeBox(reply);
     }
   }, [reply, storeBox]);
-  useEffect(() => {
-    if (discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[defaultSort]);
-      setDiscussionState(list);
-    }
-  }, [isLoadingDiscussion, discussion, defaultSort]);
 
-  useEffect(() => {
-    if (router.query.sort === 'trending' && discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[router.query.sort]);
-      setDiscussionState(list);
-    }
-    if (router.query.sort === 'votes' && discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[router.query.sort]);
-      setDiscussionState(list);
-    }
-    if (router.query.sort === 'new' && discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[router.query.sort]);
-      setDiscussionState(list);
-    }
-  }, [discussion, router.query.sort]);
+  const discussionState = useMemo(() => {
+    if (!discussion) return undefined;
 
+    const list = [...Object.keys(discussion).map((key) => discussion[key])];
+    const sortType = (router.query.sort as SortOrder) || defaultSort;
+    sorter(list, SortOrder[sortType]);
+    return list;
+  }, [discussion, router.query.sort, defaultSort]);
+  const firstPost = discussionState?.find((post) => post.depth === 0);
+  const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
-
+  useEffect(() => {
+    setMutedPost(post?.stats?.gray ?? false);
+  }, [post?.stats?.gray]);
   if (userFromGDPR || (postError && !post)) {
     return <CustomError />;
   }
   const deleteComment = async (permlink: string) => {
     try {
-      await deletePostMutation.mutateAsync({ permlink }).then(() => {
-        router.push(`/@${username}/posts`);
-      });
+      await deletePostMutation.mutateAsync({ permlink });
+      setIsSubmitting(true);
+      // Wait 2 seconds before redirecting
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      router.push(`/@${username}/posts`);
     } catch (error) {
+      setIsSubmitting(false);
       handleError(error, { method: 'deleteComment', params: { permlink } });
     }
   };
@@ -358,6 +344,7 @@ function PostPage({
                     parentPermlink={post.parent_permlink}
                     storageId={storageId}
                     comment={post}
+                    discussionPermlink={permlink}
                   />
                 ) : edit ? (
                   <PostForm
@@ -367,6 +354,7 @@ function PostPage({
                     sideBySidePreview={false}
                     post_s={post}
                     refreshPage={refreshPage}
+                    setIsSubmitting={setIsSubmitting}
                   />
                 ) : legalBlockedUser ? (
                   <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
@@ -538,20 +526,15 @@ function PostPage({
                             </div>
                           ) : userCanModerate && post.depth === 0 ? (
                             <div className="flex flex-col items-center">
-                              {/* <button
-                            className="ml-2 flex items-center text-destructive"
-                            onClick={post_is_pinned ? unpin : pin}
-                            >
-                            {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
-                          </button> */}
-                              {/* TODO swap two button to one when api return stats.is_pinned,
-                            temprary use two button to unpin and pin
-                            */}
-                              <button className="ml-2 flex items-center text-destructive" onClick={pin}>
-                                {t('communities.pin')}
-                              </button>
-                              <button className="ml-2 flex items-center text-destructive" onClick={unpin}>
-                                {t('communities.unpin')}
+                              <button
+                                disabled={post.stats?._temporary}
+                                className={clsx('ml-2 flex items-center text-destructive', {
+                                  'animate-pulse cursor-not-allowed text-destructive':
+                                    firstPost?.stats?._temporary
+                                })}
+                                onClick={post_is_pinned ? unpin : pin}
+                              >
+                                {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
                               </button>
                             </div>
                           ) : null}
@@ -564,6 +547,7 @@ function PostPage({
                               contentMuted={post.stats?.gray ?? false}
                               discussionPermlink={post.permlink}
                               discussionAuthor={post.author}
+                              temporaryDisable={post.stats?._temporary}
                             />
                           ) : null}
                         </>
@@ -685,6 +669,7 @@ function PostPage({
                 permlink={permlink}
                 storageId={storageId}
                 comment={storedComment}
+                discussionPermlink={permlink}
               />
             ) : null}
           </div>
@@ -694,7 +679,7 @@ function PostPage({
                 <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
                 <CommentSelectFilter />
               </div>
-              <DynamicComments
+              <CommentList
                 highestAuthor={post.author}
                 highestPermlink={post.permlink}
                 permissionToMute={userCanModerate}
@@ -703,6 +688,7 @@ function PostPage({
                 flagText={communityData?.flag_text}
                 parent={post}
                 parent_depth={post.depth}
+                discussionPermlink={permlink}
               />
             </div>
           ) : (
@@ -711,6 +697,7 @@ function PostPage({
         </div>
         <div className="col-span-2" />
       </div>
+      <PostingLoader isSubmitting={isSubmitting} />
     </>
   );
 }

@@ -27,11 +27,15 @@ export interface EntryStat {
   hide: boolean;
   total_votes: number;
   is_pinned?: boolean;
+  // added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 export interface IFollowList {
   name: string;
   blacklist_description: string;
   muted_list_description: string;
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 export interface Entry {
   active_votes: EntryVote[];
@@ -72,6 +76,8 @@ export interface Entry {
   updated: string;
   url: string;
   original_entry?: Entry;
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export interface JsonMetadata {
@@ -123,7 +129,11 @@ export interface Community {
     role: string;
     subscribed: Boolean;
     title: string;
+    //  added only when using optimistic update, not backend property
+    _temporary?: boolean;
   };
+  // added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export interface JsonMetadata {
@@ -449,38 +459,38 @@ export type OpType =
   | 'transfer'
   | 'withdraw_vesting';
 
-  export type IAuthorReward = {
-    author: string;
-    curators_vesting_payout: string;
-    hbd_payout: string;
-    hive_payout: string;
-    payout_must_be_claimed: boolean;
-    permlink: string;
-    vesting_payout: string;
-    author_rewards?: string;
-    beneficiary_payout_value?: string;
-    curator_payout_value?: string;
-    payout?: string;
-    reward?: string;
-    total_payout_value?: string;
-    curator?: string;
-  };
-  export type ICurationReward = {
-    author_rewards: string;
-    beneficiary_payout_value: string;
-    curator_payout_value: string;
-    payout: string;
-    total_payout_value: string;
-    reward: string;
-    curator: string;
-    author?: string;
-    curators_vesting_payout?: string;
-    hbd_payout?: string;
-    hive_payout?: string;
-    payout_must_be_claimed?: boolean;
-    permlink?: string;
-    vesting_payout?: string;
-  };
+export type IAuthorReward = {
+  author: string;
+  curators_vesting_payout: string;
+  hbd_payout: string;
+  hive_payout: string;
+  payout_must_be_claimed: boolean;
+  permlink: string;
+  vesting_payout: string;
+  author_rewards?: string;
+  beneficiary_payout_value?: string;
+  curator_payout_value?: string;
+  payout?: string;
+  reward?: string;
+  total_payout_value?: string;
+  curator?: string;
+};
+export type ICurationReward = {
+  author_rewards: string;
+  beneficiary_payout_value: string;
+  curator_payout_value: string;
+  payout: string;
+  total_payout_value: string;
+  reward: string;
+  curator: string;
+  author?: string;
+  curators_vesting_payout?: string;
+  hbd_payout?: string;
+  hive_payout?: string;
+  payout_must_be_claimed?: boolean;
+  permlink?: string;
+  vesting_payout?: string;
+};
 
 export type AccountHistory = [
   number,
@@ -580,6 +590,8 @@ export interface IFollow {
   follower: string;
   following: string;
   what: string[];
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export interface ICollateralizedConversionRequest {
@@ -611,6 +623,8 @@ export interface IVoteListItem {
   vote_percent: number;
   last_update: string;
   num_changes: number;
+  // added only when using optimistic update, not backend property
+  _temporary: boolean;
 }
 
 export interface IAccountNotification {
@@ -670,7 +684,7 @@ export type Badge = {
 
 export interface SimilarPostParams {
   pattern?: string;
-  tr_body?:number;
+  tr_body?: number;
   posts_limit?: number;
   observer?: string;
   start_author?: string;
@@ -696,7 +710,7 @@ export interface HivesenseStatusResponse {
   externalDocs: {
     description: string;
     url: string;
-  }
+  };
   info: {
     description: string;
     title: string;
@@ -704,8 +718,8 @@ export interface HivesenseStatusResponse {
     license: {
       name: string;
       url: string;
-    }
-  }
+    };
+  };
   paths: unknown;
   servers: string[];
   tags: ApiTag[];
@@ -713,10 +727,7 @@ export interface HivesenseStatusResponse {
 
 export type ExtendedNodeApi = {
   bridge: {
-    get_post_header: TWaxApiRequest<
-      { author: string; permlink: string },
-      IGetPostHeader
-    >;
+    get_post_header: TWaxApiRequest<{ author: string; permlink: string }, IGetPostHeader>;
     get_ranked_posts: TWaxApiRequest<
       {
         sort: string;
@@ -758,10 +769,7 @@ export type ExtendedNodeApi = {
     list_all_subscriptions: TWaxApiRequest<{ account: string }, string[][] | null>;
     list_subscribers: TWaxApiRequest<{ community: string }, string[][] | null>;
     unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
-    get_relationship_between_accounts: TWaxApiRequest<
-      string[],
-      IAccountRelationship | null
-    >;
+    get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
     get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
   };
   condenser_api: {

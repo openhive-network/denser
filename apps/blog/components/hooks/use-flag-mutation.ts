@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
+import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
@@ -21,6 +22,11 @@ export function useFlagMutation() {
       return response;
     },
     onSuccess: (data) => {
+      toast({
+        title: 'Flag transaction successful',
+        description: `You have flagged the post in ${data.community}.`,
+        variant: 'success'
+      });
       logger.info('useFlagMutation onSuccess data: %o', data);
     }
   });

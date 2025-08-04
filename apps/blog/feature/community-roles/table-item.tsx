@@ -7,6 +7,7 @@ import { useSetRoleMutation } from '@/blog/components/hooks/use-set-role-mutatio
 import { useState } from 'react';
 import { EAvailableCommunityRoles } from '@hiveio/wax';
 import { handleError } from '@ui/lib/handle-error';
+import clsx from 'clsx';
 
 const TableItem = ({
   community,
@@ -67,8 +68,18 @@ const TableItem = ({
               </>
             ) : (
               <>
-                {item.role}
-                <button onClick={() => setEditMode(true)} className="text-destructive">
+                <span
+                  className={clsx('', {
+                    'animate-pulse text-destructive': item.temprary
+                  })}
+                >
+                  {item.role}
+                </span>
+                <button
+                  onClick={() => setEditMode(true)}
+                  className="text-destructive"
+                  disabled={item.temprary}
+                >
                   <Pen className="h-4 w-4" />
                 </button>
               </>
