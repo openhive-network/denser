@@ -7,7 +7,7 @@ Successor to hive/condenser> aka [hive.blog](https://hive.blog/).
 
 The project consists of three apps:
 
-- auth
+- auth (obsolete)
 - blog
 - wallet
 
@@ -37,17 +37,15 @@ You can build the apps separately using commands:
 ```bash
 pnpm run build:blog
 pnpm run build:wallet
-pnpm run build:auth
 ```
 
 ## Running
 
-The following commands start the blog app on port 3000, the wallet app on port 4000 and the auth app on port 5000:
+The following commands start the blog app on port 3000, the wallet app on port 4000:
 
 ```bash
 pnpm run start:blog
 pnpm run start:wallet
-pnpm run start:auth
 ```
 
 ## Testing
@@ -72,7 +70,6 @@ pnpm run wallet:pw:test:local
 To build Docker images use the following commands:
 
 ```bash
-./scripts/build_instance.sh --app-scope='@hive/auth' --app-path='/apps/auth' --app-name='auth' "$(pwd)"
 ./scripts/build_instance.sh --app-scope='@hive/blog' --app-path='/apps/blog' --app-name='blog' "$(pwd)"
 ./scripts/build_instance.sh --app-scope='@hive/wallet' --app-path='/apps/wallet' --app-name='wallet' "$(pwd)"
 ```
@@ -84,36 +81,22 @@ All the options available can be displayed by running `scripts/build_instance.sh
 To start Docker images run the following commands:
 
 ```bash
-scripts/run_instance.sh \
-    --image="registry.gitlab.syncad.com/hive/denser/auth:latest" \
-    --app-scope="@hive/auth" \
-    --app-path="/apps/auth" \
-    --api-endpoint="https://api.hive.blog" \
-    --images-endpoint="https://images.hive.blog/" \
-    --name="denser-auth" \
-    --port=5000 \
-    --detach
-scripts/run_instance.sh \
-    --image="registry.gitlab.syncad.com/hive/denser/blog:latest" \
-    --app-scope="@hive/blog" \
-    --app-path="/apps/blog" \
-    --api-endpoint="https://api.hive.blog" \
-    --images-endpoint="https://images.hive.blog/" \
-    --name="denser-blog" \
-    --port=3000 \
-    --detach
-scripts/run_instance.sh \
-    --image="registry.gitlab.syncad.com/hive/denser/wallet:latest" \
-    --app-scope="@hive/wallet" \
-    --app-path="/apps/wallet" \
-    --api-endpoint="https://api.hive.blog" \
-    --images-endpoint="https://images.hive.blog/" \
-    --name="denser-wallet" \
-    --port=4000 \
-    --detach
+./scripts/run_instance.sh \
+        --image="registry.gitlab.syncad.com/hive/denser/blog:latest" \
+        --name="denser-blog" \
+        --env-file=/home/hive/denser/.env \
+        --port=3000 \
+        --detach
+
+./scripts/run_instance.sh \
+        --image="registry.gitlab.syncad.com/hive/denser/wallet:latest" \
+        --name="denser-wallet" \
+        --env-file=/home/hive/denser/.env \
+        --port=4000 \
+        --detach
 ```
 
-They will start the auth app on port 5000, the blog app on port 3000 and the wallet app on port 4000.
+They will start the blog app on port 3000 and the wallet app on port 4000.
 The containers will delete themselves once stopped.
 
 All the options available can be displayed by running `scripts/run_instance.sh --help`.
@@ -235,7 +218,6 @@ The path given here as a second argument is the same path provided later as `--b
 Build local Denser docker images:
 
 ```bash
-./scripts/build_instance.sh --app-name="auth" --tag="local"
 ./scripts/build_instance.sh --app-name="blog" --tag="local"
 ./scripts/build_instance.sh --app-name="wallet" --tag="local"
 ```
