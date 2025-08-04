@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import clsx from 'clsx';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
@@ -42,6 +42,16 @@ const ListArea = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const resetAllListsMutation = useResetAllListsMutation();
+  const [disabled, setDisabled] = useState(false);
+  useEffect(() => {
+    if (resetAllListsMutation.isLoading || resetListIsLoading) {
+      setDisabled(true);
+    } else {
+      setTimeout(() => {
+        setDisabled(false);
+      }, 3000);
+    }
+  }, [resetAllListsMutation.isLoading, resetListIsLoading]);
   const resetAll = async () => {
     try {
       await resetAllListsMutation.mutateAsync();
@@ -139,12 +149,13 @@ const ListArea = ({
               className="bg-background sm:w-3/4"
               value={addValue}
               onChange={(e) => setAddValue(e.target.value)}
+              disabled={resetListIsLoading || resetAllListsMutation.isLoading}
             />
           </div>
           {addValue ? (
             <Button
               className="mt-2"
-              disabled={isLoading}
+              disabled={isLoading || disabled}
               onClick={() => {
                 handleAdd(addValue), setAddValue('');
               }}
@@ -169,26 +180,17 @@ const ListArea = ({
               size="sm"
               variant="outlineRed"
               className="text-xs"
-              disabled={resetListIsLoading || resetAllListsMutation.isLoading}
+              disabled={disabled}
             >
               {resetListIsLoading || resetAllListsMutation.isLoading ? (
                 <span className="flex h-5 w-20 items-center justify-center">
-                  <CircleSpinner
-                    loading={resetListIsLoading || resetAllListsMutation.isLoading}
-                    size={18}
-                    color="#dc2626"
-                  />
+                  <CircleSpinner loading={disabled} size={18} color="#dc2626" />
                 </span>
               ) : (
                 resetTitle
               )}
             </Button>
-            <Button
-              disabled={resetAllListsMutation.isLoading}
-              onClick={resetAll}
-              size="sm"
-              className="text-xs"
-            >
+            <Button disabled={disabled} onClick={resetAll} size="sm" className="text-xs">
               {resetAllListsMutation.isLoading ? (
                 <span className="flex h-5 w-20 items-center justify-center">
                   <CircleSpinner loading={resetAllListsMutation.isLoading} size={18} color="#dc2626" />
