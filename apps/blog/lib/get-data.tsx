@@ -34,7 +34,6 @@ export const getSimilarPosts = async ({
   }
 };
 
-// FIXME: Source of data should use Wax not direct hivesense API call via fetch
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
     const response = await chain.restApi['hivesense-api']();
