@@ -17,7 +17,7 @@ import ExploreHive from '@/blog/components/explore-hive';
 
 const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
   const { user } = useUser();
-
+  const communityPage = community.startsWith('hive-');
   const { data: mySubsData } = useQuery(
     ['subscriptions', user?.username],
     () => getSubscriptions(user.username),
@@ -55,7 +55,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div data-testid="card-explore-hive-mobile" className="md:col-span-10 md:flex xl:hidden">
-            {!community ? null : communityDataIsLoading || subsIsLoading ? (
+            {!community || !communityPage ? null : communityDataIsLoading || subsIsLoading ? (
               <SimpleDescriptionSkeleton />
             ) : communityData && subsData ? (
               <CommunitySimpleDescription
@@ -70,7 +70,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
           <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">{children}</div>
         </div>
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-          {!community && !user.username ? (
+          {!communityPage ? null : !community && !user.username ? (
             <ExploreHive />
           ) : !community && (!communityData || !communityData) ? (
             <CommunitiesSidebar />
