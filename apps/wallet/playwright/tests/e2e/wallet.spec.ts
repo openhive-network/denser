@@ -238,6 +238,7 @@ test.describe("Wallet page of @gtg tests", () => {
     await expect(walletPage.page.url()).toMatch(
       /https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/
     );
+    await walletPage.page.waitForTimeout(5000);
     await walletPage.page.waitForSelector(
       await walletPage.walletSearchInput["_selector"]
     );
