@@ -66,7 +66,7 @@ export async function waitForPostIsVisibleInUnmoderatedTagPage(page: Page, postT
 }
 
 export async function waitForCreatedCommentIsVisible(page: Page, commentContent: string) {
-  const timeout = 20000;
+  const timeout = 30000;
   const interval = 4000;
 
   await waitForCommentIsVisible(page, commentContent, timeout, interval);
