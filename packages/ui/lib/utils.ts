@@ -5,7 +5,7 @@ import { convertStringToBig } from './helpers';
 import { TFunction } from 'i18next';
 import type { FullAccount } from '@hive/transaction/lib/app-types';
 import { NaiAsset } from '@hiveio/wax';
-import { Entry } from '@hive/transaction/lib/extended-hive.chain'; 
+import { Entry } from '@hive/transaction/lib/extended-hive.chain';
 import { parseDate2 } from './parse-date';
 import { IDynamicGlobalProperties, IVote } from '@hive/transaction/lib/extended-hive.chain';
 
@@ -46,11 +46,11 @@ export const prepareVotes = (entry: Entry, votes: IVote[]) => {
   if (payout && Number(totalPayout.toFixed(3)) !== payout) {
     totalPayout += payout;
   }
-  const voteRshares = votes && votes.reduce((a, b) => a + parseFloat(b.rshares), 0);
+  const voteRshares = votes && votes.reduce((a, b) => a + b.rshares, 0);
   const ratio = totalPayout / voteRshares;
 
   return votes.map((a) => {
-    const rew = parseFloat(a.rshares) * ratio;
+    const rew = a.rshares * ratio;
 
     return Object.assign({}, a, {
       reward: rew,

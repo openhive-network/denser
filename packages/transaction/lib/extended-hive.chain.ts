@@ -5,9 +5,7 @@ import {
   GetDynamicGlobalPropertiesRequest,
   asset,
   NaiAsset,
-  ApiAccount,
-  transaction,
-  TWaxRestExtended
+  transaction
 } from '@hiveio/wax';
 import { AccountFollowStats, FullAccount } from './app-types';
 
@@ -326,7 +324,7 @@ export interface IPost {
 export interface IVote {
   percent: number;
   reputation: number;
-  rshares: string;
+  rshares: number;
   time: string;
   timestamp?: number;
   voter: string;
@@ -449,38 +447,38 @@ export type OpType =
   | 'transfer'
   | 'withdraw_vesting';
 
-  export type IAuthorReward = {
-    author: string;
-    curators_vesting_payout: string;
-    hbd_payout: string;
-    hive_payout: string;
-    payout_must_be_claimed: boolean;
-    permlink: string;
-    vesting_payout: string;
-    author_rewards?: string;
-    beneficiary_payout_value?: string;
-    curator_payout_value?: string;
-    payout?: string;
-    reward?: string;
-    total_payout_value?: string;
-    curator?: string;
-  };
-  export type ICurationReward = {
-    author_rewards: string;
-    beneficiary_payout_value: string;
-    curator_payout_value: string;
-    payout: string;
-    total_payout_value: string;
-    reward: string;
-    curator: string;
-    author?: string;
-    curators_vesting_payout?: string;
-    hbd_payout?: string;
-    hive_payout?: string;
-    payout_must_be_claimed?: boolean;
-    permlink?: string;
-    vesting_payout?: string;
-  };
+export type IAuthorReward = {
+  author: string;
+  curators_vesting_payout: string;
+  hbd_payout: string;
+  hive_payout: string;
+  payout_must_be_claimed: boolean;
+  permlink: string;
+  vesting_payout: string;
+  author_rewards?: string;
+  beneficiary_payout_value?: string;
+  curator_payout_value?: string;
+  payout?: string;
+  reward?: string;
+  total_payout_value?: string;
+  curator?: string;
+};
+export type ICurationReward = {
+  author_rewards: string;
+  beneficiary_payout_value: string;
+  curator_payout_value: string;
+  payout: string;
+  total_payout_value: string;
+  reward: string;
+  curator: string;
+  author?: string;
+  curators_vesting_payout?: string;
+  hbd_payout?: string;
+  hive_payout?: string;
+  payout_must_be_claimed?: boolean;
+  permlink?: string;
+  vesting_payout?: string;
+};
 
 export type AccountHistory = [
   number,
@@ -670,7 +668,7 @@ export type Badge = {
 
 export interface SimilarPostParams {
   pattern?: string;
-  tr_body?:number;
+  tr_body?: number;
   posts_limit?: number;
   observer?: string;
   start_author?: string;
@@ -696,7 +694,7 @@ export interface HivesenseStatusResponse {
   externalDocs: {
     description: string;
     url: string;
-  }
+  };
   info: {
     description: string;
     title: string;
@@ -704,8 +702,8 @@ export interface HivesenseStatusResponse {
     license: {
       name: string;
       url: string;
-    }
-  }
+    };
+  };
   paths: unknown;
   servers: string[];
   tags: ApiTag[];
@@ -713,10 +711,7 @@ export interface HivesenseStatusResponse {
 
 export type ExtendedNodeApi = {
   bridge: {
-    get_post_header: TWaxApiRequest<
-      { author: string; permlink: string },
-      IGetPostHeader
-    >;
+    get_post_header: TWaxApiRequest<{ author: string; permlink: string }, IGetPostHeader>;
     get_ranked_posts: TWaxApiRequest<
       {
         sort: string;
@@ -758,10 +753,7 @@ export type ExtendedNodeApi = {
     list_all_subscriptions: TWaxApiRequest<{ account: string }, string[][] | null>;
     list_subscribers: TWaxApiRequest<{ community: string }, string[][] | null>;
     unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
-    get_relationship_between_accounts: TWaxApiRequest<
-      string[],
-      IAccountRelationship | null
-    >;
+    get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
     get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
   };
   condenser_api: {
