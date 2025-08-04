@@ -22,7 +22,7 @@ test.describe('Muted posts tests', () => {
 
     await page.goto('/');
     await homePage.moveToMutedPosts();
-   
+
     await page.waitForURL('/muted');
     const url = await page.url()
     await expect(url).toContain('/muted')
@@ -112,8 +112,9 @@ test.describe('Muted posts tests', () => {
     });
 
     const postAuthor = (await response.json()).result[0].author;
-    await postPage.firstPostTitleOnHomePage.click()
-    
+    await postPage.firstPostTitleOnHomePage.click();
+
+    await postPage.page.waitForTimeout(3000);
     const articleAuthor = postPage.articleAuthorName;
     const articleAuthorText = await postPage.articleAuthorName.innerText();
     await expect(articleAuthor).toBeVisible();
