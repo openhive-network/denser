@@ -70,11 +70,11 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
           <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">{children}</div>
         </div>
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-          {!communityPage ? null : !community && !user.username ? (
+          {!community && !user.username ? (
             <ExploreHive />
           ) : !community && (!communityData || !communityData) ? (
             <CommunitiesSidebar />
-          ) : !!community && (communityDataIsLoading || subsIsLoading) ? (
+          ) : !communityPage ? null : !!community && (communityDataIsLoading || subsIsLoading) ? (
             <DescriptionSkeleton />
           ) : communityData && subsData ? (
             <CommunityDescription
