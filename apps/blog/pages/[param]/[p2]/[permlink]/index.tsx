@@ -11,7 +11,7 @@ import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -154,7 +154,6 @@ function PostPage({
       handleError(error, { method: 'unpin', params: { community, username, permlink } });
     }
   };
-  const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
     return Object.values(SortOrder).includes(token as SortOrder);
@@ -171,8 +170,6 @@ function PostPage({
   const [storedComment] = useLocalStorage<string>(`replyTo-/${username}/${permlink}-${user.username}`, '');
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const firstPost = discussionState?.find((post) => post.depth === 0);
-  const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);
 
   const [edit, setEdit] = useState(false);
 
@@ -186,32 +183,17 @@ function PostPage({
       storeBox(reply);
     }
   }, [reply, storeBox]);
-  useEffect(() => {
-    if (discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[defaultSort]);
-      setDiscussionState(list);
-    }
-  }, [isLoadingDiscussion, discussion, defaultSort]);
 
-  useEffect(() => {
-    if (router.query.sort === 'trending' && discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[router.query.sort]);
-      setDiscussionState(list);
-    }
-    if (router.query.sort === 'votes' && discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[router.query.sort]);
-      setDiscussionState(list);
-    }
-    if (router.query.sort === 'new' && discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[router.query.sort]);
-      setDiscussionState(list);
-    }
-  }, [discussion, router.query.sort]);
+  const discussionState = useMemo(() => {
+    if (!discussion) return undefined;
 
+    const list = [...Object.keys(discussion).map((key) => discussion[key])];
+    const sortType = (router.query.sort as SortOrder) || defaultSort;
+    sorter(list, SortOrder[sortType]);
+    return list;
+  }, [discussion, router.query.sort, defaultSort]);
+  const firstPost = discussionState?.find((post) => post.depth === 0);
+  const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
   useEffect(() => {

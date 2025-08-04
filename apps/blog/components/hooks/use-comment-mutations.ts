@@ -43,7 +43,13 @@ export function useCommentMutation() {
       if (!data) return;
       const { queryKey, prevData, body, parentAuthor, parentPermlink } = data;
       if (!!prevData) {
-        const list = [...Object.keys(prevData).map((key) => prevData[key])];
+        const list = [...Object.keys(prevData).map((key) => prevData[key])].map((post) => {
+          if (post.permlink === parentPermlink && post.author === parentAuthor) {
+            const newPostData = { ...post, children: 1, replies: [...(post.replies || [])] };
+            return newPostData;
+          }
+          return post;
+        });
         const parentPost = list.find(
           (post) => post.author === parentAuthor && post.permlink === parentPermlink
         );
