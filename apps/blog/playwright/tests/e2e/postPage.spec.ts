@@ -173,7 +173,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.articleAuthorName.click();
-    await postPage.page.waitForTimeout(3000);
+    await postPage.page.waitForTimeout(5000);
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -215,7 +215,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.articleAuthorName.click();
-    await postPage.page.waitForTimeout(3000);
+    await postPage.page.waitForTimeout(5000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
       'rgb(44, 48, 53)'
@@ -432,7 +432,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.footerAuthorNameLink.click();
-    await postPage.page.waitForTimeout(3000);
+    await postPage.page.waitForTimeout(5000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
       'rgb(44, 48, 53)'
@@ -501,7 +501,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.footerAuthorNameLink.click();
-    await postPage.page.waitForTimeout(3000);
+    await postPage.page.waitForTimeout(5000);
 
     const userFollowersAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
       .follower_count;
@@ -531,7 +531,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.footerAuthorNameLink.click();
-    await postPage.page.waitForTimeout(3000);
+    await postPage.page.waitForTimeout(5000);
 
     try {
       const userPostingJsonMetadata = await JSON.parse(
