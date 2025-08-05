@@ -172,8 +172,9 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
+    await postPage.page.waitForTimeout(3000);
     await postPage.articleAuthorName.click();
-    await postPage.page.waitForTimeout(5000);
+    await postPage.page.waitForTimeout(3000);
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -214,8 +215,9 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
+    await postPage.page.waitForTimeout(3000);
     await postPage.articleAuthorName.click();
-    await postPage.page.waitForTimeout(5000);
+    await postPage.page.waitForTimeout(3000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
       'rgb(44, 48, 53)'
@@ -431,8 +433,9 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
+    await postPage.page.waitForTimeout(3000);
     await postPage.footerAuthorNameLink.click();
-    await postPage.page.waitForTimeout(5000);
+    await postPage.page.waitForTimeout(3000);
 
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
       'rgb(44, 48, 53)'
@@ -500,8 +503,9 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
+    await postPage.page.waitForTimeout(3000);
     await postPage.footerAuthorNameLink.click();
-    await postPage.page.waitForTimeout(5000);
+    await postPage.page.waitForTimeout(3000);
 
     const userFollowersAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
       .follower_count;
@@ -530,8 +534,9 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
+    await postPage.page.waitForTimeout(3000);
     await postPage.footerAuthorNameLink.click();
-    await postPage.page.waitForTimeout(5000);
+    await postPage.page.waitForTimeout(3000);
 
     try {
       const userPostingJsonMetadata = await JSON.parse(
