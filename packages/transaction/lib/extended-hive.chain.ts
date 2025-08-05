@@ -5,9 +5,7 @@ import {
   GetDynamicGlobalPropertiesRequest,
   asset,
   NaiAsset,
-  ApiAccount,
-  transaction,
-  TWaxRestExtended
+  transaction
 } from '@hiveio/wax';
 import { AccountFollowStats, FullAccount } from './app-types';
 
@@ -336,7 +334,7 @@ export interface IPost {
 export interface IVote {
   percent: number;
   reputation: number;
-  rshares: string;
+  rshares: number;
   time: string;
   timestamp?: number;
   voter: string;

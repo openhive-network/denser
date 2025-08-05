@@ -584,7 +584,7 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
             </>
           ) : null}
 
-          <div className="py-8">
+          <div className="p-8">
             <Accordion type="single" collapsible defaultValue="main-hc">
               <AccordionItem value="main-hc">
                 <AccordionTrigger>API Endpoint</AccordionTrigger>

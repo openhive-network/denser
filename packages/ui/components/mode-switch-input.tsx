@@ -51,7 +51,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           className={clsx(
-            'z-10 block h-8 bg-transparent p-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+            'z-10 block h-8 w-full bg-transparent p-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
             {
               'w-24 pr-0': mode === 'userTopic'
             }

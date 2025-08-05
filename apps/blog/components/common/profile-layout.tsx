@@ -46,7 +46,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const { data: accountData } = useQuery(['accountData', username], () => getAccount(username), {
     enabled: !!username
   });
-  const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
+  const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
 
   const { data: dynamicGlobalData } = useQuery(['dynamicGlobalData'], () => getDynamicGlobalProperties());
 

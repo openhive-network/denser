@@ -20,8 +20,8 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
   const { user } = useUser();
   const follows = useFollowsQuery(author);
   const { data: account, isLoading } = useAccountQuery(author);
-  const following = useFollowingInfiniteQuery(user.username || '', 50, 'blog', ['blog']);
-  const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
+  const following = useFollowingInfiniteQuery(user.username || '', 1000, 'blog', ['blog']);
+  const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
   const about =
     account && account.posting_json_metadata
       ? JSON.parse(account.posting_json_metadata)?.profile?.about

@@ -21,7 +21,7 @@ import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 
-import { getAccount } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { useRouter } from 'next/router';
@@ -44,7 +44,7 @@ const SiteHeader: FC = () => {
       enabled: !!user.username
     }
   );
-  const { data: profile } = useQuery(['profileData', user.username], () => getAccount(user.username), {
+  const { data: profile } = useQuery(['profileData', user.username], () => getAccountFull(user.username), {
     enabled: user?.isLoggedIn
   });
   const { data: hiveSense } = useQuery(['hivesense-api'], () => getHiveSenseStatus(), {

@@ -7,7 +7,7 @@ import { configuredSiteDomain, configuredImagesEndpoint } from '@hive/ui/config/
 
 const renderDefaultOptions = {
   baseUrl: `${configuredSiteDomain}/`,
-  breaks: true,
+  breaks: false,
   skipSanitization: false,
   allowInsecureScriptTags: false,
   addNofollowToLinks: true,

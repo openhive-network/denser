@@ -40,7 +40,6 @@ import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
-import CustomError from '@/blog/components/custom-error';
 import RendererContainer from '@/blog/components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
@@ -62,6 +61,7 @@ import TimeAgo from '@ui/components/time-ago';
 import CommentList from '@/blog/components/comment-list';
 import clsx from 'clsx';
 import PostingLoader from '@/blog/components/posting-loader';
+import NoDataError from '@/blog/components/no-data-error';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -91,13 +91,13 @@ function PostPage({
   const { user } = useUser();
   const { data: mutedList } = useFollowListQuery(user.username, 'muted');
   const deletePostMutation = useDeletePostMutation();
-  const {
-    isLoading: isLoadingPost,
-    data: post,
-    isError: postError
-  } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
+  const { isLoading: isLoadingPost, data: post } = useQuery(
+    ['postData', username, permlink],
+    () => getPost(username, String(permlink)),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
 
   const { data: suggestions } = useQuery(
     ['suggestions', username, permlink],
@@ -199,8 +199,8 @@ function PostPage({
   useEffect(() => {
     setMutedPost(post?.stats?.gray ?? false);
   }, [post?.stats?.gray]);
-  if (userFromGDPR || (postError && !post)) {
-    return <CustomError />;
+  if (userFromGDPR || !post) {
+    return <NoDataError />;
   }
   const deleteComment = async (permlink: string) => {
     try {
@@ -673,7 +673,7 @@ function PostPage({
               />
             ) : null}
           </div>
-          {!isLoadingDiscussion && discussion && discussionState && !isLoadingPost && post ? (
+          {discussion && discussionState && post ? (
             <div className="max-w-4xl pr-2">
               <div className="my-1 flex items-center justify-end" translate="no">
                 <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
@@ -727,7 +727,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     communityTag: '',
     authorReputation: 0
   };
-
+  if (!!permlink && !!username) {
+    try {
+      await queryClient.prefetchQuery(['discussionData', permlink], () => getDiscussion(username, permlink));
+    } catch (error) {
+      console.error('Error prefetching comments data:', error);
+    }
+  }
   try {
     post = await getPost(username, String(permlink));
     mutedStatus = post?.stats?.gray ?? false;

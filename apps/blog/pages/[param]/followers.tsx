@@ -26,8 +26,8 @@ export default function Followers({
   const { user } = useUser();
   const profileData = useQueryClient().getQueryData<FullAccount>(['profileData', username]);
   const followersData = useFollowersInfiniteQuery(username, LIMIT);
-  const following = useFollowingInfiniteQuery(user.username, 50, 'blog', ['blog']);
-  const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
+  const following = useFollowingInfiniteQuery(user.username, 1000, 'blog', ['blog']);
+  const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
 
   const handleNextPage = () => {
     if (!followersData.data) return;
