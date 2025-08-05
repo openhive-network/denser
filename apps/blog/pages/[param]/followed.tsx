@@ -19,10 +19,11 @@ export default function Followed({ metadata }: { metadata: MetadataProps }) {
   const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
   const profileData = useQueryClient().getQueryData<FullAccount>(['profileData', username]);
+
   const { user } = useUser();
   const followingData = useFollowingInfiniteQuery(username, LIMIT);
-  const following = useFollowingInfiniteQuery(user?.username || '', 50, 'blog', ['blog']);
-  const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
+  const following = useFollowingInfiniteQuery(user?.username || '', 1000, 'blog', ['blog']);
+  const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
 
   const handleNextPage = () => {
     if (!followingData.data) return;
@@ -49,8 +50,8 @@ export default function Followed({ metadata }: { metadata: MetadataProps }) {
           <h1 className="self-center p-2">
             {t('user_profile.lists.followed_pages', {
               current: page + 1,
-              total: profileData?.follow_stats?.follower_count
-                ? Math.ceil(profileData?.follow_stats?.follower_count / LIMIT)
+              total: profileData?.follow_stats?.following_count
+                ? Math.ceil(profileData?.follow_stats?.following_count / LIMIT)
                 : '?'
             })}
           </h1>
@@ -92,8 +93,8 @@ export default function Followed({ metadata }: { metadata: MetadataProps }) {
           <h1 className="self-center p-2">
             {t('user_profile.lists.followed_pages', {
               current: page + 1,
-              total: profileData?.follow_stats?.follower_count
-                ? Math.ceil(profileData?.follow_stats?.follower_count / LIMIT)
+              total: profileData?.follow_stats?.following_count
+                ? Math.ceil(profileData?.follow_stats?.following_count / LIMIT)
                 : '?'
             })}
           </h1>

@@ -326,7 +326,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                         placeholder={t('login_form.signin_safe_storage.placeholder_password')}
                         type={show.password ? 'text' : 'password'}
                         autoComplete="current-password"
-                        data-testid="password</div>-input"
+                        data-testid="password-input"
                         {...field}
                       />
                       <Button
