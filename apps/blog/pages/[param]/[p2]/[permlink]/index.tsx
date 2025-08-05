@@ -673,7 +673,7 @@ function PostPage({
               />
             ) : null}
           </div>
-          {!isLoadingDiscussion && discussion && discussionState && !isLoadingPost && post ? (
+          {discussion && discussionState && post ? (
             <div className="max-w-4xl pr-2">
               <div className="my-1 flex items-center justify-end" translate="no">
                 <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
@@ -727,7 +727,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     communityTag: '',
     authorReputation: 0
   };
-
+  if (!!permlink && !!username) {
+    try {
+      await queryClient.prefetchQuery(['discussionData', permlink], () => getDiscussion(username, permlink));
+    } catch (error) {
+      console.error('Error prefetching comments data:', error);
+    }
+  }
   try {
     post = await getPost(username, String(permlink));
     mutedStatus = post?.stats?.gray ?? false;
