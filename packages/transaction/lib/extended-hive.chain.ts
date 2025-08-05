@@ -25,11 +25,15 @@ export interface EntryStat {
   hide: boolean;
   total_votes: number;
   is_pinned?: boolean;
+  // added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 export interface IFollowList {
   name: string;
   blacklist_description: string;
   muted_list_description: string;
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 export interface Entry {
   active_votes: EntryVote[];
@@ -70,6 +74,8 @@ export interface Entry {
   updated: string;
   url: string;
   original_entry?: Entry;
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export interface JsonMetadata {
@@ -121,7 +127,11 @@ export interface Community {
     role: string;
     subscribed: Boolean;
     title: string;
+    //  added only when using optimistic update, not backend property
+    _temporary?: boolean;
   };
+  // added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export interface JsonMetadata {
@@ -578,6 +588,8 @@ export interface IFollow {
   follower: string;
   following: string;
   what: string[];
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export interface ICollateralizedConversionRequest {
@@ -609,6 +621,8 @@ export interface IVoteListItem {
   vote_percent: number;
   last_update: string;
   num_changes: number;
+  // added only when using optimistic update, not backend property
+  _temporary: boolean;
 }
 
 export interface IAccountNotification {

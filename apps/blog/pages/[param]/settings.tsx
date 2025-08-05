@@ -1,4 +1,3 @@
-
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
@@ -36,9 +35,8 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { handleError } from '@ui/lib/handle-error';
 import Head from 'next/head';
-import {ApiChecker, HealthCheckerComponent } from "@hiveio/healthchecker-component";
-import {useHealthChecker} from "@ui/hooks/useHealthChecker";
-
+import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component';
+import { useHealthChecker } from '@ui/hooks/useHealthChecker';
 
 const logger = getLogger('app');
 interface Settings {
@@ -157,13 +155,9 @@ function validation(values: Settings, t: TFunction<'common_blog'>) {
 
 export default function UserSettings({ metadata }: { metadata: MetadataProps }) {
   const { user } = useUser();
-  const { isLoading, error, data } = useQuery(
-    ['profileData', user.username],
-    () => getAccountFull(user.username),
-    {
-      enabled: !!user.username
-    }
-  );
+  const { isLoading, data } = useQuery(['profileData', user.username], () => getAccountFull(user.username), {
+    enabled: !!user.username
+  });
 
   const profileData = data?.profile;
   const profileSettings: Settings = {
@@ -207,47 +201,57 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
   const updateProfileMutation = useUpdateProfileMutation();
 
   const DEFAULT_AI_ENDPOINTS = [
-    "https://api.hive.blog",
-    "https://api.syncad.com",
-    "https://api.openhive.network",
-    "https://api.dev.openhive.network",
-  ]
+    'https://api.hive.blog',
+    'https://api.syncad.com',
+    'https://api.openhive.network',
+    'https://api.dev.openhive.network'
+  ];
 
-  const nodeHcService = useHealthChecker("node-api", nodeApiCheckers, 'node-endpoint', hiveChainService.setHiveChainEndpoint);
-  const aiSearchHcService = useHealthChecker("ai-search", aiSearchApiCheckers, 'ai-search-endpoint', hiveChainService.setAiSearchEndpoint, DEFAULT_AI_ENDPOINTS);
-
+  const nodeHcService = useHealthChecker(
+    'node-api',
+    nodeApiCheckers,
+    'node-endpoint',
+    hiveChainService.setHiveChainEndpoint
+  );
+  const aiSearchHcService = useHealthChecker(
+    'ai-search',
+    aiSearchApiCheckers,
+    'ai-search-endpoint',
+    hiveChainService.setAiSearchEndpoint,
+    DEFAULT_AI_ENDPOINTS
+  );
 
   const createApiCheckers = async () => {
     const hiveChain = await hiveChainService.getHiveChain();
     const nodeApiCheckers: ApiChecker[] = [
-    {
-      title: "Condenser - Get accounts",
-      method: hiveChain.api.condenser_api.get_accounts,
-      params: [["guest4test"]],
-      validatorFunction: data => data[0].name === "guest4test" ? true : "Get block error",
-    },
-    {
-      title: "Bridge - Get post",
-      method: hiveChain.api.bridge.get_post,
-      params: {author: "guest4test", permlink: "6wpmjy-test", observer: ""},
-      validatorFunction: data => data.author === "guest4test" ? true : "Get post error",
-    },
-  ]
-    const aiSearchApiCheckers: ApiChecker[] = [
-    {
-      title: "AI search",
-      method: hiveChain.restApi['hivesense-api'].similarposts,
-      params: {
-        pattern: "test",
-        tr_body: 100,
-        posts_limit: 20,
+      {
+        title: 'Condenser - Get accounts',
+        method: hiveChain.api.condenser_api.get_accounts,
+        params: [['guest4test']],
+        validatorFunction: (data) => (data[0].name === 'guest4test' ? true : 'Get block error')
       },
-      validatorFunction: data => data[0]? true : "AI search error",
-    }
-    ]
+      {
+        title: 'Bridge - Get post',
+        method: hiveChain.api.bridge.get_post,
+        params: { author: 'guest4test', permlink: '6wpmjy-test', observer: '' },
+        validatorFunction: (data) => (data.author === 'guest4test' ? true : 'Get post error')
+      }
+    ];
+    const aiSearchApiCheckers: ApiChecker[] = [
+      {
+        title: 'AI search',
+        method: hiveChain.restApi['hivesense-api'].similarposts,
+        params: {
+          pattern: 'test',
+          tr_body: 100,
+          posts_limit: 20
+        },
+        validatorFunction: (data) => (data[0] ? true : 'AI search error')
+      }
+    ];
     setNodeApiCheckers(nodeApiCheckers);
     setAiSearchApiCheckers(aiSearchApiCheckers);
-  }
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -466,7 +470,7 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
                   onClick={() => onSubmit()}
                   className="my-4 w-44"
                   data-testid="pps-update-button"
-                  disabled={sameData || disabledBtn || updateProfileMutation.isLoading}
+                  disabled={sameData || disabledBtn || updateProfileMutation.isLoading || data?._temporary}
                 >
                   {updateProfileMutation.isLoading ? (
                     <span className="flex items-center justify-center">
@@ -581,17 +585,22 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
           ) : null}
 
           <div className="py-8">
-            <Accordion
-              type="single"
-              collapsible
-              defaultValue='main-hc'>
+            <Accordion type="single" collapsible defaultValue="main-hc">
               <AccordionItem value="main-hc">
                 <AccordionTrigger>API Endpoint</AccordionTrigger>
-                <AccordionContent>{!!nodeHcService && <HealthCheckerComponent healthCheckerService={nodeHcService} />}</AccordionContent>
+                <AccordionContent>
+                  {!!nodeHcService && (
+                    <HealthCheckerComponent className="m-4" healthCheckerService={nodeHcService} />
+                  )}
+                </AccordionContent>
               </AccordionItem>
               <AccordionItem value="search-hc">
                 <AccordionTrigger>Endpoint for AI search</AccordionTrigger>
-                <AccordionContent>{!!aiSearchHcService && <HealthCheckerComponent healthCheckerService={aiSearchHcService} />}</AccordionContent>
+                <AccordionContent>
+                  {!!aiSearchHcService && (
+                    <HealthCheckerComponent className="m-4" healthCheckerService={aiSearchHcService} />
+                  )}
+                </AccordionContent>
               </AccordionItem>
             </Accordion>
           </div>

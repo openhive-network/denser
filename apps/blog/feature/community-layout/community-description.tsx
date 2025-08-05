@@ -1,4 +1,3 @@
-import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
 import ln2list from '@/blog/lib/ln2list';
@@ -14,8 +13,9 @@ import SubscribeCommunity from '../../components/subscribe-community';
 import NewPost from '../../components/new-post-button';
 import RendererContainer from '../../components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
-import EditCommunityDialog from '../../components/edit-community-dialog';
+import EditCommunityDialog from '../community-settings/edit-dialog';
 import { Separator } from '@ui/components';
+import clsx from 'clsx';
 
 const logger = getLogger('app');
 
@@ -42,7 +42,9 @@ const CommunityDescription = ({
   return (
     <div className="flex w-full max-w-[240px] flex-col">
       <Card
-        className={cn('my-4 hidden h-fit w-auto flex-col px-4 text-primary dark:bg-background md:flex')}
+        className={clsx('my-4 hidden h-fit w-auto flex-col px-4 text-primary dark:bg-background md:flex', {
+          'animate-pulse': data._temporary
+        })}
         data-testid="community-info-sidebar"
       >
         <CardHeader className="px-0 font-light">
@@ -82,6 +84,8 @@ const CommunityDescription = ({
               community={data.name}
               isSubscribed={isSubscribed}
               onIsSubscribed={(e) => setIsSubscribed(e)}
+              communityTitle={data.title}
+              temprary={data.context._temporary}
             />
             <NewPost name={data.name} disabled={!isSubscribed} />
           </div>
@@ -126,7 +130,9 @@ const CommunityDescription = ({
         </CardContent>
       </Card>
       <Card
-        className={cn('my-4 hidden h-fit w-auto flex-col px-4 text-primary dark:bg-background md:flex')}
+        className={clsx('my-4 hidden h-fit w-auto flex-col px-4 text-primary dark:bg-background md:flex', {
+          'animate-pulse': data._temporary
+        })}
         data-testid="community-description-rules-sidebar"
       >
         <CardContent className="py-4">

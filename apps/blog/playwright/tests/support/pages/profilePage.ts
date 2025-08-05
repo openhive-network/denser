@@ -102,6 +102,15 @@ export class ProfilePage {
 
   readonly publicProfileSettings: any;
   readonly publicProfileSettingsHeader: Locator;
+  readonly apiEndpointCard: Locator;
+  readonly apiSelectedNodeText: Locator;
+  readonly apiEndpointButton: Locator;
+  readonly firstSetMainButton: Locator;
+  readonly apiEndpointAISearchButton: Locator;
+  readonly apiAddressInput: Locator;
+  readonly apiFilterInput: Locator;
+  readonly apiAddButton: Locator;
+  readonly apiRestoreDefaultServerSetButton: Locator;
   readonly preferencesProfileSettingsHeader: Locator;
   readonly advancedProfileSettingsHeader: Locator;
   readonly ppsProfilePictureUrlLabel: Locator;
@@ -324,6 +333,15 @@ export class ProfilePage {
 
     this.publicProfileSettings = page.locator('[data-testid="public-profile-settings"]');
     this.publicProfileSettingsHeader = this.publicProfileSettings.locator('h2').nth(0);
+    this.apiEndpointCard = this.publicProfileSettings.locator('.rounded-lg');
+    this.apiEndpointButton = this.publicProfileSettings.locator('[data-testid="comment-close-open"]').first();
+    this.firstSetMainButton = this.publicProfileSettings.getByTestId('hc-set-api-button').first();
+    this.apiSelectedNodeText = this.publicProfileSettings.getByTestId('hc-selected');
+    this.apiEndpointAISearchButton = this.publicProfileSettings.locator('[data-testid="comment-close-open"]').last();
+    this.apiAddressInput = this.publicProfileSettings.locator('[data-testid="api-address-input"]');
+    this.apiFilterInput = this.publicProfileSettings.locator('[placeholder="Filter by URL…"]');
+    this.apiAddButton = this.publicProfileSettings.locator('button').getByText('Add');
+    this.apiRestoreDefaultServerSetButton = this.publicProfileSettings.getByText('Restore default API server set');
     this.preferencesProfileSettingsHeader = this.publicProfileSettings.locator('h2').nth(1);
     this.advancedProfileSettingsHeader = this.publicProfileSettings.locator('h2').nth(2);
 
@@ -435,6 +453,25 @@ export class ProfilePage {
     await this.page.waitForTimeout(1000);
     await this.page.waitForSelector(this.profileInfo['_selector']);
     await this.page.waitForSelector(this.socialBadgesAchievemntsMenuBar['_selector']);
+  }
+
+  async gotoApiEndpointHealthcheckerProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/settings`);
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(this.apiEndpointButton['_selector']);
+    await this.page.waitForSelector(this.page.getByText('Condenser - Get accounts')['_selector']);
+  }
+
+  async gotoAISearchApiEndpointHealthcheckerProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/settings`);
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(this.apiEndpointAISearchButton['_selector']);
+    // Click Endpoint for AI search
+    await this.apiEndpointAISearchButton.click();
+    await this.page.waitForSelector(this.page.getByText('AI search').first()['_selector']);
+    await this.page.waitForTimeout(1000);
   }
 
   async profileNameIsEqual(authorName: string) {

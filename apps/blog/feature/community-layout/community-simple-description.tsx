@@ -10,7 +10,8 @@ import NewPost from '../../components/new-post-button';
 import { useEffect, useState } from 'react';
 import { Badge, Separator } from '@ui/components';
 import Link from 'next/link';
-import EditCommunityDialog from '../../components/edit-community-dialog';
+import EditCommunityDialog from '../community-settings/edit-dialog';
+import clsx from 'clsx';
 
 const CommunitySimpleDescription = ({
   data,
@@ -37,7 +38,9 @@ const CommunitySimpleDescription = ({
 
   return (
     <Card
-      className="my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 text-primary dark:bg-background"
+      className={clsx('my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 text-primary dark:bg-background', {
+        'animate-pulse': data._temporary
+      })}
       data-testid="community-simple-description-sidebar"
     >
       <CardHeader className="col-span-2 p-0">
@@ -93,6 +96,8 @@ const CommunitySimpleDescription = ({
             community={data.name}
             isSubscribed={isSubscribed}
             onIsSubscribed={(e) => setIsSubscribed(e)}
+            communityTitle={data.title}
+            temprary={data.context._temporary}
           />
           <NewPost disabled={!isSubscribed} name={data.name} />
         </div>
