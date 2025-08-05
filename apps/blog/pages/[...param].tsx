@@ -17,7 +17,6 @@ import PostSelectFilter from '@/blog/components/post-select-filter';
 import { useRouter } from 'next/router';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { useInView } from 'react-intersection-observer';
-import CustomError from '@/blog/components/custom-error';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
@@ -33,6 +32,7 @@ import Head from 'next/head';
 import { sortToTitle, sortTypes } from '../lib/utils';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import CommunityLayout from '../feature/community-layout/community-layout';
+import NoDataError from '../components/no-data-error';
 
 export const PostSkeleton = () => {
   return (
@@ -239,7 +239,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       router.events.off('routeChangeStart', handleRouteChange);
     };
   }, [router.events]);
-  if (accountEntriesIsError || entriesDataIsError) return <CustomError />;
+  if (accountEntriesIsError || entriesDataIsError) return <NoDataError />;
 
   const tabTitle =
     Array.isArray(router.query.param) && router.query.param.length > 1
@@ -247,7 +247,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       : sortToTitle((router.query.param?.[0] ?? 'trending') as sortTypes);
 
   if (username && router.query.param ? router.query.param.length > 1 : false) {
-    return <CustomError />;
+    return <NoDataError />;
   }
   if (entriesData && entriesData.pages) {
     // Debug: log data and user

@@ -7,7 +7,6 @@ import { FC, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
 import { Skeleton } from '@ui/components/skeleton';
 import { useInView } from 'react-intersection-observer';
-import CustomError from '@/blog/components/custom-error';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
@@ -16,6 +15,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getDefaultProps } from '../../lib/get-translations';
 import Head from 'next/head';
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
+import NoDataError from '@/blog/components/no-data-error';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
@@ -85,7 +85,7 @@ const FeedPage: FC = () => {
     }
   }, [accountFetchNextPage, accountHasNextPage, inViewAcc]);
 
-  if (accountEntriesIsError || mySubsIsError) return <CustomError />;
+  if (accountEntriesIsError || mySubsIsError) return <NoDataError />;
 
   if (accountEntriesIsLoading && accountEntriesIsFetching) {
     return <Loading loading={accountEntriesIsLoading || accountEntriesIsFetching} />;

@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import Loading from '@ui/components/loading';
-import CustomError from '@/blog/components/custom-error';
 import AddRole from '@/blog/feature/community-roles/add-role';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@ui/components/table';
 import { useTranslation } from 'next-i18next';
@@ -14,6 +13,7 @@ import Head from 'next/head';
 import { getRoleValue, Roles, rolesLevels } from '@/blog/feature/community-roles/lib/utils';
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
 import TableItem from '@/blog/feature/community-roles/table-item';
+import NoDataError from '@/blog/components/no-data-error';
 
 const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const router = useRouter();
@@ -47,7 +47,7 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   };
 
   if (isLoading) return <Loading loading={isLoading} />;
-  if (isError) return <CustomError />;
+  if (isError) return <NoDataError />;
 
   return (
     <>
