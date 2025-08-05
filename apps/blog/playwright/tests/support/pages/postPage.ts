@@ -102,7 +102,9 @@ export class PostPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.showPostBodyBtn = page.getByRole('button', { name: 'Show' });
+    this.showPostBodyBtn = page.locator('div').filter({
+      hasText: /^Content were hidden due to low ratings\.Show$/
+    }).getByRole('button');
     this.postListItemOnHomePage = page.locator('li[data-testid="post-list-item"]');
     this.firstPostImageOnHomePage = page.locator('li[data-testid="post-list-item"]:nth-of-type(1) img');
     this.firstPostTitleOnHomePage = page
