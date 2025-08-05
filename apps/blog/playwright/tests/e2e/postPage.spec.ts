@@ -172,6 +172,7 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
+    await postPage.page.waitForTimeout(3000);
     await postPage.articleAuthorName.click();
     await postPage.page.waitForTimeout(3000);
 
@@ -214,6 +215,7 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
+    await postPage.page.waitForTimeout(3000);
     await postPage.articleAuthorName.click();
     await postPage.page.waitForTimeout(3000);
 
@@ -431,6 +433,7 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
+    await postPage.page.waitForTimeout(3000);
     await postPage.footerAuthorNameLink.click();
     await postPage.page.waitForTimeout(3000);
 
@@ -500,6 +503,7 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
+    await postPage.page.waitForTimeout(3000);
     await postPage.footerAuthorNameLink.click();
     await postPage.page.waitForTimeout(3000);
 
@@ -530,6 +534,7 @@ test.describe('Post page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
+    await postPage.page.waitForTimeout(3000);
     await postPage.footerAuthorNameLink.click();
     await postPage.page.waitForTimeout(3000);
 
