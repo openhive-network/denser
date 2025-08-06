@@ -302,9 +302,9 @@ Spoiler Output:
 
     const previewContent: string = `<p class=\"my-0\">* Without the backslash, this would be a bullet in an unordered list.</p>
 <p class=\"my-0\">Spoiler:</p>
-<details><summary>Hidden Spoiler Text</summary><p class=\"my-0\">This is the spoiler content.<br>
+<details><summary>Hidden Spoiler Text</summary><p class=\"my-0\">This is the spoiler content.
 Optionally with more lines</p>
-</details><p class=\"my-0\">Spoiler Output:<br>
+</details><p class=\"my-0\">Spoiler Output:
 <img src=\"https://images.hive.blog/1536x0/https://usermedia.actifit.io/M20FVR8P5ZFXYEF49HN7QQH4KK8BJ9\" alt=\"image.png\"></p>`;
 
     expect(preview).toContain(previewContent);
