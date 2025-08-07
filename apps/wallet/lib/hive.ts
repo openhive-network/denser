@@ -1,7 +1,14 @@
 import Big from 'big.js';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import { TWaxApiRequest, RcAccount, GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
+import {
+  TWaxApiRequest,
+  RcAccount,
+  asset,
+  GetDynamicGlobalPropertiesResponse,
+  GetDynamicGlobalPropertiesRequest,
+
+} from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import {
   SavingsWithdrawals,
@@ -18,8 +25,10 @@ import {
   IOrdersData,
   IMarketStatistics,
   IWitness,
-  IDirectDelegation
+  IDirectDelegation,
+  IGetOperationsByAccountResponse
 } from '@transaction/lib/extended-hive.chain';
+import { commonVariables } from '@ui/lib/common-variables';
 
 const chain = await hiveChainService.getHiveChain();
 
@@ -78,7 +87,7 @@ export const getVestingDelegations = async (
 };
 
 const op = operationOrders;
-const wallet_operations_bitmask = makeBitMaskFilter([
+const wallet_operations_bitmask = [
   op.transfer,
   op.transfer_to_vesting,
   op.withdraw_vesting,
@@ -94,7 +103,7 @@ const wallet_operations_bitmask = makeBitMaskFilter([
   op.fill_convert_request,
   op.fill_order,
   op.claim_reward_balance
-]);
+];
 
 export const getAccountHistory = async (
   username: string,
@@ -108,6 +117,20 @@ export const getAccountHistory = async (
     ...wallet_operations_bitmask
   ]) as Promise<AccountHistory[]>;
 };
+
+export const getAccountOperations = async (
+  username: string,
+  page: number | undefined = undefined,
+  pageSize: number = 500,
+  observer: string
+): Promise<IGetOperationsByAccountResponse> => {
+  return chain.restApi['hivemind-api'].accountsOperations({
+    "account-name": username,
+    page, "page-size":
+    pageSize, "operation-types": wallet_operations_bitmask.toString(),
+    'observer-name': observer !== '' ? observer : commonVariables.defaultObserver
+  })
+}
 
 export type IAuthorReward = {
   author: string;

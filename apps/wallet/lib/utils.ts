@@ -2,12 +2,14 @@ import { TFunction } from 'i18next';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
-import { SavingsWithdrawals, IFollow, IDynamicGlobalProperties } from '@transaction/lib/extended-hive.chain';
+import { SavingsWithdrawals, IFollow, IDynamicGlobalProperties, HiveOperation } from '@transaction/lib/extended-hive.chain';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
 import Big from 'big.js';
 import { HIVE_NAI_STRING, VESTS_PRECISION } from '@transaction/lib/utils';
 import { AccountHistoryData } from '../feature/transfers-page/lib/utils';
+import { NaiAsset } from '@hiveio/wax';
+import { HiveChain } from '@transaction/lib/hive-chain-service';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -40,62 +42,60 @@ export function getCurrentHpApr(data: IDynamicGlobalProperties) {
 
 interface getFilterArgs {
   filter: TransferFilters;
-  totalFund: Big;
-  totalShares: Big;
   username: string;
 }
 
 export const getFilter =
-  ({ filter, totalFund, username, totalShares }: getFilterArgs) =>
-  ({ operation }: AccountHistoryData) => {
-    if (!operation) return false;
-    switch (operation.type) {
-      case 'transfer':
-        const opAmount = convertStringToBig(operation.amount ?? '0');
-        const incomingFromCurrent = operation.to === username || operation.from !== username;
-        const outcomingFromCurrent = operation.from === username || operation.to !== username;
-        const inSearch = operation.to?.includes(filter.search) || operation.from?.includes(filter.search);
+  ({ filter, username }: getFilterArgs) =>
+  ({ op }: HiveOperation) => {
+    const opValue = op?.value;
+    if (!opValue) return false;
+    switch (op.type) {
+      case 'transfer_operation':
+        const incomingFromCurrent = opValue.to === username || opValue.from !== username;
+        const outcomingFromCurrent = opValue.from === username || opValue.to !== username;
+        const inSearch = opValue.to?.includes(filter.search) || opValue.from?.includes(filter.search);
 
         return (
-          !(filter.exlude && opAmount.lt(1)) &&
+          !(filter.exlude && filterSmallerThanOne(opValue.amount)) &&
           (filter.incoming || !incomingFromCurrent) &&
           (filter.outcoming || !outcomingFromCurrent) &&
           inSearch
         );
-      case 'claim_reward_balance':
+      case 'claim_reward_balance_operation':
         if (
           !filter.others ||
           (filter.exlude &&
-            operation.reward_hbd.lt(1) &&
-            operation.reward_hive.lt(1) &&
-            totalFund.times(operation.reward_vests.div(totalShares)).lt(1))
+            opValue.reward_hbd &&
+            opValue.reward_hive &&
+            opValue.reward_vests
+        ))
+          return false;
+        break;
+
+      case 'transfer_from_savings_operation':
+      case 'transfer_to_savings_operation':
+      case 'transfer_to_vesting_operation':
+        if (!filter.others || (filter.exlude && filterSmallerThanOne(opValue.amount)))
+          return false;
+        break;
+      case 'interest_operation':
+        if (!filter.others || (filter.exlude && filterSmallerThanOne(opValue.interest)))
+          return false;
+        break;
+      case 'fill_order_operation':
+        if (
+          !filter.others ||
+          (filter.exlude &&
+            filterSmallerThanOne(opValue.open_pays) &&
+            filterSmallerThanOne(opValue.current_pays))
         )
           return false;
         break;
 
-      case 'transfer_from_savings':
-      case 'transfer_to_savings':
-      case 'transfer_to_vesting':
-        if (!filter.others || (filter.exlude && convertStringToBig(operation?.amount || '0').lt(1)))
-          return false;
-        break;
-      case 'interest':
-        if (!filter.others || (filter.exlude && convertStringToBig(operation?.interest || '0').lt(1)))
-          return false;
-        break;
-      case 'fill_order':
-        if (
-          !filter.others ||
-          (filter.exlude &&
-            convertStringToBig(operation?.open_pays || '0').lt(1) &&
-            convertStringToBig(operation?.current_pays || '0').lt(1))
-        )
-          return false;
-        break;
-
-      case 'cancel_transfer_from_savings':
+      case 'cancel_transfer_from_savings_operation':
         if (!filter.others || filter.exlude) return false;
-      case 'withdraw_vesting':
+      case 'withdraw_vesting_operation':
         if (!filter.others || filter.exlude) return false;
     }
     return true;
@@ -196,7 +196,7 @@ export function transformKeyAuths(authority: { [keyOrAccount: string]: number })
 export function createListWithSuggestions(
   username: string,
   t: TFunction<'common_wallet', undefined>,
-  transferHistory?: AccountHistoryData[],
+  transferHistory?: HiveOperation[],
   followingList?: IFollow[]
 ): { username: string; about: string }[] {
   const following =
@@ -206,31 +206,31 @@ export function createListWithSuggestions(
       ?.map((e) => {
         let accountName;
 
-        switch (e.operation?.type) {
+        switch (e.op?.type) {
           case 'transfer':
-            if (e.operation?.to !== username) accountName = e.operation?.to;
-            if (e.operation?.from !== username) accountName = e.operation?.from;
+            if (e.op?.value?.to !== username) accountName = e.op?.value?.to;
+            if (e.op?.value?.from !== username) accountName = e.op?.value?.from;
             break;
           case 'claim_reward_balance':
-            if (e.operation?.account !== username) accountName = e.operation?.account;
+            if (e.op?.value?.account !== username) accountName = e.op?.value?.account;
             break;
           case 'transfer_from_savings':
           case 'transfer_to_savings':
-            if (e.operation?.to !== username) accountName = e.operation?.to;
-            if (e.operation?.from !== username) accountName = e.operation?.from;
+            if (e.op?.value?.to !== username) accountName = e.op?.value?.to;
+            if (e.op?.value?.from !== username) accountName = e.op?.value?.from;
             break;
           case 'interest':
-            if (e.operation?.owner !== username) accountName = e.operation?.owner;
+            if (e.op?.value?.owner !== username) accountName = e.op?.value?.owner;
             break;
           case 'cancel_transfer_from_savings':
-            if (e.operation?.from !== username) accountName = e.operation?.from;
+            if (e.op?.value?.from !== username) accountName = e.op?.value?.from;
             break;
           case 'fill_order':
-            if (e.operation?.current_owner !== username) accountName = e.operation?.current_owner;
+            if (e.op?.value?.current_owner !== username) accountName = e.op?.value?.current_owner;
             break;
           case 'transfer_to_vesting':
-            if (e.operation?.to !== username) accountName = e.operation?.to;
-            if (e.operation?.from !== username) accountName = e.operation?.from;
+            if (e.op?.value?.to !== username) accountName = e.op?.value?.to;
+            if (e.op?.value?.from !== username) accountName = e.op?.value?.from;
             break;
         }
         return accountName ? { username: accountName } : undefined;
@@ -249,7 +249,27 @@ export function createListWithSuggestions(
       .map((e) => ({ username: e.username, about: `${e.counter} ${e.about}` })) ?? [];
   return [...transfers, ...following];
 }
+<<<<<<< HEAD
 
 export const prepareRC = (rc: string): string => {
   return `${numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(1))}bil`;
 };
+||||||| parent of f87e07c5 (Use hivemind API to get transactions data)
+=======
+
+export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: string | undefined, totalVestingShares: string | undefined, hiveChain: HiveChain): string {
+  let operationHp = hiveChain?.hive(0);
+  if (vests) {
+    const totalVestingFundNai = hiveChain!.hive((totalVestingFund || "0").replace(" HIVE", "")) ;
+    const totalVestingSharesNai = hiveChain!.vests((totalVestingShares || "0").replace(" VESTS", "")) ;
+    operationHp = hiveChain?.vestsToHp(vests, totalVestingFundNai, totalVestingSharesNai);
+  }
+  return hiveChain.formatter.format(operationHp).replace("HIVE", "HIVE POWER");
+}
+
+export function filterSmallerThanOne(asset?: NaiAsset) {
+  if (!asset) return false;
+  const {precision, amount} = asset;
+  return parseInt(amount, 10) < 10 ** precision;
+}
+>>>>>>> f87e07c5 (Use hivemind API to get transactions data)

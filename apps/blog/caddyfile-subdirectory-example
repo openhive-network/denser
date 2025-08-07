@@ -1,0 +1,36 @@
+# Example Caddy configuration for serving Denser apps from subdirectories
+# This configuration serves blog at /blog and wallet at /wallet
+
+example.com {
+    # Blog app at /blog
+    handle_path /blog/* {
+        reverse_proxy denser-blog:3000 {
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
+    
+    # Wallet app at /wallet  
+    handle_path /wallet/* {
+        reverse_proxy denser-wallet:4000 {
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
+    
+    # Optional: Block Explorer at /explorer
+    # handle_path /explorer/* {
+    #     reverse_proxy block-explorer:3000 {
+    #         header_up X-Forwarded-Proto {scheme}
+    #         header_up X-Forwarded-Host {host}
+    #         header_up X-Real-IP {remote_host}
+    #     }
+    # }
+    
+    # Root redirect (optional - redirect / to /blog)
+    handle / {
+        redir /blog/ permanent
+    }
+}

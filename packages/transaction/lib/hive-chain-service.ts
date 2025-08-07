@@ -9,8 +9,10 @@ import { hbauthService } from '@smart-signer/lib/hbauth-service';
 
 const logger = getLogger('app');
 
+export type HiveChain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
+
 export class HiveChainService {
-  static hiveChain: TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
+  static hiveChain: HiveChain;
 
   storage: Storage;
   storageType: StorageType;
@@ -22,7 +24,7 @@ export class HiveChainService {
    * @type {(Promise<TWaxExtended<ExtendedNodeApi, IHiveChainInterface>> | null)}
    * @memberof HiveChainService
    */
-  hiveChainPromise: Promise<TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>> | null;
+  hiveChainPromise: Promise<HiveChain> | null;
 
   constructor({ storageType = 'localStorage' }: StorageBaseOptions) {
     this.hiveChainPromise = null;
@@ -37,7 +39,7 @@ export class HiveChainService {
     }
   }
 
-  async getHiveChain(): Promise<TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>> {
+  async getHiveChain(): Promise<HiveChain> {
     if (!HiveChainService.hiveChain) {
       // If we have pending promise, return its result.
       if (this.hiveChainPromise) return await this.hiveChainPromise;
@@ -65,14 +67,24 @@ export class HiveChainService {
     return HiveChainService.hiveChain;
   }
 
+  reuseHiveChain(): HiveChain | undefined{
+    if (HiveChainService.hiveChain) return HiveChainService.hiveChain;
+    return undefined;
+  }
+
   async setHiveChain(options?: Partial<IWaxOptionsChain>) {
     logger.info('Creating instance of HiveChainService.hiveChain with options: %o', options);
     const hiveChain = await createHiveChain(options);
     HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>().extendRest<ExtendedRestApi>({
-      'hivesense-api': {
-        urlPath: 'hivesense-api/'
-      }
-    });
+        'hivesense-api': {
+          urlPath: 'hivesense-api/',
+        },
+        'hivemind-api': {
+          "accountsOperations": {
+            urlPath: 'accounts/{account-name}/operations',
+          }
+        }
+      });
     const storedAiSearchEndpoint = this.storage.getItem('ai-search-endpoint');
     let apiEndpoint: string = storedAiSearchEndpoint ? JSON.parse(storedAiSearchEndpoint) : '';
     if (!apiEndpoint) {

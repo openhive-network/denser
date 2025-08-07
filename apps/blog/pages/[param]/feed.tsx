@@ -16,9 +16,9 @@ import Head from 'next/head';
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
 import NoDataError from '@/blog/components/no-data-error';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
-
 import { useLocalStorage } from 'usehooks-ts';
 import PostCardSkeleton from '@ui/components/card-skeleton';
+import { commonVariables } from '@ui/lib/common-variables';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
@@ -47,7 +47,7 @@ const FeedPage: FC = () => {
       return await getAccountPosts(
         'feed',
         username,
-        user.username === '' ? 'hive.blog' : user.username,
+        user.username !== '' ? user.username : commonVariables.defaultObserver,
         pageParam?.author,
         pageParam?.permlink
       );
