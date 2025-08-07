@@ -8,7 +8,7 @@ import {
   getFollowing
 } from '@transaction/lib/hive';
 import moment from 'moment';
-import { getAccountHistory, getSavingsWithdrawals } from '@/wallet/lib/hive';
+import { getAccountHistory, getAccountOperations, getSavingsWithdrawals } from '@/wallet/lib/hive';
 import {
   createListWithSuggestions,
   getAmountFromWithdrawal,

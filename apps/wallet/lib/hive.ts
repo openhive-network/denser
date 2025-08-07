@@ -6,7 +6,8 @@ import {
   RcAccount,
   asset,
   GetDynamicGlobalPropertiesResponse,
-  GetDynamicGlobalPropertiesRequest
+  GetDynamicGlobalPropertiesRequest,
+
 } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import {
@@ -23,7 +24,8 @@ import {
   IOpenOrdersData,
   IOrdersData,
   IMarketStatistics,
-  IWitness
+  IWitness,
+  IGetOperationsByAccountResponse,
 } from '@transaction/lib/extended-hive.chain';
 
 const chain = await hiveChainService.getHiveChain();
@@ -107,6 +109,14 @@ export const getAccountHistory = async (
   return chain
     .api.condenser_api.get_account_history([username, start, limit, ...wallet_operations_bitmask]) as Promise<AccountHistory[]>;
 };
+
+export const getAccountOperations = async (
+  username: string,
+  page: number = 1,
+  pageSize: number = 500
+): Promise<IGetOperationsByAccountResponse> => {
+  return chain.restApi['hivemind-api'].accountsOperations({"account-name": username, page, "page-size": pageSize})
+}
 
 export type IAuthorReward = {
   author: string;

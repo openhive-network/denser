@@ -75,7 +75,12 @@ export class HiveChainService {
     const hiveChain = await createHiveChain(options)
     HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>().extendRest<ExtendedRestApi>({
         'hivesense-api': {
-          urlPath: 'hivesense-api/'
+          urlPath: 'hivesense-api/',
+        },
+        'hivemind-api': {
+          "accountsOperations": {
+            urlPath: 'accounts/{account-name}/operations',
+          }
         }
       });
     const storedAiSearchEndpoint = this.storage.getItem('ai-search-endpoint');

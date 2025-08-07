@@ -785,7 +785,7 @@ export interface GetOperationsByAccountParams {
   "to-block"?: string;
 }
 
-export interface GetOperationsByAccountResponse {
+export interface IGetOperationsByAccountResponse {
 
     total_operations: number;
     total_pages: number;
@@ -925,10 +925,10 @@ export type ExtendedRestApi = {
     };
   };
   'hivemind-api': {
-    accounts: {
-      urlPath: "{account-name}/operations",
+    accountsOperations: {
+
       params: GetOperationsByAccountParams;
-      result: GetOperationsByAccountResponse;
+      result: IGetOperationsByAccountResponse;
     }
   }
 };
