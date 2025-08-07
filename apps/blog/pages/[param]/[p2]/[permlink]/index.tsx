@@ -747,11 +747,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   } catch (error) {
     logger.error('Failed to fetch post:', error);
   }
-  if (community === 'undefined' || !community || community === '[param]') {
+  if (community === 'undefined' || !community) {
     return {
       redirect: {
         destination: `/${post?.community ?? post?.category}/@${username}/${permlink}`,
-        permanent: false
+        permanent: true
       }
     };
   }
