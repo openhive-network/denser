@@ -27,9 +27,11 @@ export async function commonMiddleware(request: NextRequest) {
         })
       });
       entry = await resp.json();
-      return NextResponse.redirect(
-        new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url)
-      );
+      if (entry?.result?.community && entry?.result?.author && entry?.result?.permlink) {
+        return NextResponse.redirect(
+          new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url)
+        );
+      }
     } catch (e: any) {
       logger.error('Error fetching post:', e.message);
     }
