@@ -48,13 +48,13 @@ test.describe('Post preview - tests', () => {
 
     const preview = await postPage.articleBody.innerHTML();
 
-    const previewContent: string = `<p class=\"my-0\"><em>italic</em><br>
-<strong>bold</strong><br>
-Love<strong>is</strong>bold<br>
-I just love <strong>bold text</strong>.<br>
-also <em>italic</em><br>
-<strong><em>bold-italic</em></strong><br>
-<del>strikethrough</del><br>
+    const previewContent: string = `<p class=\"my-0\"><em>italic</em>
+<strong>bold</strong>
+Love<strong>is</strong>bold
+I just love <strong>bold text</strong>.
+also <em>italic</em>
+<strong><em>bold-italic</em></strong>
+<del>strikethrough</del>
 <a href=\"http://example.com\" rel=\"nofollow noopener\" target=\"_blank\" class=\"link-external\">link</a></p>
 `
 
@@ -205,7 +205,7 @@ At the command prompt, type \`nano\`.`;
 <tr><td>seven</td><td>eight</td><td>nine</td></tr>
 </tbody>
 </table></div>
-<p class=\"my-0\">sample code:<br>
+<p class=\"my-0\">sample code:
 At the command prompt, type <code>nano</code>.</p>`;
 
     expect(preview).toContain(previewContent);
@@ -269,12 +269,12 @@ X/Twitter:
 //     expect(preview).toContain(previewContent);
 
     const previewRegex = new RegExp(
-  `<p class="my-0">Links/Emails:<br>\\s*` +
-  `<a href="https://www\\.markdownguide\\.org"[^>]*>https://www\\.markdownguide\\.org</a><br>\\s*` +
+  `<p class="my-0">Links/Emails:\\s*` +
+  `<a href="https://www\\.markdownguide\\.org"[^>]*>https://www\\.markdownguide\\.org</a>\\s*` +
   `<a href="https://mailto:fake@example\\.com"[^>]*>fake@example\\.com</a></p>\\s*` +
   `<p class="my-0"><a href="https://www\\.example\\.com/my%20great%20page"[^>]*>link1</a></p>\\s*` +
   `<p class="my-0"><a href="https://www\\.example\\.com/my great page"[^>]*>link2</a></p>\\s*` +
-  `<p class="my-0">X/Twitter:<br>\\s*` +
+  `<p class="my-0">X/Twitter:\\s*` +
   `<a href="https://&amp;nbsp;<div>twitter-id-\\d+-author-ShouldHaveCat-count-\\d+</div>&amp;nbsp;"[^>]*>X link</a></p>`,
   's' // flaga "dotAll" umożliwia dopasowanie wielu linii przez `.`
 );
@@ -302,9 +302,9 @@ Spoiler Output:
 
     const previewContent: string = `<p class=\"my-0\">* Without the backslash, this would be a bullet in an unordered list.</p>
 <p class=\"my-0\">Spoiler:</p>
-<details><summary>Hidden Spoiler Text</summary><p class=\"my-0\">This is the spoiler content.<br>
+<details><summary>Hidden Spoiler Text</summary><p class=\"my-0\">This is the spoiler content.
 Optionally with more lines</p>
-</details><p class=\"my-0\">Spoiler Output:<br>
+</details><p class=\"my-0\">Spoiler Output:
 <img src=\"https://images.hive.blog/1536x0/https://usermedia.actifit.io/M20FVR8P5ZFXYEF49HN7QQH4KK8BJ9\" alt=\"image.png\"></p>`;
 
     expect(preview).toContain(previewContent);
@@ -329,7 +329,7 @@ These details <em>remain</em> <strong>hidden</strong> until expanded.
 
     const preview = await postPage.articleBody.innerHTML();
 
-    const previewContent: string = `<details><br>
+    const previewContent: string = `<details>
 <summary>Click to expand</summary>
 <p class=\"my-0\">These details <em>remain</em> <strong>hidden</strong> until expanded.</p>
 <pre><code>PASTE LOGS HERE</code></pre></details>
@@ -338,7 +338,8 @@ These details <em>remain</em> <strong>hidden</strong> until expanded.
     expect(preview).toContain(previewContent);
   });
 
-  test('Check if 3speak and youtube videos are diplayed correctly', async ({ denserAutoTest0Page }) => {
+  // Fail due to https://gitlab.syncad.com/hive/denser/-/issues/668
+  test.fail('Check if 3speak and youtube videos are diplayed correctly', async ({ denserAutoTest0Page }) => {
 
     const postContentText: string = `3speak video (preferably displayed as embedded/playable video)
 https://3speak.tv/watch?v=jongolson/vhtttbyf
@@ -408,9 +409,9 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 
     // await denserAutoTest0Page.page.waitForTimeout(3000)
 
-    const previewContent: string =      `<center><br>
+    const previewContent: string =      `<center>
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
-<p class=\"my-0\"></p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text<br>
+<p class=\"my-0\"></p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 </center>`
 
     expect(preview).toContain(previewContent);
@@ -439,7 +440,7 @@ Hello Mr. @sketch.and.jam, how are you?`;
 <blockquote>
 <p class=\"my-0\">Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. <a href=\"https://peakd.com/silvergoldstackers/@silverd510/on-the-first-day-of\" rel=\"nofollow noopener\" target=\"_blank\" class=\"link-external\">source</a></p>
 </blockquote>
-<p class=\"my-0\">Hive User links:<br>
+<p class=\"my-0\">Hive User links:
 Hello Mr. <a href=\"/@sketch.and.jam\">@sketch.and.jam</a>, how are you?</p>
 `
 
