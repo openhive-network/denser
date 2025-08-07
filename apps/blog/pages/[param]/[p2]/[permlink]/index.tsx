@@ -33,7 +33,7 @@ import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '@/blog/components/dialog-login';
 import { UserPopoverCard } from '@/blog/components/user-popover-card';
-import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
@@ -199,9 +199,9 @@ function PostPage({
   useEffect(() => {
     setMutedPost(post?.stats?.gray ?? false);
   }, [post?.stats?.gray]);
-  if (userFromGDPR || !post) {
-    return <NoDataError />;
-  }
+  if (isLoadingPost) return <Loading loading={isLoadingPost} />;
+  if (userFromGDPR || !post) return <NoDataError />;
+
   const deleteComment = async (permlink: string) => {
     try {
       await deletePostMutation.mutateAsync({ permlink });
@@ -773,7 +773,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   return {
     props: {
-      dehydratedState: dehydrate(queryClient),
       mutedStatus,
       community,
       username,

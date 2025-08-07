@@ -30,9 +30,10 @@ import {
 } from '../lib/get-translations';
 import Head from 'next/head';
 import { sortToTitle, sortTypes } from '../lib/utils';
-import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import CommunityLayout from '../feature/community-layout/community-layout';
 import NoDataError from '../components/no-data-error';
+import { getLogger } from '@ui/lib/logging';
 
 export const PostSkeleton = () => {
   return (
@@ -45,6 +46,8 @@ export const PostSkeleton = () => {
     </div>
   );
 };
+
+const logger = getLogger('app');
 
 const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const router = useRouter();
@@ -496,38 +499,24 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         await queryClient.prefetchQuery(['subscribers', tag], () => getSubscribers(tag));
         await queryClient.prefetchQuery(['AccountNotification', tag], () => getAccountNotifications(tag));
       } catch (error) {
-        console.error('Error prefetching community data:', error);
+        logger.error('Error prefetching community data:', error);
         // Continue without community data
       }
     }
 
-    // Utility to replace undefined with null for Next.js serialization
-    function replaceUndefinedWithNull(obj: any): any {
-      if (Array.isArray(obj)) {
-        return obj.map((v) => (v === undefined ? null : replaceUndefinedWithNull(v)));
-      } else if (obj && typeof obj === 'object') {
-        return Object.fromEntries(
-          Object.entries(obj).map(([k, v]) => [k, v === undefined ? null : replaceUndefinedWithNull(v)])
-        );
-      }
-      return obj;
-    }
-
     return {
       props: {
         metadata,
-        ...(await getTranslations(ctx)),
-        dehydratedState: replaceUndefinedWithNull(dehydrate(queryClient))
+        ...(await getTranslations(ctx))
       }
     };
   } catch (error) {
-    console.error('Error in getServerSideProps:', error);
+    logger.error('Error in getServerSideProps:', error);
     // Return default props on error
     return {
       props: {
         metadata,
-        ...(await getTranslations(ctx)),
-        dehydratedState: null
+        ...(await getTranslations(ctx))
       }
     };
   }
