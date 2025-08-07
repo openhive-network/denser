@@ -2,6 +2,7 @@ import { TWaxApiRequest } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
 import { IGetPostHeader, IFollowList, IAccountRelationship, Entry, IUnreadNotifications, Community, IAccountNotification, FollowListType } from './extended-hive.chain';
+import {commonVariables} from'@ui/lib/common-variables';
 
 const logger = getLogger('app');
 
@@ -173,7 +174,7 @@ export const getCommunities = async (
     // limit,
     query,
     sort,
-    observer
+    observer: observer !== '' ? observer : commonVariables.defaultObserver,
   });
 };
 

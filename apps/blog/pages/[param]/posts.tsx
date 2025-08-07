@@ -18,6 +18,7 @@ import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 
 import { useLocalStorage } from 'usehooks-ts';
 import PostCardSkeleton from '@ui/components/card-skeleton';
+import {commonVariables} from'@ui/lib/common-variables';
 
 const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { t } = useTranslation('common_blog');
@@ -36,7 +37,7 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       return await getAccountPosts(
         sort || 'trending',
         username,
-        user.username === '' ? 'hive.blog' : user.username,
+        user.username !== '' ? user.username : commonVariables.defaultObserver,
         pageParam?.author,
         pageParam?.permlink
       );

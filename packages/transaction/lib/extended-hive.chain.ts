@@ -491,6 +491,58 @@ export type ICurationReward = {
   vesting_payout?: string;
 };
 
+export interface HiveOperation {
+  block: number,
+  trx_id: string | null,
+  op_pos: number,
+  op_type_id: number,
+  timestamp: Date,
+  virtual_op: boolean,
+  operation_id: number,
+  trx_in_block: number
+  op: {
+    type: string,
+    value: {
+      open_pays?: NaiAsset;
+      current_pays?: NaiAsset;
+      owner?: string;
+      is_saved_into_hbd_balance?: boolean;
+      interest: NaiAsset;
+      request_id?: number;
+      amount?: NaiAsset;
+      from?: string;
+      memo?: string;
+      to?: string;
+      account?: string;
+      reward_hbd?: NaiAsset;
+      reward_hive?: NaiAsset;
+      reward_vests?: NaiAsset;
+      vesting_shares?: string;
+      author?: string;
+      producer?: string;
+      curator?: string;
+      seller?: string;
+      permlink?: string;
+      voter?: string;
+      weight?: number;
+      body?: string;
+      json_metadata?: string;
+      parent_author?: string;
+      parent_permlink?: string;
+      title?: string;
+      required_posting_auths?: string[];
+      required_auths?: string[];
+      id?: string;
+      json?: string;
+      message?: string;
+      "org-op-id"?: string;
+      perspective?: "incoming" | "outgoing";
+      current_owner?: string;
+    }
+  };
+}
+
+
 export type AccountHistory = [
   number,
   {
@@ -762,6 +814,27 @@ export interface IDirectDelegation {
     to: string;
   }[];
 }
+export interface GetOperationsByAccountParams {
+  "account-name"?: string;
+  "observer-name"?: string;
+  "operation-types"?: string;
+  page?: number;
+  "page-size"?: number;
+  "data-size-limit"?: number;
+  "from-block"?: string;
+  "to-block"?: string;
+}
+
+export interface IGetOperationsByAccountResponse {
+
+    total_operations: number;
+    total_pages: number;
+    block_range: {
+      from: number;
+      to: number;
+    },
+    operations_result: HiveOperation[];
+}
 
 export type ExtendedNodeApi = {
   bridge: {
@@ -906,4 +979,11 @@ export type ExtendedRestApi = {
       result: Entry[];
     };
   };
+  'hivemind-api': {
+    accountsOperations: {
+
+      params: GetOperationsByAccountParams;
+      result: IGetOperationsByAccountResponse;
+    }
+  }
 };
