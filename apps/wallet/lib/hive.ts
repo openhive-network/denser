@@ -83,7 +83,7 @@ export const getVestingDelegations = async (
 };
 
 const op = operationOrders;
-const wallet_operations_bitmask = makeBitMaskFilter([
+const wallet_operations_bitmask = [
   op.transfer,
   op.transfer_to_vesting,
   op.withdraw_vesting,
@@ -99,7 +99,7 @@ const wallet_operations_bitmask = makeBitMaskFilter([
   op.fill_convert_request,
   op.fill_order,
   op.claim_reward_balance
-]);
+];
 
 export const getAccountHistory = async (
   username: string,
@@ -107,7 +107,7 @@ export const getAccountHistory = async (
   limit: number = 20
 ): Promise<AccountHistory[]> => { 
   return chain
-    .api.condenser_api.get_account_history([username, start, limit, ...wallet_operations_bitmask]) as Promise<AccountHistory[]>;
+    .api.condenser_api.get_account_history([username, start, limit, ...makeBitMaskFilter(wallet_operations_bitmask)]) as Promise<AccountHistory[]>;
 };
 
 export const getAccountOperations = async (
@@ -115,7 +115,8 @@ export const getAccountOperations = async (
   page: number = 1,
   pageSize: number = 500
 ): Promise<IGetOperationsByAccountResponse> => {
-  return chain.restApi['hivemind-api'].accountsOperations({"account-name": username, page, "page-size": pageSize})
+  console.log('TEST BITMASK', wallet_operations_bitmask, op);
+  return chain.restApi['hivemind-api'].accountsOperations({"account-name": username, page, "page-size": pageSize, "operation-types": wallet_operations_bitmask.toString()})
 }
 
 export type IAuthorReward = {

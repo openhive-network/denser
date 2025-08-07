@@ -490,7 +490,7 @@ export type ICurationReward = {
   vesting_payout?: string;
 };
 
-export interface Operation {
+export interface HiveOperation {
   block: number,
   trx_id: string | null,
   op_pos: number,
@@ -499,9 +499,9 @@ export interface Operation {
   virtual_op: boolean,
   operation_id: number,
   trx_in_block: number
-  op: [
-    OpType,
-    {
+  op: {
+    type: string,
+    value: {
       open_pays?: string;
       current_pays?: string;
       owner?: string;
@@ -537,7 +537,7 @@ export interface Operation {
       "org-op-id"?: string;
       perspective?: "incoming" | "outgoing";
     }
-  ];
+  };
 }
 
 
@@ -793,7 +793,7 @@ export interface IGetOperationsByAccountResponse {
       from: number;
       to: number;
     },
-    operations_result: Operation[];
+    operations_result: HiveOperation[];
 }
 
 export type ExtendedNodeApi = {

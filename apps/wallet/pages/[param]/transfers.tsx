@@ -17,7 +17,7 @@ import {
 } from '@/wallet/lib/utils';
 import { powerdownHive, cn, convertToHP, numberWithCommas } from '@ui/lib/utils';
 import { convertStringToBig } from '@ui/lib/helpers';
-import { AccountHistory } from '@transaction/lib/extended-hive.chain';
+import { AccountHistory, HiveOperation } from '@transaction/lib/extended-hive.chain';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import Loading from '@ui/components/loading';
@@ -214,6 +214,76 @@ const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
   return { id, ...rest, operation };
 };
 
+const mapAndFilterAccountHistory = (hiveOperation: HiveOperation) => {
+  const { op, ...rest } = hiveOperation;
+  let operation: Operation | undefined;
+  if (!op) operation = undefined;
+  if (op) {
+    switch (op.type) {
+      default:
+        operation = undefined;
+      case 'transfer':
+        operation = {
+          type: 'transfer',
+          amount: op.value.amount,
+          from: op.value.from,
+          memo: op.value.memo,
+          to: op.value.to
+        };
+        break;
+      case 'claim_reward_balance':
+        operation = {
+          type: 'claim_reward_balance',
+          account: op.value.account,
+          reward_hbd: convertStringToBig(op.value?.reward_hbd ?? '0'),
+          reward_hive: convertStringToBig(op.value?.reward_hive ?? '0'),
+          reward_vests: convertStringToBig(op.value?.reward_vests ?? '0')
+        };
+        break;
+      case 'transfer_from_savings':
+        operation = {
+          type: 'transfer_from_savings',
+          amount: op.value.amount,
+          from: op.value.from,
+          request_id: op.value.request_id,
+          memo: op.value.memo,
+          to: op.value.to
+        };
+        break;
+      case 'transfer_to_savings':
+        operation = {
+          type: 'transfer_to_savings',
+          amount: op.value.amount,
+          from: op.value.from,
+          memo: op.value.memo,
+          to: op.value.to
+        };
+        break;
+      case 'transfer_to_vesting':
+        operation = { type: 'transfer_to_vesting', amount: op.value.amount, from: op.value.from, to: op.value.to };
+        break;
+      case 'interest':
+        operation = {
+          type: 'interest',
+          interest: op.value.interest,
+          is_saved_into_hbd_balance: op.value.is_saved_into_hbd_balance,
+          owner: op.value.owner
+        };
+        break;
+      case 'cancel_transfer_from_savings':
+        operation = { type: 'cancel_transfer_from_savings', from: op.value.from, request_id: op.value.request_id };
+        break;
+      case 'fill_order':
+        operation = { type: 'fill_order', current_pays: op.value.current_pays, open_pays: op.value.open_pays };
+        break;
+      case 'withdraw_vesting':
+        operation = { type: 'withdraw_vesting', amount: op.value?.vesting_shares ?? '0' };
+        break;
+    }
+  }
+  return { id: hiveOperation.operation_id , ...rest, operation };
+}
+
 export type AccountHistoryData = ReturnType<typeof mapToAccountHistoryObject>;
 
 function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -242,6 +312,13 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
     () => getAccountHistory(username, -1, 500),
     {
       select: (data) => data.map(mapToAccountHistoryObject)
+    }
+  );
+  const { data: operationHistoryData, isLoading: operationHistoryLoading } = useQuery(
+    ['Operations', username],
+    () => getAccountOperations(username, 1, 500),
+    {
+      select: (data) => data.operations_result.map(mapAndFilterAccountHistory)
     }
   );
   const { data: historyFeedData, isLoading: historyFeedLoading } = useQuery(['feedHistory'], () =>
