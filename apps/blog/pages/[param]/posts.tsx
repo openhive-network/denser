@@ -15,6 +15,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import { getAccountMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
+import {commonVariables} from'@ui/lib/common-variables';
 
 const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { t } = useTranslation('common_blog');
@@ -29,7 +30,7 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       return await getAccountPosts(
         sort || 'trending',
         username,
-        user.username === '' ? 'hive.blog' : user.username,
+        user.username !== '' ? user.username : commonVariables.defaultObserver,
         pageParam?.author,
         pageParam?.permlink
       );
