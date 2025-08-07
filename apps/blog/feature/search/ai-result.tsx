@@ -8,6 +8,8 @@ import { getSimilarPosts } from '@/blog/lib/get-data';
 import { PER_PAGE } from './lib/utils';
 import PostList from '@/blog/components/post-list';
 import { PostSkeleton } from './loading-skeleton';
+import {commonVariables} from'@ui/lib/common-variables';
+
 
 const AIResult = ({ query }: { query: string }) => {
   const { user } = useUser();
@@ -19,7 +21,7 @@ const AIResult = ({ query }: { query: string }) => {
     async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
       return await getSimilarPosts({
         pattern: query,
-        observer: user.username !== '' ? user.username : 'hive.blog',
+        observer: user.username !== '' ? user.username : commonVariables.defaultObserver,
         start_permlink: pageParam?.permlink ?? '',
         start_author: pageParam?.author ?? '',
         limit: PER_PAGE

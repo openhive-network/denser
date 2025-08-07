@@ -62,6 +62,7 @@ import clsx from 'clsx';
 import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
+import {commonVariables} from'@ui/lib/common-variables';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -105,7 +106,7 @@ function PostPage({
       getSuggestions({
         author: username,
         permlink,
-        observer: user.username !== '' ? user.username : 'hive.blog'
+        observer: user.username !== '' ? user.username : commonVariables.defaultObserver,
       }),
     {
       enabled: !!username && !!permlink
