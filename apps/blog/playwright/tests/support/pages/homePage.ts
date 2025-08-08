@@ -164,9 +164,20 @@ export class HomePage {
     this.getUpvoteButton = page.locator('[data-testid="upvote-button"]');
     this.getFirstPostUpvoteButton = this.getUpvoteButton.first();
     this.getFirstPostUpvoteButtonIcon = this.getFirstPostUpvoteButton.locator('svg');
-    this.firstPostCardUpvoteButtonLocator = page.locator('[data-testid="post-card-footer"]').first().locator('[data-testid="upvote-button"]').locator('svg');
-    this.firstPostCardDownvoteButtonLocator = page.locator('[data-testid="post-card-footer"]').first().locator('[data-testid="downvote-button"]').locator('svg');
-    this.getSecondPostDownvoteButton = page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button');
+    this.firstPostCardUpvoteButtonLocator = page
+      .locator('[data-testid="post-card-footer"]')
+      .first()
+      .locator('[data-testid="upvote-button"]')
+      .locator('svg');
+    this.firstPostCardDownvoteButtonLocator = page
+      .locator('[data-testid="post-card-footer"]')
+      .first()
+      .locator('[data-testid="downvote-button"]')
+      .locator('svg');
+    this.getSecondPostDownvoteButton = page
+      .getByTestId('post-list-item')
+      .nth(1)
+      .getByTestId('downvote-button');
     this.getSecondPostDownvoteButtonIcon = this.getSecondPostDownvoteButton.locator('svg');
     this.getFirstPostCardFooter = this.getPostCardFooter.first();
     this.getUpvoteButtonTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
@@ -233,7 +244,7 @@ export class HomePage {
     this.commentListItem = '[data-testid="comment-list-item"]';
     this.postsImages = '[data-testid="post-image"]';
     this.postAuthor = '[data-testid="post-author"]';
-    this.profileAvatar = '[data-testid="profile-avatar-button"]'
+    this.profileAvatar = '[data-testid="profile-avatar-button"]';
 
     // for logged in user
     this.profileAvatarButton = page.locator('[data-testid="profile-avatar-button"]');
@@ -475,7 +486,7 @@ export class HomePage {
   async moveToMutedPosts() {
     await this.getFilterPosts.click();
     await this.page.getByText('Muted').click();
-    await expect(this.getFirstPostTitle).toBeVisible()
+    await expect(this.getFirstPostTitle).toBeVisible();
   }
 
   async moveToFirstPost() {
@@ -501,7 +512,7 @@ export class HomePage {
 
   async moveToPrivacyPolicyPage() {
     await this.getNavSidebarMenu.click();
-    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Private Policy' }).click();
+    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Privacy Policy' }).click();
     await this.page.waitForTimeout(5000);
     await expect(this.page.locator('h1').getByText('Privacy Policy')).toBeVisible();
     await expect(this.page).toHaveURL('privacy.html');
