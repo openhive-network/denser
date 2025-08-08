@@ -513,9 +513,9 @@ export interface HiveOperation {
       memo?: string;
       to?: string;
       account?: string;
-      reward_hbd?: string;
-      reward_hive?: string;
-      reward_vests?: string;
+      reward_hbd?: NaiAsset;
+      reward_hive?: NaiAsset;
+      reward_vests?: NaiAsset;
       vesting_shares?: string;
       author?: string;
       producer?: string;

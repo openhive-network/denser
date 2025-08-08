@@ -1,6 +1,6 @@
 import { TFunction } from 'i18next';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
-import { AccountHistoryData } from '../pages/[param]/transfers';
+import { OperationsHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
 import { SavingsWithdrawals,  IFollow, IDynamicGlobalProperties } from '@transaction/lib/extended-hive.chain';
@@ -47,7 +47,7 @@ interface getFilterArgs {
 
 export const getFilter =
   ({ filter, totalFund, username, totalShares }: getFilterArgs) =>
-  ({ operation }: AccountHistoryData) => {
+  ({ operation }: OperationsHistoryData) => {
     if (!operation) return false;
     switch (operation.type) {
       case 'transfer':
@@ -66,10 +66,10 @@ export const getFilter =
         if (
           !filter.others ||
           (filter.exlude &&
-            operation.reward_hbd.lt(1) &&
-            operation.reward_hive.lt(1) &&
-            totalFund.times(operation.reward_vests.div(totalShares)).lt(1))
-        )
+            operation.reward_hbd &&
+            operation.reward_hive &&
+            operation.reward_vests
+        ))
           return false;
         break;
 
@@ -196,7 +196,7 @@ export function transformKeyAuths(authority: { [keyOrAccount: string]: number })
 export function createListWithSuggestions(
   username: string,
   t: TFunction<'common_wallet', undefined>,
-  transferHistory?: AccountHistoryData[],
+  transferHistory?: OperationsHistoryData[],
   followingList?: IFollow[]
 ): { username: string; about: string }[] {
   const following =

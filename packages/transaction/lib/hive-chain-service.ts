@@ -70,6 +70,11 @@ export class HiveChainService {
     return HiveChainService.hiveChain;
   }
 
+  reuseHiveChain(): TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>> | undefined{
+    if (HiveChainService.hiveChain) return HiveChainService.hiveChain;
+    return undefined;
+  }
+
   async setHiveChain(options?: Partial<IWaxOptionsChain>) {
     logger.info('Creating instance of HiveChainService.hiveChain with options: %o', options);
     const hiveChain = await createHiveChain(options)
