@@ -48,7 +48,7 @@ const PostListItem = ({
 }) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+  const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );

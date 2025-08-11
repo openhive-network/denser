@@ -194,7 +194,7 @@ export default function PostForm({
       : storedPost?.maxAcceptedPayout === undefined
         ? 1000000
         : storedPost.maxAcceptedPayout,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType || preferences.blog_rewards
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType
   };
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -256,7 +256,7 @@ export default function PostForm({
         category: communityPosting ? communityPosting : data.category,
         summary: data.postSummary,
         altAuthor: data.author,
-        payoutType: data.payoutType ?? preferences.blog_rewards,
+        payoutType: data.payoutType,
         image: imagePickerState,
         editMode
       };
@@ -459,9 +459,9 @@ export default function PostForm({
 
                 <span className="text-xs" data-testid="author-rewards-description">
                   {t('submit_page.author_rewards')}
-                  {preferences.blog_rewards === '0%' || storedPost.maxAcceptedPayout === 0
+                  {storedPost.maxAcceptedPayout === 0
                     ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
-                    : preferences.blog_rewards === '100%' || storedPost.payoutType === '100%'
+                    : storedPost.payoutType === '100%'
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}
                 </span>

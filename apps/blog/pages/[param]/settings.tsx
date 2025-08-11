@@ -176,6 +176,24 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
+  const [_storedPost, setStoredPost] = useLocalStorage(`postData-new-${user.username}`, {
+    title: '',
+    postArea: '',
+    postSummary: '',
+    tags: '',
+    author: '',
+    category: 'blog',
+    beneficiaries: [],
+    maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
+    payoutType: preferences.blog_rewards
+  });
+  useEffect(() => {
+    setStoredPost((prev) => ({
+      ...prev,
+      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
+      payoutType: preferences.blog_rewards
+    }));
+  }, [JSON.stringify(preferences)]);
   const [isClient, setIsClient] = useState(false);
   const [insertImg, setInsertImg] = useState('');
   const [nodeApiCheckers, setNodeApiCheckers] = useState<ApiChecker[] | undefined>(undefined);
