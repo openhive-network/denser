@@ -93,6 +93,7 @@ export function useMuteMutation() {
         queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
+        queryClient.invalidateQueries({ queryKey: ['discussionData'] });
       }, 3000);
     }
   });
@@ -148,8 +149,7 @@ export function useUnmuteMutation() {
         queryClient.invalidateQueries({ queryKey: ['followingData', username, 'ignore'] });
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
-
-        logger.info('useUnmuteMutation onSuccess data: %o', data);
+        queryClient.invalidateQueries({ queryKey: ['discussionData'] });
       }, 3000);
     }
   });
