@@ -128,13 +128,25 @@ export default function PostForm({
     editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
     defaultValues
   );
+  const { data: communityData } = useQuery(
+    ['community', router.query.category],
+    () =>
+      getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
+    {
+      enabled: Boolean(router.query.category) || Boolean(storedPost.category)
+    }
+  );
   useEffect(() => {
     storePost({
       ...storedPost,
       payoutType: preferences.blog_rewards,
-      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000
+      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
+      tags:
+        communityData?.is_nsfw && !storedPost.tags?.includes('nsfw')
+          ? `nsfw ${storedPost.tags}`
+          : storedPost.tags
     });
-  }, [preferences.blog_rewards]);
+  }, [preferences.blog_rewards, communityData?.is_nsfw]);
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
@@ -147,14 +159,6 @@ export default function PostForm({
   const { data: mySubsData } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
     enabled: Boolean(username)
   });
-  const { data: communityData } = useQuery(
-    ['community', router.query.category],
-    () =>
-      getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
-    {
-      enabled: Boolean(router.query.category) || Boolean(storedPost.category)
-    }
-  );
 
   const accountFormSchema = z.object({
     title: z
