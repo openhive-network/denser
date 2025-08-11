@@ -560,13 +560,6 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
             </div>
           )}
           <div>
-            {user?.username === username && (
-              <Link href="https://blocktrades.us" target="_blank">
-                <Button variant="outlineRed" className="mx-2 my-8 border-destructive text-destructive">
-                  {t('profile.buy_hive_or_hive_power')}
-                </Button>
-              </Link>
-            )}
             <table className="max-w-6xl text-sm">
               <tbody>
                 <tr className="flex flex-col py-2 sm:table-row">
@@ -622,24 +615,6 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                             <DropdownMenuItem className="p-0">
                               <Link href="/market" className="w-full px-2 py-1.5">
                                 {t('profile.market')}
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="p-0">
-                              <Link
-                                href="https://blocktrades.us"
-                                target="_blank"
-                                className="w-full px-2 py-1.5"
-                              >
-                                {t('profile.buy')}
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="p-0">
-                              <Link
-                                href="https://blocktrades.us"
-                                target="_blank"
-                                className="w-full px-2 py-1.5"
-                              >
-                                {t('profile.sell')}
                               </Link>
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
@@ -798,24 +773,6 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                             <DropdownMenuItem className="p-0">
                               <Link href="/market" className="w-full px-2 py-1.5">
                                 {t('profile.market')}
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="p-0">
-                              <Link
-                                href="https://blocktrades.us"
-                                target="_blank"
-                                className="w-full px-2 py-1.5"
-                              >
-                                {t('profile.buy')}
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="p-0">
-                              <Link
-                                href="https://blocktrades.us"
-                                target="_blank"
-                                className="w-full px-2 py-1.5"
-                              >
-                                {t('profile.sell')}
                               </Link>
                             </DropdownMenuItem>
                           </DropdownMenuGroup>

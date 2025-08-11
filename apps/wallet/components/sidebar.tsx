@@ -89,10 +89,6 @@ const Sidebar = () => {
             <Separator className="my-2" />
 
             <li className="p-4 text-sm text-slate-500">{t('navigation.sidebar.third_party_exchanges')}</li>
-            <Item href="https://blocktrades.us" target>
-              {t('navigation.sidebar.blocktrades')}
-              <Icons.forward className="w-4" />
-            </Item>
             <Item href="https://ionomy.com" target>
               {t('navigation.sidebar.ionomy')}
               <Icons.forward className="w-4" />

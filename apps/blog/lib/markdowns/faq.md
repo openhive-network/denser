@@ -231,7 +231,7 @@ You can earn digital tokens on Hive by:
 
 **Voting and curating** - If you discover a post and upvote it before it becomes popular, you can earn a curation reward. The reward amount will depend on the amount of Hive Power you have.
 
-**Purchasing** - Users can purchase Hive or Hive Dollar tokens directly through their Hive wallet using bitcoin, Ether, or BitShares tokens. They are also available from other markets and exchanges including [BlockTrades](https://blocktrades.us) and [Ionomy](https://ionomy.com).
+**Purchasing** - Users can purchase Hive or Hive Dollar tokens directly through their Hive wallet using bitcoin, Ether, or BitShares tokens. They are also available from other markets and exchanges including [Ionomy](https://ionomy.com).
 
 **Vesting** - HIVE tokens that are powered up to Hive Power will earn a small amount of new tokens for holding.
 
@@ -643,7 +643,6 @@ HIVE and HBD are listed on the following exchanges:
 | Exchange                                   | HIVE | HBD |
 | ------------------------------------------ | :--: | --: |
 | [BitShares](https://wallet.bitshares.org/) |  Y   |   Y |
-| [BlockTrades](https://blocktrades.us)      |  Y   |   Y |
 | [Ionomy](https://ionomy.com)               |  Y   |   N |
 
 <a href="#Table_of_Contents_Economics">^</a>
@@ -731,8 +730,6 @@ To buy:
 - Click the "Get Deposit Address" button.
 - Send the currency to the provided address.
 
-HIVE purchases made via hive.blog are facilitated by <a href="https://blocktrades.us">BlockTrades</a>.
-
 Bitcoin can also be exchanged for HIVE on external markets.
 
 <a href="#Table_of_Contents_Economics">^</a>
@@ -813,7 +810,7 @@ Other than making a post and making sales manually, there is no interface for se
 
 ## <span id="How_can_I_withdraw_my_HIVE_or_HBD_coins">How can I withdraw my HIVE or HBD coins?</span>
 
-HIVE and HBD tokens are readily tradable to bitcoin, which can be traded for the local currency of your choice. There is a link to "Sell" your HIVE and HBD tokens in your wallet, which uses the <a href="https://blocktrades.us/">BlockTrades</a> interface.
+HIVE and HBD tokens are readily tradable to bitcoin, which can be traded for the local currency of your choice. There is a link to "Sell" your HIVE and HBD tokens in your wallet.
 
 <a href="#Table_of_Contents_Economics">^</a>
 
