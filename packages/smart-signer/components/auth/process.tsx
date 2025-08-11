@@ -88,13 +88,12 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
 
       const authProof = getAuthProof(txBuilder);
 
-      await fetch('/api/auth/login_account', {
+      await fetch('/api/auth/log_account', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          type: 'login',
           username,
-          loginType,
-          loginChallenge,
           authProof
         })
       });
