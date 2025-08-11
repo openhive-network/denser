@@ -5,7 +5,6 @@ import Head from 'next/head';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { useEffect } from 'react';
 import AIResult from '../feature/search/ai-result';
-import ClassicResult from '../feature/search/classic-result';
 import { SearchSort } from '@ui/hooks/useSearch';
 import AccountTopicResult from '../feature/search/account-topic-result';
 import { useQuery } from '@tanstack/react-query';
@@ -18,6 +17,7 @@ export default function SearchPage() {
     refetchOnWindowFocus: false,
     refetchOnMount: false
   });
+
   const router = useRouter();
   const aiQuery = router.query.ai as string | undefined;
   const classicQuery = router.query.q as string | undefined;
@@ -62,9 +62,9 @@ export default function SearchPage() {
           </div>
         </div>
         {!!aiQuery ? <AIResult query={aiQuery} /> : null}
-        {!!classicQuery && !!sortQuery ? <ClassicResult query={classicQuery} sort={sortQuery} /> : null}
+        {!!classicQuery && !!sortQuery ? <AccountTopicResult query={classicQuery} sort={sortQuery} /> : null}
         {!!userTopicQuery && !!topicQuery && !!sortQuery ? (
-          <AccountTopicResult account={userTopicQuery} query={userTopicQuery} sort={sortQuery} />
+          <AccountTopicResult author={userTopicQuery} query={userTopicQuery} sort={sortQuery} />
         ) : null}
       </div>
     </>

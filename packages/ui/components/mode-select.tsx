@@ -17,8 +17,7 @@ const ModeSelect = ({
         <SelectValue />
       </SelectTrigger>
       <CustomSelectContent className="w-fit min-w-fit">
-        {/* Not supported yet */}
-        <CustomSelectItem value="classic" className="p-2" disabled={true}>
+        <CustomSelectItem value="classic" className="p-2">
           <Search className="h-4 w-4" />
         </CustomSelectItem>
         <CustomSelectItem value="ai" className="w-fit p-2" disabled={!aiAvailable}>
@@ -27,8 +26,7 @@ const ModeSelect = ({
         <CustomSelectItem value="account" className="p-2">
           <User className="h-4 w-4" />
         </CustomSelectItem>
-        {/* Not supported yet */}
-        <CustomSelectItem value="userTopic" className="p-2" disabled={true}>
+        <CustomSelectItem value="userTopic" className="p-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

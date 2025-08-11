@@ -35,7 +35,11 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      handleSearch(inputValue, secondInputValue);
+      if (mode === 'userTopic') {
+        handleSearch(secondInputValue, inputValue);
+      } else {
+        handleSearch(inputValue, secondInputValue);
+      }
     }
   };
   const placeholder = getPlaceholder(mode);
@@ -44,12 +48,14 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
       <div className="relative flex w-full items-center rounded-full border border-input bg-background ring-offset-background">
         <ModeSelect handleMode={(e) => setMode(e)} mode={mode} aiAvailable={aiAvailable} />
         <input
-          disabled={(!aiAvailable && mode === 'ai') || mode === 'userTopic' || mode === 'classic'}
+          disabled={!aiAvailable && mode === 'ai'}
           ref={inputRef}
           type="text"
           placeholder={placeholder}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          value={mode === 'userTopic' ? secondInputValue : inputValue}
+          onChange={(e) =>
+            mode === 'userTopic' ? setSecondInputValue(e.target.value) : setInputValue(e.target.value)
+          }
           className={clsx(
             'z-10 block h-8 w-full bg-transparent p-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
             {
@@ -62,13 +68,11 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
           <>
             <Separator className="mx-1 h-4 w-px bg-primary" />
             <input
-              // Not supported yet
-              disabled={true}
               ref={inputRef}
               type="text"
               placeholder="Topic..."
-              value={secondInputValue}
-              onChange={(e) => setSecondInputValue(e.target.value)}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
               className="z-10 block h-8 w-full bg-transparent p-2 pl-0 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               onKeyDown={onKeyDown}
             />

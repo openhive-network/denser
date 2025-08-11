@@ -1,13 +1,7 @@
 import Big from 'big.js';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import {
-  TWaxApiRequest,
-  RcAccount,
-  asset,
-  GetDynamicGlobalPropertiesResponse,
-  GetDynamicGlobalPropertiesRequest
-} from '@hiveio/wax';
+import { TWaxApiRequest, RcAccount, GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import {
   SavingsWithdrawals,
@@ -29,7 +23,6 @@ import {
 const chain = await hiveChainService.getHiveChain();
 
 export declare type Bignum = string;
-
 
 export type ProposalData = Omit<IProposal, 'daily_pay' | 'total_votes'> & {
   total_votes: Big;
@@ -76,8 +69,7 @@ export const getVestingDelegations = async (
   from: string = '',
   limit: number = 50
 ): Promise<IDelegatedVestingShare[]> => {
-  return chain
-    .api.condenser_api.get_vesting_delegations([username, from, limit]);
+  return chain.api.condenser_api.get_vesting_delegations([username, from, limit]);
 };
 
 const op = operationOrders;
@@ -103,9 +95,13 @@ export const getAccountHistory = async (
   username: string,
   start: number = -1,
   limit: number = 20
-): Promise<AccountHistory[]> => { 
-  return chain
-    .api.condenser_api.get_account_history([username, start, limit, ...wallet_operations_bitmask]) as Promise<AccountHistory[]>;
+): Promise<AccountHistory[]> => {
+  return chain.api.condenser_api.get_account_history([
+    username,
+    start,
+    limit,
+    ...wallet_operations_bitmask
+  ]) as Promise<AccountHistory[]>;
 };
 
 export type IAuthorReward = {
@@ -147,8 +143,12 @@ export const getAccountRewardsHistory = async (
   start: number = -1,
   limit: number = 20
 ): Promise<AccountRewardsHistory[]> => {
-  return chain
-    .api.condenser_api.get_account_history([username, start, limit, ...wallet_rewards_history_bitmask]) as Promise<AccountRewardsHistory[]>;
+  return chain.api.condenser_api.get_account_history([
+    username,
+    start,
+    limit,
+    ...wallet_rewards_history_bitmask
+  ]) as Promise<AccountRewardsHistory[]>;
 };
 
 export const getProposalVotes = async (
@@ -156,8 +156,8 @@ export const getProposalVotes = async (
   voter: string = '',
   limit: number = 1000
 ): Promise<IProposalVote[]> => {
-  return chain
-    .api.condenser_api.list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
+  return chain.api.condenser_api
+    .list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
     .then((r) => r.filter((x: IProposalVote) => x.proposal.proposal_id === proposalId));
 };
 
@@ -167,12 +167,6 @@ export const getMarketStatistics = async (): Promise<IMarketStatistics> => {
 
 export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> => {
   return chain.api.condenser_api.get_order_book([limit]);
-};
-
-type GetOpenOrderData = {
-  condenser_api: {
-    get_open_orders: TWaxApiRequest<string[], IOpenOrdersData[]>;
-  };
 };
 
 export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => {
@@ -188,8 +182,7 @@ type GetTradeHistoryData = {
 export const getTradeHistory = async (limit: number = 1000): Promise<IOrdersDataItem[]> => {
   let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
   let todayNow = moment(Date.now()).format().split('+')[0];
-  return chain
-    .api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
+  return chain.api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
 };
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
@@ -197,22 +190,12 @@ export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTrad
 };
 
 export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {
-  return chain
-    .api.database_api.find_savings_withdrawals({ account: account });
+  return chain.api.database_api.find_savings_withdrawals({ account: account });
 };
 
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
   return chain.api.condenser_api.get_owner_history([account]);
 };
-
-interface GetDynamicGlobalProperties {
-  database_api: {
-    get_dynamic_global_properties: TWaxApiRequest<
-      GetDynamicGlobalPropertiesRequest,
-      GetDynamicGlobalPropertiesResponse
-    >;
-  };
-}
 
 export const getDynamicGlobalPropertiesData = async (): Promise<GetDynamicGlobalPropertiesResponse> => {
   return chain.api.database_api.get_dynamic_global_properties({});
