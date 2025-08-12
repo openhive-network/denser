@@ -146,7 +146,7 @@ export default function PostForm({
           ? `nsfw ${storedPost.tags}`
           : storedPost.tags
     });
-  }, [preferences.blog_rewards, communityData?.is_nsfw]);
+  }, [preferences.blog_rewards, communityData?.is_nsfw, storedPost.tags]);
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
