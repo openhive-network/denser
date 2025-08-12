@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@hive/smart-signer/lib/middleware-challenge-cookies';
 import { configuredApiEndpoint } from '@hive/ui/config/public-vars';
 import { getLogger } from '@hive/ui/lib/logging';
+import { logPageVisit } from './auth-proof-cookie';
 
 const logger = getLogger('middleware');
 
@@ -47,6 +48,9 @@ export async function commonMiddleware(request: NextRequest) {
   */
   if (pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {
     setLoginChallengeCookies(request, res);
+
+    // Log page visits for authenticated users (if they have auth proof cookie)
+    logPageVisit(request, pathname);
   }
 
   return res;

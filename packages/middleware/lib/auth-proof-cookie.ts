@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextRequest } from 'next/server';
 import { createWaxFoundation, custom_json } from '@hiveio/wax';
 import { getLogger } from '@ui/lib/logging';
 import { logLoginEvent, logLogoutEvent } from '@ui/lib/logging';
@@ -7,6 +8,20 @@ export const AUTH_PROOF_COOKIE_NAME = 'auth_proof';
 
 const wax = await createWaxFoundation();
 const logger = getLogger('auth-proof-cookie');
+
+// Simple rate limiting for page visit logging (prevent spam)
+const pageVisitLogCache = new Map<string, number>();
+const PAGE_VISIT_LOG_COOLDOWN = 30000; // 30 seconds between logs for same path (more aggressive)
+
+// Clean up old entries from cache periodically
+setInterval(() => {
+    const now = Date.now();
+    for (const [path, timestamp] of pageVisitLogCache.entries()) {
+        if (now - timestamp > PAGE_VISIT_LOG_COOLDOWN * 2) {
+            pageVisitLogCache.delete(path);
+        }
+    }
+}, 30000); // Clean up every 30 seconds
 
 // Interface for the auth proof cookie data
 export interface AuthProofCookieData {
@@ -109,8 +124,6 @@ export function logLogoutAndKeepCookie(
         loginType,
         uuid
     );
-
-    logger.info('Logged out user: %s (login type: %s, uuid: %s)', username, loginType, uuid);
 }
 
 export async function validateAndGetAuthProofCookie(
@@ -192,4 +205,83 @@ export async function validateAndGetAuthProofCookie(
 
     // return cookie data
     return cookieData;
+}
+
+/**
+ * Log a page visit event using data from the auth proof cookie
+ * Only logs main page visits, not internal navigation or API calls
+ * @param req - The NextRequest object to get IP and pathname
+ * @param pathname - The page path being visited
+ */
+export function logPageVisit(req: NextRequest, pathname: string): void {
+    try {
+        // Skip logging for certain patterns to avoid spam
+        if (shouldSkipPageVisitLogging(pathname)) {
+            return;
+        }
+        
+        // Rate limiting: don't log the same path multiple times in quick succession
+        const now = Date.now();
+        const lastLogTime = pageVisitLogCache.get(pathname);
+        if (lastLogTime && (now - lastLogTime) < PAGE_VISIT_LOG_COOLDOWN) {
+            return; // Skip logging, too soon
+        }
+        
+        // Get the auth proof cookie
+        const authCookie = req.cookies.get(AUTH_PROOF_COOKIE_NAME);
+        
+        if (authCookie) {
+            // Parse the cookie to get user details
+            const cookieData = parseAuthProofCookie(authCookie.value);
+            
+            if (cookieData) {
+                // Get client IP
+                const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+                
+                // Log the page visit
+                logger.info('Page visit: %s --> ip=%s account=%s login_type=%s uuid=%s', 
+                    pathname, 
+                    ip, 
+                    cookieData.username, 
+                    cookieData.loginType, 
+                    cookieData.uuid
+                );
+                
+                // Update the cache with current time
+                pageVisitLogCache.set(pathname, now);
+                
+                // Debug: log the cache update
+                logger.debug('Updated page visit cache for %s at %d', pathname, now);
+            }
+        }
+    } catch (error) {
+        // Silently fail - don't break the middleware if logging fails
+        logger.debug('Failed to log page visit: %o', error);
+    }
+}
+
+/**
+ * Determine if we should skip logging for a given pathname
+ * @param pathname - The page path being visited
+ * @returns true if we should skip logging
+ */
+function shouldSkipPageVisitLogging(pathname: string): boolean {
+    // Skip API routes
+    if (pathname.startsWith('/api/')) {
+        return true;
+    }
+    
+    // Skip static files and Next.js internals
+    if (pathname.startsWith('/_next/') || pathname.startsWith('/static/')) {
+        return true;
+    }
+    
+    // Skip favicon and other assets
+    if (pathname === '/favicon.ico' || pathname.includes('.')) {
+        return true;
+    }
+    
+    // Don't skip any actual page routes we want to log them all!
+    // The rate limiting will handle duplicate calls for the same route
+    return false;
 }
