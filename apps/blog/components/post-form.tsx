@@ -128,25 +128,14 @@ export default function PostForm({
     editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
     defaultValues
   );
-  const { data: communityData } = useQuery(
-    ['community', router.query.category],
-    () =>
-      getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
-    {
-      enabled: Boolean(router.query.category) || Boolean(storedPost.category)
-    }
-  );
+
   useEffect(() => {
     storePost({
       ...storedPost,
       payoutType: preferences.blog_rewards,
-      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
-      tags:
-        communityData?.is_nsfw && !storedPost.tags?.includes('nsfw')
-          ? `nsfw ${storedPost.tags}`
-          : storedPost.tags
+      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000
     });
-  }, [preferences.blog_rewards, communityData?.is_nsfw, storedPost.tags]);
+  }, [preferences.blog_rewards]);
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState('');
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
@@ -155,7 +144,14 @@ export default function PostForm({
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
   const postMutation = usePostMutation();
-
+  const { data: communityData } = useQuery(
+    ['community', router.query.category],
+    () =>
+      getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
+    {
+      enabled: Boolean(router.query.category) || Boolean(storedPost.category)
+    }
+  );
   const { data: mySubsData } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
     enabled: Boolean(username)
   });
@@ -200,6 +196,10 @@ export default function PostForm({
     resolver: zodResolver(accountFormSchema),
     defaultValues: entryValues
   });
+  const nsfwTagCheck = communityData?.is_nsfw && !storedPost.tags?.includes('nsfw');
+  useEffect(() => {
+    form.setValue('tags', nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);
+  }, [!!communityData?.is_nsfw]);
   const { postArea, ...restFields } = useWatch({
     control: form.control
   });
@@ -507,6 +507,9 @@ export default function PostForm({
                           onValueChange={(e) => {
                             form.setValue('category', e);
                             storePost({ ...storedPost, category: e });
+                            if (router.query.category) {
+                              router.replace({ query: { ...router.query, category: e } });
+                            }
                           }}
                         >
                           <FormControl>
