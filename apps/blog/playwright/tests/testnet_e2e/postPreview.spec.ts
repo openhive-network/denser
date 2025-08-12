@@ -339,10 +339,10 @@ https://www.youtube.com/watch?v=a3ICNMQW7Ok`;
     const preview = await postPage.articleBody.innerHTML();
 
     const previewContent: string = `<p class=\"my-0\">3speak video (preferably displayed as embedded/playable video)
-    </p><div class=\"threeSpeakWrapper videoWrapper\"><iframe width=\"640\" height=\"480\" src=\"https://3speak.tv/embed?v=jongolson/vhtttbyf\" frameborder=\"0\" allowfullscreen=\"\"></iframe></div><p class=\"my-0\"></p>
-    <p class=\"my-0\">Similarly for youtube videos (sample video below)
-    </p><div class=\"videoWrapper\"><iframe width=\"640\" height=\"480\" src=\"https://www.youtube.com/embed/a3ICNMQW7Ok\" allowfullscreen=\"allowfullscreen\" webkitallowfullscreen=\"webkitallowfullscreen\" mozallowfullscreen=\"mozallowfullscreen\" frameborder=\"0\"></iframe></div><p class=\"my-0\"></p>
-    `;
+</p><div class=\"threeSpeakWrapper videoWrapper\"><iframe width=\"640\" height=\"480\" src=\"https://3speak.tv/embed?v=jongolson/vhtttbyf\" frameborder=\"0\" allowfullscreen=\"\"></iframe></div><p class=\"my-0\"></p>
+<p class=\"my-0\">Similarly for youtube videos (sample video below)
+</p><div class=\"videoWrapper\"><iframe width=\"640\" height=\"480\" src=\"https://www.youtube.com/embed/a3ICNMQW7Ok\" allowfullscreen=\"allowfullscreen\" webkitallowfullscreen=\"webkitallowfullscreen\" mozallowfullscreen=\"mozallowfullscreen\" frameborder=\"0\"></iframe></div><p class=\"my-0\"></p>
+`;
 
     expect(preview).toContain(previewContent);
   });
