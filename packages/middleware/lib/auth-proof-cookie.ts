@@ -9,20 +9,6 @@ export const AUTH_PROOF_COOKIE_NAME = 'auth_proof';
 const wax = await createWaxFoundation();
 const logger = getLogger('auth-proof-cookie');
 
-// Simple rate limiting for page visit logging (prevent spam)
-const pageVisitLogCache = new Map<string, number>();
-const PAGE_VISIT_LOG_COOLDOWN = 30000; // 30 seconds between logs for same path (more aggressive)
-
-// Clean up old entries from cache periodically
-setInterval(() => {
-    const now = Date.now();
-    for (const [path, timestamp] of pageVisitLogCache.entries()) {
-        if (now - timestamp > PAGE_VISIT_LOG_COOLDOWN * 2) {
-            pageVisitLogCache.delete(path);
-        }
-    }
-}, 30000); // Clean up every 30 seconds
-
 // Interface for the auth proof cookie data
 export interface AuthProofCookieData {
     uuid: string; // loginChallenge
@@ -220,13 +206,6 @@ export function logPageVisit(req: NextRequest, pathname: string): void {
             return;
         }
         
-        // Rate limiting: don't log the same path multiple times in quick succession
-        const now = Date.now();
-        const lastLogTime = pageVisitLogCache.get(pathname);
-        if (lastLogTime && (now - lastLogTime) < PAGE_VISIT_LOG_COOLDOWN) {
-            return; // Skip logging, too soon
-        }
-        
         // Get the auth proof cookie
         const authCookie = req.cookies.get(AUTH_PROOF_COOKIE_NAME);
         
@@ -246,12 +225,6 @@ export function logPageVisit(req: NextRequest, pathname: string): void {
                     cookieData.loginType, 
                     cookieData.uuid
                 );
-                
-                // Update the cache with current time
-                pageVisitLogCache.set(pathname, now);
-                
-                // Debug: log the cache update
-                logger.debug('Updated page visit cache for %s at %d', pathname, now);
             }
         }
     } catch (error) {
