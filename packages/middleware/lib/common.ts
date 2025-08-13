@@ -30,7 +30,8 @@ export async function commonMiddleware(request: NextRequest) {
       entry = await resp.json();
       if (entry?.result?.community && entry?.result?.author && entry?.result?.permlink) {
         return NextResponse.redirect(
-          new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url)
+          new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url),
+          { status: 302 }
         );
       }
     } catch (e: any) {
