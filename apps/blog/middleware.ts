@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const result = await commonMiddleware(request);
 
   /// In blog, let's redirect root path to /trending
-  if (pathname === '/') return NextResponse.redirect(new URL('/trending', request.url));
+  if (pathname === '/') return NextResponse.redirect(new URL('/trending', request.url), { status: 302 });
 
   return result;
 }
