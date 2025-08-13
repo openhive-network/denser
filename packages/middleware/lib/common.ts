@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@hive/smart-signer/lib/middleware-challenge-cookies';
 import { configuredApiEndpoint } from '@hive/ui/config/public-vars';
 import { getLogger } from '@hive/ui/lib/logging';
+import { logPageVisit } from './auth-proof-cookie';
 
 const logger = getLogger('middleware');
 
@@ -29,7 +30,8 @@ export async function commonMiddleware(request: NextRequest) {
       entry = await resp.json();
       if (entry?.result?.community && entry?.result?.author && entry?.result?.permlink) {
         return NextResponse.redirect(
-          new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url)
+          new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url),
+          { status: 302 }
         );
       }
     } catch (e: any) {
@@ -47,6 +49,16 @@ export async function commonMiddleware(request: NextRequest) {
   */
   if (pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {
     setLoginChallengeCookies(request, res);
+
+    const isPrefetch =
+      request.headers.get('x-middleware-prefetch') === '1' ||
+      request.headers.get('purpose') === 'prefetch' ||
+      request.headers.get('sec-purpose')?.includes('prefetch')
+
+    if (!isPrefetch) {
+      // Log page visits for authenticated users (if they have auth proof cookie)
+      logPageVisit(request, pathname);
+    }
   }
 
   return res;
