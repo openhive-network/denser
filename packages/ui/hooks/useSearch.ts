@@ -8,11 +8,10 @@ const getMode = (
   query: string | undefined,
   aiQuery: string | undefined,
   userTopicQuery: string | undefined
-): SearchMode => {
-  if (aiQuery) return 'ai';
-  if (query) return 'classic';
-  if (userTopicQuery) return 'userTopic';
-  return 'ai';
+) => {
+  if (!!aiQuery) return 'ai';
+  if (!!query) return 'classic';
+  if (!!userTopicQuery) return 'userTopic';
 };
 
 export function useSearch() {
@@ -27,7 +26,6 @@ export function useSearch() {
   const [inputValue, setInputValue] = useState(query ?? aiQuery ?? userTopicQuery ?? '');
   const [mode, setMode] = useState<SearchMode>(currentMode ?? 'ai');
   const [secondInputValue, setSecondInputValue] = useState(topicQuery ?? '');
-
   useEffect(() => {
     if (inputValue.startsWith('/')) {
       setMode('userTopic');
@@ -51,9 +49,14 @@ export function useSearch() {
     }
   }, [inputValue]);
 
-  const handleSearch = (value: string, secondValue?: string, currenySort?: SearchSort) => {
+  const handleSearch = (
+    value: string,
+    currentMode: SearchMode,
+    secondValue?: string,
+    currenySort?: SearchSort
+  ) => {
     if (!value) return;
-    switch (mode) {
+    switch (currentMode) {
       case 'tag':
         router.push(`trending/${encodeURIComponent(value)}`);
         break;
@@ -65,14 +68,11 @@ export function useSearch() {
         break;
       case 'userTopic':
         router.push(
-          `/search?a=${encodeURIComponent(value)}&p=${encodeURIComponent(secondValue ?? '')}&s=${currenySort ?? 'relevance'}`
+          `/search?a=${encodeURIComponent(value)}&p=${encodeURIComponent(secondValue ?? '')}&s=${currenySort ?? sortQuery ?? 'relevance'}`
         );
         break;
       case 'classic':
-        router.push(`/search?q=${encodeURIComponent(value)}&s=${currenySort ?? 'relevance'}`);
-        break;
-      default:
-        router.push(`/search?q=${encodeURIComponent(value)}&s=${currenySort ?? 'relevance'}`);
+        router.push(`/search?q=${encodeURIComponent(value)}&s=${currenySort ?? sortQuery ?? 'relevance'}`);
         break;
     }
   };

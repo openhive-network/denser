@@ -36,9 +36,9 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       if (mode === 'userTopic') {
-        handleSearch(secondInputValue, inputValue);
+        handleSearch(secondInputValue, mode, inputValue);
       } else {
-        handleSearch(inputValue, secondInputValue);
+        handleSearch(inputValue, mode, secondInputValue);
       }
     }
   };
@@ -80,7 +80,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
         ) : null}
       </div>
       {searchPage && (mode === 'classic' || mode === 'userTopic') && (
-        <SearchSortSelect value={inputValue} secondValue={secondInputValue} />
+        <SearchSortSelect value={inputValue} secondValue={secondInputValue} mode={mode} />
       )}
     </div>
   );
