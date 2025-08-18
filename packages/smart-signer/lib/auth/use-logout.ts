@@ -19,6 +19,20 @@ export function useLogout(redirect?: string) {
       if (user && user.isLoggedIn) {
         const signer = getSigner(signerOptions);
         await signer.destroy();
+        
+        // Log logout event to the backend
+        try {
+          await fetch('/api/auth/log_account', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'logout'
+              // username and loginType will be read from the existing cookie
+            })
+          });
+        } catch (logError) {
+          logger.error('Failed to log logout event:', logError);
+        }
       }
       await signOut.mutateAsync({ user });
       // Delete auth_proof cookie

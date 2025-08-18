@@ -1,7 +1,8 @@
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
-import { find_first_img } from './post-img';
+import { Entry } from '@transaction/lib/extended-hive.chain';
+import { find_first_img } from '../../components/post-img';
 import Link from 'next/link';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
+import { useState } from 'react';
 
 const truncateTitle = (title: string, maxLength: number = 50) => {
   return title.length > maxLength ? `${title.substring(0, maxLength)}...` : title;
@@ -9,18 +10,30 @@ const truncateTitle = (title: string, maxLength: number = 50) => {
 
 const SuggestionsCard = ({ entry }: { entry: Entry }) => {
   const cardImage = find_first_img(entry);
+  const [image, setImage] = useState<string>(cardImage);
   return (
     <div className="m-4 flex flex-col rounded-lg bg-background shadow-md">
       <Link href={`/${entry.category}/@${entry.author}/${entry.permlink}`} data-testid="post-image">
         <>
-          {cardImage ? (
+          {image ? (
             <div className="flex h-24 items-center overflow-hidden rounded-t-lg bg-transparent">
               <picture className="articles__feature-img h-ful w-full">
                 <source
-                  srcSet={proxifyImageUrl(cardImage, '256x512').replace(/ /g, '%20')}
+                  srcSet={proxifyImageUrl(image, '256x512').replace(/ /g, '%20')}
                   media="(min-width: 600px)"
+                  onError={() =>
+                    setImage('https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4')
+                  }
                 />
-                <img srcSet={cardImage} alt="Post image" loading="lazy" className="w-full" />
+                <img
+                  srcSet={image}
+                  alt="Post image"
+                  loading="lazy"
+                  className="w-full"
+                  onError={() =>
+                    setImage('https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4')
+                  }
+                />
               </picture>
             </div>
           ) : null}

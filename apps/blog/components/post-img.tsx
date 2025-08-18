@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { customEndsWith } from '../lib/ends-with';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import { extractPictureFromPostBody, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
+import { useState } from 'react';
 
 export function find_first_img(post: Entry) {
   try {
@@ -75,10 +76,11 @@ export function find_first_img(post: Entry) {
 
 export default function PostImage({ post }: { post: Entry }) {
   const cardImage = find_first_img(post);
+  const [image, setImage] = useState<string>(cardImage);
 
   return (
     <>
-      {cardImage ? (
+      {image ? (
         <Link
           href={`/${post.category}/@${post.author}/${post.permlink}`}
           data-testid="post-image"
@@ -87,10 +89,21 @@ export default function PostImage({ post }: { post: Entry }) {
           <div className="relative flex h-[210px] items-center overflow-hidden bg-transparent sm:h-[360px] md:mr-3.5 md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
             <picture className="articles__feature-img h-ful w-full">
               <source
-                srcSet={proxifyImageUrl(cardImage, '256x512').replace(/ /g, '%20')}
+                srcSet={proxifyImageUrl(image, '256x512').replace(/ /g, '%20')}
                 media="(min-width: 1000px)"
+                onError={() =>
+                  setImage('https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4')
+                }
               />
-              <img srcSet={cardImage} alt="Post image" loading="lazy" className="w-full" />
+              <img
+                srcSet={image}
+                alt="Post image"
+                loading="lazy"
+                className="w-full"
+                onError={() =>
+                  setImage('https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4')
+                }
+              />
             </picture>
           </div>
         </Link>

@@ -4,7 +4,6 @@ import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
-import { Entry } from '@transaction/lib/extended-hive.chain';
 import Loading from '@hive/ui/components/loading';
 import ImageGallery from '@/blog/components/image-gallery';
 import Link from 'next/link';
@@ -56,12 +55,13 @@ import { PostDeleteDialog } from '@/blog/components/post-delete-dialog';
 import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation';
 import FlagIcon from '@/blog/components/flag-icon';
 import { getSuggestions } from '@/blog/lib/get-data';
-import SuggestionsList from '@/blog/components/suggestions-list';
+import SuggestionsList from '@/blog/feature/suggestions-posts/list';
 import TimeAgo from '@ui/components/time-ago';
 import CommentList from '@/blog/components/comment-list';
 import clsx from 'clsx';
 import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
+import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -167,10 +167,10 @@ function PostPage({
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}-${user.username}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
+
   const [storedComment] = useLocalStorage<string>(`replyTo-/${username}/${permlink}-${user.username}`, '');
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [edit, setEdit] = useState(false);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
@@ -236,12 +236,7 @@ function PostPage({
       </Head>
       <div className="grid grid-cols-1 md:grid-cols-12">
         <div className="col-span-2 hidden md:block">
-          {suggestions ? (
-            <div className="flex flex-col overflow-x-auto overflow-y-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)]">
-              <h2 className="mb-4 mt-2 px-4 font-sanspro text-xl font-bold md:mt-0">You Might Also Like</h2>
-              <SuggestionsList suggestions={suggestions} />
-            </div>
-          ) : null}
+          {suggestions ? <AnimatedList suggestions={suggestions} /> : null}
         </div>
         <div className="py-8 sm:col-span-8 sm:mx-auto sm:flex sm:flex-col">
           <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">

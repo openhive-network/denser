@@ -128,6 +128,7 @@ export default function PostForm({
     editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
     defaultValues
   );
+
   useEffect(() => {
     storePost({
       ...storedPost,
@@ -143,10 +144,6 @@ export default function PostForm({
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
   const postMutation = usePostMutation();
-
-  const { data: mySubsData } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
-    enabled: Boolean(username)
-  });
   const { data: communityData } = useQuery(
     ['community', router.query.category],
     () =>
@@ -155,6 +152,9 @@ export default function PostForm({
       enabled: Boolean(router.query.category) || Boolean(storedPost.category)
     }
   );
+  const { data: mySubsData } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
+    enabled: Boolean(username)
+  });
 
   const accountFormSchema = z.object({
     title: z
@@ -190,12 +190,16 @@ export default function PostForm({
       : storedPost?.maxAcceptedPayout === undefined
         ? 1000000
         : storedPost.maxAcceptedPayout,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType || preferences.blog_rewards
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType
   };
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     defaultValues: entryValues
   });
+  const nsfwTagCheck = communityData?.is_nsfw && !storedPost.tags?.includes('nsfw');
+  useEffect(() => {
+    form.setValue('tags', nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);
+  }, [!!communityData?.is_nsfw]);
   const { postArea, ...restFields } = useWatch({
     control: form.control
   });
@@ -252,7 +256,7 @@ export default function PostForm({
         category: communityPosting ? communityPosting : data.category,
         summary: data.postSummary,
         altAuthor: data.author,
-        payoutType: data.payoutType ?? preferences.blog_rewards,
+        payoutType: data.payoutType,
         image: imagePickerState,
         editMode
       };
@@ -455,9 +459,9 @@ export default function PostForm({
 
                 <span className="text-xs" data-testid="author-rewards-description">
                   {t('submit_page.author_rewards')}
-                  {preferences.blog_rewards === '0%' || storedPost.maxAcceptedPayout === 0
+                  {storedPost.maxAcceptedPayout === 0
                     ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
-                    : preferences.blog_rewards === '100%' || storedPost.payoutType === '100%'
+                    : storedPost.payoutType === '100%'
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}
                 </span>
@@ -503,6 +507,9 @@ export default function PostForm({
                           onValueChange={(e) => {
                             form.setValue('category', e);
                             storePost({ ...storedPost, category: e });
+                            if (router.query.category) {
+                              router.replace({ query: { ...router.query, category: e } });
+                            }
                           }}
                         >
                           <FormControl>
