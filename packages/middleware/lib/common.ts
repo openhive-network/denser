@@ -27,9 +27,10 @@ export async function commonMiddleware(request: NextRequest) {
         })
       });
       entry = await resp.json();
-      if (entry?.result?.community && entry?.result?.author && entry?.result?.permlink) {
+      if (entry?.result?.author && entry?.result?.permlink) {
+        const category = entry.result.category ?? entry.result.community;
         return NextResponse.redirect(
-          new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url)
+          new URL(`/${category}/@${entry.result.author}/${entry.result.permlink}`, request.url)
         );
       }
     } catch (e: any) {
