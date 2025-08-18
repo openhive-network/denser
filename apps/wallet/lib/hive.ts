@@ -23,13 +23,13 @@ import {
   IOpenOrdersData,
   IOrdersData,
   IMarketStatistics,
-  IWitness
+  IWitness,
+  IDirectDelegation
 } from '@transaction/lib/extended-hive.chain';
 
 const chain = await hiveChainService.getHiveChain();
 
 export declare type Bignum = string;
-
 
 export type ProposalData = Omit<IProposal, 'daily_pay' | 'total_votes'> & {
   total_votes: Big;
@@ -42,6 +42,10 @@ export const getWitnessesByVote = async (from: string, limit: number): Promise<I
 
 export const findRcAccounts = async (username: string): Promise<{ rc_accounts: RcAccount[] }> => {
   return chain.api.rc_api.find_rc_accounts({ accounts: [username] });
+};
+
+export const getDirectDelegations = async (account: string): Promise<IDirectDelegation> => {
+  return chain.api.rc_api.list_rc_direct_delegations({ limit: 1000, start: [account, ''] });
 };
 
 export const DEFAULT_PARAMS_FOR_PROPOSALS: IGetProposalsParams = {
@@ -60,7 +64,6 @@ export const getProposals = async (params?: Partial<IGetProposalsParams>): Promi
     });
     return response.proposals;
   } catch (error) {
-    console.error('Error:', error);
     throw error;
   }
 };
@@ -76,8 +79,7 @@ export const getVestingDelegations = async (
   from: string = '',
   limit: number = 50
 ): Promise<IDelegatedVestingShare[]> => {
-  return chain
-    .api.condenser_api.get_vesting_delegations([username, from, limit]);
+  return chain.api.condenser_api.get_vesting_delegations([username, from, limit]);
 };
 
 const op = operationOrders;
@@ -103,9 +105,13 @@ export const getAccountHistory = async (
   username: string,
   start: number = -1,
   limit: number = 20
-): Promise<AccountHistory[]> => { 
-  return chain
-    .api.condenser_api.get_account_history([username, start, limit, ...wallet_operations_bitmask]) as Promise<AccountHistory[]>;
+): Promise<AccountHistory[]> => {
+  return chain.api.condenser_api.get_account_history([
+    username,
+    start,
+    limit,
+    ...wallet_operations_bitmask
+  ]) as Promise<AccountHistory[]>;
 };
 
 export type IAuthorReward = {
@@ -147,8 +153,12 @@ export const getAccountRewardsHistory = async (
   start: number = -1,
   limit: number = 20
 ): Promise<AccountRewardsHistory[]> => {
-  return chain
-    .api.condenser_api.get_account_history([username, start, limit, ...wallet_rewards_history_bitmask]) as Promise<AccountRewardsHistory[]>;
+  return chain.api.condenser_api.get_account_history([
+    username,
+    start,
+    limit,
+    ...wallet_rewards_history_bitmask
+  ]) as Promise<AccountRewardsHistory[]>;
 };
 
 export const getProposalVotes = async (
@@ -156,8 +166,8 @@ export const getProposalVotes = async (
   voter: string = '',
   limit: number = 1000
 ): Promise<IProposalVote[]> => {
-  return chain
-    .api.condenser_api.list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
+  return chain.api.condenser_api
+    .list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
     .then((r) => r.filter((x: IProposalVote) => x.proposal.proposal_id === proposalId));
 };
 
@@ -188,8 +198,7 @@ type GetTradeHistoryData = {
 export const getTradeHistory = async (limit: number = 1000): Promise<IOrdersDataItem[]> => {
   let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
   let todayNow = moment(Date.now()).format().split('+')[0];
-  return chain
-    .api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
+  return chain.api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
 };
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
@@ -197,8 +206,7 @@ export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTrad
 };
 
 export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {
-  return chain
-    .api.database_api.find_savings_withdrawals({ account: account });
+  return chain.api.database_api.find_savings_withdrawals({ account: account });
 };
 
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {

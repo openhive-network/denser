@@ -1,13 +1,13 @@
 import { TFunction } from 'i18next';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
-import { AccountHistoryData } from '../pages/[param]/transfers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
-import { SavingsWithdrawals,  IFollow, IDynamicGlobalProperties } from '@transaction/lib/extended-hive.chain';
+import { SavingsWithdrawals, IFollow, IDynamicGlobalProperties } from '@transaction/lib/extended-hive.chain';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
 import Big from 'big.js';
 import { HIVE_NAI_STRING, VESTS_PRECISION } from '@transaction/lib/utils';
+import { AccountHistoryData } from '../feature/transfers-page/lib/utils';
 
 export function getCurrentHpApr(data: IDynamicGlobalProperties) {
   // The inflation was set to 9.5% at block 7m
@@ -249,3 +249,7 @@ export function createListWithSuggestions(
       .map((e) => ({ username: e.username, about: `${e.counter} ${e.about}` })) ?? [];
   return [...transfers, ...following];
 }
+
+export const prepareRC = (rc: string): string => {
+  return `${numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(1))}bil`;
+};
