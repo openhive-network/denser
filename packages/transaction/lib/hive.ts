@@ -3,11 +3,9 @@ import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
 import {
   TWaxApiRequest,
   IManabarData,
-  IHiveChainInterface,
   transaction,
-  NaiAsset,
   ApiAccount,
-  AccountAuthorityUpdateOperation,
+  AccountAuthorityUpdateOperation
 } from '@hiveio/wax';
 import { isCommunity, parseAsset } from '@ui/lib/utils';
 import { vestsToRshares } from '@ui/lib/utils';
@@ -39,20 +37,18 @@ const logger = getLogger('app');
 const chain = await hiveChainService.getHiveChain();
 
 export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProperties> => {
-  return chain
-    .api.condenser_api.get_dynamic_global_properties([])
-    .then((r: any) => {
-      return {
-        total_vesting_fund_hive: r.total_vesting_fund_hive || r.total_vesting_fund_steem,
-        total_vesting_shares: r.total_vesting_shares,
-        hbd_print_rate: r.hbd_print_rate || r.sbd_print_rate,
-        hbd_interest_rate: r.hbd_interest_rate,
-        head_block_number: r.head_block_number,
-        head_block_id: r.head_block_id,
-        vesting_reward_percent: r.vesting_reward_percent,
-        virtual_supply: r.virtual_supply
-      };
-    });
+  return chain.api.condenser_api.get_dynamic_global_properties([]).then((r: any) => {
+    return {
+      total_vesting_fund_hive: r.total_vesting_fund_hive || r.total_vesting_fund_steem,
+      total_vesting_shares: r.total_vesting_shares,
+      hbd_print_rate: r.hbd_print_rate || r.sbd_print_rate,
+      hbd_interest_rate: r.hbd_interest_rate,
+      head_block_number: r.head_block_number,
+      head_block_id: r.head_block_id,
+      vesting_reward_percent: r.vesting_reward_percent,
+      virtual_supply: r.virtual_supply
+    };
+  });
 };
 
 type GetAccountsnData = {
@@ -62,78 +58,76 @@ type GetAccountsnData = {
 };
 
 export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> => {
-  return chain
-    .api.condenser_api.get_accounts([usernames])
-    .then((resp: any[]): FullAccount[] =>
-      resp.map((x) => {
-        const account: FullAccount = {
-          name: x.name,
-          owner: x.owner,
-          active: x.active,
-          posting: x.posting,
-          memo_key: x.memo_key,
-          post_count: x.post_count,
-          created: x.created,
-          reputation: x.reputation,
-          posting_json_metadata: x.posting_json_metadata,
-          last_vote_time: x.last_vote_time,
-          last_post: x.last_post,
-          json_metadata: x.json_metadata,
-          reward_hive_balance: x.reward_hive_balance,
-          reward_hbd_balance: x.reward_hbd_balance,
-          reward_vesting_hive: x.reward_vesting_hive,
-          governance_vote_expiration_ts: x.governance_vote_expiration_ts,
-          reward_vesting_balance: x.reward_vesting_balance,
-          balance: x.balance,
-          hbd_balance: x.hbd_balance,
-          savings_balance: x.savings_balance,
-          savings_hbd_balance: x.savings_hbd_balance,
-          savings_hbd_last_interest_payment: x.savings_hbd_last_interest_payment,
-          savings_hbd_seconds_last_update: x.savings_hbd_seconds_last_update,
-          savings_hbd_seconds: x.savings_hbd_seconds,
-          next_vesting_withdrawal: x.next_vesting_withdrawal,
-          vesting_shares: x.vesting_shares,
-          delegated_vesting_shares: x.delegated_vesting_shares,
-          received_vesting_shares: x.received_vesting_shares,
-          vesting_withdraw_rate: x.vesting_withdraw_rate,
-          to_withdraw: x.to_withdraw,
-          withdrawn: x.withdrawn,
-          witness_votes: x.witness_votes,
-          proxy: x.proxy,
-          proxied_vsf_votes: x.proxied_vsf_votes,
-          voting_manabar: x.voting_manabar,
-          voting_power: x.voting_power,
-          downvote_manabar: x.downvote_manabar,
-          vesting_balance: x.vesting_balance,
-          __loaded: true
-        };
+  return chain.api.condenser_api.get_accounts([usernames]).then((resp: any[]): FullAccount[] =>
+    resp.map((x) => {
+      const account: FullAccount = {
+        name: x.name,
+        owner: x.owner,
+        active: x.active,
+        posting: x.posting,
+        memo_key: x.memo_key,
+        post_count: x.post_count,
+        created: x.created,
+        reputation: x.reputation,
+        posting_json_metadata: x.posting_json_metadata,
+        last_vote_time: x.last_vote_time,
+        last_post: x.last_post,
+        json_metadata: x.json_metadata,
+        reward_hive_balance: x.reward_hive_balance,
+        reward_hbd_balance: x.reward_hbd_balance,
+        reward_vesting_hive: x.reward_vesting_hive,
+        governance_vote_expiration_ts: x.governance_vote_expiration_ts,
+        reward_vesting_balance: x.reward_vesting_balance,
+        balance: x.balance,
+        hbd_balance: x.hbd_balance,
+        savings_balance: x.savings_balance,
+        savings_hbd_balance: x.savings_hbd_balance,
+        savings_hbd_last_interest_payment: x.savings_hbd_last_interest_payment,
+        savings_hbd_seconds_last_update: x.savings_hbd_seconds_last_update,
+        savings_hbd_seconds: x.savings_hbd_seconds,
+        next_vesting_withdrawal: x.next_vesting_withdrawal,
+        vesting_shares: x.vesting_shares,
+        delegated_vesting_shares: x.delegated_vesting_shares,
+        received_vesting_shares: x.received_vesting_shares,
+        vesting_withdraw_rate: x.vesting_withdraw_rate,
+        to_withdraw: x.to_withdraw,
+        withdrawn: x.withdrawn,
+        witness_votes: x.witness_votes,
+        proxy: x.proxy,
+        proxied_vsf_votes: x.proxied_vsf_votes,
+        voting_manabar: x.voting_manabar,
+        voting_power: x.voting_power,
+        downvote_manabar: x.downvote_manabar,
+        vesting_balance: x.vesting_balance,
+        __loaded: true
+      };
 
-        let profile: AccountProfile | undefined;
+      let profile: AccountProfile | undefined;
 
+      try {
+        profile = JSON.parse(x.posting_json_metadata!).profile;
+      } catch (e) {}
+
+      if (!profile) {
         try {
-          profile = JSON.parse(x.posting_json_metadata!).profile;
+          profile = JSON.parse(x.json_metadata!).profile;
         } catch (e) {}
+      }
 
-        if (!profile) {
-          try {
-            profile = JSON.parse(x.json_metadata!).profile;
-          } catch (e) {}
-        }
+      if (!profile) {
+        profile = {
+          about: '',
+          cover_image: '',
+          location: '',
+          name: '',
+          profile_image: '',
+          website: ''
+        };
+      }
 
-        if (!profile) {
-          profile = {
-            about: '',
-            cover_image: '',
-            location: '',
-            name: '',
-            profile_image: '',
-            website: ''
-          };
-        }
-
-        return { ...account, profile };
-      })
-    );
+      return { ...account, profile };
+    })
+  );
 };
 
 export const getAccount = (username: string): Promise<FullAccount> =>
@@ -149,8 +143,7 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
   });
 
 export const getFindAccounts = (username: string): Promise<{ accounts: ApiAccount[] }> => {
-  return chain
-    .api.database_api.find_accounts({ accounts: [username], delayed_votes_active: false });
+  return chain.api.database_api.find_accounts({ accounts: [username], delayed_votes_active: false });
 };
 
 type GetFeedHistoryData = {
@@ -212,8 +205,7 @@ export const getAccountReputations = async (
   account_lower_bound: string,
   limit: number
 ): Promise<IAccountReputations[]> => {
-  return chain
-    .api.condenser_api.get_account_reputations({ account_lower_bound, limit });
+  return chain.api.condenser_api.get_account_reputations({ account_lower_bound, limit });
 };
 
 type GetMarketBucketSizesData = {
@@ -233,8 +225,7 @@ export const getMarketHistory = async (
 ): Promise<IMarketCandlestickDataItem[]> => {
   let todayEarlier: string = startDate.format().split('+')[0];
   let todayNow: string = endDate.format().split('+')[0];
-  return chain
-    .api.condenser_api.get_market_history([seconds, todayEarlier, todayNow]);
+  return chain.api.condenser_api.get_market_history([seconds, todayEarlier, todayNow]);
 };
 
 export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
@@ -242,22 +233,20 @@ export const getActiveVotes = async (author: string, permlink: string): Promise<
 };
 
 export const getTrendingTags = async (afterTag: string = '', limit: number = 250): Promise<string[]> => {
-  return chain
-    .api.database_api.get_trending_tags([afterTag, limit])
-    .then((tags: ITrendingTag[]) => {
-      return tags
-        .filter((x: ITrendingTag) => x.name !== '')
-        .filter((x: ITrendingTag) => !isCommunity(x.name))
-        .map((x: ITrendingTag) => x.name);
-    });
+  return chain.api.database_api.get_trending_tags([afterTag, limit]).then((tags: ITrendingTag[]) => {
+    return tags
+      .filter((x: ITrendingTag) => x.name !== '')
+      .filter((x: ITrendingTag) => !isCommunity(x.name))
+      .map((x: ITrendingTag) => x.name);
+  });
 };
 
 export const getAllTrendingTags = async (
   afterTag: string = '',
   limit: number = 250
 ): Promise<ITrendingTag[] | void> => {
-  return chain
-    .api.database_api.get_trending_tags([afterTag, limit])
+  return chain.api.database_api
+    .get_trending_tags([afterTag, limit])
     .then((tags: ITrendingTag[]) => {
       return tags.filter((x) => x.name !== '').filter((x) => !isCommunity(x.name));
     })
@@ -296,13 +285,12 @@ type GetFollowersData = {
 };
 export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    return chain
-      .api.condenser_api.get_followers([
-        params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
-        params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
-        params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
-        params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
-      ]);
+    return chain.api.condenser_api.get_followers([
+      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
+      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
+      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
+      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
+    ]);
   } catch (error) {
     console.error('Error:', error);
     throw error;
@@ -316,13 +304,12 @@ type GetFollowingData = {
 };
 export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    return chain
-      .api.condenser_api.get_following([
-        params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
-        params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
-        params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
-        params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
-      ]);
+    return chain.api.condenser_api.get_following([
+      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
+      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
+      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
+      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
+    ]);
   } catch (error) {
     console.error('Error:', error);
     throw error;
@@ -434,8 +421,7 @@ export const getConversionRequests = async (account: string): Promise<IConversio
 export const getCollateralizedConversionRequests = async (
   account: string
 ): Promise<ICollateralizedConversionRequest[]> => {
-  return chain
-    .api.database_api.get_collateralized_conversion_requests([account]);
+  return chain.api.database_api.get_collateralized_conversion_requests([account]);
 };
 
 export const getSavingsWithdrawFrom = async (account: string): Promise<SavingsWithdrawRequest[]> => {
@@ -470,8 +456,7 @@ type BrodcastTransactionData = {
   };
 };
 export const brodcastTransaction = async (transaction: any): Promise<any> => {
-  return chain
-    .api.network_broadcast_api.broadcast_transaction([transaction]);
+  return chain.api.network_broadcast_api.broadcast_transaction([transaction]);
 };
 
 // create type for api call result do working search
@@ -514,17 +499,14 @@ interface Manabar {
   downvote: ISingleManabar;
   rc: ISingleManabar;
 }
-export const getManabars = async (
-  accountName: string,
-  hiveChain: IHiveChainInterface
-): Promise<IManabars | null> => {
+export const getManabars = async (accountName: string): Promise<IManabars | null> => {
   try {
-    const upvoteCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 0);
-    const downvoteCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 1);
-    const rcCooldownPromise = hiveChain.calculateManabarFullRegenerationTimeForAccount(accountName, 2);
-    const upvotePromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 0);
-    const downvotePromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 1);
-    const rcPromise = hiveChain.calculateCurrentManabarValueForAccount(accountName, 2);
+    const upvoteCooldownPromise = chain.calculateManabarFullRegenerationTimeForAccount(accountName, 0);
+    const downvoteCooldownPromise = chain.calculateManabarFullRegenerationTimeForAccount(accountName, 1);
+    const rcCooldownPromise = chain.calculateManabarFullRegenerationTimeForAccount(accountName, 2);
+    const upvotePromise = chain.calculateCurrentManabarValueForAccount(accountName, 0);
+    const downvotePromise = chain.calculateCurrentManabarValueForAccount(accountName, 1);
+    const rcPromise = chain.calculateCurrentManabarValueForAccount(accountName, 2);
     const manabars = await Promise.all([
       upvotePromise,
       upvoteCooldownPromise,
@@ -546,11 +528,8 @@ export const getManabars = async (
     return null;
   }
 };
-export const getManabar = async (
-  accountName: string,
-  hiveChain: IHiveChainInterface
-): Promise<Manabar | null> => {
-  const manabars = await getManabars(accountName, hiveChain!);
+export const getManabar = async (accountName: string): Promise<Manabar | null> => {
+  const manabars = await getManabars(accountName!);
   if (!manabars) return null;
   const { upvote, upvoteCooldown, downvote, downvoteCooldown, rc, rcCooldown } = manabars;
 
@@ -577,28 +556,12 @@ export const getManabar = async (
   return processedManabars;
 };
 
-
-
 export const getListWitnessVotes = async (
   username: string,
   limit: number,
   order: string
 ): Promise<IListWitnessVotes> => {
-  return chain
-    .api.database_api.list_witness_votes({ start: [username, ''], limit, order });
-};
-
-type GetListVotesData = {
-  database_api: {
-    list_votes: TWaxApiRequest<
-      {
-        start: [string, string, string] | null;
-        limit: number;
-        order: 'by_comment_voter' | 'by_voter_comment';
-      },
-      { votes: IVoteListItem[] }
-    >;
-  };
+  return chain.api.database_api.list_witness_votes({ start: [username, ''], limit, order });
 };
 
 // See https://developers.hive.io/apidefinitions/#database_api.list_votes
@@ -606,16 +569,14 @@ export const getListVotesByCommentVoter = async (
   start: [string, string, string] | null, // should be [author, permlink, voter]
   limit: number
 ): Promise<{ votes: IVoteListItem[] }> => {
-  return chain
-    .api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
+  return chain.api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
 };
 
 export const getListVotesByVoterComment = async (
   start: [string, string, string] | null, // should be [voter, author, permlink]
   limit: number
 ): Promise<{ votes: IVoteListItem[] }> => {
-  return chain
-    .api.database_api.list_votes({ start, limit, order: 'by_voter_comment' });
+  return chain.api.database_api.list_votes({ start, limit, order: 'by_voter_comment' });
 };
 
 export const getAuthority = async (username: string): Promise<AccountAuthorityUpdateOperation> => {

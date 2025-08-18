@@ -723,6 +723,14 @@ export interface HivesenseStatusResponse {
   tags: ApiTag[];
 }
 
+export interface IDirectDelegation {
+  rc_direct_delegations: {
+    delegated_rc: number;
+    from: string;
+    to: string;
+  }[];
+}
+
 export type ExtendedNodeApi = {
   bridge: {
     get_post_header: TWaxApiRequest<{ author: string; permlink: string }, IGetPostHeader>;
@@ -803,6 +811,7 @@ export type ExtendedNodeApi = {
   };
   rc_api: {
     find_rc_accounts: TWaxApiRequest<string[], { rc_accounts: RcAccount[] }>;
+    list_rc_direct_delegations: TWaxApiRequest<{ limit: number; start: [string, string] }, IDirectDelegation>;
   };
   database_api: {
     list_proposals: TWaxApiRequest<Partial<IGetProposalsParams>, { proposals: IProposal[] }>;
