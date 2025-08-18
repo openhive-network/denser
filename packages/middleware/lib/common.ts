@@ -28,9 +28,10 @@ export async function commonMiddleware(request: NextRequest) {
         })
       });
       entry = await resp.json();
-      if (entry?.result?.community && entry?.result?.author && entry?.result?.permlink) {
+      if (entry?.result?.author && entry?.result?.permlink) {
+        const category = entry.result.category ?? entry.result.community;
         return NextResponse.redirect(
-          new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url),
+          new URL(`/${category}/@${entry.result.author}/${entry.result.permlink}`, request.url),
           { status: 302 }
         );
       }
@@ -53,7 +54,7 @@ export async function commonMiddleware(request: NextRequest) {
     const isPrefetch =
       request.headers.get('x-middleware-prefetch') === '1' ||
       request.headers.get('purpose') === 'prefetch' ||
-      request.headers.get('sec-purpose')?.includes('prefetch')
+      request.headers.get('sec-purpose')?.includes('prefetch');
 
     if (!isPrefetch) {
       // Log page visits for authenticated users (if they have auth proof cookie)
