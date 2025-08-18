@@ -60,7 +60,6 @@ export function useUpdateProfileMutation() {
         'profileData',
         user.username
       ]);
-      console.log('prevProfileData', prevProfileData);
 
       const response = { ...params, broadcastResult, prevProfileData };
       return response;
