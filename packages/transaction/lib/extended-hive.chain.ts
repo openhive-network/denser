@@ -8,6 +8,7 @@ import {
   transaction
 } from '@hiveio/wax';
 import { AccountFollowStats, FullAccount } from './app-types';
+import { SearchType } from './hive';
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -835,6 +836,9 @@ export type ExtendedNodeApi = {
   };
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
+  };
+  'search-api': {
+    find_text: TWaxApiRequest<SearchType, Entry[]>;
   };
 };
 

@@ -8,17 +8,28 @@ import {
 } from '@ui/components/select';
 import { Label } from '@ui/components/label';
 import { useTranslation } from 'next-i18next';
-import { SearchSort, useSearch } from '@ui/hooks/useSearch';
+import { SearchMode, SearchSort, useSearch } from '@ui/hooks/useSearch';
 
-function SearchSortSelect({ value, secondValue }: { value: string; secondValue: string }) {
+function SearchSortSelect({
+  value,
+  secondValue,
+  mode
+}: {
+  value: string;
+  secondValue: string;
+  mode: SearchMode;
+}) {
   const { t } = useTranslation('common_blog');
   const { handleSearch, sortQuery } = useSearch();
-
+  const onValueChange = (sortValue: SearchSort) => {
+    if (mode === 'userTopic') {
+      handleSearch(secondValue, mode, value, sortValue);
+    } else {
+      handleSearch(value, mode, secondValue, sortValue);
+    }
+  };
   return (
-    <Select
-      defaultValue={sortQuery ?? 'relevance'}
-      onValueChange={(sortValue) => handleSearch(value, secondValue, sortValue as SearchSort)}
-    >
+    <Select value={sortQuery ?? 'relevance'} onValueChange={onValueChange}>
       <Label>Sort by:</Label>
       <SelectTrigger className="w-[180px]" data-testid="search-sort-by-dropdown-list">
         <SelectValue />
