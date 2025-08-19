@@ -23,9 +23,9 @@ export function useSearch() {
   const sortQuery = router.query.s as SearchSort | undefined;
 
   const currentMode = getMode(query, aiQuery, userTopicQuery);
-  const [inputValue, setInputValue] = useState(query ?? aiQuery ?? userTopicQuery ?? '');
+  const [inputValue, setInputValue] = useState(query ?? aiQuery ?? topicQuery ?? '');
   const [mode, setMode] = useState<SearchMode>(currentMode ?? 'ai');
-  const [secondInputValue, setSecondInputValue] = useState(topicQuery ?? '');
+  const [secondInputValue, setSecondInputValue] = useState(userTopicQuery ?? '');
   useEffect(() => {
     if (inputValue.startsWith('/')) {
       setMode('userTopic');
