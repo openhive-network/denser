@@ -1,13 +1,27 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import type { NextRequest } from 'next/server';
-import { createWaxFoundation, custom_json } from '@hiveio/wax';
 import { getLogger } from '@ui/lib/logging';
 import { logLoginEvent, logLogoutEvent } from '@ui/lib/logging';
 
 export const AUTH_PROOF_COOKIE_NAME = 'auth_proof';
 
-const wax = await createWaxFoundation();
 const logger = getLogger('auth-proof-cookie');
+
+// Conditional WASM loading - only load when available (Node.js), skip in Edge Runtime
+let wax: any = null;
+let custom_json: any = null;
+
+// Try to load WASM modules, but don't fail if they're not available
+try {
+    // Dynamic import to avoid Edge Runtime issues
+    const waxModule = await import('@hiveio/wax');
+    wax = await waxModule.createHiveChain();
+    custom_json = waxModule.custom_json;
+    logger.debug('WASM modules loaded successfully');
+} catch (error) {
+    logger.debug('WASM modules not available (likely Edge Runtime):', error);
+    // Continue without WASM - functions will handle this gracefully
+}
 
 // Interface for the auth proof cookie data
 export interface AuthProofCookieData {
@@ -31,8 +45,14 @@ interface AuthRequestBody {
  */
 export async function parseAuthProofTransaction(authProof: string): Promise<{ loginChallenge: string; loginType: string } | null> {
     try {
+        // Check if WASM is available
+        if (!wax || !custom_json) {
+            logger.debug('WASM not available, cannot parse auth proof transaction');
+            return null;
+        }
+
         const tx = wax.convertTransactionFromBinaryForm(Buffer.from(authProof, 'base64').toString());
-        const op = tx.operations[0].value as custom_json;
+        const op = tx.operations[0].value as typeof custom_json;
 
         // Extract loginChallenge from the custom_json operation
         const loginChallenge = JSON.parse(op.json);
