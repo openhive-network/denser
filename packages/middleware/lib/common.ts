@@ -4,10 +4,13 @@ import { setLoginChallengeCookies } from '@hive/smart-signer/lib/middleware-chal
 import { configuredApiEndpoint } from '@hive/ui/config/public-vars';
 import { getLogger } from '@hive/ui/lib/logging';
 import { logPageVisit } from './auth-proof-cookie';
+import { hiveChainService } from '../../transaction/lib/hive-chain-service';
 
 const logger = getLogger('middleware');
 
 export async function commonMiddleware(request: NextRequest) {
+
+  const chain = await hiveChainService.getHiveChain();
   const { pathname } = request.nextUrl;
 
   const res = NextResponse.next();
@@ -18,20 +21,16 @@ export async function commonMiddleware(request: NextRequest) {
     let author = tempArr[1].slice(1);
     let permlink = tempArr[2];
     try {
-      const resp = await fetch(configuredApiEndpoint, {
-        method: 'POST',
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'bridge.get_post',
-          params: { author: author, permlink: permlink, observer: '' },
-          id: 1
-        })
-      });
-      entry = await resp.json();
-      if (entry?.result?.author && entry?.result?.permlink) {
-        const category = entry.result.category ?? entry.result.community;
+      const entry = await chain
+      .api.bridge.get_post({
+        author,
+        permlink,
+        observer: ''
+      })
+      if (entry?.author && entry?.permlink) {
+        const category = entry.category ?? entry.community;
         return NextResponse.redirect(
-          new URL(`/${category}/@${entry.result.author}/${entry.result.permlink}`, request.url),
+          new URL(`/${category}/@${entry.author}/${entry.permlink}`, request.url),
           { status: 302 }
         );
       }
