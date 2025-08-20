@@ -3,15 +3,42 @@ import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@hive/smart-signer/lib/middleware-challenge-cookies';
 import { getLogger } from '@hive/ui/lib/logging';
 import { logPageVisit } from './auth-proof-cookie';
+import { hiveChainService } from '../../transaction/lib/hive-chain-service';
 
 const logger = getLogger('middleware');
 
 export async function commonMiddleware(request: NextRequest) {
+
+  const chain = await hiveChainService.getHiveChain();
   const { pathname } = request.nextUrl;
 
   const res = NextResponse.next();
 
   setLoginChallengeCookies(request, res);
+
+  const tempArr = pathname.split('/');
+  let entry: any = null;
+  if (tempArr.length === 3 && tempArr[1].startsWith('@')) {
+    let author = tempArr[1].slice(1);
+    let permlink = tempArr[2];
+    try {
+      const entry = await chain
+      .api.bridge.get_post({
+        author,
+        permlink,
+        observer: ''
+      })
+      if (entry?.author && entry?.permlink) {
+        const category = entry.category ?? entry.community;
+        return NextResponse.redirect(
+          new URL(`/${category}/@${entry.author}/${entry.permlink}`, request.url),
+          { status: 302 }
+        );
+      }
+    } catch (e: any) {
+      logger.error('Error fetching post:', e.message);
+    }
+  }
 
   if (pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {
     const isPrefetch =
