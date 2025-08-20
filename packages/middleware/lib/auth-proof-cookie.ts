@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import type { NextRequest } from 'next/server';
 import { getLogger } from '@ui/lib/logging';
 import { logLoginEvent, logLogoutEvent } from '@ui/lib/logging';
+import { getClientIp } from './common-utils';
 
 export const AUTH_PROOF_COOKIE_NAME = 'auth_proof';
 
@@ -11,23 +12,27 @@ const logger = getLogger('auth-proof-cookie');
 let wax: any = null;
 let custom_json: any = null;
 
-// Try to load WASM modules, but don't fail if they're not available
-try {
-    // Dynamic import to avoid Edge Runtime issues
-    const waxModule = await import('@hiveio/wax');
-    wax = await waxModule.createHiveChain();
-    custom_json = waxModule.custom_json;
-    logger.debug('WASM modules loaded successfully');
-} catch (error) {
-    logger.debug('WASM modules not available (likely Edge Runtime):', error);
-    // Continue without WASM - functions will handle this gracefully
+// Initialize WASM modules when needed (not at top level)
+async function initializeWasm() {
+    if (wax && custom_json) return; // Already initialized
+    
+    try {
+        // Dynamic import to avoid Edge Runtime issues
+        const waxModule = await import('@hiveio/wax');
+        wax = await waxModule.createHiveChain();
+        custom_json = waxModule.custom_json;
+        logger.debug('WASM modules loaded successfully');
+    } catch (error) {
+        logger.debug('WASM modules not available (likely Edge Runtime):', error);
+        // Continue without WASM - functions will handle this gracefully
+    }
 }
 
 // Interface for the auth proof cookie data
 export interface AuthProofCookieData {
-    uuid: string; // loginChallenge
-    username: string;
-    loginType: string;
+    uuid: string;
+    username: string | null;
+    loginType: string | null;
     authProof: string;
     timestamp: number;
 }
@@ -45,6 +50,9 @@ interface AuthRequestBody {
  */
 export async function parseAuthProofTransaction(authProof: string): Promise<{ loginChallenge: string; loginType: string } | null> {
     try {
+        // Initialize WASM if not already done
+        await initializeWasm();
+        
         // Check if WASM is available
         if (!wax || !custom_json) {
             logger.debug('WASM not available, cannot parse auth proof transaction');
@@ -75,8 +83,8 @@ export function parseAuthProofCookie(cookieValue: string): AuthProofCookieData |
         const decoded = Buffer.from(cookieValue, 'base64').toString('utf-8');
         const parsed = JSON.parse(decoded);
 
-        // Validate required fields
-        if (parsed.uuid && parsed.username && parsed.loginType && parsed.authProof && parsed.timestamp) {
+        // Validate required fields (username and loginType can be null for logged out users)
+        if (parsed.uuid && parsed.authProof && parsed.timestamp !== undefined) {
             return parsed as AuthProofCookieData;
         }
 
@@ -109,27 +117,42 @@ export function clearAuthProofCookie(res: NextApiResponse): void {
 }
 
 /**
- * Log a logout event and keep the auth proof cookie
- * @param req - The NextApiRequest object to get IP and user info
- * @param res - The NextApiResponse object to set cookies
- * @param username - The username of the user who logged out
- * @param loginType - The login type that was used
- * @param uuid - The UUID (loginChallenge) from the cookie
+ * Log logout event and keep the cookie (for IP/browser tracking)
  */
 export function logLogoutAndKeepCookie(
     req: NextApiRequest,
-    _res: NextApiResponse,
+    res: NextApiResponse,
     username: string,
     loginType: string,
-    uuid: string
+    uuid: string,
+    ip: string
 ): void {
     // Log the logout event
-    logLogoutEvent(
-        req.socket.remoteAddress || req.headers['x-forwarded-for'] as string,
-        username,
-        loginType,
-        uuid
-    );
+    logLogoutEvent(ip, username, loginType, uuid);
+    
+    logger.info('Logged out user: %s (login type: %s, uuid: %s) - cookie kept for tracking', username, loginType, uuid);
+    
+    // Update the cookie to set username and login_type to null, but keep uuid and other fields
+    const existingCookie = req.cookies[AUTH_PROOF_COOKIE_NAME];
+    if (existingCookie) {
+        try {
+            const cookieData = parseAuthProofCookie(existingCookie);
+            if (cookieData) {
+                // Create updated cookie data with null username and login_type
+                const updatedCookieData: AuthProofCookieData = {
+                    ...cookieData,
+                    username: null,
+                    loginType: null
+                };
+                
+                // Set the updated cookie
+                setAuthProofCookie(res, updatedCookieData);
+                logger.debug('Updated auth proof cookie with null username/login_type for logged out user');
+            }
+        } catch (error) {
+            logger.debug('Failed to update cookie on logout:', error);
+        }
+    }
 }
 
 export async function validateAndGetAuthProofCookie(
@@ -158,12 +181,12 @@ export async function validateAndGetAuthProofCookie(
             setAuthProofCookie(res, cookieData);
 
             // log login event
-            logLoginEvent(
-                req.socket.remoteAddress || req.headers['x-forwarded-for'] as string,
-                username,
-                loginType,
-                loginChallenge
-            );
+                                    logLoginEvent(
+                            getClientIp(req),
+                            username,
+                            loginType,
+                            loginChallenge
+                        );
 
             logger.info('Created new auth proof cookie for user: %s', username);
         }
@@ -192,7 +215,7 @@ export async function validateAndGetAuthProofCookie(
 
                         // log login change event
                         logLoginEvent(
-                            req.socket.remoteAddress || req.headers['x-forwarded-for'] as string,
+                            getClientIp(req),
                             username,
                             loginType,
                             loginChallenge
@@ -221,6 +244,11 @@ export async function validateAndGetAuthProofCookie(
  */
 export function logPageVisit(req: NextRequest, pathname: string): void {
     try {
+        // Safety check - ensure pathname is valid
+        if (!pathname || typeof pathname !== 'string') {
+            return;
+        }
+        
         // Skip logging for certain patterns to avoid spam
         if (shouldSkipPageVisitLogging(pathname)) {
             return;
@@ -235,14 +263,18 @@ export function logPageVisit(req: NextRequest, pathname: string): void {
             
             if (cookieData) {
                 // Get client IP
-                const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+                const ip = getClientIp(req);
+                
+                // Handle null values for logged out users
+                const username = cookieData.username || 'none';
+                const loginType = cookieData.loginType || 'none';
                 
                 // Log the page visit
                 logger.info('Page visit: %s --> ip=%s account=%s login_type=%s uuid=%s', 
                     pathname, 
                     ip, 
-                    cookieData.username, 
-                    cookieData.loginType, 
+                    username, 
+                    loginType, 
                     cookieData.uuid
                 );
             }
@@ -254,9 +286,7 @@ export function logPageVisit(req: NextRequest, pathname: string): void {
 }
 
 /**
- * Determine if we should skip logging for a given pathname
- * @param pathname - The page path being visited
- * @returns true if we should skip logging
+ * Check if page visit logging should be skipped
  */
 function shouldSkipPageVisitLogging(pathname: string): boolean {
     // Skip API routes
@@ -264,17 +294,29 @@ function shouldSkipPageVisitLogging(pathname: string): boolean {
         return true;
     }
     
-    // Skip static files and Next.js internals
-    if (pathname.startsWith('/_next/') || pathname.startsWith('/static/')) {
+    // Skip Next.js internals and error pages
+    if (pathname.startsWith('/_next/') || pathname.startsWith('/__nextjs_')) {
         return true;
     }
     
-    // Skip favicon and other assets
-    if (pathname === '/favicon.ico' || pathname.includes('.')) {
+    // Skip static files by specific extensions
+    const staticFileExtensions = [
+        '.js', '.css', '.ico', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp',
+        '.txt', '.xml', '.json', '.woff', '.woff2', '.ttf', '.eot', '.map',
+        '.pdf', '.zip', '.mp4', '.mp3', '.wav', '.wasm'
+    ];
+    
+    if (staticFileExtensions.some(ext => pathname.toLowerCase().endsWith(ext))) {
         return true;
     }
     
-    // Don't skip any actual page routes we want to log them all!
-    // The rate limiting will handle duplicate calls for the same route
+    // Skip other common static patterns
+    if (pathname.startsWith('/static/') || 
+        pathname.startsWith('/assets/') ||
+        pathname.startsWith('/public/')) {
+        return true;
+    }
+    
+    // Log actual page routes only (no file extensions or static paths)
     return false;
 }
