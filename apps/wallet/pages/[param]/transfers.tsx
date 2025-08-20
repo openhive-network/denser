@@ -25,6 +25,7 @@ import Loading from '@ui/components/loading';
 import TransfersHistoryFilter from '@/wallet/components/transfers-history-filter';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useTranslation } from 'next-i18next';
+import { TFunction } from 'i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import {
   Button,
@@ -59,7 +60,6 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { toast } from '@ui/components/hooks/use-toast';
 import Head from 'next/head';
 import TimeAgo from '@hive/ui/components/time-ago';
-import HistoryTable from '@/wallet/feature/transfers-page/history-table';
 import {
   initialFilters,
   mapToAccountHistoryObject,
@@ -828,56 +828,6 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
   );
 }
 
-<<<<<<< HEAD
-||||||| parent of f87e07c5 (Use hivemind API to get transactions data)
-interface HistoryTableProps {
-  isLoading: boolean;
-  historyList: AccountHistoryData[] | undefined;
-  historyItemDescription: (operation: Operation) => JSX.Element;
-  t: TFunction<'common_wallet', undefined>;
-}
-
-const HistoryTable = ({ t, isLoading, historyList = [], historyItemDescription }: HistoryTableProps) => {
-  if (isLoading) return <div>{t('global.loading')}</div>;
-  if (historyList.length === 0)
-    return (
-      <div
-        className="py-12 text-center text-3xl text-red-300"
-        data-testid="wallet-account-history-no-transacions-found"
-      >
-        {t('profile.no_transactions_found')}
-      </div>
-    );
-
-  return (
-    <table className="w-full max-w-6xl p-2">
-      <tbody>
-        {[...historyList].reverse().map(
-          (element) =>
-            element.operation && (
-              <tr
-                key={element.id}
-                className="m-0 w-full p-0 text-xs even:bg-background-tertiary sm:text-sm"
-                data-testid="wallet-account-history-row"
-              >
-                <td className="px-4 py-2 sm:min-w-[150px]">
-                  <TimeAgo date={element.timestamp} />
-                </td>
-                <td className="px-4 py-2 sm:min-w-[300px]">{historyItemDescription(element.operation)}</td>
-                {element.operation.memo ? (
-                  <td className="hidden break-all px-4 py-2 sm:block">{element.operation.memo}</td>
-                ) : (
-                  <td></td>
-                )}
-              </tr>
-            )
-        )}
-      </tbody>
-    </table>
-  );
-};
-
-=======
 interface HistoryTableProps {
   isLoading: boolean;
   historyList: HiveOperation[] | undefined;
@@ -924,8 +874,6 @@ const HistoryTable = ({ t, isLoading, historyList = [], historyItemDescription }
     </table>
   );
 };
-
->>>>>>> f87e07c5 (Use hivemind API to get transactions data)
 export default TransfersPage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {

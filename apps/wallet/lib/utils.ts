@@ -249,13 +249,10 @@ export function createListWithSuggestions(
       .map((e) => ({ username: e.username, about: `${e.counter} ${e.about}` })) ?? [];
   return [...transfers, ...following];
 }
-<<<<<<< HEAD
 
 export const prepareRC = (rc: string): string => {
   return `${numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(1))}bil`;
 };
-||||||| parent of f87e07c5 (Use hivemind API to get transactions data)
-=======
 
 export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: string | undefined, totalVestingShares: string | undefined, hiveChain: HiveChain): string {
   let operationHp = hiveChain?.hive(0);
@@ -272,4 +269,3 @@ export function filterSmallerThanOne(asset?: NaiAsset) {
   const {precision, amount} = asset;
   return parseInt(amount, 10) < 10 ** precision;
 }
->>>>>>> f87e07c5 (Use hivemind API to get transactions data)
