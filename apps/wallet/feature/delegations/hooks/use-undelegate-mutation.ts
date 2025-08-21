@@ -21,6 +21,7 @@ export const useUndelegateMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ['resourceCredits', user.username]
       });
+      queryClient.invalidateQueries(['manabar', user.username]);
       toast({
         variant: 'success',
         description: `Successfully undelegated RC from ${toAccount}`

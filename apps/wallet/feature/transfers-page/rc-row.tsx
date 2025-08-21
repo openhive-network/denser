@@ -4,9 +4,7 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { hoursAndMinutes } from './lib/utils';
 import RCStats from './rc-stats';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Button } from '@ui/components';
 import { prepareRC } from '@/wallet/lib/utils';
-import { useDelegateRCMutation } from './hooks/use-delegate-mutation';
 import DelegateRCDialog from './delegate-rc-dialog';
 
 const RCRow = ({ username }: { username: string }) => {
@@ -31,7 +29,8 @@ const RCRow = ({ username }: { username: string }) => {
               max: prepareRC(e.rc.max),
               percentageValue: e.rc.percentageValue,
               cooldown: hoursAndMinutes(e.rc.cooldown)
-            }
+            },
+            maxAvailableRC: e.rc.current
           }
         : null
   });
@@ -95,9 +94,9 @@ const RCRow = ({ username }: { username: string }) => {
           <p>No data available</p>
         </div>
       )}
-      {user.username === username ? (
+      {user.username === username && !!data ? (
         <div className="my-4 flex justify-center">
-          <DelegateRCDialog />
+          <DelegateRCDialog maxRC={data.maxAvailableRC} />
         </div>
       ) : null}
     </div>
