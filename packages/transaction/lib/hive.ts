@@ -1,33 +1,14 @@
-import { Moment } from 'moment';
 import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
-import {
-  TWaxApiRequest,
-  IManabarData,
-  transaction,
-  ApiAccount,
-  AccountAuthorityUpdateOperation
-} from '@hiveio/wax';
-import { isCommunity, parseAsset } from '@ui/lib/utils';
-import { vestsToRshares } from '@ui/lib/utils';
-import { DATA_LIMIT } from './bridge';
+import { IManabarData, ApiAccount, AccountAuthorityUpdateOperation } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
 import {
   IVoteListItem,
   IListWitnessVotes,
-  ICollateralizedConversionRequest,
-  ITrendingTag,
-  SavingsWithdrawRequest,
-  IConversionRequest,
-  WithdrawRoute,
-  IRewardFund,
   IFeedHistory,
   IFollow,
-  IMarketCandlestickDataItem,
   IAccountReputations,
   IDynamicGlobalProperties,
-  IWitnessSchedule,
-  BlogEntry,
   IVote,
   IPost
 } from './extended-hive.chain';
@@ -49,12 +30,6 @@ export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProper
       virtual_supply: r.virtual_supply
     };
   });
-};
-
-type GetAccountsnData = {
-  condenser_api: {
-    get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
-  };
 };
 
 export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> => {
@@ -146,20 +121,8 @@ export const getFindAccounts = (username: string): Promise<{ accounts: ApiAccoun
   return chain.api.database_api.find_accounts({ accounts: [username], delayed_votes_active: false });
 };
 
-type GetFeedHistoryData = {
-  database_api: {
-    get_feed_history: TWaxApiRequest<void, IFeedHistory>;
-  };
-};
-
 export const getFeedHistory = async (): Promise<IFeedHistory> => {
   return chain.api.database_api.get_feed_history();
-};
-
-type GetFollowCountData = {
-  condenser_api: {
-    get_follow_count: TWaxApiRequest<string[], AccountFollowStats>;
-  };
 };
 
 export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
@@ -181,25 +144,9 @@ export interface IDynamicProps {
   vestingRewardPercent: number;
 }
 
-export interface ITradeDataItem {
-  current_pays: string;
-  date: number;
-  open_pays: string;
-}
-
 export const getPost = async (username: string, permlink: string): Promise<IPost> => {
   return chain.api.condenser_api.get_content([username, permlink]);
 };
-
-interface IAccountReputationParams {
-  account_lower_bound: string;
-  limit: number;
-}
-
-interface IAccountReputation {
-  account: string;
-  reputation: number;
-}
 
 export const getAccountReputations = async (
   account_lower_bound: string,
@@ -208,61 +155,8 @@ export const getAccountReputations = async (
   return chain.api.condenser_api.get_account_reputations({ account_lower_bound, limit });
 };
 
-type GetMarketBucketSizesData = {
-  condenser_api: {
-    get_market_history_buckets: TWaxApiRequest<void[], number[]>;
-  };
-};
-
-export const getMarketBucketSizes = async (): Promise<number[]> => {
-  return chain.api.condenser_api.get_market_history_buckets([]);
-};
-
-export const getMarketHistory = async (
-  seconds: number,
-  startDate: Moment,
-  endDate: Moment
-): Promise<IMarketCandlestickDataItem[]> => {
-  let todayEarlier: string = startDate.format().split('+')[0];
-  let todayNow: string = endDate.format().split('+')[0];
-  return chain.api.condenser_api.get_market_history([seconds, todayEarlier, todayNow]);
-};
-
 export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
   return chain.api.condenser_api.get_active_votes([author, permlink]);
-};
-
-export const getTrendingTags = async (afterTag: string = '', limit: number = 250): Promise<string[]> => {
-  return chain.api.database_api.get_trending_tags([afterTag, limit]).then((tags: ITrendingTag[]) => {
-    return tags
-      .filter((x: ITrendingTag) => x.name !== '')
-      .filter((x: ITrendingTag) => !isCommunity(x.name))
-      .map((x: ITrendingTag) => x.name);
-  });
-};
-
-export const getAllTrendingTags = async (
-  afterTag: string = '',
-  limit: number = 250
-): Promise<ITrendingTag[] | void> => {
-  return chain.api.database_api
-    .get_trending_tags([afterTag, limit])
-    .then((tags: ITrendingTag[]) => {
-      return tags.filter((x) => x.name !== '').filter((x) => !isCommunity(x.name));
-    })
-    .catch((reason) => {
-      debugger;
-    });
-};
-
-type LookupAccountsData = {
-  database_api: {
-    lookup_accounts: TWaxApiRequest<(string | number)[], string[]>;
-  };
-};
-
-export const lookupAccounts = async (q: string, limit = 50): Promise<string[]> => {
-  return chain.api.database_api.lookup_accounts([q, limit]);
 };
 
 export interface IGetFollowParams {
@@ -278,11 +172,6 @@ export const DEFAULT_PARAMS_FOR_FOLLOW: IGetFollowParams = {
   limit: 50
 };
 
-type GetFollowersData = {
-  condenser_api: {
-    get_followers: TWaxApiRequest<(string | number | null)[], IFollow[]>;
-  };
-};
 export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
     return chain.api.condenser_api.get_followers([
@@ -297,11 +186,6 @@ export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<
   }
 };
 
-type GetFollowingData = {
-  condenser_api: {
-    get_following: TWaxApiRequest<(string | number | null)[], IFollow[]>;
-  };
-};
 export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
     return chain.api.condenser_api.get_following([
@@ -316,128 +200,6 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
   }
 };
 
-export const getRewardFund = async (): Promise<IRewardFund> => {
-  return chain.api.database_api.get_reward_fund(['post']);
-};
-
-export const getDynamicProps = async (): Promise<IDynamicProps> => {
-  const globalDynamic = await getDynamicGlobalProperties();
-  const feedHistory = await getFeedHistory();
-  const rewardFund = await getRewardFund();
-
-  const hivePerMVests =
-    (parseAsset(globalDynamic.total_vesting_fund_hive).amount /
-      parseAsset(globalDynamic.total_vesting_shares).amount) *
-    1e6;
-  const base = parseAsset(feedHistory.current_median_history.base).amount;
-  const quote = parseAsset(feedHistory.current_median_history.quote).amount;
-  const fundRecentClaims = parseFloat(rewardFund.recent_claims);
-  const fundRewardBalance = parseAsset(rewardFund.reward_balance).amount;
-  const hbdPrintRate = globalDynamic.hbd_print_rate;
-  const hbdInterestRate = globalDynamic.hbd_interest_rate;
-  const headBlock = globalDynamic.head_block_number;
-  const totalVestingFund = parseAsset(globalDynamic.total_vesting_fund_hive).amount;
-  const totalVestingShares = parseAsset(globalDynamic.total_vesting_shares).amount;
-  const virtualSupply = parseAsset(globalDynamic.virtual_supply).amount;
-  const vestingRewardPercent = globalDynamic.vesting_reward_percent;
-
-  return {
-    hivePerMVests,
-    base,
-    quote,
-    fundRecentClaims,
-    fundRewardBalance,
-    hbdPrintRate,
-    hbdInterestRate,
-    headBlock,
-    totalVestingFund,
-    totalVestingShares,
-    virtualSupply,
-    vestingRewardPercent
-  };
-};
-
-export const getWithdrawRoutes = async (account: string): Promise<WithdrawRoute[]> => {
-  return chain.api.database_api.get_withdraw_routes([account, 'outgoing']);
-};
-
-export const powerRechargeTime = (power: number) => {
-  const missingPower = 100 - power;
-  return (missingPower * 100 * 432000) / 10000;
-};
-
-export const votingValue = (
-  account: FullAccount,
-  dynamicProps: IDynamicProps,
-  votingPower: number,
-  weight: number = 10000
-): number => {
-  const { fundRecentClaims, fundRewardBalance, base, quote } = dynamicProps;
-
-  const total_vests =
-    parseAsset(account.vesting_shares).amount +
-    parseAsset(account.received_vesting_shares).amount -
-    parseAsset(account.delegated_vesting_shares).amount;
-
-  const rShares = vestsToRshares(total_vests, votingPower, weight);
-
-  return (rShares / fundRecentClaims) * fundRewardBalance * (base / quote);
-};
-
-const HIVE_VOTING_MANA_REGENERATION_SECONDS = 5 * 60 * 60 * 24; //5 days
-
-export const downVotingPower = (account: FullAccount): number => {
-  const totalShares =
-    parseFloat(account.vesting_shares) +
-    parseFloat(account.received_vesting_shares) -
-    parseFloat(account.delegated_vesting_shares) -
-    parseFloat(account.vesting_withdraw_rate);
-  const elapsed = Math.floor(Date.now() / 1000) - account.downvote_manabar.last_update_time;
-  const maxMana = (totalShares * 1000000) / 4;
-
-  let currentMana =
-    parseFloat(account.downvote_manabar.current_mana.toString()) +
-    (elapsed * maxMana) / HIVE_VOTING_MANA_REGENERATION_SECONDS;
-
-  if (currentMana > maxMana) {
-    currentMana = maxMana;
-  }
-  const currentManaPerc = (currentMana * 100) / maxMana;
-
-  if (isNaN(currentManaPerc)) {
-    return 0;
-  }
-
-  if (currentManaPerc > 100) {
-    return 100;
-  }
-  return currentManaPerc;
-};
-
-export const getConversionRequests = async (account: string): Promise<IConversionRequest[]> => {
-  return chain.api.database_api.get_conversion_requests([account]);
-};
-
-export const getCollateralizedConversionRequests = async (
-  account: string
-): Promise<ICollateralizedConversionRequest[]> => {
-  return chain.api.database_api.get_collateralized_conversion_requests([account]);
-};
-
-export const getSavingsWithdrawFrom = async (account: string): Promise<SavingsWithdrawRequest[]> => {
-  return chain.api.database_api.get_savings_withdraw_from([account]);
-};
-
-export const getBlogEntries = async (username: string, limit: number = DATA_LIMIT): Promise<BlogEntry[]> => {
-  return chain.api.condenser_api.get_blog_entries([username, 0, limit]);
-};
-
-type GetRebloggedByData = {
-  condenser_api: {
-    get_reblogged_by: TWaxApiRequest<[string, string], string[]>;
-  };
-};
-
 /**
  * Returns list of accounts that reblogged given post, defined by tuple
  * `[author: string, permlink: string]`.
@@ -449,34 +211,6 @@ type GetRebloggedByData = {
 export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
   return chain.api.condenser_api.get_reblogged_by([author, permlink]);
 };
-
-type BrodcastTransactionData = {
-  network_broadcast_api: {
-    broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
-  };
-};
-export const brodcastTransaction = async (transaction: any): Promise<any> => {
-  return chain.api.network_broadcast_api.broadcast_transaction([transaction]);
-};
-
-// create type for api call result do working search
-// export const searchTag = async (
-//   q: string = '',
-//   scroll_id: string = '',
-//   sort: string = 'newest',
-// ): Promise<any> => {
-//   const bodyData = { q, scroll_id, sort };
-//   const bodyWithCSRF = {
-//     ...bodyData,
-//     _csrf: window.$STM_csrf,
-//   };
-//   const response = await fetch('https://hive.blog/api/v1/search', {
-//     method: 'post',
-//     body: JSON.stringify(bodyData),
-//     headers: { 'Content-Type': 'application/json' }
-//   });
-//   return await response.json();
-// };
 
 interface IManabars {
   upvote: IManabarData;
@@ -572,13 +306,6 @@ export const getListVotesByCommentVoter = async (
   return chain.api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
 };
 
-export const getListVotesByVoterComment = async (
-  start: [string, string, string] | null, // should be [voter, author, permlink]
-  limit: number
-): Promise<{ votes: IVoteListItem[] }> => {
-  return chain.api.database_api.list_votes({ start, limit, order: 'by_voter_comment' });
-};
-
 export const getAuthority = async (username: string): Promise<AccountAuthorityUpdateOperation> => {
   const chain = await hiveChainService.getHiveChain();
   const operation = await AccountAuthorityUpdateOperation.createFor(chain, username);
@@ -617,8 +344,4 @@ export const getPrivateKeys = async (
     })
   );
   return keys;
-};
-
-export const getWitnessSchedule = async (): Promise<IWitnessSchedule> => {
-  return chain.api.condenser_api.get_witness_schedule([]);
 };
