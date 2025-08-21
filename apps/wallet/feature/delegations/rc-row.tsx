@@ -16,10 +16,7 @@ const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string
   const userOwner = account === user.username;
 
   return (
-    <tr
-      className="m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700"
-      data-testid="wallet-delegation-item"
-    >
+    <tr className="m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700">
       <td className="py-2 pl-10">{prepareRC(delegated_rc.toString())}</td>
       <td className="px-1 py-2 text-destructive sm:px-4">
         <Link href={`/@${to}/transfers`}>{`@${to}`}</Link>
