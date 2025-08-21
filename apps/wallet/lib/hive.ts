@@ -1,13 +1,7 @@
 import Big from 'big.js';
 import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
-import {
-  TWaxApiRequest,
-  RcAccount,
-  asset,
-  GetDynamicGlobalPropertiesResponse,
-  GetDynamicGlobalPropertiesRequest
-} from '@hiveio/wax';
+import { TWaxApiRequest, RcAccount, GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import {
   SavingsWithdrawals,
@@ -179,12 +173,6 @@ export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> =>
   return chain.api.condenser_api.get_order_book([limit]);
 };
 
-type GetOpenOrderData = {
-  condenser_api: {
-    get_open_orders: TWaxApiRequest<string[], IOpenOrdersData[]>;
-  };
-};
-
 export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => {
   return chain.api.condenser_api.get_open_orders([user]);
 };
@@ -212,15 +200,6 @@ export const getSavingsWithdrawals = async (account: string): Promise<SavingsWit
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
   return chain.api.condenser_api.get_owner_history([account]);
 };
-
-interface GetDynamicGlobalProperties {
-  database_api: {
-    get_dynamic_global_properties: TWaxApiRequest<
-      GetDynamicGlobalPropertiesRequest,
-      GetDynamicGlobalPropertiesResponse
-    >;
-  };
-}
 
 export const getDynamicGlobalPropertiesData = async (): Promise<GetDynamicGlobalPropertiesResponse> => {
   return chain.api.database_api.get_dynamic_global_properties({});
