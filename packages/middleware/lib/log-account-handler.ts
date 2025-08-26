@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { logLoginEvent } from '@hive/ui/lib/logging';
 import {
     AUTH_PROOF_COOKIE_NAME,
     parseAuthProofCookie,
     setAuthProofCookie,
     logLogoutAndKeepCookie,
     AuthProofCookieData,
-    parseAuthProofTransaction
+    parseAuthProofTransaction,
+    logLoginEvent
 } from './auth-proof-cookie';
 import { getClientIp } from './common-utils';
 
