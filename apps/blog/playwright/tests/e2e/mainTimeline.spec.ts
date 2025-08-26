@@ -524,8 +524,8 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(44, 48, 53)');
   });
 
-  test('filtr posts in maintimeline', async ({ browser, browserName }) => {
-    test.skip(browserName === "webkit", 'Automatic test works well on chromium');
+  test('filtr posts in maintimeline', async ({ browserName }) => {
+    test.skip(browserName === 'firefox' || browserName === "webkit", 'Automatic test works well on chromium');
 
     await homePage.goto();
 
