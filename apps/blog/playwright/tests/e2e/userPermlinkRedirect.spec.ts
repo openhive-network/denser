@@ -36,4 +36,23 @@ test.describe('User parmlink redirect tests', () => {
     const location = response.headers()['location'];
     expect(location).toBe(expectedEndpoint);
   });
+
+  test('validate redirect location for user/permlink endpoint of the comment', async ({ page, request }) => {
+    const userPermlinkEndpoint: string = '/@gtg/re-palmerjm1-re-gtg-hello-world-20170808t063121445z';
+    const expectedEndpoint: string = '/introduceyourself/@gtg/re-palmerjm1-re-gtg-hello-world-20170808t063121445z'
+
+    await homePage.gotoSpecificUrl(userPermlinkEndpoint);
+
+    const requestEndpoint = `${userPermlinkEndpoint}`;
+
+    await homePage.page.waitForTimeout(5000);
+
+    // Validate the redirect request
+    const response = await request.get(requestEndpoint, { maxRedirects: 0 });
+    expect(response.status()).toBe(302);
+
+    // Get the location header of the respons
+    const location = response.headers()['location'];
+    expect(location).toBe(expectedEndpoint);
+  });
 });
