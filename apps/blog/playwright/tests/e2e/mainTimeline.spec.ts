@@ -420,6 +420,7 @@ test.describe('Home page tests', () => {
     const postChildren = (await response.json()).result[0].children;
     // console.log("Responses to post : ", await postChildren)
 
+    await homePage.page.waitForTimeout(3000);
     expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
     expect(homePage.getFirstPostAuthorReputation).toContainText('(' + Math.floor(postAuthorReputation) + ')');
     expect(homePage.getFirstPostTitle).toHaveText(postTitle);
@@ -523,10 +524,7 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(44, 48, 53)');
   });
 
-  test('filtr posts in maintimeline', async ({ browser, browserName }) => {
-    const newContext = await browser.newContext();
-    const newPage = await newContext.newPage();
-
+  test('filtr posts in maintimeline', async ({ browser }) => {
     await homePage.goto();
 
     await expect(homePage.getFilterPosts).toHaveText('Trending');
