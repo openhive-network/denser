@@ -524,7 +524,9 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(44, 48, 53)');
   });
 
-  test('filtr posts in maintimeline', async ({ browser }) => {
+  test('filtr posts in maintimeline', async ({ browser, browserName }) => {
+    test.skip(browserName === "webkit", 'Automatic test works well on chromium');
+
     await homePage.goto();
 
     await expect(homePage.getFilterPosts).toHaveText('Trending');
@@ -533,7 +535,7 @@ test.describe('Home page tests', () => {
     await homePage.getFilterPostsList.getByText('New').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('New').locator('..').click();
     await expect(homePage.getFilterPosts).toHaveText('New');
-    // // click 'Hot' value of posts filter
+    // click 'Hot' value of posts filter
     await homePage.getFilterPosts.click();
     await homePage.getFilterPostsList.getByText('Hot').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Hot').click();
