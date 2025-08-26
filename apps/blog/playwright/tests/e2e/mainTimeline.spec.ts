@@ -535,18 +535,22 @@ test.describe('Home page tests', () => {
     await expect(homePage.getFilterPosts).toHaveText('New');
     // // click 'Hot' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Hot').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Hot').click();
     await expect(homePage.getFilterPosts).toHaveText('Hot');
     // click 'Payout' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Payouts').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Payouts').click();
     await expect(homePage.getFilterPosts).toHaveText('Payouts');
     // click 'Promoted' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Muted').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Muted').click();
     await expect(homePage.getFilterPosts).toHaveText('Muted');
     // click 'Trending' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Trending').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Trending').click();
     await expect(homePage.getFilterPosts).toHaveText('Trending');
   });
