@@ -137,7 +137,11 @@ export default function PostForm({
     });
   }, [preferences.blog_rewards]);
   const [preview, setPreview] = useState(true);
-  const [selectedImg, setSelectedImg] = useState('');
+  const [selectedImg, setSelectedImg] = useState(
+    // Initialize with existing cover image when editing
+    editMode && post_s?.json_metadata?.image?.[0] ? post_s.json_metadata.image[0] : ''
+  );
+
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const [imagePickerState, setImagePickerState] = useState('');
   const { manabarsData } = useManabars(username);
