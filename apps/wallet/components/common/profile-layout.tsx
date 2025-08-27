@@ -17,6 +17,7 @@ import {
 } from '@ui/components/dropdown-menu';
 import { useTranslation } from 'next-i18next';
 import { getExternalLink } from '@/wallet/lib/utils';
+import { getUserAvatarUrl } from '@hive/ui';
 
 interface IProfileLayout {
   children: React.ReactNode;
@@ -64,7 +65,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <div
                 className="mr-3 h-[48px] w-[48px] rounded-3xl bg-cover bg-no-repeat"
                 style={{
-                  backgroundImage: `url(https://images.hive.blog/u/${profileData?.name}/avatar)`
+                  backgroundImage: `url(${getUserAvatarUrl(profileData?.name || '', 'medium')})`
                 }}
               />
               <h4 className="sm:text-2xl" data-testid="profile-name">

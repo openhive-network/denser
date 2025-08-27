@@ -27,6 +27,7 @@ import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { useRouter } from 'next/router';
 import { cn } from '@ui/lib/utils';
 import { getHiveSenseStatus } from '../lib/get-data';
+import { getUserAvatarUrl, getDefaultImageUrl } from '@hive/ui';
 
 const SiteHeader: FC = () => {
   const { t } = useTranslation('common_blog');
@@ -227,17 +228,14 @@ const SiteHeader: FC = () => {
                         <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
                           <AvatarImage
                             className="h-full w-full object-cover"
-                            src={
-                              profile?.profile?.profile_image ||
-                              `${configuredImagesEndpoint}/u/${user.username}/avatar`
-                            }
+                            src={getUserAvatarUrl(user?.username || '', 'small')}
                             alt="Profile picture"
                           />
                           <AvatarFallback>
                             <img
                               className="h-full w-full object-cover"
-                              src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
-                              alt="default img"
+                              src={getUserAvatarUrl(user?.username || '', 'small')}
+                              alt="Profile picture"
                             />
                           </AvatarFallback>
                         </Avatar>

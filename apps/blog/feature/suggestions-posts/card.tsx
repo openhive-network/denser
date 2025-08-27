@@ -3,6 +3,7 @@ import { find_first_img } from '../../components/post-img';
 import Link from 'next/link';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useState } from 'react';
+import { getDefaultImageUrl } from '@hive/ui';
 
 const truncateTitle = (title: string, maxLength: number = 50) => {
   return title.length > maxLength ? `${title.substring(0, maxLength)}...` : title;
@@ -22,7 +23,7 @@ const SuggestionsCard = ({ entry }: { entry: Entry }) => {
                   srcSet={proxifyImageUrl(image, '256x512').replace(/ /g, '%20')}
                   media="(min-width: 600px)"
                   onError={() =>
-                    setImage('https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4')
+                    setImage(getDefaultImageUrl())
                   }
                 />
                 <img
@@ -31,7 +32,7 @@ const SuggestionsCard = ({ entry }: { entry: Entry }) => {
                   loading="lazy"
                   className="w-full"
                   onError={() =>
-                    setImage('https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4')
+                    setImage(getDefaultImageUrl())
                   }
                 />
               </picture>

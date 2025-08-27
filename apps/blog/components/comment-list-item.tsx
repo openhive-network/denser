@@ -32,6 +32,8 @@ import ChangeTitleDialog from './change-title-dialog';
 import { AlertDialogFlag } from './alert-window-flag';
 import FlagTooltip from './flag-icon';
 import TimeAgo from '@hive/ui/components/time-ago';
+import { getUserAvatarUrl } from '@hive/ui';
+
 interface CommentListProps {
   permissionToMute: Boolean;
   comment: Entry;
@@ -119,7 +121,7 @@ const CommentListItem = ({
               })}
               height="40"
               width="40"
-              src={`https://images.hive.blog/u/${username}/avatar/small`}
+              src={getUserAvatarUrl(username, 'small')}
               alt={`${username} profile picture`}
               loading="lazy"
             />
@@ -149,7 +151,7 @@ const CommentListItem = ({
                                   className=" h-[20px] w-[20px] rounded-3xl sm:hidden"
                                   height="20"
                                   width="20"
-                                  src={`https://images.hive.blog/u/${username}/avatar/small`}
+                                  src={getUserAvatarUrl(username, 'small')}
                                   alt={`${username} profile picture`}
                                   loading="lazy"
                                 />
