@@ -681,6 +681,40 @@ export type Badge = {
   url: string;
 };
 
+// New API parameter interfaces
+export interface PostsSearchParams {
+  q: string;
+  truncate?: number;
+  result_limit?: number;
+  full_posts?: number;
+  observer?: string;
+}
+
+export interface PostsSimilarParams {
+  author: string;
+  permlink: string;
+  truncate?: number;
+  result_limit?: number;
+  full_posts?: number;
+  observer?: string;
+}
+
+export interface PostsByIdsParams {
+  posts: Array<{ author: string; permlink: string }>;
+  truncate?: number;
+  observer?: string;
+}
+
+// Stub entry type for posts with only author/permlink
+export interface PostStub {
+  author: string;
+  permlink: string;
+}
+
+// Mixed response type for new API endpoints
+export type MixedPostsResponse = Array<Entry | PostStub>;
+
+// Legacy API parameter interfaces (deprecated)
 export interface SimilarPostParams {
   pattern?: string;
   tr_body?: number;
@@ -689,8 +723,6 @@ export interface SimilarPostParams {
   start_author?: string;
   start_permlink?: string;
 }
-
-// author=${author}&permlink=${permlink}&tr_body=${tr_body}&posts_limit=${posts_limit}&observer=${observer}
 
 export interface SimilarPostsByPostParams {
   author: string;
@@ -855,6 +887,20 @@ export type ExtendedRestApi = {
   'hivesense-api': {
     params: undefined;
     result: HivesenseStatusResponse;
+    // New API endpoints
+    posts_search: {
+      params: PostsSearchParams;
+      result: MixedPostsResponse;
+    };
+    posts_similar: {
+      params: PostsSimilarParams;
+      result: MixedPostsResponse;
+    };
+    posts_by_ids: {
+      params: PostsByIdsParams;
+      result: Entry[];
+    };
+    // Legacy API endpoints (deprecated)
     similarposts: {
       params: SimilarPostParams;
       result: Entry[];

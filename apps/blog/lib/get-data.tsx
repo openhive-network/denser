@@ -1,5 +1,5 @@
 import env from '@beam-australia/react-env';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry, PostStub, MixedPostsResponse } from '@transaction/lib/extended-hive.chain';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { configuredAIDomain } from '@ui/config/public-vars';
 import { logger } from '@ui/lib/logger';
@@ -62,4 +62,89 @@ export const getSuggestions = async ({
   } catch (error) {
     return logStandarizedError("getSuggestions", error);
   }
+};
+
+// New API functions using the updated endpoints
+
+export const searchPosts = async ({
+  query,
+  truncate = 0,
+  result_limit = 100,
+  full_posts = 10,
+  observer
+}: {
+  query: string;
+  truncate?: number;
+  result_limit?: number;
+  full_posts?: number;
+  observer: string;
+}): Promise<MixedPostsResponse | null> => {
+  try {
+    const response = await chain.restApi['hivesense-api'].posts_search({
+      q: query,
+      truncate,
+      result_limit,
+      full_posts,
+      observer
+    });
+    return response;
+  } catch (error) {
+    return logStandarizedError("searchPosts", error);
+  }
+};
+
+export const getSimilarPostsByPost = async ({
+  author,
+  permlink,
+  truncate = 0,
+  result_limit = 100,
+  full_posts = 10,
+  observer
+}: {
+  author: string;
+  permlink: string;
+  truncate?: number;
+  result_limit?: number;
+  full_posts?: number;
+  observer: string;
+}): Promise<MixedPostsResponse | null> => {
+  try {
+    const response = await chain.restApi['hivesense-api'].posts_similar({
+      author,
+      permlink,
+      truncate,
+      result_limit,
+      full_posts,
+      observer
+    });
+    return response;
+  } catch (error) {
+    return logStandarizedError("getSimilarPostsByPost", error);
+  }
+};
+
+export const getPostsByIds = async ({
+  posts,
+  truncate = 0,
+  observer
+}: {
+  posts: Array<{ author: string; permlink: string }>;
+  truncate?: number;
+  observer: string;
+}): Promise<Entry[] | null> => {
+  try {
+    const response = await chain.restApi['hivesense-api'].posts_by_ids({
+      posts,
+      truncate,
+      observer
+    });
+    return response;
+  } catch (error) {
+    return logStandarizedError("getPostsByIds", error);
+  }
+};
+
+// Helper function to check if a post is a stub (only has author/permlink)
+export const isPostStub = (post: Entry | PostStub): post is PostStub => {
+  return !('title' in post) && !('body' in post) && 'author' in post && 'permlink' in post;
 };
