@@ -54,7 +54,8 @@ import moment from 'moment';
 import { PostDeleteDialog } from '@/blog/components/post-delete-dialog';
 import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation';
 import FlagIcon from '@/blog/components/flag-icon';
-import { getSuggestions } from '@/blog/lib/get-data';
+import { getSimilarPostsByPost, isPostStub } from '@/blog/lib/get-data';
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import SuggestionsList from '@/blog/feature/suggestions-posts/list';
 import TimeAgo from '@ui/components/time-ago';
 import CommentList from '@/blog/components/comment-list';
@@ -62,7 +63,6 @@ import clsx from 'clsx';
 import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
-import { Entry } from '@transaction/lib/extended-hive.chain';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -100,18 +100,29 @@ function PostPage({
     }
   );
 
-  const { data: suggestions } = useQuery(
+  const { data: suggestionResults } = useQuery(
     ['suggestions', username, permlink],
-    () =>
-      getSuggestions({
+    async () => {
+      const results = await getSimilarPostsByPost({
         author: username,
         permlink,
-        observer: user.username !== '' ? user.username : 'hive.blog'
-      }),
+        observer: user.username !== '' ? user.username : 'hive.blog',
+        result_limit: 10, // Only get 10 suggestions
+        full_posts: 10 // Get all as full posts
+      });
+      
+      if (!results) return null;
+      
+      // Filter out null/invalid posts and only include full Entry objects (not stubs)
+      const fullPosts = results.filter(post => post && !isPostStub(post) && (post as Entry).post_id) as Entry[];
+      return fullPosts;
+    },
     {
       enabled: !!username && !!permlink
     }
   );
+  
+  const suggestions = suggestionResults;
   const { isLoading: isLoadingDiscussion, data: discussion } = useQuery(
     ['discussionData', permlink],
     () => getDiscussion(username, String(permlink), user.username),
