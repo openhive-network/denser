@@ -193,12 +193,12 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
 
       if (routerTag) {
         router.push(`/${e}/${routerTag}`, undefined, {
-          shallow: true,
+          shallow: false,
           scroll: false // Prevent scroll jump
         });
       } else {
         router.push(`/${e}`, undefined, {
-          shallow: true,
+          shallow: false,
           scroll: false // Prevent scroll jump
         });
       }

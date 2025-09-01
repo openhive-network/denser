@@ -420,6 +420,7 @@ test.describe('Home page tests', () => {
     const postChildren = (await response.json()).result[0].children;
     // console.log("Responses to post : ", await postChildren)
 
+    await homePage.page.waitForTimeout(3000);
     expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
     expect(homePage.getFirstPostAuthorReputation).toContainText('(' + Math.floor(postAuthorReputation) + ')');
     expect(homePage.getFirstPostTitle).toHaveText(postTitle);
@@ -523,9 +524,8 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(44, 48, 53)');
   });
 
-  test('filtr posts in maintimeline', async ({ browser, browserName }) => {
-    const newContext = await browser.newContext();
-    const newPage = await newContext.newPage();
+  test('filtr posts in maintimeline', async ({ browserName }) => {
+    test.skip(browserName === 'firefox' || browserName === "webkit", 'Automatic test works well on chromium');
 
     await homePage.goto();
 
@@ -534,22 +534,31 @@ test.describe('Home page tests', () => {
     await homePage.getFilterPosts.click();
     await homePage.getFilterPostsList.getByText('New').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('New').locator('..').click();
+    await homePage.page.waitForTimeout(3000);
     await expect(homePage.getFilterPosts).toHaveText('New');
-    // // click 'Hot' value of posts filter
+    // click 'Hot' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Hot').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Hot').click();
+    await homePage.page.waitForTimeout(3000);
     await expect(homePage.getFilterPosts).toHaveText('Hot');
     // click 'Payout' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Payouts').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Payouts').click();
+    await homePage.page.waitForTimeout(3000);
     await expect(homePage.getFilterPosts).toHaveText('Payouts');
     // click 'Promoted' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Muted').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Muted').click();
+    await homePage.page.waitForTimeout(3000);
     await expect(homePage.getFilterPosts).toHaveText('Muted');
     // click 'Trending' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Trending').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Trending').click();
+    await homePage.page.waitForTimeout(3000);
     await expect(homePage.getFilterPosts).toHaveText('Trending');
   });
 

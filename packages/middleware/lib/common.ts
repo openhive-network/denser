@@ -12,6 +12,8 @@ export async function commonMiddleware(request: NextRequest) {
 
   const res = NextResponse.next();
 
+  setLoginChallengeCookies(request, res);
+
   const tempArr = pathname.split('/');
   let entry: any = null;
   if (tempArr.length === 3 && tempArr[1].startsWith('@')) {
@@ -40,17 +42,7 @@ export async function commonMiddleware(request: NextRequest) {
     }
   }
 
-  /*
-  Set cookies with loginChallenge value set to random string (UID).
-  * Match all request paths except for the ones starting with:
-  * - api (API routes)
-  * - _next/static (static files)
-  * - _next/image (image optimization files)
-  * - favicon.ico (favicon file)
-  */
   if (pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {
-    setLoginChallengeCookies(request, res);
-
     const isPrefetch =
       request.headers.get('x-middleware-prefetch') === '1' ||
       request.headers.get('purpose') === 'prefetch' ||

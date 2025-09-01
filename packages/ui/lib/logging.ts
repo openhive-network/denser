@@ -66,30 +66,3 @@ export function getLogger(name: string): Logger {
     ...config
   });
 }
-
-/**
- * Log a login event in the required format, including optional serialized auth proof.
- * @param ip - The user's IP address
- * @param authProof - The serialized login auth proof (Transaction base64), optional
- */
-export function logLoginEvent(ip: string | undefined, username: string, loginType: string, loginChallenge: string) {
-  let logLine = `/login_account --> ip=${ip} account=${username} login_type=${loginType} uuid=${loginChallenge}`;
-
-  // Use the shared logger
-  const logger = getLogger('login_account');
-  logger.info(logLine);
-}
-
-/**
- * Log a logout event in the required format.
- * @param ip - The user's IP address
- * @param username - The username of the user who logged out
- * @param loginType - The login type that was used
- * @param uuid - The UUID (loginChallenge) from the cookie
- */
-export function logLogoutEvent(ip: string | undefined, username: string, loginType: string, uuid: string) {
-  const logLine = `/logout --> ip=${ip} account=${username} login_type=${loginType} uuid=${uuid}`;
-  // Use the shared logger
-  const logger = getLogger('logout');
-  logger.info(logLine);
-}
