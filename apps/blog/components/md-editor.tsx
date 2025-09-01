@@ -8,7 +8,8 @@ import {
   useCallback,
   useEffect,
   useRef,
-  useState
+  useState,
+  ClipboardEvent
 } from 'react';
 import * as commands from '@uiw/react-md-editor/commands';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -61,13 +62,17 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
 
     data = await data;
     const prefix = Buffer.from('ImageSigningChallenge');
-    const buf = Buffer.concat([prefix, data as unknown as Uint8Array]);
+    const dataBuf = data as Buffer; // ensure Buffer
+    const combined = new Uint8Array(prefix.length + dataBuf.length);
+    combined.set(prefix, 0);
+    combined.set(dataBuf, prefix.length);
+    const buf = Buffer.from(combined);
 
     const sig = await signer.signChallenge({
       message: buf,
       password: ''
     });
-    
+
     const imageOwner = signer.authorityUsername || signer.username;
 
     const postUrl = `${configuredImagesEndpoint}${imageOwner}/${sig}`;
@@ -117,6 +122,26 @@ export const onImageDrop = async (
   await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode)));
 };
 
+export const onImagePaste = async (
+  clipboardData: DataTransfer,
+  setMarkdown: Dispatch<SetStateAction<string>>,
+  username: string,
+  signer: Signer,
+  htmlMode: boolean
+) => {
+  const files: File[] = [];
+  for (let i = 0; i < clipboardData.items.length; i++) {
+    const item = clipboardData.items[i];
+    if (item.kind === 'file' && item.type.startsWith('image/')) {
+      const file = item.getAsFile();
+      if (file) files.push(file);
+    }
+  }
+  if (!files.length) return false;
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode)));
+  return true;
+};
+
 const insertToTextArea = (insertString: string) => {
   const textarea = document.querySelector('textarea');
   if (!textarea) {
@@ -147,7 +172,13 @@ interface MdEditorProps {
   windowheight: number;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, htmlMode, windowheight }) => {
+const MdEditor: FC<MdEditorProps> = ({
+  onChange,
+  persistedValue = '',
+  placeholder,
+  htmlMode,
+  windowheight
+}) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
@@ -198,6 +229,27 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     [htmlMode, setFormValue, signer]
   );
 
+  const pasteHandler = useCallback(
+    async (event: ClipboardEvent<HTMLDivElement>) => {
+      if (!event.clipboardData) return;
+
+      let hasImage = false;
+      for (let i = 0; i < event.clipboardData.items.length; i++) {
+        const it = event.clipboardData.items[i];
+        if (it.kind === 'file' && it.type.startsWith('image/')) {
+          hasImage = true;
+          break;
+        }
+      }
+      if (hasImage) {
+        event.preventDefault();
+        event.stopPropagation();
+        await onImagePaste(event.clipboardData, setFormValue, signer.username, signer, htmlMode);
+      }
+    },
+    [htmlMode, setFormValue, signer]
+  );
+
   const imgBtn = (inputRef: MutableRefObject<HTMLInputElement>): commands.ICommand => ({
     name: 'Text To Image',
     keyCommand: 'text2image',
@@ -243,15 +295,12 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   });
 
   const spoilerBtn = (): commands.ICommand => ({
-    name: "Add Spoiler",
-    keyCommand: "spoiler",
+    name: 'Add Spoiler',
+    keyCommand: 'spoiler',
     render: (
       command: commands.ICommand,
       disabled: boolean | undefined,
-      executeCommand: (
-        arg0: commands.ICommand<string>,
-        arg1: string | undefined
-      ) => void
+      executeCommand: (arg0: commands.ICommand<string>, arg1: string | undefined) => void
     ) => {
       return (
         <Button
@@ -264,15 +313,13 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       );
     },
     execute: (_: commands.ExecuteState, api: TextAreaTextApi) => {
-      const spoilerTemplate = ">! [Click to reveal] Your spoiler content";
+      const spoilerTemplate = '>! [Click to reveal] Your spoiler content';
       const newState = api.replaceSelection(spoilerTemplate);
       api.setSelectionRange({
-        start:
-          newState.selection.start +
-          spoilerTemplate.indexOf("Your spoiler content"),
-        end: newState.selection.end,
+        start: newState.selection.start + spoilerTemplate.indexOf('Your spoiler content'),
+        end: newState.selection.end
       });
-    },
+    }
   });
 
   return !imageUserBlocklist?.includes(user.username) ? (
@@ -287,7 +334,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         //@ts-ignore
         onChange={inputImageHandler}
       />
-      <div className="relative">
+      <div className="relative" onPaste={pasteHandler}>
         <div>
           <MDEditor
             ref={editorRef}
