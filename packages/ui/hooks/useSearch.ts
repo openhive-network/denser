@@ -58,10 +58,10 @@ export function useSearch() {
     if (!value) return;
     switch (currentMode) {
       case 'tag':
-        router.push(`trending/${encodeURIComponent(value)}`);
+        router.push(`/trending/${encodeURIComponent(value)}`);
         break;
       case 'account':
-        router.push(`@${encodeURIComponent(value)}`);
+        router.push(`/@${encodeURIComponent(value)}`);
         break;
       case 'ai':
         router.push(`/search?ai=${encodeURIComponent(value)}`);
