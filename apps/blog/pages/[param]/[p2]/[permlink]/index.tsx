@@ -521,7 +521,7 @@ function PostPage({
                             </div>
                           ) : userCanModerate && post.depth === 0 ? (
                             <div className="flex flex-col items-center">
-                              <button
+                              {/* <button
                                 disabled={post.stats?._temporary}
                                 className={clsx('ml-2 flex items-center text-destructive', {
                                   'animate-pulse cursor-not-allowed text-destructive':
@@ -530,6 +530,15 @@ function PostPage({
                                 onClick={post_is_pinned ? unpin : pin}
                               >
                                 {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
+                              </button> */}
+                              {/* TODO swap two button to one when api return stats.is_pinned,
+                            temprary use two button to unpin and pin
+                            */}
+                              <button className="ml-2 flex items-center text-destructive" onClick={pin}>
+                                {t('communities.pin')}
+                              </button>
+                              <button className="ml-2 flex items-center text-destructive" onClick={unpin}>
+                                {t('communities.unpin')}
                               </button>
                             </div>
                           ) : null}
