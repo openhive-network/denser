@@ -4,6 +4,11 @@ import { ProfilePage } from './profilePage';
 export class HomePage {
   readonly page: Page;
   readonly postPage: PostPage;
+  readonly getPostListTrending: Locator;
+  readonly getPostListNew: Locator;
+  readonly getPostListHot: Locator;
+  readonly getPostListPayouts: Locator;
+  readonly getPostListMuted: Locator;
   readonly getTrendingCommunitiesSideBar: Locator;
   readonly getTrendingCommunitiesSideBarLinks: Locator;
   readonly getTrandingCommunitiesHeader: Locator;
@@ -118,6 +123,11 @@ export class HomePage {
   constructor(page: Page) {
     this.page = page;
     this.postPage = new PostPage(page);
+    this.getPostListTrending = page.getByTestId('post-list-trending');
+    this.getPostListNew = page.getByTestId('post-list-created');
+    this.getPostListHot = page.getByTestId('post-list-hot');
+    this.getPostListPayouts = page.getByTestId('post-list-payout');
+    this.getPostListMuted = page.getByTestId('post-list-muted');
     this.getTrendingCommunitiesSideBar = page.locator('[data-testid="card-trending-comunities"]');
     this.getTrendingCommunitiesSideBarLinks = this.getTrendingCommunitiesSideBar.locator('div ul li a');
     this.getTrandingCommunitiesHeader = this.getTrendingCommunitiesSideBar
