@@ -324,7 +324,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
               <>
                 {entriesData.pages.map((page, index) => {
                   return page ? (
-                    <PostList data={page} key={`f-${index}`} isCommunityPage={!!communityData} />
+                    <PostList data={page} key={`f-${index}`} isCommunityPage={!!communityData} testFilter={routerSort} />
                   ) : null;
                 })}
                 <div>
