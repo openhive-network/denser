@@ -366,7 +366,7 @@ const ParamPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
               <>
                 {accountEntriesData.pages[0]?.length !== 0 ? (
                   accountEntriesData.pages.map((page, index) => {
-                    return page ? <PostList data={page} key={`x-${index}`} /> : null;
+                    return page ? <PostList data={page} key={`x-${index}`}  testFilter='profile-blog-list'/> : null;
                   })
                 ) : (
                   <div
