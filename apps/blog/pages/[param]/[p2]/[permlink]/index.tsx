@@ -2,7 +2,7 @@ import parseDate from '@ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
-import { useQuery } from '@tanstack/react-query';
+import { dehydrate, useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import ImageGallery from '@/blog/components/image-gallery';
@@ -62,6 +62,7 @@ import clsx from 'clsx';
 import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
+import { Entry } from '@transaction/lib/extended-hive.chain';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -712,12 +713,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const permlink = String(ctx.query.permlink);
 
   const queryClient = new QueryClient();
-  if (!queryClient.getQueryData(['postData', username, permlink])) {
-    await queryClient.prefetchQuery(['postData', username, permlink], () =>
-      getPost(username, String(permlink))
-    );
-  }
-  let post;
+  let post: Entry | undefined;
   let mutedStatus = false;
   let metadata = {
     tabTitle: '',
@@ -731,25 +727,55 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     communityTag: '',
     authorReputation: 0
   };
+
   if (!!permlink && !!username) {
     try {
-      await queryClient.prefetchQuery(['discussionData', permlink], () => getDiscussion(username, permlink));
+      await queryClient.prefetchQuery(['discussionData', permlink], async () => {
+        const discussion = await getDiscussion(username, permlink);
+        // Strip out active_votes from all posts in discussion
+        if (discussion) {
+          const cleanedDiscussion: Record<string, Entry> = {};
+          Object.keys(discussion).forEach((key) => {
+            cleanedDiscussion[key] = {
+              ...discussion[key],
+              active_votes: []
+            };
+          });
+          return cleanedDiscussion;
+        }
+        return discussion;
+      });
+
+      // Get the main post from discussion data and prefetch it for client
+      const discussionData = queryClient.getQueryData(['discussionData', permlink]) as Record<string, Entry>;
+      if (discussionData) {
+        const mainPostUrl = `@${username}/${permlink}`;
+        const mainPostKey = Object.keys(discussionData).find((key) => {
+          if (discussionData[key].url.endsWith(mainPostUrl)) {
+            return discussionData[key];
+          }
+        });
+        post = discussionData[mainPostKey ?? ''] as Entry;
+
+        // Prefetch the main post data for client-side use
+        if (post) {
+          await queryClient.prefetchQuery(['postData', username, permlink], () => Promise.resolve(post));
+        }
+      }
     } catch (error) {
       console.error('Error prefetching comments data:', error);
     }
   }
-  try {
-    post = await getPost(username, String(permlink));
-    mutedStatus = post?.stats?.gray ?? false;
-    metadata.tabTitle = `${post?.title} - Hive`;
-    metadata.description = (post?.json_metadata?.summary || post?.json_metadata.description) ?? '';
+
+  if (post) {
+    mutedStatus = post.stats?.gray ?? false;
+    metadata.tabTitle = `${post.title} - Hive`;
+    metadata.description = (post.json_metadata?.summary || post.json_metadata?.description) ?? '';
     metadata.image =
-      post?.json_metadata?.image[0] ||
-      post?.json_metadata.images[0] ||
+      post.json_metadata?.image?.[0] ||
+      post.json_metadata?.images?.[0] ||
       'https://hive.blog/images/hive-blog-share.png';
-    metadata.title = post?.title ?? '';
-  } catch (error) {
-    logger.error('Failed to fetch post:', error);
+    metadata.title = post.title ?? '';
   }
   if (community === 'undefined' || !community) {
     return {
@@ -761,10 +787,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   if (post?.json_metadata.tags?.includes('cross-post')) {
     try {
-      const crossedPost = await getPost(
+      const fullCrossedPost = await getPost(
         post.json_metadata.original_author,
         String(post.json_metadata.original_permlink)
       );
+      // Strip out active_votes from crosspost as well
+      const crossedPost = fullCrossedPost
+        ? {
+            ...fullCrossedPost,
+            active_votes: []
+          }
+        : fullCrossedPost;
+
       crosspost = {
         community: crossedPost?.community_title ?? crossedPost?.community ?? '',
         body: crossedPost?.body ?? '',
@@ -777,6 +811,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   return {
     props: {
+      dehydratedState: dehydrate(queryClient),
       mutedStatus,
       community,
       username,
