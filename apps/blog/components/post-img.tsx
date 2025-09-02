@@ -78,10 +78,6 @@ export default function PostImage({ post }: { post: Entry }) {
   const cardImage = find_first_img(post);
   const [image, setImage] = useState<string>(cardImage);
 
-  useEffect(() => {
-    setImage(cardImage);
-  }, [cardImage]);
-
   return (
     <>
       {image ? (
