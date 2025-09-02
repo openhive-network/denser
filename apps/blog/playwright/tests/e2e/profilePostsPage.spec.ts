@@ -264,13 +264,13 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Payouts - Post Card Header - Avatar', async ({ page }) => {
     await page.goto('/@gtg/payout');
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(10000);
 
     if (await profilePage.postBlogItem.first().isVisible()) {
       await expect(profilePage.postBlogItem.first()).toBeVisible();
       await homePage.getPostCardAvatar.first().locator('div').click();
       // await page.waitForURL('/@gtg');
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(10000);
       await expect(profilePage.profileBlogLink).toBeVisible();
       await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
@@ -279,7 +279,7 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Payouts - Post Card Header - NickName Link', async ({ page }) => {
     await page.goto('/@gtg/payout');
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(10000);
 
     if (await profilePage.postBlogItem.first().isVisible()) {
       await expect(profilePage.postBlogItem.first()).toBeVisible();
