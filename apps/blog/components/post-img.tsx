@@ -80,7 +80,7 @@ export default function PostImage({ post }: { post: Entry }) {
 
   useEffect(() => {
     setImage(cardImage);
-  }, [cardImage]);
+  }, [post.json_metadata.image]);
 
   return (
     <>
