@@ -12,7 +12,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';
 import { useUpdateProposalVotesMutation } from '@hive/wallet/components/hooks/use-update-proposal-votes-mutation';
 import env from '@beam-australia/react-env';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
 import TimeAgo from '@ui/components/time-ago';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -58,12 +58,12 @@ function translateShorDate(data: string, t: TFunction<'common_wallet', undefined
   return dd;
 }
 
-export function ProposalListItem({ proposalData, totalShares, totalVestingFund }: IListItemProps) {
+export function ProposalListItem({ proposalData, totalShares, totalVestingFund, voted }: IListItemProps) {
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
   const updateProposalVotesMutation = useUpdateProposalVotesMutation();
   const [loading, setLoading] = useState(false);
-  const [voteSuccess, setVotesSuccess] = useState(false);
+  const [voteSuccess, setVotesSuccess] = useState(voted);
 
   const totalHBD = proposalData.daily_pay?.amount.times(
     moment(proposalData?.end_date).diff(moment(proposalData.start_date), 'd')
@@ -81,6 +81,9 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund }
 
     return null;
   }
+  useEffect(() => {
+    setVotesSuccess(voted);
+  }, [voted]);
 
   async function updateProposalVotes(e: React.MouseEvent<HTMLOrSVGElement>) {
     const params = {

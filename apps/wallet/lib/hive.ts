@@ -66,6 +66,7 @@ export interface IListItemProps {
   proposalData: ProposalData;
   totalShares: Big;
   totalVestingFund: Big;
+  voted: boolean;
 }
 
 export const getVestingDelegations = async (
@@ -163,6 +164,12 @@ export const getProposalVotes = async (
   return chain.api.condenser_api
     .list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
     .then((r) => r.filter((x: IProposalVote) => x.proposal.proposal_id === proposalId));
+};
+
+export const getUserVotes = async (voter: string, limit: number = 1000): Promise<IProposalVote[]> => {
+  return chain.api.condenser_api
+    .list_proposal_votes([[voter], limit, 'by_voter_proposal'])
+    .then((r) => r.filter((x: IProposalVote) => x.voter === voter));
 };
 
 export const getMarketStatistics = async (): Promise<IMarketStatistics> => {

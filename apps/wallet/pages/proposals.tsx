@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import { DEFAULT_PARAMS_FOR_PROPOSALS, getProposals } from '@/wallet/lib/hive';
+import { DEFAULT_PARAMS_FOR_PROPOSALS, getProposals, getUserVotes } from '@/wallet/lib/hive';
 import { IGetProposalsParams } from '@transaction/lib/extended-hive.chain';
 import { getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { ProposalsFilter } from '@/wallet/components/proposals-filter';
@@ -14,6 +14,7 @@ import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
 import { getServerSidePropsDefault } from '../lib/get-translations';
 import Head from 'next/head';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
@@ -31,6 +32,7 @@ function timeStatus(status: string, t: TFunction<'common_wallet', undefined>) {
 }
 const TAB_TITLE = 'Hive Wallet - Proposals';
 function ProposalsPage() {
+  const { user } = useUser();
   const { t } = useTranslation('common_wallet');
   const [filterStatus, setFilterStatus] = useState<IGetProposalsParams['status']>(
     DEFAULT_PARAMS_FOR_PROPOSALS.status
@@ -41,7 +43,9 @@ function ProposalsPage() {
   const [orderDirection, setOrderDirection] = useState<IGetProposalsParams['order_direction']>(
     DEFAULT_PARAMS_FOR_PROPOSALS.order_direction
   );
-
+  const { data: votes } = useQuery(['accountVotes', user.username], () => getUserVotes(user.username), {
+    enabled: !!user?.username
+  });
   const proposalsData = useInfiniteQuery(
     ['proposals', filterStatus, sortOrder, orderDirection],
     ({ pageParam: last_id }) =>
@@ -143,6 +147,9 @@ function ProposalsPage() {
           proposalsData.data?.pages.map((page) =>
             page.map((proposal) => (
               <ProposalListItem
+                voted={
+                  votes?.find((vote) => vote.proposal.proposal_id === proposal.proposal_id) ? true : false
+                }
                 totalVestingFund={dynamicData.total_vesting_fund_hive}
                 totalShares={dynamicData.total_vesting_shares}
                 proposalData={proposal}
