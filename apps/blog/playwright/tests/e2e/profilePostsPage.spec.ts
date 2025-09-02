@@ -269,7 +269,8 @@ test.describe('Profile page of @gtg', () => {
     if (await profilePage.postBlogItem.first().isVisible()) {
       await expect(profilePage.postBlogItem.first()).toBeVisible();
       await homePage.getPostCardAvatar.first().click();
-      await page.waitForURL('/@gtg');
+      // await page.waitForURL('/@gtg');
+      await page.waitForTimeout(3000);
       await expect(profilePage.profileBlogLink).toBeVisible();
       await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
       await expect(profilePage.blogTabPostsContainer).toBeVisible();

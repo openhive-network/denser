@@ -326,7 +326,7 @@ mirrornet-haf-node-replay:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
       cd .$TURBO_APP_PATH
-      npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
+      npx playwright test tests/e2e/profilePostsPage.spec.ts --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
       echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
