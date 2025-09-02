@@ -27,9 +27,9 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
     return '';
   }
 
-  // Simple domain replacement for Hive images (like the old working implementation)
-  if (url.indexOf('https://images.hive.blog/') === 0 && url.indexOf('https://images.hive.blog/D') !== 0) {
-    return url.replace('https://images.hive.blog/', proxyBase);
+  // Skip already-proxified URLs (ones that already have /p/ hash format)
+  if (url.includes('/p/') && url.includes('images.hive.blog')) {
+    return url; // Return as-is, already proxified
   }
 
   if (url.indexOf('https://steemitimages.com/') === 0 && url.indexOf('https://steemitimages.com/D') !== 0) {
