@@ -264,7 +264,7 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Payouts - Post Card Header - Avatar', async ({ page }) => {
     await page.goto('/@gtg/payout');
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(5000);
 
     if (await profilePage.postBlogItem.first().isVisible()) {
       await expect(profilePage.postBlogItem.first()).toBeVisible();
