@@ -40,7 +40,7 @@ const CommentList = ({
     return [...mutedContent, ...unmutedContent];
   }, [JSON.stringify(data), JSON.stringify(parent)]);
   return (
-    <ul>
+    <ul data-testid='comment-list'>
       <>
         {!!arr
           ? arr.map((comment: Entry, index: number) => (

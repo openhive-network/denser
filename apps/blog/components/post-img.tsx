@@ -4,7 +4,7 @@ import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import { extractPictureFromPostBody, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function find_first_img(post: Entry) {
   try {
@@ -77,6 +77,10 @@ export function find_first_img(post: Entry) {
 export default function PostImage({ post }: { post: Entry }) {
   const cardImage = find_first_img(post);
   const [image, setImage] = useState<string>(cardImage);
+
+  useEffect(() => {
+    setImage(cardImage);
+  }, [post.json_metadata.image]);
 
   return (
     <>

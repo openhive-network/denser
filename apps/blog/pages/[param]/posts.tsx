@@ -82,7 +82,7 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                     <>
                       {data.pages.map((page, index) => {
                         return page && page.length > 0 ? (
-                          <PostList data={page} key={`posts-${index}`} />
+                          <PostList data={page} key={`posts-${index}`} testFilter='user-posts'/>
                         ) : (
                           <div
                             key="empty"
@@ -164,7 +164,7 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                     <>
                       {data.pages.map((page, index) => {
                         return page && page.length > 0 ? (
-                          <PostList data={page} key={`payout-${index}`} />
+                          <PostList data={page} key={`payout-${index}`} testFilter='user-payouts' />
                         ) : (
                           <div
                             key="empty"

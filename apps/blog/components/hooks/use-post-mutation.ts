@@ -75,6 +75,7 @@ export function usePostMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
         queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+        queryClient.invalidateQueries({ queryKey: ['accountEntriesInfinite'] });
       }, 3000);
     }
   });

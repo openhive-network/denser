@@ -1,14 +1,14 @@
 import PostListItem from '@/blog/components/post-list-item';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import { useFollowListQuery } from './hooks/use-follow-list';
 
-const PostList = ({ data, isCommunityPage }: { data: Entry[]; isCommunityPage?: boolean }) => {
+const PostList = ({ data, isCommunityPage, testFilter }: { data: Entry[]; isCommunityPage?: boolean, testFilter?: string }) => {
   const { user } = useUser();
   const { data: blacklist } = useFollowListQuery(user.username, 'blacklisted');
 
   return (
-    <ul>
+    <ul data-testid={`post-list-${testFilter}`}>
       {data?.map((post: Entry) => (
         <PostListItem
           post={post}
