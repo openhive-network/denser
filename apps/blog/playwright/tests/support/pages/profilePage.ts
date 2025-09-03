@@ -72,6 +72,7 @@ export class ProfilePage {
   readonly repliesCommentListItemVotes: Locator;
   readonly repliesCommentListItemVotesTooltip: Locator;
   readonly repliesCommentListItemRespond: Locator;
+  readonly repliesCommentListItemRespondFirst: Locator;
   readonly repliesCommentListItemRespondTooltip: Locator;
   readonly repliesCommentListItemArticleTitle: Locator;
 
@@ -292,6 +293,7 @@ export class ProfilePage {
     this.repliesCommentListItemVotes = page.locator('[data-testid="comment-vote"]');
     this.repliesCommentListItemVotesTooltip = page.locator('[data-testid="comment-vote-tooltip"]');
     this.repliesCommentListItemRespond = page.locator('[data-testid="comment-respond-link"]');
+    this.repliesCommentListItemRespondFirst = this.repliesCommentListItemRespond.first();
     this.repliesCommentListItemRespondTooltip = page.locator('[data-testid="comment-respond-tooltip"]');
     this.repliesCommentListItemArticleTitle = page.locator('[data-testid="article-title"]');
 

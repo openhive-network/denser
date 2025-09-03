@@ -220,9 +220,9 @@ test.describe('Profile page of @gtg', () => {
   test('Tab Posts - Comment Card Footer - Response', async ({ page }) => {
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(postPage.commentListItems.first()).toBeVisible();
-    await page.locator('button > a').first().click();
-    await expect(page.locator('h4.text-sm')).toBeVisible();
-    await expect(page.locator('h4.text-sm')).toHaveText("You are viewing a single comment's thread from:");
+    await profilePage.repliesCommentListItemRespondFirst.click();
+    await expect(commentViewPage.getHeaderOfViewingCommentThread).toBeVisible();
+    await expect(commentViewPage.getHeaderOfViewingCommentThread).toHaveText("You are viewing a single comment's thread from:");
   });
 
   test('Tab Posts - Payouts - List', async ({ page, request }) => {
