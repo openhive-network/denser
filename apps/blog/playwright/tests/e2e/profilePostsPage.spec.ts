@@ -339,7 +339,7 @@ test.describe('Profile page of @gtg', () => {
           }
         }
       }
-      await page.waitForTimeout(10000);
+      await page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
       await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
     } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
