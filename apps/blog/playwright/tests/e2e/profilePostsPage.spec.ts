@@ -89,7 +89,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Comments - List', async ({ page, request }) => {
-    await page.goto('/@gtg/comments');
+    await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(postPage.commentListItems.first()).toBeVisible();
     const comments = await postPage.commentListItems.all();
     const commentsLenght = await comments.length;
@@ -134,8 +134,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Comments Header - Avatar', async ({ page }) => {
-    await page.goto('/@gtg/comments');
-    await page.waitForURL('/@gtg/comments');
+    await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(postPage.commentListItems.first()).toBeVisible();
     await postPage.postsCommentsFirstAvatar.click();
     await page.waitForURL('/@gtg');
@@ -145,8 +144,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Comments Header - NickName Link', async ({ page }) => {
-    await page.goto('/@gtg/comments');
-    await page.waitForURL('/@gtg/comments');
+    await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(postPage.commentListItems.first()).toBeVisible();
     await homePage.getFirstPostAuthor.click();
     await page.waitForURL('/@gtg');
@@ -156,8 +154,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Comments Header - Community Name Link', async ({ page }) => {
-    await page.goto('/@gtg/comments');
-    await page.waitForURL('/@gtg/comments');
+    await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(postPage.commentListItems.first()).toBeVisible();
 
     const firstCommunityName = await profilePage.firstCommunityLinkPostsComments.textContent();
@@ -168,22 +165,21 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Comments Header - Timestamp Link', async ({ page }) => {
-    await page.goto('/@gtg/comments');
+    await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(postPage.commentCardsTitles.first()).toBeVisible();
     const commentTittText = await postPage.commentCardsTitles.first().textContent();
 
     await expect(postPage.commentListItems.first()).toBeVisible();
     await profilePage.communityTimeStamp.click();
-    await page.waitForTimeout(2000);
+    await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
     await expect(postPage.articleBody).toBeVisible();
     await expect(postPage.articleTitle).toBeVisible();
     await expect(postPage.articleTitle).toHaveText(`${commentTittText}`);
   });
 
   test('Tab Posts - Comment Card Footer - Payout Amount', async ({ page }) => {
-    await page.goto('/@gtg/comments');
+    await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(commentViewPage.getResponseCommentPayout.first()).toBeVisible();
-    await page.waitForTimeout(2000);
     const firstPayout = await commentViewPage.getResponseCommentPayout.first();
     const payoutText = await commentViewPage.getResponseCommentPayout.first().textContent();
     await expect(commentViewPage.getResponseCommentPayout.first()).toBeVisible();
@@ -207,7 +203,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Comment Card Footer - Votes', async ({ page }) => {
-    await page.goto('/@gtg/comments');
+    await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(commentViewPage.getResponseCommentPayout.first()).toBeVisible();
     const commentVoteText = await commentViewPage.commentVote.first().textContent();
     await commentViewPage.commentVote.first().hover();
@@ -222,7 +218,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Comment Card Footer - Response', async ({ page }) => {
-    await page.goto('/@gtg/comments');
+    await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(postPage.commentListItems.first()).toBeVisible();
     await page.locator('button > a').first().click();
     await expect(page.locator('h4.text-sm')).toBeVisible();
