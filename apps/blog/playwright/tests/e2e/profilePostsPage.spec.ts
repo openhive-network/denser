@@ -23,7 +23,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Posts - List', async ({ page, request }) => {
-    await page.goto('/@gtg/posts');
+    await profilePage.gotoPostsProfilePage('@gtg');
     await expect(profilePage.postBlogItem.first()).toBeVisible();
     const post = await profilePage.postBlogItem.all();
     const postLenght = await post.length;
@@ -61,7 +61,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Posts Card Header- Avatar', async ({ page }) => {
-    await page.goto('/@gtg/posts');
+    await profilePage.gotoPostsProfilePage('@gtg');
     await expect(profilePage.postBlogItem.first()).toBeVisible();
     await homePage.getPostCardAvatar.first().click();
     await page.waitForURL('/@gtg');
@@ -71,7 +71,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Posts Card Header - NickName Link', async ({ page }) => {
-    await page.goto('/@gtg/posts');
+    await profilePage.gotoPostsProfilePage('@gtg');
     await expect(profilePage.postBlogItem.first()).toBeVisible();
     await homePage.getFirstPostAuthor.click();
     await page.waitForURL('/@gtg');
@@ -81,10 +81,10 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Posts Card Header - Timestamp Link', async ({ page }) => {
-    await page.goto('/@gtg/posts');
+    await profilePage.gotoPostsProfilePage('@gtg');
     await expect(profilePage.postBlogItem.first()).toBeVisible();
     await homePage.getFirstPostCardTimestampLink.click();
-    await page.waitForTimeout(5000);
+    await page.waitForSelector(postPage.articleBody['_selector']);
     await expect(postPage.articleBody).toBeVisible();
   });
 
