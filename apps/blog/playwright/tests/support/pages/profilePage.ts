@@ -562,10 +562,8 @@ export class ProfilePage {
   }
 
   async profileRepliesTabIsSelected() {
-    await this.page.waitForSelector(this.postsCommentsListLocator['_selector'])
-    // await this.page.waitForSelector(this.page.locator('main')['_selector']);
-    await expect(this.page).toHaveURL(/.*replies/)
-    // await expect(this.repliesCommentListItem).toHaveCount(20);
+    await this.page.waitForSelector(this.userHasNotHadAnyRepliesYetMsg['_selector'], this.postsCommentsListLocator['_selector']);
+    await expect(this.page).toHaveURL(/.*replies/);
   }
 
   async profileRepliesTabIsNotSelected() {
