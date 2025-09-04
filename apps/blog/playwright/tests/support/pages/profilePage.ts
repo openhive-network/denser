@@ -194,9 +194,13 @@ export class ProfilePage {
   readonly profileNameString: string;
   readonly followBtn: string;
   readonly profileStatsString: string;
+  readonly muteButton: Locator;
+  readonly mutedUsersBtn: Locator;
 
   constructor(page: Page) {
     this.page = page;
+    this.muteButton = page.locator('[data-testid="profile-mute-button"]')
+    this.mutedUsersBtn = page.getByRole('link', { name: 'Muted Users' })
     this.followBtn = '[data-testid="profile-follow-button"]'
     this.profileInfo = page.locator('[data-testid="profile-info"]');
     this.profileName = page.locator('[data-testid="profile-name"]');
