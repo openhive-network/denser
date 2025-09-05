@@ -12,10 +12,9 @@ test.describe('User parmlink redirect tests', () => {
     const userPermlinkEndpoint: string = `/@gtg/hello-world`;
     const expectedContentElementText: string = 'Nyunya';
     await homePage.gotoSpecificUrl(userPermlinkEndpoint);
-    await homePage.page.waitForTimeout(3000);
+    await homePage.page.waitForSelector(homePage.articleBodyString);
     const specificContentTextLocator: Locator = homePage.page.locator(homePage.articleBodyString).locator('p > strong').getByText(expectedContentElementText);
     expect(specificContentTextLocator).toBeVisible();
-
   });
 
   test('validate redirect location for user/permlink endpoint', async ({ page, request }) => {
@@ -26,7 +25,7 @@ test.describe('User parmlink redirect tests', () => {
 
     const requestEndpoint = `${userPermlinkEndpoint}`;
 
-    await homePage.page.waitForTimeout(5000);
+    await homePage.page.waitForSelector(homePage.articleBodyString);
 
     // Validate the redirect request
     const response = await request.get(requestEndpoint, { maxRedirects: 0 });
@@ -45,7 +44,7 @@ test.describe('User parmlink redirect tests', () => {
 
     const requestEndpoint = `${userPermlinkEndpoint}`;
 
-    await homePage.page.waitForTimeout(5000);
+    await homePage.page.waitForSelector(homePage.articleBodyString);
 
     // Validate the redirect request
     const response = await request.get(requestEndpoint, { maxRedirects: 0 });
