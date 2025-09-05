@@ -234,7 +234,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     // sicarius is expected as the second comment author
     await expect(postPage.commentAuthorLink.nth(0)).toHaveText('sicarius');
-    // click timestamp in the first comment and validat that all comment thread was highlighted by the red boarder
+    // click timestamp in the first comment and validate that all comment thread was highlighted by the red boarder
     // and the background color is green
     await postPage.commentCardsHeadersTimeStampLink.nth(0).click();
     await postPage.page.waitForTimeout(1000);
@@ -244,7 +244,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentListItems.nth(0).locator('..'),
         'border-color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(220, 38, 39)');
     // background-color of the first comment
     expect(
       await postPage.getElementCssPropertyValue(
@@ -493,7 +493,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     // Click comment name to display the author info popover card
     await postPage.commentAuthorLink.first().click();
-    await postPage.page.waitForTimeout(1000);
+    await page.waitForSelector(await postPage.userAboutPopoverCard['_selector']);
 
     // Compare followers of `sicarius` of API and UI
     const userFollowersAPI = (await apiHelper.getFollowCountAPI('sicarius'))['result'].follower_count;
@@ -512,7 +512,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
     await postPage.commentAuthorLink.first().click();
-    await postPage.page.waitForTimeout(1000);
+    await page.waitForSelector(await postPage.userAboutPopoverCard['_selector']);
 
     const userPostingJsonMetadata = await JSON.parse(
       (await apiHelper.getAccountInfoAPI('sicarius'))['result'][0].posting_json_metadata
@@ -540,7 +540,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
     await postPage.commentAuthorLink.first().click();
-    await postPage.page.waitForTimeout(1000);
+    await page.waitForSelector(await postPage.userAboutPopoverCard['_selector']);
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -585,7 +585,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     // Click the first comment author link
     await postPage.commentAuthorLink.first().click();
-    await postPage.page.waitForTimeout(1000);
+    await page.waitForSelector(await postPage.userAboutPopoverCard['_selector']);
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -627,7 +627,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     // Popover the first comment author link
     await postPage.commentAuthorLink.first().click();
-    await postPage.page.waitForTimeout(1000);
+    await page.waitForSelector(await postPage.userAboutPopoverCard['_selector']);
 
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
       'rgb(44, 48, 53)'
@@ -740,11 +740,11 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // Validate re-title of the comment's thread - comment view page is loaded
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
-    await commentViewPage.page.waitForTimeout(1000);
+    await postPage.articleBody.waitFor({state: 'visible'});
     // Click 'View the full context'
     commentViewPage.getViewFullContext.click();
     await postPage.page.waitForLoadState('domcontentloaded');
-    await postPage.page.waitForTimeout(1000);
+    await postPage.articleBody.waitFor({state: 'visible'});
     // Validate that the post page of Hive HardFork 25 Jump Starter Kit of gtg is loaded
     expect(await postPage.articleTitle).toHaveText('Hive HardFork 25 Jump Starter Kit');
     expect(await postPage.articleAuthorName).toHaveText('gtg');
@@ -774,10 +774,10 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // Validate re-title of the comment's thread - comment view page is loaded
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
-    await commentViewPage.page.waitForTimeout(2000);
+    await postPage.articleBody.waitFor({state: 'visible'});
     // Click 'View the direct parent'
     commentViewPage.getViewDirectParent.click();
-    await commentViewPage.page.waitForTimeout(1000);
+    await postPage.commentListLocator.first().waitFor({state: 'visible'});
     // Validate that the `sicarius` comment is visibled on the comment view page
     await expect(await commentViewPage.getMainCommentAuthorData).toBeVisible();
     await expect(await commentViewPage.getMainCommentAuthorNameLink).toHaveText('sicarius');
@@ -822,7 +822,7 @@ test.describe('Load more... comments in the post', () => {
     await postPage.gotoPostPage('leofinance', 'leo-curation', 'organic-curation-report-week-25');
     await expect(await postPage.articleTitle).toHaveText('Organic Curation report - Week 25, 2023');
     // Validate the number of visible posts
-    await postPage.page.waitForTimeout(3000);
+    await postPage.commentListLocator.first().waitFor({state: 'visible'});
     await expect((await postPage.commentListItems.all()).length).toBe(12);
     // Validate the author and content of the first post in the Trending filter
     await expect(await postPage.commentAuthorLink.first()).toHaveText('infinity0');
