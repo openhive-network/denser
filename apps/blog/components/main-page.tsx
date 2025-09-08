@@ -41,7 +41,7 @@ const MainPage = ({
   const { param } = useParams();
   const observer = !!user.username ? user.username : DEFAULT_OBSERVER;
   const [sort, tagParam] = param;
-  const tag = tagParam || '';
+  const tag = tagParam.toLocaleLowerCase() || '';
 
   const isValidSort = validSorts.includes(sort);
   const { username } = useSiteParams();
