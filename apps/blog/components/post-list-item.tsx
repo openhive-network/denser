@@ -1,28 +1,17 @@
 import Link from 'next/link';
-import { getPostSummary } from '@/blog/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@hive/ui/components/card';
+import { Card, CardFooter, CardHeader } from '@hive/ui/components/card';
 import { Separator } from '@hive/ui/components/separator';
 import { Badge } from '@hive/ui/components/badge';
 import accountReputation from '@/blog/lib/account-reputation';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import PostImage from './post-img';
 import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useLocalStorage } from 'usehooks-ts';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
@@ -31,49 +20,45 @@ import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from './reblog-trigger';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
-import PostCardHidden from './post-card-hidden';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import TimeAgo from '@hive/ui/components/time-ago';
+import PostSummary from '../feature/posts/summary';
+import { Preferences } from '@/blog/lib/utils';
 
 const logger = getLogger('app');
 
 const PostListItem = ({
   post,
   isCommunityPage,
-  blacklist
+  blacklist,
+  nsfwPreferences
 }: {
   post: Entry;
   isCommunityPage: boolean | undefined;
   blacklist: IFollowList[] | undefined;
+  nsfwPreferences: Preferences['nsfw'];
 }) => {
-  const { user } = useUser();
   const { t } = useTranslation('common_blog');
-  const [preferences] = useLocalStorage<Preferences>(
-    `user-preferences-${user.username}`,
-    DEFAULT_PREFERENCES
-  );
-  const [reveal, setReveal] = useState(
-    preferences.nsfw === 'show'
-      ? false
-      : preferences.nsfw === 'warn'
-        ? post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')
-        : false
-  );
+  const tagExists = !!post.json_metadata.tags && post?.json_metadata?.tags.includes('nsfw');
+  const [nsfw, setNSFW] = useState<Preferences['nsfw']>(tagExists ? 'warn' : 'show');
+
+  useEffect(() => {
+    if (tagExists) {
+      setNSFW(nsfwPreferences);
+    }
+  }, [nsfwPreferences, tagExists]);
+
   const router = useRouter();
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
   const userFromDMCA = dmcaUserList.includes(post.author);
   const userFromImageBlockList = imageUserBlocklist.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
 
-  const revealPost = () => setReveal((reveal) => !reveal);
-
   if (gdprUserList.includes(post.author)) return null;
 
   return (
     <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
-      {post.json_metadata?.tags &&
-      post.json_metadata?.tags.includes('nsfw') &&
-      preferences.nsfw === 'hide' ? null : (
+      {nsfw === 'hide' ? null : (
         <Card className="mb-4 bg-background px-2 text-primary">
           {post.original_entry ? (
             <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
@@ -109,7 +94,7 @@ const PostListItem = ({
           ) : null}
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
-              {!reveal && post.blacklists.length < 1 ? (
+              {nsfw === 'show' && post.blacklists.length < 1 ? (
                 <Link href={`/@${post.author}`} data-testid="post-card-avatar">
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
@@ -208,7 +193,7 @@ const PostListItem = ({
           </CardHeader>
           <div className="flex w-full flex-col md:flex-row ">
             <div>
-              {!reveal &&
+              {nsfw === 'show' &&
               post.blacklists.length < 1 &&
               !userFromDMCA &&
               !userFromImageBlockList &&
@@ -219,40 +204,13 @@ const PostListItem = ({
               ) : null}
             </div>
             <div className="w-full md:overflow-hidden">
-              <CardContent>
-                {!reveal ? (
-                  <>
-                    <CardTitle data-testid="post-title" className="text-md">
-                      {post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw') ? (
-                        <Badge variant="outline" className="mx-1 border-destructive text-destructive">
-                          nsfw
-                        </Badge>
-                      ) : null}
-                      <Link
-                        href={`/${post.category}/@${post.author}/${post.permlink}`}
-                        className="whitespace-normal break-words visited:text-gray-500 dark:visited:text-gray-400"
-                      >
-                        {post.title}
-                      </Link>
-                    </CardTitle>
-                    <CardDescription className="block w-auto whitespace-pre-wrap break-words md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
-                      <Link
-                        href={`/${post.category}/@${post.author}/${post.permlink}`}
-                        data-testid="post-description"
-                      >
-                        {userFromDMCA
-                          ? t('cards.content_removed')
-                          : legalBlockedUser
-                            ? t('global.unavailable_for_legal_reasons')
-                            : getPostSummary(post.json_metadata, post.body)}
-                      </Link>
-                    </CardDescription>
-                    <Separator orientation="horizontal" className="my-1" />
-                  </>
-                ) : (
-                  <PostCardHidden user={user} revealPost={revealPost} />
-                )}
-              </CardContent>
+              <PostSummary
+                post={post}
+                nsfw={nsfw}
+                setNSFW={setNSFW}
+                userFromDMCA={userFromDMCA}
+                legalBlockedUser={legalBlockedUser}
+              />
               <CardFooter className="pb-2">
                 <div className="flex h-5 items-center space-x-2 text-sm" data-testid="post-card-footer">
                   <VotesComponent post={post} type="post" />

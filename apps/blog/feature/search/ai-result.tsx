@@ -8,8 +8,9 @@ import { getSimilarPosts } from '@/blog/lib/get-data';
 import { PER_PAGE } from './lib/utils';
 import PostList from '@/blog/components/post-list';
 import { PostSkeleton } from './loading-skeleton';
+import { Preferences } from '@/blog/pages/[param]/settings';
 
-const AIResult = ({ query }: { query: string }) => {
+const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: Preferences['nsfw'] }) => {
   const { user } = useUser();
   const { ref, inView } = useInView();
   const { t } = useTranslation('common_blog');
@@ -53,7 +54,7 @@ const AIResult = ({ query }: { query: string }) => {
         <Loading loading={isLoading} />
       ) : data ? (
         data.pages.map((page, index) => {
-          return page ? <PostList data={page} key={`ai-${index}`} /> : null;
+          return page ? <PostList data={page} key={`ai-${index}`} nsfwPreferences={nsfwPreferences} /> : null;
         })
       ) : null}
       <div>

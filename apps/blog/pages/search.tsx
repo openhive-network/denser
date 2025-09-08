@@ -9,6 +9,9 @@ import { SearchSort } from '@ui/hooks/useSearch';
 import AccountTopicResult from '../feature/search/account-topic-result';
 import { useQuery } from '@tanstack/react-query';
 import { getHiveSenseStatus } from '../lib/get-data';
+import { useLocalStorage } from 'usehooks-ts';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 const TAB_TITLE = 'Search - Hive';
@@ -17,7 +20,11 @@ export default function SearchPage() {
     refetchOnWindowFocus: false,
     refetchOnMount: false
   });
-
+  const { user } = useUser();
+  const [preferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
   const router = useRouter();
   const aiQuery = router.query.ai as string | undefined;
   const classicQuery = router.query.q as string | undefined;
@@ -61,10 +68,17 @@ export default function SearchPage() {
             <ModeSwitchInput searchPage aiAvailable={!!hiveSense} />
           </div>
         </div>
-        {!!aiQuery ? <AIResult query={aiQuery} /> : null}
-        {!!classicQuery && !!sortQuery ? <AccountTopicResult query={classicQuery} sort={sortQuery} /> : null}
+        {!!aiQuery ? <AIResult query={aiQuery} nsfwPreferences={preferences.nsfw} /> : null}
+        {!!classicQuery && !!sortQuery ? (
+          <AccountTopicResult nsfwPreferences={preferences.nsfw} query={classicQuery} sort={sortQuery} />
+        ) : null}
         {!!userTopicQuery && !!topicQuery && !!sortQuery ? (
-          <AccountTopicResult author={userTopicQuery} query={userTopicQuery} sort={sortQuery} />
+          <AccountTopicResult
+            author={userTopicQuery}
+            query={userTopicQuery}
+            sort={sortQuery}
+            nsfwPreferences={preferences.nsfw}
+          />
         ) : null}
       </div>
     </>

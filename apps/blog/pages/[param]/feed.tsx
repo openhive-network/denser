@@ -16,6 +16,9 @@ import { getDefaultProps } from '../../lib/get-translations';
 import Head from 'next/head';
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
 import NoDataError from '@/blog/components/no-data-error';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+
+import { useLocalStorage } from 'usehooks-ts';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
@@ -37,7 +40,10 @@ const FeedPage: FC = () => {
   const { username, tag } = useSiteParams();
   const { ref: refAcc, inView: inViewAcc } = useInView();
   const { user } = useUser();
-
+  const [preferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
   // Only enable community query if tag is a valid community name (not a username)
   const isValidCommunityTag = tag && !tag.startsWith('@');
 
@@ -115,7 +121,9 @@ const FeedPage: FC = () => {
               <>
                 {accountEntriesData.pages[0]?.length !== 0 ? (
                   accountEntriesData.pages.map((page, index) => {
-                    return page ? <PostList data={page} key={`x-${index}`} /> : null;
+                    return page ? (
+                      <PostList data={page} key={`x-${index}`} nsfwPreferences={preferences.nsfw} />
+                    ) : null;
                   })
                 ) : (
                   <div

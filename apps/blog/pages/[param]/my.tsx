@@ -21,6 +21,8 @@ import Link from 'next/link';
 import { getDefaultProps } from '../../lib/get-translations';
 import Head from 'next/head';
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
+import { useLocalStorage } from 'usehooks-ts';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
@@ -43,6 +45,10 @@ const MyPage: FC = () => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();
+  const [preferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
   const { data: mySubsData } = useQuery(
     ['subscriptions', user?.username],
     () => getSubscriptions(user ? user?.username : ''),
@@ -123,7 +129,9 @@ const MyPage: FC = () => {
           <>
             {entriesData && entriesData.pages[0]?.length !== 0 ? (
               entriesData.pages.map((page, index) => {
-                return page ? <PostList data={page} key={`f-${index}`} /> : null;
+                return page ? (
+                  <PostList data={page} key={`f-${index}`} nsfwPreferences={preferences.nsfw} />
+                ) : null;
               })
             ) : (
               <div
