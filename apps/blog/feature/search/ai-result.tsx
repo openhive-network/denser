@@ -7,8 +7,8 @@ import { useTranslation } from 'next-i18next';
 import { getSimilarPosts } from '@/blog/lib/get-data';
 import { PER_PAGE } from './lib/utils';
 import PostList from '@/blog/components/post-list';
-import { PostSkeleton } from './loading-skeleton';
 import { Preferences } from '@/blog/lib/utils';
+import PostCardSkeleton from '@ui/components/card-skeleton';
 
 const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: Preferences['nsfw'] }) => {
   const { user } = useUser();
@@ -66,7 +66,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
           disabled={!hasNextPage || isFetchingNextPage}
         >
           {isFetchingNextPage ? (
-            <PostSkeleton />
+            <PostCardSkeleton />
           ) : hasNextPage ? (
             t('user_profile.load_newer')
           ) : !isLoading ? (

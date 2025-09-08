@@ -5,13 +5,13 @@ import { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useInView } from 'react-intersection-observer';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { PostSkeleton } from './loading-skeleton';
 import PostList from '@/blog/components/post-list';
 import Loading from '@ui/components/loading';
 import { getByText } from '@transaction/lib/hive';
 import Link from 'next/link';
 import { Activity } from 'lucide-react';
 import { Preferences } from '@transaction/lib/app-types';
+import PostCardSkeleton from '@hive/ui/components/card-skeleton';
 
 const AccountTopicResult = ({
   author,
@@ -94,7 +94,7 @@ const AccountTopicResult = ({
           disabled={!hasNextPage || isFetchingNextPage}
         >
           {isFetchingNextPage ? (
-            <PostSkeleton />
+            <PostCardSkeleton />
           ) : hasNextPage ? (
             t('user_profile.load_newer')
           ) : !isLoading ? (

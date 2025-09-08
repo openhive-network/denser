@@ -22,7 +22,7 @@ import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import TimeAgo from '@hive/ui/components/time-ago';
-import PostSummary from '../feature/posts/summary';
+import PostSummary from '../feature/posts-card/summary';
 import { Preferences } from '@/blog/lib/utils';
 
 const logger = getLogger('app');

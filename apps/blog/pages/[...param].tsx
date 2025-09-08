@@ -33,17 +33,6 @@ import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import PostRedirectPage from '../components/post-redirect-page';
 
-export const PostSkeleton = () => {
-  return (
-    <div className="flex items-center space-x-4">
-      <Skeleton className="h-12 w-12 rounded-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  );
-};
 const logger = getLogger('app');
 export type PageType = 'main' | 'community' | 'userProfile' | 'redirect' | 'tag';
 const sorts = ['trending', 'hot', 'created', 'payout', 'muted'];

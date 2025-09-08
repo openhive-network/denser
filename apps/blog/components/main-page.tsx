@@ -19,9 +19,10 @@ import CommunityLayout from '../feature/community-layout/community-layout';
 import { DEFAULT_OBSERVER, sortToTitle, sortTypes } from '@/blog/lib/utils';
 import { MetadataProps } from '@/blog/lib/get-translations';
 import NoDataError from '@/blog/components/no-data-error';
-import { PageType, PostSkeleton } from '@/blog/pages/[...param]';
+import { PageType } from '@/blog/pages/[...param]';
 import { useParams } from 'next/dist/client/components/navigation';
 import { Preferences } from '@/blog/lib/utils';
+import PostCardSkeleton from '@hive/ui/components/card-skeleton';
 
 const validSorts = ['trending', 'hot', 'created', 'payout', 'payout_comments', 'muted'];
 
@@ -216,7 +217,7 @@ const MainPage = ({
                   disabled={!hasNextPage || isFetchingNextPage}
                 >
                   {isFetchingNextPage && !!data && data.pages.length > 0 ? (
-                    <PostSkeleton />
+                    <PostCardSkeleton />
                   ) : hasNextPage ? (
                     t('user_profile.load_newer')
                   ) : (
