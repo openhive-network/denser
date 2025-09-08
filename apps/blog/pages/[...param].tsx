@@ -1,5 +1,11 @@
-import { getAccountNotifications, getAccountPosts } from '@transaction/lib/bridge';
-import { getCommunity, getSubscribers, getPostsRanked } from '@transaction/lib/bridge';
+import {
+  getCommunity,
+  getSubscribers,
+  getPostsRanked,
+  getAccountNotifications,
+  getAccountPosts,
+  getPost
+} from '@transaction/lib/bridge';
 import { FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
@@ -25,6 +31,7 @@ import {
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import PostRedirectPage from '../components/post-redirect-page';
 
 export const PostSkeleton = () => {
   return (
@@ -64,7 +71,11 @@ const getPageType = (firstParam: string, secondParam?: string) => {
   if (!!firstParam && !!secondParam) return 'redirect';
 };
 
-const ParamPage: FC<{ metadata: MetadataProps; pageType: PageType }> = ({ metadata, pageType }) => {
+const ParamPage: FC<{ metadata: MetadataProps; pageType: PageType; redirectUrl: string }> = ({
+  metadata,
+  pageType,
+  redirectUrl
+}) => {
   const router = useRouter();
   const { user } = useUser();
   const [preferences] = useLocalStorage<Preferences>(
@@ -105,7 +116,7 @@ const ParamPage: FC<{ metadata: MetadataProps; pageType: PageType }> = ({ metada
     case 'userProfile':
       return <AccountProfileMainPage metadata={metadata} nsfwPreferences={preferences.nsfw} />;
     case 'redirect':
-      return <div>Redirect to blablabla</div>;
+      return <PostRedirectPage url={redirectUrl} />;
     default:
       return <NoDataError />;
   }
@@ -119,13 +130,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const pageType = getPageType(firstParam, secondParam);
   const tag = secondParam || '';
   const queryClient = new QueryClient();
-
+  let redirectUrl = '';
   let metadata = {
     tabTitle: '',
     description: '',
     image: 'https://hive.blog/images/hive-blog-share.png',
     title: firstParam
   };
+  const username = firstParam.split('@')[1];
 
   switch (pageType) {
     case 'community':
@@ -167,7 +179,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       break;
     case 'userProfile':
       metadata = await getAccountMetadata(firstParam, 'Posts');
-      const username = firstParam.split('@')[1];
       try {
         await queryClient.prefetchQuery(['profileData', username], () => getAccountFull(username));
         await queryClient.prefetchQuery(['accountData', username], () => getAccount(username));
@@ -199,12 +210,31 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       }
       break;
     case 'redirect':
+      const permlink = secondParam;
+      try {
+        const post = await queryClient.fetchQuery(['postData', username, permlink], () =>
+          getPost(username, permlink)
+        );
+        if (post) {
+          console.log('Found post for redirect:', post);
+          redirectUrl = `/${post.category ?? post.community}/@${username}/${permlink}`;
+          return {
+            redirect: {
+              destination: redirectUrl,
+              permanent: true
+            }
+          };
+        }
+      } catch (error) {
+        logger.error('Error prefetching post data:', `/${username}/${permlink}`, error);
+      }
       break;
   }
 
   return {
     props: {
       dehydratedState: replaceUndefinedWithNull(dehydrate(queryClient)),
+      redirectUrl,
       metadata,
       pageType,
       ...(await getTranslations(ctx))
