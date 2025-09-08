@@ -4,33 +4,27 @@ import CommunitiesMybar from '../../components/communities-mybar';
 import CommunitiesSidebar from '../../components/communities-sidebar';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import {
-  getAccountNotifications,
-  getCommunity,
-  getSubscribers,
-  getSubscriptions
-} from '@transaction/lib/bridge';
+import { getAccountNotifications, getSubscribers } from '@transaction/lib/bridge';
 import CommunityDescription from './community-description';
 import SimpleDescriptionSkeleton from '@/blog/feature/community-layout/simple-description-skeleton';
 import DescriptionSkeleton from './descripton-skeleton';
 import ExploreHive from '@/blog/components/explore-hive';
+import { Community } from '@transaction/lib/extended-hive.chain';
 
-const CommunityLayout = ({ children, community }: { children: ReactNode; community?: string }) => {
+const CommunityLayout = ({
+  children,
+  community,
+  mySubsData,
+  communityData
+}: {
+  children: ReactNode;
+  community?: string;
+  mySubsData?: string[][] | null;
+  communityData?: Community | null;
+}) => {
   const { user } = useUser();
   const communityPage = community?.startsWith('hive-') ?? false;
-  const { data: mySubsData } = useQuery(
-    ['subscriptions', user?.username],
-    () => getSubscriptions(user.username),
-    {
-      enabled: Boolean(user?.username)
-    }
-  );
 
-  const { data: communityData, isLoading: communityDataIsLoading } = useQuery(
-    ['community', community, ''],
-    () => getCommunity(community ?? '', user.username),
-    { enabled: !!community }
-  );
   const { data: subsData, isLoading: subsIsLoading } = useQuery(
     ['subscribers', community],
     () => getSubscribers(community ?? ''),
@@ -53,7 +47,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div data-testid="card-explore-hive-mobile" className="md:col-span-10 md:flex xl:hidden">
-            {!community || !communityPage ? null : communityDataIsLoading || subsIsLoading ? (
+            {!community || !communityPage ? null : subsIsLoading ? (
               <SimpleDescriptionSkeleton />
             ) : communityData && subsData ? (
               <CommunitySimpleDescription
@@ -70,9 +64,9 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
           {!community && !mySubsData ? (
             <ExploreHive />
-          ) : !community && (!communityData || !communityData) ? (
+          ) : !community && !communityData ? (
             <CommunitiesSidebar />
-          ) : !communityPage ? null : !!community && (communityDataIsLoading || subsIsLoading) ? (
+          ) : !communityPage ? null : !!community && subsIsLoading ? (
             <DescriptionSkeleton />
           ) : communityData && subsData ? (
             <CommunityDescription

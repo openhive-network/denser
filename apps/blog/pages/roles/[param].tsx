@@ -7,7 +7,7 @@ import AddRole from '@/blog/feature/community-roles/add-role';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@ui/components/table';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getListCommunityRoles } from '@transaction/lib/bridge';
+import { getListCommunityRoles, getSubscriptions } from '@transaction/lib/bridge';
 import { getCommunityMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
 import { getRoleValue, Roles, rolesLevels } from '@/blog/feature/community-roles/lib/utils';
@@ -20,6 +20,14 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const community = router.query.param as string;
+
+  const { data: mySubsData } = useQuery(
+    ['subscriptions', user?.username],
+    () => getSubscriptions(user.username),
+    {
+      enabled: Boolean(user?.username)
+    }
+  );
 
   const { data, isLoading, isError } = useQuery(
     ['rolesList', community],
@@ -57,7 +65,7 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
         <meta property="og:description" content={metadata.description} />
         <meta property="og:image" content={metadata.image} />
       </Head>
-      <CommunityLayout community={community}>
+      <CommunityLayout community={community} mySubsData={mySubsData}>
         <div className="my-4 flex w-full items-center justify-between" translate="no">
           <div className="m-2 w-full bg-background px-8 py-6">
             <h2 className="mb-1 text-2xl">{t('communities.user_roles')}</h2>

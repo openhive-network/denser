@@ -56,7 +56,7 @@ const MainPage = ({
     }
   );
   const { data: communityData } = useQuery(['community', tag], () => getCommunity(tag || '', user.username), {
-    enabled: !!tag
+    enabled: pageType === 'community'
   });
   const { data, isFetching, isError, isFetchingNextPage, fetchNextPage, hasNextPage, refetch } =
     useInfiniteQuery(
@@ -154,7 +154,7 @@ const MainPage = ({
         <meta property="og:description" content={metadata.description} />
         <meta property="og:image" content={metadata.image} />
       </Head>
-      <CommunityLayout community={tag}>
+      <CommunityLayout community={tag} mySubsData={mySubsData} communityData={communityData}>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
             <div className="my-4 flex w-full items-center justify-between" translate="no">

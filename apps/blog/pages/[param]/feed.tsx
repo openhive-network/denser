@@ -5,7 +5,6 @@ import { Entry } from '@transaction/lib/extended-hive.chain';
 import Loading from '@hive/ui/components/loading';
 import { FC, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
-import { Skeleton } from '@ui/components/skeleton';
 import { useInView } from 'react-intersection-observer';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
@@ -33,8 +32,6 @@ const FeedPage: FC = () => {
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
-  // Only enable community query if tag is a valid community name (not a username)
-  const isValidCommunityTag = tag && !tag.startsWith('@');
 
   const {
     data: accountEntriesData,
@@ -92,7 +89,7 @@ const FeedPage: FC = () => {
         <title>{TAB_TITLE}</title>
       </Head>
 
-      <CommunityLayout community={''}>
+      <CommunityLayout community={''} mySubsData={mySubsData}>
         <div className="col-span-12 pt-4 md:col-span-9 xl:col-span-8 xl:pt-0">
           <span className="text-md mt-4 hidden text-xl font-medium xl:block">
             {t('navigation.communities_nav.my_friends')}

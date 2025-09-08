@@ -20,7 +20,6 @@ import NoDataError from '../components/no-data-error';
 import { getLogger } from '@ui/lib/logging';
 import MainPage from '../components/main-page';
 import AccountProfileMainPage from '../feature/account-profile/main-page';
-import { Skeleton } from '@ui/components/skeleton';
 import { DEFAULT_OBSERVER } from '../lib/utils';
 import {
   getAccount,
@@ -132,7 +131,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     case 'community':
       metadata = await getCommunityMetadata(firstParam, tag, 'Posts');
       try {
-        await queryClient.prefetchQuery(['community', tag, ''], async () => await getCommunity(tag, ''));
+        await queryClient.prefetchQuery(['community', tag], async () => await getCommunity(tag, ''));
         await queryClient.prefetchQuery(['subscribers', tag], async () => await getSubscribers(tag));
         await queryClient.prefetchQuery(
           ['AccountNotification', tag],

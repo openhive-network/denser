@@ -9,7 +9,6 @@ import {
 import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
-import { Skeleton } from '@ui/components/skeleton';
 import PostSelectFilter from '@/blog/components/post-select-filter';
 import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
@@ -99,7 +98,7 @@ const MyPage: FC = () => {
         <title>{tabTitle}</title>
       </Head>
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
-        <CommunityLayout community="">
+        <CommunityLayout community="" mySubsData={mySubsData}>
           <div className="my-4 flex w-full items-center justify-between" translate="no">
             <div className="mr-2 flex w-[320px] flex-col">
               <span className="text-md hidden font-medium md:block">My communities</span>
