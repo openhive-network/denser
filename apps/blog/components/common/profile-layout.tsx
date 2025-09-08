@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
@@ -39,6 +39,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
   const { username } = useSiteParams();
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   const userFromGDPRList = gdprUserList.includes(username);
   const { data: profileData } = useQuery(['profileData', username], () => getAccountFull(username), {
     enabled: !!username
@@ -315,7 +319,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     </span>
                   </li>
                 </ul>
-                {user.username !== username ? (
+                {isClient && user.username !== username ? (
                   <div className="m-2 flex gap-2 hover:text-destructive sm:absolute sm:right-0">
                     <ButtonsContainer
                       username={username}
@@ -381,7 +385,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     {t('navigation.profile_navbar.wallet')}
                   </Link>
                 </li>
-                {user.isLoggedIn && username === user.username ? (
+                {isClient && user.isLoggedIn && username === user.username ? (
                   <li>
                     <Link
                       href={`/@${username}/settings`}
