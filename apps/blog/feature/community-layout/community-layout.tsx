@@ -15,9 +15,9 @@ import SimpleDescriptionSkeleton from '@/blog/feature/community-layout/simple-de
 import DescriptionSkeleton from './descripton-skeleton';
 import ExploreHive from '@/blog/components/explore-hive';
 
-const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
+const CommunityLayout = ({ children, community }: { children: ReactNode; community?: string }) => {
   const { user } = useUser();
-  const communityPage = community.startsWith('hive-');
+  const communityPage = community?.startsWith('hive-') ?? false;
   const { data: mySubsData } = useQuery(
     ['subscriptions', user?.username],
     () => getSubscriptions(user.username),
@@ -27,27 +27,25 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
   );
 
   const { data: communityData, isLoading: communityDataIsLoading } = useQuery(
-    ['community', community],
-    () => getCommunity(community, user.username),
+    ['community', community, ''],
+    () => getCommunity(community ?? '', user.username),
     { enabled: !!community }
   );
-
   const { data: subsData, isLoading: subsIsLoading } = useQuery(
     ['subscribers', community],
-    () => getSubscribers(community),
+    () => getSubscribers(community ?? ''),
     { enabled: !!community }
   );
-
   const { data: notificationData } = useQuery(
     ['AccountNotification', community],
-    () => getAccountNotifications(community),
+    () => getAccountNotifications(community ?? ''),
     { enabled: !!community }
   );
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
         <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-          {user?.isLoggedIn ? (
+          {!!mySubsData ? (
             <CommunitiesMybar data={mySubsData} username={user.username} />
           ) : (
             <CommunitiesSidebar />
@@ -70,7 +68,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
           <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">{children}</div>
         </div>
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-          {!community && !user.username ? (
+          {!community && !mySubsData ? (
             <ExploreHive />
           ) : !community && (!communityData || !communityData) ? (
             <CommunitiesSidebar />
@@ -81,7 +79,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
               data={communityData}
               subs={subsData}
               notificationData={notificationData}
-              username={community}
+              username={community ?? ''}
             />
           ) : null}
         </div>
