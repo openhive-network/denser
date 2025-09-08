@@ -128,7 +128,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const allParams: string[] = Array.isArray(ctx.params?.param) ? (ctx.params!.param as string[]) : [];
   const [firstParam, secondParam] = allParams;
   const pageType = getPageType(firstParam, secondParam);
-  const tag = secondParam.toLocaleLowerCase() || '';
+  const tag = (secondParam || '').toLocaleLowerCase();
   const queryClient = new QueryClient();
   let redirectUrl = '';
   let metadata = {
