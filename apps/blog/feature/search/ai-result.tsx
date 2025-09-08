@@ -8,7 +8,7 @@ import { getSimilarPosts } from '@/blog/lib/get-data';
 import { PER_PAGE } from './lib/utils';
 import PostList from '@/blog/components/post-list';
 import { PostSkeleton } from './loading-skeleton';
-import { Preferences } from '@/blog/pages/[param]/settings';
+import { Preferences } from '@/blog/lib/utils';
 
 const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: Preferences['nsfw'] }) => {
   const { user } = useUser();

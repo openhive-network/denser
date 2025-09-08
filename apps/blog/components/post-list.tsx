@@ -2,7 +2,7 @@ import PostListItem from '@/blog/components/post-list-item';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { useFollowListQuery } from './hooks/use-follow-list';
-import { Preferences } from '../pages/[param]/settings';
+import { Preferences } from '@/blog/lib/utils';
 
 const PostList = ({
   data,
