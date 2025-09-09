@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
@@ -48,7 +46,7 @@ const NotificationListItem = ({
   const imageHosterUrl = configuredImagesEndpoint;
   const participants = mentions
     ? mentions.map((m: string) => (
-        <Link key={m} href={'/' + m} data-testid="notification-account-icon-link">
+        <a key={m} href={'/' + m} data-testid="notification-account-icon-link">
           <Avatar className="mr-3 h-[40px] w-[40px] rounded-3xl">
             <AvatarImage
               src={`${imageHosterUrl}u/${m.substring(1)}/avatar/small`}
@@ -58,7 +56,7 @@ const NotificationListItem = ({
               <Image width={40} height={40} alt={`${m} profile picture`} src="/defaultavatar.png" />
             </AvatarFallback>
           </Avatar>
-        </Link>
+        </a>
       ))
     : null;
 
