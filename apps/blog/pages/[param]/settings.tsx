@@ -325,7 +325,7 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
       </Head>
       <ProfileLayout>
         <div className="flex flex-col" data-testid="public-profile-settings">
-          {isClient && user?.isLoggedIn && user?.username === params?.param.slice(1) ? (
+          {isClient && user?.isLoggedIn && user?.username === params?.param?.slice(1) ? (
             <>
               <div className="py-8">
                 <h2 className="py-4 text-lg font-semibold leading-5">

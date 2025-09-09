@@ -5,6 +5,7 @@ import { extractPictureFromPostBody, extractUrlsFromJsonString, extractYouTubeVi
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
+import { getUserAvatarUrl, getDefaultImageUrl } from '@hive/ui';
 
 export function find_first_img(post: Entry) {
   try {
@@ -48,7 +49,7 @@ export function find_first_img(post: Entry) {
       return proxifyImageUrl(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`, true);
     }
     if (post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')) {
-      return proxifyImageUrl(`https://images.hive.blog/u/${post.author}/avatar/`, true);
+      return proxifyImageUrl(getUserAvatarUrl(post.author, 'small'), true);
     }
     const pictures_extracted = extractPictureFromPostBody(extractUrlsFromJsonString(post.body));
     if (pictures_extracted[0]) {
@@ -65,7 +66,7 @@ export function find_first_img(post: Entry) {
       return proxifyImageUrl(matchgif[1], true);
     }
     if (!post.title.includes('RE: ') && post.depth === 0) {
-      return proxifyImageUrl(`https://images.hive.blog/u/${post.author}/avatar/large`, true);
+      return proxifyImageUrl(getUserAvatarUrl(post.author, 'large'), true);
     }
     return '';
   } catch (e) {
@@ -96,7 +97,7 @@ export default function PostImage({ post }: { post: Entry }) {
                 srcSet={proxifyImageUrl(image, '256x512').replace(/ /g, '%20')}
                 media="(min-width: 1000px)"
                 onError={() =>
-                  setImage('https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4')
+                  setImage(getDefaultImageUrl())
                 }
               />
               <img
@@ -105,7 +106,7 @@ export default function PostImage({ post }: { post: Entry }) {
                 loading="lazy"
                 className="w-full"
                 onError={() =>
-                  setImage('https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4')
+                  setImage(getDefaultImageUrl())
                 }
               />
             </picture>

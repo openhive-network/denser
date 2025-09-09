@@ -1,14 +1,8 @@
 import querystring from 'querystring';
 import multihash from 'multihashes';
-
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 
-// Change this when we have images.hive.blog working
-let proxyBase = `${configuredImagesEndpoint}`;
-
-export function setProxyBase(p: string): void {
-  proxyBase = p;
-}
+const proxyBase = configuredImagesEndpoint;
 
 export function extractPHash(url: string): string | null {
   if (url.startsWith(`${proxyBase}/p/`)) {
@@ -33,10 +27,9 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
     return '';
   }
 
-  // skip images already proxified with images.hive.blog
-  if (url.indexOf('https://images.hive.blog/') === 0 && url.indexOf('https://images.hive.blog/D') !== 0) {
-    console.log(url.replace('https://images.hive.blog/', proxyBase));
-    return url.replace('https://images.hive.blog/', proxyBase);
+  // Skip already-proxified URLs (ones that already have /p/ hash format)
+  if (url.includes('/p/') && url.includes('images.hive.blog')) {
+    return url; // Return as-is, already proxified
   }
 
   if (url.indexOf('https://steemitimages.com/') === 0 && url.indexOf('https://steemitimages.com/D') !== 0) {
@@ -47,6 +40,7 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
     return url.replace('https://images.ecency.com', proxyBase);
   }
 
+  // For other external images, use the complex /p/hash system
   const realUrl = getLatestUrl(url);
   const pHash = extractPHash(realUrl);
 
@@ -66,10 +60,11 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
   const qs = querystring.stringify(options);
 
   if (pHash) {
-    return `${proxyBase}/p/${pHash}${format === 'webp' ? '.webp' : '.png'}?${qs}`;
+    // Don't add .png extension for Hive images, let the image hoster decide
+    return `${proxyBase}/p/${pHash}?${qs}`;
   }
 
-  const b58url = multihash.toB58String(Buffer.from(realUrl.toString()));
+  const b58url = multihash.toB58String(Buffer.from(realUrl.toString()) as unknown as Uint8Array);
 
-  return `${proxyBase}/p/${b58url}${format === 'webp' ? '.webp' : '.png'}?${qs}`;
+  return `${proxyBase}/p/${b58url}?${qs}`;
 }

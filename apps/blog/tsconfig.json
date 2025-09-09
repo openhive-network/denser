@@ -4,12 +4,21 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@/blog/*": ["./*"],
-      "@smart-signer/*": ["../../packages/smart-signer/*"],
-      "@transaction/*": ["../../packages/transaction/*"],
-      "@ui/*": ["../../packages/ui/*"]
+      "@/blog/*": [
+        "./*"
+      ],
+      "@smart-signer/*": [
+        "../../packages/smart-signer/*"
+      ],
+      "@transaction/*": [
+        "../../packages/transaction/*"
+      ],
+      "@ui/*": [
+        "../../packages/ui/*"
+      ]
     },
-    "module": "esnext"
+    "module": "esnext",
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
@@ -20,5 +29,8 @@
     "../../packages/ui/components/time-ago.tsx",
     "../../packages/ui/components/card-skeleton.tsx"
   ],
-  "exclude": ["node_modules", "playwright"]
+  "exclude": [
+    "node_modules",
+    "playwright"
+  ]
 }

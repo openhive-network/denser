@@ -14,13 +14,12 @@ import { convertToHP, numberWithCommas } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToShow } from '@hive/ui/lib/parse-date';
-import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
 import { getTwitterInfo } from '@transaction/lib/bridge';
 import { useTranslation } from 'next-i18next';
 import env from '@beam-australia/react-env';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../hooks/use-following-infinitequery';
-import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
+import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, getUserAvatarUrl } from '@ui/components';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import CustomError from '../custom-error';
@@ -106,9 +105,10 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               backgroundImage:
                 profileData?.posting_json_metadata &&
                 JSON.parse(profileData?.posting_json_metadata).profile?.cover_image
-                  ? `url('${proxifyImageUrl(
+                  ? `url('${proxifyImageSrc(
                       JSON.parse(profileData?.posting_json_metadata).profile?.cover_image,
-                      '2048x512'
+                      2048,
+                      512
                     ).replace(/ /g, '%20')}')`
                   : '',
               backgroundPosition: 'center center',
@@ -121,14 +121,14 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
               <Avatar className="mr-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full">
                 <AvatarImage
                   className="h-full w-full object-cover"
-                  src={profileData?.profile?.profile_image}
+                  src={getUserAvatarUrl(profileData?.name || '', 'medium')}
                   alt="Profile picture"
                 />
                 <AvatarFallback>
                   <img
                     className="h-full w-full object-cover"
-                    src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
-                    alt="default img"
+                    src={getUserAvatarUrl(profileData?.name || '', 'medium')}
+                    alt="Profile picture"
                   />
                 </AvatarFallback>
               </Avatar>

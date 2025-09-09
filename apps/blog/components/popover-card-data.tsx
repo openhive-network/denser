@@ -14,6 +14,7 @@ import ButtonsContainer from './buttons-container';
 import { convertStringToBig } from '@ui/lib/helpers';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { compareDates } from '../lib/utils';
+import { getDefaultImageUrl } from '@hive/ui';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');
@@ -57,7 +58,7 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
               <Avatar className="flex h-[75px] w-[75px] items-center justify-center overflow-hidden rounded-full">
                 <AvatarImage
                   className="h-full w-full object-cover"
-                  src={account.profile?.profile_image}
+                  src={getDefaultImageUrl()}
                   alt="Profile picture"
                 />
                 <AvatarFallback>

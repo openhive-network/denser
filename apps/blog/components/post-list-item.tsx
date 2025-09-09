@@ -16,7 +16,6 @@ import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
-import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from './reblog-trigger';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
@@ -24,8 +23,7 @@ import PostCardBlacklistMark from './post-card-blacklist-mark';
 import TimeAgo from '@hive/ui/components/time-ago';
 import PostSummary from '../feature/posts-card/summary';
 import { Preferences } from '@/blog/lib/utils';
-
-const logger = getLogger('app');
+import { getUserAvatarUrl } from '@hive/ui';
 
 const PostListItem = ({
   post,
@@ -99,7 +97,7 @@ const PostListItem = ({
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                     style={{
-                      backgroundImage: `url(https://images.hive.blog/u/${post.author}/avatar/small)`
+                      backgroundImage: `url(${getUserAvatarUrl(post.author, 'small')})`
                     }}
                   />
                 </Link>

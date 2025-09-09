@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
 import TimeAgo from '@ui/components/time-ago';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { getUserAvatarUrl } from '@hive/ui';
 
 const TitleSetter = ({ start, end, status }: { start: string; end: string; status: string }) => {
   switch (status) {
@@ -191,7 +192,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund, 
               className="h-[30px] w-[30px] rounded-3xl"
               height="40"
               width="40"
-              src={`https://images.hive.blog/u/${proposalData.creator}/avatar`}
+              src={getUserAvatarUrl(proposalData.creator, 'medium')}
               alt={`${proposalData.creator} profile picture`}
             />
           </Link>

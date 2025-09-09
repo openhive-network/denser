@@ -242,6 +242,9 @@ export function logPageVisit(req: NextRequest, pathname: string): void {
       return;
     }
 
+    // Get client IP
+    const ip = getClientIp(req);
+
     // Get the auth proof cookie
     const authCookie = req.cookies.get(AUTH_PROOF_COOKIE_NAME);
 
@@ -250,18 +253,25 @@ export function logPageVisit(req: NextRequest, pathname: string): void {
       const cookieData = parseAuthProofCookie(authCookie.value);
 
       if (cookieData) {
-        // Get client IP
-        const ip = getClientIp(req);
-
         // Handle null values for logged out users
-        const username = cookieData.username || 'none';
-        const loginType = cookieData.loginType || 'none';
+        const username = cookieData.username || 'n/a';
+        const loginType = cookieData.loginType || 'n/a';
 
-        // Log the page visit
+        // Log the page visit with cookie data
         console.log(
-          `[${new Date().toISOString()}] Page visit: ${pathname} --> ip=${ip} account=${username} login_type=${loginType} uuid=${cookieData.uuid}`
+          `Page visit: ${pathname} --> ip=${ip} account=${username} login_type=${loginType} uuid=${cookieData.uuid}`
+        );
+      } else {
+        // Cookie exists but is invalid - log with defaults
+        console.log(
+          `Page visit: ${pathname} --> ip=${ip} account=n/a login_type=n/a uuid=n/a`
         );
       }
+    } else {
+      // No cookie - user is not logged in, log with defaults
+      console.log(
+        `Page visit: ${pathname} --> ip=${ip} account=n/a login_type=n/a uuid=n/a`
+      );
     }
   } catch (error) {
     // Silently fail - don't break the middleware if logging fails
@@ -337,7 +347,7 @@ export function logLoginEvent(
   loginChallenge: string
 ) {
   console.log(
-    `[${new Date().toISOString()}] Account login: ${username} --> ip=${ip} account=${username} login_type=${loginType} uuid=${loginChallenge}`
+    `Account login: ${username} --> ip=${ip} account=${username} login_type=${loginType} uuid=${loginChallenge}`
   );
 }
 
@@ -350,6 +360,6 @@ export function logLoginEvent(
  */
 export function logLogoutEvent(ip: string | undefined, username: string, loginType: string, uuid: string) {
   console.log(
-    `[${new Date().toISOString()}] Account logout: ${username} --> ip=${ip} account=${username} login_type=${loginType} uuid=${uuid}`
+    `Account logout: ${username} --> ip=${ip} account=${username} login_type=${loginType} uuid=${uuid}`
   );
 }
