@@ -97,6 +97,7 @@ export class PostPage {
   readonly profileFollowBtn: string;
   readonly commentCard: string;
   readonly commentListItem: string;
+  readonly commentListLocator: Locator;
   readonly articleBodyParagraph: string;
   readonly postingToDropdown: Locator;
 
@@ -139,6 +140,7 @@ export class PostPage {
     this.buttonMutePopoverCard = page.locator('button').getByText('Mute');
     this.commentListItems = page.locator('[data-testid="comment-list-item"]');
     this.commentListItem = '[data-testid="comment-list-item"]'
+    this.commentListLocator = page.locator('[data-testid="comment-list"]');
     this.commentAuthorLink = page.locator(
       '[data-testid="comment-card-header"] [data-testid="author-name-link"]'
     );

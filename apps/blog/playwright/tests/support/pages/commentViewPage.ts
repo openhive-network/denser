@@ -2,6 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 export class CommentViewPage {
   readonly page: Page;
+  readonly getHeaderOfViewingCommentThread: Locator;
   readonly getHeaderOfCommentThread: Locator;
   readonly getReArticleTitle: Locator;
   readonly getViewFullContext: Locator;
@@ -45,6 +46,7 @@ export class CommentViewPage {
 
   constructor(page: Page) {
     this.page = page;
+    this.getHeaderOfViewingCommentThread = page.locator('h4.text-sm');
     this.getHeaderOfCommentThread = page.getByText('You are viewing a single comment');
     this.getReArticleTitle = page.locator('[data-testid="article-title"]');
     this.getViewFullContext = page.locator('[data-testid="view-the-full-context"]');
