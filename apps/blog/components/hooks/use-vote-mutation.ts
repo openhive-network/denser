@@ -45,8 +45,7 @@ export function useVoteMutation() {
             rshares: weight,
             vote_percent: weight,
             voter,
-            weight,
-            _temporary: true
+            weight
           }
         ]
       };
@@ -65,13 +64,15 @@ export function useVoteMutation() {
         variant: 'success'
       });
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['votes', author, permlink, voter] });
         queryClient.invalidateQueries({ queryKey: ['discussionData'] });
         queryClient.invalidateQueries({ queryKey: [permlink, voter, 'ActiveVotes'] });
         queryClient.invalidateQueries({ queryKey: ['postData', author, permlink] });
         queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
         queryClient.invalidateQueries({ queryKey: ['manabars', voter] });
       }, 3000);
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['votes', author, permlink, voter] });
+      }, 6000);
     }
   });
   return voteMutation;
