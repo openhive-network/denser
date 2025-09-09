@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import PostList from '@/blog/components/post-list';
 import { useRouter } from 'next/router';
 import RepliesList from '@/blog/components/replies-list';
-import { PostSkeleton } from '@/blog/pages/[...param]';
 import { useInView } from 'react-intersection-observer';
 import { FC, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
@@ -15,6 +14,10 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import { getAccountMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+
+import { useLocalStorage } from 'usehooks-ts';
+import PostCardSkeleton from '@ui/components/card-skeleton';
 
 const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { t } = useTranslation('common_blog');
@@ -23,6 +26,10 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { ref, inView } = useInView();
   const sort = router.pathname.split('/')[router.pathname.split('/').length - 1];
   const { user } = useUser();
+  const [preferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
   const { data, isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery(
     ['accountRepliesInfinite', username, sort],
     async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
@@ -82,7 +89,12 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                     <>
                       {data.pages.map((page, index) => {
                         return page && page.length > 0 ? (
-                          <PostList data={page} key={`posts-${index}`} testFilter='user-posts'/>
+                          <PostList
+                            data={page}
+                            key={`posts-${index}`}
+                            testFilter="user-posts"
+                            nsfwPreferences={preferences.nsfw}
+                          />
                         ) : (
                           <div
                             key="empty"
@@ -100,7 +112,7 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                           disabled={!hasNextPage || isFetchingNextPage}
                         >
                           {isFetchingNextPage ? (
-                            <PostSkeleton />
+                            <PostCardSkeleton />
                           ) : hasNextPage ? (
                             'Load Newer'
                           ) : data.pages[0] && data.pages[0].length > 0 ? (
@@ -141,7 +153,7 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                           disabled={!hasNextPage || isFetchingNextPage}
                         >
                           {isFetchingNextPage ? (
-                            <PostSkeleton />
+                            <PostCardSkeleton />
                           ) : hasNextPage ? (
                             'Load Newer'
                           ) : data.pages[0] && data.pages[0].length > 0 ? (
@@ -164,7 +176,12 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                     <>
                       {data.pages.map((page, index) => {
                         return page && page.length > 0 ? (
-                          <PostList data={page} key={`payout-${index}`} testFilter='user-payouts' />
+                          <PostList
+                            data={page}
+                            key={`payout-${index}`}
+                            testFilter="user-payouts"
+                            nsfwPreferences={preferences.nsfw}
+                          />
                         ) : (
                           <div
                             key="empty"
@@ -182,7 +199,7 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                           disabled={!hasNextPage || isFetchingNextPage}
                         >
                           {isFetchingNextPage ? (
-                            <PostSkeleton />
+                            <PostCardSkeleton />
                           ) : hasNextPage ? (
                             t('user_profile.load_newer')
                           ) : data.pages[0] && data.pages[0].length > 0 ? (

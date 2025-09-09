@@ -37,6 +37,7 @@ import { handleError } from '@ui/lib/handle-error';
 import Head from 'next/head';
 import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component';
 import { useHealthChecker } from '@ui/hooks/useHealthChecker';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 
 const logger = getLogger('app');
 interface Settings {
@@ -49,18 +50,7 @@ interface Settings {
   blacklist_description: string;
   muted_list_description: string;
 }
-export interface Preferences {
-  nsfw: 'hide' | 'warn' | 'show';
-  blog_rewards: '0%' | '50%' | '100%';
-  comment_rewards: '0%' | '50%' | '100%';
-  referral_system: 'enabled' | 'disabled';
-}
-export const DEFAULT_PREFERENCES: Preferences = {
-  nsfw: 'warn',
-  blog_rewards: '50%',
-  comment_rewards: '50%',
-  referral_system: 'enabled'
-};
+
 const DEFAULT_SETTINGS: Settings = {
   profile_image: '',
   cover_image: '',

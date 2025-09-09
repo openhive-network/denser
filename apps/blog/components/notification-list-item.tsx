@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
@@ -72,12 +70,12 @@ const NotificationListItem = ({
           {unRead && isOwner ? <span className="mr-2 h-2 w-2 rounded-full bg-destructive" /> : null}
           {participants}
           <div className="flex flex-col">
-            <Link href={`/${url}`}>
+            <a href={`/${url}`}>
               <span className="" data-testid="notification-account-and-message">
                 <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
                 {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}
               </span>
-            </Link>
+            </a>
             <span
               className="flex items-center gap-2 text-sm text-gray-400"
               data-testid="notification-timestamp"

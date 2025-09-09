@@ -9,7 +9,6 @@ import {
 import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
-import { Skeleton } from '@ui/components/skeleton';
 import PostSelectFilter from '@/blog/components/post-select-filter';
 import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
@@ -21,20 +20,11 @@ import Link from 'next/link';
 import { getDefaultProps } from '../../lib/get-translations';
 import Head from 'next/head';
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
+import { useLocalStorage } from 'usehooks-ts';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import PostCardSkeleton from '@ui/components/card-skeleton';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
-
-export const PostSkeleton = () => {
-  return (
-    <div className="flex items-center space-x-4">
-      <Skeleton className="h-12 w-12 rounded-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  );
-};
 
 const MyPage: FC = () => {
   const router = useRouter();
@@ -43,6 +33,10 @@ const MyPage: FC = () => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();
+  const [preferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
   const { data: mySubsData } = useQuery(
     ['subscriptions', user?.username],
     () => getSubscriptions(user ? user?.username : ''),
@@ -104,7 +98,7 @@ const MyPage: FC = () => {
         <title>{tabTitle}</title>
       </Head>
       <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
-        <CommunityLayout community="">
+        <CommunityLayout community="" mySubsData={mySubsData}>
           <div className="my-4 flex w-full items-center justify-between" translate="no">
             <div className="mr-2 flex w-[320px] flex-col">
               <span className="text-md hidden font-medium md:block">My communities</span>
@@ -123,7 +117,9 @@ const MyPage: FC = () => {
           <>
             {entriesData && entriesData.pages[0]?.length !== 0 ? (
               entriesData.pages.map((page, index) => {
-                return page ? <PostList data={page} key={`f-${index}`} /> : null;
+                return page ? (
+                  <PostList data={page} key={`f-${index}`} nsfwPreferences={preferences.nsfw} />
+                ) : null;
               })
             ) : (
               <div
@@ -144,7 +140,7 @@ const MyPage: FC = () => {
                   disabled={!hasNextPage || isFetchingNextPage}
                 >
                   {isFetchingNextPage ? (
-                    <PostSkeleton />
+                    <PostCardSkeleton />
                   ) : hasNextPage ? (
                     t('user_profile.load_newer')
                   ) : (

@@ -5,7 +5,6 @@ import { Entry } from '@transaction/lib/extended-hive.chain';
 import Loading from '@hive/ui/components/loading';
 import { FC, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
-import { Skeleton } from '@ui/components/skeleton';
 import { useInView } from 'react-intersection-observer';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
@@ -16,20 +15,12 @@ import { getDefaultProps } from '../../lib/get-translations';
 import Head from 'next/head';
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
 import NoDataError from '@/blog/components/no-data-error';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+
+import { useLocalStorage } from 'usehooks-ts';
+import PostCardSkeleton from '@ui/components/card-skeleton';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
-
-export const PostSkeleton = () => {
-  return (
-    <div className="flex items-center space-x-4">
-      <Skeleton className="h-12 w-12 rounded-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  );
-};
 
 const TAB_TITLE = 'My Friends - Hive';
 const FeedPage: FC = () => {
@@ -37,9 +28,10 @@ const FeedPage: FC = () => {
   const { username, tag } = useSiteParams();
   const { ref: refAcc, inView: inViewAcc } = useInView();
   const { user } = useUser();
-
-  // Only enable community query if tag is a valid community name (not a username)
-  const isValidCommunityTag = tag && !tag.startsWith('@');
+  const [preferences] = useLocalStorage<Preferences>(
+    `user-preferences-${user.username}`,
+    DEFAULT_PREFERENCES
+  );
 
   const {
     data: accountEntriesData,
@@ -97,7 +89,7 @@ const FeedPage: FC = () => {
         <title>{TAB_TITLE}</title>
       </Head>
 
-      <CommunityLayout community={''}>
+      <CommunityLayout community={''} mySubsData={mySubsData}>
         <div className="col-span-12 pt-4 md:col-span-9 xl:col-span-8 xl:pt-0">
           <span className="text-md mt-4 hidden text-xl font-medium xl:block">
             {t('navigation.communities_nav.my_friends')}
@@ -115,7 +107,9 @@ const FeedPage: FC = () => {
               <>
                 {accountEntriesData.pages[0]?.length !== 0 ? (
                   accountEntriesData.pages.map((page, index) => {
-                    return page ? <PostList data={page} key={`x-${index}`} /> : null;
+                    return page ? (
+                      <PostList data={page} key={`x-${index}`} nsfwPreferences={preferences.nsfw} />
+                    ) : null;
                   })
                 ) : (
                   <div
@@ -141,7 +135,7 @@ const FeedPage: FC = () => {
                       disabled={!accountHasNextPage || accountIsFetchingNextPage}
                     >
                       {accountIsFetchingNextPage ? (
-                        <PostSkeleton />
+                        <PostCardSkeleton />
                       ) : accountHasNextPage ? (
                         t('user_profile.load_newer')
                       ) : accountEntriesData.pages[0] && accountEntriesData.pages[0].length > 0 ? (

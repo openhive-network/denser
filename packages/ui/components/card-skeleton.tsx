@@ -1,6 +1,6 @@
 import { Skeleton } from '@ui/components/skeleton';
 
-export const PostSkeleton = () => {
+const PostCardSkeleton = () => {
   return (
     <div className="flex items-center space-x-4">
       <Skeleton className="h-12 w-12 rounded-full" />
@@ -11,3 +11,4 @@ export const PostSkeleton = () => {
     </div>
   );
 };
+export default PostCardSkeleton;

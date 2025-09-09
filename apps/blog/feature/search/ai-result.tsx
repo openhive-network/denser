@@ -7,9 +7,10 @@ import { useTranslation } from 'next-i18next';
 import { getSimilarPosts } from '@/blog/lib/get-data';
 import { PER_PAGE } from './lib/utils';
 import PostList from '@/blog/components/post-list';
-import { PostSkeleton } from './loading-skeleton';
+import { Preferences } from '@/blog/lib/utils';
+import PostCardSkeleton from '@ui/components/card-skeleton';
 
-const AIResult = ({ query }: { query: string }) => {
+const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: Preferences['nsfw'] }) => {
   const { user } = useUser();
   const { ref, inView } = useInView();
   const { t } = useTranslation('common_blog');
@@ -53,13 +54,13 @@ const AIResult = ({ query }: { query: string }) => {
         <Loading loading={isLoading} />
       ) : data ? (
         data.pages.map((page, index) => {
-          return page ? <PostList data={page} key={`ai-${index}`} /> : null;
+          return page ? <PostList data={page} key={`ai-${index}`} nsfwPreferences={nsfwPreferences} /> : null;
         })
       ) : null}
       <div>
         <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
           {isFetchingNextPage ? (
-            <PostSkeleton />
+            <PostCardSkeleton />
           ) : hasNextPage ? (
             t('user_profile.load_newer')
           ) : !isLoading ? (

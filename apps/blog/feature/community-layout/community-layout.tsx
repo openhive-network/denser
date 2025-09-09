@@ -4,50 +4,42 @@ import CommunitiesMybar from '../../components/communities-mybar';
 import CommunitiesSidebar from '../../components/communities-sidebar';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import {
-  getAccountNotifications,
-  getCommunity,
-  getSubscribers,
-  getSubscriptions
-} from '@transaction/lib/bridge';
+import { getAccountNotifications, getSubscribers } from '@transaction/lib/bridge';
 import CommunityDescription from './community-description';
 import SimpleDescriptionSkeleton from '@/blog/feature/community-layout/simple-description-skeleton';
 import DescriptionSkeleton from './descripton-skeleton';
 import ExploreHive from '@/blog/components/explore-hive';
+import { Community } from '@transaction/lib/extended-hive.chain';
 
-const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
+const CommunityLayout = ({
+  children,
+  community,
+  mySubsData,
+  communityData
+}: {
+  children: ReactNode;
+  community?: string;
+  mySubsData?: string[][] | null;
+  communityData?: Community | null;
+}) => {
   const { user } = useUser();
-  const communityPage = community.startsWith('hive-');
-  const { data: mySubsData } = useQuery(
-    ['subscriptions', user?.username],
-    () => getSubscriptions(user.username),
-    {
-      enabled: Boolean(user?.username)
-    }
-  );
-
-  const { data: communityData, isLoading: communityDataIsLoading } = useQuery(
-    ['community', community],
-    () => getCommunity(community, user.username),
-    { enabled: !!community }
-  );
+  const communityPage = community?.startsWith('hive-') ?? false;
 
   const { data: subsData, isLoading: subsIsLoading } = useQuery(
     ['subscribers', community],
-    () => getSubscribers(community),
+    () => getSubscribers(community ?? ''),
     { enabled: !!community }
   );
-
   const { data: notificationData } = useQuery(
     ['AccountNotification', community],
-    () => getAccountNotifications(community),
+    () => getAccountNotifications(community ?? ''),
     { enabled: !!community }
   );
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
         <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-          {user?.isLoggedIn ? (
+          {!!mySubsData ? (
             <CommunitiesMybar data={mySubsData} username={user.username} />
           ) : (
             <CommunitiesSidebar />
@@ -55,7 +47,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div data-testid="card-explore-hive-mobile" className="md:col-span-10 md:flex xl:hidden">
-            {!community || !communityPage ? null : communityDataIsLoading || subsIsLoading ? (
+            {!community || !communityPage ? null : subsIsLoading ? (
               <SimpleDescriptionSkeleton />
             ) : communityData && subsData ? (
               <CommunitySimpleDescription
@@ -70,18 +62,18 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
           <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">{children}</div>
         </div>
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-          {!community && !user.username ? (
+          {!community && !mySubsData ? (
             <ExploreHive />
-          ) : !community && (!communityData || !communityData) ? (
+          ) : !community && !communityData ? (
             <CommunitiesSidebar />
-          ) : !communityPage ? null : !!community && (communityDataIsLoading || subsIsLoading) ? (
+          ) : !communityPage ? null : !!community && subsIsLoading ? (
             <DescriptionSkeleton />
           ) : communityData && subsData ? (
             <CommunityDescription
               data={communityData}
               subs={subsData}
               notificationData={notificationData}
-              username={community}
+              username={community ?? ''}
             />
           ) : null}
         </div>

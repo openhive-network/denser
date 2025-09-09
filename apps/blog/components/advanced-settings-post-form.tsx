@@ -15,7 +15,7 @@ import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import badActorList from '@ui/config/lists/bad-actor-list';
 import clsx from 'clsx';
 
