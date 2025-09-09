@@ -20,7 +20,6 @@ import NoDataError from '../components/no-data-error';
 import { getLogger } from '@ui/lib/logging';
 import MainPage from '../components/main-page';
 import AccountProfileMainPage from '../feature/account-profile/main-page';
-import { DEFAULT_OBSERVER } from '../lib/utils';
 import {
   getAccount,
   getAccountFull,
@@ -151,7 +150,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
               tag,
               pageParam?.author,
               pageParam?.permlink,
-              DEFAULT_OBSERVER
+              ''
             );
             if (!!postsData && postsData.length > 0) {
               const cleanedPostsList = postsData.map((post) => ({ ...post, active_votes: [] }));
@@ -177,13 +176,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         await queryClient.prefetchInfiniteQuery(
           ['accountEntriesInfinite', username],
           async ({ pageParam }) => {
-            const data = await getAccountPosts(
-              'blog',
-              username,
-              DEFAULT_OBSERVER,
-              pageParam?.author,
-              pageParam?.permlink
-            );
+            const data = await getAccountPosts('blog', username, '', pageParam?.author, pageParam?.permlink);
             if (data) {
               const nsfwCleanedData = data?.filter(
                 (post) => !(!!post.json_metadata.tags && post.json_metadata?.tags.includes('nsfw'))
