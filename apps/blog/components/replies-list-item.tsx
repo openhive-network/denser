@@ -25,6 +25,7 @@ import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import TimeAgo from '@hive/ui/components/time-ago';
+import { getUserAvatarUrl } from '@hive/ui';
 
 const RepliesListItem = ({
   comment,
@@ -58,7 +59,7 @@ const RepliesListItem = ({
                   className="mr-3 h-[24px] w-[24px] rounded-3xl"
                   height="24"
                   width="24"
-                  src={`https://images.hive.blog/u/${comment.author}/avatar/small`}
+                  src={getUserAvatarUrl(comment.author, 'small')}
                   alt={`${comment.author} profile picture`}
                   loading="lazy"
                   data-testid="comment-author-avatar"

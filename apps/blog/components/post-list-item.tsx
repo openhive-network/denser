@@ -34,8 +34,8 @@ import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardHidden from './post-card-hidden';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import TimeAgo from '@hive/ui/components/time-ago';
+import { getUserAvatarUrl } from '@hive/ui';
 
-const logger = getLogger('app');
 
 const PostListItem = ({
   post,
@@ -114,7 +114,7 @@ const PostListItem = ({
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                     style={{
-                      backgroundImage: `url(https://images.hive.blog/u/${post.author}/avatar/small)`
+                      backgroundImage: `url(${getUserAvatarUrl(post.author, 'small')})`
                     }}
                   />
                 </Link>

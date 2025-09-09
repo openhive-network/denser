@@ -27,6 +27,7 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import TimeAgo from '@hive/ui/components/time-ago';
+import { getUserAvatarUrl } from '@hive/ui';
 
 interface SearchCardProps {
   post: SearchResult;
@@ -63,7 +64,7 @@ const SearchCard = ({ post, nsfw, blacklist }: SearchCardProps) => {
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                     style={{
-                      backgroundImage: `url(https://images.hive.blog/u/${post.author}/avatar/small)`
+                      backgroundImage: `url(${getUserAvatarUrl(post.author, 'small')})`
                     }}
                   />
                 </Link>

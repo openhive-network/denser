@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { getUserAvatarUrl } from '@hive/ui';
 
 interface Props {
   username: string;
@@ -8,9 +9,7 @@ interface Props {
 
 function UserAvatar({ username, size, className }: Props) {
   const imgSize = size === 'xLarge' ? 'large' : size === 'normal' || size === 'small' ? 'small' : 'medium';
-  const imageSrc = `https://images.hive.blog/u/${username}/avatar/${imgSize}`;
-
-  const boxSize = size === 'large' ? '24' : size === 'medium' ? '16' : '12';
+  const imageSrc = getUserAvatarUrl(username, imgSize as 'small' | 'medium' | 'large');
 
   return (
     <span

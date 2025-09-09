@@ -24,10 +24,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
 import Link from 'next/link';
 import { useAppStore } from '@/blog/store/app';
 import env from '@beam-australia/react-env';
+import { getUserAvatarUrl } from '@hive/ui';
 
 const ProfileDropdownMenu = () => {
   const currentProfile = useAppStore((state) => state.currentProfile);
-  const setCurrentProfile = useAppStore((state) => state.setCurrentProfile);
   const walletHost = env('WALLET_ENDPOINT');
 
   return (
@@ -35,7 +35,7 @@ const ProfileDropdownMenu = () => {
       <DropdownMenuTrigger asChild>
         <Avatar className="rounded-md" data-testid="profile-menu">
           {currentProfile && (
-            <AvatarImage src={`https://images.hive.blog/u/${currentProfile?.name || ''}/avatar/small`} />
+            <AvatarImage src={getUserAvatarUrl(currentProfile?.name || '', 'small')} />
           )}
           <AvatarFallback>{currentProfile?.name.slice(0, 2).toUpperCase() || ''}</AvatarFallback>
         </Avatar>
