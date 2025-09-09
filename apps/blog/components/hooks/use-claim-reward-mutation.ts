@@ -49,7 +49,7 @@ export function useClaimRewardsMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 6000);
     }
   });
 

@@ -58,7 +58,9 @@ const NotificationActivities = ({
     ['profileData', user.username],
     () => getAccountFull(user.username),
     {
-      enabled: !!user.username
+      enabled: !!user.username,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false
     }
   );
   const accountOwner = user.username === username;
