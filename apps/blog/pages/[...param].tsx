@@ -197,7 +197,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           getPost(username, permlink)
         );
         if (post) {
-          console.log('Found post for redirect:', post);
           redirectUrl = `/${post.category ?? post.community}/@${username}/${permlink}`;
           if (ctx.res && redirectUrl) {
             ctx.res.statusCode = 302; // Temporary redirect
