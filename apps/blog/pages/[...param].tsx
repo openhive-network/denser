@@ -199,12 +199,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         if (post) {
           console.log('Found post for redirect:', post);
           redirectUrl = `/${post.category ?? post.community}/@${username}/${permlink}`;
-          return {
-            redirect: {
-              destination: redirectUrl,
-              permanent: true
-            }
-          };
+          if (ctx.res && redirectUrl) {
+            ctx.res.statusCode = 302; // Temporary redirect
+            ctx.res.setHeader('Location', redirectUrl);
+          }
         }
       } catch (error) {
         logger.error('Error prefetching post data:', `/${username}/${permlink}`, error);
