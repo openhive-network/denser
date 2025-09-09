@@ -52,7 +52,7 @@ export function useBlacklistBlogMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 4000);
     }
   });
 
@@ -98,7 +98,7 @@ export function useUnblacklistBlogMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 4000);
     }
   });
 
@@ -134,7 +134,7 @@ export function useResetBlacklistBlogMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 4000);
       logger.info('useResetBlacklistBlogMutation onSuccess: %o', data);
     }
   });

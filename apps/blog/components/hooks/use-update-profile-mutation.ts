@@ -60,7 +60,6 @@ export function useUpdateProfileMutation() {
         'profileData',
         user.username
       ]);
-      console.log('prevProfileData', prevProfileData);
 
       const response = { ...params, broadcastResult, prevProfileData };
       return response;
@@ -106,7 +105,7 @@ export function useUpdateProfileMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['profileData', user.username] });
-      }, 3000);
+      }, 4000);
     }
   });
 

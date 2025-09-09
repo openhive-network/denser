@@ -63,7 +63,7 @@ export function useUpdateCommunityMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['community', communityName] });
-      }, 3000);
+      }, 4000);
     }
   });
 

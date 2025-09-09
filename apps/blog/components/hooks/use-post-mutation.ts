@@ -76,7 +76,7 @@ export function usePostMutation() {
         queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
         queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
         queryClient.invalidateQueries({ queryKey: ['accountEntriesInfinite'] });
-      }, 3000);
+      }, 4000);
     }
   });
 
@@ -110,7 +110,7 @@ export function useDeletePostMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
         queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-      }, 3000);
+      }, 4000);
     }
   });
 

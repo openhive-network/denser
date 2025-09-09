@@ -12,6 +12,7 @@ export class ProfilePage {
   readonly profileStats: Locator;
   readonly followButton: Locator;
   readonly userLinks: Locator;
+  readonly profileBlogPostsList: Locator;
 
   readonly profileNav: Locator;
   readonly profileBlogLink: Locator;
@@ -50,6 +51,9 @@ export class ProfilePage {
   readonly postAvatar: Locator;
   readonly postReputation: Locator;
   readonly postReputationTooltip: Locator;
+  readonly postsPostListLocator: Locator;
+  readonly postsCommentsListLocator: Locator;
+  readonly postsPayoutsListLocator: Locator;
 
   readonly repliesCommentListItem: any;
   readonly repliesCommentListItemLoadNewer: Locator;
@@ -68,6 +72,7 @@ export class ProfilePage {
   readonly repliesCommentListItemVotes: Locator;
   readonly repliesCommentListItemVotesTooltip: Locator;
   readonly repliesCommentListItemRespond: Locator;
+  readonly repliesCommentListItemRespondFirst: Locator;
   readonly repliesCommentListItemRespondTooltip: Locator;
   readonly repliesCommentListItemArticleTitle: Locator;
 
@@ -214,6 +219,7 @@ export class ProfilePage {
     this.profileFollowers = this.profileStats.locator('li').nth(0);
     this.followButton = page.locator('[data-testid="profile-follow-button"]');
     this.userLinks = page.locator('[data-testid="user-links"]');
+    this.profileBlogPostsList = page.getByTestId('post-list-profile-blog-list');
 
     this.profileNav = page.locator('[data-testid="profile-navigation"]');
     this.profileBlogLink = page
@@ -266,6 +272,9 @@ export class ProfilePage {
     this.postAvatar = page.locator('[data-testid="post-card-avatar"]');
     this.postReputation = page.locator('[data-testid="post-author-reputation"]');
     this.postReputationTooltip = page.locator('[data-testid="post-reputation-tooltip"]');
+    this.postsPostListLocator = page.getByTestId('post-list-user-posts');
+    this.postsCommentsListLocator = page.getByTestId('comment-list-replies');
+    this.postsPayoutsListLocator = page.getByTestId('post-list-user-payouts');
 
     this.repliesCommentListItem = page.locator('[data-testid="comment-list-item"]');
     this.repliesCommentListItemLoadNewer = page.locator('[div > button]').getByText('Load Newer');
@@ -284,6 +293,7 @@ export class ProfilePage {
     this.repliesCommentListItemVotes = page.locator('[data-testid="comment-vote"]');
     this.repliesCommentListItemVotesTooltip = page.locator('[data-testid="comment-vote-tooltip"]');
     this.repliesCommentListItemRespond = page.locator('[data-testid="comment-respond-link"]');
+    this.repliesCommentListItemRespondFirst = this.repliesCommentListItemRespond.first();
     this.repliesCommentListItemRespondTooltip = page.locator('[data-testid="comment-respond-tooltip"]');
     this.repliesCommentListItemArticleTitle = page.locator('[data-testid="article-title"]');
 
@@ -433,6 +443,28 @@ export class ProfilePage {
     await this.page.waitForSelector(this.profileInfo['_selector']);
   }
 
+  async gotoPostsProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/posts`);
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(this.postsPostListLocator['_selector']);
+  }
+
+  async gotoPostsCommentsProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/comments`);
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(this.postsCommentsListLocator['_selector']);
+  }
+
+  async gotoPostsPayoutsProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/payout`);
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    if (!await this.userNoPendingPayoutsMsg.isVisible())
+      await this.page.waitForSelector(this.postsPayoutsListLocator['_selector']);
+  }
+
   async gotoRepliesProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/replies`);
     await this.page.waitForLoadState('domcontentloaded');
@@ -530,9 +562,9 @@ export class ProfilePage {
   }
 
   async profileRepliesTabIsSelected() {
-    await this.page.waitForSelector(this.page.locator('main')['_selector']);
-    await expect(this.page).toHaveURL(/.*replies/)
-    // await expect(this.repliesCommentListItem).toHaveCount(20);
+    const repliesPageListLocator = this.userHasNotHadAnyRepliesYetMsg.or(this.postsCommentsListLocator);
+    await repliesPageListLocator.waitFor({state: 'visible'});
+    await expect(this.page).toHaveURL(/.*replies/);
   }
 
   async profileRepliesTabIsNotSelected() {

@@ -52,7 +52,7 @@ export function useFollowMutedBlogMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 4000);
       logger.info('useFollowMutedBlogMutation onSuccess data: %o', data);
     }
   });
@@ -99,7 +99,7 @@ export function useUnfollowMutedBlogMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 4000);
       logger.info('useUnfollowMutedBlogMutation onSuccess data: %o', data);
     }
   });
@@ -136,7 +136,7 @@ export function useResetFollowMutedBlogMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 4000);
       logger.info('useResetFollowMutedBlogMutation onSuccess: %o', data);
     }
   });

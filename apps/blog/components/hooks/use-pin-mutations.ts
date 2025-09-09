@@ -50,7 +50,7 @@ export function usePinMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
-      }, 3000);
+      }, 4000);
     }
   });
 
@@ -96,7 +96,7 @@ export function useUnpinMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
-      }, 3000);
+      }, 4000);
     }
   });
 

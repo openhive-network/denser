@@ -38,6 +38,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
+  const explorerHost = env('EXPLORER_DOMAIN');
   const { username } = useSiteParams();
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
@@ -375,6 +376,16 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                 />
               </ul>
               <ul className="flex h-full flex-nowrap text-xs sm:text-base lg:flex lg:gap-4">
+                <li>
+                  <Link
+                    href={`${explorerHost}/@${username}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mr-4 flex h-12 items-center px-2 hover:bg-background hover:text-primary"
+                  >
+                    Block Explorer
+                  </Link>
+                </li>
                 <li>
                   <Link
                     href={`${walletHost}/@${username}/transfers`}

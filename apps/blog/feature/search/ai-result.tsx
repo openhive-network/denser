@@ -58,13 +58,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
         })
       ) : null}
       <div>
-        <button
-          ref={ref}
-          onClick={() => {
-            fetchNextPage(), console.log('fetchNextPage');
-          }}
-          disabled={!hasNextPage || isFetchingNextPage}
-        >
+        <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
           {isFetchingNextPage ? (
             <PostCardSkeleton />
           ) : hasNextPage ? (

@@ -17,6 +17,7 @@ import {
   ESupportedLanguages,
   IHiveChainInterface,
   GetDynamicGlobalPropertiesResponse,
+  ResourceCreditsOperation
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
@@ -173,8 +174,7 @@ export class TransactionService {
   }
 
   async getDynamicGlobalProperties(): Promise<GetDynamicGlobalPropertiesResponse> {
-    return (await this.getChain())
-      .api.database_api.get_dynamic_global_properties({});
+    return (await this.getChain()).api.database_api.get_dynamic_global_properties({});
   }
 
   /**
@@ -1013,7 +1013,9 @@ export class TransactionService {
     posting?: authority,
     transactionOptions: TransactionOptions = {}
   ) {
-    const { median_props } = await (await hiveChainService.getHiveChain()).api.condenser_api.get_witness_schedule([]);
+    const { median_props } = await (
+      await hiveChainService.getHiveChain()
+    ).api.condenser_api.get_witness_schedule([]);
     const fee = await getAsset(median_props.account_creation_fee.split(' ')[0], 'HIVE');
     return (
       await this.processHiveAppOperation((builder) => {
@@ -1122,6 +1124,25 @@ export class TransactionService {
           request_id: requestId
         }
       });
+    }, transactionOptions);
+  }
+  async delegateRC(
+    fromAccount: string,
+    amount: string,
+    toAccount: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation(
+        new ResourceCreditsOperation().delegate(fromAccount, amount, toAccount).authorize(fromAccount)
+      );
+    }, transactionOptions);
+  }
+  async undelegateRC(fromAccount: string, toAccount: string, transactionOptions: TransactionOptions = {}) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation(
+        new ResourceCreditsOperation().removeDelegation(fromAccount, toAccount).authorize(fromAccount)
+      );
     }, transactionOptions);
   }
 }

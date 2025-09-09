@@ -58,7 +58,7 @@ export function useSubscribeMutation() {
         queryClient.invalidateQueries({ queryKey: ['community', community] });
         queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
         queryClient.invalidateQueries({ queryKey: ['AccountNotification', community] });
-      }, 4000);
+      }, 5000);
     }
   });
 

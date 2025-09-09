@@ -60,7 +60,10 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
     ['votes', post.author, post.permlink, user?.username],
     () => getListVotesByCommentVoter([post.author, post.permlink, user?.username], 1),
     {
-      enabled: !!checkVote || !!clickedVoteButton
+      enabled: !!checkVote || !!clickedVoteButton,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false
     }
   );
   const { net_vests } = useLoggedUserContext();

@@ -115,7 +115,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     // Click avatar of the first comment card
     await profilePage.repliesCommentListItemAvatar.first().click();
-    await page.waitForTimeout(3000);
+    await profilePage.page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
 
     if (await profilePage.postBlogItem.first().isVisible()) {
       await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
@@ -142,7 +142,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     // Click nickname of the first comment card
     await profilePage.postsPostAuthor.first().click();
-    await page.waitForTimeout(3000);
+    await profilePage.page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
 
     if (await profilePage.postBlogItem.first().isVisible()) {
       await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);

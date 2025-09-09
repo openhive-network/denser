@@ -69,7 +69,7 @@ export function useMutePostMutation() {
         queryClient.invalidateQueries({
           queryKey: ['discussionData', discussionPermlink]
         });
-      }, 3000);
+      }, 4000);
     }
   });
   return mutePostMutation;
@@ -132,7 +132,7 @@ export function useUnmutePostMutation() {
         queryClient.invalidateQueries({
           queryKey: ['discussionData', discussionPermlink]
         });
-      }, 3000);
+      }, 4000);
     }
   });
 

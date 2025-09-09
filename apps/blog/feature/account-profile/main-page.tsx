@@ -70,7 +70,12 @@ const AccountProfileMainPage = ({
                 {data.pages[0]?.length !== 0 ? (
                   data.pages.map((page, index) => {
                     return page ? (
-                      <PostList data={page} key={`x-${index}`} nsfwPreferences={nsfwPreferences} />
+                      <PostList
+                        data={page}
+                        key={`x-${index}`}
+                        nsfwPreferences={nsfwPreferences}
+                        testFilter="profile-blog-list"
+                      />
                     ) : null;
                   })
                 ) : (

@@ -17,7 +17,8 @@ import {
   IOpenOrdersData,
   IOrdersData,
   IMarketStatistics,
-  IWitness
+  IWitness,
+  IDirectDelegation
 } from '@transaction/lib/extended-hive.chain';
 
 const chain = await hiveChainService.getHiveChain();
@@ -37,6 +38,10 @@ export const findRcAccounts = async (username: string): Promise<{ rc_accounts: R
   return chain.api.rc_api.find_rc_accounts({ accounts: [username] });
 };
 
+export const getDirectDelegations = async (account: string): Promise<IDirectDelegation> => {
+  return chain.api.rc_api.list_rc_direct_delegations({ limit: 1000, start: [account, ''] });
+};
+
 export const DEFAULT_PARAMS_FOR_PROPOSALS: IGetProposalsParams = {
   start: [],
   limit: 30,
@@ -53,7 +58,6 @@ export const getProposals = async (params?: Partial<IGetProposalsParams>): Promi
     });
     return response.proposals;
   } catch (error) {
-    console.error('Error:', error);
     throw error;
   }
 };
@@ -62,6 +66,7 @@ export interface IListItemProps {
   proposalData: ProposalData;
   totalShares: Big;
   totalVestingFund: Big;
+  voted: boolean;
 }
 
 export const getVestingDelegations = async (
@@ -159,6 +164,12 @@ export const getProposalVotes = async (
   return chain.api.condenser_api
     .list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
     .then((r) => r.filter((x: IProposalVote) => x.proposal.proposal_id === proposalId));
+};
+
+export const getUserVotes = async (voter: string, limit: number = 1000): Promise<IProposalVote[]> => {
+  return chain.api.condenser_api
+    .list_proposal_votes([[voter], limit, 'by_voter_proposal'])
+    .then((r) => r.filter((x: IProposalVote) => x.voter === voter));
 };
 
 export const getMarketStatistics = async (): Promise<IMarketStatistics> => {

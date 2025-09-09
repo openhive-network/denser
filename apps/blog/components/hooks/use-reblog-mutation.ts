@@ -37,7 +37,7 @@ export function useReblogMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['PostRebloggedBy', author, permlink, username] });
-      }, 3000);
+      }, 4000);
     }
   });
 
