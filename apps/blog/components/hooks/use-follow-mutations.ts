@@ -96,7 +96,7 @@ export function useFollowMutation() {
         queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
-      }, 3000);
+      }, 4000);
     }
   });
 
@@ -151,7 +151,7 @@ export function useUnfollowMutation() {
         queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
-      }, 3000);
+      }, 4000);
     }
   });
 

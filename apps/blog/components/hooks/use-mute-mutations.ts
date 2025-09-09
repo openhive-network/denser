@@ -94,7 +94,7 @@ export function useMuteMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
         queryClient.invalidateQueries({ queryKey: ['discussionData'] });
-      }, 3000);
+      }, 4000);
     }
   });
 }
@@ -150,7 +150,7 @@ export function useUnmuteMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
         queryClient.invalidateQueries({ queryKey: ['discussionData'] });
-      }, 3000);
+      }, 4000);
     }
   });
 
@@ -190,7 +190,7 @@ export function useResetBlogListMutation() {
         queryClient.invalidateQueries({ queryKey: ['muted', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         logger.info('useResetBlogListMutation onSuccess: %o', data);
-      }, 3000);
+      }, 4000);
     }
   });
 

@@ -71,7 +71,7 @@ export function useSetRoleMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['rolesList', community] });
         queryClient.invalidateQueries({ queryKey: ['community', community] });
-      }, 3000);
+      }, 4000);
     }
   });
 

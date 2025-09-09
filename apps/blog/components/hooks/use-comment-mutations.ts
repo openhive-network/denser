@@ -105,7 +105,7 @@ export function useCommentMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 4000);
     }
   });
 
@@ -180,7 +180,7 @@ export function useUpdateCommentMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['discussionData', discussionPermlink] });
         queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
-      }, 3000);
+      }, 4000);
     }
   });
 
@@ -232,7 +232,7 @@ export function useDeleteCommentMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['discussionData', discussionPermlink] });
-      }, 3000);
+      }, 4000);
     }
   });
 

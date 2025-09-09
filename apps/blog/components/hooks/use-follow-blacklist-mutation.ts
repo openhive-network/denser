@@ -54,7 +54,7 @@ export function useFollowBlacklistBlogMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 4000);
       logger.info('useFollowBlacklistBlogMutation onSuccess data: %o', data);
     }
   });
@@ -101,7 +101,7 @@ export function useUnfollowBlacklistBlogMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 4000);
       logger.info('useUnfollowBlacklistBlogMutation onSuccess data: %o', data);
     }
   });
@@ -140,7 +140,7 @@ export function useResetFollowBlacklistBlogMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 3000);
+      }, 4000);
       logger.info('useResetFollowBlacklistBlogMutation onSuccess: %o', data);
     }
   });

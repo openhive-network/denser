@@ -42,7 +42,7 @@ export function useResetAllListsMutation() {
           queryKey: ['follow_blacklist', username]
         });
         logger.info('useResetAllListsMutation onSuccess: %o', data);
-      }, 3000);
+      }, 4000);
     }
   });
 

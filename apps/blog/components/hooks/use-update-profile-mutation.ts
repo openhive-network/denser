@@ -105,7 +105,7 @@ export function useUpdateProfileMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['profileData', user.username] });
-      }, 3000);
+      }, 4000);
     }
   });
 
