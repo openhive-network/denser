@@ -37,7 +37,9 @@ const NotificationActivities = ({
     ['unreadNotifications', user?.username],
     () => getUnreadNotifications(user?.username || ''),
     {
-      enabled: !!user?.username
+      enabled: !!user?.username,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false
     }
   );
   const newDate = new Date(Date.now());

@@ -37,7 +37,7 @@ export function useMarkAllNotificationsAsReadMutation() {
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['unreadNotifications', username] });
-      }, 3000);
+      }, 6000);
     }
   });
 
