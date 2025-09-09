@@ -26,25 +26,7 @@ export const setLoginChallengeCookies = (req: NextRequest, res: NextResponse) =>
       httpOnly: false
     });
 
-    // Also create auth_proof cookie for first-time visitors
-    // This ensures every user gets tracked from first visit
-    const authProofCookieData = {
-      uuid: loginChallenge,
-      username: null,
-      loginType: null,
-      authProof: '', // Empty for first-time visitors
-      timestamp: Date.now()
-    };
-
-    const authProofCookieValue = Buffer.from(JSON.stringify(authProofCookieData)).toString('base64');
-
-    res.cookies.set({
-      name: 'auth_proof',
-      value: authProofCookieValue,
-      path: '/',
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      httpOnly: true
-    });
+    // Note: auth_proof cookie is only created when users actually log in
+    // First-time visitors don't get auth_proof cookies
   }
 };
