@@ -27,7 +27,7 @@ export class CommunitiesExplorePage{
 
     constructor(page:Page){
         this.page = page;
-        this.searchInput = page.locator('#search');  
+        this.searchInput = page.locator('#search');
         this.combobox = page.getByTestId('communities-filter');
         this.comboboxDefaultValue = page.getByTestId('communities-filter');
         this.communitiesFilter = page.locator('[data-testid="communities-filter"]');

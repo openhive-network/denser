@@ -142,7 +142,8 @@ export class HomePage {
     this.getHeaderWorldmappinCommunities = page
       .locator('[data-testid="community-name"]')
       .getByText('Worldmappin');
-    this.getLifestyleCommunityLink = page.getByTestId('card-trending-comunities').getByText('Lifestyle');
+    this.getLifestyleCommunityLink = page.getByTestId('card-trending-comunities').getByTestId('my-subscriptions-community-list').getByRole('link', { name: 'Lifestyle' }).first();
+    // page.getByTestId('card-trending-comunities').getByText('Lifestyle');
     this.getHomeNavLink = page.locator('header a span:text("Hive Blog")');
     this.getNavPostsLink = page.locator('[data-testid="nav-posts-link"]');
     this.getNavProposalsLink = page.locator('[data-testid="nav-proposals-link"]');

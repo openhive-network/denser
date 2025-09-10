@@ -19,7 +19,8 @@ test.describe('Test for commonities in the blog app', () => {
     const communityName: string = 'Photography Lovers';
 
     test('Validate that denserAutoTest3Page subscribes Photography Lovers', async ({ denserAutoTest3Page }) => {
-        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('[href="/trending/hive-100006"]');
+        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('ul').filter({ hasText: /^Photography Lovers$/ }).getByRole('link');
+        // locator('[href="/trending/hive-100006"]');
 
         await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
         await expect(photographyLoversCommunityLocator).toHaveText(communityName);
@@ -29,7 +30,8 @@ test.describe('Test for commonities in the blog app', () => {
     test('Validate that denserAutoTest3Page moves to the Photography Lovers page', async ({ denserAutoTest3Page }) => {
         const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
         const communityPage: CommunitiesPage = new CommunitiesPage(denserAutoTest3Page.page);
-        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('[href="/trending/hive-100006"]');
+        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('ul').filter({ hasText: /^Photography Lovers$/ }).getByRole('link');
+        // locator('[href="/trending/hive-100006"]');
 
         await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
         await expect(photographyLoversCommunityLocator).toHaveText(communityName);
@@ -59,7 +61,8 @@ test.describe('Test for commonities in the blog app', () => {
     test('Validate that denserAutoTest3Page leaves and joins the Photography Lovers community', async ({ denserAutoTest3Page }) => {
         const loginForm: LoginForm = new LoginForm(denserAutoTest3Page.page);
         const communityPage: CommunitiesPage = new CommunitiesPage(denserAutoTest3Page.page);
-        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('[href="/trending/hive-100006"]');
+        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('ul').filter({ hasText: /^Photography Lovers$/ }).getByRole('link');
+        // locator('[href="/trending/hive-100006"]');
 
         // Validate the Photography Lovers link is in My subscriptions
         await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
@@ -95,7 +98,8 @@ test.describe('Test for commonities in the blog app', () => {
         const loginForm: LoginForm = new LoginForm(denserAutoTest3Page.page);
         const communityPage: CommunitiesPage = new CommunitiesPage(denserAutoTest3Page.page);
         const postEditorPage: PostEditorPage = new PostEditorPage(denserAutoTest3Page.page);
-        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('[href="/trending/hive-100006"]');
+        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('ul').filter({ hasText: /^Photography Lovers$/ }).getByRole('link');
+        // locator('[href="/trending/hive-100006"]');
 
         // Move to the page of the community (Photography Lovers)
         await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
@@ -159,13 +163,14 @@ test.describe('Test for commonities in the blog app', () => {
         const loginForm: LoginForm = new LoginForm(denserAutoTest3Page.page);
         const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
         const communityExplorerPage: CommunitiesExplorePage = new CommunitiesExplorePage(denserAutoTest3Page.page);
-        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('[href="/trending/hive-100006"]');
+        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.getByRole('link', { name: 'Photography Lovers' }).first();
+        // locator('[href="/trending/hive-100006"]');
 
         // Validate the Photography Lovers link is in My subscriptions
         await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
         await expect(photographyLoversCommunityLocator).toHaveText(communityName);
         // Click Explore communities...
-        await denserAutoTest3Page.page.getByText('Explore communities...').click();
+        await denserAutoTest3Page.page.getByRole('heading', { name: 'Explore communities...' }).getByRole('link').click();
         // Validate the Explore communities page i loaded
         await communityExplorerPage.validataExplorerCommunitiesPageIsLoaded();
         // Click Lifestyle subscribe button
@@ -194,7 +199,8 @@ test.describe('Test for commonities in the blog app', () => {
 
     test('Validate styles community card in explore communities page', async ({ denserAutoTest3Page }) => {
         const communityExplorerPage: CommunitiesExplorePage = new CommunitiesExplorePage(denserAutoTest3Page.page);
-        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('[href="/trending/hive-100006"]');
+        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('ul').filter({ hasText: /^Photography Lovers$/ }).getByRole('link');
+        // locator('[href="/trending/hive-100006"]');
 
         // Validate the Photography Lovers link is in My subscriptions
         await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
@@ -237,7 +243,8 @@ test.describe('Test for commonities in the blog app', () => {
         const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
         const profileMenu: ProfileUserMenu = new ProfileUserMenu(denserAutoTest3Page.page);
         const communityExplorerPage: CommunitiesExplorePage = new CommunitiesExplorePage(denserAutoTest3Page.page);
-        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('[href="/trending/hive-100006"]');
+        const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('ul').filter({ hasText: /^Photography Lovers$/ }).getByRole('link');
+        // locator('[href="/trending/hive-100006"]');
 
         // Change theme to Dark
         await profileMenu.setTheme('Dark');

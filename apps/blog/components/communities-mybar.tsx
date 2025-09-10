@@ -36,7 +36,7 @@ const CommunitiesMybar = ({
       {data && data?.length > 0 ? (
         <CardContent className="px-0 py-2">
           <span className="text-sm opacity-60">My subscriptions</span>
-          <ul>
+          <ul data-testid="my-subscriptions-community-list">
             {data.map((e) => (
               <li key={e[0]}>
                 <Link href={`/trending/${e[0]}`} className="w-full text-sm font-light hover:text-destructive">
