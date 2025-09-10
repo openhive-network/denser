@@ -16,7 +16,7 @@ import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import Head from 'next/head';
 import CommunityLayout from '../feature/community-layout/community-layout';
-import { sortToTitle, sortTypes } from '@/blog/lib/utils';
+import { DEFAULT_OBSERVER, sortToTitle, sortTypes } from '@/blog/lib/utils';
 import { MetadataProps } from '@/blog/lib/get-translations';
 import NoDataError from '@/blog/components/no-data-error';
 import { PageType } from '@/blog/pages/[...param]';
@@ -40,7 +40,7 @@ const MainPage = ({
   const { user } = useUser();
   const queryClient = useQueryClient();
   const { param } = useParams() as { param: string[] };
-  const observer = !!user.username ? user.username : '';
+  const observer = !!user.username ? user.username : DEFAULT_OBSERVER;
   const [sort, tagParam] = param;
   const tag = (tagParam || '').toLocaleLowerCase();
 

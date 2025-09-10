@@ -27,7 +27,7 @@ import {
   getDynamicGlobalProperties
 } from '@transaction/lib/hive';
 import { useLocalStorage } from 'usehooks-ts';
-import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import PostRedirectPage from '../components/post-redirect-page';
 
@@ -150,7 +150,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
               tag,
               pageParam?.author,
               pageParam?.permlink,
-              ''
+              DEFAULT_OBSERVER
             );
             if (!!postsData && postsData.length > 0) {
               const cleanedPostsList = postsData.map((post) => ({ ...post, active_votes: [] }));
@@ -176,7 +176,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         await queryClient.prefetchInfiniteQuery(
           ['accountEntriesInfinite', username],
           async ({ pageParam }) => {
-            const data = await getAccountPosts('blog', username, '', pageParam?.author, pageParam?.permlink);
+            const data = await getAccountPosts('blog', username, DEFAULT_OBSERVER, pageParam?.author, pageParam?.permlink);
             if (data) {
               const nsfwCleanedData = data?.filter(
                 (post) => !(!!post.json_metadata.tags && post.json_metadata?.tags.includes('nsfw'))
