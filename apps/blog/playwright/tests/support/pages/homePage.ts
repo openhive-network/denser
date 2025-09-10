@@ -128,7 +128,7 @@ export class HomePage {
     this.getPostListHot = page.getByTestId('post-list-hot');
     this.getPostListPayouts = page.getByTestId('post-list-payout');
     this.getPostListMuted = page.getByTestId('post-list-muted');
-    this.getTrendingCommunitiesSideBar = page.locator('[data-testid="card-trending-comunities"]');
+    this.getTrendingCommunitiesSideBar = page.getByTestId('card-explore-hive-desktop').locator('[data-testid="card-trending-comunities"]');
     this.getTrendingCommunitiesSideBarLinks = this.getTrendingCommunitiesSideBar.locator('div ul li a');
     this.getTrandingCommunitiesHeader = this.getTrendingCommunitiesSideBar
       .locator('a')

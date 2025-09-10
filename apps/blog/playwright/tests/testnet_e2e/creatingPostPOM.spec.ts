@@ -241,9 +241,9 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postSummary: string = '1 My testing post POM';
     const postTag: string = 'test';
 
-    const communityNameText = await denserAutoTest0Page.page.getByRole('link', { name: 'Test wizard' }).innerText()
+    const communityNameText = await denserAutoTest0Page.page.getByTestId('my-subscriptions-community-list').getByRole('link', { name: 'Test wizard' }).innerText()
 
-    await denserAutoTest0Page.page.getByRole('link', { name: 'Test wizard' }).click()
+    await denserAutoTest0Page.page.getByTestId('my-subscriptions-community-list').getByRole('link', { name: 'Test wizard' }).click()
     await communityPage.communityNewPostButton.click()
 
     await expect(postEditorPage.getPostTitleInput).toBeVisible()
@@ -253,6 +253,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     await postEditorPage.getEnterYourTagsInput.fill(postTag);
     await denserAutoTest0Page.page.mouse.wheel(0, 2000)
     await postEditorPage.getSubmitPostButton.click()
+    await postEditorPage.page.waitForTimeout(3000);
 
     await expect(communityPage.communityNameTitle).toBeVisible()
     await expect(communityPage.communityNameTitle).toContainText(communityNameText)
@@ -291,7 +292,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const homePage = new HomePage(denserAutoTest0Page.page);
     const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
     const postPage = new PostPage(denserAutoTest0Page.page);
-    const communitiesPage = new CommunitiesPage(denserAutoTest0Page.page)
+    const communitiesPage = new CommunitiesPage(denserAutoTest0Page.page);
 
 
     const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
@@ -300,22 +301,22 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postTag: string = 'test';
 
     await homePage.getNavCreatePost.click();
-    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
 
     await postEditorPage.getPostTitleInput.fill(postTitle);
     await postEditorPage.getEditorContentTextarea.fill(postContentText);
     await postEditorPage.getPostSummaryInput.fill(postSummary);
-    await denserAutoTest0Page.page.mouse.wheel(0, 2000)
-    await postPage.postingToDropdown.click()
-    await expect(denserAutoTest0Page.page.getByLabel('Test wizard')).toBeVisible()
-    await denserAutoTest0Page.page.getByLabel('Test wizard').click()
-    await postEditorPage.getSubmitPostButton.click()
-    await expect(postPage.postImage.first()).toBeVisible()
-    await homePage.getTrendingCommunitiesSideBar.locator('a').getByText('Test wizard').click()
-    await communitiesPage.validataCommunitiesPageIsLoaded('Test wizard')
+    await denserAutoTest0Page.page.mouse.wheel(0, 2000);
+    await postPage.postingToDropdown.click();
+    await expect(denserAutoTest0Page.page.getByLabel('Test wizard').getByText('Test wizard')).toBeVisible();
+    await denserAutoTest0Page.page.getByLabel('Test wizard').getByText('Test wizard').click();
+    await postEditorPage.getSubmitPostButton.click();
+    await expect(postPage.postImage.first()).toBeVisible();
+    await homePage.getTrendingCommunitiesSideBar.locator('a').getByText('Test wizard').click();
+    await communitiesPage.validataCommunitiesPageIsLoaded('Test wizard');
 
-    const firstPostTitleText = await homePage.postTitle.first().innerText()
+    const firstPostTitleText = await homePage.postTitle.first().innerText();
 
-    await expect(firstPostTitleText).toContain(postTitle)
+    await expect(firstPostTitleText).toContain(postTitle);
   });
 });
