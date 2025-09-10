@@ -7,11 +7,19 @@ const withPWA = require('next-pwa')({
   disable: process.env.NODE_ENV !== 'production'
 });
 
+// Support serving from subdirectory like /blog
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   swcMinify: false,
+  basePath: basePath,
+  assetPrefix: basePath,
+  publicRuntimeConfig: {
+    basePath: basePath
+  },
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..'),
     instrumentationHook: true
@@ -57,6 +65,11 @@ const nextConfig = {
       {
         source: '/oidc/:path*',
         destination: '/api/oidc/:path*'
+      },
+      // Strip /public from paths to handle auth worker and other assets
+      {
+        source: '/public/:path*',
+        destination: '/:path*',
       }
     ];
   },

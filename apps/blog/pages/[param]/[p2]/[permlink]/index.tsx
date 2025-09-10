@@ -7,6 +7,7 @@ import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@tr
 import Loading from '@hive/ui/components/loading';
 import ImageGallery from '@/blog/components/image-gallery';
 import Link from 'next/link';
+import BasePathLink from '@/blog/components/base-path-link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
@@ -63,6 +64,8 @@ import clsx from 'clsx';
 import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
+import { Entry } from '@transaction/lib/extended-hive.chain';
+import { withBasePath } from '@/blog/utils/PathUtils';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -221,7 +224,13 @@ function PostPage({
       // Wait 2 seconds before redirecting
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      router.push(`/@${username}/posts`);
+      // Use window.location for subdirectory deployments to ensure catch-all route works
+      if (router.basePath) {
+        window.location.href = `${router.basePath}/@${username}/posts`;
+      } else {
+        // Use client-side navigation for root deployments (faster)
+        router.push(`/@${username}/posts`);
+      }
     } catch (error) {
       setIsSubmitting(false);
       handleError(error, { method: 'deleteComment', params: { permlink } });
@@ -256,9 +265,9 @@ function PostPage({
               <div className="mb-4 flex items-center gap-2 bg-background-secondary p-5 text-sm">
                 <Icons.crossPost className="h-4 w-4" />
                 <span>
-                  <Link href={`/@${post?.author}`} className="font-bold hover:text-destructive">
+                  <BasePathLink href={`/@${post?.author}`} className="font-bold hover:text-destructive">
                     {post?.author}{' '}
-                  </Link>
+                  </BasePathLink>
                   cross-posted{' '}
                   <Link
                     href={`/@${post?.json_metadata.original_author}/${post?.json_metadata.original_permlink}`}

@@ -1,6 +1,7 @@
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
+import BasePathLink from './base-path-link';
 import { Community } from '@transaction/lib/extended-hive.chain';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -46,7 +47,7 @@ const CommunitiesListItem = ({ community }: { community: Community }) => {
               <span>{community.admins?.length > 1 ? t('communities.admins') : t('communities.admin')}: </span>
               {community.admins.map((admin: string, index: number) => (
                 <span key={index} className="text-destructive">
-                  <Link href={`@${admin}`}>{admin}</Link>{' '}
+                  <BasePathLink href={`/@${admin}`}>{admin}</BasePathLink>{' '}
                   {community.admins && index !== community.admins.length - 1 ? (
                     <span className="mx-1">•</span>
                   ) : null}

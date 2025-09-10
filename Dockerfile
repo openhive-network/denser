@@ -25,6 +25,8 @@ RUN pnpm dlx turbo prune --scope=${TURBO_APP_SCOPE} --docker
 # TODO: Remove python3 installation after getting rid of dhive
 FROM base AS installer
 ARG TURBO_APP_SCOPE
+ARG BASE_PATH
+ENV NEXT_PUBLIC_BASE_PATH=${BASE_PATH}
 RUN apk add --no-cache libc6-compat
 RUN apk update
 WORKDIR /app

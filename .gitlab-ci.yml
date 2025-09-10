@@ -143,6 +143,22 @@ docker-build-wallet:
     TURBO_APP_PATH: '/apps/wallet'
     TURBO_APP_NAME: 'wallet'
 
+docker-build-blog-subdirectory:
+  extends: .docker_build_template
+  variables:
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    TURBO_APP_NAME: 'blog-subdirectory'
+    BASE_PATH: '/blog'
+
+docker-build-wallet-subdirectory:
+  extends: .docker_build_template
+  variables:
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
+    TURBO_APP_NAME: 'wallet-subdirectory'
+    BASE_PATH: '/wallet'
+
 docker-build-blog-testenv:
   extends: .docker-build-testenv-image
   needs:

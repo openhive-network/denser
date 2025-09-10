@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { getTranslations } from '../../lib/get-translations';
 import { getLogger } from '@ui/lib/logging';
 import { siteConfig } from '@ui/config/site';
+import { withBasePath } from '@/blog/utils/PathUtils';
 
 const logger = getLogger('app');
 
@@ -12,7 +13,7 @@ export default function InteractionPage({
   const router = useRouter();
 
   if (redirectTo) {
-    router.push(redirectTo);
+    router.push(withBasePath(redirectTo));
   }
 
   return (

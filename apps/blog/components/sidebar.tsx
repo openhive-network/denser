@@ -2,6 +2,7 @@ import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@ui/components/sheet';
 import Link from 'next/link';
+import BasePathLink from './base-path-link';
 import { Separator } from '@ui/components/separator';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
@@ -31,12 +32,18 @@ const Item = ({
         <div className="flex h-full w-full cursor-not-allowed items-center gap-1 p-4 text-sm font-semibold opacity-50 hover:border-border">
           {children}
         </div>
-      ) : (
-        <a href={href} target={clsx(target ? '_blank' : '')}>
+      ) : target ? (
+        <a href={href} target="_blank" rel="noopener noreferrer">
           <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
             {children}
           </SheetClose>
         </a>
+      ) : (
+        <BasePathLink href={href}>
+          <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+            {children}
+          </SheetClose>
+        </BasePathLink>
       )}
     </li>
   );

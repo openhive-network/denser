@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { SidebarOpen } from 'lucide-react';
 import { siteConfig } from '@ui/config/site';
 import { cn } from '@ui/lib/utils';
+import { withBasePath } from '@/wallet/utils/PathUtils';
 import { Button } from '@ui/components/button';
 import { Sheet, SheetContent, SheetTrigger } from '@ui/components/sheet';
 import { Icons } from '@ui/components/icons';
@@ -46,7 +47,7 @@ function MobileLink({ href, onOpenChange, className, children, ...props }: Mobil
     <Link
       href={href}
       onClick={() => {
-        router.push(href.toString());
+        router.push(withBasePath(href.toString()));
         onOpenChange?.(false);
       }}
       className={cn(className)}

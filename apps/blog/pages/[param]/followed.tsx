@@ -4,7 +4,7 @@ import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import PrevNextButtons from '@/blog/components/prev-next-buttons';
 import { FullAccount } from '@ui/store/app-types';
 import { useQueryClient } from '@tanstack/react-query';
-import Link from 'next/link';
+import BasePathLink from '@/blog/components/base-path-link';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
@@ -68,7 +68,7 @@ export default function Followed({ metadata }: { metadata: MetadataProps }) {
                 key={e.following}
                 className="flex items-center justify-between bg-background-tertiary px-3 font-semibold text-destructive odd:bg-background"
               >
-                <Link href={`/@${e.following}`}>{e.following}</Link>
+                <BasePathLink href={`/@${e.following}`}>{e.following}</BasePathLink>
                 {!user.isLoggedIn || user.username === e.following ? null : (
                   <div className="flex gap-2">
                     <ButtonsContainer

@@ -10,6 +10,7 @@ import {
 import { ReactNode } from 'react';
 import ModeToggle from './mode-toggle';
 import Link from 'next/link';
+import BasePathLink from './base-path-link';
 import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components';
 import LangToggle from './lang-toggle';
@@ -48,12 +49,12 @@ const UserMenu = ({
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={`/@${user.username}`} data-testid="user-profile-menu-profile-link">
+          <BasePathLink href={`/@${user.username}`} data-testid="user-profile-menu-profile-link">
             <DropdownMenuItem className="cursor-pointer">
               <Icons.user className="mr-2" />
               <span className="w-full">{t('navigation.user_menu.profile')}</span>
             </DropdownMenuItem>
-          </Link>
+          </BasePathLink>
           <Link href={`/@${user.username}/notifications`} data-testid="user-profile-menu-notifications-link">
             <DropdownMenuItem className="cursor-pointer">
               <Icons.clock className="mr-2" />

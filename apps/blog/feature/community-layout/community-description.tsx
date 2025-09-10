@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import Link from 'next/link';
+import BasePathLink from '@/blog/components/base-path-link';
 import ln2list from '@/blog/lib/ln2list';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import { Community } from '@transaction/lib/extended-hive.chain';
@@ -95,9 +96,9 @@ const CommunityDescription = ({
             </h6>
             <div className="flex items-center gap-1 self-end">
               {userRole ? (
-                <Link href={`/roles/${username}`} className="text-sm text-destructive">
+                <BasePathLink href={`/roles/${username}`} className="text-sm text-destructive">
                   {t('communities.edit_roles')}
-                </Link>
+                </BasePathLink>
               ) : null}
               {adminRole ? (
                 <>
@@ -109,9 +110,9 @@ const CommunityDescription = ({
             <ul className="mt-1.5 text-xs">
               {data.team.slice(1).map((member: string[]) => (
                 <li key={member[0]} className="pt-0.5">
-                  <Link href={`/@${member[0]}`} className="text-destructive hover:cursor-pointer">
+                  <BasePathLink href={`/@${member[0]}`} className="text-destructive hover:cursor-pointer">
                     @{member[0]}
-                  </Link>{' '}
+                  </BasePathLink>{' '}
                   <span className="text-[10px] text-slate-500">{member[1].toUpperCase()}</span>{' '}
                   {member[2] && member[2] !== '' ? (
                     <Badge variant="outline" className="ml-0.5 border-destructive py-0">
