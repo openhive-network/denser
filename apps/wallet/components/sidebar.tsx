@@ -38,7 +38,8 @@ const logger = getLogger('app');
 const Sidebar = () => {
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
-  const envURL = env('BLOG_DOMAIN');
+  // Remove trailing slash from BLOG_DOMAIN to avoid double slashes
+  const envURL = env('BLOG_DOMAIN')?.replace(/\/$/, '') || '';
   return (
     <Sheet>
       <TooltipContainer title={t('navigation.main_nav_bar.menu_panel')}>

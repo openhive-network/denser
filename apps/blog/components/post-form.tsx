@@ -28,6 +28,7 @@ import { useRouter } from 'next/router';
 import { TFunction } from 'i18next';
 import { debounce } from '../lib/utils';
 import { Icons } from '@ui/components/icons';
+import { withBasePath } from '../utils/PathUtils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { getLogger } from '@ui/lib/logging';
@@ -286,9 +287,9 @@ export default function PostForm({
         }
       } else {
         if (router.query.category) {
-          await router.push(`/created/${router.query.category}`, undefined, { shallow: true });
+          await router.push(withBasePath(`/created/${router.query.category}`), undefined, { shallow: true });
         } else {
-          await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
+          await router.push(withBasePath(`/created/${tags[0]}`), undefined, { shallow: true });
         }
       }
       if (btnRef.current) {

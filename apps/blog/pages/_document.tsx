@@ -1,6 +1,9 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 import Script from 'next/script';
 
+// Get basePath from build-time environment
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 const SITE_DESC =
   'Communities without borders. A social network owned and operated by its users, powered by Hive.';
 export default function Document() {
@@ -32,7 +35,7 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
-        <Script src="/__ENV.js" strategy="beforeInteractive" />
+        <Script src={`${basePath}/__ENV.js`} strategy="beforeInteractive" />
       </body>
     </Html>
   );

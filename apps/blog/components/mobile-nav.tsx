@@ -9,6 +9,7 @@ import { cn } from '@ui/lib/utils';
 import { Button } from '@ui/components/button';
 import { Sheet, SheetContent, SheetTrigger } from '@ui/components/sheet';
 import { Icons } from '@ui/components/icons';
+import { withBasePath } from '../utils/PathUtils';
 
 export function MobileNav() {
   const [open, setOpen] = React.useState(false);
@@ -46,7 +47,7 @@ function MobileLink({ href, onOpenChange, className, children, ...props }: Mobil
     <Link
       href={href}
       onClick={() => {
-        router.push(href.toString());
+        router.push(withBasePath(href.toString()));
         onOpenChange?.(false);
       }}
       className={cn(className)}

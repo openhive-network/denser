@@ -13,6 +13,7 @@ import { getCommunities } from '@transaction/lib/bridge';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { withBasePath } from '../utils/PathUtils';
 
 export function CommunitiesSelect({
   title,
@@ -40,7 +41,7 @@ export function CommunitiesSelect({
   return (
     <Select
       onValueChange={(e) => {
-        e === 'communities' ? router.push('communities') : router.push(`/trending/${e}`);
+        e === 'communities' ? router.push(withBasePath('communities')) : router.push(withBasePath(`/trending/${e}`));
       }}
     >
       <SelectTrigger className="bg-white dark:bg-background/95 dark:text-white">

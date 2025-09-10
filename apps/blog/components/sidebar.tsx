@@ -31,12 +31,18 @@ const Item = ({
         <div className="flex h-full w-full cursor-not-allowed items-center gap-1 p-4 text-sm font-semibold opacity-50 hover:border-border">
           {children}
         </div>
-      ) : (
-        <a href={href} target={clsx(target ? '_blank' : '')}>
+      ) : target ? (
+        <a href={href} target="_blank" rel="noopener noreferrer">
           <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
             {children}
           </SheetClose>
         </a>
+      ) : (
+        <Link href={href}>
+          <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+            {children}
+          </SheetClose>
+        </Link>
       )}
     </li>
   );
