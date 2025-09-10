@@ -30,8 +30,8 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
         query,
         observer: user.username !== '' ? user.username : 'hive.blog',
         result_limit: 1000, // Get up to 1000 results
-        full_posts: PER_PAGE, // Get first page fully expanded
-        truncate: 0
+        full_posts: PER_PAGE // Get first page fully expanded
+        // Remove explicit truncate: 0 to use default of 100
       });
     },
     {
@@ -95,8 +95,8 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
       // Fetch full post data for the stubs
       const fullPostData = await getPostsByIds({
         posts: stubsToFetch,
-        observer: user.username !== '' ? user.username : 'hive.blog',
-        truncate: 0
+        observer: user.username !== '' ? user.username : 'hive.blog'
+        // Remove explicit truncate: 0 to use default of 100
       });
       
       if (fullPostData) {

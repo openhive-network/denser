@@ -887,19 +887,16 @@ export type ExtendedRestApi = {
   'hivesense-api': {
     params: undefined;
     result: HivesenseStatusResponse;
-    // New API endpoints
-    posts_search: {
+    // New API endpoints - using correct paths
+    'posts/search': {
       params: PostsSearchParams;
       result: MixedPostsResponse;
     };
-    posts_similar: {
-      params: PostsSimilarParams;
-      result: MixedPostsResponse;
-    };
-    posts_by_ids: {
+    'posts/by-ids': {
       params: PostsByIdsParams;
       result: Entry[];
     };
+    // Note: The similar posts endpoint uses path parameters, may need special handling
     // Legacy API endpoints (deprecated)
     similarposts: {
       params: SimilarPostParams;

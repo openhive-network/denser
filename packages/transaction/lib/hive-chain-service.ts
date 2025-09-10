@@ -78,8 +78,9 @@ export class HiveChainService {
     if (!apiEndpoint) {
       apiEndpoint = siteConfig.endpoint;
     }
+    // Always use the same endpoint as the main API for hivesense-api
+    HiveChainService.hiveChain.restApi['hivesense-api'].endpointUrl = options?.apiEndpoint || siteConfig.endpoint;
     if (storedAiSearchEndpoint) {
-      HiveChainService.hiveChain.restApi['hivesense-api'].endpointUrl = apiEndpoint;
       HiveChainService.hiveChain.api['search-api'].find_text.endpointUrl = apiEndpoint;
     }
   }

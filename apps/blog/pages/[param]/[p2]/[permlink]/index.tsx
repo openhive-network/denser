@@ -109,8 +109,8 @@ function PostPage({
         permlink,
         observer: user.username !== '' ? user.username : 'hive.blog',
         result_limit: 10, // Only get 10 suggestions
-        full_posts: 10, // Get all as full posts
-        truncate: 0
+        full_posts: 10 // Get all as full posts
+        // Remove explicit truncate: 0 to use default of 100
       });
       
       if (!results) return null;
