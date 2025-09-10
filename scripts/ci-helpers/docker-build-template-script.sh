@@ -16,7 +16,9 @@ echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image
 git config --global --add safe.directory "${CI_PROJECT_DIR:?}"
 "${CI_PROJECT_DIR:?}/scripts/build_instance.sh" --progress=plain "${CI_PROJECT_DIR:?}"
 APP_NAME="${TURBO_APP_NAME:?}"
-echo "${APP_NAME^^}_IMAGE_NAME=${CI_REGISTRY_IMAGE:?}/${APP_NAME}:${CI_COMMIT_SHORT_SHA:?}" > "${APP_NAME}-docker-build.env"
+# Replace hyphens with underscores for the environment variable name (GitLab dotenv only allows letters, digits, and underscores)
+ENV_VAR_NAME="${APP_NAME//-/_}"
+echo "${ENV_VAR_NAME^^}_IMAGE_NAME=${CI_REGISTRY_IMAGE:?}/${APP_NAME}:${CI_COMMIT_SHORT_SHA:?}" > "${APP_NAME}-docker-build.env"
 echo "Unique image tag:"
 cat "${APP_NAME}-docker-build.env"
 echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"

@@ -63,6 +63,7 @@ import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
 import { Entry } from '@transaction/lib/extended-hive.chain';
+import { withBasePath } from '@/blog/utils/PathUtils';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -210,7 +211,7 @@ function PostPage({
       // Wait 2 seconds before redirecting
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      router.push(`/@${username}/posts`);
+      router.push(withBasePath(`/@${username}/posts`));
     } catch (error) {
       setIsSubmitting(false);
       handleError(error, { method: 'deleteComment', params: { permlink } });

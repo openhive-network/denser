@@ -4,14 +4,39 @@ import { StorageMixin, StorageBase, StorageBaseOptions } from '@smart-signer/lib
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { configuredSessionTime } from '@ui/config/public-vars';
+import env from '@beam-australia/react-env';
 
 const logger = getLogger('app');
+
+// Get the worker URL with proper basePath handling
+const getWorkerUrl = (): string => {
+  // Only run in browser context
+  if (typeof window === 'undefined') {
+    return '/auth/worker.js';
+  }
+  
+  const basePath = env('BASE_PATH') || '';
+  
+  // For subdirectory deployments, construct the full URL to avoid path issues
+  if (basePath) {
+    // Use the current origin to construct an absolute URL
+    const origin = window.location.origin;
+    const workerUrl = `${origin}${basePath}/auth/worker.js`;
+    logger.info('Worker URL (absolute) computed as: %s (basePath: %s)', workerUrl, basePath);
+    return workerUrl;
+  }
+  
+  // For root deployments, use relative path
+  const workerUrl = '/auth/worker.js';
+  logger.info('Worker URL (relative) computed as: %s', workerUrl);
+  return workerUrl;
+};
 
 const defaultClientOptions: ClientOptions = {
   sessionTimeout: Number(configuredSessionTime),
   chainId: 'beeab0de00000000000000000000000000000000000000000000000000000000',
   node: 'https://api.hive.blog',
-  workerUrl: '/auth/worker.js'
+  workerUrl: '/auth/worker.js' // This will be overridden in getOnlineClient
 };
 
 class HbauthService extends StorageMixin(StorageBase) {
@@ -45,7 +70,11 @@ class HbauthService extends StorageMixin(StorageBase) {
         }
         // Set promise result in this class' static property and return
         // it here as well.
-        await this.setOnlineClient({ node, chainId: siteConfig.chainId });
+        await this.setOnlineClient({ 
+          node, 
+          chainId: siteConfig.chainId,
+          workerUrl: getWorkerUrl() // Use dynamic worker URL with basePath
+        });
         return HbauthService.onlineClient;
       };
 
