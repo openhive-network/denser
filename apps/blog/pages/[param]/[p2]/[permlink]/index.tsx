@@ -63,6 +63,7 @@ import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
 import { Entry } from '@transaction/lib/extended-hive.chain';
+import { makeCanonicalLink } from '@ui/lib/canonical-url';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -99,6 +100,12 @@ function PostPage({
       enabled: !!username && !!permlink
     }
   );
+
+  const canonical_url = useMemo(() => {
+    if (!post) return undefined;
+
+    return makeCanonicalLink(post, post.json_metadata);
+  }, [post]);
 
   const { data: suggestions } = useQuery(
     ['suggestions', username, permlink],
@@ -221,9 +228,7 @@ function PostPage({
       deleteComment(permlink);
     }
   };
-  const canonical_url = post
-    ? new URL(post.url.startsWith('http') ? post.url : `https://${env('SITE_DOMAIN')}${post.url}`).href
-    : undefined;
+
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   const crossedPost = post?.json_metadata.tags?.includes('cross-post');
   return (
