@@ -1,0 +1,58 @@
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { MouseEvent, ReactNode } from 'react';
+
+interface BasePathLinkProps {
+  href: string;
+  children: ReactNode;
+  className?: string;
+  'data-testid'?: string;
+  prefetch?: boolean;
+}
+
+/**
+ * Custom Link component that handles basePath navigation issues with catch-all routes.
+ * For user profile links (starting with @) and comment links (containing #@),
+ * it forces a full page reload when using basePath to ensure getServerSideProps
+ * is called and the correct page type is rendered.
+ */
+const BasePathLink = ({ href, children, className, 'data-testid': dataTestId, prefetch = true }: BasePathLinkProps) => {
+  const router = useRouter();
+
+  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    // Force full page reload for certain link types when using basePath
+    // This ensures getServerSideProps runs and the correct page component is rendered
+    // For root deployments (no basePath), use normal Next.js navigation
+    const needsReload = href.startsWith('/@') || href.includes('/#@');
+
+    // Also force reload for static pages to avoid intermittent navigation failures
+    const isStaticPage = href === '/welcome' || href === '/faq.html' || href === '/privacy.html' || href === '/tos.html';
+
+    if ((needsReload || isStaticPage) && router.basePath) {
+      e.preventDefault();
+      // Force a full page reload
+      // router.basePath already includes the basePath from next.config.js
+      const fullPath = router.basePath + href;
+      console.log('BasePathLink forcing reload:', {
+        href,
+        basePath: router.basePath,
+        fullPath
+      });
+      window.location.href = fullPath;
+    }
+  };
+  
+  return (
+    <Link 
+      href={href} 
+      className={className}
+      data-testid={dataTestId}
+      prefetch={prefetch}
+      onClick={handleClick}
+    >
+      {children}
+    </Link>
+  );
+};
+
+export default BasePathLink;

@@ -5,7 +5,7 @@ import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { Button } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
-import Link from 'next/link';
+import BasePathLink from '@/blog/components/base-path-link';
 import { CircleSpinner } from 'react-spinners-kit';
 
 const ListItem = ({
@@ -61,9 +61,9 @@ const ListItem = ({
     <li className="flex w-72 items-center justify-between bg-background p-1 font-semibold odd:bg-background-tertiary">
       {!item._temporary ? (
         <span className="px-2">
-          <Link className="text-destructive" href={`/@${item.name}`}>
+          <BasePathLink className="text-destructive" href={`/@${item.name}`}>
             {item.name}
-          </Link>
+          </BasePathLink>
           {' ' + item.blacklist_description}
         </span>
       ) : (

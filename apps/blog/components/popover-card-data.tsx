@@ -1,5 +1,5 @@
 import { dateToShow } from '@ui/lib/parse-date';
-import Link from 'next/link';
+import BasePathLink from './base-path-link';
 import { useAccountQuery } from './hooks/use-account';
 import { useFollowsQuery } from './hooks/use-follows';
 import { convertToHP, numberWithCommas } from '@ui/lib/utils';
@@ -54,7 +54,7 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
       {account && !isLoading && follows.data && !follows.isLoading ? (
         <>
           <div className="flex">
-            <Link href={`/@${author}`} data-testid="popover-card-user-avatar">
+            <BasePathLink href={`/@${author}`} data-testid="popover-card-user-avatar">
               <Avatar className="flex h-[75px] w-[75px] items-center justify-center overflow-hidden rounded-full">
                 <AvatarImage
                   className="h-full w-full object-cover"
@@ -69,9 +69,9 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
                   />
                 </AvatarFallback>
               </Avatar>
-            </Link>
+            </BasePathLink>
             <div translate="no">
-              <Link
+              <BasePathLink
                 href={`/@${author}`}
                 className="block font-bold hover:cursor-pointer"
                 data-testid="popover-card-user-name"
@@ -79,14 +79,14 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
                 {account.posting_json_metadata
                   ? JSON.parse(account.posting_json_metadata)?.profile?.name
                   : null}
-              </Link>
-              <Link
+              </BasePathLink>
+              <BasePathLink
                 href={`/@${author}`}
                 className="flex px-2 text-sm text-gray-500 hover:cursor-pointer"
                 data-testid="popover-card-user-nickname"
               >
                 <span className="block">{`@${author}`}</span>
-              </Link>
+              </BasePathLink>
               <div className="grid grid-cols-2 gap-2 p-2">
                 {legalBlockedUser ? (
                   <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>

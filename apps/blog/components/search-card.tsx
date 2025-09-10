@@ -10,6 +10,7 @@ import {
   Separator
 } from '@hive/ui';
 import Link from 'next/link';
+import BasePathLink from './base-path-link';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import { extractBodySummary } from '@/blog/lib/utils';
 import ReblogTrigger from '../components/reblog-trigger';
@@ -60,14 +61,14 @@ const SearchCard = ({ post, nsfw, blacklist }: SearchCardProps) => {
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
               {!reveal ? (
-                <Link href={`/@${post.author}`} data-testid="post-card-avatar">
+                <BasePathLink href={`/@${post.author}`} data-testid="post-card-avatar">
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                     style={{
                       backgroundImage: `url(${getUserAvatarUrl(post.author, 'small')})`
                     }}
                   />
-                </Link>
+                </BasePathLink>
               ) : null}
               <div className="flex flex-wrap items-center gap-0.5 md:flex-nowrap">
                 <Link

@@ -22,6 +22,7 @@ import {
 } from '@ui/components/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
 import Link from 'next/link';
+import BasePathLink from './base-path-link';
 import { useAppStore } from '@/blog/store/app';
 import env from '@beam-australia/react-env';
 import { getUserAvatarUrl } from '@hive/ui';
@@ -46,7 +47,7 @@ const ProfileDropdownMenu = () => {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <User className="mr-2 h-4 w-4" />
-            <Link href={`/@${currentProfile?.name}`}>Profile</Link>
+            <BasePathLink href={`/@${currentProfile?.name}`}>Profile</BasePathLink>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>

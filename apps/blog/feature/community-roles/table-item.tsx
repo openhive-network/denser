@@ -1,7 +1,7 @@
 import { TableCell, TableRow } from '@ui/components/table';
 import { Pen, Save, X } from 'lucide-react';
 import { Roles, User } from './lib/utils';
-import Link from 'next/link';
+import BasePathLink from '@/blog/components/base-path-link';
 import RolesSelect from './roles-select';
 import { useSetRoleMutation } from '@/blog/components/hooks/use-set-role-mutations';
 import { useState } from 'react';
@@ -42,9 +42,9 @@ const TableItem = ({
   return (
     <TableRow key={item.name}>
       <TableCell className="p-2">
-        <Link href={`/@${item.name}`} className="text-destructive">
+        <BasePathLink href={`/@${item.name}`} className="text-destructive">
           @{item.name}
-        </Link>
+        </BasePathLink>
       </TableCell>
       <TableCell className="border-x-[1px] border-solid border-secondary p-2">
         {loggedUserValue >= 4 && item.value < loggedUserValue ? (

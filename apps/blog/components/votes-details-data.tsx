@@ -1,7 +1,7 @@
 import { IVote } from '@transaction/lib/extended-hive.chain';
 import { prepareVotes } from '@ui/lib/utils';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import Link from 'next/link';
+import BasePathLink from './base-path-link';
 import { useActiveVotesQuery } from './hooks/use-active-votes';
 import { useTranslation } from 'next-i18next';
 
@@ -28,7 +28,7 @@ export default function VotersDetailsData({ post }: { post: Entry }) {
       {sliced &&
         sliced.map((vote: IVote, index: number) => (
           <li key={index}>
-            <Link href={`/@${vote.voter}`} className="hover:cursor-pointer hover:text-red-600">
+            <BasePathLink href={`/@${vote.voter}`} className="hover:cursor-pointer hover:text-red-600">
               {vote.voter}
               {vote.reward
                 ? Math.abs(parseFloat(vote.reward.toString())) < 0.0001
@@ -36,7 +36,7 @@ export default function VotersDetailsData({ post }: { post: Entry }) {
                   : `: $${Number(vote.reward).toFixed(2)}`
                 : null}
               {vote.rshares < 0 ? '[-]' : ''}
-            </Link>
+            </BasePathLink>
           </li>
         ))}
       {votes && votes.length > 20 && post.stats ? (

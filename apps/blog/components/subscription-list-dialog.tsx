@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 
-import Link from 'next/link';
+import BasePathLink from './base-path-link';
 import { ReactNode } from 'react';
 import { Badge } from '@ui/components';
 import ChangeTitleDialog from './change-title-dialog';
@@ -28,9 +28,9 @@ export function SubsListDialog({
         <ul>
           {subs.map((e: string[]) => (
             <li key={e[0]} className="flex items-center gap-1 p-[1.5px] text-sm">
-              <Link href={`/@${e[0]}`} className="text-destructive">
+              <BasePathLink href={`/@${e[0]}`} className="text-destructive">
                 @{e[0]}
-              </Link>
+              </BasePathLink>
               <span className="text-xs font-thin">{e[1] !== 'guest' ? e[1].toLocaleUpperCase() : null}</span>
               {e[2] ? (
                 <Badge className="font-light" variant="red">

@@ -5,6 +5,8 @@ import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 
 import { configuredSiteDomain, configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 const renderDefaultOptions = {
   baseUrl: `${configuredSiteDomain}/`,
   breaks: false,
@@ -20,8 +22,8 @@ const renderDefaultOptions = {
   assetsHeight: 480,
   plugins: [new TwitterPlugin(), new InstagramPlugin(), new TablePlugin()],
   imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-  usertagUrlFn: (account: string) => '/@' + account,
-  hashtagUrlFn: (hashtag: string) => '/trending/' + hashtag,
+  usertagUrlFn: (account: string) => basePath ? `${basePath}/@${account}` : `/@${account}`,
+  hashtagUrlFn: (hashtag: string) => basePath ? `${basePath}/trending/${hashtag}` : `/trending/${hashtag}`,
   isLinkSafeFn: (url: string) =>
     !!url.match(`^(/(?!/)|${configuredImagesEndpoint})`) ||
     !!url.match(`^(/(?!/)|${configuredSiteDomain})`) ||

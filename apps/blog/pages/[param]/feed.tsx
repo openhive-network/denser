@@ -9,6 +9,7 @@ import { useInView } from 'react-intersection-observer';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
+import BasePathLink from '@/blog/components/base-path-link';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getDefaultProps } from '../../lib/get-translations';
@@ -122,9 +123,9 @@ const FeedPage: FC = () => {
                         Explore Trending
                       </Link>
                     </span>
-                    <Link href="/welcome" className="w-fit text-destructive">
+                    <BasePathLink href="/welcome" className="w-fit text-destructive">
                       New users guide
-                    </Link>
+                    </BasePathLink>
                   </div>
                 )}
                 <div>
