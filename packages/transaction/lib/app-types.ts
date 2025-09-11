@@ -76,7 +76,7 @@ export interface FullAccount {
 
 export interface Beneficiarie {
   account: string;
-  weight: string;
+  weight: number;
 }
 
 export interface Preferences {

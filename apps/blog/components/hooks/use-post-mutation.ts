@@ -22,15 +22,15 @@ export function usePostMutation() {
       permlink: string;
       title: string;
       body: string;
-      beneficiaries: Beneficiarie[];
-      maxAcceptedPayout: NaiAsset;
       tags: string[];
       category: string;
       summary: string;
       altAuthor: string;
-      payoutType: string;
       image?: string;
       editMode: boolean;
+      beneficiaries?: Beneficiarie[];
+      maxAcceptedPayout?: NaiAsset;
+      percentHbd?: number;
     }) => {
       const {
         permlink,
@@ -42,27 +42,41 @@ export function usePostMutation() {
         category,
         summary,
         altAuthor,
-        payoutType,
+        percentHbd,
         image,
         editMode
       } = params;
-      const broadcastResult = await transactionService.post(
-        permlink,
-        title,
-        body,
-        beneficiaries,
-        maxAcceptedPayout,
-        tags,
-        category,
-        summary,
-        altAuthor,
-        payoutType,
-        image,
-        { observe: true },
-        editMode
-      );
-      const response = { ...params, broadcastResult };
-      return response;
+
+      if (!editMode && !!beneficiaries && !!maxAcceptedPayout && !!percentHbd) {
+        const broadcastResult = await transactionService.post(
+          permlink,
+          title,
+          body,
+          beneficiaries,
+          maxAcceptedPayout,
+          tags,
+          category,
+          summary,
+          altAuthor,
+          percentHbd,
+          image,
+          { observe: true }
+        );
+        return { ...params, broadcastResult };
+      } else {
+        const broadcastResult = await transactionService.updatePost(
+          permlink,
+          title,
+          body,
+          tags,
+          category,
+          summary,
+          altAuthor,
+          image,
+          { observe: true }
+        );
+        return { ...params, broadcastResult };
+      }
     },
     onSuccess: (data) => {
       const { permlink } = data;

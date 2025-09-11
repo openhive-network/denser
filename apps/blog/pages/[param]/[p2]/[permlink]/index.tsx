@@ -28,7 +28,7 @@ import { useTranslation } from 'next-i18next';
 import { AlertDialogFlag } from '@/blog/components/alert-window-flag';
 import VotesComponent from '@/blog/components/votes';
 import { useLocalStorage } from 'usehooks-ts';
-import PostForm from '@/blog/components/post-form';
+import PostForm from '@/blog/feature/post-editor/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '@/blog/components/dialog-login';
 import { UserPopoverCard } from '@/blog/components/user-popover-card';
@@ -58,11 +58,11 @@ import { getSuggestions } from '@/blog/lib/get-data';
 import SuggestionsList from '@/blog/feature/suggestions-posts/list';
 import TimeAgo from '@ui/components/time-ago';
 import CommentList from '@/blog/components/comment-list';
-import clsx from 'clsx';
 import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
 import { Entry } from '@transaction/lib/extended-hive.chain';
+import { DEFAULT_FORM_VALUE, EditPostEntry } from '@/blog/feature/post-editor/lib/utils';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -175,9 +175,6 @@ function PostPage({
   const [edit, setEdit] = useState(false);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
-  const refreshPage = () => {
-    router.replace(router.asPath);
-  };
 
   useEffect(() => {
     if (reply) {
@@ -226,6 +223,18 @@ function PostPage({
     : undefined;
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
   const crossedPost = post?.json_metadata.tags?.includes('cross-post');
+
+  const editPostEntry: EditPostEntry = {
+    title: post.title,
+    author: post.author,
+    category: post.category,
+    postArea: post.body,
+    postSummary: post.json_metadata?.summary ?? '',
+    tags: post.json_metadata?.tags ? post.json_metadata.tags.join(' ') : '',
+    selectedImg: post.json_metadata.image[0],
+    permlink: post.permlink
+  };
+
   return (
     <>
       <Head>
@@ -347,10 +356,9 @@ function PostPage({
                     username={username}
                     editMode={edit}
                     setEditMode={setEdit}
-                    sideBySidePreview={false}
-                    post_s={post}
-                    refreshPage={refreshPage}
                     setIsSubmitting={setIsSubmitting}
+                    defaultValues={DEFAULT_FORM_VALUE}
+                    entryValues={editPostEntry}
                   />
                 ) : legalBlockedUser ? (
                   <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
