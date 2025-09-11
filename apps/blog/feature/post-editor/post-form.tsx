@@ -74,8 +74,8 @@ export default function PostForm({
     resolver: zodResolver(accountFormSchema),
     defaultValues: entryValues
   });
-  const watchedValues = form.getValues();
 
+  const watchedValues = form.watch();
   useEffect(() => {
     debounce(() => {
       storePost(watchedValues);
