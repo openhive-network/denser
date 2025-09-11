@@ -51,10 +51,16 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
     const stubs: PostStub[] = [];
     
     searchResults.forEach(post => {
+      // Filter out null or invalid posts
+      if (!post) return;
+      
       if (isPostStub(post)) {
         stubs.push(post);
       } else {
-        full.push(post as Entry);
+        // Only check post_id for full Entry objects
+        if ((post as Entry).post_id) {
+          full.push(post as Entry);
+        }
       }
     });
     
@@ -100,7 +106,11 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
       });
       
       if (fullPostData) {
-        setDisplayedPosts(prev => [...prev, ...fullPostData]);
+        // Filter out null or invalid posts before adding to displayed posts
+        const validPosts = fullPostData.filter(post => post && post.post_id);
+        if (validPosts.length > 0) {
+          setDisplayedPosts(prev => [...prev, ...validPosts]);
+        }
         setCurrentPage(prev => prev + 1);
       }
     } catch (error) {

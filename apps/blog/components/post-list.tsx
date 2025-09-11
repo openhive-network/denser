@@ -20,7 +20,7 @@ const PostList = ({
 
   return (
     <ul data-testid={`post-list-${testFilter}`}>
-      {data?.map((post: Entry) => (
+      {data?.filter(post => post && post.post_id).map((post: Entry) => (
         <PostListItem
           nsfwPreferences={nsfwPreferences}
           post={post}

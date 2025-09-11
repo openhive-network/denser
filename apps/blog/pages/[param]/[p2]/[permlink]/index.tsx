@@ -115,8 +115,8 @@ function PostPage({
       
       if (!results) return null;
       
-      // Filter to only include full Entry objects (not stubs)
-      const fullPosts = results.filter(post => !isPostStub(post)) as Entry[];
+      // Filter out null/invalid posts and only include full Entry objects (not stubs)
+      const fullPosts = results.filter(post => post && !isPostStub(post) && (post as Entry).post_id) as Entry[];
       return fullPosts;
     },
     {

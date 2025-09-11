@@ -199,6 +199,10 @@ export const getPostsByIds = async ({
     }
     
     const data = await response.json();
+    // Filter out null or invalid posts before returning
+    if (Array.isArray(data)) {
+      return data.filter(post => post && (post as Entry).post_id);
+    }
     return data;
   } catch (error) {
     return logStandarizedError("getPostsByIds", error);
