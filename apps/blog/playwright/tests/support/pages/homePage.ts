@@ -9,6 +9,9 @@ export class HomePage {
   readonly getPostListHot: Locator;
   readonly getPostListPayouts: Locator;
   readonly getPostListMuted: Locator;
+  readonly getTrendingCommunitiesSideBarUnloggedUsr: Locator;
+  readonly getTrendingCommunitiesSideBarUnloggedUsrLinks: Locator;
+  readonly getTrandingCommunitiesHeaderUnloggedUsr: Locator;
   readonly getTrendingCommunitiesSideBar: Locator;
   readonly getTrendingCommunitiesSideBarLinks: Locator;
   readonly getTrandingCommunitiesHeader: Locator;
@@ -128,6 +131,11 @@ export class HomePage {
     this.getPostListHot = page.getByTestId('post-list-hot');
     this.getPostListPayouts = page.getByTestId('post-list-payout');
     this.getPostListMuted = page.getByTestId('post-list-muted');
+    this.getTrendingCommunitiesSideBarUnloggedUsr = page.locator('[data-testid="card-trending-comunities"]');
+    this.getTrendingCommunitiesSideBarUnloggedUsrLinks = this.getTrendingCommunitiesSideBarUnloggedUsr.locator('div ul li a');
+    this.getTrandingCommunitiesHeaderUnloggedUsr = this.getTrendingCommunitiesSideBarUnloggedUsr
+      .locator('a')
+      .getByText('All posts');
     this.getTrendingCommunitiesSideBar = page.getByTestId('card-explore-hive-desktop').locator('[data-testid="card-trending-comunities"]');
     this.getTrendingCommunitiesSideBarLinks = this.getTrendingCommunitiesSideBar.locator('div ul li a');
     this.getTrandingCommunitiesHeader = this.getTrendingCommunitiesSideBar
@@ -451,7 +459,7 @@ export class HomePage {
   }
 
   async isTrendingCommunitiesVisible() {
-    await expect(this.getTrandingCommunitiesHeader).toBeVisible();
+    await expect(this.getTrandingCommunitiesHeaderUnloggedUsr).toBeVisible();
     await expect(this.getExploreCommunities).toHaveText(/Explore communities.../);
     await expect(this.getExploreCommunities).toBeEnabled();
   }

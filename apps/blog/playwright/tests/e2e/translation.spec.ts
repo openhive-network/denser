@@ -372,8 +372,8 @@ test.describe('Translation tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Load and validate the polish version of the home page is ready
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
-    await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
+    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBarUnloggedUsr['_selector']);
+    await expect(homePage.getTrendingCommunitiesSideBarUnloggedUsr).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Validate upvote button tooltip
     const expectedUpvoteTooltipText: string = 'Głos zaGłos za';
@@ -394,8 +394,8 @@ test.describe('Translation tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Load and validate the polish version of the home page is ready
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
-    await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
+    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBarUnloggedUsr['_selector']);
+    await expect(homePage.getTrendingCommunitiesSideBarUnloggedUsr).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Validate post payouts button tooltip
     const expectedPayoutsTooltipText1: string = 'Wypłacana kwota';
@@ -414,8 +414,8 @@ test.describe('Translation tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Load and validate the polish version of the home page is ready
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
-    await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
+    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBarUnloggedUsr['_selector']);
+    await expect(homePage.getTrendingCommunitiesSideBarUnloggedUsr).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Validate post votes button tooltip
     const expectedVotesTooltipText: string = 'Liczba głosów';
@@ -432,8 +432,8 @@ test.describe('Translation tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Load and validate the polish version of the home page is ready
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
-    await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
+    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBarUnloggedUsr['_selector']);
+    await expect(homePage.getTrendingCommunitiesSideBarUnloggedUsr).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Validate post votes button tooltip
     const expectedResponsesTooltipText: string = 'Kliknij by odpowiedzieć';
@@ -450,8 +450,8 @@ test.describe('Translation tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Load and validate the polish version of the home page is ready
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
-    await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
+    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBarUnloggedUsr['_selector']);
+    await expect(homePage.getTrendingCommunitiesSideBarUnloggedUsr).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Validate post reblog button tooltip
     const expectedReblogTooltipText: string = 'Rebloguj';

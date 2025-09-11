@@ -24,8 +24,8 @@ test.describe('Home page tests - All posts', () => {
     await page.waitForLoadState("domcontentloaded");
     await page.goBack();
     await page.waitForLoadState("domcontentloaded");
-    await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
-    await expect(homePage.getTrandingCommunitiesHeader).toContainText('All posts');
+    await expect(homePage.getTrandingCommunitiesHeaderUnloggedUsr).toBeVisible();
+    await expect(homePage.getTrandingCommunitiesHeaderUnloggedUsr).toContainText('All posts');
   });
 
   test('move to Explore communities... from Home Page', async ({ page }) => {
@@ -63,14 +63,14 @@ test.describe('Home page tests - All posts', () => {
       titleCommunitiesList.push((await response.json()).result[i].title);
     }
 
-    expect((await homePage.getTrendingCommunitiesSideBarLinks.all()).length - 1).toBe(
+    expect((await homePage.getTrendingCommunitiesSideBarUnloggedUsrLinks.all()).length - 1).toBe(
       titleCommunitiesList.length
     );
 
     // Get Tranding communities link names from website
     let displayedNameLink: Locator[] = [];
 
-    for (const el of await homePage.getTrendingCommunitiesSideBarLinks.all()) {
+    for (const el of await homePage.getTrendingCommunitiesSideBarUnloggedUsrLinks.all()) {
       displayedNameLink.push(await el.textContent());
     }
 

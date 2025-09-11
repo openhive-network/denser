@@ -589,12 +589,12 @@ test.describe('Home page tests', () => {
   test('validate that All posts in communities sidebar is visible', async ({ page }) => {
     await homePage.goto();
 
-    await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
-    await expect(homePage.getTrandingCommunitiesHeader).toHaveText('All posts');
-    await expect(homePage.getTrendingCommunitiesSideBarLinks).toHaveCount(13);
+    await expect(homePage.getTrendingCommunitiesSideBarUnloggedUsr).toBeVisible();
+    await expect(homePage.getTrandingCommunitiesHeaderUnloggedUsr).toHaveText('All posts');
+    await expect(homePage.getTrendingCommunitiesSideBarUnloggedUsrLinks).toHaveCount(13);
     expect(
       await homePage.getElementCssPropertyValue(
-        await homePage.getTrendingCommunitiesSideBarLinks.first(),
+        await homePage.getTrendingCommunitiesSideBarUnloggedUsrLinks.first(),
         'color'
       )
     ).toBe('rgb(24, 30, 42)');
@@ -997,7 +997,7 @@ test.describe('Home page tests', () => {
     // await expect(reblogDialog.getDialogOkButton).toBeVisible();
     await expect(reblogDialog.getDialogCancelButton).toBeVisible();
     await reblogDialog.closeReblogDialog();
-    await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
+    await expect(homePage.getTrandingCommunitiesHeaderUnloggedUsr).toBeVisible();
   });
 
   test('validate styles of the reputation in the post card header in the light mode', async ({ page }) => {
