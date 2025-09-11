@@ -134,11 +134,9 @@ export class HomePage {
       .locator('a')
       .getByText('All posts');
     this.getExploreCommunities = page.locator('[data-testid="explore-communities-link"]'); // page.getByText('Explore communities...');
-    this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar
-      .locator('a')
-      .getByText('LeoFinance');
+    this.getLeoFinanceCommunitiesLink = page.locator('[data-testid="card-trending-comunities"]').locator('a').getByText('LeoFinance');
     this.getHeaderLeoCommunities = page.locator('[data-testid="community-name"]').getByText('LeoFinance');
-    this.getWorldmappinCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a:text("Worldmappin")');
+    this.getWorldmappinCommunitiesLink = page.locator('[data-testid="card-trending-comunities"]').locator('a:text("Worldmappin")');
     this.getHeaderWorldmappinCommunities = page
       .locator('[data-testid="community-name"]')
       .getByText('Worldmappin');
@@ -278,12 +276,13 @@ export class HomePage {
   }
 
   async moveToLeoFinanceCommunities() {
+    await this.page.waitForSelector(this.getLeoFinanceCommunitiesLink['_selector']);
     await this.getLeoFinanceCommunitiesLink.click();
-    // await this.page.waitForRequest('https://api.hive.blog/');
     await expect(this.getHeaderLeoCommunities).toBeVisible();
   }
 
   async moveToWorldmappinCommunities() {
+    await this.page.waitForSelector(this.getWorldmappinCommunitiesLink['_selector']);
     await this.getWorldmappinCommunitiesLink.click();
     await expect(this.getHeaderWorldmappinCommunities).toBeVisible();
   }

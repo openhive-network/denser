@@ -519,7 +519,7 @@ test.describe('Communities page tests', () => {
     await expect(reblogThisPostDialog.getDialogOkButton).toBeVisible();
     await expect(reblogThisPostDialog.getDialogCancelButton).toBeVisible();
     await reblogThisPostDialog.closeReblogDialog();
-    await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
+    await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
   });
   // new tests
   test('check if posts in specific communities loading correctly', async ({ page }) => {
