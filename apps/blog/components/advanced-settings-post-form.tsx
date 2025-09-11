@@ -62,10 +62,10 @@ export function AdvancedSettingsPostForm({
   );
   const [selectTemplate, setSelectTemplate] = useState('/');
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
-    data.beneficiaries
+    data?.beneficiaries ?? []
   );
   const [customValue, setCustomValue] = useState(
-    data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100'
+    data?.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100'
   );
   const [open, setOpen] = useState(false);
   const [storedTemplates, storeTemplates] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
@@ -142,12 +142,12 @@ export function AdvancedSettingsPostForm({
   function handleTamplates(e: string) {
     const template = storedTemplates.find((template) => template.templateTitle === e);
     if (template) {
-      setBeneficiaries(template.beneficiaries);
-      setRewards(template.payoutType);
-      if (template.maxAcceptedPayout === 1000000) {
+      setBeneficiaries(template?.beneficiaries ?? []);
+      setRewards(template?.payoutType);
+      if (template?.maxAcceptedPayout === 1000000) {
         setMaxPayout('no_max');
       }
-      if (template.maxAcceptedPayout === 0) {
+      if (template?.maxAcceptedPayout === 0) {
         setMaxPayout('0');
       }
       if (Number(template.maxAcceptedPayout) > 0 && Number(template.maxAcceptedPayout) < 1000000) {
