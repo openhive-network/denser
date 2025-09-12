@@ -118,7 +118,6 @@ test.describe('Test for slider voting', () => {
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
       // Wait until optimistic ui is finished and validate the color of the upvote button
-      // await waitForCircleSpinnerIsDetatched(denserAutoTest3Page.page);
       await waitForFirstProcessedUpvoteLightMode(denserAutoTest3Page.page);
       expect(await homePage.getElementCssPropertyValue(firstPostCardUpvoteButtonLocator, 'color')).toBe(
         lightModeWhiteColor
@@ -130,11 +129,12 @@ test.describe('Test for slider voting', () => {
       await firstPostCardUpvoteButtonLocator.hover();
       await homePage.page.waitForTimeout(1000);
       expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(undoUpvoteTooltipText);
+      await firstPostCardUpvoteButtonLocator.blur();
       // Click Upvote button again to undo the upvote your vote
+      await homePage.page.waitForTimeout(5000);
       await firstPostCardUpvoteButtonLocatorToClick.click();
       // Wait until optimistic ui is finished and validate the color of the upvote button
-      // await waitForCircleSpinnerIsDetatched(denserAutoTest3Page.page);
-      await waitForFirstBroadcastedUpvoteLightMode(denserAutoTest3Page.page);
+      await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest3.safeStoragePassword);
       // Hovering the downvote button due to validate the real uncovered upvote button
       await firstPostCardDownvoteButtonLocator.hover();
       expect(await homePage.getElementCssPropertyValue(firstPostCardUpvoteButtonLocator, 'color')).toBe(
@@ -437,6 +437,8 @@ test.describe('Test for slider voting', () => {
       await firstPostCardDownvoteButtonLocator.hover();
       await homePage.page.waitForTimeout(1000);
       expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(undoDownvoteTooltipText);
+      await firstPostCardDownvoteButtonLocator.blur();
+      await homePage.page.waitForTimeout(5000);
       // Click Downvote button again to undo the downvote your vote
       await firstPostDownvoteButtonLocatorToClick.click();
       // Wait until optimistic ui is finished and validate the color of the downvote button

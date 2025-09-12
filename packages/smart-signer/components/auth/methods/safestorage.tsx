@@ -100,6 +100,10 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
+    const [show, setShow] = useState<{ password: boolean; wif: boolean }>({
+      password: false,
+      wif: false
+    });
     const [authUsers, setAuthUsers] = useState<AuthUser[]>([]);
     const form = useForm<SafeStorageForm>({
       mode: 'onChange',
@@ -138,7 +142,10 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         await finalize(values);
       } catch (error) {
         const authError = error as AuthorizationError;
-        if (authError.message.includes('Not authorized') || authError.message.includes('Authentication failed')) {
+        if (
+          authError.message.includes('Not authorized') ||
+          authError.message.includes('Authentication failed')
+        ) {
           onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE);
         }
         setError(authError.message);
@@ -314,13 +321,24 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               render={({ field, formState: { errors } }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      placeholder={t('login_form.signin_safe_storage.placeholder_password')}
-                      type="password"
-                      autoComplete="current-password"
-                      data-testid="password-input"
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Input
+                        placeholder={t('login_form.signin_safe_storage.placeholder_password')}
+                        type={show.password ? 'text' : 'password'}
+                        autoComplete="current-password"
+                        data-testid="password-input"
+                        {...field}
+                      />
+                      <Button
+                        variant="ghost"
+                        className="absolute right-2 top-1/2 h-7 w-7 -translate-y-1/2 p-1 hover:bg-transparent"
+                        onClick={() => {
+                          setShow((prev) => ({ ...prev, password: !prev.password }));
+                        }}
+                      >
+                        {show.password ? <Icons.eyeOff /> : <Icons.eye />}
+                      </Button>
+                    </div>
                   </FormControl>
                   <FormMessage className="font-normal" data-testid="password-error-message"></FormMessage>
                   {/* {errors.password && <FormMessage className="font-normal">{t(errors.password?.message!)}</FormMessage>} */}
@@ -336,14 +354,25 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 render={({ field, formState: { errors } }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        placeholder={t('login_form.signin_safe_storage.placeholder_wif', {
-                          keyType: form.getValues().keyType
-                        })}
-                        type="password"
-                        data-testid="wif-input"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <Input
+                          placeholder={t('login_form.signin_safe_storage.placeholder_wif', {
+                            keyType: form.getValues().keyType
+                          })}
+                          type={show.wif ? 'text' : 'password'}
+                          data-testid="wif-input"
+                          {...field}
+                        />
+                        <Button
+                          variant="ghost"
+                          className="absolute right-2 top-1/2 h-7 w-7 -translate-y-1/2 p-1 hover:bg-transparent"
+                          onClick={() => {
+                            setShow((prev) => ({ ...prev, wif: !prev.wif }));
+                          }}
+                        >
+                          {show.wif ? <Icons.eyeOff /> : <Icons.eye />}
+                        </Button>
+                      </div>
                     </FormControl>
                     {errors.wif && (
                       <FormMessage className="font-normal" data-testid="wif-input-error-message">
@@ -425,7 +454,10 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
             )}
             {authUsers?.length > 0 && (
               <div className="flex justify-end">
-                <span onClick={() => onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE)} className="max-w-max cursor-pointer text-xs text-destructive hover:opacity-80 active:opacity-60">
+                <span
+                  onClick={() => onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE)}
+                  className="max-w-max cursor-pointer text-xs text-destructive hover:opacity-80 active:opacity-60"
+                >
                   {t('login_form.signin_safe_storage.key_update')}
                 </span>
               </div>

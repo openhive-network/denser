@@ -88,7 +88,7 @@ export class ApiHelper {
   ) {
     const url = process.env.REACT_APP_API_ENDPOINT;
 
-    const response = await this.page.request.post(`${url}/`, {
+    const response = await this.page.request.post(`${url}`, {
       data: {
         id: 0,
         jsonrpc: '2.0',
@@ -224,17 +224,16 @@ export class ApiHelper {
   }
 
   waitForRequestToIntercept(requestUrl: string, requestMethod: string, jsonRpcMethod: string) {
-    const broadcastTransaction = this.page.waitForRequest((request) => {
-      // console.log(
-      //   request.url(),
-      //   request.method(),
-      //   request.postDataJSON(),
-      //   request.postDataJSON().method
-      // );
-      return request.url()===requestUrl && 
-        request.method()===requestMethod && 
-        request.postDataJSON().method === jsonRpcMethod;
-    }, {timeout: 120000});
+    const broadcastTransaction = this.page.waitForRequest(
+      (request) => {
+        return (
+          request.url() === requestUrl &&
+          request.method() === requestMethod &&
+          request.postDataJSON().method === jsonRpcMethod
+        );
+      },
+      { timeout: 120000 }
+    );
     return broadcastTransaction;
   }
 }

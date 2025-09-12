@@ -4,18 +4,21 @@ import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
 export class ThreeSpeakEmbedder extends AbstractEmbedder {
     public type = '3speak';
 
-    private static readonly linkRegex =
-        /^(?:https?:\/\/)?(?:(?:3speak\.(?:tv|online|co)\/watch\?v=)|(?:3speak\.tv\/embed\?v=))([a-zA-Z0-9_.-]+\/[a-zA-Z0-9_-]+)(?:&.*)?$/;
+    private static readonly linkRegex = /(?:https?:\/\/)?(?:3speak\.(?:tv|online|co)\/(?:watch|embed)\?v=)([^&\s]+)/i;
 
     public getEmbedMetadata(input: string | HTMLObjectElement): EmbedMetadata | undefined {
         const url = typeof input === 'string' ? input : input.data;
         try {
-            const match = (url.startsWith('\n') ? url.replace('\n', '') : url).match(ThreeSpeakEmbedder.linkRegex);
+            // Clean the URL by trimming whitespace and removing leading newlines
+            const cleanUrl = url.trim().replace(/^\n+/, '');
+
+            // Check if this contains a 3speak URL
+            const match = cleanUrl.match(ThreeSpeakEmbedder.linkRegex);
             if (match && match[1]) {
                 const id = match[1];
                 return {
                     id,
-                    url: url // Return the original URL
+                    url: match[0] // Return the matched URL part
                 };
             }
         } catch (error) {

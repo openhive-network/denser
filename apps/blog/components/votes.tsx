@@ -11,7 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive';
 import { getLogger } from '@ui/lib/logging';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import { Slider } from '@ui/components/slider';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
 import { useLoggedUserContext } from './common/logged-user';
@@ -60,7 +60,10 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
     ['votes', post.author, post.permlink, user?.username],
     () => getListVotesByCommentVoter([post.author, post.permlink, user?.username], 1),
     {
-      enabled: !!checkVote || !!clickedVoteButton
+      enabled: !!checkVote || !!clickedVoteButton,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false
     }
   );
   const { net_vests } = useLoggedUserContext();
@@ -100,9 +103,9 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         />
       ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
         <Popover>
-          <PopoverTrigger>
+          <PopoverTrigger disabled={userVote?._temporary}>
             <TooltipContainer
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isLoading || !!userVote?._temporary}
               text={t('cards.post_card.upvote')}
               dataTestId="upvote-button"
             >
@@ -123,14 +126,14 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
-                loading={voteMutation.isLoading}
+                loading={voteMutation.isLoading || !!userVote?._temporary}
                 text={t('cards.post_card.upvote')}
                 dataTestId="upvote-button-slider"
               >
-                <Icons.arrowUpCircle
-                  className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1"
+                <button
+                  className="flex h-full items-center justify-center"
+                  disabled={voteMutation.isLoading || !!userVote?._temporary}
                   onClick={() => {
-                    if (voteMutation.isLoading) return;
                     setClickedVoteButton('up');
                     submitVote(sliderUpvote[0] * 100);
                     storeVotesValues((prev) => ({
@@ -141,7 +144,14 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                       }
                     }));
                   }}
-                />
+                >
+                  <Icons.arrowUpCircle
+                    className={clsx(
+                      'h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
+                      { 'animate-pulse': userVote?._temporary }
+                    )}
+                  />
+                </button>
               </TooltipContainer>
               <Slider
                 dataTestId="upvote-slider"
@@ -159,7 +169,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         </Popover>
       ) : user.isLoggedIn ? (
         <TooltipContainer
-          loading={voteMutation.isLoading}
+          loading={voteMutation.isLoading || !!userVote?._temporary}
           text={
             userVote && userVote.vote_percent > 0
               ? userVote.vote_percent === 10000 && !enable_slider
@@ -171,13 +181,10 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           }
           dataTestId="upvote-button"
         >
-          <Icons.arrowUpCircle
-            className={clsx(
-              'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
-              { 'bg-destructive text-white': userVote && userVote.vote_percent > 0 }
-            )}
+          <button
+            className="flex h-full items-center justify-center"
             onClick={() => {
-              if (voteMutation.isLoading) return;
+              if (voteMutation.isLoading || !!userVote?._temporary) return;
               setClickedVoteButton('up');
               {
                 // We vote either 100% or 0%.
@@ -188,14 +195,24 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 }
               }
             }}
-          />
+          >
+            <Icons.arrowUpCircle
+              className={clsx(
+                'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
+                {
+                  'bg-destructive text-white': userVote && userVote.vote_percent > 0,
+                  'animate-pulse': userVote?._temporary
+                }
+              )}
+            />
+          </button>
         </TooltipContainer>
       ) : (
         <DialogLogin>
           <div className="flex items-center">
             <TooltipContainer
               text={t('cards.post_card.upvote')}
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isLoading || !!userVote?._temporary}
               dataTestId="upvote-button"
             >
               <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" />
@@ -211,9 +228,9 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         />
       ) : user.isLoggedIn && enable_slider && !vote_downvoted ? (
         <Popover>
-          <PopoverTrigger>
+          <PopoverTrigger disabled={userVote?._temporary}>
             <TooltipContainer
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isLoading || !!userVote?._temporary}
               text={t('cards.post_card.downvote')}
               dataTestId="downvote-button"
             >
@@ -234,14 +251,14 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
-                loading={voteMutation.isLoading}
+                loading={voteMutation.isLoading || !!userVote?._temporary}
                 text={t('cards.post_card.downvote')}
                 dataTestId="downvote-button-slider"
               >
-                <Icons.arrowDownCircle
-                  className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
+                <button
+                  className="flex h-full items-center justify-center"
+                  disabled={voteMutation.isLoading || !!userVote?._temporary}
                   onClick={() => {
-                    if (voteMutation.isLoading) return;
                     setClickedVoteButton('down');
                     submitVote(-sliderDownvote[0] * 100);
                     storeVotesValues((prev) => ({
@@ -252,7 +269,16 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                       }
                     }));
                   }}
-                />
+                >
+                  <Icons.arrowDownCircle
+                    className={clsx(
+                      'h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                      {
+                        'animate-pulse': userVote?._temporary
+                      }
+                    )}
+                  />
+                </button>
               </TooltipContainer>
               <Slider
                 dataTestId="downvote-slider"
@@ -279,7 +305,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         </Popover>
       ) : user.isLoggedIn ? (
         <TooltipContainer
-          loading={voteMutation.isLoading}
+          loading={voteMutation.isLoading || !!userVote?._temporary}
           text={
             userVote && userVote.vote_percent < 0
               ? userVote.vote_percent === -10000 && !enable_slider
@@ -291,13 +317,11 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           }
           dataTestId="downvote-button"
         >
-          <Icons.arrowDownCircle
-            className={clsx(
-              'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
-              { 'bg-destructive text-white opacity-80': userVote && userVote.vote_percent < 0 }
-            )}
+          <button
+            className="flex h-full items-center justify-center"
+            disabled={voteMutation.isLoading || !!userVote?._temporary}
             onClick={() => {
-              if (voteMutation.isLoading) return;
+              if (voteMutation.isLoading || !!userVote?._temporary) return;
               setClickedVoteButton('down');
               {
                 // We vote either -100% or 0%.
@@ -308,14 +332,24 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 }
               }
             }}
-          />
+          >
+            <Icons.arrowDownCircle
+              className={clsx(
+                'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                {
+                  'bg-destructive text-white opacity-80': userVote && userVote.vote_percent < 0,
+                  'animate-pulse': userVote?._temporary
+                }
+              )}
+            />
+          </button>
         </TooltipContainer>
       ) : (
         <DialogLogin>
           <div className="flex items-center">
             <TooltipContainer
               text={t('cards.post_card.downvote')}
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isLoading || !!userVote?._temporary}
               dataTestId="downvote-button"
             >
               <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />

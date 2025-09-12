@@ -21,14 +21,14 @@ export class VotingSlider {
     this.page = page;
     this.upvoteSliderModal = page.locator('[data-testid="upvote-slider-modal"]');
     this.upvoteSliderButton = page.locator('[data-testid="upvote-button-slider"]');
-    this.upvoteSliderButtonIcon = page.locator('[data-testid="upvote-button-slider"] > svg');
+    this.upvoteSliderButtonIcon = page.locator('[data-testid="upvote-button-slider"] > button > svg');
     this.upvoteSliderThumb = page.locator('[data-testid="upvote-slider-thumb"]');
     this.upvoteSliderTrack = page.locator('[data-testid="upvote-slider-track"]');
     this.upvoteSliderPercentageValue = page.locator('[data-testid="upvote-slider-percentage-value"]');
 
     this.downvoteSliderModal = page.locator('[data-testid="downvote-slider-modal"]');
     this.downvoteSliderButton = page.locator('[data-testid="downvote-button-slider"]');
-    this.downvoteSliderButtonIcon = page.locator('[data-testid="downvote-button-slider"] > svg');
+    this.downvoteSliderButtonIcon = page.locator('[data-testid="downvote-button-slider"] > button > svg');
     this.downvoteSliderThumb = page.locator('[data-testid="downvote-slider-thumb"]');
     this.downvoteSliderTrack = page.locator('[data-testid="downvote-slider-track"]');
     this.downvoteSliderPercentageValue = page.locator('[data-testid="downvote-slider-percentage-value"]');

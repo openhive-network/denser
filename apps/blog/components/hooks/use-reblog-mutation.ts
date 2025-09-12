@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult, transactionService } from '@transaction/index';
+import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
@@ -19,13 +20,24 @@ export function useReblogMutation() {
         observe: true
       });
       const response = { author, permlink, username, broadcastResult };
-      logger.info('Done reblog transaction: %o', response);
       return response;
     },
-    onSuccess: (data) => {
-      logger.info('useReblogMutation onSuccess data: %o', data);
+    onSettled: (data) => {
+      if (!data) return;
       const { author, permlink, username } = data;
-      queryClient.invalidateQueries({ queryKey: ['PostRebloggedBy', author, permlink, username] });
+      queryClient.setQueriesData({ queryKey: ['PostRebloggedBy', author, permlink, username] }, true);
+    },
+
+    onSuccess: (data) => {
+      const { author, permlink, username } = data;
+      toast({
+        title: 'Reblog successful',
+        description: `You have successfully reblogged the post.`,
+        variant: 'success'
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['PostRebloggedBy', author, permlink, username] });
+      }, 4000);
     }
   });
 

@@ -1,4 +1,4 @@
-import { Input, Separator } from '@ui/components';
+import { Checkbox, Input, Label, ScrollArea, Separator } from '@ui/components';
 import { Button } from '@ui/components/button';
 import {
   Dialog,
@@ -15,8 +15,9 @@ import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from 'next-i18next';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import badActorList from '@ui/config/lists/bad-actor-list';
+import clsx from 'clsx';
 
 type AccountFormValues = {
   title: string;
@@ -48,10 +49,18 @@ export function AdvancedSettingsPostForm({
   updateForm: (data: AccountFormValues) => void;
 }) {
   const { t } = useTranslation('common_blog');
-  const [preferences, setPreferences] = useLocalStorage<Preferences>(
-    `user-preferences-${username}`,
-    DEFAULT_PREFERENCES
-  );
+  const [preferences] = useLocalStorage<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES);
+
+  const maxPayoutOptions = [
+    { value: 'no_max', label: t('submit_page.advanced_settings_dialog.no_limit') },
+    { value: '0', label: t('submit_page.advanced_settings_dialog.decline_payout') },
+    { value: 'custom', label: t('submit_page.advanced_settings_dialog.custom_value') }
+  ];
+  const authorRewardsOptions = [
+    { value: '50%', label: '50% HBD / 50% HP' },
+    { value: '100%', label: t('submit_page.advanced_settings_dialog.power_up') }
+  ];
+
   const [rewards, setRewards] = useState(
     preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards
   );
@@ -281,20 +290,22 @@ export function AdvancedSettingsPostForm({
             </span>
             <span>{t('submit_page.advanced_settings_dialog.value_of_the_maximum')}</span>
             <div className="flex flex-col gap-1">
-              <Select onValueChange={(e: '0' | 'no_max' | 'custom') => setMaxPayout(e)} value={maxPayout}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="no_max">{t('submit_page.advanced_settings_dialog.no_limit')}</SelectItem>
-                  <SelectItem value="0">
-                    {t('submit_page.advanced_settings_dialog.decline_payout')}
-                  </SelectItem>
-                  <SelectItem value="custom">
-                    {t('submit_page.advanced_settings_dialog.custom_value')}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="my-8 flex justify-around">
+                {maxPayoutOptions.map((e) => (
+                  <div key={e.value}>
+                    <Checkbox id={e.value} className="hidden" onCheckedChange={() => setMaxPayout(e.value)} />
+                    <Label
+                      htmlFor={e.value}
+                      className={clsx('cursor-pointer rounded-lg border p-2', {
+                        'border-destructive bg-border': maxPayout === e.value,
+                        'text-muted-foreground': maxPayout !== e.value
+                      })}
+                    >
+                      {e.label}
+                    </Label>
+                  </div>
+                ))}
+              </div>
               {maxPayout === 'custom' ? (
                 <>
                   <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
@@ -314,19 +325,27 @@ export function AdvancedSettingsPostForm({
               {t('submit_page.advanced_settings_dialog.author_rewards')}
             </span>
             <span>{t('submit_page.advanced_settings_dialog.what_type_of_tokens')}</span>
-            <Select
-              value={rewards}
-              onValueChange={(e: '50%' | '100%') => setRewards(e)}
-              disabled={maxPayout === '0'}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="50%">{'50% HBD / 50% HP'}</SelectItem>
-                <SelectItem value="100%">{t('submit_page.advanced_settings_dialog.power_up')}</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="my-8 flex justify-around">
+              {authorRewardsOptions.map((e) => (
+                <div key={e.value}>
+                  <Checkbox
+                    id={e.value}
+                    className="hidden"
+                    onCheckedChange={() => setRewards(e.value)}
+                    disabled={maxPayout === '0'}
+                  />
+                  <Label
+                    htmlFor={e.value}
+                    className={clsx('cursor-pointer rounded-lg border p-2', {
+                      'border-destructive bg-border': rewards === e.value,
+                      'text-muted-foreground': rewards !== e.value
+                    })}
+                  >
+                    {e.label}
+                  </Label>
+                </div>
+              ))}
+            </div>
             <span>
               {t('submit_page.advanced_settings_dialog.default')}
               {authorRewardsText(preferences.blog_rewards)}
@@ -394,25 +413,24 @@ export function AdvancedSettingsPostForm({
             </span>
             <span>{t('submit_page.advanced_settings_dialog.manage_your_post_templates')}</span>
             <div className="flex flex-col gap-1">
-              <Select value={selectTemplate} onValueChange={(e) => handleTamplates(e)}>
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder={t('submit_page.advanced_settings_dialog.choose_a_template_to_load')}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="/">
-                    {t('submit_page.advanced_settings_dialog.choose_a_template_to_load')}
-                  </SelectItem>
-                  {storedTemplates
-                    ? storedTemplates.map((e) => (
-                        <SelectItem key={e.templateTitle} value={e.templateTitle}>
-                          {e.templateTitle}
-                        </SelectItem>
-                      ))
-                    : null}
-                </SelectContent>
-              </Select>
+              <ScrollArea className=" h-fit max-h-48 rounded-md border p-4">
+                {storedTemplates && storedTemplates.length > 0
+                  ? storedTemplates.map((e) => (
+                      <div
+                        key={e.templateTitle}
+                        onClick={() => handleTamplates(e.templateTitle)}
+                        className={clsx(
+                          'cursor-pointer border-b border-border p-1 text-base hover:bg-border',
+                          {
+                            'border-destructive': selectTemplate === e.templateTitle
+                          }
+                        )}
+                      >
+                        {e.templateTitle}
+                      </div>
+                    ))
+                  : 'No templates found.'}
+              </ScrollArea>
               <Input
                 placeholder={t('submit_page.advanced_settings_dialog.name_of_a_new_template')}
                 value={templateTitle}

@@ -1,6 +1,6 @@
 import RepliesListItem from '@/blog/components/replies-list-item';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import { useFollowListQuery } from './hooks/use-follow-list';
 
 const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; parent?: Entry }) => {
@@ -37,7 +37,7 @@ const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; paren
     });
 
     return (
-      <ul className="px-2">
+      <ul className="px-2" data-testid="comment-list-replies">
         {tmp?.map((comment: Entry) => (
           <RepliesListItem blacklist={blacklist} comment={comment} key={comment.post_id} />
         ))}
@@ -46,7 +46,7 @@ const RepliesList = ({ data, parent }: { data: Entry[] | null | undefined; paren
   }
 
   return (
-    <ul className="px-2">
+    <ul className="px-2" data-testid="comment-list-replies">
       {data?.map((comment: Entry) => (
         <RepliesListItem blacklist={blacklist} comment={comment} key={comment.post_id} />
       ))}

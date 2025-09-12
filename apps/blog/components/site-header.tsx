@@ -21,12 +21,13 @@ import { PieChart, Pie } from 'recharts';
 import useManabars from './hooks/useManabars';
 import { hoursAndMinutes } from '../lib/utils';
 
-import { getAccount } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { useRouter } from 'next/router';
 import { cn } from '@ui/lib/utils';
 import { getHiveSenseStatus } from '../lib/get-data';
+import { getUserAvatarUrl, getDefaultImageUrl } from '@hive/ui';
 
 const SiteHeader: FC = () => {
   const { t } = useTranslation('common_blog');
@@ -44,17 +45,13 @@ const SiteHeader: FC = () => {
       enabled: !!user.username
     }
   );
-  const { data: profile } = useQuery(['user', user.username], () => getAccount(user.username), {
+  const { data: profile } = useQuery(['profileData', user.username], () => getAccountFull(user.username), {
     enabled: user?.isLoggedIn
   });
-  const { data: hiveSense, isLoading: hiveSenseLoading } = useQuery(
-    ['hivesense-api'],
-    () => getHiveSenseStatus(),
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false
-    }
-  );
+  const { data: hiveSense } = useQuery(['hivesense-api'], () => getHiveSenseStatus(), {
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
+  });
   const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
   const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
   const rcAngle = (360 * (manabarsData ? manabarsData?.rc.percentageValue : 0)) / 100;
@@ -90,7 +87,7 @@ const SiteHeader: FC = () => {
       <div className="container flex h-16 w-full items-center justify-between">
         <Link href="/trending" className="flex items-center space-x-2">
           <Icons.hive className="h-6 w-6" />
-          <div className='flex flex-col md:flex-row'>
+          <div className="flex flex-col md:flex-row">
             <span className="font-bold sm:inline-block">{siteConfig.name}</span>
             {siteConfig.chainEnv !== 'mainnet' && (
               <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
@@ -121,12 +118,12 @@ const SiteHeader: FC = () => {
             )}
             <div className="hidden lg:block">
               {router.pathname === '/search' ? (
-                <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} />
+                <SearchButton aiTag={!!hiveSense} />
               ) : (
-                <ModeSwitchInput aiAvailable={!!hiveSense} isLoading={hiveSenseLoading} />
+                <ModeSwitchInput aiAvailable={!!hiveSense} />
               )}
             </div>
-            <SearchButton aiTag={!hiveSenseLoading && !!hiveSense} className="lg:hidden" />
+            <SearchButton aiTag={!!hiveSense} className="lg:hidden" />
             <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
               <Link href="/submit.html">
                 <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
@@ -231,17 +228,14 @@ const SiteHeader: FC = () => {
                         <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
                           <AvatarImage
                             className="h-full w-full object-cover"
-                            src={
-                              profile?.profile?.profile_image ||
-                              `${configuredImagesEndpoint}/u/${user.username}/avatar`
-                            }
+                            src={getUserAvatarUrl(user?.username || '', 'small')}
                             alt="Profile picture"
                           />
                           <AvatarFallback>
                             <img
                               className="h-full w-full object-cover"
-                              src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
-                              alt="default img"
+                              src={getUserAvatarUrl(user?.username || '', 'small')}
+                              alt="Profile picture"
                             />
                           </AvatarFallback>
                         </Avatar>

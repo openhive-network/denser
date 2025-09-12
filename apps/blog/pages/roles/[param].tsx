@@ -1,58 +1,27 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { GetServerSideProps } from 'next';
-
-import CommunitiesMybar from '@/blog/components/communities-mybar';
-import CommunitiesSidebar from '@/blog/components/communities-sidebar';
 import Loading from '@ui/components/loading';
-import CustomError from '@/blog/components/custom-error';
-import CommunityDescription from '@/blog/components/community-description';
-import CommunitySimpleDescription from '@/blog/components/community-simple-description';
-import AddRole from '@/blog/components/add-role';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/components/table';
-import { Button } from '@ui/components';
+import AddRole from '@/blog/feature/community-roles/add-role';
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@ui/components/table';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import {
-  getAccountNotifications,
-  getCommunity,
-  getListCommunityRoles,
-  getSubscribers,
-  getSubscriptions
-} from '@transaction/lib/bridge';
+import { getListCommunityRoles, getSubscriptions } from '@transaction/lib/bridge';
 import { getCommunityMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
-
-const roles = [
-  { name: 'owner', value: 6 },
-  { name: 'admin', value: 5 },
-  { name: 'mod', value: 4 },
-  { name: 'member', value: 3 },
-  { name: 'guest', value: 2 },
-  { name: 'muted', value: 1 }
-];
+import { getRoleValue, Roles, rolesLevels } from '@/blog/feature/community-roles/lib/utils';
+import CommunityLayout from '@/blog/feature/community-layout/community-layout';
+import TableItem from '@/blog/feature/community-roles/table-item';
+import NoDataError from '@/blog/components/no-data-error';
 
 const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const router = useRouter();
   const { user } = useUser();
-  const [client, setClient] = useState(false);
   const { t } = useTranslation('common_blog');
+  const community = router.query.param as string;
 
-  useEffect(() => {
-    setClient(true);
-  }, []);
-
-  const tag = router.query.param as string;
-
-  const {
-    data: rolesData,
-    isLoading: rolesIsLoading,
-    isError: rolesIsError
-  } = useQuery(['rolesList', tag], () => getListCommunityRoles(tag), { enabled: Boolean(tag) });
-
-  const { data: mySubsData, isError: mySubsIsError } = useQuery(
+  const { data: mySubsData } = useQuery(
     ['subscriptions', user?.username],
     () => getSubscriptions(user.username),
     {
@@ -60,41 +29,33 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     }
   );
 
-  const {
-    data: communityData,
-    isLoading: communityDataIsLoading,
-    isError: communityIsError
-  } = useQuery(['community', tag, ''], () => getCommunity(tag, user.username), { enabled: !!tag });
+  const { data, isLoading, isError } = useQuery(
+    ['rolesList', community],
+    () => getListCommunityRoles(community),
+    {
+      enabled: Boolean(community),
+      select: (list) =>
+        list
+          ? list.map((e) => ({
+              name: e[0],
+              value: getRoleValue(e[1] as Roles),
+              role: e[1] as Roles,
+              title: e[2],
+              temprary: !!e[3]
+            }))
+          : []
+    }
+  );
 
-  const {
-    data: subsData,
-    isLoading: subsIsLoading,
-    isError: subsIsError
-  } = useQuery(['subscribers', tag], () => getSubscribers(tag), { enabled: !!tag });
-
-  const {
-    isLoading: notificationIsLoading,
-    isError: notificationIsError,
-    data: notificationData
-  } = useQuery(['AccountNotification', tag], () => getAccountNotifications(tag), { enabled: !!tag });
-
-  const isLoading = communityDataIsLoading || subsIsLoading || notificationIsLoading || rolesIsLoading;
-  const isError = mySubsIsError || communityIsError || subsIsError || notificationIsError || rolesIsError;
-
-  const userRole = rolesData?.find((e) => e[0] === user.username);
-  const roleValue = userRole
-    ? (() => {
-        const role = roles.find((e) => e.name === userRole[1]);
-        return role ? { value: role.value, role: role.name, name: userRole[0], title: userRole[2] } : null;
-      })()
-    : null;
-  const rolesValue = rolesData?.map((e) => {
-    const role = roles.find((r) => r.name === e[1]);
-    return role ? { value: role.value, role: role.name, name: e[0], title: e[2] } : null;
-  });
+  const loggedUser = data?.find((e) => e.name === user.username) ?? {
+    value: 1,
+    role: 'guest',
+    name: user.username,
+    title: ''
+  };
 
   if (isLoading) return <Loading loading={isLoading} />;
-  if (isError) return <CustomError />;
+  if (isError) return <NoDataError />;
 
   return (
     <>
@@ -104,100 +65,39 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
         <meta property="og:description" content={metadata.description} />
         <meta property="og:image" content={metadata.image} />
       </Head>
-      {client ? (
-        <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
-          <div className="grid grid-cols-12 md:gap-4">
-            <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-              {user?.isLoggedIn ? (
-                <CommunitiesMybar data={mySubsData} username={user.username} />
-              ) : (
-                <CommunitiesSidebar />
-              )}
-            </div>
-            <div className="col-span-12 md:col-span-9 xl:col-span-8">
-              <div data-testid="card-explore-hive-mobile" className=" md:col-span-10 md:flex xl:hidden">
-                {communityData && subsData && (
-                  <CommunitySimpleDescription
-                    data={communityData}
-                    subs={subsData}
-                    username={tag || ' '}
-                    notificationData={notificationData}
-                  />
-                )}
-              </div>
-              <div>
-                <div className="mx-2 text-lg xl:mt-4">
-                  <Link className="text-destructive" href={`/trending/${communityData?.name}`}>
-                    {communityData?.title}
-                  </Link>
-                </div>
-                <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
-                  <div className="my-4 flex w-full items-center justify-between" translate="no">
-                    <div className="m-2 w-full bg-background px-8 py-6">
-                      <h2 className="mb-1 text-2xl">{t('communities.user_roles')}</h2>
-                      <Table className="w-full border-[1px] border-solid border-secondary">
-                        <TableHeader className="text-">
-                          <TableRow className="bg-secondary">
-                            <TableHead className="px-2">{t('communities.account')}</TableHead>
-                            <TableHead className="px-2">{t('communities.role')}</TableHead>
-                            <TableHead className="px-2">{t('communities.title')}</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {rolesValue?.map((e) =>
-                            e ? (
-                              <TableRow key={e.name}>
-                                <TableCell className="p-2">
-                                  <Link href={`/@${e.name}`} className="text-destructive">
-                                    @{e.name}
-                                  </Link>
-                                </TableCell>
-                                {roleValue ? (
-                                  <TableCell className="border-x-[1px] border-solid border-secondary p-2">
-                                    {roleValue.value >= 4 && e.value < roleValue.value ? (
-                                      <AddRole user={roleValue} community={tag} targetedUser={e}>
-                                        <span className="cursor-pointer text-destructive">{e.role}</span>
-                                      </AddRole>
-                                    ) : (
-                                      <span>{e.role}</span>
-                                    )}
-                                  </TableCell>
-                                ) : (
-                                  <TableCell>{e.role}</TableCell>
-                                )}
-                                <TableCell className="p-2">{e.title}</TableCell>
-                              </TableRow>
-                            ) : null
-                          )}
-                        </TableBody>
-                      </Table>
-                      {roleValue && roleValue.value >= 3 && (
-                        <AddRole user={roleValue} community={tag}>
-                          <Button variant="outlineRed" className="m-10 mx-0 mt-4 font-normal" size="xs">
-                            {t('communities.add_user')}
-                          </Button>
-                        </AddRole>
-                      )}
-                    </div>
+      <CommunityLayout community={community} mySubsData={mySubsData}>
+        <div className="my-4 flex w-full items-center justify-between" translate="no">
+          <div className="m-2 w-full bg-background px-8 py-6">
+            <h2 className="mb-1 text-2xl">{t('communities.user_roles')}</h2>
+            <Table className="w-full border-[1px] border-solid border-secondary">
+              <TableHeader className="text-">
+                <TableRow className="bg-secondary">
+                  <TableHead className="px-2">{t('communities.account')}</TableHead>
+                  <TableHead className="w-48 px-2">{t('communities.role')}</TableHead>
+                  <TableHead className="px-2">{t('communities.title')}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.map((e) => (
+                  <TableItem loggedUserValue={loggedUser.value} item={e} community={community} key={e.name} />
+                ))}
+              </TableBody>
+            </Table>
+            {loggedUser.value >= 3 && <AddRole loggedUserLevel={loggedUser.value} community={community} />}
+            <div className="mt-12">
+              <h1>{t('communities.role_permissions')}</h1>
+              <div className="text-sm">
+                {rolesLevels.map((role) => (
+                  <div key={role.name}>
+                    <span className="font-bold"> {t(`communities.${role.name}`)}</span>
+                    <span>- {t(`communities.description_${role.name}`)}</span>
                   </div>
-                </div>
+                ))}
               </div>
-            </div>
-            <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-              {communityData && subsData && (
-                <CommunityDescription
-                  data={communityData}
-                  subs={subsData}
-                  notificationData={notificationData}
-                  username={tag}
-                />
-              )}
             </div>
           </div>
         </div>
-      ) : (
-        <Loading loading />
-      )}
+      </CommunityLayout>
     </>
   );
 };

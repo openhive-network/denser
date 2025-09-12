@@ -1,13 +1,14 @@
 import { Button } from '@hive/ui';
+import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
-import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 
 const FollowButton = ({
   variant,
   loading,
   isFollow,
-  onClick
+  onClick,
+  disabled
 }: {
   variant:
     | 'default'
@@ -24,17 +25,20 @@ const FollowButton = ({
   loading: boolean;
   isFollow: boolean;
   onClick: () => void;
+  disabled?: boolean;
 }) => {
   const { t } = useTranslation('common_blog');
 
   return (
     <Button
-      className="hover:text-destructive"
+      className={clsx('hover:text-destructive', {
+        'text-destructive': disabled
+      })}
       variant={variant}
       size="sm"
       data-testid="profile-follow-button"
       onClick={() => onClick()}
-      disabled={loading}
+      disabled={loading || !!disabled}
     >
       {loading ? (
         <span className="flex h-5 w-12 items-center justify-center">

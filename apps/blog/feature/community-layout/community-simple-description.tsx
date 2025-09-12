@@ -1,16 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
 import { Community } from '@transaction/lib/extended-hive.chain';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
-import { SubsListDialog } from './subscription-list-dialog';
-import { ActivityLogDialog } from './activity-log-dialog';
+import { SubsListDialog } from '../../components/subscription-list-dialog';
+import { ActivityLogDialog } from '../../components/activity-log-dialog';
 import { useTranslation } from 'next-i18next';
-import SubscribeCommunity from './subscribe-community';
+import SubscribeCommunity from '../../components/subscribe-community';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import NewPost from './new-post-button';
+import NewPost from '../../components/new-post-button';
 import { useEffect, useState } from 'react';
 import { Badge, Separator } from '@ui/components';
 import Link from 'next/link';
-import EditCommunityDialog from './edit-community-dialog';
+import EditCommunityDialog from '../community-settings/edit-dialog';
+import clsx from 'clsx';
 
 const CommunitySimpleDescription = ({
   data,
@@ -37,7 +38,9 @@ const CommunitySimpleDescription = ({
 
   return (
     <Card
-      className="my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 text-primary dark:bg-background"
+      className={clsx('my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 text-primary dark:bg-background', {
+        'animate-pulse': data._temporary
+      })}
       data-testid="community-simple-description-sidebar"
     >
       <CardHeader className="col-span-2 p-0">
@@ -93,6 +96,8 @@ const CommunitySimpleDescription = ({
             community={data.name}
             isSubscribed={isSubscribed}
             onIsSubscribed={(e) => setIsSubscribed(e)}
+            communityTitle={data.title}
+            temprary={data.context._temporary}
           />
           <NewPost disabled={!isSubscribed} name={data.name} />
         </div>

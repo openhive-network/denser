@@ -3,6 +3,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
+import { FullAccount } from '@transaction/lib/app-types';
+import { toast } from '@ui/components/hooks/use-toast';
 const logger = getLogger('app');
 
 /**
@@ -14,20 +16,40 @@ const logger = getLogger('app');
 export function useClaimRewardsMutation() {
   const queryClient = useQueryClient();
   const { user } = useUser();
+  const queryKey = ['profileData', user.username];
   const claimRewardMutation = useMutation({
     mutationFn: async (params: { account: ApiAccount }) => {
       const { account } = params;
 
       const broadcstResult = await transactionService.claimRewards(account, { observe: true });
-      const response = { ...params, broadcstResult };
+      const prevData: FullAccount | undefined = queryClient.getQueryData(queryKey);
+      const response = { ...params, broadcstResult, prevData };
 
       logger.info('Done claim reward tranasaction: %o', response);
       return response;
     },
+    onSettled: (data) => {
+      if (!data) return;
+      const { prevData } = data;
+      if (prevData) {
+        queryClient.setQueryData(queryKey, () => ({
+          ...prevData,
+          reward_hbd_balance: '0.000 HBD',
+          reward_hive_balance: '0.000 HIVE',
+          reward_vesting_hive: '0.000 HIVE'
+        }));
+      }
+    },
     onSuccess: (data) => {
       logger.info('useClaimRewardMutation onSuccess data: %o', data);
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+      toast({
+        title: 'Claim rewards',
+        description: 'Your rewards have been claimed successfully.',
+        variant: 'success'
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey });
+      }, 6000);
     }
   });
 

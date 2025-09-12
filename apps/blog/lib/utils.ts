@@ -6,6 +6,23 @@ import moment from 'moment';
 import { TFunction } from 'i18next';
 import { FullAccount } from '@transaction/lib/app-types';
 import { getRenderer } from './renderer';
+import { proxifyImageSrc } from '@hive/ui';
+
+export const DEFAULT_OBSERVER = 'hive.blog';
+
+export interface Preferences {
+  nsfw: 'hide' | 'warn' | 'show';
+  blog_rewards: '0%' | '50%' | '100%';
+  comment_rewards: '0%' | '50%' | '100%';
+  referral_system: 'enabled' | 'disabled';
+}
+
+export const DEFAULT_PREFERENCES: Preferences = {
+  nsfw: 'warn',
+  blog_rewards: '50%',
+  comment_rewards: '50%',
+  referral_system: 'enabled'
+};
 
 export enum Symbol {
   HIVE = 'HIVE',
@@ -291,7 +308,7 @@ export function extractPictureFromPostBody(urls: string[]): string[] {
   for (const url of urls) {
     const match = url.match(picturesRegex);
     if (match && match[1]) {
-      picturesFromPostBody.push(`https://images.hive.blog/${match[1]}`);
+      picturesFromPostBody.push(proxifyImageSrc(match[0]));
     }
   }
 

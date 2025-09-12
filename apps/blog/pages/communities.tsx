@@ -33,23 +33,19 @@ const CommunitiesPage = () => {
   const [inputQuery, setInputQuery] = useState<string>('');
   const [query, setQuery] = useState<string | null>();
 
-  const {
-    isLoading: communitiesDataIsLoading,
-    error: communitiesDataError,
-    data: communitiesData
-  } = useQuery(
+  const { data: communitiesData } = useQuery(
     ['communitiesList', sort, query, user.username],
     async () => await getCommunities(sort, query, user.username),
     { enabled: !!user }
   );
 
-  const {
-    data: mySubsData,
-    isLoading: mySubsIsLoading,
-    isError: mySubsIsError
-  } = useQuery(['subscriptions', user.username], () => getSubscriptions(user.username), {
-    enabled: Boolean(user?.username)
-  });
+  const { data: mySubsData } = useQuery(
+    ['subscriptions', user.username],
+    () => getSubscriptions(user.username),
+    {
+      enabled: Boolean(user?.username)
+    }
+  );
 
   function handleSearchCommunity(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {

@@ -17,14 +17,12 @@ import {
 } from '@/wallet/lib/utils';
 import { powerdownHive, cn, convertToHP, numberWithCommas } from '@ui/lib/utils';
 import { convertStringToBig } from '@ui/lib/helpers';
-import { AccountHistory } from '@transaction/lib/extended-hive.chain';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import Loading from '@ui/components/loading';
-import TransfersHistoryFilter, { TransferFilters } from '@/wallet/components/transfers-history-filter';
+import TransfersHistoryFilter from '@/wallet/components/transfers-history-filter';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useTranslation } from 'next-i18next';
-import { TFunction } from 'i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import {
   Button,
@@ -59,162 +57,13 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { toast } from '@ui/components/hooks/use-toast';
 import Head from 'next/head';
 import TimeAgo from '@hive/ui/components/time-ago';
-
-const initialFilters: TransferFilters = {
-  search: '',
-  others: false,
-  incoming: false,
-  outcoming: false,
-  exlude: false
-};
-type Transfer = {
-  type: 'transfer';
-  amount?: string;
-  from?: string;
-  memo?: string;
-  to?: string;
-};
-type ClaimRewardBalance = {
-  type: 'claim_reward_balance';
-  memo?: string;
-  account?: string;
-  reward_hbd: Big;
-  reward_hive: Big;
-  reward_vests: Big;
-};
-type TransferFromSavings = {
-  type: 'transfer_from_savings';
-  amount?: string;
-  from?: string;
-  memo?: string;
-  request_id?: number;
-  to?: string;
-};
-type TransferToSavings = {
-  type: 'transfer_to_savings';
-  amount?: string;
-  from?: string;
-  memo?: string;
-  to?: string;
-};
-type Interest = {
-  type: 'interest';
-  interest?: string;
-  is_saved_into_hbd_balance?: boolean;
-  memo?: string;
-  owner?: string;
-};
-type CancelTransferFromSavings = {
-  type: 'cancel_transfer_from_savings';
-  from?: string;
-  memo?: string;
-  request_id?: number;
-};
-type FillOrder = {
-  type: 'fill_order';
-  current_orderid?: number;
-  current_owner?: string;
-  current_pays?: string;
-  memo?: string;
-  open_orderid?: number;
-  open_owner?: string;
-  open_pays?: string;
-};
-type TransferToVesting = {
-  type: 'transfer_to_vesting';
-  amount?: string;
-  from?: string;
-  memo?: string;
-  to?: string;
-};
-type WithdrawVesting = {
-  type: 'withdraw_vesting';
-  amount: string;
-  memo?: string;
-};
-
-type Operation =
-  | Transfer
-  | ClaimRewardBalance
-  | TransferFromSavings
-  | TransferToSavings
-  | Interest
-  | CancelTransferFromSavings
-  | TransferToVesting
-  | FillOrder
-  | WithdrawVesting;
-
-const mapToAccountHistoryObject = ([id, data]: AccountHistory) => {
-  const { op, ...rest } = data;
-  let operation: Operation | undefined;
-  if (!op) operation = undefined;
-  if (op) {
-    switch (op[0]) {
-      default:
-        operation = undefined;
-      case 'transfer':
-        operation = {
-          type: 'transfer',
-          amount: op[1].amount,
-          from: op[1].from,
-          memo: op[1].memo,
-          to: op[1].to
-        };
-        break;
-      case 'claim_reward_balance':
-        operation = {
-          type: 'claim_reward_balance',
-          account: op[1].account,
-          reward_hbd: convertStringToBig(op[1]?.reward_hbd ?? '0'),
-          reward_hive: convertStringToBig(op[1]?.reward_hive ?? '0'),
-          reward_vests: convertStringToBig(op[1]?.reward_vests ?? '0')
-        };
-        break;
-      case 'transfer_from_savings':
-        operation = {
-          type: 'transfer_from_savings',
-          amount: op[1].amount,
-          from: op[1].from,
-          request_id: op[1].request_id,
-          memo: op[1].memo,
-          to: op[1].to
-        };
-        break;
-      case 'transfer_to_savings':
-        operation = {
-          type: 'transfer_to_savings',
-          amount: op[1].amount,
-          from: op[1].from,
-          memo: op[1].memo,
-          to: op[1].to
-        };
-        break;
-      case 'transfer_to_vesting':
-        operation = { type: 'transfer_to_vesting', amount: op[1].amount, from: op[1].from, to: op[1].to };
-        break;
-      case 'interest':
-        operation = {
-          type: 'interest',
-          interest: op[1].interest,
-          is_saved_into_hbd_balance: op[1].is_saved_into_hbd_balance,
-          owner: op[1].owner
-        };
-        break;
-      case 'cancel_transfer_from_savings':
-        operation = { type: 'cancel_transfer_from_savings', from: op[1].from, request_id: op[1].request_id };
-        break;
-      case 'fill_order':
-        operation = { type: 'fill_order', current_pays: op[1].current_pays, open_pays: op[1].open_pays };
-        break;
-      case 'withdraw_vesting':
-        operation = { type: 'withdraw_vesting', amount: op[1]?.vesting_shares ?? '0' };
-        break;
-    }
-  }
-  return { id, ...rest, operation };
-};
-
-export type AccountHistoryData = ReturnType<typeof mapToAccountHistoryObject>;
+import HistoryTable from '@/wallet/feature/transfers-page/history-table';
+import {
+  initialFilters,
+  mapToAccountHistoryObject,
+  Operation
+} from '@/wallet/feature/transfers-page/lib/utils';
+import RCRow from '@/wallet/feature/transfers-page/rc-row';
 
 function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
@@ -559,15 +408,8 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
               </div>
             </div>
           )}
-          <div>
-            {user?.username === username && (
-              <Link href="https://blocktrades.us" target="_blank">
-                <Button variant="outlineRed" className="mx-2 my-8 border-destructive text-destructive">
-                  {t('profile.buy_hive_or_hive_power')}
-                </Button>
-              </Link>
-            )}
-            <table className="max-w-6xl text-sm">
+          <div className="flex max-w-6xl flex-col text-sm">
+            <table>
               <tbody>
                 <tr className="flex flex-col py-2 sm:table-row">
                   <td className="px-2 sm:px-4 sm:py-4">
@@ -622,24 +464,6 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                             <DropdownMenuItem className="p-0">
                               <Link href="/market" className="w-full px-2 py-1.5">
                                 {t('profile.market')}
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="p-0">
-                              <Link
-                                href="https://blocktrades.us"
-                                target="_blank"
-                                className="w-full px-2 py-1.5"
-                              >
-                                {t('profile.buy')}
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="p-0">
-                              <Link
-                                href="https://blocktrades.us"
-                                target="_blank"
-                                className="w-full px-2 py-1.5"
-                              >
-                                {t('profile.sell')}
                               </Link>
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
@@ -800,24 +624,6 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                                 {t('profile.market')}
                               </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="p-0">
-                              <Link
-                                href="https://blocktrades.us"
-                                target="_blank"
-                                className="w-full px-2 py-1.5"
-                              >
-                                {t('profile.buy')}
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="p-0">
-                              <Link
-                                href="https://blocktrades.us"
-                                target="_blank"
-                                className="w-full px-2 py-1.5"
-                              >
-                                {t('profile.sell')}
-                              </Link>
-                            </DropdownMenuItem>
                           </DropdownMenuGroup>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -917,6 +723,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                 </tr>
               </tbody>
             </table>
+            <RCRow username={username} />
           </div>
           {powerdown_hive.gt(0) ? (
             <div className="p-2 text-sm sm:p-4">
@@ -1012,53 +819,6 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
     </>
   );
 }
-
-interface HistoryTableProps {
-  isLoading: boolean;
-  historyList: AccountHistoryData[] | undefined;
-  historyItemDescription: (operation: Operation) => JSX.Element;
-  t: TFunction<'common_wallet', undefined>;
-}
-
-const HistoryTable = ({ t, isLoading, historyList = [], historyItemDescription }: HistoryTableProps) => {
-  if (isLoading) return <div>{t('global.loading')}</div>;
-  if (historyList.length === 0)
-    return (
-      <div
-        className="py-12 text-center text-3xl text-red-300"
-        data-testid="wallet-account-history-no-transacions-found"
-      >
-        {t('profile.no_transactions_found')}
-      </div>
-    );
-
-  return (
-    <table className="w-full max-w-6xl p-2">
-      <tbody>
-        {[...historyList].reverse().map(
-          (element) =>
-            element.operation && (
-              <tr
-                key={element.id}
-                className="m-0 w-full p-0 text-xs even:bg-background-tertiary sm:text-sm"
-                data-testid="wallet-account-history-row"
-              >
-                <td className="px-4 py-2 sm:min-w-[150px]">
-                  <TimeAgo date={element.timestamp} />
-                </td>
-                <td className="px-4 py-2 sm:min-w-[300px]">{historyItemDescription(element.operation)}</td>
-                {element.operation.memo ? (
-                  <td className="hidden break-all px-4 py-2 sm:block">{element.operation.memo}</td>
-                ) : (
-                  <td></td>
-                )}
-              </tr>
-            )
-        )}
-      </tbody>
-    </table>
-  );
-};
 
 export default TransfersPage;
 

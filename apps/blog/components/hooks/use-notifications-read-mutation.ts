@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';
+import { toast } from '@ui/components/hooks/use-toast';
 
 const logger = getLogger('app');
 
@@ -19,15 +20,24 @@ export function useMarkAllNotificationsAsReadMutation() {
       const { date } = params;
       const broadcastResult = await transactionService.markAllNotificationAsRead(date, { observe: true });
       const response = { ...params, broadcastResult };
-      logger.info('Done mark all notifications as read transaction: %o', response);
       return response;
     },
-    onSuccess: (data) => {
-      logger.info('useMarkAllNotificationsAsReadMutation onSuccess data: %o', data);
+    onSettled: (data) => {
+      queryClient.setQueryData(['unreadNotifications', user.username], {
+        lastread: data?.date || new Date().toISOString(),
+        unread: 0
+      });
+    },
+    onSuccess: () => {
       const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['AccountNotification', username] });
-      queryClient.invalidateQueries({ queryKey: ['AccountNotificationMoreData', username] });
-      queryClient.invalidateQueries({ queryKey: ['unreadNotifications', username] });
+      toast({
+        title: 'Notifications marked as read',
+        description: 'All notifications have been marked as read successfully.',
+        variant: 'success'
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['unreadNotifications', username] });
+      }, 6000);
     }
   });
 

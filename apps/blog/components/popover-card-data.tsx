@@ -14,14 +14,15 @@ import ButtonsContainer from './buttons-container';
 import { convertStringToBig } from '@ui/lib/helpers';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { compareDates } from '../lib/utils';
+import { getDefaultImageUrl } from '@hive/ui';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const follows = useFollowsQuery(author);
   const { data: account, isLoading } = useAccountQuery(author);
-  const following = useFollowingInfiniteQuery(user.username || '', 50, 'blog', ['blog']);
-  const mute = useFollowingInfiniteQuery(user.username, 50, 'ignore', ['ignore']);
+  const following = useFollowingInfiniteQuery(user.username || '', 1000, 'blog', ['blog']);
+  const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
   const about =
     account && account.posting_json_metadata
       ? JSON.parse(account.posting_json_metadata)?.profile?.about
@@ -57,7 +58,7 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
               <Avatar className="flex h-[75px] w-[75px] items-center justify-center overflow-hidden rounded-full">
                 <AvatarImage
                   className="h-full w-full object-cover"
-                  src={account.profile?.profile_image}
+                  src={getDefaultImageUrl()}
                   alt="Profile picture"
                 />
                 <AvatarFallback>

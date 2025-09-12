@@ -567,15 +567,17 @@ export function TransferDialog({
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                {t('transfers_page.memo')}
-                <div className="relative col-span-3">
-                  <Input
-                    defaultValue={data.memo}
-                    className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5"
-                  />
+              {data.memo === '' ? null : (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  {t('transfers_page.memo')}
+                  <div className="relative col-span-3">
+                    <Input
+                      defaultValue={data.memo}
+                      className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
               {(type === 'withdrawHive' || type === 'withdrawHiveDollars') && (
                 <div className="grid grid-cols-4 items-center gap-4">
                   {t('transfers_page.request_id')}

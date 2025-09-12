@@ -40,12 +40,15 @@ import {
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
 import { Check, MoreHorizontal } from 'lucide-react';
+import { getUserAvatarUrl } from '@hive/ui';
+
 interface CommentListProps {
   permissionToMute: Boolean;
   comment: Entry;
   parent_depth: number;
   mutedList: IFollowList[];
   parentPermlink: string;
+  discussionPermlink: string;
   parentAuthor: string;
   flagText: string | undefined;
 }
@@ -59,7 +62,8 @@ const CommentListItem = ({
   mutedList,
   parentPermlink,
   parentAuthor,
-  flagText
+  flagText,
+  discussionPermlink
 }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const username = comment.author;
@@ -97,7 +101,7 @@ const CommentListItem = ({
   const deleteCommentMutation = useDeleteCommentMutation();
   const deleteComment = async (permlink: string) => {
     try {
-      await deleteCommentMutation.mutateAsync({ permlink });
+      await deleteCommentMutation.mutateAsync({ permlink, discussionPermlink });
     } catch (error) {
       handleError(error, { method: 'deleteComment', params: { permlink } });
     }
@@ -127,13 +131,14 @@ const CommentListItem = ({
               })}
               height="40"
               width="40"
-              src={`https://images.hive.blog/u/${username}/avatar/small`}
+              src={getUserAvatarUrl(username, 'small')}
               alt={`${username} profile picture`}
               loading="lazy"
             />
             <Card
               className={cn(`mb-4 w-full bg-background text-primary depth-${comment.depth}`, {
-                'opacity-50 hover:opacity-100': hiddenComment || tempraryHidden
+                'opacity-50 hover:opacity-100': hiddenComment || tempraryHidden,
+                'border border-destructive': comment._temporary
               })}
             >
               <Accordion type="single" collapsible value={openState}>
@@ -146,60 +151,68 @@ const CommentListItem = ({
                       >
                         <div className="flex w-full items-center justify-between text-xs sm:text-sm">
                           <div className="my-1 flex flex-wrap items-center pl-1">
-                            <img
-                              className=" h-[20px] w-[20px] rounded-3xl sm:hidden"
-                              height="20"
-                              width="20"
-                              src={`https://images.hive.blog/u/${username}/avatar/small`}
-                              alt={`${username} profile picture`}
-                              loading="lazy"
-                            />
-                            <UserPopoverCard
-                              author={username}
-                              author_reputation={comment.author_reputation}
-                              blacklist={comment.blacklists}
-                            />
-                            {comment.author_title ? (
-                              <Badge
-                                variant="outline"
-                                className="mr-1 border-destructive"
-                                data-testid="comment-user-affiliation-tag"
-                              >
-                                <span className="mr-1">{comment.author_title}</span>
-                                <ChangeTitleDialog
-                                  permlink={parentPermlink}
-                                  moderateEnabled={permissionToMute}
-                                  userOnList={comment.author}
-                                  title={comment.author_title ?? ''}
-                                  community={comment.community ?? ''}
-                                />
-                              </Badge>
+                            {comment._temporary ? (
+                              <div className="flex items-center pl-1 font-bold hover:cursor-pointer hover:text-destructive">
+                                {comment.author}
+                              </div>
                             ) : (
-                              <ChangeTitleDialog
-                                permlink={parentPermlink}
-                                moderateEnabled={permissionToMute}
-                                userOnList={comment.author}
-                                title={comment.author_title ?? ''}
-                                community={comment.community ?? ''}
-                              />
+                              <>
+                                <img
+                                  className=" h-[20px] w-[20px] rounded-3xl sm:hidden"
+                                  height="20"
+                                  width="20"
+                                  src={getUserAvatarUrl(username, 'small')}
+                                  alt={`${username} profile picture`}
+                                  loading="lazy"
+                                />
+                                <UserPopoverCard
+                                  author={username}
+                                  author_reputation={comment.author_reputation}
+                                  blacklist={comment.blacklists}
+                                />
+                                {comment.author_title ? (
+                                  <Badge
+                                    variant="outline"
+                                    className="mr-1 border-destructive"
+                                    data-testid="comment-user-affiliation-tag"
+                                  >
+                                    <span className="mr-1">{comment.author_title}</span>
+                                    <ChangeTitleDialog
+                                      permlink={parentPermlink}
+                                      moderateEnabled={permissionToMute}
+                                      userOnList={comment.author}
+                                      title={comment.author_title ?? ''}
+                                      community={comment.community ?? ''}
+                                    />
+                                  </Badge>
+                                ) : (
+                                  <ChangeTitleDialog
+                                    permlink={parentPermlink}
+                                    moderateEnabled={permissionToMute}
+                                    userOnList={comment.author}
+                                    title={comment.author_title ?? ''}
+                                    community={comment.community ?? ''}
+                                  />
+                                )}
+                                <Link
+                                  href={`#@${username}/${comment.permlink}`}
+                                  className="hover:text-destructive md:text-sm"
+                                  title={String(parseDate(comment.created))}
+                                  data-testid="comment-timestamp-link"
+                                >
+                                  <TimeAgo date={comment.created} />
+                                </Link>
+                                <Link
+                                  className="p-1 sm:p-2"
+                                  href={`/${comment.category}/@${username}/${comment.permlink}`}
+                                  data-testid="comment-page-link"
+                                >
+                                  <Icons.link className="h-3 w-3" />
+                                </Link>
+                              </>
                             )}
-                            <Link
-                              href={`#@${username}/${comment.permlink}`}
-                              className="hover:text-destructive md:text-sm"
-                              title={String(parseDate(comment.created))}
-                              data-testid="comment-timestamp-link"
-                            >
-                              <TimeAgo date={comment.created} />
-                            </Link>
-                            <Link
-                              className="p-1 sm:p-2"
-                              href={`/${comment.category}/@${username}/${comment.permlink}`}
-                              data-testid="comment-page-link"
-                            >
-                              <Icons.link className="h-3 w-3" />
-                            </Link>
                           </div>
-                          {!hiddenComment ? (
+                          {comment._temporary ? null : !hiddenComment ? (
                             <div className="flex items-center">
                               {flagText && comment.community && !user.isLoggedIn ? (
                                 <DialogLogin>
@@ -254,7 +267,7 @@ const CommentListItem = ({
                           <span className="ml-4 text-xs">{t('cards.comment_card.will_be_hidden')}</span>
                         ) : null}
 
-                        {hiddenComment ? (
+                        {comment._temporary ? null : hiddenComment ? (
                           <div className="flex w-full justify-between">
                             <AccordionTrigger
                               className="pb-0 pt-1 !no-underline "
@@ -284,7 +297,7 @@ const CommentListItem = ({
                           </div>
                         ) : null}
 
-                        {!openState ? (
+                        {comment._temporary ? null : !openState ? (
                           <div
                             className="ml-4 flex h-5 items-center gap-2 text-xs sm:text-sm"
                             data-testid="comment-card-footer"
@@ -338,6 +351,7 @@ const CommentListItem = ({
                           storageId={storageId}
                           comment={comment}
                           editorType={comment.json_metadata?.editorType || 'classic'}
+                          discussionPermlink={discussionPermlink}
                         />
                       ) : (
                         <CardDescription data-testid="comment-card-description">
@@ -359,117 +373,124 @@ const CommentListItem = ({
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}
                     <CardFooter className="px-2 py-1">
-                      <div
-                        className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
-                        data-testid="comment-card-footer"
-                      >
-                        <VotesComponent post={comment} type="comment" />
-                        <DetailsCardHover
-                          post={comment}
-                          decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+                      {comment._temporary ? null : (
+                        <div
+                          className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
+                          data-testid="comment-card-footer"
                         >
-                          <div
-                            data-testid="comment-card-footer-payout"
-                            className={clsx('flex items-center hover:cursor-pointer hover:text-destructive', {
-                              'line-through opacity-50': Number(comment.max_accepted_payout.slice(0, 1)) === 0
-                            })}
+                          <VotesComponent post={comment} type="comment" />
+                          <DetailsCardHover
+                            post={comment}
+                            decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
                           >
-                            {'$'}
-                            {comment.payout.toFixed(2)}
-                          </div>
-                        </DetailsCardHover>
-                        <Separator orientation="vertical" className="h-5" />
-                        {comment.stats && comment.stats.total_votes > 0 ? (
-                          <>
-                            <div className="flex items-center">
-                              <DetailsCardVoters post={comment}>
-                                <span className="hover:text-destructive">
-                                  {comment.stats && comment.stats.total_votes > 1
-                                    ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
-                                    : t('cards.post_card.vote')}
-                                </span>
-                              </DetailsCardVoters>
-                            </div>
-                            <Separator orientation="vertical" className="h-5" />
-                          </>
-                        ) : null}
-                        {user && user.isLoggedIn ? (
-                          <button
-                            disabled={deleteCommentMutation.isLoading}
-                            onClick={() => {
-                              setReply(!reply), removeBox();
-                            }}
-                            className="flex items-center hover:cursor-pointer hover:text-destructive"
-                            data-testid="comment-card-footer-reply"
-                          >
-                            {t('cards.comment_card.reply')}
-                          </button>
-                        ) : (
-                          <DialogLogin>
-                            <button
-                              className="flex items-center hover:cursor-pointer hover:text-destructive"
-                              data-testid="comment-card-footer-reply"
+                            <div
+                              data-testid="comment-card-footer-payout"
+                              className={clsx(
+                                'flex items-center hover:cursor-pointer hover:text-destructive',
+                                {
+                                  'line-through opacity-50':
+                                    Number(comment.max_accepted_payout.slice(0, 1)) === 0
+                                }
+                              )}
                             >
-                              {t('post_content.footer.reply')}
-                            </button>
-                          </DialogLogin>
-                        )}
-                        {user && user.isLoggedIn && comment.author === user.username ? (
-                          <>
-                            <Separator orientation="vertical" className="h-5" />
+                              {'$'}
+                              {comment.payout.toFixed(2)}
+                            </div>
+                          </DetailsCardHover>
+                          <Separator orientation="vertical" className="h-5" />
+                          {comment.stats && comment.stats.total_votes > 0 ? (
+                            <>
+                              <div className="flex items-center">
+                                <DetailsCardVoters post={comment}>
+                                  <span className="hover:text-destructive">
+                                    {comment.stats && comment.stats.total_votes > 1
+                                      ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
+                                      : t('cards.post_card.vote')}
+                                  </span>
+                                </DetailsCardVoters>
+                              </div>
+                              <Separator orientation="vertical" className="h-5" />
+                            </>
+                          ) : null}
+                          {user && user.isLoggedIn ? (
                             <button
                               disabled={deleteCommentMutation.isLoading}
                               onClick={() => {
-                                setEdit(!edit);
+                                setReply(!reply), removeBox();
                               }}
                               className="flex items-center hover:cursor-pointer hover:text-destructive"
-                              data-testid="comment-card-footer-edit"
+                              data-testid="comment-card-footer-reply"
                             >
-                              {t('cards.comment_card.edit')}
+                              {t('cards.comment_card.reply')}
                             </button>
-                          </>
-                        ) : null}
-                        {comment.replies.length === 0 &&
-                        user.isLoggedIn &&
-                        comment.author === user.username &&
-                        moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
-                          <>
-                            <Separator orientation="vertical" className="h-5" />
-                            <PostDeleteDialog
-                              permlink={comment.permlink}
-                              action={dialogAction}
-                              label="Comment"
-                            >
+                          ) : (
+                            <DialogLogin>
                               <button
-                                disabled={edit || deleteCommentMutation.isLoading}
                                 className="flex items-center hover:cursor-pointer hover:text-destructive"
-                                data-testid="comment-card-footer-delete"
+                                data-testid="comment-card-footer-reply"
                               >
-                                {deleteCommentMutation.isLoading ? (
-                                  <CircleSpinner
-                                    loading={deleteCommentMutation.isLoading}
-                                    size={18}
-                                    color="#dc2626"
-                                  />
-                                ) : (
-                                  t('cards.comment_card.delete')
-                                )}
+                                {t('post_content.footer.reply')}
                               </button>
-                            </PostDeleteDialog>
-                          </>
-                        ) : null}
-                        {permissionToMute ? (
-                          <MutePostDialog
-                            comment={true}
-                            community={comment.community ?? ''}
-                            username={comment.author}
-                            permlink={comment.permlink}
-                            contentMuted={comment.stats?.gray ?? false}
-                            discussionPermlink={parentPermlink}
-                            discussionAuthor={parentAuthor}
-                          />
-                        ) : null}
-                      </div>
+                            </DialogLogin>
+                          )}
+                          {user && user.isLoggedIn && comment.author === user.username ? (
+                            <>
+                              <Separator orientation="vertical" className="h-5" />
+                              <button
+                                disabled={deleteCommentMutation.isLoading}
+                                onClick={() => {
+                                  setEdit(!edit);
+                                }}
+                                className="flex items-center hover:cursor-pointer hover:text-destructive"
+                                data-testid="comment-card-footer-edit"
+                              >
+                                {t('cards.comment_card.edit')}
+                              </button>
+                            </>
+                          ) : null}
+                          {comment.replies.length === 0 &&
+                          user.isLoggedIn &&
+                          comment.author === user.username &&
+                          moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
+                            <>
+                              <Separator orientation="vertical" className="h-5" />
+                              <PostDeleteDialog
+                                permlink={comment.permlink}
+                                action={dialogAction}
+                                label="Comment"
+                              >
+                                <button
+                                  disabled={edit || deleteCommentMutation.isLoading}
+                                  className="flex items-center hover:cursor-pointer hover:text-destructive"
+                                  data-testid="comment-card-footer-delete"
+                                >
+                                  {deleteCommentMutation.isLoading ? (
+                                    <CircleSpinner
+                                      loading={deleteCommentMutation.isLoading}
+                                      size={18}
+                                      color="#dc2626"
+                                    />
+                                  ) : (
+                                    t('cards.comment_card.delete')
+                                  )}
+                                </button>
+                              </PostDeleteDialog>
+                            </>
+                          ) : null}
+                          {permissionToMute ? (
+                            <MutePostDialog
+                              comment={true}
+                              community={comment.community ?? ''}
+                              username={comment.author}
+                              permlink={comment.permlink}
+                              contentMuted={comment.stats?.gray ?? false}
+                              discussionPermlink={parentPermlink}
+                              discussionAuthor={parentAuthor}
+                              temporaryDisable={comment.stats?._temporary}
+                            />
+                          ) : null}
+                        </div>
+                      )}
                     </CardFooter>
                   </AccordionContent>
                 </AccordionItem>
@@ -493,6 +514,7 @@ const CommentListItem = ({
           storageId={storageId}
           comment=""
           editorType="denser"
+          discussionPermlink={discussionPermlink}
         />
       ) : null}
     </>

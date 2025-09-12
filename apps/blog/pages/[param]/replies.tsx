@@ -5,12 +5,12 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import RepliesList from '@/blog/components/replies-list';
 import { FC, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { PostSkeleton } from '../[...param]';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getAccountMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
+import PostCardSkeleton from '@ui/components/card-skeleton';
 
 const UserReplies: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { t } = useTranslation('common_blog');
@@ -75,7 +75,7 @@ const UserReplies: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
             <div>
               <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
                 {isFetchingNextPage ? (
-                  <PostSkeleton />
+                  <PostCardSkeleton />
                 ) : hasNextPage ? (
                   t('user_profile.load_newer')
                 ) : data.pages[0] && data.pages[0].length > 0 ? (

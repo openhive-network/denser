@@ -13,6 +13,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import Head from 'next/head';
 import TimeAgo from '@ui/components/time-ago';
 import { IDynamicGlobalProperties } from '@transaction/lib/extended-hive.chain';
+import RCTable from '@/wallet/feature/delegations/rc-table';
 
 const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalProperties) => {
   const totalFund = parseFloat(dynamicData.total_vesting_fund_hive);
@@ -48,31 +49,39 @@ function DelegationsPage({ username, metadata }: InferGetServerSidePropsType<typ
       <ProfileLayout>
         <div className="flex flex-col gap-8 ">
           <WalletMenu username={username} />
-          <table className="w-full">
-            <tbody>
-              {vestingData?.map((element) => (
-                <tr
-                  key={element.id}
-                  className="m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700"
-                  data-testid="wallet-delegation-item"
-                >
-                  <td className="px-1 py-2 sm:px-4">
-                    {numberWithCommas(convertVestsToSteem(parseFloat(element.vesting_shares), dynamicData))}{' '}
-                    HP
-                  </td>
-                  <td className="px-1 py-2 sm:px-4">{element.delegatee}</td>
-                  <td className="px-1 py-2 sm:px-4">
-                    <TimeAgo date={element.min_delegation_time} />
-                  </td>
-                  <td className="px-1 py-2 sm:px-4">
-                    {accoutOwner ? (
-                      <RevokeDialog delegator={element.delegator} delegatee={element.delegatee} />
-                    ) : null}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="flex flex-col items-center">
+              <h2 className="text-lg font-bold underline">HIVE POWER</h2>
+              <table className="w-full">
+                <tbody>
+                  {vestingData?.map((element) => (
+                    <tr
+                      key={element.id}
+                      className="m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700"
+                      data-testid="wallet-delegation-item"
+                    >
+                      <td className="px-1 py-2 sm:px-4">
+                        {numberWithCommas(
+                          convertVestsToSteem(parseFloat(element.vesting_shares), dynamicData)
+                        )}{' '}
+                        HP
+                      </td>
+                      <td className="px-1 py-2 sm:px-4">{element.delegatee}</td>
+                      <td className="px-1 py-2 sm:px-4">
+                        <TimeAgo date={element.min_delegation_time} />
+                      </td>
+                      <td className="px-1 py-2 sm:px-4">
+                        {accoutOwner ? (
+                          <RevokeDialog delegator={element.delegator} delegatee={element.delegatee} />
+                        ) : null}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <RCTable account={username} />
+          </div>
         </div>
       </ProfileLayout>
     </>

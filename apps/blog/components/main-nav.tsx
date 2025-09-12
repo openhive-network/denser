@@ -13,6 +13,7 @@ export function MainNav() {
     <div className="flex h-full items-center justify-between lg:mr-4">
       <nav className="hidden h-full items-center space-x-2 text-sm font-medium lg:flex lg:text-base xl:space-x-6">
         <Link
+          prefetch={false}
           href={`/trending`}
           className={cn(
             'ml-6 flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
@@ -23,6 +24,7 @@ export function MainNav() {
           {t('navigation.main_nav_bar.posts')}
         </Link>
         <Link
+          prefetch={false}
           href={`${walletHost}/proposals`}
           target="_blank"
           rel="noopener noreferrer"
@@ -35,6 +37,7 @@ export function MainNav() {
           {t('navigation.main_nav_bar.proposals')}
         </Link>
         <Link
+          prefetch={false}
           href={`${walletHost}/~witnesses`}
           target="_blank"
           rel="noopener noreferrer"
@@ -48,6 +51,7 @@ export function MainNav() {
         </Link>
 
         <Link
+          prefetch={false}
           href="https://hive.io/eco/"
           target="_blank"
           rel="noopener noreferrer"

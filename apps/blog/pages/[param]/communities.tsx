@@ -15,6 +15,7 @@ import Error from 'next/error';
 import { getAccountMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import { getAccountFull } from '@transaction/lib/hive';
 import Head from 'next/head';
+import { getUserAvatarUrl } from '@hive/ui';
 
 const logger = getLogger('app');
 
@@ -116,7 +117,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       const peakdJson = await peakdRes.json();
       peakdJsonMapedWithURL = peakdJson?.map((obj: Badge) => ({
         id: obj.title,
-        url: `https://images.hive.blog/u/${obj.name}/avatar`,
+        url: getUserAvatarUrl(obj.name, 'medium'),
         title: obj.title
       }));
     }

@@ -19,6 +19,7 @@ import { RcAccount } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
 import WitnessVoteExpiryWarning from './witness-vote-expiry-warning';
 import { getAccount } from '@transaction/lib/hive';
+import { getUserAvatarUrl } from '@hive/ui';
 
 const logger = getLogger('app');
 
@@ -140,7 +141,7 @@ const SiteHeader: FC = () => {
                           </div>
                           <Avatar>
                             <AvatarImage
-                              src={`https://images.hive.blog/u/${user?.username}/avatar/small`}
+                              src={getUserAvatarUrl(user?.username || '', 'small')}
                               alt="Profile picture"
                             />
                             <AvatarFallback>

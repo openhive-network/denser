@@ -16,13 +16,14 @@ import {
   AccountAuthorityUpdateOperation,
   ESupportedLanguages,
   IHiveChainInterface,
-  GetDynamicGlobalPropertiesResponse
+  GetDynamicGlobalPropertiesResponse,
+  ResourceCreditsOperation
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
-import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
+import WorkerBee, { IWorkerBee } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
 
@@ -1131,6 +1132,25 @@ export class TransactionService {
           request_id: requestId
         }
       });
+    }, transactionOptions);
+  }
+  async delegateRC(
+    fromAccount: string,
+    amount: string,
+    toAccount: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation(
+        new ResourceCreditsOperation().delegate(fromAccount, amount, toAccount).authorize(fromAccount)
+      );
+    }, transactionOptions);
+  }
+  async undelegateRC(fromAccount: string, toAccount: string, transactionOptions: TransactionOptions = {}) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation(
+        new ResourceCreditsOperation().removeDelegation(fromAccount, toAccount).authorize(fromAccount)
+      );
     }, transactionOptions);
   }
 }

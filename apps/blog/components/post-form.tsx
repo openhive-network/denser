@@ -29,7 +29,7 @@ import { TFunction } from 'i18next';
 import { debounce } from '../lib/utils';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { getLogger } from '@ui/lib/logging';
 import SelectImageList from './select-image-list';
 import RendererContainer from './rendererContainer';
@@ -104,7 +104,8 @@ export default function PostForm({
   post_s,
   setEditMode,
   refreshPage,
-  renderType
+  renderType,
+  setIsSubmitting
 }: {
   username: string;
   editMode: boolean;
@@ -113,6 +114,7 @@ export default function PostForm({
   setEditMode?: Dispatch<SetStateAction<boolean>>;
   refreshPage?: () => void;
   renderType: 'denser' | 'classic';
+  setIsSubmitting: (submitting: boolean) => void;
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
@@ -132,6 +134,7 @@ export default function PostForm({
     editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
     defaultValues
   );
+
   useEffect(() => {
     storePost({
       ...storedPost,
@@ -141,25 +144,28 @@ export default function PostForm({
   }, [preferences.blog_rewards]);
   const [preview, setPreview] = useState(true);
   const [editorType, setEditorType] = useState<'denser' | 'classic'>(renderType);
-  const [selectedImg, setSelectedImg] = useState('');
+  const [selectedImg, setSelectedImg] = useState(
+    // Initialize with existing cover image when editing
+    editMode && post_s?.json_metadata?.image?.[0] ? post_s.json_metadata.image[0] : ''
+  );
+
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const [imagePickerState, setImagePickerState] = useState('');
   const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
   const postMutation = usePostMutation();
-
-  const { data: mySubsData } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
-    enabled: Boolean(username)
-  });
   const { data: communityData } = useQuery(
-    ['community', router.query.category, ''],
+    ['community', router.query.category],
     () =>
       getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
     {
       enabled: Boolean(router.query.category) || Boolean(storedPost.category)
     }
   );
+  const { data: mySubsData } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
+    enabled: Boolean(username)
+  });
 
   const accountFormSchema = z.object({
     title: z
@@ -195,12 +201,16 @@ export default function PostForm({
       : storedPost?.maxAcceptedPayout === undefined
         ? 1000000
         : storedPost.maxAcceptedPayout,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType || preferences.blog_rewards
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType
   };
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     defaultValues: entryValues
   });
+  const nsfwTagCheck = communityData?.is_nsfw && !storedPost.tags?.includes('nsfw');
+  useEffect(() => {
+    form.setValue('tags', nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);
+  }, [!!communityData?.is_nsfw]);
   const { postArea, ...restFields } = useWatch({
     control: form.control
   });
@@ -247,7 +257,6 @@ export default function PostForm({
       if (btnRef.current) {
         btnRef.current.disabled = true;
       }
-
       const postParams = {
         permlink: editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
         title: data.title,
@@ -258,15 +267,18 @@ export default function PostForm({
         category: communityPosting ? communityPosting : data.category,
         summary: data.postSummary,
         altAuthor: data.author,
-        payoutType: data.payoutType ?? preferences.blog_rewards,
+        payoutType: data.payoutType,
         image: imagePickerState,
         editMode,
         editorType
       };
-
       try {
         await postMutation.mutateAsync(postParams);
+        setIsSubmitting(true);
+        // Wait 2 seconds before redirecting
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (error) {
+        setIsSubmitting(false);
         handleError(error, { method: 'post', params: postParams });
         throw error;
       }
@@ -276,6 +288,7 @@ export default function PostForm({
       removePost();
       if (editMode) {
         if (refreshPage && setEditMode) {
+          setIsSubmitting(false);
           setEditMode(!editMode);
           refreshPage();
         }
@@ -478,9 +491,9 @@ export default function PostForm({
 
                 <span className="text-xs" data-testid="author-rewards-description">
                   {t('submit_page.author_rewards')}
-                  {preferences.blog_rewards === '0%' || storedPost.maxAcceptedPayout === 0
+                  {storedPost.maxAcceptedPayout === 0
                     ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
-                    : preferences.blog_rewards === '100%' || storedPost.payoutType === '100%'
+                    : storedPost.payoutType === '100%'
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}
                 </span>
@@ -526,6 +539,9 @@ export default function PostForm({
                           onValueChange={(e) => {
                             form.setValue('category', e);
                             storePost({ ...storedPost, category: e });
+                            if (router.query.category) {
+                              router.replace({ query: { ...router.query, category: e } });
+                            }
                           }}
                         >
                           <FormControl>

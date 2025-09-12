@@ -13,6 +13,7 @@ import { useTranslation } from 'next-i18next';
 import { CircleSpinner } from 'react-spinners-kit';
 import WitnessRemoveVote from './witness-remove-vote';
 import TimeAgo from '@ui/components/time-ago';
+import { getUserAvatarUrl } from '@hive/ui';
 
 const getOwnersString = (owners?: string) => {
   if (!owners) return '';
@@ -171,7 +172,7 @@ function WitnessListItem({
                 })}
                 height="40"
                 width="40"
-                src={`https://images.hive.blog/u/${data.owner}/avatar`}
+                src={getUserAvatarUrl(data.owner, 'medium')}
                 alt={`${data.owner} profile picture`}
               />
             </Link>

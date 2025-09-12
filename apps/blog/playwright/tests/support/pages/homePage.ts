@@ -4,6 +4,11 @@ import { ProfilePage } from './profilePage';
 export class HomePage {
   readonly page: Page;
   readonly postPage: PostPage;
+  readonly getPostListTrending: Locator;
+  readonly getPostListNew: Locator;
+  readonly getPostListHot: Locator;
+  readonly getPostListPayouts: Locator;
+  readonly getPostListMuted: Locator;
   readonly getTrendingCommunitiesSideBar: Locator;
   readonly getTrendingCommunitiesSideBarLinks: Locator;
   readonly getTrandingCommunitiesHeader: Locator;
@@ -12,6 +17,7 @@ export class HomePage {
   readonly getHeaderLeoCommunities: Locator;
   readonly getWorldmappinCommunitiesLink: Locator;
   readonly getHeaderWorldmappinCommunities: Locator;
+  readonly getLifestyleCommunityLink: Locator;
   readonly getHomeNavLink: Locator;
   readonly getNavPostsLink: Locator;
   readonly getNavProposalsLink: Locator;
@@ -22,6 +28,7 @@ export class HomePage {
   readonly getNavSearchInput: Locator;
   readonly getNavSearchLink: Locator;
   readonly getNavSearchAIInput: Locator;
+  readonly getNavSearchTagsInput: Locator;
   readonly getNavUserAvatar: Locator;
   readonly getNavCreatePost: Locator;
   readonly getNavSidebarMenu: any;
@@ -116,6 +123,11 @@ export class HomePage {
   constructor(page: Page) {
     this.page = page;
     this.postPage = new PostPage(page);
+    this.getPostListTrending = page.getByTestId('post-list-trending');
+    this.getPostListNew = page.getByTestId('post-list-created');
+    this.getPostListHot = page.getByTestId('post-list-hot');
+    this.getPostListPayouts = page.getByTestId('post-list-payout');
+    this.getPostListMuted = page.getByTestId('post-list-muted');
     this.getTrendingCommunitiesSideBar = page.locator('[data-testid="card-trending-comunities"]');
     this.getTrendingCommunitiesSideBarLinks = this.getTrendingCommunitiesSideBar.locator('div ul li a');
     this.getTrandingCommunitiesHeader = this.getTrendingCommunitiesSideBar
@@ -130,6 +142,7 @@ export class HomePage {
     this.getHeaderWorldmappinCommunities = page
       .locator('[data-testid="community-name"]')
       .getByText('Worldmappin');
+    this.getLifestyleCommunityLink = page.getByTestId('card-trending-comunities').getByText('Lifestyle');
     this.getHomeNavLink = page.locator('header a span:text("Hive Blog")');
     this.getNavPostsLink = page.locator('[data-testid="nav-posts-link"]');
     this.getNavProposalsLink = page.locator('[data-testid="nav-proposals-link"]');
@@ -161,9 +174,20 @@ export class HomePage {
     this.getUpvoteButton = page.locator('[data-testid="upvote-button"]');
     this.getFirstPostUpvoteButton = this.getUpvoteButton.first();
     this.getFirstPostUpvoteButtonIcon = this.getFirstPostUpvoteButton.locator('svg');
-    this.firstPostCardUpvoteButtonLocator = page.locator('[data-testid="post-card-footer"]').first().locator('[data-testid="upvote-button"]').locator('svg');
-    this.firstPostCardDownvoteButtonLocator = page.locator('[data-testid="post-card-footer"]').first().locator('[data-testid="downvote-button"]').locator('svg');
-    this.getSecondPostDownvoteButton = page.getByTestId('post-list-item').nth(1).getByTestId('downvote-button');
+    this.firstPostCardUpvoteButtonLocator = page
+      .locator('[data-testid="post-card-footer"]')
+      .first()
+      .locator('[data-testid="upvote-button"]')
+      .locator('svg');
+    this.firstPostCardDownvoteButtonLocator = page
+      .locator('[data-testid="post-card-footer"]')
+      .first()
+      .locator('[data-testid="downvote-button"]')
+      .locator('svg');
+    this.getSecondPostDownvoteButton = page
+      .getByTestId('post-list-item')
+      .nth(1)
+      .getByTestId('downvote-button');
     this.getSecondPostDownvoteButtonIcon = this.getSecondPostDownvoteButton.locator('svg');
     this.getFirstPostCardFooter = this.getPostCardFooter.first();
     this.getUpvoteButtonTooltip = page.locator('[data-testid="upvote-button-tooltip"]');
@@ -192,6 +216,7 @@ export class HomePage {
     this.getNavSearchInput = page.locator('input[type="search"]');
     this.getNavSearchLink = page.locator('[data-testid="navbar-search-link"]');
     this.getNavSearchAIInput = page.getByPlaceholder('AI Search');
+    this.getNavSearchTagsInput = page.getByPlaceholder('Search tags...');
     this.getNavUserAvatar = page.locator('[data-testid="profile-menu"]');
     this.getNavProfileMenuContent = page.locator('[data-testid="profile-menu-content"]');
     this.getNavCreatePost = page.locator('[data-testid="nav-pencil"]');
@@ -229,7 +254,7 @@ export class HomePage {
     this.commentListItem = '[data-testid="comment-list-item"]';
     this.postsImages = '[data-testid="post-image"]';
     this.postAuthor = '[data-testid="post-author"]';
-    this.profileAvatar = '[data-testid="profile-avatar-button"]'
+    this.profileAvatar = '[data-testid="profile-avatar-button"]';
 
     // for logged in user
     this.profileAvatarButton = page.locator('[data-testid="profile-avatar-button"]');
@@ -471,7 +496,7 @@ export class HomePage {
   async moveToMutedPosts() {
     await this.getFilterPosts.click();
     await this.page.getByText('Muted').click();
-    await expect(this.getFirstPostTitle).toBeVisible()
+    await expect(this.getFirstPostTitle).toBeVisible();
   }
 
   async moveToFirstPost() {
@@ -497,7 +522,7 @@ export class HomePage {
 
   async moveToPrivacyPolicyPage() {
     await this.getNavSidebarMenu.click();
-    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Private Policy' }).click();
+    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Privacy Policy' }).click();
     await this.page.waitForTimeout(5000);
     await expect(this.page.locator('h1').getByText('Privacy Policy')).toBeVisible();
     await expect(this.page).toHaveURL('privacy.html');
@@ -509,5 +534,12 @@ export class HomePage {
     await this.page.waitForTimeout(5000);
     await expect(this.page.locator('div').getByText('Terms of Service')).toBeVisible();
     await expect(this.page).toHaveURL('tos.html');
+  }
+
+  // Tranding All Posts
+  async validateAllPostspageIsLoaded() {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector(this.getMainTimeLineOfPosts['_selector']);
+    await expect(this.getFilterPosts).toHaveText('Trending');
   }
 }

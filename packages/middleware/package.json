@@ -9,6 +9,7 @@
   "dependencies": {
     "@hive/smart-signer": "workspace:*",
     "@hive/ui": "workspace:*",
+    "@hiveio/wax": "catalog:hiveio-toolset",
     "@tanstack/react-query": "^4.36.1",
     "next": "^14.2.5",
     "pino": "^8.17.1",

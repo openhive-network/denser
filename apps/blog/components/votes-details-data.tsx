@@ -1,6 +1,6 @@
 import { IVote } from '@transaction/lib/extended-hive.chain';
 import { prepareVotes } from '@ui/lib/utils';
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@transaction/lib/extended-hive.chain';
 import Link from 'next/link';
 import { useActiveVotesQuery } from './hooks/use-active-votes';
 import { useTranslation } from 'next-i18next';
@@ -15,8 +15,8 @@ export default function VotersDetailsData({ post }: { post: Entry }) {
     votes &&
     votes
       .sort((a, b) => {
-        const keyA = a['reward']!;
-        const keyB = b['reward']!;
+        const keyA = Math.abs(a.rshares);
+        const keyB = Math.abs(b.rshares);
         if (keyA > keyB) return -1;
         if (keyA < keyB) return 1;
         return 0;
@@ -35,6 +35,7 @@ export default function VotersDetailsData({ post }: { post: Entry }) {
                   ? `: $0`
                   : `: $${Number(vote.reward).toFixed(2)}`
                 : null}
+              {vote.rshares < 0 ? '[-]' : ''}
             </Link>
           </li>
         ))}

@@ -1,12 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
-import Link from 'next/link';
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
-import { useTranslation } from 'next-i18next';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getLogger } from '@ui/lib/logging';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
@@ -14,11 +10,16 @@ import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import Image from 'next/image';
 import TimeAgo from '@hive/ui/components/time-ago';
 
-const logger = getLogger('app');
 const usernamePattern = /\B@[a-z0-9.-]+/gi;
 
-const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccountNotification & {lastRead: number}) => {
-  const { t } = useTranslation('common_blog');
+const NotificationListItem = ({
+  date,
+  msg,
+  score,
+  type,
+  url,
+  lastRead
+}: IAccountNotification & { lastRead: number }) => {
   const { username } = useSiteParams();
   const { user } = useUser();
   const isOwner = user.username === username;
@@ -58,7 +59,7 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
         </a>
       ))
     : null;
-  const filteredUrl = type === 'follow' ? `/${url}` : url;
+
   return (
     <tr
       className="block w-full px-4 odd:bg-background even:bg-background-tertiary "
@@ -69,12 +70,12 @@ const NotificationListItem = ({ date, msg, score, type, url, lastRead }: IAccoun
           {unRead && isOwner ? <span className="mr-2 h-2 w-2 rounded-full bg-destructive" /> : null}
           {participants}
           <div className="flex flex-col">
-            <Link href={filteredUrl}>
+            <a href={`/${url}`}>
               <span className="" data-testid="notification-account-and-message">
                 <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
                 {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}
               </span>
-            </Link>
+            </a>
             <span
               className="flex items-center gap-2 text-sm text-gray-400"
               data-testid="notification-timestamp"

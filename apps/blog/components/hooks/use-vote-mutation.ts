@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult, transactionService } from '@transaction/index';
-import env from '@beam-australia/react-env';
-
 import { getLogger } from '@ui/lib/logging';
+import { toast } from '@ui/components/hooks/use-toast';
 
 const logger = getLogger('app');
 
@@ -19,17 +18,7 @@ export function useVoteMutation() {
   const queryClient = useQueryClient();
   const voteMutation = useMutation({
     mutationFn: async (params: { voter: string; author: string; permlink: string; weight: number }) => {
-      let { voter, author, permlink, weight } = params;
-
-      // // Use in manual testing in development only!
-      // if (env('DEVELOPMENT') === 'true') {
-      //   if (weight > 0) {
-      //     weight = 1;
-      //   } else if (weight < 0) {
-      //     weight = -1;
-      //   }
-      // }
-
+      const { voter, author, permlink, weight } = params;
       const broadcastResult: TransactionBroadcastResult = await transactionService.upVote(
         author,
         permlink,
@@ -38,21 +27,52 @@ export function useVoteMutation() {
           observe: true
         }
       );
+
       const response = { voter, author, permlink, weight, broadcastResult };
-      logger.info('Done vote transaction: %o', response);
       return response;
     },
+    onSettled: (data) => {
+      if (!data) return;
+      const { voter, author, permlink, weight } = data;
+      const newVoteData = {
+        votes: [
+          {
+            author,
+            id: 1,
+            last_update: new Date().toISOString(),
+            num_changes: 0,
+            permlink,
+            rshares: weight,
+            vote_percent: weight,
+            voter,
+            weight
+          }
+        ]
+      };
+      queryClient.setQueryData(['votes', author, permlink, voter], newVoteData);
+    },
     onSuccess: async (data) => {
-      logger.info('Running useVoteMutation onSuccess, data: %o', data);
-      const { voter, author, permlink } = data;
-      // We need to invalidate queries, that can be affected by
-      // mutation. This tells @tanstack/react-query, that it
-      // should refetch data for these queries.
-      queryClient.invalidateQueries({ queryKey: ['votes', author, permlink, voter] });
-      queryClient.invalidateQueries({ queryKey: [permlink, voter, 'ActiveVotes'] });
-      queryClient.invalidateQueries({ queryKey: ['postData', author, permlink] });
-      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-      queryClient.invalidateQueries({ queryKey: ['manabars', voter] });
+      const { voter, author, permlink, weight } = data;
+      toast({
+        title: 'Vote successful',
+        description:
+          weight > 0
+            ? 'You have successfully upvoted.'
+            : weight < 0
+              ? 'You have successfully downvoted.'
+              : 'Your vote has been removed.',
+        variant: 'success'
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['discussionData'] });
+        queryClient.invalidateQueries({ queryKey: [permlink, voter, 'ActiveVotes'] });
+        queryClient.invalidateQueries({ queryKey: ['postData', author, permlink] });
+        queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+        queryClient.invalidateQueries({ queryKey: ['manabars', voter] });
+      }, 3000);
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['votes', author, permlink, voter] });
+      }, 6000);
     }
   });
   return voteMutation;

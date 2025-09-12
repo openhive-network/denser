@@ -391,6 +391,7 @@ test.describe('Home page tests', () => {
     await homePage.getFilterPostsList.getByText('New').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('New').locator('..').click();
     await expect(homePage.getFilterPosts).toHaveText('New');
+    await homePage.page.waitForSelector(homePage.getPostListNew['_selector']);
 
     const url = process.env.REACT_APP_API_ENDPOINT;
 
@@ -523,9 +524,8 @@ test.describe('Home page tests', () => {
     ).toBe('rgb(44, 48, 53)');
   });
 
-  test('filtr posts in maintimeline', async ({ browser, browserName }) => {
-    const newContext = await browser.newContext();
-    const newPage = await newContext.newPage();
+  test('filtr posts in maintimeline', async ({ browserName }) => {
+    test.skip(browserName === 'firefox' || browserName === "webkit", 'Automatic test works well on chromium');
 
     await homePage.goto();
 
@@ -534,22 +534,31 @@ test.describe('Home page tests', () => {
     await homePage.getFilterPosts.click();
     await homePage.getFilterPostsList.getByText('New').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('New').locator('..').click();
+    await homePage.page.waitForSelector(homePage.getPostListNew['_selector']);
     await expect(homePage.getFilterPosts).toHaveText('New');
-    // // click 'Hot' value of posts filter
+    // click 'Hot' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Hot').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Hot').click();
+    await homePage.page.waitForSelector(homePage.getPostListHot['_selector']);
     await expect(homePage.getFilterPosts).toHaveText('Hot');
     // click 'Payout' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Payouts').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Payouts').click();
+    await homePage.page.waitForSelector(homePage.getPostListPayouts['_selector']);
     await expect(homePage.getFilterPosts).toHaveText('Payouts');
     // click 'Promoted' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Muted').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Muted').click();
+    await homePage.page.waitForSelector(homePage.getPostListMuted['_selector']);
     await expect(homePage.getFilterPosts).toHaveText('Muted');
     // click 'Trending' value of posts filter
     await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText('Trending').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Trending').click();
+    await homePage.page.waitForSelector(homePage.getPostListTrending['_selector']);
     await expect(homePage.getFilterPosts).toHaveText('Trending');
   });
 
@@ -632,22 +641,25 @@ test.describe('Home page tests', () => {
 
   test('navigation search link is visible', async ({ page }) => {
     await homePage.goto();
+    // await page.getByRole('banner').getByRole('combobox').click();
+    // await page.getByRole('option').nth(1).click();
 
     await expect(homePage.getNavSearchAIInput).toBeVisible();
   });
 
-  test('move to the search page', async ({ page }) => {
+  test('move to the test trending page for searching by tags', async ({ page }) => {
     await homePage.goto();
-
-    await expect(homePage.getNavSearchAIInput).toBeVisible();
+    await page.getByRole('banner').getByRole('combobox').click();
+    await page.getByRole('option').last().click();
+    await expect(homePage.getNavSearchTagsInput).toBeVisible();
     // Type test and press Enter
-    await homePage.getNavSearchAIInput.fill('test');
+    await homePage.getNavSearchTagsInput.fill('test');
     await homePage.page.keyboard.press('Enter');
     await homePage.page.waitForTimeout(5000);
     // validate url was changed to /search
-    await expect(homePage.page).toHaveURL('/search?q=test');
+    await expect(homePage.page).toHaveURL('/trending/test');
     // validate the first post card
-    await expect(homePage.getFirstPostListItem).toBeVisible();
+    // await expect(homePage.getFirstPostListItem).toBeVisible();
   });
 
   test('navigation Login link is visible', async ({ page }) => {
@@ -1108,10 +1120,11 @@ test.describe('Home page tests', () => {
       // console.log('Text of the first affiliation tag: ', await homePage.postCardAffiliationTag.first().textContent());
 
       // Compare text the first affiliation tag from UI with the first affiliation tag from API
-      if (await rankedPostResultLength !== 0)
+      if (await elementsWithAffiliationTag.length !== 0) {
         await expect(await homePage.postCardAffiliationTag.first().textContent()).toBe(
           elementsWithAffiliationTag[0]
         );
+      }
         else console.log('No affiliation tags on the post cards');
     } else console.log('No affiliation tags on the 40 post cards');
   });

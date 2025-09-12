@@ -417,9 +417,9 @@ mirrornet-based-tests:
       - '*.log'
       - 'logs/'
       - '*.env'
-      - './apps/blog/playwright-report/'
+      - '/apps/blog/playwright-report/'
       - './apps/blog/test-results/'
-      - './apps/blog/junit/'
+      - '/apps/blog/junit/'
     reports:
       junit: 'apps/blog/junit/results.xml'
   tags:
@@ -575,6 +575,7 @@ main:deploy-blog-mainnet:
     CONTAINER_NAME: denser-main-blog
     PORT: 9111
     IMAGE_NAME: $BLOG_IMAGE_NAME
+    APP_SESSION_TIME: 64800
     DEPLOYMENT_ENV_FILE: "MAINNET_PROD_DEPLOYMENT_ENV"
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

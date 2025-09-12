@@ -55,7 +55,7 @@ const TimeAgo: FC<TimeAgoProps> = ({ date }) => {
     return () => clearInterval(interval);
   }, [date, userLang]);
 
-  return <span>{timeAgo}</span>;
+  return <span title={new Date(date).toLocaleString(userLang)}>{timeAgo}</span>;
 };
 
 export default TimeAgo;

@@ -33,3 +33,7 @@ export * from "./toast";
 export * from "./toaster";
 export * from "./toggle";
 export * from "./tooltip";
+
+// utility exports
+export * from "../lib/avatar-utils";
+export * from "../lib/proxify-images";

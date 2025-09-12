@@ -59,7 +59,12 @@ export default defineConfig({
     baseURL: process.env.DENSER_URL || `https://${process.env.PUBLIC_HOSTNAME}:${process.env.BLOG_PORT}/`,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'retain-on-failure',
+    trace: {
+      mode: 'retain-on-failure',
+      screenshots: true,
+      snapshots: !process.env.CI,
+      sources: true
+    },
 
     /* Set viewport for headless to be full-hd */
     viewport: { width: 1920, height: 1080 },
@@ -77,8 +82,8 @@ export default defineConfig({
 
     // /* Additional context options */
     // contextOptions: {
-    //   /* Disable service workers. */ 
-    //   serviceWorkers: 'block' 
+    //   /* Disable service workers. */
+    //   serviceWorkers: 'block'
     // }
   },
 

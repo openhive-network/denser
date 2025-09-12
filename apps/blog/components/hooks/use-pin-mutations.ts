@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
+import { Entry } from '@transaction/lib/extended-hive.chain';
+import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
@@ -17,14 +19,38 @@ export function usePinMutation() {
       const broadcastResult = await transactionService.pin(community, username, permlink, {
         observe: true
       });
-      const response = { ...params, broadcastResult };
-      logger.info('Done pin transaction: %o', response);
+      const prevDiscussionData: Record<string, Entry> | undefined = queryClient.getQueryData([
+        'discussionData',
+        permlink
+      ]);
+      const response = { ...params, broadcastResult, prevDiscussionData };
       return response;
     },
+    onSettled: (data) => {
+      if (!data) return;
+      const { prevDiscussionData, username, permlink } = data;
+      if (!!prevDiscussionData) {
+        const list = [...Object.keys(prevDiscussionData).map((key) => prevDiscussionData[key])];
+        const updatedList = list.map((post) => {
+          if (post.author === username && post.permlink === permlink) {
+            return { ...post, stats: { ...post.stats, _temporary: true } };
+          }
+          return post;
+        });
+        const newDiscussionData = Object.fromEntries(updatedList.map((post) => [post.permlink, post]));
+        queryClient.setQueryData(['discussionData', permlink], newDiscussionData);
+      }
+    },
     onSuccess: (data) => {
-      logger.info('usePinMutation onSuccess data: %o', data);
       const { permlink } = data;
-      queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
+      toast({
+        title: 'Pinned',
+        description: 'Post has been pinned successfully.',
+        variant: 'success'
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
+      }, 4000);
     }
   });
 
@@ -39,14 +65,38 @@ export function useUnpinMutation() {
       const broadcastResult = await transactionService.unpin(community, username, permlink, {
         observe: true
       });
-      const response = { ...params, broadcastResult };
-      logger.info('Done unpin transaction: %o', response);
+      const prevDiscussionData: Record<string, Entry> | undefined = queryClient.getQueryData([
+        'discussionData',
+        permlink
+      ]);
+      const response = { ...params, broadcastResult, prevDiscussionData };
       return response;
     },
+    onSettled: (data) => {
+      if (!data) return;
+      const { prevDiscussionData, username, permlink } = data;
+      if (!!prevDiscussionData) {
+        const list = [...Object.keys(prevDiscussionData).map((key) => prevDiscussionData[key])];
+        const updatedList = list.map((post) => {
+          if (post.author === username && post.permlink === permlink) {
+            return { ...post, stats: { ...post.stats, _temporary: true } };
+          }
+          return post;
+        });
+        const newDiscussionData = Object.fromEntries(updatedList.map((post) => [post.permlink, post]));
+        queryClient.setQueryData(['discussionData', permlink], newDiscussionData);
+      }
+    },
     onSuccess: (data) => {
-      logger.info('useUnpinMutation onSuccess data: %o', data);
       const { permlink } = data;
-      queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
+      toast({
+        title: 'Unpinned',
+        description: 'Post has been unpinned successfully.',
+        variant: 'success'
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
+      }, 4000);
     }
   });
 

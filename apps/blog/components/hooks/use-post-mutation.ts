@@ -3,7 +3,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Beneficiarie } from '@transaction/lib/app-types';
-import { JsonMetadata } from '@transaction/lib/extended-hive.chain';
+import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -65,15 +65,21 @@ export function usePostMutation() {
         editMode
       );
       const response = { ...params, broadcastResult };
-      logger.info('Done post transaction: %o', response);
       return response;
     },
     onSuccess: (data) => {
-      logger.info('usePostMutation onSuccess data: %o', data);
       const { permlink } = data;
       const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
-      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+      toast({
+        title: 'Post submitted successfully',
+        description: 'Your post has been submitted',
+        variant: 'success'
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
+        queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+        queryClient.invalidateQueries({ queryKey: ['accountEntriesInfinite'] });
+      }, 4000);
     }
   });
 
@@ -94,15 +100,20 @@ export function useDeletePostMutation() {
       const { permlink } = params;
       const broadcastResult = await transactionService.deleteComment(permlink, { observe: true });
       const response = { ...params, broadcastResult };
-      logger.info('Done delete post transaction: %o', response);
       return response;
     },
     onSuccess: (data) => {
       const { permlink } = data;
       const { username } = user;
-      logger.info('useDeletePostMutation onSuccess data: %o', data);
-      queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
-      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+      toast({
+        title: 'Post deleted successfully',
+        description: 'Your post has been deleted',
+        variant: 'success'
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
+        queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+      }, 4000);
     }
   });
 

@@ -2,17 +2,16 @@ import parseDate from '@ui/lib/parse-date';
 import { Check, Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
-import { useQuery } from '@tanstack/react-query';
+import { dehydrate, useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
 import { Entry, JsonMetadata } from '@transaction/lib/extended-hive.chain';
 import Loading from '@hive/ui/components/loading';
-import dynamic from 'next/dynamic';
 import ImageGallery from '@/blog/components/image-gallery';
 import Link from 'next/link';
 import DetailsCardHover from '@/blog/components/details-card-hover';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import CommentSelectFilter from '@/blog/components/comment-select-filter';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { useRouter } from 'next/router';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -40,14 +39,13 @@ import PostForm from '@/blog/components/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '@/blog/components/dialog-login';
 import { UserPopoverCard } from '@/blog/components/user-popover-card';
-import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import dmcaList from '@ui/config/lists/dmca-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
-import CustomError from '@/blog/components/custom-error';
 import RendererContainer from '@/blog/components/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
@@ -63,19 +61,18 @@ import moment from 'moment';
 import { PostDeleteDialog } from '@/blog/components/post-delete-dialog';
 import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation';
 import { getSuggestions } from '@/blog/lib/get-data';
-import SuggestionsList from '@/blog/components/suggestions-list';
+import SuggestionsList from '@/blog/feature/suggestions-posts/list';
 import TimeAgo from '@ui/components/time-ago';
 import Renderer from '@/blog/features/renderer/renderer';
 import { MoreHorizontal } from 'lucide-react';
+import CommentList from '@/blog/components/comment-list';
+import PostingLoader from '@/blog/components/posting-loader';
+import NoDataError from '@/blog/components/no-data-error';
+import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
 
 const logger = getLogger('app');
 export const postClassName =
   'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer';
-
-const DynamicComments = dynamic(() => import('@/blog/components/comment-list'), {
-  loading: () => <Loading loading={true} />,
-  ssr: false
-});
 
 function PostPage({
   community,
@@ -101,13 +98,13 @@ function PostPage({
   const { user } = useUser();
   const { data: mutedList } = useFollowListQuery(user.username, 'muted');
   const deletePostMutation = useDeletePostMutation();
-  const {
-    isLoading: isLoadingPost,
-    data: post,
-    isError: postError
-  } = useQuery(['postData', username, permlink], () => getPost(username, String(permlink)), {
-    enabled: !!username && !!permlink
-  });
+  const { isLoading: isLoadingPost, data: post } = useQuery(
+    ['postData', username, permlink],
+    () => getPost(username, String(permlink)),
+    {
+      enabled: !!username && !!permlink
+    }
+  );
   const [renderMethod, setRenderMethod] = useState<JsonMetadata['editorType'] | 'raw'>(
     post?.json_metadata?.editorType || 'classic'
   );
@@ -131,7 +128,7 @@ function PostPage({
       enabled: !!username && !!permlink
     }
   );
-  const { data: communityData } = useQuery(['communityData', community], () => getCommunity(community), {
+  const { data: communityData } = useQuery(['community', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
 
@@ -167,7 +164,6 @@ function PostPage({
       handleError(error, { method: 'unpin', params: { community, username, permlink } });
     }
   };
-  const [discussionState, setDiscussionState] = useState<Entry[]>();
   const router = useRouter();
   const isSortOrder = (token: any): token is SortOrder => {
     return Object.values(SortOrder).includes(token as SortOrder);
@@ -181,11 +177,10 @@ function PostPage({
   const defaultSort = isSortOrder(query) ? query : SortOrder.trending;
   const storageId = `replybox-/${username}/${post?.permlink}-${user.username}`;
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
+
   const [storedComment] = useLocalStorage<string>(`replyTo-/${username}/${permlink}-${user.username}`, '');
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
-  const firstPost = discussionState?.find((post) => post.depth === 0);
-  const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [edit, setEdit] = useState(false);
 
   const userFromGDPR = gdprUserList.some((e) => e === post?.author);
@@ -198,44 +193,35 @@ function PostPage({
       storeBox(reply);
     }
   }, [reply, storeBox]);
-  useEffect(() => {
-    if (discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[defaultSort]);
-      setDiscussionState(list);
-    }
-  }, [isLoadingDiscussion, discussion, defaultSort]);
 
-  useEffect(() => {
-    if (router.query.sort === 'trending' && discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[router.query.sort]);
-      setDiscussionState(list);
-    }
-    if (router.query.sort === 'votes' && discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[router.query.sort]);
-      setDiscussionState(list);
-    }
-    if (router.query.sort === 'new' && discussion) {
-      const list = [...Object.keys(discussion).map((key) => discussion[key])];
-      sorter(list, SortOrder[router.query.sort]);
-      setDiscussionState(list);
-    }
-  }, [discussion, router.query.sort]);
+  const discussionState = useMemo(() => {
+    if (!discussion) return undefined;
 
+    const list = [...Object.keys(discussion).map((key) => discussion[key])];
+    const sortType = (router.query.sort as SortOrder) || defaultSort;
+    sorter(list, SortOrder[sortType]);
+    return list;
+  }, [discussion, router.query.sort, defaultSort]);
+  const firstPost = discussionState?.find((post) => post.depth === 0);
+  const thisPost = discussionState?.find((post) => post.permlink === permlink && post.author === username);
   const commentSite = post?.depth !== 0 ? true : false;
   const [mutedPost, setMutedPost] = useState<boolean>(mutedStatus);
+  useEffect(() => {
+    setMutedPost(post?.stats?.gray ?? false);
+  }, [post?.stats?.gray]);
+  if (isLoadingPost) return <Loading loading={isLoadingPost} />;
+  if (userFromGDPR || !post) return <NoDataError />;
 
-  if (userFromGDPR || (postError && !post)) {
-    return <CustomError />;
-  }
   const deleteComment = async (permlink: string) => {
     try {
-      await deletePostMutation.mutateAsync({ permlink }).then(() => {
-        router.push(`/@${username}/posts`);
-      });
+      await deletePostMutation.mutateAsync({ permlink });
+      setIsSubmitting(true);
+      // Wait 2 seconds before redirecting
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      router.push(`/@${username}/posts`);
     } catch (error) {
+      setIsSubmitting(false);
       handleError(error, { method: 'deleteComment', params: { permlink } });
     }
   };
@@ -260,12 +246,7 @@ function PostPage({
       </Head>
       <div className="grid grid-cols-1 md:grid-cols-12">
         <div className="col-span-2 hidden md:block">
-          {suggestions ? (
-            <div className="flex flex-col overflow-x-auto overflow-y-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)]">
-              <h2 className="mb-4 mt-2 px-4 font-sanspro text-xl font-bold md:mt-0">You Might Also Like</h2>
-              <SuggestionsList suggestions={suggestions} />
-            </div>
-          ) : null}
+          {suggestions ? <AnimatedList suggestions={suggestions} /> : null}
         </div>
         <div className="py-8 sm:col-span-8 sm:mx-auto sm:flex sm:flex-col">
           <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
@@ -403,6 +384,7 @@ function PostPage({
                     storageId={storageId}
                     comment={post}
                     editorType={post.json_metadata?.editorType || 'classic'}
+                    discussionPermlink={permlink}
                   />
                 ) : edit ? (
                   <PostForm
@@ -413,6 +395,7 @@ function PostPage({
                     post_s={post}
                     refreshPage={refreshPage}
                     renderType={renderMethod === 'denser' ? 'denser' : 'classic'}
+                    setIsSubmitting={setIsSubmitting}
                   />
                 ) : legalBlockedUser ? (
                   <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
@@ -598,11 +581,15 @@ function PostPage({
                           ) : userCanModerate && post.depth === 0 ? (
                             <div className="flex flex-col items-center">
                               {/* <button
-                            className="ml-2 flex items-center text-destructive"
-                            onClick={post_is_pinned ? unpin : pin}
-                            >
-                            {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
-                          </button> */}
+                                disabled={post.stats?._temporary}
+                                className={clsx('ml-2 flex items-center text-destructive', {
+                                  'animate-pulse cursor-not-allowed text-destructive':
+                                    firstPost?.stats?._temporary
+                                })}
+                                onClick={post_is_pinned ? unpin : pin}
+                              >
+                                {post_is_pinned ? t('communities.unpin') : t('communities.pin')}
+                              </button> */}
                               {/* TODO swap two button to one when api return stats.is_pinned,
                             temprary use two button to unpin and pin
                             */}
@@ -623,6 +610,7 @@ function PostPage({
                               contentMuted={post.stats?.gray ?? false}
                               discussionPermlink={post.permlink}
                               discussionAuthor={post.author}
+                              temporaryDisable={post.stats?._temporary}
                             />
                           ) : null}
                         </>
@@ -745,16 +733,17 @@ function PostPage({
                 storageId={storageId}
                 comment={storedComment}
                 editorType="denser"
+                discussionPermlink={permlink}
               />
             ) : null}
           </div>
-          {!isLoadingDiscussion && discussion && discussionState && !isLoadingPost && post ? (
+          {discussion && discussionState && post ? (
             <div className="max-w-4xl pr-2">
               <div className="my-1 flex items-center justify-end" translate="no">
                 <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
                 <CommentSelectFilter />
               </div>
-              <DynamicComments
+              <CommentList
                 highestAuthor={post.author}
                 highestPermlink={post.permlink}
                 permissionToMute={userCanModerate}
@@ -763,6 +752,7 @@ function PostPage({
                 flagText={communityData?.flag_text}
                 parent={post}
                 parent_depth={post.depth}
+                discussionPermlink={permlink}
               />
             </div>
           ) : (
@@ -771,6 +761,7 @@ function PostPage({
         </div>
         <div className="col-span-2" />
       </div>
+      <PostingLoader isSubmitting={isSubmitting} />
     </>
   );
 }
@@ -781,12 +772,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const permlink = String(ctx.query.permlink);
 
   const queryClient = new QueryClient();
-  if (!queryClient.getQueryData(['postData', username, permlink])) {
-    await queryClient.prefetchQuery(['postData', username, permlink], () =>
-      getPost(username, String(permlink))
-    );
-  }
-  let post;
+  let post: Entry | undefined;
   let mutedStatus = false;
   let metadata = {
     tabTitle: '',
@@ -801,33 +787,77 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     authorReputation: 0
   };
 
-  try {
-    post = await getPost(username, String(permlink));
-    mutedStatus = post?.stats?.gray ?? false;
-    metadata.tabTitle = `${post?.title} - Hive`;
-    metadata.description = (post?.json_metadata?.summary || post?.json_metadata.description) ?? '';
-    metadata.image =
-      post?.json_metadata?.image[0] ||
-      post?.json_metadata.images[0] ||
-      'https://hive.blog/images/hive-blog-share.png';
-    metadata.title = post?.title ?? '';
-  } catch (error) {
-    logger.error('Failed to fetch post:', error);
+  if (!!permlink && !!username) {
+    try {
+      await queryClient.prefetchQuery(['discussionData', permlink], async () => {
+        const discussion = await getDiscussion(username, permlink);
+        // Strip out active_votes from all posts in discussion
+        if (discussion) {
+          const cleanedDiscussion: Record<string, Entry> = {};
+          Object.keys(discussion).forEach((key) => {
+            cleanedDiscussion[key] = {
+              ...discussion[key],
+              active_votes: []
+            };
+          });
+          return cleanedDiscussion;
+        }
+        return discussion;
+      });
+
+      // Get the main post from discussion data and prefetch it for client
+      const discussionData = queryClient.getQueryData(['discussionData', permlink]) as Record<string, Entry>;
+      if (discussionData) {
+        const mainPostUrl = `@${username}/${permlink}`;
+        const mainPostKey = Object.keys(discussionData).find((key) => {
+          if (discussionData[key].url.endsWith(mainPostUrl)) {
+            return discussionData[key];
+          }
+        });
+        post = discussionData[mainPostKey ?? ''] as Entry;
+
+        // Prefetch the main post data for client-side use
+        if (post) {
+          await queryClient.prefetchQuery(['postData', username, permlink], () => Promise.resolve(post));
+        }
+      }
+    } catch (error) {
+      console.error('Error prefetching comments data:', error);
+    }
   }
-  if (community === 'undefined' || !community || community === '[param]') {
+
+  if (post) {
+    mutedStatus = post.stats?.gray ?? false;
+    metadata.tabTitle = `${post.title} - Hive`;
+    metadata.description = (post.json_metadata?.summary || post.json_metadata?.description) ?? '';
+    metadata.image =
+      post.json_metadata?.image?.[0] ||
+      post.json_metadata?.images?.[0] ||
+      'https://hive.blog/images/hive-blog-share.png';
+    metadata.title = post.title ?? '';
+  }
+  if (community === 'undefined' || !community) {
     return {
       redirect: {
         destination: `/${post?.community ?? post?.category}/@${username}/${permlink}`,
-        permanent: false
+        permanent: true
       }
     };
   }
   if (post?.json_metadata.tags?.includes('cross-post')) {
     try {
-      const crossedPost = await getPost(
+      const fullCrossedPost = await getPost(
         post.json_metadata.original_author,
         String(post.json_metadata.original_permlink)
       );
+      // Strip out active_votes from crosspost as well
+      const crossedPost = fullCrossedPost
+        ? {
+            ...fullCrossedPost,
+            active_votes: []
+          }
+        : fullCrossedPost;
+
       crosspost = {
         community: crossedPost?.community_title ?? crossedPost?.community ?? '',
         body: crossedPost?.body ?? '',

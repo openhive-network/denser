@@ -5,10 +5,10 @@ import {
   GetDynamicGlobalPropertiesRequest,
   asset,
   NaiAsset,
-  ApiAccount,
   transaction
 } from '@hiveio/wax';
 import { AccountFollowStats, FullAccount } from './app-types';
+import { SearchType } from './hive';
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -26,11 +26,15 @@ export interface EntryStat {
   hide: boolean;
   total_votes: number;
   is_pinned?: boolean;
+  // added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 export interface IFollowList {
   name: string;
   blacklist_description: string;
   muted_list_description: string;
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 export interface Entry {
   active_votes: EntryVote[];
@@ -71,6 +75,8 @@ export interface Entry {
   updated: string;
   url: string;
   original_entry?: Entry;
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export interface JsonMetadata {
@@ -122,7 +128,11 @@ export interface Community {
     role: string;
     subscribed: Boolean;
     title: string;
+    //  added only when using optimistic update, not backend property
+    _temporary?: boolean;
   };
+  // added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
@@ -299,7 +309,7 @@ export interface IPost {
 export interface IVote {
   percent: number;
   reputation: number;
-  rshares: string;
+  rshares: number;
   time: string;
   timestamp?: number;
   voter: string;
@@ -553,6 +563,8 @@ export interface IFollow {
   follower: string;
   following: string;
   what: string[];
+  //added only when using optimistic update, not backend property
+  _temporary?: boolean;
 }
 
 export interface ICollateralizedConversionRequest {
@@ -584,6 +596,8 @@ export interface IVoteListItem {
   vote_percent: number;
   last_update: string;
   num_changes: number;
+  // added only when using optimistic update, not backend property
+  _temporary: boolean;
 }
 
 export interface IAccountNotification {
@@ -640,6 +654,57 @@ export type Badge = {
   title: string;
   url: string;
 };
+
+export interface SimilarPostParams {
+  pattern?: string;
+  tr_body?: number;
+  posts_limit?: number;
+  observer?: string;
+  start_author?: string;
+  start_permlink?: string;
+}
+
+// author=${author}&permlink=${permlink}&tr_body=${tr_body}&posts_limit=${posts_limit}&observer=${observer}
+
+export interface SimilarPostsByPostParams {
+  author: string;
+  permlink: string;
+  tr_body: number;
+  posts_limit: number;
+  observer: string;
+}
+
+export interface ApiTag {
+  description: string;
+  name: string;
+}
+
+export interface HivesenseStatusResponse {
+  externalDocs: {
+    description: string;
+    url: string;
+  };
+  info: {
+    description: string;
+    title: string;
+    version: string;
+    license: {
+      name: string;
+      url: string;
+    };
+  };
+  paths: unknown;
+  servers: string[];
+  tags: ApiTag[];
+}
+
+export interface IDirectDelegation {
+  rc_direct_delegations: {
+    delegated_rc: number;
+    from: string;
+    to: string;
+  }[];
+}
 
 export type ExtendedNodeApi = {
   bridge: {
@@ -721,6 +786,7 @@ export type ExtendedNodeApi = {
   };
   rc_api: {
     find_rc_accounts: TWaxApiRequest<string[], { rc_accounts: RcAccount[] }>;
+    list_rc_direct_delegations: TWaxApiRequest<{ limit: number; start: [string, string] }, IDirectDelegation>;
   };
   database_api: {
     list_proposals: TWaxApiRequest<Partial<IGetProposalsParams>, { proposals: IProposal[] }>;
@@ -739,7 +805,6 @@ export type ExtendedNodeApi = {
       params: VerifySignaturesParams;
       result: VerifySignaturesResponse;
     };
-    find_accounts: TWaxApiRequest<string, { accounts: ApiAccount[] }>;
     get_trending_tags: TWaxApiRequest<(string | number)[], ITrendingTag[]>;
     get_collateralized_conversion_requests: TWaxApiRequest<string[], ICollateralizedConversionRequest[]>;
     list_witness_votes: TWaxApiRequest<{ start: string[]; limit: number; order: string }, IListWitnessVotes>;
@@ -754,5 +819,23 @@ export type ExtendedNodeApi = {
   };
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
+  };
+  'search-api': {
+    find_text: TWaxApiRequest<SearchType, Entry[]>;
+  };
+};
+
+export type ExtendedRestApi = {
+  'hivesense-api': {
+    params: undefined;
+    result: HivesenseStatusResponse;
+    similarposts: {
+      params: SimilarPostParams;
+      result: Entry[];
+    };
+    similarpostsbypost: {
+      params: SimilarPostsByPostParams;
+      result: Entry[];
+    };
   };
 };

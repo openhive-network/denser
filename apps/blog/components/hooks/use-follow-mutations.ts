@@ -1,6 +1,8 @@
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { UseInfiniteQueryResult, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
+import { IFollow, IFollowList } from '@transaction/lib/extended-hive.chain';
+import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
@@ -17,20 +19,84 @@ export function useFollowMutation() {
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
       const broadcastResult = await transactionService.follow(username, { observe: true });
-      const response = { ...params, broadcastResult };
-      logger.info('Done follow transaction: %o', response);
+      const prevIgnoredData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData(
+        ['followingData', user.username, 'ignore']
+      );
+      const prevBlogData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData([
+        'followingData',
+        user.username,
+        'blog'
+      ]);
+      const prevFollowersData: UseInfiniteQueryResult<IFollow[]>['data'] = queryClient.getQueryData([
+        'followersData',
+        username
+      ]);
+      const prevMuteData: IFollowList[] | undefined = queryClient.getQueryData(['muted', username]);
+      const response = {
+        ...params,
+        broadcastResult,
+        prevIgnoredData,
+        prevBlogData,
+        prevMuteData,
+        prevFollowersData
+      };
       return response;
+    },
+    onSettled: (data) => {
+      if (!data) return;
+      const {
+        prevIgnoredData,
+        prevBlogData,
+        prevMuteData,
+        prevFollowersData,
+        username: otherUsername
+      } = data;
+      const { username } = user;
+      if (!!prevIgnoredData) {
+        // const newItem = prevIgnoredData.pages[0].find((e) => e.following === otherUsername)
+        const newData = {
+          ...prevIgnoredData,
+          pages: [prevIgnoredData.pages[0].filter((e) => e.following !== otherUsername)]
+        };
+        queryClient.setQueryData(['followingData', username, 'ignore'], newData);
+      }
+      if (!!prevBlogData) {
+        const newItem = { follower: username, following: otherUsername, what: ['blog'], _temporary: true };
+        const newData = {
+          ...prevBlogData,
+          pages: [[newItem, ...prevBlogData.pages[0]]]
+        };
+        queryClient.setQueryData(['followingData', username, 'blog'], newData);
+      }
+      if (!!prevMuteData) {
+        const newData = prevMuteData.filter((e) => e.name !== otherUsername);
+        queryClient.setQueryData(['muted', otherUsername], newData);
+      }
+      if (!!prevFollowersData) {
+        const newItem = { follower: username, following: otherUsername, what: ['blog'], _temporary: true };
+        const newData = {
+          ...prevFollowersData,
+          pages: [[newItem, ...prevFollowersData.pages[0]]]
+        };
+        queryClient.setQueryData(['followersData', otherUsername], newData);
+      }
     },
     onSuccess: (data) => {
       const { username } = user;
       const { username: otherUsername } = data;
-      queryClient.invalidateQueries({ queryKey: ['muted', username] });
-      queryClient.invalidateQueries({ queryKey: ['followingData', otherUsername] });
-      queryClient.invalidateQueries({ queryKey: ['followingData', username] });
-      queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
-      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
-      queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
-      logger.info('useFollowMutation onSuccess data: %o', data);
+      toast({
+        title: 'Followed',
+        description: `You are now following ${otherUsername}.`,
+        variant: 'success'
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['followingData', otherUsername] });
+        queryClient.invalidateQueries({ queryKey: ['followingData', username] });
+        queryClient.invalidateQueries({ queryKey: ['muted', username] });
+        queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
+        queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+        queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
+      }, 4000);
     }
   });
 
@@ -50,21 +116,42 @@ export function useUnfollowMutation() {
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
       const broadcastResult = await transactionService.unfollow(username, { observe: true });
-      const response = { ...params, broadcastResult };
-      logger.info('Done unfollow transaction: %o', response);
+      const prevBlogData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData([
+        'followingData',
+        user.username,
+        'blog'
+      ]);
+
+      const response = { ...params, broadcastResult, prevBlogData };
       return response;
+    },
+    onSettled: (data) => {
+      if (!data) return;
+      const { username: otherUsername, prevBlogData } = data;
+      const { username } = user;
+      if (!!prevBlogData) {
+        const newData = {
+          ...prevBlogData,
+          pages: [prevBlogData.pages[0].filter((e) => e.following !== otherUsername)]
+        };
+        queryClient.setQueryData(['followingData', username, 'blog'], newData);
+      }
     },
     onSuccess: (data) => {
       const { username } = user;
       const { username: otherUsername } = data;
-      queryClient.invalidateQueries({ queryKey: ['muted', username] });
-      queryClient.invalidateQueries({ queryKey: ['followingData', otherUsername] });
-      queryClient.invalidateQueries({ queryKey: ['followingData', username] });
-      queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
-      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
-      queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
-
-      logger.info('useUnfollowMutation onSuccess data: %o', data);
+      toast({
+        title: 'Unfollowed',
+        description: `You have unfollowed ${otherUsername}.`,
+        variant: 'success'
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['followingData', otherUsername] });
+        queryClient.invalidateQueries({ queryKey: ['followingData', username] });
+        queryClient.invalidateQueries({ queryKey: ['followersData', otherUsername] });
+        queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+        queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
+      }, 4000);
     }
   });
 
@@ -77,106 +164,3 @@ export function useUnfollowMutation() {
  * @export
  * @return {*}
  */
-export function useFollowBlacklistBlogMutation() {
-  const { user } = useUser();
-  const queryClient = useQueryClient();
-  const followBlacklistBlogMutation = useMutation({
-    mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
-      const { otherBlogs, blog } = params;
-      const broadcastResult = await transactionService.followBlacklistBlog(otherBlogs, blog, {
-        observe: true
-      });
-      const response = { ...params, broadcastResult };
-      logger.info('Done follow blacklist blog transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['follow_blacklist', username] });
-      logger.info('useFollowBlacklistBlogMutation onSuccess data: %o', data);
-    }
-  });
-
-  return followBlacklistBlogMutation;
-}
-
-/**
- * Makes unfollow blacklistblog transaction.
- *
- * @export
- * @return {*}
- */
-export function useUnfollowBlacklistBlogMutation() {
-  const { user } = useUser();
-  const queryClient = useQueryClient();
-  const unfollowBlacklistBlogMutation = useMutation({
-    mutationFn: async (params: { blog: string }) => {
-      const { blog } = params;
-      const broadcastResult = await transactionService.unfollowBlacklistBlog(blog, { observe: true });
-      const response = { ...params, broadcastResult };
-      logger.info('Done unfollow blacklist blog transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['follow_blacklist', username] });
-      logger.info('useUnfollowBlacklistBlogMutation onSuccess data: %o', data);
-    }
-  });
-
-  return unfollowBlacklistBlogMutation;
-}
-
-/**
- * Makes follow muted transaction.
- *
- * @export
- * @return {*}
- */
-export function useFollowMutedBlogMutation() {
-  const { user } = useUser();
-  const queryClient = useQueryClient();
-  const followMutedBlogMutation = useMutation({
-    mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
-      const { otherBlogs, blog } = params;
-      const broadcastResult = await transactionService.followMutedBlog(otherBlogs, blog, { observe: true });
-      const response = { ...params, broadcastResult };
-      logger.info('Done follow muted blog transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['follow_muted', username] });
-      logger.info('useFollowMutedBlogMutation onSuccess data: %o', data);
-    }
-  });
-
-  return followMutedBlogMutation;
-}
-
-/**
- * Makes unfollow muted transaction.
- *
- * @export
- * @return {*}
- */
-export function useUnfollowMutedBlogMutation() {
-  const { user } = useUser();
-  const queryClient = useQueryClient();
-  const unfollowMutedBlogMutation = useMutation({
-    mutationFn: async (params: { blog: string }) => {
-      const { blog } = params;
-      const broadcastResult = await transactionService.unfollowMutedBlog(blog, { observe: true });
-      const response = { ...params, broadcastResult };
-      logger.info('Done unfollow muted blog transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['follow_muted', username] });
-      logger.info('useUnfollowMutedBlogMutation onSuccess data: %o', data);
-    }
-  });
-
-  return unfollowMutedBlogMutation;
-}

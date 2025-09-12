@@ -6,10 +6,10 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { DEFAULT_PREFERENCES, Preferences } from '../pages/[param]/settings';
+
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from './hooks/useManabars';
-import { hoursAndMinutes } from '../lib/utils';
+import { DEFAULT_PREFERENCES, hoursAndMinutes, Preferences } from '@/blog/lib/utils';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import RendererContainer from './rendererContainer';
 import { getLogger } from '@ui/lib/logging';
@@ -31,7 +31,8 @@ export function ReplyTextbox({
   storageId,
   editMode,
   comment,
-  editorType
+  editorType,
+  discussionPermlink
 }: {
   onSetReply: (e: boolean) => void;
   username: string;
@@ -41,6 +42,7 @@ export function ReplyTextbox({
   editMode: boolean;
   comment: Entry | string;
   editorType: 'denser' | 'classic';
+  discussionPermlink: string;
 }) {
   const { user } = useUser();
   const [renderMethod, setRenderMethod] = useState<'denser' | 'classic'>(editorType);
@@ -87,7 +89,8 @@ export function ReplyTextbox({
           parentAuthor: username,
           parentPermlink,
           permlink,
-          body: text
+          body: text,
+          discussionPermlink
         };
         try {
           await updateCommentMutation.mutateAsync(updateCommentParams);
@@ -101,7 +104,8 @@ export function ReplyTextbox({
           parentPermlink: permlink,
           body: text,
           preferences,
-          renderMethod
+          renderMethod,
+          discussionPermlink
         };
         try {
           await commentMutation.mutateAsync(commentParams);
