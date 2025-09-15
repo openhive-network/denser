@@ -348,13 +348,14 @@ export default function PostForm({
             data-testid="form-container"
           >
             <div className="flex items-center justify-between">
-              <h1
-                className="cursor-pointer text-sm text-destructive"
-                onClick={() => setSideBySide((prev) => !prev)}
-                data-testid="enable-disable-side-by-side-editor"
-              >
-                {sideBySide ? t('submit_page.disable_side') : t('submit_page.enable_side')}
-              </h1>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="switch">{editorType === 'denser' ? 'Denser Editor' : 'Classic Editor'}</Label>
+                <EditorSwitch
+                  checked={editorType === 'denser'}
+                  onCheckedChange={(checked) => setEditorType(checked ? 'denser' : 'classic')}
+                  id="switch"
+                />
+              </div>
               <Button
                 type="button"
                 onClick={() => setPreview((prev) => !prev)}
@@ -364,6 +365,13 @@ export default function PostForm({
               >
                 {preview ? t('submit_page.hide_preview') : t('submit_page.show_preview')}
               </Button>
+              <h1
+                className="cursor-pointer text-sm text-destructive"
+                onClick={() => setSideBySide((prev) => !prev)}
+                data-testid="enable-disable-side-by-side-editor"
+              >
+                {sideBySide ? t('submit_page.disable_side') : t('submit_page.enable_side')}
+              </h1>
             </div>
             <FormField
               control={form.control}
@@ -384,16 +392,6 @@ export default function PostForm({
                 <FormItem>
                   <FormControl>
                     <>
-                      <div className="flex items-center gap-2">
-                        <EditorSwitch
-                          checked={editorType === 'denser'}
-                          onCheckedChange={(checked) => setEditorType(checked ? 'denser' : 'classic')}
-                          id="switch"
-                        />
-                        <Label htmlFor="switch">
-                          {editorType === 'denser' ? 'Denser Editor' : 'Classic Editor'}
-                        </Label>
-                      </div>
                       {editorType === 'denser' ? (
                         <DenserMdEditor
                           text={field.value}
