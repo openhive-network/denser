@@ -47,8 +47,8 @@ export class PostEditorPage {
         this.getPreviewContainer = page.getByTestId('preview-container');
         this.getFormContainer = page.getByTestId('form-container');
         this.getPostTitleInput = page.getByTestId('post-title-input');
-        this.getEditorContent = page.locator('div.w-md-editor-content');
-        this.getEditorContentTextarea = this.getEditorContent.locator('textarea');
+        this.getEditorContent = page.locator('[data-language="markdown"]');
+        this.getEditorContentTextarea = this.getEditorContent;
         this.getEditorBar = page.locator('div.w-md-editor-bar');
         this.getEditorToolbar = page.locator('div.w-md-editor-toolbar ');
         this.getBoldButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="bold"]');
