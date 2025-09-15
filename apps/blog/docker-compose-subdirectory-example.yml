@@ -1,0 +1,39 @@
+# Example Docker Compose configuration for subdirectory deployment
+# This shows how to deploy the blog and wallet apps under /blog and /wallet paths
+
+version: '3.8'
+
+services:
+  denser-blog:
+    # Use the subdirectory variant image
+    image: registry.gitlab.syncad.com/hive/denser/blog/blog-subdirectory:${TAG:-latest}
+    environment:
+      # All environment variables must be prefixed with REACT_APP_
+      REACT_APP_API_ENDPOINT: https://${PUBLIC_HOSTNAME}/
+      REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+      REACT_APP_SITE_DOMAIN: https://${PUBLIC_HOSTNAME}/blog/
+      REACT_APP_BLOG_DOMAIN: https://${PUBLIC_HOSTNAME}/blog/
+      REACT_APP_WALLET_ENDPOINT: https://${PUBLIC_HOSTNAME}/wallet
+      REACT_APP_EXPLORER_DOMAIN: https://${PUBLIC_HOSTNAME}/explorer
+      REACT_APP_AI_DOMAIN: https://${PUBLIC_HOSTNAME}/
+      REACT_APP_BASE_PATH: /blog
+    networks:
+      - web-network
+
+  denser-wallet:
+    # Use the subdirectory variant image
+    image: registry.gitlab.syncad.com/hive/denser/wallet/wallet-subdirectory:${TAG:-latest}
+    environment:
+      # All environment variables must be prefixed with REACT_APP_
+      REACT_APP_API_ENDPOINT: https://${PUBLIC_HOSTNAME}/
+      REACT_APP_SSR_HOST: https://${PUBLIC_HOSTNAME}/
+      REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+      REACT_APP_BASE_PATH: /wallet
+      REACT_APP_WALLET_ENDPOINT: https://${PUBLIC_HOSTNAME}/wallet
+      REACT_APP_BLOG_DOMAIN: https://${PUBLIC_HOSTNAME}/blog/
+    networks:
+      - web-network
+
+networks:
+  web-network:
+    external: true

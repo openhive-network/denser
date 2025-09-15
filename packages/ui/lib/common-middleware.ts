@@ -2,8 +2,11 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@hive/smart-signer/lib/middleware-challenge-cookies';
 import { configuredApiEndpoint } from '@hive/ui/config/public-vars';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 export async function commonMiddleware(request: NextRequest) {
+  const chain = await hiveChainService.getHiveChain();
+
   const { pathname } = request.nextUrl;
   const res = NextResponse.next();
 
@@ -13,18 +16,15 @@ export async function commonMiddleware(request: NextRequest) {
     let author = tempArr[1].slice(1);
     let permlink = tempArr[2];
     try {
-      const resp = await fetch(configuredApiEndpoint, {
-        method: 'POST',
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'bridge.get_post',
-          params: { author: author, permlink: permlink, observer: '' },
-          id: 1
-        })
-      });
-      entry = await resp.json();
+      const entry = await chain
+      .api.bridge.get_post({
+        author,
+        permlink,
+        observer: ''
+      })
+      if (entry)
       return NextResponse.redirect(
-        new URL(`/${entry.result.community}/@${entry.result.author}/${entry.result.permlink}`, request.url)
+        new URL(`/${entry.community}/@${entry.author}/${entry.permlink}`, request.url)
       );
     } catch (e: any) {
       console.log(e.message);

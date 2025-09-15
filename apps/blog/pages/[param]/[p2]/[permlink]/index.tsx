@@ -65,6 +65,7 @@ import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
 import { withBasePath } from '@/blog/utils/PathUtils';
+import { commonVariables } from '@ui/lib/common-variables';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -108,13 +109,13 @@ function PostPage({
       const results = await getSimilarPostsByPost({
         author: username,
         permlink,
-        observer: user.username !== '' ? user.username : 'hive.blog',
+        observer: user.username !== '' ? user.username : commonVariables.defaultObserver,
         result_limit: 10, // Only get 10 suggestions
         full_posts: 10 // Get all as full posts
       });
-      
+
       if (!results) return null;
-      
+
       // Filter out null/invalid posts and only include full Entry objects (not stubs)
       const fullPosts = results.filter(post => post && !isPostStub(post) && (post as Entry).post_id) as Entry[];
       return fullPosts;

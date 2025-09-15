@@ -10,6 +10,7 @@ import { PER_PAGE } from './lib/utils';
 import PostList from '@/blog/components/post-list';
 import { Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@ui/components/card-skeleton';
+import { commonVariables } from '@ui/lib/common-variables';
 
 const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: Preferences['nsfw'] }) => {
   const { user } = useUser();
@@ -25,10 +26,10 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
     ['searchPosts', query],
     async () => {
       if (!query) return null;
-      
+
       return await searchPosts({
         query,
-        observer: user.username !== '' ? user.username : 'hive.blog',
+        observer: user.username !== '' ? user.username : commonVariables.defaultObserver,
         result_limit: 1000, // Get up to 1000 results
         full_posts: PER_PAGE // Get first page fully expanded
       });
