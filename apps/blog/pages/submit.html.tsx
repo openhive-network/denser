@@ -29,7 +29,7 @@ function Submit() {
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
-  const category = searchParams.get('category') ?? DEFAULT_FORM_VALUE.category;
+  const category = searchParams?.get('category') ?? DEFAULT_FORM_VALUE.category;
   const { data: communityData } = useQuery(
     ['community', category],
     () => getCommunity(category, user.username),

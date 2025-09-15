@@ -102,7 +102,7 @@ export default function PostForm({
         altAuthor: data.author,
         image: selectedImg,
         editMode,
-        percentHbd: data.payoutType ? (data.payoutType === '100%' ? 0 : 10000) : undefined,
+        percentHbd: data.payoutType ? (data.payoutType === '100%' ? 0 : 10000) : 0,
         maxAcceptedPayout: generateMaxAcceptedPayout(data.payoutType, data.maxAcceptedPayout),
         tags,
         beneficiaries: data.beneficiaries
@@ -112,7 +112,7 @@ export default function PostForm({
                 weight: Number(weight) * 100
               }))
               .filter((b) => Number(b.weight) !== 10000)
-          : undefined
+          : []
       });
       setIsSubmitting(true);
       // Wait 2 seconds before redirecting
@@ -266,18 +266,20 @@ export default function PostForm({
               )}
             />
             <SelectImageList content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} />
-            {!editMode && !!watchedValues.beneficiaries && !!watchedValues.maxAcceptedPayout ? (
+            {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
 
-                {watchedValues.maxAcceptedPayout < 1000000 && watchedValues.maxAcceptedPayout > 0 ? (
+                {!!watchedValues.maxAcceptedPayout &&
+                watchedValues.maxAcceptedPayout < 1000000 &&
+                watchedValues.maxAcceptedPayout > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}:{' '}
                     {watchedValues.maxAcceptedPayout} HBD
                   </span>
                 ) : null}
 
-                {watchedValues.beneficiaries.length > 0 ? (
+                {!!watchedValues.beneficiaries && watchedValues.beneficiaries.length > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.beneficiaries', {
                       num: watchedValues.beneficiaries.length

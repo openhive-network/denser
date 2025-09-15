@@ -28,9 +28,9 @@ export function usePostMutation() {
       altAuthor: string;
       image?: string;
       editMode: boolean;
-      beneficiaries?: Beneficiarie[];
-      maxAcceptedPayout?: NaiAsset;
-      percentHbd?: number;
+      beneficiaries: Beneficiarie[];
+      maxAcceptedPayout: NaiAsset;
+      percentHbd: number;
     }) => {
       const {
         permlink,
@@ -47,7 +47,7 @@ export function usePostMutation() {
         editMode
       } = params;
 
-      if (!editMode && !!beneficiaries && !!maxAcceptedPayout && !!percentHbd) {
+      if (!editMode && !!maxAcceptedPayout) {
         const broadcastResult = await transactionService.post(
           permlink,
           title,
@@ -63,7 +63,8 @@ export function usePostMutation() {
           { observe: true }
         );
         return { ...params, broadcastResult };
-      } else {
+      }
+      if (editMode) {
         const broadcastResult = await transactionService.updatePost(
           permlink,
           title,
@@ -76,6 +77,8 @@ export function usePostMutation() {
           { observe: true }
         );
         return { ...params, broadcastResult };
+      } else {
+        throw new Error('maxAcceptedPayout is required for new posts');
       }
     },
     onSuccess: (data) => {

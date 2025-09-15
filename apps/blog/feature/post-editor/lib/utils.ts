@@ -65,9 +65,8 @@ export function imagePicker(img: string) {
 }
 
 export const generateMaxAcceptedPayout = (payoutType?: '0%' | '50%' | '100%', maxAcceptedPayout?: number) => {
-  if (!maxAcceptedPayout || !payoutType) return undefined;
   if (payoutType === '0%') return createAsset('0', 'HBD');
-  return createAsset((maxAcceptedPayout * 1000).toString(), 'HBD');
+  return createAsset(((maxAcceptedPayout ?? 0) * 1000).toString(), 'HBD');
 };
 
 export const accountFormSchema = z.object({
