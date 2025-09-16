@@ -228,6 +228,7 @@ extended_block_log_creation:
     artifacts: true
   variables:
     GIT_SUBMODULE_STRATEGY: 'recursive'
+    GIT_DEPTH: 0 # the BLOCK_LOG_VERSION currently points to a really old version
     REGISTRY: 'registry.gitlab.syncad.com/hive/hive'
     REGISTRY_USER: '${HIVED_CI_IMGBUILDER_USER}'
     REGISTRY_PASS: '${HIVED_CI_IMGBUILDER_PASSWORD}'
