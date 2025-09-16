@@ -1,11 +1,11 @@
 stages:
-  - build
-  - replay-and-sync
-  - test
-  - test-report-aggregate
-  - deploy
-  - publish
-  - cleanup
+- build
+- replay-and-sync
+- test
+- test-report-aggregate
+- deploy
+- publish
+- cleanup
 
 variables:
   # Variables required by Common CI jobs
@@ -41,42 +41,42 @@ variables:
   PLAYWRIGHT_TAG: 'v1.49.1-jammy'
 
 include:
-  - template: Workflows/Branch-Pipelines.gitlab-ci.yml
-  - project: 'hive/common-ci-configuration'
-    ref: e74d7109838ff05fdc239bced6a726aa7ad46a9b # develop
-    file:
-      - '/templates/docker_image_jobs.gitlab-ci.yml'
-      - '/templates/cache_cleanup.gitlab-ci.yml'
-  - project: 'hive/haf'
-    ref: b7870f229cc0d45993a648ab9a15b0b4a12e7fe5 #develop
-    file: '/scripts/ci-helpers/prepare_data_image_job.yml'
-  - project: 'hive/haf_api_node'
-    ref: denser-11
-    file: 'ci/node-replay.gitlab-ci.yml'
+- template: Workflows/Branch-Pipelines.gitlab-ci.yml
+- project: 'hive/common-ci-configuration'
+  ref: e74d7109838ff05fdc239bced6a726aa7ad46a9b   # develop
+  file:
+  - '/templates/docker_image_jobs.gitlab-ci.yml'
+  - '/templates/cache_cleanup.gitlab-ci.yml'
+- project: 'hive/haf'
+  ref: d4bca1524076323418802ea33995d8f7948b929c   #develop
+  file: '/scripts/ci-helpers/prepare_data_image_job.yml'
+- project: 'hive/haf_api_node'
+  ref: denser-11
+  file: 'ci/node-replay.gitlab-ci.yml'
 
 .docker_build_template:
   extends: .docker_image_builder_job_template
   stage: build
   before_script:
-    - !reference [.docker_image_builder_job_template, before_script]
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-      echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
+  - !reference [.docker_image_builder_job_template, before_script]
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
+    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
-    - |
-      # Create a default env file in case the build fails
-      echo "${TURBO_APP_NAME}_IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}" > ${TURBO_APP_NAME}-docker-build.env
-      scripts/ci-helpers/docker-build-template-script.sh
+  - |
+    # Create a default env file in case the build fails
+    echo "${TURBO_APP_NAME}_IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}" > ${TURBO_APP_NAME}-docker-build.env
+    scripts/ci-helpers/docker-build-template-script.sh
   artifacts:
     paths:
-      - ${TURBO_APP_NAME}-docker-build.env
+    - ${TURBO_APP_NAME}-docker-build.env
     reports:
       dotenv: ${TURBO_APP_NAME}-docker-build.env
     when: always # This ensures artifacts are created even if job fails
   tags:
-    - public-runner-docker
-    - hived-for-tests
+  - public-runner-docker
+  - hived-for-tests
 
 mirrornet-haf-binaries-extraction:
   extends: .job-defaults
@@ -91,10 +91,10 @@ mirrornet-haf-binaries-extraction:
   artifacts:
     when: on_success
     paths:
-      - '${BINARY_CACHE_PATH}'
+    - '${BINARY_CACHE_PATH}'
   tags:
-    - public-runner-docker
-    - hived-for-tests
+  - public-runner-docker
+  - hived-for-tests
 
 # helper job just to prepare extended version of production image additionally holding .env file specific to test environment
 .docker-build-testenv-image:
@@ -105,29 +105,29 @@ mirrornet-haf-binaries-extraction:
     ENV_FILE_PATHNAME: "./apps/${TURBO_APP_NAME}/.env.testing"
     IMAGE_SUFFIX: "testenv"
   script:
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-      echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
+    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
 
-      export NEW_IMAGE_TAGNAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-${IMAGE_SUFFIX}:${CI_COMMIT_SHA}"
+    export NEW_IMAGE_TAGNAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-${IMAGE_SUFFIX}:${CI_COMMIT_SHA}"
 
-      docker buildx build \
-        --push \
-        -t "${NEW_IMAGE_TAGNAME}" -f- . << EOF
-        FROM $BASE_IMAGE_NAME AS production
-        COPY "${ENV_FILE_PATHNAME}" /app/apps/.env
-      EOF
-      echo "DENSER_${TURBO_APP_NAME^^}_IMAGE_NAME=${NEW_IMAGE_TAGNAME}" > docker-build-testenv-${TURBO_APP_NAME}-image.env
+    docker buildx build \
+      --push \
+      -t "${NEW_IMAGE_TAGNAME}" -f- . << EOF
+      FROM $BASE_IMAGE_NAME AS production
+      COPY "${ENV_FILE_PATHNAME}" /app/apps/.env
+    EOF
+    echo "DENSER_${TURBO_APP_NAME^^}_IMAGE_NAME=${NEW_IMAGE_TAGNAME}" > docker-build-testenv-${TURBO_APP_NAME}-image.env
   artifacts:
     paths:
-      - docker-build-testenv-${TURBO_APP_NAME}-image.env
+    - docker-build-testenv-${TURBO_APP_NAME}-image.env
     reports:
       dotenv: docker-build-testenv-${TURBO_APP_NAME}-image.env
     when: always # This ensures artifacts are created even if job fails
   tags:
-    - public-runner-docker
-    - hived-for-tests
+  - public-runner-docker
+  - hived-for-tests
 
 docker-build-blog:
   extends: .docker_build_template
@@ -162,7 +162,7 @@ docker-build-wallet-subdirectory:
 docker-build-blog-testenv:
   extends: .docker-build-testenv-image
   needs:
-    - docker-build-blog
+  - docker-build-blog
   variables:
     TURBO_APP_NAME: 'blog'
     BASE_IMAGE_NAME: ${BLOG_IMAGE_NAME}
@@ -170,7 +170,7 @@ docker-build-blog-testenv:
 docker-build-wallet-testenv:
   extends: .docker-build-testenv-image
   needs:
-    - docker-build-wallet
+  - docker-build-wallet
   variables:
     TURBO_APP_NAME: 'wallet'
     BASE_IMAGE_NAME: ${WALLET_IMAGE_NAME}
@@ -178,7 +178,7 @@ docker-build-wallet-testenv:
 docker-build-blog-mirrornet-testenv:
   extends: .docker-build-testenv-image
   needs:
-    - docker-build-blog
+  - docker-build-blog
   variables:
     TURBO_APP_NAME: 'blog'
     BASE_IMAGE_NAME: ${BLOG_IMAGE_NAME}
@@ -188,7 +188,7 @@ docker-build-blog-mirrornet-testenv:
 docker-build-wallet-mirrornet-testenv:
   extends: .docker-build-testenv-image
   needs:
-    - docker-build-wallet
+  - docker-build-wallet
   variables:
     TURBO_APP_NAME: 'wallet'
     BASE_IMAGE_NAME: ${WALLET_IMAGE_NAME}
@@ -205,27 +205,27 @@ library_extraction:
     name: $HAF_IMAGE_NAME
     entrypoint: ['']
   needs:
-    - job: 'mirrornet-haf-binaries-extraction'
-      artifacts: true
+  - job: 'mirrornet-haf-binaries-extraction'
+    artifacts: true
   variables:
     BINARY_CACHE_PATH: '${CI_PROJECT_DIR}/hived-mirrornet-binaries'
   script: scripts/ci-helpers/library-extraction.sh
   artifacts:
     when: on_success
     paths:
-      - '${BINARY_CACHE_PATH}'
+    - '${BINARY_CACHE_PATH}'
   tags:
-    - public-runner-docker
-    - hived-for-tests
+  - public-runner-docker
+  - hived-for-tests
 
 extended_block_log_creation:
   extends: .extended_block_log_creation
   stage: build
   needs:
-    - job: 'mirrornet-haf-binaries-extraction'
-      artifacts: true
-    - job: 'library_extraction'
-      artifacts: true
+  - job: 'mirrornet-haf-binaries-extraction'
+    artifacts: true
+  - job: 'library_extraction'
+    artifacts: true
   variables:
     GIT_SUBMODULE_STRATEGY: 'recursive'
     REGISTRY: 'registry.gitlab.syncad.com/hive/hive'
@@ -238,53 +238,54 @@ extended_block_log_creation:
     BINARY_PATH: '${CI_PROJECT_DIR}/hived-mirrornet-binaries'
     LD_LIBRARY_PATH: '${BINARY_PATH}'
   tags:
-    - public-runner-docker
-    - hived-for-tests
+  - public-runner-docker
+  - hived-for-tests
 
 block-log-extraction:
   extends: .docker_image_builder_job_template
   stage: replay-and-sync
   needs:
-    - extended_block_log_creation
+  - extended_block_log_creation
   variables:
     GIT_SUBMODULE_STRATEGY: 'recursive'
     BLOCK_LOG_DIRECTORY: '${REPLAY_PIPELINE_DIRECTORY}_block_log'
   script: scripts/ci-helpers/block-log-extraction.sh
   tags:
-    - data-cache-storage
+  - data-cache-storage
 
 block_log_processing:
   extends: .job-defaults
   image: 'registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}'
   stage: replay-and-sync
   needs:
-    - mirrornet-haf-binaries-extraction
-    - block-log-extraction
+  - mirrornet-haf-binaries-extraction
+  - block-log-extraction
   variables:
     BLOCK_LOG_UTIL_PATH: '${CI_PROJECT_DIR}/hived-mirrornet-binaries/block_log_util'
   script: scripts/ci-helpers/block-log-processing.sh
   artifacts:
     reports:
       dotenv:
-        - 'block_log_data.env'
-    paths:
-      - '*.log'
       - 'block_log_data.env'
+    paths:
+    - '*.log'
+    - 'block_log_data.env'
   tags:
-    - data-cache-storage
+  - data-cache-storage
 
 mirrornet-haf-node-replay:
   extends: .haf-node-replay
   stage: replay-and-sync
   timeout: 3 hours
   needs:
-    - mirrornet-haf-binaries-extraction
-    - block_log_processing
+  - mirrornet-haf-binaries-extraction
+  - block_log_processing
   variables:
     GIT_STRATEGY: 'clone'
     CI_DEBUG_SERVICES: 'false' # Change to true to debug services in this job
     # LAST_BLOCK_NUMBER: "5004741"
-    ARGUMENTS: '--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER} --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json'
+    ARGUMENTS: '--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n
+      --replay-blockchain --stop-at-block ${LAST_BLOCK_NUMBER} --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json'
     # FAKETIME: "@2016-09-16 01:39:06"
     FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
     ADDITIONAL_CONFIGURATION_SCRIPT: 'scripts/ci-helpers/copy-mirrornet-haf-config.sh'
@@ -292,7 +293,7 @@ mirrornet-haf-node-replay:
     HAF_IMAGE: ${HAF_IMAGE_REGISTRY}
     HIVE_API_NODE_VERSION: ${API_NODE_VERSION}
   tags:
-    - data-cache-storage
+  - data-cache-storage
 
 .node-job:
   extends: .job-defaults
@@ -301,26 +302,26 @@ mirrornet-haf-node-replay:
     entrypoint: []
   stage: test
   before_script:
-    - corepack enable
-    - corepack prepare pnpm@9.6.0 --activate
-    - pnpm config set store-dir .pnpm-store
+  - corepack enable
+  - corepack prepare pnpm@9.6.0 --activate
+  - pnpm config set store-dir .pnpm-store
   script:
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
-      pnpm install --frozen-lockfile
-      echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
+    pnpm install --frozen-lockfile
+    echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
     key: '$TURBO_APP_SCOPE-cache-2'
     paths:
-      - .npm/
-      - .pnpm-store/
-      - .next/
+    - .npm/
+    - .pnpm-store/
+    - .next/
   artifacts:
     name: '$CI_JOB_NAME-$CI_COMMIT_REF_NAME'
     when: always
     expire_in: 1 week
   tags:
-    - public-runner-docker
+  - public-runner-docker
 
 .e2e_tests_template:
   extends: .node-job
@@ -334,21 +335,21 @@ mirrornet-haf-node-replay:
     DENSER_URL: https://caddy
   parallel:
     matrix:
-      - PROJECT: ['chromium', 'firefox', 'webkit']
-        SHARD_INDEX: [1, 2, 3, 4, 5]
-        SHARD_TOTAL: 5
+    - PROJECT: ['chromium', 'firefox', 'webkit']
+      SHARD_INDEX: [1, 2, 3, 4, 5]
+      SHARD_TOTAL: 5
   script:
-    - !reference [.node-job, script]
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
-      cd .$TURBO_APP_PATH
-      npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
-      echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
+  - !reference [.node-job, script]
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
+    cd .$TURBO_APP_PATH
+    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
+    echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
-      - .${TURBO_APP_PATH}/playwright-report/
-      - .${TURBO_APP_PATH}/test-results/
-      - .${TURBO_APP_PATH}/junit/
+    - .${TURBO_APP_PATH}/playwright-report/
+    - .${TURBO_APP_PATH}/test-results/
+    - .${TURBO_APP_PATH}/junit/
     reports:
       junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
 
@@ -356,62 +357,63 @@ mirrornet-replay-data-copy:
   extends: .haf_api_node_replay_data_copy
   stage: test
   needs:
-    - mirrornet-haf-node-replay
+  - mirrornet-haf-node-replay
   tags:
-    - data-cache-storage
+  - data-cache-storage
 
 mirrornet-based-tests:
   extends:
-    - .haf_api_node_test
-    - .node-job
+  - .haf_api_node_test
+  - .node-job
   needs:
-    - mirrornet-haf-binaries-extraction
-    - docker-build-blog-mirrornet-testenv
-    - docker-build-wallet-mirrornet-testenv
-    - mirrornet-replay-data-copy
-    - block_log_processing
+  - mirrornet-haf-binaries-extraction
+  - docker-build-blog-mirrornet-testenv
+  - docker-build-wallet-mirrornet-testenv
+  - mirrornet-replay-data-copy
+  - block_log_processing
   image: 'mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}'
   allow_failure: true
   services:
-    - !reference [.haf_api_node_test, services]
-    - name: $DENSER_BLOG_IMAGE_NAME
-      alias: denser-blog
-      variables:
-        HEALTHCHECK_TCP_PORT: '3000'
-        PORT: '3000'
-        REACT_APP_SITE_DOMAIN: 'https://caddy-blog.local'
-        REACT_APP_WALLET_ENDPOINT: 'https://caddy-wallet'
-        TURBO_APP_SCOPE: '@hive/blog'
-        TURBO_APP_PATH: '/apps/blog'
-    - name: caddy:${CADDY_TAG}
-      alias: caddy-blog
-      command:
-        - caddy
-        - reverse-proxy
-        - --from=https://caddy-blog
-        - --to=denser-blog:3000
-        - --internal-certs
-    - name: $DENSER_WALLET_IMAGE_NAME
-      alias: denser-wallet
-      variables:
-        HEALTHCHECK_TCP_PORT: '4000'
-        PORT: '4000'
-        REACT_APP_SITE_DOMAIN: 'https://caddy-wallet.local'
-        REACT_APP_BLOG_DOMAIN: 'https://caddy-blog'
-        TURBO_APP_SCOPE: '@hive/wallet'
-        TURBO_APP_PATH: '/apps/wallet'
-    - name: caddy:${CADDY_TAG}
-      alias: caddy-wallet
-      command:
-        - caddy
-        - reverse-proxy
-        - --from=https://caddy-wallet
-        - --to=denser-wallet:4000
-        - --internal-certs
+  - !reference [.haf_api_node_test, services]
+  - name: $DENSER_BLOG_IMAGE_NAME
+    alias: denser-blog
+    variables:
+      HEALTHCHECK_TCP_PORT: '3000'
+      PORT: '3000'
+      REACT_APP_SITE_DOMAIN: 'https://caddy-blog.local'
+      REACT_APP_WALLET_ENDPOINT: 'https://caddy-wallet'
+      TURBO_APP_SCOPE: '@hive/blog'
+      TURBO_APP_PATH: '/apps/blog'
+  - name: caddy:${CADDY_TAG}
+    alias: caddy-blog
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy-blog
+    - --to=denser-blog:3000
+    - --internal-certs
+  - name: $DENSER_WALLET_IMAGE_NAME
+    alias: denser-wallet
+    variables:
+      HEALTHCHECK_TCP_PORT: '4000'
+      PORT: '4000'
+      REACT_APP_SITE_DOMAIN: 'https://caddy-wallet.local'
+      REACT_APP_BLOG_DOMAIN: 'https://caddy-blog'
+      TURBO_APP_SCOPE: '@hive/wallet'
+      TURBO_APP_PATH: '/apps/wallet'
+  - name: caddy:${CADDY_TAG}
+    alias: caddy-wallet
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy-wallet
+    - --to=denser-wallet:4000
+    - --internal-certs
   variables:
     GIT_STRATEGY: 'clone'
     CI_DEBUG_SERVICES: 'false'
-    ARGUMENTS: '--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json'
+    ARGUMENTS: '--chain-id=44 --skeleton-key=5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n
+      --alternate-chain-spec=/home/hived/datadir/blockchain/alternate-chain-spec.json'
     FAKETIME: ${HEAD_BLOCK_TIMESTAMP}
     HAF_IMAGE: ${HAF_IMAGE_REGISTRY}
     HIVE_API_NODE_VERSION: ${API_NODE_VERSION}
@@ -423,42 +425,42 @@ mirrornet-based-tests:
   timeout: 3 hours
   script: scripts/ci-helpers/run-mirrornet-tests.sh
   after_script:
-    - |
-      cp "${REPLAY_PIPELINE_DIRECTORY}/docker_entrypoint.log" "${CI_PROJECT_DIR}/haf.log"
-      cp --recursive "${REPLAY_PIPELINE_DIRECTORY}/logs" "${CI_PROJECT_DIR}/logs"
+  - |
+    cp "${REPLAY_PIPELINE_DIRECTORY}/docker_entrypoint.log" "${CI_PROJECT_DIR}/haf.log"
+    cp --recursive "${REPLAY_PIPELINE_DIRECTORY}/logs" "${CI_PROJECT_DIR}/logs"
   cache:
     key: 'mirrornet-tests-1'
   artifacts:
     paths:
-      - '*.log'
-      - 'logs/'
-      - '*.env'
-      - '/apps/blog/playwright-report/'
-      - './apps/blog/test-results/'
-      - '/apps/blog/junit/'
+    - '*.log'
+    - 'logs/'
+    - '*.env'
+    - '/apps/blog/playwright-report/'
+    - './apps/blog/test-results/'
+    - '/apps/blog/junit/'
     reports:
       junit: 'apps/blog/junit/results.xml'
   tags:
-    - data-cache-storage
+  - data-cache-storage
 
 e2e-tests-blog:
   extends: .e2e_tests_template
   needs:
-    - docker-build-blog-testenv
+  - docker-build-blog-testenv
 
   services:
-    - name: $DENSER_BLOG_IMAGE_NAME
-      alias: denser
-      variables:
-        HEALTHCHECK_TCP_PORT: '3000'
+  - name: $DENSER_BLOG_IMAGE_NAME
+    alias: denser
+    variables:
+      HEALTHCHECK_TCP_PORT: '3000'
 
-    - name: caddy:${CADDY_TAG}
-      command:
-        - caddy
-        - reverse-proxy
-        - --from=https://caddy
-        - --to=denser:3000
-        - --internal-certs
+  - name: caddy:${CADDY_TAG}
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy
+    - --to=denser:3000
+    - --internal-certs
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
@@ -467,21 +469,21 @@ e2e-tests-blog:
 e2e-tests-wallet:
   extends: .e2e_tests_template
   needs:
-    - docker-build-wallet-testenv
+  - docker-build-wallet-testenv
 
   services:
-    - name: $DENSER_WALLET_IMAGE_NAME
-      alias: denser
-      variables:
-        HEALTHCHECK_TCP_PORT: '4000'
+  - name: $DENSER_WALLET_IMAGE_NAME
+    alias: denser
+    variables:
+      HEALTHCHECK_TCP_PORT: '4000'
 
-    - name: caddy:${CADDY_TAG}
-      command:
-        - caddy
-        - reverse-proxy
-        - --from=https://caddy
-        - --to=denser:4000
-        - --internal-certs
+  - name: caddy:${CADDY_TAG}
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy
+    - --to=denser:4000
+    - --internal-certs
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
@@ -493,18 +495,18 @@ e2e-tests-wallet:
   when: always
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   script:
-    - cd .$TURBO_APP_PATH
-    - pnpm install -D playwright-merge-html-reports
-    - ./node_modules/.bin/playwright test tests/merge-reports --config playwright.merge.config.ts
+  - cd .$TURBO_APP_PATH
+  - pnpm install -D playwright-merge-html-reports
+  - ./node_modules/.bin/playwright test tests/merge-reports --config playwright.merge.config.ts
   artifacts:
     paths:
-      - .${TURBO_APP_PATH}/merged-html-report/
-      - .${TURBO_APP_PATH}/junit/
+    - .${TURBO_APP_PATH}/merged-html-report/
+    - .${TURBO_APP_PATH}/junit/
 
 e2e-report-aggregate-blog:
   extends: .e2e_report_aggregate_template
   needs:
-    - e2e-tests-blog
+  - e2e-tests-blog
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
@@ -514,7 +516,7 @@ e2e-report-aggregate-blog:
 e2e-report-aggregate-wallet:
   extends: .e2e_report_aggregate_template
   needs:
-    - e2e-tests-wallet
+  - e2e-tests-wallet
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
@@ -529,64 +531,64 @@ publish:
   stage: publish
   script:
     # Extract a few values from package.json
-    - NPM_PACKAGE_NAME=$(node -p "require('./package.json').name")
-    - NPM_PACKAGE_VERSION=$(node -p "require('./package.json').version")
+  - NPM_PACKAGE_NAME=$(node -p "require('./package.json').name")
+  - NPM_PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
     # Validate that the package name is properly scoped to the project's root namespace.
     # For more information, see https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention
-    - |
-      if [[ ! $NPM_PACKAGE_NAME =~ ^@$CI_PROJECT_ROOT_NAMESPACE/ ]]; then
-        echo "Invalid package scope! Packages must be scoped in the root namespace of the project, e.g. \"@${CI_PROJECT_ROOT_NAMESPACE}/${CI_PROJECT_NAME}\""
-        echo 'For more information, see https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention'
-        exit 1
-      fi
+  - |
+    if [[ ! $NPM_PACKAGE_NAME =~ ^@$CI_PROJECT_ROOT_NAMESPACE/ ]]; then
+      echo "Invalid package scope! Packages must be scoped in the root namespace of the project, e.g. \"@${CI_PROJECT_ROOT_NAMESPACE}/${CI_PROJECT_NAME}\""
+      echo 'For more information, see https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention'
+      exit 1
+    fi
 
     # Compare the version in package.json to all published versions.
     # If the package.json version has not yet been published, run `npm publish`.
-    - |
-      if [[ "$(npm view ${NPM_PACKAGE_NAME} versions)" != *"'${NPM_PACKAGE_VERSION}'"* ]]; then
-        npm publish
-        echo "Successfully published version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} to GitLab's NPM registry: ${CI_PROJECT_URL}/-/packages"
-      else
-        echo "Version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} has already been published, so no new version has been published."
-      fi
+  - |
+    if [[ "$(npm view ${NPM_PACKAGE_NAME} versions)" != *"'${NPM_PACKAGE_VERSION}'"* ]]; then
+      npm publish
+      echo "Successfully published version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} to GitLab's NPM registry: ${CI_PROJECT_URL}/-/packages"
+    else
+      echo "Version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} has already been published, so no new version has been published."
+    fi
   rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'
-      when: manual
-      allow_failure: true
+  - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'
+    when: manual
+    allow_failure: true
   tags:
-    - public-runner-docker
+  - public-runner-docker
 
 .deploy_template:
   extends: .job-defaults
   stage: deploy
   before_script:
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-      echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):login[collapsed=true]\r\e[0KLogging to Docker registry..."
+    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
-    - |
-      # credits of solution for gitlab bug: https://gitlab.com/gitlab-org/gitlab/-/issues/294292#note_1070210709
-      export DEPLOYMENT_ENV_FILE=${!DEPLOYMENT_ENV_FILE}
-      # Make visible all vars in the bash env
-      source "${DEPLOYMENT_ENV_FILE}"
+  - |
+    # credits of solution for gitlab bug: https://gitlab.com/gitlab-org/gitlab/-/issues/294292#note_1070210709
+    export DEPLOYMENT_ENV_FILE=${!DEPLOYMENT_ENV_FILE}
+    # Make visible all vars in the bash env
+    source "${DEPLOYMENT_ENV_FILE}"
 
-      scripts/run_instance.sh \
-        --image="$IMAGE_NAME" \
-        --name="$CONTAINER_NAME" \
-        --port=$PORT \
-        --env-file="${DEPLOYMENT_ENV_FILE}" \
-        --detach
+    scripts/run_instance.sh \
+      --image="$IMAGE_NAME" \
+      --name="$CONTAINER_NAME" \
+      --port=$PORT \
+      --env-file="${DEPLOYMENT_ENV_FILE}" \
+      --detach
   tags:
-    - hs-denser
+  - hs-denser
 
 # Main branch deployments (manual)
 main:deploy-blog-mainnet:
   extends: .deploy_template
   needs:
-    - docker-build-blog
-    - e2e-tests-blog
+  - docker-build-blog
+  - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-main-blog
     PORT: 9111
@@ -594,8 +596,8 @@ main:deploy-blog-mainnet:
     APP_SESSION_TIME: 64800
     DEPLOYMENT_ENV_FILE: "MAINNET_PROD_DEPLOYMENT_ENV"
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: manual
   environment:
     name: main-blog-mainnet
     url: https://blog.openhive.network
@@ -604,16 +606,16 @@ main:deploy-blog-mainnet:
 main:deploy-wallet-mainnet:
   extends: .deploy_template
   needs:
-    - docker-build-wallet
-    - e2e-tests-wallet
+  - docker-build-wallet
+  - e2e-tests-wallet
   variables:
     CONTAINER_NAME: denser-main-wallet
     PORT: 9122
     IMAGE_NAME: $WALLET_IMAGE_NAME
     DEPLOYMENT_ENV_FILE: "MAINNET_PROD_DEPLOYMENT_ENV"
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: manual
   environment:
     name: main-wallet-mainnet
     url: https://wallet.openhive.network
@@ -622,8 +624,8 @@ main:deploy-wallet-mainnet:
 main:deploy-blog-mirrornet:
   extends: .deploy_template
   needs:
-    - docker-build-blog
-    - e2e-tests-blog
+  - docker-build-blog
+  - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-main-blog-mirror
     PORT: 9211
@@ -635,8 +637,8 @@ main:deploy-blog-mirrornet:
     APP_SESSION_TIME: 64800
     IMAGE_NAME: $BLOG_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: manual
   environment:
     name: main-blog-mirrornet
     url: https://blog.fake.openhive.network
@@ -645,8 +647,8 @@ main:deploy-blog-mirrornet:
 main:deploy-wallet-mirrornet:
   extends: .deploy_template
   needs:
-    - docker-build-wallet
-    - e2e-tests-wallet
+  - docker-build-wallet
+  - e2e-tests-wallet
   variables:
     CONTAINER_NAME: denser-main-wallet-mirror
     PORT: 9222
@@ -657,8 +659,8 @@ main:deploy-wallet-mirrornet:
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
     IMAGE_NAME: $WALLET_IMAGE_NAME
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: manual
   environment:
     name: main-wallet-mirrornet
     url: https://wallet.fake.openhive.network
@@ -669,26 +671,26 @@ main:deploy-wallet-mirrornet:
   extends: .job-defaults
   stage: cleanup
   script:
-    - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
+  - docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop $CONTAINER_NAME
   rules:
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: manual
-      allow_failure: true
+  - if: $CI_PIPELINE_SOURCE == "web"
+    when: manual
+    allow_failure: true
   tags:
-    - hs-denser
+  - hs-denser
 
 # Stop jobs for main deployments
 main:stop-blog-mainnet:
   extends: .stop_template
   needs:
-    - job: main:deploy-blog-mainnet
-      optional: true
+  - job: main:deploy-blog-mainnet
+    optional: true
   variables:
     CONTAINER_NAME: denser-main-blog
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-      allow_failure: true
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: manual
+    allow_failure: true
   environment:
     name: main-blog-mainnet
     action: stop
@@ -696,14 +698,14 @@ main:stop-blog-mainnet:
 main:stop-wallet-mainnet:
   extends: .stop_template
   needs:
-    - job: main:deploy-wallet-mainnet
-      optional: true
+  - job: main:deploy-wallet-mainnet
+    optional: true
   variables:
     CONTAINER_NAME: denser-main-wallet
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-      allow_failure: true
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: manual
+    allow_failure: true
   environment:
     name: main-wallet-mainnet
     action: stop
@@ -711,14 +713,14 @@ main:stop-wallet-mainnet:
 main:stop-blog-mirrornet:
   extends: .stop_template
   needs:
-    - job: main:deploy-blog-mirrornet
-      optional: true
+  - job: main:deploy-blog-mirrornet
+    optional: true
   variables:
     CONTAINER_NAME: denser-main-blog-mirror
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-      allow_failure: true
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: manual
+    allow_failure: true
   environment:
     name: main-blog-mirrornet
     action: stop
@@ -726,14 +728,14 @@ main:stop-blog-mirrornet:
 main:stop-wallet-mirrornet:
   extends: .stop_template
   needs:
-    - job: main:deploy-wallet-mirrornet
-      optional: true
+  - job: main:deploy-wallet-mirrornet
+    optional: true
   variables:
     CONTAINER_NAME: denser-main-wallet-mirror
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-      allow_failure: true
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: manual
+    allow_failure: true
   environment:
     name: main-wallet-mirrornet
     action: stop
@@ -743,15 +745,15 @@ main:stop-wallet-mirrornet:
 develop:deploy-blog-mainnet:
   extends: .deploy_template
   needs:
-    - docker-build-blog
-    - e2e-tests-blog
+  - docker-build-blog
+  - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-dev-blog
     PORT: 8111
     IMAGE_NAME: $BLOG_IMAGE_NAME
     DEPLOYMENT_ENV_FILE: "MAINNET_DEV_DEPLOYMENT_ENV"
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+  - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-blog-mainnet
     url: https://blog.dev.openhive.network
@@ -760,15 +762,15 @@ develop:deploy-blog-mainnet:
 develop:deploy-wallet-mainnet:
   extends: .deploy_template
   needs:
-    - docker-build-wallet
-    - e2e-tests-wallet
+  - docker-build-wallet
+  - e2e-tests-wallet
   variables:
     CONTAINER_NAME: denser-dev-wallet
     PORT: 8122
     IMAGE_NAME: $WALLET_IMAGE_NAME
     DEPLOYMENT_ENV_FILE: "MAINNET_DEV_DEPLOYMENT_ENV"
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+  - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-wallet-mainnet
     url: https://wallet.dev.openhive.network
@@ -777,15 +779,15 @@ develop:deploy-wallet-mainnet:
 develop:deploy-blog-mirrornet:
   extends: .deploy_template
   needs:
-    - docker-build-blog
-    - e2e-tests-blog
+  - docker-build-blog
+  - e2e-tests-blog
   variables:
     CONTAINER_NAME: denser-dev-blog-mirror
     PORT: 8211
     IMAGE_NAME: $BLOG_IMAGE_NAME
     DEPLOYMENT_ENV_FILE: "MIRRORNET_DEV_DEPLOYMENT_ENV"
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+  - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-blog-mirrornet
     url: https://blog.dev.fake.openhive.network
@@ -794,15 +796,15 @@ develop:deploy-blog-mirrornet:
 develop:deploy-wallet-mirrornet:
   extends: .deploy_template
   needs:
-    - docker-build-wallet
-    - e2e-tests-wallet
+  - docker-build-wallet
+  - e2e-tests-wallet
   variables:
     CONTAINER_NAME: denser-dev-wallet-mirror
     PORT: 8222
     IMAGE_NAME: $WALLET_IMAGE_NAME
     DEPLOYMENT_ENV_FILE: "MIRRORNET_DEV_DEPLOYMENT_ENV"
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+  - if: $CI_COMMIT_BRANCH == "develop"
   environment:
     name: develop-wallet-mirrornet
     url: https://wallet.dev.fake.openhive.network
@@ -813,14 +815,14 @@ develop:deploy-wallet-mirrornet:
 develop:stop-blog-mainnet:
   extends: .stop_template
   needs:
-    - job: develop:deploy-blog-mainnet
-      optional: true
+  - job: develop:deploy-blog-mainnet
+    optional: true
   variables:
     CONTAINER_NAME: denser-dev-blog
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-      when: manual
-      allow_failure: true
+  - if: $CI_COMMIT_BRANCH == "develop"
+    when: manual
+    allow_failure: true
   environment:
     name: develop-blog-mainnet
     action: stop
@@ -828,14 +830,14 @@ develop:stop-blog-mainnet:
 develop:stop-wallet-mainnet:
   extends: .stop_template
   needs:
-    - job: develop:deploy-wallet-mainnet
-      optional: true
+  - job: develop:deploy-wallet-mainnet
+    optional: true
   variables:
     CONTAINER_NAME: denser-dev-wallet
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-      when: manual
-      allow_failure: true
+  - if: $CI_COMMIT_BRANCH == "develop"
+    when: manual
+    allow_failure: true
   environment:
     name: develop-wallet-mainnet
     action: stop
@@ -843,14 +845,14 @@ develop:stop-wallet-mainnet:
 develop:stop-blog-mirrornet:
   extends: .stop_template
   needs:
-    - job: develop:deploy-blog-mirrornet
-      optional: true
+  - job: develop:deploy-blog-mirrornet
+    optional: true
   variables:
     CONTAINER_NAME: denser-dev-blog-mirror
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-      when: manual
-      allow_failure: true
+  - if: $CI_COMMIT_BRANCH == "develop"
+    when: manual
+    allow_failure: true
   environment:
     name: develop-blog-mirrornet
     action: stop
@@ -858,14 +860,14 @@ develop:stop-blog-mirrornet:
 develop:stop-wallet-mirrornet:
   extends: .stop_template
   needs:
-    - job: develop:deploy-wallet-mirrornet
-      optional: true
+  - job: develop:deploy-wallet-mirrornet
+    optional: true
   variables:
     CONTAINER_NAME: denser-dev-wallet-mirror
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-      when: manual
-      allow_failure: true
+  - if: $CI_COMMIT_BRANCH == "develop"
+    when: manual
+    allow_failure: true
   environment:
     name: develop-wallet-mirrornet
     action: stop
