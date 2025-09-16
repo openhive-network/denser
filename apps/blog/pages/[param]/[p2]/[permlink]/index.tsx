@@ -64,7 +64,6 @@ import clsx from 'clsx';
 import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
-import { Entry } from '@transaction/lib/extended-hive.chain';
 import { withBasePath } from '@/blog/utils/PathUtils';
 
 const logger = getLogger('app');
