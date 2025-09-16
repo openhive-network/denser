@@ -10,7 +10,6 @@ import { PER_PAGE } from './lib/utils';
 import PostList from '@/blog/components/post-list';
 import { Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@ui/components/card-skeleton';
-import { PostSkeleton } from './loading-skeleton';
 import {commonVariables} from'@ui/lib/common-variables';
 
 
