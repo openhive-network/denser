@@ -85,7 +85,7 @@ export default function PostForm({
   }, [...Object.values(watchedValues)]);
 
   async function onSubmit(data: PostFormValues) {
-    if (!data.tags || data.tags.trim() === '') {
+    if (data.category === 'blog' && (!data.tags || data.tags.trim() === '')) {
       setTagsError('In posting in My Blog use at least one tag');
       return;
     }
@@ -131,8 +131,8 @@ export default function PostForm({
       setEditMode(false);
       setIsSubmitting(false);
     } else {
-      if (router.query.category) {
-        await router.push(withBasePath(`/created/${router.query.category}`), undefined, { shallow: true });
+      if (data.category.startsWith('hive-')) {
+        await router.push(withBasePath(`/created/${data.category}`), undefined, { shallow: true });
       } else {
         await router.push(withBasePath(`/created/${tags[0]}`), undefined, { shallow: true });
       }
