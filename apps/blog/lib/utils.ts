@@ -5,10 +5,10 @@ import { Entry, JsonMetadata } from '@transaction/lib/extended-hive.chain';
 import moment from 'moment';
 import { TFunction } from 'i18next';
 import { FullAccount } from '@transaction/lib/app-types';
-import { getRenderer } from './renderer';
 import { proxifyImageSrc } from '@hive/ui';
 
 export const DEFAULT_OBSERVER = 'hive.blog';
+export type SortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted';
 
 export interface Preferences {
   nsfw: 'hide' | 'warn' | 'show';
@@ -228,12 +228,6 @@ export function formatDecimal(value: number, decPlaces = 2, truncate0s = true) {
   ];
 }
 
-export function extractUrlsFromJsonString(jsonString: string): string[] {
-  const urlRegex = /((?:https?:\/\/|www\.)[^\s]+)/g;
-  const matches = jsonString.match(urlRegex);
-  return matches || [];
-}
-
 export function extractLinks(text: string): string[] {
   const urlRegex = /https?:\\?\/\\?\/[^\s]+/g;
   const markdownImageRegex = /!\[.*?\]\((https?:\\?\/\\?\/[^\s]+)\)/g;
@@ -263,42 +257,6 @@ export function extractLinks(text: string): string[] {
     });
   }
   return matches;
-}
-
-/**
- * Finds all images in markdown content, so also in html content, and
- * returns their `src` attribute.
- *
- * @export
- * @param {string} markdownContent
- * @return {*}  {string[]}
- */
-export function extractImagesSrc(markdownContent: string): string[] {
-  if (markdownContent === '') return [];
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(getRenderer('').render(markdownContent), 'text/html');
-  const images = doc.getElementsByTagName('img');
-  const result = [];
-  for (let i = 0; i < images.length; i++) {
-    // logger.info('extractImages found image src: %o', images[i].src);
-    result.push(images[i].src);
-  }
-  return result;
-}
-
-export function extractYouTubeVideoIds(urls: string[]): string[] {
-  const youtubeLinkRegex =
-    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed|shorts\/|v\/)?([a-zA-Z0-9_-]+)/i;
-
-  const youtubeVideoIds: string[] = [];
-  for (const url of urls) {
-    const match = url.match(youtubeLinkRegex);
-    if (match && match[1]) {
-      youtubeVideoIds.push(match[1]);
-    }
-  }
-
-  return youtubeVideoIds;
 }
 
 export function extractPictureFromPostBody(urls: string[]): string[] {
@@ -409,3 +367,22 @@ export const getMutedComments = (list: string[], discussion: Record<string, Entr
   });
   return filteredByAuthorMuted;
 };
+export function extractUrlsFromJsonString(jsonString: string): string[] {
+  const urlRegex = /((?:https?:\/\/|www\.)[^\s]+)/g;
+  const matches = jsonString.match(urlRegex);
+  return matches || [];
+}
+
+export function extractYouTubeVideoIds(urls: string[]): string[] {
+  const youtubeLinkRegex =
+    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed|shorts\/|v\/)?([a-zA-Z0-9_-]+)/i;
+
+  const youtubeVideoIds: string[] = [];
+  for (const url of urls) {
+    const match = url.match(youtubeLinkRegex);
+    if (match && match[1]) {
+      youtubeVideoIds.push(match[1]);
+    }
+  }
+  return youtubeVideoIds;
+}

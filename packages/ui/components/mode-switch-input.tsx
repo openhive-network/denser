@@ -1,6 +1,6 @@
 import React, { KeyboardEvent, useRef } from 'react';
 import { cn } from '@ui/lib/utils';
-import { SearchMode, useSearch } from '@ui/hooks/useSearch';
+import { SearchMode, useSearch } from '@ui/hooks/use-search';
 import SearchSortSelect from './search-select';
 import ModeSelect from './mode-select';
 import clsx from 'clsx';

@@ -5,7 +5,6 @@ import { loginPageController } from '@smart-signer/lib/login-page-controller';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
 import { getLogger } from '@ui/lib/logging';
-import { getTranslations } from '../../../lib/get-translations';
 import { siteConfig } from '@ui/config/site';
 
 const logger = getLogger('app');
@@ -25,7 +24,7 @@ export default function LoginPage({ redirectTo }: { redirectTo?: string }) {
       logger.info('LoginPage onComplete redirecting to: %s', redirectTo);
       location.replace(redirectTo);
     }
-  }
+  };
 
   return (
     <div className="flex justify-center">
@@ -43,14 +42,15 @@ export default function LoginPage({ redirectTo }: { redirectTo?: string }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const result: GetServerSidePropsResult<{ [key: string]: any }> & { redirect?: Redirect, props?: { [key: string]: any } }
-      = await loginPageController(ctx);
+  const result: GetServerSidePropsResult<{ [key: string]: any }> & {
+    redirect?: Redirect;
+    props?: { [key: string]: any };
+  } = await loginPageController(ctx);
   if (Object.hasOwnProperty.call(result, 'props')) {
     const output: GetServerSidePropsResult<{ [key: string]: any }> = {
       props: {
-        ...result.props,
-        ...(await getTranslations(ctx)),
-      },
+        ...result.props
+      }
     };
     return output;
   }

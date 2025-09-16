@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Select,
   SelectContent,
@@ -7,8 +9,7 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { Label } from '@ui/components/label';
-import { useTranslation } from 'next-i18next';
-import { SearchMode, SearchSort, useSearch } from '@ui/hooks/useSearch';
+import { SearchMode, SearchSort, useSearch } from '@ui/hooks/use-search';
 
 function SearchSortSelect({
   value,
@@ -19,7 +20,6 @@ function SearchSortSelect({
   secondValue: string;
   mode: SearchMode;
 }) {
-  const { t } = useTranslation('common_blog');
   const { handleSearch, sortQuery } = useSearch();
   const onValueChange = (sortValue: SearchSort) => {
     if (mode === 'userTopic') {
@@ -36,8 +36,8 @@ function SearchSortSelect({
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectItem value="created">{t('select_sort.search_sorter.newest')}</SelectItem>
-          <SelectItem value="relevance">{t('select_sort.search_sorter.relevance')}</SelectItem>
+          <SelectItem value="created">Newest</SelectItem>
+          <SelectItem value="relevance">Relevance</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

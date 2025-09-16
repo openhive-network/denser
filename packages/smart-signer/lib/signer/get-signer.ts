@@ -9,7 +9,7 @@ export type SignerTool = SignerHbauth | SignerHiveauth | SignerKeychain | Signer
 
 export type RegisteredSigners = {
   [key in LoginType]?: any;
-}
+};
 
 const registeredSigners: RegisteredSigners = {};
 registeredSigners[LoginType.hbauth] = SignerHbauth;
@@ -23,7 +23,7 @@ export function signerFactory({
   keyType,
   apiEndpoint,
   storageType,
-  chainId,
+  chainId
 }: SignerOptions): SignerTool {
   return new registeredSigners[loginType]({
     username,
@@ -31,7 +31,7 @@ export function signerFactory({
     keyType,
     apiEndpoint,
     storageType,
-    chainId,
+    chainId
   }) as SignerTool;
 }
 

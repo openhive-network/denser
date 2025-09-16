@@ -1,4 +1,3 @@
-import { TWaxApiRequest } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
 import { IGetPostHeader, IFollowList, IAccountRelationship, Entry, IUnreadNotifications, Community, IAccountNotification, FollowListType } from './extended-hive.chain';
@@ -7,13 +6,6 @@ import {commonVariables} from'@ui/lib/common-variables';
 const logger = getLogger('app');
 
 const chain = await hiveChainService.getHiveChain();
-
-export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
-  return chain.api.bridge.get_post_header({
-    author,
-    permlink
-  });
-};
 
 export type Subscription = Array<string>;
 
@@ -184,41 +176,11 @@ export const normalizePost = async (post: Entry): Promise<Entry | null> => {
   });
 };
 
-export const getSubscriptions = async (account: string): Promise<string[][] | null> => {
-  return chain.api.bridge.list_all_subscriptions({
-    account
-  });
-};
-
-export const getSubscribers = async (community: string): Promise<string[][] | null> => {
-  return chain.api.bridge.list_subscribers({
-    community
-  });
-};
-
-
-export const getUnreadNotifications = async (account: string): Promise<IUnreadNotifications | null> => {
-  return chain.api.bridge.unread_notifications({
-    account
-  });
-};
-
 export const getRelationshipBetweenAccounts = async (
   follower: string,
   following: string
 ): Promise<IAccountRelationship | null> => {
-  return chain
-    .api.bridge.get_relationship_between_accounts([follower, following]);
-};
-
-export const getFollowList = async (
-  observer: string,
-  follow_type: FollowListType
-): Promise<IFollowList[]> => {
-  return chain.api.bridge.get_follow_list({
-    observer,
-    follow_type
-  });
+  return chain.api.bridge.get_relationship_between_accounts([follower, following]);
 };
 
 export type TwitterInfo = {

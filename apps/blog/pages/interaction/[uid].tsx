@@ -1,6 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
-import { getTranslations } from '../../lib/get-translations';
 import { getLogger } from '@ui/lib/logging';
 import { siteConfig } from '@ui/config/site';
 import { withBasePath } from '@/blog/utils/PathUtils';
@@ -31,8 +30,6 @@ export default function InteractionPage({
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!siteConfig.oidcEnabled) return { notFound: true };
   return {
-    props: {
-      ...(await getTranslations(ctx))
-    }
+    props: {}
   };
 };

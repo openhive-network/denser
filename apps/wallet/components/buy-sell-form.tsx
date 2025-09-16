@@ -9,7 +9,7 @@ import { handleError } from '@ui/lib/handle-error';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getAccount } from '@transaction/lib/hive';
+import { getAccount } from '@transaction/lib/hive-api';
 import { getAsset } from '@transaction/lib/utils';
 
 enum ActionType {

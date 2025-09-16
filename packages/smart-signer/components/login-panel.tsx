@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
+
 import { useRouter } from 'next/router';
 import { LoginType } from '@smart-signer/types/common';
 import { getCookie } from '@smart-signer/lib/storage-utils';
@@ -17,20 +17,13 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 interface LoginPanelOptions {
-  authenticateOnBackend: boolean,
+  authenticateOnBackend: boolean;
   strict: boolean; // if true use strict authentication
   i18nNamespace?: string;
 }
 
-export function LoginPanel(
-  {
-    authenticateOnBackend,
-    strict,
-    i18nNamespace = 'smart-signer'
-  }: LoginPanelOptions
-) {
+export function LoginPanel({ authenticateOnBackend, strict }: LoginPanelOptions) {
   const router = useRouter();
-  const { t } = useTranslation(i18nNamespace);
   const [loginChallenge, setLoginChallenge] = useState('');
   const { signerOptions } = useSigner();
   const [errorMsg, setErrorMsg] = useState('');
@@ -52,7 +45,7 @@ export function LoginPanel(
     setErrorMsg('');
 
     const { loginType, username, keyType } = data;
-    const signatures: Signatures = {posting: '', active: ''};
+    const signatures: Signatures = { posting: '', active: '' };
     let hivesignerToken = '';
 
     const loginSignerOptions: SignerOptions = {
@@ -74,12 +67,12 @@ export function LoginPanel(
       const signature = await signer.signChallenge({
         message,
         password,
-        translateFn: t
+        translateFn: (v: string) => v
       });
       signatures[keyType] = signature;
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
-      setErrorMsg(t('pageLogin.loginFailed'));
+      setErrorMsg('Login failed');
       return;
     }
 
@@ -92,14 +85,14 @@ export function LoginPanel(
       pack: TTransactionPackType.HF_26,
       strict,
       signatures,
-      authenticateOnBackend,
+      authenticateOnBackend
     };
 
     try {
       await signIn.mutateAsync({ data: body });
     } catch (error) {
       logger.error('onSubmit unexpected error', error);
-      setErrorMsg(t('pageLogin.loginFailed'));
+      setErrorMsg('Login failed');
     }
   };
 

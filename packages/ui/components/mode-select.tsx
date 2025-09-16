@@ -1,4 +1,4 @@
-import { SearchMode } from '@ui/hooks/useSearch';
+import { SearchMode } from '@ui/hooks/use-search';
 import { Select, CustomSelectContent, CustomSelectItem, SelectTrigger, SelectValue } from './select';
 import { Bot, Hash, Search, User } from 'lucide-react';
 
@@ -34,7 +34,7 @@ const ModeSelect = ({
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
+            strokeWidth="2"
             className="h-4 w-4"
           >
             <path d="M11.5 15H7a4 4 0 0 0-4 4v2" />

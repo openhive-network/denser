@@ -11,7 +11,7 @@ const compat = new FlatCompat({
   allConfig: js.configs.all
 });
 
-export default [
+const config = [
   ...compat.extends('@hive/eslint-config-custom'),
   {
     files: ['**/*.ts', '**/*.tsx'],
@@ -22,3 +22,5 @@ export default [
     }
   }
 ];
+
+export default config;

@@ -1,7 +1,7 @@
 import { GetStaticPropsContext, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/wallet/next-i18next.config';
-import { getAccountFull } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive-api';
 
 // Unified getTranslations function supporting both SSR and SSG
 export const getTranslations = async (

@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import {
-  getAccount,
-  getAccounts,
-  getDynamicGlobalProperties,
-  getListWitnessVotes
-} from '@transaction/lib/hive';
+import { getListWitnessVotes } from '@transaction/lib/hive';
+import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
 import { FullAccount } from '@transaction/lib/app-types';
@@ -36,6 +32,7 @@ import {
 } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
 import Head from 'next/head';
+import { getAccount, getAccounts } from '@transaction/lib/hive-api';
 
 export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
