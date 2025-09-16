@@ -38,6 +38,7 @@ export class PostEditorPage {
     readonly getPostingToListTrigger: Locator;
     readonly getSubmitPostButton: Locator;
     readonly getCleanPostButton: Locator;
+    readonly getTitleErrorMessage: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -77,6 +78,7 @@ export class PostEditorPage {
         this.getPostingToListTrigger = page.locator('[data-testid="posting-to-list-trigger"]');
         this.getSubmitPostButton = page.locator('[data-testid="submit-post-button"]');
         this.getCleanPostButton = page.locator('[data-testid="clean-post-button"]');
+        this.getTitleErrorMessage = page.locator('[data-testid="form-container"] p').filter( {hasText: 'String must contain at least'});
     }
 
     async validateDefaultPostEditorIsLoaded() {

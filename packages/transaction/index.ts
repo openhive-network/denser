@@ -23,7 +23,7 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
-import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
+import WorkerBee, { IWorkerBee } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
 const logger = getLogger('app');
@@ -614,12 +614,43 @@ export class TransactionService {
     category: string,
     summary: string,
     altAuthor: string,
-    payoutType: string,
+    percentHbd: number,
     image?: string,
-    transactionOptions: TransactionOptions = {},
-    editMode = false
+    transactionOptions: TransactionOptions = {}
   ) {
-    const postData: IArticle = {
+    const blogPost = new BlogPostOperation({
+      category: category !== 'blog' ? category : tags[0],
+      beneficiaries,
+      maxAcceptedPayout,
+      percentHbd,
+      tags,
+      author: this.signerOptions.username,
+      title,
+      body,
+      permlink,
+      alternativeAuthor: altAuthor,
+      images: [image ? image : ''],
+      jsonMetadata: {
+        summary,
+        app: 'hive.blog/0.9'
+      }
+    });
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation(blogPost);
+    }, transactionOptions);
+  }
+  async updatePost(
+    permlink: string,
+    title: string,
+    body: string,
+    tags: string[],
+    category: string,
+    summary: string,
+    altAuthor: string,
+    image?: string,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    const blogPost = new BlogPostOperation({
       category: category !== 'blog' ? category : tags[0],
       tags,
       author: this.signerOptions.username,
@@ -632,32 +663,7 @@ export class TransactionService {
         summary,
         app: 'hive.blog/0.9'
       }
-    };
-
-    if (!editMode || payoutType !== '100%') {
-      postData.maxAcceptedPayout = maxAcceptedPayout;
-
-      if (payoutType === '100%') {
-        postData.percentHbd = 0;
-      }
-      if (payoutType === '50%' || payoutType === '0%') {
-        postData.percentHbd = 10000;
-      }
-      if (payoutType === '0%') {
-        postData.maxAcceptedPayout = createAsset('0', 'HBD');
-      }
-
-      const filteredBeneficiaries = beneficiaries.filter(({ account, weight }) => Number(weight) !== 10000);
-
-      if (filteredBeneficiaries.length > 0) {
-        postData.beneficiaries = filteredBeneficiaries.map(({ account, weight }) => ({
-          account,
-          weight: Number(weight) * 100
-        }));
-      }
-    }
-
-    const blogPost = new BlogPostOperation(postData);
+    });
 
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation(blogPost);
