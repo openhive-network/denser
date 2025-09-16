@@ -145,14 +145,16 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postContentText: string = '1 Content of the testing post POM';
     const postSummary: string = '1 My testing post POM';
     const postTag: string = 'test';
+    const titleErrorMessage: string = 'String must contain at least 2 character(s)';
 
     await homePage.getNavCreatePost.click();
-    await expect(postEditorPage.getPostTitleInput).toBeVisible()
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
     await postEditorPage.getEditorContentTextarea.fill(postContentText);
     await postEditorPage.getPostSummaryInput.fill(postSummary);
     await postEditorPage.getEnterYourTagsInput.fill(postTag);
-    await denserAutoTest0Page.page.mouse.wheel(0, 2000)
-    await expect(postEditorPage.getSubmitPostButton).toBeDisabled()
+    await denserAutoTest0Page.page.mouse.wheel(0, 2000);
+    await postEditorPage.getSubmitPostButton.click();
+    expect(await postEditorPage.getTitleErrorMessage.textContent()).toBe(titleErrorMessage);
   });
 
   test('Attempt to create a post with no content', async ({ denserAutoTest0Page }) => {
@@ -165,14 +167,14 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postTag: string = 'test';
 
     await homePage.getNavCreatePost.click();
-    await expect(postEditorPage.getPostTitleInput).toBeVisible()
-    await postEditorPage.getPostTitleInput.fill(postTitle)
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
+    await postEditorPage.getPostTitleInput.fill(postTitle);
     await postEditorPage.getPostSummaryInput.fill(postSummary);
     await postEditorPage.getEnterYourTagsInput.fill(postTag);
-    await denserAutoTest0Page.page.mouse.wheel(0, 2000)
-    await expect(postEditorPage.getSubmitPostButton).toBeEnabled()
-    await postEditorPage.getSubmitPostButton.click()
-    await expect(postEditorPage.getFormContainer).toContainText('String must contain at least 1 character(s)')
+    await denserAutoTest0Page.page.mouse.wheel(0, 2000);
+    await expect(postEditorPage.getSubmitPostButton).toBeEnabled();
+    await postEditorPage.getSubmitPostButton.click();
+    await expect(postEditorPage.getFormContainer).toContainText('String must contain at least 1 character(s)');
   });
 
   test('Attempt to create a post with no tags', async ({ denserAutoTest0Page }) => {
@@ -185,11 +187,12 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postTag: string = 'test';
 
     await homePage.getNavCreatePost.click();
-    await expect(postEditorPage.getPostTitleInput).toBeVisible()
-    await postEditorPage.getPostTitleInput.fill(postTitle)
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
+    await postEditorPage.getPostTitleInput.fill(postTitle);
     await postEditorPage.getEditorContentTextarea.fill(postContentText);
     await postEditorPage.getPostSummaryInput.fill(postSummary);
-    await expect(postEditorPage.getFormContainer).toContainText('Required when post to My Blog')
+    await postEditorPage.getSubmitPostButton.click();
+    await expect(postEditorPage.getFormContainer).toContainText('In posting in My Blog use at least one tag');
   });
 
   test('Attempt to create a post with no post summary', async ({ denserAutoTest0Page }) => {
@@ -221,14 +224,14 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postTag: string = 'test';
 
     await homePage.getNavCreatePost.click();
-    await expect(postEditorPage.getPostTitleInput).toBeVisible()
-    await postEditorPage.getPostTitleInput.fill(postTitle)
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
+    await postEditorPage.getPostTitleInput.fill(postTitle);
     await postEditorPage.getEditorContentTextarea.fill(postContentText);
     await postEditorPage.getEnterYourTagsInput.fill(postTag);
     await postEditorPage.getPostSummaryInput.fill(LongPostSummary);
-    await expect(postEditorPage.getSubmitPostButton).toBeVisible()
+    await expect(postEditorPage.getSubmitPostButton).toBeVisible();
     await postEditorPage.getSubmitPostButton.click();
-    await expect(denserAutoTest0Page.page.getByText('Maximum 140 characters')).toBeVisible()
+    await expect(denserAutoTest0Page.page.getByText('Maximum characters allowed is 140')).toBeVisible();
   });
 
   test('After creating post by clicking New Post button in the community, user is moved to the specific community post list page', async ({ denserAutoTest0Page }) => {
