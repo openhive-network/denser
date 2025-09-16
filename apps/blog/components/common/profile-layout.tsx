@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import BasePathLink from '@/blog/components/base-path-link';
 import { useRouter } from 'next/router';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useQuery } from '@tanstack/react-query';
@@ -241,42 +242,42 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
 
                 <ul className="my-1 flex flex-wrap justify-center gap-2 text-xs sm:text-sm">
                   <li className="flex items-center gap-1">
-                    <Link
+                    <BasePathLink
                       href={`/@${profileData?.name}/lists/blacklisted`}
                       className="hover:cursor-pointer hover:text-destructive hover:underline"
                     >
                       {t('user_profile.lists.blacklisted_users')}
-                    </Link>
+                    </BasePathLink>
                   </li>
 
                   <li className="flex items-center gap-1">
                     <Separator orientation="vertical" className="h-4 bg-background" />
-                    <Link
+                    <BasePathLink
                       href={`/@${profileData?.name}/lists/muted`}
                       className="hover:cursor-pointer hover:text-destructive hover:underline"
                     >
                       {t('user_profile.lists.muted_users')}
-                    </Link>
+                    </BasePathLink>
                   </li>
 
                   <li className="flex items-center gap-1">
                     <Separator orientation="vertical" className="h-4 bg-background" />
-                    <Link
+                    <BasePathLink
                       href={`/@${profileData?.name}/lists/followed_blacklists`}
                       className="hover:cursor-pointer hover:text-destructive hover:underline"
                     >
                       {t('user_profile.lists.followed_blacklists')}
-                    </Link>
+                    </BasePathLink>
                   </li>
 
                   <li className="flex items-center gap-1">
                     <Separator orientation="vertical" className="bg-background" />
-                    <Link
+                    <BasePathLink
                       href={`/@${profileData?.name}/lists/followed_muted_lists`}
                       className="hover:cursor-pointer hover:text-destructive hover:underline"
                     >
                       {t('user_profile.lists.followed_muted_lists')}
-                    </Link>
+                    </BasePathLink>
                   </li>
                 </ul>
 

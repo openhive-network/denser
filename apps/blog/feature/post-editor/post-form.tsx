@@ -32,6 +32,7 @@ import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { postClassName } from '../../pages/[param]/[p2]/[permlink]';
 import { accountFormSchema, PostFormValues, EditPostEntry, generateMaxAcceptedPayout } from './lib/utils';
+import { withBasePath } from '@/blog/utils/PathUtils';
 
 const logger = getLogger('app');
 
@@ -131,9 +132,9 @@ export default function PostForm({
       setIsSubmitting(false);
     } else {
       if (router.query.category) {
-        await router.push(`/created/${router.query.category}`, undefined, { shallow: true });
+        await router.push(withBasePath(`/created/${router.query.category}`), undefined, { shallow: true });
       } else {
-        await router.push(`/created/${tags[0]}`, undefined, { shallow: true });
+        await router.push(withBasePath(`/created/${tags[0]}`), undefined, { shallow: true });
       }
     }
   }

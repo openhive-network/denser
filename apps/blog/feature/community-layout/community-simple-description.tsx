@@ -10,6 +10,7 @@ import NewPost from '../../components/new-post-button';
 import { useEffect, useState } from 'react';
 import { Badge, Separator } from '@ui/components';
 import Link from 'next/link';
+import BasePathLink from '@/blog/components/base-path-link';
 import EditCommunityDialog from '../community-settings/edit-dialog';
 import clsx from 'clsx';
 
@@ -73,9 +74,9 @@ const CommunitySimpleDescription = ({
               {userRole ? (
                 <>
                   <span>{userRole[1].charAt(0).toUpperCase() + userRole[1].slice(1)}:</span>{' '}
-                  <Link href={`/roles/${username}`} className="text-destructive">
+                  <BasePathLink href={`/roles/${username}`} className="text-destructive">
                     {t('communities.roles')}
-                  </Link>
+                  </BasePathLink>
                 </>
               ) : null}
               {adminRole ? (

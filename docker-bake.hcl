@@ -15,6 +15,9 @@ variable "GIT_CURRENT_BRANCH" {}
 variable "GIT_LAST_LOG_MESSAGE" {}
 variable "GIT_LAST_COMMITTER" {}
 variable "GIT_LAST_COMMIT_DATE" {}
+variable "BASE_PATH" {
+  default = ""
+}
 
 function "notempty" {
   params = [variable]
@@ -38,6 +41,7 @@ target "local-build" {
     GIT_LAST_LOG_MESSAGE = "${GIT_LAST_LOG_MESSAGE}",
     GIT_LAST_COMMITTER = "${GIT_LAST_COMMITTER}",
     GIT_LAST_COMMIT_DATE = "${GIT_LAST_COMMIT_DATE}",
+    BASE_PATH = "${BASE_PATH}",
   }
   output = [
     "type=docker"

@@ -61,7 +61,13 @@ export function useSearch() {
         router.push(`/trending/${encodeURIComponent(value)}`);
         break;
       case 'account':
-        router.push(`/@${encodeURIComponent(value)}`);
+        // Use window.location for subdirectory deployments to ensure catch-all route works
+        if (router.basePath) {
+          window.location.href = `${router.basePath}/@${encodeURIComponent(value)}`;
+        } else {
+          // Use client-side navigation for root deployments (faster)
+          router.push(`/@${encodeURIComponent(value)}`);
+        }
         break;
       case 'ai':
         router.push(`/search?ai=${encodeURIComponent(value)}`);

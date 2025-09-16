@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import BasePathLink from './base-path-link';
 import { Icons } from '@hive/ui/components/icons';
 import { Card, CardFooter, CardHeader } from '@hive/ui/components/card';
 import { Separator } from '@hive/ui/components/separator';
@@ -62,9 +63,9 @@ const PostListItem = ({
             <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
                 <Icons.crossPost className="h-4 w-4 text-slate-500 dark:text-slate-400" />{' '}
-                <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${post.author}`}>
+                <BasePathLink className="hover:cursor-pointer hover:text-destructive" href={`/@${post.author}`}>
                   {post.author}
-                </Link>{' '}
+                </BasePathLink>{' '}
                 cross-posted{' '}
                 <Link
                   href={`/${post.original_entry.community}/@${post.original_entry.author}/${post.original_entry.permlink}`}
@@ -79,13 +80,13 @@ const PostListItem = ({
             <div className="flex items-center gap-2 py-1 text-sm">
               <Icons.forward className="h-4 w-4" />
               <span data-testid="reblogged-label">
-                <Link
+                <BasePathLink
                   href={`/@${post.reblogged_by[0]}`}
                   className="cursor-pointer hover:text-destructive"
                   data-testid="reblogged-author-link"
                 >
                   {post.reblogged_by[0]}
-                </Link>{' '}
+                </BasePathLink>{' '}
                 {t('cards.reblogged')}
               </span>
             </div>
@@ -93,23 +94,23 @@ const PostListItem = ({
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
               {nsfw === 'show' && post.blacklists.length < 1 ? (
-                <Link href={`/@${post.author}`} data-testid="post-card-avatar">
+                <BasePathLink href={`/@${post.author}`} data-testid="post-card-avatar">
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                     style={{
                       backgroundImage: `url(${getUserAvatarUrl(post.author, 'small')})`
                     }}
                   />
-                </Link>
+                </BasePathLink>
               ) : null}
               <div className="flex flex-wrap items-center gap-0.5 md:flex-nowrap">
-                <Link
+                <BasePathLink
                   href={`/@${post.author}`}
                   className="font-medium text-primary hover:cursor-pointer hover:text-destructive"
                   data-testid="post-author"
                 >
                   {post.author}
-                </Link>{' '}
+                </BasePathLink>{' '}
                 <span
                   title={t('post_content.reputation_title')}
                   className="mr-1 block font-normal"

@@ -20,6 +20,7 @@ import Link from 'next/link';
 import { getDefaultProps } from '../../lib/get-translations';
 import Head from 'next/head';
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
+import { withBasePath } from '@/blog/utils/PathUtils';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@ui/components/card-skeleton';
@@ -47,7 +48,7 @@ const MyPage: FC = () => {
 
   const handleChangeFilter = useCallback(
     (e: string) => {
-      router.push(`/${e}/my`, undefined, { shallow: true });
+      router.push(withBasePath(`/${e}/my`), undefined, { shallow: true });
     },
     [router]
   );
