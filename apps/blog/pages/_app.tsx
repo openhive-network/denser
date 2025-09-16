@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config';
-import { getCookie } from '@smart-signer/lib/utils';
+import { getCookie } from '@smart-signer/lib/storage-utils';
 import i18nConfig from '../next-i18next.config';
 import { getLanguage } from '../utils/language';
 import Providers from '@/blog/components/common/providers';
