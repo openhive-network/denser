@@ -48,7 +48,7 @@ include:
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
-  ref: a2031fd663ef74d12e20d6aac5537ce20eca992f   #develop
+  ref: 80e558bdeec9556ec46927853cf390c72ef03311   #develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/haf_api_node'
   ref: denser-11
