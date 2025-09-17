@@ -1,4 +1,5 @@
 import {AbstractUniverseLog} from 'universe-log';
+
 export class Log extends AbstractUniverseLog {
     public static log(): Log {
         return Log.INSTANCE;
