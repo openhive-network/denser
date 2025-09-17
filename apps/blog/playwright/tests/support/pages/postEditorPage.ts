@@ -93,6 +93,16 @@ export class PostEditorPage {
         expect(this.getSubmitPostButton).toBeVisible();
     }
 
+    async validateThePostEditorOfSpecificPostIsLoaded(postTitle: string, postContent: string, postSummary: string, postTags: string){
+        expect(this.getPostTitleInput).toHaveValue(postTitle);
+        expect(this.getFormContainer).toBeVisible();
+        expect(this.getPreviewContainer).toBeVisible();
+        expect(this.getEditorContent).toContainText(postContent);
+        expect(this.getPostSummaryInput).toHaveValue(postSummary);
+        expect(this.getEnterYourTagsInput).toHaveValue(postTags);
+        expect(this.getSubmitPostButton).toBeVisible();
+    }
+
     async createSimplePost(
         postTitle: string,
         postContentText: string,

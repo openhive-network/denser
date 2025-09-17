@@ -100,6 +100,7 @@ export class PostPage {
   readonly commentListLocator: Locator;
   readonly articleBodyParagraph: string;
   readonly postingToDropdown: Locator;
+  readonly postEditButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -217,6 +218,7 @@ export class PostPage {
     this.postFooterDownvoteTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
     this.firstPostAffiliationTag = page.locator('[data-testid="affiliation-tag-badge"]').first();
     this.postingToDropdown = page.locator('[data-testid="posting-to-list-trigger"]');
+    this.postEditButton = page.getByTestId('post-edit');
   }
 
   async gotoHomePage() {
