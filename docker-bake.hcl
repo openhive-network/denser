@@ -18,6 +18,9 @@ variable "GIT_LAST_COMMIT_DATE" {}
 variable "BASE_PATH" {
   default = ""
 }
+variable "PUSH_TO_HIVE_BLOG" {
+  default = ""
+}
 
 function "notempty" {
   params = [variable]
@@ -29,7 +32,9 @@ target "local-build" {
   tags = [
     "${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${TAG}",
     notempty(CI_COMMIT_SHORT_SHA) ? "${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHORT_SHA}": "",
-    notempty(CI_COMMIT_TAG) ? "${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_TAG}": ""
+    notempty(CI_COMMIT_TAG) ? "${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_TAG}": "",
+    # Add tags for registry-upload.hive.blog when PUSH_TO_HIVE_BLOG is set
+    notempty(PUSH_TO_HIVE_BLOG) && notempty(CI_COMMIT_TAG) ? "registry-upload.hive.blog/denser/${TURBO_APP_NAME}:${CI_COMMIT_TAG}": ""
   ]
   args = {
     TURBO_APP_SCOPE = "${TURBO_APP_SCOPE}",

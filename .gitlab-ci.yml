@@ -65,6 +65,14 @@ include:
     echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
   - |
+    # Set PUSH_TO_HIVE_BLOG for protected tags matching pattern
+    if [[ "${CI_COMMIT_TAG}" =~ ^[v01].* ]] && [[ "${CI_COMMIT_REF_PROTECTED}" == "true" ]]; then
+      export PUSH_TO_HIVE_BLOG="true"
+      echo "Will push to registry-upload.hive.blog for protected tag ${CI_COMMIT_TAG}"
+      # Login to registry-upload.hive.blog
+      docker login -u "$BLOG_REGISTRY_USER" -p "$BLOG_REGISTRY_PASSWORD" registry-upload.hive.blog
+    fi
+  - |
     # Create a default env file in case the build fails
     echo "${TURBO_APP_NAME}_IMAGE_NAME=${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}:${CI_COMMIT_SHA}" > ${TURBO_APP_NAME}-docker-build.env
     scripts/ci-helpers/docker-build-template-script.sh
