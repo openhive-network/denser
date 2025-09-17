@@ -20,7 +20,6 @@ import { sortToTitle, sortTypes } from '@/blog/lib/utils';
 import { MetadataProps } from '@/blog/lib/get-translations';
 import NoDataError from '@/blog/components/no-data-error';
 import { PageType } from '@/blog/pages/[...param]';
-import { useParams } from 'next/dist/client/components/navigation';
 import { Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@hive/ui/components/card-skeleton';
 
@@ -39,7 +38,35 @@ const MainPage = ({
   const router = useRouter();
   const { user } = useUser();
   const queryClient = useQueryClient();
-  const { param } = useParams() as { param: string[] };
+  
+  // Get params from router
+  let param = router.query.param as string[];
+  if (!param) {
+    param = [];
+  }
+
+  // Handle Next.js internal data fetching routes
+  // During client-side navigation, Next.js may inject '_next/data' paths into params
+  // This happens when the framework fetches data for page transitions
+  // We need to extract the actual route params from these internal paths
+  if (param.length > 0 && param[0] === '_next') {
+    // For _next/data routes, the pattern is ['_next', 'data', 'buildId', 'actual', 'params']
+    // We want to skip _next, data, and buildId (3 items)
+    if (param.length > 3) {
+      param = param.slice(3);
+      // Remove .json extension if present
+      if (param.length > 0) {
+        param[param.length - 1] = param[param.length - 1].replace(/\.json.*$/, '');
+      }
+    } else {
+      // If we don't have enough params after _next/data, use the path
+      const pathParts = router.asPath.split('/').filter(p => p && !p.startsWith('#') && !p.startsWith('?'));
+      param = pathParts;
+    }
+  }
+  
+  // Additional cleanup - remove any remaining invalid params
+  param = param.filter(p => p && p !== '_next' && p !== 'data' && !p.includes('.json'));
   const observer = !!user.username ? user.username : '';
   const [sort, tagParam] = param;
   const tag = (tagParam || '').toLocaleLowerCase();

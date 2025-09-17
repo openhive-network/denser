@@ -16,6 +16,9 @@ OPTIONS:
   --app-path=PATH       App path (eg. '/apps/auth')
   --app-name=NAME       App name (eg. 'auth')
   --help|-h|-?          Display this help screen and exit
+  
+  For subdirectory builds, set BASE_PATH environment variable:
+    BASE_PATH=/blog $0 ...
 EOF
 }
 
@@ -24,6 +27,7 @@ export TAG=${TAG:-"latest"}
 export TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-}
 export TURBO_APP_PATH=${TURBO_APP_PATH:-}
 export TURBO_APP_NAME=${TURBO_APP_NAME:-}
+export BASE_PATH=${BASE_PATH:-""}
 PROGRESS_DISPLAY=${PROGRESS_DISPLAY:-"auto"}
 
 while [ $# -gt 0 ]; do

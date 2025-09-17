@@ -8,7 +8,7 @@ import {
 } from '@ui/components/dropdown-menu';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { getCookie } from '@smart-signer/lib/utils';
+import { getCookie } from '@smart-signer/lib/storage-utils';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import TooltipContainer from '@ui/components/tooltip-container';

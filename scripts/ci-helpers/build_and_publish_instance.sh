@@ -141,3 +141,37 @@ echo "Pushing instance images"
 docker push "$CI_REGISTRY_IMAGE/$TURBO_APP_NAME:$CI_COMMIT_TAG"
 docker push "hiveio/$CI_PROJECT_NAME/$TURBO_APP_NAME:$CI_COMMIT_TAG"
 docker push "registry.hive.blog/$CI_PROJECT_NAME/$TURBO_APP_NAME:$CI_COMMIT_TAG"
+
+# Build subdirectory versions for blog and wallet apps
+if [ "$TURBO_APP_NAME" = "blog" ] || [ "$TURBO_APP_NAME" = "wallet" ]; then
+    echo "Building subdirectory version for $TURBO_APP_NAME"
+    
+    # Determine subdirectory image name
+    if [ "$TURBO_APP_NAME" = "blog" ]; then
+        SUBDIR_IMAGE_NAME="blog-subdirectory"
+        BASE_PATH="/blog"
+    else
+        SUBDIR_IMAGE_NAME="wallet-subdirectory"
+        BASE_PATH="/wallet"
+    fi
+    
+    # Build subdirectory version with BASE_PATH
+    BASE_PATH="$BASE_PATH" "$SRC_DIR/scripts/build_instance.sh" "$SRC_DIR" \
+        --tag="$CI_COMMIT_TAG" \
+        --registry="$CI_REGISTRY_IMAGE" \
+        --progress=plain \
+        --app-scope="$TURBO_APP_SCOPE" \
+        --app-path="$TURBO_APP_PATH" \
+        --app-name="$SUBDIR_IMAGE_NAME"
+    
+    # Pull and tag subdirectory image
+    docker pull "$CI_REGISTRY_IMAGE/$SUBDIR_IMAGE_NAME:$CI_COMMIT_TAG"
+    docker tag "$CI_REGISTRY_IMAGE/$SUBDIR_IMAGE_NAME:$CI_COMMIT_TAG" "hiveio/$CI_PROJECT_NAME/$SUBDIR_IMAGE_NAME:$CI_COMMIT_TAG"
+    docker tag "$CI_REGISTRY_IMAGE/$SUBDIR_IMAGE_NAME:$CI_COMMIT_TAG" "registry.hive.blog/$CI_PROJECT_NAME/$SUBDIR_IMAGE_NAME:$CI_COMMIT_TAG"
+    
+    # Push subdirectory images
+    echo "Pushing subdirectory instance images"
+    docker push "$CI_REGISTRY_IMAGE/$SUBDIR_IMAGE_NAME:$CI_COMMIT_TAG"
+    docker push "hiveio/$CI_PROJECT_NAME/$SUBDIR_IMAGE_NAME:$CI_COMMIT_TAG"
+    docker push "registry.hive.blog/$CI_PROJECT_NAME/$SUBDIR_IMAGE_NAME:$CI_COMMIT_TAG"
+fi

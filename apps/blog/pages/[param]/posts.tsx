@@ -18,6 +18,7 @@ import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 
 import { useLocalStorage } from 'usehooks-ts';
 import PostCardSkeleton from '@ui/components/card-skeleton';
+import {commonVariables} from'@ui/lib/common-variables';
 
 const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const { t } = useTranslation('common_blog');
@@ -36,7 +37,7 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
       return await getAccountPosts(
         sort || 'trending',
         username,
-        user.username === '' ? 'hive.blog' : user.username,
+        user.username !== '' ? user.username : commonVariables.defaultObserver,
         pageParam?.author,
         pageParam?.permlink
       );
@@ -75,7 +76,15 @@ const UserPosts: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
           <Tabs
             defaultValue={sort}
             className="w-full"
-            onValueChange={(s) => router.push(`/@${username}/${s}`)}
+            onValueChange={(s) => {
+              // Use window.location for subdirectory deployments to ensure catch-all route works
+              if (router.basePath) {
+                window.location.href = `${router.basePath}/@${username}/${s}`;
+              } else {
+                // Use client-side navigation for root deployments (faster)
+                router.push(`/@${username}/${s}`);
+              }
+            }}
           >
             <TabsList className="flex justify-start bg-background-tertiary" data-testid="user-post-menu">
               <TabsTrigger value="posts">{t('navigation.profile_posts_tab_navbar.posts')}</TabsTrigger>

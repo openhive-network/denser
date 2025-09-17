@@ -4,7 +4,7 @@ import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import PrevNextButtons from '@/blog/components/prev-next-buttons';
 import { FullAccount } from '@ui/store/app-types';
 import { useQueryClient } from '@tanstack/react-query';
-import Link from 'next/link';
+import BasePathLink from '@/blog/components/base-path-link';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
@@ -72,7 +72,7 @@ export default function Followers({
                 key={e.follower}
                 className="flex items-center justify-between bg-background-tertiary px-3 font-semibold text-destructive odd:bg-background"
               >
-                <Link href={`/@${e.follower}`}>{e.follower}</Link>
+                <BasePathLink href={`/@${e.follower}`}>{e.follower}</BasePathLink>
                 {!user.isLoggedIn || user.username === e.follower ? null : (
                   <div>
                     <ButtonsContainer

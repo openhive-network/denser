@@ -9,7 +9,6 @@ import {
   DialogTrigger
 } from '@ui/components/dialog';
 import { ReactNode, useEffect, useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from 'usehooks-ts';
@@ -18,24 +17,16 @@ import { useTranslation } from 'next-i18next';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import badActorList from '@ui/config/lists/bad-actor-list';
 import clsx from 'clsx';
+import { PostFormValues } from '../feature/post-editor/lib/utils';
 
-type AccountFormValues = {
-  title: string;
-  postArea: string;
-  postSummary: string;
-  tags: string;
-  author: string;
-  category: string;
-  beneficiaries: {
-    account: string;
-    weight: string;
-  }[];
-  maxAcceptedPayout: number;
-  payoutType: string;
-};
-type Template = AccountFormValues & {
+type Template = PostFormValues & {
   templateTitle: string;
 };
+
+interface AuthorRewardsTypes {
+  value: PostFormValues['payoutType'];
+  label: string;
+}
 
 export function AdvancedSettingsPostForm({
   children,
@@ -45,8 +36,8 @@ export function AdvancedSettingsPostForm({
 }: {
   children: ReactNode;
   username: string;
-  data: AccountFormValues;
-  updateForm: (data: AccountFormValues) => void;
+  data: PostFormValues;
+  updateForm: (data: PostFormValues) => void;
 }) {
   const { t } = useTranslation('common_blog');
   const [preferences] = useLocalStorage<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES);
@@ -56,12 +47,12 @@ export function AdvancedSettingsPostForm({
     { value: '0', label: t('submit_page.advanced_settings_dialog.decline_payout') },
     { value: 'custom', label: t('submit_page.advanced_settings_dialog.custom_value') }
   ];
-  const authorRewardsOptions = [
+  const authorRewardsOptions: AuthorRewardsTypes[] = [
     { value: '50%', label: '50% HBD / 50% HP' },
     { value: '100%', label: t('submit_page.advanced_settings_dialog.power_up') }
   ];
 
-  const [rewards, setRewards] = useState(
+  const [rewards, setRewards] = useState<PostFormValues['payoutType']>(
     preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards
   );
   const [splitRewards, setSplitRewards] = useState(100);
@@ -71,10 +62,10 @@ export function AdvancedSettingsPostForm({
   );
   const [selectTemplate, setSelectTemplate] = useState('/');
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
-    data.beneficiaries
+    data?.beneficiaries ?? []
   );
   const [customValue, setCustomValue] = useState(
-    data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100'
+    data?.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100'
   );
   const [open, setOpen] = useState(false);
   const [storedTemplates, storeTemplates] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
@@ -151,12 +142,12 @@ export function AdvancedSettingsPostForm({
   function handleTamplates(e: string) {
     const template = storedTemplates.find((template) => template.templateTitle === e);
     if (template) {
-      setBeneficiaries(template.beneficiaries);
-      setRewards(template.payoutType);
-      if (template.maxAcceptedPayout === 1000000) {
+      setBeneficiaries(template?.beneficiaries ?? []);
+      setRewards(template?.payoutType);
+      if (template?.maxAcceptedPayout === 1000000) {
         setMaxPayout('no_max');
       }
-      if (template.maxAcceptedPayout === 0) {
+      if (template?.maxAcceptedPayout === 0) {
         setMaxPayout('0');
       }
       if (Number(template.maxAcceptedPayout) > 0 && Number(template.maxAcceptedPayout) < 1000000) {

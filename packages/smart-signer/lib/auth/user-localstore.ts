@@ -1,6 +1,6 @@
 import { User } from '@smart-signer/types/common';
 import { defaultUser } from '@smart-signer/lib/auth/utils';
-import { isStorageAvailable } from '@smart-signer/lib/utils';
+import { isStorageAvailable } from '@smart-signer/lib/storage-utils';
 
 const USER_LOCAL_STORAGE_KEY = 'user';
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, MutableRefObject } from 'react';
 import { TFunction } from 'next-i18next';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
-import { getCookie } from '@smart-signer/lib/utils';
+import { getCookie } from '@smart-signer/lib/storage-utils';
 import { KeyType } from '@smart-signer/types/common';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
