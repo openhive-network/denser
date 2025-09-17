@@ -1,28 +1,17 @@
-import '@hive/tailwindcss-config/globals.css';
-import type { AppProps } from 'next/app';
+'use client';
+
 import { useEffect } from 'react';
-import { appWithTranslation } from 'next-i18next';
-import { i18n } from 'next-i18next.config';
 import { getCookie } from '@smart-signer/lib/utils';
-import i18nConfig from '../next-i18next.config';
 import { getLanguage } from '../utils/language';
-import Providers from '@/blog/components/common/providers';
-import { useRouter } from 'next/router';
 
-function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-
+export default function ClientEffects() {
   useEffect(() => {
     // Handle locale cookie setting
     if (typeof window !== 'undefined' && !getCookie('NEXT_LOCALE')) {
-      document.cookie = `NEXT_LOCALE=${i18n.defaultLocale}; SameSite=Lax`;
+      document.cookie = `NEXT_LOCALE=en; SameSite=Lax`;
     }
 
-    // Handle direction setting
-    const locale = getCookie('NEXT_LOCALE');
-    document.body.setAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr');
-
-    // Handle language setting
+    // Handle language setting from localStorage/cookies
     const savedLang = getLanguage();
     if (savedLang) {
       document.documentElement.lang = savedLang;
@@ -32,10 +21,11 @@ function App({ Component, pageProps }: AppProps) {
   // Global handler for browser back/forward navigation in subdirectory deployments
   // This fixes issues when navigating back between different route handlers
   useEffect(() => {
-    if (router.basePath) {
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+    if (basePath) {
       const handlePopState = () => {
         // Get the current path without basePath
-        const pathWithoutBase = window.location.pathname.replace(router.basePath, '');
+        const pathWithoutBase = window.location.pathname.replace(basePath, '');
 
         // Force reload when navigating to/from user profile pages
         // This ensures the correct route handler is used
@@ -50,13 +40,7 @@ function App({ Component, pageProps }: AppProps) {
       window.addEventListener('popstate', handlePopState);
       return () => window.removeEventListener('popstate', handlePopState);
     }
-  }, [router.basePath]);
+  }, []);
 
-  return (
-    <Providers dehydratedState={pageProps.dehydratedState}>
-      <Component {...pageProps} />
-    </Providers>
-  );
+  return null;
 }
-
-export default appWithTranslation(App, i18nConfig);

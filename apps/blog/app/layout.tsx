@@ -1,7 +1,9 @@
 import '@hive/tailwindcss-config/globals.css';
 import { ReactNode } from 'react';
-import { Metadata } from 'next';
 import Script from 'next/script';
+import { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import ClientEffects from './client-effects';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -28,12 +30,20 @@ export const metadata: Metadata = {
     title: '#Hive.io',
     description: SITE_DESC,
     images: ['https://hive.blog/images/hive-blog-twshare.png']
+  },
+  other: {
+    'fb:app_id': 'YOUR_FB_APP_ID'
   }
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  // Server-side locale and language handling
+  const cookieStore = cookies();
+  const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
+  const isRTL = locale === 'ar';
+
   return (
-    <html lang="en">
+    <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
       <body>
         <div className="min-h-screen bg-gray-50">
           <header className="bg-white shadow-sm">
@@ -44,6 +54,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <main className="container mx-auto px-4 py-8">{children}</main>
         </div>
         <Script src={`${basePath}/__ENV.js`} strategy="beforeInteractive" />
+        <ClientEffects />
       </body>
     </html>
   );
