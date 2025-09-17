@@ -1,5 +1,4 @@
 import {AbstractUniverseLog} from 'universe-log';
-
 export class Log extends AbstractUniverseLog {
     public static log(): Log {
         return Log.INSTANCE;
@@ -8,7 +7,7 @@ export class Log extends AbstractUniverseLog {
 
     private constructor() {
         super({
-            levelEnvs: ['HIVE_CONTENT_RENDERER_LOG_LEVEL', 'ENGRAVE_LOG_LEVEL'],
+            levelEnvs: ['REACT_APP_LOGGING_LOG_LEVEL'],
             metadata: {
                 library: '@hiveio/content-renderer'
             }
