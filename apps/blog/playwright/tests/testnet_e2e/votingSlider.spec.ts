@@ -401,6 +401,7 @@ test.describe('Test for slider voting', () => {
       const setupValueOfSlider: number = 25; // -25%
       const undoDownvoteTooltipText: string = 'Undo your downvote 25.00%Undo your downvote 25.00%';
       const downvoteTooltipText: string = 'DownvoteDownvote';
+      const downvoteAfterTheirPayout: string = 'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards';
 
       const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
       const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
@@ -446,9 +447,8 @@ test.describe('Test for slider voting', () => {
 
       const tooltipText = await homePage.getDownvoteButtonTooltip.textContent();
         expect(
-          tooltipText === 'DownvoteDownvote' ||
-            tooltipText ===
-              'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards'
+          tooltipText === undoDownvoteTooltipText ||
+            tooltipText === downvoteAfterTheirPayout
         ).toBeTruthy();
 
       // expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(undoDownvoteTooltipText);
@@ -470,12 +470,9 @@ test.describe('Test for slider voting', () => {
       // Hover the downvote button to validate the tooltip text
       await firstPostCardDownvoteButtonLocator.hover();
       await homePage.page.waitForTimeout(1000);
-
-      
-        expect(
-          tooltipText === 'DownvoteDownvote' ||
-            tooltipText ===
-              'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards'
+      expect(
+          tooltipText === undoDownvoteTooltipText ||
+            tooltipText === downvoteAfterTheirPayout
         ).toBeTruthy();
       // expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(downvoteTooltipText);
     });
