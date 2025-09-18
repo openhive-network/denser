@@ -3,7 +3,13 @@ import { Clock, Link2 } from 'lucide-react';
 import UserInfo from '@/blog/components/user-info';
 import { getActiveVotes } from '@transaction/lib/hive';
 import { dehydrate, useQuery } from '@tanstack/react-query';
-import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge';
+import {
+  getCommunity,
+  getDiscussion,
+  getFollowList,
+  getListCommunityRoles,
+  getPost
+} from '@transaction/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import ImageGallery from '@/blog/components/image-gallery';
 import Link from 'next/link';
@@ -66,6 +72,7 @@ import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
 import { makeCanonicalLink } from '@ui/lib/canonical-url';
 import { DEFAULT_FORM_VALUE, EditPostEntry } from '@/blog/feature/post-editor/lib/utils';
 import { commonVariables } from '@ui/lib/common-variables';
+import { getMutedComments } from '@/blog/lib/utils';
 
 const logger = getLogger('app');
 export const postClassName =
@@ -94,6 +101,8 @@ function PostPage({
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const { data: mutedList } = useFollowListQuery(user.username, 'muted');
+  const { data: authorMutedList } = useFollowListQuery(username, 'muted');
+  const mutedNames = authorMutedList?.map((e) => e.name) || [];
   const deletePostMutation = useDeletePostMutation();
   const { isLoading: isLoadingPost, data: post } = useQuery(
     ['postData', username, permlink],
@@ -138,13 +147,17 @@ function PostPage({
     ['discussionData', permlink],
     () => getDiscussion(username, String(permlink), user.username),
     {
+      select: (discussion) => {
+        if (!discussion) return null;
+        return getMutedComments(mutedNames, discussion);
+      },
       enabled: !!username && !!permlink
     }
   );
   const { data: communityData } = useQuery(['community', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
-
+  console.log('communityData', discussion);
   const { data: activeVotesData, isLoading: isActiveVotesLoading } = useQuery(
     ['activeVotes'],
     () => getActiveVotes(username, permlink),
@@ -766,13 +779,23 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     try {
       await queryClient.prefetchQuery(['discussionData', permlink], async () => {
         const discussion = await getDiscussion(username, permlink);
+        const authorMutedList = await getFollowList(username, 'muted');
         // Strip out active_votes from all posts in discussion
         if (discussion) {
           const cleanedDiscussion: Record<string, Entry> = {};
           Object.keys(discussion).forEach((key) => {
             cleanedDiscussion[key] = {
               ...discussion[key],
-              active_votes: []
+              active_votes: [],
+              stats: {
+                flag_weight: discussion[key].stats?.flag_weight ?? 0,
+                gray: authorMutedList?.some((e) => e.name === discussion[key].author)
+                  ? true
+                  : (discussion[key].stats?.gray ?? false),
+                hide: discussion[key].stats?.hide ?? false,
+                total_votes: discussion[key].stats?.total_votes ?? 0,
+                is_pinned: discussion[key].stats?.is_pinned ?? false
+              }
             };
           });
           return cleanedDiscussion;

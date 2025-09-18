@@ -1,7 +1,7 @@
 import Big from 'big.js';
 import sanitize from 'sanitize-html';
 import remarkableStripper from '../lib/remmarkable-stripper';
-import { JsonMetadata } from '@transaction/lib/extended-hive.chain';
+import { Entry, JsonMetadata } from '@transaction/lib/extended-hive.chain';
 import moment from 'moment';
 import { TFunction } from 'i18next';
 import { FullAccount } from '@transaction/lib/app-types';
@@ -392,3 +392,20 @@ export function compareDates(dateStrings: string[]) {
 
   return closestDate.format('YYYY-MM-DDTHH:mm:ss');
 }
+
+export const getMutedComments = (list: string[], discussion: Record<string, Entry>) => {
+  const filteredByAuthorMuted: Record<string, Entry> = {};
+  Object.keys(discussion).map((key) => {
+    filteredByAuthorMuted[key] = {
+      ...discussion[key],
+      stats: {
+        flag_weight: discussion[key].stats?.flag_weight ?? 0,
+        gray: list.includes(discussion[key].author) ? true : (discussion[key].stats?.gray ?? false),
+        hide: discussion[key].stats?.hide ?? false,
+        total_votes: discussion[key].stats?.total_votes ?? 0,
+        is_pinned: discussion[key].stats?.is_pinned ?? false
+      }
+    };
+  });
+  return filteredByAuthorMuted;
+};
