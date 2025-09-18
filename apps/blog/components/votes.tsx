@@ -49,7 +49,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
     type === 'post' ? storedVotesValues.post.downvote : storedVotesValues.comment.downvote
   );
   const voter = user.username;
-  const afterPayout =
+  const pastPayout =
     moment(
       post.payout_at.indexOf('.') !== -1 || post.payout_at.indexOf('+') !== -1
         ? post.payout_at
@@ -116,7 +116,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               loading={voteMutation.isLoading || !!userVote?._temporary}
               text={t('cards.post_card.upvote')}
               dataTestId="upvote-button"
-              afterPayout={afterPayout}
+              afterPayout={pastPayout && !vote_upvoted}
             >
               <Icons.arrowUpCircle
                 className={clsx(
@@ -138,7 +138,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 loading={voteMutation.isLoading || !!userVote?._temporary}
                 text={t('cards.post_card.upvote')}
                 dataTestId="upvote-button-slider"
-                afterPayout={afterPayout}
+                afterPayout={pastPayout && !vote_upvoted}
               >
                 <button
                   className="flex h-full items-center justify-center"
@@ -190,7 +190,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               : t('cards.post_card.upvote')
           }
           dataTestId="upvote-button"
-          afterPayout={afterPayout}
+          afterPayout={pastPayout && !vote_upvoted}
         >
           <button
             className="flex h-full items-center justify-center"
@@ -225,7 +225,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               text={t('cards.post_card.upvote')}
               loading={voteMutation.isLoading || !!userVote?._temporary}
               dataTestId="upvote-button"
-              afterPayout={afterPayout}
+              afterPayout={pastPayout && !vote_upvoted}
             >
               <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" />
             </TooltipContainer>
@@ -246,7 +246,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               loading={voteMutation.isLoading || !!userVote?._temporary}
               text={t('cards.post_card.downvote')}
               dataTestId="downvote-button"
-              afterPayout={afterPayout}
+              afterPayout={pastPayout && !vote_downvoted}
             >
               <Icons.arrowDownCircle
                 className={clsx(
@@ -268,7 +268,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 loading={voteMutation.isLoading || !!userVote?._temporary}
                 text={t('cards.post_card.downvote')}
                 dataTestId="downvote-button-slider"
-                afterPayout={afterPayout}
+                afterPayout={pastPayout && !vote_downvoted}
               >
                 <button
                   className="flex h-full items-center justify-center"
@@ -331,7 +331,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               : t('cards.post_card.downvote')
           }
           dataTestId="downvote-button"
-          afterPayout={afterPayout}
+          afterPayout={pastPayout && !vote_downvoted}
         >
           <button
             className="flex h-full items-center justify-center"
@@ -367,7 +367,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               text={t('cards.post_card.downvote')}
               loading={voteMutation.isLoading || !!userVote?._temporary}
               dataTestId="downvote-button"
-              afterPayout={afterPayout}
+              afterPayout={pastPayout && !vote_downvoted}
             >
               <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
             </TooltipContainer>
