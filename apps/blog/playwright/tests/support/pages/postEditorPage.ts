@@ -94,6 +94,7 @@ export class PostEditorPage {
     }
 
     async validateThePostEditorOfSpecificPostIsLoaded(postTitle: string, postContent: string, postSummary: string, postTags: string){
+        await this.page.waitForSelector(this.getSubmitPostButton['_selector']);
         expect(this.getPostTitleInput).toHaveValue(postTitle);
         expect(this.getFormContainer).toBeVisible();
         expect(this.getPreviewContainer).toBeVisible();

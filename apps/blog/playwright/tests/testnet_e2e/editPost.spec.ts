@@ -75,13 +75,13 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(homePage.postDescription.first()).toContainText(postSummary);
       // Move inside the first post on the list of posts of denserautotest4
       await homePage.getFirstPostTitle.click();
-      await postPage.page.waitForTimeout(3000);
+      // await postPage.page.waitForTimeout(3000);
+      await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
       await postPage.validatePostTitle(postTitle);
       await postPage.validatePostContantContainText(postContentText, postContentText);
       // Click post edit button
       await postPage.postEditButton.click();
       // Validate the post editor is opened
-      await postEditorPage.page.waitForTimeout(3000);
       await postEditorPage.validateThePostEditorOfSpecificPostIsLoaded(
         postTitle,
         postContentText,
