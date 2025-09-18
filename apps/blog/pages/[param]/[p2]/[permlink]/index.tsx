@@ -51,7 +51,6 @@ import { getLogger } from '@ui/lib/logging';
 import ReblogTrigger from '@/blog/components/reblog-trigger';
 import { getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
-import env from '@beam-australia/react-env';
 import { usePinMutation, useUnpinMutation } from '@/blog/components/hooks/use-pin-mutations';
 import { handleError } from '@ui/lib/handle-error';
 import MutePostDialog from '@/blog/components/mute-post-dialog';
