@@ -384,7 +384,7 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.postDownvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    expect(await profilePage.postDownvoteTooltip.textContent()).toBe('DownvoteDownvote');
+    expect(await profilePage.postDownvoteTooltip.textContent()).toBe("DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards");
     // Upvote icon color
     expect(
         await profilePage.getElementCssPropertyValue(
