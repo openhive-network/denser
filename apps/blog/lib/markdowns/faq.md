@@ -862,8 +862,6 @@ New users can only upvote and downvote with 100% voting strength.
 
 Once you reach about 500 Hive Power, you will see a vote slider appear when you vote. You can use the slider to adjust the weight of your vote, between 1% and 100% voting strength. Voting with less than 100% voting weight will use up less voting mana, but it will also have less of an influence on the post or comment's rewards.
 
-<img src="https://images.hive.blog/DQmV6c21tzSrgXwPHx4tvuc1UiCXBEvzkLBH9QCZHtVN6Ma/image.png">
-
 <a href="#Table_of_Contents_Voting_and_Curating">^</a>
 
 ## <span id="Where_can_I_check_my_voting_mana">Where can I check my voting mana?</span>
