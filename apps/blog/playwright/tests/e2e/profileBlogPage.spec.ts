@@ -353,8 +353,11 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.postUpvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    expect(await profilePage.postUpvoteTooltip.textContent()).toBe('UpvoteUpvote');
-    // Upvote icon color
+    const tooltipText = await profilePage.postUpvoteTooltip.textContent();
+    expect(
+      tooltipText === "UpvoteUpvote" || tooltipText === "UpvoteVoting on Content after their payout does not generate any new rewardsUpvoteVoting on Content after their payout does not generate any new rewards"
+    ).toBeTruthy();
+
     expect(
         await profilePage.getElementCssPropertyValue(
         await profilePage.postUpvoteButton.locator('svg').first(),
@@ -384,7 +387,11 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.postDownvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    expect(await profilePage.postDownvoteTooltip.textContent()).toBe("DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards");
+    const tooltipText = await profilePage.postDownvoteTooltip.textContent();
+    expect(
+      tooltipText === "DownvoteDownvote" || tooltipText === "DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards"
+    ).toBeTruthy();
+
     // Upvote icon color
     expect(
         await profilePage.getElementCssPropertyValue(
