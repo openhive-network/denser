@@ -30,11 +30,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       // Validate User is logged in as denserautotest4
       await loginHelper.validateLoggedInUser(users.denserautotest4.username);
       // Click to close the profile menu
-      await denserAutoTest4Page.page
-        .getByTestId('community-name')
-        .locator('..')
-        .locator('..')
-        .click({ force: true });
+      await homePage.clickToCloseProfileMenu();
       // Click navigation pencil icon to move to the post editor
       await homePage.getNavCreatePost.click();
       // Validate the post editor is open and create simple post
@@ -75,7 +71,6 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(homePage.postDescription.first()).toContainText(postSummary);
       // Move inside the first post on the list of posts of denserautotest4
       await homePage.getFirstPostTitle.click();
-      // await postPage.page.waitForTimeout(3000);
       await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
       await postPage.validatePostTitle(postTitle);
       await postPage.validatePostContantContainText(postContentText, postContentText);

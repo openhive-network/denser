@@ -9,6 +9,7 @@ export class HomePage {
   readonly getPostListHot: Locator;
   readonly getPostListPayouts: Locator;
   readonly getPostListMuted: Locator;
+  readonly getCommunityNameElement: Locator;
   readonly getTrendingCommunitiesSideBar: Locator;
   readonly getTrendingCommunitiesSideBarLinks: Locator;
   readonly getTrandingCommunitiesHeader: Locator;
@@ -137,6 +138,7 @@ export class HomePage {
     this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar
       .locator('a')
       .getByText('LeoFinance');
+    this.getCommunityNameElement = page.getByTestId('community-name');
     this.getHeaderLeoCommunities = page.locator('[data-testid="community-name"]').getByText('LeoFinance');
     this.getWorldmappinCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a:text("Worldmappin")');
     this.getHeaderWorldmappinCommunities = page
@@ -541,5 +543,13 @@ export class HomePage {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.getMainTimeLineOfPosts['_selector']);
     await expect(this.getFilterPosts).toHaveText('Trending');
+  }
+
+  // Click to close the profile menu - click the center of the home page community and filter header
+  async clickToCloseProfileMenu(){
+    await this.getCommunityNameElement
+        .locator('..')
+        .locator('..')
+        .click({ force: true });
   }
 }
