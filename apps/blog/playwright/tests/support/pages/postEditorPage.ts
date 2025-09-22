@@ -123,4 +123,28 @@ export class PostEditorPage {
         // Click the submit button
         await this.getSubmitPostButton.click();
     }
+
+    async createSimplePostForCommunity(
+        postTitle: string,
+        postContentText: string,
+        postSummary: string,
+        postTag: string,
+        communitySelectOptionValue: string
+    ) {
+        // Validate the post editor is loaded
+        await this.validateDefaultPostEditorIsLoaded();
+        // Type the title of the post
+        await this.getPostTitleInput.fill(postTitle);
+        // Type the conntent of the post
+        await this.getEditorContentTextarea.fill(postContentText);
+        // Type the post summary
+        await this.getPostSummaryInput.fill(postSummary);
+        // Type the tag
+        await this.getEnterYourTagsInput.fill(postTag);
+        // Set a community
+        await this.getPostingToListTrigger.locator('//following-sibling::select').selectOption(communitySelectOptionValue);
+        // Click the submit button
+        await this.getSubmitPostButton.click();
+    }
+
 }

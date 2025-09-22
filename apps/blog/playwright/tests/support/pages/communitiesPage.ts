@@ -2,6 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 export class CommunitiesPage {
   readonly page: Page;
+  readonly postTitle: Locator;
   readonly communityNameTitle: Locator;
   readonly communityInfoSidebar: Locator;
   readonly communityDescriptionSidebar: Locator;
@@ -47,6 +48,7 @@ export class CommunitiesPage {
 
   constructor(page: Page) {
     this.page = page;
+    this.postTitle = page.getByTestId('post-title');
     this.communityNameTitle = page.locator('[data-testid="community-name"]');
     this.communityInfoSidebar = page.locator('[data-testid="community-info-sidebar"]');
     this.communityDescriptionSidebar = page.locator('[data-testid="community-description-rules-sidebar"]');
