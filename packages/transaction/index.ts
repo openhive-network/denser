@@ -121,7 +121,7 @@ export class TransactionService {
     const signature = await this.signTransaction(txBuilder, singleSignKeyType, requiredKeyType);
 
     // Add signature to transaction
-    txBuilder.sign(signature);
+    txBuilder.addSignature(signature);
 
     if (observe) {
       return await this.broadcastAndObserveTransaction(txBuilder);
