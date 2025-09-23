@@ -17,6 +17,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover'
 import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/handle-error';
 import { useLocalStorage } from 'usehooks-ts';
+import moment from 'moment';
 
 const logger = getLogger('app');
 
@@ -48,6 +49,12 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
     type === 'post' ? storedVotesValues.post.downvote : storedVotesValues.comment.downvote
   );
   const voter = user.username;
+  const pastPayout =
+    moment(
+      post.payout_at.indexOf('.') !== -1 || post.payout_at.indexOf('+') !== -1
+        ? post.payout_at
+        : `${post.payout_at}.000Z`
+    ).diff(moment()) < 0;
   useEffect(() => {
     setSliderUpvote(type === 'post' ? storedVotesValues.post.upvote : storedVotesValues.comment.upvote);
   }, [type, storedVotesValues.post.upvote, storedVotesValues.comment.upvote]);
@@ -95,6 +102,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
 
   return (
     <div className="flex items-center gap-1">
+      {/* Upvote with slider - trigger */}
       {clickedVoteButton === 'up' && voteMutation.isLoading ? (
         <CircleSpinner
           loading={clickedVoteButton === 'up' && voteMutation.isLoading}
@@ -108,6 +116,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               loading={voteMutation.isLoading || !!userVote?._temporary}
               text={t('cards.post_card.upvote')}
               dataTestId="upvote-button"
+              afterPayout={pastPayout && !vote_upvoted}
             >
               <Icons.arrowUpCircle
                 className={clsx(
@@ -129,6 +138,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 loading={voteMutation.isLoading || !!userVote?._temporary}
                 text={t('cards.post_card.upvote')}
                 dataTestId="upvote-button-slider"
+                afterPayout={pastPayout && !vote_upvoted}
               >
                 <button
                   className="flex h-full items-center justify-center"
@@ -180,6 +190,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               : t('cards.post_card.upvote')
           }
           dataTestId="upvote-button"
+          afterPayout={pastPayout && !vote_upvoted}
         >
           <button
             className="flex h-full items-center justify-center"
@@ -214,12 +225,14 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               text={t('cards.post_card.upvote')}
               loading={voteMutation.isLoading || !!userVote?._temporary}
               dataTestId="upvote-button"
+              afterPayout={pastPayout && !vote_upvoted}
             >
               <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" />
             </TooltipContainer>
           </div>
         </DialogLogin>
       )}
+      {/* Downvote with slider - trigger */}
       {clickedVoteButton === 'down' && voteMutation.isLoading ? (
         <CircleSpinner
           loading={clickedVoteButton === 'down' && voteMutation.isLoading}
@@ -233,6 +246,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               loading={voteMutation.isLoading || !!userVote?._temporary}
               text={t('cards.post_card.downvote')}
               dataTestId="downvote-button"
+              afterPayout={pastPayout && !vote_downvoted}
             >
               <Icons.arrowDownCircle
                 className={clsx(
@@ -254,6 +268,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 loading={voteMutation.isLoading || !!userVote?._temporary}
                 text={t('cards.post_card.downvote')}
                 dataTestId="downvote-button-slider"
+                afterPayout={pastPayout && !vote_downvoted}
               >
                 <button
                   className="flex h-full items-center justify-center"
@@ -316,6 +331,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               : t('cards.post_card.downvote')
           }
           dataTestId="downvote-button"
+          afterPayout={pastPayout && !vote_downvoted}
         >
           <button
             className="flex h-full items-center justify-center"
@@ -351,6 +367,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               text={t('cards.post_card.downvote')}
               loading={voteMutation.isLoading || !!userVote?._temporary}
               dataTestId="downvote-button"
+              afterPayout={pastPayout && !vote_downvoted}
             >
               <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
             </TooltipContainer>
@@ -373,12 +390,14 @@ const TooltipContainer = ({
   children,
   loading,
   text,
-  dataTestId
+  dataTestId,
+  afterPayout
 }: {
   children: ReactNode;
   loading: boolean;
   text: string;
   dataTestId: string;
+  afterPayout?: boolean;
 }) => {
   return (
     <TooltipProvider>
@@ -386,7 +405,17 @@ const TooltipContainer = ({
         <TooltipTrigger data-testid={dataTestId} disabled={loading} asChild>
           <span className="cursor-pointer">{children}</span>
         </TooltipTrigger>
-        <TooltipContent data-testid={dataTestId + '-tooltip'}>{text}</TooltipContent>
+        <TooltipContent
+          data-testid={dataTestId + '-tooltip'}
+          className="flex flex-col items-center justify-center"
+        >
+          <div className="font-bold">{text}</div>
+          {afterPayout && (
+            <div className="text-xs text-destructive opacity-80">
+              Voting on Content after their payout does not generate any new rewards
+            </div>
+          )}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
