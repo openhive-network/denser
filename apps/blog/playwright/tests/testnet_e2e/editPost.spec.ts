@@ -124,7 +124,13 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       // Click navigation pencil icon to move to the post editor
       await homePage.getNavCreatePost.click();
       // Validate the post editor is open and create simple post for the Lifestyle community
-      await postEditorPage.createSimplePostForCommunity(postTitle, postContentText, postSummary, postTag, communitySelectOptionValue);
+      await postEditorPage.createSimplePostForCommunity(
+        postTitle,
+        postContentText,
+        postSummary,
+        postTag,
+        communitySelectOptionValue
+      );
       // If a password to unlock key is needed
       await loginForm.page.waitForTimeout(2000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
@@ -191,7 +197,10 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     test('Move to the Lifestyle community and create the new post for denserautotest4 in a specific community', async ({
       denserAutoTest4Page
     }) => {
-      const lifestyleCommunityLocator: Locator = denserAutoTest4Page.page.locator('ul').filter({ hasText: /^Lifestyle$/ }).getByRole('link');
+      const lifestyleCommunityLocator: Locator = denserAutoTest4Page.page
+        .locator('ul')
+        .filter({ hasText: /^Lifestyle$/ })
+        .getByRole('link');
       const homePage = new HomePage(denserAutoTest4Page.page);
       const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
@@ -223,7 +232,10 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     });
 
     test('Edit the post of denserautotest4 of the specific community', async ({ denserAutoTest4Page }) => {
-      const lifestyleCommunityLocator: Locator = denserAutoTest4Page.page.locator('ul').filter({ hasText: /^Lifestyle$/ }).getByRole('link');
+      const lifestyleCommunityLocator: Locator = denserAutoTest4Page.page
+        .locator('ul')
+        .filter({ hasText: /^Lifestyle$/ })
+        .getByRole('link');
       const timestamp: string = new Date().toString();
       const postEditedContentText: string = 'The new conntent after editing in community';
       const postEditedTitleText: string = `Edited title in community ${timestamp}`;
@@ -276,5 +288,4 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postEditedTagExpected);
     });
   });
-
 });
