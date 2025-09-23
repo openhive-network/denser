@@ -134,7 +134,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(await communityPage.postTitle.allTextContents()).toContain(postTitle);
     });
 
-    test('Edit the post of denserautotest4 in a unmoderated tag test', async ({ denserAutoTest4Page }) => {
+    test('Edit the post of denserautotest4 in a specific community', async ({ denserAutoTest4Page }) => {
       const timestamp: string = new Date().toString();
       const postEditedContentText: string = 'The new conntent after editing in community';
       const postEditedTitleText: string = `Edited title in community ${timestamp}`;
