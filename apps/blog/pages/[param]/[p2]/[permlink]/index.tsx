@@ -156,7 +156,7 @@ function PostPage({
   const { data: communityData } = useQuery(['community', community], () => getCommunity(community), {
     enabled: !!username && !!community && community.startsWith('hive-')
   });
-  console.log('communityData', discussion);
+
   const { data: activeVotesData, isLoading: isActiveVotesLoading } = useQuery(
     ['activeVotes'],
     () => getActiveVotes(username, permlink),

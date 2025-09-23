@@ -70,7 +70,6 @@ const ParamPage: FC<{ metadata: MetadataProps; pageType: PageType; redirectUrl: 
     DEFAULT_PREFERENCES
   );
 
-
   useEffect(() => {
     // Save scroll position when leaving the page
     const handleRouteChange = () => {
@@ -115,25 +114,21 @@ export default ParamPage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   let allParams: string[] = Array.isArray(ctx.params?.param) ? (ctx.params!.param as string[]) : [];
-  
+
   // Filter out any _next or data params - these come from Next.js internal routing
   // This can happen during client-side navigation with basePath
-  const filteredParams = allParams.filter(p => 
-    p !== '_next' && 
-    p !== 'data' && 
-    !p.includes('.json')
-  );
-  
+  const filteredParams = allParams.filter((p) => p !== '_next' && p !== 'data' && !p.includes('.json'));
+
   // Use filtered params if we have any valid ones, otherwise use original
   if (filteredParams.length > 0) {
     allParams = filteredParams;
   }
-  
+
   // If first param is still invalid or we have no params, default to trending
   if (allParams.length === 0 || allParams[0] === 'data' || allParams[0] === '_next') {
     allParams = ['trending'];
   }
-  
+
   const [firstParam, secondParam] = allParams;
   const pageType = getPageType(firstParam, secondParam);
   const tag = (secondParam || '').toLocaleLowerCase();
@@ -226,7 +221,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           }
         }
       } catch (error) {
-        logger.error('Error prefetching post data:', `/${username}/${permlink}`, error);
+        logger.error(`Error prefetching post data: /${username}/${permlink}`, error);
       }
       break;
   }
