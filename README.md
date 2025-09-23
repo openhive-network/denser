@@ -29,12 +29,7 @@ Next, you can run following commands install the dependencies and build the apps
 
 ```bash
 pnpm install
-pnpm run build
-```
 
-You can build the apps separately using commands:
-
-```bash
 pnpm run build:blog
 pnpm run build:wallet
 ```
@@ -233,7 +228,7 @@ Configure the stack using the command (assuming block_log_util is in directory `
 The are many parameters than can be used to customize the stack. You can see the full list by running `./scripts/setup-stack.sh --help`. Stack's configuration can also be altered after the script is finished running by edition the resulting dotenv file - `${SRC_DIR}/stack/mirrornet-stack.env`.
 
 If your computer has a proper domain name, you can pass it to the stack by adding `--public-hostname` parameter to the command above, ie. `--public-hostname=your.domain.name` or editing `PUBLIC_HOSTNAME` in the generated env file.  
-Otherwise the stack will use *your-hostname.local* as its domain name.
+Otherwise the stack will use _your-hostname.local_ as its domain name.
 
 This will create stack's data directory at `/srv/haf-pool/haf-datadir`, generate block_log.artifacts file, copy the block log, the artifacts file and the HAF ini file to the data directory and store stack's configuration in `${SRC_DIR}/stack/mirrornet-stack.env`, where `${SRC_DIR}` is Denser's source directory. The process will take a while. Once it's finished, note the value printed after `Head block number is:` in the script's output, then use it to replace the value after `--stop-at-block` in `ARGUMENTS` in the `${SRC_DIR}/stack/mirrornet-stack.env` file. **It is importatnt that the block log size is accurate.**
 
@@ -322,7 +317,7 @@ You can obtain the stack's logs using one of the commands:
 
 # If you want to know the service names, the easiest way is to run
 ./scripts/get-stack-logs.sh --env-files="${SRC_DIR}/stack/mirrornet-stack.env" --project-name=mirrornet-api-stack --profiles=denser --tail=1
-# This will display one line of logs per service for all services. Each line will start with `service-name-1  |` 
+# This will display one line of logs per service for all services. Each line will start with `service-name-1  |`
 
 # Get logs for specific service (in this case haf).
 ./scripts/get-stack-logs.sh --env-files="${SRC_DIR}/stack/mirrornet-stack.env" --project-name=mirrornet-api-stack --profiles=denser --service=haf
@@ -366,7 +361,7 @@ exit
 
 If, while starting the stack, you get an error like:
 
-> Error response from daemon: error while mounting volume '/var/lib/docker/volumes/mirrornet-api-stack_haf-datadir/_data': failed to mount local volume: mount /some/path:/var/lib/docker/volumes/mirrornet-api-stack_haf-datadir/_data, flags: 0x1000: no such file or directory
+> Error response from daemon: error while mounting volume '/var/lib/docker/volumes/mirrornet-api-stack_haf-datadir/\_data': failed to mount local volume: mount /some/path:/var/lib/docker/volumes/mirrornet-api-stack_haf-datadir/\_data, flags: 0x1000: no such file or directory
 
 you need to stop the stack, remove the volume and restart the stack:
 
