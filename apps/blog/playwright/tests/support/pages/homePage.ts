@@ -4,6 +4,7 @@ import { ProfilePage } from './profilePage';
 export class HomePage {
   readonly page: Page;
   readonly postPage: PostPage;
+  readonly getLifestyleCommunityInMySubscriptions: Locator;
   readonly getPostListTrending: Locator;
   readonly getPostListNew: Locator;
   readonly getPostListHot: Locator;
@@ -124,6 +125,10 @@ export class HomePage {
   constructor(page: Page) {
     this.page = page;
     this.postPage = new PostPage(page);
+    this.getLifestyleCommunityInMySubscriptions = page
+        .locator('ul')
+        .filter({ hasText: /^Lifestyle$/ })
+        .getByRole('link');
     this.getPostListTrending = page.getByTestId('post-list-trending');
     this.getPostListNew = page.getByTestId('post-list-created');
     this.getPostListHot = page.getByTestId('post-list-hot');

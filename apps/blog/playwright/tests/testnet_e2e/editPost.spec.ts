@@ -197,10 +197,6 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     test('Move to the Lifestyle community and create the new post for denserautotest4 in a specific community', async ({
       denserAutoTest4Page
     }) => {
-      const lifestyleCommunityLocator: Locator = denserAutoTest4Page.page
-        .locator('ul')
-        .filter({ hasText: /^Lifestyle$/ })
-        .getByRole('link');
       const homePage = new HomePage(denserAutoTest4Page.page);
       const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
       const loginHelper = new LoginHelper(denserAutoTest4Page.page);
@@ -213,7 +209,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       // Click to close the profile menu
       await homePage.clickToCloseProfileMenu();
       // Move to the Lifestyle community
-      await lifestyleCommunityLocator.click();
+      await homePage.getLifestyleCommunityInMySubscriptions.click();
       // Validate that user has been moved to the Lifestyle community page
       await communityPage.quickValidataCommunitiesPageIsLoaded('Lifestyle');
       // Click New Post button
@@ -232,10 +228,6 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     });
 
     test('Edit the post of denserautotest4 of the specific community', async ({ denserAutoTest4Page }) => {
-      const lifestyleCommunityLocator: Locator = denserAutoTest4Page.page
-        .locator('ul')
-        .filter({ hasText: /^Lifestyle$/ })
-        .getByRole('link');
       const timestamp: string = new Date().toString();
       const postEditedContentText: string = 'The new conntent after editing in community';
       const postEditedTitleText: string = `Edited title in community ${timestamp}`;
@@ -256,7 +248,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       // Click to close the profile menu
       await homePage.clickToCloseProfileMenu();
       // Move to the Lifestyle community
-      await lifestyleCommunityLocator.click();
+      await homePage.getLifestyleCommunityInMySubscriptions.click();
       // Validate that user has been moved to the Lifestyle community page
       await communityPage.quickValidataCommunitiesPageIsLoaded('Lifestyle');
       // Find created post and move inside
