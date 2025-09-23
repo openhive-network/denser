@@ -253,10 +253,12 @@ export const prepareRC = (rc: string): string => {
   return `${numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(1))}bil`;
 };
 export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: string | undefined, totalVestingShares: string | undefined, hiveChain: HiveChain): string {
-  let operationHp = hiveChain?.hive(0);
+  let operationHp = hiveChain?.hiveSatoshis(0);
   if (vests) {
-    const totalVestingFundNai = hiveChain!.hive((totalVestingFund || "0").replace(" HIVE", "")) ;
-    const totalVestingSharesNai = hiveChain!.vests((totalVestingShares || "0").replace(" VESTS", "")) ;
+    // TODO: Replace with better NAI conversion
+    // operationHp = hiveChain?.vestsToHp(vests, totalVestingFund!, totalVestingShares!);
+    const totalVestingFundNai = hiveChain!.hiveCoins(Number((totalVestingFund || "0").replace(" HIVE", "")));
+    const totalVestingSharesNai = hiveChain!.vestsCoins(Number((totalVestingShares || "0").replace(" VESTS", "")));
     operationHp = hiveChain?.vestsToHp(vests, totalVestingFundNai, totalVestingSharesNai);
   }
   return hiveChain.formatter.format(operationHp).replace("HIVE", "HIVE POWER");

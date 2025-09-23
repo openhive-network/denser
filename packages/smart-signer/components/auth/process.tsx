@@ -65,7 +65,7 @@ export const useProcessAuth = (t: TFunction, authenticateOnBackend: boolean, str
       });
 
       logger.info('signature: %s', signature);
-      txBuilder.sign(signature);
+      txBuilder.addSignature(signature);
       signatures[keyType] = signature;
 
       logger.info('transaction: %o', {

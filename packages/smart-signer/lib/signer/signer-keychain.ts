@@ -108,7 +108,7 @@ export class SignerKeychain extends Signer {
       transaction.operations.forEach((op) => authTx.pushOperation(op));
 
       const provider: IOnlineSignatureProvider = KeychainProvider.for(this.username, requiredKeyType ?? this.keyType);
-      await authTx.sign(provider);
+      await provider.signTransaction(authTx);
 
       // This is quicker way to verify authority, isntead of
       // authority-checker.ts
