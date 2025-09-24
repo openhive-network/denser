@@ -194,6 +194,14 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     const postSummary: string = 'Edit me - by the community';
     const postTag: string = 'test';
 
+    const postEditedContentText: string = 'The new conntent after editing in community';
+    const postEditedTitleText: string = `Edited title in community ${timestamp}`;
+    const postEditedSummary: string = `I'm edited post in community`;
+    const postEditedTag: string = 'spam edit';
+    const postEditedTagExpected: string = '#spam#edit';
+    const postDeletedTags: string = '';
+    const postDeletedTagsExpected: string = ''
+
     test('Move to the Lifestyle community and create the new post for denserautotest4 in a specific community', async ({
       denserAutoTest4Page
     }) => {
@@ -228,13 +236,6 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     });
 
     test('Edit the post of denserautotest4 of the specific community', async ({ denserAutoTest4Page }) => {
-      const timestamp: string = new Date().toString();
-      const postEditedContentText: string = 'The new conntent after editing in community';
-      const postEditedTitleText: string = `Edited title in community ${timestamp}`;
-      const postEditedSummary: string = `I'm edited post in community`;
-      const postEditedTag: string = 'spam edit';
-      const postEditedTagExpected: string = '#spam#edit';
-
       const homePage = new HomePage(denserAutoTest4Page.page);
       const postPage = new PostPage(denserAutoTest4Page.page);
       const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
@@ -278,6 +279,48 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(await postPage.articleTitle).toHaveText(postEditedTitleText);
       await expect(await postPage.articleBody).toContainText(postEditedContentText);
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postEditedTagExpected);
+    });
+
+    test('Delete tags the post of denserautotest4 of the specific community', async ({ denserAutoTest4Page }) => {
+      const homePage = new HomePage(denserAutoTest4Page.page);
+      const postPage = new PostPage(denserAutoTest4Page.page);
+      const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
+      const loginHelper = new LoginHelper(denserAutoTest4Page.page);
+      const loginForm = new LoginForm(denserAutoTest4Page.page);
+      const communityPage = new CommunitiesPage(denserAutoTest4Page.page);
+
+      await homePage.goto();
+      // Validate User is logged in as denserautotest4
+      await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+      // Click to close the profile menu
+      await homePage.clickToCloseProfileMenu();
+      // Move to the Lifestyle community
+      await homePage.getLifestyleCommunityInMySubscriptions.click();
+      // Validate that user has been moved to the Lifestyle community page
+      await communityPage.quickValidataCommunitiesPageIsLoaded('Lifestyle');
+      // Find created post and move inside
+      await denserAutoTest4Page.page.getByText(postEditedTitleText).click();
+      await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
+      await postPage.validatePostTitle(postEditedTitleText);
+      await postPage.validatePostContantContainText(postEditedContentText, postEditedContentText);
+      // Click post edit button
+      await postPage.postEditButton.click();
+      // Validate the post editor is opened
+      await postEditorPage.validateThePostEditorOfSpecificPostIsLoaded(
+        postEditedTitleText,
+        postEditedContentText,
+        postEditedSummary,
+        postEditedTag
+      );
+      // Edit the post title, content, summary, tags
+      await postEditorPage.getEnterYourTagsInput.fill(postDeletedTags);
+      await postEditorPage.getSubmitPostButton.click();
+      // If a password to unlock key is needed
+      await loginForm.page.waitForTimeout(2000);
+      await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
+      // Validate the post is edited
+      await postPage.page.waitForSelector(postEditorPage.getFormContainer['_selector'], { state: 'detached' });
+      await expect(await postPage.hashtagsPosts.textContent()).toBe(postDeletedTagsExpected);
     });
   });
 });
