@@ -4,11 +4,13 @@ import { ProfilePage } from './profilePage';
 export class HomePage {
   readonly page: Page;
   readonly postPage: PostPage;
+  readonly getLifestyleCommunityInMySubscriptions: Locator;
   readonly getPostListTrending: Locator;
   readonly getPostListNew: Locator;
   readonly getPostListHot: Locator;
   readonly getPostListPayouts: Locator;
   readonly getPostListMuted: Locator;
+  readonly getCommunityNameElement: Locator;
   readonly getTrendingCommunitiesSideBar: Locator;
   readonly getTrendingCommunitiesSideBarLinks: Locator;
   readonly getTrandingCommunitiesHeader: Locator;
@@ -123,6 +125,10 @@ export class HomePage {
   constructor(page: Page) {
     this.page = page;
     this.postPage = new PostPage(page);
+    this.getLifestyleCommunityInMySubscriptions = page
+        .locator('ul')
+        .filter({ hasText: /^Lifestyle$/ })
+        .getByRole('link');
     this.getPostListTrending = page.getByTestId('post-list-trending');
     this.getPostListNew = page.getByTestId('post-list-created');
     this.getPostListHot = page.getByTestId('post-list-hot');
@@ -137,6 +143,7 @@ export class HomePage {
     this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar
       .locator('a')
       .getByText('LeoFinance');
+    this.getCommunityNameElement = page.getByTestId('community-name');
     this.getHeaderLeoCommunities = page.locator('[data-testid="community-name"]').getByText('LeoFinance');
     this.getWorldmappinCommunitiesLink = this.getTrendingCommunitiesSideBar.locator('a:text("Worldmappin")');
     this.getHeaderWorldmappinCommunities = page
@@ -541,5 +548,13 @@ export class HomePage {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.getMainTimeLineOfPosts['_selector']);
     await expect(this.getFilterPosts).toHaveText('Trending');
+  }
+
+  // Click to close the profile menu - click the center of the home page community and filter header
+  async clickToCloseProfileMenu(){
+    await this.getCommunityNameElement
+        .locator('..')
+        .locator('..')
+        .click({ force: true });
   }
 }

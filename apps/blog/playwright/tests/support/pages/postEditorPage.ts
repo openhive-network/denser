@@ -93,6 +93,29 @@ export class PostEditorPage {
         expect(this.getSubmitPostButton).toBeVisible();
     }
 
+    async validateDefaultPostEditorForSpecificCommunityIsLoaded(communityName: string) {
+        expect(this.getPostTitleInput).toHaveAttribute('placeholder', 'Title');
+        expect(this.getFormContainer).toBeVisible();
+        expect(this.getPreviewContainer).toBeVisible();
+        expect(this.getEditorContent).toBeVisible();
+        expect(this.getPostSummaryInput).toHaveAttribute('placeholder', 'Post summary(for posts & SEO, max 140 chars)');
+        expect(this.getEnterYourTagsInput).toHaveAttribute('placeholder', 'Enter your tags separated by a space');
+        expect(this.getAdvancedSettingsButton).toBeVisible();
+        expect(this.getPostingToListTrigger).toContainText(communityName);
+        expect(this.getSubmitPostButton).toBeVisible();
+    }
+
+    async validateThePostEditorOfSpecificPostIsLoaded(postTitle: string, postContent: string, postSummary: string, postTags: string){
+        await this.page.waitForSelector(this.getSubmitPostButton['_selector']);
+        expect(this.getPostTitleInput).toHaveValue(postTitle);
+        expect(this.getFormContainer).toBeVisible();
+        expect(this.getPreviewContainer).toBeVisible();
+        expect(this.getEditorContent).toContainText(postContent);
+        expect(this.getPostSummaryInput).toHaveValue(postSummary);
+        expect(this.getEnterYourTagsInput).toHaveValue(postTags);
+        expect(this.getSubmitPostButton).toBeVisible();
+    }
+
     async createSimplePost(
         postTitle: string,
         postContentText: string,
@@ -112,4 +135,28 @@ export class PostEditorPage {
         // Click the submit button
         await this.getSubmitPostButton.click();
     }
+
+    async createSimplePostForCommunity(
+        postTitle: string,
+        postContentText: string,
+        postSummary: string,
+        postTag: string,
+        communitySelectOptionValue: string
+    ) {
+        // Validate the post editor is loaded
+        await this.validateDefaultPostEditorIsLoaded();
+        // Type the title of the post
+        await this.getPostTitleInput.fill(postTitle);
+        // Type the conntent of the post
+        await this.getEditorContentTextarea.fill(postContentText);
+        // Type the post summary
+        await this.getPostSummaryInput.fill(postSummary);
+        // Type the tag
+        await this.getEnterYourTagsInput.fill(postTag);
+        // Set a community
+        await this.getPostingToListTrigger.locator('//following-sibling::select').selectOption(communitySelectOptionValue);
+        // Click the submit button
+        await this.getSubmitPostButton.click();
+    }
+
 }
