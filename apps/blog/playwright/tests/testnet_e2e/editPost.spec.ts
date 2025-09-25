@@ -16,6 +16,12 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     const postSummary: string = 'Edit me';
     const postTag: string = 'test';
 
+    const postEditedContentText: string = 'The new conntent after editing';
+    const postEditedTitleText: string = `Edited title ${timestamp}`;
+    const postEditedSummary: string = `I'm edited`;
+    const postEditedTag: string = 'spam edit';
+    const postEditedTagExpected: string = '#spam#edit';
+
     test('Create the new post by clicking the nav pencil icon for denserautotest4 in a unmoderated tag test', async ({
       denserAutoTest4Page
     }) => {
@@ -53,13 +59,6 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     });
 
     test('Edit the post of denserautotest4 in a unmoderated tag test', async ({ denserAutoTest4Page }) => {
-      const timestamp: string = new Date().toString();
-      const postEditedContentText: string = 'The new conntent after editing';
-      const postEditedTitleText: string = `Edited title ${timestamp}`;
-      const postEditedSummary: string = `I'm edited`;
-      const postEditedTag: string = 'spam edit';
-      const postEditedTagExpected: string = '#spam#edit';
-
       const homePage = new HomePage(denserAutoTest4Page.page);
       const postPage = new PostPage(denserAutoTest4Page.page);
       const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
