@@ -6,7 +6,12 @@ import { LoginForm } from '../support/pages/loginForm';
 import { UnmoderatedTagPage } from '../support/pages/unmoderatedTagPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { PostPage } from '../support/pages/postPage';
-import { waitForPostIsVisibleInUnmoderatedTagPage } from '../support/waitHelper';
+import {
+  waitForPostIsVisibleInUnmoderatedTagPage,
+  waitForCreatedCommentIsVisible
+} from '../support/waitHelper';
+import { CommentEditorPage } from '../support/pages/commentEditorPage';
+import { generateRandomString } from '../support/utils';
 
 test.describe('Creating a post and edit it with POM and fixture users', () => {
   test.describe.serial('Create a post and edit it in serial tests', () => {
@@ -15,6 +20,12 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     const postContentText: string = 'Test post content';
     const postSummary: string = 'Edit me';
     const postTag: string = 'test';
+
+    const postEditedContentText: string = 'The new conntent after editing';
+    const postEditedTitleText: string = `Edited title ${timestamp}`;
+    const postEditedSummary: string = `I'm edited`;
+    const postEditedTag: string = 'spam edit';
+    const postEditedTagExpected: string = '#spam#edit';
 
     test('Create the new post by clicking the nav pencil icon for denserautotest4 in a unmoderated tag test', async ({
       denserAutoTest4Page
@@ -53,13 +64,6 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     });
 
     test('Edit the post of denserautotest4 in a unmoderated tag test', async ({ denserAutoTest4Page }) => {
-      const timestamp: string = new Date().toString();
-      const postEditedContentText: string = 'The new conntent after editing';
-      const postEditedTitleText: string = `Edited title ${timestamp}`;
-      const postEditedSummary: string = `I'm edited`;
-      const postEditedTag: string = 'spam edit';
-      const postEditedTagExpected: string = '#spam#edit';
-
       const homePage = new HomePage(denserAutoTest4Page.page);
       const postPage = new PostPage(denserAutoTest4Page.page);
       const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
@@ -97,6 +101,42 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(await postPage.articleBody).toContainText(postEditedContentText);
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postEditedTagExpected);
     });
+
+    test('Create comment for the post of denserautotest4 in a unmoderated tag test', async ({
+      denserAutoTest4Page
+    }) => {
+      const homePage = new HomePage(denserAutoTest4Page.page);
+      const postPage = new PostPage(denserAutoTest4Page.page);
+      const commentEditorPage = new CommentEditorPage(denserAutoTest4Page.page);
+      const loginForm = new LoginForm(denserAutoTest4Page.page);
+
+      // Move to the denserautotest4 the Posts tab in the profile page
+      await homePage.gotoSpecificUrl(`/@${users.denserautotest4.username}/posts`);
+      await expect(homePage.getFirstPostTitle).toContainText(postEditedTitleText);
+      await expect(homePage.postDescription.first()).toContainText(postEditedSummary);
+      // Move inside the first post on the list of posts of denserautotest4
+      await homePage.getFirstPostTitle.click();
+      await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
+      await postPage.validatePostTitle(postEditedTitleText);
+      // Click reply button
+      await postPage.commentReplay.click();
+
+      // Validate the empty reply editor is loaded
+      await commentEditorPage.validateEmptyCommentEditorIsLoaded();
+      // Add content to the textarea
+      const randomString: string = generateRandomString();
+      const commentContent: string = `Comment test content ${randomString}`;
+      await commentEditorPage.createSimpleComment(commentContent);
+      // If a password to unlock key is needed
+      await loginForm.page.waitForTimeout(2000);
+      await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
+      // Validate the new comment was created
+      // Be careful the optimistic ui doesn't always work well!!!
+      await waitForCreatedCommentIsVisible(denserAutoTest4Page.page, randomString);
+      await expect(await commentEditorPage.findCreatedCommentContentByText(randomString)).toHaveText(
+        commentContent
+      );
+    });
   });
 
   test.describe.serial('Create a post and edit it for specific community in serial tests', () => {
@@ -106,6 +146,12 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     const postContentText: string = 'Test post content - community';
     const postSummary: string = 'Edit me - community';
     const postTag: string = 'test';
+
+    const postEditedContentText: string = 'The new conntent after editing in community';
+    const postEditedTitleText: string = `Edited title in community ${timestamp}`;
+    const postEditedSummary: string = `I'm edited post in community`;
+    const postEditedTag: string = 'spam edit';
+    const postEditedTagExpected: string = '#spam#edit';
 
     test('Create the new post by clicking the nav pencil icon for denserautotest4 in a specific community', async ({
       denserAutoTest4Page
@@ -141,13 +187,6 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     });
 
     test('Edit the post of denserautotest4 in a specific community', async ({ denserAutoTest4Page }) => {
-      const timestamp: string = new Date().toString();
-      const postEditedContentText: string = 'The new conntent after editing in community';
-      const postEditedTitleText: string = `Edited title in community ${timestamp}`;
-      const postEditedSummary: string = `I'm edited post in community`;
-      const postEditedTag: string = 'spam edit';
-      const postEditedTagExpected: string = '#spam#edit';
-
       const homePage = new HomePage(denserAutoTest4Page.page);
       const postPage = new PostPage(denserAutoTest4Page.page);
       const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
@@ -185,6 +224,42 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(await postPage.articleBody).toContainText(postEditedContentText);
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postEditedTagExpected);
     });
+
+    test('Create comment for the post of denserautotest4 in a specific community', async ({
+      denserAutoTest4Page
+    }) => {
+      const homePage = new HomePage(denserAutoTest4Page.page);
+      const postPage = new PostPage(denserAutoTest4Page.page);
+      const commentEditorPage = new CommentEditorPage(denserAutoTest4Page.page);
+      const loginForm = new LoginForm(denserAutoTest4Page.page);
+
+      // Move to the denserautotest4 the Posts tab in the profile page
+      await homePage.gotoSpecificUrl(`/@${users.denserautotest4.username}/posts`);
+      await expect(homePage.getFirstPostTitle).toContainText(postEditedTitleText);
+      await expect(homePage.postDescription.first()).toContainText(postEditedSummary);
+      // Move inside the first post on the list of posts of denserautotest4
+      await homePage.getFirstPostTitle.click();
+      await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
+      await postPage.validatePostTitle(postEditedTitleText);
+      // Click reply button
+      await postPage.commentReplay.click();
+
+      // Validate the empty reply editor is loaded
+      await commentEditorPage.validateEmptyCommentEditorIsLoaded();
+      // Add content to the textarea
+      const randomString: string = generateRandomString();
+      const commentContent: string = `Comment test content in Lifestyle community ${randomString}`;
+      await commentEditorPage.createSimpleComment(commentContent);
+      // If a password to unlock key is needed
+      await loginForm.page.waitForTimeout(2000);
+      await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
+      // Validate the new comment was created
+      // Be careful the optimistic ui doesn't always work well!!!
+      await waitForCreatedCommentIsVisible(denserAutoTest4Page.page, randomString);
+      await expect(await commentEditorPage.findCreatedCommentContentByText(randomString)).toHaveText(
+        commentContent
+      );
+    });
   });
 
   test.describe.serial('Move to the specific community, create and edit a post in serial tests', () => {
@@ -200,7 +275,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     const postEditedTag: string = 'spam edit';
     const postEditedTagExpected: string = '#spam#edit';
     const postDeletedTags: string = '';
-    const postDeletedTagsExpected: string = ''
+    const postDeletedTagsExpected: string = '';
 
     test('Move to the Lifestyle community and create the new post for denserautotest4 in a specific community', async ({
       denserAutoTest4Page
@@ -281,7 +356,9 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postEditedTagExpected);
     });
 
-    test('Delete tags the post of denserautotest4 of the specific community', async ({ denserAutoTest4Page }) => {
+    test('Delete tags the post of denserautotest4 of the specific community', async ({
+      denserAutoTest4Page
+    }) => {
       const homePage = new HomePage(denserAutoTest4Page.page);
       const postPage = new PostPage(denserAutoTest4Page.page);
       const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
@@ -319,7 +396,9 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await loginForm.page.waitForTimeout(2000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Validate the post is edited
-      await postPage.page.waitForSelector(postEditorPage.getFormContainer['_selector'], { state: 'detached' });
+      await postPage.page.waitForSelector(postEditorPage.getFormContainer['_selector'], {
+        state: 'detached'
+      });
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postDeletedTagsExpected);
     });
   });
