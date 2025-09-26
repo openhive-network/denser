@@ -59,6 +59,7 @@ export class HomePage {
   readonly getFirstPostResponseButtonTooltip: Locator;
   readonly getFirstPostCardFooter: Locator;
   readonly getFirstPostListItem: Locator;
+  readonly getFirstPostListItemReblogButton: Locator;
   readonly getFirstPostCardAvatar: Locator;
   readonly getFirstPostAuthor: Locator;
   readonly getFirstPostAuthorReputation: Locator;
@@ -76,6 +77,8 @@ export class HomePage {
   readonly getFirstPostChildernTooltip: Locator;
   readonly getFirstPostReblogButton: Locator;
   readonly getFirstPostReblogTooltip: Locator;
+  readonly getSecondPostReblogButton: Locator;
+  readonly getSecondPostReblogTooltip: Locator;
   readonly getPostChildren: Locator;
   readonly getBody: Locator;
   readonly getThemeModeButton: Locator;
@@ -157,7 +160,8 @@ export class HomePage {
     this.getNavOurdAppsLink = page.locator('[data-testid="nav-our-dapps-link"]');
     this.getHeaderAllCommunities = page.locator('[data-testid="card-trending-comunities"]');
     this.getMainTimeLineOfPosts = page.locator('li[data-testid="post-list-item"]');
-    this.getFirstPostListItem = this.getMainTimeLineOfPosts.first().locator('div').first();
+    this.getFirstPostListItem = this.getMainTimeLineOfPosts.nth(0).locator('div').first();
+    this.getFirstPostListItemReblogButton = this.getFirstPostListItem.getByTestId('post-card-reblog');
     this.getPostCardAvatar = page.locator('[data-testid="post-card-avatar"]');
     this.getFirstPostCardAvatar = this.getPostCardAvatar.first();
     this.getFirstPostAuthor = page.locator('[data-testid="post-author"]').first();
@@ -203,9 +207,11 @@ export class HomePage {
     this.getFirstPostDownvoteButton = this.getDownvoteButton.first();
     this.getDownvoteButtonTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
     this.getFirstPostDownvoteButtonTooltip = this.getDownvoteButtonTooltip.first();
-    this.getReblogButton = page.locator('[data-testid="post-card-reblog"]');
+    this.getReblogButton = page.locator('[data-testid="post-card-reblog"] > button > svg');
     this.getFirstPostReblogButton = this.getReblogButton.first();
     this.getFirstPostReblogTooltip = page.locator('[data-testid="post-card-reblog-tooltip"]').first();
+    this.getSecondPostReblogButton = this.getReblogButton.nth(1);
+    this.getSecondPostReblogTooltip = page.locator('[data-testid="post-card-reblog-tooltip"]').nth(1);
     this.getBody = page.locator('body');
     this.getThemeModeButton = page.locator('[data-testid="theme-mode"]');
     this.getThemeModeItem = page.locator('[data-testid="theme-mode-item"]');

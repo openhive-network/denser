@@ -30,6 +30,7 @@ export class ProfilePage {
   readonly postsMenuCommentsButton: Locator;
   readonly postsMenuPayoutsButton: Locator;
   readonly postRebloggedLabel: Locator;
+  readonly firstPostRebloggedLabel: Locator;
   readonly postRebloggedAuthorLink: Locator;
   readonly postTitle: Locator;
   readonly postDescription: Locator;
@@ -251,6 +252,7 @@ export class ProfilePage {
     this.postsMenuCommentsButton = page.locator('[data-testid="user-post-menu"]').getByText('Comments');
     this.postsMenuPayoutsButton = page.locator('[data-testid="user-post-menu"]').getByText('Payouts');
     this.postRebloggedLabel = page.locator('[data-testid="reblogged-label"]');
+    this.firstPostRebloggedLabel = this.postBlogItem.first().locator(this.postRebloggedLabel);
     this.postRebloggedAuthorLink = page.locator('[data-testid="reblogged-author-link"]');
     this.postTitle = this.postBlogItem.locator('[data-testid="post-title"] > a');
     this.postDescription = this.postBlogItem.locator('[data-testid="post-description"]');
