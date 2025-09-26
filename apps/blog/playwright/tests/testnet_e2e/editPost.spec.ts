@@ -6,7 +6,10 @@ import { LoginForm } from '../support/pages/loginForm';
 import { UnmoderatedTagPage } from '../support/pages/unmoderatedTagPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { PostPage } from '../support/pages/postPage';
-import { waitForPostIsVisibleInUnmoderatedTagPage, waitForCreatedCommentIsVisible } from '../support/waitHelper';
+import {
+  waitForPostIsVisibleInUnmoderatedTagPage,
+  waitForCreatedCommentIsVisible
+} from '../support/waitHelper';
 import { CommentEditorPage } from '../support/pages/commentEditorPage';
 import { generateRandomString } from '../support/utils';
 
@@ -99,7 +102,9 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postEditedTagExpected);
     });
 
-    test('Create comment for the post of denserautotest4 in a unmoderated tag test', async ({ denserAutoTest4Page }) => {
+    test('Create comment for the post of denserautotest4 in a unmoderated tag test', async ({
+      denserAutoTest4Page
+    }) => {
       const homePage = new HomePage(denserAutoTest4Page.page);
       const postPage = new PostPage(denserAutoTest4Page.page);
       const commentEditorPage = new CommentEditorPage(denserAutoTest4Page.page);
@@ -220,7 +225,9 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postEditedTagExpected);
     });
 
-    test('Create comment for the post of denserautotest4 in a specific community', async ({ denserAutoTest4Page }) => {
+    test('Create comment for the post of denserautotest4 in a specific community', async ({
+      denserAutoTest4Page
+    }) => {
       const homePage = new HomePage(denserAutoTest4Page.page);
       const postPage = new PostPage(denserAutoTest4Page.page);
       const commentEditorPage = new CommentEditorPage(denserAutoTest4Page.page);
@@ -268,7 +275,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
     const postEditedTag: string = 'spam edit';
     const postEditedTagExpected: string = '#spam#edit';
     const postDeletedTags: string = '';
-    const postDeletedTagsExpected: string = ''
+    const postDeletedTagsExpected: string = '';
 
     test('Move to the Lifestyle community and create the new post for denserautotest4 in a specific community', async ({
       denserAutoTest4Page
@@ -349,7 +356,9 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postEditedTagExpected);
     });
 
-    test('Delete tags the post of denserautotest4 of the specific community', async ({ denserAutoTest4Page }) => {
+    test('Delete tags the post of denserautotest4 of the specific community', async ({
+      denserAutoTest4Page
+    }) => {
       const homePage = new HomePage(denserAutoTest4Page.page);
       const postPage = new PostPage(denserAutoTest4Page.page);
       const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
@@ -387,7 +396,9 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await loginForm.page.waitForTimeout(2000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Validate the post is edited
-      await postPage.page.waitForSelector(postEditorPage.getFormContainer['_selector'], { state: 'detached' });
+      await postPage.page.waitForSelector(postEditorPage.getFormContainer['_selector'], {
+        state: 'detached'
+      });
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postDeletedTagsExpected);
     });
   });
