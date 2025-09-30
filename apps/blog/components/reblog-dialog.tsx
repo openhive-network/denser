@@ -61,6 +61,7 @@ export function ReblogDialog({
                 action(true);
                 setOpen(false);
               }}
+              data-testid="reblog-dialog-ok"
             >
               {t('alert_dialog_reblog.action')}
             </AlertDialogAction>
