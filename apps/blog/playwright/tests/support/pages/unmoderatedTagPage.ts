@@ -9,6 +9,9 @@ export class UnmoderatedTagPage {
   readonly firstPostAuthor: Locator;
   readonly firstPostTitle: Locator;
   readonly firstPostSummary: Locator;
+  readonly secondPostAuthor: Locator;
+  readonly secondPostTitle: Locator;
+  readonly secondPostSummary: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -27,6 +30,18 @@ export class UnmoderatedTagPage {
     this.firstPostSummary = page
       .locator('[data-testid="post-list-item"]')
       .first()
+      .locator('[data-testid="post-description"]');
+    this.secondPostAuthor = page
+      .locator('[data-testid="post-list-item"]')
+      .nth(1)
+      .locator('[data-testid="post-author"]');
+    this.secondPostTitle = page
+      .locator('[data-testid="post-list-item"]')
+      .nth(1)
+      .locator('[data-testid="post-title"]');
+    this.secondPostSummary = page
+      .locator('[data-testid="post-list-item"]')
+      .nth(1)
       .locator('[data-testid="post-description"]');
   }
 
