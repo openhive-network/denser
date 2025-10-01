@@ -102,8 +102,8 @@ export const numberWithCommas = (x: string) => x.replace(/\B(?=(\d{3})+(?!\d))/g
 
 export function convertToHP(
   vests: Big,
-  totalVestingShares: string,
-  totalVestingFundHive: string,
+  totalVestingShares: NaiAsset,
+  totalVestingFundHive: NaiAsset,
   div: number = 1
 ) {
   const total_vests = convertStringToBig(totalVestingShares);

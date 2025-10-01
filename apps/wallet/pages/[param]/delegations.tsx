@@ -16,8 +16,8 @@ import { IDynamicGlobalProperties } from '@transaction/lib/extended-hive.chain';
 import RCTable from '@/wallet/feature/delegations/rc-table';
 
 const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalProperties) => {
-  const totalFund = parseFloat(dynamicData.total_vesting_fund_hive);
-  const totalShares = parseFloat(dynamicData.total_vesting_shares);
+  const totalFund = parseFloat(dynamicData.total_vesting_fund_hive.amount);
+  const totalShares = parseFloat(dynamicData.total_vesting_shares.amount);
   return ((vests * totalFund) / totalShares).toFixed(2);
 };
 

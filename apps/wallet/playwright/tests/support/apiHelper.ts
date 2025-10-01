@@ -136,8 +136,8 @@ export class ApiHelper {
       data: {
         id: 0,
         jsonrpc: "2.0",
-        method: "condenser_api.get_dynamic_global_properties",
-        params: [],
+        method: "database_api.get_dynamic_global_properties",
+        params: {},
       },
       headers: {
         Accept: "application/json, text/plain, */*",

@@ -157,13 +157,10 @@ test.describe('Witnesses page tests', () => {
 
     // Validate Witness votes received
     const resDynamicGlobalProperties = await apiHelper.getDynamicGlobalPropertiesAPI();
-    const totalVesting = await resDynamicGlobalProperties.result.total_vesting_fund_hive.replace(
-      / HIVE/g,
-      ''
-    );
-    const totalShares = await resDynamicGlobalProperties.result.total_vesting_shares.replace(/ VESTS/g, '');
+    const totalVesting = await resDynamicGlobalProperties.result.total_vesting_fund_hive.amount;
+    const totalShares = await resDynamicGlobalProperties.result.total_vesting_shares.amount;
     const witnessVotesAPI = await resWitnessesByVoteAPI.result[0].votes;
-    const vestsToHp: Big = Big(Big(totalVesting).times(Big(witnessVotesAPI).div(Big(totalShares)))).div(
+    const vestsToHp: Big = Big(totalVesting).times(Big(witnessVotesAPI).div(totalShares)).div(
       1000000
     );
     expect(await witnessesPage.witnessVotesReceived.first().textContent()).toBe(

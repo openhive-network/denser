@@ -596,13 +596,13 @@ export interface IProposalVote {
 
 export interface IDynamicGlobalProperties {
   hbd_print_rate: number;
-  total_vesting_fund_hive: string;
-  total_vesting_shares: string;
+  total_vesting_fund_hive: NaiAsset;
+  total_vesting_shares: NaiAsset;
   hbd_interest_rate: number;
   head_block_number: number;
   head_block_id: string;
   vesting_reward_percent: number;
-  virtual_supply: string;
+  virtual_supply: NaiAsset;
 }
 
 export interface IAccountReputations {

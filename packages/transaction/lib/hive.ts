@@ -20,7 +20,7 @@ const logger = getLogger('app');
 const chain = await hiveChainService.getHiveChain();
 
 export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProperties> => {
-  return chain.api.condenser_api.get_dynamic_global_properties([]).then((r: any) => {
+  return chain.api.database_api.get_dynamic_global_properties({}).then((r: any) => {
     return {
       total_vesting_fund_hive: r.total_vesting_fund_hive || r.total_vesting_fund_steem,
       total_vesting_shares: r.total_vesting_shares,
