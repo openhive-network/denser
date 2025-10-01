@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures';
+import { test, expect, Locator } from '../../fixtures';
 import { HomePage } from '../support/pages/homePage';
 import { users, LoginHelper } from '../support/loginHelper';
 import { PostEditorPage } from '../support/pages/postEditorPage';
@@ -7,6 +7,7 @@ import { UnmoderatedTagPage } from '../support/pages/unmoderatedTagPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { PostPage } from '../support/pages/postPage';
 import { waitForPostIsVisibleInUnmoderatedTagPage } from '../support/waitHelper';
+import { generateRandomString } from '../support/utils';
 
 test.describe('Creating post tests with POM and fixture users', () => {
 
@@ -136,6 +137,83 @@ test.describe('Creating post tests with POM and fixture users', () => {
     await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest4Page.page, postTitle2);
     // Validate the first post on the unmoderated post list
     await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle2, postSummary2);
+  });
+
+  test('Validate creating the two posts with the same title', async ({
+    denserAutoTest4Page
+  }) => {
+    // The same title - different permlinks
+    const randomString: string = generateRandomString();
+
+    const postTitle1: string = `The same title of a post - ${randomString} - ${users.denserautotest4.username}`;
+    const expectedPartOfPermling: string = `the-same-title-of-a-post-${randomString.toLocaleLowerCase()}-${users.denserautotest4.username}`
+    const postContentText1: string = 'Content of the testing post POM 1';
+    const postSummary1: string = 'My testing post POM 1';
+    const postTag: string = 'test';
+    const postContentText2: string = 'Content of the testing post POM 2';
+    const postSummary2: string = 'My testing post POM 2';
+
+    const homePage = new HomePage(denserAutoTest4Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
+    const loginHelper = new LoginHelper(denserAutoTest4Page.page);
+    const loginForm = new LoginForm(denserAutoTest4Page.page);
+    const unmoderatedTagPage = new UnmoderatedTagPage(denserAutoTest4Page.page);
+
+    // Create first post
+    await homePage.goto();
+    // Validate User is logged in as denserautotest4
+    await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+    // Click to close the profile menu
+    await denserAutoTest4Page.page.getByTestId('community-name').locator('..').locator('..').click({ force: true });
+    // Click navigation pencil icon to move to the post editor
+    await homePage.getNavCreatePost.click();
+    // Validate the post editor is open and create simple post
+    await postEditorPage.createSimplePost(postTitle1,postContentText1,postSummary1,postTag);
+    // If a password to unlock key is needed
+    await loginForm.page.waitForTimeout(2000);
+    await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword)
+    // Validate that user has been moved to the unmoderated tag page
+    await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
+    // Wait until optimistic ui is finished
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest4Page.page, postTitle1);
+    // Validate the first post on the unmoderated post list
+    await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle1, postSummary1);
+
+    // Create second post
+    // Click navigation pencil icon to move to the post editor
+    await homePage.getNavCreatePost.click();
+    // Validate the post editor is open and create simple post
+    await postEditorPage.createSimplePost(postTitle1,postContentText2,postSummary2,postTag);
+    // If a password to unlock key is needed
+    await loginForm.page.waitForTimeout(2000);
+    await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword)
+    // Validate that user has been moved to the unmoderated tag page
+    await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
+    // Wait until optimistic ui is finished
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest4Page.page, postTitle1);
+    // Validate the first post on the unmoderated post list
+    await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(users.denserautotest4.username, postTitle1, postSummary2);
+
+    // Get and compare permlinks
+    const permlinks: string[] = [];
+    const postContent2: Locator = homePage.page.getByText(postContentText2);
+    const postContent1: Locator = homePage.page.getByText(postContentText1);
+    // Move to the last created post
+    await unmoderatedTagPage.firstPostTitle.click();
+    await homePage.page.waitForSelector(await postContent2['_selector']);
+    // Add url to the array
+    permlinks.push(homePage.page.url());
+    // Go back
+    await homePage.page.goBack();
+    // Validate that user has been moved to the unmoderated tag page
+    await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
+    // Move to the earlier created post with the same title
+    await unmoderatedTagPage.secondPostTitle.click();
+    await homePage.page.waitForSelector(await postContent1['_selector']);
+    // Add url to the array
+    permlinks.push(homePage.page.url());
+    expect(permlinks[0]).not.toBe(permlinks[1]);
+    expect(permlinks[0]).toContain(expectedPartOfPermling);
   });
 
   test('Attempting to create a post without a title', async ({ denserAutoTest0Page }) => {

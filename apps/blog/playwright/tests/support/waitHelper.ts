@@ -58,7 +58,7 @@ export async function waitForCommunityCreatedPost(page: Page, postTitle: string)
 
 export async function waitForPostIsVisibleInUnmoderatedTagPage(page: Page, postTitle: string) {
   const unmoderatedTagPage = new UnmoderatedTagPage(page);
-  const selectorCreatedPost = await unmoderatedTagPage.page.getByText(postTitle)['_selector'];
+  const selectorCreatedPost = await unmoderatedTagPage.page.getByText(postTitle).first()['_selector'];
   const timeout = 20000;
   const interval = 4000;
 
