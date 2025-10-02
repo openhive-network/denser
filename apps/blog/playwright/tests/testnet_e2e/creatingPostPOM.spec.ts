@@ -301,7 +301,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
     const postContentText: string = '1 Content of the testing post POM';
     const postSummary: string = '1 My testing post POM';
-    const postTag: string = 'test';
+    const errorMessage: string = 'In posting in My Blog use at least one tag';
 
     await homePage.getNavCreatePost.click();
     await expect(postEditorPage.getPostTitleInput).toBeVisible();
@@ -309,7 +309,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     await postEditorPage.getEditorContentTextarea.fill(postContentText);
     await postEditorPage.getPostSummaryInput.fill(postSummary);
     await postEditorPage.getSubmitPostButton.click();
-    await expect(postEditorPage.getFormContainer).toContainText('In posting in My Blog use at least one tag');
+    await expect(postEditorPage.getFormContainer).toContainText(errorMessage);
   });
 
   test('Attempt to get error message to use only allowed characters in tags input', async ({
