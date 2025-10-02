@@ -280,6 +280,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postContentText: string = '1 Content of the testing post POM';
     const postSummary: string = '1 My testing post POM';
     const postTag: string = 'test';
+    const errorMessage: string = 'String must contain at least 1 character(s)';
 
     await homePage.getNavCreatePost.click();
     await expect(postEditorPage.getPostTitleInput).toBeVisible();
@@ -289,9 +290,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     await denserAutoTest0Page.page.mouse.wheel(0, 2000);
     await expect(postEditorPage.getSubmitPostButton).toBeEnabled();
     await postEditorPage.getSubmitPostButton.click();
-    await expect(postEditorPage.getFormContainer).toContainText(
-      'String must contain at least 1 character(s)'
-    );
+    await expect(postEditorPage.getFormContainer).toContainText(errorMessage);
   });
 
   test('Attempt to create a post with no tags', async ({ denserAutoTest0Page }) => {
@@ -452,7 +451,9 @@ test.describe('Creating post tests with POM and fixture users', () => {
     await expect(denserAutoTest0Page.page.getByText(errorMessage)).toBeVisible();
   });
 
-  test('Attempt to create a post with different author with other characters than letters and numbers', async ({ denserAutoTest0Page }) => {
+  test('Attempt to create a post with different author with other characters than letters and numbers', async ({
+    denserAutoTest0Page
+  }) => {
     const homePage = new HomePage(denserAutoTest0Page.page);
     const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
 
