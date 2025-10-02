@@ -451,6 +451,29 @@ test.describe('Creating post tests with POM and fixture users', () => {
     await expect(denserAutoTest0Page.page.getByText('Maximum characters allowed is 140')).toBeVisible();
   });
 
+  test('Attempt to create a post with different author with other characters than letters and numbers', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const wrongAuthorCharacter: string = '#';
+    const postTag: string = 'test';
+    const errorMessage: string = 'Must contain only letters and numbers';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
+    await postEditorPage.getPostTitleInput.fill(postTitle);
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    // Set wrong name of the author
+    await postEditorPage.getAuthorInput.fill(wrongAuthorCharacter);
+    await expect(postEditorPage.getSubmitPostButton).toBeVisible();
+    await postEditorPage.getSubmitPostButton.click();
+    // Check expected error message is visible
+    await expect(postEditorPage.getFormContainer).toContainText(errorMessage);
+  });
+
   test('After creating post by clicking New Post button in the community, user is moved to the specific community post list page', async ({
     denserAutoTest0Page
   }) => {
