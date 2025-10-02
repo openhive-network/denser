@@ -70,7 +70,7 @@ test.describe.skip('Witnesses page tests', () => {
     await homePage.moveToNavWitnessesPage();
 
     // First witness's info from API
-    const firstWitnessInfoAPI = (await apiHelper.getListWitnessesByVoteAPI('', 5)).result[0]; // blocktrades expected
+    const firstWitnessInfoAPI = (await apiHelper.getListWitnessesByVoteAPI('', 5)).result.witnesses[0]; // blocktrades expected
     const nameFirstWitnessAPI = await firstWitnessInfoAPI.owner;
     const lastConfirmedBlockNumberOfFirstWitnessAPI = await firstWitnessInfoAPI.last_confirmed_block_num;
     const runningVersionOfFirstWitnessAPI = await firstWitnessInfoAPI.running_version;

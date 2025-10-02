@@ -54,14 +54,14 @@ test.describe('Witnesses page tests', () => {
 
     for (let i = 0; i < 250; i++) {
       if (i >= 0 && i < 101) {
-        witnessByVoteAPIArray.push(await resWitnessesByVote.result[i].owner);
+        witnessByVoteAPIArray.push(await resWitnessesByVote.result.witnesses[i].owner);
       }
       if (i >= 101 && i < 250) {
         witnessLastBlockAgeInSecs =
-          (headBlock - (await resWitnessesByVote.result[i].last_confirmed_block_num)) * 3;
+          (headBlock - (await resWitnessesByVote.result.witnesses[i].last_confirmed_block_num)) * 3;
 
         if (witnessLastBlockAgeInSecs < LAST_BLOCK_AGE_THRESHOLD_IN_SEC) {
-          witnessByVoteAPIArray.push(await resWitnessesByVote.result[i].owner);
+          witnessByVoteAPIArray.push(await resWitnessesByVote.result.witnesses[i].owner);
         }
       }
     }
@@ -136,20 +136,20 @@ test.describe('Witnesses page tests', () => {
     await witnessesPage.goToWitnessesPage();
 
     const resWitnessesByVoteAPI = await apiHelper.getListWitnessesByVoteAPI('', 250);
-    const lastConfirmedBlockNum = await resWitnessesByVoteAPI.result[0].last_confirmed_block_num.toString();
+    const lastConfirmedBlockNum = await resWitnessesByVoteAPI.result.witnesses[0].last_confirmed_block_num.toString();
     // Validate last confirmed block number
     expect(await witnessesPage.witnessLastBlockNumber.first()).toBeVisible();
     // Below assertion is too unstable
     // expect(await witnessesPage.witnessLastBlockNumber.first().textContent()).toContain(await lastConfirmedBlockNum);
 
-    const witnessCreatedAPI = await resWitnessesByVoteAPI.result[0].created;
+    const witnessCreatedAPI = await resWitnessesByVoteAPI.result.witnesses[0].created;
     // Validate Witness's age
     expect(await witnessesPage.witnessCreated.first().textContent()).toContain(
       moment().from(witnessCreatedAPI, true)
     );
 
     // Validate Witness external site
-    const firstWitnessUrl = await resWitnessesByVoteAPI.result[0].url;
+    const firstWitnessUrl = await resWitnessesByVoteAPI.result.witnesses[0].url;
     await expect(witnessesPage.witnessExternalSiteLink.locator('a').first()).toHaveAttribute(
       'href',
       firstWitnessUrl
@@ -159,7 +159,7 @@ test.describe('Witnesses page tests', () => {
     const resDynamicGlobalProperties = await apiHelper.getDynamicGlobalPropertiesAPI();
     const totalVesting = await resDynamicGlobalProperties.result.total_vesting_fund_hive.amount;
     const totalShares = await resDynamicGlobalProperties.result.total_vesting_shares.amount;
-    const witnessVotesAPI = await resWitnessesByVoteAPI.result[0].votes;
+    const witnessVotesAPI = await resWitnessesByVoteAPI.result.witnesses[0].votes;
     const vestsToHp: Big = Big(totalVesting).times(Big(witnessVotesAPI).div(totalShares)).div(
       1000000
     );
@@ -168,10 +168,7 @@ test.describe('Witnesses page tests', () => {
     );
 
     // Validate Witness price feed
-    const firstWitnessPriceFeed = await resWitnessesByVoteAPI.result[0].hbd_exchange_rate.base.replace(
-      / HBD/g,
-      ''
-    );
+    const firstWitnessPriceFeed = await resWitnessesByVoteAPI.result.witnesses[0].hbd_exchange_rate.base.amount;
     expect('$' + firstWitnessPriceFeed).toContain(await witnessesPage.witnessPriceFeed.first().textContent());
   });
 

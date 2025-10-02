@@ -177,22 +177,32 @@ export interface IWitness {
   id: number;
   total_missed: number;
   url: string;
+  votes: number;
+  virtual_last_update: string;
+  virtual_position: string;
+  virtual_scheduled_time: string;
+  last_aslot: number;
+  last_confirmed_block_num: number;
+  pow_worker: number;
+  signing_key: string;
   props: {
-    account_creation_fee: string;
-    account_subsidy_budget: number;
+    account_creation_fee: NaiAsset;
     maximum_block_size: number;
+    hbd_interest_rate: number;
+    account_subsidy_budget: number;
+    account_subsidy_decay: number;
   };
   hbd_exchange_rate: {
-    base: string;
-    quote: string;
+    base: NaiAsset;
+    quote: NaiAsset;
   };
-  available_witness_account_subsidies: number;
-  running_version: string;
-  owner: string;
-  signing_key: string;
   last_hbd_exchange_update: string;
-  votes: number;
-  last_confirmed_block_num: number;
+  last_work: string;
+  running_version: string;
+  hardfork_version_vote: string;
+  hardfork_time_vote: string;
+  available_witness_account_subsidies: number;
+  owner: string;
 }
 
 export interface IOrdersDataItem {
@@ -946,6 +956,7 @@ export type ExtendedNodeApi = {
       },
       { votes: IVoteListItem[] }
     >;
+    list_witnesses: TWaxApiRequest<{ start: string[]; limit: number; order: string }, { witnesses: IWitness[] }>;
   };
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;

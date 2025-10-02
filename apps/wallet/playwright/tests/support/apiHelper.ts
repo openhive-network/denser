@@ -117,8 +117,8 @@ export class ApiHelper {
       data: {
         id: 0,
         jsonrpc: "2.0",
-        method: "condenser_api.get_witnesses_by_vote",
-        params: [`${startName}`, `${limit}`],
+        method: "database_api.list_witnesses",
+        params: { start: [9223372036854775807n.toString(), startName], limit, order: 'by_vote_name' },
       },
       headers: {
         Accept: "application/json, text/plain, */*",

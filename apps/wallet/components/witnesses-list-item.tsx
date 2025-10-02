@@ -271,7 +271,7 @@ function WitnessListItem({
       </td>
       <td className=" sm:p-2">
         <div className="font-medium" data-testid="witness-price-feed">
-          ${parseFloat(data.hbd_exchange_rate.base)}
+          ${parseFloat(data.hbd_exchange_rate.base.amount)}
         </div>
         <div className="font-light">
           <TimeAgo date={data.last_hbd_exchange_update} />

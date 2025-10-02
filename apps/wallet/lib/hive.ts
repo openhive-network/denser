@@ -40,7 +40,7 @@ export type ProposalData = Omit<IProposal, 'daily_pay' | 'total_votes'> & {
 };
 
 export const getWitnessesByVote = async (from: string, limit: number): Promise<IWitness[]> => {
-  return chain.api.condenser_api.get_witnesses_by_vote([from, limit]);
+  return (await chain.api.database_api.list_witnesses({ start: [9223372036854775807n.toString(), from], limit, order: 'by_vote_name' })).witnesses;
 };
 
 export const findRcAccounts = async (username: string): Promise<{ rc_accounts: RcAccount[] }> => {
