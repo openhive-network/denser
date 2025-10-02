@@ -405,6 +405,29 @@ test.describe('Creating post tests with POM and fixture users', () => {
     ).toBeVisible();
   });
 
+  test('Attempt to create a post with markdowns no post summary', async ({ denserAutoTest0Page }) => {
+    const homePage = new HomePage(denserAutoTest0Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
+
+    const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
+    const postContentText: string = '1 Content of the testing post POM';
+    const postSummaryAsMarkdown: string = '~abc~';
+    const postTag: string = 'test';
+    const errorMessage: string = 'Markdown is not supported here';
+
+    await homePage.getNavCreatePost.click();
+    await expect(postEditorPage.getPostTitleInput).toBeVisible();
+    await postEditorPage.getPostTitleInput.fill(postTitle);
+    await postEditorPage.getEditorContentTextarea.fill(postContentText);
+    // Set post summary as markdown
+    await postEditorPage.getPostSummaryInput.fill(postSummaryAsMarkdown);
+    await postEditorPage.getEnterYourTagsInput.fill(postTag);
+    await expect(postEditorPage.getSubmitPostButton).toBeVisible();
+    await postEditorPage.getSubmitPostButton.click();
+    // Check expected error message is visible
+    await expect(postEditorPage.getFormContainer).toContainText(errorMessage);
+  });
+
   test('Attempt to create a post with post summary longer than 140 characters', async ({
     denserAutoTest0Page
   }) => {
