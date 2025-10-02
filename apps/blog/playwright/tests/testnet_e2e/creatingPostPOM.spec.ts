@@ -439,6 +439,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const LongPostSummary: string =
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Donec vulputate, elit nec porta sodales, lacus justo.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Donec vulputate, elit nec porta sodales, lacus justo.';
     const postTag: string = 'test';
+    const errorMessage: string = 'Maximum characters allowed is 140';
 
     await homePage.getNavCreatePost.click();
     await expect(postEditorPage.getPostTitleInput).toBeVisible();
@@ -448,7 +449,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     await postEditorPage.getPostSummaryInput.fill(LongPostSummary);
     await expect(postEditorPage.getSubmitPostButton).toBeVisible();
     await postEditorPage.getSubmitPostButton.click();
-    await expect(denserAutoTest0Page.page.getByText('Maximum characters allowed is 140')).toBeVisible();
+    await expect(denserAutoTest0Page.page.getByText(errorMessage)).toBeVisible();
   });
 
   test('Attempt to create a post with different author with other characters than letters and numbers', async ({ denserAutoTest0Page }) => {
