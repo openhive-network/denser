@@ -23,7 +23,7 @@ variables:
   FF_ENABLE_JOB_CLEANUP: 1
 
   # HAF API node configuration
-  API_NODE_VERSION: '1.27.8'
+  API_NODE_VERSION: '1.27.12-rc3'
   API_NODE_TAG: 'denser-11'
   HAF_IMAGE_REGISTRY: 'registry.gitlab.syncad.com/hive/haf/mirrornet-instance'
   HAF_IMAGE_NAME: '${HAF_IMAGE_REGISTRY}:${API_NODE_VERSION}'
