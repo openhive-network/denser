@@ -228,7 +228,7 @@ export const getTradeHistory = async (limit: number = 1000): Promise<ITradesData
 };
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
-  return chain.api.condenser_api.get_recent_trades([limit]);
+  return (await chain.api.market_history_api.get_recent_trades({ limit })).trades;
 };
 
 export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {

@@ -244,8 +244,8 @@ export interface IOpenOrdersData {
 
 export interface IRecentTradesData {
   date: string;
-  current_pays: string;
-  open_pays: string;
+  current_pays: NaiAsset;
+  open_pays: NaiAsset;
 }
 
 export type OwnerHistory = {
@@ -973,6 +973,7 @@ export type ExtendedNodeApi = {
     get_ticker: TWaxApiRequest<{}, IMarketStatistics>;
     get_order_book: TWaxApiRequest<{ limit: number }, IOrdersData>;
     get_trade_history: TWaxApiRequest<{ start: string, end: string, limit: number }, { trades: ITradesData[] }>;
+    get_recent_trades: TWaxApiRequest<{ limit: number }, { trades: IRecentTradesData[] }>;
   }
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;

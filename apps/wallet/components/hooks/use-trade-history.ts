@@ -11,8 +11,8 @@ export const useTradeHistory = (config?: useTradeHistoryOptions) => {
     select: (data) => {
       return data.map((e) => ({
         ...e,
-        hbd: convertStringToBig(e.current_pays.includes('HBD') ? e.current_pays : e.open_pays),
-        hive: convertStringToBig(e.current_pays.includes('HIVE') ? e.current_pays : e.open_pays)
+        hbd: convertStringToBig(e.current_pays.nai === '@@000000013' ? e.current_pays : e.open_pays),
+        hive: convertStringToBig(e.current_pays.nai === '@@000000021' ? e.current_pays : e.open_pays)
       }));
     }
   });
