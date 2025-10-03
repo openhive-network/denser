@@ -210,8 +210,8 @@ export interface IOrdersDataItem {
   hbd: number;
   hive: number;
   order_price: {
-    base: string;
-    quote: string;
+    base: NaiAsset;
+    quote: NaiAsset;
   };
   real_price: string;
 }
@@ -964,6 +964,7 @@ export type ExtendedNodeApi = {
   };
   market_history_api: {
     get_ticker: TWaxApiRequest<{}, IMarketStatistics>;
+    get_order_book: TWaxApiRequest<{ limit: number }, IOrdersData>;
   }
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;

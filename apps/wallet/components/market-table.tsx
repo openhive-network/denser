@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { dateToRelative } from '@ui/lib/parse-date';
 import Big from 'big.js';
 import { useTranslation } from 'next-i18next';
+import { NaiAsset } from '@hiveio/wax';
 
 export interface OrdersItem {
   total: number;
@@ -11,8 +12,8 @@ export interface OrdersItem {
   hbd: number;
   hive: number;
   order_price: {
-    base: string;
-    quote: string;
+    base: NaiAsset;
+    quote: NaiAsset;
   };
   real_price: string;
 }

@@ -207,7 +207,7 @@ export const getMarketStatistics = async (): Promise<IMarketStatistics> => {
 };
 
 export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> => {
-  return chain.api.condenser_api.get_order_book([limit]);
+  return chain.api.market_history_api.get_order_book({ limit });
 };
 
 export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => {
