@@ -8,7 +8,7 @@ import {
 } from '@ui/components/select';
 import { Label } from '@ui/components/label';
 import { useTranslation } from 'next-i18next';
-import { SearchMode, SearchSort, useSearch } from '@ui/hooks/useSearch';
+import { SearchMode, SearchSort, useSearch } from '@ui/hooks/use-search';
 
 function SearchSortSelect({
   value,

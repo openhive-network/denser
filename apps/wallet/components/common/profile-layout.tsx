@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import Loading from '@ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountFull } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive-api';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToShow } from '@hive/ui/lib/parse-date';
 import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';

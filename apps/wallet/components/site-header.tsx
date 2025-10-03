@@ -18,7 +18,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/
 import { RcAccount } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
 import WitnessVoteExpiryWarning from './witness-vote-expiry-warning';
-import { getAccount } from '@transaction/lib/hive';
+import { getAccount } from '@transaction/lib/hive-api';
 import { getUserAvatarUrl } from '@hive/ui';
 
 const logger = getLogger('app');

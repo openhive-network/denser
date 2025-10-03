@@ -57,13 +57,13 @@ import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation
 import FlagIcon from '@/blog/components/flag-icon';
 import { getSimilarPostsByPost, isPostStub } from '@/blog/lib/get-data';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import SuggestionsList from '@/blog/feature/suggestions-posts/list';
+import SuggestionsList from '@/blog/features/suggestions-posts/list';
 import TimeAgo from '@ui/components/time-ago';
 import CommentList from '@/blog/components/comment-list';
 import clsx from 'clsx';
 import PostingLoader from '@/blog/components/posting-loader';
 import NoDataError from '@/blog/components/no-data-error';
-import AnimatedList from '@/blog/feature/suggestions-posts/animated-tab';
+import AnimatedList from '@/blog/features/suggestions-posts/animated-tab';
 import { withBasePath } from '@/blog/utils/PathUtils';
 
 const logger = getLogger('app');
@@ -112,18 +112,20 @@ function PostPage({
         result_limit: 10, // Only get 10 suggestions
         full_posts: 10 // Get all as full posts
       });
-      
+
       if (!results) return null;
-      
+
       // Filter out null/invalid posts and only include full Entry objects (not stubs)
-      const fullPosts = results.filter(post => post && !isPostStub(post) && (post as Entry).post_id) as Entry[];
+      const fullPosts = results.filter(
+        (post) => post && !isPostStub(post) && (post as Entry).post_id
+      ) as Entry[];
       return fullPosts;
     },
     {
       enabled: !!username && !!permlink
     }
   );
-  
+
   const suggestions = suggestionResults;
   const { isLoading: isLoadingDiscussion, data: discussion } = useQuery(
     ['discussionData', permlink],

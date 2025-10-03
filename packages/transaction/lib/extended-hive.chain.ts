@@ -3,12 +3,13 @@ import {
   RcAccount,
   GetDynamicGlobalPropertiesResponse,
   GetDynamicGlobalPropertiesRequest,
-  asset,
+  type asset as AssetType,
   NaiAsset,
   transaction
 } from '@hiveio/wax';
 import { AccountFollowStats, FullAccount } from './app-types';
 import { SearchType } from './hive';
+import { info } from 'console';
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -272,7 +273,7 @@ export interface IProposal {
 
 export type SavingsWithdrawals = {
   withdrawals: {
-    amount: asset;
+    amount: AssetType;
     complete: Date;
     from: string;
     id: number;

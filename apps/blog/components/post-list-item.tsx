@@ -22,7 +22,7 @@ import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import TimeAgo from '@hive/ui/components/time-ago';
-import PostSummary from '../feature/posts-card/summary';
+import PostSummary from '../features/posts-card/summary';
 import { Preferences } from '@/blog/lib/utils';
 import { getUserAvatarUrl } from '@hive/ui';
 
@@ -63,7 +63,10 @@ const PostListItem = ({
             <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
                 <Icons.crossPost className="h-4 w-4 text-slate-500 dark:text-slate-400" />{' '}
-                <BasePathLink className="hover:cursor-pointer hover:text-destructive" href={`/@${post.author}`}>
+                <BasePathLink
+                  className="hover:cursor-pointer hover:text-destructive"
+                  href={`/@${post.author}`}
+                >
                   {post.author}
                 </BasePathLink>{' '}
                 cross-posted{' '}

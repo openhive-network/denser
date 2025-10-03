@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { getCookie } from '@smart-signer/lib/utils';
-import { getLanguage } from '../utils/language';
+import { getLanguage } from '@/blog/utils/language';
 
 export default function ClientEffects() {
   useEffect(() => {

@@ -3,16 +3,16 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import Loading from '@ui/components/loading';
-import AddRole from '@/blog/feature/community-roles/add-role';
+import AddRole from '@/blog/features/community-roles/add-role';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@ui/components/table';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getListCommunityRoles, getSubscriptions } from '@transaction/lib/bridge';
 import { getCommunityMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
-import { getRoleValue, Roles, rolesLevels } from '@/blog/feature/community-roles/lib/utils';
-import CommunityLayout from '@/blog/feature/community-layout/community-layout';
-import TableItem from '@/blog/feature/community-roles/table-item';
+import { getRoleValue, Roles, rolesLevels } from '@/blog/features/community-roles/lib/utils';
+import CommunityLayout from '@/blog/features/community-layout/community-layout';
+import TableItem from '@/blog/features/community-roles/table-item';
 import NoDataError from '@/blog/components/no-data-error';
 
 const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {

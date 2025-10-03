@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getAccountNotifications, getSubscribers } from '@transaction/lib/bridge';
 import CommunityDescription from './community-description';
-import SimpleDescriptionSkeleton from '@/blog/feature/community-layout/simple-description-skeleton';
+import SimpleDescriptionSkeleton from '@/blog/features/community-layout/simple-description-skeleton';
 import DescriptionSkeleton from './descripton-skeleton';
 import ExploreHive from '@/blog/components/explore-hive';
 import { Community } from '@transaction/lib/extended-hive.chain';

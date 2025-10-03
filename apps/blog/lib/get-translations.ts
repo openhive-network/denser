@@ -1,7 +1,7 @@
 import { GetStaticPropsContext, GetServerSidePropsContext, GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/blog/next-i18next.config';
-import { getAccountFull } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive-api';
 import { getCommunity } from '@transaction/lib/bridge';
 
 // Unified getTranslations function supporting both SSR and SSG
@@ -84,13 +84,13 @@ export const getCommunityMetadata = async (
   };
 
   try {
-      if(secondParam === '') {
-        const defaultMetadata = {
-          tabTitle: '',
-          description: '',
-          image: 'https://hive.blog/images/hive-blog-share.png',
-          title: firstParam
-      };  
+    if (secondParam === '') {
+      const defaultMetadata = {
+        tabTitle: '',
+        description: '',
+        image: 'https://hive.blog/images/hive-blog-share.png',
+        title: firstParam
+      };
       return defaultMetadata;
     }
     // Fetch community data

@@ -1,11 +1,11 @@
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { useMemo, useState } from 'react';
-import { getAccountFull } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive-api';
 import { useQuery } from '@tanstack/react-query';
 import Head from 'next/head';
 import { MetadataProps } from '@/blog/lib/get-translations';
-import ListVariant from '../feature/account-lists/list-variant';
+import ListVariant from '../features/account-lists/list-variant';
 
 const CHUNK_SIZE = 10;
 

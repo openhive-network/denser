@@ -3,7 +3,9 @@ import { ReactNode } from 'react';
 import Script from 'next/script';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import ClientEffects from './client-effects';
+import MainBar from '../features/main-layout/main-bar';
+import { Providers } from '../features/main-layout/providers';
+import ClientEffects from '../features/main-layout/client-effects';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -45,13 +47,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
       <body>
-        <div className="min-h-screen bg-gray-50">
-          <header className="bg-white shadow-sm">
-            <div className="container mx-auto px-4 py-4">
-              <h1 className="text-2xl font-bold text-gray-900">Hive Blog</h1>
-            </div>
-          </header>
-          <main className="container mx-auto px-4 py-8">{children}</main>
+        <div className="min-h-screen">
+          <Providers>
+            <>
+              <MainBar />
+              <main className="container mx-auto px-4 py-8">{children}</main>
+            </>
+          </Providers>
         </div>
         <Script src={`${basePath}/__ENV.js`} strategy="beforeInteractive" />
         <ClientEffects />

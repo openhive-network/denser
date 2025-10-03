@@ -18,7 +18,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-import { getAccountFull } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive-api';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';

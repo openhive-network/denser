@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { Button } from '@ui/components/button';
 import {
@@ -6,12 +8,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { getLanguage, setLanguage } from '../utils/language';
+import { useRouter } from 'next/navigation';
 
 const languages = [
   { locale: 'ar', label: 'عر' },
@@ -33,7 +35,7 @@ export default function LangToggle({ logged, className }: { logged: Boolean; cla
   const handleLanguageChange = (locale: string) => {
     setLanguage(locale);
     setLang(locale);
-    router.reload();
+    router.refresh();
   };
 
   return (

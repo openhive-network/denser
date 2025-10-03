@@ -1,37 +1,37 @@
+'use client';
+
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
-import Sidebar from './sidebar';
-import { MainNav } from '../features/main-layout/main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
-import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import Link from 'next/link';
 import React, { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
-import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import DialogLogin from './dialog-login';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
 import { getUnreadNotifications } from '@transaction/lib/bridge-api';
-import ModeToggle from './mode-toggle';
 import UserMenu from '@/blog/components/user-menu';
-import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
-import useManabars from './hooks/useManabars';
-import { hoursAndMinutes } from '../lib/utils';
-
 import { getAccountFull } from '@transaction/lib/hive-api';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
-import { useRouter } from 'next/router';
 import { cn } from '@ui/lib/utils';
-import { getHiveSenseStatus } from '../lib/get-data';
-import { getUserAvatarUrl, getDefaultImageUrl } from '@hive/ui';
+import { getUserAvatarUrl } from '@hive/ui';
+import useManabars from '@/blog/components/hooks/useManabars';
+import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
+import { MainNav } from '@/blog/features/main-layout/main-nav';
+import DialogLogin from '@/blog/components/dialog-login';
+import ModeToggle from '@/blog/components/mode-toggle';
+import LangToggle from '@/blog/components/lang-toggle';
+import { hoursAndMinutes } from '@/blog/lib/utils';
+import Sidebar from '@/blog/components/sidebar';
+import { useTranslation } from '@/blog/i18n/client';
+import { usePathname } from 'next/navigation';
 
-const SiteHeader: FC = () => {
+const MainBar: FC = () => {
   const { t } = useTranslation('common_blog');
-  const router = useRouter();
+  const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
@@ -117,7 +117,7 @@ const SiteHeader: FC = () => {
               </div>
             )}
             <div className="hidden lg:block">
-              {router.pathname === '/search' ? (
+              {pathname === '/search' ? (
                 <SearchButton aiTag={!!hiveSense} />
               ) : (
                 <ModeSwitchInput aiAvailable={!!hiveSense} />
@@ -276,7 +276,7 @@ const SiteHeader: FC = () => {
   );
 };
 
-export default SiteHeader;
+export default MainBar;
 
 const SearchButton = ({ aiTag, className }: { aiTag: boolean; className?: string }) => {
   return (

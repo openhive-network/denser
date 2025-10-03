@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
 import {
-  getAccount,
   getDynamicGlobalProperties,
   getFeedHistory,
   getFindAccounts,
   getFollowing
 } from '@transaction/lib/hive';
 import moment from 'moment';
+import { getAccount } from '@transaction/lib/hive-api';
 import { getAccountHistory, getSavingsWithdrawals } from '@/wallet/lib/hive';
 import {
   createListWithSuggestions,

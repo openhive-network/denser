@@ -1,4 +1,4 @@
-import SuggestionsList from '@/blog/feature/suggestions-posts/list';
+import SuggestionsList from '@/blog/features/suggestions-posts/list';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components';

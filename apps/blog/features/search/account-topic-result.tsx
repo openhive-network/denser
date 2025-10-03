@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { SearchSort } from '@ui/hooks/useSearch';
+import { SearchSort } from '@ui/hooks/use-search';
 import { PER_PAGE } from './lib/utils';
 import { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';

@@ -1,9 +1,9 @@
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { createContext, FC, useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getAccount } from '@transaction/lib/hive';
 import { netVests } from '@/blog/lib/utils';
 import { FullAccount } from '@transaction/lib/app-types';
+import { getAccount } from '@transaction/lib/hive-api';
 
 type LoggedUserContextType = {
   loggedUser: FullAccount | undefined;

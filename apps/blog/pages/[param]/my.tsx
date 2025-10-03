@@ -19,7 +19,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import Link from 'next/link';
 import { getDefaultProps } from '../../lib/get-translations';
 import Head from 'next/head';
-import CommunityLayout from '@/blog/feature/community-layout/community-layout';
+import CommunityLayout from '@/blog/features/community-layout/community-layout';
 import { withBasePath } from '@/blog/utils/PathUtils';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';

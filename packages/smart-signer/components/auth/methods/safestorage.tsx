@@ -1,5 +1,5 @@
 /* Sign-in with safe storage (use beekeeper wallet through hb-auth) */
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 import { AuthUser, AuthorizationError, OnlineClient } from '@hiveio/hb-auth';
@@ -35,7 +35,6 @@ import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { TFunction } from 'i18next';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
-import { useRouter } from 'next/router';
 
 function getFormSchema(t: TFunction<'smart-signer', undefined>) {
   return z
@@ -117,7 +116,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         strict: true
       }
     });
-    const router = useRouter();
 
     async function onSave(values: SafeStorageForm) {
       const { username, password, wif, keyType, strict } = values;

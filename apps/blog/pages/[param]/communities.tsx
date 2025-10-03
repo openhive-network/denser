@@ -13,7 +13,7 @@ import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-h
 import { getLogger } from '@ui/lib/logging';
 import Error from 'next/error';
 import { getAccountMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
-import { getAccountFull } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive-api';
 import Head from 'next/head';
 import { getUserAvatarUrl } from '@hive/ui';
 

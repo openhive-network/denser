@@ -1,19 +1,21 @@
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountNotifications, getUnreadNotifications } from '@transaction/lib/bridge';
+import { getAccountNotifications } from '@transaction/lib/bridge';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import NotificationList from '@/blog/components/notification-list';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { useTranslation } from 'next-i18next';
 import { getRewardsString } from '../lib/utils';
-import { getAccountFull, getFindAccounts } from '@transaction/lib/hive';
+import { getFindAccounts } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive-api';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications-read-mutation';
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getLogger } from '@ui/lib/logging';
+import { getUnreadNotifications } from '@transaction/lib/bridge-api';
 
 const logger = getLogger('app');
 

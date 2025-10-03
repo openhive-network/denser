@@ -8,7 +8,7 @@ import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { getAccountMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
-import { getAccountFull } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive-api';
 
 export default function UserNotifications({ metadata }: { metadata: MetadataProps }) {
   const { t } = useTranslation('common_blog');

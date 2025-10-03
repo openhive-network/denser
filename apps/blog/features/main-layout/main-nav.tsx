@@ -1,8 +1,11 @@
+'use client';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@ui/lib/utils';
-import { useTranslation } from 'next-i18next';
+
 import env from '@beam-australia/react-env';
+import { useTranslation } from '../../i18n/client';
 
 export function MainNav() {
   const pathname = usePathname();

@@ -1,18 +1,17 @@
-import { TWaxApiRequest } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
-import { IGetPostHeader, IFollowList, IAccountRelationship, Entry, IUnreadNotifications, Community, IAccountNotification, FollowListType } from './extended-hive.chain';
+import {
+  IFollowList,
+  IAccountRelationship,
+  Entry,
+  Community,
+  IAccountNotification,
+  FollowListType
+} from './extended-hive.chain';
 
 const logger = getLogger('app');
 
 const chain = await hiveChainService.getHiveChain();
-
-export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
-  return chain.api.bridge.get_post_header({
-    author,
-    permlink
-  });
-};
 
 export type Subscription = Array<string>;
 
@@ -57,8 +56,8 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return chain
-    .api.bridge.get_ranked_posts({
+  return chain.api.bridge
+    .get_ranked_posts({
       sort,
       start_author,
       start_permlink,
@@ -84,8 +83,8 @@ export const getAccountPosts = async (
   start_permlink: string = '',
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return chain
-    .api.bridge.get_account_posts({
+  return chain.api.bridge
+    .get_account_posts({
       sort,
       account,
       start_author,
@@ -107,8 +106,8 @@ export const getPost = async (
   permlink: string = '',
   observer: string = ''
 ): Promise<Entry | null> => {
-  return chain
-    .api.bridge.get_post({
+  return chain.api.bridge
+    .get_post({
       author,
       permlink,
       observer
@@ -195,19 +194,11 @@ export const getSubscribers = async (community: string): Promise<string[][] | nu
   });
 };
 
-
-export const getUnreadNotifications = async (account: string): Promise<IUnreadNotifications | null> => {
-  return chain.api.bridge.unread_notifications({
-    account
-  });
-};
-
 export const getRelationshipBetweenAccounts = async (
   follower: string,
   following: string
 ): Promise<IAccountRelationship | null> => {
-  return chain
-    .api.bridge.get_relationship_between_accounts([follower, following]);
+  return chain.api.bridge.get_relationship_between_accounts([follower, following]);
 };
 
 export const getFollowList = async (

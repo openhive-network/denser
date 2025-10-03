@@ -1,5 +1,5 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { getManabar } from '@transaction/lib/hive';
+import { getManabar } from '@transaction/lib/hive-api';
 
 interface SingleManabar {
   max: string;
@@ -21,7 +21,7 @@ const useManabars = (accountName?: string) => {
     isError: manabarsDataError
   }: UseQueryResult<Manabars | null> = useQuery({
     queryKey: ['manabars', accountName],
-    queryFn: () => getManabar(accountName!),
+    queryFn: async () => await getManabar(accountName!),
     enabled: !!accountName,
     refetchOnWindowFocus: false,
     refetchInterval: 60000 // 1 minute in milliseconds

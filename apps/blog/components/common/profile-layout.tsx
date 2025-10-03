@@ -4,12 +4,7 @@ import BasePathLink from '@/blog/components/base-path-link';
 import { useRouter } from 'next/router';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useQuery } from '@tanstack/react-query';
-import {
-  getAccount,
-  getDynamicGlobalProperties,
-  getAccountFull,
-  getAccountReputations
-} from '@transaction/lib/hive';
+import { getDynamicGlobalProperties, getAccountReputations } from '@transaction/lib/hive';
 import { accountReputation, compareDates } from '@/blog/lib/utils';
 import { convertToHP, numberWithCommas } from '@hive/ui/lib/utils';
 import { Separator } from '@hive/ui/components/separator';
@@ -28,6 +23,7 @@ import ButtonsContainer from '../buttons-container';
 import clsx from 'clsx';
 import { convertStringToBig } from '@ui/lib/helpers';
 import TimeAgo from '@hive/ui/components/time-ago';
+import { getAccount, getAccountFull } from '@transaction/lib/hive-api';
 
 interface IProfileLayout {
   children: React.ReactNode;

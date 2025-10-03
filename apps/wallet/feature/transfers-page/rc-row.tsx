@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getManabar } from '@transaction/lib/hive';
+import { getManabar } from '@transaction/lib/hive-api';
 import { CircleSpinner } from 'react-spinners-kit';
 import { hoursAndMinutes } from './lib/utils';
 import RCStats from './rc-stats';

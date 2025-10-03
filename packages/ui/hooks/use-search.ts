@@ -1,4 +1,5 @@
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export type SearchMode = 'ai' | 'classic' | 'account' | 'userTopic' | 'tag';
@@ -15,12 +16,14 @@ const getMode = (
 };
 
 export function useSearch() {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const query = router.query.q as string;
-  const aiQuery = router.query.ai as string;
-  const userTopicQuery = router.query.a as string;
-  const topicQuery = router.query.p as string;
-  const sortQuery = router.query.s as SearchSort | undefined;
+
+  const query = searchParams?.get('q') ?? undefined;
+  const aiQuery = searchParams?.get('ai') ?? undefined;
+  const userTopicQuery = searchParams?.get('a') ?? undefined;
+  const topicQuery = searchParams?.get('p') ?? undefined;
+  const sortQuery = searchParams?.get('s') ?? undefined;
 
   const currentMode = getMode(query, aiQuery, userTopicQuery);
   const [inputValue, setInputValue] = useState(query ?? aiQuery ?? topicQuery ?? '');
@@ -57,17 +60,8 @@ export function useSearch() {
   ) => {
     if (!value) return;
     switch (currentMode) {
-      case 'tag':
-        router.push(`/trending/${encodeURIComponent(value)}`);
-        break;
       case 'account':
-        // Use window.location for subdirectory deployments to ensure catch-all route works
-        if (router.basePath) {
-          window.location.href = `${router.basePath}/@${encodeURIComponent(value)}`;
-        } else {
-          // Use client-side navigation for root deployments (faster)
-          router.push(`/@${encodeURIComponent(value)}`);
-        }
+        router.push(`/@${encodeURIComponent(value)}`);
         break;
       case 'ai':
         router.push(`/search?ai=${encodeURIComponent(value)}`);

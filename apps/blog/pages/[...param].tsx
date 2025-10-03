@@ -19,17 +19,13 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import NoDataError from '../components/no-data-error';
 import { getLogger } from '@ui/lib/logging';
 import MainPage from '../components/main-page';
-import AccountProfileMainPage from '../feature/account-profile/main-page';
-import {
-  getAccount,
-  getAccountFull,
-  getAccountReputations,
-  getDynamicGlobalProperties
-} from '@transaction/lib/hive';
+import AccountProfileMainPage from '../features/account-profile/main-page';
+import { getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import PostRedirectPage from '../components/post-redirect-page';
+import { getAccount, getAccountFull } from '@transaction/lib/hive-api';
 
 const logger = getLogger('app');
 export type PageType = 'main' | 'community' | 'userProfile' | 'redirect' | 'tag';
@@ -69,7 +65,6 @@ const ParamPage: FC<{ metadata: MetadataProps; pageType: PageType; redirectUrl: 
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
-
 
   useEffect(() => {
     // Save scroll position when leaving the page
@@ -115,25 +110,21 @@ export default ParamPage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   let allParams: string[] = Array.isArray(ctx.params?.param) ? (ctx.params!.param as string[]) : [];
-  
+
   // Filter out any _next or data params - these come from Next.js internal routing
   // This can happen during client-side navigation with basePath
-  const filteredParams = allParams.filter(p => 
-    p !== '_next' && 
-    p !== 'data' && 
-    !p.includes('.json')
-  );
-  
+  const filteredParams = allParams.filter((p) => p !== '_next' && p !== 'data' && !p.includes('.json'));
+
   // Use filtered params if we have any valid ones, otherwise use original
   if (filteredParams.length > 0) {
     allParams = filteredParams;
   }
-  
+
   // If first param is still invalid or we have no params, default to trending
   if (allParams.length === 0 || allParams[0] === 'data' || allParams[0] === '_next') {
     allParams = ['trending'];
   }
-  
+
   const [firstParam, secondParam] = allParams;
   const pageType = getPageType(firstParam, secondParam);
   const tag = (secondParam || '').toLocaleLowerCase();

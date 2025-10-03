@@ -6,26 +6,27 @@ import {
   FollowOperation,
   type IArticle,
   type IReplyData,
-  ITransaction,
+  type ITransaction,
   NaiAsset,
   ReplyOperation,
-  asset,
-  authority,
-  future_extensions,
+  type asset as IAsset,
+  type authority,
+  type future_extensions,
   EAvailableCommunityRoles,
   AccountAuthorityUpdateOperation,
   ESupportedLanguages,
-  IHiveChainInterface,
-  GetDynamicGlobalPropertiesResponse,
+  type IHiveChainInterface,
+  type GetDynamicGlobalPropertiesResponse,
   ResourceCreditsOperation
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
-import WorkerBee, { ITransactionData, IWorkerBee } from '@hiveio/workerbee';
+import WorkerBee, { IWorkerBee } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
+
 const logger = getLogger('app');
 
 export type TransactionErrorCallback = (error: any) => any;
@@ -663,6 +664,7 @@ export class TransactionService {
       builder.pushOperation(blogPost);
     }, transactionOptions);
   }
+
   async updateWalletProfile(
     username: string,
     memo_key: string,
@@ -818,7 +820,7 @@ export class TransactionService {
     }, transactionOptions);
   }
   async transferToSavings(
-    amount: asset,
+    amount: IAsset,
     fromAccount: string,
     memo: string,
     toAccount: string,
@@ -837,7 +839,7 @@ export class TransactionService {
   }
 
   async transferFromSavings(
-    amount: asset,
+    amount: IAsset,
     fromAccount: string,
     memo: string,
     toAccount: string,
@@ -858,7 +860,7 @@ export class TransactionService {
   }
 
   async transfer(
-    amount: asset,
+    amount: IAsset,
     fromAccount: string,
     memo: string,
     toAccount: string,
@@ -877,7 +879,7 @@ export class TransactionService {
   }
 
   async transferToVesting(
-    amount: asset,
+    amount: IAsset,
     fromAccount: string,
     toAccount: string,
     transactionOptions: TransactionOptions = {}
@@ -893,7 +895,7 @@ export class TransactionService {
     }, transactionOptions);
   }
 
-  async withdrawFromVesting(account: string, hp: asset, transactionOptions: TransactionOptions = {}) {
+  async withdrawFromVesting(account: string, hp: IAsset, transactionOptions: TransactionOptions = {}) {
     const { total_vesting_fund_hive, total_vesting_shares } = await this.getDynamicGlobalProperties();
     const vestingShares = (await this.getChain()).hpToVests(
       hp,
@@ -914,7 +916,7 @@ export class TransactionService {
   async delegateVestingShares(
     delegator: string,
     delegatee: string,
-    hp: asset,
+    hp: IAsset,
     transactionOptions: TransactionOptions = {}
   ) {
     const { total_vesting_fund_hive, total_vesting_shares } = await this.getDynamicGlobalProperties();
@@ -1016,6 +1018,7 @@ export class TransactionService {
     const { median_props } = await (
       await hiveChainService.getHiveChain()
     ).api.condenser_api.get_witness_schedule([]);
+
     const fee = await getAsset(median_props.account_creation_fee.split(' ')[0], 'HIVE');
     return (
       await this.processHiveAppOperation((builder) => {
@@ -1078,10 +1081,11 @@ export class TransactionService {
       );
     }, transactionOptions);
   }
+
   async limitOrderCreate(
-    amountToSell: asset,
+    amountToSell: IAsset,
     owner: string,
-    minToReceive: asset,
+    minToReceive: IAsset,
     orderId: number,
     fillOrKill: boolean,
     expiration: string,
@@ -1126,6 +1130,7 @@ export class TransactionService {
       });
     }, transactionOptions);
   }
+
   async delegateRC(
     fromAccount: string,
     amount: string,
@@ -1146,5 +1151,4 @@ export class TransactionService {
     }, transactionOptions);
   }
 }
-
 export const transactionService = new TransactionService();

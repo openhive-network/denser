@@ -15,7 +15,7 @@ import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import Head from 'next/head';
-import CommunityLayout from '../feature/community-layout/community-layout';
+import CommunityLayout from '../features/community-layout/community-layout';
 import { sortToTitle, sortTypes } from '@/blog/lib/utils';
 import { MetadataProps } from '@/blog/lib/get-translations';
 import NoDataError from '@/blog/components/no-data-error';
@@ -38,7 +38,7 @@ const MainPage = ({
   const router = useRouter();
   const { user } = useUser();
   const queryClient = useQueryClient();
-  
+
   // Get params from router
   let param = router.query.param as string[];
   if (!param) {
@@ -60,13 +60,13 @@ const MainPage = ({
       }
     } else {
       // If we don't have enough params after _next/data, use the path
-      const pathParts = router.asPath.split('/').filter(p => p && !p.startsWith('#') && !p.startsWith('?'));
+      const pathParts = router.asPath.split('/').filter((p) => p && !p.startsWith('#') && !p.startsWith('?'));
       param = pathParts;
     }
   }
-  
+
   // Additional cleanup - remove any remaining invalid params
-  param = param.filter(p => p && p !== '_next' && p !== 'data' && !p.includes('.json'));
+  param = param.filter((p) => p && p !== '_next' && p !== 'data' && !p.includes('.json'));
   const observer = !!user.username ? user.username : '';
   const [sort, tagParam] = param;
   const tag = (tagParam || '').toLocaleLowerCase();
