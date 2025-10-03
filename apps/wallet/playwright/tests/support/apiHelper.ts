@@ -283,8 +283,8 @@ export class ApiHelper {
       data: {
         id: 0,
         jsonrpc: "2.0",
-        method: "condenser_api.get_vesting_delegations",
-        params: [account, start_account, limit],
+        method: "database_api.list_vesting_delegations",
+        params: { start: [account, start_account], limit, order: 'by_delegation' },
       },
       headers: {
         Accept: "application/json, text/plain, */*",

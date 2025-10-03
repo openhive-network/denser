@@ -14,12 +14,8 @@ import Head from 'next/head';
 import TimeAgo from '@ui/components/time-ago';
 import { IDynamicGlobalProperties } from '@transaction/lib/extended-hive.chain';
 import RCTable from '@/wallet/feature/delegations/rc-table';
-
-const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalProperties) => {
-  const totalFund = parseFloat(dynamicData.total_vesting_fund_hive.amount);
-  const totalShares = parseFloat(dynamicData.total_vesting_shares.amount);
-  return ((vests * totalFund) / totalShares).toFixed(2);
-};
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { convertVestsToHp } from '@/wallet/lib/utils';
 
 function DelegationsPage({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
@@ -32,10 +28,12 @@ function DelegationsPage({ username, metadata }: InferGetServerSidePropsType<typ
     getDynamicGlobalProperties()
   );
 
+  const hiveChain = hiveChainService.reuseHiveChain();
+
   if (dynamicLoading || vestingLoading) {
     return <Loading loading={dynamicLoading || vestingLoading} />;
   }
-  if (!vestingData || !dynamicData) {
+  if (!vestingData || !dynamicData || !hiveChain) {
     return <p className="my-32 text-center text-3xl">{t('global.something_went_wrong')}</p>;
   }
   return (
@@ -62,7 +60,7 @@ function DelegationsPage({ username, metadata }: InferGetServerSidePropsType<typ
                     >
                       <td className="px-1 py-2 sm:px-4">
                         {numberWithCommas(
-                          convertVestsToSteem(parseFloat(element.vesting_shares), dynamicData)
+                          convertVestsToHp(element.vesting_shares.amount, dynamicData.total_vesting_fund_hive, dynamicData.total_vesting_shares, hiveChain)
                         )}{' '}
                         HP
                       </td>

@@ -262,6 +262,15 @@ export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVe
   return operationHp.amount;
 }
 
+export function convertVestsToHp(vestsAmount: string, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined, hiveChain: HiveChain): string {
+  if (!totalVestingFund || !totalVestingShares) return "0.00";
+
+  const vests = hiveChain.vestsSatoshis(vestsAmount);
+  const operationHp = hiveChain.vestsToHp(vests, totalVestingFund, totalVestingShares);
+
+  return operationHp.amount;
+}
+
 export function filterSmallerThanOne(asset?: NaiAsset) {
   if (!asset) return false;
   const {precision, amount} = asset;

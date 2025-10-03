@@ -445,7 +445,7 @@ export interface IDelegatedVestingShare {
   delegatee: string;
   delegator: string;
   min_delegation_time: string;
-  vesting_shares: string;
+  vesting_shares: NaiAsset;
 }
 
 export type OpType =
@@ -957,6 +957,7 @@ export type ExtendedNodeApi = {
       { votes: IVoteListItem[] }
     >;
     list_witnesses: TWaxApiRequest<{ start: string[]; limit: number; order: string }, { witnesses: IWitness[] }>;
+    list_vesting_delegations: TWaxApiRequest<{ start: [string, string]; limit: number; order: string }, { delegations: IDelegatedVestingShare[] }>;
   };
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;

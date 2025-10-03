@@ -303,7 +303,7 @@ test.describe("Wallet page of @gtg tests", () => {
     await walletPage.page.waitForSelector(await walletPage.walletDelegationItem["_selector"]);
 
     const vestingDelegationAPI = await apiHelper.getVestingDelegationsAPI("blocktrades", "", 50);
-    const vestingDelegationAPILength = await vestingDelegationAPI.result.length;
+    const vestingDelegationAPILength = await vestingDelegationAPI.result.delegations.length;
     // console.log('vesting delegation api response ', await vestingDelegationAPI, await vestingDelegationAPILength);
 
     expect((await walletPage.walletDelegationItem.all()).length).toBe(vestingDelegationAPILength);

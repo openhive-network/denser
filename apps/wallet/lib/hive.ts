@@ -83,7 +83,7 @@ export const getVestingDelegations = async (
   from: string = '',
   limit: number = 50
 ): Promise<IDelegatedVestingShare[]> => {
-  return chain.api.condenser_api.get_vesting_delegations([username, from, limit]);
+  return (await chain.api.database_api.list_vesting_delegations({ start: [username, from], limit, order: 'by_delegation' })).delegations;
 };
 
 const op = operationOrders;
