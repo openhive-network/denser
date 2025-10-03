@@ -18,7 +18,6 @@ import {
   AccountHistory,
   AccountRewardsHistory,
   IDelegatedVestingShare,
-  OwnerHistory,
   IRecentTradesData,
   IOrdersDataItem,
   IOpenOrdersData,
@@ -28,6 +27,7 @@ import {
   IDirectDelegation,
   IGetOperationsByAccountResponse,
   ITradesData,
+  IOwnerHistory,
 } from '@transaction/lib/extended-hive.chain';
 import { commonVariables } from '@ui/lib/common-variables';
 
@@ -235,8 +235,8 @@ export const getSavingsWithdrawals = async (account: string): Promise<SavingsWit
   return chain.api.database_api.find_savings_withdrawals({ account: account });
 };
 
-export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
-  return chain.api.condenser_api.get_owner_history([account]);
+export const getOwnerHistory = async (account: string): Promise<IOwnerHistory[]> => {
+  return (await chain.api.database_api.list_owner_histories({ start: [account, '1970-01-01T00:00:00'], limit: 100 })).owner_auths;
 };
 
 export const getDynamicGlobalPropertiesData = async (): Promise<GetDynamicGlobalPropertiesResponse> => {

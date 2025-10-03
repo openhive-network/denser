@@ -248,16 +248,16 @@ export interface IRecentTradesData {
   open_pays: NaiAsset;
 }
 
-export type OwnerHistory = {
+export interface IOwnerHistory {
   account: string;
   id: number;
   last_valid_time: string;
   previous_owner_authority: {
-    account_auths: unknown[];
+    account_auths: string[];
     key_auths: [string, number][];
     weight_threshold: number;
   };
-}[];
+};
 
 export interface IGetProposalsParams {
   start: Array<number | string>;
@@ -906,7 +906,7 @@ export type ExtendedNodeApi = {
     get_open_orders: TWaxApiRequest<string[], IOpenOrdersData[]>;
     get_trade_history: TWaxApiRequest<(string | number)[], IOrdersDataItem[]>;
     get_recent_trades: TWaxApiRequest<number[], IRecentTradesData[]>;
-    get_owner_history: TWaxApiRequest<string[], OwnerHistory>;
+    get_owner_history: TWaxApiRequest<string[], IOwnerHistory[]>;
     get_follow_count: TWaxApiRequest<string[], AccountFollowStats>;
     get_content: TWaxApiRequest<string[], IPost>;
     get_market_history_buckets: TWaxApiRequest<void[], number[]>;
@@ -965,6 +965,7 @@ export type ExtendedNodeApi = {
     list_witnesses: TWaxApiRequest<{ start: string[]; limit: number; order: string }, { witnesses: IWitness[] }>;
     list_vesting_delegations: TWaxApiRequest<{ start: [string, string]; limit: number; order: string }, { delegations: IDelegatedVestingShare[] }>;
     list_limit_orders: TWaxApiRequest<{ start: [string, number], limit: number, order: string }, { orders: IOpenOrdersData[] }>;
+    list_owner_histories: TWaxApiRequest<{ start: [string, string], limit: number }, { owner_auths: IOwnerHistory[] }>;
   };
   account_history_api: {
     get_account_history: TWaxApiRequest<{ account: string, start: string, limit: number, include_reversible?: boolean, operation_filter_low?: number, operation_filter_high?: number }, { history: AccountHistory[] }>;
