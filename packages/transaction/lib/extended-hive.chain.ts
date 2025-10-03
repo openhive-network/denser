@@ -229,11 +229,11 @@ export interface IOpenOrdersData {
   orderid: number;
   for_sale: number;
   sell_price: {
-    base: string;
-    quote: string;
+    base: NaiAsset;
+    quote: NaiAsset;
   };
-  real_price: string;
-  rewarded: boolean;
+  real_price?: string;
+  rewarded?: boolean;
 }
 
 export interface IRecentTradesData {
@@ -958,6 +958,7 @@ export type ExtendedNodeApi = {
     >;
     list_witnesses: TWaxApiRequest<{ start: string[]; limit: number; order: string }, { witnesses: IWitness[] }>;
     list_vesting_delegations: TWaxApiRequest<{ start: [string, string]; limit: number; order: string }, { delegations: IDelegatedVestingShare[] }>;
+    list_limit_orders: TWaxApiRequest<{ start: [string, number], limit: number, order: string }, { orders: IOpenOrdersData[] }>;
   };
   account_history_api: {
     get_account_history: TWaxApiRequest<{ account: string, start: string, limit: number, include_reversible?: boolean, operation_filter_low?: number, operation_filter_high?: number }, { history: AccountHistory[] }>;

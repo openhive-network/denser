@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { IOpenOrdersData } from '@transaction/lib/extended-hive.chain'; 
+import { IOpenOrdersData } from '@transaction/lib/extended-hive.chain';
 import { useTranslation } from 'next-i18next';
 import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import { dateToFormatted } from '@ui/lib/parse-date';
@@ -68,10 +68,10 @@ const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
               {orders && orders.length ? (
                 (sortAsc ? orders : orders.toReversed()).map((order: IOpenOrdersData) => {
                   const currency = [
-                    order.sell_price.base.split(' ')[0],
-                    order.sell_price.quote.split(' ')[0]
+                    order.sell_price.base.amount,
+                    order.sell_price.quote.amount
                   ];
-                  if (order.sell_price.base.includes('HBD')) currency.reverse();
+                  if (order.sell_price.base.nai === '@@000000013') currency.reverse();
 
                   return (
                     <tr className="even:bg-background-tertiary" key={order.orderid}>
@@ -79,7 +79,7 @@ const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
                         {dateToFormatted(order.created, 'YYYY-MM-DD HH:mm:ss')}
                       </td>
                       <td>
-                        {order.sell_price.base.includes('HIVE')
+                        {order.sell_price.base.nai === '@@000000021'
                           ? t('market_page.sell')
                           : t('market_page.buy')}
                       </td>
@@ -88,7 +88,7 @@ const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
                       <td>{currency[1]}</td>
                       <td>
                         {(
-                          (1 - order.for_sale / 1000 / parseFloat(order.sell_price.base.split(' ')[0])) *
+                          (1 - order.for_sale / 1000 / parseFloat(order.sell_price.base.amount)) *
                           100
                         ).toFixed(2)}
                         %

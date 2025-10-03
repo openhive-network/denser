@@ -211,7 +211,7 @@ export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> =>
 };
 
 export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => {
-  return chain.api.condenser_api.get_open_orders([user]);
+  return (await chain.api.database_api.list_limit_orders({ start: [user, 0], limit: 100, order: 'by_account' })).orders;
 };
 
 type GetTradeHistoryData = {
