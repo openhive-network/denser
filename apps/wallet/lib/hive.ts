@@ -27,6 +27,7 @@ import {
   IWitness,
   IDirectDelegation,
   IGetOperationsByAccountResponse,
+  ITradesData,
 } from '@transaction/lib/extended-hive.chain';
 import { commonVariables } from '@ui/lib/common-variables';
 
@@ -220,10 +221,10 @@ type GetTradeHistoryData = {
   };
 };
 
-export const getTradeHistory = async (limit: number = 1000): Promise<IOrdersDataItem[]> => {
+export const getTradeHistory = async (limit: number = 1000): Promise<ITradesData[]> => {
   let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
   let todayNow = moment(Date.now()).format().split('+')[0];
-  return chain.api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
+  return (await chain.api.market_history_api.get_trade_history({ start: todayEarlier, end: todayNow, limit })).trades;
 };
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {

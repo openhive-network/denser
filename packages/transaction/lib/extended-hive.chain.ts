@@ -205,6 +205,12 @@ export interface IWitness {
   owner: string;
 }
 
+export interface ITradesData {
+  date: string;
+  current_pays: NaiAsset;
+  open_pays: NaiAsset;
+}
+
 export interface IOrdersDataItem {
   created: string;
   hbd: number;
@@ -966,6 +972,7 @@ export type ExtendedNodeApi = {
   market_history_api: {
     get_ticker: TWaxApiRequest<{}, IMarketStatistics>;
     get_order_book: TWaxApiRequest<{ limit: number }, IOrdersData>;
+    get_trade_history: TWaxApiRequest<{ start: string, end: string, limit: number }, { trades: ITradesData[] }>;
   }
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
