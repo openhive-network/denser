@@ -12,11 +12,12 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getOpenOrder } from '../lib/hive';
 import OpenOrders from './open-orders';
 import { useQuery } from '@tanstack/react-query';
+import { NaiAsset } from '@hiveio/wax';
 
 interface Market {
-  hbd_volume: string;
+  hbd_volume: NaiAsset;
   highest_bid: Big;
-  hive_volume: string;
+  hive_volume: NaiAsset;
   latest: string;
   lowest_ask: Big;
   percent_change: string;

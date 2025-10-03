@@ -164,9 +164,9 @@ export interface JsonMetadata {
 export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
 
 export interface IMarketStatistics {
-  hbd_volume: string;
+  hbd_volume: NaiAsset;
   highest_bid: string;
-  hive_volume: string;
+  hive_volume: NaiAsset;
   latest: string;
   lowest_ask: string;
   percent_change: string;
@@ -962,6 +962,9 @@ export type ExtendedNodeApi = {
   account_history_api: {
     get_account_history: TWaxApiRequest<{ account: string, start: string, limit: number, include_reversible?: boolean, operation_filter_low?: number, operation_filter_high?: number }, { history: AccountHistory[] }>;
   };
+  market_history_api: {
+    get_ticker: TWaxApiRequest<{}, IMarketStatistics>;
+  }
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
   };

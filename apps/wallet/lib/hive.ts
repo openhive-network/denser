@@ -203,7 +203,7 @@ export const getUserVotes = async (voter: string, limit: number = 1000): Promise
 };
 
 export const getMarketStatistics = async (): Promise<IMarketStatistics> => {
-  return chain.api.condenser_api.get_ticker([]);
+  return chain.api.market_history_api.get_ticker({});
 };
 
 export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> => {
