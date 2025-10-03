@@ -264,8 +264,13 @@ export class ApiHelper {
       data: {
         id: 0,
         jsonrpc: "2.0",
-        method: "condenser_api.get_account_history",
-        params: [account, start, limit, "199284866418737180"], // last parameter: ...wallet_operations_bitmask
+        method: "account_history_api.get_account_history",
+        params: {
+          account: account,
+          start: start.toString(),
+          limit: limit,
+          operation_filter_low: "199284866418737180" // wallet_operations_bitmask converted to string
+        },
       },
       headers: {
         Accept: "application/json, text/plain, */*",

@@ -223,7 +223,7 @@ test.describe("Wallet page of @gtg tests", () => {
 
     if (await walletPage.walletAccountHistoryRow.first().isVisible()){
       await walletPage.page.waitForSelector(await walletPage.walletAccountHistoryRow["_selector"]);
-      await expect(accountHistoryUI.length).toBe(accountHistoryResult.result.length);
+      await expect(accountHistoryUI.length).toBe(accountHistoryResult.result.history.length);
     } else {
       await expect(await walletPage.walletAccountHistoryNoTransactionMsg).toContainText('No transactions found');
     }
@@ -246,7 +246,7 @@ test.describe("Wallet page of @gtg tests", () => {
     let accountHistoryResult = null;
 
     if (await accountHistoryResultAPI.result != null)
-      accountHistoryResult = await accountHistoryResultAPI.result.reverse();
+      accountHistoryResult = await accountHistoryResultAPI.result.history.reverse();
 
     // console.log('Account history result:\n', await accountHistoryResult);
 

@@ -105,17 +105,21 @@ const wallet_operations_bitmask = [
   op.claim_reward_balance
 ];
 
+const wallet_operations_filter = makeBitMaskFilter(wallet_operations_bitmask);
+
 export const getAccountHistory = async (
   username: string,
   start: number = -1,
   limit: number = 20
 ): Promise<AccountHistory[]> => {
-  return chain.api.condenser_api.get_account_history([
-    username,
-    start,
+  const response = await chain.api.account_history_api.get_account_history({
+    account: username,
+    start: start.toString(),
     limit,
-    ...wallet_operations_bitmask
-  ]) as Promise<AccountHistory[]>;
+    operation_filter_low: wallet_operations_filter[0],
+    operation_filter_high: wallet_operations_filter[1]
+  });
+  return response.history;
 };
 
 export const getAccountOperations = async (
@@ -171,12 +175,15 @@ export const getAccountRewardsHistory = async (
   start: number = -1,
   limit: number = 20
 ): Promise<AccountRewardsHistory[]> => {
-  return chain.api.condenser_api.get_account_history([
-    username,
-    start,
+  const response = await chain.api.account_history_api.get_account_history({
+    account: username,
+    start: start.toString(),
     limit,
-    ...wallet_rewards_history_bitmask
-  ]) as Promise<AccountRewardsHistory[]>;
+    operation_filter_low: wallet_rewards_history_bitmask[0],
+    operation_filter_high: wallet_rewards_history_bitmask[1]
+  });
+
+  return response.history as unknown as Promise<AccountRewardsHistory[]>;
 };
 
 export const getProposalVotes = async (

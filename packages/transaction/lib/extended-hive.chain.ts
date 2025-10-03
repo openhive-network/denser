@@ -959,6 +959,9 @@ export type ExtendedNodeApi = {
     list_witnesses: TWaxApiRequest<{ start: string[]; limit: number; order: string }, { witnesses: IWitness[] }>;
     list_vesting_delegations: TWaxApiRequest<{ start: [string, string]; limit: number; order: string }, { delegations: IDelegatedVestingShare[] }>;
   };
+  account_history_api: {
+    get_account_history: TWaxApiRequest<{ account: string, start: string, limit: number, include_reversible?: boolean, operation_filter_low?: number, operation_filter_high?: number }, { history: AccountHistory[] }>;
+  };
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
   };
