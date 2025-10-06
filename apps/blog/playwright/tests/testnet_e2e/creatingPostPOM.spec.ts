@@ -277,7 +277,6 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postEditorPage = new PostEditorPage(denserAutoTest0Page.page);
 
     const postTitle: string = `1 Testing post POM - ${users.denserautotest0.username}`;
-    const postContentText: string = '1 Content of the testing post POM';
     const postSummary: string = '1 My testing post POM';
     const postTag: string = 'test';
     const errorMessage: string = 'String must contain at least 1 character(s)';
