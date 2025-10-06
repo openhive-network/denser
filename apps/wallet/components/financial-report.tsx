@@ -65,17 +65,18 @@ const convertHistoryToCSV = (transactions: AccountHistory[]) => {
 
   transactions.forEach((transaction) => {
     console.log(transaction);
+    const opData = transaction[1].op[1];
     const formatted = [
       transaction[1].timestamp,
       transaction[1].op[0],
-      transaction[1].op[1].amount,
-      transaction[1].op[1].from,
-      transaction[1].op[1].to,
-      transaction[1].op[1].memo,
-      transaction[1].op[1].account,
-      transaction[1].op[1].reward_hive,
-      transaction[1].op[1].reward_hbd,
-      transaction[1].op[1].reward_hive
+      opData.amount,
+      opData.from,
+      opData.to,
+      opData.memo,
+      opData.account,
+      opData.reward_hive,
+      opData.reward_hbd,
+      opData.reward_hive
       // 'payout_must_be_claimed',
       // 'permlink',
       // 'vesting_payout',
@@ -106,7 +107,7 @@ const downloadCSV = (csv: string) => {
 const generateReport = async (username: string, financialPeriod: FinancialReportPeriod) => {
   const transactions = await getAccountHistory(username, -1, 1000);
   const filtered = transactions.filter((transaction) => {
-    const opType = transaction[1].op!.at(0);
+    const opType = transaction[1].op![0];
     if (!!opType) {
       return (
         opTypes.includes(opType as OpType) &&
