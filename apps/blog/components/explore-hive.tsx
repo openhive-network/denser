@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/ca
 import { FC } from 'react';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
-import { useTranslation } from 'next-i18next';
+
 import env from '@beam-australia/react-env';
+import { useTranslation } from '../i18n/client';
 
 const ExploreHive: FC = () => {
   const { t } = useTranslation('common_blog');

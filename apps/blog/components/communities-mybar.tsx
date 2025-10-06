@@ -2,16 +2,16 @@ import Link from 'next/link';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from 'next-i18next';
+import { useQuery } from '@tanstack/react-query';
+import { getSubscriptions } from '@transaction/lib/bridge-api';
 
-const CommunitiesMybar = ({
-  data,
-  username
-}: {
-  data: string[][] | null | undefined;
-  username: string;
-}) => {
+const CommunitiesMybar = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');
-
+  const { data } = useQuery({
+    queryKey: ['subscriptions', username],
+    queryFn: () => getSubscriptions(username),
+    enabled: Boolean(username)
+  });
   return (
     <Card
       className={cn('my-4 hidden h-fit w-full flex-col bg-background px-8 py-2 text-primary md:flex')}

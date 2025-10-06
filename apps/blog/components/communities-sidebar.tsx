@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { getCommunities } from '@transaction/lib/bridge';
+import { getCommunities } from '@transaction/lib/bridge-api';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
@@ -10,9 +10,10 @@ const CommunitiesSidebar: FC = () => {
   const { t } = useTranslation('common_blog');
   const sort = 'rank';
   const query = null;
-  const { isLoading, error, data } = useQuery(['communitiesList', sort, query], () =>
-    getCommunities(sort, query)
-  );
+  const { isLoading, error, data } = useQuery({
+    queryKey: ['communitiesList', sort, query],
+    queryFn: () => getCommunities(sort, query)
+  });
 
   // Only show a fallback if data is truly missing (not hydrated)
   if (!data) return null;
