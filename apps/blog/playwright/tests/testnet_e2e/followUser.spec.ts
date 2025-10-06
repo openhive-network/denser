@@ -5,7 +5,7 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
 
 // Unskip these tests after fixing
-//  - "condenser_api.get_follow_count" will return correct value for following_count,
+//  - "follow_api.get_follow_count" will return correct value for following_count,
 //  - and Optimistic UI will work correctly
 test.describe.skip('Follow user - tests', () => {
   let profileUserMenu: ProfileUserMenu;

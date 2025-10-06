@@ -127,8 +127,8 @@ export const getFeedHistory = async (): Promise<IFeedHistory> => {
   return chain.api.database_api.get_feed_history();
 };
 
-export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
-  return chain.api.condenser_api.get_follow_count([username]);
+export const getFollowCount = async (account: string): Promise<AccountFollowStats> => {
+  return chain.api.follow_api.get_follow_count({ account });
 };
 
 export interface IDynamicProps {

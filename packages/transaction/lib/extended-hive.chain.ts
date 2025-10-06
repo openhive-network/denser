@@ -979,6 +979,9 @@ export type ExtendedNodeApi = {
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
   };
+  follow_api: {
+    get_follow_count: TWaxApiRequest<{ account: string }, AccountFollowStats>
+  }
   'search-api': {
     find_text: TWaxApiRequest<SearchType, Entry[]>;
   };

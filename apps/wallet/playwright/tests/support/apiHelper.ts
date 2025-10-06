@@ -27,15 +27,15 @@ export class ApiHelper {
   }
 
   // Get Follow count info as json from API response
-  async getFollowCountAPI(username: string) {
+  async getFollowCountAPI(account: string) {
     const url = process.env.REACT_APP_API_ENDPOINT;
 
     const responseGetFollowCount = await this.page.request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: "2.0",
-        method: "condenser_api.get_follow_count",
-        params: [`${username}`],
+        method: "follow_api.get_follow_count",
+        params: { account },
       },
       headers: {
         Accept: "application/json, text/plain, */*",

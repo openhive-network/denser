@@ -64,8 +64,8 @@ test.describe('Profile page of @gtg', () => {
       data: {
         id: 0,
         jsonrpc: '2.0',
-        method: 'condenser_api.get_follow_count',
-        params: ['gtg']
+        method: 'follow_api.get_follow_count',
+        params: { account: 'gtg' }
       },
       headers: {
         Accept: 'application/json, text/plain, */*'
