@@ -1,11 +1,7 @@
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  DATA_LIMIT as PER_PAGE,
-  getCommunity,
-  getSubscriptions,
-  getPostsRanked
-} from '@transaction/lib/bridge';
+import { DATA_LIMIT as PER_PAGE, getCommunity, getPostsRanked } from '@transaction/lib/bridge';
+import { getSubscriptions } from '@transaction/lib/bridge-api';
 import { useCallback, useEffect } from 'react';
 import PostList from '@/blog/components/post-list';
 import PostSelectFilter from '@/blog/components/post-select-filter';
