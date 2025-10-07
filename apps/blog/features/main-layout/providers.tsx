@@ -1,15 +1,17 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 
-import { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren, useMemo } from 'react';
 import { ThemeProvider } from '../../components/theme-provider';
 import Head from 'next/head';
 import { useTheme } from 'next-themes';
 import { SignerProvider } from '@hive/smart-signer/components/signer-provider';
+import { getQueryClient } from '@/blog/lib/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
-  const queryClient = new QueryClient();
+  const queryClient = useMemo(() => getQueryClient(), []);
   const { resolvedTheme } = useTheme();
 
   return (
@@ -21,6 +23,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <SignerProvider>{children}</SignerProvider>
         </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </>
   );
