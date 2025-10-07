@@ -1,10 +1,6 @@
-'use client';
-
 import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
-import { hiveChainService } from './hive-chain-service';
+import { getChain } from './chain';
 import { IManabarData } from '@hiveio/wax';
-
-const chain = hiveChainService.getHiveChain();
 
 interface ISingleManabar {
   max: string;
@@ -29,18 +25,21 @@ interface IManabars {
 
 export const getManabars = async (accountName: string): Promise<IManabars | null> => {
   try {
-    const upvoteCooldownPromise = (await chain).calculateManabarFullRegenerationTimeForAccount(
+    const upvoteCooldownPromise = (await getChain()).calculateManabarFullRegenerationTimeForAccount(
       accountName,
       0
     );
-    const downvoteCooldownPromise = (await chain).calculateManabarFullRegenerationTimeForAccount(
+    const downvoteCooldownPromise = (await getChain()).calculateManabarFullRegenerationTimeForAccount(
       accountName,
       1
     );
-    const rcCooldownPromise = (await chain).calculateManabarFullRegenerationTimeForAccount(accountName, 2);
-    const upvotePromise = (await chain).calculateCurrentManabarValueForAccount(accountName, 0);
-    const downvotePromise = (await chain).calculateCurrentManabarValueForAccount(accountName, 1);
-    const rcPromise = (await chain).calculateCurrentManabarValueForAccount(accountName, 2);
+    const rcCooldownPromise = (await getChain()).calculateManabarFullRegenerationTimeForAccount(
+      accountName,
+      2
+    );
+    const upvotePromise = (await getChain()).calculateCurrentManabarValueForAccount(accountName, 0);
+    const downvotePromise = (await getChain()).calculateCurrentManabarValueForAccount(accountName, 1);
+    const rcPromise = (await getChain()).calculateCurrentManabarValueForAccount(accountName, 2);
     const manabars = await Promise.all([
       upvotePromise,
       upvoteCooldownPromise,
@@ -91,7 +90,7 @@ export const getManabar = async (accountName: string): Promise<Manabar | null> =
 };
 
 export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> => {
-  return (await chain).api.condenser_api.get_accounts([usernames]).then((resp: any[]): FullAccount[] =>
+  return (await getChain()).api.condenser_api.get_accounts([usernames]).then((resp: any[]): FullAccount[] =>
     resp.map((x) => {
       const account: FullAccount = {
         name: x.name,
@@ -176,5 +175,5 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
   });
 
 export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
-  return (await chain).api.condenser_api.get_follow_count([username]);
+  return (await getChain()).api.condenser_api.get_follow_count([username]);
 };

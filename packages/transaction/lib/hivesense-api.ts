@@ -1,8 +1,6 @@
-import { hiveChainService } from './hive-chain-service';
 import { logger } from '@ui/lib/logger';
 import { Entry, MixedPostsResponse, PostStub } from './extended-hive.chain';
-
-const chain = hiveChainService.getHiveChain();
+import { getChain } from './chain';
 
 const logStandarizedError = (methodName: string, error: unknown): null => {
   logger.error(`Error in ${methodName}`, error);
@@ -26,7 +24,7 @@ export const getSimilarPosts = async ({
 }): Promise<Entry[] | null> => {
   try {
     const response = await (
-      await chain
+      await getChain()
     ).restApi['hivesense-api'].similarposts({
       posts_limit: limit,
       tr_body,
@@ -43,7 +41,7 @@ export const getSimilarPosts = async ({
 
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
-    const response = await (await chain).restApi['hivesense-api']();
+    const response = await (await getChain()).restApi['hivesense-api']();
     return response.info.title === 'Hivesense';
   } catch (error) {
     return !!logStandarizedError('getHiveSenseStatus', error);
@@ -65,7 +63,7 @@ export const getSuggestions = async ({
 }): Promise<Entry[] | null> => {
   try {
     // Use the new endpoint format: /posts/{author}/{permlink}/similar
-    const baseUrl = (await chain).restApi['hivesense-api'].endpointUrl || (await chain).endpointUrl;
+    const baseUrl = (await getChain()).restApi['hivesense-api'].endpointUrl || (await getChain()).endpointUrl;
 
     const params = new URLSearchParams({
       truncate: tr_body.toString(),
@@ -112,7 +110,7 @@ export const searchPosts = async ({
   observer: string;
 }): Promise<MixedPostsResponse | null> => {
   try {
-    const response = (await chain).restApi['hivesense-api']['posts/search']({
+    const response = (await getChain()).restApi['hivesense-api']['posts/search']({
       q: query,
       truncate,
       result_limit,
@@ -142,7 +140,7 @@ export const getSimilarPostsByPost = async ({
 }): Promise<MixedPostsResponse | null> => {
   try {
     // Use the new endpoint format: /posts/{author}/{permlink}/similar
-    const baseUrl = (await chain).restApi['hivesense-api'].endpointUrl || (await chain).endpointUrl;
+    const baseUrl = (await getChain()).restApi['hivesense-api'].endpointUrl || (await getChain()).endpointUrl;
 
     const params = new URLSearchParams({
       truncate: truncate.toString(),
@@ -182,7 +180,7 @@ export const getPostsByIds = async ({
 }): Promise<Entry[] | null> => {
   try {
     // Use POST endpoint to handle more than 10 posts (up to 50)
-    const baseUrl = (await chain).restApi['hivesense-api'].endpointUrl || (await chain).endpointUrl;
+    const baseUrl = (await getChain()).restApi['hivesense-api'].endpointUrl || (await getChain()).endpointUrl;
 
     const url = `${baseUrl}/hivesense-api/posts/by-ids`;
 
