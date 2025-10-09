@@ -117,6 +117,7 @@ export class CommunitiesPage {
   }
 
   async quickValidataCommunitiesPageIsLoaded(communityName: string) {
+    await this.page.waitForTimeout(3000);
     await expect(this.communityNameTitle).toHaveText(communityName);
     await expect(this.communityInfoSidebar).toBeVisible();
     await expect(this.communityDescriptionSidebar).toBeVisible();
