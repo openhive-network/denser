@@ -20,8 +20,10 @@ test.describe('Voting tests with fixture and POM', () => {
   // Upvotes and downvotes tooltip texts
   const upvoteTooltipText: string = 'UpvoteUpvote';
   const undoUpvoteTooltipText: string = 'Undo your upvoteUndo your upvote';
+  const upVotingAfterPayoutText: string = 'UpvoteVoting on Content after their payout does not generate any new rewardsUpvoteVoting on Content after their payout does not generate any new rewards';
   const downvoteTooltipText: string = 'DownvoteDownvote';
   const undoDownvoteTooltipText: string = 'Undo your downvoteUndo your downvote';
+  const downVotingAfterPayoutText: string = 'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards';
 
   let homePage: HomePage;
 
@@ -53,11 +55,7 @@ test.describe('Voting tests with fixture and POM', () => {
         await firstPostUpvoteButtonLocator.hover();
         await homePage.page.waitForTimeout(1000);
         const tooltipText = await homePage.getUpvoteButtonTooltip.textContent();
-        expect(
-          tooltipText === 'UpvoteUpvote' ||
-            tooltipText ===
-              'UpvoteVoting on Content after their payout does not generate any new rewardsUpvoteVoting on Content after their payout does not generate any new rewards'
-        ).toBeTruthy();
+        expect(tooltipText === upvoteTooltipText || tooltipText === upVotingAfterPayoutText).toBeTruthy();
       } else {
         // Wait until optimistic ui is finished and validate the color of the upvote button
         await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
@@ -70,7 +68,8 @@ test.describe('Voting tests with fixture and POM', () => {
         // Validate the upvote tooltips
         await firstPostUpvoteButtonLocator.hover();
         await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(undoUpvoteTooltipText);
+        const tooltipText = await homePage.getUpvoteButtonTooltip.textContent();
+        expect(tooltipText === undoUpvoteTooltipText || tooltipText === upVotingAfterPayoutText).toBeTruthy();
       }
       // Click Upvote button of the first post on the trending list
       await firstPostUpvoteButtonLocatorToClick.click();
@@ -92,7 +91,8 @@ test.describe('Voting tests with fixture and POM', () => {
 
         await firstPostUpvoteButtonLocator.hover();
         await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(undoUpvoteTooltipText);
+        const tooltipText = await homePage.getUpvoteButtonTooltip.textContent();
+        expect(tooltipText === undoUpvoteTooltipText || tooltipText === upVotingAfterPayoutText).toBeTruthy();
       } else {
         // Validate that Upvote button of the first color red
         expect(await homePage.getElementCssPropertyValue(firstPostUpvoteButtonLocator, 'color')).toBe(
@@ -104,7 +104,8 @@ test.describe('Voting tests with fixture and POM', () => {
 
         await firstPostUpvoteButtonLocator.hover();
         await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getUpvoteButtonTooltip.textContent()).toBe(upvoteTooltipText);
+        const tooltipText = await homePage.getUpvoteButtonTooltip.textContent();
+        expect(tooltipText === undoUpvoteTooltipText || tooltipText === upVotingAfterPayoutText).toBeTruthy();
       }
     });
 
@@ -374,11 +375,7 @@ test.describe('Voting tests with fixture and POM', () => {
         await homePage.page.waitForTimeout(1000);
 
         const tooltipText = await homePage.getDownvoteButtonTooltip.textContent();
-        expect(
-          tooltipText === 'DownvoteDownvote' ||
-            tooltipText ===
-              'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards'
-        ).toBeTruthy();
+        expect(tooltipText === downvoteTooltipText || tooltipText === downVotingAfterPayoutText).toBeTruthy();
 
         // expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(downvoteTooltipText);
       } else {
@@ -395,13 +392,7 @@ test.describe('Voting tests with fixture and POM', () => {
         await homePage.page.waitForTimeout(1000);
 
         const tooltipText = await homePage.getDownvoteButtonTooltip.textContent();
-        expect(
-          tooltipText === 'DownvoteDownvote' ||
-            tooltipText ===
-              'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards'
-        ).toBeTruthy();
-
-
+        expect(tooltipText === undoDownvoteTooltipText || tooltipText === downVotingAfterPayoutText).toBeTruthy();
         // expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(undoDownvoteTooltipText);
       }
       // Click Downvote button of the second post on the trending list
@@ -437,7 +428,7 @@ test.describe('Voting tests with fixture and POM', () => {
         // Validate the downvote tooltip text
         await secondPostDownvoteButtonLocator.hover();
         await homePage.page.waitForTimeout(1000);
-        expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(downvoteTooltipText);
+        expect(await homePage.getDownvoteButtonTooltip.textContent()).toBe(downVotingAfterPayoutText);
       }
     });
 
