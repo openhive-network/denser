@@ -1,8 +1,9 @@
+'use client';
+
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { FC } from 'react';
 
 interface PostCardCommentTooltipProps {
   comments: number;
@@ -25,7 +26,6 @@ const PostCardCommentTooltip = ({ comments, url }: PostCardCommentTooltipProps) 
                 )}
               </Link>
               <Link
-                // href={`/${category}/@${author}/${permlink}/#comments`}
                 href={url}
                 className="flex cursor-pointer items-center pl-1 hover:text-destructive"
                 data-testid="post-card-response-link"

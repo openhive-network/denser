@@ -9,6 +9,7 @@ import { useTheme } from 'next-themes';
 import { SignerProvider } from '@hive/smart-signer/components/signer-provider';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { LoggedUserProvider } from '@/blog/components/common/logged-user';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useMemo(() => getQueryClient(), []);
@@ -21,7 +22,9 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
       </Head>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <SignerProvider>{children}</SignerProvider>
+          <SignerProvider>
+            <LoggedUserProvider>{children}</LoggedUserProvider>
+          </SignerProvider>
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

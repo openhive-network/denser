@@ -1,24 +1,22 @@
-import dynamic from 'next/dynamic';
+'use client';
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Icons } from '@ui/components/icons';
 import DialogLogin from './dialog-login';
 import clsx from 'clsx';
-import { useTranslation } from 'next-i18next';
 import { ReactNode, useEffect, useState } from 'react';
 import { useVoteMutation } from '../components/hooks/use-vote-mutation';
 import { useQuery } from '@tanstack/react-query';
 import { CircleSpinner } from 'react-spinners-kit';
-import { getListVotesByCommentVoter } from '@transaction/lib/hive';
-import { getLogger } from '@ui/lib/logging';
+import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { Slider } from '@ui/components/slider';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
 import { useLoggedUserContext } from './common/logged-user';
 import { handleError } from '@ui/lib/handle-error';
 import { useLocalStorage } from 'usehooks-ts';
-
-const logger = getLogger('app');
+import { useTranslation } from '../i18n/client';
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
 
@@ -54,23 +52,21 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
   useEffect(() => {
     setSliderDownvote(type === 'post' ? storedVotesValues.post.downvote : storedVotesValues.comment.downvote);
   }, [type, storedVotesValues.post.downvote, storedVotesValues.comment.downvote]);
-  const checkVote = post.active_votes.find((e) => e.voter === user?.username);
+  const checkVote = post.active_votes.find((e) => e.voter === voter);
 
-  const { data: userVotes } = useQuery(
-    ['votes', post.author, post.permlink, user?.username],
-    () => getListVotesByCommentVoter([post.author, post.permlink, user?.username], 1),
-    {
-      enabled: !!checkVote || !!clickedVoteButton,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false
-    }
-  );
+  const { data: userVotes } = useQuery({
+    queryKey: ['votes', post.author, post.permlink, user?.username],
+    queryFn: () => getListVotesByCommentVoter([post.author, post.permlink, user?.username], 1),
+    enabled: !!checkVote || !!clickedVoteButton,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false
+  });
   const { net_vests } = useLoggedUserContext();
   const enable_slider = net_vests > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
 
   const userVote =
-    userVotes?.votes[0] && userVotes?.votes[0].voter === user.username ? userVotes.votes[0] : undefined;
+    userVotes?.votes[0] && userVotes?.votes[0].voter === voter ? userVotes.votes[0] : undefined;
   const voteMutation = useVoteMutation();
   const vote_upvoted = userVote ? userVote.vote_percent > 0 : false;
   const vote_downvoted = userVote ? userVote.vote_percent < 0 : false;
@@ -169,7 +165,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         </Popover>
       ) : user.isLoggedIn ? (
         <TooltipContainer
-          loading={voteMutation.isLoading || !!userVote?._temporary}
+          loading={voteMutation.isPending || !!userVote?._temporary}
           text={
             userVote && userVote.vote_percent > 0
               ? userVote.vote_percent === 10000 && !enable_slider
@@ -361,13 +357,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
   );
 };
 
-// Create a client-side only version of the component
-const VotesComponentNoSSR = dynamic(() => Promise.resolve(VotesComponent), {
-  ssr: false
-});
-
-// Export the client-side only version
-export default VotesComponentNoSSR;
+export default VotesComponent;
 
 const TooltipContainer = ({
   children,

@@ -38,10 +38,6 @@ export const getFindAccounts = (username: string): Promise<{ accounts: ApiAccoun
   return chain.api.database_api.find_accounts({ accounts: [username], delayed_votes_active: false });
 };
 
-export const getFeedHistory = async (): Promise<IFeedHistory> => {
-  return chain.api.database_api.get_feed_history();
-};
-
 export interface IDynamicProps {
   hivePerMVests: number;
   base: number;
@@ -113,32 +109,12 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
   }
 };
 
-/**
- * Returns list of accounts that reblogged given post, defined by tuple
- * `[author: string, permlink: string]`.
- *
- * @param author
- * @param permlink
- * @returns
- */
-export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
-  return chain.api.condenser_api.get_reblogged_by([author, permlink]);
-};
-
 export const getListWitnessVotes = async (
   username: string,
   limit: number,
   order: string
 ): Promise<IListWitnessVotes> => {
   return chain.api.database_api.list_witness_votes({ start: [username, ''], limit, order });
-};
-
-// See https://developers.hive.io/apidefinitions/#database_api.list_votes
-export const getListVotesByCommentVoter = async (
-  start: [string, string, string] | null, // should be [author, permlink, voter]
-  limit: number
-): Promise<{ votes: IVoteListItem[] }> => {
-  return chain.api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
 };
 
 export const getAuthority = async (username: string): Promise<AccountAuthorityUpdateOperation> => {

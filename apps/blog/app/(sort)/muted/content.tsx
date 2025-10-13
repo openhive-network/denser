@@ -3,6 +3,7 @@
 import SortedPagesPosts from '@/blog/features/sorts-pages/posts-list';
 
 const Content = () => {
-  return <SortedPagesPosts />;
+  const sort = 'muted';
+  return <SortedPagesPosts sort={sort} />;
 };
 export default Content;

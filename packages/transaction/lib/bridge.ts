@@ -76,16 +76,6 @@ export const getRelationshipBetweenAccounts = async (
   return chain.api.bridge.get_relationship_between_accounts([follower, following]);
 };
 
-export const getFollowList = async (
-  observer: string,
-  follow_type: FollowListType
-): Promise<IFollowList[]> => {
-  return chain.api.bridge.get_follow_list({
-    observer,
-    follow_type
-  });
-};
-
 export type TwitterInfo = {
   twitter_username: string;
   twitter_profile: string;

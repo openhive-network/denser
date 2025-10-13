@@ -20,15 +20,17 @@ const PostList = ({
 
   return (
     <ul data-testid={`post-list-${testFilter}`}>
-      {data?.filter(post => post && post.post_id).map((post: Entry) => (
-        <PostListItem
-          nsfwPreferences={nsfwPreferences}
-          post={post}
-          key={post.post_id}
-          isCommunityPage={isCommunityPage}
-          blacklist={blacklist}
-        />
-      ))}
+      {data
+        ?.filter((post) => post && post.post_id)
+        .map((post: Entry) => (
+          <PostListItem
+            nsfwPreferences={nsfwPreferences}
+            post={post}
+            key={post.post_id}
+            isCommunityPage={isCommunityPage}
+            blacklist={blacklist}
+          />
+        ))}
     </ul>
   );
 };

@@ -1,6 +1,7 @@
 import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
 import { getChain } from './chain';
 import { IManabarData } from '@hiveio/wax';
+import { IFeedHistory, IVoteListItem } from './extended-hive.chain';
 
 interface ISingleManabar {
   max: string;
@@ -176,4 +177,28 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
 
 export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
   return (await getChain()).api.condenser_api.get_follow_count([username]);
+};
+
+/**
+ * Returns list of accounts that reblogged given post, defined by tuple
+ * `[author: string, permlink: string]`.
+ *
+ * @param author
+ * @param permlink
+ * @returns
+ */
+export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
+  return (await getChain()).api.condenser_api.get_reblogged_by([author, permlink]);
+};
+
+export const getFeedHistory = async (): Promise<IFeedHistory> => {
+  return (await getChain()).api.database_api.get_feed_history();
+};
+
+// See https://developers.hive.io/apidefinitions/#database_api.list_votes
+export const getListVotesByCommentVoter = async (
+  start: [string, string, string] | null, // should be [author, permlink, voter]
+  limit: number
+): Promise<{ votes: IVoteListItem[] }> => {
+  return (await getChain()).api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
 };

@@ -1,6 +1,11 @@
 import { getLogger } from '@ui/lib/logging';
 import { Community, Entry } from './extended-hive.chain';
-import type { IGetPostHeader, IUnreadNotifications } from './extended-hive.chain';
+import type {
+  FollowListType,
+  IFollowList,
+  IGetPostHeader,
+  IUnreadNotifications
+} from './extended-hive.chain';
 import { getChain } from './chain';
 
 export const DATA_LIMIT = 20;
@@ -45,7 +50,6 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  console.log('getPostsRanked', { sort, tag, start_author, start_permlink, observer, limit });
   return (await getChain()).api.bridge
     .get_ranked_posts({
       sort,
@@ -141,4 +145,14 @@ export const getAccountPosts = async (
 
       return resp;
     });
+};
+
+export const getFollowList = async (
+  observer: string,
+  follow_type: FollowListType
+): Promise<IFollowList[]> => {
+  return (await getChain()).api.bridge.get_follow_list({
+    observer,
+    follow_type
+  });
 };

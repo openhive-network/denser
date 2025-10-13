@@ -22,7 +22,9 @@ export const useLoggedUserContext = () => {
 
 export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useUser();
-  const { data: accountData } = useQuery(['accountData', user.username], () => getAccount(user.username), {
+  const { data: accountData } = useQuery({
+    queryKey: ['accountData', user.username],
+    queryFn: () => getAccount(user.username),
     enabled: !!user.username
   });
   const net_vests = accountData ? netVests(accountData) : 0;

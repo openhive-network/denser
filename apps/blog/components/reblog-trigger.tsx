@@ -1,4 +1,5 @@
-import { useTranslation } from 'next-i18next';
+'use client';
+
 import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
 import { cn } from '@ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
@@ -6,11 +7,9 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useReblogMutation } from './hooks/use-reblog-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
-import { getLogger } from '@ui/lib/logging';
 import { ReblogDialog } from './reblog-dialog';
 import { handleError } from '@ui/lib/handle-error';
-
-const logger = getLogger('app');
+import { useTranslation } from '../i18n/client';
 
 const ReblogTrigger = ({
   author,

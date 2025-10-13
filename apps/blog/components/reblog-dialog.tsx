@@ -13,8 +13,8 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { ReactNode, useState, KeyboardEvent } from 'react';
 import DialogLogin from './dialog-login';
 import { Button } from '@ui/components/button';
-import { useTranslation } from 'next-i18next';
 import { getLogger } from '@ui/lib/logging';
+import { useTranslation } from '../i18n/client';
 
 const logger = getLogger('app');
 

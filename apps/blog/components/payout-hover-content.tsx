@@ -1,3 +1,5 @@
+'use client';
+
 import { dateToRelative } from '@ui/lib/parse-date';
 import Link from 'next/link';
 import { amt, fmt } from '../lib/utils';
@@ -5,10 +7,10 @@ import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
 import Loading from '@hive/ui/components/loading';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
-import { getFeedHistory } from '@transaction/lib/hive';
+import { getFeedHistory } from '@transaction/lib/hive-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import moment from 'moment';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '../i18n/client';
 
 interface IBeneficiary {
   account: string;
@@ -17,7 +19,10 @@ interface IBeneficiary {
 
 export default function PayoutHoverContent({ post }: { post: Entry }) {
   const { t } = useTranslation('common_blog');
-  const { data, isLoading } = useQuery(['feedHistory'], () => getFeedHistory());
+  const { data, isLoading } = useQuery({
+    queryKey: ['feedHistory'],
+    queryFn: () => getFeedHistory()
+  });
   if (isLoading || !data) {
     return <Loading loading />;
   }

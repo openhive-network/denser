@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import BasePathLink from './base-path-link';
 import { Icons } from '@hive/ui/components/icons';
@@ -7,11 +9,9 @@ import { Badge } from '@hive/ui/components/badge';
 import accountReputation from '@/blog/lib/account-reputation';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import DetailsCardHover from './details-card-hover';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import PostImage from './post-img';
-import { useTranslation } from 'next-i18next';
 import VotesComponent from './votes';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
@@ -25,6 +25,8 @@ import TimeAgo from '@hive/ui/components/time-ago';
 import PostSummary from '../features/posts-card/summary';
 import { Preferences } from '@/blog/lib/utils';
 import { getUserAvatarUrl } from '@hive/ui';
+import { useTranslation } from '../i18n/client';
+import { useRouter } from 'next/navigation';
 
 const PostListItem = ({
   post,
@@ -122,9 +124,7 @@ const PostListItem = ({
                   ({accountReputation(post.author_reputation)})
                 </span>
                 <PostCardBlacklistMark blacklistCheck={blacklistCheck} blacklists={post.blacklists} />
-                {(router.query.param ? router.query.param[1]?.startsWith('hive-') : false) &&
-                post.author_role &&
-                post.author_role !== 'guest' ? (
+                {post.author_role && post.author_role !== 'guest' ? (
                   <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}&nbsp;</span>
                 ) : null}
                 {post.author_title ? (
