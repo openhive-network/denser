@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 
 import {
@@ -9,30 +11,28 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { useQuery } from '@tanstack/react-query';
-import { getCommunities } from '@transaction/lib/bridge';
-import { useRouter } from 'next/router';
+
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { withBasePath } from '../utils/PathUtils';
+import { getCommunities, getSubscriptions } from '@transaction/lib/bridge-api';
+import { useRouter } from 'next/navigation';
 
-export function CommunitiesSelect({
-  title,
-  mySubsData,
-  username
-}: {
-  title: string;
-  mySubsData: string[][] | null | undefined;
-  username?: string;
-}) {
+export function CommunitiesSelect({ title }: { title: string }) {
   const { user } = useUser();
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const sort = 'rank';
   const query = null;
-  const { isLoading, error, data } = useQuery(['communitiesList', sort, query], () =>
-    getCommunities(sort, query)
-  );
-
+  const { isLoading, data } = useQuery({
+    queryKey: ['communitiesList', sort, query],
+    queryFn: () => getCommunities(sort, query)
+  });
+  const { data: mySubsData } = useQuery({
+    queryKey: ['subscriptions', user.username],
+    queryFn: () => getSubscriptions(user.username),
+    enabled: Boolean(user.isLoggedIn)
+  });
   const filteredCommunity = data
     ?.slice(0, 12)
     .filter((c) => !mySubsData?.map((my) => my[0]).includes(c.name));
@@ -41,14 +41,16 @@ export function CommunitiesSelect({
   return (
     <Select
       onValueChange={(e) => {
-        e === 'communities' ? router.push(withBasePath('communities')) : router.push(withBasePath(`/trending/${e}`));
+        e === 'communities'
+          ? router.push(withBasePath('communities'))
+          : router.push(withBasePath(`/trending/${e}`));
       }}
     >
       <SelectTrigger className="bg-white dark:bg-background/95 dark:text-white">
         <SelectValue placeholder={title} />
       </SelectTrigger>
       <SelectContent
-      className="overflow-y-auto max-h-96"
+        className="max-h-96 overflow-y-auto"
         ref={(ref) => {
           if (!ref) return;
           ref.ontouchstart = (e) => {
@@ -59,9 +61,9 @@ export function CommunitiesSelect({
         <SelectGroup>
           <SelectItem value="/">{t('navigation.communities_nav.all_posts')}</SelectItem>
         </SelectGroup>
-        {username && (
+        {user.isLoggedIn && (
           <SelectGroup>
-            <SelectItem value={`../@${username}/feed`}>My friends</SelectItem>
+            <SelectItem value={`../@${user.username}/feed`}>My friends</SelectItem>
             <SelectItem value={`../trending/my`}>My communities</SelectItem>
             {mySubsData && mySubsData.length > 0 ? (
               <SelectItem disabled value="my-communities" className="text-slate-400">

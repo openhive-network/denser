@@ -1,15 +1,14 @@
-'use client';
+import { getQueryClient } from '@/blog/lib/react-query';
 
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
-import { DEFAULT_OBSERVER, SortTypes } from './lib/utils';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { usePathname } from 'next/navigation';
+import Content from './content';
 
-const SortedPagesPosts = () => {
-  const pathname = usePathname();
-  const sort = pathname?.split('/')[2] ?? 'trending';
-  const { data, isLoading } = useInfiniteQuery({
+export default async function PayoutPage() {
+  const sort = 'payout';
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchInfiniteQuery({
     queryKey: ['entriesInfinite', sort],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
@@ -23,6 +22,9 @@ const SortedPagesPosts = () => {
       return { author: last.author, permlink: last.permlink };
     }
   });
-  return <div>Posts Sort Page</div>;
-};
-export default SortedPagesPosts;
+  return (
+    <Hydrate state={dehydrate(queryClient)}>
+      <Content />
+    </Hydrate>
+  );
+}

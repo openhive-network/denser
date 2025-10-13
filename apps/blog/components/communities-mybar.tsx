@@ -1,16 +1,20 @@
+'use client';
+
 import Link from 'next/link';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from 'next-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
+import { useUser } from '@smart-signer/lib/auth/use-user';
 
-const CommunitiesMybar = ({ username }: { username: string }) => {
+const CommunitiesMybar = () => {
   const { t } = useTranslation('common_blog');
+  const { user } = useUser();
   const { data } = useQuery({
-    queryKey: ['subscriptions', username],
-    queryFn: () => getSubscriptions(username),
-    enabled: Boolean(username)
+    queryKey: ['subscriptions', user.username],
+    queryFn: () => getSubscriptions(user.username),
+    enabled: user.isLoggedIn
   });
   return (
     <Card
@@ -23,7 +27,7 @@ const CommunitiesMybar = ({ username }: { username: string }) => {
         </Link>
       </CardTitle>
       <CardTitle>
-        <Link href={`/@${username}/feed`} className="text-base hover:text-destructive">
+        <Link href={`/@${user.username}/feed`} className="text-base hover:text-destructive">
           My friends
         </Link>
       </CardTitle>

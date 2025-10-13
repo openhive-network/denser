@@ -45,6 +45,7 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
+  console.log('getPostsRanked', { sort, tag, start_author, start_permlink, observer, limit });
   return (await getChain()).api.bridge
     .get_ranked_posts({
       sort,

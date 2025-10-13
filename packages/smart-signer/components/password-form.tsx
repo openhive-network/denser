@@ -1,67 +1,67 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useTranslation } from 'next-i18next';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { getLogger } from '@ui/lib/logging';
+import { useTranslation } from 'next-i18next';
 
 const logger = getLogger('app');
 
 export enum PasswordFormMode {
   HBAUTH = 'hbauth',
-  WIF = 'wif',
+  WIF = 'wif'
 }
 
 // Hbauth password (de facto regular password)
-const passwordHbauth = z.string()
+const passwordHbauth = z
+  .string()
   .min(1, 'Password must contain at least 1 character')
   .max(512, 'Password must contain at most 512 characters');
 
 const passwordFormSchemaHbauth = z.object({
-  password: passwordHbauth,
+  password: passwordHbauth
 });
 export type PasswordFormSchemaHbauth = z.infer<typeof passwordFormSchemaHbauth>;
 
 export const passwordFormDefaultValuesHbauth = {
-  password: '',
+  password: ''
 };
 
 // Wif password
 
-export const passwordWif = z.string()
-  .superRefine((val, ctx) => {
-    const result = validateWifKey(val, (v) => v);
-    if (result) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: result,
-        fatal: true
-      });
-      return z.NEVER;
-    }
-    return true;
-  });
+export const passwordWif = z.string().superRefine((val, ctx) => {
+  const result = validateWifKey(val, (v) => v);
+  if (result) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: result,
+      fatal: true
+    });
+    return z.NEVER;
+  }
+  return true;
+});
 
 const passwordFormSchemaWif = z.object({
   password: passwordWif,
-  storePassword: z.boolean(),
+  storePassword: z.boolean()
 });
 export type PasswordFormSchemaWif = z.infer<typeof passwordFormSchemaWif>;
 
 export const passwordFormDefaultValuesWif = {
   password: '',
-  storePassword: false,
+  storePassword: false
 };
 
 // captions for inputs, buttons, form title etc.
 export interface PasswordFormI18nKeysForCaptions {
-  title?: string | [string, {[key: string]: string}];
-  description?: string | [string, {[key: string]: string}];
-  inputPasswordPlaceholder?: string | [string, {[key: string]: string}];
-  inputStorePasswordLabel?: string | [string, {[key: string]: string}];
-  submitButtonName?: string | [string, {[key: string]: string}];
-  submitButtonNameWhenWorking?: string | [string, {[key: string]: string}];
-  resetButtonName?: string | [string, {[key: string]: string}];
+  title?: string | [string, { [key: string]: string }];
+  description?: string | [string, { [key: string]: string }];
+  inputPasswordPlaceholder?: string | [string, { [key: string]: string }];
+  inputStorePasswordLabel?: string | [string, { [key: string]: string }];
+  submitButtonName?: string | [string, { [key: string]: string }];
+  submitButtonNameWhenWorking?: string | [string, { [key: string]: string }];
+  resetButtonName?: string | [string, { [key: string]: string }];
 }
 
 export interface PasswordFormOptions {
@@ -82,8 +82,8 @@ export function PasswordForm({
   i18nNamespace = 'smart-signer'
 }: PasswordFormOptions) {
   const { t } = useTranslation(i18nNamespace);
-  const randomValue = crypto.randomUUID()
-  const t2 = (args: string | [string, {[key: string]: string}]) =>
+  const randomValue = crypto.randomUUID();
+  const t2 = (args: string | [string, { [key: string]: string }]) =>
     Array.isArray(args) ? t(...args) : t(args);
 
   const defaultI18nKeysForCaptions = {
@@ -93,19 +93,21 @@ export function PasswordForm({
     inputStorePasswordLabel: 'password_form.store_password_label',
     submitButtonName: 'login_form.login_button',
     submitButtonNameWhenWorking: 'login_form.working',
-    resetButtonName: 'login_form.reset_button',
+    resetButtonName: 'login_form.reset_button'
   };
-  const captionKey: Required<PasswordFormI18nKeysForCaptions> =
-    {...defaultI18nKeysForCaptions, ...i18nKeysForCaptions};
+  const captionKey: Required<PasswordFormI18nKeysForCaptions> = {
+    ...defaultI18nKeysForCaptions,
+    ...i18nKeysForCaptions
+  };
 
   let resolver;
   let passwordFormDefaultValues;
   if (mode === PasswordFormMode.HBAUTH) {
     resolver = passwordFormSchemaHbauth;
-    passwordFormDefaultValues = passwordFormDefaultValuesHbauth
+    passwordFormDefaultValues = passwordFormDefaultValuesHbauth;
   } else if (mode === PasswordFormMode.WIF) {
     resolver = passwordFormSchemaWif;
-    passwordFormDefaultValues = passwordFormDefaultValuesWif
+    passwordFormDefaultValues = passwordFormDefaultValuesWif;
   } else {
     throw new Error('Invalid mode');
   }
@@ -121,14 +123,15 @@ export function PasswordForm({
   });
 
   return (
-    <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0" data-testid="enter-password-to-unlock-key">
+    <div
+      className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0"
+      data-testid="enter-password-to-unlock-key"
+    >
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
-
         <h2 className="w-full text-xl">{t2(captionKey.title)}</h2>
         {captionKey.description && <p className="w-full">{t2(captionKey.description)}</p>}
 
-        <form method="post" className="w-full mt-6">
-
+        <form method="post" className="mt-6 w-full">
           <div className="relative mb-5">
             <input
               type="password"
@@ -140,15 +143,13 @@ export function PasswordForm({
             />
             {errors.password?.message && (
               <p className="text-sm text-red-500" role="alert" data-testid="password-form-error-message">
-                {
-                  t(errors.password.message)
-                }
+                {t(errors.password.message)}
               </p>
             )}
           </div>
 
-          { showInputStorePassword && (
-            <div className="flex items-center py-1 mb-5">
+          {showInputStorePassword && (
+            <div className="mb-5 flex items-center py-1">
               <input
                 id={`store-password-${randomValue}`}
                 type="checkbox"
@@ -165,8 +166,7 @@ export function PasswordForm({
             </div>
           )}
 
-          <div className="flex items-center justify-between mt-10">
-
+          <div className="mt-10 flex items-center justify-between">
             {/* Submit Button */}
             <button
               type="submit"
@@ -188,7 +188,6 @@ export function PasswordForm({
             >
               {t2(captionKey.resetButtonName)}
             </button>
-
           </div>
 
           <div>
@@ -196,9 +195,7 @@ export function PasswordForm({
               {errorMessage || '\u00A0'}
             </p>
           </div>
-
         </form>
-
       </div>
     </div>
   );
