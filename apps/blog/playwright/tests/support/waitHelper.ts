@@ -47,6 +47,15 @@ export async function waitForLifestyleCommunityJoinedLeaveButtonInCommunityExplo
   await waitForElementVisible(page, selectorJoinedLeaveButton, timeout, interval);
 }
 
+export async function waitForCommentEditorIsLoaded(page: Page) {
+  const commentEditorPage = new CommentEditorPage(page);
+  const commentRepleyEditor = await commentEditorPage.getReplayEditorElement['_selector'];
+  const timeout = 20000;
+  const interval = 4000;
+
+  await waitForElementVisible(page, commentRepleyEditor, timeout, interval);
+}
+
 export async function waitForCommunityCreatedPost(page: Page, postTitle: string) {
   const communityPage = new CommunitiesPage(page);
   const selectorCreatedPost = await communityPage.page.getByText(postTitle)['_selector'];

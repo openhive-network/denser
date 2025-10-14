@@ -9,9 +9,14 @@ export class UnmoderatedTagPage {
   readonly firstPostAuthor: Locator;
   readonly firstPostTitle: Locator;
   readonly firstPostSummary: Locator;
+  readonly firstPostCardFooter: Locator;
+  readonly firstPostCardFooterDeclinePayout: Locator;
   readonly secondPostAuthor: Locator;
   readonly secondPostTitle: Locator;
   readonly secondPostSummary: Locator;
+  readonly firstPostCardPoweredUp100Trigger: Locator;
+  readonly firstPostCardPoweredUp100TriggerLink: Locator;
+  readonly postCardPoweredUp100Tooltip: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -31,6 +36,15 @@ export class UnmoderatedTagPage {
       .locator('[data-testid="post-list-item"]')
       .first()
       .locator('[data-testid="post-description"]');
+    this.firstPostCardFooter = page
+      .locator('[data-testid="post-list-item"]')
+      .first()
+      .locator('[data-testid="post-card-footer"]');
+    this.firstPostCardFooterDeclinePayout = page
+      .locator('[data-testid="post-list-item"]')
+      .first()
+      .locator('[data-testid="post-card-footer"]')
+      .locator('[data-testid="post-payout-decline"]');
     this.secondPostAuthor = page
       .locator('[data-testid="post-list-item"]')
       .nth(1)
@@ -43,6 +57,12 @@ export class UnmoderatedTagPage {
       .locator('[data-testid="post-list-item"]')
       .nth(1)
       .locator('[data-testid="post-description"]');
+    this.firstPostCardPoweredUp100Trigger = page
+      .locator('[data-testid="post-list-item"]')
+      .first()
+      .locator('[data-testid="powered-up-100-trigger"]');
+    this.firstPostCardPoweredUp100TriggerLink = this.firstPostCardPoweredUp100Trigger.locator('a');
+    this.postCardPoweredUp100Tooltip = page.locator('[data-testid="powered-up-100-tooltip"]');
   }
 
   async validateUnmoderatedTagPageIsLoaded(postTag: string) {
