@@ -11,12 +11,16 @@ import {
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslation } from '../i18n/client';
 
-const PostSelectFilter = () => {
+const PostSelectFilter = ({ param }: { param: string }) => {
   const { t } = useTranslation('common_blog');
   const router = useRouter();
   const path = usePathname();
+  const currentPath = `/${path?.split('/')[1]}`;
+  const onValueChange = (value: string) => {
+    router.push(`${value}${param}`, undefined);
+  };
   return (
-    <Select defaultValue={path ?? '/trending'} onValueChange={(e) => router.push(`${e}`, undefined)}>
+    <Select defaultValue={currentPath ?? '/trending'} onValueChange={onValueChange}>
       <SelectTrigger className="bg-background" data-testid="posts-filter">
         <SelectValue placeholder={t('select_sort.posts_sort.trending')} />
       </SelectTrigger>

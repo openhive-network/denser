@@ -1,39 +1,43 @@
+'use client';
+
 import { ReactNode } from 'react';
 import CommunitySimpleDescription from './community-simple-description';
 import CommunitiesMybar from '../../components/communities-mybar';
 import CommunitiesSidebar from '../../components/communities-sidebar';
 import { useQuery } from '@tanstack/react-query';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getAccountNotifications, getSubscribers } from '@transaction/lib/bridge';
+import {
+  getAccountNotifications,
+  getCommunity,
+  getSubscribers,
+  getSubscriptions
+} from '@transaction/lib/bridge-api';
 import CommunityDescription from './community-description';
-import SimpleDescriptionSkeleton from '@/blog/features/community-layout/simple-description-skeleton';
-import DescriptionSkeleton from './descripton-skeleton';
-import ExploreHive from '@/blog/components/explore-hive';
-import { Community } from '@transaction/lib/extended-hive.chain';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { CommunitiesSelect } from '@/blog/components/communities-select';
+import PostSelectFilter from '@/blog/components/post-select-filter';
 
-const CommunityLayout = ({
-  children,
-  community,
-  mySubsData,
-  communityData
-}: {
-  children: ReactNode;
-  community?: string;
-  mySubsData?: string[][] | null;
-  communityData?: Community | null;
-}) => {
-  const communityPage = community?.startsWith('hive-') ?? false;
+const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
+  const { user } = useUser();
+  const { data: subsData } = useQuery({
+    queryKey: ['subscribers', community],
+    queryFn: () => getSubscribers(community ?? '')
+  });
+  const { data: notificationData } = useQuery({
+    queryKey: ['AccountNotification', community],
+    queryFn: () => getAccountNotifications(community ?? '')
+  });
 
-  const { data: subsData, isLoading: subsIsLoading } = useQuery(
-    ['subscribers', community],
-    () => getSubscribers(community ?? ''),
-    { enabled: !!community }
-  );
-  const { data: notificationData } = useQuery(
-    ['AccountNotification', community],
-    () => getAccountNotifications(community ?? ''),
-    { enabled: !!community }
-  );
+  const { data: mySubsData } = useQuery({
+    queryKey: ['subscriptions', user?.username],
+    queryFn: () => getSubscriptions(user.username),
+    enabled: Boolean(user?.username)
+  });
+
+  const { data: communityData } = useQuery({
+    queryKey: ['community', community],
+    queryFn: () => getCommunity(community, user.username)
+  });
+
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
@@ -42,9 +46,7 @@ const CommunityLayout = ({
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div data-testid="card-explore-hive-mobile" className="md:col-span-10 md:flex xl:hidden">
-            {!community || !communityPage ? null : subsIsLoading ? (
-              <SimpleDescriptionSkeleton />
-            ) : communityData && subsData ? (
+            {communityData && subsData ? (
               <CommunitySimpleDescription
                 data={communityData}
                 subs={subsData}
@@ -54,15 +56,28 @@ const CommunityLayout = ({
             ) : null}
           </div>
 
-          <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">{children}</div>
+          <div className="col-span-12 md:col-span-9 xl:col-span-8">
+            <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
+              <div className="my-4 flex w-full items-center justify-between" translate="no">
+                <div className="mr-2 flex w-[320px] flex-col">
+                  <span className="text-md hidden font-medium md:block" data-testid="community-name">
+                    {communityData?.title || community}
+                  </span>
+                  <span className="md:hidden">
+                    <CommunitiesSelect title={communityData?.title || community} />
+                  </span>
+                </div>
+                <div className="w-[180px]">
+                  <PostSelectFilter param={`/${community}`} />
+                </div>
+              </div>
+              {children}
+            </div>
+          </div>
         </div>
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
-          {!community && !mySubsData ? (
-            <ExploreHive />
-          ) : !community && !communityData ? (
+          {!community && !communityData ? (
             <CommunitiesSidebar />
-          ) : !communityPage ? null : !!community && subsIsLoading ? (
-            <DescriptionSkeleton />
           ) : communityData && subsData ? (
             <CommunityDescription
               data={communityData}

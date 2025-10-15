@@ -9,7 +9,8 @@ import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { useInView } from 'react-intersection-observer';
 import { useTranslation } from '@/blog/i18n/client';
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
+import { Entry } from '@transaction/lib/extended-hive.chain';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
   const { user } = useUser();
@@ -36,7 +37,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
       const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer);
       return postsData ?? [];
     },
-    getNextPageParam: (lastPage: any[]) => {
+    getNextPageParam: (lastPage: Entry[]) => {
       if (!Array.isArray(lastPage) || lastPage.length === 0) return undefined;
       const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
       if (!last?.author || !last?.permlink) return undefined;

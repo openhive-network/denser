@@ -2,6 +2,7 @@ import { getLogger } from '@ui/lib/logging';
 import { Community, Entry } from './extended-hive.chain';
 import type {
   FollowListType,
+  IAccountNotification,
   IFollowList,
   IGetPostHeader,
   IUnreadNotifications
@@ -155,4 +156,33 @@ export const getFollowList = async (
     observer,
     follow_type
   });
+};
+
+export const getSubscribers = async (community: string): Promise<string[][] | null> => {
+  return (await getChain()).api.bridge.list_subscribers({
+    community
+  });
+};
+
+export const getAccountNotifications = async (
+  account: string,
+  lastId: number | null = null,
+  limit = 50
+): Promise<IAccountNotification[] | null> => {
+  const params: { account: string; last_id?: number; limit: number } = {
+    account,
+    limit
+  };
+
+  if (lastId) {
+    params.last_id = lastId;
+  }
+  return (await getChain()).api.bridge.account_notifications(params);
+};
+
+export const getCommunity = async (
+  name: string,
+  observer: string | undefined = ''
+): Promise<Community | null> => {
+  return (await getChain()).api.bridge.get_community({ name, observer });
 };

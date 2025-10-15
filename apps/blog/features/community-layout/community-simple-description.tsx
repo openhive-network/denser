@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
 import { Community } from '@transaction/lib/extended-hive.chain';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
@@ -9,7 +11,6 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import NewPost from '../../components/new-post-button';
 import { useEffect, useState } from 'react';
 import { Badge, Separator } from '@ui/components';
-import Link from 'next/link';
 import BasePathLink from '@/blog/components/base-path-link';
 import EditCommunityDialog from '../community-settings/edit-dialog';
 import clsx from 'clsx';

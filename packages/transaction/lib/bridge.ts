@@ -17,23 +17,6 @@ export type Subscription = Array<string>;
 
 export const DATA_LIMIT = 20;
 
-// I have problem with this func, I pass good account name but RPC call it with empty string
-export const getAccountNotifications = async (
-  account: string,
-  lastId: number | null = null,
-  limit = 50
-): Promise<IAccountNotification[] | null> => {
-  const params: { account: string; last_id?: number; limit: number } = {
-    account,
-    limit
-  };
-
-  if (lastId) {
-    params.last_id = lastId;
-  }
-  return chain.api.bridge.account_notifications(params);
-};
-
 export const getDiscussion = async (
   author: string,
   permlink: string,
@@ -46,13 +29,6 @@ export const getDiscussion = async (
   });
 };
 
-export const getCommunity = async (
-  name: string,
-  observer: string | undefined = ''
-): Promise<Community | null> => {
-  return chain.api.bridge.get_community({ name, observer });
-};
-
 export const getListCommunityRoles = async (community: string): Promise<string[][] | null> => {
   return chain.api.bridge.list_community_roles({ community });
 };
@@ -60,12 +36,6 @@ export const getListCommunityRoles = async (community: string): Promise<string[]
 export const normalizePost = async (post: Entry): Promise<Entry | null> => {
   return chain.api.bridge.normalize_post({
     post
-  });
-};
-
-export const getSubscribers = async (community: string): Promise<string[][] | null> => {
-  return chain.api.bridge.list_subscribers({
-    community
   });
 };
 

@@ -1,5 +1,6 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
-import Link from 'next/link';
 import BasePathLink from '@/blog/components/base-path-link';
 import ln2list from '@/blog/lib/ln2list';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';

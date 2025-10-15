@@ -9,7 +9,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import PostSelectFilter from '@/blog/components/post-select-filter';
 
-const PageLayout = ({ children }: { children: ReactNode }) => {
+const PageLayout = ({ children, tag = '' }: { children: ReactNode; tag?: string }) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
 
@@ -24,14 +24,14 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
             <div className="my-4 flex w-full items-center justify-between" translate="no">
               <div className="mr-2 flex w-[320px] flex-col">
                 <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                  {t('navigation.communities_nav.all_posts')}
+                  {tag ?? t('navigation.communities_nav.all_posts')}
                 </span>
                 <span className="md:hidden">
                   <CommunitiesSelect title={t('navigation.communities_nav.all_posts')} />
                 </span>
               </div>
               <div className="w-[180px]">
-                <PostSelectFilter />
+                <PostSelectFilter param={!!tag ? `/${tag}` : ''} />
               </div>
             </div>
             {children}

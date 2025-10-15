@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunities } from '@transaction/lib/bridge-api';
@@ -10,7 +12,7 @@ const CommunitiesSidebar: FC = () => {
   const { t } = useTranslation('common_blog');
   const sort = 'rank';
   const query = null;
-  const { isLoading, error, data } = useQuery({
+  const { data } = useQuery({
     queryKey: ['communitiesList', sort, query],
     queryFn: () => getCommunities(sort, query)
   });
