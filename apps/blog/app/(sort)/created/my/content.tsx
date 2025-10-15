@@ -2,8 +2,9 @@
 
 import SortedPagesPosts from '@/blog/features/sorts-pages/posts-list';
 
-const sort = 'trending';
+const sort = 'created';
+const tag = 'my';
 
-const Content = () => <SortedPagesPosts sort={sort} />;
+const Content = () => <SortedPagesPosts sort={sort} tag={tag} />;
 
 export default Content;

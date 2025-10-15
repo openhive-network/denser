@@ -11,8 +11,9 @@ import { useInView } from 'react-intersection-observer';
 import { useTranslation } from '@/blog/i18n/client';
 import { useEffect, useCallback } from 'react';
 
-const SortedPagesPosts = ({ sort }: { sort: SortTypes }) => {
+const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
   const { user } = useUser();
+  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();
   // Create a separate ref for prefetching - triggers earlier than the main ref
@@ -29,10 +30,10 @@ const SortedPagesPosts = ({ sort }: { sort: SortTypes }) => {
   );
 
   const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery({
-    queryKey: ['entriesInfinite', sort],
+    queryKey: ['entriesInfinite', sort, tag],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
-      const postsData = await getPostsRanked(sort, '', author ?? '', permlink ?? '', '');
+      const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer);
       return postsData ?? [];
     },
     getNextPageParam: (lastPage: any[]) => {

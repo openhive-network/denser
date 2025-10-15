@@ -2,8 +2,8 @@
 
 import SortedPagesPosts from '@/blog/features/sorts-pages/posts-list';
 
-const Content = () => {
-  const sort = 'payout';
-  return <SortedPagesPosts sort={sort} />;
-};
+const sort = 'payout';
+
+const Content = () => <SortedPagesPosts sort={sort} />;
+
 export default Content;
