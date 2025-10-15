@@ -32,7 +32,8 @@ test.describe('Muted user - tests', () => {
     await expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthorName}` })).toBeVisible();
     await denserAutoTest0Page.page.getByRole('button', { name: 'unmute' }).click()
     await expect(denserAutoTest0Page.page.getByRole('status')).toBeVisible()
-    await expect(denserAutoTest0Page.page.getByText('Muted', { exact: true }))
+    await expect(denserAutoTest0Page.page.getByText('There are no users on this')).toBeVisible()
+    await expect(denserAutoTest0Page.page.getByText('Unmuted', { exact: true })).toBeVisible();
     
   });
 });

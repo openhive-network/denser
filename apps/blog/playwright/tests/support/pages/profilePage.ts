@@ -200,6 +200,8 @@ export class ProfilePage {
   readonly profileNameString: string;
   readonly followBtn: string;
   readonly profileStatsString: string;
+  readonly muteButton: Locator;
+  readonly mutedUsersBtn: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -298,6 +300,8 @@ export class ProfilePage {
     this.repliesCommentListItemRespondFirst = this.repliesCommentListItemRespond.first();
     this.repliesCommentListItemRespondTooltip = page.locator('[data-testid="comment-respond-tooltip"]');
     this.repliesCommentListItemArticleTitle = page.locator('[data-testid="article-title"]');
+    this.muteButton = page.locator('[data-testid="profile-mute-button"]');
+    this.mutedUsersBtn = page.getByRole('link', { name: 'Muted Users' });
 
     this.notificationsMenu = page.locator('[data-testid="notifications-local-menu"]');
     this.notificationsMenuAllButton = page
