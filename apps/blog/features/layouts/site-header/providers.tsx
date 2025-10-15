@@ -3,7 +3,7 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 
 import { FC, PropsWithChildren, useMemo } from 'react';
-import { ThemeProvider } from '../../components/theme-provider';
+import { ThemeProvider } from '../../../components/theme-provider';
 import Head from 'next/head';
 import { useTheme } from 'next-themes';
 import { SignerProvider } from '@hive/smart-signer/components/signer-provider';

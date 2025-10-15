@@ -1,9 +1,8 @@
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { DATA_LIMIT as PER_PAGE, getAccountPosts } from '@transaction/lib/bridge';
+import { DATA_LIMIT as PER_PAGE } from '@transaction/lib/bridge';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { useEffect } from 'react';
-import PostList from '@/blog/components/post-list';
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { useInView } from 'react-intersection-observer';
 import { useTranslation } from 'next-i18next';
@@ -14,6 +13,8 @@ import { MetadataProps } from '@/blog/lib/get-translations';
 import NoDataError from '@/blog/components/no-data-error';
 import { Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@hive/ui/components/card-skeleton';
+import { getAccountPosts } from '@transaction/lib/bridge-api';
+import PostList from '../list-of-posts/posts-loader';
 
 const AccountProfileMainPage = ({
   metadata,

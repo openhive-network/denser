@@ -3,16 +3,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
 import { Community } from '@transaction/lib/extended-hive.chain';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
-import { SubsListDialog } from '../../components/subscription-list-dialog';
-import { ActivityLogDialog } from '../../components/activity-log-dialog';
+import { SubsListDialog } from '../../../components/subscription-list-dialog';
+import { ActivityLogDialog } from '../../../components/activity-log-dialog';
 import { useTranslation } from 'next-i18next';
-import SubscribeCommunity from '../../components/subscribe-community';
+import SubscribeCommunity from '../../../components/subscribe-community';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import NewPost from '../../components/new-post-button';
+import NewPost from '../../../components/new-post-button';
 import { useEffect, useState } from 'react';
 import { Badge, Separator } from '@ui/components';
 import BasePathLink from '@/blog/components/base-path-link';
-import EditCommunityDialog from '../community-settings/edit-dialog';
+import EditCommunityDialog from '../../community-settings/edit-dialog';
 import clsx from 'clsx';
 
 const CommunitySimpleDescription = ({

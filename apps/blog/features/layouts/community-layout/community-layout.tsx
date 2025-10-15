@@ -2,8 +2,8 @@
 
 import { ReactNode } from 'react';
 import CommunitySimpleDescription from './community-simple-description';
-import CommunitiesMybar from '../../components/communities-mybar';
-import CommunitiesSidebar from '../../components/communities-sidebar';
+import CommunitiesMybar from '../../../components/communities-mybar';
+import CommunitiesSidebar from '../../../components/communities-sidebar';
 import { useQuery } from '@tanstack/react-query';
 import {
   getAccountNotifications,

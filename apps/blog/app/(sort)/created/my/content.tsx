@@ -1,6 +1,6 @@
 'use client';
 
-import SortedPagesPosts from '@/blog/features/sorts-pages/posts-list';
+import SortedPagesPosts from '@/blog/features/list-of-posts/list-of-posts';
 
 const sort = 'created';
 const tag = 'my';

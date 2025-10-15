@@ -7,25 +7,30 @@ import { useTranslation } from 'next-i18next';
 import { searchPosts, getPostsByIds, isPostStub } from '@/blog/lib/get-data';
 import { Entry, PostStub } from '@transaction/lib/extended-hive.chain';
 import { PER_PAGE } from './lib/utils';
-import PostList from '@/blog/components/post-list';
 import { Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@ui/components/card-skeleton';
+import PostList from '../list-of-posts/posts-loader';
 
 const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: Preferences['nsfw'] }) => {
   const { user } = useUser();
   const { ref, inView } = useInView();
   const { t } = useTranslation('common_blog');
-  
+
   const [currentPage, setCurrentPage] = useState(0);
   const [displayedPosts, setDisplayedPosts] = useState<Entry[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // Fetch all results in a single call
-  const { data: searchResults, isLoading, isFetching, error } = useQuery(
+  const {
+    data: searchResults,
+    isLoading,
+    isFetching,
+    error
+  } = useQuery(
     ['searchPosts', query],
     async () => {
       if (!query) return null;
-      
+
       return await searchPosts({
         query,
         observer: user.username !== '' ? user.username : 'hive.blog',
@@ -45,14 +50,14 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
   // Separate full posts and stubs
   const { fullPosts, stubPosts } = useMemo(() => {
     if (!searchResults) return { fullPosts: [], stubPosts: [] };
-    
+
     const full: Entry[] = [];
     const stubs: PostStub[] = [];
-    
-    searchResults.forEach(post => {
+
+    searchResults.forEach((post) => {
       // Filter out null or invalid posts
       if (!post) return;
-      
+
       if (isPostStub(post)) {
         stubs.push(post);
       } else {
@@ -62,7 +67,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
         }
       }
     });
-    
+
     return { fullPosts: full, stubPosts: stubs };
   }, [searchResults]);
 
@@ -83,33 +88,33 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
   // Load next page of posts
   const fetchNextPage = async () => {
     if (!hasNextPage || isLoadingMore) return;
-    
+
     setIsLoadingMore(true);
-    
+
     try {
       // Calculate which stubs to fetch
       const startIndex = (currentPage - 1) * PER_PAGE;
       const endIndex = Math.min(startIndex + PER_PAGE, stubPosts.length);
       const stubsToFetch = stubPosts.slice(startIndex, endIndex);
-      
+
       if (stubsToFetch.length === 0) {
         setIsLoadingMore(false);
         return;
       }
-      
+
       // Fetch full post data for the stubs
       const fullPostData = await getPostsByIds({
         posts: stubsToFetch,
         observer: user.username !== '' ? user.username : 'hive.blog'
       });
-      
+
       if (fullPostData) {
         // Filter out null or invalid posts before adding to displayed posts
-        const validPosts = fullPostData.filter(post => post && post.post_id);
+        const validPosts = fullPostData.filter((post) => post && post.post_id);
         if (validPosts.length > 0) {
-          setDisplayedPosts(prev => [...prev, ...validPosts]);
+          setDisplayedPosts((prev) => [...prev, ...validPosts]);
         }
-        setCurrentPage(prev => prev + 1);
+        setCurrentPage((prev) => prev + 1);
       }
     } catch (error) {
       console.error('Error fetching next page:', error);
@@ -132,25 +137,23 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
   }, [query]);
 
   if (!query) return null;
-  
+
   if (isLoading) {
     return <Loading loading={isLoading} />;
   }
-  
+
   if (error) {
     return <div>Error loading search results</div>;
   }
-  
+
   if (!searchResults || searchResults.length === 0) {
     return <div>{t('search.no_results')}</div>;
   }
 
   return (
     <div>
-      {displayedPosts.length > 0 && (
-        <PostList data={displayedPosts} nsfwPreferences={nsfwPreferences} />
-      )}
-      
+      {displayedPosts.length > 0 && <PostList data={displayedPosts} nsfwPreferences={nsfwPreferences} />}
+
       <div>
         <button
           ref={ref}
@@ -158,21 +161,13 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
           disabled={!hasNextPage || isLoadingMore}
           style={{ display: hasNextPage ? 'block' : 'none' }}
         >
-          {isLoadingMore ? (
-            <PostCardSkeleton />
-          ) : hasNextPage ? (
-            t('user_profile.load_newer')
-          ) : null}
+          {isLoadingMore ? <PostCardSkeleton /> : hasNextPage ? t('user_profile.load_newer') : null}
         </button>
-        
-        {!hasNextPage && displayedPosts.length > 0 && (
-          <div>{t('user_profile.nothing_more_to_load')}</div>
-        )}
+
+        {!hasNextPage && displayedPosts.length > 0 && <div>{t('user_profile.nothing_more_to_load')}</div>}
       </div>
-      
-      {isFetching && !isLoadingMore && (
-        <div>Background Updating...</div>
-      )}
+
+      {isFetching && !isLoadingMore && <div>Background Updating...</div>}
     </div>
   );
 };

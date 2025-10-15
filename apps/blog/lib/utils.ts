@@ -9,6 +9,7 @@ import { getRenderer } from './renderer';
 import { proxifyImageSrc } from '@hive/ui';
 
 export const DEFAULT_OBSERVER = 'hive.blog';
+export type SortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted';
 
 export interface Preferences {
   nsfw: 'hide' | 'warn' | 'show';

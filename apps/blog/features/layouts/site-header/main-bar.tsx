@@ -20,7 +20,6 @@ import { cn } from '@ui/lib/utils';
 import { getUserAvatarUrl } from '@hive/ui';
 import useManabars from '@/blog/components/hooks/useManabars';
 import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
-import { MainNav } from '@/blog/features/main-layout/main-nav';
 import DialogLogin from '@/blog/components/dialog-login';
 import ModeToggle from '@/blog/components/mode-toggle';
 import LangToggle from '@/blog/components/lang-toggle';
@@ -28,6 +27,7 @@ import { hoursAndMinutes } from '@/blog/lib/utils';
 import Sidebar from '@/blog/components/sidebar';
 import { useTranslation } from '@/blog/i18n/client';
 import { usePathname } from 'next/navigation';
+import { MainNav } from './main-nav';
 
 const MainBar: FC = () => {
   const { t } = useTranslation('common_blog');

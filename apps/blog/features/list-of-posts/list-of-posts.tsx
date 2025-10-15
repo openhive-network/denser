@@ -2,11 +2,10 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
-import { DEFAULT_OBSERVER, SortTypes } from './lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import PostList from '@/blog/components/post-list';
+import PostList from '@/blog/features/list-of-posts/posts-loader';
 import { useLocalStorage } from 'usehooks-ts';
-import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
 import { useInView } from 'react-intersection-observer';
 import { useTranslation } from '@/blog/i18n/client';
 import { useEffect } from 'react';

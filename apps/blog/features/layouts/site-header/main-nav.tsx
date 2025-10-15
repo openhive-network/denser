@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@ui/lib/utils';
 
 import env from '@beam-australia/react-env';
-import { useTranslation } from '../../i18n/client';
+import { useTranslation } from '../../../i18n/client';
 
 export function MainNav() {
   const pathname = usePathname();

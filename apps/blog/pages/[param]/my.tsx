@@ -8,7 +8,6 @@ import {
 } from '@transaction/lib/bridge';
 import Loading from '@hive/ui/components/loading';
 import { FC, useCallback, useEffect } from 'react';
-import PostList from '@/blog/components/post-list';
 import PostSelectFilter from '@/blog/components/post-select-filter';
 import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
@@ -19,7 +18,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import Link from 'next/link';
 import { getDefaultProps } from '../../lib/get-translations';
 import Head from 'next/head';
-import CommunityLayout from '@/blog/features/community-layout/community-layout';
+import CommunityLayout from '@/blog/features/layouts/community-layout/community-layout';
 import { withBasePath } from '@/blog/utils/PathUtils';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';

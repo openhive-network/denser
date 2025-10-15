@@ -1,7 +1,7 @@
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import Sidebar from './sidebar';
-import { MainNav } from '../features/main-layout/main-nav';
+import { MainNav } from '../features/layouts/main-layout/main-nav';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';

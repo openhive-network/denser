@@ -11,7 +11,7 @@ import { getListCommunityRoles, getSubscriptions } from '@transaction/lib/bridge
 import { getCommunityMetadata, getTranslations, MetadataProps } from '@/blog/lib/get-translations';
 import Head from 'next/head';
 import { getRoleValue, Roles, rolesLevels } from '@/blog/features/community-roles/lib/utils';
-import CommunityLayout from '@/blog/features/community-layout/community-layout';
+import CommunityLayout from '@/blog/features/layouts/community-layout/community-layout';
 import TableItem from '@/blog/features/community-roles/table-item';
 import NoDataError from '@/blog/components/no-data-error';
 

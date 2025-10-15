@@ -3,7 +3,6 @@ import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-quer
 import { DATA_LIMIT as PER_PAGE, getCommunity, getPostsRanked } from '@transaction/lib/bridge';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
 import { useCallback, useEffect } from 'react';
-import PostList from '@/blog/components/post-list';
 import PostSelectFilter from '@/blog/components/post-select-filter';
 import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
@@ -11,7 +10,7 @@ import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import Head from 'next/head';
-import CommunityLayout from '../features/community-layout/community-layout';
+import CommunityLayout from '../features/layouts/community-layout/community-layout';
 import { sortToTitle, sortTypes } from '@/blog/lib/utils';
 import { MetadataProps } from '@/blog/lib/get-translations';
 import NoDataError from '@/blog/components/no-data-error';

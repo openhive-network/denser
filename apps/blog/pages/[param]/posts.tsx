@@ -3,7 +3,6 @@ import { getAccountPosts, DATA_LIMIT as PER_PAGE } from '@transaction/lib/bridge
 import ProfileLayout from '@/blog/components/common/profile-layout';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
-import PostList from '@/blog/components/post-list';
 import { useRouter } from 'next/router';
 import RepliesList from '@/blog/components/replies-list';
 import { useInView } from 'react-intersection-observer';
