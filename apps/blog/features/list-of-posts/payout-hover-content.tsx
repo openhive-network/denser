@@ -2,15 +2,15 @@
 
 import { dateToRelative } from '@ui/lib/parse-date';
 import Link from 'next/link';
-import { amt, fmt } from '../lib/utils';
+import { amt, fmt } from '@/blog/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import Loading from '@hive/ui/components/loading';
-import { convertStringToBig } from '@hive/ui/lib/helpers';
+import Loading from '@ui/components/loading';
+import { convertStringToBig } from '@ui/lib/helpers';
 import { getFeedHistory } from '@transaction/lib/hive-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import moment from 'moment';
-import { useTranslation } from '../i18n/client';
+import { useTranslation } from '@/blog/i18n/client';
 
 interface IBeneficiary {
   account: string;

@@ -1,15 +1,15 @@
 'use client';
 
-import { useRebloggedByQuery } from '@/blog/components/hooks/use-reblogged-by-query';
-import { cn } from '@ui/lib/utils';
-import { Icons } from '@hive/ui/components/icons';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { useReblogMutation } from './hooks/use-reblog-mutation';
 import { CircleSpinner } from 'react-spinners-kit';
-import { ReblogDialog } from './reblog-dialog';
+import { cn } from '@ui/lib/utils';
+import { Icons } from '@ui/components/icons';
 import { handleError } from '@ui/lib/handle-error';
-import { useTranslation } from '../i18n/client';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useRebloggedByQuery } from './hooks/use-reblogged-by-query';
+import { useReblogMutation } from './hooks/use-reblog-mutation';
+import { ReblogDialog } from './reblog-dialog';
+import { useTranslation } from '@/blog/i18n/client';
 
 const ReblogTrigger = ({
   author,
@@ -24,11 +24,7 @@ const ReblogTrigger = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
-  const { isLoading: isLoadingReblogData, data: isReblogged } = useRebloggedByQuery(
-    author,
-    permlink,
-    user.username
-  );
+  const { data: isReblogged } = useRebloggedByQuery(author, permlink, user.username);
 
   const reblogMutation = useReblogMutation();
 

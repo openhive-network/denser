@@ -8,12 +8,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@u
 import { useEffect, useRef, useState } from 'react';
 import DetailsCardVoters from '@/blog/components/details-card-voters';
 import { ReplyTextbox } from './reply-textbox';
-import DetailsCardHover from './details-card-hover';
+import DetailsCardHover from '../features/list-of-posts/details-card-hover';
 import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
-import VotesComponent from './votes';
+import VotesComponent from '../features/votes/votes-component';
 import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';

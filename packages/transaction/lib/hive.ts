@@ -34,10 +34,6 @@ export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProper
   });
 };
 
-export const getFindAccounts = (username: string): Promise<{ accounts: ApiAccount[] }> => {
-  return chain.api.database_api.find_accounts({ accounts: [username], delayed_votes_active: false });
-};
-
 export interface IDynamicProps {
   hivePerMVests: number;
   base: number;

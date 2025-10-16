@@ -1,31 +1,31 @@
 'use client';
 
-import Link from 'next/link';
-import BasePathLink from '../../components/base-path-link';
-import { Icons } from '@hive/ui/components/icons';
-import { Card, CardFooter, CardHeader } from '@hive/ui/components/card';
-import { Separator } from '@hive/ui/components/separator';
-import { Badge } from '@hive/ui/components/badge';
-import accountReputation from '@/blog/lib/account-reputation';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import DetailsCardHover from '../../components/details-card-hover';
 import { useEffect, useState } from 'react';
-import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
-import PostImage from '../../components/post-img';
-import VotesComponent from '../../components/votes';
-import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
-import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
-import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
+import Link from 'next/link';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { Card, CardFooter, CardHeader } from '@ui/components/card';
+import { Icons } from '@ui/components/icons';
+import { Separator } from '@ui/components/separator';
+import { Badge } from '@ui/components/badge';
+import dmcaUserList from '@ui/config/lists/dmca-user-list';
+import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
+import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
-import ReblogTrigger from '../../components/reblog-trigger';
-import PostCardCommentTooltip from '../../components/post-card-comment-tooltip';
-import PostCardUpvotesTooltip from '../../components/post-card-upvotes-tooltip';
-import PostCardBlacklistMark from '../../components/post-card-blacklist-mark';
-import TimeAgo from '@hive/ui/components/time-ago';
+import TimeAgo from '@ui/components/time-ago';
+import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
+import BasePathLink from '@/blog/components/base-path-link';
+import accountReputation from '@/blog/lib/account-reputation';
+import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
+import DetailsCardHover from './details-card-hover';
+import PostImage from './post-img';
+import ReblogTrigger from './reblog-trigger';
+import PostCardCommentTooltip from './post-card-comment-tooltip';
+import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
+import PostCardBlacklistMark from './post-card-blacklist-mark';
 import PostSummary from './summary';
+import VotesComponent from '@/blog/features/votes/votes-component';
 import { Preferences } from '@/blog/lib/utils';
-import { getUserAvatarUrl } from '@hive/ui';
-import { useTranslation } from '../../i18n/client';
+import { useTranslation } from '@/blog/i18n/client';
 
 const PostListItem = ({
   post,

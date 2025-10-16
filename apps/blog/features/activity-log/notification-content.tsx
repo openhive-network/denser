@@ -3,12 +3,11 @@
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
-import NotificationList from '@/blog/features/activity-log/list';
+import NotificationList from './list';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { getRewardsString } from '../../lib/utils';
-import { getFindAccounts } from '@transaction/lib/hive';
-import { getAccountFull } from '@transaction/lib/hive-api';
+import { getAccountFull, getFindAccounts } from '@transaction/lib/hive-api';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications-read-mutation';
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';

@@ -1,22 +1,22 @@
 'use client';
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Icons } from '@ui/components/icons';
-import DialogLogin from './dialog-login';
-import clsx from 'clsx';
 import { ReactNode, useEffect, useState } from 'react';
-import { useVoteMutation } from '../components/hooks/use-vote-mutation';
-import { useQuery } from '@tanstack/react-query';
+import { useLocalStorage } from 'usehooks-ts';
+import clsx from 'clsx';
 import { CircleSpinner } from 'react-spinners-kit';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { Slider } from '@ui/components/slider';
+import { handleError } from '@ui/lib/handle-error';
+import { Icons } from '@ui/components/icons';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import DialogLogin from '@/blog/components/dialog-login';
+import { useQuery } from '@tanstack/react-query';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import { Slider } from '@ui/components/slider';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
-import { useLoggedUserContext } from './common/logged-user';
-import { handleError } from '@ui/lib/handle-error';
-import { useLocalStorage } from 'usehooks-ts';
-import { useTranslation } from '../i18n/client';
+import { useLoggedUserContext } from '@/blog/components/hooks/use-logged-user';
+import { useTranslation } from '@/blog/i18n/client';
+import { useVoteMutation } from './hooks/use-vote-mutation';
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
 

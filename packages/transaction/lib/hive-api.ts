@@ -1,6 +1,6 @@
 import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
 import { getChain } from './chain';
-import { IManabarData } from '@hiveio/wax';
+import { ApiAccount, IManabarData } from '@hiveio/wax';
 import { IFeedHistory, IVoteListItem } from './extended-hive.chain';
 
 interface ISingleManabar {
@@ -201,4 +201,11 @@ export const getListVotesByCommentVoter = async (
   limit: number
 ): Promise<{ votes: IVoteListItem[] }> => {
   return (await getChain()).api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
+};
+
+export const getFindAccounts = async (username: string): Promise<{ accounts: ApiAccount[] }> => {
+  return (await getChain()).api.database_api.find_accounts({
+    accounts: [username],
+    delayed_votes_active: false
+  });
 };

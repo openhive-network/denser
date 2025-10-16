@@ -1,5 +1,5 @@
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import { find_first_img } from '../../components/post-img';
+import { find_first_img } from '../list-of-posts/post-img';
 import Link from 'next/link';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useState } from 'react';
@@ -22,18 +22,14 @@ const SuggestionsCard = ({ entry }: { entry: Entry }) => {
                 <source
                   srcSet={proxifyImageUrl(image, '256x512').replace(/ /g, '%20')}
                   media="(min-width: 600px)"
-                  onError={() =>
-                    setImage(getDefaultImageUrl())
-                  }
+                  onError={() => setImage(getDefaultImageUrl())}
                 />
                 <img
                   srcSet={image}
                   alt="Post image"
                   loading="lazy"
                   className="w-full"
-                  onError={() =>
-                    setImage(getDefaultImageUrl())
-                  }
+                  onError={() => setImage(getDefaultImageUrl())}
                 />
               </picture>
             </div>

@@ -1,15 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInView } from 'react-intersection-observer';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import PostList from '@/blog/features/list-of-posts/posts-loader';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
-import { useInView } from 'react-intersection-observer';
 import { useTranslation } from '@/blog/i18n/client';
-import { useEffect } from 'react';
 import { Entry } from '@transaction/lib/extended-hive.chain';
+import PostList from './posts-loader';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
   const { user } = useUser();

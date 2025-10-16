@@ -1,10 +1,10 @@
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
+import TimeAgo from '@hive/ui/components/time-ago';
+import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
-import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
-import TimeAgo from '@hive/ui/components/time-ago';
 import { usePathname } from 'next/navigation';
 
 const usernamePattern = /\B@[a-z0-9.-]+/gi;

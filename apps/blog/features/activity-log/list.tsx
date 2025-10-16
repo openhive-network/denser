@@ -1,6 +1,6 @@
 'use client';
 
-import NotificationListItem from '@/blog/features/activity-log/list-item';
+import NotificationListItem from './list-item';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 
 const NotificationList = ({

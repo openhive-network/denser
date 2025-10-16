@@ -1,3 +1,6 @@
+'use client';
+
+import { ReactNode, useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,14 +12,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
-import { useUser } from '@smart-signer/lib/auth/use-user';
-import { ReactNode, useState, KeyboardEvent } from 'react';
-import DialogLogin from './dialog-login';
 import { Button } from '@ui/components/button';
-import { getLogger } from '@ui/lib/logging';
-import { useTranslation } from '../i18n/client';
-
-const logger = getLogger('app');
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import DialogLogin from '@/blog/components/dialog-login';
+import { useTranslation } from '@/blog/i18n/client';
 
 export function ReblogDialog({
   children,

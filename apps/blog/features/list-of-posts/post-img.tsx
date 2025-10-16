@@ -1,11 +1,17 @@
-import Link from 'next/link';
-import { customEndsWith } from '../lib/ends-with';
-import { proxifyImageUrl } from '@ui/lib/old-profixy';
-import { extractPictureFromPostBody, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
-import { Entry } from '@transaction/lib/extended-hive.chain';
-import clsx from 'clsx';
+'use client';
+
 import { useEffect, useState } from 'react';
-import { getUserAvatarUrl, getDefaultImageUrl } from '@hive/ui';
+import clsx from 'clsx';
+import Link from 'next/link';
+import { proxifyImageUrl } from '@ui/lib/old-profixy';
+import { getDefaultImageUrl, getUserAvatarUrl } from '@ui/lib/avatar-utils';
+import { customEndsWith } from '@/blog/lib/ends-with';
+import {
+  extractPictureFromPostBody,
+  extractUrlsFromJsonString,
+  extractYouTubeVideoIds
+} from '@/blog/lib/utils';
+import { Entry } from '@transaction/lib/extended-hive.chain';
 
 export function find_first_img(post: Entry) {
   try {
@@ -96,18 +102,14 @@ export default function PostImage({ post }: { post: Entry }) {
               <source
                 srcSet={proxifyImageUrl(image, '256x512').replace(/ /g, '%20')}
                 media="(min-width: 1000px)"
-                onError={() =>
-                  setImage(getDefaultImageUrl())
-                }
+                onError={() => setImage(getDefaultImageUrl())}
               />
               <img
                 srcSet={image}
                 alt="Post image"
                 loading="lazy"
                 className="w-full"
-                onError={() =>
-                  setImage(getDefaultImageUrl())
-                }
+                onError={() => setImage(getDefaultImageUrl())}
               />
             </picture>
           </div>
