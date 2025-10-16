@@ -4,7 +4,7 @@ import { Hydrate } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from '../theme-provider';
 import Layout from './layout';
-import { LoggedUserProvider } from '../hooks/use-logged-user';
+import { LoggedUserProvider } from '../../features/votes/hooks/use-logged-user';
 import { SignerProvider } from '../../../../packages/smart-signer/components/signer-provider';
 
 const queryClient = new QueryClient();

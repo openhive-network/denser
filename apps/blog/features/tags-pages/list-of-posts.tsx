@@ -9,7 +9,8 @@ import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import PostList from './posts-loader';
+import PostList from '../list-of-posts/posts-loader';
+import NoDataError from '@/blog/components/no-data-error';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
   const { user } = useUser();
@@ -29,7 +30,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     DEFAULT_PREFERENCES
   );
 
-  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery({
+  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({
     queryKey: ['entriesInfinite', sort, tag],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
@@ -60,6 +61,8 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
 
   // Calculate total posts to determine when to show prefetch trigger
   const totalPosts = data?.pages?.reduce((acc, page) => acc + (page?.length || 0), 0) || 0;
+
+  if (isError) return <NoDataError />;
 
   return (
     <>

@@ -1,6 +1,6 @@
 'use client';
 
-import SortedPagesPosts from '@/blog/features/list-of-posts/list-of-posts';
+import SortedPagesPosts from '@/blog/features/tags-pages/list-of-posts';
 
 const sort = 'payout';
 const tag = 'my';

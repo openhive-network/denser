@@ -18,9 +18,7 @@ import {
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import NoDataError from '../components/no-data-error';
 import { getLogger } from '@ui/lib/logging';
-import MainPage from '../components/main-page';
 import AccountProfileMainPage from '../features/account-profile/main-page';
-import { getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -93,10 +91,6 @@ const ParamPage: FC<{ metadata: MetadataProps; pageType: PageType; redirectUrl: 
   }, [router.events]);
 
   switch (pageType) {
-    case 'main':
-    case 'community':
-    case 'tag':
-      return <MainPage metadata={metadata} pageType={pageType} nsfwPreferences={preferences.nsfw} />;
     case 'userProfile':
       return <AccountProfileMainPage metadata={metadata} nsfwPreferences={preferences.nsfw} />;
     case 'redirect':
@@ -140,43 +134,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const username = firstParam.split('@')[1];
 
   switch (pageType) {
-    case 'community':
-      metadata = await getCommunityMetadata(firstParam, tag, 'Posts');
-      try {
-        await queryClient.prefetchQuery(['community', tag], async () => await getCommunity(tag, ''));
-        await queryClient.prefetchQuery(['subscribers', tag], async () => await getSubscribers(tag));
-        await queryClient.prefetchQuery(
-          ['AccountNotification', tag],
-          async () => await getAccountNotifications(tag)
-        );
-      } catch (error) {
-        logger.error('Error prefetching community metadata:', error);
-      }
-    case 'main':
-    case 'tag':
-      try {
-        await queryClient.prefetchInfiniteQuery(
-          ['entriesInfinite', firstParam, tag],
-          async ({ pageParam }) => {
-            const postsData = await getPostsRanked(
-              firstParam,
-              tag,
-              pageParam?.author,
-              pageParam?.permlink,
-              ''
-            );
-            if (!!postsData && postsData.length > 0) {
-              const cleanedPostsList = postsData.map((post) => ({ ...post, active_votes: [] }));
-              return cleanedPostsList;
-            }
-            return postsData;
-          }
-        );
-      } catch (error) {
-        logger.error('Error prefetching entriesInfinite:', error);
-      }
-
-      break;
     case 'userProfile':
       metadata = await getAccountMetadata(firstParam, 'Posts');
       try {

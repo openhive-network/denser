@@ -14,7 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
-import { useLoggedUserContext } from '@/blog/components/hooks/use-logged-user';
+import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
 import { useTranslation } from '@/blog/i18n/client';
 import { useVoteMutation } from './hooks/use-vote-mutation';
 

@@ -14,7 +14,7 @@ import CommunityLayout from '../features/layouts/community/community-layout';
 import { sortToTitle, sortTypes } from '@/blog/lib/utils';
 import { MetadataProps } from '@/blog/lib/get-translations';
 import NoDataError from '@/blog/components/no-data-error';
-import { PageType } from '@/blog/pages/[...param]';
+import { PageType } from '@/blog/pages/__[...param]';
 import { Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@hive/ui/components/card-skeleton';
 
