@@ -3,13 +3,13 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 
 import { FC, PropsWithChildren, useMemo } from 'react';
-import { ThemeProvider } from '../../../components/theme-provider';
 import Head from 'next/head';
 import { useTheme } from 'next-themes';
 import { SignerProvider } from '@hive/smart-signer/components/signer-provider';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { LoggedUserProvider } from '@/blog/components/common/logged-user';
+import { ThemeProvider } from '@/blog/components/theme-provider';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useMemo(() => getQueryClient(), []);

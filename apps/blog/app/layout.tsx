@@ -3,9 +3,9 @@ import { ReactNode } from 'react';
 import Script from 'next/script';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Providers } from '../features/layouts/site-header/providers';
 import MainBar from '../features/layouts/site-header/main-bar';
 import ClientEffects from '../features/layouts/site-header/client-effects';
+import { Providers } from '../features/layouts/providers';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';

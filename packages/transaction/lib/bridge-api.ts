@@ -186,3 +186,6 @@ export const getCommunity = async (
 ): Promise<Community | null> => {
   return (await getChain()).api.bridge.get_community({ name, observer });
 };
+export const getListCommunityRoles = async (community: string): Promise<string[][] | null> => {
+  return (await getChain()).api.bridge.list_community_roles({ community });
+};

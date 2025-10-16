@@ -29,10 +29,6 @@ export const getDiscussion = async (
   });
 };
 
-export const getListCommunityRoles = async (community: string): Promise<string[][] | null> => {
-  return chain.api.bridge.list_community_roles({ community });
-};
-
 export const normalizePost = async (post: Entry): Promise<Entry | null> => {
   return chain.api.bridge.normalize_post({
     post
