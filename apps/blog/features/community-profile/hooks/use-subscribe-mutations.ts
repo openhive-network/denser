@@ -2,8 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Community } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
-import { getLogger } from '@ui/lib/logging';
-const logger = getLogger('app');
 
 /**
  * Makes subscribe transaction.

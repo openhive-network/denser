@@ -11,7 +11,7 @@ import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
-import SubscribeCommunity from '../../../components/subscribe-community';
+import SubscribeCommunity from '../../community-profile/subscribe-community';
 import NewPost from '../../../components/new-post-button';
 import RendererContainer from '../../../components/rendererContainer';
 import EditCommunityDialog from '../../community-profile/edit-dialog';

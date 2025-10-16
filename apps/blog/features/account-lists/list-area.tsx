@@ -44,14 +44,14 @@ const ListArea = ({
   const resetAllListsMutation = useResetAllListsMutation();
   const [disabled, setDisabled] = useState(false);
   useEffect(() => {
-    if (resetAllListsMutation.isLoading || resetListIsLoading) {
+    if (resetAllListsMutation.isPending || resetListIsLoading) {
       setDisabled(true);
     } else {
       setTimeout(() => {
         setDisabled(false);
       }, 3000);
     }
-  }, [resetAllListsMutation.isLoading, resetListIsLoading]);
+  }, [resetAllListsMutation.isPending, resetListIsLoading]);
   const resetAll = async () => {
     try {
       await resetAllListsMutation.mutateAsync();
@@ -149,7 +149,7 @@ const ListArea = ({
               className="bg-background sm:w-3/4"
               value={addValue}
               onChange={(e) => setAddValue(e.target.value)}
-              disabled={resetListIsLoading || resetAllListsMutation.isLoading}
+              disabled={resetListIsLoading || resetAllListsMutation.isPending}
             />
           </div>
           {addValue ? (
@@ -182,7 +182,7 @@ const ListArea = ({
               className="text-xs"
               disabled={disabled}
             >
-              {resetListIsLoading || resetAllListsMutation.isLoading ? (
+              {resetListIsLoading || resetAllListsMutation.isPending ? (
                 <span className="flex h-5 w-20 items-center justify-center">
                   <CircleSpinner loading={disabled} size={18} color="#dc2626" />
                 </span>
@@ -191,9 +191,9 @@ const ListArea = ({
               )}
             </Button>
             <Button disabled={disabled} onClick={resetAll} size="sm" className="text-xs">
-              {resetAllListsMutation.isLoading ? (
+              {resetAllListsMutation.isPending ? (
                 <span className="flex h-5 w-20 items-center justify-center">
-                  <CircleSpinner loading={resetAllListsMutation.isLoading} size={18} color="#dc2626" />
+                  <CircleSpinner loading={resetAllListsMutation.isPending} size={18} color="#dc2626" />
                 </span>
               ) : (
                 t('user_profile.lists.list.reset_all_lists')

@@ -53,10 +53,10 @@ const ListItem = ({
     unfollowMutedBlogMutation.variables?.blog;
 
   const deleteIsLoading =
-    unblacklistBlogMutation.isLoading ||
-    unfollowBlacklistBlogMutation.isLoading ||
-    unmuteMutation.isLoading ||
-    unfollowMutedBlogMutation.isLoading;
+    unblacklistBlogMutation.isPending ||
+    unfollowBlacklistBlogMutation.isPending ||
+    unmuteMutation.isPending ||
+    unfollowMutedBlogMutation.isPending;
   return (
     <li className="flex w-72 items-center justify-between bg-background p-1 font-semibold odd:bg-background-tertiary">
       {!item._temporary ? (

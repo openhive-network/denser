@@ -119,7 +119,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
               <FormField
-                disabled={updateCommunityMutation.isLoading}
+                disabled={updateCommunityMutation.isPending}
                 control={form.control}
                 name="title"
                 render={({ field }) => (
@@ -133,7 +133,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                 )}
               />
               <FormField
-                disabled={updateCommunityMutation.isLoading}
+                disabled={updateCommunityMutation.isPending}
                 control={form.control}
                 name="about"
                 render={({ field }) => (
@@ -147,7 +147,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                 )}
               />
               <FormField
-                disabled={updateCommunityMutation.isLoading}
+                disabled={updateCommunityMutation.isPending}
                 control={form.control}
                 name="description"
                 render={({ field }) => (
@@ -161,7 +161,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                 )}
               />
               <FormField
-                disabled={updateCommunityMutation.isLoading}
+                disabled={updateCommunityMutation.isPending}
                 control={form.control}
                 name="flagText"
                 render={({ field }) => (
@@ -175,7 +175,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                 )}
               />
               <FormField
-                disabled={updateCommunityMutation.isLoading}
+                disabled={updateCommunityMutation.isPending}
                 control={form.control}
                 name="lang"
                 render={({ field }) => (
@@ -209,7 +209,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                          disabled={updateCommunityMutation.isLoading}
+                          disabled={updateCommunityMutation.isPending}
                         />
                       </FormControl>
                       <FormLabel>{t('communities.edit_props_dialog.nsfw')}</FormLabel>
@@ -225,13 +225,13 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                     setOpen(false);
                   }}
                   variant="outlineRed"
-                  disabled={updateCommunityMutation.isLoading}
+                  disabled={updateCommunityMutation.isPending}
                 >
                   {t('communities.edit_props_dialog.cancel')}
                 </Button>
-                <Button type="submit" variant="redHover" disabled={updateCommunityMutation.isLoading}>
-                  {updateCommunityMutation.isLoading ? (
-                    <CircleSpinner loading={updateCommunityMutation.isLoading} size={18} color="#dc2626" />
+                <Button type="submit" variant="redHover" disabled={updateCommunityMutation.isPending}>
+                  {updateCommunityMutation.isPending ? (
+                    <CircleSpinner loading={updateCommunityMutation.isPending} size={18} color="#dc2626" />
                   ) : (
                     t('communities.edit_props_dialog.save')
                   )}

@@ -9,7 +9,15 @@ import { useTranslation } from '@/blog/i18n/client';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import PostSelectFilter from '@/blog/components/post-select-filter';
 
-const PageLayout = ({ children, tag = '' }: { children: ReactNode; tag?: string }) => {
+const PageLayout = ({
+  children,
+  tag = '',
+  hidePostsHeader = false
+}: {
+  children: ReactNode;
+  tag?: string;
+  hidePostsHeader?: boolean;
+}) => {
   const { user } = useUser();
   const { t } = useTranslation('common_blog');
 
@@ -21,19 +29,21 @@ const PageLayout = ({ children, tag = '' }: { children: ReactNode; tag?: string 
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
-            <div className="my-4 flex w-full items-center justify-between" translate="no">
-              <div className="mr-2 flex w-[320px] flex-col">
-                <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                  {tag ?? t('navigation.communities_nav.all_posts')}
-                </span>
-                <span className="md:hidden">
-                  <CommunitiesSelect title={t('navigation.communities_nav.all_posts')} />
-                </span>
+            {hidePostsHeader ? null : (
+              <div className="my-4 flex w-full items-center justify-between" translate="no">
+                <div className="mr-2 flex w-[320px] flex-col">
+                  <span className="text-md hidden font-medium md:block" data-testid="community-name">
+                    {tag ?? t('navigation.communities_nav.all_posts')}
+                  </span>
+                  <span className="md:hidden">
+                    <CommunitiesSelect title={t('navigation.communities_nav.all_posts')} />
+                  </span>
+                </div>
+                <div className="w-[180px]">
+                  <PostSelectFilter param={!!tag ? `/${tag}` : ''} />
+                </div>
               </div>
-              <div className="w-[180px]">
-                <PostSelectFilter param={!!tag ? `/${tag}` : ''} />
-              </div>
-            </div>
+            )}
             {children}
           </div>
         </div>

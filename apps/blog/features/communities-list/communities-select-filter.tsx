@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 
 import {
@@ -8,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/components/select';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 
 const CommunitiesSelectFilter = ({
   filter,

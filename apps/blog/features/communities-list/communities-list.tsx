@@ -1,4 +1,6 @@
-import CommunitiesListItem from '@/blog/components/communities-list-item';
+'use client';
+
+import CommunitiesListItem from '@/blog/features/communities-list/communities-list-item';
 import { Community } from '@transaction/lib/extended-hive.chain';
 
 const CommunitiesList = ({ data }: { data: Community[] | null | undefined }) => {

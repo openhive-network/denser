@@ -80,7 +80,7 @@ const NotificationActivities = ({
   }, [lastStateElementId, refetch]);
 
   async function handleMarkAllAsRead() {
-    if (markAllNotificationsAsReadMutation.isLoading) return;
+    if (markAllNotificationsAsReadMutation.isPending) return;
     const myDate = new Date().toISOString();
     const date = myDate.slice(0, myDate.length - 5);
     try {
@@ -125,11 +125,11 @@ const NotificationActivities = ({
           <Button
             variant="redHover"
             onClick={handleClaimRewards}
-            disabled={claimRewardMutation.isLoading}
+            disabled={claimRewardMutation.isPending}
             className="w-36"
           >
-            {claimRewardMutation.isLoading ? (
-              <CircleSpinner loading={claimRewardMutation.isLoading} size={18} color="#dc2626" />
+            {claimRewardMutation.isPending ? (
+              <CircleSpinner loading={claimRewardMutation.isPending} size={18} color="#dc2626" />
             ) : (
               t('navigation.profile_notifications_tab_navbar.redeem')
             )}
@@ -140,13 +140,13 @@ const NotificationActivities = ({
       {accountOwner && unreadNotifications && unreadNotifications.unread !== 0 ? (
         <div className="flex flex-col items-center">
           <button
-            disabled={markAllNotificationsAsReadMutation.isLoading}
+            disabled={markAllNotificationsAsReadMutation.isPending}
             className="w-100 mb-4 font-bold"
             onClick={handleMarkAllAsRead}
           >
-            {markAllNotificationsAsReadMutation.isLoading ? (
+            {markAllNotificationsAsReadMutation.isPending ? (
               <CircleSpinner
-                loading={markAllNotificationsAsReadMutation.isLoading}
+                loading={markAllNotificationsAsReadMutation.isPending}
                 size={18}
                 color="#dc2626"
               />
