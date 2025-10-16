@@ -1,3 +1,5 @@
+'use client';
+
 import { Dialog, DialogTrigger } from '@ui/components/dialog';
 import { useTranslation } from 'next-i18next';
 import { Community } from '@transaction/lib/extended-hive.chain';

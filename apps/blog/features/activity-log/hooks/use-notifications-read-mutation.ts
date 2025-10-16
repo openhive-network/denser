@@ -1,10 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getLogger } from '@ui/lib/logging';
 import { toast } from '@ui/components/hooks/use-toast';
-
-const logger = getLogger('app');
 
 /**
  * Makes mark all notifications as read transaction.

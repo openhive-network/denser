@@ -1,13 +1,15 @@
+'use client';
+
 import { TableCell, TableRow } from '@ui/components/table';
 import { Pen, Save, X } from 'lucide-react';
 import { Roles, User } from './lib/utils';
 import BasePathLink from '@/blog/components/base-path-link';
-import RolesSelect from './roles-select';
-import { useSetRoleMutation } from '@/blog/components/hooks/use-set-role-mutations';
+import { useSetRoleMutation } from '@/blog/features/community-profile/hooks/use-set-role-mutations';
 import { useState } from 'react';
 import { EAvailableCommunityRoles } from '@hiveio/wax';
 import { handleError } from '@ui/lib/handle-error';
 import clsx from 'clsx';
+import RolesSelect from './roles-select';
 
 const TableItem = ({
   community,
@@ -53,16 +55,16 @@ const TableItem = ({
               <>
                 <div className="w-36">
                   <RolesSelect
-                    disabled={setRoleMutation.isLoading}
+                    disabled={setRoleMutation.isPending}
                     loggedUserLevel={loggedUserValue}
                     value={selectedRole}
                     onValueChange={setSelectedRole}
                   />
                 </div>
-                <button onClick={onUpdateRole} disabled={setRoleMutation.isLoading}>
+                <button onClick={onUpdateRole} disabled={setRoleMutation.isPending}>
                   <Save className="h-4 w-4 text-green-500" />
                 </button>
-                <button onClick={() => setEditMode((prev) => !prev)} disabled={setRoleMutation.isLoading}>
+                <button onClick={() => setEditMode((prev) => !prev)} disabled={setRoleMutation.isPending}>
                   <X className="h-4 w-4 text-destructive" />
                 </button>
               </>

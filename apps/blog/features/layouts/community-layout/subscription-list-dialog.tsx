@@ -1,9 +1,11 @@
+'use client';
+
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 
-import BasePathLink from './base-path-link';
+import BasePathLink from '../../../components/base-path-link';
 import { ReactNode } from 'react';
 import { Badge } from '@ui/components';
-import ChangeTitleDialog from './change-title-dialog';
+import ChangeTitleDialog from '../../community-profile/change-title-dialog';
 
 export function SubsListDialog({
   community,

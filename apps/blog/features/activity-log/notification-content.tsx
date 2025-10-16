@@ -1,12 +1,12 @@
+'use client';
+
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountNotifications } from '@transaction/lib/bridge';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
-import NotificationList from '@/blog/components/notification-list';
+import NotificationList from '@/blog/features/activity-log/list';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
-import { useTranslation } from 'next-i18next';
-import { getRewardsString } from '../lib/utils';
+import { getRewardsString } from '../../lib/utils';
 import { getFindAccounts } from '@transaction/lib/hive';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -14,10 +14,8 @@ import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
-import { getLogger } from '@ui/lib/logging';
-import { getUnreadNotifications } from '@transaction/lib/bridge-api';
-
-const logger = getLogger('app');
+import { getAccountNotifications, getUnreadNotifications } from '@transaction/lib/bridge-api';
+import { useTranslation } from '@/blog/i18n/client';
 
 const NotificationActivities = ({
   data,
@@ -35,15 +33,13 @@ const NotificationActivities = ({
   const markAllNotificationsAsReadMutation = useMarkAllNotificationsAsReadMutation();
   const claimRewardMutation = useClaimRewardsMutation();
 
-  const { data: unreadNotifications } = useQuery(
-    ['unreadNotifications', user?.username],
-    () => getUnreadNotifications(user?.username || ''),
-    {
-      enabled: !!user?.username,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false
-    }
-  );
+  const { data: unreadNotifications } = useQuery({
+    queryKey: ['unreadNotifications', user?.username],
+    queryFn: () => getUnreadNotifications(user?.username || ''),
+    enabled: !!user?.username,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
+  });
   const newDate = new Date(Date.now());
   const lastRead = new Date(unreadNotifications?.lastread || newDate).getTime();
 
@@ -51,24 +47,27 @@ const NotificationActivities = ({
     isLoading,
     refetch,
     data: moreData
-  } = useQuery(
-    ['AccountNotificationMoreData', username],
-    () => getAccountNotifications(username, lastStateElementId, 50),
-    { enabled: !!username }
-  );
-  const { data: profileData } = useQuery(
-    ['profileData', user.username],
-    () => getAccountFull(user.username),
-    {
-      enabled: !!user.username,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false
-    }
-  );
-  const accountOwner = user.username === username;
-  const { data: apiAccounts } = useQuery(['apiAccount', username], () => getFindAccounts(username), {
+  } = useQuery({
+    queryKey: ['AccountNotificationMoreData', username],
+    queryFn: () => getAccountNotifications(username, lastStateElementId, 50),
     enabled: !!username
   });
+
+  const { data: profileData } = useQuery({
+    queryKey: ['profileData', user.username],
+    queryFn: () => getAccountFull(user.username),
+    enabled: !!user.username,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
+  });
+
+  const accountOwner = user.username === username;
+  const { data: apiAccounts } = useQuery({
+    queryKey: ['apiAccount', username],
+    queryFn: () => getFindAccounts(username),
+    enabled: !!username
+  });
+
   const showButton = moreData?.length !== 0;
   const noNotifications = !state || !state.length || state.length === 0;
   useEffect(() => {

@@ -3,7 +3,7 @@ import parseDate from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
 import { UserPopoverCard, UserPopoverCardProps } from './user-popover-card';
-import ChangeTitleDialog from './change-title-dialog';
+import ChangeTitleDialog from '../features/community-profile/change-title-dialog';
 import TimeAgo from '@hive/ui/components/time-ago';
 
 interface UserInfoProps extends UserPopoverCardProps {

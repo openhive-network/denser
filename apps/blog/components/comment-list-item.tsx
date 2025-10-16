@@ -28,7 +28,7 @@ import { useDeleteCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import MutePostDialog from './mute-post-dialog';
-import ChangeTitleDialog from './change-title-dialog';
+import ChangeTitleDialog from '../features/community-profile/change-title-dialog';
 import { AlertDialogFlag } from './alert-window-flag';
 import FlagTooltip from './flag-icon';
 import TimeAgo from '@hive/ui/components/time-ago';

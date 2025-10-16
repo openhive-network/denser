@@ -1,4 +1,4 @@
-import { Roles } from '@/blog/features/community-roles/lib/utils';
+import { Roles } from '@/blog/features/community-profile/lib/utils';
 import { EAvailableCommunityRoles } from '@hiveio/wax';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';

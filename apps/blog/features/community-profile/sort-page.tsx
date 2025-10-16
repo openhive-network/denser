@@ -1,4 +1,5 @@
 import { getQueryClient } from '@/blog/lib/react-query';
+import { SortTypes } from '@/blog/lib/utils';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import {
   getAccountNotifications,
@@ -8,7 +9,6 @@ import {
 } from '@transaction/lib/bridge-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { ReactNode } from 'react';
-import { SortTypes } from '../sorts-pages/lib/utils';
 
 const SortPage = async ({
   children,

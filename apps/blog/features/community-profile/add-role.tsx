@@ -1,9 +1,11 @@
+'use client';
+
 import { Button, Input, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@ui/components';
 import { useTranslation } from 'next-i18next';
 import { CircleSpinner } from 'react-spinners-kit';
 import { Roles } from './lib/utils';
 import RolesSelect from './roles-select';
-import { useSetRoleMutation } from '@/blog/components/hooks/use-set-role-mutations';
+import { useSetRoleMutation } from '@/blog/features/community-profile/hooks/use-set-role-mutations';
 import { useState } from 'react';
 import { EAvailableCommunityRoles } from '@hiveio/wax';
 import { handleError } from '@ui/lib/handle-error';

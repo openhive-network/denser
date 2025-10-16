@@ -1,4 +1,4 @@
-import SortPage from '@/blog/features/community-pages/sort-page';
+import SortPage from '@/blog/features/community-profile/sort-page';
 import Content from './content';
 
 interface PageProps {

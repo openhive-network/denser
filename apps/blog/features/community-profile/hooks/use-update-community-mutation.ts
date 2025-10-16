@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Community } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
-import { logger } from '@ui/lib/logger';
 
 interface UpdateCommunityMutationParams {
   communityName: string;

@@ -50,7 +50,7 @@ import { usePinMutation, useUnpinMutation } from '@/blog/components/hooks/use-pi
 import { handleError } from '@ui/lib/handle-error';
 import MutePostDialog from '@/blog/components/mute-post-dialog';
 import { CircleSpinner } from 'react-spinners-kit';
-import ChangeTitleDialog from '@/blog/components/change-title-dialog';
+import ChangeTitleDialog from '@/blog/features/community-profile/change-title-dialog';
 import moment from 'moment';
 import { PostDeleteDialog } from '@/blog/components/post-delete-dialog';
 import { useDeletePostMutation } from '@/blog/components/hooks/use-post-mutation';

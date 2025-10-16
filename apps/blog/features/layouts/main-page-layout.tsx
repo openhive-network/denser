@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import CommunitiesMybar from '../../components/communities-mybar';
-import CommunitiesSidebar from '../../components/communities-sidebar';
+import CommunitiesSidebar from './community-layout/communities-sidebar';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import ExploreHive from '@/blog/components/explore-hive';
 import { useTranslation } from '@/blog/i18n/client';

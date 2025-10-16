@@ -3,7 +3,7 @@
 import { ReactNode } from 'react';
 import CommunitySimpleDescription from './community-simple-description';
 import CommunitiesMybar from '../../../components/communities-mybar';
-import CommunitiesSidebar from '../../../components/communities-sidebar';
+import CommunitiesSidebar from './communities-sidebar';
 import { useQuery } from '@tanstack/react-query';
 import {
   getAccountNotifications,
@@ -15,9 +15,13 @@ import CommunityDescription from './community-description';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { CommunitiesSelect } from '@/blog/components/communities-select';
 import PostSelectFilter from '@/blog/components/post-select-filter';
+import { usePathname } from 'next/navigation';
+import BasePathLink from '@/blog/components/base-path-link';
 
 const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
   const { user } = useUser();
+  const pathname = usePathname();
+  const isRolesPage = pathname?.includes('/roles/');
   const { data: subsData } = useQuery({
     queryKey: ['subscribers', community],
     queryFn: () => getSubscribers(community ?? '')
@@ -60,16 +64,32 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
             <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
               <div className="my-4 flex w-full items-center justify-between" translate="no">
                 <div className="mr-2 flex w-[320px] flex-col">
-                  <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                    {communityData?.title || community}
-                  </span>
-                  <span className="md:hidden">
-                    <CommunitiesSelect title={communityData?.title || community} />
-                  </span>
+                  {isRolesPage ? (
+                    <BasePathLink href={`/trending/${community}`}>
+                      <span
+                        className="text-md ml-10 font-medium text-destructive"
+                        data-testid="community-name"
+                      >
+                        {communityData?.title || community}
+                      </span>
+                    </BasePathLink>
+                  ) : (
+                    <>
+                      <span className="text-md hidden font-medium md:block" data-testid="community-name">
+                        {communityData?.title || community}
+                      </span>
+                      <span className="md:hidden">
+                        <CommunitiesSelect title={communityData?.title || community} />
+                      </span>
+                    </>
+                  )}
                 </div>
-                <div className="w-[180px]">
-                  <PostSelectFilter param={`/${community}`} />
-                </div>
+
+                {isRolesPage ? null : (
+                  <div className="w-[180px]">
+                    <PostSelectFilter param={`/${community}`} />
+                  </div>
+                )}
               </div>
               {children}
             </div>

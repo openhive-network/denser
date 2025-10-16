@@ -1,15 +1,11 @@
 import { Icons } from '@hive/ui/components/icons';
 import { Progress } from '@hive/ui/components/progress';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
-import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
-
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
-
-import Image from 'next/image';
 import TimeAgo from '@hive/ui/components/time-ago';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 
 const usernamePattern = /\B@[a-z0-9.-]+/gi;
 
@@ -21,9 +17,9 @@ const NotificationListItem = ({
   url,
   lastRead
 }: IAccountNotification & { lastRead: number }) => {
-  const { username } = useSiteParams();
+  const pathname = usePathname();
+  const username = pathname?.split('/')[1] || '';
   const { user } = useUser();
-  const router = useRouter();
   const isOwner = user.username === username;
   const mentions = msg.match(usernamePattern);
   const unRead = lastRead <= new Date(date).getTime();
@@ -48,16 +44,19 @@ const NotificationListItem = ({
   const imageHosterUrl = configuredImagesEndpoint;
   const participants = mentions
     ? mentions.map((m: string) => {
-        const userHref = router.basePath ? `${router.basePath}/${m}` : `/${m}`;
         return (
-          <a key={m} href={userHref} data-testid="notification-account-icon-link">
+          <a key={m} href={`/${m}`} data-testid="notification-account-icon-link">
             <Avatar className="mr-3 h-[40px] w-[40px] rounded-3xl">
               <AvatarImage
                 src={`${imageHosterUrl}u/${m.substring(1)}/avatar/small`}
                 alt={`${m} profile picture`}
               />
               <AvatarFallback className="bg-transparent">
-                <Image width={40} height={40} alt={`${m} profile picture`} src="/defaultavatar.png" />
+                <img
+                  className="h-10 w-10 rounded-full"
+                  alt={`${m} profile picture`}
+                  src="/defaultavatar.png"
+                />
               </AvatarFallback>
             </Avatar>
           </a>
@@ -75,7 +74,7 @@ const NotificationListItem = ({
           {unRead && isOwner ? <span className="mr-2 h-2 w-2 rounded-full bg-destructive" /> : null}
           {participants}
           <div className="flex flex-col">
-            <a href={router.basePath ? `${router.basePath}/${url}` : `/${url}`}>
+            <a href={`/${url}`}>
               <span className="" data-testid="notification-account-and-message">
                 <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
                 {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}

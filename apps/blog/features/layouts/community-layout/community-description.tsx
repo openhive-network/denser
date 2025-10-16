@@ -5,8 +5,8 @@ import BasePathLink from '@/blog/components/base-path-link';
 import ln2list from '@/blog/lib/ln2list';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import { Community } from '@transaction/lib/extended-hive.chain';
-import { SubsListDialog } from '../../../components/subscription-list-dialog';
-import { ActivityLogDialog } from '../../../components/activity-log-dialog';
+import { SubsListDialog } from './subscription-list-dialog';
+import { ActivityLogDialog } from '../../activity-log/dialog';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -14,12 +14,9 @@ import { useEffect, useState } from 'react';
 import SubscribeCommunity from '../../../components/subscribe-community';
 import NewPost from '../../../components/new-post-button';
 import RendererContainer from '../../../components/rendererContainer';
-import { getLogger } from '@ui/lib/logging';
-import EditCommunityDialog from '../../community-settings/edit-dialog';
+import EditCommunityDialog from '../../community-profile/edit-dialog';
 import { Separator } from '@ui/components';
 import clsx from 'clsx';
-
-const logger = getLogger('app');
 
 const CommunityDescription = ({
   data,

@@ -2,11 +2,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Loading from '@ui/components/loading';
-import AddRole from '@/blog/features/community-roles/add-role';
+import AddRole from '@/blog/features/community-profile/add-role';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@ui/components/table';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getRoleValue, Roles, rolesLevels } from '@/blog/features/community-roles/lib/utils';
-import TableItem from '@/blog/features/community-roles/table-item';
+import { getRoleValue, Roles, rolesLevels } from '@/blog/features/community-profile/lib/utils';
+import TableItem from '@/blog/features/community-profile/table-item';
 import NoDataError from '@/blog/components/no-data-error';
 import { getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';

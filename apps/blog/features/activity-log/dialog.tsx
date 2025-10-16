@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
-import NotificationActivities from './notification-activities';
+import NotificationActivities from './notification-content';
 import type { ReactNode } from 'react';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 

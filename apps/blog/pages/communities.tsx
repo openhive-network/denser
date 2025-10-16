@@ -1,4 +1,4 @@
-import CommunitiesSidebar from '@/blog/components/communities-sidebar';
+import CommunitiesSidebar from '@/blog/features/layouts/community-layout/communities-sidebar';
 import { Input } from '@ui/components/input';
 import { useState, KeyboardEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';

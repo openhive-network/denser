@@ -1,3 +1,5 @@
+'use client';
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/components/select';
 import { Roles, rolesLevels } from './lib/utils';
 import { useTranslation } from 'next-i18next';
