@@ -1,7 +1,13 @@
 import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
 import { getChain } from './chain';
 import { ApiAccount, IManabarData } from '@hiveio/wax';
-import { IFeedHistory, IVoteListItem } from './extended-hive.chain';
+import {
+  IAccountReputations,
+  IDynamicGlobalProperties,
+  IFeedHistory,
+  IFollow,
+  IVoteListItem
+} from './extended-hive.chain';
 
 interface ISingleManabar {
   max: string;
@@ -207,5 +213,54 @@ export const getFindAccounts = async (username: string): Promise<{ accounts: Api
   return (await getChain()).api.database_api.find_accounts({
     accounts: [username],
     delayed_votes_active: false
+  });
+};
+
+export interface IGetFollowParams {
+  account: string;
+  start: string | null;
+  type: string;
+  limit: number;
+}
+
+export const DEFAULT_PARAMS_FOR_FOLLOW: IGetFollowParams = {
+  account: '',
+  start: null,
+  type: 'blog',
+  limit: 50
+};
+
+export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
+  try {
+    return (await getChain()).api.condenser_api.get_following([
+      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
+      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
+      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
+      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
+    ]);
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
+
+export const getAccountReputations = async (
+  account_lower_bound: string,
+  limit: number
+): Promise<IAccountReputations[]> => {
+  return (await getChain()).api.condenser_api.get_account_reputations({ account_lower_bound, limit });
+};
+export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProperties> => {
+  return (await getChain()).api.condenser_api.get_dynamic_global_properties([]).then((r: any) => {
+    return {
+      total_vesting_fund_hive: r.total_vesting_fund_hive || r.total_vesting_fund_steem,
+      total_vesting_shares: r.total_vesting_shares,
+      hbd_print_rate: r.hbd_print_rate || r.sbd_print_rate,
+      hbd_interest_rate: r.hbd_interest_rate,
+      head_block_number: r.head_block_number,
+      head_block_id: r.head_block_id,
+      vesting_reward_percent: r.vesting_reward_percent,
+      virtual_supply: r.virtual_supply
+    };
   });
 };

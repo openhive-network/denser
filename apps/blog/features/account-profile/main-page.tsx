@@ -3,7 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { DATA_LIMIT as PER_PAGE } from '@transaction/lib/bridge';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { useEffect } from 'react';
-import ProfileLayout from '@/blog/components/common/profile-layout';
+import ProfileLayout from '@/blog/features/layouts/user-profile/profile-layout';
 import { useInView } from 'react-intersection-observer';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';

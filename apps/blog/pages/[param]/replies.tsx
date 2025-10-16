@@ -1,4 +1,4 @@
-import ProfileLayout from '@/blog/components/common/profile-layout';
+import ProfileLayout from '@/blog/features/layouts/user-profile/profile-layout';
 import { useSiteParams } from '@hive/ui/components/hooks/use-site-params';
 import { getAccountPosts, DATA_LIMIT as PER_PAGE } from '@transaction/lib/bridge';
 import { useInfiniteQuery } from '@tanstack/react-query';

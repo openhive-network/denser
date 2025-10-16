@@ -1,5 +1,5 @@
-import ProfileLayout from '@/blog/components/common/profile-layout';
-import { useFollowingInfiniteQuery } from '@/blog/components/hooks/use-following-infinitequery';
+import ProfileLayout from '@/blog/features/layouts/user-profile/profile-layout';
+import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import PrevNextButtons from '@/blog/components/prev-next-buttons';
 import { FullAccount } from '@ui/store/app-types';

@@ -13,7 +13,7 @@ import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getDefaultProps } from '../../lib/get-translations';
 import Head from 'next/head';
-import CommunityLayout from '@/blog/features/layouts/community-layout/community-layout';
+import CommunityLayout from '@/blog/features/layouts/community/community-layout';
 import NoDataError from '@/blog/components/no-data-error';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 

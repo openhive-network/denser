@@ -5,7 +5,7 @@ import {
   getAccountNotifications,
   getAccountPosts,
   getPost
-} from '@transaction/lib/bridge';
+} from '@transaction/lib/bridge-api';
 import { FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';

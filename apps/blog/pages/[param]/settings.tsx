@@ -1,4 +1,4 @@
-import ProfileLayout from '@/blog/components/common/profile-layout';
+import ProfileLayout from '@/blog/features/layouts/user-profile/profile-layout';
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';

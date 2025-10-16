@@ -1,6 +1,6 @@
 'use client';
 
-import CommunityLayout from '@/blog/features/layouts/community-layout/community-layout';
+import CommunityLayout from '@/blog/features/layouts/community/community-layout';
 import PageLayout from '@/blog/features/layouts/main-page-layout';
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge';
 import { Badge } from '@transaction/lib/extended-hive.chain';
-import ProfileLayout from '@/blog/components/common/profile-layout';
+import ProfileLayout from '@/blog/features/layouts/user-profile/profile-layout';
 import SocialActivities from '@/blog/components/social-activities';
 import SubscriptionList from '@/blog/components/subscription-list';
 import Loading from '@ui/components/loading';

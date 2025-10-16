@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAccountNotifications } from '@transaction/lib/bridge';
-import LayoutProfile from '@/blog/components/common/profile-layout';
+import LayoutProfile from '@/blog/features/layouts/user-profile/profile-layout';
 import NotificationActivities from '@/blog/features/activity-log/notification-content';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import Loading from '@ui/components/loading';

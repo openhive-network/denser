@@ -7,7 +7,7 @@ import Big from 'big.js';
 import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useFollowingInfiniteQuery } from './hooks/use-following-infinitequery';
+import { useFollowingInfiniteQuery } from '../features/account-lists/hooks/use-following-infinitequery';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import ButtonsContainer from './buttons-container';

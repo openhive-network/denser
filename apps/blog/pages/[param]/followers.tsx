@@ -1,4 +1,4 @@
-import ProfileLayout from '@/blog/components/common/profile-layout';
+import ProfileLayout from '@/blog/features/layouts/user-profile/profile-layout';
 import { useFollowersInfiniteQuery } from '@/blog/components/hooks/use-followers-infinitequery';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import PrevNextButtons from '@/blog/components/prev-next-buttons';
@@ -8,7 +8,7 @@ import BasePathLink from '@/blog/components/base-path-link';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
-import { useFollowingInfiniteQuery } from '@/blog/components/hooks/use-following-infinitequery';
+import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getAccountMetadata, getTranslations } from '@/blog/lib/get-translations';
 import ButtonsContainer from '@/blog/components/buttons-container';

@@ -1,4 +1,4 @@
-import ProfileLayout from '@/blog/components/common/profile-layout';
+import ProfileLayout from '@/blog/features/layouts/user-profile/profile-layout';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { useMemo, useState } from 'react';
 import { getAccountFull } from '@transaction/lib/hive-api';

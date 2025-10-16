@@ -32,10 +32,6 @@ import { MainNav } from './main-nav';
 const MainBar: FC = () => {
   const { t } = useTranslation('common_blog');
   const pathname = usePathname();
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
   const { user } = useUser();
   const { manabarsData } = useManabars(user.username);
   const { data } = useQuery(
@@ -98,7 +94,7 @@ const MainBar: FC = () => {
         <MainNav />
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-            {isClient && user.isLoggedIn ? null : (
+            {user.isLoggedIn ? null : (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <DialogLogin>
                   <Button
@@ -131,7 +127,7 @@ const MainBar: FC = () => {
                 </Button>
               </Link>
             </TooltipContainer>
-            {isClient && !user.isLoggedIn ? (
+            {!user.isLoggedIn ? (
               <div>
                 <ModeToggle>
                   <Button variant="ghost" size="sm" className="h-10 w-full px-2" data-testid="theme-mode">
@@ -143,13 +139,13 @@ const MainBar: FC = () => {
               </div>
             ) : null}
 
-            {isClient && !user.isLoggedIn ? (
+            {!user.isLoggedIn ? (
               <div>
                 <LangToggle logged={user ? user?.isLoggedIn : false} className="px-2" />
               </div>
             ) : null}
 
-            {isClient && user.isLoggedIn ? (
+            {user.isLoggedIn ? (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger data-testid="profile-avatar-button" className="cursor-pointer">

@@ -10,7 +10,7 @@ import { CommunitiesSelect } from '@/blog/components/communities-select';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import Head from 'next/head';
-import CommunityLayout from '../features/layouts/community-layout/community-layout';
+import CommunityLayout from '../features/layouts/community/community-layout';
 import { sortToTitle, sortTypes } from '@/blog/lib/utils';
 import { MetadataProps } from '@/blog/lib/get-translations';
 import NoDataError from '@/blog/components/no-data-error';
