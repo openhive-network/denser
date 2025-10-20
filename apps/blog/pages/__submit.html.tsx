@@ -1,11 +1,11 @@
 import { GetServerSideProps } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import PostForm from '../components/post-form';
+import PostForm from '../features/post-editor/post-form';
 import { useState, useEffect } from 'react';
 import { getDefaultProps } from '../lib/get-translations';
 import { useTranslation } from 'next-i18next';
 import Head from 'next/head';
-import PostingLoader from '../components/posting-loader';
+import PostingLoader from '../features/post-editor/posting-loader';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 

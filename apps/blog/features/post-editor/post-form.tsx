@@ -1,6 +1,11 @@
+'use client';
+
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import clsx from 'clsx';
+import * as z from 'zod';
 import { Button } from '@hive/ui/components/button';
 import { Input } from '@hive/ui/components/input';
-import Link from 'next/link';
 import {
   Select,
   SelectContent,
@@ -10,89 +15,37 @@ import {
   SelectValue
 } from '@hive/ui/components/select';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@hive/ui/components/form';
 import { useForm, useWatch } from 'react-hook-form';
-import useManabars from './hooks/useManabars';
-import { AdvancedSettingsPostForm } from './advanced-settings-post-form';
-import MdEditor from './md-editor';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import clsx from 'clsx';
 import { useLocalStorage } from 'usehooks-ts';
-import { useTranslation } from 'next-i18next';
-import { createAsset, createPermlink } from '@transaction/lib/utils';
+import useManabars from '@/blog/components/hooks/use-manabars';
 import { useQuery } from '@tanstack/react-query';
-import { getCommunity, getSubscriptions } from '@transaction/lib/bridge';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import { useRouter } from 'next/router';
-import { TFunction } from 'i18next';
-import { debounce } from '../lib/utils';
+import { getCommunity, getSubscriptions } from '@transaction/lib/bridge-api';
 import { Icons } from '@ui/components/icons';
-import { withBasePath } from '../utils/PathUtils';
+import { withBasePath } from '@/blog/utils/PathUtils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import { debounce, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { getLogger } from '@ui/lib/logging';
-import SelectImageList from './select-image-list';
-import RendererContainer from './rendererContainer';
-import { usePostMutation } from './hooks/use-post-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
-import { postClassName } from '../pages/__[param]/__[p2]/[permlink]';
+import { useTranslation } from '@/blog/i18n/client';
+import { usePostMutation } from './hooks/use-post-mutation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { createAsset, createPermlink } from '@transaction/lib/utils';
+import {
+  imagePicker,
+  postClassName,
+  validateAltUsernameInput,
+  validateSummaryInput,
+  validateTagInput
+} from './lib/utils';
+import SelectImageList from '@/blog/features/post-editor/select-image-list';
+import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-settings-post-form';
+import MdEditor from '@/blog/features/post-editor/md-editor';
+import RendererContainer from '@/blog/features/post-rendering/rendererContainer';
 
 const logger = getLogger('app');
-
-const MAX_TAGS = 8;
-function validateTagInput(value: string, required: boolean, t: TFunction<'common_blog', undefined>) {
-  if (!value || value.trim() === '') return required ? t('submit_page.category_selector.required') : null;
-  const tags = value.trim().replace(/#/g, '').split(/ +/);
-  return tags.length > MAX_TAGS
-    ? t('submit_page.category_selector.use_limited_amount_of_categories', {
-        amount: MAX_TAGS
-      })
-    : tags.find((c) => c.length > 24)
-      ? t('submit_page.category_selector.maximum_tag_length_is_24_characters')
-      : tags.find((c) => c.split('-').length > 2)
-        ? t('submit_page.category_selector.use_one_dash')
-        : tags.find((c) => c.indexOf(',') >= 0)
-          ? t('submit_page.category_selector.use_spaces_to_separate_tags')
-          : tags.find((c) => /[A-Z]/.test(c))
-            ? t('submit_page.category_selector.use_only_lowercase_letters')
-            : tags.find((c) => !/^[a-z0-9-#]+$/.test(c))
-              ? t('submit_page.category_selector.use_only_allowed_characters')
-              : tags.find((c) => !/^[a-z-#]/.test(c))
-                ? t('submit_page.category_selector.must_start_with_a_letter')
-                : tags.find((c) => !/[a-z0-9]$/.test(c))
-                  ? t('submit_page.category_selector.must_end_with_a_letter_or_number')
-                  : tags.filter((c) => c.substring(0, 5) === 'hive-').length > 0
-                    ? t('submit_page.category_selector.must_not_include_hivemind_community_owner')
-                    : tags.reduce((acc, tag, index, array) => {
-                          const isDuplicate = array.slice(index + 1).some((b) => b === tag);
-                          return acc || isDuplicate;
-                        }, false)
-                      ? t('submit_page.category_selector.tags_cannot_be_repeated')
-                      : null;
-}
-
-function validateSummaryInput(value: string, t: TFunction<'common_wallet', undefined>) {
-  const markdownRegex = /(?:\*[\w\s]*\*|#[\w\s]*#|_[\w\s]*_|~[\w\s]*~|\]\s*\(|\]\s*\[)/;
-  const htmlTagRegex = /<\/?[\w\s="/.':;#-/?]+>/gi;
-  return markdownRegex.test(value)
-    ? t('submit_page.markdown_not_supported')
-    : htmlTagRegex.test(value)
-      ? t('submit_page.html_not_supported')
-      : null;
-}
-
-function validateAltUsernameInput(value: string, t: TFunction<'common_wallet', undefined>) {
-  const altAuthorAllowedCharactersRegex = /^[\w.\d-]+$/;
-  return value !== '' && !altAuthorAllowedCharactersRegex.test(value)
-    ? t('submit_page.must_contain_only')
-    : null;
-}
-export function imagePicker(img: string) {
-  const checkImg = img.startsWith('youtu-') ? `https://img.youtube.com/vi/${img.slice(6)}/0.jpg` : img;
-  return checkImg;
-}
 
 export default function PostForm({
   username,
@@ -113,6 +66,8 @@ export default function PostForm({
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams?.get('category') ?? undefined;
   const [preferences] = useLocalStorage<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES);
   const defaultValues = {
     title: '',
@@ -149,15 +104,14 @@ export default function PostForm({
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const { t } = useTranslation('common_blog');
   const postMutation = usePostMutation();
-  const { data: communityData } = useQuery(
-    ['community', router.query.category],
-    () =>
-      getCommunity(router.query.category ? router.query.category.toString() : storedPost.category, username),
-    {
-      enabled: Boolean(router.query.category) || Boolean(storedPost.category)
-    }
-  );
-  const { data: mySubsData } = useQuery(['subscriptions', username], () => getSubscriptions(username), {
+  const { data: communityData } = useQuery({
+    queryKey: ['community', categoryParam],
+    queryFn: () => getCommunity(categoryParam ?? storedPost.category, username),
+    enabled: Boolean(categoryParam) || Boolean(storedPost.category)
+  });
+  const { data: mySubsData } = useQuery({
+    queryKey: ['subscriptions', username],
+    queryFn: () => getSubscriptions(username),
     enabled: Boolean(username)
   });
 
@@ -188,7 +142,7 @@ export default function PostForm({
     postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
     tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
     author: post_s?.json_metadata?.author || storedPost?.author || '',
-    category: (router.query.category as string) ?? storedPost?.category ?? post_s?.category ?? '',
+    category: categoryParam ?? storedPost?.category ?? post_s?.category ?? '',
     beneficiaries: storedPost?.beneficiaries || [],
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
@@ -212,14 +166,14 @@ export default function PostForm({
   const watchedValues = form.getValues();
   const tagsCheck = validateTagInput(
     watchedValues.tags,
-    !router.query.category ? watchedValues.category === 'blog' : false,
+    !categoryParam ? watchedValues.category === 'blog' : false,
     t
   );
   const summaryCheck = validateSummaryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
   const communityPosting =
-    mySubsData && mySubsData?.filter((e) => e[0] === router.query.category).length > 0
-      ? mySubsData?.filter((e) => e[0] === router.query.category)[0][0]
+    mySubsData && mySubsData?.filter((e) => e[0] === categoryParam).length > 0
+      ? mySubsData?.filter((e) => e[0] === categoryParam)[0][0]
       : undefined;
 
   useEffect(() => {
@@ -286,10 +240,10 @@ export default function PostForm({
           refreshPage();
         }
       } else {
-        if (router.query.category) {
-          await router.push(withBasePath(`/created/${router.query.category}`), undefined, { shallow: true });
+        if (categoryParam) {
+          await router.push(withBasePath(`/created/${categoryParam}`), undefined);
         } else {
-          await router.push(withBasePath(`/created/${tags[0]}`), undefined, { shallow: true });
+          await router.push(withBasePath(`/created/${tags[0]}`), undefined);
         }
       }
       if (btnRef.current) {
@@ -496,7 +450,7 @@ export default function PostForm({
               <FormField
                 control={form.control}
                 name="category"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <div className="flex flex-wrap items-center gap-4">
                       {t('submit_page.posting_to')}
@@ -512,8 +466,8 @@ export default function PostForm({
                           onValueChange={(e) => {
                             form.setValue('category', e);
                             storePost({ ...storedPost, category: e });
-                            if (router.query.category) {
-                              router.replace({ query: { ...router.query, category: e } });
+                            if (categoryParam) {
+                              router.replace(withBasePath(`/submit.html`));
                             }
                           }}
                         >
@@ -557,18 +511,18 @@ export default function PostForm({
                 Boolean(tagsCheck) ||
                 Boolean(summaryCheck) ||
                 Boolean(altUsernameCheck) ||
-                postMutation.isLoading
+                postMutation.isPending
               }
               data-testid="submit-post-button"
             >
-              {postMutation.isLoading ? (
-                <CircleSpinner loading={postMutation.isLoading} size={18} color="#dc2626" />
+              {postMutation.isPending ? (
+                <CircleSpinner loading={postMutation.isPending} size={18} color="#dc2626" />
               ) : (
                 t('submit_page.submit')
               )}
             </Button>
             <Button
-              disabled={postMutation.isLoading}
+              disabled={postMutation.isPending}
               onClick={() => handleCancel()}
               type="reset"
               variant="ghost"

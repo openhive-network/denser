@@ -18,7 +18,7 @@ import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { cn } from '@ui/lib/utils';
 import { getUserAvatarUrl } from '@hive/ui';
-import useManabars from '@/blog/components/hooks/useManabars';
+import useManabars from '@/blog/components/hooks/use-manabars';
 import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
 import DialogLogin from '@/blog/components/dialog-login';
 import ModeToggle from '@/blog/components/mode-toggle';

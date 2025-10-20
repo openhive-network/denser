@@ -23,7 +23,7 @@ import moment from 'moment';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
-import RendererContainer from './rendererContainer';
+import RendererContainer from '../features/post-rendering/rendererContainer';
 import { useDeleteCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';

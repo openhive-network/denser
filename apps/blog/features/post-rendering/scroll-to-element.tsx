@@ -1,7 +1,8 @@
-import { FC, RefObject, useLayoutEffect, useEffect, useRef } from 'react';
+'use client';
 
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+import { FC, RefObject, useLayoutEffect, useEffect } from 'react';
+
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 const ScrollToElement: FC<{ rendererRef: RefObject<HTMLDivElement> }> = ({ rendererRef }) => {
   useIsomorphicLayoutEffect(() => {

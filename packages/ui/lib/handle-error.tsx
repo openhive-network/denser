@@ -1,3 +1,5 @@
+'use client';
+
 import { transformError } from '@hive/transaction/lib/transform-error';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';

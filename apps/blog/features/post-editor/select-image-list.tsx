@@ -1,7 +1,9 @@
+'use client';
+
 import { FC, useEffect, useMemo } from 'react';
-import { extractImagesSrc, extractUrlsFromJsonString, extractYouTubeVideoIds } from '../lib/utils';
+import { extractImagesSrc, extractUrlsFromJsonString, extractYouTubeVideoIds } from './lib/utils';
 import SelectImageItem from './select-image-item';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 
 interface SelectImageListTypes {
   content: string;

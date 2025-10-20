@@ -18,7 +18,7 @@ import ModeToggle from './mode-toggle';
 import UserMenu from '@/blog/components/user-menu';
 import LangToggle from './lang-toggle';
 import { PieChart, Pie } from 'recharts';
-import useManabars from './hooks/useManabars';
+import useManabars from './hooks/use-manabars';
 import { hoursAndMinutes } from '../lib/utils';
 
 import { getAccountFull } from '@transaction/lib/hive-api';

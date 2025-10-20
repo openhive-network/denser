@@ -13,7 +13,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
 import SubscribeCommunity from '../../community-profile/subscribe-community';
 import NewPost from '../../../components/new-post-button';
-import RendererContainer from '../../../components/rendererContainer';
+import RendererContainer from '../../post-rendering/rendererContainer';
 import EditCommunityDialog from '../../community-profile/edit-dialog';
 import { Separator } from '@ui/components';
 import clsx from 'clsx';

@@ -1,13 +1,12 @@
+'use client';
+
 import { useRef, useEffect, useState, useMemo } from 'react';
 import Loading from '@ui/components/loading';
 import { LeavePageDialog } from './leave-page-dialog';
-import { getRenderer } from '../lib/renderer';
-import { getLogger } from '@ui/lib/logging';
+import { getRenderer } from './lib/renderer';
 import ScrollToElement from './scroll-to-element';
 import { cn } from '@ui/lib/utils';
 import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
-
-const logger = getLogger('app');
 
 const RendererContainer = ({
   body,

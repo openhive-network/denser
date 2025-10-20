@@ -2,7 +2,7 @@ import { Button } from '@ui/components';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { imagePicker } from './post-form';
+import { imagePicker } from './lib/utils';
 
 interface SelectImageItemTypes {
   data: string;

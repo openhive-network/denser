@@ -1,3 +1,5 @@
+'use client';
+
 import { CircleSpinner } from 'react-spinners-kit';
 
 const PostingLoader = ({ isSubmitting }: { isSubmitting: boolean }) => {

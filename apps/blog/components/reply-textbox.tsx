@@ -4,14 +4,14 @@ import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
-import MdEditor from './md-editor';
+import MdEditor from '../features/post-editor/md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import useManabars from './hooks/useManabars';
+import useManabars from './hooks/use-manabars';
 import { DEFAULT_PREFERENCES, hoursAndMinutes, Preferences } from '@/blog/lib/utils';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import RendererContainer from './rendererContainer';
+import RendererContainer from '../features/post-rendering/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/handle-error';

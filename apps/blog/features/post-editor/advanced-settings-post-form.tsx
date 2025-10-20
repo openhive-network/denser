@@ -1,3 +1,5 @@
+'use client';
+
 import { Checkbox, Input, Label, ScrollArea, Separator } from '@ui/components';
 import { Button } from '@ui/components/button';
 import {
@@ -9,15 +11,16 @@ import {
   DialogTrigger
 } from '@ui/components/dialog';
 import { ReactNode, useEffect, useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@hive/ui/components/select';
 import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';
-import { useTranslation } from 'next-i18next';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import badActorList from '@ui/config/lists/bad-actor-list';
 import clsx from 'clsx';
+import { useTranslation } from '@/blog/i18n/client';
+import { Beneficiary } from './beneficiary-item';
+import { maxAcceptedPayout } from './lib/utils';
 
 type AccountFormValues = {
   title: string;
@@ -66,7 +69,7 @@ export function AdvancedSettingsPostForm({
   );
   const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
-  const [maxPayout, setMaxPayout] = useState(
+  const [maxPayout, setMaxPayout] = useState<'no_max' | '0' | 'custom'>(
     preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0'
   );
   const [selectTemplate, setSelectTemplate] = useState('/');
@@ -170,17 +173,7 @@ export function AdvancedSettingsPostForm({
     setSelectTemplate('/');
     setTemplateTitle(e);
   }
-  function maxAcceptedPayout() {
-    switch (maxPayout) {
-      case 'no_max':
-        return 1000000;
-      case '0':
-        return 0;
-      case 'custom':
-        return customValue === '0' ? 1000000 : Number(customValue);
-    }
-    return 1000000;
-  }
+
   function loadTemplate() {
     updateForm({
       title: currentTemplate?.title || '',
@@ -190,7 +183,7 @@ export function AdvancedSettingsPostForm({
       author: currentTemplate?.author || '',
       category: currentTemplate?.category || '',
       beneficiaries: beneficiaries,
-      maxAcceptedPayout: maxAcceptedPayout(),
+      maxAcceptedPayout: maxAcceptedPayout(customValue, maxPayout),
       payoutType: rewards
     });
     setSelectTemplate('/');
@@ -215,7 +208,7 @@ export function AdvancedSettingsPostForm({
                 category: data.category,
                 templateTitle: selectTemplate,
                 beneficiaries: beneficiaries,
-                maxAcceptedPayout: maxAcceptedPayout(),
+                maxAcceptedPayout: maxAcceptedPayout(customValue, maxPayout),
                 payoutType: rewards
               }
         )
@@ -235,7 +228,7 @@ export function AdvancedSettingsPostForm({
           category: data.category,
           templateTitle: templateTitle,
           beneficiaries: beneficiaries,
-          maxAcceptedPayout: maxAcceptedPayout(),
+          maxAcceptedPayout: maxAcceptedPayout(customValue, maxPayout),
           payoutType: rewards
         }
       ]);
@@ -243,7 +236,7 @@ export function AdvancedSettingsPostForm({
     updateForm({
       ...data,
       beneficiaries: beneficiaries,
-      maxAcceptedPayout: maxAcceptedPayout(),
+      maxAcceptedPayout: maxAcceptedPayout(customValue, maxPayout),
       payoutType: rewards
     });
     setSelectTemplate('/');
@@ -293,7 +286,11 @@ export function AdvancedSettingsPostForm({
               <div className="my-8 flex justify-around">
                 {maxPayoutOptions.map((e) => (
                   <div key={e.value}>
-                    <Checkbox id={e.value} className="hidden" onCheckedChange={() => setMaxPayout(e.value)} />
+                    <Checkbox
+                      id={e.value}
+                      className="hidden"
+                      onCheckedChange={() => setMaxPayout(e.value as 'no_max' | '0' | 'custom')}
+                    />
                     <Label
                       htmlFor={e.value}
                       className={clsx('cursor-pointer rounded-lg border p-2', {
@@ -476,32 +473,5 @@ export function AdvancedSettingsPostForm({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-}
-
-interface ItemProps {
-  onChangeBeneficiary: (weight: string, account: string) => void;
-  beneficiary: { weight: string; account: string };
-}
-function Beneficiary({ onChangeBeneficiary, beneficiary }: ItemProps) {
-  return (
-    <li className="flex items-center gap-5">
-      <Input
-        type="number"
-        value={beneficiary.weight}
-        className="w-16"
-        onChange={(e) => onChangeBeneficiary(e.target.value, beneficiary.account)}
-      />
-      <div className="relative col-span-3">
-        <Input
-          value={beneficiary.account}
-          className="block w-full px-3 py-2.5 pl-11"
-          onChange={(e) => onChangeBeneficiary(beneficiary.weight, e.target.value)}
-        />
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <Icons.atSign className="h-5 w-5" />
-        </div>
-      </div>
-    </li>
   );
 }

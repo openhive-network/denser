@@ -1,7 +1,7 @@
 import { Dialog, DialogContent } from '@ui/components/dialog';
 import { Button, Separator } from '@ui/components';
 import Link from 'next/link';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 
 export function LeavePageDialog({
   link,

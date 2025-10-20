@@ -22,8 +22,8 @@ const renderDefaultOptions = {
   assetsHeight: 480,
   plugins: [new TwitterPlugin(), new InstagramPlugin(), new TablePlugin()],
   imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
-  usertagUrlFn: (account: string) => basePath ? `${basePath}/@${account}` : `/@${account}`,
-  hashtagUrlFn: (hashtag: string) => basePath ? `${basePath}/trending/${hashtag}` : `/trending/${hashtag}`,
+  usertagUrlFn: (account: string) => (basePath ? `${basePath}/@${account}` : `/@${account}`),
+  hashtagUrlFn: (hashtag: string) => (basePath ? `${basePath}/trending/${hashtag}` : `/trending/${hashtag}`),
   isLinkSafeFn: (url: string) =>
     !!url.match(`^(/(?!/)|${configuredImagesEndpoint})`) ||
     !!url.match(`^(/(?!/)|${configuredSiteDomain})`) ||
