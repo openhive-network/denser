@@ -8,12 +8,12 @@ import {
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
 import { ReactNode } from 'react';
-import ModeToggle from './mode-toggle';
+import ModeToggle from '../mode-toggle';
 import Link from 'next/link';
-import BasePathLink from './base-path-link';
+import BasePathLink from '../../../components/base-path-link';
 import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components';
-import LangToggle from './lang-toggle';
+import LangToggle from '../lang-toggle';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import env from '@beam-australia/react-env';
 import { User } from '@smart-signer/types/common';

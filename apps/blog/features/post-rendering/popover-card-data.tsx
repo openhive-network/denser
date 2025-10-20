@@ -1,20 +1,21 @@
 import { dateToShow } from '@ui/lib/parse-date';
-import BasePathLink from './base-path-link';
-import { useAccountQuery } from './hooks/use-account';
-import { useFollowsQuery } from './hooks/use-follows';
 import { convertToHP, numberWithCommas } from '@ui/lib/utils';
 import Big from 'big.js';
-import { useDynamicGlobalData } from './hooks/use-dynamic-global-data';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useFollowingInfiniteQuery } from '../features/account-lists/hooks/use-following-infinitequery';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
-import ButtonsContainer from '../features/mute-follow/buttons-container';
+
 import { convertStringToBig } from '@ui/lib/helpers';
 import TimeAgo from '@hive/ui/components/time-ago';
-import { compareDates } from '../lib/utils';
 import { getDefaultImageUrl } from '@hive/ui';
+import { compareDates } from '@/blog/lib/utils';
+import BasePathLink from '@/blog/components/base-path-link';
+import { useAccountQuery } from '@/blog/components/hooks/use-account';
+import { useDynamicGlobalData } from '@/blog/components/hooks/use-dynamic-global-data';
+import { useFollowsQuery } from '@/blog/components/hooks/use-follows';
+import { useFollowingInfiniteQuery } from '../account-lists/hooks/use-following-infinitequery';
+import ButtonsContainer from '../mute-follow/buttons-container';
 
 export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
   const { t } = useTranslation('common_blog');

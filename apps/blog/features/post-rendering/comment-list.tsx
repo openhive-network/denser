@@ -1,4 +1,4 @@
-import CommentListItem from '@/blog/components/comment-list-item';
+import CommentListItem from '@/blog/features/post-rendering/comment-list-item';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { useRouter } from 'next/router';
@@ -40,7 +40,7 @@ const CommentList = ({
     return [...mutedContent, ...unmutedContent];
   }, [JSON.stringify(data), JSON.stringify(parent)]);
   return (
-    <ul data-testid='comment-list'>
+    <ul data-testid="comment-list">
       <>
         {!!arr
           ? arr.map((comment: Entry, index: number) => (

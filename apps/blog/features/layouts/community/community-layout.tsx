@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import CommunitySimpleDescription from './community-simple-description';
-import CommunitiesMybar from '../../../components/communities-mybar';
+import CommunitiesMybar from '../communities-mybar';
 import CommunitiesSidebar from './communities-sidebar';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -13,8 +13,8 @@ import {
 } from '@transaction/lib/bridge-api';
 import CommunityDescription from './community-description';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { CommunitiesSelect } from '@/blog/components/communities-select';
-import PostSelectFilter from '@/blog/components/post-select-filter';
+import { CommunitiesSelect } from '@/blog/features/layouts/communities-select';
+import PostSelectFilter from '@/blog/features/layouts/post-select-filter';
 import { usePathname } from 'next/navigation';
 import BasePathLink from '@/blog/components/base-path-link';
 

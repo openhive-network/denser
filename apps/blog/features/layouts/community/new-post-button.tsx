@@ -1,9 +1,9 @@
 import { useLocalStorage } from 'usehooks-ts';
 import { Button } from '@ui/components';
-import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useTranslation } from '../../../i18n/client';
 
 type AccountFormValues = {
   title: string;

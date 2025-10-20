@@ -1,6 +1,6 @@
 'use client';
 
-import SocialActivities from '@/blog/components/social-activities';
+import SocialActivities from '@/blog/features/account-social/social-activities';
 import SubscriptionList from '@/blog/features/account-social/subscription-list';
 import { useTranslation } from '@/blog/i18n/client';
 import { useQuery } from '@tanstack/react-query';

@@ -9,7 +9,7 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { usePathname, useRouter } from 'next/navigation';
-import { useTranslation } from '../i18n/client';
+import { useTranslation } from '../../i18n/client';
 
 const PostSelectFilter = ({ param }: { param: string }) => {
   const { t } = useTranslation('common_blog');

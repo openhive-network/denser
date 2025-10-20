@@ -9,7 +9,7 @@ import { SignerProvider } from '@hive/smart-signer/components/signer-provider';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { LoggedUserProvider } from '@/blog/features/votes/hooks/use-logged-user';
-import { ThemeProvider } from '@/blog/components/theme-provider';
+import { ThemeProvider } from '@/blog/features/layouts/theme-provider';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useMemo(() => getQueryClient(), []);

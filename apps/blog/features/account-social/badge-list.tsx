@@ -1,5 +1,5 @@
-import BadgeListItem from '@/blog/components/badge-list-item';
 import type { Badge } from '@transaction/lib/extended-hive.chain';
+import BadgeListItem from './badge-list-item';
 
 const BadgeList = ({ data, username }: { data: Badge[]; username?: string }) => {
   return (

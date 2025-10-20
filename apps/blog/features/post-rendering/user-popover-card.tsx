@@ -1,4 +1,4 @@
-import UserAvatar from '@/blog/components/user-avatar';
+import UserAvatar from '@/blog/features/post-rendering/user-avatar';
 import accountReputation from '@/blog/lib/account-reputation';
 import { useTranslation } from 'next-i18next';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/components/popover';

@@ -1,8 +1,8 @@
 import { IVote } from '@transaction/lib/extended-hive.chain';
 import { prepareVotes } from '@ui/lib/utils';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import BasePathLink from './base-path-link';
-import { useActiveVotesQuery } from './hooks/use-active-votes';
+import BasePathLink from '../../components/base-path-link';
+import { useActiveVotesQuery } from '../../components/hooks/use-active-votes';
 import { useTranslation } from 'next-i18next';
 
 export default function VotersDetailsData({ post }: { post: Entry }) {

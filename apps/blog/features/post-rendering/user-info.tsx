@@ -2,9 +2,10 @@ import Link from 'next/link';
 import parseDate from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from 'next-i18next';
-import { UserPopoverCard, UserPopoverCardProps } from './user-popover-card';
-import ChangeTitleDialog from '../features/community-profile/change-title-dialog';
+
+import ChangeTitleDialog from '../community-profile/change-title-dialog';
 import TimeAgo from '@hive/ui/components/time-ago';
+import { UserPopoverCard, UserPopoverCardProps } from './user-popover-card';
 
 interface UserInfoProps extends UserPopoverCardProps {
   permlink: string;

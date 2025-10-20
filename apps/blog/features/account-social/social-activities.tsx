@@ -1,7 +1,7 @@
-import BadgeList from '@/blog/components/badge-list';
+import { useTranslation } from '@/blog/i18n/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
 import { Badge } from '@transaction/lib/extended-hive.chain';
-import { useTranslation } from 'next-i18next';
+import BadgeList from './badge-list';
 
 export default function SocialActivities({
   data,
@@ -36,7 +36,7 @@ export default function SocialActivities({
   return (
     <Tabs defaultValue={defaultValue} className="mt-8 w-full">
       <TabsList
-        className="bg-background-tertiary flex h-auto flex-wrap justify-start"
+        className="flex h-auto flex-wrap justify-start bg-background-tertiary"
         data-testid="badges-activity-menu"
       >
         {peakd.length !== 0 ? (

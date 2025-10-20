@@ -4,19 +4,19 @@ import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
-import MdEditor from '../features/post-editor/md-editor';
+import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import useManabars from './hooks/use-manabars';
+import useManabars from '../../components/hooks/use-manabars';
 import { DEFAULT_PREFERENCES, hoursAndMinutes, Preferences } from '@/blog/lib/utils';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import RendererContainer from '../features/post-rendering/rendererContainer';
+import RendererContainer from '../post-rendering/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
-import { useCommentMutation, useUpdateCommentMutation } from './hooks/use-comment-mutations';
+import { useCommentMutation, useUpdateCommentMutation } from '../../components/hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
-import { commentClassName } from './comment-list-item';
+import { commentClassName } from '../post-rendering/comment-list-item';
 
 const logger = getLogger('app');
 

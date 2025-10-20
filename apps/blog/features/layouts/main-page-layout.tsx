@@ -1,13 +1,13 @@
 'use client';
 
 import { ReactNode } from 'react';
-import CommunitiesMybar from '../../components/communities-mybar';
+import CommunitiesMybar from './communities-mybar';
 import CommunitiesSidebar from './community/communities-sidebar';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import ExploreHive from '@/blog/components/explore-hive';
+import ExploreHive from '@/blog/features/layouts/explore-hive';
 import { useTranslation } from '@/blog/i18n/client';
-import { CommunitiesSelect } from '@/blog/components/communities-select';
-import PostSelectFilter from '@/blog/components/post-select-filter';
+import { CommunitiesSelect } from '@/blog/features/layouts/communities-select';
+import PostSelectFilter from '@/blog/features/layouts/post-select-filter';
 
 const PageLayout = ({
   children,

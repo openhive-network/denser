@@ -5,7 +5,7 @@ import { getAccountFull } from '@transaction/lib/hive-api';
 import { useQuery } from '@tanstack/react-query';
 import Head from 'next/head';
 import { MetadataProps } from '@/blog/lib/get-translations';
-import ListVariant from '../features/account-lists/list-variant';
+import ListVariant from './list-variant';
 
 const CHUNK_SIZE = 10;
 

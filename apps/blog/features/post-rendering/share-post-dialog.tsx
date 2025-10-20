@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import Link from 'next/link';
 import ClipboardCopy from './copy-from-input';
 import { Icons } from '@ui/components/icons';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 
 export function SharePost({ children, path, title }: { children: ReactNode; path: string; title: string }) {
   const { t } = useTranslation('common_blog');

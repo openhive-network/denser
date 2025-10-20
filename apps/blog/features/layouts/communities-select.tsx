@@ -14,7 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { withBasePath } from '../utils/PathUtils';
+import { withBasePath } from '../../utils/PathUtils';
 import { getCommunities, getSubscriptions } from '@transaction/lib/bridge-api';
 import { useRouter } from 'next/navigation';
 

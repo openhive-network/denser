@@ -12,7 +12,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'next-i18next';
 import TooltipContainer from '@ui/components/tooltip-container';
-import { getLanguage, setLanguage } from '../utils/language';
+import { getLanguage, setLanguage } from '../../utils/language';
 import { useRouter } from 'next/navigation';
 
 const languages = [

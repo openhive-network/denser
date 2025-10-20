@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Icons } from '@ui/components/icons';
 
 import env from '@beam-australia/react-env';
-import { useTranslation } from '../i18n/client';
+import { useTranslation } from '../../i18n/client';
 
 const ExploreHive: FC = () => {
   const { t } = useTranslation('common_blog');

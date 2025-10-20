@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Hydrate } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ThemeProvider } from '../theme-provider';
+import { ThemeProvider } from '../../features/layouts/theme-provider';
 import Layout from './layout';
 import { LoggedUserProvider } from '../../features/votes/hooks/use-logged-user';
 import { SignerProvider } from '../../../../packages/smart-signer/components/signer-provider';

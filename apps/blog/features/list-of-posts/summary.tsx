@@ -1,6 +1,6 @@
 'use client';
 
-import PostCardHidden from '@/blog/components/post-card-hidden';
+import PostCardHidden from '@/blog/features/list-of-posts/post-card-hidden';
 import { getPostSummary, Preferences } from '@/blog/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Entry } from '@transaction/lib/extended-hive.chain';
