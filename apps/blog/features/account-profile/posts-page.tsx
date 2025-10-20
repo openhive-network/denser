@@ -15,12 +15,12 @@ const PostsPage = async ({
   query: QueryTypes;
 }) => {
   const queryClient = getQueryClient();
-
+  const username = param.replace('%40', '');
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ['accountEntriesInfinite', param, query],
+    queryKey: ['accountEntriesInfinite', username, query],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
-      const postsData = await getAccountPosts(query, param, '', author ?? '', permlink ?? '');
+      const postsData = await getAccountPosts(query, username, '', author ?? '', permlink ?? '');
       return postsData ?? [];
     },
     getNextPageParam: (lastPage: Entry[]) => {
