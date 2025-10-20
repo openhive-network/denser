@@ -23,7 +23,7 @@ import { accountReputation, compareDates } from '@/blog/lib/utils';
 import CustomError from '@/blog/components/custom-error';
 import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 
-import ButtonsContainer from '@/blog/components/buttons-container';
+import ButtonsContainer from '@/blog/features/mute-follow/buttons-container';
 import { usePathname } from 'next/navigation';
 import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
 import { getTwitterInfo } from '@transaction/lib/custom-api';

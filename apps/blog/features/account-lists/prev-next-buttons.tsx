@@ -1,5 +1,7 @@
+'use client';
+
+import { useTranslation } from '@/blog/i18n/client';
 import { Button } from '@ui/components/button';
-import { useTranslation } from 'next-i18next';
 
 export default function PrevNextButtons({
   onNextPage,

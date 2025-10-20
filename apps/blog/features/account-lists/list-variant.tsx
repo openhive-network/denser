@@ -7,7 +7,10 @@ import {
   useBlacklistBlogMutation,
   useResetBlacklistBlogMutation
 } from '@/blog/components/hooks/use-blacklist-mutations';
-import { useMuteMutation, useResetBlogListMutation } from '@/blog/components/hooks/use-mute-mutations';
+import {
+  useMuteMutation,
+  useResetBlogListMutation
+} from '@/blog/features/mute-follow/hooks/use-mute-mutations';
 import { handleError } from '@ui/lib/handle-error';
 import {
   useFollowBlacklistBlogMutation,

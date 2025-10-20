@@ -3,8 +3,6 @@ import { UseInfiniteQueryResult, useMutation, useQueryClient } from '@tanstack/r
 import { transactionService } from '@transaction/index';
 import { IFollow, IFollowList } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
-import { getLogger } from '@ui/lib/logging';
-const logger = getLogger('app');
 
 /**
  * Makes follow transaction.

@@ -32,8 +32,6 @@ const CommunityContent = ({ username }: { username: string }) => {
       }))
   });
 
-  console.log('Subscriptions data:', peakd);
-  console.log('Hivebuzz badges:', hivebuzz);
   return (
     <div className="flex flex-col py-8">
       <h2 className="text-xl font-semibold" data-testid="community-subscriptions-label">

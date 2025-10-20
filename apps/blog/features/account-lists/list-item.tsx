@@ -1,7 +1,7 @@
 import { useUnblacklistBlogMutation } from '@/blog/components/hooks/use-blacklist-mutations';
 import { useUnfollowBlacklistBlogMutation } from '@/blog/components/hooks/use-follow-blacklist-mutation';
 import { useUnfollowMutedBlogMutation } from '@/blog/components/hooks/use-follow-muted-list-mutation';
-import { useUnmuteMutation } from '@/blog/components/hooks/use-mute-mutations';
+import { useUnmuteMutation } from '@/blog/features/mute-follow/hooks/use-mute-mutations';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { Button } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';

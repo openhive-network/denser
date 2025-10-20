@@ -1,0 +1,25 @@
+import { getQueryClient } from '@/blog/lib/react-query';
+import FollowersContent from './content';
+import { getAccountFull, getFollowers } from '@transaction/lib/hive-api';
+
+const FollowersPage = async ({ params }: { params: { param: string } }) => {
+  const queryClient = getQueryClient();
+  const username = params.param.replace('%40', '');
+
+  await queryClient.prefetchQuery({
+    queryKey: ['profileData', username],
+    queryFn: () => getAccountFull(username)
+  });
+
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['followersData', username],
+    queryFn: ({ pageParam: last_id }) =>
+      getFollowers({ account: username, start: last_id, type: 'blog', limit: 50 }),
+    getNextPageParam: (lastPage) => {
+      return lastPage.length >= 50 ? lastPage[lastPage.length - 1].follower : undefined;
+    }
+  });
+  return <FollowersContent username={username} />;
+};
+
+export default FollowersPage;

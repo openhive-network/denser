@@ -10,7 +10,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useFollowingInfiniteQuery } from '../features/account-lists/hooks/use-following-infinitequery';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
-import ButtonsContainer from './buttons-container';
+import ButtonsContainer from '../features/mute-follow/buttons-container';
 import { convertStringToBig } from '@ui/lib/helpers';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { compareDates } from '../lib/utils';

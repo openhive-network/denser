@@ -264,3 +264,17 @@ export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProper
     };
   });
 };
+
+export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
+  try {
+    return (await getChain()).api.condenser_api.get_followers([
+      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
+      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
+      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
+      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
+    ]);
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};

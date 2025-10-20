@@ -1,6 +1,6 @@
+import { useTranslation } from '@/blog/i18n/client';
 import { Button } from '@hive/ui';
 import clsx from 'clsx';
-import { useTranslation } from 'next-i18next';
 import { CircleSpinner } from 'react-spinners-kit';
 
 const FollowButton = ({

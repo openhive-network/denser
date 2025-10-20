@@ -1,3 +1,5 @@
+'use client';
+
 import { IFollow } from '@transaction/lib/extended-hive.chain';
 import FollowButton from './follow-button';
 import MuteButton from './mute-button';
@@ -6,9 +8,9 @@ import { UseInfiniteQueryResult } from '@tanstack/react-query';
 import { useMuteMutation, useUnmuteMutation } from './hooks/use-mute-mutations';
 import { useFollowMutation, useUnfollowMutation } from './hooks/use-follow-mutations';
 import { Button } from '@hive/ui';
-import DialogLogin from './dialog-login';
-import { useTranslation } from 'next-i18next';
+import DialogLogin from '@/blog/components/dialog-login';
 import { handleError } from '@ui/lib/handle-error';
+import { useTranslation } from '@/blog/i18n/client';
 
 const ButtonsContainer = ({
   username,
@@ -91,12 +93,12 @@ const ButtonsContainer = ({
   const loading =
     mute.isLoading ||
     mute.isFetching ||
-    muteMutation.isLoading ||
-    unmuteMutation.isLoading ||
+    muteMutation.isPending ||
+    unmuteMutation.isPending ||
     follow.isLoading ||
     follow.isFetching ||
-    followMutation.isLoading ||
-    unfollowMutation.isLoading;
+    followMutation.isPending ||
+    unfollowMutation.isPending;
   return (
     <>
       {user.isLoggedIn ? (

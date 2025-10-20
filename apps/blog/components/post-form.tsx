@@ -37,7 +37,7 @@ import RendererContainer from './rendererContainer';
 import { usePostMutation } from './hooks/use-post-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
-import { postClassName } from '../pages/__[param]/[p2]/[permlink]';
+import { postClassName } from '../pages/__[param]/__[p2]/[permlink]';
 
 const logger = getLogger('app');
 

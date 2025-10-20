@@ -42,20 +42,6 @@ export const getActiveVotes = async (author: string, permlink: string): Promise<
   return chain.api.condenser_api.get_active_votes([author, permlink]);
 };
 
-export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
-  try {
-    return chain.api.condenser_api.get_followers([
-      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
-      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
-      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
-      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
-    ]);
-  } catch (error) {
-    console.error('Error:', error);
-    throw error;
-  }
-};
-
 export const getListWitnessVotes = async (
   username: string,
   limit: number,
