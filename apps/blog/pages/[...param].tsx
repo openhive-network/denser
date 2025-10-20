@@ -196,7 +196,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             const data = await getAccountPosts('blog', username, '', pageParam?.author, pageParam?.permlink);
             if (data) {
               const nsfwCleanedData = data?.filter(
-                (post) => !(!!post.json_metadata.tags && post.json_metadata?.tags.includes('nsfw'))
+                (post) => !(Array.isArray(post.json_metadata?.tags) && post.json_metadata.tags.includes('nsfw'))
               );
               return nsfwCleanedData;
             }

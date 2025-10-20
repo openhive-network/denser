@@ -260,7 +260,7 @@ function PostPage({
   };
 
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
-  const crossedPost = post?.json_metadata.tags?.includes('cross-post');
+  const crossedPost = Array.isArray(post?.json_metadata.tags) && post.json_metadata.tags.includes('cross-post');
 
   const editPostEntry: EditPostEntry = {
     title: post.title,
@@ -425,8 +425,8 @@ function PostPage({
                 <div className="clear-both">
                   {!commentSite ? (
                     <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
-                      {post.json_metadata.tags
-                        ?.filter((e) => e !== post.category && e !== '' && e !== post.community)
+                      {Array.isArray(post.json_metadata.tags) && post.json_metadata.tags
+                        .filter((e) => e !== post.category && e !== '' && e !== post.community)
                         .map((tag: string) => (
                           <li key={tag}>
                             <Link
@@ -841,7 +841,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       }
     };
   }
-  if (post?.json_metadata.tags?.includes('cross-post')) {
+  if (Array.isArray(post?.json_metadata.tags) && post.json_metadata.tags.includes('cross-post')) {
     try {
       const fullCrossedPost = await getPost(
         post.json_metadata.original_author,

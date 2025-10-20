@@ -38,7 +38,7 @@ const PostListItem = ({
   nsfwPreferences: Preferences['nsfw'];
 }) => {
   const { t } = useTranslation('common_blog');
-  const tagExists = !!post.json_metadata.tags && post?.json_metadata?.tags.includes('nsfw');
+  const tagExists = Array.isArray(post.json_metadata?.tags) && post.json_metadata.tags.includes('nsfw');
   const [nsfw, setNSFW] = useState<Preferences['nsfw']>(tagExists ? 'warn' : 'show');
 
   useEffect(() => {
