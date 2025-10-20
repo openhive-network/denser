@@ -26,14 +26,34 @@ test.describe('Muted user - tests', () => {
     await denserAutoTest0Page.page.locator(homePage.profileAvatar).click()
     await expect(denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString)).toBeVisible();
     await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click()
-    await expect(denserAutoTest0Page.page.getByTestId('profile-name')).toContainText('denserautotest0')
+    await expect(profilePage.profileName).toContainText('denserautotest0')
     await profilePage.mutedUsersBtn.click()
     await expect(denserAutoTest0Page.page.getByRole('heading', { name: 'Accounts Muted By' })).toBeVisible();
     await expect(denserAutoTest0Page.page.getByRole('link', { name: `${postAuthorName}` })).toBeVisible();
-    await denserAutoTest0Page.page.getByRole('button', { name: 'unmute' }).click()
+    await profilePage.unmuteButton.click()
     await expect(denserAutoTest0Page.page.getByRole('status')).toBeVisible()
     await expect(denserAutoTest0Page.page.getByText('There are no users on this')).toBeVisible()
     await expect(denserAutoTest0Page.page.getByText('Unmuted', { exact: true })).toBeVisible();
+    
+  });
+
+  test('Add user to Muted list by - Add Account(s) To List', async ({ denserAutoTest0Page }) => {
+    const muteUser = `serejandmyself`
+
+    await denserAutoTest0Page.page.locator(homePage.profileAvatar).click()
+    await expect(denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString)).toBeVisible();
+    await denserAutoTest0Page.page.locator(profileUserMenu.profileLinkString).click()
+    await expect(profilePage.profileName).toContainText('denserautotest0')
+    await profilePage.mutedUsersBtn.click()
+    await expect(denserAutoTest0Page.page.getByRole('heading', { name: 'Accounts Muted By' })).toBeVisible();
+    await denserAutoTest0Page.page.locator('div').filter({ hasText: /^Add Account\(s\) To List\(single account or comma separated list\)$/ }).getByRole('textbox').fill(muteUser);
+    await denserAutoTest0Page.page.waitForTimeout(5000)
+    await denserAutoTest0Page.page.getByRole('button', { name: 'Add to list' }).click();
+    await expect(denserAutoTest0Page.page.getByText('serejandmyself unmute')).toBeVisible();
+    await expect(denserAutoTest0Page.page.getByText('You have muted serejandmyself.')).toBeVisible();
+    await profilePage.unmuteButton.click()
+    await expect(denserAutoTest0Page.page.getByText('Unmuted', { exact: true })).toBeVisible();
+    await expect(denserAutoTest0Page.page.getByText('There are no users on this')).toBeVisible(); 
     
   });
 });

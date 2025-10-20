@@ -202,7 +202,8 @@ export class ProfilePage {
   readonly profileStatsString: string;
   readonly muteButton: Locator;
   readonly mutedUsersBtn: Locator;
-
+  readonly unmuteButton: Locator;
+  
   constructor(page: Page) {
     this.page = page;
     this.followBtn = '[data-testid="profile-follow-button"]'
@@ -302,6 +303,8 @@ export class ProfilePage {
     this.repliesCommentListItemArticleTitle = page.locator('[data-testid="article-title"]');
     this.muteButton = page.locator('[data-testid="profile-mute-button"]');
     this.mutedUsersBtn = page.getByRole('link', { name: 'Muted Users' });
+    this.unmuteButton = page.getByRole('button', { name: 'unmute' })
+
 
     this.notificationsMenu = page.locator('[data-testid="notifications-local-menu"]');
     this.notificationsMenuAllButton = page
