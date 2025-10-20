@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Providers>
             <>
               <MainBar />
-              <main className="mx-auto py-8">{children}</main>
+              <main className="mx-auto">{children}</main>
             </>
           </Providers>
         </div>
