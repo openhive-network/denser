@@ -2,12 +2,14 @@ import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
 import { getChain } from './chain';
 import { ApiAccount, IManabarData } from '@hiveio/wax';
 import {
+  Entry,
   IAccountReputations,
   IDynamicGlobalProperties,
   IFeedHistory,
   IFollow,
   IVoteListItem
 } from './extended-hive.chain';
+import { DATA_LIMIT } from './bridge-api';
 
 interface ISingleManabar {
   max: string;
@@ -278,3 +280,32 @@ export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<
     throw error;
   }
 };
+
+export const getByText = async ({
+  pattern,
+  sort = 'relevance',
+  author = '',
+  limit = DATA_LIMIT,
+  observer,
+  start_author = '',
+  start_permlink = ''
+}: SearchType): Promise<Entry[]> => {
+  return (await getChain()).api['search-api'].find_text({
+    pattern,
+    sort,
+    author,
+    limit,
+    observer,
+    start_author,
+    start_permlink
+  });
+};
+export interface SearchType {
+  pattern: string;
+  sort?: string;
+  author?: string;
+  limit?: number;
+  observer?: string;
+  start_author?: string;
+  start_permlink?: string;
+}

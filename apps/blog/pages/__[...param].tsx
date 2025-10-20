@@ -18,7 +18,6 @@ import {
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import NoDataError from '../components/no-data-error';
 import { getLogger } from '@ui/lib/logging';
-import AccountProfileMainPage from '../features/account-profile/main-page';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';

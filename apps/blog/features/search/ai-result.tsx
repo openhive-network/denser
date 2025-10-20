@@ -1,15 +1,17 @@
+'use client';
+
 import { useQuery } from '@tanstack/react-query';
 import Loading from '@ui/components/loading';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState, useMemo } from 'react';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useTranslation } from 'next-i18next';
-import { searchPosts, getPostsByIds, isPostStub } from '@/blog/lib/get-data';
 import { Entry, PostStub } from '@transaction/lib/extended-hive.chain';
 import { PER_PAGE } from './lib/utils';
 import { Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@ui/components/card-skeleton';
 import PostList from '../list-of-posts/posts-loader';
+import { useTranslation } from '@/blog/i18n/client';
+import { getPostsByIds, isPostStub, searchPosts } from '@transaction/lib/hivesense-api';
 
 const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: Preferences['nsfw'] }) => {
   const { user } = useUser();
@@ -26,9 +28,9 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
     isLoading,
     isFetching,
     error
-  } = useQuery(
-    ['searchPosts', query],
-    async () => {
+  } = useQuery({
+    queryKey: ['searchPosts', query],
+    queryFn: async () => {
       if (!query) return null;
 
       return await searchPosts({
@@ -38,14 +40,12 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
         full_posts: PER_PAGE // Get first page fully expanded
       });
     },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false,
-      enabled: !!query,
-      staleTime: 5 * 60 * 1000 // Cache for 5 minutes
-    }
-  );
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    enabled: !!query,
+    staleTime: 5 * 60 * 1000 // Cache for 5 minutes
+  });
 
   // Separate full posts and stubs
   const { fullPosts, stubPosts } = useMemo(() => {

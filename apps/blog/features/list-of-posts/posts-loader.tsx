@@ -1,7 +1,8 @@
+'use client';
+
 import PostListItem from '@/blog/features/list-of-posts/post-list-item';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-
 import { Preferences } from '@/blog/lib/utils';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 

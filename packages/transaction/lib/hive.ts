@@ -89,32 +89,3 @@ export const getPrivateKeys = async (
   );
   return keys;
 };
-
-export const getByText = async ({
-  pattern,
-  sort = 'relevance',
-  author = '',
-  limit = DATA_LIMIT,
-  observer,
-  start_author = '',
-  start_permlink = ''
-}: SearchType): Promise<Entry[]> => {
-  return chain.api['search-api'].find_text({
-    pattern,
-    sort,
-    author,
-    limit,
-    observer,
-    start_author,
-    start_permlink
-  });
-};
-export interface SearchType {
-  pattern: string;
-  sort?: string;
-  author?: string;
-  limit?: number;
-  observer?: string;
-  start_author?: string;
-  start_permlink?: string;
-}
