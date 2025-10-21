@@ -220,7 +220,7 @@ const PostContent = () => {
       storeBox(reply);
     }
   }, [reply, storeBox]);
-  if (userFromGDPR || !postData) return <NoDataError />;
+  if (userFromGDPR || (!postData && !postIsLoading)) return <NoDataError />;
 
   return (
     <>
