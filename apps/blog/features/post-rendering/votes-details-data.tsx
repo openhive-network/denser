@@ -1,11 +1,10 @@
-import { IVote } from '@transaction/lib/extended-hive.chain';
 import { prepareVotes } from '@ui/lib/utils';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry, IVote } from '@transaction/lib/extended-hive.chain';
 import BasePathLink from '../../components/base-path-link';
 import { useActiveVotesQuery } from '../../components/hooks/use-active-votes';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 
-export default function VotersDetailsData({ post }: { post: Entry }) {
+const VotersDetailsData = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
   const { data } = useActiveVotesQuery(post.author, post.permlink);
 
@@ -46,4 +45,5 @@ export default function VotersDetailsData({ post }: { post: Entry }) {
       ) : null}
     </ul>
   );
-}
+};
+export default VotersDetailsData;

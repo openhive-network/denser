@@ -3,8 +3,8 @@ import { PenTool } from 'lucide-react';
 import { useState } from 'react';
 import { useUserTitleMutation } from './hooks/use-user-title';
 import { CircleSpinner } from 'react-spinners-kit';
-import { useTranslation } from 'next-i18next';
 import ChangeTitleData from './change-title-data';
+import { useTranslation } from '@/blog/i18n/client';
 
 const ChangeTitleDialog = ({
   moderateEnabled,

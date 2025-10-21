@@ -1,3 +1,5 @@
+'use client';
+
 import { Icons } from '@hive/ui/components/icons';
 import parseDate from '@hive/ui/lib/parse-date';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@hive/ui/components/card';
@@ -12,7 +14,6 @@ import DetailsCardHover from '../list-of-posts/details-card-hover';
 import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
-import { useTranslation } from 'next-i18next';
 import VotesComponent from '../votes/votes-component';
 import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -24,7 +25,7 @@ import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import RendererContainer from './rendererContainer';
-import { useDeleteCommentMutation } from '../../components/hooks/use-comment-mutations';
+import { useDeleteCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import MutePostDialog from './mute-post-dialog';
@@ -34,6 +35,7 @@ import FlagTooltip from './flag-icon';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { getUserAvatarUrl } from '@hive/ui';
 import { UserPopoverCard } from './user-popover-card';
+import { useTranslation } from '@/blog/i18n/client';
 
 interface CommentListProps {
   permissionToMute: Boolean;
@@ -59,7 +61,6 @@ const CommentListItem = ({
   discussionPermlink
 }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
-  const username = comment.author;
   const { user } = useUser();
   const ref = useRef<HTMLTableRowElement>(null);
   const [hiddenComment, setHiddenComment] = useState(
@@ -67,8 +68,8 @@ const CommentListItem = ({
   );
   const [openState, setOpenState] = useState<string>(comment.stats?.gray && hiddenComment ? '' : 'item-1');
   const [tempraryHidden, setTemporaryHidden] = useState(false);
-  const commentId = `@${username}/${comment.permlink}`;
-  const storageId = `replybox-/${username}/${comment.permlink}-${user.username}`;
+  const commentId = `@${comment.author}/${comment.permlink}`;
+  const storageId = `replybox-/${comment.author}/${comment.permlink}-${user.username}`;
   const [edit, setEdit] = useState(false);
   const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
@@ -122,8 +123,8 @@ const CommentListItem = ({
               })}
               height="40"
               width="40"
-              src={getUserAvatarUrl(username, 'small')}
-              alt={`${username} profile picture`}
+              src={getUserAvatarUrl(comment.author, 'small')}
+              alt={`${comment.author} profile picture`}
               loading="lazy"
             />
             <Card
@@ -152,12 +153,12 @@ const CommentListItem = ({
                                   className=" h-[20px] w-[20px] rounded-3xl sm:hidden"
                                   height="20"
                                   width="20"
-                                  src={getUserAvatarUrl(username, 'small')}
-                                  alt={`${username} profile picture`}
+                                  src={getUserAvatarUrl(comment.author, 'small')}
+                                  alt={`${comment.author} profile picture`}
                                   loading="lazy"
                                 />
                                 <UserPopoverCard
-                                  author={username}
+                                  author={comment.author}
                                   author_reputation={comment.author_reputation}
                                   blacklist={comment.blacklists}
                                 />
@@ -186,7 +187,7 @@ const CommentListItem = ({
                                   />
                                 )}
                                 <Link
-                                  href={`#@${username}/${comment.permlink}`}
+                                  href={`#@${comment.author}/${comment.permlink}`}
                                   className="hover:text-destructive md:text-sm"
                                   title={String(parseDate(comment.created))}
                                   data-testid="comment-timestamp-link"
@@ -195,7 +196,7 @@ const CommentListItem = ({
                                 </Link>
                                 <Link
                                   className="p-1 sm:p-2"
-                                  href={`/${comment.category}/@${username}/${comment.permlink}`}
+                                  href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
                                   data-testid="comment-page-link"
                                 >
                                   <Icons.link className="h-3 w-3" />
@@ -212,7 +213,7 @@ const CommentListItem = ({
                               ) : flagText && comment.community && user.isLoggedIn ? (
                                 <AlertDialogFlag
                                   community={comment.community}
-                                  username={username}
+                                  username={comment.author}
                                   permlink={comment.permlink}
                                   flagText={flagText}
                                 >
@@ -250,7 +251,7 @@ const CommentListItem = ({
                             ) : flagText && comment.community && user.isLoggedIn ? (
                               <AlertDialogFlag
                                 community={comment.community}
-                                username={username}
+                                username={comment.author}
                                 permlink={comment.permlink}
                                 flagText={flagText}
                               >
@@ -367,7 +368,7 @@ const CommentListItem = ({
                               <Separator orientation="vertical" className="h-5" />
                             </>
                           ) : null}
-                          {user && user.isLoggedIn ? (
+                          {user.isLoggedIn ? (
                             <button
                               disabled={deleteCommentMutation.isLoading}
                               onClick={() => {
@@ -455,7 +456,10 @@ const CommentListItem = ({
         </li>
       ) : currentDepth === 8 ? (
         <div className="h-8">
-          <Link href={`/${comment.category}/@${username}/${comment.permlink}`} className="text-destructive">
+          <Link
+            href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
+            className="text-destructive"
+          >
             {t('cards.comment_card.load_more')}...
           </Link>
         </div>
@@ -464,7 +468,7 @@ const CommentListItem = ({
         <ReplyTextbox
           editMode={edit}
           onSetReply={setReply}
-          username={username}
+          username={comment.author}
           permlink={comment.permlink}
           storageId={storageId}
           comment=""

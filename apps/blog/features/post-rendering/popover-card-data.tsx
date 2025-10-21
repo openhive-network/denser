@@ -1,11 +1,12 @@
+'use client';
+
 import { dateToShow } from '@ui/lib/parse-date';
 import { convertToHP, numberWithCommas } from '@ui/lib/utils';
 import Big from 'big.js';
-import { useTranslation } from 'next-i18next';
+
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
-
 import { convertStringToBig } from '@ui/lib/helpers';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { getDefaultImageUrl } from '@hive/ui';
@@ -16,8 +17,9 @@ import { useDynamicGlobalData } from '@/blog/components/hooks/use-dynamic-global
 import { useFollowsQuery } from '@/blog/components/hooks/use-follows';
 import { useFollowingInfiniteQuery } from '../account-lists/hooks/use-following-infinitequery';
 import ButtonsContainer from '../mute-follow/buttons-container';
+import { useTranslation } from '@/blog/i18n/client';
 
-export function PopoverCardData({ author, blacklist }: { author: string; blacklist: string[] }) {
+const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: string[] }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const follows = useFollowsQuery(author);
@@ -145,4 +147,6 @@ export function PopoverCardData({ author, blacklist }: { author: string; blackli
       ) : null}
     </div>
   );
-}
+};
+
+export default PopoverCardData;

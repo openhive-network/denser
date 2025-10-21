@@ -38,10 +38,6 @@ export const getPost = async (username: string, permlink: string): Promise<IPost
   return chain.api.condenser_api.get_content([username, permlink]);
 };
 
-export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
-  return chain.api.condenser_api.get_active_votes([author, permlink]);
-};
-
 export const getListWitnessVotes = async (
   username: string,
   limit: number,

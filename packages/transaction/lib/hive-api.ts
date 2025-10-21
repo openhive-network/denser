@@ -7,6 +7,7 @@ import {
   IDynamicGlobalProperties,
   IFeedHistory,
   IFollow,
+  IVote,
   IVoteListItem
 } from './extended-hive.chain';
 import { DATA_LIMIT } from './bridge-api';
@@ -309,3 +310,7 @@ export interface SearchType {
   start_author?: string;
   start_permlink?: string;
 }
+
+export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
+  return (await getChain()).api.condenser_api.get_active_votes([author, permlink]);
+};

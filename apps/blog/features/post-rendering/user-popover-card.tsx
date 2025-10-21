@@ -1,8 +1,8 @@
 import UserAvatar from '@/blog/features/post-rendering/user-avatar';
 import accountReputation from '@/blog/lib/account-reputation';
-import { useTranslation } from 'next-i18next';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/components/popover';
-import { PopoverCardData } from './popover-card-data';
+import PopoverCardData from './popover-card-data';
+import { useTranslation } from '@/blog/i18n/client';
 
 export interface UserPopoverCardProps {
   author: string;

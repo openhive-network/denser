@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from '@/blog/i18n/client';
 import {
   Select,
   SelectContent,
@@ -6,18 +9,20 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/components/select';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const CommentSelectFilter = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const sort = searchParams?.get('sort') ?? 'trending';
   const { t } = useTranslation('common_blog');
-  const defaultSort = router.query.sort?.toString();
+
   return (
     <Select
-      defaultValue={defaultSort ? defaultSort : 'trending'}
+      defaultValue={sort}
       onValueChange={(e) => {
-        router.replace(`${router.asPath.split('#')[0].split('?')[0]}?sort=${e}#comments`);
+        router.replace(`${pathname?.split('#')[0].split('?')[0]}?sort=${e}#comments`);
       }}
     >
       <SelectTrigger className="h-5 w-fit border-none bg-transparent text-red-600" data-testid="posts-filter">

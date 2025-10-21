@@ -1,9 +1,11 @@
+'use client';
+
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { ReactNode, useRef, useState } from 'react';
 import VotersDetailsData from './votes-details-data';
 
-export default function DetailsCardVoters({ post, children }: { post: Entry; children: ReactNode }) {
+const DetailsCardVoters = ({ post, children }: { post: Entry; children: ReactNode }) => {
   const [open, setOpen] = useState(false);
   const isHovering = useRef(false);
 
@@ -38,6 +40,9 @@ export default function DetailsCardVoters({ post, children }: { post: Entry; chi
       >
         <VotersDetailsData post={post} />
       </HoverCardContent>
+      {children}
     </HoverCard>
   );
-}
+};
+
+export default DetailsCardVoters;

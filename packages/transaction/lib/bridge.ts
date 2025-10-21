@@ -17,18 +17,6 @@ export type Subscription = Array<string>;
 
 export const DATA_LIMIT = 20;
 
-export const getDiscussion = async (
-  author: string,
-  permlink: string,
-  observer?: string
-): Promise<Record<string, Entry> | null> => {
-  return chain.api.bridge.get_discussion({
-    author,
-    permlink,
-    observer
-  });
-};
-
 export const normalizePost = async (post: Entry): Promise<Entry | null> => {
   return chain.api.bridge.normalize_post({
     post

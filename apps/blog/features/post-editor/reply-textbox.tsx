@@ -13,7 +13,7 @@ import { DEFAULT_PREFERENCES, hoursAndMinutes, Preferences } from '@/blog/lib/ut
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import RendererContainer from '../post-rendering/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
-import { useCommentMutation, useUpdateCommentMutation } from '../../components/hooks/use-comment-mutations';
+import { useCommentMutation, useUpdateCommentMutation } from '../post-rendering/hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { commentClassName } from '../post-rendering/comment-list-item';
