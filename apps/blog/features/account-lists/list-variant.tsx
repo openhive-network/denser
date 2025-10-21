@@ -22,7 +22,7 @@ import {
 } from '@/blog/components/hooks/use-follow-muted-list-mutation';
 
 interface ListVariantProps {
-  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute';
+  variant: 'blacklisted' | 'muted' | 'follow_blacklist' | 'followed_muted_lists';
   username: string;
   profileData: FullAccount;
   data: IFollowList[] | undefined;
@@ -115,7 +115,7 @@ const ListVariant = ({
           }}
         />
       );
-    case 'followedBlacklist':
+    case 'follow_blacklist':
       return (
         <ListArea
           titleBy={t('user_profile.lists.followed_blacklists', { username: username })}
@@ -144,7 +144,7 @@ const ListVariant = ({
           }}
         />
       );
-    case 'followedMute':
+    case 'followed_muted_lists':
       return (
         <ListArea
           titleBy={t('user_profile.lists.followed_muted_lists', { username: username })}

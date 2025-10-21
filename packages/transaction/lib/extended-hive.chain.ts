@@ -8,8 +8,7 @@ import {
   transaction
 } from '@hiveio/wax';
 import { AccountFollowStats, FullAccount } from './app-types';
-import { SearchType } from './hive';
-import { info } from 'console';
+import { SearchType } from './hive-api';
 
 export interface EntryBeneficiaryRoute {
   account: string;
@@ -162,7 +161,7 @@ export interface JsonMetadata {
   summary?: string;
 }
 
-export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
+export type FollowListType = 'follow_blacklist' | 'followed_muted_lists' | 'blacklisted' | 'muted';
 
 export interface IMarketStatistics {
   hbd_volume: string;

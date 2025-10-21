@@ -1,10 +1,8 @@
-import ProfileLayout from '@/blog/features/layouts/user-profile/profile-layout';
+'usle client';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { useMemo, useState } from 'react';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { useQuery } from '@tanstack/react-query';
-import Head from 'next/head';
-import { MetadataProps } from '@/blog/lib/get-translations';
 import ListVariant from './list-variant';
 
 const CHUNK_SIZE = 10;
@@ -12,15 +10,16 @@ const CHUNK_SIZE = 10;
 export default function ProfileLists({
   username,
   variant,
-  data,
-  metadata
+  data
 }: {
   username: string;
-  variant: 'blacklisted' | 'muted' | 'followedBlacklist' | 'followedMute';
+  variant: 'blacklisted' | 'muted' | 'follow_blacklist' | 'followed_muted_lists';
   data: IFollowList[] | undefined;
-  metadata: MetadataProps;
 }) {
-  const { data: profilData } = useQuery(['profileData', username], () => getAccountFull(username));
+  const { data: profilData } = useQuery({
+    queryKey: ['profileData', username],
+    queryFn: () => getAccountFull(username)
+  });
   const [filter, setFilter] = useState('');
 
   const splitArrays = useMemo(() => {
@@ -33,26 +32,14 @@ export default function ProfileLists({
     );
   }, [data, filter]);
 
-  return (
-    <>
-      <Head>
-        <title>{metadata.tabTitle}</title>
-        <meta property="og:title" content={metadata.title} />
-        <meta property="og:description" content={metadata.description} />
-        <meta property="og:image" content={metadata.image} />
-      </Head>
-      <ProfileLayout>
-        {profilData && (
-          <ListVariant
-            variant={variant}
-            username={username}
-            profileData={profilData}
-            data={data}
-            splitArrays={splitArrays}
-            onSearchChange={setFilter}
-          />
-        )}
-      </ProfileLayout>
-    </>
-  );
+  return profilData ? (
+    <ListVariant
+      variant={variant}
+      username={username}
+      profileData={profilData}
+      data={data}
+      splitArrays={splitArrays}
+      onSearchChange={setFilter}
+    />
+  ) : null;
 }
