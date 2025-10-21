@@ -32,7 +32,6 @@ import { useLocalStorage } from 'usehooks-ts';
 import PostForm from '@/blog/features/post-editor/post-form';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '@/blog/components/dialog-login';
-import { UserPopoverCard } from '@/blog/components/user-popover-card';
 import { QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
