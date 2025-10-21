@@ -268,7 +268,7 @@ function PostPage({
     category: post.category,
     postArea: post.body,
     postSummary: post.json_metadata?.summary ?? '',
-    tags: post.json_metadata?.tags ? post.json_metadata.tags.join(' ') : '',
+    tags: Array.isArray(post.json_metadata?.tags) ? post.json_metadata.tags.join(' ') : '',
     selectedImg: post.json_metadata.image?.[0] ?? '',
     permlink: post.permlink
   };
