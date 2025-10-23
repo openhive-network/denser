@@ -1,7 +1,7 @@
-'use client';
-
 import { useRef } from 'react';
+import { GetServerSideProps, GetServerSidePropsResult, Redirect } from 'next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
+import { loginPageController } from '@smart-signer/lib/login-page-controller';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
 import { getLogger } from '@ui/lib/logging';
@@ -9,11 +9,7 @@ import { siteConfig } from '@ui/config/site';
 
 const logger = getLogger('app');
 
-interface LoginClientProps {
-  redirectTo?: string;
-}
-
-export default function LoginClient({ redirectTo }: LoginClientProps) {
+export default function LoginPage({ redirectTo }: { redirectTo?: string }) {
   const signInFormRef = useRef<SignInFormRef>(null);
 
   // Here we just check if user is already logged in and we redirect him
@@ -25,7 +21,7 @@ export default function LoginClient({ redirectTo }: LoginClientProps) {
 
   const onComplete = async (username: string) => {
     if (redirectTo) {
-      logger.info('LoginClient onComplete redirecting to: %s', redirectTo);
+      logger.info('LoginPage onComplete redirecting to: %s', redirectTo);
       location.replace(redirectTo);
     }
   };
@@ -44,3 +40,19 @@ export default function LoginClient({ redirectTo }: LoginClientProps) {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const result: GetServerSidePropsResult<{ [key: string]: any }> & {
+    redirect?: Redirect;
+    props?: { [key: string]: any };
+  } = await loginPageController(ctx);
+  if (Object.hasOwnProperty.call(result, 'props')) {
+    const output: GetServerSidePropsResult<{ [key: string]: any }> = {
+      props: {
+        ...result.props
+      }
+    };
+    return output;
+  }
+  return result;
+};

@@ -90,7 +90,7 @@ export const uploadImg = async (file: File, username: string, signer: Signer): P
 
     data = await data;
     const prefix = Buffer.from('ImageSigningChallenge');
-    // @ts-expect-error
+    // @ts-ignore
     const buf = Buffer.concat([prefix, data as unknown as Uint8Array]);
 
     const sig = await signer.signChallenge({
