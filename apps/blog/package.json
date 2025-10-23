@@ -63,7 +63,7 @@
     "i": "^0.3.7",
     "i18next": "^23.7.9",
     "iron-session": "^8.0.1",
-    "lucide-react": "^0.259.0",
+    "lucide-react": "^0.482.0",
     "moment": "^2.29.4",
     "next": "^14.2.5",
     "next-i18next": "^15.1.1",

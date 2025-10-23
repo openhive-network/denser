@@ -11,29 +11,6 @@ const logStandarizedError = (methodName: string, error: unknown): null => {
     throw new Error(`Error in ${methodName}`);
 }
 
-export const getSimilarPosts = async ({
-  pattern,
-  tr_body = 100,
-  limit = 50,
-  observer,
-  start_author,
-  start_permlink
-}: {
-  pattern: string;
-  tr_body?: number;
-  limit?: number;
-  observer: string;
-  start_author: string;
-  start_permlink: string;
-}): Promise<Entry[] | null> => {
-  try {
-    const response = await chain.restApi['hivesense-api'].similarposts({posts_limit: limit, tr_body, pattern, observer, start_author, start_permlink})
-    return response;
-  } catch (error) {
-    return logStandarizedError("getSimilarPosts", error);
-  }
-};
-
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
     const response = await chain.restApi['hivesense-api']();
@@ -59,27 +36,27 @@ export const getSuggestions = async ({
   try {
     // Use the new endpoint format: /posts/{author}/{permlink}/similar
     const baseUrl = (chain.restApi['hivesense-api'].endpointUrl || chain.endpointUrl).replace(/\/$/, '');
-    
+
     const params = new URLSearchParams({
       truncate: tr_body.toString(),
       result_limit: posts_limit.toString(),
       full_posts: posts_limit.toString(), // For suggestions, we want all results as full posts
       observer
     });
-    
+
     const url = `${baseUrl}/hivesense-api/posts/${encodeURIComponent(author)}/${encodeURIComponent(permlink)}/similar?${params}`;
-    
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Accept': 'application/json'
       }
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
     // The new endpoint returns MixedPostsResponse, but getSuggestions expects Entry[]
     // Extract just the full posts array
@@ -136,27 +113,26 @@ export const getSimilarPostsByPost = async ({
   try {
     // Use the new endpoint format: /posts/{author}/{permlink}/similar
     const baseUrl = (chain.restApi['hivesense-api'].endpointUrl || chain.endpointUrl).replace(/\/$/, '');
-    
+
     const params = new URLSearchParams({
       truncate: truncate.toString(),
       result_limit: result_limit.toString(),
       full_posts: full_posts.toString(),
       observer
     });
-    
+
     const url = `${baseUrl}/hivesense-api/posts/${encodeURIComponent(author)}/${encodeURIComponent(permlink)}/similar?${params}`;
-    
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Accept': 'application/json'
       }
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
     return data;
   } catch (error) {
@@ -176,15 +152,14 @@ export const getPostsByIds = async ({
   try {
     // Use POST endpoint to handle more than 10 posts (up to 50)
     const baseUrl = (chain.restApi['hivesense-api'].endpointUrl || chain.endpointUrl).replace(/\/$/, '');
-    
+
     const url = `${baseUrl}/hivesense-api/posts/by-ids`;
-    
     const requestBody = {
       posts,
       truncate,
       observer
     };
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -193,11 +168,11 @@ export const getPostsByIds = async ({
       },
       body: JSON.stringify(requestBody)
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
     // Filter out null or invalid posts before returning
     if (Array.isArray(data)) {

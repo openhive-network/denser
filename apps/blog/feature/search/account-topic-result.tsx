@@ -77,7 +77,7 @@ const AccountTopicResult = ({
             There was a problem fetching the data.
           </p>{' '}
           <Link
-            href="/status/settings"
+            href="/healthchecker"
             className="mt-4 inline-flex items-center text-primary hover:underline"
           >
             <Activity className="mr-2 h-4 w-4" />

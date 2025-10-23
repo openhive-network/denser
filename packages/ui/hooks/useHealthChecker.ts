@@ -31,7 +31,7 @@ const DEFAULTS_ENDPOINTS = [
  */
 export const useHealthChecker = (
   key: string,
-  apiCheckers: ApiChecker[] | undefined,
+  apiCheckers: ApiChecker<any>[] | undefined,
   endpointKey: string,
   hiveChainServiceMethod: (newEndpoint: string) => Promise<void>,
   defaultEndpoints: string[] = DEFAULTS_ENDPOINTS,
