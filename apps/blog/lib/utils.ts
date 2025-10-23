@@ -350,3 +350,23 @@ export function compareDates(dateStrings: string[]) {
 
   return closestDate.format('YYYY-MM-DDTHH:mm:ss');
 }
+
+export function extractUrlsFromJsonString(jsonString: string): string[] {
+  const urlRegex = /((?:https?:\/\/|www\.)[^\s]+)/g;
+  const matches = jsonString.match(urlRegex);
+  return matches || [];
+}
+
+export function extractYouTubeVideoIds(urls: string[]): string[] {
+  const youtubeLinkRegex =
+    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed|shorts\/|v\/)?([a-zA-Z0-9_-]+)/i;
+
+  const youtubeVideoIds: string[] = [];
+  for (const url of urls) {
+    const match = url.match(youtubeLinkRegex);
+    if (match && match[1]) {
+      youtubeVideoIds.push(match[1]);
+    }
+  }
+  return youtubeVideoIds;
+}

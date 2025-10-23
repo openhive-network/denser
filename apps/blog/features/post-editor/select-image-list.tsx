@@ -1,9 +1,10 @@
 'use client';
 
 import { FC, useEffect, useMemo } from 'react';
-import { extractImagesSrc, extractUrlsFromJsonString, extractYouTubeVideoIds } from './lib/utils';
+import { extractImagesSrc } from './lib/utils';
 import SelectImageItem from './select-image-item';
 import { useTranslation } from '@/blog/i18n/client';
+import { extractUrlsFromJsonString, extractYouTubeVideoIds } from '@/blog/lib/utils';
 
 interface SelectImageListTypes {
   content: string;

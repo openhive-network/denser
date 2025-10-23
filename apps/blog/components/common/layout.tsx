@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { Toaster } from '@ui/components/toaster';
 import { useTheme } from 'next-themes';
 import { TailwindIndicator } from '../tailwind-indicator';
-import SiteHeader from '../site-header';
+import MainBar from '@/blog/features/layouts/site-header/main-bar';
 import { ModalContainer } from '@smart-signer/components/modal-container';
 import RocketChatWidget from '../rocket-chat-widget';
 import { siteConfig } from '@ui/config/site';
@@ -26,7 +26,7 @@ function Layout({ children }: LayoutProps) {
         <meta name="theme-color" content={resolvedTheme === 'dark' ? '#030711' : '#ffffff'} />
       </Head>
       <div className="relative flex min-h-screen flex-col">
-        <SiteHeader />
+        <MainBar />
         <div className="flex-1 bg-background-secondary">{children}</div>
       </div>
       {isClient && siteConfig.openhiveChatIframeIntegrationEnable === 'yes' && <RocketChatWidget />}
