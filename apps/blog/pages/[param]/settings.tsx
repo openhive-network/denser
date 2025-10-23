@@ -10,13 +10,12 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/components/select';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components';
 import { useLocalStorage } from 'usehooks-ts';
 import { GetServerSideProps } from 'next';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { getAccountFull } from '@transaction/lib/hive';
 import { useQuery } from '@tanstack/react-query';
@@ -35,9 +34,8 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { handleError } from '@ui/lib/handle-error';
 import Head from 'next/head';
-import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component';
-import { useHealthChecker } from '@ui/hooks/useHealthChecker';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import { Activity } from 'lucide-react';
 
 const logger = getLogger('app');
 interface Settings {
@@ -186,8 +184,6 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
   }, [JSON.stringify(preferences)]);
   const [isClient, setIsClient] = useState(false);
   const [insertImg, setInsertImg] = useState('');
-  const [nodeApiCheckers, setNodeApiCheckers] = useState<ApiChecker[] | undefined>(undefined);
-  const [aiSearchApiCheckers, setAiSearchApiCheckers] = useState<ApiChecker[] | undefined>(undefined);
   const params = useParams();
   const mutedQuery = useFollowListQuery(user.username, 'muted');
   const { t } = useTranslation('common_blog');
@@ -208,72 +204,8 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
   const unmuteMutation = useUnmuteMutation();
   const updateProfileMutation = useUpdateProfileMutation();
 
-  const DEFAULT_AI_ENDPOINTS = [
-    'https://api.hive.blog',
-    'https://api.syncad.com',
-    'https://api.openhive.network',
-    'https://api.dev.openhive.network'
-  ];
-
-  const nodeHcService = useHealthChecker(
-    'node-api',
-    nodeApiCheckers,
-    'node-endpoint',
-    hiveChainService.setHiveChainEndpoint
-  );
-  const aiSearchHcService = useHealthChecker(
-    'ai-search',
-    aiSearchApiCheckers,
-    'ai-search-endpoint',
-    hiveChainService.setAiSearchEndpoint,
-    DEFAULT_AI_ENDPOINTS
-  );
-
-  const createApiCheckers = async () => {
-    const hiveChain = await hiveChainService.getHiveChain();
-    const nodeApiCheckers: ApiChecker[] = [
-      {
-        title: 'Condenser - Get accounts',
-        method: hiveChain.api.condenser_api.get_accounts,
-        params: [['guest4test']],
-        validatorFunction: (data) =>
-          Array.isArray(data) &&
-          data[0] &&
-          typeof data[0] === 'object' &&
-          'name' in data[0] &&
-          data[0].name === 'guest4test'
-            ? true
-            : 'Get block error'
-      },
-      {
-        title: 'Bridge - Get post',
-        method: hiveChain.api.bridge.get_post,
-        params: { author: 'guest4test', permlink: '6wpmjy-test', observer: '' },
-        validatorFunction: (data) =>
-          data && typeof data === 'object' && 'author' in data && data.author === 'guest4test'
-            ? true
-            : 'Get post error'
-      }
-    ];
-    const aiSearchApiCheckers: ApiChecker[] = [
-      {
-        title: 'AI search',
-        method: hiveChain.restApi['hivesense-api'].similarposts,
-        params: {
-          pattern: 'test',
-          tr_body: 100,
-          posts_limit: 20
-        },
-        validatorFunction: (data) => (Array.isArray(data) && data[0] ? true : 'AI search error')
-      }
-    ];
-    setNodeApiCheckers(nodeApiCheckers);
-    setAiSearchApiCheckers(aiSearchApiCheckers);
-  };
-
   useEffect(() => {
     setIsClient(true);
-    createApiCheckers();
   }, []);
   useEffect(() => {
     setSettings(profileSettings);
@@ -602,26 +534,12 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
             </>
           ) : null}
 
-          <div className="p-8">
-            <Accordion type="single" collapsible defaultValue="main-hc">
-              <AccordionItem value="main-hc">
-                <AccordionTrigger>API Endpoint</AccordionTrigger>
-                <AccordionContent>
-                  {!!nodeHcService && (
-                    <HealthCheckerComponent className="m-4" healthCheckerService={nodeHcService} />
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="search-hc">
-                <AccordionTrigger>Endpoint for AI search</AccordionTrigger>
-                <AccordionContent>
-                  {!!aiSearchHcService && (
-                    <HealthCheckerComponent className="m-4" healthCheckerService={aiSearchHcService} />
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+          <Link href="/healthchecker" className="my-4 inline-flex items-center text-primary hover:underline">
+            <Button>
+              <Activity className="mr-2 h-4 w-4" />
+              Change node
+            </Button>
+          </Link>
           {mutedQuery.data ? (
             <div>
               <div>{t('settings_page.muted_users')}</div>

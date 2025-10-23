@@ -12,7 +12,7 @@ const NoDataError: FC = () => {
       <p className="text-center text-muted-foreground">
         Please check if permlink is correct or the node is running properly.
       </p>
-      <Link href="/status/settings" className="mt-4 inline-flex items-center text-primary hover:underline">
+      <Link href="/healthchecker" className="mt-4 inline-flex items-center text-primary hover:underline">
         <Activity className="mr-2 h-4 w-4" />
         Check Node Status
       </Link>
