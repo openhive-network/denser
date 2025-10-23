@@ -33,8 +33,7 @@ test.describe('Muted user - tests', () => {
     await profilePage.unmuteButton.click()
     await expect(denserAutoTest0Page.page.getByRole('status')).toBeVisible()
     await expect(denserAutoTest0Page.page.getByText('There are no users on this')).toBeVisible()
-    await expect(denserAutoTest0Page.page.getByText('Unmuted', { exact: true })).toBeVisible();
-    
+    await expect(denserAutoTest0Page.page.getByText('Unmuted', { exact: true })).toBeVisible(); 
   });
 
   test('Add user to Muted list by - Add Account(s) To List', async ({ denserAutoTest0Page }) => {
@@ -50,10 +49,9 @@ test.describe('Muted user - tests', () => {
     await denserAutoTest0Page.page.waitForTimeout(5000)
     await denserAutoTest0Page.page.getByRole('button', { name: 'Add to list' }).click();
     await expect(denserAutoTest0Page.page.getByText('serejandmyself unmute')).toBeVisible();
-    await expect(denserAutoTest0Page.page.getByText('You have muted serejandmyself.')).toBeVisible();
+    await expect(denserAutoTest0Page.page.getByText(`You have muted ${muteUser}`)).toBeVisible();
     await profilePage.unmuteButton.click()
     await expect(denserAutoTest0Page.page.getByText('Unmuted', { exact: true })).toBeVisible();
     await expect(denserAutoTest0Page.page.getByText('There are no users on this')).toBeVisible(); 
-    
   });
 });
