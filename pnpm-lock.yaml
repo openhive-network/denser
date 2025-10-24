@@ -480,12 +480,12 @@ importers:
       eslint-config-prettier:
         specifier: latest
         version: 10.1.8(eslint@8.57.1)
-      eslint-config-turbo:
-        specifier: latest
-        version: 2.5.8(eslint@8.57.1)(turbo@2.3.3)
       eslint-plugin-react:
         specifier: latest
         version: 7.37.5(eslint@8.57.1)
+      eslint-plugin-turbo:
+        specifier: latest
+        version: 2.5.8(eslint@8.57.1)(turbo@2.3.3)
 
   packages/logger:
     dependencies:
@@ -5306,12 +5306,6 @@ packages:
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
-
-  eslint-config-turbo@2.5.8:
-    resolution: {integrity: sha512-wzxmN7dJNFGDwOvR/4j8U2iaIH/ruYez8qg/sCKrezJ3+ljbFMvJLmgKKt/1mDuyU9wj5aZqO6VijP3QH169FA==}
-    peerDependencies:
-      eslint: '>6.6.0'
-      turbo: '>2.0.0'
 
   eslint-import-resolver-node@0.3.9:
     resolution: {integrity: sha512-WFj2isz22JahUv+B788TlO3N6zL3nNJGU8CcZbPZvVEkBPaJdCV4vy5wyghty5ROFbCRnm132v8BScu5/1BQ8g==}
@@ -15619,12 +15613,6 @@ snapshots:
   eslint-config-prettier@9.0.0(eslint@8.57.0):
     dependencies:
       eslint: 8.57.0
-
-  eslint-config-turbo@2.5.8(eslint@8.57.1)(turbo@2.3.3):
-    dependencies:
-      eslint: 8.57.1
-      eslint-plugin-turbo: 2.5.8(eslint@8.57.1)(turbo@2.3.3)
-      turbo: 2.3.3
 
   eslint-import-resolver-node@0.3.9:
     dependencies:
