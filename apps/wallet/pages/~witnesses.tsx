@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
-import { getDynamicGlobalProperties, getListWitnessVotes } from '@transaction/lib/hive';
+import { getListWitnessVotes } from '@transaction/lib/hive';
+import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
 import { FullAccount } from '@transaction/lib/app-types';

@@ -33,7 +33,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import Loading from '@ui/components/loading';
 import Link from 'next/link';
 import env from '@beam-australia/react-env';
-import { getFindAccounts } from '@transaction/lib/hive';
+import { getFindAccounts } from '@transaction/lib/hive-api';
 import { getAccount } from '@transaction/lib/hive-api';
 import Head from 'next/head';
 
