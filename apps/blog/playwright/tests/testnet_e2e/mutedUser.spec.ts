@@ -35,6 +35,7 @@ test.describe('Muted user - tests', () => {
     await expect(denserAutoTest0Page.page.getByText('There are no users on this')).toBeVisible()
     await expect(denserAutoTest0Page.page.getByText('Unmuted', { exact: true })).toBeVisible(); 
   });
+  
 
   test('Add user to Muted list by - Add Account(s) To List', async ({ denserAutoTest0Page }) => {
     const muteUser = `serejandmyself`
