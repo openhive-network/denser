@@ -16,6 +16,7 @@ import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
 import { AlertDialogFlag } from '@/blog/features/post-rendering/alert-window-flag';
 import CommentList from '@/blog/features/post-rendering/comment-list';
 import CommentSelectFilter from '@/blog/features/post-rendering/comment-select-filter';
+import ContextLinks from '@/blog/features/post-rendering/context-links';
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import FlagIcon from '@/blog/features/post-rendering/flag-icon';
 import ImageGallery from '@/blog/features/post-rendering/image-gallery';
@@ -270,7 +271,7 @@ const PostContent = () => {
 
             {postData ? (
               <div>
-                {!postInCommunity ? (
+                {!commentSite ? (
                   <h1
                     className="font-sanspro text-[21px] font-extrabold sm:text-[25.6px]"
                     data-testid="article-title"
@@ -278,30 +279,10 @@ const PostContent = () => {
                     {postData.title}
                   </h1>
                 ) : (
-                  <div className="flex flex-col gap-2 border-2 border-solid border-card-emptyBorder bg-card-noContent p-2">
-                    <h4 className="text-sm">
-                      {t('post_content.if_comment.you_are_viewing_a_single_comments_thread_from')}:
-                    </h4>
-                    <h1 data-testid="article-title" className="text-2xl">
-                      {postData.title}
-                    </h1>
-                    <Link
-                      className="text-sm hover:text-destructive"
-                      href={`${postData.url}`}
-                      data-testid="view-the-full-context"
-                    >
-                      • {t('post_content.if_comment.view_the_full_context')}
-                    </Link>
-                    {discussionState && !discussionState.some((e) => e.depth === 1) ? (
-                      <Link
-                        className="text-sm hover:text-destructive"
-                        href={`/${postData.category}/@${postData.parent_author}/${postData.parent_permlink}`}
-                        data-testid="view-the-direct-parent"
-                      >
-                        • {t('post_content.if_comment.view_the_direct_parent')}
-                      </Link>
-                    ) : null}
-                  </div>
+                  <ContextLinks
+                    data={postData}
+                    noContext={!!discussionState && !discussionState.some((e) => e.depth === 1)}
+                  />
                 )}
                 <UserInfo
                   permlink={permlink}
