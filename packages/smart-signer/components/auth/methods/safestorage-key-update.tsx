@@ -1,7 +1,6 @@
 /* Sign-in with safe storage (use beekeeper wallet through hb-auth) */
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'next-i18next';
 import { AuthUser, AuthorizationError, OnlineClient } from '@hiveio/hb-auth';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,7 +28,7 @@ import {
 import Step from '../step';
 import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
-import { TFunction } from 'i18next';
+
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { KeyAuthorityType } from '@smart-signer/lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -43,24 +42,24 @@ export interface SafeStorageKeyUpdateProps {
   onUsernameChange: (username: string) => void;
 }
 
-function getFormSchema(t: TFunction<'smart-signer', undefined>) {
+function getFormSchema() {
   return z
     .object({
       username,
       password: z.string().min(1, {
-        message: t('login_form.zod_error.password_required')
+        message: 'Password is required'
       }),
       wif: z.string().min(1, {
-        message: t('login_form.zod_error.invalid_wif')
+        message: 'Invalid WIF key'
       }),
       keyType: z.nativeEnum(KeyType, {
-        invalid_type_error: t('login_form.zod_error.invalid_keytype'),
-        required_error: t('login_form.zod_error.keytype_required')
+        invalid_type_error: 'Invalid keyType',
+        required_error: 'keyType is required'
       }),
       isStrict: z.boolean().default(false)
     })
     .superRefine((val, ctx) => {
-      const result = validateWifKey(val.wif, t);
+      const result = validateWifKey(val.wif, (v: string) => v);
       if (result) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -87,7 +86,6 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
     }));
 
     const authClient = useRef<OnlineClient>();
-    const { t } = useTranslation(i18nNamespace);
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
     const [registeredUser, setRegisteredUser] = useState<AuthUser | null>(null);
@@ -96,7 +94,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const form = useForm<SafeStorageKeyUpdateForm>({
       mode: 'onChange',
-      resolver: zodResolver(getFormSchema(t)),
+      resolver: zodResolver(getFormSchema()),
       defaultValues: {
         username,
         password: '',
@@ -134,7 +132,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
               form.setValue('keyType', availableTypes[0]);
             }
           } else {
-            setError(t('login_form.signin_safe_storage.user_not_found'));
+            setError('User not found in safe storage');
           }
         } catch (error) {
           setError((error as AuthorizationError).message);
@@ -142,7 +140,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
           setLoading(false);
         }
       })();
-    }, [username, preferredKeyTypes, form, t]);
+    }, [username, preferredKeyTypes, form]);
 
     // Handle key update
     async function onUpdateKey(values: SafeStorageKeyUpdateForm) {
@@ -152,7 +150,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         setError(null);
 
         if (!registeredUser) {
-          setError(t('login_form.signin_safe_storage.user_not_found'));
+          setError('User not found in safe storage');
           return;
         }
 
@@ -174,8 +172,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         setUpdateSuccess(true);
 
         toast({
-          title: t('login_form.signin_safe_storage.key_updated_title'),
-          description: t('login_form.signin_safe_storage.key_updated_description'),
+          title: 'Key Updated',
+          description: 'Your key has been updated successfully',
           variant: 'success'
         });
 
@@ -190,9 +188,9 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         }, 2000);
       } catch (error) {
         if (typeof error === 'string') {
-          setError(t(error));
+          setError(error);
         } else {
-          setError(t('login_form.zod_error.invalid_wif'));
+          setError('Invalid WIF key');
         }
         setLoading(false);
       }
@@ -202,21 +200,18 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
 
     return (
       <Step
-        title={t('login_form.signin_safe_storage.update_key_title')}
+        title="Update Key in Safe Storage"
         description={
           <div>
             <div data-testid="login-form-description">
               {registeredUser
-                ? t('login_form.signin_safe_storage.update_key_description', {
-                    username,
-                    keyType: form.getValues().keyType
-                  })
-                : t('login_form.signin_safe_storage.user_not_found')}
+                ? `Update ${form.getValues().keyType} key for user ${username}`
+                : 'User not found in safe storage'}
             </div>
             {error && <div className="text-sm text-destructive">{error}</div>}
             {updateSuccess && (
               <div className="text-sm text-green-500">
-                {t('login_form.signin_safe_storage.key_updated_success')}
+                Key updated successfully! Now you can sign in again.
               </div>
             )}
           </div>
@@ -234,7 +229,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                     <Input
                       {...field}
                       disabled={true}
-                      placeholder={t('login_form.username_placeholder')}
+                      placeholder="Enter your username"
                       data-testid="login-form-username"
                     />
                   </FormControl>
@@ -284,7 +279,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                       <Input
                         {...field}
                         type="password"
-                        placeholder={t('login_form.signin_safe_storage.placeholder_password')}
+                        placeholder="Safe storage password"
                         data-testid="login-form-password"
                       />
                       <Button
@@ -312,9 +307,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                     <Input
                       {...field}
                       type="password"
-                      placeholder={t('login_form.signin_safe_storage.placeholder_wif', {
-                        keyType: form.getValues().keyType
-                      })}
+                      placeholder={`WIF ${form.getValues().keyType} private key`}
                       data-testid="login-form-wif"
                     />
                   </FormControl>
@@ -342,7 +335,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                     htmlFor="strict"
                     className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    {t('login_form.signin_safe_storage.strict_mode')}
+                    Direct Authority Mode
                   </label>
                   <TooltipProvider>
                     <Tooltip>
@@ -350,7 +343,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                         <Icons.info className="h-5 w-5" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
-                        {t('login_form.signin_safe_storage.strict_mode_tooltip')}
+                        When enabled, the app will only allow adding keys with account's own authority. If you
+                        want to add keys with other authority, please disable this mode.
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -365,10 +359,10 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                 onClick={() => onSetStep(Steps.SAFE_STORAGE_LOGIN)}
                 data-testid="login-form-back"
               >
-                {t('login_form.signin_safe_storage.back')}
+                Back
               </Button>
               <Button type="submit" disabled={loading || updateSuccess} data-testid="login-form-update-key">
-                {t('login_form.signin_safe_storage.update_key_button')}
+                Update Key
               </Button>
             </div>
           </form>

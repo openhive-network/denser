@@ -1,6 +1,5 @@
 /* Component that manages all available sign-in options */
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { useTranslation } from 'next-i18next';
 import SafeStorage, { SafeStorageRef } from './methods/safestorage';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useProcessAuth, LoginFormSchema } from './process';
@@ -37,7 +36,6 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
   ) => {
     // component controllers
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
-    const { t } = useTranslation(i18nNamespace);
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
     const [username, setUsername] = useState<string>(lastLoggedInUser);

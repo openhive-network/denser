@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslation } from 'next-i18next';
+
 import {
   Button,
   Form,
@@ -54,7 +54,6 @@ const Methods: FC<MethodsProps> = ({
   sign,
   submit
 }) => {
-  const { t } = useTranslation(i18nNamespace);
   const [loading, setLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -101,11 +100,11 @@ const Methods: FC<MethodsProps> = ({
   return (
     <Step
       loading={loading}
-      title={t('login_form.other_signin_options')}
+      title="Other sign in options"
       description={
         <div>
           <div data-testid="other-signin-options-description">
-            {t('login_form.other_signing_options_description')}
+            Enter your username and select a sign in method
           </div>
         </div>
       }
@@ -122,7 +121,7 @@ const Methods: FC<MethodsProps> = ({
                   {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
                   <div className="relative flex">
                     <Input
-                      placeholder={t('login_form.signin_safe_storage.placeholder_username')}
+                      placeholder="Username"
                       type="text"
                       autoComplete="username"
                       {...field}
@@ -133,7 +132,7 @@ const Methods: FC<MethodsProps> = ({
                 </FormControl>
                 {errors.username && (
                   <FormMessage className="font-normal" data-testid="other-signin-username-error-msg">
-                    {t(errors.username?.message!)}
+                    {errors.username?.message!}
                   </FormMessage>
                 )}
               </FormItem>
@@ -182,7 +181,7 @@ const Methods: FC<MethodsProps> = ({
               data-testid="hive-keychain-extension-button"
             >
               <Icons.hivekeychain className="mr-4 h-8 w-8" />
-              {t('login_form.signin_with_keychain')}
+              Hive Keychain extension
             </Button>
 
             <Separator className="my-1 w-full" />
@@ -197,7 +196,7 @@ const Methods: FC<MethodsProps> = ({
             >
               <div className="flex flex-1 items-center">
                 <Icons.keyRound className="mr-4 h-8 w-8" />
-                {t('login_form.signin_with_wif')}
+                Sign in with WIF (Legacy)
               </div>
             </Button>
 
@@ -212,7 +211,7 @@ const Methods: FC<MethodsProps> = ({
             >
               <div className="flex flex-1 items-center">
                 <Icons.hiveauth className="mr-4 h-8 w-8" />
-                {t('login_form.signin_with_hiveauth')}
+                HiveAuth
               </div>
             </Button>
 
@@ -226,7 +225,7 @@ const Methods: FC<MethodsProps> = ({
               data-testid="hive-signer-button"
             >
               <Icons.hivesigner className="mr-4 h-8 w-8" />
-              {t('login_form.signin_with_hivesigner')}
+              HiveSigner
             </Button>
 
             <Button
@@ -238,7 +237,7 @@ const Methods: FC<MethodsProps> = ({
               }}
               data-testid="go-back-button"
             >
-              <Icons.chevronLeft className="mr-2 h-4 w-4" /> {t('login_form.go_back_button')}
+              <Icons.chevronLeft className="mr-2 h-4 w-4" /> Go back
             </Button>
           </div>
         </form>

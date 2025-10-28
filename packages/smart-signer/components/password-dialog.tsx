@@ -17,7 +17,6 @@ const logger = getLogger('app');
 interface PasswordDialogProps {
   children?: ReactNode;
   passwordFormOptions?: PasswordFormOptions;
-  i18nNamespace?: string;
 }
 
 export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = ({
@@ -25,10 +24,8 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
   isOpen = false,
   onResolve,
   onReject,
-  passwordFormOptions = {},
-  i18nNamespace = 'smart-signer'
+  passwordFormOptions = {}
 }) => {
-  // const { t } = useTranslation(i18nNamespace);
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
   const [formData, setFormData] = useState<PasswordFormSchemaHbauth | PasswordFormSchemaWif>(

@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { getLogger } from '@ui/lib/logging';
-import { useTranslation } from 'next-i18next';
 
 const logger = getLogger('app');
 
@@ -55,13 +54,13 @@ export const passwordFormDefaultValuesWif = {
 
 // captions for inputs, buttons, form title etc.
 export interface PasswordFormI18nKeysForCaptions {
-  title?: string | [string, { [key: string]: string }];
-  description?: string | [string, { [key: string]: string }];
-  inputPasswordPlaceholder?: string | [string, { [key: string]: string }];
-  inputStorePasswordLabel?: string | [string, { [key: string]: string }];
-  submitButtonName?: string | [string, { [key: string]: string }];
-  submitButtonNameWhenWorking?: string | [string, { [key: string]: string }];
-  resetButtonName?: string | [string, { [key: string]: string }];
+  title?: string;
+  description?: string;
+  inputPasswordPlaceholder?: string;
+  inputStorePasswordLabel?: string;
+  submitButtonName?: string;
+  submitButtonNameWhenWorking?: string;
+  resetButtonName?: string;
 }
 
 export interface PasswordFormOptions {
@@ -70,7 +69,6 @@ export interface PasswordFormOptions {
   errorMessage?: string;
   onSubmit?: (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => any;
   i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
-  i18nNamespace?: string;
 }
 
 export function PasswordForm({
@@ -78,22 +76,18 @@ export function PasswordForm({
   showInputStorePassword = true,
   errorMessage = '',
   onSubmit = (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {},
-  i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
-  i18nNamespace = 'smart-signer'
+  i18nKeysForCaptions = {} // captions for inputs, buttons, form title etc.
 }: PasswordFormOptions) {
-  const { t } = useTranslation(i18nNamespace);
   const randomValue = crypto.randomUUID();
-  const t2 = (args: string | [string, { [key: string]: string }]) =>
-    Array.isArray(args) ? t(...args) : t(args);
 
   const defaultI18nKeysForCaptions = {
-    title: 'password_form.password_form_title',
+    title: 'Enter your password',
     description: '',
-    inputPasswordPlaceholder: 'password_form.password_placeholder',
-    inputStorePasswordLabel: 'password_form.store_password_label',
-    submitButtonName: 'login_form.login_button',
-    submitButtonNameWhenWorking: 'login_form.working',
-    resetButtonName: 'login_form.reset_button'
+    inputPasswordPlaceholder: 'Password',
+    inputStorePasswordLabel: 'Store password',
+    submitButtonName: 'Submit',
+    submitButtonNameWhenWorking: 'Working…',
+    resetButtonName: 'Reset'
   };
   const captionKey: Required<PasswordFormI18nKeysForCaptions> = {
     ...defaultI18nKeysForCaptions,
@@ -128,22 +122,22 @@ export function PasswordForm({
       data-testid="enter-password-to-unlock-key"
     >
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
-        <h2 className="w-full text-xl">{t2(captionKey.title)}</h2>
-        {captionKey.description && <p className="w-full">{t2(captionKey.description)}</p>}
+        <h2 className="w-full text-xl">{captionKey.title}</h2>
+        {captionKey.description && <p className="w-full">{captionKey.description}</p>}
 
         <form method="post" className="mt-6 w-full">
           <div className="relative mb-5">
             <input
               type="password"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
-              placeholder={t2(captionKey.inputPasswordPlaceholder)}
+              placeholder={captionKey.inputPasswordPlaceholder}
               autoComplete="current-password"
               {...register('password')}
               data-testid="posting-private-key-input"
             />
             {errors.password?.message && (
               <p className="text-sm text-red-500" role="alert" data-testid="password-form-error-message">
-                {t(errors.password.message)}
+                {errors.password.message}
               </p>
             )}
           </div>
@@ -161,7 +155,7 @@ export function PasswordForm({
                 htmlFor={`store-password-${randomValue}`}
                 className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
               >
-                {t2(captionKey.inputStorePasswordLabel)}
+                {captionKey.inputStorePasswordLabel}
               </label>
             </div>
           )}
@@ -175,8 +169,8 @@ export function PasswordForm({
               data-testid="password-submit-button"
               disabled={isSubmitting}
             >
-              {!isSubmitting && t2(captionKey.submitButtonName)}
-              {isSubmitting && t2(captionKey.submitButtonNameWhenWorking)}
+              {!isSubmitting && captionKey.submitButtonName}
+              {isSubmitting && captionKey.submitButtonNameWhenWorking}
             </button>
 
             {/* Reset Button */}
@@ -186,7 +180,7 @@ export function PasswordForm({
               className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
               data-testid="password-reset-button"
             >
-              {t2(captionKey.resetButtonName)}
+              {captionKey.resetButtonName}
             </button>
           </div>
 

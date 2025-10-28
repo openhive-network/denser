@@ -1,7 +1,7 @@
 /* Sign-in with safe storage (use beekeeper wallet through hb-auth) */
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'next-i18next';
+
 import { AuthUser, AuthorizationError, OnlineClient } from '@hiveio/hb-auth';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,20 +33,19 @@ import {
 import Step from '../step';
 import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
-import { TFunction } from 'i18next';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 
-function getFormSchema(t: TFunction<'smart-signer', undefined>) {
+function getFormSchema() {
   return z
     .object({
       username,
       password: z.string().min(6, {
-        message: t('login_form.zod_error.password_length')
+        message: 'Password length should be more than 6 characters'
       }),
       wif: z.string(),
       keyType: z.nativeEnum(KeyType, {
-        invalid_type_error: t('login_form.zod_error.invalid_keytype'),
-        required_error: t('login_form.zod_error.keytype_required')
+        invalid_type_error: 'Invalid keyType',
+        required_error: 'keyType is required'
       }),
       userFound: z.boolean(),
       strict: z.boolean()
@@ -95,7 +94,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     }));
 
     const authClient = useRef<OnlineClient>();
-    const { t } = useTranslation(i18nNamespace);
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
@@ -106,7 +104,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const [authUsers, setAuthUsers] = useState<AuthUser[]>([]);
     const form = useForm<SafeStorageForm>({
       mode: 'onChange',
-      resolver: zodResolver(getFormSchema(t)),
+      resolver: zodResolver(getFormSchema()),
       defaultValues: {
         username,
         password: '',
@@ -228,16 +226,12 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
       if (found?.username) {
         if (found?.unlocked) {
-          setDescription(
-            t('login_form.signin_safe_storage.description_unlocked', { keyType: form.getValues().keyType })
-          );
+          setDescription(`Unlocked with ${form.getValues().keyType} key`);
         } else {
-          setDescription(t('login_form.signin_safe_storage.description_unlock'));
+          setDescription('Unlock user with password');
         }
       } else {
-        setDescription(
-          t('login_form.signin_safe_storage.description_save', { keyType: form.getValues().keyType })
-        );
+        setDescription(`Save your ${form.getValues().keyType} key by filling form below`);
       }
 
       form.setValue('userFound', found ? true : false);
@@ -249,7 +243,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
     return (
       <Step
-        title={t('login_form.signin_safe_storage.title')}
+        title="Sign in with safe storage"
         description={
           <div>
             <div data-testid="login-form-description">{description}</div>
@@ -270,7 +264,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
                     <div className="relative flex">
                       <Input
-                        placeholder={t('login_form.signin_safe_storage.placeholder_username')}
+                        placeholder="Username"
                         type="text"
                         autoComplete="username"
                         data-testid="username-input"
@@ -305,7 +299,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   </FormControl>
                   {errors.username && (
                     <FormMessage className="font-normal" data-testid="username-error-message">
-                      {t(errors.username?.message!)}
+                      {errors.username?.message!}
                     </FormMessage>
                   )}
                 </FormItem>
@@ -321,7 +315,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   <FormControl>
                     <div className="relative">
                       <Input
-                        placeholder={t('login_form.signin_safe_storage.placeholder_password')}
+                        placeholder="Safe storage password"
                         type={show.password ? 'text' : 'password'}
                         autoComplete="current-password"
                         data-testid="password-input"
@@ -354,9 +348,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     <FormControl>
                       <div className="relative">
                         <Input
-                          placeholder={t('login_form.signin_safe_storage.placeholder_wif', {
-                            keyType: form.getValues().keyType
-                          })}
+                          placeholder={`"WIF ${form.getValues().keyType} private key`}
                           type={show.wif ? 'text' : 'password'}
                           data-testid="wif-input"
                           {...field}
@@ -374,7 +366,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     </FormControl>
                     {errors.wif && (
                       <FormMessage className="font-normal" data-testid="wif-input-error-message">
-                        {t(errors.wif?.message!)}
+                        {errors.wif?.message!}
                       </FormMessage>
                     )}
                   </FormItem>
@@ -434,7 +426,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                       htmlFor="strict"
                       className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                      {t('login_form.signin_safe_storage.strict_mode')}
+                      Direct Authority Mode
                     </label>
                     <TooltipProvider>
                       <Tooltip>
@@ -442,7 +434,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                           <Icons.info className="h-5 w-5" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">
-                          {t('login_form.signin_safe_storage.strict_mode_tooltip')}
+                          When enabled, the app will only allow adding keys with account's own authority. If
+                          you want to add keys with other authority, please disable this mode.
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -456,7 +449,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   onClick={() => onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE)}
                   className="max-w-max cursor-pointer text-xs text-destructive hover:opacity-80 active:opacity-60"
                 >
-                  {t('login_form.signin_safe_storage.key_update')}
+                  Update existing saved key
                 </span>
               </div>
             )}
@@ -470,7 +463,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     disabled={!form.formState.isValid}
                     onClick={form.handleSubmit(onAuthenticate)}
                   >
-                    {t('login_form.signin_safe_storage.button_signin')}
+                    Sign in
                   </Button>
                   {/* TODO: Re-work offline flow */}
                   {/* <Button
@@ -491,7 +484,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   disabled={!form.formState.isValid}
                   onClick={form.handleSubmit(onSave)}
                 >
-                  {t('login_form.signin_safe_storage.button_save')}
+                  Save and sign in
                 </Button>
               )}
             </div>
@@ -509,7 +502,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               }}
             >
               <Icons.keyRound className="mr-2 h-4 w-4" />
-              {t('login_form.signin_safe_storage.button_other')}
+              Other sign in options
             </Button>
           </form>
 
