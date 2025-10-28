@@ -2,7 +2,7 @@ import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
 import { Input } from '@ui/components/input';
 import { Button } from '@ui/components/button';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 
 export default function ClipboardCopy({ copyText, label }: { copyText: string; label: string }) {
   const { t } = useTranslation('common_blog');

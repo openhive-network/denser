@@ -10,7 +10,7 @@ import {
 } from '@ui/components/dropdown-menu';
 import { useState } from 'react';
 import clsx from 'clsx';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { getLanguage, setLanguage } from '../../utils/language';
 import { useRouter } from 'next/navigation';

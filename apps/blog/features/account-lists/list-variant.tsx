@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import ListArea from './list-area';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { FullAccount } from '@transaction/lib/app-types';

@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Input, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@ui/components';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { CircleSpinner } from 'react-spinners-kit';
 import { Roles } from './lib/utils';
 import RolesSelect from './roles-select';

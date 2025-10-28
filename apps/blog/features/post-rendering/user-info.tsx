@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import parseDate from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 
 import ChangeTitleDialog from '../community-profile/change-title-dialog';
 import TimeAgo from '@hive/ui/components/time-ago';

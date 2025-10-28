@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
 import { Icons } from '@ui/components/icons';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import TooltipContainer from '@ui/components/tooltip-container';
 
 export default function ModeToggle({ children }: { children: React.ReactNode }) {

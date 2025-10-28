@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@hive/ui/c
 import Link from 'next/link';
 import BasePathLink from '@/blog/components/base-path-link';
 import { Community } from '@transaction/lib/extended-hive.chain';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import SubscribeCommunity from '../community-profile/subscribe-community';
 import { useEffect, useState } from 'react';

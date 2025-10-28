@@ -1,6 +1,6 @@
 import { Button, Input } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import React, { useState } from 'react';
 import { useUserTitleMutation } from './hooks/use-user-title';
 

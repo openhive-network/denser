@@ -13,7 +13,7 @@ import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Input, Separator } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import ln2list from '../../lib/ln2list';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { useFlagMutation } from '../../components/hooks/use-flag-mutation';
 import { handleError } from '@ui/lib/handle-error';
 

@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@ui/components/dialog';
 import { handleError } from '@ui/lib/handle-error';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useUpdateCommunityMutation } from './hooks/use-update-community-mutation';

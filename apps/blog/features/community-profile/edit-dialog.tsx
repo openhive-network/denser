@@ -1,7 +1,7 @@
 'use client';
 
 import { Dialog, DialogTrigger } from '@ui/components/dialog';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { Community } from '@transaction/lib/extended-hive.chain';
 import { useState } from 'react';
 import EditDialogContent from './edit-dialog-content';

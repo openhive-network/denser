@@ -1,6 +1,6 @@
 import { Button } from '@ui/components/button';
 import DialogLogin from '@/blog/components/dialog-login';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { User } from '@smart-signer/types/common';
 import { useSubscribeMutation, useUnsubscribeMutation } from './hooks/use-subscribe-mutations';
 import { handleError } from '@ui/lib/handle-error';

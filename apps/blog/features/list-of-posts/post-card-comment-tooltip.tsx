@@ -2,7 +2,7 @@
 
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import Link from 'next/link';
 
 interface PostCardCommentTooltipProps {

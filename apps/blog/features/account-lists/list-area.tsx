@@ -5,7 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@u
 import clsx from 'clsx';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useResetAllListsMutation } from '@/blog/components/hooks/use-reset-mutations';

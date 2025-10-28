@@ -8,7 +8,7 @@ import { Community } from '@transaction/lib/extended-hive.chain';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from '../../activity-log/dialog';
 import { Badge } from '@ui/components/badge';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
 import SubscribeCommunity from '../../community-profile/subscribe-community';

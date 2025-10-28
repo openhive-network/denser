@@ -6,7 +6,7 @@ import { getCommunities } from '@transaction/lib/bridge-api';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 
 const CommunitiesSidebar: FC = () => {
   const { t } = useTranslation('common_blog');

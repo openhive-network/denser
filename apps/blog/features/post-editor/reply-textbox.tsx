@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
 import { useEffect, useState, useRef } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';

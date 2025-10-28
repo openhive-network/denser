@@ -7,7 +7,7 @@ import { Entry } from '@transaction/lib/extended-hive.chain';
 import { Badge } from '@ui/components/badge';
 import { CardContent, CardDescription, CardTitle } from '@ui/components/card';
 import { Separator } from '@ui/components/separator';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import Link from 'next/link';
 
 const PostSummary = ({

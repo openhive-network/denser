@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
 import { useUser } from '@smart-signer/lib/auth/use-user';

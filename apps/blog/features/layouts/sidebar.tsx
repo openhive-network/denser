@@ -6,7 +6,7 @@ import BasePathLink from '../../components/base-path-link';
 import { Separator } from '@ui/components/separator';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import env from '@beam-australia/react-env';
 import DialogLogin from '../../components/dialog-login';
 import { getLogger } from '@ui/lib/logging';
