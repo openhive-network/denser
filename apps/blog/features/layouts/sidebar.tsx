@@ -4,7 +4,6 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@ui/components/sh
 import Link from 'next/link';
 import BasePathLink from '../../components/base-path-link';
 import { Separator } from '@ui/components/separator';
-import clsx from 'clsx';
 import { ReactNode } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
 import env from '@beam-australia/react-env';

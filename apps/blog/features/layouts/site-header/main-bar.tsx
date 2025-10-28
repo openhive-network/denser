@@ -28,23 +28,26 @@ import Sidebar from '@/blog/features/layouts/sidebar';
 import { useTranslation } from '@/blog/i18n/client';
 import { usePathname } from 'next/navigation';
 import { MainNav } from './main-nav';
+import SearchButton from './search-button';
 
 const MainBar: FC = () => {
   const { t } = useTranslation('common_blog');
   const pathname = usePathname();
   const { user } = useUser();
   const { manabarsData } = useManabars(user.username);
-  const { data } = useQuery(
-    ['unreadNotifications', user.username],
-    () => getUnreadNotifications(user.username),
-    {
-      enabled: !!user.username
-    }
-  );
-  const { data: profile } = useQuery(['profileData', user.username], () => getAccountFull(user.username), {
+  const { data } = useQuery({
+    queryKey: ['unreadNotifications', user.username],
+    queryFn: () => getUnreadNotifications(user.username),
+    enabled: !!user.username
+  });
+  const { data: profile } = useQuery({
+    queryKey: ['profileData', user.username],
+    queryFn: () => getAccountFull(user.username),
     enabled: user?.isLoggedIn
   });
-  const { data: hiveSense } = useQuery(['hivesense-api'], () => getHiveSenseStatus(), {
+  const { data: hiveSense } = useQuery({
+    queryKey: ['hivesense-api'],
+    queryFn: () => getHiveSenseStatus(),
     refetchOnWindowFocus: false,
     refetchOnMount: false
   });
@@ -273,16 +276,3 @@ const MainBar: FC = () => {
 };
 
 export default MainBar;
-
-const SearchButton = ({ aiTag, className }: { aiTag: boolean; className?: string }) => {
-  return (
-    <TooltipContainer title={`${aiTag ? 'AI ' : ''}Search`}>
-      <Link href="/search" data-testid="navbar-search-link">
-        <Button variant="ghost" size="sm" className={cn('relative h-10 w-10 px-0', className)}>
-          <Icons.search className="h-5 w-5 rotate-90" />
-          {aiTag ? <span className="absolute bottom-0 right-2 text-[10px] font-bold">AI</span> : null}
-        </Button>
-      </Link>
-    </TooltipContainer>
-  );
-};
