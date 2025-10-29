@@ -32,7 +32,7 @@ export function AlertDialogFlag({
 }) {
   const { user } = useUser();
   const [notes, setNotes] = useState('');
-  const { t } = useTranslation();
+  const { t } = useTranslation('common_blog');
   const flagMutation = useFlagMutation();
 
   const flag = async () => {
