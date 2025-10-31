@@ -76,9 +76,42 @@ export class HiveChainService {
     logger.info('Creating instance of HiveChainService.hiveChain with options: %o', options);
     const hiveChain = await createHiveChain(options);
     HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>().extendRest<ExtendedRestApi>({
-        'hivesense-api': {
-          urlPath: 'hivesense-api/',
+      'hivesense-api': {
+        posts: {
+          urlPath: "posts",
+          search: {
+            urlPath: "search",
+            method: "GET"
+          },
+          author: {
+            urlPath: "{author}",
+            permlink: {
+              urlPath: "{permlink}",
+              similar: {
+                urlPath: "similar",
+                method: "GET"
+              }
+            }
+          },
+          byIds: {
+            urlPath: "by-ids",
+            method: "POST"
+          },
+          byIdsQuery: {
+            urlPath: "by-ids-query",
+            method: "GET"
+          }
         },
+        authors: {
+          urlPath: "authors",
+          search: {
+            urlPath: "search",
+            method: "GET"
+          }
+        },
+        urlPath: "hivesense-api/",
+      },
+      method: "GET",
         'hivemind-api': {
           "accountsOperations": {
             urlPath: 'accounts/{account-name}/operations',
