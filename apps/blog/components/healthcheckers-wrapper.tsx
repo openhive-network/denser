@@ -1,11 +1,11 @@
-import { ApiChecker, HealthCheckerComponent } from "@hiveio/healthchecker-component"
-import { FullAccount } from "@transaction/lib/app-types";
-import { Community, Entry, MixedPostsResponse } from "@transaction/lib/extended-hive.chain";
-import { hiveChainService } from "@transaction/lib/hive-chain-service";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@ui/components"
-import { useHealthChecker } from "@ui/hooks/useHealthChecker";
+import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component'
+import { FullAccount } from '@transaction/lib/app-types';
+import { Community, Entry, MixedPostsResponse } from '@transaction/lib/extended-hive.chain';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components'
+import { useHealthChecker } from '@ui/hooks/useHealthChecker';
 import { CircleCheck } from 'lucide-react';
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 type NodeApiCheckers = [
   ApiChecker<FullAccount[]>,
@@ -59,7 +59,7 @@ const HealthCheckersWrapper = () => {
       {
         title: 'Bridge - List Communities',
         method: hiveChain.api.bridge.list_communities,
-        params: {query: null, sort: "rank", observer: 'hive.blog' },
+        params: {query: null, sort: 'rank', observer: 'hive.blog' },
         validatorFunction: (data) => (data?.length && data.length > 0 ? true : 'Get community list error')
       },
       {
@@ -103,28 +103,31 @@ const HealthCheckersWrapper = () => {
   }, []);
 
   return (
-    <div className="p4  lg:px-48">
-      <div className="mx-auto flex flex-col items-center py-8">
-        <h3 className="py-4 text-lg">API switch and healthchecker</h3>
-        <p className="mb-4 text-center text-muted-foreground">You can switch your provider here. Use "Continuos Check" to start evaluating them.</p>
-        <p className="text-center text-muted-foreground">
-          For the best experience use only providers with <CircleCheck className="inline-block w-4 h-4 text-green-600" /> icon after running HealthChecker.
+    <div className='p4  lg:px-48'>
+      <div className='mx-auto flex flex-col items-center py-8'>
+        <h3 className='py-4 text-lg'>API switch and HealthChecker</h3>
+        <p className='mb-4 text-center text-muted-foreground'>You can switch your provider here. Use &quot;Continuos Check&quot; to start evaluating them.</p>
+        <p className=' mb-4 text-center text-muted-foreground'>
+          For the best experience run HealthChecker use only providers with <CircleCheck className='inline-block w-4 h-4 text-green-600' /> icon.
+        </p>
+        <p className='text-center text-muted-foreground'>
+          Click &quot;Switch to Best&quot; button for Healthchecker to automatically select the best possible API.
         </p>
       </div>
-      <Accordion type="single" collapsible defaultValue="main-hc">
-        <AccordionItem value="main-hc">
+      <Accordion type='single' collapsible defaultValue='main-hc'>
+        <AccordionItem value='main-hc'>
           <AccordionTrigger>API Endpoint</AccordionTrigger>
           <AccordionContent>
             {!!nodeHcService && (
-              <HealthCheckerComponent className="m-4" healthCheckerService={nodeHcService} />
+              <HealthCheckerComponent className='m-4' healthCheckerService={nodeHcService} />
             )}
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="search-hc">
+        <AccordionItem value='search-hc'>
           <AccordionTrigger>Endpoint for AI search</AccordionTrigger>
           <AccordionContent>
             {!!aiSearchHcService && (
-              <HealthCheckerComponent className="m-4" healthCheckerService={aiSearchHcService} />
+              <HealthCheckerComponent className='m-4' healthCheckerService={aiSearchHcService} />
             )}
           </AccordionContent>
         </AccordionItem>
