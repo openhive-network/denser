@@ -14,7 +14,7 @@ type NodeApiCheckers = [
   ApiChecker<Entry[] | null>
 ];
 
-type AiSearchApiCheckers = [ApiChecker<MixedPostsResponse>];
+type AiSearchApiCheckers = [ApiChecker<MixedPostsResponse>, ApiChecker<Entry[]>];
 
 const HealthCheckersWrapper = () => {
   const [nodeApiCheckers, setNodeApiCheckers] = useState<NodeApiCheckers | undefined>(undefined);
@@ -72,7 +72,7 @@ const HealthCheckersWrapper = () => {
     const aiSearchApiCheckers: AiSearchApiCheckers = [
       {
         title: 'AI search',
-        method: hiveChain.restApi['hivesense-api']['posts/search'],
+        method: hiveChain.restApi['hivesense-api'].posts.search,
         params: {
           q: 'test',
           truncate: 100,
@@ -80,6 +80,18 @@ const HealthCheckersWrapper = () => {
           full_posts: 10,
         },
         validatorFunction: (data) => (!!data[0] ? true : 'AI search error')
+      },
+      {
+        title: 'AI similar posts',
+        method: hiveChain.restApi['hivesense-api'].posts.author.permlink.similar,
+        params: {
+          author: 'thebeedevs',
+          permlink: 'clive-updates-clive-in-spring-colors',
+          truncate: 100,
+          result_limit: 1
+
+        },
+        validatorFunction: (data) => (!!data[0] ? true : 'AI similar posts error')
       }
     ];
     setNodeApiCheckers(nodeApiCheckers);
@@ -91,7 +103,7 @@ const HealthCheckersWrapper = () => {
   }, []);
 
   return (
-    <div className="p4  lg:p-32">
+    <div className="p4  lg:px-48">
       <div className="mx-auto flex flex-col items-center py-8">
         <h3 className="py-4 text-lg">API switch and healthchecker</h3>
         <p className="mb-4 text-center text-muted-foreground">You can switch your provider here. Use "Continuos Check" to start evaluating them.</p>

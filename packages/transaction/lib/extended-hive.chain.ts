@@ -756,6 +756,15 @@ export interface PostsByIdsParams {
   observer?: string;
 }
 
+export interface SimilarPostsParams {
+  author: string;
+  permlink: string;
+  truncate?: number;
+  result_limit?: number;
+  full_posts?: number;
+  observer?: string;
+}
+
 // Stub entry type for posts with only author/permlink
 export interface PostStub {
   author: string;
@@ -764,24 +773,6 @@ export interface PostStub {
 
 // Mixed response type for new API endpoints
 export type MixedPostsResponse = Array<Entry | PostStub>;
-
-// Legacy API parameter interfaces (deprecated)
-export interface SimilarPostParams {
-  pattern?: string;
-  tr_body?: number;
-  posts_limit?: number;
-  observer?: string;
-  start_author?: string;
-  start_permlink?: string;
-}
-
-export interface SimilarPostsByPostParams {
-  author: string;
-  permlink: string;
-  tr_body: number;
-  posts_limit: number;
-  observer: string;
-}
 
 export interface ApiTag {
   description: string;
@@ -955,29 +946,215 @@ export type ExtendedNodeApi = {
   };
 };
 
+type TEmptyReq = {}
+export interface HivesenseEndpointsPostsSearchParams {
+  /** Search query text for semantic similarity, e.g. `"vector databases"` */
+  q: string;
+  /**
+   * Body truncation length (0 = full content, >0 = truncate to N chars)
+   * @default 0
+   */
+  truncate?: number;
+  /**
+   * Total number of posts (full + stub) to return
+   * @min 1
+   * @max 1000
+   * @default 100
+   */
+  result_limit?: number;
+  /**
+   * How many of the top results should include full post data
+   * @min 0
+   * @max 50
+   * @default 10
+   */
+  full_posts?: number;
+  /**
+   * Hive account whose mute lists etc. will be respected
+   * @default ""
+   */
+  observer?: string;
+}
+
+export interface HivesenseEndpointsPostsSimilarParams {
+  /**
+   * Controls the length of returned post bodies in the results. When set to 0,
+   * returns complete post content. Any other positive value will truncate the
+   * post body to that many characters. Useful for generating previews or
+   * reducing response size. Maximum value is 65535 characters.
+   * @min 0
+   * @max 65535
+   * @default 0
+   * @example 20
+   */
+  truncate?: number;
+  /**
+   * Total number of posts (full + stub) to return. Must be between
+   * 1 and 1000. The posts are returned in order of similarity, with the most
+   * similar posts first. Setting a lower limit can improve response times
+   * and reduce data transfer.
+   * @min 1
+   * @max 1000
+   * @default 100
+   * @example 100
+   */
+  result_limit?: number;
+  /**
+   * How many of the top results should include full post data. Any
+   * remaining posts (up to result_limit) will be stub entries with only
+   * author & permlink. Set this to the size of your first page of results.
+   * @min 0
+   * @max 50
+   * @default 10
+   * @example 10
+   */
+  full_posts?: number;
+  /**
+   * Optional Hive account name with blacklists that will be used to filter the
+   * results. When provided, any posts from authors in the observer
+   * blacklist will be excluded from the results. Leave empty to disable
+   * blacklist filtering. Useful for content moderation and personalization.
+   * @default ""
+   * @example "hive.blog"
+   */
+  observer?: string;
+  /**
+   * The Hive username of the post author. This is the account name that
+   * created the original post for which you want to find similar content.
+   * Must be a valid Hive account name.
+   * @example "bue-witness"
+   */
+  author: string;
+  /**
+   * The unique permlink identifier of the post. This is the URL-friendly
+   * version of the post title that appears in the post URL on Hive.
+   * Together with the author name, it uniquely identifies the post.
+   * @example "my-blog-post"
+   */
+  permlink: string;
+}
+
+export interface HivesenseEndpointsAuthorsSearchParams {
+  /**
+   * Topic or theme to search for. Authors whose posts are semantically related to this topic will be returned.
+   * @example "Make witness node secure against hackers attack and emergency situations"
+   */
+  topic: string;
+  /**
+   * Maximum number of authors to return (1-100).
+   * @min 1
+   * @max 100
+   * @default 10
+   * @example 10
+   */
+  result_limit?: number;
+  /**
+   * Observer (hive account name) whose settings (such as muted lists) are used to filter out excluded posts from the search results
+   * @default ""
+   */
+  observer?: string;
+}
+
+export interface HivesenseEndpointsPostsByIdsPayload {
+  /**
+   * Array of post identifiers. Each item must have both 'author'
+   * and 'permlink' fields. Maximum 50 posts per request.
+   * @maxItems 50
+   * @minItems 1
+   * @example [{"author":"bue-witness","permlink":"my-first-post"},{"author":"another-user","permlink":"interesting-topic"}]
+   */
+  posts: {
+    /** The Hive username of the post author */
+    author: string;
+    /** The unique permlink identifier of the post */
+    permlink: string;
+  }[];
+  /**
+   * Body truncation length. 0 returns full content, positive values
+   * truncate to N characters. Useful for preview mode.
+   * @min 0
+   * @max 65535
+   * @default 0
+   */
+  truncate?: number;
+  /**
+   * Optional Hive account whose mute lists and blacklists will be
+   * applied to filter results. Leave empty to disable filtering.
+   * @default ""
+   */
+  observer?: string;
+}
+
+export interface HivesenseEndpointsPostsByIdsQueryParams {
+  /**
+   * URL-encoded JSON array of post identifiers. Each object must have
+   * 'author' and 'permlink' fields. Maximum 10 posts for GET requests.
+   * @example "[{"author":"bue-witness","permlink":"my-post"}]"
+   */
+  posts: string;
+  /**
+   * Body truncation length (0 = full content)
+   * @min 0
+   * @max 65535
+   * @default 0
+   */
+  truncate?: number;
+  /**
+   * Optional Hive account for filtering
+   * @default ""
+   */
+  observer?: string;
+}
+
+
 export type ExtendedRestApi = {
   'hivesense-api': {
     params: undefined;
     result: HivesenseStatusResponse;
-    // New API endpoints
-    'posts/search': {
-      params: PostsSearchParams;
-      result: MixedPostsResponse;
-    };
-    'posts/by-ids': {
-      params: PostsByIdsParams;
-      result: Entry[];
-    };
-    // Note: The similar posts endpoint uses path parameters, may need special handling
-    // Legacy API endpoints (deprecated)
-    similarposts: {
-      params: SimilarPostParams;
-      result: Entry[];
-    };
-    similarpostsbypost: {
-      params: SimilarPostsByPostParams;
-      result: Entry[];
-    };
+    posts: {
+      search: {
+        result: MixedPostsResponse,
+        params: HivesenseEndpointsPostsSearchParams & TEmptyReq & {
+        }
+      },
+      author: {
+        permlink: {
+          similar: {
+            result: Entry[],
+            params: HivesenseEndpointsPostsSimilarParams & TEmptyReq & {
+              /** The Hive username of the post author. This is the account name that
+created the original post for which you want to find similar content.
+Must be a valid Hive account name.
+ */
+              author: string;
+            
+              /** The unique permlink identifier of the post. This is the URL-friendly
+version of the post title that appears in the post URL on Hive.
+Together with the author name, it uniquely identifies the post.
+ */
+              permlink: string;
+            }
+          }
+        }
+      },
+      byIds: {
+        result: Entry[],
+        params: TEmptyReq & HivesenseEndpointsPostsByIdsPayload & {
+        }
+      },
+      byIdsQuery: {
+        result: string,
+        params: HivesenseEndpointsPostsByIdsQueryParams & TEmptyReq & {
+        }
+      }
+    },
+    authors: {
+      search: {
+        result: string,
+        params: HivesenseEndpointsAuthorsSearchParams & TEmptyReq & {
+        }
+      }
+    }
   };
   'hivemind-api': {
     accountsOperations: {
