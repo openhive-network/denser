@@ -62,12 +62,14 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
+      const commentContentWithoutSpaces: any = await commentContentWithoutUrl.replace(/\s/g, '');
       await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
     }
     else {
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
+      const commentContentWithoutSpaces: any = await commentContentWithoutUrl.replace(/\s/g, '');
       await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
     }
   });
@@ -92,12 +94,14 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
         await page.locator('button').getByText('Show').click();
         const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-        const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+        const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
+        const commentContentWithoutSpaces: any = await commentContentWithoutUrl.replace(/\s/g, '');
         await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
       }
       else {
         const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-        const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+        const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
+        const commentContentWithoutSpaces: any = await commentContentWithoutUrl.replace(/\s/g, '');
         await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
       }
     } else {
@@ -203,12 +207,14 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
+      const commentContentWithoutSpaces: any = await commentContentWithoutUrl.replace(/\s/g, '');
       await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
     }
     else {
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
+      const commentContentWithoutSpaces: any = await commentContentWithoutUrl.replace(/\s/g, '');
       await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
     }
   });
@@ -357,12 +363,14 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
+      const commentContentWithoutSpaces: any = await commentContentWithoutUrl.replace(/\s/g, '');
       await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
     }
     else {
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
-      const commentContentWithoutSpaces: any = await commentContent.replace(/\s/g, '');
+      const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
+      const commentContentWithoutSpaces: any = await commentContentWithoutUrl.replace(/\s/g, '');
       await expect(commentContentWithoutSpaces).toContain(firstCommentCardDescriptionWitoutSpaces);
     }
   });

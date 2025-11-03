@@ -269,7 +269,7 @@ export function AdvancedSettingsPostForm({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="h-full overflow-scroll sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl">
+          <DialogTitle className="text-2xl" data-testid="advanced-settings-title">
             {t('submit_page.advanced_settings_dialog.advanced_settings')}
           </DialogTitle>
           <Separator />
@@ -291,6 +291,7 @@ export function AdvancedSettingsPostForm({
                         'border-destructive bg-border': maxPayout === e.value,
                         'text-muted-foreground': maxPayout !== e.value
                       })}
+                      data-testid={`maximum-accepted-payout-${e.value}`}
                     >
                       {e.label}
                     </Label>
@@ -299,7 +300,7 @@ export function AdvancedSettingsPostForm({
               </div>
               {maxPayout === 'custom' ? (
                 <>
-                  <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
+                  <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} data-testid="maximum-accepted-payout-custom-value-input" />
                   <div className="p-2 text-red-600">
                     {Number(customValue) < 0
                       ? t('submit_page.advanced_settings_dialog.cannot_be_less_than')
@@ -331,13 +332,14 @@ export function AdvancedSettingsPostForm({
                       'border-destructive bg-border': rewards === e.value,
                       'text-muted-foreground': rewards !== e.value
                     })}
+                    data-testid={`autor-rewards-${e.value}`}
                   >
                     {e.label}
                   </Label>
                 </div>
               ))}
             </div>
-            <span>
+            <span data-testid="author-rewards-message">
               {t('submit_page.advanced_settings_dialog.default')}
               {authorRewardsText(preferences.blog_rewards)}
             </span>
@@ -348,9 +350,9 @@ export function AdvancedSettingsPostForm({
           <div>
             <ul className="flex flex-col gap-2">
               <li className="flex items-center gap-5">
-                <Input value={splitRewards + '%'} disabled className="w-16" />
+                <Input value={splitRewards + '%'} disabled className="w-16" data-testid="default-beneficiar-value"/>
                 <div className="relative col-span-3">
-                  <Input disabled value={username} className="block w-full px-3 py-2.5 pl-11" />
+                  <Input disabled value={username} className="block w-full px-3 py-2.5 pl-11" data-testid="default-beneficiar-name"/>
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <Icons.atSign className="h-5 w-5" />
                   </div>
@@ -373,7 +375,7 @@ export function AdvancedSettingsPostForm({
                 </div>
               ))}
             </ul>
-            <div className="p-2 text-destructive">
+            <div className="p-2 text-destructive" data-testid="beneficiaries-message-dialog">
               {splitRewards < 0
                 ? t('submit_page.advanced_settings_dialog.your_percent')
                 : hasDuplicateUsernames
@@ -392,19 +394,20 @@ export function AdvancedSettingsPostForm({
               <Button
                 variant="link"
                 className="h-fit w-fit px-0 py-1 text-xs text-destructive"
+                data-testid="add-beneficiar-account"
                 onClick={handleAddAccount}
               >
                 {t('submit_page.advanced_settings_dialog.add_account')}
               </Button>
             ) : null}
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3"  data-testid="post-templates-box">
             <span className="text-lg font-bold">
               {t('submit_page.advanced_settings_dialog.post_templates')}
             </span>
             <span>{t('submit_page.advanced_settings_dialog.manage_your_post_templates')}</span>
             <div className="flex flex-col gap-1">
-              <ScrollArea className=" h-fit max-h-48 rounded-md border p-4">
+              <ScrollArea className=" h-fit max-h-48 rounded-md border p-4"  data-testid="list-of-post-templates">
                 {storedTemplates && storedTemplates.length > 0
                   ? storedTemplates.map((e) => (
                       <div
@@ -416,6 +419,7 @@ export function AdvancedSettingsPostForm({
                             'border-destructive': selectTemplate === e.templateTitle
                           }
                         )}
+                        data-testid="template-list-item"
                       >
                         {e.templateTitle}
                       </div>
@@ -426,6 +430,7 @@ export function AdvancedSettingsPostForm({
                 placeholder={t('submit_page.advanced_settings_dialog.name_of_a_new_template')}
                 value={templateTitle}
                 onChange={(e) => handleTemplateTitle(e.target.value)}
+                data-testid="name-of-a-new-template-input"
               />
               {isTemplateStored ? (
                 <div className="p-2 text-destructive">
@@ -451,16 +456,17 @@ export function AdvancedSettingsPostForm({
               Boolean(smallWeight) ||
               badActor
             }
+            data-testid="advanced-settings-save-button"
           >
             {t('submit_page.advanced_settings_dialog.save')}
           </Button>
           {currentTemplate ? (
-            <Button variant="redHover" onClick={() => loadTemplate()}>
+            <Button variant="redHover" onClick={() => loadTemplate()} data-testid="advanced-settings-load-template-button">
               {t('submit_page.advanced_settings_dialog.load')}
             </Button>
           ) : null}
           {selectTemplate !== '/' ? (
-            <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)} className="mb-2">
+            <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)} className="mb-2" data-testid="advanced-settings-delete-template-button">
               {t('submit_page.advanced_settings_dialog.delete_template')}
             </Button>
           ) : null}
@@ -482,12 +488,14 @@ function Beneficiary({ onChangeBeneficiary, beneficiary }: ItemProps) {
         value={beneficiary.weight}
         className="w-16"
         onChange={(e) => onChangeBeneficiary(e.target.value, beneficiary.account)}
+        data-testid="beneficiary-value"
       />
       <div className="relative col-span-3">
         <Input
           value={beneficiary.account}
           className="block w-full px-3 py-2.5 pl-11"
           onChange={(e) => onChangeBeneficiary(beneficiary.weight, e.target.value)}
+          data-testid="beneficiary-name"
         />
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <Icons.atSign className="h-5 w-5" />

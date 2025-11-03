@@ -3,7 +3,7 @@ import { users, LoginHelper } from '../support/loginHelper';
 import { LoginForm } from '../support/pages/loginForm';
 import { CommentEditorPage } from '../support/pages/commentEditorPage';
 import { generateRandomString } from '../support/utils';
-import { waitForCreatedCommentIsVisible } from '../support/waitHelper';
+import { waitForCreatedCommentIsVisible, waitForCommentEditorIsLoaded } from '../support/waitHelper';
 import { PostPage } from '../support/pages/postPage';
 
 test.describe.serial('Creating and editing comments with POM and fixture users', () => {
@@ -20,8 +20,10 @@ test.describe.serial('Creating and editing comments with POM and fixture users',
     await postPage.validatePostTitle('test-39');
     await postPage.validatePostContantContainText('Test 39', 'content Test 39 numer');
     // Click Reply to open the comment editor
+    await postPage.postEditButton.waitFor({state:'visible'});
     await commentEditorPage.getPostReplayButton.click();
     // Validate the empty reply editor is loaded
+    // await waitForCommentEditorIsLoaded(denserAutoTest4Page.page);
     await commentEditorPage.validateEmptyCommentEditorIsLoaded();
     // Add content to the textarea
     const randomString: string = generateRandomString();
@@ -52,6 +54,7 @@ test.describe.serial('Creating and editing comments with POM and fixture users',
     await postPage.validatePostTitle('test-39');
     await postPage.validatePostContantContainText('Test 39', 'content Test 39 numer');
     // Click Edit of the first comment
+    await postPage.postEditButton.waitFor({state:'visible'});
     await postPage.commentCardsFooterEditButton.first().click();
     // Validate the reply editor is loaded by edit
     await commentEditorPage.validateCommentEditorIsLoadedByEdit();
@@ -85,6 +88,7 @@ test.describe.serial('Creating and editing comments with POM and fixture users',
     await postPage.validatePostTitle('test-39');
     await postPage.validatePostContantContainText('Test 39', 'content Test 39 numer');
     // Click Reply of the first comment to open the comment editor
+    await postPage.postEditButton.waitFor({state:'visible'});
     await postPage.commentCardsFooterReply.first().click();
     // Validate the empty reply editor is loaded
     await commentEditorPage.validateEmptyCommentEditorIsLoaded();
@@ -117,6 +121,7 @@ test.describe.serial('Creating and editing comments with POM and fixture users',
     await postPage.validatePostTitle('test-39');
     await postPage.validatePostContantContainText('Test 39', 'content Test 39 numer');
     // Click Edit of the first nested comment
+    await postPage.postEditButton.waitFor({state:'visible'});
     await postPage.firstNestedCommentEditButton.click();
     // Validate the reply editor is loaded by edit
     await commentEditorPage.validateCommentEditorIsLoadedByEdit();

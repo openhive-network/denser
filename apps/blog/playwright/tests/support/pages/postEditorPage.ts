@@ -33,12 +33,14 @@ export class PostEditorPage {
     readonly getEnterYourTagsInput: Locator;
     readonly getAuthorInput: Locator;
     readonly getAuthorRewardsDescription: Locator;
+    readonly getMaximumAcceptedPayoutDescription: Locator;
     readonly getAdvancedSettingsButton: Locator;
     readonly getResourceCreditsDescription: Locator;
     readonly getPostingToListTrigger: Locator;
     readonly getSubmitPostButton: Locator;
     readonly getCleanPostButton: Locator;
     readonly getTitleErrorMessage: Locator;
+    readonly getBeneficiariesOptionsInfo: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -73,12 +75,14 @@ export class PostEditorPage {
         this.getEnterYourTagsInput = page.locator('[name="tags"]');
         this.getAuthorInput = page.locator('[name="author"]');
         this.getAuthorRewardsDescription = page.locator('[data-testid="author-rewards-description"]');
+        this.getMaximumAcceptedPayoutDescription = page.getByText('Maximum Accepted Payout');
         this.getAdvancedSettingsButton = page.locator('[data-testid="advanced-settings-button"]');
         this.getResourceCreditsDescription = page.locator('[data-testid="resource-credits-description"]');
         this.getPostingToListTrigger = page.locator('[data-testid="posting-to-list-trigger"]');
         this.getSubmitPostButton = page.locator('[data-testid="submit-post-button"]');
         this.getCleanPostButton = page.locator('[data-testid="clean-post-button"]');
         this.getTitleErrorMessage = page.locator('[data-testid="form-container"] p').filter( {hasText: 'String must contain at least'});
+        this.getBeneficiariesOptionsInfo = page.locator('span:text("Beneficiaries:")');
     }
 
     async validateDefaultPostEditorIsLoaded() {
@@ -157,6 +161,24 @@ export class PostEditorPage {
         await this.getPostingToListTrigger.locator('//following-sibling::select').selectOption(communitySelectOptionValue);
         // Click the submit button
         await this.getSubmitPostButton.click();
+    }
+
+    async fillInSimplePost(
+        postTitle: string,
+        postContentText: string,
+        postSummary: string,
+        postTag: string
+    ) {
+        // Validate the post editor is loaded
+        await this.validateDefaultPostEditorIsLoaded();
+        // Type the title of the post
+        await this.getPostTitleInput.fill(postTitle);
+        // Type the conntent of the post
+        await this.getEditorContentTextarea.fill(postContentText);
+        // Type the post summary
+        await this.getPostSummaryInput.fill(postSummary);
+        // Type the tag
+        await this.getEnterYourTagsInput.fill(postTag);
     }
 
 }
