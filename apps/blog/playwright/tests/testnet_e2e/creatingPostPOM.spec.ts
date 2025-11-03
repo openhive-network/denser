@@ -1290,7 +1290,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     denserAutoTest0Page.page.on('dialog', async (dialog) => {
       console.log(`Type of the dialog: ${dialog.type()}`);
       console.log(`Dialog content: ${dialog.message()}`);
-      // Możesz zaakceptować lub odrzucić confirm
+      // accept or reject
       if (dialog.message().includes('Are you sure you want to clear')) {
         await dialog.accept();  // Click "OK"
       } else {
