@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Providers>
             <>
               <MainBar />
-              <main className="mx-auto">{children}</main>
+              <main className="mx-auto bg-background-secondary">{children}</main>
             </>
           </Providers>
         </div>
