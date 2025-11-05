@@ -28,9 +28,10 @@ import { usePathname } from 'next/navigation';
 import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
 import { getTwitterInfo } from '@transaction/lib/custom-api';
 import ListItem from './list-item';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const ProfileLayout = ({ children }: { children: ReactNode }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const pathname = usePathname();
   const username = pathname?.split('/')[1].replace('@', '') ?? '';

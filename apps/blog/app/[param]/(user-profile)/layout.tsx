@@ -8,8 +8,9 @@ import { getTwitterInfo } from '@transaction/lib/custom-api';
 const Layout = async ({ children, params }: { children: ReactNode; params: { param: string } }) => {
   const queryClient = getQueryClient();
   const { param } = params;
-  const username = param.startsWith('@') ? param.replace('@', '') : param;
+  const username = param.startsWith('%40') ? param.replace('%40', '') : param;
 
+  console.log('Layout username:', username);
   await queryClient.prefetchQuery({
     queryKey: ['profileData', username],
     queryFn: () => getAccountFull(username)

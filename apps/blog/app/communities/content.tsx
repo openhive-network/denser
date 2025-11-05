@@ -14,10 +14,6 @@ import { getCommunities } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';
 
 const CommunitiesContent = () => {
-  if (typeof window !== 'undefined') {
-    // eslint-disable-next-line no-console
-    console.log('[CommunitiesPage] Component rendered on client');
-  }
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
