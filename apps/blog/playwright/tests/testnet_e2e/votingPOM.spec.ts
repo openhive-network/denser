@@ -445,6 +445,7 @@ test.describe('Voting tests with fixture and POM', () => {
         lightModeWhiteColor
       ) {
         // Wait until optimistic ui is finished and validate the color of the downvote button
+        await secondPostDownvoteButtonLocator.waitFor({ state: 'visible' });
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe(
           lightModeWhiteColor
         );
@@ -453,6 +454,7 @@ test.describe('Voting tests with fixture and POM', () => {
         ).toBe(lightModeRedColor);
       } else {
         // Validate that Downvote button of the second post is color grey
+        await secondPostDownvoteButtonLocator.waitFor({ state: 'visible' });
         expect(await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')).toBe(
           lightModeGreyColor
         );
