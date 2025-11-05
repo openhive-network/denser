@@ -13,11 +13,11 @@ catalogs:
       specifier: 1.0.0-stable.250821060201
       version: 1.0.0-stable.250821060201
     '@hiveio/wax':
-      specifier: 1.27.6-rc10-stable.250718075612
-      version: 1.27.6-rc10-stable.250718075612
+      specifier: 1.27.12-rc3-251104130442
+      version: 1.27.12-rc3-251104130442
     '@hiveio/wax-signers-keychain':
-      specifier: 1.27.6-rc10-stable.250718075612
-      version: 1.27.6-rc10-stable.250718075612
+      specifier: 1.27.12-rc3-251104130442
+      version: 1.27.12-rc3-251104130442
     '@hiveio/workerbee':
       specifier: 1.27.6-rc13-stable.250718112733
       version: 1.27.6-rc13-stable.250718112733
@@ -62,7 +62,7 @@ importers:
         version: link:../../packages/ui
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10-stable.250718075612
+        version: 1.27.12-rc3-251104130442
       '@hookform/resolvers':
         specifier: ^3.3.1
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.0))
@@ -192,10 +192,10 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 1.0.0-stable.250821060201(@hiveio/wax@1.27.6-rc10-stable.250718075612)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
+        version: 1.0.0-stable.250821060201(@hiveio/wax@1.27.12-rc3-251104130442)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10-stable.250718075612
+        version: 1.27.12-rc3-251104130442
       '@hookform/resolvers':
         specifier: ^3.1.1
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.0))
@@ -400,10 +400,10 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 1.0.0-stable.250821060201(@hiveio/wax@1.27.6-rc10-stable.250718075612)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
+        version: 1.0.0-stable.250821060201(@hiveio/wax@1.27.12-rc3-251104130442)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10-stable.250718075612
+        version: 1.27.12-rc3-251104130442
       '@hookform/resolvers':
         specifier: ^3.3.2
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.0))
@@ -512,7 +512,7 @@ importers:
         version: link:../ui
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10-stable.250718075612
+        version: 1.27.12-rc3-251104130442
       '@tanstack/react-query':
         specifier: ^4.36.1
         version: 4.41.0(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -682,10 +682,10 @@ importers:
         version: 0.0.1-stable.250718112633
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10-stable.250718075612
+        version: 1.27.12-rc3-251104130442
       '@hiveio/wax-signers-keychain':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10-stable.250718075612
+        version: 1.27.12-rc3-251104130442
       '@tanstack/react-query':
         specifier: ^4.36.1
         version: 4.41.0(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -785,7 +785,7 @@ importers:
         version: link:../smart-signer
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10-stable.250718075612
+        version: 1.27.12-rc3-251104130442
       '@hiveio/workerbee':
         specifier: catalog:hiveio-toolset
         version: 1.27.6-rc13-stable.250718112733
@@ -836,7 +836,7 @@ importers:
         version: 1.3.3
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
-        version: 1.27.6-rc10-stable.250718075612
+        version: 1.27.12-rc3-251104130442
       '@radix-ui/react-accordion':
         specifier: ^1.1.2
         version: 1.2.2(@types/react-dom@18.3.0)(@types/react@18.3.0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -1894,8 +1894,12 @@ packages:
   '@hiveio/hivescript@1.3.3':
     resolution: {integrity: sha512-nOeGespwSujSaEl4R09u9FXGgMyOywtWWQiJdiWsmJDknCUqXXxTfs3KICssPTjkDlbGp2gkg3WjUyrlxm28Qg==, tarball: https://registry.npmjs.org/@hiveio/hivescript/-/hivescript-1.3.3.tgz}
 
-  '@hiveio/wax-signers-keychain@1.27.6-rc10-stable.250718075612':
-    resolution: {integrity: sha1-9RbwhsYHn+A/krVQLhBJSNDQ0rc=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-keychain/-/@hiveio/wax-signers-keychain-1.27.6-rc10-stable.250718075612.tgz}
+  '@hiveio/wax-signers-keychain@1.27.12-rc3-251104130442':
+    resolution: {integrity: sha1-bChAqe2Wvc7hzBrs2ADU3WUgXDY=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-keychain/-/@hiveio/wax-signers-keychain-1.27.12-rc3-251104130442.tgz}
+
+  '@hiveio/wax@1.27.12-rc3-251104130442':
+    resolution: {integrity: sha1-1aHx+UFw9jY6q2kftz0mvDsdkE4=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.12-rc3-251104130442.tgz}
+    engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/wax@1.27.6-rc10-stable.250718075612':
     resolution: {integrity: sha1-TYKUMQ158pF6HL+KoE1ze7dYQ/M=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.27.6-rc10-stable.250718075612.tgz}
@@ -7008,9 +7012,6 @@ packages:
   keychain-sdk@0.6.2:
     resolution: {integrity: sha512-UnfI7bwq0fajh1TcBNlzwzvVEqbGEVgT+a3segyzwFe8U7K58jkt6/DZ5TDvXYgraAy9xpl4skcMiyRFpwYQxA==}
 
-  keychain-sdk@0.8.5:
-    resolution: {integrity: sha512-8VLIgoCs1oBTmQ0EIPNV74oJIUF5xZ1EdTUADFxLPlYfdEXVj5f/JcZx2TZufR5v0FzNLaibcxqCg4DCaP6IIw==}
-
   keygrip@1.1.0:
     resolution: {integrity: sha512-iYSchDJ+liQ8iwbSI2QqsQOvqv58eJCEanyJPJi+Khyu8smkcKSFUCbPwzFcL7YVtZ6eONjqRX/38caJ7QjRAQ==}
     engines: {node: '>= 0.6'}
@@ -11769,22 +11770,22 @@ snapshots:
       '@hiveio/wax': 1.27.6-rc10-stable.250718075612
       comlink: 4.4.2
 
-  '@hiveio/healthchecker-component@1.0.0-stable.250821060201(@hiveio/wax@1.27.6-rc10-stable.250718075612)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))':
+  '@hiveio/healthchecker-component@1.0.0-stable.250821060201(@hiveio/wax@1.27.12-rc3-251104130442)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))':
     dependencies:
-      '@hiveio/wax': 1.27.6-rc10-stable.250718075612
+      '@hiveio/wax': 1.27.12-rc3-251104130442
       react: 18.3.0
       react-dom: 18.3.0(react@18.3.0)
       tailwindcss: 3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3))
 
   '@hiveio/hivescript@1.3.3': {}
 
-  '@hiveio/wax-signers-keychain@1.27.6-rc10-stable.250718075612':
+  '@hiveio/wax-signers-keychain@1.27.12-rc3-251104130442':
     dependencies:
-      '@hiveio/wax': 1.27.6-rc10-stable.250718075612
-      keychain-sdk: 0.8.5
-    transitivePeerDependencies:
-      - debug
-      - encoding
+      '@hiveio/wax': 1.27.12-rc3-251104130442
+
+  '@hiveio/wax@1.27.12-rc3-251104130442':
+    dependencies:
+      events: 3.3.0
 
   '@hiveio/wax@1.27.6-rc10-stable.250718075612':
     dependencies:
@@ -15805,8 +15806,8 @@ snapshots:
       '@next/eslint-plugin-next': 16.0.1
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.32.0)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 7.0.1(eslint@8.57.1)
@@ -15836,7 +15837,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0)(eslint@8.57.1):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.0(supports-color@8.1.1)
@@ -15848,7 +15849,7 @@ snapshots:
       is-glob: 4.0.3
       stable-hash: 0.0.4
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -15872,14 +15873,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0)(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.46.2(eslint@8.57.1)(typescript@5.5.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.32.0)(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -15937,7 +15938,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -15948,7 +15949,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.46.2(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0)(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -18050,16 +18051,6 @@ snapshots:
       setimmediate: 1.0.5
 
   keychain-sdk@0.6.2:
-    dependencies:
-      '@types/node': 18.19.70
-      axios: 1.7.9
-      hive-keychain-commons: 1.3.2
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - encoding
-
-  keychain-sdk@0.8.5:
     dependencies:
       '@types/node': 18.19.70
       axios: 1.7.9

@@ -7,7 +7,7 @@ import { siteConfig } from '@ui/config/site';
 import Link from 'next/link';
 import React, { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
 import { getUnreadNotifications } from '@transaction/lib/bridge-api';
@@ -16,7 +16,6 @@ import { PieChart, Pie } from 'recharts';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
-import { cn } from '@ui/lib/utils';
 import { getUserAvatarUrl } from '@hive/ui';
 import useManabars from '@/blog/components/hooks/use-manabars';
 import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
@@ -33,7 +32,7 @@ import SearchButton from './search-button';
 const MainBar: FC = () => {
   const { t } = useTranslation('common_blog');
   const pathname = usePathname();
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { manabarsData } = useManabars(user.username);
   const { data } = useQuery({
     queryKey: ['unreadNotifications', user.username],
