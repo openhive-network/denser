@@ -22,18 +22,6 @@ const PostPage = async ({
   });
 
   await queryClient.prefetchQuery({
-    queryKey: ['suggestions', username, permlink],
-    queryFn: () =>
-      getSimilarPostsByPost({
-        author: username,
-        permlink,
-        observer: DEFAULT_OBSERVER,
-        result_limit: 10,
-        full_posts: 10
-      })
-  });
-
-  await queryClient.prefetchQuery({
     queryKey: ['discussionData', permlink],
     queryFn: () => getDiscussion(username, permlink, DEFAULT_OBSERVER)
   });

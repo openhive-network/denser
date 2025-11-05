@@ -84,7 +84,7 @@ const PostContent = () => {
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [edit, setEdit] = useState(false);
-  const observer = user.username !== '' ? user.username : DEFAULT_OBSERVER;
+  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const postInCommunity = category?.startsWith('hive-');
   const { data: postData, isLoading: postIsLoading } = useQuery({
     queryKey: ['postData', author, permlink],

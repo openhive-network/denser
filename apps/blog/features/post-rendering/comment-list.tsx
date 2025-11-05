@@ -4,6 +4,7 @@ import CommentListItem from '@/blog/features/post-rendering/comment-list-item';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
+import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 
 const CommentList = ({
@@ -27,7 +28,7 @@ const CommentList = ({
   flagText: string | undefined;
   discussionPermlink: string;
 }) => {
-  const hash = window.location.hash;
+  const pathname = usePathname();
 
   const arr = useMemo(() => {
     if (!data || !parent) return undefined;
@@ -52,7 +53,7 @@ const CommentList = ({
                   'pl-2',
                   {
                     'm-2 border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
-                      hash?.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
+                      pathname?.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
                   },
                   { 'pl-3 sm:pl-12': comment.depth > 1 }
                 )}

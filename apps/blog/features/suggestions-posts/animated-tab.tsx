@@ -1,5 +1,5 @@
 import SuggestionsList from '@/blog/features/suggestions-posts/list';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,7 +7,7 @@ import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
 import { useLocalStorage } from 'usehooks-ts';
 
 const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const [showSuggestions, storeShowSuggestions] = useLocalStorage<Boolean>(
     `showSuggestions-/${user.username}`,
     true
