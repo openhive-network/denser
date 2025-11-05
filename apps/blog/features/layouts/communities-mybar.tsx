@@ -6,11 +6,11 @@ import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from '@/blog/i18n/client';
 import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const CommunitiesMybar = () => {
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { data } = useQuery({
     queryKey: ['subscriptions', user.username],
     queryFn: () => getSubscriptions(user.username),

@@ -12,13 +12,13 @@ import {
 } from '@ui/components/select';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from '@/blog/i18n/client';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { withBasePath } from '../../utils/PathUtils';
 import { getCommunities, getSubscriptions } from '@transaction/lib/bridge-api';
 import { useRouter } from 'next/navigation';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 export function CommunitiesSelect({ title }: { title: string }) {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const sort = 'rank';

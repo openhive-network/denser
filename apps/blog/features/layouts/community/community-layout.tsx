@@ -12,14 +12,14 @@ import {
   getSubscriptions
 } from '@transaction/lib/bridge-api';
 import CommunityDescription from './community-description';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { CommunitiesSelect } from '@/blog/features/layouts/communities-select';
 import PostSelectFilter from '@/blog/features/layouts/post-select-filter';
 import { usePathname } from 'next/navigation';
 import BasePathLink from '@/blog/components/base-path-link';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const pathname = usePathname();
   const isRolesPage = pathname?.includes('/roles/');
   const { data: subsData } = useQuery({

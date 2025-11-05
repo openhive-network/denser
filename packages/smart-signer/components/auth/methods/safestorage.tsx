@@ -348,7 +348,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     <FormControl>
                       <div className="relative">
                         <Input
-                          placeholder={`"WIF ${form.getValues().keyType} private key`}
+                          placeholder={`WIF ${form.getValues().keyType} private key`}
                           type={show.wif ? 'text' : 'password'}
                           data-testid="wif-input"
                           {...field}

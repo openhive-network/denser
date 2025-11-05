@@ -9,7 +9,6 @@ import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from '../../activity-log/dialog';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from '@/blog/i18n/client';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useEffect, useState } from 'react';
 import SubscribeCommunity from '../../community-profile/subscribe-community';
 import NewPost from './new-post-button';
@@ -17,6 +16,7 @@ import RendererContainer from '../../post-rendering/rendererContainer';
 import EditCommunityDialog from '../../community-profile/edit-dialog';
 import { Separator } from '@ui/components';
 import clsx from 'clsx';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const CommunityDescription = ({
   data,
@@ -30,7 +30,7 @@ const CommunityDescription = ({
   username: string;
 }) => {
   const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const userRole = data.team.find((e) => e[0] === user.username);
   const adminRole = data.team.find((e) => e[0] === user.username && e[1] === 'admin');

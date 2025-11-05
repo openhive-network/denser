@@ -46,12 +46,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
-      <body>
+      <body className="bg-background-secondary">
         <div className="min-h-screen">
           <Providers>
             <>
               <MainBar />
-              <main className="mx-auto bg-background-secondary">{children}</main>
+              <main className="mx-auto">{children}</main>
             </>
           </Providers>
         </div>

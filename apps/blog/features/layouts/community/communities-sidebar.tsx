@@ -13,7 +13,7 @@ const CommunitiesSidebar: FC = () => {
   const sort = 'rank';
   const query = null;
   const { data } = useQuery({
-    queryKey: ['communitiesList', sort, query],
+    queryKey: ['communitiesList', sort],
     queryFn: () => getCommunities(sort, query)
   });
 
