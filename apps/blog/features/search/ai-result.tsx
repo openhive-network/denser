@@ -7,7 +7,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Entry, PostStub } from '@transaction/lib/extended-hive.chain';
 import { PER_PAGE } from './lib/utils';
-import { Preferences } from '@/blog/lib/utils';
+import { DEFAULT_OBSERVER, Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@ui/components/card-skeleton';
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';
@@ -31,11 +31,9 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
   } = useQuery({
     queryKey: ['searchPosts', query],
     queryFn: async () => {
-      if (!query) return null;
-
       return await searchPosts({
         query,
-        observer: user.username !== '' ? user.username : 'hive.blog',
+        observer: user.isLoggedIn ? user.username : DEFAULT_OBSERVER,
         result_limit: 1000, // Get up to 1000 results
         full_posts: PER_PAGE // Get first page fully expanded
       });

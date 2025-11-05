@@ -12,7 +12,6 @@ import { Preferences } from '@transaction/lib/app-types';
 import PostCardSkeleton from '@hive/ui/components/card-skeleton';
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';
-import { useRouter } from 'next/navigation';
 import NoDataError from '@/blog/components/no-data-error';
 
 const AccountTopicResult = ({

@@ -2,9 +2,8 @@
 
 import AccountTopicResult from '@/blog/features/search/account-topic-result';
 import AIResult from '@/blog/features/search/ai-result';
-
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useQuery } from '@tanstack/react-query';
 import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
@@ -32,8 +31,8 @@ const SearchContent = ({
     refetchOnWindowFocus: false,
     refetchOnMount: false
   });
-
-  const { user } = useUser();
+  console.log('hiveSense data:', aiParam, classicQuery, userTopicQuery, topicQuery, sortQuery);
+  const { user } = useUserClient();
   const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
