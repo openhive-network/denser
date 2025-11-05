@@ -638,13 +638,13 @@ main:deploy-blog-mirrornet:
   variables:
     CONTAINER_NAME: denser-main-blog-mirror
     PORT: 9211
-    TURBO_APP_SCOPE: '@hive/blog'
-    TURBO_APP_PATH: '/apps/blog'
     SITE_DOMAIN: https://blog.fake.openhive.network
     WALLET_ENDPOINT: https://wallet.fake.openhive.network
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
     APP_SESSION_TIME: 64800
     IMAGE_NAME: $BLOG_IMAGE_NAME
+    DEPLOYMENT_ENV_FILE: "MIRRORNET_PROD_DEPLOYMENT_ENV"
+
   rules:
   - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     when: manual
@@ -661,12 +661,12 @@ main:deploy-wallet-mirrornet:
   variables:
     CONTAINER_NAME: denser-main-wallet-mirror
     PORT: 9222
-    TURBO_APP_SCOPE: '@hive/wallet'
-    TURBO_APP_PATH: '/apps/wallet'
     SITE_DOMAIN: https://wallet.fake.openhive.network
     BLOG_DOMAIN: https://blog.fake.openhive.network
     EXPLORER_DOMAIN: https://testexplorer.openhive.network
     IMAGE_NAME: $WALLET_IMAGE_NAME
+    DEPLOYMENT_ENV_FILE: "MIRRORNET_PROD_DEPLOYMENT_ENV"
+
   rules:
   - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     when: manual
