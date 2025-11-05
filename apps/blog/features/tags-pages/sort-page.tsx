@@ -1,5 +1,5 @@
 import { getQueryClient } from '@/blog/lib/react-query';
-import { SortTypes } from '@/blog/lib/utils';
+import { DEFAULT_OBSERVER, SortTypes } from '@/blog/lib/utils';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
@@ -16,11 +16,12 @@ const SortPage = async ({
 }) => {
   const queryClient = getQueryClient();
 
+  const observer = DEFAULT_OBSERVER;
   await queryClient.prefetchInfiniteQuery({
     queryKey: ['entriesInfinite', sort, tag],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
-      const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', '');
+      const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer);
       return postsData ?? [];
     },
     getNextPageParam: (lastPage: Entry[]) => {

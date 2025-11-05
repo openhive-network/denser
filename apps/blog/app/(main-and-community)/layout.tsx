@@ -1,23 +1,12 @@
 import ClientSideLayout from '@/blog/features/layouts/sorts/client-side-layout';
-import { getQueryClient } from '@/blog/lib/react-query';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
-import { getCommunities } from '@transaction/lib/bridge-api';
+import ServerSideLayout from '@/blog/features/layouts/sorts/server-side-layout';
 import { ReactNode } from 'react';
 
-const sort = 'rank';
-const query = null;
-
-const Layout = async ({ children }: { children: ReactNode }) => {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ['communitiesList', sort],
-    queryFn: () => getCommunities(sort, query)
-  });
-
+const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <ServerSideLayout>
       <ClientSideLayout>{children}</ClientSideLayout>
-    </Hydrate>
+    </ServerSideLayout>
   );
 };
 export default Layout;
