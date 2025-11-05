@@ -7,13 +7,13 @@ import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from '../../activity-log/dialog';
 import { useTranslation } from '@/blog/i18n/client';
 import SubscribeCommunity from '../../community-profile/subscribe-community';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import NewPost from './new-post-button';
 import { useEffect, useState } from 'react';
 import { Badge, Separator } from '@ui/components';
 import BasePathLink from '@/blog/components/base-path-link';
 import EditCommunityDialog from '../../community-profile/edit-dialog';
 import clsx from 'clsx';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const CommunitySimpleDescription = ({
   data,
@@ -28,7 +28,7 @@ const CommunitySimpleDescription = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
-  const { user } = useUser();
+  const { user } = useUserClient();
 
   useEffect(() => {
     setIsSubscribed(data.context.subscribed);

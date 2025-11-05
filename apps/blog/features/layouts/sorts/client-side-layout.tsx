@@ -11,7 +11,7 @@ const ClientSideLayout = ({ children }: { children: ReactNode }) => {
   const tag = params?.[2];
 
   if (tag?.startsWith('hive-')) {
-    return <CommunityLayout community={tag}>{children}</CommunityLayout>;
+    return children;
   } else {
     return <PageLayout tag={tag}>{children}</PageLayout>;
   }
