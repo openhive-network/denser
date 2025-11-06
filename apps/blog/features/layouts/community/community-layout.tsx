@@ -48,7 +48,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
         <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-          {!!mySubsData ? <CommunitiesMybar /> : <CommunitiesSidebar />}
+          {!!mySubsData ? <CommunitiesMybar data={mySubsData} /> : <CommunitiesSidebar />}
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div data-testid="card-explore-hive-mobile" className="md:col-span-10 md:flex xl:hidden">

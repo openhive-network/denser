@@ -4,18 +4,12 @@ import Link from 'next/link';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from '@/blog/i18n/client';
-import { useQuery } from '@tanstack/react-query';
-import { getSubscriptions } from '@transaction/lib/bridge-api';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
-const CommunitiesMybar = () => {
+const CommunitiesMybar = ({ data }: { data: string[][] }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
-  const { data } = useQuery({
-    queryKey: ['subscriptions', user.username],
-    queryFn: () => getSubscriptions(user.username),
-    enabled: user.isLoggedIn
-  });
+
   return (
     <Card
       className={cn('my-4 hidden h-fit w-full flex-col bg-background px-8 py-2 text-primary md:flex')}

@@ -8,6 +8,8 @@ import { useTranslation } from '@/blog/i18n/client';
 import { CommunitiesSelect } from '@/blog/features/layouts/communities-select';
 import PostSelectFilter from '@/blog/features/layouts/post-select-filter';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { getSubscriptions } from '@transaction/lib/bridge-api';
+import { useQuery } from '@tanstack/react-query';
 
 const PageLayout = ({
   children,
@@ -20,12 +22,16 @@ const PageLayout = ({
 }) => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
-
+  const { data } = useQuery({
+    queryKey: ['subscriptions', user.username],
+    queryFn: () => getSubscriptions(user.username),
+    enabled: user.isLoggedIn
+  });
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
         <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-          {user.isLoggedIn ? <CommunitiesMybar /> : <CommunitiesSidebar />}
+          {!!data ? <CommunitiesMybar data={data} /> : <CommunitiesSidebar />}
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
