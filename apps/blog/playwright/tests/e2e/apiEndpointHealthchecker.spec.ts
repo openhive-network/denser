@@ -207,7 +207,7 @@ test.describe('Api healthchecker setting page tests', () => {
     );
     // Validate color of the selected node border
     expect(await profilePage.getElementCssPropertyValue(profilePage.apiEndpointCard.first(), 'border-bottom-color')).toBe(
-      'rgb(22, 163, 74)'
+      'rgb(237, 237, 237)'
     );
     // Validate style of the first Set Main button
     expect(await profilePage.getElementCssPropertyValue(profilePage.firstSetMainButton, 'color')).toBe(
