@@ -6,37 +6,50 @@ import { Label } from '@ui/components/label';
 import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translations';
 import Head from 'next/head';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import {ApiChecker, HealthCheckerComponent } from "@hiveio/healthchecker-component";
+import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component';
 import { useEffect, useState } from 'react';
-import {useHealthChecker} from "@ui/hooks/useHealthChecker";
+import { useHealthChecker } from '@ui/hooks/useHealthChecker';
 
 function Communities({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const [walletApiCheckers, setWalletApiCheckers] = useState<ApiChecker[] | undefined>(undefined);
-    const createApiCheckers = async () => {
-      const hiveChain = await hiveChainService.getHiveChain();
-      const apiCheckers: ApiChecker[] = [
-        {
-          title: "Condenser - Get accounts",
-          method: hiveChain.api.condenser_api.get_accounts,
-          params: [["guest4test"]],
-          validatorFunction: data => data[0].name === "guest4test" ? true : "Get block error",
-        },
-        {
-          title: "Database - saving withdrawals",
-          method: hiveChain.api.database_api.find_savings_withdrawals,
-          params: {account: "guest4test"},
-          validatorFunction: data => !!data.withdrawals ? true : "Get post error",
-        },
-     ]
-      setWalletApiCheckers(apiCheckers);
-    }
-  const healthCheckerService = useHealthChecker("wallet-api", walletApiCheckers, "node-endpoint", hiveChainService.setAiSearchEndpoint );
+  const [walletApiCheckers, setWalletApiCheckers] = useState<ApiChecker[] | undefined>(undefined);
+  const createApiCheckers = async () => {
+    const hiveChain = await hiveChainService.getHiveChain();
+    const apiCheckers: ApiChecker[] = [
+      {
+        title: 'Condenser - Get accounts',
+        method: hiveChain.api.condenser_api.get_accounts,
+        params: [['guest4test']],
+        validatorFunction: (data) =>
+          Array.isArray(data) &&
+          data[0] &&
+          typeof data[0] === 'object' &&
+          'name' in data[0] &&
+          data[0].name === 'guest4test'
+            ? true
+            : 'Get block error'
+      },
+      {
+        title: 'Database - saving withdrawals',
+        method: hiveChain.api.database_api.find_savings_withdrawals,
+        params: { account: 'guest4test' },
+        validatorFunction: (data) =>
+          data && typeof data === 'object' && 'withdrawals' in data && !!data.withdrawals
+            ? true
+            : 'Get post error'
+      }
+    ];
+    setWalletApiCheckers(apiCheckers);
+  };
+  const healthCheckerService = useHealthChecker(
+    'wallet-api',
+    walletApiCheckers,
+    'node-endpoint',
+    hiveChainService.setAiSearchEndpoint
+  );
   const { t } = useTranslation('common_wallet');
   useEffect(() => {
     createApiCheckers();
   }, []);
-
-
 
   return (
     <>
@@ -57,7 +70,9 @@ function Communities({ username, metadata }: InferGetServerSidePropsType<typeof 
             </h2>
 
             <Label htmlFor="choose-api-node">{t('settings.choose_api')}</Label>
-            { !!healthCheckerService && <HealthCheckerComponent className='m-4' healthCheckerService={healthCheckerService} />}
+            {!!healthCheckerService && (
+              <HealthCheckerComponent className="m-4" healthCheckerService={healthCheckerService} />
+            )}
           </div>
         </div>
       </ProfileLayout>

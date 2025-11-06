@@ -236,13 +236,23 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
         title: 'Condenser - Get accounts',
         method: hiveChain.api.condenser_api.get_accounts,
         params: [['guest4test']],
-        validatorFunction: (data) => (data[0].name === 'guest4test' ? true : 'Get block error')
+        validatorFunction: (data) =>
+          Array.isArray(data) &&
+          data[0] &&
+          typeof data[0] === 'object' &&
+          'name' in data[0] &&
+          data[0].name === 'guest4test'
+            ? true
+            : 'Get block error'
       },
       {
         title: 'Bridge - Get post',
         method: hiveChain.api.bridge.get_post,
         params: { author: 'guest4test', permlink: '6wpmjy-test', observer: '' },
-        validatorFunction: (data) => (data.author === 'guest4test' ? true : 'Get post error')
+        validatorFunction: (data) =>
+          data && typeof data === 'object' && 'author' in data && data.author === 'guest4test'
+            ? true
+            : 'Get post error'
       }
     ];
     const aiSearchApiCheckers: ApiChecker[] = [
@@ -254,7 +264,7 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
           tr_body: 100,
           posts_limit: 20
         },
-        validatorFunction: (data) => (data[0] ? true : 'AI search error')
+        validatorFunction: (data) => (Array.isArray(data) && data[0] ? true : 'AI search error')
       }
     ];
     setNodeApiCheckers(nodeApiCheckers);
