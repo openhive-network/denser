@@ -41,7 +41,8 @@ const MainBar: FC = () => {
   });
   const { data: profile } = useQuery({
     queryKey: ['profileData', user.username],
-    queryFn: () => getAccountFull(user.username)
+    queryFn: () => getAccountFull(user.username),
+    enabled: user?.isLoggedIn
   });
   const { data: hiveSense } = useQuery({
     queryKey: ['hivesense-api'],
@@ -95,7 +96,7 @@ const MainBar: FC = () => {
         <MainNav />
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-            {!!profile ? null : (
+            {user.isLoggedIn ? null : (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <DialogLogin>
                   <Button
@@ -128,7 +129,7 @@ const MainBar: FC = () => {
                 </Button>
               </Link>
             </TooltipContainer>
-            {!profile ? (
+            {!user.isLoggedIn ? (
               <div>
                 <ModeToggle>
                   <Button variant="ghost" size="sm" className="h-10 w-full px-2" data-testid="theme-mode">
@@ -140,13 +141,13 @@ const MainBar: FC = () => {
               </div>
             ) : null}
 
-            {!profile ? (
+            {!user.isLoggedIn ? (
               <div>
                 <LangToggle logged={user ? user?.isLoggedIn : false} className="px-2" />
               </div>
             ) : null}
 
-            {!!profile ? (
+            {user.isLoggedIn ? (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger data-testid="profile-avatar-button" className="cursor-pointer">

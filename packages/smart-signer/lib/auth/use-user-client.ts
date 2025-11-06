@@ -23,7 +23,6 @@ async function getUser(): Promise<User> {
 }
 
 export function useUserClient({ redirectTo = '', redirectIfFound = false } = {}): IUseUser {
-  if (isServer) return { user: defaultUser };
   const isMounted = useIsMounted();
   const [storedUser, storeUser] = useLocalStorage<User>('user', defaultUser);
   const { data: user } = useQuery<User>({
