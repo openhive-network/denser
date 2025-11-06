@@ -16,16 +16,19 @@ import { withBasePath } from '../../utils/PathUtils';
 import { getCommunities, getSubscriptions } from '@transaction/lib/bridge-api';
 import { useRouter } from 'next/navigation';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 
 export function CommunitiesSelect({ title }: { title: string }) {
   const { user } = useUserClient();
   const router = useRouter();
   const { t } = useTranslation('common_blog');
+  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const sort = 'rank';
   const query = null;
+
   const { isLoading, data } = useQuery({
     queryKey: ['communitiesList', sort, query],
-    queryFn: () => getCommunities(sort, query)
+    queryFn: () => getCommunities(sort, query, observer)
   });
   const { data: mySubsData } = useQuery({
     queryKey: ['subscriptions', user.username],

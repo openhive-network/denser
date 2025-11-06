@@ -4,6 +4,7 @@ import { Entry } from '@transaction/lib/extended-hive.chain';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { ReactNode } from 'react';
 import { QueryTypes } from './lib/utils';
+import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 
 const PostsPage = async ({
   children,
@@ -16,11 +17,12 @@ const PostsPage = async ({
 }) => {
   const queryClient = getQueryClient();
   const username = param.replace('%40', '');
+  const observer = getObserverFromCookies();
   await queryClient.prefetchInfiniteQuery({
     queryKey: ['accountEntriesInfinite', username, query],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
-      const postsData = await getAccountPosts(query, username, '', author ?? '', permlink ?? '');
+      const postsData = await getAccountPosts(query, username, observer, author ?? '', permlink ?? '');
       return postsData ?? [];
     },
     getNextPageParam: (lastPage: Entry[]) => {

@@ -17,7 +17,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
   const { user } = useUser();
   const { ref, inView } = useInView();
   const { t } = useTranslation('common_blog');
-
+  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const [currentPage, setCurrentPage] = useState(0);
   const [displayedPosts, setDisplayedPosts] = useState<Entry[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -33,7 +33,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
     queryFn: async () => {
       return await searchPosts({
         query,
-        observer: user.isLoggedIn ? user.username : DEFAULT_OBSERVER,
+        observer,
         result_limit: 1000, // Get up to 1000 results
         full_posts: PER_PAGE // Get first page fully expanded
       });
@@ -103,7 +103,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
       // Fetch full post data for the stubs
       const fullPostData = await getPostsByIds({
         posts: stubsToFetch,
-        observer: user.username !== '' ? user.username : 'hive.blog'
+        observer
       });
 
       if (fullPostData) {

@@ -13,6 +13,7 @@ import PostCardSkeleton from '@hive/ui/components/card-skeleton';
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';
 import NoDataError from '@/blog/components/no-data-error';
+import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 
 const AccountTopicResult = ({
   author,
@@ -27,6 +28,7 @@ const AccountTopicResult = ({
 }) => {
   const { user } = useUser();
   const { ref, inView } = useInView();
+  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const { ref: prefetchRef, inView: prefetchInView } = useInView({
     // Start prefetching when element is 1500px from entering viewport
     rootMargin: '1500px 0px',
@@ -41,7 +43,7 @@ const AccountTopicResult = ({
       return await getByText({
         pattern: query,
         author,
-        observer: user.username,
+        observer,
         start_permlink: pageParam?.permlink ?? '',
         start_author: pageParam?.author ?? '',
         limit: PER_PAGE,

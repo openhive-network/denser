@@ -1,5 +1,6 @@
+import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getQueryClient } from '@/blog/lib/react-query';
-import { DEFAULT_OBSERVER, SortTypes } from '@/blog/lib/utils';
+import { SortTypes } from '@/blog/lib/utils';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
@@ -15,8 +16,7 @@ const SortPage = async ({
   tag?: string;
 }) => {
   const queryClient = getQueryClient();
-
-  const observer = DEFAULT_OBSERVER;
+  const observer = getObserverFromCookies();
   await queryClient.prefetchInfiniteQuery({
     queryKey: ['entriesInfinite', sort, tag],
     queryFn: async ({ pageParam }) => {

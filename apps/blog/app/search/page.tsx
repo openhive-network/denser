@@ -4,6 +4,7 @@ import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { searchPosts } from '@transaction/lib/hivesense-api';
 import { getByText } from '@transaction/lib/hive-api';
+import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 
 interface SearchPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -23,14 +24,14 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
     sortQuery
   });
   const queryClient = getQueryClient();
-
+  const observer = getObserverFromCookies();
   if (aiParam) {
     queryClient.prefetchQuery({
       queryKey: ['searchPosts', aiParam],
       queryFn: async () => {
         return await searchPosts({
           query: aiParam,
-          observer: 'hive.blog',
+          observer,
           result_limit: 1000,
           full_posts: 20
         });
@@ -43,7 +44,7 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
       queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
         return await getByText({
           pattern: classicQuery,
-          observer: 'hive.blog',
+          observer,
           start_permlink: pageParam?.permlink ?? '',
           start_author: pageParam?.author ?? '',
           limit: 20,
@@ -67,7 +68,7 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
         return await getByText({
           pattern: topicQuery,
           author: userTopicQuery,
-          observer: 'hive.blog',
+          observer,
           start_permlink: pageParam?.permlink ?? '',
           start_author: pageParam?.author ?? '',
           limit: 20,

@@ -17,10 +17,12 @@ import PostSelectFilter from '@/blog/features/layouts/post-select-filter';
 import { usePathname } from 'next/navigation';
 import BasePathLink from '@/blog/components/base-path-link';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 
 const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
   const { user } = useUserClient();
   const pathname = usePathname();
+  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const isRolesPage = pathname?.includes('/roles/');
   const { data: subsData } = useQuery({
     queryKey: ['subscribers', community],
@@ -39,7 +41,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
 
   const { data: communityData } = useQuery({
     queryKey: ['community', community],
-    queryFn: () => getCommunity(community, user.username)
+    queryFn: () => getCommunity(community, observer)
   });
 
   return (

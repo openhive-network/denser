@@ -1,7 +1,5 @@
 import { ReactNode } from 'react';
-import ClientSideLayout from '@/blog/features/layouts/sorts/client-side-layout';
 import { getQueryClient } from '@/blog/lib/react-query';
-import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import {
   getAccountNotifications,
@@ -10,21 +8,23 @@ import {
   getSubscribers
 } from '@transaction/lib/bridge-api';
 import CommunityLayout from './community-layout';
+import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 
 const sort = 'rank';
 const query = null;
 
 const PrefetchComponent = async ({ children, community }: { children: ReactNode; community: string }) => {
   const queryClient = getQueryClient();
+  const observer = getObserverFromCookies();
   await queryClient.prefetchQuery({
     queryKey: ['communitiesList', sort],
-    queryFn: () => getCommunities(sort, query)
+    queryFn: () => getCommunities(sort, query, observer)
   });
   console.log('Layout fetching data for community:', community);
   if (community) {
     await queryClient.prefetchQuery({
       queryKey: ['community', community],
-      queryFn: async () => await getCommunity(community, DEFAULT_OBSERVER)
+      queryFn: async () => await getCommunity(community, observer)
     });
     await queryClient.prefetchQuery({
       queryKey: ['subscribers', community],

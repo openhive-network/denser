@@ -7,14 +7,19 @@ import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 
 const CommunitiesSidebar: FC = () => {
   const { t } = useTranslation('common_blog');
   const sort = 'rank';
   const query = null;
+  const { user } = useUser();
+  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+
   const { data } = useQuery({
     queryKey: ['communitiesList', sort],
-    queryFn: () => getCommunities(sort, query)
+    queryFn: () => getCommunities(sort, query, observer)
   });
 
   // Only show a fallback if data is truly missing (not hydrated)

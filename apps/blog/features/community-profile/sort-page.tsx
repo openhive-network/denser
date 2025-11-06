@@ -1,3 +1,4 @@
+import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { SortTypes } from '@/blog/lib/utils';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
@@ -20,10 +21,10 @@ const SortPage = async ({
   tag?: string;
 }) => {
   const queryClient = getQueryClient();
-
+  const observer = getObserverFromCookies();
   await queryClient.prefetchQuery({
     queryKey: ['community', tag],
-    queryFn: async () => await getCommunity(tag, '')
+    queryFn: async () => await getCommunity(tag, observer)
   });
   await queryClient.prefetchQuery({
     queryKey: ['subscribers', tag],
@@ -37,7 +38,7 @@ const SortPage = async ({
     queryKey: ['entriesInfinite', sort, tag],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
-      const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', '');
+      const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer);
       return postsData ?? [];
     },
     getNextPageParam: (lastPage: Entry[]) => {

@@ -25,7 +25,7 @@ import { getCommunity, getSubscriptions } from '@transaction/lib/bridge-api';
 import { Icons } from '@ui/components/icons';
 import { withBasePath } from '@/blog/utils/PathUtils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { debounce, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import { debounce, DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
@@ -44,6 +44,7 @@ import SelectImageList from '@/blog/features/post-editor/select-image-list';
 import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-settings-post-form';
 import MdEditor from '@/blog/features/post-editor/md-editor';
 import RendererContainer from '@/blog/features/post-rendering/rendererContainer';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const logger = getLogger('app');
 
@@ -66,6 +67,8 @@ export default function PostForm({
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
+  const { user } = useUserClient();
+  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const searchParams = useSearchParams();
   const categoryParam = searchParams?.get('category') ?? undefined;
   const [preferences] = useLocalStorage<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES);
@@ -106,7 +109,7 @@ export default function PostForm({
   const postMutation = usePostMutation();
   const { data: communityData } = useQuery({
     queryKey: ['community', categoryParam],
-    queryFn: () => getCommunity(categoryParam ?? storedPost.category, username),
+    queryFn: () => getCommunity(categoryParam ?? storedPost.category, observer),
     enabled: Boolean(categoryParam) || Boolean(storedPost.category)
   });
   const { data: mySubsData } = useQuery({

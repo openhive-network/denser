@@ -12,6 +12,7 @@ import Link from 'next/link';
 import env from '@beam-australia/react-env';
 import { getCommunities } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';
+import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 
 const CommunitiesContent = () => {
   const walletHost = env('WALLET_ENDPOINT');
@@ -20,9 +21,10 @@ const CommunitiesContent = () => {
   const [sort, setSort] = useState('rank');
   const [inputQuery, setInputQuery] = useState<string>('');
   const [query, setQuery] = useState<string | null>();
+  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const { data: communitiesData } = useQuery({
-    queryKey: ['communitiesList', sort, query, user.username],
-    queryFn: async () => await getCommunities(sort, query, user.username)
+    queryKey: ['communitiesList', sort, query],
+    queryFn: async () => await getCommunities(sort, query, observer)
   });
 
   function handleSearchCommunity(e: KeyboardEvent<HTMLInputElement>) {

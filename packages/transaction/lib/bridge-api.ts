@@ -27,7 +27,6 @@ export const getUnreadNotifications = async (account: string): Promise<IUnreadNo
 export const getCommunities = async (
   sort: string,
   query?: string | null,
-
   observer: string = 'hive.blog'
 ): Promise<Community[] | null> => {
   return (await getChain()).api.bridge.list_communities({
