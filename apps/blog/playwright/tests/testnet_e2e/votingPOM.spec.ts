@@ -467,10 +467,8 @@ test.describe('Voting tests with fixture and POM', () => {
       // If a password to unlock key is needed
       await loginForm.page.waitForTimeout(3000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
-      // Wait until optimistic ui is finished and validate the color of the downvote button
       await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
-      // Move pointer from the upvote icon - click the main post list's header element
-      await profileMenu.clickCloseProfileMenu();
+      await loginForm.page.waitForTimeout(2000);
 
       if (
         (await homePage.getElementCssPropertyValue(secondPostDownvoteButtonLocator, 'color')) ==
