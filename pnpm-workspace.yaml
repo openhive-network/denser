@@ -5,9 +5,9 @@ packages:
 catalogs:
   # Can be referenced through "catalog:hiveio-toolset"
   hiveio-toolset:
-    "@hiveio/beekeeper": 1.27.11
-    "@hiveio/wax": 1.27.11-rc0
-    "@hiveio/wax-signers-keychain": 1.27.11-rc0
-    "@hiveio/workerbee": 1.27.6-rc13-stable.250922125817
-    "@hiveio/hb-auth": 1.27.11-rc1-stable.250909124439
-    "@hiveio/healthchecker-component": 1.0.0-stable.250918093443
+    '@hiveio/beekeeper': 1.28.3-251105100532
+    '@hiveio/wax': 1.27.12-rc3-251105101534
+    '@hiveio/wax-signers-keychain': 1.27.12-rc3-251105101534
+    '@hiveio/workerbee': 1.27.12-rc3-251105124317
+    '@hiveio/hb-auth': 1.27.12-rc3-251105124922
+    '@hiveio/healthchecker-component': 1.0.0-stable.251106092955
