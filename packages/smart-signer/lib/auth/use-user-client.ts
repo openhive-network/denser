@@ -10,6 +10,8 @@ import { defaultUser } from '@smart-signer/lib/auth/utils';
 import { getLogger } from '@ui/lib/logging';
 import { User } from '@smart-signer/types/common';
 
+const isServer = typeof window === 'undefined';
+
 const logger = getLogger('app');
 
 interface IUseUser {
@@ -21,10 +23,12 @@ async function getUser(): Promise<User> {
 }
 
 export function useUserClient({ redirectTo = '', redirectIfFound = false } = {}): IUseUser {
-  // if (isServer) return { user: defaultUser };
+  if (isServer) return { user: defaultUser };
   const isMounted = useIsMounted();
   const [storedUser, storeUser] = useLocalStorage<User>('user', defaultUser);
-  const { data: user } = useQuery<User>([QUERY_KEY.user], async (): Promise<User> => getUser(), {
+  const { data: user } = useQuery<User>({
+    queryKey: [QUERY_KEY.user],
+    queryFn: async (): Promise<User> => getUser(),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,

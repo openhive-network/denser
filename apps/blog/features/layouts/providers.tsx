@@ -10,6 +10,7 @@ import { getQueryClient } from '@/blog/lib/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { LoggedUserProvider } from '@/blog/features/votes/hooks/use-logged-user';
 import { ThemeProvider } from '@/blog/features/layouts/theme-provider';
+import { ModalContainer } from '@smart-signer/components/modal-container';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useMemo(() => getQueryClient(), []);
@@ -27,6 +28,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
           </SignerProvider>
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
+        <ModalContainer />
       </QueryClientProvider>
     </>
   );
