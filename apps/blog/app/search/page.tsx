@@ -16,13 +16,7 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
   const userTopicQuery = searchParams.a as string | undefined;
   const topicQuery = searchParams.p as string | undefined;
   const sortQuery = searchParams.s as SearchSort | undefined;
-  console.log('SearchPage render with params:', {
-    aiParam,
-    classicQuery,
-    userTopicQuery,
-    topicQuery,
-    sortQuery
-  });
+
   const queryClient = getQueryClient();
   const observer = getObserverFromCookies();
   if (aiParam) {
