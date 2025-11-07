@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
@@ -14,6 +14,7 @@ import { getRoleValue, Roles, rolesLevels } from '@/blog/feature/community-roles
 import CommunityLayout from '@/blog/feature/community-layout/community-layout';
 import TableItem from '@/blog/feature/community-roles/table-item';
 import NoDataError from '@/blog/components/no-data-error';
+import { toast } from '@ui/components/hooks/use-toast';
 
 const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
   const router = useRouter();
@@ -54,8 +55,16 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
     title: ''
   };
 
+  useEffect(() => {
+    if (isError) 
+    toast({
+      variant: 'destructive',
+      title: 'Error fetching your data',
+      description: 'Bad internet connection or troubles with API'
+    });
+  }, [isError])
   if (isLoading) return <Loading loading={isLoading} />;
-  if (isError) return <NoDataError />;
+
 
   return (
     <>
@@ -78,7 +87,7 @@ const RolesPage: FC<{ metadata: MetadataProps }> = ({ metadata }) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.map((e) => (
+                {data?.map((e) => (
                   <TableItem loggedUserValue={loggedUser.value} item={e} community={community} key={e.name} />
                 ))}
               </TableBody>
