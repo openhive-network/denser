@@ -22,6 +22,7 @@ import NoDataError from '@/blog/components/no-data-error';
 import { PageType } from '@/blog/pages/[...param]';
 import { Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@hive/ui/components/card-skeleton';
+import { toast } from '@ui/components/hooks/use-toast';
 
 const validSorts = ['trending', 'hot', 'created', 'payout', 'payout_comments', 'muted'];
 
@@ -171,7 +172,15 @@ const MainPage = ({
       fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, inView]);
-  if (isError) return <NoDataError />;
+
+  useEffect(() => {
+    if (isError) 
+    toast({
+      variant: 'destructive',
+      title: 'Error fetching your data',
+      description: 'Bad internet connection or troubles with API'
+    });
+  }, [isError])
 
   return (
     <>
