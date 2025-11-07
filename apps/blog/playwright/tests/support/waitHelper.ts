@@ -123,6 +123,27 @@ export async function waitForFirstProcessedDownvoteLightMode(page: Page) {
   await waitForDownvoteColor(page, selectorFirstPostDownvoteButton, lightModeWhiteColor, timeout, interval);
 }
 
+export async function waitForSecondBroadcastedDownvoteLightMode(page: Page) {
+  const homePage = new HomePage(page);
+  const selectorFirstPostDownvoteButton = await homePage.getSecondPostDownvoteButtonIcon['_selector'];
+
+  const timeout = 20000;
+  const interval = 4000;
+  const lightModeRedColor = 'rgb(75, 85, 99)'; // upvote icon's color not processed in the dark mode
+
+  await waitForDownvoteColor(page, selectorFirstPostDownvoteButton, lightModeRedColor, timeout, interval);
+}
+
+export async function waitForSecondProcessedDownvoteLightMode(page: Page) {
+  const homePage = new HomePage(page);
+  const selectorFirstPostDownvoteButton = await homePage.getSecondPostDownvoteButtonIcon['_selector'];
+  const timeout = 20000;
+  const interval = 4000;
+  const lightModeWhiteColor = 'rgb(255, 255, 255)'; // upvote icon's color processed in the light mode
+
+  await waitForDownvoteColor(page, selectorFirstPostDownvoteButton, lightModeWhiteColor, timeout, interval);
+}
+
 export async function waitForCircleSpinnerIsDetatched(page: Page) {
   await page.waitForSelector('.circle__Wrapper-sc-16bbsoy-0', { state: 'detached' });
 }
