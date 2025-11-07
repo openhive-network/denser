@@ -20,7 +20,6 @@ const PrefetchComponent = async ({ children, community }: { children: ReactNode;
     queryKey: ['communitiesList', sort],
     queryFn: () => getCommunities(sort, query, observer)
   });
-  console.log('Layout fetching data for community:', community);
   if (community) {
     await queryClient.prefetchQuery({
       queryKey: ['community', community],

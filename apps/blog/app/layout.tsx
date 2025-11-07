@@ -6,9 +6,6 @@ import { cookies } from 'next/headers';
 import MainBar from '../features/layouts/site-header/main-bar';
 import ClientEffects from '../features/layouts/site-header/client-effects';
 import { Providers } from '../features/layouts/providers';
-import { getQueryClient } from '../lib/react-query';
-import { getObserverFromCookies } from '../lib/auth-utils';
-import { Hydrate, dehydrate } from '@tanstack/react-query';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -46,12 +43,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const cookieStore = cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
   const isRTL = locale === 'ar';
-  const queryClient = getQueryClient();
-  const observer = getObserverFromCookies();
-  await queryClient.prefetchQuery({
-    queryKey: ['observerData', observer],
-    queryFn: () => Promise.resolve(observer)
-  });
 
   return (
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
@@ -59,9 +50,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <div className="min-h-screen">
           <Providers>
             <>
-              <Hydrate state={dehydrate(queryClient)}>
-                <MainBar />
-              </Hydrate>
+              <MainBar />
               <main className="mx-auto">{children}</main>
             </>
           </Providers>
