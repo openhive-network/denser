@@ -21,6 +21,7 @@ import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { useLocalStorage } from 'usehooks-ts';
 import PostCardSkeleton from '@ui/components/card-skeleton';
 import {commonVariables} from'@ui/lib/common-variables';
+import { toast } from '@ui/components/hooks/use-toast';
 
 export const getServerSideProps: GetServerSideProps = getDefaultProps;
 
@@ -79,7 +80,14 @@ const FeedPage: FC = () => {
     }
   }, [accountFetchNextPage, accountHasNextPage, inViewAcc]);
 
-  if (accountEntriesIsError || mySubsIsError) return <NoDataError />;
+  useEffect(() => {
+    if (accountEntriesIsError || mySubsIsError) 
+    toast({
+      variant: 'destructive',
+      title: 'Error fetching your data',
+      description: 'Bad internet connection or troubles with API'
+    });
+  }, [accountEntriesIsError, mySubsIsError])
 
   if (accountEntriesIsLoading && accountEntriesIsFetching) {
     return <Loading loading={accountEntriesIsLoading || accountEntriesIsFetching} />;
