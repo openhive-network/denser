@@ -48,13 +48,25 @@ const HealthCheckersWrapper = () => {
         title: 'Condenser - Get accounts',
         method: hiveChain.api.condenser_api.get_accounts,
         params: [['guest4test']],
-        validatorFunction: (data) => (data[0].name === 'guest4test' ? true : 'Get block error')
+        validatorFunction: (data: FullAccount[]) =>
+          Array.isArray(data) &&
+          data[0] &&
+          typeof data[0] === 'object' &&
+          'name' in data[0] &&
+          data[0].name === 'guest4test'
+            ? true
+            : 'Get block error'
+
       },
       {
         title: 'Bridge - Get post',
         method: hiveChain.api.bridge.get_post,
         params: { author: 'guest4test', permlink: '6wpmjy-test', observer: '' },
-        validatorFunction: (data) => (data?.author === 'guest4test' ? true : 'Get post error')
+        validatorFunction: (data) =>
+          data && typeof data === 'object' && 'author' in data && data.author === 'guest4test'
+            ? true
+            : 'Get post error'
+
       },
       {
         title: 'Bridge - List Communities',
@@ -79,7 +91,7 @@ const HealthCheckersWrapper = () => {
           result_limit: 10,
           full_posts: 10,
         },
-        validatorFunction: (data) => (!!data[0] ? true : 'AI search error')
+        validatorFunction: (data) => (Array.isArray(data) && data[0] ? true : 'AI search error')
       },
       {
         title: 'AI similar posts',
@@ -91,7 +103,7 @@ const HealthCheckersWrapper = () => {
           result_limit: 1
 
         },
-        validatorFunction: (data) => (!!data[0] ? true : 'AI similar posts error')
+        validatorFunction: (data) => (Array.isArray(data) && data[0] ? true : 'AI similar posts error')
       }
     ];
     setNodeApiCheckers(nodeApiCheckers);
