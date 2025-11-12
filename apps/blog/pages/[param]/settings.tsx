@@ -12,7 +12,6 @@ import {
 } from '@ui/components/select';
 import { useLocalStorage } from 'usehooks-ts';
 import { GetServerSideProps } from 'next';
-import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
@@ -35,7 +34,6 @@ import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { handleError } from '@ui/lib/handle-error';
 import Head from 'next/head';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
-import { Activity } from 'lucide-react';
 
 const logger = getLogger('app');
 interface Settings {
@@ -533,13 +531,6 @@ export default function UserSettings({ metadata }: { metadata: MetadataProps }) 
               </div>
             </>
           ) : null}
-
-          <Link href="/healthchecker" className="my-4 inline-flex items-center text-primary hover:underline">
-            <Button>
-              <Activity className="mr-2 h-4 w-4" />
-              Change node
-            </Button>
-          </Link>
           {mutedQuery.data ? (
             <div>
               <div>{t('settings_page.muted_users')}</div>

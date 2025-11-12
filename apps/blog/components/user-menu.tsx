@@ -18,6 +18,7 @@ import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import env from '@beam-australia/react-env';
 import { User } from '@smart-signer/types/common';
 import { useTranslation } from 'next-i18next';
+import { SquareActivity } from 'lucide-react';
 
 const UserMenu = ({
   children,

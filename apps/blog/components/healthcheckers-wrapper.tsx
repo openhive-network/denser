@@ -48,25 +48,32 @@ const HealthCheckersWrapper = () => {
         title: 'Condenser - Get accounts',
         method: hiveChain.api.condenser_api.get_accounts,
         params: [['guest4test']],
-        validatorFunction: (data) => (data[0].name === 'guest4test' ? true : 'Get block error')
+        validatorFunction: (data: FullAccount[]) =>
+          Array.isArray(data) &&
+          data[0] &&
+          typeof data[0] === 'object' &&
+          'name' in data[0] &&
+          data[0].name === 'guest4test'
+            ? true
+            : 'Get account error'
       },
       {
         title: 'Bridge - Get post',
         method: hiveChain.api.bridge.get_post,
         params: { author: 'guest4test', permlink: '6wpmjy-test', observer: '' },
-        validatorFunction: (data) => (data?.author === 'guest4test' ? true : 'Get post error')
+        validatorFunction: (data) => (data?.author === 'guest4test' ? true : 'Bridge API get post error')
       },
       {
         title: 'Bridge - List Communities',
         method: hiveChain.api.bridge.list_communities,
         params: {query: null, sort: 'rank', observer: 'hive.blog' },
-        validatorFunction: (data) => (data?.length && data.length > 0 ? true : 'Get community list error')
+        validatorFunction: (data) => (data?.length && data.length > 0 ? true : 'Bridge API get community list error')
       },
       {
         title: 'Bridge - Get Ranked Posts',
         method: hiveChain.api.bridge.get_ranked_posts,
         params: {observer: 'hive.blog', tag: '', limit: 10, sort: 'trending'},
-        validatorFunction: (data) => (data?.length && data.length > 0 ? true : 'Get ranked posts error')
+        validatorFunction: (data) => (data?.length && data.length > 0 ? true : 'Bridge API get ranked posts error')
       }
     ];
     const aiSearchApiCheckers: AiSearchApiCheckers = [

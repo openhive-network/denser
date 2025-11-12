@@ -128,6 +128,7 @@ const Sidebar = () => {
             </Item>
             <Separator className="my-2" />
             <Item href="/privacy.html">{t('navigation.sidebar.privacy_policy')}</Item>
+            <Item href={`/healthchecker`}>Healthchecker</Item>
             <Item href="/tos.html">{t('navigation.sidebar.terms_of_service')}</Item>
             <span className="text-center text-xs font-light">Version: {version.commithash.slice(0, 8)}</span>
           </ul>
