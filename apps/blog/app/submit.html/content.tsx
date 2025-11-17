@@ -1,6 +1,6 @@
 'use client';
 
-import PostForm from '@/blog/features/post-editor/post-form';
+import PostForm from '@/blog/feature/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUser } from '@smart-signer/lib/auth/use-user';
@@ -16,10 +16,9 @@ const SubmitContent = () => {
       <div className="px-4 py-8">
         {user?.username ? (
           <PostForm
-            communitiesList={communitiesList}
             username={user.username}
-            entryValues={storedPost}
-            defaultValues={defaultValues}
+            editMode={false}
+            sideBySidePreview={true}
             setIsSubmitting={setIsSubmitting}
           />
         ) : (

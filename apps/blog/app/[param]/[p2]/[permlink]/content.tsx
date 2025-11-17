@@ -10,7 +10,7 @@ import DetailsCardHover from '@/blog/features/list-of-posts/details-card-hover';
 import ReblogTrigger from '@/blog/features/list-of-posts/reblog-trigger';
 import { useDeletePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
 import { postClassName } from '@/blog/features/post-editor/lib/utils';
-import PostForm from '@/blog/features/post-editor/post-form';
+import PostForm from '@/blog/feature/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
 import { AlertDialogFlag } from '@/blog/features/post-rendering/alert-window-flag';
@@ -486,10 +486,10 @@ const PostContent = () => {
                           >
                             {t('post_content.footer.reply')}
                           </button>
-                          {pinMutations.isPending || unpinMutation.isPending ? (
+                          {pinMutations.isLoading || unpinMutation.isLoading ? (
                             <div className="ml-2">
                               <CircleSpinner
-                                loading={pinMutations.isPending || unpinMutation.isPending}
+                                loading={pinMutations.isLoading || unpinMutation.isLoading}
                                 size={18}
                                 color="#dc2626"
                               />
@@ -551,13 +551,13 @@ const PostContent = () => {
                             label="Post"
                           >
                             <button
-                              disabled={edit || deletePostMutation.isPending}
+                              disabled={edit || deletePostMutation.isLoading}
                               className="flex items-center text-destructive"
                               data-testid="comment-card-footer-delete"
                             >
-                              {deletePostMutation.isPending ? (
+                              {deletePostMutation.isLoading ? (
                                 <CircleSpinner
-                                  loading={deletePostMutation.isPending}
+                                  loading={deletePostMutation.isLoading}
                                   size={18}
                                   color="#dc2626"
                                 />

@@ -1,7 +1,5 @@
-import dynamic from 'next/dynamic';
-import moment from 'moment';
-'use client';
 
+import moment from 'moment';
 import { ReactNode, useEffect, useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import clsx from 'clsx';

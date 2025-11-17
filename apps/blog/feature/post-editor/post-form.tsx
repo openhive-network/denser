@@ -1,6 +1,11 @@
+'use client';
+
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import clsx from 'clsx';
+import * as z from 'zod';
 import { Button } from '@hive/ui/components/button';
 import { Input } from '@hive/ui/components/input';
-import Link from 'next/link';
 import {
   Select,
   SelectContent,
@@ -11,72 +16,166 @@ import {
 } from '@hive/ui/components/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@hive/ui/components/form';
-import { useForm } from 'react-hook-form';
-import useManabars from '../../components/hooks/useManabars';
-import { AdvancedSettingsPostForm } from '../../components/advanced-settings-post-form';
-import MdEditor from '../../components/md-editor';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import clsx from 'clsx';
+import { useForm, useWatch } from 'react-hook-form';
 import { useLocalStorage } from 'usehooks-ts';
-import { useTranslation } from 'next-i18next';
-import { createPermlink } from '@transaction/lib/utils';
-import { useRouter } from 'next/router';
-import { debounce } from '../../lib/utils';
+import useManabars from '@/blog/components/hooks/use-manabars';
+import { useQuery } from '@tanstack/react-query';
+import { Entry } from '@transaction/lib/extended-hive.chain';
+import { getCommunity, getSubscriptions } from '@transaction/lib/bridge-api';
 import { Icons } from '@ui/components/icons';
+import { withBasePath } from '@/blog/utils/PathUtils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { debounce, DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { getLogger } from '@ui/lib/logging';
-import SelectImageList from '../../components/select-image-list';
-import RendererContainer from '../../components/rendererContainer';
-import { usePostMutation } from '../../components/hooks/use-post-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
-import { postClassName } from '../../pages/[param]/[p2]/[permlink]';
-import { accountFormSchema, PostFormValues, EditPostEntry, generateMaxAcceptedPayout } from './lib/utils';
-import { withBasePath } from '@/blog/utils/PathUtils';
+import { useTranslation } from '@/blog/i18n/client';
+import { usePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { createAsset, createPermlink } from '@transaction/lib/utils';
+import {
+  imagePicker,
+} from './lib/utils';
+import { postClassName, validateTagInput, validateSummaryInput, validateAltUsernameInput } from '@/blog/features/post-editor/lib/utils';
+import SelectImageList from '@/blog/features/post-editor/select-image-list';
+import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-settings-post-form';
+import MdEditor from '@/blog/features/post-editor/md-editor';
+import RendererContainer from '@/blog/features/post-rendering/rendererContainer';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const logger = getLogger('app');
 
 export default function PostForm({
-  communitiesList,
   username,
   editMode = false,
-  defaultValues,
-  entryValues,
+  sideBySidePreview = true,
+  post_s,
   setEditMode,
+  refreshPage,
   setIsSubmitting
 }: {
-  communitiesList?: {
-    mySubs: { name: string; tag: string }[];
-    other?: { name: string; tag: string };
-  };
   username: string;
-  editMode?: boolean;
-  defaultValues: PostFormValues;
-  entryValues: EditPostEntry;
+  editMode: boolean;
+  sideBySidePreview: boolean;
+  post_s?: Entry;
   setEditMode?: Dispatch<SetStateAction<boolean>>;
+  refreshPage?: () => void;
   setIsSubmitting: (submitting: boolean) => void;
 }) {
-  const { t } = useTranslation('common_blog');
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
-  const { manabarsData } = useManabars(username);
-  const postMutation = usePostMutation();
-
-  const [preview, setPreview] = useState(true);
-  const [selectedImg, setSelectedImg] = useState(entryValues.selectedImg ?? '');
-  const [tagsError, setTagsError] = useState<string | null>(null);
-  const [sideBySide, setSideBySide] = useState(!editMode);
-  const [_storedPost, storePost, removePost] = useLocalStorage<PostFormValues>(
-    editMode ? `postData-edit-${entryValues.permlink}` : `postData-new-${username}`,
-    entryValues
+  const { user } = useUserClient();
+  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams?.get('category') ?? undefined;
+  const [preferences] = useLocalStorage<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES);
+  const defaultValues = {
+    title: '',
+    postArea: '',
+    postSummary: '',
+    tags: '',
+    author: '',
+    category: 'blog',
+    beneficiaries: [],
+    maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
+    payoutType: preferences.blog_rewards
+  };
+  const [storedPost, storePost, removePost] = useLocalStorage<AccountFormValues>(
+    editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
+    defaultValues
   );
 
-  const form = useForm<PostFormValues>({
+  useEffect(() => {
+    storePost({
+      ...storedPost,
+      payoutType: preferences.blog_rewards,
+      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000
+    });
+  }, [preferences.blog_rewards]);
+  const [preview, setPreview] = useState(true);
+  const [selectedImg, setSelectedImg] = useState(
+    // Initialize with existing cover image when editing
+    editMode && post_s?.json_metadata?.image?.[0] ? post_s.json_metadata.image[0] : ''
+  );
+
+  const [sideBySide, setSideBySide] = useState(sideBySidePreview);
+  const [imagePickerState, setImagePickerState] = useState('');
+  const { manabarsData } = useManabars(username);
+  const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
+  const { t } = useTranslation('common_blog');
+  const postMutation = usePostMutation();
+  const { data: communityData } = useQuery({
+    queryKey: ['community', categoryParam],
+    queryFn: () => getCommunity(categoryParam ?? storedPost.category, observer),
+    enabled: Boolean(categoryParam) || Boolean(storedPost.category)
+  });
+  const { data: mySubsData } = useQuery({
+    queryKey: ['subscriptions', username],
+    queryFn: () => getSubscriptions(username),
+    enabled: Boolean(username)
+  });
+
+  const accountFormSchema = z.object({
+    title: z
+      .string()
+      .min(2, t('submit_page.string_must_contain', { num: 2 }))
+      .max(255, t('submit_page.maximum_characters', { num: 255 })),
+    postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
+    postSummary: z.string().max(140, t('submit_page.maximum_characters', { num: 140 })),
+    tags: z.string(),
+    author: z.string().max(50, t('submit_page.maximum_characters', { num: 50 })),
+    category: z.string(),
+    beneficiaries: z.array(
+      z.object({
+        account: z.string(),
+        weight: z.string()
+      })
+    ),
+    maxAcceptedPayout: z.number(),
+    payoutType: z.string()
+  });
+
+  type AccountFormValues = z.infer<typeof accountFormSchema>;
+  const entryValues = {
+    title: post_s?.title || storedPost?.title || '',
+    postArea: post_s?.body || storedPost?.postArea || '',
+    postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
+    tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
+    author: post_s?.json_metadata?.author || storedPost?.author || '',
+    category: categoryParam ?? storedPost?.category ?? post_s?.category ?? '',
+    beneficiaries: storedPost?.beneficiaries || [],
+    maxAcceptedPayout: post_s
+      ? Number(post_s.max_accepted_payout.split(' ')[0])
+      : storedPost?.maxAcceptedPayout === undefined
+        ? 1000000
+        : storedPost.maxAcceptedPayout,
+    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType
+  };
+  const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     defaultValues: entryValues
   });
+  const nsfwTagCheck = communityData?.is_nsfw && !storedPost.tags?.includes('nsfw');
+  useEffect(() => {
+    form.setValue('tags', nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);
+  }, [!!communityData?.is_nsfw]);
+  const { postArea, ...restFields } = useWatch({
+    control: form.control
+  });
 
-  const watchedValues = form.watch();
+  const watchedValues = form.getValues();
+  const tagsCheck = validateTagInput(
+    watchedValues.tags,
+    !categoryParam ? watchedValues.category === 'blog' : false,
+    t
+  );
+  const summaryCheck = validateSummaryInput(watchedValues.postSummary, t);
+  const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
+  const communityPosting =
+    mySubsData && mySubsData?.filter((e) => e[0] === categoryParam).length > 0
+      ? mySubsData?.filter((e) => e[0] === categoryParam)[0][0]
+      : undefined;
+
   useEffect(() => {
     debounce(() => {
       storePost(watchedValues);
@@ -84,18 +183,30 @@ export default function PostForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...Object.values(watchedValues)]);
 
-  async function onSubmit(data: PostFormValues) {
-    if (data.category === 'blog' && (!data.tags || data.tags.trim() === '')) {
-      setTagsError('In posting in My Blog use at least one tag');
-      return;
+  // update debounced post preview content
+  useEffect(() => {
+    if (typeof previewContent !== 'undefined' && postArea !== previewContent) {
+      debounce(() => {
+        setPreviewContent(postArea);
+      }, 50)();
     }
+  }, [previewContent, watchedValues.postArea]);
+
+  useEffect(() => {
+    setImagePickerState(imagePicker(selectedImg));
+  }, [selectedImg, watchedValues.postArea]);
+
+  async function onSubmit(data: AccountFormValues) {
     const tags = data.tags.replace(/#/g, '').split(' ') ?? [];
+    const maxAcceptedPayout = createAsset((data.maxAcceptedPayout * 1000).toString(), 'HBD');
+    const postPermlink = await createPermlink(data?.title ?? '', username);
+    const permlinInEditMode = post_s?.permlink;
     try {
-      await postMutation.mutateAsync({
-        permlink:
-          editMode && entryValues.permlink
-            ? entryValues.permlink
-            : await createPermlink(data?.title ?? '', username),
+      if (btnRef.current) {
+        btnRef.current.disabled = true;
+      }
+      const postParams = {
+        permlink: postPermlink,
         title: data.title,
         body: data.postArea,
         category: data.category,
@@ -104,7 +215,7 @@ export default function PostForm({
         image: selectedImg,
         editMode,
         percentHbd: data.payoutType ? (data.payoutType === '100%' ? 0 : 10000) : 0,
-        maxAcceptedPayout: generateMaxAcceptedPayout(data.payoutType, data.maxAcceptedPayout),
+        maxAcceptedPayout,
         tags,
         beneficiaries: data.beneficiaries
           ? data.beneficiaries
@@ -114,28 +225,42 @@ export default function PostForm({
               }))
               .filter((b) => Number(b.weight) !== 10000)
           : []
-      });
-      setIsSubmitting(true);
-      // Wait 2 seconds before redirecting
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    } catch (error) {
-      setIsSubmitting(false);
-      handleError(error, { method: 'post', params: data });
-      throw error;
-    }
-
-    form.reset(defaultValues);
-    removePost();
-    if (editMode && !!setEditMode) {
-      await router.replace(router.asPath);
-      setEditMode(false);
-      setIsSubmitting(false);
-    } else {
-      if (data.category.startsWith('hive-')) {
-        await router.push(withBasePath(`/created/${data.category}`), undefined, { shallow: true });
-      } else {
-        await router.push(withBasePath(`/created/${tags[0]}`), undefined, { shallow: true });
+      };
+      try {
+        await postMutation.mutateAsync(postParams);
+        setIsSubmitting(true);
+        // Wait 2 seconds before redirecting
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      } catch (error) {
+        setIsSubmitting(false);
+        handleError(error, { method: 'post', params: postParams });
+        throw error;
       }
+
+      form.reset(defaultValues);
+      setPreviewContent(undefined);
+      removePost();
+      if (editMode) {
+        if (refreshPage && setEditMode) {
+          setIsSubmitting(false);
+          setEditMode(!editMode);
+          refreshPage();
+        }
+      } else {
+        if (categoryParam) {
+          await router.push(withBasePath(`/created/${categoryParam}`), undefined);
+        } else {
+          await router.push(withBasePath(`/created/${tags[0]}`), undefined);
+        }
+      }
+      if (btnRef.current) {
+        btnRef.current.disabled = false;
+      }
+    } catch (error) {
+      if (btnRef.current) {
+        btnRef.current.disabled = false;
+      }
+      logger.error(error);
     }
   }
 
@@ -151,7 +276,17 @@ export default function PostForm({
       }
     }
   };
-
+  const handleLoadTemplate = (data: AccountFormValues) => {
+    form.setValue('author', data.author);
+    form.setValue('beneficiaries', data.beneficiaries);
+    form.setValue('category', data.category);
+    form.setValue('maxAcceptedPayout', data.maxAcceptedPayout);
+    form.setValue('payoutType', data.payoutType);
+    form.setValue('postArea', data.postArea);
+    form.setValue('postSummary', data.postSummary);
+    form.setValue('tags', data.tags);
+    form.setValue('title', data.title);
+  };
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
@@ -236,6 +371,8 @@ export default function PostForm({
                   <FormControl>
                     <Input placeholder={t('submit_page.post_summary')} {...field} />
                   </FormControl>
+                  <div className="text-xs text-destructive">{summaryCheck}</div>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -248,8 +385,7 @@ export default function PostForm({
                   <FormControl>
                     <Input placeholder={t('submit_page.enter_your_tags')} {...field} />
                   </FormControl>
-                  {tagsError ? <div className="text-xs text-destructive">{tagsError}</div> : null}
-
+                  <div className="text-xs text-destructive">{tagsCheck}</div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -262,6 +398,7 @@ export default function PostForm({
                   <FormControl>
                     <Input placeholder={t('submit_page.author_if_different')} {...field} />
                   </FormControl>
+                  <div className="text-xs text-red-500">{altUsernameCheck}</div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -271,35 +408,33 @@ export default function PostForm({
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
 
-                {!!watchedValues.maxAcceptedPayout &&
-                watchedValues.maxAcceptedPayout < 1000000 &&
-                watchedValues.maxAcceptedPayout > 0 ? (
+                {storedPost.maxAcceptedPayout < 1000000 && storedPost.maxAcceptedPayout > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}:{' '}
-                    {watchedValues.maxAcceptedPayout} HBD
+                    {storedPost.maxAcceptedPayout} HBD
                   </span>
                 ) : null}
 
-                {!!watchedValues.beneficiaries && watchedValues.beneficiaries.length > 0 ? (
+                {storedPost.beneficiaries.length > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.beneficiaries', {
-                      num: watchedValues.beneficiaries.length
+                      num: storedPost.beneficiaries.length
                     })}
                   </span>
                 ) : null}
 
                 <span className="text-xs" data-testid="author-rewards-description">
                   {t('submit_page.author_rewards')}
-                  {watchedValues.maxAcceptedPayout === 0
+                  {storedPost.maxAcceptedPayout === 0
                     ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
-                    : watchedValues.payoutType === '100%'
+                    : storedPost.payoutType === '100%'
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}
                 </span>
                 <AdvancedSettingsPostForm
                   username={username}
-                  updateForm={(e) => form.reset(e)}
-                  data={watchedValues}
+                  updateForm={(e) => handleLoadTemplate(e)}
+                  data={storedPost}
                 >
                   <span
                     className="w-fit cursor-pointer text-xs text-destructive"
@@ -322,37 +457,46 @@ export default function PostForm({
               <FormField
                 control={form.control}
                 name="category"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <div className="flex flex-wrap items-center gap-4">
                       {t('submit_page.posting_to')}
                       <FormControl>
                         <Select
-                          {...field}
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                            if (!!router.query.category) {
-                              router.replace(`/submit.html`, undefined, { shallow: false });
+                          value={
+                            communityPosting
+                              ? communityPosting
+                              : storedPost?.category
+                                ? storedPost.category
+                                : 'blog'
+                          }
+                          onValueChange={(e) => {
+                            form.setValue('category', e);
+                            storePost({ ...storedPost, category: e });
+                            if (categoryParam) {
+                              router.replace(withBasePath(`/submit.html`));
                             }
                           }}
                         >
-                          <SelectTrigger data-testid="posting-to-list-trigger">
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-
+                          <FormControl>
+                            <SelectTrigger data-testid="posting-to-list-trigger">
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                          </FormControl>
                           <SelectContent>
                             <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
                             <SelectGroup>{t('submit_page.my_communities')}</SelectGroup>
-                            {communitiesList?.mySubs.map((e) => (
-                              <SelectItem key={e.tag} value={e.tag}>
-                                {e.name}
+                            {mySubsData?.map((e) => (
+                              <SelectItem key={e[0]} value={e[0]}>
+                                {e[1]}
                               </SelectItem>
                             ))}
-                            {!!communitiesList?.other ? (
+                            {!mySubsData?.some((e) => e[0] === storedPost.category) &&
+                            storedPost.category !== 'blog' ? (
                               <>
                                 <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>
-                                <SelectItem value={communitiesList?.other.tag}>
-                                  {communitiesList?.other.name}
+                                <SelectItem value={communityData?.name ?? storedPost.category}>
+                                  {communityData?.title}
                                 </SelectItem>
                               </>
                             ) : null}
@@ -369,18 +513,24 @@ export default function PostForm({
               type="submit"
               variant="redHover"
               className="w-24"
-              disabled={postMutation.isLoading}
+              disabled={
+                !storedPost?.title ||
+                Boolean(tagsCheck) ||
+                Boolean(summaryCheck) ||
+                Boolean(altUsernameCheck) ||
+                postMutation.isPending
+              }
               data-testid="submit-post-button"
             >
-              {postMutation.isLoading ? (
-                <CircleSpinner loading={postMutation.isLoading} size={18} color="#dc2626" />
+              {postMutation.isPending ? (
+                <CircleSpinner loading={postMutation.isPending} size={18} color="#dc2626" />
               ) : (
                 t('submit_page.submit')
               )}
             </Button>
             <Button
-              disabled={postMutation.isLoading}
-              onClick={handleCancel}
+              disabled={postMutation.isPending}
+              onClick={() => handleCancel()}
               type="reset"
               variant="ghost"
               className="font-thiny text-foreground/60 hover:text-destructive"
@@ -407,10 +557,10 @@ export default function PostForm({
               <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
             </Link>
           </div>
-          {!!watchedValues.postArea ? (
+          {previewContent ? (
             <div className="flex h-full overflow-y-scroll">
               <RendererContainer
-                body={watchedValues.postArea}
+                body={previewContent}
                 author=""
                 className={
                   postClassName +
