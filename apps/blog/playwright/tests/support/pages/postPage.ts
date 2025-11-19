@@ -12,6 +12,7 @@ export class PostPage {
   readonly articleAuthorData: Locator;
   readonly articleAuthorName: Locator;
   readonly articleFooter: Locator;
+  readonly authoredBy: Locator;
   readonly userPopoverCard: Locator;
   readonly userPopoverCardAvatar: Locator;
   readonly userPopoverCardName: Locator;
@@ -123,6 +124,7 @@ export class PostPage {
       .locator('span')
       .nth(1);
     this.articleFooter = page.locator('[data-testid="author-data-post-footer"]');
+    this.authoredBy = page.getByTestId("authored-by");
     this.profileFollowBtn = '[data-testid="profile-follow-button"]';
     this.footerAuthorNameLink = this.articleFooter.locator('[data-testid="author-name-link"]');
     this.footerAuthorName = page.locator('[data-testid="author-name-link"]').last();

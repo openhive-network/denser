@@ -1335,9 +1335,11 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postContentText: string = `Content of the testing post`;
     const postSummary: string = 'My testing post other author';
     const postTag: string = 'test';
+    const thisPostIsAuthoredBy: string = `Authored by @${postAuthor}`;
 
     const homePage = new HomePage(denserAutoTest4Page.page);
     const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
+    const postPage = new PostPage(denserAutoTest4Page.page);
     const loginHelper = new LoginHelper(denserAutoTest4Page.page);
     const loginForm = new LoginForm(denserAutoTest4Page.page);
     const unmoderatedTagPage = new UnmoderatedTagPage(denserAutoTest4Page.page);
@@ -1371,6 +1373,11 @@ test.describe('Creating post tests with POM and fixture users', () => {
     );
     // After creating post with category user is moving to the created/new page with tag name and Unmoderated tag posts lists
     await expect(communityPage.unmoderatedName).toContainText('Unmoderated tag');
-    //
+    // Move to the latest post
+    await unmoderatedTagPage.page.getByText(postTitle).click();
+    // Validate the post and if it is authored by @denserautotest0
+    await postPage.validatePostTitle(postTitle);
+    await postPage.validatePostContantContainText(postContentText, postContentText);
+    await expect(postPage.authoredBy).toHaveText(thisPostIsAuthoredBy);
   });
 });
