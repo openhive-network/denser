@@ -1325,4 +1325,52 @@ test.describe('Creating post tests with POM and fixture users', () => {
     // Validate the tags input
     await expect(postEditorPage.getEnterYourTagsInput).toHaveAttribute('value', postTag);
   });
+
+  test('Validate creating the new post for different author from denserautotest4', async ({
+    denserAutoTest4Page
+  }) => {
+    const timestamp: string = new Date().toString();
+    const postAuthor: string = `${users.denserautotest0.username}`;
+    const postTitle: string = `Testing post for different autor from ${users.denserautotest4.username} - ${timestamp}`;
+    const postContentText: string = `Content of the testing post`;
+    const postSummary: string = 'My testing post other author';
+    const postTag: string = 'test';
+
+    const homePage = new HomePage(denserAutoTest4Page.page);
+    const postEditorPage = new PostEditorPage(denserAutoTest4Page.page);
+    const loginHelper = new LoginHelper(denserAutoTest4Page.page);
+    const loginForm = new LoginForm(denserAutoTest4Page.page);
+    const unmoderatedTagPage = new UnmoderatedTagPage(denserAutoTest4Page.page);
+    const communityPage = new CommunitiesPage(denserAutoTest4Page.page);
+
+    await homePage.goto();
+    // Validate User is logged in as denserautotest4
+    await loginHelper.validateLoggedInUser(users.denserautotest4.username);
+    // Click to close the profile menu
+    await denserAutoTest4Page.page
+      .getByTestId('community-name')
+      .locator('..')
+      .locator('..')
+      .click({ force: true });
+    // Click navigation pencil icon to move to the post editor
+    await homePage.getNavCreatePost.click();
+    // Validate the post editor is open and create simple post
+    await postEditorPage.createPostByDifferentAuthor(postTitle, postContentText, postSummary, postTag, postAuthor);
+    // If a password to unlock key is needed
+    await loginForm.page.waitForTimeout(2000);
+    await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
+    // Validate that user has been moved to the unmoderated tag page
+    await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
+    // Wait until optimistic ui is finished
+    await waitForPostIsVisibleInUnmoderatedTagPage(denserAutoTest4Page.page, postTitle);
+    // Validate the first post on the unmoderated post list
+    await unmoderatedTagPage.validateFirstPostInTheUnmoderatedTagList(
+      users.denserautotest4.username,
+      postTitle,
+      postSummary
+    );
+    // After creating post with category user is moving to the created/new page with tag name and Unmoderated tag posts lists
+    await expect(communityPage.unmoderatedName).toContainText('Unmoderated tag');
+    //
+  });
 });

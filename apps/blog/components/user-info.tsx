@@ -89,7 +89,7 @@ function UserInfo({
         </span>
       </div>
       {authored ? (
-        <span className="ml-1 text-xs">
+        <span className="ml-1 text-xs" data-testid="authored-by">
           Authored by{' '}
           <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${authored}`}>
             @{authored}
