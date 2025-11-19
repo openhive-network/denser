@@ -14,7 +14,10 @@ const SITE_DESC =
   'Communities without borders. A social network owned and operated by its users, powered by Hive.';
 
 export const metadata: Metadata = {
-  title: 'Hive',
+  title: {
+    default: 'Hive',
+    template: "%s | Hive"
+  },
   description: SITE_DESC,
   icons: {
     icon: '/favicon.ico'
