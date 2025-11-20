@@ -40,7 +40,6 @@ const DetailsCardVoters = ({ post, children }: { post: Entry; children: ReactNod
       >
         <VotersDetailsData post={post} />
       </HoverCardContent>
-      {children}
     </HoverCard>
   );
 };

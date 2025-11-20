@@ -455,7 +455,7 @@ const PostContent = () => {
                       </DetailsCardHover>
                       {activeVotesData ? (
                         <DetailsCardVoters post={postData}>
-                          {postData.stats?.total_votes && postData.stats?.total_votes !== 0 ? (
+                          {!!postData.stats?.total_votes && postData.stats?.total_votes !== 0 ? (
                             <span className="text-xs text-destructive sm:text-sm">
                               {postData.stats?.total_votes > 1
                                 ? t('post_content.footer.votes', { votes: postData.stats?.total_votes })
