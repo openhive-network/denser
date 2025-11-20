@@ -139,7 +139,7 @@
     "hp_description": "Jetons d'influence qui vous donnent plus de contrôle sur les gains potentiels des articles et vous permettent d'augmenter vos gains de curation. Une partie de votre influence, ou HIVE POWER, est actuellement déléguée. La délégation est un don pour augmenter l'influence ou pour encourager les nouveaux utilisateurs à effectuer des actions sur Hive. Le montant délégué peut varier. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
     "savings_title": "EPARGNE",
-    "savings_description": "Le solde dépend de la période de 3 jours d'attente requise pour les retraits. HBD interest rate: 20.00% APR (as voted by the ",
+    "savings_description": "Le solde dépend de la période de 3 jours d'attente requise pour les retraits. HBD interest rate: 20.00% APR (as voted by the <0>Witnesses</0>)",
     "estimated_account_value_title": "aleur estimée du compte",
     "estimated_account_value_description": "La valeur estimée est basée sur la valeur moyenne de HIVE en dollars américains.",
     "account_history_title": "HISTORIQUE",

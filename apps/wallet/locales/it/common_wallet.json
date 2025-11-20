@@ -139,7 +139,7 @@
     "hp_description": "Token che ti danno più controllo sui pagamenti dei post e ti consentono di guadagnare sulle ricompense da curatore. Parte del tuo HIVE POWER ti è attualmente delegato. La delegazione è donata per l'influenza o per aiutare i nuovi utenti ad eseguire le azioni su hive.blog. Il quantitativo delegato può fluttuare. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
     "savings_title": "RISPARMI",
-    "savings_description": "Balances subject to 3 day withdraw waiting period. HBD interest rate: 20.00% APR (as voted by the ",
+    "savings_description": "Balances subject to 3 day withdraw waiting period. HBD interest rate: 20.00% APR (as voted by the <0>Witnesses</0>)",
     "estimated_account_value_title": "Valore stimato dell'account",
     "estimated_account_value_description": "Il valore stimato si basa sul valore medio di HIVE in dollari US.",
     "account_history_title": "CRONOLOGIA",

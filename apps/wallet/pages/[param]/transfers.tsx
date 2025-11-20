@@ -24,7 +24,7 @@ import Link from 'next/link';
 import Loading from '@ui/components/loading';
 import TransfersHistoryFilter from '@/wallet/components/transfers-history-filter';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
-import { useTranslation } from 'next-i18next';
+import { useTranslation, Trans } from 'next-i18next';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import {
   Button,
@@ -650,11 +650,19 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                       className="text-xs leading-relaxed text-primary/70"
                       data-testid="wallet-savings-description"
                     >
-                      {t('profile.savings_description')}
-                      <span className="font-semibold text-primary hover:text-destructive">
-                        {<Link href={`/~witnesses`}>{t('profile.witnesses')}</Link>}
-                      </span>
-                      {')'}
+                      <Trans
+                        i18nKey="profile.savings_description"
+                        components={[
+                          <Link
+                            className="font-semibold text-primary hover:text-destructive"
+                            href={`/~witnesses`}
+                            key="witnessesLinkText"
+                          />
+                        ]}
+                        values={{
+                          rate: (dynamicData.hbd_interest_rate / 100).toFixed(2),
+                        }}
+                      />
                     </p>
                   </td>
                   <td className="whitespace-nowrap bg-background-secondary font-semibold">
