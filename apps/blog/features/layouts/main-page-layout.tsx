@@ -60,7 +60,7 @@ const PageLayout = ({
                   </span>
                 </div>
                 <div className="w-[180px]">
-                  <PostSelectFilter param={!!tag ? `/${tag}` : ''} />
+                  <PostSelectFilter param={''} />
                 </div>
               </div>
             )}
