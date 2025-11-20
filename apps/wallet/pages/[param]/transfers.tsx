@@ -8,7 +8,7 @@ import {
 } from '@transaction/lib/hive-api';
 import moment from 'moment';
 import { getAccount } from '@transaction/lib/hive-api';
-import { getAccountHistory, getSavingsWithdrawals } from '@/wallet/lib/hive';
+import { getAccountOperations, getSavingsWithdrawals } from '@/wallet/lib/hive';
 import {
   convertToFormattedHivePower,
   createListWithSuggestions,
