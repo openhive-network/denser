@@ -6,7 +6,7 @@ import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
-const CommunitiesMybar = ({ data }: { data: string[][] }) => {
+const CommunitiesMyBar = ({ data }: { data: string[][] }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
 
@@ -54,4 +54,4 @@ const CommunitiesMybar = ({ data }: { data: string[][] }) => {
   );
 };
 
-export default CommunitiesMybar;
+export default CommunitiesMyBar;

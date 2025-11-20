@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import CommunitySimpleDescription from './community-simple-description';
-import CommunitiesMybar from '../communities-mybar';
+import CommunitiesMyBar from '../communities-my-bar';
 import CommunitiesSidebar from './communities-sidebar';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -44,11 +44,14 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
     queryFn: () => getCommunity(community, observer)
   });
 
+  console.log('COMMUNITY DATA', communityData);
+
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
         <div className="hidden md:col-span-3 md:flex xl:col-span-2">
-          {!!mySubsData ? <CommunitiesMybar data={mySubsData} /> : <CommunitiesSidebar />}
+          {!!mySubsData ? <CommunitiesMyBar data={mySubsData} /> : <CommunitiesSidebar />}
+          <div>TEST COMMUNITY LAY</div>
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div data-testid="card-explore-hive-mobile" className="md:col-span-10 md:flex xl:hidden">
