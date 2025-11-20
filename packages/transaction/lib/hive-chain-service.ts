@@ -53,7 +53,7 @@ export class HiveChainService {
         }
         // Set promise result in this class' static property and return
         // it here as well.
-        await this.setHiveChain({ apiEndpoint, chainId: siteConfig.chainId, restApiEndpoint: apiEndpoint });
+        await this.setHiveChain({ apiEndpoint, chainId: siteConfig.chainId, restApiEndpoint: apiEndpoint, apiTimeout: 5000 });
         return HiveChainService.hiveChain;
       };
 
@@ -67,7 +67,7 @@ export class HiveChainService {
     return HiveChainService.hiveChain;
   }
 
-  reuseHiveChain(): HiveChain | undefined{
+  reuseHiveChain(): HiveChain | undefined {
     if (HiveChainService.hiveChain) return HiveChainService.hiveChain;
     return undefined;
   }
@@ -78,35 +78,35 @@ export class HiveChainService {
     HiveChainService.hiveChain = hiveChain.extend<ExtendedNodeApi>().extendRest<ExtendedRestApi>({
       'hivesense-api': {
         posts: {
-          urlPath: "posts",
+          urlPath: 'posts',
           search: {
-            urlPath: "search",
-            method: "GET"
+            urlPath: 'search',
+            method: 'GET'
           },
           author: {
-            urlPath: "{author}",
+            urlPath: '{author}',
             permlink: {
-              urlPath: "{permlink}",
+              urlPath: '{permlink}',
               similar: {
-                urlPath: "similar",
-                method: "GET"
+                urlPath: 'similar',
+                method: 'GET'
               }
             }
           },
           byIds: {
-            urlPath: "by-ids",
-            method: "POST"
+            urlPath: 'by-ids',
+            method: 'POST'
           },
           byIdsQuery: {
-            urlPath: "by-ids-query",
-            method: "GET"
+            urlPath: 'by-ids-query',
+            method: 'GET'
           }
         },
         authors: {
-          urlPath: "authors",
+          urlPath: 'authors',
           search: {
-            urlPath: "search",
-            method: "GET"
+            urlPath: 'search',
+            method: 'GET'
           }
         },
       },
@@ -121,7 +121,8 @@ export class HiveChainService {
             urlPath: 'operation-types'
           }
         }
-      });
+      }
+    });
     const storedAiSearchEndpoint = this.storage.getItem('ai-search-endpoint');
     let apiEndpoint: string = storedAiSearchEndpoint ? JSON.parse(storedAiSearchEndpoint) : '';
     if (!apiEndpoint) {

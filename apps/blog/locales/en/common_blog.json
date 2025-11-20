@@ -666,5 +666,9 @@
     "hot_posts": "hot posts",
     "trending_posts": "trending posts",
     "muted_posts": "muted posts"
+  },
+  "pagination": {
+    "numberOfPages": "There are {{count}} pages",
+    "pages": "Pages"
   }
 }

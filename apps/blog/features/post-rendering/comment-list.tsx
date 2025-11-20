@@ -1,10 +1,13 @@
 'use client';
 
-import CommentListItem from '@/blog/features/post-rendering/comment-list-item';
+import CommentCard from '@/blog/features/post-rendering/comment-card';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
-import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState, useMemo, useCallback, useTransition } from 'react';
+import { CommentsPagination } from '@/blog/components/comments-pagination';
+import Loading from '@ui/components/loading';
 
 const CommentList = ({
   highestAuthor,
@@ -27,33 +30,112 @@ const CommentList = ({
   flagText: string | undefined;
   discussionPermlink: string;
 }) => {
-  const [markedHash, setMarkedHash] = useState<string>("");
+  const [markedHash, setMarkedHash] = useState<string>('');
 
   useEffect(() => {
-  if (typeof window !== "undefined") {
-    setMarkedHash(window.location.hash);
-  }
-}, []);
+    if (typeof window !== 'undefined') {
+      setMarkedHash(window.location.hash);
+    }
+  }, []);
 
-  const arr = useMemo(() => {
-    if (!data || !parent) return undefined;
+  const nbCommentsPerPage = 20;
+
+  const router = useRouter();
+  const topLevelComments = useMemo(() => {
+    if (!data || !parent) return [];
     const filtered = data.filter(
       (x) => x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink
     );
 
-    const mutedContent = filtered.filter(
-      (item) => parent && item.depth === 1 && item.parent_author === parent.author
-    );
-    const unmutedContent = filtered.filter((md) => mutedContent.every((fd) => fd.post_id !== md.post_id));
+    const mutedContent = filtered.filter((item) => mutedList?.some((x) => x.name === item.author));
+
+    const unmutedContent = filtered.filter((item) => mutedContent.every((m) => m.post_id !== item.post_id));
+
     return [...mutedContent, ...unmutedContent];
-  }, [JSON.stringify(data), JSON.stringify(parent)]);
+  }, [data, parent, mutedList]);
+
+  const [isPending, startTransition] = useTransition();
+  const [currentReplyPage, setCurrentReplyPage] = useState(1);
+
+  const commentStartIndex = (currentReplyPage - 1) * nbCommentsPerPage;
+  const commentEndIndex = commentStartIndex + nbCommentsPerPage;
+  const nbReplies = topLevelComments.length;
+
+  const handlePaginationClick = useCallback((page: number) => {
+    startTransition(() => {
+      setCurrentReplyPage(page);
+    });
+  }, []);
+
+  const renderReplies = useCallback(
+    (parentComment: Entry, depth: number) => {
+      if (!data) return null;
+
+      const replies = data.filter(
+        (x) => x.parent_author === parentComment.author && x.parent_permlink === parentComment.permlink
+      );
+
+      if (!replies.length) return null;
+
+      if (depth >= 7) {
+        const firstHiddenReply = replies[0];
+
+        return (
+          <div className="mt-2 pl-3 sm:pl-12">
+            <a
+              href={`/@${firstHiddenReply.author}/${firstHiddenReply.permlink}`}
+              className="text-primary underline"
+            >
+              Load more replies…
+            </a>
+          </div>
+        );
+      }
+
+      return (
+        <ul id={`comment-list-${depth}`}>
+          {replies.map((reply) => (
+            <li key={reply.post_id} className="pl-3 sm:pl-12">
+              <CommentCard
+                parentPermlink={highestPermlink}
+                parentAuthor={highestAuthor}
+                permissionToMute={permissionToMute}
+                comment={reply}
+                parent_depth={depth}
+                mutedList={mutedList}
+                flagText={flagText}
+                discussionPermlink={discussionPermlink}
+                onCommentLinkClick={(hash) => setMarkedHash(hash)}
+              />
+              {renderReplies(reply, depth + 1)}
+            </li>
+          ))}
+        </ul>
+      );
+    },
+    [data, discussionPermlink, flagText, highestAuthor, highestPermlink, mutedList, permissionToMute]
+  );
+
   return (
-    <ul data-testid="comment-list">
-      <>
-        {!!arr
-          ? arr.map((comment: Entry, index: number) => (
-              <div
-                key={`parent-${comment.post_id}-index-${index}`}
+    <div>
+      {isPending ? (
+        <Loading loading={isPending} />
+      ) : (
+        <>
+          {parent_depth === 0 && nbReplies > 0 && (
+            <CommentsPagination
+              nbComments={nbReplies}
+              currentPage={currentReplyPage}
+              nbItemsPerPage={nbCommentsPerPage}
+              onClick={handlePaginationClick}
+            />
+          )}
+
+          <ul data-testid="comment-list">
+            {topLevelComments.slice(commentStartIndex, commentEndIndex).map((comment) => (
+              <li
+                data-testid="comment-list-item"
+                key={comment.post_id}
                 className={clsx(
                   'pl-2',
                   {
@@ -63,36 +145,34 @@ const CommentList = ({
                   { 'pl-3 sm:pl-12': comment.depth > 1 }
                 )}
               >
-                <CommentListItem
+                <CommentCard
                   parentPermlink={highestPermlink}
                   parentAuthor={highestAuthor}
                   permissionToMute={permissionToMute}
                   comment={comment}
-                  key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
                   parent_depth={parent_depth}
                   mutedList={mutedList}
                   flagText={flagText}
                   discussionPermlink={discussionPermlink}
-                  onCommnentLinkClick={(hash) => setMarkedHash(hash)}
-                >
-                  <CommentList
-                    flagText={flagText}
-                    highestAuthor={highestAuthor}
-                    highestPermlink={highestPermlink}
-                    permissionToMute={permissionToMute}
-                    mutedList={mutedList}
-                    data={data}
-                    parent={comment}
-                    key={`${comment.post_id}-list-${comment.depth}-index-${index}`}
-                    parent_depth={parent_depth}
-                    discussionPermlink={discussionPermlink}
-                  />
-                </CommentListItem>
-              </div>
-            ))
-          : null}
-      </>
-    </ul>
+                  onCommentLinkClick={(hash) => setMarkedHash(hash)}
+                />
+                {renderReplies(comment, parent_depth + 1)}
+              </li>
+            ))}
+          </ul>
+
+          {parent_depth === 0 && nbReplies > 0 && (
+            <CommentsPagination
+              nbComments={nbReplies}
+              currentPage={currentReplyPage}
+              nbItemsPerPage={nbCommentsPerPage}
+              onClick={handlePaginationClick}
+            />
+          )}
+        </>
+      )}
+    </div>
   );
 };
+
 export default CommentList;
