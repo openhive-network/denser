@@ -41,6 +41,12 @@ const PageLayout = ({
     return <CommunitiesSidebar />
   }
 
+  const renderListName = () => {
+    if (!tag) return null;
+    if (tag === 'feed') return t('navigation.communities_nav.my_friends')
+    return t('navigation.communities_nav.all_posts');
+  }
+
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
@@ -53,15 +59,17 @@ const PageLayout = ({
               <div className="my-4 flex w-full items-center justify-between" translate="no">
                 <div className="mr-2 flex w-[320px] flex-col">
                   <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                    {!!tag && t('navigation.communities_nav.all_posts')}
+                    {renderListName()}
                   </span>
                   <span className="md:hidden">
                     <CommunitiesSelect title={t('navigation.communities_nav.all_posts')} />
                   </span>
                 </div>
-                <div className="w-[180px]">
-                  <PostSelectFilter param={''} />
-                </div>
+                {tag !== 'feed' && 
+                  <div className="w-[180px]">
+                    <PostSelectFilter param={''} />
+                  </div>
+                }
               </div>
             )}
             {children}
