@@ -18,6 +18,7 @@ import { usePathname } from 'next/navigation';
 import BasePathLink from '@/blog/components/base-path-link';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { t } from 'i18next';
 
 const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
   const { user } = useUserClient();
@@ -85,6 +86,16 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
                       <span className="md:hidden">
                         <CommunitiesSelect title={communityData?.title || community} />
                       </span>
+                      
+                        <span
+                          className="hidden text-xs font-light md:block"
+                          data-testid="community-name-unmoderated"
+                        >
+                          { communityData
+                            ? t('communities.community')
+                            : t('communities.unmoderated_tag')}
+                        </span>
+                      
                     </>
                   )}
                 </div>

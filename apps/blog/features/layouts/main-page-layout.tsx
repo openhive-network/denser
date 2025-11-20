@@ -53,7 +53,7 @@ const PageLayout = ({
               <div className="my-4 flex w-full items-center justify-between" translate="no">
                 <div className="mr-2 flex w-[320px] flex-col">
                   <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                    {tag ?? t('navigation.communities_nav.all_posts')}
+                    {!!tag && t('navigation.communities_nav.all_posts')}
                   </span>
                   <span className="md:hidden">
                     <CommunitiesSelect title={t('navigation.communities_nav.all_posts')} />

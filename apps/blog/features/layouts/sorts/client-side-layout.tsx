@@ -7,7 +7,7 @@ import { ReactNode } from 'react';
 const ClientSideLayout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const params = pathname?.split('/');
-  const tag = params?.[2];
+  const tag = params?.[params.length - 1];
 
   if (tag?.startsWith('hive-')) {
     return children;
