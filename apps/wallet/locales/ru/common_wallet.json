@@ -139,7 +139,7 @@
     "hp_description": "Токены дают вам возможность влиять на вознаграждения за контент, а также возможность зарабатывать на курации контента. Часть HIVE POWER вам делегирована, это увеличивает ваше влияние на платформе. Количество делегированных токенов со временем может изменяться. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Ликвидные цифровые токены, которые могут переданы куда угодно в любой момент.",
     "savings_title": "Сберегательный счет",
-    "savings_description": "Вывод баланса из сейфа на обычный счет, занимает 3 дня, HBD interest rate: 20.00% APR (as voted by the ",
+    "savings_description": "Вывод баланса из сейфа на обычный счет, занимает 3 дня, HBD interest rate: 20.00% APR (as voted by the <0>Witnesses</0>)",
     "estimated_account_value_title": "Приблизительная стоимость аккаунта",
     "estimated_account_value_description": "Сметная стоимость основана на среднем значении %(LIQUID_TOKEN)s в долларах США.",
     "account_history_title": "ИСТОРИЯ",

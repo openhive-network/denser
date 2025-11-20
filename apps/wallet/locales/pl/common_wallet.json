@@ -166,7 +166,7 @@
     "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowanie jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie.",
     "savings_title": "Oszczędności",
-    "savings_description": "Saldo zależy od 3-dniowego okresu karencji wymaganego do wycofania środków, HBD interest rate: 20.00% APR (as voted by the ",
+    "savings_description": "Saldo zależy od 3-dniowego okresu karencji wymaganego do wycofania środków, HBD interest rate: 20.00% APR (as voted by the <0>Witnesses</0>)",
     "estimated_account_value_title": "Szacowana wartość konta",
     "estimated_account_value_description": "Szacowana wartość bazuje na średniej cenie tokenu HIVE w dolarach amerykańskich.",
     "account_history_title": "Historia",
