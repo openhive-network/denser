@@ -139,7 +139,7 @@
     "hp_description": "Tokens con influencia te dan más control sobre los pagos de los posts y te permiten ganar recompensas de curación. Part of {{username}}'s HIVE POWER is currently delegated. Delegation is donated for influence or to help new users perform actions on hive.blog. Your delegation amount can fluctuate. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
     "savings_title": "AHORROS",
-    "savings_description": "El saldo está sujeto a 3 días de espera para la retirada. HBD interest rate: 20.00% APR (as voted by the <0>Witnesses</0>)",
+    "savings_description": "El saldo está sujeto a 3 días de espera para la retirada. HBD interest rate: {{rate}}% APR (as voted by the <0>Witnesses</0>)",
     "estimated_account_value_title": "Valor de cuenta aproximado",
     "estimated_account_value_description": "El valor estimado está basado en el valor medio de 1HIVE en US dollars.",
     "account_history_title": "HISTORIA",

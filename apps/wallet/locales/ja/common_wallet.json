@@ -137,7 +137,7 @@
     "hp_description": "投稿への支払額の制御権を持ち、キュレーション報酬を得ることが可能になる、プラットフォームにおける影響力を持つトークンです。現在のHIVE POWERの一部は委託されたものです。委託は影響力の寄付や、新規ユーザーがHiveでアクションを起こしやすくするために行われます。委託された額は変動する可能性があります。 HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
     "savings_title": "貯蓄口座",
-    "savings_description": "引き出しに3日間の待ち時間が必要となる貯蓄口座です。HBD interest rate: 20.00% APR (as voted by the <0>Witnesses</0>)",
+    "savings_description": "引き出しに3日間の待ち時間が必要となる貯蓄口座です。HBD interest rate: {{rate}}% APR (as voted by the <0>Witnesses</0>)",
     "estimated_account_value_title": "推定アカウント価格",
     "estimated_account_value_description": "推定値はHIVEの平均値に基いてUSドルで表されます。",
     "account_history_title": "履歴",
