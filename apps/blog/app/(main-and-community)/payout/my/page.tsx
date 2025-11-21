@@ -1,5 +1,4 @@
 import Content from './content';
-import SortPage from '@/blog/features/tags-pages/sort-page';
 
 const sort = 'payout';
 const tag = 'my';
