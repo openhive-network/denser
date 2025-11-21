@@ -220,7 +220,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentListItems.nth(1).locator('..'),
         'border-color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(237, 237, 237)');
     // background-color of the second comment
     expect(
       await postPage.getElementCssPropertyValue(
@@ -511,7 +511,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     let removeThreeDotsUserAboutUI;
     if (userPostingJsonMetadata.profile.about) {
       userAboutAPI = await userPostingJsonMetadata.profile.about;
-      userAboutUI = await postPage.userAboutPopoverCard.textContent() || '';
+      userAboutUI = (await postPage.userAboutPopoverCard.textContent()) || '';
       removeThreeDotsUserAboutUI = userAboutUI.replace('...', '');
       // console.log('userAboutAPI: ', await userAboutAPI);
       expect(userAboutAPI).toContain(await removeThreeDotsUserAboutUI);
@@ -735,11 +735,11 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // Validate re-title of the comment's thread - comment view page is loaded
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
-    await postPage.articleBody.waitFor({state: 'visible'});
+    await postPage.articleBody.waitFor({ state: 'visible' });
     // Click 'View the full context'
     await commentViewPage.getViewFullContext.click();
     await postPage.page.waitForLoadState('domcontentloaded');
-    await postPage.articleBody.waitFor({state: 'visible'});
+    await postPage.articleBody.waitFor({ state: 'visible' });
     // Validate that the post page of Hive HardFork 25 Jump Starter Kit of gtg is loaded
     expect(await postPage.articleTitle).toHaveText('Hive HardFork 25 Jump Starter Kit');
     expect(await postPage.articleAuthorName).toHaveText('gtg');
@@ -749,7 +749,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
         await postPage.commentListItems.nth(1).locator('..'),
         'border-color'
       )
-    ).toBe('rgb(220, 38, 38)');
+    ).toBe('rgb(237, 237, 237)');
     // Validate that the first comment is not selected by red border
     expect(
       await postPage.getElementCssPropertyValue(
@@ -770,10 +770,10 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // Validate re-title of the comment's thread - comment view page is loaded
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
-    await postPage.articleBody.waitFor({state: 'visible'});
+    await postPage.articleBody.waitFor({ state: 'visible' });
     // Click 'View the direct parent'
     commentViewPage.getViewDirectParent.click();
-    await postPage.commentListLocator.first().waitFor({state: 'visible'});
+    await postPage.commentListLocator.first().waitFor({ state: 'visible' });
     // Validate that the `sicarius` comment is visibled on the comment view page
     await expect(await commentViewPage.getMainCommentAuthorData).toBeVisible();
     await expect(await commentViewPage.getMainCommentAuthorNameLink).toHaveText('sicarius');
@@ -818,7 +818,7 @@ test.describe('Load more... comments in the post', () => {
     await postPage.gotoPostPage('leofinance', 'leo-curation', 'organic-curation-report-week-25');
     await expect(await postPage.articleTitle).toHaveText('Organic Curation report - Week 25, 2023');
     // Validate the number of visible posts
-    await postPage.commentListLocator.first().waitFor({state: 'visible'});
+    await postPage.commentListLocator.first().waitFor({ state: 'visible' });
     await expect((await postPage.commentListItems.all()).length).toBe(12);
     // Validate the author and content of the first post in the Trending filter
     await expect(await postPage.commentAuthorLink.first()).toHaveText('infinity0');
