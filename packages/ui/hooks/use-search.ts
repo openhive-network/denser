@@ -66,6 +66,9 @@ export function useSearch() {
       case 'ai':
         router.push(`/search?ai=${encodeURIComponent(value)}`);
         break;
+      case 'tag':
+        router.push(`/trending/${encodeURIComponent(value)}`);
+        break;
       case 'userTopic':
         router.push(
           `/search?a=${encodeURIComponent(value)}&p=${encodeURIComponent(secondValue ?? '')}&s=${currenySort ?? sortQuery ?? 'relevance'}`
