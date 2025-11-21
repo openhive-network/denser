@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Router from 'next/router';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
@@ -54,6 +54,13 @@ export function useUser({ redirectTo = '', redirectIfFound = false } = {}): IUse
       Router.push(redirectTo);
     }
   }, [user, redirectIfFound, redirectTo]);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+if (!mounted) {
+  return { user: defaultUser }; // or null
+}
 
   return {
     user: user ?? defaultUser
