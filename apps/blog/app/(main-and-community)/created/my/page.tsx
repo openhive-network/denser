@@ -5,9 +5,7 @@ const sort = 'created';
 const tag = 'my';
 
 const Page = () => (
-  <SortPage sort={sort} tag={tag}>
-    <Content />
-  </SortPage>
+  <Content />
 );
 
 export default Page;
