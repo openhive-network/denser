@@ -93,9 +93,9 @@ const CommentList = ({
       }
 
       return (
-        <ul id={`comment-list-${depth}`}>
+        <ul data-testid="comment-list" id={`comment-list-${depth}`}>
           {replies.map((reply) => (
-            <li key={reply.post_id} className="pl-3 sm:pl-12">
+            <li data-testid="comment-list-item" key={reply.post_id} className="pl-3 sm:pl-12">
               <CommentCard
                 parentPermlink={highestPermlink}
                 parentAuthor={highestAuthor}
