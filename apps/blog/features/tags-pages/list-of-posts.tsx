@@ -31,7 +31,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   );
 
   const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({
-    queryKey: ['entriesInfinite', sort, tag],
+    queryKey: ['entriesInfinite', sort, tag, observer],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
       const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer);
