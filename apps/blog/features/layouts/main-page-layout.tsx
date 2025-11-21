@@ -67,7 +67,7 @@ const PageLayout = ({
                 </div>
                 {tag !== 'feed' && 
                   <div className="w-[180px]">
-                    <PostSelectFilter param={''} />
+                    <PostSelectFilter param={tag} />
                   </div>
                 }
               </div>

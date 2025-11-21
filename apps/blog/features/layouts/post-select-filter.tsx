@@ -17,7 +17,7 @@ const PostSelectFilter = ({ param }: { param: string }) => {
   const path = usePathname();
   const currentPath = `/${path?.split('/')[1]}`;
   const onValueChange = (value: string) => {
-    router.push(`${value}${param}`, undefined);
+    router.push(`${value}/${param}`, undefined);
   };
   return (
     <Select defaultValue={currentPath ?? '/trending'} onValueChange={onValueChange}>
