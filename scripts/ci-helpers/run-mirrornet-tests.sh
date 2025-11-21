@@ -46,7 +46,8 @@ pushd apps/blog
 export DENSER_URL=https://caddy-blog/
 cp "${MIRRORNET_USER_KEYS:?}" test.env
 cat test.env
-npx playwright test -g "Validate that denserAutoTest3Page subscribes Photography Lovers" --project=chromium --config=playwright.stack-mirrornet-3000.config.ts --update-snapshotspopd
+npx playwright test -g "Validate that denserAutoTest3Page subscribes Photography Lovers" --project=chromium --config=playwright.stack-mirrornet-3000.config.ts --update-snapshots
+popd
 
 # echo "Running wallet tests..."
 # pushd apps/wallet
