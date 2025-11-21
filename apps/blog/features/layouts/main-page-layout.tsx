@@ -12,7 +12,7 @@ import { getSubscriptions } from '@transaction/lib/bridge-api';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@ui/components';
 
-const PageLayout = ({
+const MainPageLayout = ({
   children,
   tag = '',
   hidePostsHeader = false
@@ -42,7 +42,6 @@ const PageLayout = ({
   }
 
   const renderListName = () => {
-    if (!tag) return null;
     if (tag === 'feed') return t('navigation.communities_nav.my_friends')
     return t('navigation.communities_nav.all_posts');
   }
@@ -82,4 +81,4 @@ const PageLayout = ({
     </div>
   );
 };
-export default PageLayout;
+export default MainPageLayout;

@@ -1,6 +1,6 @@
 'use client';
 
-import PageLayout from '@/blog/features/layouts/main-page-layout';
+import MainPageLayout from '@/blog/features/layouts/main-page-layout';
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
 
@@ -9,10 +9,10 @@ const ClientSideLayout = ({ children }: { children: ReactNode }) => {
   const params = pathname?.split('/');
   const tag = params?.[2];
 
-  if (tag?.startsWith('hive-')) {
-    return children;
+  if (!tag) {
+    return <MainPageLayout tag={tag}>{children}</MainPageLayout>;
   } else {
-    return <PageLayout tag={tag}>{children}</PageLayout>;
+    return children;
   }
 };
 export default ClientSideLayout;
