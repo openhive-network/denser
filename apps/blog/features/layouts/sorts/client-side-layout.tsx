@@ -9,7 +9,7 @@ const ClientSideLayout = ({ children }: { children: ReactNode }) => {
   const params = pathname?.split('/');
   const tag = params?.[2];
 
-  if (!tag) {
+  if (!tag || tag === 'my') {
     return <MainPageLayout tag={tag}>{children}</MainPageLayout>;
   } else {
     return children;
