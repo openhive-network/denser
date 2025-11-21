@@ -74,7 +74,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
                   nsfwPreferences={preferences.nsfw}
                   data={page}
                   key={`f-${pageIndex}`}
-                  isCommunityPage={false}
+                  isCommunityPage={tag?.startsWith('hive-')}
                   testFilter={sort}
                 />
                 {/* Add prefetch trigger before the last page, when we have more than one page */}

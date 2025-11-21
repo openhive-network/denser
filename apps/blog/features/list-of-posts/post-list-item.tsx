@@ -122,7 +122,7 @@ const PostListItem = ({
                   ({accountReputation(post.author_reputation)})
                 </span>
                 <PostCardBlacklistMark blacklistCheck={blacklistCheck} blacklists={post.blacklists} />
-                {post.author_role && post.author_role !== 'guest' ? (
+                {post.author_role && post.author_role !== 'guest' && isCommunityPage ? (
                   <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}&nbsp;</span>
                 ) : null}
                 {post.author_title ? (
