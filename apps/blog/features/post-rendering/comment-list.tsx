@@ -86,7 +86,7 @@ const CommentList = ({
               href={`/@${firstHiddenReply.author}/${firstHiddenReply.permlink}`}
               className="text-primary underline"
             >
-              Load more replies…
+              Load more...
             </a>
           </div>
         );
