@@ -16,7 +16,7 @@ const SITE_DESC =
 export const metadata: Metadata = {
   title: {
     default: 'Hive',
-    template: "%s | Hive"
+    template: '%s - Hive'
   },
   description: SITE_DESC,
   icons: {
