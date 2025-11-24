@@ -6,12 +6,15 @@ export async function buildCommunityTagMetadata(
   params: { tag: string },
   sectionLabel?: string
 ): Promise<Metadata> {
-  const queryClient = getQueryClient();
+
   const tag = params.tag;
 
+  if (!tag.startsWith('hive-')) return {title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive`};
+
+  const queryClient = getQueryClient();
   const data = await queryClient.fetchQuery({
     queryKey: ['community', tag],
-    queryFn: () => getCommunity(tag)
+    queryFn: () => getCommunity(tag),
   });
 
   const communityName = data?.title ?? data?.name ?? tag;
