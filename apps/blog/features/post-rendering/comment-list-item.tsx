@@ -14,7 +14,6 @@ import DetailsCardHover from '../list-of-posts/details-card-hover';
 import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
-import VotesComponent from '../votes/votes-component';
 import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from '../../components/dialog-login';
@@ -36,6 +35,11 @@ import TimeAgo from '@hive/ui/components/time-ago';
 import { getUserAvatarUrl } from '@hive/ui';
 import { UserPopoverCard } from './user-popover-card';
 import { useTranslation } from '@/blog/i18n/client';
+import dynamic from 'next/dynamic';
+
+const VotesComponent = dynamic(() => import('@/blog/features/votes/votes-component'), {
+  ssr: false
+});
 
 interface CommentListProps {
   permissionToMute: Boolean;

@@ -32,7 +32,6 @@ import UserInfo from '@/blog/features/post-rendering/user-info';
 import { UserPopoverCard } from '@/blog/features/post-rendering/user-popover-card';
 import AnimatedList from '@/blog/features/suggestions-posts/animated-tab';
 import SuggestionsList from '@/blog/features/suggestions-posts/list';
-import VotesComponent from '@/blog/features/votes/votes-component';
 import { useTranslation } from '@/blog/i18n/client';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
@@ -64,6 +63,11 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 import { useEffect, useMemo, useState } from 'react';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useLocalStorage } from 'usehooks-ts';
+import dynamic from 'next/dynamic';
+
+const VotesComponent = dynamic(() => import('@/blog/features/votes/votes-component'), {
+  ssr: false
+});
 
 const PostContent = () => {
   const searchParams = useSearchParams();

@@ -23,9 +23,13 @@ import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import PostSummary from './summary';
-import VotesComponent from '@/blog/features/votes/votes-component';
 import { Preferences } from '@/blog/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
+import dynamic from 'next/dynamic';
+
+const VotesComponent = dynamic(() => import('@/blog/features/votes/votes-component'), {
+  ssr: false
+});
 
 const PostListItem = ({
   post,
