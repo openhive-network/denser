@@ -3,12 +3,12 @@
 import PostForm from '@/blog/feature/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { useTranslation } from '@/blog/i18n/client';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useState } from 'react';
 
 const SubmitContent = () => {
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
