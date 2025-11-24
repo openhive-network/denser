@@ -5,7 +5,7 @@ import { convertToHP, numberWithCommas } from '@ui/lib/utils';
 import Big from 'big.js';
 
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
+import { Avatar, AvatarFallback, AvatarImage, getUserAvatarUrl } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import { convertStringToBig } from '@ui/lib/helpers';
 import TimeAgo from '@hive/ui/components/time-ago';
@@ -61,7 +61,7 @@ const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: str
               <Avatar className="flex h-[75px] w-[75px] items-center justify-center overflow-hidden rounded-full">
                 <AvatarImage
                   className="h-full w-full object-cover"
-                  src={getDefaultImageUrl()}
+                  src={getUserAvatarUrl(author, 'medium')}
                   alt="Profile picture"
                 />
                 <AvatarFallback>
