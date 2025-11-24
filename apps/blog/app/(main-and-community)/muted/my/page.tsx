@@ -1,10 +1,13 @@
+import SortPage from '@/blog/features/tags-pages/sort-page';
 import Content from './content';
 
 const sort = 'muted';
 const tag = 'my';
 
 const Page = () => (
-  <Content />
+  <SortPage sort={sort} tag={tag}>
+    <Content />
+  </SortPage>
 );
 
 export default Page;
