@@ -503,7 +503,7 @@ export class HomePage {
 
   async validateThemeModeIsDark() {
     await this.page.waitForLoadState('domcontentloaded');
-    expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(44, 48, 53)');
+    expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(34, 38, 42)');
   }
 
   async moveToMutedPosts() {
