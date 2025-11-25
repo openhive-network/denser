@@ -139,7 +139,7 @@ export class PostPage {
     this.userAboutPopoverCard = page.locator('[data-testid="user-about"]');
     this.buttonFollowPopoverCard = page.getByTestId('user-popover-card-content').locator('button').getByText('Follow');
     this.buttonMutePopoverCard = page.locator('button').getByText('Mute');
-    this.commentListItems = page.locator('[data-testid="comment-list-item"]');
+    this.commentListItems = page.locator('[data-testid="post-list-item"]');
     this.commentListItem = '[data-testid="comment-list-item"]'
     this.commentListLocator = page.locator('[data-testid="comment-list"]');
     this.commentAuthorLink = page.locator(
@@ -151,7 +151,7 @@ export class PostPage {
     this.commentCardsHeaders = page.locator('[data-testid="comment-card-header"]');
     this.commentCardsHeadersAutorAndReputation = this.commentAuthorLink.locator('..'); // Parent of commentAuthorLink
     this.commentCardsHeadersTimeStampLink = page.locator('[data-testid="comment-timestamp-link"]');
-    this.commentCardsTitles = page.locator('[data-testid="comment-card-title"]');
+    this.commentCardsTitles = page.locator('[data-testid="post-title"]');
     this.commentCardsDescriptions = page.locator('[data-testid="comment-card-description"]');
     this.commentCard = '[data-testid="comment-card-description"]';
     this.commentCardsFooters = page.locator('[data-testid="comment-card-footer"]');
@@ -211,7 +211,7 @@ export class PostPage {
       '[data-testid="author-data-post-footer"] [data-testid="comment-votes"]'
     );
     this.postsCommentsTab = page.getByRole('tab', { name: 'Comments' });
-    this.postsCommentsFirstAvatar = page.locator('[data-testid="comment-author-avatar"]').first();
+    this.postsCommentsFirstAvatar = page.locator('[data-testid="post-card-avatar"]').first();
     this.mutedPostsBannedImageText = page.locator('#articleBody .text-red-500').first();
     this.userPostMenu = page.getByTestId('user-post-menu');
     this.postFooterUpvoteTooltip = page.locator('[data-testid="upvote-button-tooltip"]');

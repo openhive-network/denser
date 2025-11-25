@@ -294,7 +294,7 @@ export class ProfilePage {
     this.repliesCommentListItemPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]');
     this.repliesCommentListItemVotes = page.locator('[data-testid="comment-vote"]');
     this.repliesCommentListItemVotesTooltip = page.locator('[data-testid="comment-vote-tooltip"]');
-    this.repliesCommentListItemRespond = page.locator('[data-testid="comment-respond-link"]');
+    this.repliesCommentListItemRespond = page.locator('[data-testid="post-card-response-link"]');
     this.repliesCommentListItemRespondFirst = this.repliesCommentListItemRespond.first();
     this.repliesCommentListItemRespondTooltip = page.locator('[data-testid="comment-respond-tooltip"]');
     this.repliesCommentListItemArticleTitle = page.locator('[data-testid="article-title"]');
@@ -564,7 +564,8 @@ export class ProfilePage {
   }
 
   async profileRepliesTabIsSelected() {
-    const repliesPageListLocator = this.userHasNotHadAnyRepliesYetMsg.or(this.postsCommentsListLocator);
+    // const repliesPageListLocator = this.userHasNotHadAnyRepliesYetMsg.or(this.postsCommentsListLocator);
+    const repliesPageListLocator = this.userHasNotHadAnyRepliesYetMsg.or(this.profileBlogPostsList);
     await repliesPageListLocator.waitFor({state: 'visible'});
     await expect(this.page).toHaveURL(/.*replies/);
   }
