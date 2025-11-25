@@ -673,7 +673,7 @@ test.describe('Home page tests', () => {
 
     await expect(homePage.loginBtn).toBeVisible();
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe(
-      'rgb(51, 51, 51)'
+      'rgb(0, 0, 0)'
     );
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
       'rgba(0, 0, 0, 0)'
@@ -695,7 +695,7 @@ test.describe('Home page tests', () => {
     await homePage.page.waitForTimeout(1000);
     await expect(homePage.loginBtn).toBeVisible();
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe(
-      'rgb(225, 231, 239)'
+      'rgb(255, 255, 255)'
     );
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
       'rgba(0, 0, 0, 0)'
