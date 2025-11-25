@@ -491,13 +491,13 @@ export class HomePage {
 
   async validateThemeModeIsLight() {
     expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe(
-      'rgb(255, 255, 255)'
+      'rgb(247, 247, 247)'
     );
   }
 
   async validateThemeModeIsSystem() {
     expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe(
-      'rgb(255, 255, 255)'
+      'rgb(247, 247, 247)'
     );
   }
 
