@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 const usernamePattern = /\B@[a-z0-9.-]+/gi;
 
@@ -42,10 +43,11 @@ const NotificationListItem = ({
       icon = <Icons.arrowUpCircle className="h-4 w-4" />;
   }
   const imageHosterUrl = configuredImagesEndpoint;
+  const fixedUrl = url.startsWith('c') ? url.replace('c', 'trending') : url;
   const participants = mentions
     ? mentions.map((m: string) => {
         return (
-          <a key={m} href={`/${m}`} data-testid="notification-account-icon-link">
+          <Link key={m} href={`/${m}`} data-testid="notification-account-icon-link">
             <Avatar className="mr-3 h-[40px] w-[40px] rounded-3xl">
               <AvatarImage
                 src={`${imageHosterUrl}u/${m.substring(1)}/avatar/small`}
@@ -59,7 +61,7 @@ const NotificationListItem = ({
                 />
               </AvatarFallback>
             </Avatar>
-          </a>
+          </Link>
         );
       })
     : null;
@@ -74,12 +76,12 @@ const NotificationListItem = ({
           {unRead && isOwner ? <span className="mr-2 h-2 w-2 rounded-full bg-destructive" /> : null}
           {participants}
           <div className="flex flex-col">
-            <a href={`/${url}`}>
+            <Link href={`/${fixedUrl}`}>
               <span className="" data-testid="notification-account-and-message">
                 <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
                 {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}
               </span>
-            </a>
+            </Link>
             <span
               className="flex items-center gap-2 text-sm text-gray-400"
               data-testid="notification-timestamp"
