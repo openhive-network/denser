@@ -30,7 +30,7 @@ test.describe('Login and Sign Up tests', () =>{
 
   test('Check if login and sign up buttons are displayed correctly - light mode', async ({ page }) => {
     await expect(homePage.loginBtn).toBeVisible()
-    expect(await homePage.getElementCssPropertyValue(homePage.loginBtn, 'color')).toBe("rgb(51, 51, 51)");
+    expect(await homePage.getElementCssPropertyValue(homePage.loginBtn, 'color')).toBe("rgb(0, 0, 0)");
     await expect(homePage.loginBtn).toHaveText("Login")
     await homePage.loginBtn.hover()
     await page.waitForTimeout(500)
@@ -322,7 +322,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateDefaultLoginFormIsLoaded();
     // Default - empty Sign in with safe stroage form
     // Color and background color of the form
-    expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'color')).toBe("rgb(51, 51, 51)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'color')).toBe("rgb(0, 0, 0)");
     expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'background-color')).toBe("rgb(255, 255, 255)");
     // Header color
     expect(await homePage.getElementCssPropertyValue(await loginForm.loginFormHeader, 'color')).toBe("rgb(15, 23, 42)");
@@ -352,7 +352,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateDefaultLoginFormIsLoaded();
     // Default - empty Sign in with safe stroage form
     // Color and background color of the form
-    expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'color')).toBe("rgb(225, 231, 239)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'color')).toBe("rgb(255, 255, 255)");
     expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'background-color')).toBe("rgb(44, 48, 53)");
     // Header color
     expect(await homePage.getElementCssPropertyValue(await loginForm.loginFormHeader, 'color')).toBe("rgb(255, 255, 255)");
@@ -381,7 +381,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.otherSignInOptionsButton.click();
     // Default - empty Other sign in options form
     // Color and background color of the form
-    expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'color')).toBe("rgb(51, 51, 51)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'color')).toBe("rgb(0, 0, 0)");
     expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'background-color')).toBe("rgb(255, 255, 255)");
     // Header color
     expect(await homePage.getElementCssPropertyValue(await loginForm.otherSignInOptionsHeader, 'color')).toBe("rgb(15, 23, 42)");
@@ -413,7 +413,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.otherSignInOptionsButton.click();
     // Default - empty Other sign in options form
     // Color and background color of the form
-    expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'color')).toBe("rgb(225, 231, 239)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'color')).toBe("rgb(255, 255, 255)");
     expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'background-color')).toBe("rgb(44, 48, 53)");
     // Header color
     expect(await homePage.getElementCssPropertyValue(await loginForm.otherSignInOptionsHeader, 'color')).toBe("rgb(255, 255, 255)");

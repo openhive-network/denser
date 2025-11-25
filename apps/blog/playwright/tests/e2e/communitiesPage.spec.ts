@@ -671,7 +671,7 @@ test.describe('Communities page tests', () => {
       'rgb(255, 255, 255)'
     );
     await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, 'color')).toBe(
-      'rgb(51, 51, 51)'
+      'rgb(0, 0, 0)'
     );
     // console.log('First subscriber progress bar - transform css value: ', await homePage.getElementCssPropertyValue(firstRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"));
     await expect(
@@ -692,7 +692,7 @@ test.describe('Communities page tests', () => {
       'rgb(225, 231, 239)'
     );
     await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, 'color')).toBe(
-      'rgb(51, 51, 51)'
+      'rgb(0, 0, 0)'
     );
     await expect(
       await homePage.getElementCssPropertyValue(
@@ -730,7 +730,7 @@ test.describe('Communities page tests', () => {
       'rgb(44, 48, 53)'
     );
     await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, 'color')).toBe(
-      'rgb(225, 231, 239)'
+      'rgb(255, 255, 255)'
     );
     // console.log('First subscriber progress bar - transform css value: ', await homePage.getElementCssPropertyValue(firstRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"));
     await expect(
@@ -751,7 +751,7 @@ test.describe('Communities page tests', () => {
       'rgb(56, 66, 82)'
     );
     await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, 'color')).toBe(
-      'rgb(225, 231, 239)'
+      'rgb(255, 255, 255)'
     );
     await expect(
       await homePage.getElementCssPropertyValue(
@@ -1115,7 +1115,7 @@ test.describe('Communities page tests', () => {
 
     expect(
       await homePage.getElementCssPropertyValue(logInToMakePostMessagePage.logInToMakePostMessage, 'color')
-    ).toBe('rgb(51, 51, 51)');
+    ).toBe('rgb(0, 0, 0)');
   });
 
   test('validate style of the create post message page in the dark mode', async ({ page }) => {
@@ -1143,6 +1143,6 @@ test.describe('Communities page tests', () => {
 
     expect(
       await homePage.getElementCssPropertyValue(logInToMakePostMessagePage.logInToMakePostMessage, 'color')
-    ).toBe('rgb(225, 231, 239)');
+    ).toBe('rgb(255, 255, 255)');
   });
 });

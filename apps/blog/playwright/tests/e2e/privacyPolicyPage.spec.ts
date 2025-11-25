@@ -33,7 +33,7 @@ test.describe('Privacy Policy page tests', () => {
       privacyPolicyPage.firstSubtitle,
       'color'
     );
-    expect(subtitleColor).toBe('rgb(51, 51, 51)');
+    expect(subtitleColor).toBe('rgb(0, 0, 0)');
     const subtitleFontSize = await privacyPolicyPage.getElementCssPropertyValue(
       privacyPolicyPage.firstSubtitle,
       'font-size'
@@ -48,7 +48,7 @@ test.describe('Privacy Policy page tests', () => {
       privacyPolicyPage.firstParagraf,
       'color'
     );
-    expect(paragrafColor).toBe('rgb(51, 51, 51)');
+    expect(paragrafColor).toBe('rgb(0, 0, 0)');
     const paragrafFontSize = await privacyPolicyPage.getElementCssPropertyValue(
       privacyPolicyPage.firstParagraf,
       'font-size'
@@ -68,7 +68,7 @@ test.describe('Privacy Policy page tests', () => {
       privacyPolicyPage.firstSubtitle,
       'color'
     );
-    expect(subtitleColor).toBe('rgb(225, 231, 239)');
+    expect(subtitleColor).toBe('rgb(255, 255, 255)');
     const subtitleFontSize = await privacyPolicyPage.getElementCssPropertyValue(
       privacyPolicyPage.firstSubtitle,
       'font-size'
@@ -83,7 +83,7 @@ test.describe('Privacy Policy page tests', () => {
       privacyPolicyPage.firstParagraf,
       'color'
     );
-    expect(paragrafColor).toBe('rgb(225, 231, 239)');
+    expect(paragrafColor).toBe('rgb(255, 255, 255)');
     const paragrafFontSize = await privacyPolicyPage.getElementCssPropertyValue(
       privacyPolicyPage.firstParagraf,
       'font-size'

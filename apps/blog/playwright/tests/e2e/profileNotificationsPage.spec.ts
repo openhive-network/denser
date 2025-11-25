@@ -342,7 +342,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.notificationAccountAndMessage.first(),
         'color'
       )
-    ).toBe('rgb(51, 51, 51)');
+    ).toBe('rgb(0, 0, 0)');
     // Validate the timestamp color of the first notification
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.first(), 'color')
@@ -376,7 +376,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.notificationAccountAndMessage.nth(1),
         'color'
       )
-    ).toBe('rgb(51, 51, 51)');
+    ).toBe('rgb(0, 0, 0)');
     // Validate the timestamp color of the second notification
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.nth(1), 'color')
@@ -420,7 +420,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.notificationAccountAndMessage.first(),
         'color'
       )
-    ).toBe('rgb(225, 231, 239)');
+    ).toBe('rgb(255, 255, 255)');
     // Validate the timestamp color of the first notification
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.first(), 'color')
@@ -454,7 +454,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.notificationAccountAndMessage.nth(1),
         'color'
       )
-    ).toBe('rgb(225, 231, 239)');
+    ).toBe('rgb(255, 255, 255)');
     // Validate the timestamp color of the second notification
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.nth(1), 'color')
