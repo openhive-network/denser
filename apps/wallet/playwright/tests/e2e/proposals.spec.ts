@@ -525,7 +525,7 @@ test.describe('Proposals page tests', () => {
       // Vote proposal value color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalsValue.first(), 'color')
-      ).toBe('rgb(51, 51, 51)');
+      ).toBe('rgb(0, 0, 0)');
       // Proposal Status tooltip
       await expect(proposalsPage.voteProposalsValue.first()).toHaveAttribute('title', /.+( HP)$/);
       // Vote proposal button icon
@@ -604,7 +604,7 @@ test.describe('Proposals page tests', () => {
       // Vote proposal value color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalsValue.first(), 'color')
-      ).toBe('rgb(225, 231, 239)');
+      ).toBe('rgb(255, 255, 255)');
       // Proposal Status tooltip
       await expect(proposalsPage.voteProposalsValue.first()).toHaveAttribute('title', /.+( HP)$/);
       // Vote proposal button icon
@@ -626,14 +626,14 @@ test.describe('Proposals page tests', () => {
     // Filter Status:  color and border
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterStatus.first(), 'color')
-    ).toBe('rgb(51, 51, 51)');
+    ).toBe('rgb(0, 0, 0)');
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterStatus.first(), 'border')
     ).toBe('1px solid rgb(226, 232, 240)');
     // Filter Order by:  color and border
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterOrderBy.first(), 'color')
-    ).toBe('rgb(51, 51, 51)');
+    ).toBe('rgb(0, 0, 0)');
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterOrderBy.first(), 'border')
     ).toBe('1px solid rgb(226, 232, 240)');
@@ -658,14 +658,14 @@ test.describe('Proposals page tests', () => {
     // Filter Status:  color and border
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterStatus.first(), 'color')
-    ).toBe('rgb(225, 231, 239)');
+    ).toBe('rgb(255, 255, 255)');
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterStatus.first(), 'border')
     ).toBe('1px solid rgb(29, 40, 58)');
     // Filter Order by:  color and border
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterOrderBy.first(), 'color')
-    ).toBe('rgb(225, 231, 239)');
+    ).toBe('rgb(255, 255, 255)');
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterOrderBy.first(), 'border')
     ).toBe('1px solid rgb(29, 40, 58)');

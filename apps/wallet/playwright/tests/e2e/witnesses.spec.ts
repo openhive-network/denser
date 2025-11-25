@@ -91,7 +91,7 @@ test.describe('Witnesses page tests', () => {
     // Validate styles of column names
     for await (let tableHeaderThElementLocator of rankTableHeaderThElements) {
       expect(await witnessesPage.getElementCssPropertyValue(tableHeaderThElementLocator, 'color')).toBe(
-        'rgb(51, 51, 51)'
+        'rgb(0, 0, 0)'
       );
     }
     // Validate table's head background-color
@@ -121,7 +121,7 @@ test.describe('Witnesses page tests', () => {
     // Validate styles of column names
     for await (let tableHeaderThElementLocator of rankTableHeaderThElements) {
       expect(await witnessesPage.getElementCssPropertyValue(tableHeaderThElementLocator, 'color')).toBe(
-        'rgb(225, 231, 239)'
+        'rgb(255, 255, 255)'
       );
     }
     // Validate table's head background-color
@@ -365,7 +365,7 @@ test.describe('Witnesses page tests', () => {
     // Validate color of the witness's votes received
     expect(
       await witnessesPage.getElementCssPropertyValue(witnessesPage.witnessVotesReceived.first(), 'color')
-    ).toBe('rgb(225, 231, 239)');
+    ).toBe('rgb(255, 255, 255)');
     // Validate the witness name was typed into the input vote
     const firstWitnessName: any = await witnessesPage.witnessNameLink.first().textContent();
     await expect(voteBoxInput).toHaveAttribute('value', firstWitnessName);
@@ -375,7 +375,7 @@ test.describe('Witnesses page tests', () => {
         witnessesPage.witnessExternalSiteLink.first().locator('a span'),
         'color'
       )
-    ).toBe('rgb(225, 231, 239)');
+    ).toBe('rgb(255, 255, 255)');
     // Validate color of the witness's open external site after hovering
     await witnessesPage.witnessExternalSiteLink.first().locator('a span').hover();
     expect(
