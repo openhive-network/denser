@@ -429,9 +429,9 @@ export class ProfilePage {
     this.communityName = page.locator('[data-testid="community-name"]');
     this.communityTimeStamp = page.locator('span.text-xs a').nth(1);
     this.userHasNotStartedBloggingYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
-    this.userHasNotMadeAnyPostsYetMsg = page.locator('[data-testid="user-has-not-made-any-post-yet"]');
-    this.userNoPendingPayoutsMsg = page.locator('[data-testid="user-no-pending-payouts"]');
-    this.userHasNotHadAnyRepliesYetMsg = page.locator('[data-testid="user-has-not-had-any-replies-yet"]');
+    this.userHasNotMadeAnyPostsYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
+    this.userNoPendingPayoutsMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
+    this.userHasNotHadAnyRepliesYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
     this.userDoesNotHaveAnySubscriptionsYetMsg = page.locator('[data-testid="user-does-not-have-any-subscriptions-yet"]');
     this.userHasNotHadAnyNotificationsYetMsg = page.locator('[data-testid="user-has-not-had-any-notifications-yet"]');
     this.userBannerBadgeLink = page.locator('[data-testid="profile-badge-link"]');

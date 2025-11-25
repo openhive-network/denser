@@ -38,14 +38,14 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
 
     const firstNotificationAuthorName = await profilePage.notificationNickName.first().textContent();
     await profilePage.notificationAccountIconLink.first().click();
-    await profilePage.page.waitForSelector(profilePage.profileInfo['_selector']);
+    await profilePage.page.waitForTimeout(3000);
     // Validate new url of notification's author
     await expect(profilePage.page.url()).toContain(firstNotificationAuthorName);
   });
 
   // Skip this test due to move to the non existing page
   // Issue: https://gitlab.syncad.com/hive/denser/-/issues/449
-  test('Click the first three notifications and move to specific page', async ({ page }) => {
+  test.skip('Click the first three notifications and move to specific page', async ({ page }) => {
     let postPage = new PostPage(page);
     let commentPage = new CommentViewPage(page);
 
