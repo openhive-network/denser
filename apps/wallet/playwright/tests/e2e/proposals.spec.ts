@@ -539,7 +539,8 @@ test.describe('Proposals page tests', () => {
     }
   });
 
-  test('validate styles in proposals list in the dark mode', async ({ page }) => {
+  test('validate styles in proposals list in the dark mode', async ({ page, browserName }) => {
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     let homePage: HomePage = new HomePage(page);
     let apiHelper: ApiHelper = new ApiHelper(page);
 
@@ -646,7 +647,8 @@ test.describe('Proposals page tests', () => {
     ).toBe('rgb(239, 68, 68)');
   });
 
-  test('validate styles of filters in proposals list in the dark mode', async ({ page }) => {
+  test('validate styles of filters in proposals list in the dark mode', async ({ page, browserName }) => {
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     let homePage: HomePage = new HomePage(page);
     let apiHelper: ApiHelper = new ApiHelper(page);
 

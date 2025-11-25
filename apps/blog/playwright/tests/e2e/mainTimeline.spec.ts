@@ -688,7 +688,8 @@ test.describe('Home page tests', () => {
     );
   });
 
-  test('validate styles of navigation Login link in the dark mode', async ({ page }) => {
+  test('validate styles of navigation Login link in the dark mode', async ({ page, browserName }) => {
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();

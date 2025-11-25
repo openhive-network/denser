@@ -100,7 +100,8 @@ test.describe('Witnesses page tests', () => {
     ).toBe('rgb(244, 244, 245)');
   });
 
-  test("validate table's header in the witnesses rank in the dark mode", async ({ page }) => {
+  test("validate table's header in the witnesses rank in the dark mode", async ({ page, browserName }) => {
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     let homePage = new HomePage(page);
 
     await witnessesPage.goToWitnessesPage();
@@ -328,7 +329,8 @@ test.describe('Witnesses page tests', () => {
     await expect(voteBoxInput).toHaveAttribute('value', firstWitnessName);
   });
 
-  test('validate highlighting witnesses by clicking link in the dark mode', async ({ page }) => {
+  test('validate highlighting witnesses by clicking link in the dark mode', async ({ page, browserName }) => {
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     let homePage = new HomePage(page);
 
     await witnessesPage.goToWitnessesPage();

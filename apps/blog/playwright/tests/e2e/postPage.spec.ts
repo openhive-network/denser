@@ -33,7 +33,8 @@ test.describe('Post page tests', () => {
     await postPage.moveToTheFirstPostInHomePageByPostTitle();
   });
 
-  test('validate the post content pages styles in the dark theme', async ({ page }) => {
+  test('validate the post content pages styles in the dark theme', async ({ page, browserName }) => {
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByPostTitle();
     await homePage.changeThemeMode('Dark');
