@@ -4,11 +4,11 @@ import BasePathLink from '@/blog/components/base-path-link';
 import PrevNextButtons from '@/blog/features/account-lists/prev-next-buttons';
 import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
 import { useTranslation } from '@/blog/i18n/client';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { useState } from 'react';
 import ButtonsContainer from '@/blog/features/mute-follow/buttons-container';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const LIMIT = 50;
 
@@ -21,7 +21,7 @@ const FollowedContent = ({ username }: { username: string }) => {
   });
   const [page, setPage] = useState(0);
 
-  const { user } = useUser();
+  const { user } = useUserClient();
   const followingData = useFollowingInfiniteQuery(username, LIMIT);
   const following = useFollowingInfiniteQuery(user?.username || '', 1000, 'blog', ['blog']);
   const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
