@@ -69,6 +69,12 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   // Calculate total posts to determine when to show prefetch trigger
   const totalPosts = data?.pages?.reduce((acc, page) => acc + (page?.length || 0), 0) || 0;
 
+  const getNoContentMessage = () => {
+    if (query === 'posts' || query === 'comments') return t('user_profile.no_posts_yet', { username: username });
+    if (query === 'payout') return t('user_profile.no_pending_payouts');
+    return t('user_profile.no_blogging_yet', { username: username });
+  }
+
   if (isError) return <NoDataError />;
 
   return !legalBlockedUser ? (
@@ -97,7 +103,7 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
               className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
               data-testid="user-has-not-started-blogging-yet"
             >
-              {t('user_profile.no_blogging_yet', { username: username })}
+              {getNoContentMessage()}
             </div>
           )}
           <div>
