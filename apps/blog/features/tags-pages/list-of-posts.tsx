@@ -10,7 +10,6 @@ import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@
 import { useTranslation } from '@/blog/i18n/client';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import PostList from '../list-of-posts/posts-loader';
-import NoDataError from '@/blog/components/no-data-error';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
   const { user } = useUser();
@@ -61,7 +60,6 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
 
   // Calculate total posts to determine when to show prefetch trigger
   const totalPosts = data?.pages?.reduce((acc, page) => acc + (page?.length || 0), 0) || 0;
-
 
   return (
     <>
