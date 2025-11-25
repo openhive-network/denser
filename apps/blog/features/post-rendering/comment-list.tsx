@@ -4,7 +4,7 @@ import CommentListItem from '@/blog/features/post-rendering/comment-list-item';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const CommentList = ({
   highestAuthor,
@@ -27,7 +27,13 @@ const CommentList = ({
   flagText: string | undefined;
   discussionPermlink: string;
 }) => {
-  const [markedHash, setMarkedHash] = useState<string>(window.location.hash);
+  const [markedHash, setMarkedHash] = useState<string>("");
+
+  useEffect(() => {
+  if (typeof window !== "undefined") {
+    setMarkedHash(window.location.hash);
+  }
+}, []);
 
   const arr = useMemo(() => {
     if (!data || !parent) return undefined;
