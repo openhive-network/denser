@@ -4,7 +4,7 @@ import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useQuery } from '@tanstack/react-query';
 import { getPost } from '@transaction/lib/bridge-api';
-import { useParams } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 const RedirectContent = () => {
@@ -24,6 +24,7 @@ const RedirectContent = () => {
       window.location.href = url;
     }
   }, [url]);
+  if (!data) return notFound();
   return (
     <div className="flex items-center justify-center py-12">
       Redirecting to post:

@@ -59,7 +59,7 @@ import clsx from 'clsx';
 import { Clock, Link2 } from 'lucide-react';
 import moment from 'moment';
 import Link from 'next/link';
-import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { notFound, useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useLocalStorage } from 'usehooks-ts';
@@ -226,7 +226,7 @@ const PostContent = () => {
     }
   }, [reply, storeBox]);
   if (userFromGDPR || (!postData && !postIsLoading)) return <NoDataError />;
-
+  if (!postData) return notFound();
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-12">

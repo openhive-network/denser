@@ -3,10 +3,18 @@ import RedirectContent from './content';
 import { getPost } from '@transaction/lib/bridge-api';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
+import { isUsernameValid, isPermlinkValid } from '@/blog/utils/validate-links';
+import { notFound } from 'next/navigation';
 
 const Page = async ({ params: { param, p2 } }: { params: { param: string; p2: string } }) => {
   const queryClient = getQueryClient();
   const username = param.replace('%40', '');
+
+  const validUser = await isUsernameValid(username);
+  if (!validUser) notFound();
+
+  if (!isPermlinkValid(p2)) notFound();
+
   const observer = getObserverFromCookies();
   await queryClient.prefetchQuery({
     queryKey: ['postData', username, p2],

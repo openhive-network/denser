@@ -5,6 +5,8 @@ import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { getTwitterInfo } from '@transaction/lib/custom-api';
+import { isUsernameValid } from '@/blog/utils/validate-links';
+import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }: { params: { param: string } }): Promise<Metadata> {
   const raw = params.param;
@@ -40,9 +42,14 @@ export async function generateMetadata({ params }: { params: { param: string } }
 const Layout = async ({ children, params }: { children: ReactNode; params: { param: string } }) => {
   const queryClient = getQueryClient();
   const { param } = params;
+
   const username = param.startsWith('%40') ? param.replace('%40', '') : param;
 
-  console.log('Layout username:', username);
+  const valid = await isUsernameValid(username);
+  if (!valid) {
+    notFound();
+  }
+
   await queryClient.prefetchQuery({
     queryKey: ['profileData', username],
     queryFn: () => getAccountFull(username)
@@ -59,6 +66,7 @@ const Layout = async ({ children, params }: { children: ReactNode; params: { par
     queryKey: ['dynamicGlobalData'],
     queryFn: () => getDynamicGlobalProperties()
   });
+
   return (
     <Hydrate state={dehydrate(queryClient)}>
       <ProfileLayout>{children}</ProfileLayout>
