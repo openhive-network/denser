@@ -449,14 +449,14 @@ export class ProfilePage {
     await this.page.goto(`/${nickName}/posts`);
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.postsPostListLocator['_selector']);
+    await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
   }
 
   async gotoPostsCommentsProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/comments`);
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.postsCommentsListLocator['_selector']);
+    await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
   }
 
   async gotoPostsPayoutsProfilePage(nickName: string) {
@@ -464,7 +464,7 @@ export class ProfilePage {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
     if (!await this.userNoPendingPayoutsMsg.isVisible())
-      await this.page.waitForSelector(this.postsPayoutsListLocator['_selector']);
+      await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
   }
 
   async gotoRepliesProfilePage(nickName: string) {
