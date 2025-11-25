@@ -1,6 +1,6 @@
 'use client';
 
-import PostForm from '@/blog/feature/post-editor/post-form';
+import PostForm from '@/blog/features/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';

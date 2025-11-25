@@ -10,7 +10,7 @@ import DetailsCardHover from '@/blog/features/list-of-posts/details-card-hover';
 import ReblogTrigger from '@/blog/features/list-of-posts/reblog-trigger';
 import { useDeletePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
 import { postClassName } from '@/blog/features/post-editor/lib/utils';
-import PostForm from '@/blog/feature/post-editor/post-form';
+import PostForm from '@/blog/features/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
 import { AlertDialogFlag } from '@/blog/features/post-rendering/alert-window-flag';
