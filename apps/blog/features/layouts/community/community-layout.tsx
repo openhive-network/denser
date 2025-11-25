@@ -73,18 +73,18 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
                         className="text-md ml-10 font-medium text-destructive"
                         data-testid="community-name"
                       >
-                        {communityData?.title || community}
+                        {communityData?.title || `#${community}`}
                       </span>
                     </BasePathLink>
                   ) : (
                     <>
                       <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                        {communityData?.title || community}
+                        {communityData?.title || `#${community}`}
                       </span>
                       <span className="md:hidden">
                         <CommunitiesSelect title={communityData?.title || community} />
                       </span>
-                      
+
                         <span
                           className="hidden text-xs font-light md:block"
                           data-testid="community-name-unmoderated"
@@ -93,7 +93,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
                             ? t('communities.community')
                             : t('communities.unmoderated_tag')}
                         </span>
-                      
+
                     </>
                   )}
                 </div>
