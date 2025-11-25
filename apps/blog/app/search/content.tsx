@@ -31,7 +31,6 @@ const SearchContent = ({
     refetchOnWindowFocus: false,
     refetchOnMount: false
   });
-  console.log('hiveSense data:', aiParam, classicQuery, userTopicQuery, topicQuery, sortQuery);
   const { user } = useUserClient();
   const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
