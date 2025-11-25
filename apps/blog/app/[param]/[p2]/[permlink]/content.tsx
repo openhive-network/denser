@@ -64,6 +64,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useLocalStorage } from 'usehooks-ts';
 import dynamic from 'next/dynamic';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const VotesComponent = dynamic(() => import('@/blog/features/votes/votes-component'), {
   ssr: false
@@ -78,7 +79,7 @@ const PostContent = () => {
   const author = params?.p2.replace('%40', '') ?? '';
   const category = params?.param ?? '';
   const permlink = params?.permlink ?? '';
-  const { user } = useUser();
+  const { user } = useUserClient();
   const storageId = `replybox-/${author}/${permlink}-${user.username}`;
 
   const { t } = useTranslation('common_blog');
