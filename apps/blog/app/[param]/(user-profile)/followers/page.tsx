@@ -1,6 +1,7 @@
 import { getQueryClient } from '@/blog/lib/react-query';
 import FollowersContent from './content';
 import { getAccountFull, getFollowers } from '@transaction/lib/hive-api';
+import { dehydrate, Hydrate } from '@tanstack/react-query';
 
 const FollowersPage = async ({ params }: { params: { param: string } }) => {
   const queryClient = getQueryClient();
@@ -19,7 +20,11 @@ const FollowersPage = async ({ params }: { params: { param: string } }) => {
       return lastPage.length >= 50 ? lastPage[lastPage.length - 1].follower : undefined;
     }
   });
-  return <FollowersContent username={username} />;
+  return (
+    <Hydrate state={dehydrate(queryClient)}>
+      <FollowersContent username={username} />
+    </Hydrate>
+  );
 };
 
 export default FollowersPage;

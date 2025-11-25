@@ -6,7 +6,7 @@ import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/u
 import PrevNextButtons from '@/blog/features/account-lists/prev-next-buttons';
 import ButtonsContainer from '@/blog/features/mute-follow/buttons-container';
 import { useTranslation } from '@/blog/i18n/client';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { useState } from 'react';
@@ -16,7 +16,7 @@ const LIMIT = 50;
 const FollowersContent = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
-  const { user } = useUser();
+  const { user } = useUserClient();
 
   const { data: profileData } = useQuery({
     queryKey: ['profileData', username],
