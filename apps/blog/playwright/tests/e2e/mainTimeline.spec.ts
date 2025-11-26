@@ -1099,11 +1099,11 @@ test.describe('Home page tests', () => {
   }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
 
-    // Load 40 posts - more likely to occur a badge
+    // Load 60 posts - more likely to occur a badge
     await homePage.goto();
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
+    await homePage.mainPostsTimelineVisible(60);
 
     const apiHelper = await new ApiHelper(page);
     const rankedPostResponse = await apiHelper.getRankedPostsAPI('trending', '', '', 20, '', '');
