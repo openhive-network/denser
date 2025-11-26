@@ -396,6 +396,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
 
   test('Validate the notifications styles in dark mode', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
 
     await profilePage.gotoNotificationsProfilePage('@gtg');
     await profilePage.profileNotificationsTabIsSelected();

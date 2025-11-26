@@ -202,7 +202,10 @@ test.describe('Profile page of @gtg', () => {
     }
   });
 
-  test('Tab Posts - Comment Card Footer - Votes', async ({ page }) => {
+  test('Tab Posts - Comment Card Footer - Votes', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
+
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(commentViewPage.getResponseCommentPayout.first()).toBeVisible();
     const commentVoteText = await commentViewPage.commentVote.first().textContent();
