@@ -37,6 +37,7 @@ export class CommentViewPage {
   readonly getResponseCommentUpvoteButton: Locator;
   readonly getResponseCommentDownvoteButton: Locator;
   readonly getResponseCommentPayout: Locator;
+  readonly getResponsePostCommentPayout: Locator;
   readonly getResponseCommentReply: Locator;
   readonly getResponseCommentCloseOpen: Locator;
   readonly payoutPostCardTooltip: Locator;
@@ -103,6 +104,7 @@ export class CommentViewPage {
       '[data-testid="comment-card-footer-downvote"]'
     );
     this.getResponseCommentPayout = this.getResponseCommentFooter.locator('[data-testid="post-payout"]');
+    this.getResponsePostCommentPayout = this.page.getByTestId('post-card-footer').getByTestId('post-payout');
     this.getResponseCommentReply = this.getResponseCommentFooter.locator(
       '[data-testid="comment-card-footer-reply"]'
     );
