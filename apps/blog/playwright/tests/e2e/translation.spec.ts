@@ -9,7 +9,8 @@ import { WitnessPage } from '../support/pages/witnessesPage';
 import { WalletPage } from '../../../../wallet/playwright/tests/support/pages/walletPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 
-test.describe('Translation tests', () => {
+// Skipped due to move out translation from Denser
+test.describe.skip('Translation tests', () => {
   let homePage: HomePage;
   let postPage: PostPage;
   let profilePage: ProfilePage;
