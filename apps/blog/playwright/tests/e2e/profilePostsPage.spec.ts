@@ -222,7 +222,7 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Posts - Comment Card Footer - Response', async ({ page }) => {
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
-    await expect(postPage.commentListItems.first()).toBeVisible();
+    await expect(postPage.postListItemOnHomePage.first()).toBeVisible();
     await profilePage.repliesCommentListItemRespondFirst.click();
     await expect(commentViewPage.getHeaderOfViewingCommentThread).toBeVisible();
     await expect(commentViewPage.getHeaderOfViewingCommentThread).toHaveText("You are viewing a single comment's thread from:");
