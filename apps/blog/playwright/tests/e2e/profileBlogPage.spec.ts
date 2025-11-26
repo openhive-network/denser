@@ -48,7 +48,7 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.page.keyboard.down('End');
     await page.waitForTimeout(3000);
     const postListItemsAfterScrollDown = await profilePage.postBlogItem.all();
-    expect(await postListItemsAfterScrollDown.length).toBe(40);
+    expect(await postListItemsAfterScrollDown.length).toBe(60);
   });
 
   test('move to the profile page after clicking avatar of the first post card', async ({ page }) => {

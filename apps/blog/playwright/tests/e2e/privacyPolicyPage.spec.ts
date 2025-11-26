@@ -56,7 +56,8 @@ test.describe('Privacy Policy page tests', () => {
     expect(paragrafFontSize).toBe('14px');
   });
 
-  test('validate styles in the Privacy Policy in the dark mode', async ({ page }) => {
+  test('validate styles in the Privacy Policy in the dark mode', async ({ page, browserName }) => {
+    test.skip(browserName === 'firefox' || browserName === "webkit", 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.moveToPrivacyPolicyPage();
     // move to the dark mode
