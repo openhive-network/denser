@@ -471,7 +471,7 @@ export class ProfilePage {
     await this.page.goto(`/${nickName}/replies`);
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.repliesCommentListItem['_selector']);
+    await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
   }
 
   async gotoNotificationsProfilePage(nickName: string) {
