@@ -71,7 +71,7 @@ export class CommentViewPage {
       '[data-testid="downvote-button"]'
     );
     this.getMainCommentPayout = page.locator('[data-testid="comment-payout"]');
-    this.getMainCommentVotes = page.locator('[data-testid="post-total-votes"]');
+    this.getMainCommentVotes = page.locator('[data-testid="comment-votes"]');
     this.getMainCommentReblogButton = page.locator('[data-testid="comment-respons-header"] button').first();
     this.getMainCommentReplyButton = page.locator('[data-testid="comment-reply"]');
     this.getMainCommentResponsButton = page.locator('[data-testid="comment-respons"]');
@@ -95,7 +95,7 @@ export class CommentViewPage {
       '[data-testid="comment-page-link"]'
     );
     this.getResponseCommentContent = page.locator('[data-testid="comment-card-description"]');
-    this.getResponseCommentFooter = page.locator('[data-testid="post-card-footer"]');
+    this.getResponseCommentFooter = page.locator('[data-testid="comment-card-footer"]');
     this.getResponseCommentUpvoteButton = this.getResponseCommentFooter.locator(
       '[data-testid="comment-card-footer-upvote"]'
     );
