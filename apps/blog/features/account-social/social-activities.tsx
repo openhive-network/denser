@@ -1,0 +1,75 @@
+import { useTranslation } from '@/blog/i18n/client';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
+import { Badge } from '@transaction/lib/extended-hive.chain';
+import BadgeList from './badge-list';
+
+export default function SocialActivities({
+  data,
+  peakd,
+  username
+}: {
+  data: Badge[];
+  peakd: Badge[];
+  username: string;
+}) {
+  const { t } = useTranslation('common_blog');
+  const filterBadges = (type: string) => {
+    return data?.filter((badge: Badge) => badge.type === type);
+  };
+  const activity = filterBadges('activity');
+  const perso = filterBadges('perso');
+  const meetup = filterBadges('meetup');
+  const challenge = filterBadges('challenge');
+  const first_array = [peakd, activity, perso, meetup, challenge].find((array) => array.length !== 0);
+  const defaultValue =
+    first_array === peakd
+      ? 'badges'
+      : first_array === activity
+        ? 'activity'
+        : first_array === perso
+          ? 'personal'
+          : first_array === meetup
+            ? 'meetups'
+            : first_array === challenge
+              ? 'challenges'
+              : '';
+  return (
+    <Tabs defaultValue={defaultValue} className="mt-8 w-full">
+      <TabsList
+        className="flex h-auto flex-wrap justify-start bg-background-tertiary"
+        data-testid="badges-activity-menu"
+      >
+        {peakd.length !== 0 ? (
+          <TabsTrigger value="badges">{t('navigation.profile_social_tab_navbar.badges')}</TabsTrigger>
+        ) : null}
+        {activity.length !== 0 ? (
+          <TabsTrigger value="activity">{t('navigation.profile_social_tab_navbar.activity')}</TabsTrigger>
+        ) : null}
+        {perso.length !== 0 ? (
+          <TabsTrigger value="personal">{t('navigation.profile_social_tab_navbar.personal')}</TabsTrigger>
+        ) : null}
+        {meetup.length !== 0 ? (
+          <TabsTrigger value="meetups">{t('navigation.profile_social_tab_navbar.meetups')}</TabsTrigger>
+        ) : null}
+        {challenge.length !== 0 ? (
+          <TabsTrigger value="challenges">{t('navigation.profile_social_tab_navbar.challenges')}</TabsTrigger>
+        ) : null}
+      </TabsList>
+      <TabsContent value="badges">
+        <BadgeList data={peakd} />
+      </TabsContent>
+      <TabsContent value="activity">
+        <BadgeList data={activity} username={username} />
+      </TabsContent>
+      <TabsContent value="personal">
+        <BadgeList data={perso} username={username} />
+      </TabsContent>
+      <TabsContent value="meetups">
+        <BadgeList data={meetup} username={username} />
+      </TabsContent>
+      <TabsContent value="challenges">
+        <BadgeList data={challenge} username={username} />
+      </TabsContent>
+    </Tabs>
+  );
+}

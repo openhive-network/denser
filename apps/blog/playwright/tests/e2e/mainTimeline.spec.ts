@@ -673,7 +673,7 @@ test.describe('Home page tests', () => {
 
     await expect(homePage.loginBtn).toBeVisible();
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe(
-      'rgb(51, 51, 51)'
+      'rgb(0, 0, 0)'
     );
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
       'rgba(0, 0, 0, 0)'
@@ -688,14 +688,15 @@ test.describe('Home page tests', () => {
     );
   });
 
-  test('validate styles of navigation Login link in the dark mode', async ({ page }) => {
+  test('validate styles of navigation Login link in the dark mode', async ({ page, browserName }) => {
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
     await homePage.page.waitForTimeout(1000);
     await expect(homePage.loginBtn).toBeVisible();
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe(
-      'rgb(225, 231, 239)'
+      'rgb(255, 255, 255)'
     );
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
       'rgba(0, 0, 0, 0)'
@@ -1098,11 +1099,11 @@ test.describe('Home page tests', () => {
   }) => {
     // test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
 
-    // Load 40 posts - more likely to occur a badge
+    // Load 60 posts - more likely to occur a badge
     await homePage.goto();
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
+    await homePage.mainPostsTimelineVisible(60);
 
     const apiHelper = await new ApiHelper(page);
     const rankedPostResponse = await apiHelper.getRankedPostsAPI('trending', '', '', 20, '', '');

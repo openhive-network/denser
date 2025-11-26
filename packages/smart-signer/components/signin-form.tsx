@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useTranslation } from 'next-i18next';
+
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
@@ -21,7 +21,7 @@ const loginFormSchema = z.object({
   username,
   loginType: z.nativeEnum(LoginType),
   remember: z.boolean(),
-  keyType: z.nativeEnum(KeyType),
+  keyType: z.nativeEnum(KeyType)
 });
 
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
@@ -30,12 +30,12 @@ const loginFormDefaultValues = {
   username: '',
   loginType: LoginType.hbauth,
   remember: false,
-  keyType: KeyType.posting,
+  keyType: KeyType.posting
 };
 
 export interface LoginTypeDetail {
   logo: string;
-  type: 'internal' | 'external'
+  type: 'internal' | 'external';
 }
 
 export type LoginTypeDetails = {
@@ -44,25 +44,25 @@ export type LoginTypeDetails = {
 
 export const loginTypeDetails: LoginTypeDetails = {
   hbauth: {
-    logo: "/smart-signer/images/hive-blog-twshare.png",
-    type: "internal",
+    logo: '/smart-signer/images/hive-blog-twshare.png',
+    type: 'internal'
   },
   hiveauth: {
-    logo: "/smart-signer/images/hiveauth.png",
-    type: "internal",
+    logo: '/smart-signer/images/hiveauth.png',
+    type: 'internal'
   },
   hivesigner: {
-    logo: "/smart-signer/images/hivesigner.svg",
-    type: "external",
+    logo: '/smart-signer/images/hivesigner.svg',
+    type: 'external'
   },
   keychain: {
-    logo: "/smart-signer/images/hivekeychain.png",
-    type: "internal",
+    logo: '/smart-signer/images/hivekeychain.png',
+    type: 'internal'
   },
   wif: {
-    logo: "/smart-signer/images/hive-blog-twshare.png",
-    type: "internal",
-  },
+    logo: '/smart-signer/images/hive-blog-twshare.png',
+    type: 'internal'
+  }
 };
 
 export interface LoginFormOptions {
@@ -78,7 +78,6 @@ export default function LoginForm({
   enabledLoginTypes = Object.keys(LoginType) as LoginType[],
   i18nNamespace = 'smart-signer'
 }: LoginFormOptions) {
-  const { t } = useTranslation(i18nNamespace);
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
 
   useEffect(() => {
@@ -104,10 +103,7 @@ export default function LoginForm({
     });
   };
 
-  const radioGroupItem = (
-    loginType: LoginType,
-    disabled: boolean = false
-  ): JSX.Element => {
+  const radioGroupItem = (loginType: LoginType, disabled: boolean = false): JSX.Element => {
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <RadioGroupItem
@@ -123,10 +119,17 @@ export default function LoginForm({
           <img
             className="mr-1 h-4 w-4"
             src={loginTypeDetails[loginType].logo}
-
             alt={`${pascalCase(loginType)} Logo`}
           />
-          {t(`login_form.use_${loginType}`)}
+          {loginType === 'hbauth'
+            ? 'Use safe storage'
+            : loginType === 'keychain'
+              ? 'Use Keychain'
+              : loginType === 'hiveauth'
+                ? 'Use HiveAuth'
+                : loginType === 'wif'
+                  ? 'Use WIF'
+                  : loginType}
         </label>
       </div>
     );
@@ -149,36 +152,33 @@ export default function LoginForm({
     {
       value: 'posting',
       disabled: false,
-      labelText: t(`login_form.posting_private_key_placeholder`),
+      labelText: 'Posting private key',
       labelImageSrc: '',
       labelImageAlt: ''
     },
     {
       value: 'active',
       disabled: false,
-      labelText: t(`login_form.active_private_key_placeholder`),
+      labelText: 'Active private key',
       labelImageSrc: '',
       labelImageAlt: ''
     }
   ];
 
-
   return (
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
-
         <h2 className="w-full pb-6 text-3xl text-gray-800 dark:text-slate-300" data-testid="login-header">
-          {t('login_form.title_action_login')}
+          Login
         </h2>
 
         <form method="post" className="w-full">
-
           <div className="mb-5">
             <div className="relative">
               <input
                 type="text"
                 className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
-                placeholder={t('login_form.username_placeholder')}
+                placeholder="Enter your username"
                 autoComplete="username"
                 {...register('username')}
                 aria-invalid={errors.username ? 'true' : 'false'}
@@ -189,7 +189,7 @@ export default function LoginForm({
             </div>
             {errors.username?.message && (
               <p className="text-sm text-red-500" role="alert">
-                {t(errors.username.message)}
+                {errors.username.message}
               </p>
             )}
           </div>
@@ -212,10 +212,10 @@ export default function LoginForm({
               onValueChange={(v: KeyType) => {
                 setValue('keyType', v as KeyType);
               }}
-              name='keyType'
-              aria-label={t('login_form.title_select_key_type')}
+              name="keyType"
+              aria-label="Key Type"
             >
-              <h3>{t('login_form.title_select_key_type')}</h3>
+              <h3>Key Type</h3>
               {radioGroupItems(keyTypeItems)}
             </RadioGroup>
           </div>
@@ -233,7 +233,7 @@ export default function LoginForm({
                 htmlFor="remember"
                 className="ml-2 text-sm font-medium text-gray-900 dark:text-slate-300"
               >
-                {t('login_form.keep_me_logged_in')}
+                Keep me logged in
               </label>
             </div>
           </div>
@@ -246,8 +246,8 @@ export default function LoginForm({
               data-testid="login-submit-button"
               disabled={isSubmitting}
             >
-              {!isSubmitting && t('login_form.login_button')}
-              {isSubmitting && t('login_form.working')}
+              {!isSubmitting && 'Submit'}
+              {isSubmitting && 'Working…'}
             </button>
             <button
               type="button"
@@ -255,7 +255,7 @@ export default function LoginForm({
               className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
               data-testid="login-reset-button"
             >
-              {t('login_form.reset_button')}
+              Reset
             </button>
           </div>
 
@@ -283,7 +283,7 @@ export default function LoginForm({
           {enabledLoginTypes.includes(LoginType.hivesigner) && (
             <div className="mt-4 flex w-full items-center">
               <Separator orientation="horizontal" className="w-1/3" />
-              <span className="w-1/3 text-center text-sm">{t('login_form.more_login_methods')}</span>
+              <span className="w-1/3 text-center text-sm">more login methods</span>
               <Separator orientation="horizontal" className="w-1/3" />
             </div>
           )}
@@ -298,14 +298,10 @@ export default function LoginForm({
                   onHivesignerButtonClick();
                 }}
               >
-                <img
-                  src={loginTypeDetails[LoginType.hivesigner].logo}
-                  alt="Hivesigner logo"
-                />
+                <img src={loginTypeDetails[LoginType.hivesigner].logo} alt="Hivesigner logo" />
               </button>
             </div>
           )}
-
         </form>
       </div>
     </div>

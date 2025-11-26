@@ -81,9 +81,9 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
       mode: PasswordFormMode.WIF,
       showInputStorePassword: true,
       i18nKeysForCaptions: {
-        inputPasswordPlaceholder: ['login_form.private_key_placeholder', { keyType }],
-        inputStorePasswordLabel: 'password_form.store_key_label',
-        title: 'login_form.title_wif_dialog_password'
+        inputPasswordPlaceholder: `Your ${keyType} private key`,
+        inputStorePasswordLabel: 'Store key',
+        title: 'Enter your WIF key'
       }
     };
 

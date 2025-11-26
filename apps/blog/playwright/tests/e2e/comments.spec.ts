@@ -197,6 +197,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(postPage.commentAuthorLink.nth(1)).toHaveText(postAuthorName);
     // click timestamp in the second comment and validat that it was highlighted by the red boarder
     // and the background color is green
+    await postPage.commentCardsHeadersTimeStampLink.nth(1).scrollIntoViewIfNeeded();
     await postPage.commentCardsHeadersTimeStampLink.nth(1).click();
     await postPage.page.waitForTimeout(1000);
     // border color of the first comment
@@ -236,6 +237,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(postPage.commentAuthorLink.nth(0)).toHaveText('sicarius');
     // click timestamp in the first comment and validate that all comment thread was highlighted by the red boarder
     // and the background color is green
+    await postPage.commentCardsHeadersTimeStampLink.nth(0).scrollIntoViewIfNeeded();
     await postPage.commentCardsHeadersTimeStampLink.nth(0).click();
     await postPage.page.waitForTimeout(1000);
     // border color of the first comment
@@ -648,6 +650,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
     // click comment link of the first comment
+    await postPage.commentPageLink.first().scrollIntoViewIfNeeded();
     await postPage.commentPageLink.first().click();
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // validate re-title of the comment's thread
@@ -655,6 +658,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // validate author of the main comment
     await expect(commentViewPage.getMainCommentAuthorNameLink).toHaveText('sicarius');
     // click the comment author of the comment
+    await commentViewPage.getMainCommentAuthorNameLink.first().scrollIntoViewIfNeeded();
     await commentViewPage.getMainCommentAuthorNameLink.first().click();
     // validate the user info click card is visibled
     await expect(commentViewPage.getPopoverCardContent.first()).toBeVisible();
@@ -663,11 +667,13 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
       "Did my 'ol due diligence and threw a star and fork at the openhive repo."
     );
     // click Upvote and move to the Login to Vote Dialog and back
+    await commentViewPage.getMainCommentUpvoteButton.scrollIntoViewIfNeeded();
     await commentViewPage.getMainCommentUpvoteButton.click();
     await defaultLoginForm.validateDefaultLoginFormIsLoaded();
     await defaultLoginForm.closeLoginForm();
     await expect(commentViewPage.getMainCommentAuthorNameLink.first()).toHaveText('sicarius');
     // click Downvote and move to the Login to Vote Dialog and back
+    await commentViewPage.getMainCommentDownvoteButton.scrollIntoViewIfNeeded();
     await commentViewPage.getMainCommentDownvoteButton.click();
     await defaultLoginForm.validateDefaultLoginFormIsLoaded();
     await defaultLoginForm.closeLoginForm();
@@ -679,6 +685,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     const firstCommentVotes = '4 votes';
     await expect(commentViewPage.getMainCommentVotes).toHaveText(firstCommentVotes);
     // Click Reply of the first comment and open login form
+    await commentViewPage.getMainCommentReplyButton.scrollIntoViewIfNeeded();
     await commentViewPage.getMainCommentReplyButton.click();
     await defaultLoginForm.validateDefaultLoginFormIsLoaded();
     await defaultLoginForm.closeLoginForm();
@@ -706,6 +713,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
     // click comment link of the first comment
+    await postPage.commentPageLink.first().scrollIntoViewIfNeeded();
     await postPage.commentPageLink.first().click();
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // validate re-title of the comment's thread - comment view page is loaded
@@ -736,13 +744,14 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Move to the post with comments
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
     // Click comment link of the second comment(nested comment - gtg as author)
+    await postPage.commentPageLink.nth(1).scrollIntoViewIfNeeded();
     await postPage.commentPageLink.nth(1).click();
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // Validate re-title of the comment's thread - comment view page is loaded
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
     await postPage.articleBody.waitFor({state: 'visible'});
     // Click 'View the full context'
-    commentViewPage.getViewFullContext.click();
+    await commentViewPage.getViewFullContext.click();
     await postPage.page.waitForLoadState('domcontentloaded');
     await postPage.articleBody.waitFor({state: 'visible'});
     // Validate that the post page of Hive HardFork 25 Jump Starter Kit of gtg is loaded
@@ -770,6 +779,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Move to the post with comments
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
     // Click comment link of the second comment(nested comment - gtg as author)
+    await postPage.commentPageLink.nth(1).scrollIntoViewIfNeeded();
     await postPage.commentPageLink.nth(1).click();
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // Validate re-title of the comment's thread - comment view page is loaded

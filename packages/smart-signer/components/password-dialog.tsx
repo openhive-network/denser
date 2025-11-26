@@ -1,10 +1,14 @@
+'use client';
+
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode, useState, FC } from 'react';
-import { useTranslation } from 'next-i18next';
 import { create, InstanceProps } from 'react-modal-promise';
 import {
-  PasswordForm, PasswordFormSchemaHbauth, PasswordFormSchemaWif,
-  PasswordFormOptions, passwordFormDefaultValuesWif
+  PasswordForm,
+  PasswordFormSchemaHbauth,
+  PasswordFormSchemaWif,
+  PasswordFormOptions,
+  passwordFormDefaultValuesWif
 } from '@smart-signer/components/password-form';
 import { getLogger } from '@ui/lib/logging';
 
@@ -13,7 +17,6 @@ const logger = getLogger('app');
 interface PasswordDialogProps {
   children?: ReactNode;
   passwordFormOptions?: PasswordFormOptions;
-  i18nNamespace?: string;
 }
 
 export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = ({
@@ -21,21 +24,16 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
   isOpen = false,
   onResolve,
   onReject,
-  passwordFormOptions = {},
-  i18nNamespace = 'smart-signer'
+  passwordFormOptions = {}
 }) => {
-  const { t } = useTranslation(i18nNamespace);
   const [open, setOpen] = useState(isOpen);
   const [password, setPassword] = useState('');
-  const [formData, setFormData] =
-    useState<PasswordFormSchemaHbauth | PasswordFormSchemaWif>(
-      passwordFormDefaultValuesWif
-      );
+  const [formData, setFormData] = useState<PasswordFormSchemaHbauth | PasswordFormSchemaWif>(
+    passwordFormDefaultValuesWif
+  );
   const [errorMsg, setErrorMsg] = useState('');
 
-  const onSubmit = async (
-      data: PasswordFormSchemaHbauth | PasswordFormSchemaWif
-      ) => {
+  const onSubmit = async (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {
     logger.info('onSubmit form data', data);
     const { password } = data;
     setErrorMsg('');
@@ -58,17 +56,12 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
     e.preventDefault();
   };
 
-  const {
-    mode,
-    showInputStorePassword ,
-    i18nKeysForCaptions,
-  } = passwordFormOptions;
+  const { mode, showInputStorePassword, i18nKeysForCaptions } = passwordFormOptions;
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]"
-          onInteractOutside={onInteractOutside}>
+      <DialogContent className="sm:max-w-[600px]" onInteractOutside={onInteractOutside}>
         <PasswordForm
           onSubmit={onSubmit}
           errorMessage={errorMsg}

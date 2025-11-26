@@ -1,0 +1,477 @@
+'use client';
+
+import { Checkbox, Input, Label, ScrollArea, Separator } from '@ui/components';
+import { Button } from '@ui/components/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@ui/components/dialog';
+import { ReactNode, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { Icons } from '@ui/components/icons';
+import { useLocalStorage } from 'usehooks-ts';
+import { toast } from '@ui/components/hooks/use-toast';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import badActorList from '@ui/config/lists/bad-actor-list';
+import clsx from 'clsx';
+import { useTranslation } from '@/blog/i18n/client';
+import { Beneficiary } from './beneficiary-item';
+import { maxAcceptedPayout } from './lib/utils';
+
+type AccountFormValues = {
+  title: string;
+  postArea: string;
+  postSummary: string;
+  tags: string;
+  author: string;
+  category: string;
+  beneficiaries: {
+    account: string;
+    weight: string;
+  }[];
+  maxAcceptedPayout: number;
+  payoutType: string;
+};
+type Template = AccountFormValues & {
+  templateTitle: string;
+};
+
+export function AdvancedSettingsPostForm({
+  children,
+  username,
+  data,
+  updateForm
+}: {
+  children: ReactNode;
+  username: string;
+  data: AccountFormValues;
+  updateForm: (data: AccountFormValues) => void;
+}) {
+  const { t } = useTranslation('common_blog');
+  const [preferences] = useLocalStorage<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES);
+
+  const maxPayoutOptions = [
+    { value: 'no_max', label: t('submit_page.advanced_settings_dialog.no_limit') },
+    { value: '0', label: t('submit_page.advanced_settings_dialog.decline_payout') },
+    { value: 'custom', label: t('submit_page.advanced_settings_dialog.custom_value') }
+  ];
+  const authorRewardsOptions = [
+    { value: '50%', label: '50% HBD / 50% HP' },
+    { value: '100%', label: t('submit_page.advanced_settings_dialog.power_up') }
+  ];
+
+  const [rewards, setRewards] = useState(
+    preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards
+  );
+  const [splitRewards, setSplitRewards] = useState(100);
+  const [templateTitle, setTemplateTitle] = useState('');
+  const [maxPayout, setMaxPayout] = useState<'no_max' | '0' | 'custom'>(
+    preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0'
+  );
+  const [selectTemplate, setSelectTemplate] = useState('/');
+  const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
+    data.beneficiaries
+  );
+  const [customValue, setCustomValue] = useState(
+    data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100'
+  );
+  const [open, setOpen] = useState(false);
+  const [storedTemplates, storeTemplates] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
+  const hasDuplicateUsernames = beneficiaries.reduce((acc, beneficiary, index, array) => {
+    const isDuplicate = array.slice(index + 1).some((b) => b.account === beneficiary.account);
+    return acc || isDuplicate;
+  }, false);
+  const beneficiariesNames =
+    beneficiaries.length !== 0 ? beneficiaries.some((beneficiary) => beneficiary.account.length < 3) : false;
+  const selfBeneficiary =
+    beneficiaries.length !== 0
+      ? beneficiaries.some((beneficiary) => beneficiary.account === username)
+      : false;
+  const badActor = beneficiaries.some((beneficiary) => badActorList.includes(beneficiary.account));
+  const smallWeight = beneficiaries.find((e) => Number(e.weight) <= 0);
+  const isTemplateStored = storedTemplates.some((template) => template.templateTitle === templateTitle);
+  const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
+
+  useEffect(() => {
+    setMaxPayout(preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0');
+    setRewards(preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards);
+  }, [preferences.blog_rewards]);
+
+  useEffect(() => {
+    setRewards(rewards);
+    setMaxPayout(maxPayout);
+    setBeneficiaries(beneficiaries);
+    setCustomValue(customValue);
+  }, [open]);
+
+  useEffect(() => {
+    if (maxPayout === '0') {
+      setRewards('50%');
+    }
+  }, [maxPayout]);
+
+  useEffect(() => {
+    const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
+      return acc + Number(beneficiary.weight);
+    }, 0);
+    setSplitRewards(100 - combinedPercentage);
+  }, [JSON.stringify(beneficiaries)]);
+
+  const handleAddAccount = () => {
+    setBeneficiaries((prev) => [...prev, { weight: '0', account: '' }]);
+  };
+
+  const handleDeleteItem = (index: number) => {
+    setBeneficiaries((prev) => {
+      const newItems = [...prev];
+      newItems.splice(index, 1);
+      return newItems;
+    });
+  };
+
+  const handleEditBeneficiary = (index: number, weight: string, account: string) => {
+    setBeneficiaries((prev) => {
+      const updated = prev.map((beneficiary, beneficiaryIndex) =>
+        index !== beneficiaryIndex ? beneficiary : { weight, account }
+      );
+      const combinedPercentage = updated.reduce<number>((acc, beneficiary) => {
+        return acc + Number(beneficiary.weight);
+      }, 0);
+      setSplitRewards(100 - combinedPercentage);
+      return updated;
+    });
+  };
+
+  function deleteTemplate(templateName: string) {
+    storeTemplates(storedTemplates.filter((e) => e.templateTitle !== templateName));
+    setSelectTemplate('/');
+  }
+
+  function handleTamplates(e: string) {
+    const template = storedTemplates.find((template) => template.templateTitle === e);
+    if (template) {
+      setBeneficiaries(template.beneficiaries);
+      setRewards(template.payoutType);
+      if (template.maxAcceptedPayout === 1000000) {
+        setMaxPayout('no_max');
+      }
+      if (template.maxAcceptedPayout === 0) {
+        setMaxPayout('0');
+      }
+      if (Number(template.maxAcceptedPayout) > 0 && Number(template.maxAcceptedPayout) < 1000000) {
+        setMaxPayout('custom');
+        setCustomValue(Number(template.maxAcceptedPayout));
+      }
+    }
+    setSelectTemplate(e);
+  }
+  function handleTemplateTitle(e: string) {
+    setSelectTemplate('/');
+    setTemplateTitle(e);
+  }
+
+  function loadTemplate() {
+    updateForm({
+      title: currentTemplate?.title || '',
+      postArea: currentTemplate?.postArea || '',
+      postSummary: currentTemplate?.postSummary || '',
+      tags: currentTemplate?.tags || '',
+      author: currentTemplate?.author || '',
+      category: currentTemplate?.category || '',
+      beneficiaries: beneficiaries,
+      maxAcceptedPayout: maxAcceptedPayout(customValue, maxPayout),
+      payoutType: rewards
+    });
+    setSelectTemplate('/');
+    setOpen(false);
+    toast({
+      title: t('submit_page.advanced_settings_dialog.template_loaded'),
+      variant: 'success'
+    });
+  }
+  function onSave() {
+    if (selectTemplate !== '/') {
+      storeTemplates(
+        storedTemplates.map((stored) =>
+          stored.templateTitle !== selectTemplate
+            ? stored
+            : {
+                title: data.title,
+                postArea: data.postArea,
+                postSummary: data.postSummary,
+                tags: data.tags,
+                author: data.author,
+                category: data.category,
+                templateTitle: selectTemplate,
+                beneficiaries: beneficiaries,
+                maxAcceptedPayout: maxAcceptedPayout(customValue, maxPayout),
+                payoutType: rewards
+              }
+        )
+      );
+    }
+
+    if (templateTitle !== '') {
+      setTemplateTitle('');
+      storeTemplates([
+        ...storedTemplates,
+        {
+          title: data.title,
+          postArea: data.postArea,
+          postSummary: data.postSummary,
+          tags: data.tags,
+          author: data.author,
+          category: data.category,
+          templateTitle: templateTitle,
+          beneficiaries: beneficiaries,
+          maxAcceptedPayout: maxAcceptedPayout(customValue, maxPayout),
+          payoutType: rewards
+        }
+      ]);
+    }
+    updateForm({
+      ...data,
+      beneficiaries: beneficiaries,
+      maxAcceptedPayout: maxAcceptedPayout(customValue, maxPayout),
+      payoutType: rewards
+    });
+    setSelectTemplate('/');
+    setOpen(false);
+    toast({
+      title: t('submit_page.advanced_settings_dialog.changes_saved'),
+      variant: 'success'
+    });
+  }
+
+  function authorRewardsText(author_rewards: string): string {
+    const def = '50% HBD / 50% HP';
+    let text;
+    switch (author_rewards) {
+      case '0%':
+        text = t('settings_page.decline_payout');
+        break;
+      case '50%':
+        text = def;
+        break;
+      case '100%':
+        text = t('settings_page.power_up');
+        break;
+      default:
+        text = def;
+    }
+    return text;
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="h-full overflow-scroll sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">
+            {t('submit_page.advanced_settings_dialog.advanced_settings')}
+          </DialogTitle>
+          <Separator />
+        </DialogHeader>
+        <div className="flex flex-col gap-4 text-xs">
+          <div className="flex flex-col gap-3">
+            <span className="text-lg font-bold">
+              {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}
+            </span>
+            <span>{t('submit_page.advanced_settings_dialog.value_of_the_maximum')}</span>
+            <div className="flex flex-col gap-1">
+              <div className="my-8 flex justify-around">
+                {maxPayoutOptions.map((e) => (
+                  <div key={e.value}>
+                    <Checkbox
+                      id={e.value}
+                      className="hidden"
+                      onCheckedChange={() => setMaxPayout(e.value as 'no_max' | '0' | 'custom')}
+                    />
+                    <Label
+                      htmlFor={e.value}
+                      className={clsx('cursor-pointer rounded-lg border p-2', {
+                        'border-destructive bg-border': maxPayout === e.value,
+                        'text-muted-foreground': maxPayout !== e.value
+                      })}
+                    >
+                      {e.label}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+              {maxPayout === 'custom' ? (
+                <>
+                  <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
+                  <div className="p-2 text-red-600">
+                    {Number(customValue) < 0
+                      ? t('submit_page.advanced_settings_dialog.cannot_be_less_than')
+                      : Number(customValue) >= 1000000
+                        ? t('submit_page.advanced_settings_dialog.cannot_be_more_than')
+                        : null}
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <span className="text-lg font-bold">
+              {t('submit_page.advanced_settings_dialog.author_rewards')}
+            </span>
+            <span>{t('submit_page.advanced_settings_dialog.what_type_of_tokens')}</span>
+            <div className="my-8 flex justify-around">
+              {authorRewardsOptions.map((e) => (
+                <div key={e.value}>
+                  <Checkbox
+                    id={e.value}
+                    className="hidden"
+                    onCheckedChange={() => setRewards(e.value)}
+                    disabled={maxPayout === '0'}
+                  />
+                  <Label
+                    htmlFor={e.value}
+                    className={clsx('cursor-pointer rounded-lg border p-2', {
+                      'border-destructive bg-border': rewards === e.value,
+                      'text-muted-foreground': rewards !== e.value
+                    })}
+                  >
+                    {e.label}
+                  </Label>
+                </div>
+              ))}
+            </div>
+            <span>
+              {t('submit_page.advanced_settings_dialog.default')}
+              {authorRewardsText(preferences.blog_rewards)}
+            </span>
+            <Link href={`/@${username}/settings`} className="text-destructive">
+              {t('submit_page.advanced_settings_dialog.update')}
+            </Link>
+          </div>
+          <div>
+            <ul className="flex flex-col gap-2">
+              <li className="flex items-center gap-5">
+                <Input value={splitRewards + '%'} disabled className="w-16" />
+                <div className="relative col-span-3">
+                  <Input disabled value={username} className="block w-full px-3 py-2.5 pl-11" />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icons.atSign className="h-5 w-5" />
+                  </div>
+                </div>
+              </li>
+              {beneficiaries.map((item, index) => (
+                <div className="flex" key={index}>
+                  <Beneficiary
+                    onChangeBeneficiary={(weight, account) => handleEditBeneficiary(index, weight, account)}
+                    beneficiary={item}
+                  />
+                  <Button
+                    variant="link"
+                    size="xs"
+                    className="text-destructive"
+                    onClick={() => handleDeleteItem(index)}
+                  >
+                    {t('submit_page.advanced_settings_dialog.delete')}
+                  </Button>
+                </div>
+              ))}
+            </ul>
+            <div className="p-2 text-destructive">
+              {splitRewards < 0
+                ? t('submit_page.advanced_settings_dialog.your_percent')
+                : hasDuplicateUsernames
+                  ? t('submit_page.advanced_settings_dialog.beneficiaries_cannot')
+                  : beneficiariesNames
+                    ? t('submit_page.advanced_settings_dialog.account_name')
+                    : selfBeneficiary
+                      ? t('submit_page.advanced_settings_dialog.beneficiary_cannot_be_self')
+                      : smallWeight
+                        ? t('submit_page.advanced_settings_dialog.beneficiary_percent_invalid')
+                        : badActor
+                          ? t('submit_page.advanced_settings_dialog.bad_actor')
+                          : null}
+            </div>
+            {beneficiaries.length < 8 ? (
+              <Button
+                variant="link"
+                className="h-fit w-fit px-0 py-1 text-xs text-destructive"
+                onClick={handleAddAccount}
+              >
+                {t('submit_page.advanced_settings_dialog.add_account')}
+              </Button>
+            ) : null}
+          </div>
+          <div className="flex flex-col gap-3">
+            <span className="text-lg font-bold">
+              {t('submit_page.advanced_settings_dialog.post_templates')}
+            </span>
+            <span>{t('submit_page.advanced_settings_dialog.manage_your_post_templates')}</span>
+            <div className="flex flex-col gap-1">
+              <ScrollArea className=" h-fit max-h-48 rounded-md border p-4">
+                {storedTemplates && storedTemplates.length > 0
+                  ? storedTemplates.map((e) => (
+                      <div
+                        key={e.templateTitle}
+                        onClick={() => handleTamplates(e.templateTitle)}
+                        className={clsx(
+                          'cursor-pointer border-b border-border p-1 text-base hover:bg-border',
+                          {
+                            'border-destructive': selectTemplate === e.templateTitle
+                          }
+                        )}
+                      >
+                        {e.templateTitle}
+                      </div>
+                    ))
+                  : 'No templates found.'}
+              </ScrollArea>
+              <Input
+                placeholder={t('submit_page.advanced_settings_dialog.name_of_a_new_template')}
+                value={templateTitle}
+                onChange={(e) => handleTemplateTitle(e.target.value)}
+              />
+              {isTemplateStored ? (
+                <div className="p-2 text-destructive">
+                  {t('submit_page.advanced_settings_dialog.template_name_is_taken')}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            type="submit"
+            variant="redHover"
+            onClick={() => onSave()}
+            disabled={
+              Number(customValue) < 0 ||
+              Number(customValue) >= 1000000 ||
+              splitRewards < 0 ||
+              hasDuplicateUsernames ||
+              isTemplateStored ||
+              beneficiariesNames ||
+              selfBeneficiary ||
+              Boolean(smallWeight) ||
+              badActor
+            }
+          >
+            {t('submit_page.advanced_settings_dialog.save')}
+          </Button>
+          {currentTemplate ? (
+            <Button variant="redHover" onClick={() => loadTemplate()}>
+              {t('submit_page.advanced_settings_dialog.load')}
+            </Button>
+          ) : null}
+          {selectTemplate !== '/' ? (
+            <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)} className="mb-2">
+              {t('submit_page.advanced_settings_dialog.delete_template')}
+            </Button>
+          ) : null}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

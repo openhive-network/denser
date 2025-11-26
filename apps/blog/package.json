@@ -7,9 +7,9 @@
     "copy:worker": "cp ../../node_modules/@hiveio/hb-auth/dist/worker.js ./public/auth/",
     "copy:assets": "cp -r ../../node_modules/@hiveio/hb-auth/dist/assets ./public/auth/assets",
     "predev": "pnpm run clean",
-    "dev": "react-env -- next dev -H 0.0.0.0 -p 3000 | pnpm dlx pino-pretty --colorize",
-    "dev:3010": "react-env -- next dev -H 0.0.0.0 -p 3010 | pnpm dlx pino-pretty --colorize",
-    "devssl": "react-env -- next dev -H 0.0.0.0 --port 3000 --experimental-https --experimental-https-key ../../ssl/server-key.pem --experimental-https-cert ../../ssl/server-cert.pem | pnpm dlx pino-pretty --colorize",
+    "dev": "react-env -- next dev -H 0.0.0.0 -p 3000",
+    "dev:3010": "react-env -- next dev -H 0.0.0.0 -p 3010",
+    "devssl": "react-env -- next dev -H 0.0.0.0 --port 3000 --experimental-https --experimental-https-key ../../ssl/server-key.pem --experimental-https-cert ../../ssl/server-cert.pem",
     "prebuild": "pnpm run clean",
     "build": "react-env -- next build",
     "postbuild": "pnpm run copy:worker && pnpm run copy:assets",
@@ -62,6 +62,7 @@
     "http-errors": "^2.0.0",
     "i": "^0.3.7",
     "i18next": "^23.7.9",
+    "i18next-resources-to-backend": "^1.2.1",
     "iron-session": "^8.0.1",
     "lucide-react": "^0.482.0",
     "moment": "^2.29.4",
@@ -98,6 +99,7 @@
     "@types/qrcode": "^1.5.5",
     "@types/yazl": "^2.4.5",
     "copy-webpack-plugin": "^11.0.0",
+    "null-loader": "^4.0.1",
     "typescript": "5.3.3"
   }
 }

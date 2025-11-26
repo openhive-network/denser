@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useTranslation } from 'next-i18next';
+
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { username } from '@smart-signer/lib/auth/utils';
@@ -44,8 +44,8 @@ const commonFields = z.object({
   remember: z.boolean(),
   keyType: z.nativeEnum(KeyType, {
     invalid_type_error: 'Invalid keyType',
-    required_error: 'keyType is required',
-  }),
+    required_error: 'keyType is required'
+  })
 });
 
 const commonFieldsWithPassword = commonFields.merge(passwordField);
@@ -68,7 +68,7 @@ const loginFormDefaultValues = {
   useHiveauth: false,
   useKeychain: false,
   username: '',
-  keyType: KeyType.posting,
+  keyType: KeyType.posting
 };
 
 export function LoginForm({
@@ -80,7 +80,6 @@ export function LoginForm({
   onSubmit: (data: LoginFormSchema) => void;
   i18nNamespace?: string;
 }) {
-  const { t } = useTranslation(i18nNamespace);
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
   const [disabledPasword, setDisabledPassword] = useState(true);
 
@@ -129,7 +128,7 @@ export function LoginForm({
     <div className="flex h-screen flex-col justify-start pt-16 sm:h-fit md:justify-center md:pt-0">
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
         <h2 className="w-full pb-6 text-3xl text-gray-800 dark:text-slate-300" data-testid="login-header">
-          {t('login_form.title_action_login')}
+          Login
         </h2>
         <form method="post" className="w-full">
           <input type="hidden" {...register('loginType')} />
@@ -138,7 +137,7 @@ export function LoginForm({
               <input
                 type="text"
                 className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
-                placeholder={t('login_form.username_placeholder')}
+                placeholder="Enter your username"
                 autoComplete="username"
                 {...register('username')}
                 aria-invalid={errors.username ? 'true' : 'false'}
@@ -149,7 +148,7 @@ export function LoginForm({
             </div>
             {errors.username?.message && (
               <p className="text-sm text-red-500" role="alert">
-                {t(errors.username.message)}
+                {errors.username.message}
               </p>
             )}
           </div>
@@ -158,7 +157,7 @@ export function LoginForm({
             <input
               type="password"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
-              placeholder={t('login_form.password_placeholder')}
+              placeholder="Posting private key"
               autoComplete="current-password"
               disabled={disabledPasword}
               {...register('password')}
@@ -176,7 +175,6 @@ export function LoginForm({
           </div>
 
           <div className="my-6 flex w-full flex-col">
-
             <div className="flex items-center py-1">
               <input
                 id="useHbauth"
@@ -195,7 +193,7 @@ export function LoginForm({
                   src="/smart-signer/images/hive-blog-twshare.png"
                   alt="Hbauth logo"
                 />
-                {t('login_form.use_hbauth')}
+                Use safe storage
               </label>
             </div>
 
@@ -218,7 +216,7 @@ export function LoginForm({
                   src="/smart-signer/images/hivekeychain.png"
                   alt="Hive Keychain logo"
                 />
-                {t('login_form.use_keychain')}
+                Use Keychain
               </label>
             </div>
 
@@ -236,7 +234,7 @@ export function LoginForm({
                 className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
               >
                 <img className="mr-1 h-4 w-4" src="/smart-signer/images/hiveauth.png" alt="Hiveauth logo" />
-                {t('login_form.use_hiveauth')}
+                Use HiveAuth
               </label>
             </div>
 
@@ -252,7 +250,7 @@ export function LoginForm({
                 htmlFor="remember"
                 className="ml-2 text-sm font-medium text-gray-900 dark:text-slate-300"
               >
-                {t('login_form.keep_me_logged_in')}
+                Keep me logged in
               </label>
             </div>
           </div>
@@ -265,8 +263,8 @@ export function LoginForm({
               data-testid="login-submit-button"
               disabled={isSubmitting}
             >
-              {!isSubmitting && t('login_form.login_button')}
-              {isSubmitting && t('login_form.working')}
+              {!isSubmitting && 'Submit'}
+              {isSubmitting && 'Working…'}
             </button>
             <button
               type="button"
@@ -274,7 +272,7 @@ export function LoginForm({
               className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
               data-testid="login-reset-button"
             >
-              {t('login_form.reset_button')}
+              Reset
             </button>
           </div>
 
@@ -299,7 +297,7 @@ export function LoginForm({
 
           <div className="mt-4 flex w-full items-center">
             <Separator orientation="horizontal" className="w-1/3" />
-            <span className="w-1/3 text-center text-sm">{t('login_form.more_login_methods')}</span>
+            <span className="w-1/3 text-center text-sm">more login methods</span>
             <Separator orientation="horizontal" className="w-1/3" />
           </div>
           <div className="flex justify-center">

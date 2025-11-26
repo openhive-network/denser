@@ -1,4 +1,4 @@
-import { getAccountFull } from '@transaction/lib/hive';
+import { getAccountFull } from '@transaction/lib/hive-api';
 import { useQuery } from '@tanstack/react-query';
 
 const useAccountData = (username: string) => {

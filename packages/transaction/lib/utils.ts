@@ -1,8 +1,8 @@
 import getSlug from 'speakingurl';
 import base58 from 'bs58';
 import secureRandom from 'secure-random';
-import { getPostHeader } from './bridge';
-import { asset } from '@hiveio/wax';
+import { getPostHeader } from './bridge-api';
+import { asset as assetFn } from '@hiveio/wax';
 
 export const HIVE_NAI_STRING = '@@000000021';
 export const HIVE_PRECISION = 3;
@@ -18,19 +18,19 @@ export const VESTS_PRECISION = 6;
 export const createAsset = (amount: string, token: 'HIVE' | 'HBD' | 'VESTS') => {
   switch (token) {
     case 'HIVE':
-      return asset.create({
+      return assetFn.create({
         amount,
         precision: HIVE_PRECISION,
         nai: HIVE_NAI_STRING
       });
     case 'HBD':
-      return asset.create({
+      return assetFn.create({
         amount,
         precision: HBD_PRECISION,
         nai: HBD_NAI_STRING
       });
     case 'VESTS':
-      return asset.create({
+      return assetFn.create({
         amount,
         precision: VESTS_PRECISION,
         nai: VESTS_NAI_STRING

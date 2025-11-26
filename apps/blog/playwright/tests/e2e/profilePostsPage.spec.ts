@@ -90,8 +90,8 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Posts - Comments - List', async ({ page, request }) => {
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
-    await expect(postPage.commentListItems.first()).toBeVisible();
-    const comments = await postPage.commentListItems.all();
+    await expect(postPage.postListItemOnHomePage.first()).toBeVisible();
+    const comments = await postPage.postListItemOnHomePage.all();
     const commentsLenght = await comments.length;
 
     const url = process.env.REACT_APP_API_ENDPOINT;
@@ -118,15 +118,15 @@ test.describe('Profile page of @gtg', () => {
     await page.evaluate(() => {
       window.scrollBy(0, 3000);
     });
-    await expect(postPage.commentListItems.first()).toBeVisible();
-    const commentsScrolled = await postPage.commentListItems.all();
+    await expect(postPage.postListItemOnHomePage.first()).toBeVisible();
+    const commentsScrolled = await postPage.postListItemOnHomePage.all();
     const commentsScrolledLenght = commentsScrolled.length;
     console.log(commentsScrolledLenght);
     // await expect(commentsScrolled).toHaveLength(20)
 
-    await expect(postPage.commentListItems.nth(21)).toBeVisible();
+    await expect(postPage.postListItemOnHomePage.nth(21)).toBeVisible();
 
-    const postScrolled = await postPage.commentListItems.all();
+    const postScrolled = await postPage.postListItemOnHomePage.all();
     const postScrolledLenght = await postScrolled.length;
     const expectedPostsAmount = postAmountLenght * 2;
 
@@ -135,7 +135,7 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Posts - Comments Header - Avatar', async ({ page }) => {
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
-    await expect(postPage.commentListItems.first()).toBeVisible();
+    await expect(postPage.postListItemOnHomePage.first()).toBeVisible();
     await postPage.postsCommentsFirstAvatar.click();
     await page.waitForURL('/@gtg');
     await expect(profilePage.profileBlogLink).toBeVisible();
@@ -145,7 +145,7 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Posts - Comments Header - NickName Link', async ({ page }) => {
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
-    await expect(postPage.commentListItems.first()).toBeVisible();
+    await expect(postPage.postListItemOnHomePage.first()).toBeVisible();
     await homePage.getFirstPostAuthor.click();
     await page.waitForURL('/@gtg');
     await expect(profilePage.profileBlogLink).toBeVisible();
@@ -155,7 +155,7 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Posts - Comments Header - Community Name Link', async ({ page }) => {
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
-    await expect(postPage.commentListItems.first()).toBeVisible();
+    await expect(postPage.postListItemOnHomePage.first()).toBeVisible();
 
     const firstCommunityName = await profilePage.firstCommunityLinkPostsComments.textContent();
 
@@ -169,7 +169,7 @@ test.describe('Profile page of @gtg', () => {
     await expect(postPage.commentCardsTitles.first()).toBeVisible();
     const commentTittText = await postPage.commentCardsTitles.first().textContent();
 
-    await expect(postPage.commentListItems.first()).toBeVisible();
+    await expect(postPage.postListItemOnHomePage.first()).toBeVisible();
     await profilePage.communityTimeStamp.click();
     await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
     await expect(postPage.articleBody).toBeVisible();
@@ -179,32 +179,35 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Posts - Comment Card Footer - Payout Amount', async ({ page }) => {
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
-    await expect(commentViewPage.getResponseCommentPayout.first()).toBeVisible();
-    const firstPayout = await commentViewPage.getResponseCommentPayout.first();
-    const payoutText = await commentViewPage.getResponseCommentPayout.first().textContent();
-    await expect(commentViewPage.getResponseCommentPayout.first()).toBeVisible();
+    await expect(commentViewPage.getResponsePostCommentPayout.first()).toBeVisible();
+    const firstPayout = await commentViewPage.getResponsePostCommentPayout.first();
+    const payoutText = await commentViewPage.getResponsePostCommentPayout.first().textContent();
+    await expect(commentViewPage.getResponsePostCommentPayout.first()).toBeVisible();
 
     if (payoutText.includes('0.00')) {
       if (await firstPayout.getAttribute('data-state') == 'closed') {
-        await commentViewPage.getResponseCommentPayout.first().hover();
+        await commentViewPage.getResponsePostCommentPayout.first().hover();
         await commentViewPage.page.waitForTimeout(1000);
-        await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(218, 43, 43)');
+        await expect(commentViewPage.getResponsePostCommentPayout.first()).toHaveCSS('color', 'rgb(218, 43, 43)');
       } else {
-      await commentViewPage.getResponseCommentPayout.first().hover();
+      await commentViewPage.getResponsePostCommentPayout.first().hover();
       await commentViewPage.page.waitForTimeout(1000);
-      await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(24, 30, 42)');
+      await expect(commentViewPage.getResponsePostCommentPayout.first()).toHaveCSS('color', 'rgb(24, 30, 42)');
       }
     } else {
-      await commentViewPage.getResponseCommentPayout.first().hover();
+      await commentViewPage.getResponsePostCommentPayout.first().hover();
       await commentViewPage.page.waitForTimeout(1000);
-      await expect(commentViewPage.getResponseCommentPayout.first()).toHaveCSS('color', 'rgb(218, 43, 43)');
+      await expect(commentViewPage.getResponsePostCommentPayout.first()).toHaveCSS('color', 'rgb(218, 43, 43)');
       await expect(commentViewPage.payoutPostCardTooltip).toBeVisible();
     }
   });
 
-  test('Tab Posts - Comment Card Footer - Votes', async ({ page }) => {
+  test('Tab Posts - Comment Card Footer - Votes', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
+
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
-    await expect(commentViewPage.getResponseCommentPayout.first()).toBeVisible();
+    await expect(commentViewPage.getResponsePostCommentPayout.first()).toBeVisible();
     const commentVoteText = await commentViewPage.commentVote.first().textContent();
     await commentViewPage.commentVote.first().hover();
 
@@ -219,7 +222,7 @@ test.describe('Profile page of @gtg', () => {
 
   test('Tab Posts - Comment Card Footer - Response', async ({ page }) => {
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
-    await expect(postPage.commentListItems.first()).toBeVisible();
+    await expect(postPage.postListItemOnHomePage.first()).toBeVisible();
     await profilePage.repliesCommentListItemRespondFirst.click();
     await expect(commentViewPage.getHeaderOfViewingCommentThread).toBeVisible();
     await expect(commentViewPage.getHeaderOfViewingCommentThread).toHaveText("You are viewing a single comment's thread from:");

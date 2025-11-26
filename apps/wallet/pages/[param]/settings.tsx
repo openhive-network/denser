@@ -26,13 +26,20 @@ function Communities({ username, metadata }: InferGetServerSidePropsType<typeof 
           title: "Condenser - Get accounts",
           method: hiveChain.api.condenser_api.get_accounts,
           params: [["guest4test"]],
-          validatorFunction: data => data[0].name === "guest4test" ? true : "Get block error",
+        validatorFunction: (data) =>
+          Array.isArray(data) &&
+          data[0] &&
+          typeof data[0] === 'object' &&
+          'name' in data[0] &&
+          data[0].name === 'guest4test'
+            ? true
+            : 'Get accounts error'
         },
         {
           title: "Database - saving withdrawals",
           method: hiveChain.api.database_api.find_savings_withdrawals,
           params: {account: "guest4test"},
-          validatorFunction: data => !!data.withdrawals ? true : "Get post error",
+          validatorFunction: data => !!data.withdrawals ? true : "Get saving withdrawals error",
         },
      ]
       setWalletApiCheckers(apiCheckers);

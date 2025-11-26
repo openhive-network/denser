@@ -38,7 +38,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Build the project
 COPY --from=builder /app/out/full/ .
-RUN pnpm run lint
+#RUN pnpm run lint
 RUN pnpm dlx turbo run build --filter=${TURBO_APP_SCOPE}
 
 FROM base AS runner

@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useQuery } from '@tanstack/react-query';
-import { getDynamicGlobalProperties } from '@transaction/lib/hive';
+import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { getVestingDelegations } from '@/wallet/lib/hive';
 import { numberWithCommas } from '@ui/lib/utils';
 import Loading from '@ui/components/loading';

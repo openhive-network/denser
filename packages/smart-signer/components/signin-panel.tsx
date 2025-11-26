@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
+
 import { useRouter } from 'next/router';
 import { LoginType } from '@smart-signer/types/common';
 import { getCookie } from '@smart-signer/lib/storage-utils';
@@ -19,30 +19,22 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-const DynamicLoginForm = dynamic(
-  () => import('@smart-signer/components/signin-form'), {ssr: false});
+const DynamicLoginForm = dynamic(() => import('@smart-signer/components/signin-form'), { ssr: false });
 
 interface LoginPanelOptions {
-  authenticateOnBackend: boolean,
+  authenticateOnBackend: boolean;
   strict: boolean; // if true use strict authentication
-  i18nNamespace?: string
+  i18nNamespace?: string;
   enabledLoginTypes?: LoginType[];
 }
 
-export function LoginPanel(
-  {
-    authenticateOnBackend,
-    strict,
-    i18nNamespace = 'smart-signer',
-    enabledLoginTypes = [
-      LoginType.hbauth,
-      LoginType.keychain,
-      LoginType.wif,
-    ]
-  }: LoginPanelOptions
-) {
+export function LoginPanel({
+  authenticateOnBackend,
+  strict,
+  i18nNamespace = 'smart-signer',
+  enabledLoginTypes = [LoginType.hbauth, LoginType.keychain, LoginType.wif]
+}: LoginPanelOptions) {
   const router = useRouter();
-  const { t } = useTranslation(i18nNamespace);
   const [loginChallenge, setLoginChallenge] = useState('');
   const { signerOptions } = useSigner();
   const [errorMsg, setErrorMsg] = useState('');
@@ -78,8 +70,7 @@ export function LoginPanel(
 
     try {
       const hiveChain = await hiveChainService.getHiveChain();
-      const operation: operation =
-        await getOperationForLogin(username, keyType, loginChallenge, loginType);
+      const operation: operation = await getOperationForLogin(username, keyType, loginChallenge, loginType);
       const txBuilder = await hiveChain.createTransaction();
       txBuilder.pushOperation(operation);
       txBuilder.validate();
@@ -98,7 +89,7 @@ export function LoginPanel(
       logger.info('transaction: %o', {
         pack,
         toApi: txBuilder.toApi(),
-        toApiParsed: JSON.parse(txBuilder.toApi()),
+        toApiParsed: JSON.parse(txBuilder.toApi())
       });
 
       const signInData: PostLoginSchema = {
@@ -110,19 +101,17 @@ export function LoginPanel(
         pack,
         strict,
         signatures,
-        authenticateOnBackend,
+        authenticateOnBackend
       };
       await signIn.mutateAsync({ data: signInData });
     } catch (error) {
       logger.error('onSubmit error in signLoginChallenge', error);
-      setErrorMsg(t('pageLogin.loginFailed'));
+      setErrorMsg('Login failed');
       return;
     }
   };
 
-  return <DynamicLoginForm
-    errorMessage={errorMsg}
-    onSubmit={onSubmit}
-    enabledLoginTypes={enabledLoginTypes}
-  />;
+  return (
+    <DynamicLoginForm errorMessage={errorMsg} onSubmit={onSubmit} enabledLoginTypes={enabledLoginTypes} />
+  );
 }

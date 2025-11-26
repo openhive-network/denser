@@ -1,5 +1,8 @@
+'use client';
+
 import { ReactNode, useRef } from 'react';
-import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from '@ui/components/dialog';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
 import { siteConfig } from '@ui/config/site';
@@ -26,6 +29,12 @@ function DialogLogin({ children }: { children: ReactNode }) {
         data-testid="login-dialog"
         onInteractOutside={(e) => e.preventDefault()}
       >
+        <VisuallyHidden>
+          <DialogTitle>Sign In</DialogTitle>
+        </VisuallyHidden>
+        <VisuallyHidden>
+          <DialogDescription>Sign in to your account using your posting key.</DialogDescription>
+        </VisuallyHidden>
         <SignInForm
           ref={signInFormRef}
           preferredKeyTypes={[KeyType.posting]}

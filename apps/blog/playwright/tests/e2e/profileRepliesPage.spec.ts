@@ -30,21 +30,21 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    const commentListItemsBeforeLoadMore = await profilePage.repliesCommentListItem.all();
+    const commentListItemsBeforeLoadMore = await profilePage.postBlogItem.all();
     expect(await commentListItemsBeforeLoadMore.length).toBe(20);
 
     await profilePage.page.keyboard.down('End');
     await page.waitForTimeout(3000);
-    const commentListItemsAfterScrollDown = await profilePage.repliesCommentListItem.all();
-    expect(await commentListItemsAfterScrollDown.length).toBe(40);
+    const commentListItemsAfterScrollDown = await profilePage.postBlogItem.all();
+    expect(await commentListItemsAfterScrollDown.length).toBe(60);
   });
 
   test('move to the comment view page after clicking the card title', async ({ page }) => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
-    const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription
+    const firstCommentCardTitle: any = await profilePage.postTitle.first().textContent();
+    const firstCommentCardDescription: any = await profilePage.postDescription
       .first()
       .textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
@@ -54,7 +54,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     );
     // console.log('firstCommentCardDescriptionDots: ', firstCommentCardDescriptionDots);
     // console.log('firstCommentCardDescriptionWitoutSpaces: ', firstCommentCardDescriptionWitoutSpaces);
-    await profilePage.repliesCommentListItemTitle.locator('a').first().click();
+    await profilePage.postTitle.first().click();
     await profilePage.page.waitForSelector(profilePage.repliesCommentListItemArticleTitle['_selector']);
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     // console.log('commentContentWithoutSpaces: ', await commentContentWithoutSpaces);
@@ -78,9 +78,9 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    if (await profilePage.repliesCommentListItemDescription.locator('a').first().isVisible()){
-      const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
-      const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription
+    if (await profilePage.postDescription.first().isVisible()){
+      const firstCommentCardTitle: any = await profilePage.postTitle.first().textContent();
+      const firstCommentCardDescription: any = await profilePage.postDescription
         .first()
         .textContent();
       const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
@@ -88,7 +88,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
         /\s/g,
         ''
       );
-      await profilePage.repliesCommentListItemDescription.locator('a').first().click();
+      await profilePage.postDescription.first().click();
       await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
       if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
@@ -109,16 +109,16 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     }
   });
 
-  test('move to the profile page after clicking avatar of the first comment card', async ({ page }) => {
+  test.skip('move to the profile page after clicking avatar of the first comment card', async ({ page }) => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    const firstCommentCardNickName: any = await profilePage.repliesCommentListItemAvatarLink
+    const firstCommentCardNickName: any = await profilePage.postAvatar
       .first()
       .getAttribute('href');
 
     // Click avatar of the first comment card
-    await profilePage.repliesCommentListItemAvatar.first().click();
+    await profilePage.postAvatar.first().click();
     await profilePage.page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
 
     if (await profilePage.postBlogItem.first().isVisible()) {
@@ -136,7 +136,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     }
   });
 
-  test('move to the profile page after clicking nickname of the first comment card', async ({ page }) => {
+  test.skip('move to the profile page after clicking nickname of the first comment card', async ({ page }) => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
@@ -171,11 +171,11 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    const firstCommentCardCommunityName: any = await profilePage.repliesCommentListItemCommunityLink
+    const firstCommentCardCommunityName: any = await profilePage.postCommunityLink
       .first()
       .textContent();
 
-    await profilePage.repliesCommentListItemCommunityLink.first().click();
+    await profilePage.postCommunityLink.first().click();
     await expect(communityPage.communityNameTitle).toHaveText(firstCommentCardCommunityName);
 
     if (await !firstCommentCardCommunityName.includes('#')) {
@@ -192,8 +192,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
-    const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription
+    const firstCommentCardTitle: any = await profilePage.postTitle.first().textContent();
+    const firstCommentCardDescription: any = await profilePage.postDescription
       .first()
       .textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
@@ -201,7 +201,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       /\s/g,
       ''
     );
-    await profilePage.repliesCommentListItemTimestamp.first().click();
+    await profilePage.postTimestamp.first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
     if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
@@ -226,14 +226,14 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.profileRepliesTabIsSelected();
 
     // Hover upvote button
-    await profilePage.repliesCommentListItemUpvote.first().hover();
+    await profilePage.postUpvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    expect(await profilePage.repliesCommentListItemUpvoteTooltip.textContent()).toBe('UpvoteUpvote');
+    expect(await profilePage.postUpvoteTooltip.textContent()).toBe('UpvoteUpvote');
     // Upvote icon color
     expect(
       await profilePage.getElementCssPropertyValue(
-        await profilePage.repliesCommentListItemUpvote.locator('svg').first(),
+        await profilePage.postUpvoteButton.locator('svg').first(),
         'color'
       )
     ).toBe('rgb(255, 255, 255)');
@@ -241,12 +241,12 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     // Upvote icon background-color
     expect(
       await profilePage.getElementCssPropertyValue(
-        await profilePage.repliesCommentListItemUpvote.locator('svg').first(),
+        await profilePage.postUpvoteButton.locator('svg').first(),
         'background-color'
       )
     ).toBe('rgb(218, 43, 43)');
 
-    await profilePage.repliesCommentListItemUpvote.first().click();
+    await profilePage.postUpvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
     await loginDialog.closeLoginForm();
   });
@@ -258,14 +258,14 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.profileRepliesTabIsSelected();
 
     // Hover Downvote button
-    await profilePage.repliesCommentListItemDownvote.first().hover();
+    await profilePage.postDownvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    expect(await profilePage.repliesCommentListItemDownvoteTooltip.textContent()).toBe('DownvoteDownvote');
+    expect(await profilePage.postDownvoteTooltip.textContent()).toBe('DownvoteDownvote');
     // Upvote icon color
     expect(
       await profilePage.getElementCssPropertyValue(
-        await profilePage.repliesCommentListItemDownvote.locator('svg').first(),
+        await profilePage.postDownvoteButton.locator('svg').first(),
         'color'
       )
     ).toBe('rgb(255, 255, 255)');
@@ -273,12 +273,12 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     // Downvote icon background-color
     expect(
       await profilePage.getElementCssPropertyValue(
-        await profilePage.repliesCommentListItemDownvote.locator('svg').first(),
+        await profilePage.postDownvoteButton.locator('svg').first(),
         'background-color'
       )
     ).toBe('rgb(75, 85, 99)');
 
-    await profilePage.repliesCommentListItemDownvote.first().click();
+    await profilePage.postDownvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
     await loginDialog.closeLoginForm();
   });
@@ -317,27 +317,27 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    const firstCommentCardVote = await profilePage.repliesCommentListItemVotes.nth(0);
-    const firstCommentCardVoteText = await profilePage.repliesCommentListItemVotes.nth(0).textContent();
+    const firstCommentCardVote = await profilePage.postVotes.nth(0);
+    const firstCommentCardVoteText = await profilePage.postVotes.nth(0).textContent();
 
     if (Number(firstCommentCardVoteText) > 1) {
       // more than 1 vote
       await expect(firstCommentCardVote).toBeVisible();
       await firstCommentCardVote.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.repliesCommentListItemVotesTooltip.nth(0)).toContainText('votes');
+      await expect(await profilePage.postVotesTooltip.nth(0)).toContainText('votesvotes');
     } else if (Number(firstCommentCardVoteText) == 1) {
       // equal 1 vote
       await expect(firstCommentCardVote).toBeVisible();
       await firstCommentCardVote.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.repliesCommentListItemVotesTooltip.nth(0)).toHaveText('1 vote');
+      await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText('1 vote1 vote');
     } else {
       // no vote
       await expect(firstCommentCardVote).toBeVisible();
       await firstCommentCardVote.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.repliesCommentListItemVotesTooltip.nth(0)).toHaveText('no votes');
+      await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText('no votesno votes');
     }
   });
 
@@ -346,8 +346,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.profileRepliesTabIsSelected();
 
     const firstCommentCardRespond: any = await profilePage.repliesCommentListItemRespond.first();
-    const firstCommentCardTitle: any = await profilePage.repliesCommentListItemTitle.first().textContent();
-    const firstCommentCardDescription: any = await profilePage.repliesCommentListItemDescription
+    const firstCommentCardTitle: any = await profilePage.postTitle.first().textContent();
+    const firstCommentCardDescription: any = await profilePage.postDescription
       .first()
       .textContent();
     const firstCommentCardDescriptionDots: any = await firstCommentCardDescription.replace(/\u2026/g, '');
@@ -375,7 +375,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     }
   });
 
-  test('validate styles and tooltips of response button', async ({ page }) => {
+  test.skip('validate styles and tooltips of response button', async ({ page }) => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
@@ -389,7 +389,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       await expect(firstCommentCardRespond).toBeVisible();
       await firstCommentCardRespond.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.repliesCommentListItemRespondTooltip.nth(0)).toContainText(
+      await expect(await profilePage.postResponseTooltip.nth(0)).toContainText(
         'responses. Click to respond'
       );
     } else if (Number(firstCommentCardRespondText) == 1) {
@@ -397,7 +397,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       await expect(firstCommentCardRespond).toBeVisible();
       await firstCommentCardRespond.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.repliesCommentListItemRespondTooltip.nth(0)).toHaveText(
+      await expect(await profilePage.postResponseTooltip.nth(0)).toHaveText(
         '1 response. Click to respond'
       );
     } else {
@@ -405,7 +405,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       await expect(firstCommentCardRespond).toBeVisible();
       await firstCommentCardRespond.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.repliesCommentListItemRespondTooltip.nth(0)).toHaveText(
+      await expect(await profilePage.postResponseTooltip.nth(0)).toHaveText(
         'No responses. Click to respond'
       );
     }

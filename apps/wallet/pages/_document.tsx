@@ -32,7 +32,7 @@ export default function Document() {
         <meta name="twitter:description" content={SITE_DESC} />
         <meta name="twitter:image" content="https://hive.blog/images/hive-blog-share.png" />
       </Head>
-      <body>
+      <body className="bg-background-secondary">
         <Main />
         <NextScript />
         <Script src={`${basePath}/__ENV.js`} strategy="beforeInteractive" />

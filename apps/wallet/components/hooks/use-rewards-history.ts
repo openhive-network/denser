@@ -1,6 +1,6 @@
 import { getAccountRewardsHistory } from '@/wallet/lib/hive';
 import { useQuery } from '@tanstack/react-query';
-import { getDynamicGlobalProperties } from '@transaction/lib/hive';
+import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import parseDate from '@ui/lib/parse-date';
 
 export const useRewardsHistory = (username: string, opType: 'author_reward' | 'curation_reward') => {

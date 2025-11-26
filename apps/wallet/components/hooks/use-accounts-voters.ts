@@ -1,6 +1,6 @@
 import { convertStringToBig } from '@ui/lib/helpers';
 import { useQuery } from '@tanstack/react-query';
-import { getAccounts } from '@transaction/lib/hive';
+import { getAccounts } from '@transaction/lib/hive-api';
 import Big from 'big.js';
 import { FullAccount } from '@transaction/lib/app-types';
 

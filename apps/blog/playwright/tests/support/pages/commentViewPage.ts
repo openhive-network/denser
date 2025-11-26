@@ -37,6 +37,7 @@ export class CommentViewPage {
   readonly getResponseCommentUpvoteButton: Locator;
   readonly getResponseCommentDownvoteButton: Locator;
   readonly getResponseCommentPayout: Locator;
+  readonly getResponsePostCommentPayout: Locator;
   readonly getResponseCommentReply: Locator;
   readonly getResponseCommentCloseOpen: Locator;
   readonly payoutPostCardTooltip: Locator;
@@ -103,13 +104,14 @@ export class CommentViewPage {
       '[data-testid="comment-card-footer-downvote"]'
     );
     this.getResponseCommentPayout = this.getResponseCommentFooter.locator('[data-testid="post-payout"]');
+    this.getResponsePostCommentPayout = this.page.getByTestId('post-card-footer').getByTestId('post-payout');
     this.getResponseCommentReply = this.getResponseCommentFooter.locator(
       '[data-testid="comment-card-footer-reply"]'
     );
     this.getResponseCommentCloseOpen = page.locator('[data-testid="comment-close-open"]').nth(1);
     this.payoutPostCardTooltip = page.getByTestId('payout-post-card-tooltip');
-    this.commentVote = page.locator('[data-testid="comment-vote"]');
-    this.commentVoteTooltip = page.getByTestId('comment-vote-tooltip');
+    this.commentVote = page.locator('[data-testid="post-total-votes"]');
+    this.commentVoteTooltip = page.getByTestId('post-card-votes-tooltip');
     this.commentGreenSection = page.locator('.bg-card-noContent');
   }
 

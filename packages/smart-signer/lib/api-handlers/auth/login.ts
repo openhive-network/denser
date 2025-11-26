@@ -2,7 +2,7 @@ import createHttpError from 'http-errors';
 import { NextApiHandler } from 'next';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
-import { getAccount } from '@transaction/lib/hive';
+import { getAccount } from '@transaction/lib/hive-api';
 import { postLoginSchema, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
@@ -10,13 +10,12 @@ import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
-import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation'
+import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation';
 import { getLogger } from '@hive/ui/lib/logging';
 import { siteConfig } from '@hive/ui/config/site';
 import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
 
 const logger = getLogger('app');
-
 
 export const loginUser: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);
@@ -48,8 +47,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
   if (JSON.parse(data.txJSON)) {
     // Check whether loginChallenge is correct.
-    const reguestLoginChallenge =
-      getLoginChallengeFromTransactionForLogin(JSON.parse(data.txJSON), keyType);
+    const reguestLoginChallenge = getLoginChallengeFromTransactionForLogin(JSON.parse(data.txJSON), keyType);
     if (reguestLoginChallenge !== loginChallenge) {
       throw new createHttpError[401]('Invalid login challenge');
     }
@@ -62,11 +60,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
       // swallow error
     }
   } else {
-    result = verifyLoginChallenge(
-      chainAccount,
-      signatures,
-      JSON.stringify({ loginChallenge })
-    );
+    result = verifyLoginChallenge(chainAccount, signatures, JSON.stringify({ loginChallenge }));
   }
 
   if (!result) {
@@ -75,8 +69,10 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
   let chatAuthToken = '';
   const oauthConsent: { [key: string]: boolean } = {};
-  if (siteConfig.openhiveChatIframeIntegrationEnable
-      && (verifiedUser?.strict || siteConfig.openhiveChatAllowNonStrictLogin)) {
+  if (
+    siteConfig.openhiveChatIframeIntegrationEnable &&
+    (verifiedUser?.strict || siteConfig.openhiveChatAllowNonStrictLogin)
+  ) {
     const result = await getChatAuthToken(username);
     if (result.success) {
       chatAuthToken = result.data.authToken;
@@ -93,7 +89,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     authenticateOnBackend,
     chatAuthToken,
     oauthConsent,
-    strict: verifiedUser?.strict ? true : false,
+    strict: verifiedUser?.strict ? true : false
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.user = user;

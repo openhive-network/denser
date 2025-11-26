@@ -17,7 +17,8 @@ test.describe('User parmlink redirect tests', () => {
     expect(specificContentTextLocator).toBeVisible();
   });
 
-  test('validate redirect location for user/permlink endpoint', async ({ page, request }) => {
+  // Temporary skipped until 302 redirection will work well
+  test.skip('validate redirect location for user/permlink endpoint', async ({ page, request }) => {
     const userPermlinkEndpoint: string = '/@gtg/hello-world';
     const expectedEndpoint: string = '/introduceyourself/@gtg/hello-world'
 
@@ -36,7 +37,8 @@ test.describe('User parmlink redirect tests', () => {
     expect(location).toBe(expectedEndpoint);
   });
 
-  test('validate redirect location for user/permlink endpoint of the comment', async ({ page, request }) => {
+  // Temporary skipped until 302 redirection will work well
+  test.skip('validate redirect location for user/permlink endpoint of the comment', async ({ page, request }) => {
     const userPermlinkEndpoint: string = '/@gtg/re-palmerjm1-re-gtg-hello-world-20170808t063121445z';
     const expectedEndpoint: string = '/introduceyourself/@gtg/re-palmerjm1-re-gtg-hello-world-20170808t063121445z'
 

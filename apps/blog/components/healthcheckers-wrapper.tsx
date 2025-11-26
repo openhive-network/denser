@@ -1,3 +1,4 @@
+'use client';
 import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component'
 import { FullAccount } from '@transaction/lib/app-types';
 import { Community, Entry, MixedPostsResponse } from '@transaction/lib/extended-hive.chain';

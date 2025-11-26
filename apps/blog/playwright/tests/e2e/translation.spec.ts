@@ -9,7 +9,8 @@ import { WitnessPage } from '../support/pages/witnessesPage';
 import { WalletPage } from '../../../../wallet/playwright/tests/support/pages/walletPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 
-test.describe('Translation tests', () => {
+// Skipped due to move out translation from Denser
+test.describe.skip('Translation tests', () => {
   let homePage: HomePage;
   let postPage: PostPage;
   let profilePage: ProfilePage;
@@ -177,7 +178,7 @@ test.describe('Translation tests', () => {
   //   await expect(page.getByTestId('wallet-account-history-description')).toContainText('Uważaj na spam i linki phishingowe w notatkach transakcji. Nie otwieraj linków od użytkowników, którym nie ufasz. Nie udostępniaj swoich kluczy prywatnych żadnym stronom internetowym osób trzecich. Transakcje nie zostaną wyświetlone, dopóki nie zostaną potwierdzone w blockchain, co może zająć kilka minut.')
   // })
 
-  test('Community page', async ({ page }) => {
+  test.skip('Community page', async ({ page }) => {
     await homePage.goto();
     await homePage.getLeoFinanceCommunitiesLink.click();
     await expect(homePage.getHeaderLeoCommunities).toBeVisible();

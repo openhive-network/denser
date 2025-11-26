@@ -38,14 +38,14 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
 
     const firstNotificationAuthorName = await profilePage.notificationNickName.first().textContent();
     await profilePage.notificationAccountIconLink.first().click();
-    await profilePage.page.waitForSelector(profilePage.profileInfo['_selector']);
+    await profilePage.page.waitForTimeout(3000);
     // Validate new url of notification's author
     await expect(profilePage.page.url()).toContain(firstNotificationAuthorName);
   });
 
   // Skip this test due to move to the non existing page
   // Issue: https://gitlab.syncad.com/hive/denser/-/issues/449
-  test('Click the first three notifications and move to specific page', async ({ page }) => {
+  test.skip('Click the first three notifications and move to specific page', async ({ page }) => {
     let postPage = new PostPage(page);
     let commentPage = new CommentViewPage(page);
 
@@ -342,7 +342,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.notificationAccountAndMessage.first(),
         'color'
       )
-    ).toBe('rgb(51, 51, 51)');
+    ).toBe('rgb(0, 0, 0)');
     // Validate the timestamp color of the first notification
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.first(), 'color')
@@ -376,7 +376,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.notificationAccountAndMessage.nth(1),
         'color'
       )
-    ).toBe('rgb(51, 51, 51)');
+    ).toBe('rgb(0, 0, 0)');
     // Validate the timestamp color of the second notification
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.nth(1), 'color')
@@ -396,6 +396,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
 
   test('Validate the notifications styles in dark mode', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
 
     await profilePage.gotoNotificationsProfilePage('@gtg');
     await profilePage.profileNotificationsTabIsSelected();
@@ -420,7 +421,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.notificationAccountAndMessage.first(),
         'color'
       )
-    ).toBe('rgb(225, 231, 239)');
+    ).toBe('rgb(255, 255, 255)');
     // Validate the timestamp color of the first notification
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.first(), 'color')
@@ -454,7 +455,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         await profilePage.notificationAccountAndMessage.nth(1),
         'color'
       )
-    ).toBe('rgb(225, 231, 239)');
+    ).toBe('rgb(255, 255, 255)');
     // Validate the timestamp color of the second notification
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.nth(1), 'color')

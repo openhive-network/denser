@@ -294,7 +294,7 @@ export class ProfilePage {
     this.repliesCommentListItemPayoutTooltip = page.locator('[data-testid="payout-post-card-tooltip"]');
     this.repliesCommentListItemVotes = page.locator('[data-testid="comment-vote"]');
     this.repliesCommentListItemVotesTooltip = page.locator('[data-testid="comment-vote-tooltip"]');
-    this.repliesCommentListItemRespond = page.locator('[data-testid="comment-respond-link"]');
+    this.repliesCommentListItemRespond = page.locator('[data-testid="post-card-response-link"]');
     this.repliesCommentListItemRespondFirst = this.repliesCommentListItemRespond.first();
     this.repliesCommentListItemRespondTooltip = page.locator('[data-testid="comment-respond-tooltip"]');
     this.repliesCommentListItemArticleTitle = page.locator('[data-testid="article-title"]');
@@ -429,9 +429,9 @@ export class ProfilePage {
     this.communityName = page.locator('[data-testid="community-name"]');
     this.communityTimeStamp = page.locator('span.text-xs a').nth(1);
     this.userHasNotStartedBloggingYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
-    this.userHasNotMadeAnyPostsYetMsg = page.locator('[data-testid="user-has-not-made-any-post-yet"]');
-    this.userNoPendingPayoutsMsg = page.locator('[data-testid="user-no-pending-payouts"]');
-    this.userHasNotHadAnyRepliesYetMsg = page.locator('[data-testid="user-has-not-had-any-replies-yet"]');
+    this.userHasNotMadeAnyPostsYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
+    this.userNoPendingPayoutsMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
+    this.userHasNotHadAnyRepliesYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
     this.userDoesNotHaveAnySubscriptionsYetMsg = page.locator('[data-testid="user-does-not-have-any-subscriptions-yet"]');
     this.userHasNotHadAnyNotificationsYetMsg = page.locator('[data-testid="user-has-not-had-any-notifications-yet"]');
     this.userBannerBadgeLink = page.locator('[data-testid="profile-badge-link"]');
@@ -449,14 +449,14 @@ export class ProfilePage {
     await this.page.goto(`/${nickName}/posts`);
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.postsPostListLocator['_selector']);
+    await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
   }
 
   async gotoPostsCommentsProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/comments`);
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.postsCommentsListLocator['_selector']);
+    await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
   }
 
   async gotoPostsPayoutsProfilePage(nickName: string) {
@@ -464,14 +464,14 @@ export class ProfilePage {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
     if (!await this.userNoPendingPayoutsMsg.isVisible())
-      await this.page.waitForSelector(this.postsPayoutsListLocator['_selector']);
+      await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
   }
 
   async gotoRepliesProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/replies`);
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.repliesCommentListItem['_selector']);
+    await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
   }
 
   async gotoNotificationsProfilePage(nickName: string) {
@@ -564,7 +564,8 @@ export class ProfilePage {
   }
 
   async profileRepliesTabIsSelected() {
-    const repliesPageListLocator = this.userHasNotHadAnyRepliesYetMsg.or(this.postsCommentsListLocator);
+    // const repliesPageListLocator = this.userHasNotHadAnyRepliesYetMsg.or(this.postsCommentsListLocator);
+    const repliesPageListLocator = this.userHasNotHadAnyRepliesYetMsg.or(this.profileBlogPostsList);
     await repliesPageListLocator.waitFor({state: 'visible'});
     await expect(this.page).toHaveURL(/.*replies/);
   }

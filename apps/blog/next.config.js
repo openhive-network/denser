@@ -1,5 +1,4 @@
 const path = require('path');
-const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/transaction', '@hive/renderer', '@hive/middleware']);
 const CopyPlugin = require('copy-webpack-plugin');
 const removeImports = require('next-remove-imports')();
 const withPWA = require('next-pwa')({
@@ -32,11 +31,11 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Type',
-            value: 'application/javascript; charset=utf-8',
+            value: 'application/javascript; charset=utf-8'
           },
           {
             key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate, max-age=0',
+            value: 'no-cache, no-store, must-revalidate, max-age=0'
           }
         ]
       },
@@ -45,17 +44,24 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Type',
-            value: 'application/javascript; charset=utf-8',
+            value: 'application/javascript; charset=utf-8'
           },
           {
             key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate, max-age=0',
+            value: 'no-cache, no-store, must-revalidate, max-age=0'
           }
         ]
       }
-
     ];
   },
+  transpilePackages: [
+    '@hive/smart-signer',
+    '@hive/ui',
+    '@hive/transaction',
+    '@hive/renderer',
+    '@hive/middleware'
+  ],
+
   async rewrites() {
     return [
       {
@@ -112,4 +118,4 @@ const nextConfig = {
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
-module.exports = withPWA(withTM(withBundleAnalyzer(removeImports(nextConfig))));
+module.exports = withPWA(withBundleAnalyzer(removeImports(nextConfig)));
