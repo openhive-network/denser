@@ -122,12 +122,12 @@ const MainBar: FC = () => {
             )}
             <div className="hidden lg:block">
               {pathname === '/search' ? (
-                <SearchButton aiTag={!!hiveSense } />
+                <SearchButton aiTag={!!hiveSense} />
               ) : (
-                <ModeSwitchInput aiAvailable={ !!hiveSense } />
+                <ModeSwitchInput aiAvailable={!!hiveSense} />
               )}
             </div>
-            <SearchButton aiTag={ !!hiveSense } className="lg:hidden" />
+            <SearchButton aiTag={!!hiveSense} className="lg:hidden" />
             <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
               <Link href="/submit.html">
                 <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
@@ -148,136 +148,137 @@ const MainBar: FC = () => {
             ) : null}
             {!isClient && !user?.isLoggedIn ? (
               <Skeleton className="h-9 w-9 rounded-full" />
+            ) : !user?.isLoggedIn ? (
+              <div>
+                <LangToggle logged={user ? user?.isLoggedIn : false} className="px-2" />
+              </div>
+            ) : null}
+
+            {!isClient ? (
+              <Skeleton className="h-9 w-9 rounded-full" />
             ) : (
-              !user?.isLoggedIn ? (
-                <div>
-                  <LangToggle logged={user ? user?.isLoggedIn : false} className="px-2" />
-                </div>
-              ) : null
-            )}
-
-    
-              {!isClient ? (
-                <Skeleton className="h-9 w-9 rounded-full" />
-              ) : (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger data-testid="profile-avatar-button" className="cursor-pointer">
-                      <UserMenu user={user} notifications={data?.unread}>
-                        <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
-                          {data && data.unread !== 0 ? (
-                            <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
-                              {data.unread}
+              <>
+                {user.isLoggedIn ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger data-testid="profile-avatar-button" className="cursor-pointer">
+                        <UserMenu user={user} notifications={data?.unread}>
+                          <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
+                            {data && data.unread !== 0 ? (
+                              <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+                                {data.unread}
+                              </div>
+                            ) : null}
+                            <div className="absolute z-20 group-hover:invisible group-hover:delay-300 group-hover:duration-300 group-hover:animate-out group-hover:zoom-out-75">
+                              <PieChart width={50} height={50}>
+                                <Pie
+                                  data={chart}
+                                  cx={20}
+                                  cy={20}
+                                  startAngle={90}
+                                  endAngle={-rcAngle + 90}
+                                  innerRadius={18}
+                                  outerRadius={24}
+                                  fill="#0088FE"
+                                  paddingAngle={0}
+                                  dataKey="value"
+                                ></Pie>
+                              </PieChart>
                             </div>
-                          ) : null}
-                          <div className="absolute z-20 group-hover:invisible group-hover:delay-300 group-hover:duration-300 group-hover:animate-out group-hover:zoom-out-75">
-                            <PieChart width={50} height={50}>
-                              <Pie
-                                data={chart}
-                                cx={20}
-                                cy={20}
-                                startAngle={90}
-                                endAngle={-rcAngle + 90}
-                                innerRadius={18}
-                                outerRadius={24}
-                                fill="#0088FE"
-                                paddingAngle={0}
-                                dataKey="value"
-                              ></Pie>
-                            </PieChart>
-                          </div>
 
-                          <div className="invisible absolute z-20 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                            <PieChart width={50} height={50}>
-                              <Pie
-                                data={chart}
-                                cx={20}
-                                cy={20}
-                                startAngle={90}
-                                endAngle={-downvoteAngle + 90}
-                                innerRadius={18}
-                                outerRadius={21.5}
-                                fill="#C01000"
-                                paddingAngle={0}
-                                dataKey="value"
-                              ></Pie>
-                            </PieChart>
-                          </div>
-                          <div className="invisible absolute z-10 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                            <PieChart width={60} height={60}>
-                              <Pie
-                                data={chart}
-                                cx={25}
-                                cy={25}
-                                startAngle={90}
-                                endAngle={-upvoteAngle + 90}
-                                innerRadius={21.5}
-                                outerRadius={25}
-                                fill="#00C040"
-                                paddingAngle={0}
-                                dataKey="value"
-                              ></Pie>
-                            </PieChart>
-                          </div>
-                          <div className="invisible absolute group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                            <PieChart width={70} height={70}>
-                              <Pie
-                                data={chart}
-                                cx={30}
-                                cy={30}
-                                startAngle={90}
-                                endAngle={-rcAngle + 90}
-                                innerRadius={25}
-                                outerRadius={28.5}
-                                fill="#0088FE"
-                                paddingAngle={0}
-                                dataKey="value"
-                              ></Pie>
-                            </PieChart>
-                          </div>
-                          <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
-                            <AvatarImage
-                              className="h-full w-full object-cover"
-                              src={getUserAvatarUrl(user?.username || '', 'small')}
-                              alt="Profile picture"
-                            />
-                            <AvatarFallback>
-                              <img
+                            <div className="invisible absolute z-20 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
+                              <PieChart width={50} height={50}>
+                                <Pie
+                                  data={chart}
+                                  cx={20}
+                                  cy={20}
+                                  startAngle={90}
+                                  endAngle={-downvoteAngle + 90}
+                                  innerRadius={18}
+                                  outerRadius={21.5}
+                                  fill="#C01000"
+                                  paddingAngle={0}
+                                  dataKey="value"
+                                ></Pie>
+                              </PieChart>
+                            </div>
+                            <div className="invisible absolute z-10 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
+                              <PieChart width={60} height={60}>
+                                <Pie
+                                  data={chart}
+                                  cx={25}
+                                  cy={25}
+                                  startAngle={90}
+                                  endAngle={-upvoteAngle + 90}
+                                  innerRadius={21.5}
+                                  outerRadius={25}
+                                  fill="#00C040"
+                                  paddingAngle={0}
+                                  dataKey="value"
+                                ></Pie>
+                              </PieChart>
+                            </div>
+                            <div className="invisible absolute group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
+                              <PieChart width={70} height={70}>
+                                <Pie
+                                  data={chart}
+                                  cx={30}
+                                  cy={30}
+                                  startAngle={90}
+                                  endAngle={-rcAngle + 90}
+                                  innerRadius={25}
+                                  outerRadius={28.5}
+                                  fill="#0088FE"
+                                  paddingAngle={0}
+                                  dataKey="value"
+                                ></Pie>
+                              </PieChart>
+                            </div>
+                            <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
+                              <AvatarImage
                                 className="h-full w-full object-cover"
                                 src={getUserAvatarUrl(user?.username || '', 'small')}
                                 alt="Profile picture"
                               />
-                            </AvatarFallback>
-                          </Avatar>
-                        </div>
-                      </UserMenu>
-                    </TooltipTrigger>
-                    {manabarsData && (
-                      <TooltipContent className="flex flex-col bg-background-tertiary">
-                        <span>Resource Credits</span>
-                        <div className="flex flex-col text-blue-600">
-                          <span>(RC) level: {manabarsData.rc.percentageValue}%</span>
-                          {manabarsData.rc.percentageValue !== 100 ? (
-                            <span>Full in: {hoursAndMinutes(manabarsData.rc.cooldown, t)}</span>
-                          ) : null}
-                        </div>
-                        <div className="flex flex-col text-green-600">
-                          <span> Voting Power: {manabarsData.upvote.percentageValue}%</span>
-                          {manabarsData?.upvote.percentageValue !== 100 ? (
-                            <span>Full in: {hoursAndMinutes(manabarsData.upvote.cooldown, t)}</span>
-                          ) : null}
-                        </div>
-                        <div className="flex flex-col text-destructive">
-                          <span> Downvote power: {manabarsData.downvote.percentageValue}%</span>
-                          {manabarsData.downvote.percentageValue !== 100 ? (
-                            <span>Full in: {hoursAndMinutes(manabarsData.downvote.cooldown, t)}</span>
-                          ) : null}
-                        </div>
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                </TooltipProvider>  
-)}
+                              <AvatarFallback>
+                                <img
+                                  className="h-full w-full object-cover"
+                                  src={getUserAvatarUrl(user?.username || '', 'small')}
+                                  alt="Profile picture"
+                                />
+                              </AvatarFallback>
+                            </Avatar>
+                          </div>
+                        </UserMenu>
+                      </TooltipTrigger>
+                      {manabarsData && (
+                        <TooltipContent className="flex flex-col bg-background-tertiary">
+                          <span>Resource Credits</span>
+                          <div className="flex flex-col text-blue-600">
+                            <span>(RC) level: {manabarsData.rc.percentageValue}%</span>
+                            {manabarsData.rc.percentageValue !== 100 ? (
+                              <span>Full in: {hoursAndMinutes(manabarsData.rc.cooldown, t)}</span>
+                            ) : null}
+                          </div>
+                          <div className="flex flex-col text-green-600">
+                            <span> Voting Power: {manabarsData.upvote.percentageValue}%</span>
+                            {manabarsData?.upvote.percentageValue !== 100 ? (
+                              <span>Full in: {hoursAndMinutes(manabarsData.upvote.cooldown, t)}</span>
+                            ) : null}
+                          </div>
+                          <div className="flex flex-col text-destructive">
+                            <span> Downvote power: {manabarsData.downvote.percentageValue}%</span>
+                            {manabarsData.downvote.percentageValue !== 100 ? (
+                              <span>Full in: {hoursAndMinutes(manabarsData.downvote.cooldown, t)}</span>
+                            ) : null}
+                          </div>
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : null}
+              </>
+            )}
 
             <Sidebar />
           </nav>
