@@ -25,11 +25,7 @@ import PostCardBlacklistMark from './post-card-blacklist-mark';
 import PostSummary from './summary';
 import { Preferences } from '@/blog/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
-import dynamic from 'next/dynamic';
-
-const VotesComponent = dynamic(() => import('@/blog/features/votes/votes-component'), {
-  ssr: false
-});
+import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 
 const PostListItem = ({
   post,
@@ -217,7 +213,7 @@ const PostListItem = ({
               />
               <CardFooter className="pb-2">
                 <div className="flex h-5 items-center space-x-2 text-sm" data-testid="post-card-footer">
-                  <VotesComponent post={post} type="post" />
+                  <VotesComponentWrapper post={post} type="post" />
 
                   <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
                     <div

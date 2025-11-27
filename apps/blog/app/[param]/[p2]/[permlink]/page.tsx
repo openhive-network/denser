@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import PostContent from './content';
@@ -5,6 +6,7 @@ import { getCommunity, getListCommunityRoles, getPost } from '@transaction/lib/b
 import { getDiscussion } from '@transaction/lib/bridge-api';
 import { getActiveVotes } from '@transaction/lib/hive-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
+import Loading from '@ui/components/loading';
 
 const PostPage = async ({
   params: { param, p2, permlink }
@@ -43,7 +45,9 @@ const PostPage = async ({
 
   return (
     <Hydrate state={dehydrate(queryClient)}>
-      <PostContent />
+      <Suspense fallback={<Loading loading={true} />}>
+        <PostContent />
+      </Suspense>
     </Hydrate>
   );
 };
