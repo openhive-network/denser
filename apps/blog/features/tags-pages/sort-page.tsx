@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { SortTypes } from '@/blog/lib/utils';
@@ -5,6 +6,7 @@ import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { ReactNode } from 'react';
+import Loading from '@ui/components/loading';
 
 const SortPage = async ({
   children,
@@ -31,7 +33,11 @@ const SortPage = async ({
       return { author: last.author, permlink: last.permlink };
     }
   });
-  return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
+  return (
+    <Hydrate state={dehydrate(queryClient)}>
+      <Suspense fallback={<Loading loading={true} />}>{children}</Suspense>
+    </Hydrate>
+  );
 };
 
 export default SortPage;

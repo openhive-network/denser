@@ -63,12 +63,8 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 import { useEffect, useMemo, useState } from 'react';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useLocalStorage } from 'usehooks-ts';
-import dynamic from 'next/dynamic';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-
-const VotesComponent = dynamic(() => import('@/blog/features/votes/votes-component'), {
-  ssr: false
-});
+import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 
 const PostContent = () => {
   const searchParams = useSearchParams();
@@ -441,7 +437,7 @@ const PostContent = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 sm:gap-4">
-                      <VotesComponent post={postData} type="post" />
+                      <VotesComponentWrapper post={postData} type="post" />
                       <DetailsCardHover
                         post={postData}
                         decline={Number(postData.max_accepted_payout.slice(0, 1)) === 0}

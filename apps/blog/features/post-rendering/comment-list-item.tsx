@@ -35,11 +35,7 @@ import TimeAgo from '@hive/ui/components/time-ago';
 import { getUserAvatarUrl } from '@hive/ui';
 import { UserPopoverCard } from './user-popover-card';
 import { useTranslation } from '@/blog/i18n/client';
-import dynamic from 'next/dynamic';
-
-const VotesComponent = dynamic(() => import('@/blog/features/votes/votes-component'), {
-  ssr: false
-});
+import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 
 interface CommentListProps {
   permissionToMute: Boolean;
@@ -273,7 +269,7 @@ const CommentListItem = ({
                             className="ml-4 flex h-5 items-center gap-2 text-xs sm:text-sm"
                             data-testid="comment-card-footer"
                           >
-                            <VotesComponent post={comment} type="comment" />
+                            <VotesComponentWrapper post={comment} type="comment" />
 
                             <DetailsCardHover
                               post={comment}
@@ -341,7 +337,7 @@ const CommentListItem = ({
                           className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
                           data-testid="comment-card-footer"
                         >
-                          <VotesComponent post={comment} type="comment" />
+                          <VotesComponentWrapper post={comment} type="comment" />
                           <DetailsCardHover
                             post={comment}
                             decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
