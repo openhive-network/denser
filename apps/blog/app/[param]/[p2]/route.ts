@@ -24,10 +24,10 @@ export async function GET(request: Request, { params }: { params: { param: strin
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || 'localhost:3000';
+    const origin = new URL(request.url).origin;
     const url = `${post.category ?? post.community}/@${post.author}/${post.permlink}`;
 
-    return NextResponse.redirect(new URL(`${basePath}/${url}`, request.url), { status: 302 });
+    return NextResponse.redirect(new URL(`${url}`, origin), { status: 302 });
   } catch (err) {
     console.error('Redirect route error', {
       params,
