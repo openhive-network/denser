@@ -7,6 +7,9 @@ import { getDiscussion } from '@transaction/lib/bridge-api';
 import { getActiveVotes } from '@transaction/lib/hive-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import Loading from '@ui/components/loading';
+import { isUsernameValid, isPermlinkValid } from '@/blog/utils/validate-links';
+import { notFound } from 'next/navigation';
+
 
 const PostPage = async ({
   params: { param, p2, permlink }
@@ -16,6 +19,11 @@ const PostPage = async ({
   const queryClient = getQueryClient();
   const username = p2.replace('%40', '');
   const community = param;
+  const validUser = await isUsernameValid(username);
+  if (!validUser) notFound();
+
+  if (!isPermlinkValid(permlink)) notFound();
+
   const observer = getObserverFromCookies();
   await queryClient.prefetchQuery({
     queryKey: ['postData', username, permlink],
