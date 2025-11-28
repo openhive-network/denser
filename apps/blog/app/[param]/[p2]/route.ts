@@ -25,7 +25,7 @@ export async function GET(request: Request, { params }: { params: { param: strin
     }
 
     const urlObj = new URL(request.url);
-    const origin = urlObj.origin !== 'null' ? urlObj.origin : process.env.NEXT_PUBLIC_BASE_PATH;
+    const origin = !!process.env.NEXT_PUBLIC_BASE_PATH ? process.env.NEXT_PUBLIC_BASE_PATH : urlObj.origin;
     
     const path = `${post.category ?? post.community}/@${post.author}/${post.permlink}`;
     const finalUrl = new URL(path, origin);
