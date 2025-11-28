@@ -13,7 +13,6 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
-import BasePathLink from '@/blog/components/base-path-link';
 import accountReputation from '@/blog/lib/account-reputation';
 import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import DetailsCardHover from './details-card-hover';
@@ -63,12 +62,12 @@ const PostListItem = ({
             <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
                 <Icons.crossPost className="h-4 w-4 text-slate-500 dark:text-slate-400" />{' '}
-                <BasePathLink
+                <Link
                   className="hover:cursor-pointer hover:text-destructive"
                   href={`/@${post.author}`}
                 >
                   {post.author}
-                </BasePathLink>{' '}
+                </Link>{' '}
                 cross-posted{' '}
                 <Link
                   href={`/${post.original_entry.community}/@${post.original_entry.author}/${post.original_entry.permlink}`}
@@ -83,13 +82,13 @@ const PostListItem = ({
             <div className="flex items-center gap-2 py-1 text-sm">
               <Icons.forward className="h-4 w-4" />
               <span data-testid="reblogged-label">
-                <BasePathLink
+                <Link
                   href={`/@${post.reblogged_by[0]}`}
                   className="cursor-pointer hover:text-destructive"
                   data-testid="reblogged-author-link"
                 >
                   {post.reblogged_by[0]}
-                </BasePathLink>{' '}
+                </Link>{' '}
                 {t('cards.reblogged')}
               </span>
             </div>
@@ -97,23 +96,23 @@ const PostListItem = ({
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
               {nsfw === 'show' && post.blacklists.length < 1 ? (
-                <BasePathLink href={`/@${post.author}`} data-testid="post-card-avatar">
+                <Link href={`/@${post.author}`} data-testid="post-card-avatar">
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                     style={{
                       backgroundImage: `url(${getUserAvatarUrl(post.author, 'small')})`
                     }}
                   />
-                </BasePathLink>
+                </Link>
               ) : null}
               <div className="flex flex-wrap items-center gap-0.5 md:flex-nowrap">
-                <BasePathLink
+                <Link
                   href={`/@${post.author}`}
                   className="font-medium text-primary hover:cursor-pointer hover:text-destructive"
                   data-testid="post-author"
                 >
                   {post.author}
-                </BasePathLink>{' '}
+                </Link>{' '}
                 <span
                   title={t('post_content.reputation_title')}
                   className="mr-1 block font-normal"
