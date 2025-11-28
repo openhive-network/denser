@@ -24,10 +24,13 @@ export async function GET(request: Request, { params }: { params: { param: strin
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
-    const origin = new URL(request.url).origin;
-    const url = `${post.category ?? post.community}/@${post.author}/${post.permlink}`;
-
-    return NextResponse.redirect(new URL(`${url}`, origin), { status: 302 });
+    const urlObj = new URL(request.url);
+    const origin = urlObj.origin !== 'null' ? urlObj.origin : process.env.NEXT_PUBLIC_BASE_PATH;
+    
+    const path = `${post.category ?? post.community}/@${post.author}/${post.permlink}`;
+    const finalUrl = new URL(path, origin);
+    
+    return NextResponse.redirect(finalUrl, { status: 302 });
   } catch (err) {
     console.error('Redirect route error', {
       params,
