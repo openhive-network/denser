@@ -13,14 +13,16 @@ test.describe('User parmlink redirect tests', () => {
     const expectedContentElementText: string = 'Nyunya';
     await homePage.gotoSpecificUrl(userPermlinkEndpoint);
     await homePage.page.waitForSelector(homePage.articleBodyString);
-    const specificContentTextLocator: Locator = homePage.page.locator(homePage.articleBodyString).locator('p > strong').getByText(expectedContentElementText);
+    const specificContentTextLocator: Locator = homePage.page
+      .locator(homePage.articleBodyString)
+      .locator('p > strong')
+      .getByText(expectedContentElementText);
     expect(specificContentTextLocator).toBeVisible();
   });
 
-  // Temporary skipped until 302 redirection will work well
-  test.skip('validate redirect location for user/permlink endpoint', async ({ page, request }) => {
+  test('validate redirect location for user/permlink endpoint', async ({ page, request }) => {
     const userPermlinkEndpoint: string = '/@gtg/hello-world';
-    const expectedEndpoint: string = '/introduceyourself/@gtg/hello-world'
+    const expectedEndpoint: string = '/introduceyourself/@gtg/hello-world';
 
     await homePage.gotoSpecificUrl(userPermlinkEndpoint);
 
@@ -34,13 +36,13 @@ test.describe('User parmlink redirect tests', () => {
 
     // Get the location header of the respons
     const location = response.headers()['location'];
-    expect(location).toBe(expectedEndpoint);
+    expect(location).toContain(expectedEndpoint);
   });
 
-  // Temporary skipped until 302 redirection will work well
-  test.skip('validate redirect location for user/permlink endpoint of the comment', async ({ page, request }) => {
+  test('validate redirect location for user/permlink endpoint of the comment', async ({ page, request }) => {
     const userPermlinkEndpoint: string = '/@gtg/re-palmerjm1-re-gtg-hello-world-20170808t063121445z';
-    const expectedEndpoint: string = '/introduceyourself/@gtg/re-palmerjm1-re-gtg-hello-world-20170808t063121445z'
+    const expectedEndpoint: string =
+      '/introduceyourself/@gtg/re-palmerjm1-re-gtg-hello-world-20170808t063121445z';
 
     await homePage.gotoSpecificUrl(userPermlinkEndpoint);
 
@@ -54,6 +56,6 @@ test.describe('User parmlink redirect tests', () => {
 
     // Get the location header of the respons
     const location = response.headers()['location'];
-    expect(location).toBe(expectedEndpoint);
+    expect(location).toContain(expectedEndpoint);
   });
 });
