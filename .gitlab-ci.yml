@@ -261,6 +261,7 @@ block-log-extraction:
   script: scripts/ci-helpers/block-log-extraction.sh
   tags:
   - data-cache-storage
+  - hive-builder-9
 
 block_log_processing:
   extends: .job-defaults
@@ -281,6 +282,7 @@ block_log_processing:
     - 'block_log_data.env'
   tags:
   - data-cache-storage
+  - hive-builder-9
 
 mirrornet-haf-node-replay:
   extends: .haf-node-replay
@@ -303,6 +305,7 @@ mirrornet-haf-node-replay:
     HIVE_API_NODE_VERSION: ${API_NODE_VERSION}
   tags:
   - data-cache-storage
+  - hive-builder-9
 
 .node-job:
   extends: .job-defaults
@@ -369,6 +372,7 @@ mirrornet-replay-data-copy:
   - mirrornet-haf-node-replay
   tags:
   - data-cache-storage
+  - hive-builder-9
 
 mirrornet-based-tests:
   extends:
@@ -451,6 +455,7 @@ mirrornet-based-tests:
       junit: 'apps/blog/junit/results.xml'
   tags:
   - data-cache-storage
+  - hive-builder-9
 
 e2e-tests-blog:
   extends: .e2e_tests_template
