@@ -31,20 +31,19 @@ test.describe('Comments of post', () => {
     // Before hover
     expect(
       await postPage.getElementCssPropertyValue(
-        postPage.commentListItems.locator('div > div').first(),
+        postPage.commentContentToHover.first(),
         'background-color'
       )
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgba(0, 0, 0, 0)');
 
     // After hover
-    await postPage.commentListItems.first().hover();
-    await postPage.page.waitForTimeout(1000);
+    await postPage.commentContentToHover.first().hover();
     expect(
       await postPage.getElementCssPropertyValue(
-        postPage.commentListItems.locator('div > div').first(),
+        postPage.commentContentToHover.first(),
         'background-color'
       )
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgb(225, 231, 239)');
   });
 
   test('Validate a hovered comment changes backgroundcolor style in the dark mode', async ({
