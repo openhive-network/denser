@@ -4,10 +4,7 @@ import moment from 'moment';
 import {
   TWaxApiRequest,
   RcAccount,
-  asset,
   GetDynamicGlobalPropertiesResponse,
-  GetDynamicGlobalPropertiesRequest,
-
 } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import {

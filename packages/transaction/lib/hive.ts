@@ -1,19 +1,10 @@
-import { AccountFollowStats } from './app-types';
-import { ApiAccount, AccountAuthorityUpdateOperation } from '@hiveio/wax';
+import { AccountAuthorityUpdateOperation } from '@hiveio/wax';
 import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
 import {
-  IVoteListItem,
   IListWitnessVotes,
-  IFeedHistory,
-  IFollow,
-  IAccountReputations,
-  IDynamicGlobalProperties,
-  IVote,
   IPost,
-  Entry
 } from './extended-hive.chain';
-import { DATA_LIMIT } from './bridge';
 
 const logger = getLogger('app');
 

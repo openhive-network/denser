@@ -1,6 +1,5 @@
 import { ApiAccount } from '@hiveio/wax';
-import { Authority } from '@hiveio/dhive/lib/chain/account';
-import { Asset } from '@hiveio/dhive/lib/chain/asset';
+import { authority, asset } from '@hiveio/wax';
 
 export type ExpApiAccount = ApiAccount;
 export interface AccountProfile {
@@ -22,11 +21,11 @@ export interface AccountFollowStats {
   account: string;
 }
 export interface FullAccount {
-  vesting_balance: string | Asset;
+  vesting_balance: string | asset;
   name: string;
-  owner: Authority;
-  active: Authority;
-  posting: Authority;
+  owner: authority;
+  active: authority;
+  posting: authority;
   memo_key: string;
   post_count: number;
   created: string;

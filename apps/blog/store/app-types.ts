@@ -1,4 +1,4 @@
-import { FullAccount } from '@ui/store/app-types';
+import { FullAccount } from "@transaction/lib/app-types";
 
 export interface BaseAccount {
   name: string;
