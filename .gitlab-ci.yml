@@ -479,12 +479,6 @@ e2e-tests-wallet:
   extends: .e2e_tests_template
   needs:
   - docker-build-wallet-testenv
-  # Override parallel matrix - wallet has only 4 test files, 2 shards are sufficient
-  parallel:
-    matrix:
-    - PROJECT: ['chromium', 'firefox', 'webkit']
-      SHARD_INDEX: [1, 2]
-      SHARD_TOTAL: 2
   services:
   - name: $DENSER_WALLET_IMAGE_NAME
     alias: denser
@@ -535,7 +529,7 @@ e2e-report-aggregate-wallet:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
     PROJECTS: '["chromium", "firefox", "webkit"]'
-    SHARD_TOTAL: 2
+    SHARD_TOTAL: 5
 
 publish:
   image:
