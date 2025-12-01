@@ -110,26 +110,36 @@ const PostContent = () => {
     enabled: crossedPost
   });
 
-  const { data: suggestionData } = useQuery({
+  const {
+    data: suggestionData,
+    error,
+    isError
+  } = useQuery({
     queryKey: ['suggestions', author, permlink],
     queryFn: async () => {
-      const results = await getSimilarPostsByPost({
-        author,
-        permlink,
-        observer,
-        result_limit: 10, // Only get 10 suggestions
-        full_posts: 10 // Get all as full posts
-      });
+      try {
+        const results = await getSimilarPostsByPost({
+          author,
+          permlink,
+          observer,
+          result_limit: 10,
+          full_posts: 10
+        });
 
-      if (!results) return null;
+        if (!results) return null;
 
-      // Filter out null/invalid posts and only include full Entry objects (not stubs)
-      const fullPosts = results.filter(
-        (post) => post && !isPostStub(post) && (post as Entry).post_id
-      ) as Entry[];
-      return fullPosts;
+        const fullPosts = results.filter(
+          (post) => post && !isPostStub(post) && (post as Entry).post_id
+        ) as Entry[];
+
+        return fullPosts;
+      } catch (err) {
+        console.error('Error fetching similar posts', err);
+        throw err;
+      }
     }
   });
+
   const { data: communityData } = useQuery({
     queryKey: ['community', category],
     queryFn: () => getCommunity(category, observer),

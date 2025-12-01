@@ -4,9 +4,8 @@ import CommentCard from '@/blog/features/post-rendering/comment-card';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
-import { useRouter } from 'next/router';
 import { useEffect, useState, useMemo, useCallback, useTransition } from 'react';
-import { CommentsPagination } from '@/blog/components/comments-pagination';
+import CommentsPagination from '@/blog/components/comments-pagination';
 import Loading from '@ui/components/loading';
 
 const CommentList = ({
@@ -40,7 +39,6 @@ const CommentList = ({
 
   const nbCommentsPerPage = 20;
 
-  const router = useRouter();
   const topLevelComments = useMemo(() => {
     if (!data || !parent) return [];
     const filtered = data.filter(

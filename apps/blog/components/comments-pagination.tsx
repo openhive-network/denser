@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import { ReactElement } from 'react';
 
-export const CommentsPagination = ({
+const CommentsPagination = ({
   nbComments,
   nbItemsPerPage = 50,
   currentPage,
@@ -57,3 +57,5 @@ export const CommentsPagination = ({
     </div>
   );
 };
+
+export default CommentsPagination;
