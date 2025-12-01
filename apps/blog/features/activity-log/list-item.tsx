@@ -80,7 +80,7 @@ const NotificationListItem = ({
           {unRead && isOwner ? <span className="mr-2 h-2 w-2 rounded-full bg-destructive" /> : null}
           {participants}
           <div className="flex flex-col">
-            <Link href={`/${fixedUrl}`}>
+            <Link href={`/${fixedUrl}`} className="visited:text-gray-500 dark:visited:text-gray-400">
               <span data-testid="notification-account-and-message">
                 <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
                 {mentions
