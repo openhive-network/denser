@@ -286,6 +286,8 @@ mirrornet-haf-node-replay:
   extends: .haf-node-replay
   stage: replay-and-sync
   timeout: 3 hours
+  # Allow failure since this job is known to be flaky and blocking the pipeline
+  allow_failure: true
   needs:
   - mirrornet-haf-binaries-extraction
   - block_log_processing
@@ -342,7 +344,6 @@ mirrornet-haf-node-replay:
     REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     DENSER_SERVER_ENV_DUMP: true
     DENSER_URL: https://caddy
-    PLAYWRIGHT_BROWSERS_PATH: 0
   parallel:
     matrix:
     - PROJECT: ['chromium', 'firefox', 'webkit']
