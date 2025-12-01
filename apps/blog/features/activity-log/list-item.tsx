@@ -40,7 +40,7 @@ const NotificationListItem = ({
       icon = <Icons.atSign className="h-4 w-4" />;
       break;
     case 'error':
-      icon = <Icons.x className="h-4 w-4" />;
+      icon = <Icons.settings className="h-4 w-4" />;
       break;
     default:
       icon = <Icons.arrowUpCircle className="h-4 w-4" />;
