@@ -342,6 +342,7 @@ mirrornet-haf-node-replay:
     REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     DENSER_SERVER_ENV_DUMP: true
     DENSER_URL: https://caddy
+    PLAYWRIGHT_BROWSERS_PATH: 0
   parallel:
     matrix:
     - PROJECT: ['chromium', 'firefox', 'webkit']
