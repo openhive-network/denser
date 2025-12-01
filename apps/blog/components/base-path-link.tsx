@@ -21,7 +21,7 @@ const BasePathLink = ({
   children,
   className,
   'data-testid': dataTestId,
-  prefetch = true
+  prefetch = false
 }: BasePathLinkProps) => {
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     // Force full page reload for certain link types when using basePath
