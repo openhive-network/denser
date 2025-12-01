@@ -39,11 +39,15 @@ const NotificationListItem = ({
     case 'mention':
       icon = <Icons.atSign className="h-4 w-4" />;
       break;
+    case 'error':
+      icon = <Icons.x className="h-4 w-4" />;
+      break;
     default:
       icon = <Icons.arrowUpCircle className="h-4 w-4" />;
   }
   const imageHosterUrl = configuredImagesEndpoint;
   const fixedUrl = url.startsWith('c') ? url.replace('c', 'trending') : url;
+  const errorMessage = type === 'error';
   const participants = mentions
     ? mentions.map((m: string) => {
         return (
@@ -77,9 +81,13 @@ const NotificationListItem = ({
           {participants}
           <div className="flex flex-col">
             <Link href={`/${fixedUrl}`}>
-              <span className="" data-testid="notification-account-and-message">
+              <span data-testid="notification-account-and-message">
                 <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
-                {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}
+                {mentions
+                  ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2]
+                  : errorMessage
+                    ? msg.split('error:')[1]
+                    : null}
               </span>
             </Link>
             <span
