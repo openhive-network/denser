@@ -237,7 +237,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // and the background color is green
     await postPage.commentCardsHeadersTimeStampLink.nth(0).scrollIntoViewIfNeeded();
     await postPage.commentCardsHeadersTimeStampLink.nth(0).click();
-    await postPage.page.waitForTimeout(1000);
+    await postPage.commentCardsHeadersTimeStampLink.nth(0).waitFor({state: "visible"});
     // border color of the first comment
     expect(
       await postPage.getElementCssPropertyValue(
