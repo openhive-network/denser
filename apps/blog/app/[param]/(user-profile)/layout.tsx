@@ -8,7 +8,6 @@ import { getTwitterInfo } from '@transaction/lib/custom-api';
 import { isUsernameValid } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
 
-
 export async function generateMetadata({ params }: { params: { param: string } }): Promise<Metadata> {
   const raw = params.param;
   const username = raw.startsWith('%40') ? raw.replace('%40', '') : raw;

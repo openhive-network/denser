@@ -82,7 +82,7 @@ const Sidebar = () => {
             )}
             {!user?.isLoggedIn && (
               <li className="cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive">
-                <Link href="https://signup.hive.io/" target="_blank" prefetch={false}>
+                <Link href="https://signup.hive.io/" target="_blank">
                   <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
                     {t('navigation.main_nav_bar.sign_up')}
                     <Icons.forward className="w-4" />

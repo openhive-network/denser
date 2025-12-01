@@ -9,7 +9,6 @@ export function MainNav() {
     <div className="mr-4 hidden h-full items-center md:flex">
       <nav className="hidden h-full items-center space-x-6 text-sm font-medium lg:flex lg:text-base">
         <Link
-          prefetch={false}
           href="/trending"
           target="_blank"
           className={cn(
@@ -21,7 +20,6 @@ export function MainNav() {
           Posts
         </Link>
         <Link
-          prefetch={false}
           href="/proposals"
           rel="noopener noreferrer"
           className={cn(
@@ -33,7 +31,6 @@ export function MainNav() {
           Proposals
         </Link>
         <Link
-          prefetch={false}
           href="/~witnesses"
           rel="noopener noreferrer"
           className={cn(
@@ -46,7 +43,6 @@ export function MainNav() {
         </Link>
 
         <Link
-          prefetch={false}
           href="https://hive.io/eco/"
           target="_blank"
           rel="noopener noreferrer"

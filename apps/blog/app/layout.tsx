@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import MainBar from '../features/layouts/site-header/main-bar';
 import ClientEffects from '../features/layouts/site-header/client-effects';
 import { Providers } from '../features/layouts/providers';
+import VisitLoggerClient from '../lib/visit-logger-client';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -53,6 +54,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <div className="min-h-screen">
           <Providers>
             <>
+              <VisitLoggerClient />
               <MainBar />
               <main className="mx-auto">{children}</main>
             </>
