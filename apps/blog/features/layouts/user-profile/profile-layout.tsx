@@ -24,7 +24,7 @@ import CustomError from '@/blog/components/custom-error';
 import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 
 import ButtonsContainer from '@/blog/features/mute-follow/buttons-container';
-import { usePathname } from 'next/navigation';
+import { notFound, usePathname } from 'next/navigation';
 import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
 import { getTwitterInfo } from '@transaction/lib/custom-api';
 import ListItem from './list-item';
@@ -67,8 +67,14 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
     queryFn: () => getDynamicGlobalProperties()
   });
 
-  if (!dynamicGlobalData || !profileData) {
-    return children;
+  if (
+    !dynamicGlobalData ||
+    !profileData ||
+    !profileData.delegated_vesting_shares ||
+    !profileData.received_vesting_shares ||
+    !profileData.vesting_shares
+  ) {
+    return notFound();
   }
 
   const delegated_hive = convertToHP(
