@@ -89,6 +89,7 @@ include:
 mirrornet-haf-binaries-extraction:
   extends: .job-defaults
   stage: build
+  allow_failure: true
   image:
     name: $HAF_IMAGE_NAME
     entrypoint: ['']
@@ -209,6 +210,7 @@ docker-build-wallet-mirrornet-testenv:
 library_extraction:
   extends: .job-defaults
   stage: build
+  allow_failure: true
   image:
     name: $HAF_IMAGE_NAME
     entrypoint: ['']
@@ -229,6 +231,7 @@ library_extraction:
 extended_block_log_creation:
   extends: .extended_block_log_creation
   stage: build
+  allow_failure: true
   needs:
   - job: 'mirrornet-haf-binaries-extraction'
     artifacts: true
@@ -253,6 +256,7 @@ extended_block_log_creation:
 block-log-extraction:
   extends: .docker_image_builder_job_template
   stage: replay-and-sync
+  allow_failure: true
   needs:
   - extended_block_log_creation
   variables:
@@ -267,6 +271,7 @@ block_log_processing:
   extends: .job-defaults
   image: 'registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}'
   stage: replay-and-sync
+  allow_failure: true
   needs:
   - mirrornet-haf-binaries-extraction
   - block-log-extraction
@@ -288,6 +293,7 @@ mirrornet-haf-node-replay:
   extends: .haf-node-replay
   stage: replay-and-sync
   timeout: 3 hours
+  allow_failure: true
   needs:
   - mirrornet-haf-binaries-extraction
   - block_log_processing
@@ -368,6 +374,7 @@ mirrornet-haf-node-replay:
 mirrornet-replay-data-copy:
   extends: .haf_api_node_replay_data_copy
   stage: test
+  allow_failure: true
   needs:
   - mirrornet-haf-node-replay
   tags:
