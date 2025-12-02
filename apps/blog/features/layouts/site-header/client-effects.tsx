@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { getCookie } from '@smart-signer/lib/utils';
 import { getLanguage } from '@/blog/utils/language';
+import { cleanupPostDraftsFromLocalStorage } from '@/blog/lib/localstorage-cleanup';
 
 export default function ClientEffects() {
   useEffect(() => {
@@ -16,6 +17,11 @@ export default function ClientEffects() {
     if (savedLang) {
       document.documentElement.lang = savedLang;
     }
+  }, []);
+
+  // Cleanup old / stale post drafts from localStorage to avoid unbounded growth
+  useEffect(() => {
+    cleanupPostDraftsFromLocalStorage();
   }, []);
 
   // Global handler for browser back/forward navigation in subdirectory deployments

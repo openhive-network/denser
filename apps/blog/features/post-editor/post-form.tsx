@@ -77,16 +77,20 @@ export default function PostForm({
     maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
     payoutType: preferences.blog_rewards
   };
-  const [storedPost, storePost, removePost] = useLocalStorage<AccountFormValues>(
+  const [storedPost, storePost, removePost] = useLocalStorage<AccountFormValues & { updatedAt?: number }>(
     editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
-    defaultValues
+    {
+      ...defaultValues,
+      updatedAt: Date.now()
+    }
   );
 
   useEffect(() => {
     storePost({
       ...storedPost,
       payoutType: preferences.blog_rewards,
-      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000
+      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
+      updatedAt: Date.now()
     });
   }, [preferences.blog_rewards]);
   const [preview, setPreview] = useState(true);
@@ -175,7 +179,10 @@ export default function PostForm({
 
   useEffect(() => {
     debounce(() => {
-      storePost(watchedValues);
+      storePost({
+        ...(watchedValues as AccountFormValues),
+        updatedAt: Date.now()
+      });
     }, 50)();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...Object.values(watchedValues)]);
@@ -469,7 +476,11 @@ export default function PostForm({
                           }
                           onValueChange={(e) => {
                             form.setValue('category', e);
-                            storePost({ ...storedPost, category: e });
+                            storePost({
+                              ...storedPost,
+                              category: e,
+                              updatedAt: Date.now()
+                            });
                             if (categoryParam) {
                               router.replace(withBasePath(`/submit.html`));
                             }
