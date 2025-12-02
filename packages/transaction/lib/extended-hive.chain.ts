@@ -1168,5 +1168,9 @@ Together with the author name, it uniquely identifies the post.
     }
   };
   'hafah-api': {
+    'operation-types': {
+      params: undefined;
+      result: HiveOpTypeSchema[];
+    }
   }
 };

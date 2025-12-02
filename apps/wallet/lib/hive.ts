@@ -175,12 +175,11 @@ export type ICurationReward = {
 export const getRestApiAccountRewardsHistory = async (
   username: string,
   op_type: 'author_reward_operation' | 'curation_reward_operation',
-  start: number = -1,
   limit: number = 20
 ): Promise<HiveOperation[]> => {
   const opTypes = await chain.restApi['hafah-api']['operation-types']();
   const opTypeId = opTypes.find((opType) => opType.operation_name === op_type)?.op_type_id;
-  const operations = (await chain.restApi['hivemind-api'].accountsOperations({'account-name': username,  'operation-types': opTypeId?.toString()})).operations_result;
+  const operations = (await chain.restApi['hivemind-api'].accountsOperations({'account-name': username,  'operation-types': opTypeId?.toString(), "page-size": limit})).operations_result;
   return operations;
 }
 

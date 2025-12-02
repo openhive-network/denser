@@ -6,7 +6,7 @@ import parseDate from '@ui/lib/parse-date';
 export const useRewardsHistory = (username: string, opType: 'author_reward_operation' | 'curation_reward_operation') => {
   const { data, isLoading } = useQuery(
     ['accountHistory', username, opType],
-    () => getRestApiAccountRewardsHistory(username, opType, -1, 1000),
+    () => getRestApiAccountRewardsHistory(username, opType, 1000),
     {
       select: (data) =>
         data
