@@ -37,6 +37,12 @@ export function find_first_img(post: Entry) {
       return proxifyImageUrl(post.original_entry.json_metadata.image[0], true);
     }
     if (post.json_metadata.image && post.json_metadata.image[0]) {
+      if (post.json_metadata.image[0].includes('youtu-')) {
+        return proxifyImageUrl(
+          `https://img.youtube.com/vi/${post.json_metadata.image[0].slice(6)}/0.jpg`,
+          true
+        );
+      }
       return proxifyImageUrl(post.json_metadata.image[0], true);
     }
     const regex_any_img = /!\[.*?\]\((.*?)\)/;
