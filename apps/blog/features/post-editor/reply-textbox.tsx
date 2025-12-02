@@ -135,7 +135,6 @@ export function ReplyTextbox({
         <div>
           <MdEditor
             windowheight={200}
-            htmlMode={editMode}
             onChange={(value) => {
               if (value === '') {
                 setText(value);

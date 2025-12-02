@@ -154,27 +154,19 @@ export const onImageUpload = async (
   file: File,
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
-  signer: Signer,
-  htmlMode: boolean
+  signer: Signer
 ) => {
   const url = await uploadImg(file, username, signer);
-  if (htmlMode) {
-    const insertHTML = insertToTextArea(`<img src="${url}" alt="${file.name}" />`);
-    if (!insertHTML) return;
-    setMarkdown(insertHTML);
-  } else {
-    const insertedMarkdown = insertToTextArea(` ![${file.name}](${!url ? 'UPLOAD FAILED' : url}) `);
-    if (!insertedMarkdown) return;
-    setMarkdown(insertedMarkdown);
-  }
+  const insertedMarkdown = insertToTextArea(` ![${file.name}](${!url ? 'UPLOAD FAILED' : url}) `);
+  if (!insertedMarkdown) return;
+  setMarkdown(insertedMarkdown);
 };
 
 export const onImageDrop = async (
   dataTransfer: DataTransfer,
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
-  signer: Signer,
-  htmlMode: boolean
+  signer: Signer
 ) => {
   const files = [];
 
@@ -183,15 +175,14 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer)));
 };
 
 export const onImagePaste = async (
   clipboardData: DataTransfer,
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
-  signer: Signer,
-  htmlMode: boolean
+  signer: Signer
 ) => {
   const files: File[] = [];
   for (let i = 0; i < clipboardData.items.length; i++) {
@@ -202,7 +193,7 @@ export const onImagePaste = async (
     }
   }
   if (!files.length) return false;
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, htmlMode)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer)));
   return true;
 };
 

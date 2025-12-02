@@ -30,17 +30,10 @@ interface MdEditorProps {
   onChange: (value: string) => void;
   persistedValue: string;
   placeholder?: string;
-  htmlMode: boolean;
   windowheight: number;
 }
 
-const MdEditor: FC<MdEditorProps> = ({
-  onChange,
-  persistedValue = '',
-  placeholder,
-  htmlMode,
-  windowheight
-}) => {
+const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, windowheight }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
   const [formValue, setFormValue] = useState<string>(persistedValue);
@@ -63,10 +56,10 @@ const MdEditor: FC<MdEditorProps> = ({
     async (event: { target: { files: FileList } }) => {
       if (event.target.files && event.target.files.length === 1) {
         setInsertImg('');
-        await onImageUpload(event.target.files[0], setFormValue, user.username, signer, htmlMode);
+        await onImageUpload(event.target.files[0], setFormValue, user.username, signer);
       }
     },
-    [htmlMode, setFormValue, signer, user.username]
+    [setFormValue, signer, user.username]
   );
 
   const dragHandler = (event: { preventDefault: () => void; stopPropagation: () => void; type: string }) => {
@@ -86,9 +79,9 @@ const MdEditor: FC<MdEditorProps> = ({
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
-      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer, htmlMode);
+      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer);
     },
-    [htmlMode, setFormValue, signer]
+    [setFormValue, signer]
   );
 
   const pasteHandler = useCallback(
@@ -106,10 +99,10 @@ const MdEditor: FC<MdEditorProps> = ({
       if (hasImage) {
         event.preventDefault();
         event.stopPropagation();
-        await onImagePaste(event.clipboardData, setFormValue, signer.username, signer, htmlMode);
+        await onImagePaste(event.clipboardData, setFormValue, signer.username, signer);
       }
     },
-    [htmlMode, setFormValue, signer]
+    [setFormValue, signer]
   );
 
   const imgBtn = (inputRef: MutableRefObject<HTMLInputElement>): commands.ICommand => ({
