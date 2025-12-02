@@ -163,7 +163,7 @@ export const onImageUpload = async (
     if (!insertHTML) return;
     setMarkdown(insertHTML);
   } else {
-    const insertedMarkdown = insertToTextArea(` ![${file.name}](${url}) `);
+    const insertedMarkdown = insertToTextArea(` ![${file.name}](${!url ? 'UPLOAD FAILED' : url}) `);
     if (!insertedMarkdown) return;
     setMarkdown(insertedMarkdown);
   }
