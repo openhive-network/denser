@@ -287,7 +287,7 @@ const CommentListItem = ({
                             {comment.children ? (
                               <>
                                 <Separator orientation="vertical" />
-                                <div className="flex items-center">
+                                <div className="flex items-center text-nowrap">
                                   {comment.children}{' '}
                                   {comment.children > 1
                                     ? t('cards.comment_card.replies')
