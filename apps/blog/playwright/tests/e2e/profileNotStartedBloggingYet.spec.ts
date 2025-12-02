@@ -44,7 +44,7 @@ test.describe('Profile page of @ganda', () => {
         await profilePage.moveToPostsTab();
         await profilePage.profilePostsTabIsSelected();
         await profilePage.postsMenuCommentsButton.click();
-        await profilePage.page.waitForTimeout(1000);
+        await expect(profilePage.userHasNotMadeAnyPostsYetMsg).toBeVisible({ timeout: 15000 });
         await expect(profilePage.userHasNotMadeAnyPostsYetMsg).toHaveText("Looks like @ganda hasn't made any posts yet!");
     });
 
@@ -55,7 +55,7 @@ test.describe('Profile page of @ganda', () => {
         await profilePage.moveToPostsTab();
         await profilePage.profilePostsTabIsSelected();
         await profilePage.postsMenuPayoutsButton.click();
-        await profilePage.page.waitForTimeout(1000);
+        await expect(profilePage.userNoPendingPayoutsMsg).toBeVisible({ timeout: 15000 });
         await expect(profilePage.userNoPendingPayoutsMsg).toHaveText("No pending payouts.");
     });
 

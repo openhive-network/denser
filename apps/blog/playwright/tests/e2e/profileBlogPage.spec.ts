@@ -41,12 +41,12 @@ test.describe('Profile page of @gtg', () => {
   test('validate amount of post items before and after loading more cards', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
-    await page.waitForTimeout(3000);
+    await expect(profilePage.postBlogItem.nth(19)).toBeVisible({ timeout: 15000 });
     const postListItemsBeforeLoadMore = await profilePage.postBlogItem.all();
     expect(await postListItemsBeforeLoadMore.length).toBe(20);
 
     await profilePage.page.keyboard.down('End');
-    await page.waitForTimeout(3000);
+    await expect(profilePage.postBlogItem.nth(59)).toBeVisible({ timeout: 15000 });
     const postListItemsAfterScrollDown = await profilePage.postBlogItem.all();
     expect(await postListItemsAfterScrollDown.length).toBe(60);
   });
@@ -58,7 +58,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Click avatar of the first comment card
     await profilePage.postAvatar.first().click();
-    await profilePage.page.waitForTimeout(1000);
+    await expect(profilePage.profileStats).toBeVisible({ timeout: 15000 });
     await profilePage.moveToPostsTab();
     const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
     // Validate the post author name is the same as autor post in the profile page in posts tab
@@ -72,7 +72,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Click nickname of the first comment card
     await profilePage.postsPostAuthor.first().click();
-    await profilePage.page.waitForTimeout(1000);
+    await expect(profilePage.profileStats).toBeVisible({ timeout: 15000 });
     await profilePage.moveToPostsTab();
     const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
     // Validate the post author name is the same as autor post in the profile page in posts tab
@@ -146,7 +146,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Validate color of nickname after hovering
     await firstPostNickName.hover();
-    await profilePage.page.waitForTimeout(1000);
+    await expect(firstPostNickName).toBeVisible({ timeout: 15000 });
     expect(
       await profilePage.getElementCssPropertyValue(
       await firstPostNickName,
@@ -181,7 +181,7 @@ test.describe('Profile page of @gtg', () => {
 
       // Validate color of community after hovering
       await postCommunityLink.first().hover();
-      await profilePage.page.waitForTimeout(1000);
+      await expect(postCommunityLink.first()).toBeVisible({ timeout: 15000 });
       expect(
         await profilePage.getElementCssPropertyValue(
         await postCommunityLink.first(),
@@ -201,7 +201,7 @@ test.describe('Profile page of @gtg', () => {
 
       // Validate color of category after hovering
       await postCategoryLink.first().hover();
-      await profilePage.page.waitForTimeout(1000);
+      await expect(postCategoryLink.first()).toBeVisible({ timeout: 15000 });
       expect(
         await profilePage.getElementCssPropertyValue(
         await postCategoryLink.first(),
@@ -221,7 +221,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Validate color of the timestamp after hovering
     await firstPostTimestamp.first().hover();
-    await profilePage.page.waitForTimeout(1000);
+    await expect(firstPostTimestamp.first()).toBeVisible({ timeout: 15000 });
     expect(
       await profilePage.getElementCssPropertyValue(
       await firstPostTimestamp,
@@ -247,7 +247,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Validate color of nickname after hovering
     await firstPostNickName.hover();
-    await profilePage.page.waitForTimeout(1000);
+    await expect(firstPostNickName).toBeVisible({ timeout: 15000 });
     expect(
       await profilePage.getElementCssPropertyValue(
       await firstPostNickName,
@@ -282,7 +282,7 @@ test.describe('Profile page of @gtg', () => {
 
       // Validate color of community after hovering
       await postCommunityLink.first().hover();
-      await profilePage.page.waitForTimeout(1000);
+      await expect(postCommunityLink.first()).toBeVisible({ timeout: 15000 });
       expect(
         await profilePage.getElementCssPropertyValue(
         await postCommunityLink.first(),
@@ -302,7 +302,7 @@ test.describe('Profile page of @gtg', () => {
 
       // Validate color of category after hovering
       await postCategoryLink.first().hover();
-      await profilePage.page.waitForTimeout(1000);
+      await expect(postCategoryLink.first()).toBeVisible({ timeout: 15000 });
       expect(
         await profilePage.getElementCssPropertyValue(
         await postCategoryLink.first(),
@@ -322,7 +322,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Validate color of the timestamp after hovering
     await firstPostTimestamp.first().hover();
-    await profilePage.page.waitForTimeout(1000);
+    await expect(firstPostTimestamp.first()).toBeVisible({ timeout: 15000 });
     expect(
       await profilePage.getElementCssPropertyValue(
       await firstPostTimestamp,
@@ -351,7 +351,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Hover upvote button
     await profilePage.postUpvoteButton.first().hover();
-    await profilePage.page.waitForTimeout(1000);
+    await expect(profilePage.postUpvoteTooltip).toBeVisible({ timeout: 15000 });
     // Validate the tooltip message
     const tooltipText = await profilePage.postUpvoteTooltip.textContent();
     expect(
@@ -385,7 +385,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Hover Downvote button
     await profilePage.postDownvoteButton.first().hover();
-    await profilePage.page.waitForTimeout(1000);
+    await expect(profilePage.postDownvoteTooltip).toBeVisible({ timeout: 15000 });
     // Validate the tooltip message
     const tooltipText = await profilePage.postDownvoteTooltip.textContent();
     expect(
@@ -432,8 +432,7 @@ test.describe('Profile page of @gtg', () => {
     }
     else {
       await firstPostPayout.hover();
-      await profilePage.page.waitForTimeout(1000);
-      await expect(profilePage.postPayoutTooltip.first()).toBeVisible();
+      await expect(profilePage.postPayoutTooltip.first()).toBeVisible({ timeout: 15000 });
       expect(
         await profilePage.getElementCssPropertyValue(
         await profilePage.postPayout.first(),
@@ -453,20 +452,20 @@ test.describe('Profile page of @gtg', () => {
       // more than 1 vote
       await expect(firstPostVote).toBeVisible();
       await firstPostVote.hover();
-      await profilePage.page.waitForTimeout(1000);
+      await expect(profilePage.postVotesTooltip.nth(0)).toBeVisible({ timeout: 15000 });
       await expect(await profilePage.postVotesTooltip.nth(0)).toContainText('votes');
     } else if (Number(firstPostVoteText) == 1){
       // equal 1 vote
       await expect(firstPostVote).toBeVisible();
       await firstPostVote.hover();
-      await profilePage.page.waitForTimeout(1000);
+      await expect(profilePage.postVotesTooltip.nth(0)).toBeVisible({ timeout: 15000 });
       await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText('1 vote');
     }
     else {
       // no vote
       await expect(firstPostVote).toBeVisible();
       await firstPostVote.hover();
-      await profilePage.page.waitForTimeout(1000);
+      await expect(profilePage.postVotesTooltip.nth(0)).toBeVisible({ timeout: 15000 });
       await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText('no vote');
     }
   });
@@ -481,19 +480,19 @@ test.describe('Profile page of @gtg', () => {
       // more than 1 responses
       await expect(firstPostRespond).toBeVisible();
       await firstPostRespond.hover();
-      await profilePage.page.waitForTimeout(1000);
+      await expect(profilePage.postResponseTooltip.nth(0)).toBeVisible({ timeout: 15000 });
       await expect(await profilePage.postResponseTooltip.nth(0)).toContainText('responses. Click to respond');
     } else if (Number(firstPostRespondText) == 1){
       // equal 1 response
       await expect(firstPostRespond).toBeVisible();
       await firstPostRespond.hover();
-      await profilePage.page.waitForTimeout(1000);
+      await expect(profilePage.postResponseTooltip.nth(0)).toBeVisible({ timeout: 15000 });
       await expect(await profilePage.postResponseTooltip.nth(0)).toHaveText('1 response. Click to respond');
     } else {
       // no response
       await expect(firstPostRespond).toBeVisible();
       await firstPostRespond.hover();
-      await profilePage.page.waitForTimeout(1000);
+      await expect(profilePage.postResponseTooltip.nth(0)).toBeVisible({ timeout: 15000 });
       await expect(await profilePage.postResponseTooltip.nth(0)).toHaveText('No responses. Click to respond');
     }
   });
