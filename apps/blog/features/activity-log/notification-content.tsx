@@ -8,13 +8,13 @@ import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { getRewardsString } from '../../lib/utils';
 import { getAccountFull, getFindAccounts } from '@transaction/lib/hive-api';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications-read-mutation';
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getAccountNotifications, getUnreadNotifications } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const NotificationActivities = ({
   data,
@@ -28,7 +28,7 @@ const NotificationActivities = ({
   const [lastStateElementId, setLastStateElementId] = useState(
     state && state.length > 0 ? state[state.length - 1].id : null
   );
-  const { user } = useUser();
+  const { user } = useUserClient();
   const markAllNotificationsAsReadMutation = useMarkAllNotificationsAsReadMutation();
   const claimRewardMutation = useClaimRewardsMutation();
 
@@ -40,7 +40,7 @@ const NotificationActivities = ({
     refetchOnMount: false
   });
   const newDate = new Date(Date.now());
-  const lastRead = new Date(unreadNotifications?.lastread || newDate).getTime();
+  const lastRead = unreadNotifications?.lastread ? new Date(unreadNotifications.lastread) : newDate;
 
   const {
     isLoading,
