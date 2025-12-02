@@ -308,7 +308,7 @@ const CommentListItem = ({
                   </CardHeader>
                   <AccordionContent className="h-fit p-0">
                     <Separator orientation="horizontal" />
-                    <CardContent className="h-fit px-[5px] py-[1px] hover:bg-background-tertiary">
+                    <CardContent className="h-fit px-[5px] py-[1px] hover:bg-background-tertiary" data-testid="comment-card-to-hover">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (

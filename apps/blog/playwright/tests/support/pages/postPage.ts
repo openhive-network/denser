@@ -25,6 +25,7 @@ export class PostPage {
   readonly buttonMutePopoverCard: Locator;
 
   readonly commentListItems: Locator;
+  readonly commentContentToHover: Locator;
   readonly commentCardsHeaders: Locator;
   readonly commentCardsHeadersAutorAndReputation: Locator;
   readonly commentCardsHeadersTimeStampLink: Locator;
@@ -140,6 +141,7 @@ export class PostPage {
     this.buttonFollowPopoverCard = page.getByTestId('user-popover-card-content').locator('button').getByText('Follow');
     this.buttonMutePopoverCard = page.locator('button').getByText('Mute');
     this.commentListItems = page.locator('[data-testid="comment-list-item"]');
+    this.commentContentToHover = page.getByTestId('comment-card-to-hover');
     this.commentListItem = '[data-testid="comment-list-item"]'
     this.commentListLocator = page.locator('[data-testid="comment-list"]');
     this.commentAuthorLink = page.locator(

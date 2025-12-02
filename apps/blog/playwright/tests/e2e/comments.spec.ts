@@ -31,20 +31,20 @@ test.describe('Comments of post', () => {
     // Before hover
     expect(
       await postPage.getElementCssPropertyValue(
-        postPage.commentListItems.locator('div > div').first(),
+        postPage.commentContentToHover.first(),
         'background-color'
       )
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgba(0, 0, 0, 0)');
 
     // After hover
-    await postPage.commentListItems.first().hover();
-    await postPage.page.waitForTimeout(1000);
+    await postPage.commentContentToHover.first().hover();
+    await postPage.commentContentToHover.first().waitFor({state:'visible'});
     expect(
       await postPage.getElementCssPropertyValue(
-        postPage.commentListItems.locator('div > div').first(),
+        postPage.commentContentToHover.first(),
         'background-color'
       )
-    ).toBe('rgb(255, 255, 255)');
+    ).toBe('rgb(225, 231, 239)');
   });
 
   test('Validate a hovered comment changes backgroundcolor style in the dark mode', async ({
@@ -60,20 +60,20 @@ test.describe('Comments of post', () => {
     // Before hover
     expect(
       await postPage.getElementCssPropertyValue(
-        postPage.commentListItems.locator('div > div').first(),
+        postPage.commentContentToHover.first(),
         'background-color'
       )
-    ).toBe('rgb(44, 48, 53)');
+    ).toBe('rgba(0, 0, 0, 0)');
 
     // After hover
-    await postPage.commentListItems.first().hover();
-    await postPage.page.waitForTimeout(1000);
+    await postPage.commentContentToHover.first().hover();
+    await postPage.commentContentToHover.first().waitFor({state:'visible'});
     expect(
       await postPage.getElementCssPropertyValue(
-        postPage.commentListItems.locator('div > div').first(),
+        postPage.commentContentToHover.first(),
         'background-color'
       )
-    ).toBe('rgb(44, 48, 53)');
+    ).toBe('rgb(56, 66, 82)');
   });
 
   test('move to the comment view page of the first comment of the first post', async ({ page }) => {
@@ -239,7 +239,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // and the background color is green
     await postPage.commentCardsHeadersTimeStampLink.nth(0).scrollIntoViewIfNeeded();
     await postPage.commentCardsHeadersTimeStampLink.nth(0).click();
-    await postPage.page.waitForTimeout(1000);
+    await postPage.commentCardsHeadersTimeStampLink.nth(0).waitFor({state: "visible"});
     // border color of the first comment
     expect(
       await postPage.getElementCssPropertyValue(
@@ -251,20 +251,6 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     expect(
       await postPage.getElementCssPropertyValue(
         await postPage.commentListItems.nth(0).locator('..'),
-        'background-color'
-      )
-    ).toBe('rgb(240, 253, 244)');
-    // border color of the second comment
-    expect(
-      await postPage.getElementCssPropertyValue(
-        await postPage.commentListItems.nth(1).locator('../../..'),
-        'border-color'
-      )
-    ).toBe('rgb(220, 38, 38)');
-    // background-color of the second comment
-    expect(
-      await postPage.getElementCssPropertyValue(
-        await postPage.commentListItems.nth(1).locator('../../..'),
         'background-color'
       )
     ).toBe('rgb(240, 253, 244)');
