@@ -538,7 +538,11 @@ export interface HiveOperation {
       'org-op-id'?: string;
       perspective?: 'incoming' | 'outgoing';
       current_owner?: string;
-    };
+      reward: NaiAsset;
+      vesting_payout: NaiAsset;
+      hbd_payout: NaiAsset;
+      hive_payout: NaiAsset;
+    }
   };
 }
 
@@ -1104,6 +1108,13 @@ export interface HivesenseEndpointsPostsByIdsQueryParams {
   observer?: string;
 }
 
+export interface HiveOpTypeSchema {
+  op_type_id: number;
+  operation_name: string;
+  is_virtual: boolean;
+}
+
+
 export type ExtendedRestApi = {
   'hivesense-api': {
     params: undefined;
@@ -1154,6 +1165,8 @@ Together with the author name, it uniquely identifies the post.
     accountsOperations: {
       params: GetOperationsByAccountParams;
       result: IGetOperationsByAccountResponse;
-    };
+    }
   };
+  'hafah-api': {
+  }
 };

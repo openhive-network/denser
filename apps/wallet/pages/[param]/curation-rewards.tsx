@@ -21,7 +21,7 @@ const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
-  const { data, dynamicData, isLoading } = useRewardsHistory(username, 'curation_reward');
+  const { data, dynamicData, isLoading } = useRewardsHistory(username, 'curation_reward_operation');
   const [currentPage, setCurrentPage] = useState(0);
 
   const itemsPerPage = 50;
