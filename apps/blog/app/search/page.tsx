@@ -10,7 +10,7 @@ interface SearchPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-const SearchPage = ({ searchParams }: SearchPageProps) => {
+const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const aiParam = searchParams.ai as string | undefined;
   const classicQuery = searchParams.q as string | undefined;
   const userTopicQuery = searchParams.a as string | undefined;
@@ -20,7 +20,7 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
   const queryClient = getQueryClient();
   const observer = getObserverFromCookies();
   if (aiParam) {
-    queryClient.prefetchQuery({
+    await queryClient.prefetchQuery({
       queryKey: ['searchPosts', aiParam],
       queryFn: async () => {
         return await searchPosts({
@@ -33,7 +33,7 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
     });
   }
   if (classicQuery && sortQuery) {
-    queryClient.prefetchInfiniteQuery({
+    await queryClient.prefetchInfiniteQuery({
       queryKey: ['similarPosts', classicQuery, undefined, sortQuery],
       queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
         return await getByText({
@@ -56,7 +56,7 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
     });
   }
   if (userTopicQuery && topicQuery && sortQuery) {
-    queryClient.prefetchInfiniteQuery({
+    await queryClient.prefetchInfiniteQuery({
       queryKey: ['similarPosts', topicQuery, userTopicQuery, sortQuery],
       queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
         return await getByText({
