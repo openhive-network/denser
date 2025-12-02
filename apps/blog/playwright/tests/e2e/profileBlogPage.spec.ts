@@ -445,55 +445,57 @@ test.describe('Profile page of @gtg', () => {
   test('validate votes of the first post card', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
-    const firstPostVote = await profilePage.postVotes.nth(0);
-    const firstPostVoteText = await profilePage.postVotes.nth(0).textContent();
+    // Wait for the first post card to be visible before interacting with votes
+    await expect(profilePage.postBlogItem.first()).toBeVisible({ timeout: 15000 });
+
+    const firstPostVote = profilePage.postVotes.nth(0);
+    await expect(firstPostVote).toBeVisible({ timeout: 15000 });
+    const firstPostVoteText = await firstPostVote.textContent();
 
     if (Number(firstPostVoteText) > 1){
       // more than 1 vote
-      await expect(firstPostVote).toBeVisible();
       await firstPostVote.hover();
       await expect(profilePage.postVotesTooltip.nth(0)).toBeVisible({ timeout: 15000 });
-      await expect(await profilePage.postVotesTooltip.nth(0)).toContainText('votes');
+      await expect(profilePage.postVotesTooltip.nth(0)).toContainText('votes');
     } else if (Number(firstPostVoteText) == 1){
       // equal 1 vote
-      await expect(firstPostVote).toBeVisible();
       await firstPostVote.hover();
       await expect(profilePage.postVotesTooltip.nth(0)).toBeVisible({ timeout: 15000 });
-      await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText('1 vote');
+      await expect(profilePage.postVotesTooltip.nth(0)).toHaveText('1 vote');
     }
     else {
       // no vote
-      await expect(firstPostVote).toBeVisible();
       await firstPostVote.hover();
       await expect(profilePage.postVotesTooltip.nth(0)).toBeVisible({ timeout: 15000 });
-      await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText('no vote');
+      await expect(profilePage.postVotesTooltip.nth(0)).toHaveText('no vote');
     }
   });
 
   test('validate styles and tooltips of response button', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
-    const firstPostRespond: any = await profilePage.postResponse.first();
-    const firstPostRespondText: any = await profilePage.postResponse.first().textContent();
+    // Wait for the first post card to be visible before interacting with response
+    await expect(profilePage.postBlogItem.first()).toBeVisible({ timeout: 15000 });
+
+    const firstPostRespond = profilePage.postResponse.first();
+    await expect(firstPostRespond).toBeVisible({ timeout: 15000 });
+    const firstPostRespondText = await firstPostRespond.textContent();
 
     if (Number(firstPostRespondText) > 1){
       // more than 1 responses
-      await expect(firstPostRespond).toBeVisible();
       await firstPostRespond.hover();
       await expect(profilePage.postResponseTooltip.nth(0)).toBeVisible({ timeout: 15000 });
-      await expect(await profilePage.postResponseTooltip.nth(0)).toContainText('responses. Click to respond');
+      await expect(profilePage.postResponseTooltip.nth(0)).toContainText('responses. Click to respond');
     } else if (Number(firstPostRespondText) == 1){
       // equal 1 response
-      await expect(firstPostRespond).toBeVisible();
       await firstPostRespond.hover();
       await expect(profilePage.postResponseTooltip.nth(0)).toBeVisible({ timeout: 15000 });
-      await expect(await profilePage.postResponseTooltip.nth(0)).toHaveText('1 response. Click to respond');
+      await expect(profilePage.postResponseTooltip.nth(0)).toHaveText('1 response. Click to respond');
     } else {
       // no response
-      await expect(firstPostRespond).toBeVisible();
       await firstPostRespond.hover();
       await expect(profilePage.postResponseTooltip.nth(0)).toBeVisible({ timeout: 15000 });
-      await expect(await profilePage.postResponseTooltip.nth(0)).toHaveText('No responses. Click to respond');
+      await expect(profilePage.postResponseTooltip.nth(0)).toHaveText('No responses. Click to respond');
     }
   });
 
