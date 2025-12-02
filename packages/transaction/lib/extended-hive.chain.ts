@@ -492,16 +492,16 @@ export type ICurationReward = {
 };
 
 export interface HiveOperation {
-  block: number,
-  trx_id: string | null,
-  op_pos: number,
-  op_type_id: number,
-  timestamp: Date,
-  virtual_op: boolean,
-  operation_id: number,
-  trx_in_block: number
+  block: number;
+  trx_id: string | null;
+  op_pos: number;
+  op_type_id: number;
+  timestamp: Date;
+  virtual_op: boolean;
+  operation_id: number;
+  trx_in_block: number;
   op: {
-    type: string,
+    type: string;
     value: {
       open_pays?: NaiAsset;
       current_pays?: NaiAsset;
@@ -535,13 +535,12 @@ export interface HiveOperation {
       id?: string;
       json?: string;
       message?: string;
-      "org-op-id"?: string;
-      perspective?: "incoming" | "outgoing";
+      'org-op-id'?: string;
+      perspective?: 'incoming' | 'outgoing';
       current_owner?: string;
-    }
+    };
   };
 }
-
 
 export type AccountHistory = [
   number,
@@ -702,7 +701,7 @@ export interface IAccountRelationship {
 }
 
 export interface IUnreadNotifications {
-  lastread: string;
+  lastRead: string;
   unread: number;
 }
 
@@ -806,25 +805,24 @@ export interface IDirectDelegation {
   }[];
 }
 export interface GetOperationsByAccountParams {
-  "account-name"?: string;
-  "observer-name"?: string;
-  "operation-types"?: string;
+  'account-name'?: string;
+  'observer-name'?: string;
+  'operation-types'?: string;
   page?: number;
-  "page-size"?: number;
-  "data-size-limit"?: number;
-  "from-block"?: string;
-  "to-block"?: string;
+  'page-size'?: number;
+  'data-size-limit'?: number;
+  'from-block'?: string;
+  'to-block'?: string;
 }
 
 export interface IGetOperationsByAccountResponse {
-
-    total_operations: number;
-    total_pages: number;
-    block_range: {
-      from: number;
-      to: number;
-    },
-    operations_result: HiveOperation[];
+  total_operations: number;
+  total_pages: number;
+  block_range: {
+    from: number;
+    to: number;
+  };
+  operations_result: HiveOperation[];
 }
 
 export type ExtendedNodeApi = {
@@ -946,7 +944,7 @@ export type ExtendedNodeApi = {
   };
 };
 
-type TEmptyReq = {}
+type TEmptyReq = {};
 export interface HivesenseEndpointsPostsSearchParams {
   /** Search query text for semantic similarity, e.g. `"vector databases"` */
   q: string;
@@ -1106,61 +1104,56 @@ export interface HivesenseEndpointsPostsByIdsQueryParams {
   observer?: string;
 }
 
-
 export type ExtendedRestApi = {
   'hivesense-api': {
     params: undefined;
     result: HivesenseStatusResponse;
     posts: {
       search: {
-        result: MixedPostsResponse,
-        params: HivesenseEndpointsPostsSearchParams & TEmptyReq & {
-        }
-      },
+        result: MixedPostsResponse;
+        params: HivesenseEndpointsPostsSearchParams & TEmptyReq & {};
+      };
       author: {
         permlink: {
           similar: {
-            result: Entry[],
-            params: HivesenseEndpointsPostsSimilarParams & TEmptyReq & {
-              /** The Hive username of the post author. This is the account name that
+            result: Entry[];
+            params: HivesenseEndpointsPostsSimilarParams &
+              TEmptyReq & {
+                /** The Hive username of the post author. This is the account name that
 created the original post for which you want to find similar content.
 Must be a valid Hive account name.
  */
-              author: string;
-            
-              /** The unique permlink identifier of the post. This is the URL-friendly
+                author: string;
+
+                /** The unique permlink identifier of the post. This is the URL-friendly
 version of the post title that appears in the post URL on Hive.
 Together with the author name, it uniquely identifies the post.
  */
-              permlink: string;
-            }
-          }
-        }
-      },
+                permlink: string;
+              };
+          };
+        };
+      };
       byIds: {
-        result: Entry[],
-        params: TEmptyReq & HivesenseEndpointsPostsByIdsPayload & {
-        }
-      },
+        result: Entry[];
+        params: TEmptyReq & HivesenseEndpointsPostsByIdsPayload & {};
+      };
       byIdsQuery: {
-        result: string,
-        params: HivesenseEndpointsPostsByIdsQueryParams & TEmptyReq & {
-        }
-      }
-    },
+        result: string;
+        params: HivesenseEndpointsPostsByIdsQueryParams & TEmptyReq & {};
+      };
+    };
     authors: {
       search: {
-        result: string,
-        params: HivesenseEndpointsAuthorsSearchParams & TEmptyReq & {
-        }
-      }
-    }
+        result: string;
+        params: HivesenseEndpointsAuthorsSearchParams & TEmptyReq & {};
+      };
+    };
   };
   'hivemind-api': {
     accountsOperations: {
-
       params: GetOperationsByAccountParams;
       result: IGetOperationsByAccountResponse;
-    }
-  }
+    };
+  };
 };

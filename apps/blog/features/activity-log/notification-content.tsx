@@ -40,7 +40,7 @@ const NotificationActivities = ({
     refetchOnMount: false
   });
   const newDate = new Date(Date.now());
-  const lastRead = unreadNotifications?.lastread ? new Date(unreadNotifications.lastread) : newDate;
+  const lastRead = unreadNotifications?.lastRead ? new Date(unreadNotifications.lastRead) : newDate;
 
   const {
     isLoading,

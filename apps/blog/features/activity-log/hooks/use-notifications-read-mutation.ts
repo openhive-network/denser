@@ -21,7 +21,7 @@ export function useMarkAllNotificationsAsReadMutation() {
     },
     onSettled: (data) => {
       queryClient.setQueryData(['unreadNotifications', user.username], {
-        lastread: data?.date || new Date().toISOString(),
+        lastRead: data?.date || new Date().toISOString(),
         unread: 0
       });
     },
