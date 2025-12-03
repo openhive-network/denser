@@ -8,11 +8,11 @@ import {
 } from '@ui/components';
 import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
-import { getAccountHistory } from '../lib/hive';
-import { AccountHistory, OpType } from '@transaction/lib/extended-hive.chain';
+import { HiveOperation, OpType } from '@transaction/lib/extended-hive.chain';
 
 interface FinancialReportProps {
   username: string;
+  operationHistoryData?: HiveOperation[]
 }
 
 type FinancialReportPeriod = 'last7days' | 'last14days' | 'last30days' | 'last60days';
@@ -38,7 +38,7 @@ const dateDiffInDays = (a: Date, b: Date) => {
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 };
 
-const convertHistoryToCSV = (transactions: AccountHistory[]) => {
+const convertHistoryToCSV = (transactions: HiveOperation[]) => {
   let csv = '';
   const columns = [
     'timestamp',
@@ -66,16 +66,16 @@ const convertHistoryToCSV = (transactions: AccountHistory[]) => {
   transactions.forEach((transaction) => {
     console.log(transaction);
     const formatted = [
-      transaction[1].timestamp,
-      transaction[1].op[0],
-      transaction[1].op[1].amount,
-      transaction[1].op[1].from,
-      transaction[1].op[1].to,
-      transaction[1].op[1].memo,
-      transaction[1].op[1].account,
-      transaction[1].op[1].reward_hive,
-      transaction[1].op[1].reward_hbd,
-      transaction[1].op[1].reward_hive
+      transaction.timestamp,
+      transaction.op.type,
+      transaction.op.value.amount,
+      transaction.op.value.from,
+      transaction.op.value.to,
+      transaction.op.value.memo,
+      transaction.op.value.account,
+      transaction.op.value.reward_hive,
+      transaction.op.value.reward_hbd,
+      transaction.op.value.reward_hive
       // 'payout_must_be_claimed',
       // 'permlink',
       // 'vesting_payout',
@@ -92,7 +92,7 @@ const convertHistoryToCSV = (transactions: AccountHistory[]) => {
   return csv;
 };
 
-const downloadCSV = (csv: string) => {
+const downloadCSV = async (csv: string) => {
   const csvData = new Blob([csv], { type: 'text/csv' });
   const csvURL = URL.createObjectURL(csvData);
   const link = document.createElement('a');
@@ -103,14 +103,13 @@ const downloadCSV = (csv: string) => {
   document.body.removeChild(link);
 };
 
-const generateReport = async (username: string, financialPeriod: FinancialReportPeriod) => {
-  const transactions = await getAccountHistory(username, -1, 1000);
-  const filtered = transactions.filter((transaction) => {
-    const opType = transaction[1].op!.at(0);
+const generateReport = async (username: string, financialPeriod: FinancialReportPeriod, operationHistoryData : HiveOperation[]) => {
+  const filtered = operationHistoryData.filter((transaction) => {
+    const opType = transaction.op.type;
     if (!!opType) {
       return (
         opTypes.includes(opType as OpType) &&
-        dateDiffInDays(new Date(transaction[1].timestamp), new Date()) <=
+        dateDiffInDays(new Date(transaction.timestamp), new Date()) <=
           Number(financialPeriod.match(/\d+/g))
       );
     }
@@ -119,7 +118,7 @@ const generateReport = async (username: string, financialPeriod: FinancialReport
   return convertHistoryToCSV(filtered);
 };
 
-const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
+const FinancialReport: React.FC<FinancialReportProps> = ({ username, operationHistoryData }) => {
   const { t } = useTranslation('common_wallet');
   const [financialReportPeriod, setFinancialReportPeriod] = useState<FinancialReportPeriod>('last7days');
 
@@ -153,9 +152,11 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button onClick={async () => downloadCSV(await generateReport(username, financialReportPeriod))}>
-          {t('transfers_page.download_report')}
-        </Button>
+        {operationHistoryData &&
+          <Button onClick={async () => await downloadCSV(await generateReport(username, financialReportPeriod, operationHistoryData))}>
+            {t('transfers_page.download_report')}
+          </Button>
+        }
       </div>
     </div>
   );
