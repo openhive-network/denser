@@ -4,7 +4,7 @@ import { HomePage } from '../support/pages/homePage';
 
 // The tests have been temporarily skipped due to changes in the functioning of healthchecker.
 // Needs improvement.
-test.describe.skip('Api healthchecker setting page tests', () => {
+test.describe('Api healthchecker setting page tests', () => {
   let profilePage: ProfilePage;
 
   test.beforeEach(async ({ page }) => {
