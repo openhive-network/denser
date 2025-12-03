@@ -10,8 +10,8 @@ catalogs:
       specifier: 1.28.4-rc0
       version: 1.28.4-rc0
     '@hiveio/healthchecker-component':
-      specifier: 1.28.4-rc0
-      version: 1.28.4-rc0
+      specifier: 1.28.4-rc0-stable.251202134057
+      version: 1.28.4-rc0-stable.251202134057
     '@hiveio/wax':
       specifier: 1.28.4-rc0
       version: 1.28.4-rc0
@@ -192,7 +192,7 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0(@hiveio/wax@1.28.4-rc0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
+        version: 1.28.4-rc0-stable.251202134057(@hiveio/wax@1.28.4-rc0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.4-rc0
@@ -400,7 +400,7 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0(@hiveio/wax@1.28.4-rc0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
+        version: 1.28.4-rc0-stable.251202134057(@hiveio/wax@1.28.4-rc0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.4-rc0
@@ -1883,8 +1883,8 @@ packages:
     resolution: {integrity: sha1-BSdkPZskmAIgG4ndYkCjIhjjjy8=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/healthchecker-component@1.28.4-rc0':
-    resolution: {integrity: sha1-szWHKTV/JYecTqynRJI0U6Z+wck=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-1.28.4-rc0.tgz}
+  '@hiveio/healthchecker-component@1.28.4-rc0-stable.251202134057':
+    resolution: {integrity: sha1-vskKzVbouTzcxkj1a4EplsS7Q2A=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-1.28.4-rc0-stable.251202134057.tgz}
     peerDependencies:
       '@hiveio/wax': 1.28.4-rc0
       react: ^18.2.0
@@ -11746,7 +11746,7 @@ snapshots:
       '@hiveio/wax': 1.28.4-rc0
       comlink: 4.4.2
 
-  '@hiveio/healthchecker-component@1.28.4-rc0(@hiveio/wax@1.28.4-rc0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))':
+  '@hiveio/healthchecker-component@1.28.4-rc0-stable.251202134057(@hiveio/wax@1.28.4-rc0)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))':
     dependencies:
       '@hiveio/wax': 1.28.4-rc0
       react: 18.3.0

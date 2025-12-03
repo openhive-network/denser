@@ -3,7 +3,7 @@ import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-compon
 import { FullAccount } from '@transaction/lib/app-types';
 import { Community, Entry, MixedPostsResponse } from '@transaction/lib/extended-hive.chain';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components'
 import { useHealthChecker } from '@ui/hooks/useHealthChecker';
 import { CircleCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -122,24 +122,22 @@ const HealthCheckersWrapper = () => {
           Click &quot;Switch to Best&quot; button for Healthchecker to automatically select the best possible API.
         </p>
       </div>
-      <Accordion type='single' collapsible defaultValue='main-hc'>
-        <AccordionItem value='main-hc'>
-          <AccordionTrigger>API Endpoint</AccordionTrigger>
-          <AccordionContent>
-            {!!nodeHcService && (
-              <HealthCheckerComponent className='m-4' healthCheckerService={nodeHcService} />
-            )}
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value='search-hc'>
-          <AccordionTrigger>Endpoint for AI search</AccordionTrigger>
-          <AccordionContent>
-            {!!aiSearchHcService && (
-              <HealthCheckerComponent className='m-4' healthCheckerService={aiSearchHcService} />
-            )}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      <Tabs defaultValue="node" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="node">HIVE API providers</TabsTrigger>
+          <TabsTrigger value="hivesense">HiveSense API providers</TabsTrigger>
+        </TabsList>
+        <TabsContent value="node">
+          {!!nodeHcService && (
+            <HealthCheckerComponent className='m-4' healthCheckerService={nodeHcService} />
+          )}
+        </TabsContent>
+        <TabsContent value="hivesense">
+          {!!aiSearchHcService && (
+            <HealthCheckerComponent className='m-4' healthCheckerService={aiSearchHcService} />
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

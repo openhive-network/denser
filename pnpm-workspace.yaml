@@ -10,4 +10,4 @@ catalogs:
     '@hiveio/wax-signers-keychain': 1.28.4-rc0
     '@hiveio/workerbee': 1.28.4-rc0
     '@hiveio/hb-auth': 1.28.4-rc0
-    '@hiveio/healthchecker-component': 1.28.4-rc0
+    '@hiveio/healthchecker-component': 1.28.4-rc0-stable.251202134057

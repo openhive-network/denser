@@ -37,7 +37,7 @@ export const useHealthChecker = (
   defaultEndpoints: string[] = DEFAULTS_ENDPOINTS,
   enableLogs: boolean = false
 ) => {
-  const [healthCheckerService, setHealthCheckerService] = useState<HealthCheckerService | undefined>(undefined);
+  const [healthCheckerService, setHealthCheckerService] = useState<HealthCheckerService>();
   const [endpoint] = useLocalStorage(endpointKey, siteConfig.endpoint);
 
   const changeEndpoint = async (newEndpoint: string | null) => {
@@ -61,10 +61,24 @@ export const useHealthChecker = (
     }
   }
 
-  useEffect(()=> {
-    startHealthCheckerService();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiCheckers])
+useEffect(() => {
+  if (!apiCheckers) return;
+
+  const hcService = new HealthCheckerService(
+    key,
+    apiCheckers,
+    defaultEndpoints,
+    endpoint,
+    changeEndpoint,
+    enableLogs
+  );
+  setHealthCheckerService(hcService);
+
+  return () => {
+    // Clear the local instance of HC on unmount
+    hcService.stopCheckingProcess();
+  };
+}, [apiCheckers]);
 
   return healthCheckerService;
 }
