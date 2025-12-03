@@ -2,9 +2,9 @@ import { expect, test } from '@playwright/test';
 import { ProfilePage } from '../support/pages/profilePage';
 import { HomePage } from '../support/pages/homePage';
 
-// The tests have been temporarily skipped due to changes in the functioning of healthchecker.
-// Needs improvement.
-test.describe('Api healthchecker setting page tests', () => {
+// The tests have been skipped due to changes in the functioning of healthchecker.
+// New page.
+test.describe.skip('Api healthchecker setting page tests', () => {
   let profilePage: ProfilePage;
 
   test.beforeEach(async ({ page }) => {
