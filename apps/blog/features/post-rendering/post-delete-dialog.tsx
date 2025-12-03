@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { ReactNode, useState } from 'react';
 
 export function PostDeleteDialog({
@@ -25,7 +25,7 @@ export function PostDeleteDialog({
   action: (permlink: string) => void;
   label: string;
 }) {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const [open, setOpen] = useState(false);
 
   return (

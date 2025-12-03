@@ -9,13 +9,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Input, Separator } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import ln2list from '../../lib/ln2list';
 import { useTranslation } from '@/blog/i18n/client';
 import { useFlagMutation } from '../../components/hooks/use-flag-mutation';
 import { handleError } from '@ui/lib/handle-error';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 export function AlertDialogFlag({
   children,
@@ -30,7 +30,7 @@ export function AlertDialogFlag({
   flagText: string;
   permlink: string;
 }) {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const [notes, setNotes] = useState('');
   const { t } = useTranslation('common_blog');
   const flagMutation = useFlagMutation();
