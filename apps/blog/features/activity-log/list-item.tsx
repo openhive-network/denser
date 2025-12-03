@@ -4,7 +4,7 @@ import TimeAgo from '@hive/ui/components/time-ago';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
@@ -17,13 +17,13 @@ const NotificationListItem = ({
   type,
   url,
   lastRead
-}: IAccountNotification & { lastRead: number }) => {
+}: IAccountNotification & { lastRead: Date }) => {
   const pathname = usePathname();
-  const username = pathname?.split('/')[1] || '';
-  const { user } = useUser();
-  const isOwner = user.username === username;
+  const username = pathname?.split('/')[1].replace('@', '') || '';
+  const { user } = useUserClient();
+
   const mentions = msg.match(usernamePattern);
-  const unRead = lastRead <= new Date(date).getTime();
+  const notificationDate = new Date(date);
   let icon;
 
   switch (type) {
@@ -39,11 +39,16 @@ const NotificationListItem = ({
     case 'mention':
       icon = <Icons.atSign className="h-4 w-4" />;
       break;
+    case 'error':
+      icon = <Icons.settings className="h-4 w-4" />;
+      break;
     default:
       icon = <Icons.arrowUpCircle className="h-4 w-4" />;
   }
   const imageHosterUrl = configuredImagesEndpoint;
   const fixedUrl = url.startsWith('c') ? url.replace('c', 'trending') : url;
+  const errorMessage = type === 'error';
+  const isOwner = user.isLoggedIn && user.username === username;
   const participants = mentions
     ? mentions.map((m: string) => {
         return (
@@ -73,13 +78,19 @@ const NotificationListItem = ({
     >
       <td className="flex justify-between py-4">
         <div className="flex items-center">
-          {unRead && isOwner ? <span className="mr-2 h-2 w-2 rounded-full bg-destructive" /> : null}
+          {isOwner && notificationDate > lastRead ? (
+            <span className="mr-2 h-2 w-2 rounded-full bg-destructive" />
+          ) : null}
           {participants}
           <div className="flex flex-col">
-            <Link href={`/${fixedUrl}`}>
-              <span className="" data-testid="notification-account-and-message">
+            <Link href={`/${fixedUrl}`} className="visited:text-gray-500 dark:visited:text-gray-400">
+              <span data-testid="notification-account-and-message">
                 <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
-                {mentions ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2] : null}
+                {mentions
+                  ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2]
+                  : errorMessage
+                    ? msg.split('error:')[1]
+                    : null}
               </span>
             </Link>
             <span
