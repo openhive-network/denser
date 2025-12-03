@@ -58,7 +58,7 @@ const CommentList = ({
                   'pl-2',
                   {
                     'm-2 border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
-                    markedHash?.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
+                      markedHash?.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
                   },
                   { 'pl-3 sm:pl-12': comment.depth > 1 }
                 )}
@@ -74,19 +74,20 @@ const CommentList = ({
                   flagText={flagText}
                   discussionPermlink={discussionPermlink}
                   onCommnentLinkClick={(hash) => setMarkedHash(hash)}
-                />
-                <CommentList
-                  flagText={flagText}
-                  highestAuthor={highestAuthor}
-                  highestPermlink={highestPermlink}
-                  permissionToMute={permissionToMute}
-                  mutedList={mutedList}
-                  data={data}
-                  parent={comment}
-                  key={`${comment.post_id}-list-${comment.depth}-index-${index}`}
-                  parent_depth={parent_depth}
-                  discussionPermlink={discussionPermlink}
-                />
+                >
+                  <CommentList
+                    flagText={flagText}
+                    highestAuthor={highestAuthor}
+                    highestPermlink={highestPermlink}
+                    permissionToMute={permissionToMute}
+                    mutedList={mutedList}
+                    data={data}
+                    parent={comment}
+                    key={`${comment.post_id}-list-${comment.depth}-index-${index}`}
+                    parent_depth={parent_depth}
+                    discussionPermlink={discussionPermlink}
+                  />
+                </CommentListItem>
               </div>
             ))
           : null}

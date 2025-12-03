@@ -7,7 +7,7 @@ import { cn } from '@hive/ui/lib/utils';
 import Link from 'next/link';
 import { Separator } from '@ui/components/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import { ReplyTextbox } from '../post-editor/reply-textbox';
 import DetailsCardHover from '../list-of-posts/details-card-hover';
@@ -47,6 +47,7 @@ interface CommentListProps {
   parentAuthor: string;
   flagText: string | undefined;
   onCommnentLinkClick: (hash: string) => void;
+  children?: ReactNode;
 }
 export const commentClassName =
   'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-img:max-w-[400px] prose-img:max-h-[400px]';
@@ -60,7 +61,8 @@ const CommentListItem = ({
   parentAuthor,
   flagText,
   discussionPermlink,
-  onCommnentLinkClick
+  onCommnentLinkClick,
+  children
 }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUser();
@@ -129,14 +131,14 @@ const CommentListItem = ({
               alt={`${comment.author} profile picture`}
               loading="lazy"
             />
-            <Card
-              className={cn(`mb-4 w-full bg-background text-primary depth-${comment.depth}`, {
-                'opacity-50 hover:opacity-100': hiddenComment || tempraryHidden,
-                'border border-destructive': comment._temporary
-              })}
-            >
-              <Accordion type="single" collapsible value={openState}>
-                <AccordionItem className="flex w-full flex-col p-0" value="item-1">
+            <Accordion type="single" collapsible value={openState} className="w-full">
+              <AccordionItem className="flex w-full flex-col p-0" value="item-1">
+                <Card
+                  className={cn(`mb-4 w-full bg-background text-primary depth-${comment.depth}`, {
+                    'opacity-50 hover:opacity-100': hiddenComment || tempraryHidden,
+                    'border border-destructive': comment._temporary
+                  })}
+                >
                   <CardHeader className="px-0 py-0">
                     <div className="flex w-full justify-between">
                       <div
@@ -193,7 +195,9 @@ const CommentListItem = ({
                                   className="hover:text-destructive md:text-sm"
                                   title={String(parseDate(comment.created))}
                                   data-testid="comment-timestamp-link"
-                                  onClick={() => {onCommnentLinkClick(`#@${comment.author}/${comment.permlink}`)}}
+                                  onClick={() => {
+                                    onCommnentLinkClick(`#@${comment.author}/${comment.permlink}`);
+                                  }}
                                 >
                                   <TimeAgo date={comment.created} />
                                 </Link>
@@ -283,7 +287,7 @@ const CommentListItem = ({
                             {comment.children ? (
                               <>
                                 <Separator orientation="vertical" />
-                                <div className="flex items-center">
+                                <div className="flex items-center text-nowrap">
                                   {comment.children}{' '}
                                   {comment.children > 1
                                     ? t('cards.comment_card.replies')
@@ -304,7 +308,7 @@ const CommentListItem = ({
                   </CardHeader>
                   <AccordionContent className="h-fit p-0">
                     <Separator orientation="horizontal" />
-                    <CardContent className="h-fit px-[5px] py-[1px] hover:bg-background-tertiary">
+                    <CardContent className="h-fit px-[5px] py-[1px] hover:bg-background-tertiary" data-testid="comment-card-to-hover">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (
@@ -452,9 +456,10 @@ const CommentListItem = ({
                       )}
                     </CardFooter>
                   </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </Card>
+                </Card>
+                {children ? <AccordionContent className="h-fit p-0">{children}</AccordionContent> : null}
+              </AccordionItem>
+            </Accordion>
           </div>
         </li>
       ) : currentDepth === 8 ? (
