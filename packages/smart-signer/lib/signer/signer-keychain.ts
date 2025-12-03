@@ -1,7 +1,6 @@
 import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
-import { Operation, TransferOperation } from '@hiveio/dhive';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { operation, TTransactionPackType, IOnlineSignatureProvider } from '@hiveio/wax';
+import { TTransactionPackType, IOnlineSignatureProvider } from '@hiveio/wax';
 import KeychainProvider from '@hiveio/wax-signers-keychain';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -20,42 +19,6 @@ export function hasCompatibleKeychain() {
   const result =
     window.hive_keychain && window.hive_keychain.requestSignBuffer && window.hive_keychain.requestBroadcast;
   return !!result;
-}
-
-/**
- * Rewrites operations from Wax format to Keychain format.
- *
- * @export
- * @param {(operation | operation[])} operation
- * @returns
- */
-export function waxToKeychainOperation(operation: operation | operation[]) {
-  const keychainOperations: Operation[] = [];
-
-  if (!Array.isArray(operation)) operation = [operation];
-
-  for (const o of operation) {
-    for (const [key, value] of Object.entries(o)) {
-      if (key === 'transfer') {
-        // Naive workaroud for transfer, just to make login working.
-        // TODO Should be changed after upcoming update in Wax.
-        const transferOperation: TransferOperation = [
-          'transfer',
-          {
-            from: value['from_account'],
-            to: value['to_account'],
-            amount: '0.001 HIVE',
-            memo: value['memo']
-          }
-        ];
-        keychainOperations.push(transferOperation);
-      } else {
-        keychainOperations.push([key as Operation[0], value as Operation[1]]);
-      }
-    }
-  }
-
-  return keychainOperations;
 }
 
 /**

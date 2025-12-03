@@ -1,13 +1,9 @@
 import Big from 'big.js';
-import { makeBitMaskFilter, operationOrders } from '@hiveio/dhive/lib/utils';
 import moment from 'moment';
 import {
   TWaxApiRequest,
   RcAccount,
-  asset,
   GetDynamicGlobalPropertiesResponse,
-  GetDynamicGlobalPropertiesRequest,
-
 } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import {
@@ -16,7 +12,6 @@ import {
   IGetProposalsParams,
   IProposalVote,
   AccountHistory,
-  AccountRewardsHistory,
   IDelegatedVestingShare,
   OwnerHistory,
   IRecentTradesData,
@@ -27,6 +22,8 @@ import {
   IWitness,
   IDirectDelegation,
   IGetOperationsByAccountResponse,
+  HiveOperation,
+  HiveOpTypeSchema,
 } from '@transaction/lib/extended-hive.chain';
 import { commonVariables } from '@ui/lib/common-variables';
 
@@ -38,6 +35,10 @@ export type ProposalData = Omit<IProposal, 'daily_pay' | 'total_votes'> & {
   total_votes: Big;
   daily_pay: { amount: Big };
 };
+
+export const getOpTypes = async (): Promise<HiveOpTypeSchema[]> => {
+  return await chain.restApi['hafah-api']['operation-types']();
+}
 
 export const getWitnessesByVote = async (from: string, limit: number): Promise<IWitness[]> => {
   return chain.api.condenser_api.get_witnesses_by_vote([from, limit]);
@@ -86,23 +87,22 @@ export const getVestingDelegations = async (
   return chain.api.condenser_api.get_vesting_delegations([username, from, limit]);
 };
 
-const op = operationOrders;
-const wallet_operations_bitmask = [
-  op.transfer,
-  op.transfer_to_vesting,
-  op.withdraw_vesting,
-  op.interest,
-  op.liquidity_reward,
-  op.transfer_to_savings,
-  op.transfer_from_savings,
-  op.escrow_transfer,
-  op.cancel_transfer_from_savings,
-  op.escrow_approve,
-  op.escrow_dispute,
-  op.escrow_release,
-  op.fill_convert_request,
-  op.fill_order,
-  op.claim_reward_balance
+const walletOperations = [
+  'transfer_operation',
+  'transfer_to_vesting_operation',
+  'withdraw_vesting_operation',
+  'interest_operation',
+  'liquidity_reward_operation',
+  'transfer_to_savings_operation',
+  'transfer_from_savings_operation',
+  'escrow_transfer_operation',
+  'cancel_transfer_from_savings_operation',
+  'escrow_approve_operation',
+  'escrow_dispute_operation',
+  'escrow_release_operation',
+  'fill_convert_request_operation',
+  'fill_order_operation',
+  'claim_reward_balance_operation'
 ];
 
 export const getAccountHistory = async (
@@ -110,11 +110,15 @@ export const getAccountHistory = async (
   start: number = -1,
   limit: number = 20
 ): Promise<AccountHistory[]> => {
+  const opTypes = await getOpTypes();
+  const operationTypesIds = walletOperations.map((operationName) => opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id.toString() || '');
+  console.log('SHOW ME THIS', operationTypesIds);
+
   return chain.api.condenser_api.get_account_history([
     username,
     start,
     limit,
-    ...wallet_operations_bitmask
+    ...(operationTypesIds || [])
   ]) as Promise<AccountHistory[]>;
 };
 
@@ -124,10 +128,13 @@ export const getAccountOperations = async (
   pageSize: number = 500,
   observer: string
 ): Promise<IGetOperationsByAccountResponse> => {
+  const opTypes = await getOpTypes();
+  const operationTypesIds = walletOperations.map((operationName) => opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id.toString() || '');
   return chain.restApi['hivemind-api'].accountsOperations({
     "account-name": username,
-    page, "page-size":
-    pageSize, "operation-types": wallet_operations_bitmask.toString(),
+    page,
+    "page-size": pageSize,
+    "operation-types": operationTypesIds.toString(),
     'observer-name': observer !== '' ? observer : commonVariables.defaultObserver
   })
 }
@@ -164,20 +171,17 @@ export type ICurationReward = {
   permlink?: string;
   vesting_payout?: string;
 };
-const wallet_rewards_history_bitmask = makeBitMaskFilter([op.author_reward, op.curation_reward]);
 
-export const getAccountRewardsHistory = async (
+export const getRestApiAccountRewardsHistory = async (
   username: string,
-  start: number = -1,
+  op_type: 'author_reward_operation' | 'curation_reward_operation',
   limit: number = 20
-): Promise<AccountRewardsHistory[]> => {
-  return chain.api.condenser_api.get_account_history([
-    username,
-    start,
-    limit,
-    ...wallet_rewards_history_bitmask
-  ]) as Promise<AccountRewardsHistory[]>;
-};
+): Promise<HiveOperation[]> => {
+  const opTypes = await chain.restApi['hafah-api']['operation-types']();
+  const opTypeId = opTypes.find((opType) => opType.operation_name === op_type)?.op_type_id;
+  const operations = (await chain.restApi['hivemind-api'].accountsOperations({'account-name': username,  'operation-types': opTypeId?.toString(), "page-size": limit})).operations_result;
+  return operations;
+}
 
 export const getProposalVotes = async (
   proposalId: number,

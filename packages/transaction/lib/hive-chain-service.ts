@@ -116,6 +116,11 @@ export class HiveChainService {
           "accountsOperations": {
             urlPath: 'accounts/{account-name}/operations',
           }
+        },
+        'hafah-api': {
+          'operation-types': {
+            urlPath: 'operation-types'
+          }
         }
       });
     const storedAiSearchEndpoint = this.storage.getItem('ai-search-endpoint');

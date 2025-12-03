@@ -16,13 +16,17 @@ import { Button } from '@ui/components/button';
 import { InfoIcon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import TimeAgo from '@ui/components/time-ago';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { convertToFormattedHivePower } from '@/wallet/lib/utils';
 
 const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
-  const { data, isLoading, dynamicData } = useRewardsHistory(username, 'author_reward');
+  const { data, isLoading, dynamicData } = useRewardsHistory(username, 'author_reward_operation');
   const [currentPage, setCurrentPage] = useState(0);
+  const hiveChain = hiveChainService.reuseHiveChain();
+
 
   const itemsPerPage = 50;
   const totalPages = data ? Math.ceil(data.length / itemsPerPage) : 0;
@@ -32,7 +36,6 @@ function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<t
 
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
     return data
       .filter((reward) => new Date(reward.timestamp) > oneWeekAgo)
       .reduce(
@@ -141,17 +144,17 @@ function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<t
                         <TableCell className="text-right">
                           <div className="flex flex-col items-end">
                             <span>
-                              {reward.op.vesting_payout && dynamicData
-                                ? convertToHP(
-                                    convertStringToBig(reward.op.vesting_payout),
+                              {reward.op.vesting_payout && dynamicData && hiveChain
+                                ? convertToFormattedHivePower(
+                                    reward.op.vesting_payout,
+                                    dynamicData.total_vesting_fund_hive,
                                     dynamicData.total_vesting_shares,
-                                    dynamicData.total_vesting_fund_hive
-                                  ).toFixed(3)
-                                : '0'}{' '}
-                              HP
+                                    hiveChain
+                                  )
+                                : '0'}
                             </span>
-                            <span>{reward.op.hive_payout}</span>
-                            <span>{reward.op.hbd_payout}</span>
+                            <span>{hiveChain?.formatter.format(reward.op.hive_payout)}</span>
+                            <span>{hiveChain?.formatter.format(reward.op.hbd_payout)}</span>
                           </div>
                         </TableCell>
                       </TableRow>

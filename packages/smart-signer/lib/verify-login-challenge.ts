@@ -1,4 +1,4 @@
-import { Authority } from '@hiveio/dhive';
+import { authority } from '@hiveio/wax';
 import { FullAccount } from '@transaction/lib/app-types';
 import { Signatures } from '@smart-signer/lib/auth/utils';
 import { verifySignature } from '@smart-signer/lib/verify-signature';
@@ -23,11 +23,11 @@ export function verifyLoginChallenge(
     message: string = '',
     keyType: 'posting' | 'active' = 'posting'
 ) {
-    const authority: Authority = chainAccount[keyType];
+    const authority: authority = chainAccount[keyType];
     const { key_auths, weight_threshold } = authority;
 
-    const pubkey = key_auths[0][0];
-    const weight = key_auths[0][1];
+    const pubkey = Object.keys(key_auths)[0];
+    const weight = key_auths[pubkey];
 
     // We do not support situation when more than one account should be
     // involved in signing.

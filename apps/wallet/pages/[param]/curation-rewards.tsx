@@ -16,13 +16,16 @@ import Big from 'big.js';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@ui/components/tooltip';
 import { InfoIcon } from 'lucide-react';
 import TimeAgo from '@ui/components/time-ago';
+import { convertToFormattedHivePower } from '@/wallet/lib/utils';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
-  const { data, dynamicData, isLoading } = useRewardsHistory(username, 'curation_reward');
+  const { data, dynamicData, isLoading } = useRewardsHistory(username, 'curation_reward_operation');
   const [currentPage, setCurrentPage] = useState(0);
+    const hiveChain = hiveChainService.reuseHiveChain();
 
   const itemsPerPage = 50;
   const totalPages = data ? Math.ceil(data.length / itemsPerPage) : 0;
@@ -132,14 +135,14 @@ function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType
                           </Link>
                         </TableCell>
                         <TableCell className="text-right">
-                          {reward.op.reward && dynamicData
-                            ? convertToHP(
-                                convertStringToBig(reward.op.reward),
+                          {reward.op.reward && dynamicData && hiveChain
+                            ? convertToFormattedHivePower(
+                                reward.op.reward,
+                                dynamicData.total_vesting_fund_hive,
                                 dynamicData.total_vesting_shares,
-                                dynamicData.total_vesting_fund_hive
-                              ).toFixed(3)
-                            : '0'}{' '}
-                          HP
+                                hiveChain
+                              )
+                            : '0'}
                         </TableCell>
                       </TableRow>
                     ))}
