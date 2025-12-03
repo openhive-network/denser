@@ -7,7 +7,7 @@ import { Icons } from '@ui/components/icons';
 import { Separator } from '@ui/components/separator';
 import CommunitiesSelectFilter from '@/blog/features/communities-list/communities-select-filter';
 import CommunitiesList from '@/blog/features/communities-list/communities-list';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import Link from 'next/link';
 import env from '@beam-australia/react-env';
 import { getCommunities } from '@transaction/lib/bridge-api';
@@ -17,7 +17,7 @@ import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 const CommunitiesContent = () => {
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const [sort, setSort] = useState('rank');
   const [inputQuery, setInputQuery] = useState<string>('');
   const [query, setQuery] = useState<string | null>();

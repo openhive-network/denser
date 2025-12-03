@@ -3,7 +3,7 @@ import { SearchSort } from '@ui/hooks/use-search';
 import { PER_PAGE } from './lib/utils';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import Loading from '@ui/components/loading';
 import { getByText } from '@transaction/lib/hive-api';
 import Link from 'next/link';
@@ -26,7 +26,7 @@ const AccountTopicResult = ({
   author?: string;
   nsfwPreferences: Preferences['nsfw'];
 }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { ref, inView } = useInView();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const { ref: prefetchRef, inView: prefetchInView } = useInView({

@@ -1,4 +1,4 @@
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { UseInfiniteQueryResult, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { IFollow, IFollowList } from '@transaction/lib/extended-hive.chain';
@@ -11,7 +11,7 @@ import { toast } from '@ui/components/hooks/use-toast';
  * @return {*}
  */
 export function useFollowMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const followMutation = useMutation({
     mutationFn: async (params: { username: string }) => {
@@ -108,7 +108,7 @@ export function useFollowMutation() {
  * @return {*}
  */
 export function useUnfollowMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const unfollowMutation = useMutation({
     mutationFn: async (params: { username: string }) => {

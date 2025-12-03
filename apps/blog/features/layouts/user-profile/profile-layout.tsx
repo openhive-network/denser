@@ -4,7 +4,6 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
 import BasePathLink from '@/blog/components/base-path-link';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useQuery } from '@tanstack/react-query';
 import env from '@beam-australia/react-env';
 

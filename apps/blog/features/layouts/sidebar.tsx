@@ -9,10 +9,10 @@ import { useTranslation } from '@/blog/i18n/client';
 import env from '@beam-australia/react-env';
 import DialogLogin from '../../components/dialog-login';
 import { getLogger } from '@ui/lib/logging';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import version from '../../version.json';
 import { siteConfig } from '@ui/config/site';
 import TooltipContainer from '@ui/components/tooltip-container';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const Item = ({
   href,
@@ -50,7 +50,7 @@ const Item = ({
 const logger = getLogger('app');
 
 const Sidebar = () => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
   const expolorerHost = env('EXPLORER_DOMAIN');

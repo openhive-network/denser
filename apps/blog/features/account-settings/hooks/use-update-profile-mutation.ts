@@ -1,4 +1,4 @@
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { FullAccount } from '@transaction/lib/app-types';
@@ -11,7 +11,7 @@ import { toast } from '@ui/components/hooks/use-toast';
  * @return {*}
  */
 export function useUpdateProfileMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const updateProfileMutation = useMutation({
     mutationFn: async (params: {

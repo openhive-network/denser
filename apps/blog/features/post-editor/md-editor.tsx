@@ -13,7 +13,7 @@ import {
   ClipboardEvent
 } from 'react';
 import * as commands from '@uiw/react-md-editor/commands';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import MDEditor, { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 import { getLogger } from '@ui/lib/logging';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -35,7 +35,7 @@ interface MdEditorProps {
 
 const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, windowheight }) => {
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const [formValue, setFormValue] = useState<string>(persistedValue);
   const { signer } = useSignerContext();
   const inputRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;

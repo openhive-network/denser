@@ -2,7 +2,7 @@
 
 import { ESupportedLanguages } from '@hiveio/wax';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@ui/components/dialog';
 import { handleError } from '@ui/lib/handle-error';
 import { useTranslation } from '@/blog/i18n/client';
@@ -27,7 +27,7 @@ import { useEffect } from 'react';
 
 const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open: boolean) => void }) => {
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const updateCommunityMutation = useUpdateCommunityMutation();
   const createCommunitySchema = z.object({
     title: z

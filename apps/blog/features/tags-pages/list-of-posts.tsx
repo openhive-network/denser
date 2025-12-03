@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useLocalStorage } from 'usehooks-ts';
 import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
@@ -12,7 +12,7 @@ import { Entry } from '@transaction/lib/extended-hive.chain';
 import PostList from '../list-of-posts/posts-loader';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();

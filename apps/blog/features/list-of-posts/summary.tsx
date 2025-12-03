@@ -2,7 +2,7 @@
 
 import PostCardHidden from '@/blog/features/list-of-posts/post-card-hidden';
 import { getPostSummary, Preferences } from '@/blog/lib/utils';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { Badge } from '@ui/components/badge';
 import { CardContent, CardDescription, CardTitle } from '@ui/components/card';
@@ -25,7 +25,7 @@ const PostSummary = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const revealPost = () => setNSFW(nsfw === 'warn' ? 'show' : 'warn');
-  const { user } = useUser();
+  const { user } = useUserClient();
   return (
     <CardContent>
       {nsfw === 'show' ? (

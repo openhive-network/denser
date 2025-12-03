@@ -1,6 +1,6 @@
 import { useTranslation } from '@/blog/i18n/client';
 import ListArea from './list-area';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { FullAccount } from '@transaction/lib/app-types';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import {
@@ -39,7 +39,7 @@ const ListVariant = ({
   onSearchChange
 }: ListVariantProps) => {
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const userOwner = user.username === username && user.isLoggedIn;
 
   const blacklistBlogMutation = useBlacklistBlogMutation();

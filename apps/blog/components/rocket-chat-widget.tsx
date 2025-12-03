@@ -4,13 +4,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { Drawer } from '@ui/components/drawer';
 import { useState, useRef, useEffect } from 'react';
 import { siteConfig } from '@ui/config/site';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { LoginType } from '@smart-signer/types/common';
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
 import { inIframe } from '@smart-signer/lib/storage-utils';
 import clsx from 'clsx';
-import { useGetChatAuthToken } from "@smart-signer/lib/auth/use-chat-token";
+import { useGetChatAuthToken } from '@smart-signer/lib/auth/use-chat-token';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const logger = getLogger('app');
 
@@ -73,7 +73,7 @@ const RocketChatWidget = () => {
   const iframeSrc = `${siteConfig.openhiveChatUri}/channel/general`;
   const iframeTitle = 'Chat';
   const tooltip = 'Chat';
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { loginType, chatAuthToken, oauthConsent } = user;
   const [init, setInit] = useState(true);
   const [badgeContent, setBadgeContent] = useState(0);
@@ -140,7 +140,6 @@ const RocketChatWidget = () => {
     }
   };
 
-
   const removeIframeListener = () => {
     window.removeEventListener('message', onMessageReceivedFromIframe);
   };
@@ -179,100 +178,87 @@ const RocketChatWidget = () => {
 
   return (
     <>
-      {!inIframe()
-        && user.isLoggedIn
-        && (user.strict || siteConfig.openhiveChatAllowNonStrictLogin)
-        && (loggedIn || oauthConsent[siteConfig.openhiveChatClientId])
-        && (
-
-        <div
-          style={{
+      {!inIframe() &&
+        user.isLoggedIn &&
+        (user.strict || siteConfig.openhiveChatAllowNonStrictLogin) &&
+        (loggedIn || oauthConsent[siteConfig.openhiveChatClientId]) && (
+          <div
+            style={{
               ...{
-                  display: siteConfig.openhiveChatIframeVisible
-                  ? 'block'
-                  : 'none'
-              },
-          }}
-        >
+                display: siteConfig.openhiveChatIframeVisible ? 'block' : 'none'
+              }
+            }}
+          >
+            <Drawer open={open} side="right" setOpen={setOpen}>
+              {/* Rocket Chat iframe */}
+              <iframe
+                id="chat-iframe"
+                src={iframeSrc}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  display: 'block'
+                }}
+                title={iframeTitle}
+                ref={iframeRef}
+                onLoad={onIframeLoad}
+              />
 
-          <Drawer open={open} side="right" setOpen={setOpen}>
-            {/* Rocket Chat iframe */}
-            <iframe
-              id="chat-iframe"
-              src={iframeSrc}
-              style={{
-                width: '100%',
-                height: '100%',
-                border: 'none',
-                display: 'block'
-              }}
-              title={iframeTitle}
-              ref={iframeRef}
-              onLoad={onIframeLoad}
-            />
+              <div className="flex">
+                {/* Button closing drawer */}
+                <Button
+                  className="flex-1 hover:text-red-600"
+                  variant="outline"
+                  size="sm"
+                  title="Close Chat Widget"
+                  aria-label="Close Chat Widget"
+                  onClick={() => setOpen(false)}
+                >
+                  <Icons.close />
+                </Button>
 
-            <div className="flex">
-              {/* Button closing drawer */}
-              <Button
-                className="hover:text-red-600 flex-1"
-                variant="outline"
-                size="sm"
-                title="Close Chat Widget"
-                aria-label="Close Chat Widget"
-                onClick={() => setOpen(false)}
-              >
-                <Icons.close />
-              </Button>
+                {/* Link to open chat app in new tab */}
+                <Link
+                  href={iframeSrc}
+                  className="px-4 hover:cursor-pointer hover:text-red-600"
+                  aria-label="Open Chat App"
+                  title="Open Chat App"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icons.externalLink />
+                </Link>
+              </div>
+            </Drawer>
 
-              {/* Link to open chat app in new tab */}
-              <Link
-                href={iframeSrc}
-                className="hover:cursor-pointer hover:text-red-600 px-4"
-                aria-label="Open Chat App"
-                title="Open Chat App"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icons.externalLink />
-              </Link>
+            {/* Drawer toggler */}
+            <div className="group relative z-40 inline-flex w-fit cursor-pointer items-center justify-center">
+              <TooltipProvider>
+                <Tooltip>
+                  <div className="fixed bottom-10 right-10 block">
+                    <TooltipTrigger
+                      type="button"
+                      aria-label="Open Chat Widget"
+                      onClick={() => setOpen(!open)}
+                      disabled={disabled}
+                    >
+                      <Icons.messageSquareText className={clsx('h-12 w-12', { 'opacity-25': disabled })} />
+                    </TooltipTrigger>
+
+                    {/* Badge showing unread messages */}
+                    {loggedIn && badgeContent !== 0 ? (
+                      <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+                        {badgeContent}
+                      </div>
+                    ) : null}
+                  </div>
+                  <TooltipContent>{tooltip}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
-
-          </Drawer>
-
-          {/* Drawer toggler */}
-          <div className="z-40 group relative inline-flex w-fit cursor-pointer items-center justify-center">
-            <TooltipProvider>
-              <Tooltip>
-                <div className="fixed bottom-10 right-10 block">
-                  <TooltipTrigger
-                    type="button"
-                    aria-label="Open Chat Widget"
-                    onClick={() => setOpen(!open)}
-                    disabled={disabled}
-                  >
-                    <Icons.messageSquareText
-                      className={clsx(
-                        "h-12 w-12",
-                        { "opacity-25": disabled }
-                      )}
-                    />
-                  </TooltipTrigger>
-
-                  {/* Badge showing unread messages */}
-                  {loggedIn && badgeContent !== 0 ? (
-                    <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
-                      {badgeContent}
-                    </div>
-                  ) : null}
-
-                </div>
-                <TooltipContent>{tooltip}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
           </div>
-
-        </div>
-      )}
+        )}
     </>
   );
 };

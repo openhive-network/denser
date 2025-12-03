@@ -13,7 +13,7 @@ import {
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
 import { Button } from '@ui/components/button';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useTranslation } from '@/blog/i18n/client';
 
@@ -26,7 +26,7 @@ export function ReblogDialog({
   permlink: string;
   action: (dialogResponse: boolean) => void;
 }) {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const [open, setOpen] = useState(false);
 

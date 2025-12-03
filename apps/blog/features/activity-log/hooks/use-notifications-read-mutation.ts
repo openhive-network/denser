@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { toast } from '@ui/components/hooks/use-toast';
 
 /**
@@ -11,7 +11,7 @@ import { toast } from '@ui/components/hooks/use-toast';
  */
 export function useMarkAllNotificationsAsReadMutation() {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useUserClient();
   const markAllNotificationsAsReadMutation = useMutation({
     mutationFn: async (params: { date: string }) => {
       const { date } = params;

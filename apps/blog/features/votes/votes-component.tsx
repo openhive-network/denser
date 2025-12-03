@@ -1,4 +1,3 @@
-
 import moment from 'moment';
 import { ReactNode, useEffect, useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
@@ -8,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import { Slider } from '@ui/components/slider';
 import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@ui/components/icons';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useQuery } from '@tanstack/react-query';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
@@ -26,7 +25,7 @@ const offsetSlider = {
 };
 
 const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const [clickedVoteButton, setClickedVoteButton] = useState('');
   const [storedVotesValues, storeVotesValues] = useLocalStorage('votesValues', {

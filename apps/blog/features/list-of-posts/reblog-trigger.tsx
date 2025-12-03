@@ -5,7 +5,7 @@ import { cn } from '@ui/lib/utils';
 import { Icons } from '@ui/components/icons';
 import { handleError } from '@ui/lib/handle-error';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useRebloggedByQuery } from './hooks/use-reblogged-by-query';
 import { useReblogMutation } from './hooks/use-reblog-mutation';
 import { ReblogDialog } from './reblog-dialog';
@@ -23,7 +23,7 @@ const ReblogTrigger = ({
   dataTestidTooltipIcon: string;
 }) => {
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { data: isReblogged } = useRebloggedByQuery(author, permlink, user.username);
 
   const reblogMutation = useReblogMutation();

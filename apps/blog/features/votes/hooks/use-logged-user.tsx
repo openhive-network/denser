@@ -1,4 +1,4 @@
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { createContext, FC, useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { netVests } from '@/blog/lib/utils';
@@ -21,7 +21,7 @@ export const useLoggedUserContext = () => {
 };
 
 export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { data: accountData } = useQuery({
     queryKey: ['accountData', user.username],
     queryFn: () => getAccount(user.username),
