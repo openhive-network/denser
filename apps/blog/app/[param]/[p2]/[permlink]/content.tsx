@@ -54,7 +54,6 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import { handleError } from '@ui/lib/handle-error';
 import parseDate from '@ui/lib/parse-date';
-import clsx from 'clsx';
 import { Clock, Link2 } from 'lucide-react';
 import moment from 'moment';
 import Link from 'next/link';
@@ -89,7 +88,10 @@ const PostContent = () => {
   const { data: postData, isLoading: postIsLoading } = useQuery({
     queryKey: ['postData', author, permlink],
     queryFn: () => getPost(author, permlink, observer),
-    enabled: !!author && !!permlink
+    enabled: !!author && !!permlink,
+    onError: (error) => {
+      handleError(error, { method: 'getPost', params: { author, permlink, observer } });
+    }
   });
   const [mutedPost, setMutedPost] = useState<boolean>(postData?.stats?.gray || false);
   const userFromGDPR = gdprUserList.some((e) => e === postData?.author);
@@ -131,12 +133,18 @@ const PostContent = () => {
   const { data: communityData } = useQuery({
     queryKey: ['community', category],
     queryFn: () => getCommunity(category, observer),
-    enabled: postInCommunity
+    enabled: postInCommunity,
+    onError: (error) => {
+      handleError(error, { method: 'getCommunity', params: { category, observer } });
+    }
   });
 
   const { data: discussionData, isLoading: discussionIsLoading } = useQuery({
     queryKey: ['discussionData', permlink],
-    queryFn: () => getDiscussion(author, permlink, observer)
+    queryFn: () => getDiscussion(author, permlink, observer),
+    onError: (error) => {
+      handleError(error, { method: 'getDiscussion', params: { author, permlink, observer } });
+    }
   });
   const discussionState = useMemo(() => {
     if (!discussionData) return undefined;
@@ -156,6 +164,9 @@ const PostContent = () => {
     queryKey: ['rolesList', category],
     queryFn: () => getListCommunityRoles(category),
     enabled: postInCommunity,
+    onError: (error) => {
+      handleError(error, { method: 'getListCommunityRoles', params: { category } });
+    },
     select: (data) => {
       const userRole = data?.find((e) => e[0] === user.username);
       const userCanModerate = userRole
@@ -167,7 +178,10 @@ const PostContent = () => {
 
   const { data: activeVotesData } = useQuery({
     queryKey: ['activeVotes'],
-    queryFn: () => getActiveVotes(author, permlink)
+    queryFn: () => getActiveVotes(author, permlink),
+    onError: (error) => {
+      handleError(error, { method: 'getActiveVotes', params: { author, permlink } });
+    }
   });
 
   const { data: mutedList } = useFollowListQuery(user.username, 'muted');

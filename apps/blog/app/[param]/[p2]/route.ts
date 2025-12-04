@@ -3,6 +3,9 @@ import { getPost } from '@transaction/lib/bridge-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { isPermlinkValid, isUsernameValid } from '@/blog/utils/validate-links';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 export async function GET(request: Request, { params }: { params: { param: string; p2: string } }) {
   try {
@@ -49,12 +52,7 @@ export async function GET(request: Request, { params }: { params: { param: strin
     const finalUrl = new URL(path, origin);
 
     return NextResponse.redirect(finalUrl.toString(), { status: 302 });
-    
-    return NextResponse.redirect(finalUrl, { status: 302 });
   } catch (err) {
-    console.error('Redirect route error', {
-      params,
-      err
-    });
+    logger.error('Error in GET:', err);
   }
 }
