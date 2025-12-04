@@ -15,7 +15,7 @@ import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { useLocalStorage } from 'usehooks-ts';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '../../components/dialog-login';
 
 import { PostDeleteDialog } from './post-delete-dialog';
@@ -65,7 +65,7 @@ const CommentListItem = ({
   children
 }: CommentListProps) => {
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const ref = useRef<HTMLTableRowElement>(null);
   const [hiddenComment, setHiddenComment] = useState(
     comment.stats?.gray || mutedList?.some((x) => x.name === comment.author)

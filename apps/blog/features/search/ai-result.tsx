@@ -4,19 +4,19 @@ import { useQuery } from '@tanstack/react-query';
 import Loading from '@ui/components/loading';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState, useMemo } from 'react';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Entry, PostStub } from '@transaction/lib/extended-hive.chain';
 import { PER_PAGE } from './lib/utils';
 import { DEFAULT_OBSERVER, Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@ui/components/card-skeleton';
-import {commonVariables} from'@ui/lib/common-variables';
+import { commonVariables } from '@ui/lib/common-variables';
 
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';
 import { getPostsByIds, isPostStub, searchPosts } from '@transaction/lib/hivesense-api';
 
 const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: Preferences['nsfw'] }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { ref, inView } = useInView();
   const { t } = useTranslation('common_blog');
 
@@ -153,9 +153,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
 
   return (
     <div>
-      {displayedPosts.length > 0 && (
-        <PostList data={displayedPosts} nsfwPreferences={nsfwPreferences} />
-      )}
+      {displayedPosts.length > 0 && <PostList data={displayedPosts} nsfwPreferences={nsfwPreferences} />}
 
       <div>
         <button
@@ -167,14 +165,10 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
           {isLoadingMore ? <PostCardSkeleton /> : hasNextPage ? t('user_profile.load_newer') : null}
         </button>
 
-        {!hasNextPage && displayedPosts.length > 0 && (
-          <div>{t('user_profile.nothing_more_to_load')}</div>
-        )}
+        {!hasNextPage && displayedPosts.length > 0 && <div>{t('user_profile.nothing_more_to_load')}</div>}
       </div>
 
-      {isFetching && !isLoadingMore && (
-        <div>Background Updating...</div>
-      )}
+      {isFetching && !isLoadingMore && <div>Background Updating...</div>}
     </div>
   );
 };

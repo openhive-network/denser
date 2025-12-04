@@ -6,12 +6,12 @@ import Link from 'next/link';
 import BasePathLink from '@/blog/components/base-path-link';
 import { Community } from '@transaction/lib/extended-hive.chain';
 import { useTranslation } from '@/blog/i18n/client';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import SubscribeCommunity from '../community-profile/subscribe-community';
 import { useEffect, useState } from 'react';
 
 const CommunitiesListItem = ({ community }: { community: Community }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const [isSubscribed, setIsSubscribed] = useState(() => community.context.subscribed);
   useEffect(() => {

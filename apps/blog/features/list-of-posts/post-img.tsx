@@ -12,8 +12,10 @@ import {
   extractYouTubeVideoIds
 } from '@/blog/lib/utils';
 import { Entry } from '@transaction/lib/extended-hive.chain';
+import { useQuery } from '@tanstack/react-query';
+import { getAccountFull } from '@transaction/lib/hive-api';
 
-export function find_first_img(post: Entry) {
+export function find_first_img(post: Entry, authorProfileImage?: string) {
   try {
     if (
       post.json_metadata.links &&
@@ -37,6 +39,12 @@ export function find_first_img(post: Entry) {
       return proxifyImageUrl(post.original_entry.json_metadata.image[0], true);
     }
     if (post.json_metadata.image && post.json_metadata.image[0]) {
+      if (post.json_metadata.image[0].includes('youtu-')) {
+        return proxifyImageUrl(
+          `https://img.youtube.com/vi/${post.json_metadata.image[0].slice(6)}/0.jpg`,
+          true
+        );
+      }
       return proxifyImageUrl(post.json_metadata.image[0], true);
     }
     const regex_any_img = /!\[.*?\]\((.*?)\)/;
@@ -71,7 +79,11 @@ export function find_first_img(post: Entry) {
     if (matchgif && matchgif[1]) {
       return proxifyImageUrl(matchgif[1], true);
     }
+    // Last fallback: use user profile image if available, otherwise use avatar
     if (!post.title.includes('RE: ') && post.depth === 0) {
+      if (authorProfileImage) {
+        return proxifyImageUrl(authorProfileImage, true);
+      }
       return proxifyImageUrl(getUserAvatarUrl(post.author, 'large'), true);
     }
     return '';
@@ -82,12 +94,22 @@ export function find_first_img(post: Entry) {
 }
 
 export default function PostImage({ post }: { post: Entry }) {
-  const cardImage = find_first_img(post);
+  // Fetch author profile data to get profile_image
+  const { data: authorProfile } = useQuery({
+    queryKey: ['profileData', post.author],
+    queryFn: () => getAccountFull(post.author),
+    enabled: !post.title.includes('RE: ') && post.depth === 0,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    cacheTime: 10 * 60 * 1000 // Keep in cache for 10 minutes
+  });
+
+  const authorProfileImage = authorProfile?.profile?.profile_image;
+  const cardImage = find_first_img(post, authorProfileImage);
   const [image, setImage] = useState<string>(cardImage);
 
   useEffect(() => {
     setImage(cardImage);
-  }, [post.json_metadata.image]);
+  }, [cardImage]);
 
   return (
     <>

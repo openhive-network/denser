@@ -2,7 +2,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Button } from '@ui/components';
 import Link from 'next/link';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useTranslation } from '../../../i18n/client';
 
 type AccountFormValues = {
@@ -14,7 +14,7 @@ type AccountFormValues = {
   category: string;
 };
 const NewPost = ({ name, disabled }: { name: string; disabled: boolean }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,

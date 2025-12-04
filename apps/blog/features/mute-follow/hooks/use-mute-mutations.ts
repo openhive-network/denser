@@ -1,4 +1,4 @@
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { UseInfiniteQueryResult, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { IFollow, IFollowList } from '@transaction/lib/extended-hive.chain';
@@ -14,7 +14,7 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useMuteMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (params: { username: string }) => {
@@ -106,7 +106,7 @@ export function useMuteMutation() {
  * @return {*}
  */
 export function useUnmuteMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const unmuteMutation = useMutation({
     mutationFn: async (params: { username: string }) => {
@@ -164,7 +164,7 @@ export function useUnmuteMutation() {
  * @return {*}
  */
 export function useResetBlogListMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
 
   const resetBlogListMutation = useMutation({

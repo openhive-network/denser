@@ -1,4 +1,4 @@
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
@@ -13,7 +13,7 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useFollowMutedBlogMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const queryKey = ['follow_muted', user.username];
 
@@ -67,7 +67,7 @@ export function useFollowMutedBlogMutation() {
  * @return {*}
  */
 export function useUnfollowMutedBlogMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const queryKey = ['follow_muted', user.username];
 
@@ -114,7 +114,7 @@ export function useUnfollowMutedBlogMutation() {
  * @return {*}
  */
 export function useResetFollowMutedBlogMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const queryKey = ['follow_muted', user.username];
 

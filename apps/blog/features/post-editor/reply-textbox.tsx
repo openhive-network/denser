@@ -6,8 +6,6 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import useManabars from '../../components/hooks/use-manabars';
 import { DEFAULT_PREFERENCES, hoursAndMinutes, Preferences } from '@/blog/lib/utils';
 import { Entry } from '@transaction/lib/extended-hive.chain';
@@ -17,6 +15,7 @@ import { useCommentMutation, useUpdateCommentMutation } from '../post-rendering/
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { commentClassName } from '../post-rendering/comment-list-item';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const logger = getLogger('app');
 
@@ -39,7 +38,7 @@ export function ReplyTextbox({
   comment: Entry | string;
   discussionPermlink: string;
 }) {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const [storedPost, storePost, removePost] = useLocalStorage<string>(
     `replyTo-/${username}/${permlink}-${user.username}`,
     ''
@@ -135,7 +134,6 @@ export function ReplyTextbox({
         <div>
           <MdEditor
             windowheight={200}
-            htmlMode={editMode}
             onChange={(value) => {
               if (value === '') {
                 setText(value);

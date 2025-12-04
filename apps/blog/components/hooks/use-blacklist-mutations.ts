@@ -1,4 +1,4 @@
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
@@ -13,7 +13,7 @@ const logger = getLogger('app');
  * @return {*}
  */
 export function useBlacklistBlogMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryKey = ['blacklisted', user.username];
   const queryClient = useQueryClient();
 
@@ -66,7 +66,7 @@ export function useBlacklistBlogMutation() {
  * @return {*}
  */
 export function useUnblacklistBlogMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const queryKey = ['blacklisted', user.username];
 
@@ -112,7 +112,7 @@ export function useUnblacklistBlogMutation() {
  * @return {*}
  */
 export function useResetBlacklistBlogMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const queryKey = ['blacklisted', user.username];
 

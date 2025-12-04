@@ -36,7 +36,6 @@ import { useTranslation } from '@/blog/i18n/client';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { getBasePath } from '@/blog/utils/PathUtils';
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';

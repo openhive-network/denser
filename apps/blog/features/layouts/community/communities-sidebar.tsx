@@ -7,14 +7,14 @@ import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 
 const CommunitiesSidebar: FC = () => {
   const { t } = useTranslation('common_blog');
   const sort = 'rank';
   const query = null;
-  const { user } = useUser();
+  const { user } = useUserClient();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
 
   const { data } = useQuery({

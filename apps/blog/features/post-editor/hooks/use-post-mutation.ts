@@ -1,5 +1,5 @@
 import { NaiAsset } from '@hiveio/wax';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Beneficiarie } from '@transaction/lib/app-types';
@@ -16,7 +16,7 @@ const logger = getLogger('app');
  */
 export function usePostMutation() {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useUserClient();
   const postMutation = useMutation({
     mutationFn: async (params: {
       permlink: string;
@@ -107,7 +107,7 @@ export function usePostMutation() {
  * @return {*}
  */
 export function useDeletePostMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const deletePostMutation = useMutation({
     mutationFn: async (params: { permlink: string }) => {

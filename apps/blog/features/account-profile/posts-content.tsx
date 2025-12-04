@@ -5,7 +5,7 @@ import PostList from '@/blog/features/list-of-posts/posts-loader';
 import { PER_PAGE } from '@/blog/features/search/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
 import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getAccountPosts } from '@transaction/lib/bridge-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
@@ -29,7 +29,7 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
     triggerOnce: false
   });
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
@@ -70,11 +70,12 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   const totalPosts = data?.pages?.reduce((acc, page) => acc + (page?.length || 0), 0) || 0;
 
   const getNoContentMessage = () => {
-    if (query === 'posts' || query === 'comments') return t('user_profile.no_posts_yet', { username: username });
+    if (query === 'posts' || query === 'comments')
+      return t('user_profile.no_posts_yet', { username: username });
     if (query === 'payout') return t('user_profile.no_pending_payouts');
-    if (query === 'replies') return t('user_profile.no_replies_yet', { username: username })
+    if (query === 'replies') return t('user_profile.no_replies_yet', { username: username });
     return t('user_profile.no_blogging_yet', { username: username });
-  }
+  };
 
   if (isError) return <NoDataError />;
 

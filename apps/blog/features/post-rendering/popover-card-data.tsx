@@ -3,13 +3,10 @@
 import { dateToShow } from '@ui/lib/parse-date';
 import { convertToHP, numberWithCommas } from '@ui/lib/utils';
 import Big from 'big.js';
-
-import { useUser } from '@smart-signer/lib/auth/use-user';
 import { Avatar, AvatarFallback, AvatarImage, getUserAvatarUrl } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import { convertStringToBig } from '@ui/lib/helpers';
 import TimeAgo from '@hive/ui/components/time-ago';
-import { getDefaultImageUrl } from '@hive/ui';
 import { compareDates } from '@/blog/lib/utils';
 import BasePathLink from '@/blog/components/base-path-link';
 import { useAccountQuery } from '@/blog/components/hooks/use-account';
@@ -18,10 +15,11 @@ import { useFollowsQuery } from '@/blog/components/hooks/use-follows';
 import { useFollowingInfiniteQuery } from '../account-lists/hooks/use-following-infinitequery';
 import ButtonsContainer from '../mute-follow/buttons-container';
 import { useTranslation } from '@/blog/i18n/client';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: string[] }) => {
   const { t } = useTranslation('common_blog');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const follows = useFollowsQuery(author);
   const { data: account, isLoading } = useAccountQuery(author);
   const following = useFollowingInfiniteQuery(user.username || '', 1000, 'blog', ['blog']);

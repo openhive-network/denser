@@ -2,10 +2,10 @@
 
 import SettingsForm from '@/blog/features/account-settings/form';
 import MutedList from '@/blog/features/account-settings/muted-list';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const SettingsContent = ({ username }: { username: string }) => {
-  const { user } = useUser();
+  const { user } = useUserClient();
 
   return (
     <div className="flex flex-col" data-testid="public-profile-settings">
