@@ -9,6 +9,8 @@ import {
 import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
 import { HiveOperation, OpType } from '@transaction/lib/extended-hive.chain';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import moment from "moment";
 
 interface FinancialReportProps {
   username: string;
@@ -30,15 +32,11 @@ const opTypes: OpType[] = [
 ];
 
 const dateDiffInDays = (a: Date, b: Date) => {
-  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-  // Discard the time and time-zone information.
-  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-
-  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+  return moment(b).diff(moment(a), "days");
 };
 
 const convertHistoryToCSV = (transactions: HiveOperation[]) => {
+  const hiveChain = hiveChainService.reuseHiveChain();
   let csv = '';
   const columns = [
     'timestamp',
@@ -61,21 +59,21 @@ const convertHistoryToCSV = (transactions: HiveOperation[]) => {
     // 'total_payout_value'
   ];
 
-  csv += columns.join(', ') + '\r\n';
+  csv += columns.join(',') + '\r\n';
 
   transactions.forEach((transaction) => {
     console.log(transaction);
     const formatted = [
       transaction.timestamp,
       transaction.op.type,
-      transaction.op.value.amount,
+      hiveChain?.formatter.format(transaction.op.value.amount) || 0,
       transaction.op.value.from,
       transaction.op.value.to,
       transaction.op.value.memo,
       transaction.op.value.account,
-      transaction.op.value.reward_hive,
-      transaction.op.value.reward_hbd,
-      transaction.op.value.reward_hive
+      hiveChain?.formatter.format(transaction.op.value.reward_vests) || 0,
+      hiveChain?.formatter.format(transaction.op.value.reward_hbd) || 0,
+      hiveChain?.formatter.format(transaction.op.value.reward_hive) || 0
       // 'payout_must_be_claimed',
       // 'permlink',
       // 'vesting_payout',
@@ -86,7 +84,7 @@ const convertHistoryToCSV = (transactions: HiveOperation[]) => {
       // 'total_payout_value'
     ];
 
-    csv += formatted.join(', ') + '\r\n';
+    csv += formatted.join(',') + '\r\n';
   });
 
   return csv;
@@ -103,17 +101,13 @@ const downloadCSV = async (csv: string) => {
   document.body.removeChild(link);
 };
 
-const generateReport = async (username: string, financialPeriod: FinancialReportPeriod, operationHistoryData : HiveOperation[]) => {
-  const filtered = operationHistoryData.filter((transaction) => {
-    const opType = transaction.op.type;
-    if (!!opType) {
-      return (
-        opTypes.includes(opType as OpType) &&
-        dateDiffInDays(new Date(transaction.timestamp), new Date()) <=
-          Number(financialPeriod.match(/\d+/g))
-      );
-    }
-  });
+const generateReport = async (financialPeriod: FinancialReportPeriod, operationHistoryData : HiveOperation[]) => {
+  const days = parseInt(financialPeriod.match(/\d+/)?.[0] ?? "0", 10);
+  const now = new Date();
+  const filtered = operationHistoryData.filter(({ op, timestamp }) =>
+    opTypes.includes(op.type as OpType) &&
+    dateDiffInDays(new Date(timestamp), now) <= days
+  );
 
   return convertHistoryToCSV(filtered);
 };
@@ -153,7 +147,7 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username, operationHi
           </DropdownMenuContent>
         </DropdownMenu>
         {operationHistoryData &&
-          <Button onClick={async () => await downloadCSV(await generateReport(username, financialReportPeriod, operationHistoryData))}>
+          <Button onClick={async () => await downloadCSV(await generateReport(financialReportPeriod, operationHistoryData))}>
             {t('transfers_page.download_report')}
           </Button>
         }
