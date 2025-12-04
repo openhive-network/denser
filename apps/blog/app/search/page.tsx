@@ -5,10 +5,13 @@ import { getQueryClient } from '@/blog/lib/react-query';
 import { searchPosts } from '@transaction/lib/hivesense-api';
 import { getByText } from '@transaction/lib/hive-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
+import { getLogger } from '@ui/lib/logging';
 
 interface SearchPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
+
+const logger = getLogger('app');
 
 const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const aiParam = searchParams.ai as string | undefined;
@@ -18,68 +21,71 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const sortQuery = searchParams.s as SearchSort | undefined;
 
   const queryClient = getQueryClient();
-  const observer = getObserverFromCookies();
-  if (aiParam) {
-    await queryClient.prefetchQuery({
-      queryKey: ['searchPosts', aiParam],
-      queryFn: async () => {
-        return await searchPosts({
-          query: aiParam,
-          observer,
-          result_limit: 1000,
-          full_posts: 20
-        });
-      }
-    });
-  }
-  if (classicQuery && sortQuery) {
-    await queryClient.prefetchInfiniteQuery({
-      queryKey: ['similarPosts', classicQuery, undefined, sortQuery],
-      queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
-        return await getByText({
-          pattern: classicQuery,
-          observer,
-          start_permlink: pageParam?.permlink ?? '',
-          start_author: pageParam?.author ?? '',
-          limit: 20,
-          sort: sortQuery
-        });
-      },
-      getNextPageParam: (lastPage) => {
-        if (lastPage && lastPage.length === 20) {
-          return {
-            author: lastPage[lastPage.length - 1].author,
-            permlink: lastPage[lastPage.length - 1].permlink
-          };
+  try {
+    const observer = getObserverFromCookies();
+    if (aiParam) {
+      await queryClient.prefetchQuery({
+        queryKey: ['searchPosts', aiParam],
+        queryFn: async () => {
+          return await searchPosts({
+            query: aiParam,
+            observer,
+            result_limit: 1000,
+            full_posts: 20
+          });
         }
-      }
-    });
-  }
-  if (userTopicQuery && topicQuery && sortQuery) {
-    await queryClient.prefetchInfiniteQuery({
-      queryKey: ['similarPosts', topicQuery, userTopicQuery, sortQuery],
-      queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
-        return await getByText({
-          pattern: topicQuery,
-          author: userTopicQuery,
-          observer,
-          start_permlink: pageParam?.permlink ?? '',
-          start_author: pageParam?.author ?? '',
-          limit: 20,
-          sort: sortQuery
-        });
-      },
-      getNextPageParam: (lastPage) => {
-        if (lastPage && lastPage.length === 20) {
-          return {
-            author: lastPage[lastPage.length - 1].author,
-            permlink: lastPage[lastPage.length - 1].permlink
-          };
+      });
+    }
+    if (classicQuery && sortQuery) {
+      await queryClient.prefetchInfiniteQuery({
+        queryKey: ['similarPosts', classicQuery, undefined, sortQuery],
+        queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
+          return await getByText({
+            pattern: classicQuery,
+            observer,
+            start_permlink: pageParam?.permlink ?? '',
+            start_author: pageParam?.author ?? '',
+            limit: 20,
+            sort: sortQuery
+          });
+        },
+        getNextPageParam: (lastPage) => {
+          if (lastPage && lastPage.length === 20) {
+            return {
+              author: lastPage[lastPage.length - 1].author,
+              permlink: lastPage[lastPage.length - 1].permlink
+            };
+          }
         }
-      }
-    });
+      });
+    }
+    if (userTopicQuery && topicQuery && sortQuery) {
+      await queryClient.prefetchInfiniteQuery({
+        queryKey: ['similarPosts', topicQuery, userTopicQuery, sortQuery],
+        queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
+          return await getByText({
+            pattern: topicQuery,
+            author: userTopicQuery,
+            observer,
+            start_permlink: pageParam?.permlink ?? '',
+            start_author: pageParam?.author ?? '',
+            limit: 20,
+            sort: sortQuery
+          });
+        },
+        getNextPageParam: (lastPage) => {
+          if (lastPage && lastPage.length === 20) {
+            return {
+              author: lastPage[lastPage.length - 1].author,
+              permlink: lastPage[lastPage.length - 1].permlink
+            };
+          }
+        }
+      });
+    }
+  } catch (error) {
+    logger.error('Error in SearchPage:', error);
   }
-
   return (
     <Hydrate state={dehydrate(queryClient)}>
       <SearchContent
