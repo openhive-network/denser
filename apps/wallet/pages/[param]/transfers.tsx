@@ -807,7 +807,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
                 </table>
               </div>
             )}
-            <FinancialReport username={username} operationHistoryData={operationHistoryData} />
+            {user.username === username && <FinancialReport username={username} />}
             <TransfersHistoryFilter
               onFiltersChange={(value) => {
                 setFilter((prevFilters) => ({
