@@ -11,7 +11,6 @@ import {
   IProposal,
   IGetProposalsParams,
   IProposalVote,
-  AccountHistory,
   IDelegatedVestingShare,
   OwnerHistory,
   IRecentTradesData,
@@ -105,38 +104,26 @@ const walletOperations = [
   'claim_reward_balance_operation'
 ];
 
-export const getAccountHistory = async (
-  username: string,
-  start: number = -1,
-  limit: number = 20
-): Promise<AccountHistory[]> => {
-  const opTypes = await getOpTypes();
-  const operationTypesIds = walletOperations.map((operationName) => opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id.toString() || '');
-  console.log('SHOW ME THIS', operationTypesIds);
-
-  return chain.api.condenser_api.get_account_history([
-    username,
-    start,
-    limit,
-    ...(operationTypesIds || [])
-  ]) as Promise<AccountHistory[]>;
-};
-
 export const getAccountOperations = async (
   username: string,
   page: number | undefined = undefined,
   pageSize: number = 500,
-  observer: string
+  observer: string,
 ): Promise<IGetOperationsByAccountResponse> => {
   const opTypes = await getOpTypes();
-  const operationTypesIds = walletOperations.map((operationName) => opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id.toString() || '');
-  return chain.restApi['hivemind-api'].accountsOperations({
+  const operationTypesIds = walletOperations
+    .map((operationName) =>
+      opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id
+    )
+    .filter((id) => id != null)   // filters out undefined/null
+  .map((id) => id?.toString());  const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
     "account-name": username,
     page,
     "page-size": pageSize,
     "operation-types": operationTypesIds.toString(),
     'observer-name': observer !== '' ? observer : commonVariables.defaultObserver
   })
+  return accountOperations
 }
 
 export type IAuthorReward = {

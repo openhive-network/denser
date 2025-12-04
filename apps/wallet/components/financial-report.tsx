@@ -8,37 +8,35 @@ import {
 } from '@ui/components';
 import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
-import { getAccountHistory } from '../lib/hive';
-import { AccountHistory, OpType } from '@transaction/lib/extended-hive.chain';
+import { HiveOperation, OpType } from '@transaction/lib/extended-hive.chain';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import moment from "moment";
 
 interface FinancialReportProps {
   username: string;
+  operationHistoryData?: HiveOperation[]
 }
 
 type FinancialReportPeriod = 'last7days' | 'last14days' | 'last30days' | 'last60days';
 const allReportPeriods: FinancialReportPeriod[] = ['last7days', 'last14days', 'last30days', 'last60days'];
 const opTypes: OpType[] = [
-  'curation_reward',
-  'author_reward',
-  'producer_reward',
-  'comment_reward',
-  'comment_benefactor_reward',
-  'interest',
-  'proposal_pay',
-  'sps_fund',
-  'transfer'
+  'curation_reward_operation',
+  'author_reward_operation',
+  'producer_reward_operation',
+  'comment_reward_operation',
+  'comment_benefactor_reward_operation',
+  'interest_operation',
+  'proposal_pay_operation',
+  'sps_fund_operation',
+  'transfer_operation'
 ];
 
 const dateDiffInDays = (a: Date, b: Date) => {
-  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-  // Discard the time and time-zone information.
-  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-
-  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+  return moment(b).diff(moment(a), "days");
 };
 
-const convertHistoryToCSV = (transactions: AccountHistory[]) => {
+const convertHistoryToCSV = (transactions: HiveOperation[]) => {
+  const hiveChain = hiveChainService.reuseHiveChain();
   let csv = '';
   const columns = [
     'timestamp',
@@ -61,21 +59,21 @@ const convertHistoryToCSV = (transactions: AccountHistory[]) => {
     // 'total_payout_value'
   ];
 
-  csv += columns.join(', ') + '\r\n';
+  csv += columns.join(',') + '\r\n';
 
   transactions.forEach((transaction) => {
     console.log(transaction);
     const formatted = [
-      transaction[1].timestamp,
-      transaction[1].op[0],
-      transaction[1].op[1].amount,
-      transaction[1].op[1].from,
-      transaction[1].op[1].to,
-      transaction[1].op[1].memo,
-      transaction[1].op[1].account,
-      transaction[1].op[1].reward_hive,
-      transaction[1].op[1].reward_hbd,
-      transaction[1].op[1].reward_hive
+      transaction.timestamp,
+      transaction.op.type,
+      hiveChain?.formatter.format(transaction.op.value.amount) || 0,
+      transaction.op.value.from,
+      transaction.op.value.to,
+      transaction.op.value.memo,
+      transaction.op.value.account,
+      hiveChain?.formatter.format(transaction.op.value.reward_vests) || 0,
+      hiveChain?.formatter.format(transaction.op.value.reward_hbd) || 0,
+      hiveChain?.formatter.format(transaction.op.value.reward_hive) || 0
       // 'payout_must_be_claimed',
       // 'permlink',
       // 'vesting_payout',
@@ -86,13 +84,13 @@ const convertHistoryToCSV = (transactions: AccountHistory[]) => {
       // 'total_payout_value'
     ];
 
-    csv += formatted.join(', ') + '\r\n';
+    csv += formatted.join(',') + '\r\n';
   });
 
   return csv;
 };
 
-const downloadCSV = (csv: string) => {
+const downloadCSV = async (csv: string) => {
   const csvData = new Blob([csv], { type: 'text/csv' });
   const csvURL = URL.createObjectURL(csvData);
   const link = document.createElement('a');
@@ -103,30 +101,25 @@ const downloadCSV = (csv: string) => {
   document.body.removeChild(link);
 };
 
-const generateReport = async (username: string, financialPeriod: FinancialReportPeriod) => {
-  const transactions = await getAccountHistory(username, -1, 1000);
-  const filtered = transactions.filter((transaction) => {
-    const opType = transaction[1].op!.at(0);
-    if (!!opType) {
-      return (
-        opTypes.includes(opType as OpType) &&
-        dateDiffInDays(new Date(transaction[1].timestamp), new Date()) <=
-          Number(financialPeriod.match(/\d+/g))
-      );
-    }
-  });
+const generateReport = async (financialPeriod: FinancialReportPeriod, operationHistoryData : HiveOperation[]) => {
+  const days = parseInt(financialPeriod.match(/\d+/)?.[0] ?? "0", 10);
+  const now = new Date();
+  const filtered = operationHistoryData.filter(({ op, timestamp }) =>
+    opTypes.includes(op.type as OpType) &&
+    dateDiffInDays(new Date(timestamp), now) <= days
+  );
 
   return convertHistoryToCSV(filtered);
 };
 
-const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
+const FinancialReport: React.FC<FinancialReportProps> = ({ username, operationHistoryData }) => {
   const { t } = useTranslation('common_wallet');
   const [financialReportPeriod, setFinancialReportPeriod] = useState<FinancialReportPeriod>('last7days');
 
   return (
     <div className="border-t-2 border-zinc-500 p-2 sm:p-4">
       <div className="font-semibold">{t('transfers_page.financial_report')}</div>
-      <p className="text-xs leading-relaxed text-primary/70" data-testid="wallet-account-history-description">
+      <p className="text-xs leading-relaxed text-primary/70" data-testid="wallet-financial-report-description">
         {t('transfers_page.financial_report_description')}
       </p>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
@@ -153,9 +146,11 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button onClick={async () => downloadCSV(await generateReport(username, financialReportPeriod))}>
-          {t('transfers_page.download_report')}
-        </Button>
+        {operationHistoryData &&
+          <Button onClick={async () => await downloadCSV(await generateReport(financialReportPeriod, operationHistoryData))}>
+            {t('transfers_page.download_report')}
+          </Button>
+        }
       </div>
     </div>
   );
