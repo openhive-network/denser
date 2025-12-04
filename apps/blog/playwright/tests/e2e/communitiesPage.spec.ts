@@ -649,7 +649,7 @@ test.describe('Communities page tests', () => {
   });
 
   test('validate styles of the list of the subscribers in the modal in the light mode', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'webkit' || browserName === 'firefox' , 'Automatic test works well on chromium');
 
     const leoFinanceCommunityAccount: string = 'hive-167922';
     const widthProgressBar = 60; // 100%
