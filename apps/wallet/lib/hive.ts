@@ -11,7 +11,6 @@ import {
   IProposal,
   IGetProposalsParams,
   IProposalVote,
-  AccountHistory,
   IDelegatedVestingShare,
   OwnerHistory,
   IRecentTradesData,
@@ -105,22 +104,6 @@ const walletOperations = [
   'claim_reward_balance_operation'
 ];
 
-export const getAccountHistory = async (
-  username: string,
-  start: number = -1,
-  limit: number = 20
-): Promise<AccountHistory[]> => {
-  const opTypes = await getOpTypes();
-  const operationTypesIds = walletOperations.map((operationName) => opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id.toString() || '');
-  const results = await chain.api.condenser_api.get_account_history([
-    username,
-    start,
-    limit,
-    ...(operationTypesIds || [])
-  ]) as AccountHistory[]
-  return results;
-}; // Remove from tests - deprecated
-
 export const getAccountOperations = async (
   username: string,
   page: number | undefined = undefined,
@@ -133,7 +116,7 @@ export const getAccountOperations = async (
       opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id
     )
     .filter((id) => id != null)   // filters out undefined/null
-  .map((id) => id.toString());  const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
+  .map((id) => id?.toString());  const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
     "account-name": username,
     page,
     "page-size": pageSize,

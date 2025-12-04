@@ -439,24 +439,24 @@ export interface IDelegatedVestingShare {
 }
 
 export type OpType =
-  | 'claim_reward_balance'
-  | 'transfer'
-  | 'transfer_from_savings'
-  | 'transfer_to_savings'
-  | 'interest'
-  | 'cancel_transfer_from_savings'
-  | 'fill_order'
-  | 'transfer_to_vesting'
-  | 'curation_reward'
-  | 'author_reward'
-  | 'producer_reward'
-  | 'comment_reward'
-  | 'comment_benefactor_reward'
-  | 'interest'
-  | 'proposal_pay'
-  | 'sps_fund'
-  | 'transfer'
-  | 'withdraw_vesting';
+  | 'claim_reward_balance_operation'
+  | 'transfer_operation'
+  | 'transfer_from_savings_operation'
+  | 'transfer_to_savings_operation'
+  | 'interest_operation'
+  | 'cancel_transfer_from_savings_operation'
+  | 'fill_order_operation'
+  | 'transfer_to_vesting_operation'
+  | 'curation_reward_operation'
+  | 'author_reward_operation'
+  | 'producer_reward_operation'
+  | 'comment_reward_operation'
+  | 'comment_benefactor_reward_operation'
+  | 'interest_operation'
+  | 'proposal_pay_operation'
+  | 'sps_fund_operation'
+  | 'transfer_operation'
+  | 'withdraw_vesting_operation';
 
 export type IAuthorReward = {
   author: string;
@@ -545,38 +545,6 @@ export interface HiveOperation {
     }
   };
 }
-
-export type AccountHistory = [
-  number,
-  {
-    trx_id: string;
-    block: number;
-    trx_in_block: number;
-    op_in_trx: number;
-    virtual_op: boolean;
-    timestamp: string;
-    op: [
-      OpType,
-      {
-        open_pays?: string;
-        current_pays?: string;
-        owner?: string;
-        is_saved_into_hbd_balance?: boolean;
-        interest: string;
-        request_id?: number;
-        amount?: string;
-        from?: string;
-        memo?: string;
-        to?: string;
-        account?: string;
-        reward_hbd?: string;
-        reward_hive?: string;
-        reward_vests?: string;
-        vesting_shares?: string;
-      }
-    ];
-  }
-];
 
 export type AccountRewardsHistory = [
   number,
@@ -892,7 +860,6 @@ export type ExtendedNodeApi = {
     get_reblogged_by: TWaxApiRequest<[string, string], string[]>;
     get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
     get_vesting_delegations: TWaxApiRequest<(string | number)[], IDelegatedVestingShare[]>;
-    get_account_history: TWaxApiRequest<(string | number)[], AccountHistory[] | AccountRewardsHistory[]>;
     list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
     get_dynamic_global_properties: TWaxApiRequest<[], IDynamicGlobalProperties>;
     get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;

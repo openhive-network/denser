@@ -18,15 +18,15 @@ interface FinancialReportProps {
 type FinancialReportPeriod = 'last7days' | 'last14days' | 'last30days' | 'last60days';
 const allReportPeriods: FinancialReportPeriod[] = ['last7days', 'last14days', 'last30days', 'last60days'];
 const opTypes: OpType[] = [
-  'curation_reward',
-  'author_reward',
-  'producer_reward',
-  'comment_reward',
-  'comment_benefactor_reward',
-  'interest',
-  'proposal_pay',
-  'sps_fund',
-  'transfer'
+  'curation_reward_operation',
+  'author_reward_operation',
+  'producer_reward_operation',
+  'comment_reward_operation',
+  'comment_benefactor_reward_operation',
+  'interest_operation',
+  'proposal_pay_operation',
+  'sps_fund_operation',
+  'transfer_operation'
 ];
 
 const dateDiffInDays = (a: Date, b: Date) => {
