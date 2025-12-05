@@ -33,16 +33,16 @@ test.describe('Login and Sign Up tests', () =>{
     expect(await homePage.getElementCssPropertyValue(homePage.loginBtn, 'color')).toBe("rgb(0, 0, 0)");
     await expect(homePage.loginBtn).toHaveText("Login")
     await homePage.loginBtn.hover()
-    await page.waitForTimeout(500)
-    expect(await homePage.getElementCssPropertyValue(homePage.loginBtn, 'color')).toBe("rgb(218, 43, 43)");
+    // Wait for hover state with auto-retry instead of fixed timeout
+    await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(218, 43, 43)');
 
 
     await expect(homePage.signupBtn).toBeVisible()
     expect(await homePage.getElementCssPropertyValue(homePage.signupBtn, 'color')).toBe("rgb(255, 255, 255)");
     await expect(homePage.signupBtn).toHaveText("Sign up")
     await homePage.signupBtn.hover()
-    await page.waitForTimeout(500)
-    expect(await homePage.getElementCssPropertyValue(homePage.signupBtn, 'background-color')).toBe("rgb(220, 38, 38)");
+    // Wait for hover state with auto-retry instead of fixed timeout
+    await expect(homePage.signupBtn).toHaveCSS('background-color', 'rgb(220, 38, 38)');
   });
 
   test('Check if login and sign up buttons are displayed correctly - dark mode', async ({ page }) => {
@@ -51,15 +51,15 @@ test.describe('Login and Sign Up tests', () =>{
     // expect(await homePage.getElementCssPropertyValue(homePage.loginBtn, 'color')).toBe("rgb(52, 60, 77)");
     await expect(homePage.loginBtn).toHaveText("Login")
     await homePage.loginBtn.hover()
-    await page.waitForTimeout(1000)
-    expect(await homePage.getElementCssPropertyValue(homePage.loginBtn, 'color')).toBe("rgb(226, 18, 53)");
+    // Wait for hover state with auto-retry instead of fixed timeout
+    await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(226, 18, 53)');
 
     await expect(homePage.signupBtn).toBeVisible()
     expect(await homePage.getElementCssPropertyValue(homePage.signupBtn, 'color')).toBe("rgb(255, 255, 255)");
     await expect(homePage.signupBtn).toHaveText("Sign up")
     await homePage.signupBtn.hover()
-    await page.waitForTimeout(1000)
-    expect(await homePage.getElementCssPropertyValue(homePage.signupBtn, 'background-color')).toBe("rgb(220, 38, 38)");
+    // Wait for hover state with auto-retry instead of fixed timeout
+    await expect(homePage.signupBtn).toHaveCSS('background-color', 'rgb(220, 38, 38)');
     await homePage.changeThemeMode("Light")
   });
 
