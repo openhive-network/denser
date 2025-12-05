@@ -966,10 +966,11 @@ test.describe('Communities page tests', () => {
     let subscribersUIBeforeLoadMoreClik = await communitiesPage.subscriberRow.all();
     expect(subscribersUIBeforeLoadMoreClik.length).toBe(subscribersAPI.result.length);
     // Click `Load more` button
-    await communitiesPage.page.waitForTimeout(3000);
+    await communitiesPage.subscribersLoadMoreButton.waitFor({state: 'visible'});
     await communitiesPage.subscribersLoadMoreButton.click();
     // Validate the length of subscribers is two times longer than befor clicking `Load more` button
-    await communitiesPage.page.waitForTimeout(3000);
+    // Wait for subscribers list to update (expect double the count)
+    await expect(communitiesPage.subscriberRow).toHaveCount(2 * subscribersUIBeforeLoadMoreClik.length, {timeout: 10000});
     let subscribersUIAfterLoadMoreClick = await communitiesPage.subscriberRow.all();
     expect(subscribersUIAfterLoadMoreClick.length).toBe(2 * subscribersUIBeforeLoadMoreClik.length);
   });
