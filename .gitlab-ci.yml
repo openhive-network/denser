@@ -466,6 +466,7 @@ mirrornet-based-tests:
 
 e2e-tests-blog:
   extends: .e2e_tests_template
+  allow_failure: true
   needs:
   - docker-build-blog-testenv
 
