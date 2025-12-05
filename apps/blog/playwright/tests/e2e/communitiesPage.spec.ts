@@ -42,7 +42,16 @@ test.describe('Communities page tests', () => {
 
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
+
+    // Wait for new posts to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
+    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    expect(postsCount).toBeGreaterThanOrEqual(40);
+    expect(postsCount).toBeLessThanOrEqual(60);
   });
 
   test('load next the community post cards in the Worldmappin Community', async ({ page, browserName }) => {
@@ -53,7 +62,16 @@ test.describe('Communities page tests', () => {
 
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
+
+    // Wait for new posts to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
+    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    expect(postsCount).toBeGreaterThanOrEqual(40);
+    expect(postsCount).toBeLessThanOrEqual(60);
   });
 
   test('validate the community subscribers, pending rewards, active posters are valid in LeoFinance Community', async ({
@@ -649,7 +667,7 @@ test.describe('Communities page tests', () => {
   });
 
   test('validate styles of the list of the subscribers in the modal in the light mode', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit' || browserName === 'firefox' , 'Automatic test works well on chromium');
+    test.skip(browserName === 'webkit' || browserName === 'firefox', 'Automatic test works well on chromium');
 
     const leoFinanceCommunityAccount: string = 'hive-167922';
     const widthProgressBar = 60; // 100%

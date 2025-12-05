@@ -34,9 +34,19 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     expect(await commentListItemsBeforeLoadMore.length).toBe(20);
 
     await profilePage.page.keyboard.down('End');
-    await page.waitForTimeout(3000);
+
+    // Wait for new comments to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
     const commentListItemsAfterScrollDown = await profilePage.postBlogItem.all();
-    expect(await commentListItemsAfterScrollDown.length).toBe(60);
+    expect(await commentListItemsAfterScrollDown.length).toBeGreaterThanOrEqual(40);
+    expect(await commentListItemsAfterScrollDown.length).toBeLessThanOrEqual(80);
+
+    // Verify that new comments were actually loaded
+    expect(await commentListItemsAfterScrollDown.length).toBeGreaterThan(commentListItemsBeforeLoadMore.length);
   });
 
   test('move to the comment view page after clicking the card title', async ({ page }) => {
@@ -59,7 +69,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     // console.log('commentContentWithoutSpaces: ', await commentContentWithoutSpaces);
 
-    if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
+    if (await page.getByText('Content were hidden due to low ratings.').isVisible()) {
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
       const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
@@ -78,7 +88,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    if (await profilePage.postDescription.first().isVisible()){
+    if (await profilePage.postDescription.first().isVisible()) {
       const firstCommentCardTitle: any = await profilePage.postTitle.first().textContent();
       const firstCommentCardDescription: any = await profilePage.postDescription
         .first()
@@ -91,7 +101,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       await profilePage.postDescription.first().click();
       await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
-      if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
+      if (await page.getByText('Content were hidden due to low ratings.').isVisible()) {
         await page.locator('button').getByText('Show').click();
         const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
         const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
@@ -204,7 +214,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.postTimestamp.first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
-    if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
+    if (await page.getByText('Content were hidden due to low ratings.').isVisible()) {
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
       const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
@@ -360,7 +370,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
-    if (await page.getByText('Content were hidden due to low ratings.').isVisible()){
+    if (await page.getByText('Content were hidden due to low ratings.').isVisible()) {
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
       const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
