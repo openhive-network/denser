@@ -7,36 +7,51 @@ import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } fro
 import { getTwitterInfo } from '@transaction/lib/custom-api';
 import { isUsernameValid } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 export async function generateMetadata({ params }: { params: { param: string } }): Promise<Metadata> {
   const raw = params.param;
   const username = raw.startsWith('%40') ? raw.replace('%40', '') : raw;
   const queryClient = getQueryClient();
-  const account = await queryClient.fetchQuery({
-    queryKey: ['profileData', username],
-    queryFn: () => getAccountFull(username)
-  });
-  const image = account?.profile?.profile_image || 'https://hive.blog/images/hive-blog-share.png';
-  const about = account?.profile?.about || `Profile of @${username} on Hive.`;
-  const title = `Blog ${username}`;
-  return {
-    title: {
-      default: title,
-      template: '%s - Hive'
-    },
-    description: about,
-    openGraph: {
-      title,
+  try {
+    const account = await queryClient.fetchQuery({
+      queryKey: ['profileData', username],
+      queryFn: () => getAccountFull(username)
+    });
+    const image = account?.profile?.profile_image || 'https://hive.blog/images/hive-blog-share.png';
+    const about = account?.profile?.about || `Profile of @${username} on Hive.`;
+    const title = `Blog ${username}`;
+    return {
+      title: {
+        default: title,
+        template: '%s - Hive'
+      },
       description: about,
-      images: [image]
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description: about,
-      images: [image]
-    }
-  };
+      openGraph: {
+        title,
+        description: about,
+        images: [image]
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description: about,
+        images: [image]
+      }
+    };
+  } catch (error) {
+    logger.error('Error in generateMetadata:', error);
+    return {
+      title: 'Hive',
+      description: 'Hive: Communities Without Borders.',
+      openGraph: {
+        title: 'Hive',
+        description: 'Hive: Communities Without Borders.'
+      }
+    };
+  }
 }
 
 const Layout = async ({ children, params }: { children: ReactNode; params: { param: string } }) => {
@@ -49,22 +64,26 @@ const Layout = async ({ children, params }: { children: ReactNode; params: { par
     notFound();
   }
 
-  await queryClient.prefetchQuery({
-    queryKey: ['profileData', username],
-    queryFn: () => getAccountFull(username)
-  });
-  await queryClient.prefetchQuery({
-    queryKey: ['accountReputationData', username],
-    queryFn: () => getAccountReputations(username, 1)
-  });
-  await queryClient.prefetchQuery({
-    queryKey: ['twitterData', username],
-    queryFn: () => getTwitterInfo(username)
-  });
-  await queryClient.prefetchQuery({
-    queryKey: ['dynamicGlobalData'],
-    queryFn: () => getDynamicGlobalProperties()
-  });
+  try {
+    await queryClient.prefetchQuery({
+      queryKey: ['profileData', username],
+      queryFn: () => getAccountFull(username)
+    });
+    await queryClient.prefetchQuery({
+      queryKey: ['accountReputationData', username],
+      queryFn: () => getAccountReputations(username, 1)
+    });
+    await queryClient.prefetchQuery({
+      queryKey: ['twitterData', username],
+      queryFn: () => getTwitterInfo(username)
+    });
+    await queryClient.prefetchQuery({
+      queryKey: ['dynamicGlobalData'],
+      queryFn: () => getDynamicGlobalProperties()
+    });
+  } catch (error) {
+    logger.error('Error in Layout:', error);
+  }
   return (
     <Hydrate state={dehydrate(queryClient)}>
       <ProfileLayout>{children}</ProfileLayout>

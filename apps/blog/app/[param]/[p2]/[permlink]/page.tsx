@@ -9,7 +9,9 @@ import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import Loading from '@ui/components/loading';
 import { isUsernameValid, isPermlinkValid } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
+import { getLogger } from '@ui/lib/logging';
 
+const logger = getLogger('app');
 
 const PostPage = async ({
   params: { param, p2, permlink }
@@ -23,32 +25,35 @@ const PostPage = async ({
   if (!validUser) notFound();
 
   if (!isPermlinkValid(permlink)) notFound();
-
-  const observer = getObserverFromCookies();
-  await queryClient.prefetchQuery({
-    queryKey: ['postData', username, permlink],
-    queryFn: () => getPost(username, permlink, observer)
-  });
-
-  await queryClient.prefetchQuery({
-    queryKey: ['discussionData', permlink],
-    queryFn: () => getDiscussion(username, permlink, observer)
-  });
-
-  await queryClient.prefetchQuery({
-    queryKey: ['activeVotes', username, permlink],
-    queryFn: () => getActiveVotes(username, permlink)
-  });
-
-  if (community.startsWith('hive-')) {
+  try {
+    const observer = getObserverFromCookies();
     await queryClient.prefetchQuery({
-      queryKey: ['communityData', community],
-      queryFn: () => getCommunity(community, observer)
+      queryKey: ['postData', username, permlink],
+      queryFn: () => getPost(username, permlink, observer)
     });
+
     await queryClient.prefetchQuery({
-      queryKey: ['rolesList', community],
-      queryFn: () => getListCommunityRoles(community)
+      queryKey: ['discussionData', permlink],
+      queryFn: () => getDiscussion(username, permlink, observer)
     });
+
+    await queryClient.prefetchQuery({
+      queryKey: ['activeVotes', username, permlink],
+      queryFn: () => getActiveVotes(username, permlink)
+    });
+
+    if (community.startsWith('hive-')) {
+      await queryClient.prefetchQuery({
+        queryKey: ['communityData', community],
+        queryFn: () => getCommunity(community, observer)
+      });
+      await queryClient.prefetchQuery({
+        queryKey: ['rolesList', community],
+        queryFn: () => getListCommunityRoles(community)
+      });
+    }
+  } catch (error) {
+    logger.error('Error in PostPage:', error);
   }
 
   return (

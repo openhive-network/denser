@@ -12,10 +12,8 @@ import {
   extractYouTubeVideoIds
 } from '@/blog/lib/utils';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import { useQuery } from '@tanstack/react-query';
-import { getAccountFull } from '@transaction/lib/hive-api';
 
-export function find_first_img(post: Entry, authorProfileImage?: string) {
+export function find_first_img(post: Entry) {
   try {
     if (
       post.json_metadata.links &&
@@ -81,10 +79,7 @@ export function find_first_img(post: Entry, authorProfileImage?: string) {
     }
     // Last fallback: use user profile image if available, otherwise use avatar
     if (!post.title.includes('RE: ') && post.depth === 0) {
-      if (authorProfileImage) {
-        return proxifyImageUrl(authorProfileImage, true);
-      }
-      return proxifyImageUrl(getUserAvatarUrl(post.author, 'large'), true);
+      return getUserAvatarUrl(post.author, 'large');
     }
     return '';
   } catch (e) {
@@ -94,22 +89,8 @@ export function find_first_img(post: Entry, authorProfileImage?: string) {
 }
 
 export default function PostImage({ post }: { post: Entry }) {
-  // Fetch author profile data to get profile_image
-  const { data: authorProfile } = useQuery({
-    queryKey: ['profileData', post.author],
-    queryFn: () => getAccountFull(post.author),
-    enabled: !post.title.includes('RE: ') && post.depth === 0,
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-    cacheTime: 10 * 60 * 1000 // Keep in cache for 10 minutes
-  });
-
-  const authorProfileImage = authorProfile?.profile?.profile_image;
-  const cardImage = find_first_img(post, authorProfileImage);
+  const cardImage = find_first_img(post);
   const [image, setImage] = useState<string>(cardImage);
-
-  useEffect(() => {
-    setImage(cardImage);
-  }, [cardImage]);
 
   return (
     <>
@@ -122,7 +103,7 @@ export default function PostImage({ post }: { post: Entry }) {
           <div className="relative flex h-[210px] items-center overflow-hidden bg-transparent sm:h-[360px] md:mr-3.5 md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
             <picture className="articles__feature-img h-ful w-full">
               <source
-                srcSet={proxifyImageUrl(image, '256x512').replace(/ /g, '%20')}
+                srcSet={image}
                 media="(min-width: 1000px)"
                 onError={() => setImage(getDefaultImageUrl())}
               />
