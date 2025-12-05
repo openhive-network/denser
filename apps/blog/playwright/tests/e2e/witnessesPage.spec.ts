@@ -115,28 +115,28 @@ test.describe.skip('Witnesses page tests', () => {
 
     // Click the highlight link of the first witness
     await witnessPage.firstWitnessHighLightLink.click();
-    await witnessPage.page.waitForTimeout(1000);
+    // Wait for highlight background-color to appear
+    await expect.poll(async () => {
+      return await witnessPage.getElementCssPropertyValue(witnessPage.firstWitnessListMemberRow, 'background-color');
+    }).toBe('rgb(252, 165, 165)');
     const inputValueVoteBox = await witnessPage.page.$eval(
       await witnessPage.witnessesVoteBoxInput['_selector'],
       (el) => el.value
     );
     expect(inputValueVoteBox).toBe(await witnessPage.firstWitnessNameLink.textContent());
-    expect(
-      await witnessPage.getElementCssPropertyValue(witnessPage.firstWitnessListMemberRow, 'background-color')
-    ).toBe('rgb(252, 165, 165)');
 
     // Click the highlight link of the first witness again
     // Expected empty string inside input value
     await witnessPage.firstWitnessHighLightLink.click();
-    await witnessPage.page.waitForTimeout(1000);
+    // Wait for highlight background-color to disappear
+    await expect.poll(async () => {
+      return await witnessPage.getElementCssPropertyValue(witnessPage.firstWitnessListMemberRow, 'background-color');
+    }).toBe('rgba(0, 0, 0, 0)');
     const inputValueVoteBoxEmpty = await witnessPage.page.$eval(
       await witnessPage.witnessesVoteBoxInput['_selector'],
       (el) => el.value
     );
     expect(inputValueVoteBoxEmpty).toBe('');
-    expect(
-      await witnessPage.getElementCssPropertyValue(witnessPage.firstWitnessListMemberRow, 'background-color')
-    ).toBe('rgba(0, 0, 0, 0)');
   });
 
   test('move to the profile page of the first witness', async ({ page }) => {
@@ -153,7 +153,8 @@ test.describe.skip('Witnesses page tests', () => {
   test('move to the extra side of the first witness', async ({ page }) => {
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
-    await witnessPage.page.waitForTimeout(1000);
+    // Wait for witness external site link to be visible
+    await witnessPage.witnessesExternalSiteLink.first().waitFor({ state: 'visible' });
 
     const hrefValueFirstWitnessExternalSiteLink = await witnessPage.page.$eval(
       await witnessPage.witnessesExternalSiteLink.first()['_selector'],

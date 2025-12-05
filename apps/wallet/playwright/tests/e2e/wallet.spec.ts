@@ -124,7 +124,6 @@ test.describe('Wallet page of @gtg tests', () => {
   test('validate searching by unknown user on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForTimeout(5000);
     await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
     await walletPage.walletSearchInput.fill('unknownuser');
     await expect(walletPage.walletSearchInput).toHaveAttribute('value', 'unknownuser');
@@ -141,7 +140,6 @@ test.describe('Wallet page of @gtg tests', () => {
     let apiHelper = new ApiHelper(page);
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForTimeout(5000);
     await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
     const accountHistoryResult = await apiHelper.getAccountHistoryAPI('gtg', -1, 500);
     const accountHistoryUI = await walletPage.walletAccountHistoryRow.all();

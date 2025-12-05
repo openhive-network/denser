@@ -271,11 +271,10 @@ test.describe('Profile page of @gtg', () => {
     );
 
     await profilePage.followButton.hover();
-    await profilePage.page.waitForTimeout(1000);
-
-    expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color')).toBe(
-      'rgb(218, 43, 43)'
-    );
+    // Wait for hover color to change
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color');
+    }).toBe('rgb(218, 43, 43)');
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.followButton, 'background-color')
     ).toBe('rgb(24, 30, 42)');
@@ -286,7 +285,6 @@ test.describe('Profile page of @gtg', () => {
 
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
-    await homePage.page.waitForTimeout(1000);
 
     expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color')).toBe(
       'rgb(2, 2, 5)'
@@ -296,11 +294,10 @@ test.describe('Profile page of @gtg', () => {
     );
 
     await profilePage.followButton.hover();
-    await profilePage.page.waitForTimeout(1000);
-
-    expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color')).toBe(
-      'rgb(226, 18, 53)'
-    );
+    // Wait for hover color to change
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color');
+    }).toBe('rgb(226, 18, 53)');
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.followButton, 'background-color')
     ).toBe('rgb(248, 250, 252)');
