@@ -321,7 +321,26 @@ mirrornet-haf-node-replay:
   stage: test
   before_script:
   - corepack enable
-  - corepack prepare pnpm@9.6.0 --activate
+  - |
+    # Retry corepack prepare with exponential backoff to handle transient npm registry failures
+    max_attempts=5
+    attempt=1
+    delay=5
+    while [ $attempt -le $max_attempts ]; do
+      echo "Attempting to prepare pnpm (attempt $attempt/$max_attempts)..."
+      if corepack prepare pnpm@9.6.0 --activate; then
+        echo "Successfully prepared pnpm"
+        break
+      fi
+      if [ $attempt -eq $max_attempts ]; then
+        echo "Failed to prepare pnpm after $max_attempts attempts"
+        exit 1
+      fi
+      echo "Attempt $attempt failed, retrying in ${delay}s..."
+      sleep $delay
+      attempt=$((attempt + 1))
+      delay=$((delay * 2))
+    done
   - pnpm config set store-dir .pnpm-store
   script:
   - |
