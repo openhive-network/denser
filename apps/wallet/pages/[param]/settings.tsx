@@ -10,11 +10,13 @@ import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-compon
 import { useEffect, useState } from 'react';
 import {useHealthChecker} from "@ui/hooks/useHealthChecker";
 import { FullAccount } from '@transaction/lib/app-types';
-import { SavingsWithdrawals } from '@transaction/lib/extended-hive.chain';
+import { HiveOpTypeSchema, IGetOperationsByAccountResponse, SavingsWithdrawals } from '@transaction/lib/extended-hive.chain';
 
 type NodeApiCheckers = [
   ApiChecker<FullAccount[]>,
   ApiChecker<SavingsWithdrawals>,
+  ApiChecker<IGetOperationsByAccountResponse>,
+  ApiChecker<HiveOpTypeSchema[]>
 ];
 
 function Communities({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -41,10 +43,22 @@ function Communities({ username, metadata }: InferGetServerSidePropsType<typeof 
           params: {account: "guest4test"},
           validatorFunction: data => !!data.withdrawals ? true : "Get saving withdrawals error",
         },
+        {
+          title: "Hivemind API",
+          method: hiveChain.restApi['hivemind-api'].accountsOperations,
+          params: {'account-name': "gtg", 'page-size': 10, 'observer-name': "gtg", 'data-size-limit': 200000},
+          validatorFunction: data => !!data.total_operations ? true : "Get saving withdrawals error",
+        },
+        {
+          title: "HAFAH API",
+          method: hiveChain.restApi["hafah-api"]['operation-types'],
+          params: {},
+          validatorFunction: data => data.length > 0 ? true : "Get saving withdrawals error",
+        },
      ]
       setWalletApiCheckers(apiCheckers);
     }
-  const healthCheckerService = useHealthChecker("wallet-api", walletApiCheckers, "node-endpoint", hiveChainService.setAiSearchEndpoint );
+  const healthCheckerService = useHealthChecker("wallet-api", walletApiCheckers, "node-endpoint", hiveChainService.setHiveChainEndpoint );
   const { t } = useTranslation('common_wallet');
   useEffect(() => {
     createApiCheckers();

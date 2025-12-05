@@ -53,7 +53,7 @@ export class HiveChainService {
         }
         // Set promise result in this class' static property and return
         // it here as well.
-        await this.setHiveChain({ apiEndpoint, chainId: siteConfig.chainId });
+        await this.setHiveChain({ apiEndpoint, chainId: siteConfig.chainId, restApiEndpoint: apiEndpoint });
         return HiveChainService.hiveChain;
       };
 
@@ -129,7 +129,7 @@ export class HiveChainService {
       apiEndpoint = siteConfig.endpoint;
     }
     // Always use the same endpoint as the main API for hivesense-api
-    HiveChainService.hiveChain.restApi['hivesense-api'].endpointUrl = options?.apiEndpoint || siteConfig.endpoint;
+    HiveChainService.hiveChain.restApi['hivesense-api'].endpointUrl = apiEndpoint || siteConfig.endpoint;
     if (storedAiSearchEndpoint) {
       HiveChainService.hiveChain.api['search-api'].find_text.endpointUrl = apiEndpoint;
     }
