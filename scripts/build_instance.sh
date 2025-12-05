@@ -129,6 +129,25 @@ fi
 export GIT_LAST_COMMIT_DATE
 
 ./scripts/write-version.sh ".${TURBO_APP_PATH}/version.json"
-docker buildx bake --provenance=false --progress="$PROGRESS_DISPLAY" "$TARGET"
+
+# Retry docker buildx bake with exponential backoff to handle transient Docker Hub rate limiting
+max_attempts=5
+attempt=1
+delay=30
+while [ $attempt -le $max_attempts ]; do
+  echo "Docker build attempt $attempt/$max_attempts..."
+  if docker buildx bake --provenance=false --progress="$PROGRESS_DISPLAY" "$TARGET"; then
+    echo "Docker build succeeded"
+    break
+  fi
+  if [ $attempt -eq $max_attempts ]; then
+    echo "Docker build failed after $max_attempts attempts"
+    exit 1
+  fi
+  echo "Attempt $attempt failed, retrying in ${delay}s..."
+  sleep $delay
+  attempt=$((attempt + 1))
+  delay=$((delay * 2))
+done
 
 popd
