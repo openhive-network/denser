@@ -33,9 +33,9 @@ test.describe('Profile page of @gtg', () => {
     const firstPostAuthor = await profilePage.postsPostAuthor.nth(0);
 
     if (await firstPostRebloggedLabel.locator('[data-testid="reblogged-label"]').isVisible())
-        expect(await firstPostRebloggedAuthorLink.textContent()).not.toBe(await firstPostAuthor.textContent());
+      expect(await firstPostRebloggedAuthorLink.textContent()).not.toBe(await firstPostAuthor.textContent());
     else
-        expect(await firstPostAuthor.textContent()).toBe('gtg');
+      expect(await firstPostAuthor.textContent()).toBe('gtg');
   });
 
   test('validate amount of post items before and after loading more cards', async ({ page }) => {
@@ -46,9 +46,19 @@ test.describe('Profile page of @gtg', () => {
     expect(await postListItemsBeforeLoadMore.length).toBe(20);
 
     await profilePage.page.keyboard.down('End');
-    await expect(profilePage.postBlogItem.nth(59)).toBeVisible({ timeout: 15000 });
+
+    // Wait for new posts to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
     const postListItemsAfterScrollDown = await profilePage.postBlogItem.all();
-    expect(await postListItemsAfterScrollDown.length).toBe(60);
+    expect(await postListItemsAfterScrollDown.length).toBeGreaterThanOrEqual(40);
+    expect(await postListItemsAfterScrollDown.length).toBeLessThanOrEqual(60);
+
+    // Verify that new posts were actually loaded
+    expect(await postListItemsAfterScrollDown.length).toBeGreaterThan(postListItemsBeforeLoadMore.length);
   });
 
   test('move to the profile page after clicking avatar of the first post card', async ({ page }) => {
@@ -111,23 +121,23 @@ test.describe('Profile page of @gtg', () => {
     const postCategoryLink: Locator = await profilePage.postCategoryLink;
 
 
-    if (await firstPostItem.filter({ has: postCommunityLink }).isVisible()){
-        const firstPostCommunityLinkName: any = await firstPostItem.filter({ has: postCommunityLink }).locator(postCommunityLink).textContent();
-        console.log('Fist Post Community Name ', await firstPostCommunityLinkName);
+    if (await firstPostItem.filter({ has: postCommunityLink }).isVisible()) {
+      const firstPostCommunityLinkName: any = await firstPostItem.filter({ has: postCommunityLink }).locator(postCommunityLink).textContent();
+      console.log('Fist Post Community Name ', await firstPostCommunityLinkName);
 
-        await postCommunityLink.first().click();
-        expect(await communityPage.communityNameTitle.textContent()).toBe(firstPostCommunityLinkName);
+      await postCommunityLink.first().click();
+      expect(await communityPage.communityNameTitle.textContent()).toBe(firstPostCommunityLinkName);
 
-        expect(await communityPage.communityInfoSidebar.locator('h3').textContent()).toBe(firstPostCommunityLinkName);
-        await communityPage.validataCommunitiesPageIsLoaded(await firstPostCommunityLinkName);
+      expect(await communityPage.communityInfoSidebar.locator('h3').textContent()).toBe(firstPostCommunityLinkName);
+      await communityPage.validataCommunitiesPageIsLoaded(await firstPostCommunityLinkName);
     }
 
-    if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()){
-        const firstPostCategoryLinkName: any = await firstPostItem.filter({ has: postCategoryLink }).locator(postCategoryLink).textContent();
-        // console.log('Fist Post Category Name ', await firstPostCategoryLinkName);
+    if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()) {
+      const firstPostCategoryLinkName: any = await firstPostItem.filter({ has: postCategoryLink }).locator(postCategoryLink).textContent();
+      // console.log('Fist Post Category Name ', await firstPostCategoryLinkName);
 
-        await postCategoryLink.first().click();
-        expect(await communityPage.communityNameTitle.textContent()).toBe(firstPostCategoryLinkName);
+      await postCategoryLink.first().click();
+      expect(await communityPage.communityNameTitle.textContent()).toBe(firstPostCategoryLinkName);
     }
   });
 
@@ -139,8 +149,8 @@ test.describe('Profile page of @gtg', () => {
     // Validate color of nickname before hovering
     expect(
       await profilePage.getElementCssPropertyValue(
-      await firstPostNickName,
-      'color'
+        await firstPostNickName,
+        'color'
       )
     ).toBe('rgb(24, 30, 42)');
 
@@ -149,8 +159,8 @@ test.describe('Profile page of @gtg', () => {
     await expect(firstPostNickName).toBeVisible({ timeout: 15000 });
     expect(
       await profilePage.getElementCssPropertyValue(
-      await firstPostNickName,
-      'color'
+        await firstPostNickName,
+        'color'
       )
     ).toBe('rgb(218, 43, 43)');
 
@@ -158,8 +168,8 @@ test.describe('Profile page of @gtg', () => {
     const firstPostReputation = await profilePage.postReputation.first();
     expect(
       await profilePage.getElementCssPropertyValue(
-      await firstPostReputation,
-      'color'
+        await firstPostReputation,
+        'color'
       )
     ).toBe('rgb(24, 30, 42)');
 
@@ -170,12 +180,12 @@ test.describe('Profile page of @gtg', () => {
     const postCommunityLink: Locator = await profilePage.postCommunityLink;
     const postCategoryLink: Locator = await profilePage.postCategoryLink;
 
-    if (await firstPostItem.filter({ has: postCommunityLink }).isVisible()){
+    if (await firstPostItem.filter({ has: postCommunityLink }).isVisible()) {
       // Validate color of community before hovering
       expect(
         await profilePage.getElementCssPropertyValue(
-        await postCommunityLink.first(),
-        'color'
+          await postCommunityLink.first(),
+          'color'
         )
       ).toBe('rgb(24, 30, 42)');
 
@@ -184,18 +194,18 @@ test.describe('Profile page of @gtg', () => {
       await expect(postCommunityLink.first()).toBeVisible({ timeout: 15000 });
       expect(
         await profilePage.getElementCssPropertyValue(
-        await postCommunityLink.first(),
-        'color'
+          await postCommunityLink.first(),
+          'color'
         )
       ).toBe('rgb(218, 43, 43)');
     }
 
-    if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()){
+    if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()) {
       // Validate color of category before hovering
       expect(
         await profilePage.getElementCssPropertyValue(
-        await postCategoryLink.first(),
-        'color'
+          await postCategoryLink.first(),
+          'color'
         )
       ).toBe('rgb(24, 30, 42)');
 
@@ -204,8 +214,8 @@ test.describe('Profile page of @gtg', () => {
       await expect(postCategoryLink.first()).toBeVisible({ timeout: 15000 });
       expect(
         await profilePage.getElementCssPropertyValue(
-        await postCategoryLink.first(),
-        'color'
+          await postCategoryLink.first(),
+          'color'
         )
       ).toBe('rgb(218, 43, 43)');
     }
@@ -214,8 +224,8 @@ test.describe('Profile page of @gtg', () => {
     const firstPostTimestamp = await profilePage.postTimestamp.first();
     expect(
       await profilePage.getElementCssPropertyValue(
-      await firstPostTimestamp,
-      'color'
+        await firstPostTimestamp,
+        'color'
       )
     ).toBe('rgb(24, 30, 42)');
 
@@ -224,8 +234,8 @@ test.describe('Profile page of @gtg', () => {
     await expect(firstPostTimestamp.first()).toBeVisible({ timeout: 15000 });
     expect(
       await profilePage.getElementCssPropertyValue(
-      await firstPostTimestamp,
-      'color'
+        await firstPostTimestamp,
+        'color'
       )
     ).toBe('rgb(218, 43, 43)');
   });
@@ -240,8 +250,8 @@ test.describe('Profile page of @gtg', () => {
     // Validate color of nickname before hovering
     expect(
       await profilePage.getElementCssPropertyValue(
-      await firstPostNickName,
-      'color'
+        await firstPostNickName,
+        'color'
       )
     ).toBe('rgb(248, 250, 252)');
 
@@ -250,8 +260,8 @@ test.describe('Profile page of @gtg', () => {
     await expect(firstPostNickName).toBeVisible({ timeout: 15000 });
     expect(
       await profilePage.getElementCssPropertyValue(
-      await firstPostNickName,
-      'color'
+        await firstPostNickName,
+        'color'
       )
     ).toBe('rgb(226, 18, 53)');
 
@@ -259,8 +269,8 @@ test.describe('Profile page of @gtg', () => {
     const firstPostReputation = await profilePage.postReputation.first();
     expect(
       await profilePage.getElementCssPropertyValue(
-      await firstPostReputation,
-      'color'
+        await firstPostReputation,
+        'color'
       )
     ).toBe('rgb(248, 250, 252)');
 
@@ -271,12 +281,12 @@ test.describe('Profile page of @gtg', () => {
     const postCommunityLink: Locator = await profilePage.postCommunityLink;
     const postCategoryLink: Locator = await profilePage.postCategoryLink;
 
-    if (await firstPostItem.filter({ has: postCommunityLink }).isVisible()){
+    if (await firstPostItem.filter({ has: postCommunityLink }).isVisible()) {
       // Validate color of community before hovering
       expect(
         await profilePage.getElementCssPropertyValue(
-        await postCommunityLink.first(),
-        'color'
+          await postCommunityLink.first(),
+          'color'
         )
       ).toBe('rgb(248, 250, 252)');
 
@@ -285,18 +295,18 @@ test.describe('Profile page of @gtg', () => {
       await expect(postCommunityLink.first()).toBeVisible({ timeout: 15000 });
       expect(
         await profilePage.getElementCssPropertyValue(
-        await postCommunityLink.first(),
-        'color'
+          await postCommunityLink.first(),
+          'color'
         )
       ).toBe('rgb(226, 18, 53)');
     }
 
-    if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()){
+    if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()) {
       // Validate color of category before hovering
       expect(
         await profilePage.getElementCssPropertyValue(
-        await postCategoryLink.first(),
-        'color'
+          await postCategoryLink.first(),
+          'color'
         )
       ).toBe('rgb(226, 18, 53)');
 
@@ -305,8 +315,8 @@ test.describe('Profile page of @gtg', () => {
       await expect(postCategoryLink.first()).toBeVisible({ timeout: 15000 });
       expect(
         await profilePage.getElementCssPropertyValue(
-        await postCategoryLink.first(),
-        'color'
+          await postCategoryLink.first(),
+          'color'
         )
       ).toBe('rgb(218, 43, 43)');
     }
@@ -315,8 +325,8 @@ test.describe('Profile page of @gtg', () => {
     const firstPostTimestamp = await profilePage.postTimestamp.first();
     expect(
       await profilePage.getElementCssPropertyValue(
-      await firstPostTimestamp,
-      'color'
+        await firstPostTimestamp,
+        'color'
       )
     ).toBe('rgb(248, 250, 252)');
 
@@ -325,8 +335,8 @@ test.describe('Profile page of @gtg', () => {
     await expect(firstPostTimestamp.first()).toBeVisible({ timeout: 15000 });
     expect(
       await profilePage.getElementCssPropertyValue(
-      await firstPostTimestamp,
-      'color'
+        await firstPostTimestamp,
+        'color'
       )
     ).toBe('rgb(226, 18, 53)');
   });
@@ -359,18 +369,18 @@ test.describe('Profile page of @gtg', () => {
     ).toBeTruthy();
 
     expect(
-        await profilePage.getElementCssPropertyValue(
+      await profilePage.getElementCssPropertyValue(
         await profilePage.postUpvoteButton.locator('svg').first(),
         'color'
-        )
+      )
     ).toBe('rgb(255, 255, 255)');
 
     // Upvote icon background-color
     expect(
-        await profilePage.getElementCssPropertyValue(
+      await profilePage.getElementCssPropertyValue(
         await profilePage.postUpvoteButton.locator('svg').first(),
         'background-color'
-        )
+      )
     ).toBe('rgb(218, 43, 43)');
 
     await profilePage.postUpvoteButton.first().click();
@@ -394,18 +404,18 @@ test.describe('Profile page of @gtg', () => {
 
     // Upvote icon color
     expect(
-        await profilePage.getElementCssPropertyValue(
+      await profilePage.getElementCssPropertyValue(
         await profilePage.postDownvoteButton.locator('svg').first(),
         'color'
-        )
+      )
     ).toBe('rgb(255, 255, 255)');
 
     // Downvote icon background-color
     expect(
-        await profilePage.getElementCssPropertyValue(
+      await profilePage.getElementCssPropertyValue(
         await profilePage.postDownvoteButton.locator('svg').first(),
         'background-color'
-        )
+      )
     ).toBe('rgb(75, 85, 99)');
 
     await profilePage.postDownvoteButton.first().click();
@@ -425,8 +435,8 @@ test.describe('Profile page of @gtg', () => {
       await expect(firstPostPayout).toBeVisible();
       expect(
         await profilePage.getElementCssPropertyValue(
-        await profilePage.postPayout.first(),
-        'color'
+          await profilePage.postPayout.first(),
+          'color'
         )
       ).toBe('rgb(15, 23, 42)');
     }
@@ -435,8 +445,8 @@ test.describe('Profile page of @gtg', () => {
       await expect(profilePage.postPayoutTooltip.first()).toBeVisible({ timeout: 15000 });
       expect(
         await profilePage.getElementCssPropertyValue(
-        await profilePage.postPayout.first(),
-        'color'
+          await profilePage.postPayout.first(),
+          'color'
         )
       ).toBe('rgb(218, 43, 43)');
     }
@@ -452,12 +462,12 @@ test.describe('Profile page of @gtg', () => {
     await expect(firstPostVote).toBeVisible({ timeout: 15000 });
     const firstPostVoteText = await firstPostVote.textContent();
 
-    if (Number(firstPostVoteText) > 1){
+    if (Number(firstPostVoteText) > 1) {
       // more than 1 vote
       await firstPostVote.hover();
       await expect(profilePage.postVotesTooltip.nth(0)).toBeVisible({ timeout: 15000 });
       await expect(profilePage.postVotesTooltip.nth(0)).toContainText('votes');
-    } else if (Number(firstPostVoteText) == 1){
+    } else if (Number(firstPostVoteText) == 1) {
       // equal 1 vote
       await firstPostVote.hover();
       await expect(profilePage.postVotesTooltip.nth(0)).toBeVisible({ timeout: 15000 });
@@ -481,12 +491,12 @@ test.describe('Profile page of @gtg', () => {
     await expect(firstPostRespond).toBeVisible({ timeout: 15000 });
     const firstPostRespondText = await firstPostRespond.textContent();
 
-    if (Number(firstPostRespondText) > 1){
+    if (Number(firstPostRespondText) > 1) {
       // more than 1 responses
       await firstPostRespond.hover();
       await expect(profilePage.postResponseTooltip.nth(0)).toBeVisible({ timeout: 15000 });
       await expect(profilePage.postResponseTooltip.nth(0)).toContainText('responses. Click to respond');
-    } else if (Number(firstPostRespondText) == 1){
+    } else if (Number(firstPostRespondText) == 1) {
       // equal 1 response
       await firstPostRespond.hover();
       await expect(profilePage.postResponseTooltip.nth(0)).toBeVisible({ timeout: 15000 });

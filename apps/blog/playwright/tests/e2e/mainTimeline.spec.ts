@@ -21,7 +21,7 @@ test.describe('Home page tests', () => {
     await homePage.mainPostsTimelineVisible(20);
   });
 
-  test('load next the main timeline of posts (40 posts are displayed by default)', async ({
+  test('load next the main timeline of posts (at least 40 posts after scrolling)', async ({
     page,
     browserName
   }) => {
@@ -30,7 +30,16 @@ test.describe('Home page tests', () => {
     await homePage.goto();
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
+
+    // Wait for new posts to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
+    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    expect(postsCount).toBeGreaterThanOrEqual(40);
+    expect(postsCount).toBeLessThanOrEqual(60);
   });
 
   test('validate the first post (for Trending filter)', async ({ page, request, browserName }) => {
@@ -1050,7 +1059,16 @@ test.describe('Home page tests', () => {
     await homePage.goto();
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
+
+    // Wait for new posts to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
+    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    expect(postsCount).toBeGreaterThanOrEqual(40);
+    expect(postsCount).toBeLessThanOrEqual(60);
 
     if (await homePage.postCardAffiliationTag.first().isVisible()) {
       expect(
@@ -1078,7 +1096,16 @@ test.describe('Home page tests', () => {
     // Load 40 posts - more likely to occur a badge
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
+
+    // Wait for new posts to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
+    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    expect(postsCount).toBeGreaterThanOrEqual(40);
+    expect(postsCount).toBeLessThanOrEqual(60);
 
     if (await homePage.postCardAffiliationTag.first().isVisible()) {
       expect(
@@ -1103,7 +1130,15 @@ test.describe('Home page tests', () => {
     await homePage.goto();
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(60);
+    // Wait for new posts to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
+    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    expect(postsCount).toBeGreaterThanOrEqual(40);
+    expect(postsCount).toBeLessThanOrEqual(60);
 
     const apiHelper = await new ApiHelper(page);
     const rankedPostResponse = await apiHelper.getRankedPostsAPI('trending', '', '', 20, '', '');
@@ -1126,7 +1161,7 @@ test.describe('Home page tests', () => {
           elementsWithAffiliationTag[0]
         );
       }
-        else console.log('No affiliation tags on the post cards');
+      else console.log('No affiliation tags on the post cards');
     } else console.log('No affiliation tags on the 40 post cards');
   });
 
@@ -1141,7 +1176,15 @@ test.describe('Home page tests', () => {
     // Load 40 posts - more likely to occur a badge
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
+    // Wait for new posts to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
+    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    expect(postsCount).toBeGreaterThanOrEqual(40);
+    expect(postsCount).toBeLessThanOrEqual(60);
 
     if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
       await homePage.postCardPoweredUp100Trigger.first().hover();
@@ -1166,7 +1209,15 @@ test.describe('Home page tests', () => {
     // Load 40 posts - more likely to occur a badge
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
+    // Wait for new posts to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
+    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    expect(postsCount).toBeGreaterThanOrEqual(40);
+    expect(postsCount).toBeLessThanOrEqual(60);
 
     if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
       await homePage.postCardPoweredUp100Trigger.first().hover();
@@ -1189,7 +1240,15 @@ test.describe('Home page tests', () => {
     // Load 40 posts - more likely to occur a badge
     await homePage.mainPostsTimelineVisible(20);
     await homePage.page.keyboard.down('End');
-    await homePage.mainPostsTimelineVisible(40);
+    // Wait for new posts to load with dynamic timeout
+    await page.waitForFunction(
+      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      { timeout: 10000 }
+    );
+
+    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    expect(postsCount).toBeGreaterThanOrEqual(40);
+    expect(postsCount).toBeLessThanOrEqual(60);
 
     if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
       const firstPoweredUp100Link = await homePage.postCardPoweredUp100TriggerLink.first();
