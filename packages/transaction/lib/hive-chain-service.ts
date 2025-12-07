@@ -109,7 +109,6 @@ export class HiveChainService {
             method: "GET"
           }
         },
-        urlPath: "hivesense-api/",
       },
       method: "GET",
         'hivemind-api': {
