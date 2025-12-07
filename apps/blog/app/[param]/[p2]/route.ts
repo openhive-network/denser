@@ -53,6 +53,7 @@ export async function GET(request: Request, { params }: { params: { param: strin
 
     return NextResponse.redirect(finalUrl.toString(), { status: 302 });
   } catch (err) {
-    logger.error('Error in GET:', err);
+    logger.error(err, 'Error in GET');
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
