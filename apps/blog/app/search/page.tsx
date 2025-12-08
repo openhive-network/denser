@@ -84,7 +84,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
       });
     }
   } catch (error) {
-    logger.error('Error in SearchPage:', error);
+    logger.error(error, 'Error in SearchPage:');
   }
   return (
     <Hydrate state={dehydrate(queryClient)}>

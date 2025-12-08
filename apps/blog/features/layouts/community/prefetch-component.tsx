@@ -39,7 +39,7 @@ const PrefetchComponent = async ({ children, community }: { children: ReactNode;
       });
     }
   } catch (error) {
-    logger.error('Error in PrefetchComponent:', error);
+    logger.error(error, 'Error in PrefetchComponent:');
   }
   return (
     <Hydrate state={dehydrate(queryClient)}>

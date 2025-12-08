@@ -105,7 +105,7 @@ export function LoginPanel({
       };
       await signIn.mutateAsync({ data: signInData });
     } catch (error) {
-      logger.error('onSubmit error in signLoginChallenge', error);
+      logger.error(error, 'onSubmit error in signLoginChallenge');
       setErrorMsg('Login failed');
       return;
     }

@@ -27,7 +27,7 @@ const CommunitiesPage = async ({ params }: { params: { param: string } }) => {
       queryFn: () => getPeakdBadges(username)
     });
   } catch (error) {
-    logger.error('Error in CommunitiesPage:', error);
+    logger.error(error, 'Error in CommunitiesPage:');
   }
   return (
     <Hydrate state={dehydrate(queryClient)}>

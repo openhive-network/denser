@@ -23,7 +23,7 @@ const ServerSideLayout = async ({ children }: { children: ReactNode }) => {
       queryFn: () => getSubscriptions(observer)
     });
   } catch (error) {
-    logger.error('Error in ServerSideLayout:', error);
+    logger.error(error, 'Error in ServerSideLayout:');
   }
   return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
 };

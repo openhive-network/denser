@@ -98,7 +98,7 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
         })
       });
     } catch (error) {
-      logger.error('onSubmit error in signLoginChallenge', error);
+      logger.error(error, 'onSubmit error in signLoginChallenge');
       return Promise.reject(error);
     }
 
@@ -123,7 +123,7 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
         throw new Error('Unexpected error while processing authorization');
       }
     } catch (error: unknown) {
-      logger.error('onSubmit unexpected error', error);
+      logger.error(error, 'onSubmit unexpected error');
       throw error;
     } finally {
       authDataRef.current = null;

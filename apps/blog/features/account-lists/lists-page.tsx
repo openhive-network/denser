@@ -24,7 +24,7 @@ const ListsPage = async ({
       queryFn: () => getFollowList(usernameClean, type)
     });
   } catch (error) {
-    logger.error('Error in ListsPage:', error);
+    logger.error(error, 'Error in ListsPage:');
   }
   return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
 };

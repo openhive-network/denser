@@ -21,7 +21,7 @@ const SettingsPage = async ({ params }: { params: { param: string } }) => {
       queryFn: () => getAccountFull(username)
     });
   } catch (error) {
-    logger.error('Error in SettingsPage:', error);
+    logger.error(error, 'Error in SettingsPage:');
   }
 
   return (

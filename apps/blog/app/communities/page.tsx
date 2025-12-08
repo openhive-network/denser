@@ -19,7 +19,7 @@ const CommunitiesPage = async () => {
       queryFn: async () => await getCommunities(sort, query, observer)
     });
   } catch (error) {
-    logger.error('Error in CommunitiesPage:', error);
+    logger.error(error, 'Error in CommunitiesPage:');
   }
   return (
     <Hydrate state={dehydrate(queryClient)}>

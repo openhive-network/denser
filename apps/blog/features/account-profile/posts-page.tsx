@@ -37,7 +37,7 @@ const PostsPage = async ({
       }
     });
   } catch (error) {
-    logger.error('Error in PostsPage:', error);
+    logger.error(error, 'Error in PostsPage:');
   }
   return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
 };

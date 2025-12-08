@@ -17,7 +17,7 @@ const NotificationsPage = async ({ params }: { params: { param: string } }) => {
       queryFn: () => getAccountNotifications(username)
     });
   } catch (error) {
-    logger.error('Error in NotificationsPage:', error);
+    logger.error(error, 'Error in NotificationsPage:');
   }
 
   return (

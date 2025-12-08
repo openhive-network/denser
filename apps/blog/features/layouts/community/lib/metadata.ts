@@ -42,7 +42,7 @@ export async function buildCommunityTagMetadata(
       }
     };
   } catch (error) {
-    logger.error('Error in buildCommunityTagMetadata:', error);
+    logger.error(error, 'Error in buildCommunityTagMetadata:');
   }
   return {
     title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive`,

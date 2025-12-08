@@ -24,7 +24,7 @@ const FollowersPage = async ({ params }: { params: { param: string } }) => {
       }
     });
   } catch (error) {
-    logger.error('Error in FollowersPage:', error);
+    logger.error(error, 'Error in FollowersPage:');
   }
   return (
     <Hydrate state={dehydrate(queryClient)}>

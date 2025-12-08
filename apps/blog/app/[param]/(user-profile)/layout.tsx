@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: { params: { param: string } }
       }
     };
   } catch (error) {
-    logger.error('Error in generateMetadata:', error);
+    logger.error(error, 'Error in generateMetadata:');
     return {
       title: 'Hive',
       description: 'Hive: Communities Without Borders.',
@@ -82,7 +82,7 @@ const Layout = async ({ children, params }: { children: ReactNode; params: { par
       queryFn: () => getDynamicGlobalProperties()
     });
   } catch (error) {
-    logger.error('Error in Layout:', error);
+    logger.error(error, 'Error in Layout:');
   }
   return (
     <Hydrate state={dehydrate(queryClient)}>

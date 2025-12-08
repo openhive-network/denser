@@ -40,7 +40,7 @@ const chatLogin = (
         logger.warn('chatLogin not posting message, data is wrong', data);
       }
     } catch (error) {
-      logger.error('chatLogin not posting message', data);
+      logger.error(data, 'chatLogin not posting message');
     }
   } else {
     logger.info('chatLogin siteConfig.openhiveChatIframeIntegrationEnable is false');
@@ -64,7 +64,7 @@ export const chatLogout = (iframeRef: React.RefObject<HTMLIFrameElement>): void 
         `${siteConfig.openhiveChatUri}`
       );
     } catch (error) {
-      logger.error('chatLogout error', error);
+      logger.error(error, 'chatLogout error');
     }
   }
 };

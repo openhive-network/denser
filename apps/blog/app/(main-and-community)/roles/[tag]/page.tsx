@@ -13,7 +13,7 @@ const Page = async ({ params }: { params: { tag: string } }) => {
       queryFn: () => getListCommunityRoles(params.tag)
     });
   } catch (error) {
-    logger.error('Error in Page:', error);
+    logger.error(error, 'Error in Page:');
   }
   return <Content community={params.tag} />;
 };

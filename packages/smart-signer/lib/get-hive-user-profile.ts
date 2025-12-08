@@ -23,7 +23,7 @@ export const getHiveUserProfile = async (hiveUsername: string): Promise<HiveUser
   try {
     const chainAccount = await getAccount(hiveUsername);
     if (!chainAccount) {
-      logger.error('gethiveUserProfile error: missing blockchain account', hiveUsername);
+      logger.error('gethiveUserProfile error: missing blockchain account %s', hiveUsername);
       return hiveUserProfile;
     }
 
@@ -55,7 +55,7 @@ export const getHiveUserProfile = async (hiveUsername: string): Promise<HiveUser
     // chainAccount.json_metadata, when
     // chainAccount.posting_json_metadata doesn't exist.
   } catch (error) {
-    logger.error('gethiveUserProfile error', error);
+    logger.error(error, 'gethiveUserProfile error');
   }
   return hiveUserProfile;
 };

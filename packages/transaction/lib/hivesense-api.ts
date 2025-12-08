@@ -3,7 +3,7 @@ import { Entry, MixedPostsResponse, PostStub } from './extended-hive.chain';
 import { getChain } from './chain';
 
 const logStandarizedError = (methodName: string, error: unknown): null => {
-  logger.error(`Error in ${methodName}`, error);
+  logger.error(error, `Error in ${methodName}`);
   throw new Error(`Error in ${methodName}`);
 };
 

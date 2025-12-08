@@ -71,7 +71,7 @@ export function LoginPanel({ authenticateOnBackend, strict }: LoginPanelOptions)
       });
       signatures[keyType] = signature;
     } catch (error) {
-      logger.error('onSubmit error in signLoginChallenge', error);
+      logger.error(error, 'onSubmit error in signLoginChallenge');
       setErrorMsg('Login failed');
       return;
     }
@@ -91,7 +91,7 @@ export function LoginPanel({ authenticateOnBackend, strict }: LoginPanelOptions)
     try {
       await signIn.mutateAsync({ data: body });
     } catch (error) {
-      logger.error('onSubmit unexpected error', error);
+      logger.error(error, 'onSubmit unexpected error');
       setErrorMsg('Login failed');
     }
   };

@@ -154,7 +154,7 @@ const broadcast = (
   };
 
   const handleRequestExpired = (error: { message: any }) => {
-    logger.error('Hive Auth: broadcast request expired', error.message);
+    logger.error('Hive Auth: broadcast request expired: %s', error.message);
     updateModalMessage(translateFn('hiveauthservices.requestExpired'));
 
     callbackFn({
@@ -166,7 +166,7 @@ const broadcast = (
   };
 
   const handleAttachFailure = (error: { message: any }) => {
-    logger.error('Hive Auth: lost connection to server and failed re-attaching', error.message);
+    logger.error('Hive Auth: lost connection to server and failed re-attaching: %s', error.message);
     clearLoginInstructions();
     callbackFn({
       success: false,
@@ -213,7 +213,7 @@ const signChallenge = (
   };
 
   const handleChallengeFailure = (e: any) => {
-    logger.error('Hive Auth: challenge failure', e);
+    logger.error(e, 'Hive Auth: challenge failure');
     callbackFn({
       success: false,
       error: translateFn('hiveauthservices.userRejectedRequest')
@@ -222,7 +222,7 @@ const signChallenge = (
   };
 
   const handleChallengeError = (e: any) => {
-    logger.error('Hive Auth: challenge error', e);
+    logger.error(e, 'Hive Auth: challenge error');
     callbackFn({
       success: false,
       error: translateFn('hiveauthservices.challengeError')
@@ -231,7 +231,7 @@ const signChallenge = (
   };
 
   const handleRequestExpired = (error: { message: any }) => {
-    logger.error('Hive Auth: challenge request expired', error.message);
+    logger.error('Hive Auth: challenge request expired: %s', error.message);
     updateModalMessage(translateFn('hiveauthservices.requestExpired'));
 
     callbackFn({
@@ -393,7 +393,7 @@ const login = async (
   };
 
   const handleRequestExpired = (error: { message: any }) => {
-    logger.error('Hive Auth: authentication request expired', error.message);
+    logger.error('Hive Auth: authentication request expired: %s', error.message);
     clearLoginInstructions();
     updateModalMessage(translateFn('hiveauthservices.requestExpired'));
 
@@ -406,7 +406,7 @@ const login = async (
   };
 
   const handleAttachFailure = (error: { message: any }) => {
-    logger.error('Hive Auth: lost connection to server and failed re-attaching', error.message);
+    logger.error('Hive Auth: lost connection to server and failed re-attaching: %s', error.message);
     clearLoginInstructions();
     callbackFn({
       success: false,

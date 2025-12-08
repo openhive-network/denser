@@ -23,7 +23,7 @@ const FollowedUsersPage = async ({ params }: { params: { param: string } }) => {
       }
     });
   } catch (error) {
-    logger.error('Error in FollowedUsersPage:', error);
+    logger.error(error, 'Error in FollowedUsersPage:');
   }
 
   return (

@@ -53,7 +53,7 @@ const SortPage = async ({
       }
     });
   } catch (error) {
-    logger.error('Error in SortPage:', error);
+    logger.error(error, 'Error in SortPage:');
   }
   return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
 };

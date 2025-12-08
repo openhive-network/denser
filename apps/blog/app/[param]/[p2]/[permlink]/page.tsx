@@ -53,7 +53,7 @@ const PostPage = async ({
       });
     }
   } catch (error) {
-    logger.error('Error in PostPage:', error);
+    logger.error(error, 'Error in PostPage:');
   }
 
   return (
