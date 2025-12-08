@@ -27,7 +27,7 @@ export const registerConsent: NextApiHandler<User> = async (req, res) => {
     );
     user = session.user;
   } catch (error) {
-    logger.error('registerConsent error:', error);
+    logger.error(error, 'registerConsent error');
   }
 
   if (!(user?.isLoggedIn && user.username)) {

@@ -49,7 +49,7 @@ export async function generateMetadata({
       }
     };
   } catch (error) {
-    logger.error('Error in generateMetadata:', error);
+    logger.error(error, 'Error in generateMetadata');
     return {
       title: 'Hive',
       description: 'Hive: Communities Without Borders.',

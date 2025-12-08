@@ -31,7 +31,7 @@ export function useLogout(redirect?: string) {
             })
           });
         } catch (logError) {
-          logger.error('Failed to log logout event:', logError);
+          logger.error(logError, 'Failed to log logout event');
         }
       }
       await signOut.mutateAsync({ user });
@@ -43,7 +43,7 @@ export function useLogout(redirect?: string) {
         description: 'Logout failed',
         variant: 'destructive'
       });
-      logger.error('Error in logout', error);
+      logger.error(error, 'Error in logout');
     } finally {
       if (redirect) {
         router.push(redirect);

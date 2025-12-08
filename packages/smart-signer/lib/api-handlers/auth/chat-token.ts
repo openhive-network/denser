@@ -27,7 +27,7 @@ export const getChatToken: NextApiHandler<User> = async (req, res) => {
     );
     user = session.user;
   } catch (error) {
-    logger.error('getChatToken error:', error);
+    logger.error(error, 'getChatToken error');
   }
 
   if (!(
