@@ -458,6 +458,9 @@
       "we_are_just_verifying": "We are just verifying with you that you want to continue.",
       "open_link": "Open Link"
     },
+    "comments": {
+      "show_more": "Show more comments ({{count}} remaining)"
+    },
     "footer": {
       "and_more": "and {{value}} more",
       "in": "in",

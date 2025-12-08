@@ -421,6 +421,9 @@
       "community_rules": "Правила сообщества",
       "cancel": "Отмена",
       "ok": "OK"
+    },
+    "comments": {
+      "show_more": "Show more comments ({{count}} remaining)"
     }
   },
   "submit_page": {

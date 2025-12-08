@@ -415,6 +415,9 @@
       "community_rules": "社区规则",
       "cancel": "取消",
       "ok": "确定"
+    },
+    "comments": {
+      "show_more": "Show more comments ({{count}} remaining)"
     }
   },
   "submit_page": {

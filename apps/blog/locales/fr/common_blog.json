@@ -415,6 +415,9 @@
       "community_rules": "Règles de la communauté",
       "cancel": "Annuler",
       "ok": "OK"
+    },
+    "comments": {
+      "show_more": "Show more comments ({{count}} remaining)"
     }
   },
   "submit_page": {
@@ -509,7 +512,6 @@
     "no_results": "Nothing was found.",
     "error": "There was an error"
   },
-
   "settings_page": {
     "invalid_url": "URL invalide",
     "name_is_too_long": "Le nom est trop long",

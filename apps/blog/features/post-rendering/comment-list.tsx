@@ -3,8 +3,12 @@
 import CommentListItem from '@/blog/features/post-rendering/comment-list-item';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
+import { Button } from '@ui/components/button';
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'next-i18next';
+
+const COMMENTS_PER_PAGE = 50;
 
 const CommentList = ({
   highestAuthor,
@@ -27,7 +31,10 @@ const CommentList = ({
   flagText: string | undefined;
   discussionPermlink: string;
 }) => {
+  const { t } = useTranslation('common_blog');
   const [markedHash, setMarkedHash] = useState<string>("");
+  const [displayLimit, setDisplayLimit] = useState(COMMENTS_PER_PAGE);
+  const isRootLevel = parent.depth === 0;
 
   useEffect(() => {
   if (typeof window !== "undefined") {
@@ -47,11 +54,17 @@ const CommentList = ({
     const unmutedContent = filtered.filter((md) => mutedContent.every((fd) => fd.post_id !== md.post_id));
     return [...mutedContent, ...unmutedContent];
   }, [JSON.stringify(data), JSON.stringify(parent)]);
+
+  // Only limit at root level to prevent browser crash with 1000+ comments
+  const visibleComments = isRootLevel && arr ? arr.slice(0, displayLimit) : arr;
+  const hasMoreComments = isRootLevel && arr && arr.length > displayLimit;
+  const remainingCount = arr ? arr.length - displayLimit : 0;
+
   return (
     <ul data-testid="comment-list">
       <>
-        {!!arr
-          ? arr.map((comment: Entry, index: number) => (
+        {!!visibleComments
+          ? visibleComments.map((comment: Entry, index: number) => (
               <div
                 key={`parent-${comment.post_id}-index-${index}`}
                 className={clsx(
@@ -91,6 +104,17 @@ const CommentList = ({
               </div>
             ))
           : null}
+        {hasMoreComments && (
+          <li className="my-4 flex justify-center">
+            <Button
+              variant="outline"
+              onClick={() => setDisplayLimit((prev) => prev + COMMENTS_PER_PAGE)}
+              data-testid="show-more-comments"
+            >
+              {t('post_content.comments.show_more', { count: remainingCount })}
+            </Button>
+          </li>
+        )}
       </>
     </ul>
   );

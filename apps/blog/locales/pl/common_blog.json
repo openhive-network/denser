@@ -379,6 +379,9 @@
       "we_are_just_verifying": "Właśnie sprawdzamy, czy chcesz kontynuować.",
       "open_link": "Otwórz Link"
     },
+    "comments": {
+      "show_more": "Pokaż więcej komentarzy ({{count}} pozostało)"
+    },
     "footer": {
       "and_more": "i {{value}} więcej",
       "in": "w",

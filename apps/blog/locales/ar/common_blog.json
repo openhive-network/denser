@@ -463,6 +463,9 @@
       "community_rules": "قواعد المجتمع",
       "cancel": "إلغاء",
       "ok": "موافق"
+    },
+    "comments": {
+      "show_more": "Show more comments ({{count}} remaining)"
     }
   },
   "submit_page": {

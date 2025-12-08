@@ -415,6 +415,9 @@
       "community_rules": "Regole della comunità",
       "cancel": "Annulla",
       "ok": "OK"
+    },
+    "comments": {
+      "show_more": "Show more comments ({{count}} remaining)"
     }
   },
   "submit_page": {
