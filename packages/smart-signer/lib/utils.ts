@@ -13,26 +13,6 @@ const KEY_TYPES = ['active', 'posting'] as const;
 export type KeyAuthorityType = (typeof KEY_TYPES)[number];
 
 /**
- * Returns all cookies as object. For use on client only.
- *
- * @export
- * @param {string} cookie
- * @returns {Record<string, string>}
- */
-export function parseCookie(cookie: string): Record<string, string> {
-  const kv: Record<string, string> = {};
-
-  if (!cookie) return kv;
-
-  cookie.split(';').forEach((part) => {
-    const [k, v] = part.trim().split('=');
-    kv[k.trim()] = v;
-  });
-
-  return kv;
-}
-
-/**
  * Return cookie value for given cookie name. For use on client only.
  * When cookie doesn't exist returns empty string.
  *
@@ -84,60 +64,6 @@ export function isStorageAvailable(
   } catch (e) {
     return false;
   }
-}
-
-/**
- * Returns enum key for enum value.
- *
- * @export
- * @template T
- * @param {T} myEnum
- * @param {string} enumValue
- * @returns {(keyof T | null)}
- */
-export function getEnumKeyByEnumValue<T extends { [index: string]: string }>(
-  myEnum: T,
-  enumValue: string
-): keyof T | null {
-  const keys = Object.keys(myEnum).filter((x) => myEnum[x] == enumValue);
-  return keys.length > 0 ? keys[0] : null;
-}
-
-/**
- * Calculates a digest and converts it to a hex string with Web Crypto
- * API. Normally the digest is returned as an ArrayBuffer, but for
- * comparison and display digests are often represented as hex strings.
- * This method calculates a digest, then converts the ArrayBuffer to a
- * hex string. In theory the same result can be achieved with following
- * synchronous code (it's used by Dhive.cryptoutils.sha256() function as
- * well):
- * ```
- * import { createHash } from 'crypto';
- * const hashHex = createHash('sha256').update(message).digest('hex');
- * ```
- * However MDN suggests using crypto.subtle in browsers.
- *
- * See:
- * https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest.
- *
- * @param {string} message
- * @returns {string} in hex format
- */
-export async function subtleCryptoDigestHex(message: string | Buffer) {
-  let msgUint8: Buffer | Uint8Array;
-  if (typeof message === 'string') {
-    // encode as (utf-8) Uint8Array
-    msgUint8 = new TextEncoder().encode(message);
-  } else {
-    msgUint8 = message;
-  }
-  // hash the message
-  const hashArrayBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-  // convert ArrayBuffer to byte array
-  const hashArray = Array.from(new Uint8Array(hashArrayBuffer));
-  // convert bytes to hex string
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
 }
 
 /**
@@ -194,14 +120,6 @@ export async function getTransactionDigest(
   };
 }
 
-class VerifySignaturesRequest {
-  hash!: string;
-  signatures!: string[];
-  required_other!: string[];
-  required_active!: string[];
-  required_owner!: string[];
-  required_posting!: string[];
-}
 
 const DatabaseApiExtensions = {
   database_api: {
@@ -211,8 +129,6 @@ const DatabaseApiExtensions = {
     }
   }
 };
-
-type TExtendedHiveChain = TWaxExtended<typeof DatabaseApiExtensions>;
 
 /**
  * Verifies signature of transaction or only signature of digest.
