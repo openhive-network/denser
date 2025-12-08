@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
 import { useEffect, useState, useRef } from 'react';
@@ -15,7 +17,6 @@ import { useCommentMutation, useUpdateCommentMutation } from '../post-rendering/
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { commentClassName } from '../post-rendering/comment-card';
 
 const logger = getLogger('app');
 
@@ -221,7 +222,7 @@ export function ReplyTextbox({
         <RendererContainer
           body={text}
           author=""
-          className={commentClassName + ' max-w-full border-2 border-background-tertiary p-2'}
+          className="hive-comment max-w-full border-2 border-background-tertiary p-2"
         />
       </div>
     </div>

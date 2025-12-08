@@ -53,7 +53,12 @@ export class HiveChainService {
         }
         // Set promise result in this class' static property and return
         // it here as well.
-        await this.setHiveChain({ apiEndpoint, chainId: siteConfig.chainId, restApiEndpoint: apiEndpoint, apiTimeout: 10000 });
+        await this.setHiveChain({
+          apiEndpoint,
+          chainId: siteConfig.chainId,
+          restApiEndpoint: apiEndpoint,
+          apiTimeout: 10000
+        });
         return HiveChainService.hiveChain;
       };
 
@@ -108,21 +113,21 @@ export class HiveChainService {
             urlPath: 'search',
             method: 'GET'
           }
-        },
+        }
       },
-      method: "GET",
-        'hivemind-api': {
-          "accountsOperations": {
-            urlPath: 'accounts/{account-name}/operations',
-          }
-        },
-        'hafah-api': {
-          'operation-types': {
-            urlPath: 'operation-types'
-          }
+      method: 'GET',
+      'hivemind-api': {
+        accountsOperations: {
+          urlPath: 'accounts/{account-name}/operations'
+        }
+      },
+      'hafah-api': {
+        'operation-types': {
+          urlPath: 'operation-types'
         }
       }
     });
+
     const storedAiSearchEndpoint = this.storage.getItem('ai-search-endpoint');
     let apiEndpoint: string = storedAiSearchEndpoint ? JSON.parse(storedAiSearchEndpoint) : '';
     if (!apiEndpoint) {

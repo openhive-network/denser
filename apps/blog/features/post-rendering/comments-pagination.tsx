@@ -1,4 +1,6 @@
-import { useTranslation } from 'next-i18next';
+'use client';
+
+import { useTranslation } from '@/blog/i18n/client';
 import { ReactElement } from 'react';
 
 const CommentsPagination = ({

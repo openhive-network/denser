@@ -5,7 +5,7 @@ import { Entry } from '@transaction/lib/extended-hive.chain';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
 import { useEffect, useState, useMemo, useCallback, useTransition } from 'react';
-import CommentsPagination from '@/blog/components/comments-pagination';
+import CommentsPagination from '@/blog/features/post-rendering/comments-pagination';
 import Loading from '@ui/components/loading';
 
 const CommentList = ({
