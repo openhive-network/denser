@@ -13,11 +13,6 @@
     "devssl:wallet": "./scripts/write-version.sh ./apps/wallet/version.json && turbo devssl --filter=@hive/wallet",
     "build:wallet": "./scripts/write-version.sh ./apps/wallet/version.json && turbo build --filter=@hive/wallet",
     "start:wallet": "./scripts/write-version.sh ./apps/wallet/version.json && turbo start --filter=@hive/wallet",
-    "dev:auth": "./scripts/write-version.sh ./apps/auth/version.json && turbo dev --filter=@hive/auth",
-    "devssl:auth": "./scripts/write-version.sh ./apps/auth/version.json && turbo devssl --filter=@hive/auth",
-    "build:auth": "./scripts/write-version.sh ./apps/auth/version.json && turbo build --filter=@hive/auth",
-    "start:auth": "./scripts/write-version.sh ./apps/auth/version.json && turbo start --filter=@hive/auth",
-    "test:jest:auth": "turbo test:jest --filter=@hive/auth",
     "lint": "turbo lint",
     "blog:pw:test:local": "turbo run pw:test:local --filter=@hive/blog",
     "blog:pw:test:local:chromium": "turbo run pw:test:local:chromium --filter=@hive/blog",
@@ -41,7 +36,6 @@
   "workspaces": [
     "apps/blog",
     "apps/wallet",
-    "apps/auth",
     "packages/*"
   ],
   "devDependencies": {

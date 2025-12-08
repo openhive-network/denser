@@ -38,19 +38,6 @@ const nextConfig = {
             value: 'no-cache, no-store, must-revalidate, max-age=0'
           }
         ]
-      },
-      {
-        source: '/auth/worker.js',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/javascript; charset=utf-8'
-          },
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate, max-age=0'
-          }
-        ]
       }
     ];
   },
@@ -87,14 +74,6 @@ const nextConfig = {
     config.plugins.push(
       new CopyPlugin({
         patterns: [
-          {
-            from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/worker.js'),
-            to: path.join(__dirname, 'public/auth/')
-          },
-          {
-            from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/assets'),
-            to: path.join(__dirname, 'public/auth/assets')
-          },
           {
             from: path.join(__dirname, './locales'),
             to: path.join(__dirname, 'public/locales/')
