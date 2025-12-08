@@ -27,6 +27,7 @@ export class ProposalsPage {
   readonly proposalVoterLinkInDialogList: Locator;
   readonly voterValuesDialog: Locator;
   readonly cannotShowYouAnyProposals: Locator;
+  readonly proposalMessageCannotShowYouAnyProposals: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -65,6 +66,8 @@ export class ProposalsPage {
     this.proposalVoterLinkInDialogList = page.locator('[data-testid="proposal-voter-link-dialog"]');
     this.voterValuesDialog = page.locator('[data-testid="voter-values-dialog"]');
     this.cannotShowYouAnyProposals = page.locator('data-testid="cannot-show-you-any-proposals"');
+
+    this.proposalMessageCannotShowYouAnyProposals = page.locator('text="Sorry, I can\'t show you any proposals right now."')
   }
 
   async goToProposalsPage() {
@@ -75,7 +78,7 @@ export class ProposalsPage {
     // Wait for proposals to load - either proposal items appear or "no proposals" message
     await Promise.race([
       this.proposalListItem.first().waitFor({ state: 'visible', timeout: 10000 }),
-      this.page.locator('text="Sorry, I can\'t show you any proposals right now."').waitFor({ state: 'visible', timeout: 10000 })
+      this.proposalMessageCannotShowYouAnyProposals.waitFor({ state: 'visible', timeout: 10000 })
     ]).catch(() => {
       // If neither appears within timeout, continue anyway (data may still be loading)
     });
