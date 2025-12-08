@@ -5,6 +5,7 @@ import { Entry } from '@transaction/lib/extended-hive.chain';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { Button } from '@ui/components/button';
 import clsx from 'clsx';
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
@@ -59,6 +60,10 @@ const CommentList = ({
   const visibleComments = isRootLevel && arr ? arr.slice(0, displayLimit) : arr;
   const hasMoreComments = isRootLevel && arr && arr.length > displayLimit;
   const remainingCount = arr ? arr.length - displayLimit : 0;
+  // Hidden comments - not rendered but links are crawlable
+  const hiddenComments = isRootLevel && arr && arr.length > displayLimit
+    ? arr.slice(displayLimit)
+    : [];
 
   return (
     <ul data-testid="comment-list">
@@ -113,6 +118,19 @@ const CommentList = ({
             >
               {t('post_content.comments.show_more', { count: remainingCount })}
             </Button>
+          </li>
+        )}
+        {/* Hidden links for crawlers - visually hidden but present in HTML */}
+        {hiddenComments.length > 0 && (
+          <li className="sr-only" aria-hidden="true" data-testid="hidden-comment-links">
+            {hiddenComments.map((comment) => (
+              <Link
+                key={`crawler-link-${comment.post_id}`}
+                href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
+              >
+                {comment.author}/{comment.permlink}
+              </Link>
+            ))}
           </li>
         )}
       </>
