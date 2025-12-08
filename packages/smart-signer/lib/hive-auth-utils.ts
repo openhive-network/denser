@@ -213,7 +213,7 @@ const signChallenge = (
   };
 
   const handleChallengeFailure = (e: any) => {
-    logger.error('Hive Auth: challenge failure', e);
+    logger.error(e, 'Hive Auth: challenge failure');
     callbackFn({
       success: false,
       error: translateFn('hiveauthservices.userRejectedRequest')
@@ -222,7 +222,7 @@ const signChallenge = (
   };
 
   const handleChallengeError = (e: any) => {
-    logger.error('Hive Auth: challenge error', e);
+    logger.error(e, 'Hive Auth: challenge error');
     callbackFn({
       success: false,
       error: translateFn('hiveauthservices.challengeError')

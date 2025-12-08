@@ -29,7 +29,7 @@ export async function verifyLogin(data: PostLoginSchema): Promise<User> {
     };
     return user;
   } catch (error) {
-    logger.error('error in verifyLogin', error);
+    logger.error(error, 'Error in verifyLogin');
     throw error;
   }
 }
