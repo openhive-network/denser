@@ -542,7 +542,7 @@ export interface HiveOperation {
       vesting_payout: NaiAsset;
       hbd_payout: NaiAsset;
       hive_payout: NaiAsset;
-    }
+    };
   };
 }
 
@@ -673,7 +673,7 @@ export interface IAccountRelationship {
 }
 
 export interface IUnreadNotifications {
-  lastRead: string;
+  lastread: string;
   unread: number;
 }
 
@@ -1081,7 +1081,6 @@ export interface HiveOpTypeSchema {
   is_virtual: boolean;
 }
 
-
 export type ExtendedRestApi = {
   'hivesense-api': {
     params: undefined;
@@ -1132,12 +1131,12 @@ Together with the author name, it uniquely identifies the post.
     accountsOperations: {
       params: GetOperationsByAccountParams;
       result: IGetOperationsByAccountResponse;
-    }
+    };
   };
   'hafah-api': {
     'operation-types': {
       params: undefined;
       result: HiveOpTypeSchema[];
-    }
-  }
+    };
+  };
 };
