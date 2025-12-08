@@ -4,11 +4,7 @@ function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false,
-        staleTime: 2 * 60 * 1000, // 2 minutes, adjust as needed
-        cacheTime: 5 * 60 * 1000 // 5 minutes (default)
+        staleTime: 60 * 1000 // *10,
       }
     }
   });
