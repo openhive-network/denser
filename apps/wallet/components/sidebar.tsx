@@ -112,6 +112,7 @@ const Sidebar = () => {
             <Item href={`${envURL}/privacy.html`} target>
               {t('navigation.sidebar.privacy_policy')}
             </Item>
+            <Item href={`/healthchecker`}>Healthchecker</Item>
             <Item href={`${envURL}/tos.html`} target>
               {t('navigation.sidebar.terms_of_service')}
             </Item>
