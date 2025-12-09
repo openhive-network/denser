@@ -15,6 +15,7 @@
  */
 
 import path from "path";
+import { existsSync } from "fs";
 import { test } from '@playwright/test';
 
 import { mergeHTMLReports } from "./merge-reports"; //'playwright-merge-html-reports';
@@ -28,10 +29,19 @@ const reportPaths: string[] = [];
 for (let project of projects) {
     for (let shardNumber = 1; shardNumber <= numberOfShards; shardNumber++) {
         const reportPath = path.resolve(process.cwd(), 'playwright-report', project, String(shardNumber))
-        reportPaths.push(reportPath);
+        if (existsSync(reportPath)) {
+            reportPaths.push(reportPath);
+        } else {
+            console.log(`Report path does not exist, skipping: ${reportPath}`);
+        }
     }
 }
 
 test('Merge Reports', async ({ page }) => {
+  if (reportPaths.length === 0) {
+    console.log('No report paths found. Skipping merge (tests were likely skipped).');
+    test.skip();
+    return;
+  }
   await mergeHTMLReports(reportPaths, { debug: false});
 })
