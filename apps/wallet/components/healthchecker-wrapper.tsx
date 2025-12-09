@@ -16,8 +16,6 @@ type NodeApiCheckers = [
 
 const HealthCheckerWrapper = () => {
 
-
-
     const [walletApiCheckers, setWalletApiCheckers] = useState<NodeApiCheckers | undefined>(undefined);
 
     const createApiCheckers = async () => {
