@@ -209,7 +209,7 @@ export default function PostForm({
         btnRef.current.disabled = true;
       }
       const postParams = {
-        permlink: postPermlink,
+        permlink: editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
         title: data.title,
         body: data.postArea,
         category: data.category,
