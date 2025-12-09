@@ -67,12 +67,6 @@ const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
               <span className="w-full">{t('navigation.user_menu.change_password')}</span>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/@${user.username}/settings`}>
-            <DropdownMenuItem className="flex w-full cursor-pointer items-center">
-              <Icons.settings className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.settings')}</span>
-            </DropdownMenuItem>
-          </Link>
           <DropdownMenuItem className="cursor-pointer">
             <Link
               href=""
