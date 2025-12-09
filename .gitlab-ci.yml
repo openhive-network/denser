@@ -24,7 +24,7 @@ variables:
 
   # HAF submodule commit - must match the 'ref:' in the include section above
   # This is needed for service containers which can't access dotenv artifacts
-  HAF_COMMIT: 'df653a09a8f16c8f96a852c40443635f4c93887d'
+  HAF_COMMIT: 'e842bc8773b4415077cb0fae028de9a03eb228ba'
 
   # HAF API node configuration
   API_NODE_VERSION: '1.27.8'
