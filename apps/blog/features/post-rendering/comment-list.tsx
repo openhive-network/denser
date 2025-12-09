@@ -5,6 +5,7 @@ import { Entry } from '@transaction/lib/extended-hive.chain';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { Button } from '@ui/components/button';
 import clsx from 'clsx';
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
@@ -19,7 +20,9 @@ const CommentList = ({
   parent_depth,
   mutedList,
   flagText,
-  discussionPermlink
+  discussionPermlink,
+  initialPage = 1,
+  sort = 'trending'
 }: {
   highestAuthor: string;
   highestPermlink: string;
@@ -30,10 +33,13 @@ const CommentList = ({
   mutedList: IFollowList[];
   flagText: string | undefined;
   discussionPermlink: string;
+  initialPage?: number;
+  sort?: string;
 }) => {
   const { t } = useTranslation('common_blog');
   const [markedHash, setMarkedHash] = useState<string>("");
-  const [displayLimit, setDisplayLimit] = useState(COMMENTS_PER_PAGE);
+  // Start with initialPage worth of comments shown
+  const [displayLimit, setDisplayLimit] = useState(COMMENTS_PER_PAGE * initialPage);
   const isRootLevel = parent.depth === 0;
 
   useEffect(() => {
@@ -59,6 +65,12 @@ const CommentList = ({
   const visibleComments = isRootLevel && arr ? arr.slice(0, displayLimit) : arr;
   const hasMoreComments = isRootLevel && arr && arr.length > displayLimit;
   const remainingCount = arr ? arr.length - displayLimit : 0;
+
+  // Calculate pagination info for crawler-friendly links
+  const totalComments = arr?.length || 0;
+  const totalPages = Math.ceil(totalComments / COMMENTS_PER_PAGE);
+  const currentPage = Math.ceil(displayLimit / COMMENTS_PER_PAGE);
+  const nextPage = currentPage < totalPages ? currentPage + 1 : null;
 
   return (
     <ul data-testid="comment-list">
@@ -105,7 +117,8 @@ const CommentList = ({
             ))
           : null}
         {hasMoreComments && (
-          <li className="my-4 flex justify-center">
+          <li className="my-4 flex flex-col items-center gap-2">
+            {/* JS-enabled button for better UX */}
             <Button
               variant="outline"
               onClick={() => setDisplayLimit((prev) => prev + COMMENTS_PER_PAGE)}
@@ -113,6 +126,18 @@ const CommentList = ({
             >
               {t('post_content.comments.show_more', { count: remainingCount })}
             </Button>
+            {/* Visible link for crawlers - works without JS */}
+            {nextPage && (
+              <nav aria-label={t('post_content.comments.pagination_label')} className="text-sm">
+                <Link
+                  href={`?comments_page=${nextPage}&sort=${sort}#comments`}
+                  className="text-primary hover:underline"
+                  data-testid="next-page-link"
+                >
+                  {t('post_content.comments.page_link', { page: nextPage, total: totalPages })}
+                </Link>
+              </nav>
+            )}
           </li>
         )}
       </>

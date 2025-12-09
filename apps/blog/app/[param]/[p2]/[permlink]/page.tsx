@@ -14,10 +14,15 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 const PostPage = async ({
-  params: { param, p2, permlink }
+  params: { param, p2, permlink },
+  searchParams
 }: {
   params: { param: string; p2: string; permlink: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) => {
+  const commentsPage = typeof searchParams?.comments_page === 'string'
+    ? parseInt(searchParams.comments_page, 10) || 1
+    : 1;
   const queryClient = getQueryClient();
   const username = p2.replace('%40', '');
   const community = param;
@@ -59,7 +64,7 @@ const PostPage = async ({
   return (
     <Hydrate state={dehydrate(queryClient)}>
       <Suspense fallback={<Loading loading={true} />}>
-        <PostContent />
+        <PostContent initialCommentsPage={commentsPage} />
       </Suspense>
     </Hydrate>
   );

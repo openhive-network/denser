@@ -64,12 +64,13 @@ import { useLocalStorage } from 'usehooks-ts';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 
-const PostContent = () => {
+const PostContent = ({ initialCommentsPage = 1 }: { initialCommentsPage?: number }) => {
   const searchParams = useSearchParams();
   const params = useParams<{ param: string; p2: string; permlink: string }>();
   const router = useRouter();
   const pathname = usePathname();
   const commentSort = searchParams?.get('sort') || 'trending';
+  const commentsPage = parseInt(searchParams?.get('comments_page') || String(initialCommentsPage), 10) || 1;
   const author = params?.p2.replace('%40', '') ?? '';
   const category = params?.param ?? '';
   const permlink = params?.permlink ?? '';
@@ -688,6 +689,8 @@ const PostContent = () => {
                 parent={postData}
                 parent_depth={postData.depth}
                 discussionPermlink={permlink}
+                initialPage={commentsPage}
+                sort={commentSort}
               />
             </div>
           ) : (

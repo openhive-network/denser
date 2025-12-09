@@ -380,7 +380,9 @@
       "open_link": "Otwórz Link"
     },
     "comments": {
-      "show_more": "Pokaż więcej komentarzy ({{count}} pozostało)"
+      "show_more": "Pokaż więcej komentarzy ({{count}} pozostało)",
+      "pagination_label": "Comment pagination",
+      "page_link": "Page {{page}} of {{total}}"
     },
     "footer": {
       "and_more": "i {{value}} więcej",

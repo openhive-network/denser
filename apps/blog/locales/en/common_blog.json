@@ -459,7 +459,9 @@
       "open_link": "Open Link"
     },
     "comments": {
-      "show_more": "Show more comments ({{count}} remaining)"
+      "show_more": "Show more comments ({{count}} remaining)",
+      "pagination_label": "Comment pagination",
+      "page_link": "Page {{page}} of {{total}}"
     },
     "footer": {
       "and_more": "and {{value}} more",
