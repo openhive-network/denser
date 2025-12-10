@@ -7,7 +7,7 @@ import { siteConfig } from '@ui/config/site';
 import { LoginType } from '@smart-signer/types/common';
 import Link from 'next/link';
 import { Button } from '@ui/components/button';
-import { inIframe } from '@smart-signer/lib/storage-utils';
+import { inIframe } from '@smart-signer/lib/utils';
 import clsx from 'clsx';
 import { useGetChatAuthToken } from '@smart-signer/lib/auth/use-chat-token';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';

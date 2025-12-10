@@ -1,4 +1,4 @@
-import { isStorageAvailable } from '@smart-signer/lib/storage-utils';
+import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { memoryStorage } from '@smart-signer/lib/memory-storage';
 
 export type StorageType = 'localStorage' | 'sessionStorage' | 'memoryStorage';

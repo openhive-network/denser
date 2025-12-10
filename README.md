@@ -5,9 +5,8 @@ Successor to hive/condenser> aka [hive.blog](https://hive.blog/).
 
 ## Introduction
 
-The project consists of three apps:
+The project consists of two apps:
 
-- auth (obsolete)
 - blog
 - wallet
 
