@@ -64,6 +64,9 @@ import { useLocalStorage } from 'usehooks-ts';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 
+// Maximum number of comments per page
+const MAX_COMMENTS_PER_PAGE = 50;
+
 const PostContent = () => {
   const searchParams = useSearchParams();
   const params = useParams<{ param: string; p2: string; permlink: string }>();
@@ -83,6 +86,7 @@ const PostContent = () => {
   const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [commentsPage, setCommentsPage] = useState(1);
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const postInCommunity = category?.startsWith('hive-');
   const { data: postData, isLoading: postIsLoading } = useQuery({
@@ -139,7 +143,7 @@ const PostContent = () => {
     }
   });
 
-  const { data: discussionData, isLoading: discussionIsLoading } = useQuery({
+  const { data: discussionData } = useQuery({
     queryKey: ['discussionData', permlink],
     queryFn: () => getDiscussion(author, permlink, observer),
     onError: (error) => {
@@ -153,6 +157,114 @@ const PostContent = () => {
     sorter(list, sortType);
     return list;
   }, [discussionData, commentSort]);
+
+  const paginatedDiscussionState = useMemo(() => {
+    if (!discussionState || !postData) return undefined;
+
+    // Build a map of comments by parent_author/parent_permlink for fast lookup
+    const commentsByParent = new Map<string, Entry[]>();
+
+    discussionState.forEach((comment) => {
+      const parentKey = `${comment.parent_author}/${comment.parent_permlink}`;
+      if (!commentsByParent.has(parentKey)) {
+        commentsByParent.set(parentKey, []);
+      }
+      commentsByParent.get(parentKey)!.push(comment);
+    });
+
+    // Find all main comments (depth === 1, which are direct replies to the post)
+    const mainComments = discussionState.filter(
+      (comment) =>
+        comment.depth === 1 &&
+        comment.parent_author === postData.author &&
+        comment.parent_permlink === postData.permlink
+    );
+
+    // Divide main comments into pages - maximum 50 comments total per page
+    const mainPost = discussionState.find((c) => c.depth === 0);
+    const pages: Set<number>[] = [];
+    let currentPageIds = new Set<number>();
+    let currentPageCount = mainPost ? 1 : 0;
+
+    if (mainPost) {
+      currentPageIds.add(mainPost.post_id);
+    }
+
+    for (const mainComment of mainComments) {
+      // Estimate how many comments this main comment has (1 + nested)
+      const parentKey = `${mainComment.author}/${mainComment.permlink}`;
+      const directChildren = commentsByParent.get(parentKey) || [];
+      // Simple estimate: main + direct children
+      const estimatedCount = 1 + Math.min(directChildren.length, 10);
+
+      // If adding this comment probably exceeds the limit, save the current page
+      if (
+        currentPageCount + estimatedCount > MAX_COMMENTS_PER_PAGE &&
+        currentPageIds.size > (mainPost ? 1 : 0)
+      ) {
+        pages.push(currentPageIds);
+        currentPageIds = new Set<number>();
+        currentPageCount = mainPost ? 1 : 0;
+        if (mainPost) {
+          currentPageIds.add(mainPost.post_id);
+        }
+      }
+
+      // Now collect actual comments with the limit
+      const remainingLimit = MAX_COMMENTS_PER_PAGE - currentPageCount;
+      if (remainingLimit <= 0) continue;
+
+      currentPageIds.add(mainComment.post_id);
+      currentPageCount++;
+
+      // Collect nested comments with the limit (iteratively)
+      const queue: Entry[] = [...directChildren].sort(
+        (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()
+      );
+      const visited = new Set<number>([mainComment.post_id]);
+
+      while (queue.length > 0 && currentPageCount < MAX_COMMENTS_PER_PAGE) {
+        const current = queue.shift()!;
+        if (visited.has(current.post_id)) continue;
+        if (currentPageIds.has(current.post_id)) continue;
+
+        visited.add(current.post_id);
+        currentPageIds.add(current.post_id);
+        currentPageCount++;
+
+        // Add children of this comment to the queue
+        const currentParentKey = `${current.author}/${current.permlink}`;
+        const currentChildren = commentsByParent.get(currentParentKey) || [];
+        const sortedCurrentChildren = [...currentChildren].sort(
+          (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()
+        );
+        queue.push(...sortedCurrentChildren);
+      }
+    }
+
+    if (currentPageIds.size > (mainPost ? 1 : 0)) {
+      pages.push(currentPageIds);
+    }
+
+    const totalPages = Math.max(1, pages.length);
+    const validPage = Math.min(commentsPage, totalPages);
+    const pageIncludedIds = pages[validPage - 1] || new Set<number>();
+
+    // Always include the main post
+    if (mainPost && !pageIncludedIds.has(mainPost.post_id)) {
+      pageIncludedIds.add(mainPost.post_id);
+    }
+
+    // Create the final list using Set for O(1) lookup
+    const paginatedComments = discussionState.filter((comment) => pageIncludedIds.has(comment.post_id));
+
+    return {
+      comments: paginatedComments,
+      totalPages,
+      currentPage: validPage,
+      totalMainComments: mainComments.length
+    };
+  }, [discussionState, postData, commentsPage]);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
 
@@ -235,6 +347,11 @@ const PostContent = () => {
       storeBox(reply);
     }
   }, [reply, storeBox]);
+
+  // Reset comments pagination when the post changes
+  useEffect(() => {
+    setCommentsPage(1);
+  }, [author, permlink]);
   if (userFromGDPR || (!postData && !postIsLoading)) return <NoDataError />;
 
   return (
@@ -672,7 +789,7 @@ const PostContent = () => {
               />
             ) : null}
           </div>
-          {!!discussionData && !!discussionState && !!postData ? (
+          {!!postData && paginatedDiscussionState ? (
             <div className="max-w-4xl pr-2">
               <div className="my-1 flex items-center justify-end" translate="no">
                 <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
@@ -683,16 +800,76 @@ const PostContent = () => {
                 highestPermlink={postData.permlink}
                 permissionToMute={!!userCanModerate}
                 mutedList={mutedList || []}
-                data={discussionState}
+                data={paginatedDiscussionState.comments}
                 flagText={communityData?.flag_text}
                 parent={postData}
                 parent_depth={postData.depth}
                 discussionPermlink={permlink}
               />
+              {paginatedDiscussionState.totalPages > 1 && (
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setCommentsPage((prev) => Math.max(1, prev - 1));
+                    }}
+                    disabled={paginatedDiscussionState.currentPage === 1}
+                  >
+                    {t('user_profile.lists.list.previous_button')}
+                  </Button>
+                  {Array.from({ length: paginatedDiscussionState.totalPages }, (_, i) => i + 1).map(
+                    (pageNum) => {
+                      // Show only a few pages around the current page
+                      const showPage =
+                        pageNum === 1 ||
+                        pageNum === paginatedDiscussionState.totalPages ||
+                        (pageNum >= paginatedDiscussionState.currentPage - 2 &&
+                          pageNum <= paginatedDiscussionState.currentPage + 2);
+
+                      if (!showPage) {
+                        // Show ellipses
+                        if (
+                          pageNum === paginatedDiscussionState.currentPage - 3 ||
+                          pageNum === paginatedDiscussionState.currentPage + 3
+                        ) {
+                          return (
+                            <span key={pageNum} className="px-2">
+                              ...
+                            </span>
+                          );
+                        }
+                        return null;
+                      }
+
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={pageNum === paginatedDiscussionState.currentPage ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => {
+                            setCommentsPage(pageNum);
+                          }}
+                        >
+                          {pageNum}
+                        </Button>
+                      );
+                    }
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setCommentsPage((prev) => Math.min(paginatedDiscussionState.totalPages, prev + 1));
+                    }}
+                    disabled={paginatedDiscussionState.currentPage === paginatedDiscussionState.totalPages}
+                  >
+                    {t('user_profile.lists.list.next_button')}
+                  </Button>
+                </div>
+              )}
             </div>
-          ) : (
-            <Loading loading={discussionIsLoading} />
-          )}
+          ) : null}
         </div>
         <div className="col-span-2" />
       </div>
