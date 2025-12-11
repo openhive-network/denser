@@ -44,7 +44,8 @@ test.describe('Explore communities page tests', () => {
 
     await communitiesPage.communitiesFilter.click();
     await communitiesPage.communitiesFilterItems.getByText("Subscribers").click();
-    await page.waitForTimeout(1000);
+    // Wait for community list to update after filter change
+    await communitiesPage.communityListItem.first().waitFor({ state: 'visible' });
     await expect(await communitiesPage.communityListItem.all()).toHaveLength(await subscribersCommunitiesListAPI.result.length);
   });
 
@@ -59,7 +60,8 @@ test.describe('Explore communities page tests', () => {
 
     await communitiesPage.communitiesFilter.click();
     await communitiesPage.communitiesFilterItems.getByText("New").click();
-    await page.waitForTimeout(1000);
+    // Wait for community list to update after filter change
+    await communitiesPage.communityListItem.first().waitFor({ state: 'visible' });
     await expect(await communitiesPage.communityListItem.all()).toHaveLength(await newCommunitiesListAPI.result.length);
   });
 
@@ -287,8 +289,9 @@ test.describe('Explore communities page tests', () => {
     await communitiesPage.searchInput.click();
     await communitiesPage.page.keyboard.press('Escape');
     await communitiesPage.page.keyboard.press('Enter');
-    await communitiesPage.page.waitForTimeout(2000);
-    await communitiesPage.communityListItem.first().waitFor();
-    await expect(await communitiesPage.communityListItem.count()).toBe(100);
+    // Wait for full community list to reload (100 items)
+    await expect.poll(async () => {
+      return await communitiesPage.communityListItem.count();
+    }).toBe(100);
   });
 });

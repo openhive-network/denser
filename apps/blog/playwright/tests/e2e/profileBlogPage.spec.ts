@@ -533,6 +533,8 @@ test.describe('Profile page of @gtg', () => {
 
     // The tooltip message and colors
     await profilePage.postReblog.first().hover();
+    // Wait for the tooltip to be visible before checking its content
+    await expect(profilePage.postReblogTooltip.first()).toBeVisible();
     expect(await profilePage.postReblogTooltip.first().textContent()).toContain('Reblog');
     expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogTooltip, 'color')).toBe(
       'rgb(15, 23, 42)'
@@ -554,6 +556,8 @@ test.describe('Profile page of @gtg', () => {
 
     // The tooltip message and colors
     await profilePage.postReblog.first().hover();
+    // Wait for the tooltip to be visible before checking its content
+    await expect(profilePage.postReblogTooltip.first()).toBeVisible();
     expect(await profilePage.postReblogTooltip.textContent()).toContain('Reblog');
     expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
@@ -567,7 +571,11 @@ test.describe('Profile page of @gtg', () => {
     let reblogDialog = new ReblogThisPostDialog(page);
     await profilePage.gotoProfilePage('@gtg');
 
+    // Wait for the reblog button to be ready and click it
+    await expect(profilePage.postReblog.first()).toBeVisible();
     await profilePage.postReblog.first().click();
+    // Wait for the dialog to appear before validating
+    await expect(reblogDialog.getDialogHeader).toBeVisible({ timeout: 15000 });
     await reblogDialog.validateReblogThisPostHeaderIsVisible();
     await reblogDialog.validateReblogThisPostDescriptionIsVisible();
     await expect(reblogDialog.getDialogOkButton).toBeVisible();

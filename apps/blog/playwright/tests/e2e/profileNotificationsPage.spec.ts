@@ -38,7 +38,8 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
 
     const firstNotificationAuthorName = await profilePage.notificationNickName.first().textContent();
     await profilePage.notificationAccountIconLink.first().click();
-    await profilePage.page.waitForTimeout(3000);
+    // Wait for navigation to author's profile page
+    await profilePage.page.waitForURL(url => url.href.includes(firstNotificationAuthorName as string));
     // Validate new url of notification's author
     await expect(profilePage.page.url()).toContain(firstNotificationAuthorName);
   });
@@ -219,13 +220,10 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     ).toBe('rgb(100, 116, 139)');
     // Validate the styles of replies notifications after clicking it
     await profilePage.notificationsMenuRepliesButton.click();
-    await profilePage.page.waitForTimeout(500);
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuRepliesButton,
-        'background-color'
-      )
-    ).toBe('rgb(255, 255, 255)');
+    // Wait for background-color to change after click
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuRepliesButton, 'background-color');
+    }).toBe('rgb(255, 255, 255)');
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuRepliesButton, 'color')
     ).toBe('rgb(51, 51, 51)');
@@ -241,13 +239,10 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     ).toBe('rgb(100, 116, 139)');
     // Validate the styles of mentions notifications after clicking it
     await profilePage.notificationsMenuMentionsButton.click();
-    await profilePage.page.waitForTimeout(500);
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuMentionsButton,
-        'background-color'
-      )
-    ).toBe('rgb(255, 255, 255)');
+    // Wait for background-color to change after click
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuMentionsButton, 'background-color');
+    }).toBe('rgb(255, 255, 255)');
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuMentionsButton, 'color')
     ).toBe('rgb(51, 51, 51)');
@@ -263,13 +258,10 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     ).toBe('rgb(100, 116, 139)');
     // Validate the styles of follows notifications after clicking it
     await profilePage.notificationsMenuFollowsButton.click();
-    await profilePage.page.waitForTimeout(500);
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuFollowsButton,
-        'background-color'
-      )
-    ).toBe('rgb(255, 255, 255)');
+    // Wait for background-color to change after click
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuFollowsButton, 'background-color');
+    }).toBe('rgb(255, 255, 255)');
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuFollowsButton, 'color')
     ).toBe('rgb(51, 51, 51)');
@@ -285,13 +277,10 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     ).toBe('rgb(100, 116, 139)');
     // Validate the styles of upvotes notifications after clicking it
     await profilePage.notificationsMenuUpvotesButton.click();
-    await profilePage.page.waitForTimeout(500);
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuUpvotesButton,
-        'background-color'
-      )
-    ).toBe('rgb(255, 255, 255)');
+    // Wait for background-color to change after click
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuUpvotesButton, 'background-color');
+    }).toBe('rgb(255, 255, 255)');
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuUpvotesButton, 'color')
     ).toBe('rgb(51, 51, 51)');
@@ -307,13 +296,10 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     ).toBe('rgb(100, 116, 139)');
     // Validate the styles of reblogs notifications after clicking it
     await profilePage.notificationsMenuReblogsButton.click();
-    await profilePage.page.waitForTimeout(500);
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuReblogsButton,
-        'background-color'
-      )
-    ).toBe('rgb(255, 255, 255)');
+    // Wait for background-color to change after click
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuReblogsButton, 'background-color');
+    }).toBe('rgb(255, 255, 255)');
     expect(
       await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuReblogsButton, 'color')
     ).toBe('rgb(51, 51, 51)');
@@ -489,9 +475,12 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
       50,
       lastNotificationId
     );
-    await profilePage.page.waitForTimeout(3000);
     await profilePage.notificationLoadMoreButtonInAll.click();
-    await profilePage.page.waitForTimeout(3000);
+    // Wait for more notifications to load
+    const expectedCount = resAccountNotificationsAPI.result.length + resAccountNotificationsAPILoadMore.result.length;
+    await expect.poll(async () => {
+      return (await profilePage.notificationListItemInAll.all()).length;
+    }).toBe(expectedCount);
     const notificationListItemInAllArrayAfterLoadMoreClicked =
       await profilePage.notificationListItemInAll.all();
     expect(await notificationListItemInAllArrayAfterLoadMoreClicked.length).toBe(
@@ -515,10 +504,10 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     ).toBe('rgba(0, 0, 0, 0)');
     // Style after hovering
     await profilePage.notificationLoadMoreButtonInAll.hover();
-    await profilePage.page.waitForTimeout(500);
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationLoadMoreButtonInAll, 'color')
-    ).toBe('rgb(241, 245, 249)');
+    // Wait for hover color change
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(await profilePage.notificationLoadMoreButtonInAll, 'color');
+    }).toBe('rgb(241, 245, 249)');
     expect(
       await profilePage.getElementCssPropertyValue(
         await profilePage.notificationLoadMoreButtonInAll,

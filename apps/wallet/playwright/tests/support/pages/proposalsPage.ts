@@ -72,7 +72,13 @@ export class ProposalsPage {
     await this.page.waitForLoadState("domcontentloaded");
     await expect(this.proposalsHeaderName).toHaveText("Proposals");
     await expect(this.proposalsBody).toBeVisible();
-    await this.page.waitForTimeout(3000);
+    // Wait for proposals to load - either proposal items appear or "no proposals" message
+    await Promise.race([
+      this.proposalListItem.first().waitFor({ state: 'visible', timeout: 10000 }),
+      this.page.locator('text="Sorry, I can\'t show you any proposals right now."').waitFor({ state: 'visible', timeout: 10000 })
+    ]).catch(() => {
+      // If neither appears within timeout, continue anyway (data may still be loading)
+    });
   }
 
   async clickVoteButtonOfFirstProposalItem() {

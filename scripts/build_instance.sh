@@ -129,6 +129,31 @@ fi
 export GIT_LAST_COMMIT_DATE
 
 ./scripts/write-version.sh ".${TURBO_APP_PATH}/version.json"
-docker buildx bake --provenance=false --progress="$PROGRESS_DISPLAY" "$TARGET"
+
+# Attempt to login to Docker Hub if credentials are available (increases rate limit)
+if [ -n "${DOCKERHUB_USER:-}" ] && [ -n "${DOCKERHUB_PASSWORD:-}" ]; then
+  echo "Logging in to Docker Hub to increase rate limits..."
+  echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USER" --password-stdin docker.io || true
+fi
+
+# Retry docker buildx bake with exponential backoff to handle transient Docker Hub rate limiting
+max_attempts=5
+attempt=1
+delay=60
+while [ $attempt -le $max_attempts ]; do
+  echo "Docker build attempt $attempt/$max_attempts..."
+  if docker buildx bake --provenance=false --progress="$PROGRESS_DISPLAY" "$TARGET"; then
+    echo "Docker build succeeded"
+    break
+  fi
+  if [ $attempt -eq $max_attempts ]; then
+    echo "Docker build failed after $max_attempts attempts"
+    exit 1
+  fi
+  echo "Attempt $attempt failed, retrying in ${delay}s..."
+  sleep $delay
+  attempt=$((attempt + 1))
+  delay=$((delay * 2))
+done
 
 popd

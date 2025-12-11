@@ -207,13 +207,14 @@ test.describe.skip('Translation tests', () => {
     await expect(await page.getByTestId('community-name').textContent()).toBe('Wszystkie posty');
     await expect(await homePage.getExploreCommunities).toHaveText('Pokaż więcej społeczności...');
     await homePage.getExploreCommunities.click();
-    await page.waitForTimeout(10000);
+    // Wait for communities page to load
+    await expect(communitiesExplorerPage.communitiesHeaderPage).toBeVisible();
     // Click PL language again
     // Without this on CI this tests found english page instead polish
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
-    await page.waitForTimeout(2000);
+    // Wait for Polish translation to appear
     await expect(communitiesExplorerPage.communitiesHeaderPage).toHaveText('Społeczności');
     await expect(communitiesExplorerPage.searchInput).toHaveAttribute('placeholder', 'Szukaj...');
     await expect(communitiesExplorerPage.communityListItemFooter.first()).toContainText('subskrybentów');
@@ -273,10 +274,9 @@ test.describe.skip('Translation tests', () => {
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
-    await postPage.page.waitForTimeout(3000);
+    // Wait for Polish translation to load on post page
     await expect(postPage.articleTitle).toBeVisible();
     // Validate post footer upvote and downvote buttons tooltips
-    await postPage.page.waitForTimeout(3000);
     const expectedUpvoteTooltipText: string = 'Głos zaGłos za';
     const expectedDownvoteTooltipText: string = 'Głos przeciwGłos przeciw';
     await postPage.upvoteButton.locator('svg').hover();
@@ -486,7 +486,7 @@ test.describe.skip('Translation tests', () => {
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
-    await homePage.page.waitForTimeout(3000);
+    // Wait for sidebar menu to be visible after language change
     await expect(homePage.getNavSidebarMenu).toBeVisible();
     await homePage.getNavSidebarMenu.click();
     await homePage.page.waitForSelector(homePage.getNavSidebarMenuContent['_selector']);

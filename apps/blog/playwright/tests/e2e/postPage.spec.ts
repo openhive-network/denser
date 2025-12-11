@@ -150,11 +150,10 @@ test.describe('Post page tests', () => {
 
     // button styles when hovered over it
     await postPage.buttonFollowPopoverCard.hover();
-    await postPage.page.waitForTimeout(1000);
-
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(218, 43, 43)'
-    );
+    // Wait for hover color to change
+    await expect.poll(async () => {
+      return await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color');
+    }).toBe('rgb(218, 43, 43)');
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgb(24, 30, 42)');
@@ -192,11 +191,10 @@ test.describe('Post page tests', () => {
 
     // button styles when hovered over it
     await postPage.buttonFollowPopoverCard.hover();
-    await postPage.page.waitForTimeout(1000);
-
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(226, 18, 53)'
-    );
+    // Wait for hover color to change
+    await expect.poll(async () => {
+      return await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color');
+    }).toBe('rgb(226, 18, 53)');
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgb(248, 250, 252)');
@@ -470,13 +468,11 @@ test.describe('Post page tests', () => {
     );
 
     // button styles when hovered over it
-    await postPage.page.waitForTimeout(1000);
     await postPage.buttonFollowPopoverCard.hover();
-    await postPage.page.waitForTimeout(3000);
-
-    expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
-      'rgb(226, 18, 53)'
-    );
+    // Wait for hover color to change
+    await expect.poll(async () => {
+      return await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color');
+    }).toBe('rgb(226, 18, 53)');
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgb(248, 250, 252)');
