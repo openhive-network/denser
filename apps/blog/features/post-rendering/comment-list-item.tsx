@@ -329,6 +329,7 @@ const CommentListItem = ({
                           <RendererContainer
                             body={comment.body}
                             author={comment.author}
+                            permlink={comment.permlink}
                             className={commentClassName}
                           />
                         </CardDescription>
