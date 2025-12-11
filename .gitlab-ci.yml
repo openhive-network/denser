@@ -24,7 +24,7 @@ variables:
 
   # HAF submodule commit - must match the 'ref:' in the include section above
   # This is needed for service containers which can't access dotenv artifacts
-  HAF_COMMIT: '465036e77ceb78cd71d1daeb377b6d0c0a21b857'
+  HAF_COMMIT: '24737036315690b7f5d4093eeb71a4904b5e4a5b'
 
   # HAF API node configuration
   API_NODE_VERSION: '1.27.8'
@@ -55,7 +55,7 @@ include:
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
-  ref: 465036e77ceb78cd71d1daeb377b6d0c0a21b857  # feature/nfs-cache-manager
+  ref: 24737036315690b7f5d4093eeb71a4904b5e4a5b  # feature/nfs-cache-manager
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/haf_api_node'
   ref: denser-11
