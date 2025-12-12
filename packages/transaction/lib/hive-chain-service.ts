@@ -29,13 +29,22 @@ export class HiveChainService {
   constructor({ storageType = 'localStorage' }: StorageBaseOptions) {
     this.hiveChainPromise = null;
     this.storageType = storageType;
-    if (this.storageType === 'localStorage' && isStorageAvailable(this.storageType, true)) {
-      this.storage = window.localStorage;
-    } else if (this.storageType === 'sessionStorage' && isStorageAvailable(this.storageType, true)) {
-      this.storage = window.sessionStorage;
-    } else {
+
+    // SSR-safe: check if running in browser before accessing window
+    if (typeof window === 'undefined') {
+      // Server-side: always use memoryStorage
       this.storageType = 'memoryStorage';
       this.storage = memoryStorage;
+    } else {
+      // Client-side: check storage availability
+      if (this.storageType === 'localStorage' && isStorageAvailable(this.storageType, true)) {
+        this.storage = window.localStorage;
+      } else if (this.storageType === 'sessionStorage' && isStorageAvailable(this.storageType, true)) {
+        this.storage = window.sessionStorage;
+      } else {
+        this.storageType = 'memoryStorage';
+        this.storage = memoryStorage;
+      }
     }
   }
 
@@ -149,4 +158,32 @@ export class HiveChainService {
   }
 }
 
-export const hiveChainService = new HiveChainService({ storageType: 'localStorage' });
+// Factory function for SSR-safe HiveChainService instantiation
+let _hiveChainServiceInstance: HiveChainService | undefined;
+
+/**
+ * Get or create HiveChainService instance.
+ * SSR-safe: Creates instance with appropriate storage based on environment.
+ *
+ * @param options - Optional storage type override
+ * @returns HiveChainService instance
+ */
+export function getHiveChainService(options?: StorageBaseOptions): HiveChainService {
+  if (!_hiveChainServiceInstance) {
+    // Determine storage type based on environment
+    const storageType =
+      typeof window === 'undefined' ? 'memoryStorage' : options?.storageType || 'localStorage';
+
+    _hiveChainServiceInstance = new HiveChainService({ storageType });
+  }
+  return _hiveChainServiceInstance;
+}
+
+// Backward compatibility via Proxy - allows existing code to continue using hiveChainService
+// The Proxy lazily initializes the service when any property is accessed
+export const hiveChainService = new Proxy({} as HiveChainService, {
+  get(_target, prop) {
+    const instance = getHiveChainService();
+    return instance[prop as keyof HiveChainService];
+  }
+});

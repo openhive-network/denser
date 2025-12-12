@@ -215,6 +215,12 @@ export default function PostForm() {
     ];
 
     const copyToClipboard = (text: string, keyType: string) => {
+      // SSR guard - clipboard API is only available in browser
+      if (typeof window === 'undefined' || !navigator.clipboard) {
+        console.warn('Clipboard API not available');
+        return;
+      }
+
       navigator.clipboard.writeText(text);
       setCopiedStates((prev) => ({ ...prev, [keyType]: true }));
       setTimeout(() => {
@@ -223,6 +229,12 @@ export default function PostForm() {
     };
 
     const downloadKeys = () => {
+      // SSR guard - DOM APIs are only available in browser
+      if (typeof window === 'undefined' || typeof document === 'undefined') {
+        console.warn('Download not available on server');
+        return;
+      }
+
       const content = `HIVE ACCOUNT: ${username}
 GENERATED: ${new Date().toISOString()}
 
