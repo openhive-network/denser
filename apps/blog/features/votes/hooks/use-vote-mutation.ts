@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult, transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
 import { toast } from '@ui/components/hooks/use-toast';
+import { handleError } from '@ui/lib/handle-error';
 
 const logger = getLogger('app');
 
@@ -73,6 +74,12 @@ export function useVoteMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['votes', author, permlink, voter] });
       }, 6000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useVoteMutation',
+        params: variables
+      });
     }
   });
   return voteMutation;

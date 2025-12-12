@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Community } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
+import { handleError } from '@ui/lib/handle-error';
 
 /**
  * Makes subscribe transaction.
@@ -57,6 +58,12 @@ export function useSubscribeMutation() {
         queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
         queryClient.invalidateQueries({ queryKey: ['AccountNotification', community] });
       }, 5000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useSubscribeMutation',
+        params: variables
+      });
     }
   });
 
@@ -117,6 +124,12 @@ export function useUnsubscribeMutation() {
         queryClient.invalidateQueries({ queryKey: ['subscribers', community] });
         queryClient.invalidateQueries({ queryKey: ['AccountNotification', community] });
       }, 5000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useUnsubscribeMutation',
+        params: variables
+      });
     }
   });
 

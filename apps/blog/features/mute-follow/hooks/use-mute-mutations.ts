@@ -4,6 +4,7 @@ import { transactionService } from '@transaction/index';
 import { IFollow, IFollowList } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
+import { handleError } from '@ui/lib/handle-error';
 
 const logger = getLogger('app');
 
@@ -95,6 +96,12 @@ export function useMuteMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
         queryClient.invalidateQueries({ queryKey: ['discussionData'] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useMuteMutation',
+        params: variables
+      });
     }
   });
 }
@@ -151,6 +158,12 @@ export function useUnmuteMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
         queryClient.invalidateQueries({ queryKey: ['discussionData'] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useUnmuteMutation',
+        params: variables
+      });
     }
   });
 
@@ -191,6 +204,12 @@ export function useResetBlogListMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         logger.info('useResetBlogListMutation onSuccess: %o', data);
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useResetBlogListMutation',
+        params: variables
+      });
     }
   });
 

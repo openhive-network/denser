@@ -3,6 +3,7 @@ import { UseInfiniteQueryResult, useMutation, useQueryClient } from '@tanstack/r
 import { transactionService } from '@transaction/index';
 import { IFollow, IFollowList } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
+import { handleError } from '@ui/lib/handle-error';
 
 /**
  * Makes follow transaction.
@@ -95,6 +96,12 @@ export function useFollowMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useFollowMutation',
+        params: variables
+      });
     }
   });
 
@@ -150,6 +157,12 @@ export function useUnfollowMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useUnfollowMutation',
+        params: variables
+      });
     }
   });
 

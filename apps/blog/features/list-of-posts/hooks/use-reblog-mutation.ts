@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult, transactionService } from '@transaction/index';
 import { toast } from '@ui/components/hooks/use-toast';
+import { handleError } from '@ui/lib/handle-error';
 
 /**
  * Makes reblog transaction.
@@ -36,6 +37,12 @@ export function useReblogMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['PostRebloggedBy', author, permlink, username] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useReblogMutation',
+        params: variables
+      });
     }
   });
 

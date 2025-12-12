@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { FullAccount } from '@transaction/lib/app-types';
 import { toast } from '@ui/components/hooks/use-toast';
+import { handleError } from '@ui/lib/handle-error';
 
 /**
  * Makes update profile transaction.
@@ -104,6 +105,12 @@ export function useUpdateProfileMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['profileData', user.username] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useUpdateProfileMutation',
+        params: variables
+      });
     }
   });
 
