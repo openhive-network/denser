@@ -91,7 +91,6 @@ include:
     when: always # This ensures artifacts are created even if job fails
   tags:
   - public-runner-docker
-  - hived-for-tests
 
 # Validate that HAF_COMMIT variable matches both the submodule and include ref
 validate_haf_commit:
@@ -137,7 +136,6 @@ mirrornet-haf-binaries-extraction:
     - '${BINARY_CACHE_PATH}'
   tags:
   - public-runner-docker
-  - hived-for-tests
 
 # helper job just to prepare extended version of production image additionally holding .env file specific to test environment
 .docker-build-testenv-image:
@@ -170,7 +168,6 @@ mirrornet-haf-binaries-extraction:
     when: always # This ensures artifacts are created even if job fails
   tags:
   - public-runner-docker
-  - hived-for-tests
 
 docker-build-blog:
   extends: .docker_build_template
@@ -260,7 +257,6 @@ library_extraction:
     - '${BINARY_CACHE_PATH}'
   tags:
   - public-runner-docker
-  - hived-for-tests
 
 extended_block_log_creation:
   extends: .extended_block_log_creation
@@ -285,7 +281,6 @@ extended_block_log_creation:
     LD_LIBRARY_PATH: '${BINARY_PATH}'
   tags:
   - public-runner-docker
-  - hived-for-tests
 
 block-log-extraction:
   extends: .docker_image_builder_job_template
