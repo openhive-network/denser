@@ -122,7 +122,10 @@ export class InstagramPlugin implements RendererPlugin {
         return text.replace(/<div>instagram-url-(.*?)-count-(.*?)<\/div>/g, (_match, encodedUrl, count) => {
             const url = decodeURIComponent(encodedUrl);
             const match = url.match(/\/(p|reel|reels)\/([^/?]+)/);
-            const containerId = `instagram-${match}-${count}`;
+            if (!match || !match[2]) {
+                return `<a href="${url}" target="_blank">${url}</a>`;
+            }
+            const containerId = `instagram-${match[2]}-${count}`;
             setTimeout(() => this.renderPost(url, containerId), 1000);
             return `<div id="${containerId}" class="instagram-embed"><a href="${url}" target="_blank">${url}</a></div>`;
         });

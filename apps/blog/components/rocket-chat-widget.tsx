@@ -167,13 +167,12 @@ const RocketChatWidget = () => {
       addIframeListener();
       setInit(false);
     }
+
+    return removeIframeListener;
   }, [chatAuthToken, init, isIframeLoaded, loginType]);
 
   const onIframeLoad = () => {
     logger.info('Chat iframe has been loaded');
-    return () => {
-      removeIframeListener();
-    };
   };
 
   return (

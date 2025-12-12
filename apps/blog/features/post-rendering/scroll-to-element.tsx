@@ -17,8 +17,8 @@ const ScrollToElement: FC<{ rendererRef: RefObject<HTMLDivElement> }> = ({ rende
           selectors.map((img) => {
             if (img.complete) return;
             return new Promise((resolve, reject) => {
-              img.addEventListener('load', resolve);
-              img.addEventListener('error', reject);
+              img.addEventListener('load', resolve, { once: true });
+              img.addEventListener('error', reject, { once: true });
             });
           })
         );

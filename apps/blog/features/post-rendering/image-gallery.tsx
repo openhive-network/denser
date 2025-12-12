@@ -34,7 +34,7 @@ const ImageGallery = ({ children }: PropsWithChildren) => {
     }
     return () => {
       images.forEach((val, i) => {
-        val.addEventListener('click', openOnIndex(i));
+        val.removeEventListener('click', openOnIndex(i));
       });
     };
   }, [children]);

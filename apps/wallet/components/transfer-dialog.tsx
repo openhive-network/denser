@@ -81,7 +81,7 @@ export function TransferDialog({
     selectCurr: true,
     buttonTitle: t('transfers_page.next'),
     to: ['transferTo', 'powerUp', 'withdrawHive', 'withdrawHiveDollars'].includes(type) ? username : '',
-    onSubmit: new Function(),
+    onSubmit: () => {},
     memo: '',
     requestId: 0
   };
