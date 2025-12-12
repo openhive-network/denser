@@ -1,11 +1,6 @@
 import Big from 'big.js';
 import moment from 'moment';
-import {
-  TWaxApiRequest,
-  RcAccount,
-  GetDynamicGlobalPropertiesResponse,
-} from '@hiveio/wax';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { RcAccount, GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import {
   SavingsWithdrawals,
   IProposal,
@@ -22,11 +17,10 @@ import {
   IDirectDelegation,
   IGetOperationsByAccountResponse,
   HiveOperation,
-  HiveOpTypeSchema,
+  HiveOpTypeSchema
 } from '@transaction/lib/extended-hive.chain';
 import { commonVariables } from '@ui/lib/common-variables';
-
-const chain = await hiveChainService.getHiveChain();
+import { getChain } from '@transaction/lib/chain';
 
 export declare type Bignum = string;
 
@@ -36,18 +30,22 @@ export type ProposalData = Omit<IProposal, 'daily_pay' | 'total_votes'> & {
 };
 
 export const getOpTypes = async (): Promise<HiveOpTypeSchema[]> => {
+  const chain = await getChain();
   return await chain.restApi['hafah-api']['operation-types']();
-}
+};
 
 export const getWitnessesByVote = async (from: string, limit: number): Promise<IWitness[]> => {
+  const chain = await getChain();
   return chain.api.condenser_api.get_witnesses_by_vote([from, limit]);
 };
 
 export const findRcAccounts = async (username: string): Promise<{ rc_accounts: RcAccount[] }> => {
+  const chain = await getChain();
   return chain.api.rc_api.find_rc_accounts({ accounts: [username] });
 };
 
 export const getDirectDelegations = async (account: string): Promise<IDirectDelegation> => {
+  const chain = await getChain();
   return chain.api.rc_api.list_rc_direct_delegations({ limit: 1000, start: [account, ''] });
 };
 
@@ -61,6 +59,7 @@ export const DEFAULT_PARAMS_FOR_PROPOSALS: IGetProposalsParams = {
 
 export const getProposals = async (params?: Partial<IGetProposalsParams>): Promise<IProposal[]> => {
   try {
+    const chain = await getChain();
     const response = await chain.api.database_api.list_proposals({
       ...DEFAULT_PARAMS_FOR_PROPOSALS,
       ...params
@@ -83,6 +82,7 @@ export const getVestingDelegations = async (
   from: string = '',
   limit: number = 50
 ): Promise<IDelegatedVestingShare[]> => {
+  const chain = await getChain();
   return chain.api.condenser_api.get_vesting_delegations([username, from, limit]);
 };
 
@@ -108,23 +108,23 @@ export const getAccountOperations = async (
   username: string,
   page: number | undefined = undefined,
   pageSize: number = 500,
-  observer: string,
+  observer: string
 ): Promise<IGetOperationsByAccountResponse> => {
+  const chain = await getChain();
   const opTypes = await getOpTypes();
   const operationTypesIds = walletOperations
-    .map((operationName) =>
-      opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id
-    )
-    .filter((id) => id != null)   // filters out undefined/null
-  .map((id) => id?.toString());  const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
-    "account-name": username,
+    .map((operationName) => opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id)
+    .filter((id) => id != null) // filters out undefined/null
+    .map((id) => id?.toString());
+  const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
+    'account-name': username,
     page,
-    "page-size": pageSize,
-    "operation-types": operationTypesIds.toString(),
+    'page-size': pageSize,
+    'operation-types': operationTypesIds.toString(),
     'observer-name': observer !== '' ? observer : commonVariables.defaultObserver
-  })
-  return accountOperations
-}
+  });
+  return accountOperations;
+};
 
 export type IAuthorReward = {
   author: string;
@@ -164,64 +164,75 @@ export const getRestApiAccountRewardsHistory = async (
   op_type: 'author_reward_operation' | 'curation_reward_operation',
   limit: number = 20
 ): Promise<HiveOperation[]> => {
+  const chain = await getChain();
   const opTypes = await chain.restApi['hafah-api']['operation-types']();
   const opTypeId = opTypes.find((opType) => opType.operation_name === op_type)?.op_type_id;
-  const operations = (await chain.restApi['hivemind-api'].accountsOperations({'account-name': username,  'operation-types': opTypeId?.toString(), "page-size": limit})).operations_result;
+  const operations = (
+    await chain.restApi['hivemind-api'].accountsOperations({
+      'account-name': username,
+      'operation-types': opTypeId?.toString(),
+      'page-size': limit
+    })
+  ).operations_result;
   return operations;
-}
+};
 
 export const getProposalVotes = async (
   proposalId: number,
   voter: string = '',
   limit: number = 1000
 ): Promise<IProposalVote[]> => {
+  const chain = await getChain();
   return chain.api.condenser_api
     .list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
     .then((r) => r.filter((x: IProposalVote) => x.proposal.proposal_id === proposalId));
 };
 
 export const getUserVotes = async (voter: string, limit: number = 1000): Promise<IProposalVote[]> => {
+  const chain = await getChain();
   return chain.api.condenser_api
     .list_proposal_votes([[voter], limit, 'by_voter_proposal'])
     .then((r) => r.filter((x: IProposalVote) => x.voter === voter));
 };
 
 export const getMarketStatistics = async (): Promise<IMarketStatistics> => {
+  const chain = await getChain();
   return chain.api.condenser_api.get_ticker([]);
 };
 
 export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> => {
+  const chain = await getChain();
   return chain.api.condenser_api.get_order_book([limit]);
 };
 
 export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => {
+  const chain = await getChain();
   return chain.api.condenser_api.get_open_orders([user]);
 };
 
-type GetTradeHistoryData = {
-  condenser_api: {
-    get_trade_history: TWaxApiRequest<(string | number)[], IOrdersDataItem[]>;
-  };
-};
-
 export const getTradeHistory = async (limit: number = 1000): Promise<IOrdersDataItem[]> => {
+  const chain = await getChain();
   let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
   let todayNow = moment(Date.now()).format().split('+')[0];
   return chain.api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
 };
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
+  const chain = await getChain();
   return chain.api.condenser_api.get_recent_trades([limit]);
 };
 
 export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {
+  const chain = await getChain();
   return chain.api.database_api.find_savings_withdrawals({ account: account });
 };
 
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
+  const chain = await getChain();
   return chain.api.condenser_api.get_owner_history([account]);
 };
 
 export const getDynamicGlobalPropertiesData = async (): Promise<GetDynamicGlobalPropertiesResponse> => {
+  const chain = await getChain();
   return chain.api.database_api.get_dynamic_global_properties({});
 };

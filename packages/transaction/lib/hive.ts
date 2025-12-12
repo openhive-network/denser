@@ -1,14 +1,9 @@
 import { AccountAuthorityUpdateOperation } from '@hiveio/wax';
-import { hiveChainService } from './hive-chain-service';
 import { getLogger } from '@ui/lib/logging';
-import {
-  IListWitnessVotes,
-  IPost,
-} from './extended-hive.chain';
+import { IListWitnessVotes, IPost } from './extended-hive.chain';
+import { getChain } from './chain';
 
 const logger = getLogger('app');
-
-const chain = await hiveChainService.getHiveChain();
 
 export interface IDynamicProps {
   hivePerMVests: number;
@@ -26,6 +21,7 @@ export interface IDynamicProps {
 }
 
 export const getPost = async (username: string, permlink: string): Promise<IPost> => {
+  const chain = await getChain();
   return chain.api.condenser_api.get_content([username, permlink]);
 };
 
@@ -34,11 +30,12 @@ export const getListWitnessVotes = async (
   limit: number,
   order: string
 ): Promise<IListWitnessVotes> => {
+  const chain = await getChain();
   return chain.api.database_api.list_witness_votes({ start: [username, ''], limit, order });
 };
 
 export const getAuthority = async (username: string): Promise<AccountAuthorityUpdateOperation> => {
-  const chain = await hiveChainService.getHiveChain();
+  const chain = await getChain();
   const operation = await AccountAuthorityUpdateOperation.createFor(chain, username);
 
   return operation;
@@ -62,7 +59,7 @@ export const getPrivateKeys = async (
     correctKey: boolean;
   }[]
 > => {
-  const chain = await hiveChainService.getHiveChain();
+  const chain = await getChain();
   const keys = await Promise.all(
     keyTypes.map(async (keyType) => {
       const key = await chain.getPrivateKeyFromPassword(username, keyType, password);

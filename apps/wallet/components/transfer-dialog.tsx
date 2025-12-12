@@ -252,15 +252,16 @@ export function TransferDialog({
       }),
     [data.amount, t]
   );
+  type TransferFormValues = z.infer<typeof transferSchema>;
 
-  const form = useForm<z.infer<typeof transferSchema>>({
+  const form = useForm<TransferFormValues>({
     resolver: zodResolver(transferSchema),
     mode: 'onSubmit',
     defaultValues: {
       to: data.to
     }
   });
-  const onSubmit: SubmitHandler<z.infer<typeof transferSchema>> = () => {
+  const onSubmit: SubmitHandler<TransferFormValues> = () => {
     setNextOpen(true);
   };
 

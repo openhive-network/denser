@@ -78,8 +78,9 @@ export default function PostForm() {
       }),
     [generatedPassword]
   );
+  type PasswordFormValues = z.infer<typeof accountFormSchema>;
 
-  const form = useForm<z.infer<typeof accountFormSchema>>({
+  const form = useForm<PasswordFormValues>({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
     resolver: zodResolver(accountFormSchema),
