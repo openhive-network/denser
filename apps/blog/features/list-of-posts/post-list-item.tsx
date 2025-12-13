@@ -65,6 +65,7 @@ const PostListItem = ({
                 <Link
                   className="hover:cursor-pointer hover:text-destructive"
                   href={`/@${post.author}`}
+                  prefetch={false}
                 >
                   {post.author}
                 </Link>{' '}
@@ -72,6 +73,7 @@ const PostListItem = ({
                 <Link
                   href={`/${post.original_entry.community}/@${post.original_entry.author}/${post.original_entry.permlink}`}
                   className="text-destructive hover:cursor-pointer"
+                  prefetch={false}
                 >
                   @{post.original_entry.author}/{post.original_entry.permlink}
                 </Link>
@@ -86,6 +88,7 @@ const PostListItem = ({
                   href={`/@${post.reblogged_by[0]}`}
                   className="cursor-pointer hover:text-destructive"
                   data-testid="reblogged-author-link"
+                  prefetch={false}
                 >
                   {post.reblogged_by[0]}
                 </Link>{' '}
@@ -96,7 +99,7 @@ const PostListItem = ({
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
               {nsfw === 'show' && post.blacklists.length < 1 ? (
-                <Link href={`/@${post.author}`} data-testid="post-card-avatar">
+                <Link href={`/@${post.author}`} data-testid="post-card-avatar" prefetch={false}>
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                     style={{
@@ -110,6 +113,7 @@ const PostListItem = ({
                   href={`/@${post.author}`}
                   className="font-medium text-primary hover:cursor-pointer hover:text-destructive"
                   data-testid="post-author"
+                  prefetch={false}
                 >
                   {post.author}
                 </Link>{' '}
@@ -157,6 +161,7 @@ const PostListItem = ({
                     href={`/${post.category}/@${post.author}/${post.permlink}`}
                     className="hover:cursor-pointer hover:text-destructive"
                     data-testid="post-card-timestamp"
+                    prefetch={false}
                   >
                     <TimeAgo date={post.created} />
                   </Link>
@@ -165,7 +170,7 @@ const PostListItem = ({
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger data-testid="powered-up-100-trigger">
-                            <Link href={`/${post.category}/@${post.author}/${post.permlink}`}>
+                            <Link href={`/${post.category}/@${post.author}/${post.permlink}`} prefetch={false}>
                               <Icons.hive className="h-4 w-4" />
                             </Link>
                           </TooltipTrigger>
@@ -181,6 +186,7 @@ const PostListItem = ({
                       <Link
                         href={`/${post.category}/@${post.author}/${post.permlink}`}
                         data-testid="post-pinned-tag"
+                        prefetch={false}
                       >
                         {t('cards.badges.pinned')}
                       </Link>
