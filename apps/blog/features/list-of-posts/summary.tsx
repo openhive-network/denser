@@ -39,13 +39,12 @@ const PostSummary = ({
             <Link
               href={`/${post.category}/@${post.author}/${post.permlink}`}
               className="whitespace-normal break-words visited:text-gray-500 dark:visited:text-gray-400"
-              prefetch={false}
             >
               {post.title}
             </Link>
           </CardTitle>
           <CardDescription className="block w-auto whitespace-pre-wrap break-words md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
-            <Link href={`/${post.category}/@${post.author}/${post.permlink}`} data-testid="post-description" prefetch={false}>
+            <Link href={`/${post.category}/@${post.author}/${post.permlink}`} data-testid="post-description">
               {userFromDMCA
                 ? t('cards.content_removed')
                 : legalBlockedUser

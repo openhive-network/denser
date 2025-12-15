@@ -92,7 +92,7 @@ function UserInfo({
       {authored ? (
         <span className="ml-1 text-xs">
           Authored by{' '}
-          <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${authored}`} prefetch={false}>
+          <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${authored}`}>
             @{authored}
           </Link>
         </span>
