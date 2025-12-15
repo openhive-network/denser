@@ -4,7 +4,7 @@ import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import React, { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';

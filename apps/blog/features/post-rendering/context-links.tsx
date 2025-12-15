@@ -1,6 +1,6 @@
 import { useTranslation } from '@/blog/i18n/client';
 import { Entry } from '@transaction/lib/extended-hive.chain';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 
 const ContentLinks = ({ data, noContext }: { data: Entry; noContext: boolean }) => {
   const { t } = useTranslation('common_blog');

@@ -14,7 +14,20 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
     'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn'
+    'react-hooks/exhaustive-deps': 'warn',
+    'turbo/no-undeclared-env-vars': 'off',
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          {
+            name: 'next/link',
+            message:
+              'Use { Link } from "@hive/ui" instead for prefetch={false} by default'
+          }
+        ]
+      }
+    ]
   },
   env: {
     browser: true,

@@ -1,7 +1,7 @@
 'use client';
 
 import { dateToRelative } from '@ui/lib/parse-date';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { amt, fmt } from '@/blog/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';

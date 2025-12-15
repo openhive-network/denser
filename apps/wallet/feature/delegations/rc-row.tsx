@@ -1,5 +1,5 @@
 import { prepareRC } from '@/wallet/lib/utils';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { useUndelegateMutation } from './hooks/use-undelegate-mutation';
 import { Button } from '@ui/components';
 import { CircleSpinner } from 'react-spinners-kit';

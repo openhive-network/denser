@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import parseDate from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from '@/blog/i18n/client';

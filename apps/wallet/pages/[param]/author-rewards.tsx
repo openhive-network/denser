@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translations';
 import Head from 'next/head';
 import { useRewardsHistory } from '@/wallet/components/hooks/use-rewards-history';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import env from '@beam-australia/react-env';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { convertToHP } from '@ui/lib/utils';

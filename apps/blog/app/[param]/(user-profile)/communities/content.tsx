@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
 import { getHivebuzzBadges, getPeakdBadges } from '@transaction/lib/custom-api';
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 
 const CommunityContent = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');

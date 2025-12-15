@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import Loading from '@ui/components/loading';
 import { getByText } from '@transaction/lib/hive-api';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { Activity } from 'lucide-react';
 import { Preferences } from '@transaction/lib/app-types';
 import PostCardSkeleton from '@hive/ui/components/card-skeleton';

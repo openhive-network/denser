@@ -9,7 +9,7 @@ import {
 } from '@ui/components/dropdown-menu';
 import { ReactNode } from 'react';
 import ModeToggle from '../mode-toggle';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import BasePathLink from '../../../components/base-path-link';
 import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components';

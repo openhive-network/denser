@@ -1,6 +1,6 @@
 import { Icons } from '@ui/components/icons';
 import { GetStaticProps } from 'next';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from '@/wallet/next-i18next.config';
 import { useTranslation } from 'next-i18next';

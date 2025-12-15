@@ -31,7 +31,7 @@ import { handleError } from '@ui/lib/handle-error';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import Loading from '@ui/components/loading';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import env from '@beam-australia/react-env';
 import { getFindAccounts } from '@transaction/lib/hive-api';
 import { getAccount } from '@transaction/lib/hive-api';

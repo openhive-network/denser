@@ -5,7 +5,7 @@ import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translatio
 import Head from 'next/head';
 import { useRewardsHistory } from '@/wallet/components/hooks/use-rewards-history';
 import Loading from '@ui/components/loading';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { convertToHP } from '@ui/lib/utils';
 import { convertStringToBig } from '@ui/lib/helpers';
 import env from '@beam-australia/react-env';

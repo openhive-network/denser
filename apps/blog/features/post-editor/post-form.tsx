@@ -1,7 +1,7 @@
 'use client';
 
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import clsx from 'clsx';
 import * as z from 'zod';
 import { Button } from '@hive/ui/components/button';

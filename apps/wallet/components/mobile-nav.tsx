@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import Link, { LinkProps } from 'next/link';
+import { Link, LinkProps } from '@hive/ui';
 import { useRouter } from 'next/navigation';
 import { SidebarOpen } from 'lucide-react';
 import { siteConfig } from '@ui/config/site';

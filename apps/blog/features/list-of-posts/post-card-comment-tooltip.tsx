@@ -3,7 +3,7 @@
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from '@/blog/i18n/client';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 
 interface PostCardCommentTooltipProps {
   comments: number;

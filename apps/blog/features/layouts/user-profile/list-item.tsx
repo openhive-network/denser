@@ -1,7 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 
 const ListItem = ({ href, currentTab, label }: { href: string; currentTab: boolean; label: string }) => {
   return (

@@ -2,7 +2,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import WalletMenu from '@/wallet/components/wallet-menu';
 import { Card, Separator } from '@ui/components';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { cn } from '@ui/lib/utils';
 import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translations';
 import { useTranslation } from 'next-i18next';

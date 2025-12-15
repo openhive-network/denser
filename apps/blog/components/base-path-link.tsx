@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports -- This is a wrapper component that needs direct access to next/link
 import Link from 'next/link';
 import { MouseEvent, ReactNode } from 'react';
 

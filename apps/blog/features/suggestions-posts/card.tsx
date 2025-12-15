@@ -1,6 +1,6 @@
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { find_first_img } from '../list-of-posts/post-img';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useState } from 'react';
 import { getDefaultImageUrl } from '@hive/ui';

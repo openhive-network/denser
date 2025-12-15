@@ -1,6 +1,6 @@
 import { User } from '@smart-signer/types/common';
 import { Badge } from '@ui/components';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { useEffect, useState } from 'react';
 
 interface PostCardHiddenProps {

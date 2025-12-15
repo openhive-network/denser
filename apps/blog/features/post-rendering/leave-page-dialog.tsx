@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from '@ui/components/dialog';
 import { Button, Separator } from '@ui/components';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { useTranslation } from '@/blog/i18n/client';
 
 export function LeavePageDialog({

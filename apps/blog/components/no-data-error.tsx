@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
 import { Activity } from 'lucide-react';
 

@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/blog/i18n/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
 

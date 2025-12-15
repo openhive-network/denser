@@ -1,6 +1,6 @@
 import { useLocalStorage } from 'usehooks-ts';
 import { Button } from '@ui/components';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useTranslation } from '../../../i18n/client';

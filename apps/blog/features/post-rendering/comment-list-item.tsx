@@ -4,7 +4,7 @@ import { Icons } from '@hive/ui/components/icons';
 import parseDate from '@hive/ui/lib/parse-date';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@hive/ui/components/card';
 import { cn } from '@hive/ui/lib/utils';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { Separator } from '@ui/components/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import { useEffect, useRef, useState, type ReactNode } from 'react';

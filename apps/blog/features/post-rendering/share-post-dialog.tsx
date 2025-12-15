@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@ui/components/dialog';
 import { ReactNode } from 'react';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import ClipboardCopy from './copy-from-input';
 import { Icons } from '@ui/components/icons';
 import { useTranslation } from '@/blog/i18n/client';

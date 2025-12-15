@@ -56,7 +56,7 @@ import { handleError } from '@ui/lib/handle-error';
 import parseDate from '@ui/lib/parse-date';
 import { Clock, Link2 } from 'lucide-react';
 import moment from 'moment';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { CircleSpinner } from 'react-spinners-kit';
