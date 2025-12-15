@@ -187,18 +187,18 @@ test.describe('Profile page of @gtg', () => {
     if (payoutText.includes('0.00')) {
       if (await firstPayout.getAttribute('data-state') == 'closed') {
         await commentViewPage.getResponsePostCommentPayout.first().hover();
-        await commentViewPage.page.waitForTimeout(1000);
+        // Use toHaveCSS with auto-retry instead of fixed timeout
         await expect(commentViewPage.getResponsePostCommentPayout.first()).toHaveCSS('color', 'rgb(218, 43, 43)');
       } else {
       await commentViewPage.getResponsePostCommentPayout.first().hover();
-      await commentViewPage.page.waitForTimeout(1000);
+      // Use toHaveCSS with auto-retry instead of fixed timeout
       await expect(commentViewPage.getResponsePostCommentPayout.first()).toHaveCSS('color', 'rgb(24, 30, 42)');
       }
     } else {
       await commentViewPage.getResponsePostCommentPayout.first().hover();
-      await commentViewPage.page.waitForTimeout(1000);
+      // Wait for tooltip to be visible instead of fixed timeout
+      await expect(commentViewPage.payoutPostCardTooltip).toBeVisible({ timeout: 15000 });
       await expect(commentViewPage.getResponsePostCommentPayout.first()).toHaveCSS('color', 'rgb(218, 43, 43)');
-      await expect(commentViewPage.payoutPostCardTooltip).toBeVisible();
     }
   });
 

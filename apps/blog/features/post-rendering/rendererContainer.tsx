@@ -11,6 +11,7 @@ import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
 const RendererContainer = ({
   body,
   author,
+  permlink,
   dataTestid,
   communityDescription,
   mainPost,
@@ -18,6 +19,7 @@ const RendererContainer = ({
 }: {
   body: string;
   author: string;
+  permlink?: string;
   dataTestid?: string;
   communityDescription?: boolean;
   className?: string;
@@ -82,8 +84,11 @@ const RendererContainer = ({
   }, [body, hiveRenderer]);
 
   const htmlBody = useMemo(() => {
-    if (body) return hiveRenderer.render(body);
-  }, [hiveRenderer, body]);
+    if (body) {
+      const postContext = author || permlink ? { author, permlink } : undefined;
+      return hiveRenderer.render(body, postContext);
+    }
+  }, [hiveRenderer, body, author, permlink]);
 
   return !htmlBody ? (
     <Loading loading={false} />

@@ -50,7 +50,8 @@ export class WitnessesPage {
     await this.page.waitForLoadState('domcontentloaded');
     await expect(this.witnessTitle).toHaveText('Witness Voting');
     await expect(this.witnessTableBody).toBeVisible();
-    await this.page.waitForTimeout(5000);
+    // Wait for witness data to load by checking for first witness name link
+    await this.witnessNameLink.first().waitFor({ state: 'visible' });
   }
 
   async getElementCssPropertyValue(element: Locator, cssProperty: string) {

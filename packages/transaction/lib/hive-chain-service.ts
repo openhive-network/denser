@@ -1,7 +1,7 @@
 import { createHiveChain, IWaxOptionsChain, TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
 import { StorageType, StorageBaseOptions } from '@smart-signer/lib/storage-mixin';
-import { isStorageAvailable } from '@smart-signer/lib/storage-utils';
+import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { memoryStorage } from '@smart-signer/lib/memory-storage';
 import { getLogger } from '@ui/lib/logging';
 import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';

@@ -8,6 +8,7 @@ export {TwitterPlugin} from './renderers/default/plugins/TwitterPlugin';
 export {InstagramPlugin} from './renderers/default/plugins/InstagramPlugin';
 export {TablePlugin} from './renderers/default/plugins/TablePlugin';
 export type {RendererPlugin} from './renderers/default/plugins/RendererPlugin';
+export type {PostContext} from './renderers/default/sanitization/TagTransformingSanitizer';
 
 export const HiveContentRenderer = {
     DefaultRenderer,

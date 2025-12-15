@@ -160,7 +160,7 @@ test.describe('Communities page tests', () => {
     });
 
     for (let i = 0; i < leadershipLinkLists.length; i++) {
-      leadershipLinkLists[i].click();
+      await leadershipLinkLists[i].click();
       await page.waitForSelector(profilePage.profileName['_selector']);
       expect(await profilePage.profileName).toBeVisible();
       await profilePage.profilePostsLink.click();
@@ -235,10 +235,7 @@ test.describe('Communities page tests', () => {
     );
     // Post author link color after hovering
     await communitiesPage.getFirstPostAuthor.hover();
-    await communitiesPage.page.waitForTimeout(1000);
-    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
-      'rgb(218, 43, 43)'
-    );
+    await expect(communitiesPage.getFirstPostAuthor).toHaveCSS('color', 'rgb(218, 43, 43)');
 
     // Timestamp link color without hovering
     expect(
@@ -246,20 +243,14 @@ test.describe('Communities page tests', () => {
     ).toBe('rgb(24, 30, 42)');
     // Timestamp link color after hovering
     await communitiesPage.getFirstPostCardTimestampLink.hover();
-    await communitiesPage.page.waitForTimeout(1000);
-    expect(
-      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
-    ).toBe('rgb(218, 43, 43)');
+    await expect(communitiesPage.getFirstPostCardTimestampLink).toHaveCSS('color', 'rgb(218, 43, 43)');
     // Author reputation color without hovering
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
     ).toBe('rgb(24, 30, 42)');
     // Author reputation color after hovering
     await communitiesPage.getFirstPostAuthorReputation.hover();
-    await communitiesPage.page.waitForTimeout(1000);
-    expect(
-      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
-    ).toBe('rgb(24, 30, 42)');
+    await expect(communitiesPage.getFirstPostAuthorReputation).toHaveCSS('color', 'rgb(24, 30, 42)');
   });
 
   test('validate the first post header styles (for Trending filter) in the dark theme', async ({ page }) => {
@@ -276,10 +267,7 @@ test.describe('Communities page tests', () => {
     );
     // Post author link color after hovering
     await communitiesPage.getFirstPostAuthor.hover();
-    await communitiesPage.page.waitForTimeout(1000);
-    expect(await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthor, 'color')).toBe(
-      'rgb(226, 18, 53)'
-    );
+    await expect(communitiesPage.getFirstPostAuthor).toHaveCSS('color', 'rgb(226, 18, 53)');
 
     // Timestamp link color without hovering
     expect(
@@ -287,20 +275,14 @@ test.describe('Communities page tests', () => {
     ).toBe('rgb(248, 250, 252)');
     // Timestamp link color after hovering
     await communitiesPage.getFirstPostCardTimestampLink.hover();
-    await communitiesPage.page.waitForTimeout(1000);
-    expect(
-      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostCardTimestampLink, 'color')
-    ).toBe('rgb(226, 18, 53)');
+    await expect(communitiesPage.getFirstPostCardTimestampLink).toHaveCSS('color', 'rgb(226, 18, 53)');
     // Author reputation color without hovering
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
     ).toBe('rgb(248, 250, 252)');
     // Author reputation color after hovering
     await communitiesPage.getFirstPostAuthorReputation.hover();
-    await communitiesPage.page.waitForTimeout(1000);
-    expect(
-      await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
-    ).toBe('rgb(248, 250, 252)');
+    await expect(communitiesPage.getFirstPostAuthorReputation).toHaveCSS('color', 'rgb(248, 250, 252)');
   });
 
   test('validate the first post footer payouts styles (for Trending filter) in the light theme in the LeoFinance', async ({
@@ -314,13 +296,10 @@ test.describe('Communities page tests', () => {
       'rgb(24, 30, 42)'
     );
     await homePage.getFirstPostPayout.hover();
-    await homePage.page.waitForTimeout(1000);
+    // Wait for tooltip to be visible instead of fixed timeout
+    await expect(homePage.getFirstPostPayoutTooltip).toBeVisible({ timeout: 15000 });
     // Color of the first post payouts with hovering
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
-      'rgb(218, 43, 43)'
-    );
-    // The tooltip is visible by hovering
-    expect(await homePage.getFirstPostPayoutTooltip).toBeVisible();
+    await expect(homePage.getFirstPostPayout).toHaveCSS('color', 'rgb(218, 43, 43)');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
@@ -341,13 +320,10 @@ test.describe('Communities page tests', () => {
       'rgb(248, 250, 252)'
     );
     await homePage.getFirstPostPayout.hover();
-    await homePage.page.waitForTimeout(1000);
+    // Wait for tooltip to be visible instead of fixed timeout
+    await expect(homePage.getFirstPostPayoutTooltip).toBeVisible({ timeout: 15000 });
     // Color of the first post payouts with hovering
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayout, 'color')).toBe(
-      'rgb(226, 18, 53)'
-    );
-    // The tooltip is visible by hovering
-    expect(await homePage.getFirstPostPayoutTooltip).toBeVisible();
+    await expect(homePage.getFirstPostPayout).toHaveCSS('color', 'rgb(226, 18, 53)');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
@@ -367,7 +343,8 @@ test.describe('Communities page tests', () => {
       'rgb(24, 30, 42)'
     );
     await homePage.getFirstPostVotes.hover();
-    await homePage.page.waitForTimeout(1000);
+    // Wait for tooltip to be visible instead of fixed timeout
+    await expect(homePage.getFirstPostVotesTooltip).toBeVisible({ timeout: 15000 });
 
     const votes = await homePage.getFirstPostVotes.textContent();
 
@@ -398,7 +375,8 @@ test.describe('Communities page tests', () => {
       'rgb(248, 250, 252)'
     );
     await homePage.getFirstPostVotes.hover();
-    await homePage.page.waitForTimeout(1000);
+    // Wait for tooltip to be visible instead of fixed timeout
+    await expect(homePage.getFirstPostVotesTooltip).toBeVisible({ timeout: 15000 });
 
     const votes = await homePage.getFirstPostVotes.textContent();
 
@@ -466,7 +444,7 @@ test.describe('Communities page tests', () => {
 
     for (let i = 0; i < leadershipLinkLists.length; i++) {
       if (i < 3) {
-        leadershipLinkLists[i].click();
+        await leadershipLinkLists[i].click();
         await page.waitForSelector(profilePage.profileName['_selector']);
         expect(await profilePage.profileName).toBeVisible();
         await profilePage.profilePostsLink.click();
@@ -988,10 +966,11 @@ test.describe('Communities page tests', () => {
     let subscribersUIBeforeLoadMoreClik = await communitiesPage.subscriberRow.all();
     expect(subscribersUIBeforeLoadMoreClik.length).toBe(subscribersAPI.result.length);
     // Click `Load more` button
-    await communitiesPage.page.waitForTimeout(3000);
+    await communitiesPage.subscribersLoadMoreButton.waitFor({state: 'visible'});
     await communitiesPage.subscribersLoadMoreButton.click();
     // Validate the length of subscribers is two times longer than befor clicking `Load more` button
-    await communitiesPage.page.waitForTimeout(3000);
+    // Wait for subscribers list to update (expect double the count)
+    await expect(communitiesPage.subscriberRow).toHaveCount(2 * subscribersUIBeforeLoadMoreClik.length, {timeout: 10000});
     let subscribersUIAfterLoadMoreClick = await communitiesPage.subscriberRow.all();
     expect(subscribersUIAfterLoadMoreClick.length).toBe(2 * subscribersUIBeforeLoadMoreClik.length);
   });
@@ -1010,11 +989,8 @@ test.describe('Communities page tests', () => {
       'rgb(37, 99, 235)'
     );
     await communitySubscribeButton.hover();
-    await page.waitForTimeout(1000);
-    // Color of the Subscribe button after hover
-    expect(await homePage.getElementCssPropertyValue(communitySubscribeButton, 'background-color')).toBe(
-      'rgb(29, 78, 216)'
-    );
+    // Wait for hover state with auto-retry instead of fixed timeout
+    await expect(communitySubscribeButton).toHaveCSS('background-color', 'rgb(29, 78, 216)');
     await communitySubscribeButton.click();
     await defaultLoginForm.validateDefaultLoginFormIsLoaded();
     await defaultLoginForm.closeLoginForm();

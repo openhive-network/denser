@@ -24,7 +24,6 @@ test.describe('Proposals page tests', () => {
     let apiHelper: ApiHelper = new ApiHelper(page);
 
     await proposalsPage.goToProposalsPage();
-    await proposalsPage.page.waitForTimeout(3000);
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       const resListOfProposalsAPI = await apiHelper.getListOfProposalsAPI(); // default parameters
       const amountListOfProposalsItemsAPI = resListOfProposalsAPI.result.length;
@@ -57,7 +56,8 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText('All').click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText('All');
-    await proposalsPage.page.waitForTimeout(3000);
+    // Wait for proposals to load after filter change
+    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -88,7 +88,8 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Active$/).click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Active$/);
-    await proposalsPage.page.waitForTimeout(3000);
+    // Wait for proposals to load after filter change
+    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('started');
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
@@ -121,7 +122,8 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Inactive$/).click();
     await proposalsPage.page.waitForSelector(proposalsPage.proposalsFilterStatus.getByText(/^Inactive$/)['_selector']);
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Inactive$/);
-    await proposalsPage.page.waitForTimeout(3000);
+    // Wait for proposals to load after filter change
+    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('not started');
@@ -153,7 +155,8 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Expired$/).click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Expired$/);
-    await proposalsPage.page.waitForTimeout(3000);
+    // Wait for proposals to load after filter change
+    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('finished');
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
@@ -185,7 +188,8 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Votable$/).click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Votable$/);
-    await proposalsPage.page.waitForTimeout(3000);
+    // Wait for proposals to load after filter change
+    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -203,14 +207,14 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.goToProposalsPage();
 
-    await proposalsPage.page.waitForTimeout(3000);
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       const firstProposalVotesValueOnPageDescending = await proposalsPage.voteProposalsValue
         .first()
         .textContent();
 
       await proposalsPage.page.keyboard.down('End');
-      await proposalsPage.page.waitForTimeout(2000);
+      // Wait for last proposal to be visible after scrolling
+      await proposalsPage.voteProposalsValue.last().waitFor({ state: 'visible' });
 
       const lastProposalVotesValueOnPageDescending = await proposalsPage.voteProposalsValue
         .last()
@@ -225,7 +229,8 @@ test.describe('Proposals page tests', () => {
         .textContent();
 
       await proposalsPage.page.keyboard.down('End');
-      await proposalsPage.page.waitForTimeout(2000);
+      // Wait for last proposal to be visible after scrolling
+      await proposalsPage.voteProposalsValue.last().waitFor({ state: 'visible' });
 
       const lastProposalVotesValueOnPageAscending = await proposalsPage.voteProposalsValue.last().textContent();
 
@@ -259,7 +264,8 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderBy.click();
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^Creator$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Creator$/);
-    await proposalsPage.page.waitForTimeout(3000);
+    // Wait for proposals to load after filter change
+    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -296,7 +302,8 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderBy.click();
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^Start Date$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Start Date$/);
-    await proposalsPage.page.waitForTimeout(3000);
+    // Wait for proposals to load after filter change
+    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -333,7 +340,8 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderBy.click();
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^End Date$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^End Date$/);
-    await proposalsPage.page.waitForTimeout(3000);
+    // Wait for proposals to load after filter change
+    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -370,7 +378,8 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderBy.click();
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^Total Votes$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Total Votes$/);
-    await proposalsPage.page.waitForTimeout(3000);
+    // Wait for proposals to load after filter change
+    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -421,7 +430,6 @@ test.describe('Proposals page tests', () => {
 
     let totalDaysBrackets: string;
 
-    await proposalsPage.page.waitForTimeout(3000);
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
 
       // Validate proposal subject and id
@@ -479,7 +487,6 @@ test.describe('Proposals page tests', () => {
     const firstProposalCreatorAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].creator;
     const firstProposalReceiverAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].receiver;
 
-    await proposalsPage.page.waitForTimeout(3000);
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       // Title color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(
@@ -559,7 +566,6 @@ test.describe('Proposals page tests', () => {
     const firstProposalCreatorAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].creator;
     const firstProposalReceiverAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].receiver;
 
-    await proposalsPage.page.waitForTimeout(3000);
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       // Title color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(

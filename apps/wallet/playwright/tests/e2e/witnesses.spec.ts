@@ -318,11 +318,10 @@ test.describe('Witnesses page tests', () => {
       'rgba(0, 0, 0, 0)'
     );
     await witnessHighlightLink.click();
-    await page.waitForTimeout(1000);
-    // Validate background-color of the first row in the rand witness table after clicking highlight link
-    expect(await witnessesPage.getElementCssPropertyValue(firstWitnessTableRow, 'background-color')).toBe(
-      'rgb(254, 205, 211)'
-    );
+    // Wait for background-color to change after clicking highlight link
+    await expect.poll(async () => {
+      return await witnessesPage.getElementCssPropertyValue(firstWitnessTableRow, 'background-color');
+    }).toBe('rgb(254, 205, 211)');
 
     // Validate the witness name was typed into the input vote
     const firstWitnessName: any = await witnessesPage.witnessNameLink.first().textContent();
@@ -352,11 +351,10 @@ test.describe('Witnesses page tests', () => {
       'rgba(0, 0, 0, 0)'
     );
     await witnessHighlightLink.click();
-    await page.waitForTimeout(1000);
-    // Validate background-color of the first row in the rand witness table after clicking highlight link
-    expect(await witnessesPage.getElementCssPropertyValue(firstWitnessTableRow, 'background-color')).toBe(
-      'rgb(159, 18, 57)'
-    );
+    // Wait for background-color to change after clicking highlight link
+    await expect.poll(async () => {
+      return await witnessesPage.getElementCssPropertyValue(firstWitnessTableRow, 'background-color');
+    }).toBe('rgb(159, 18, 57)');
     // Validate color of the witness's nickname
     expect(
       await witnessesPage.getElementCssPropertyValue(
@@ -452,10 +450,9 @@ test.describe('Witnesses page tests', () => {
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
-    await expect(witnessPage.witnessHeaderTitle).toBeVisible();
-    await homePage.page.waitForTimeout(3000);
-    await expect(await witnessPage.witnessHeaderTitle.textContent()).toBe('Głosowanie na delegatów');
-    await expect(await witnessPage.witnessHeaderDescription.textContent()).toBe(
+    // Wait for translation to load by checking for Polish text
+    await expect(witnessPage.witnessHeaderTitle).toHaveText('Głosowanie na delegatów');
+    await expect(witnessPage.witnessHeaderDescription).toHaveText(
       'Na poniższej liście znajduje sie 100 pierwszych delegatów, aktywnych jak również nieaktywnych. Każdy delegat powyżej 100 pozycji jest filtrowany i nie wyświetlany jeśli nie wyprodukował bloku w ostatnich 30 dniach.'
     );
     await expect(page.getByRole('button', { name: 'Zagłosuj' })).toBeVisible();

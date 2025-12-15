@@ -11,6 +11,7 @@ export class TagTransformingSanitizer {
     private options: TagsSanitizerOptions;
     private localization: LocalizationOptions;
     private sanitizationErrors: string[] = [];
+    private currentPostContext?: PostContext;
 
     public constructor(options: TagsSanitizerOptions, localization: LocalizationOptions) {
         this.validate(options);
@@ -25,10 +26,20 @@ export class TagTransformingSanitizer {
      * Uses the sanitize-html library with custom configuration for tag transformation.
      *
      * @param text - The HTML content to sanitize
+     * @param postContext - Optional context about the post being rendered (for logging)
      * @returns A sanitized version of the HTML content with transformed tags and removed unsafe content
      */
-    public sanitize(text: string): string {
+    public sanitize(text: string, postContext?: PostContext): string {
+        this.currentPostContext = postContext;
         return sanitize(text, this.generateSanitizeConfig());
+    }
+
+    private formatPostContext(): string {
+        if (!this.currentPostContext) return '';
+        const { author, permlink } = this.currentPostContext;
+        if (author && permlink) return ` in @${author}/${permlink}`;
+        if (author) return ` by @${author}`;
+        return '';
     }
 
     public getErrors(): string[] {
@@ -98,7 +109,7 @@ export class TagTransformingSanitizer {
                             return iframeToBeReturned;
                         }
                     }
-                    Log.log().warn('Blocked, did not match iframe "src" white list urls:', tagName, attributes);
+                    Log.log().warn(`Blocked iframe (not whitelisted)${this.formatPostContext()}: src="${srcAtty || '(empty)'}"`);
                     this.sanitizationErrors.push('Invalid iframe URL: ' + srcAtty);
 
                     const retTag: sanitize.Tag = {tagName: 'div', text: `(Unsupported ${srcAtty})`, attribs: {}};
@@ -117,7 +128,7 @@ export class TagTransformingSanitizer {
                     const {src, alt} = attribs;
                     // eslint-disable-next-line security/detect-unsafe-regex
                     if (!/^(https?:)?\/\//i.test(src)) {
-                        Log.log().warn('Blocked, image tag src does not appear to be a url', tagName, attribs);
+                        Log.log().warn(`Blocked image (invalid src)${this.formatPostContext()}: src="${src || '(empty)'}"`);
                         this.sanitizationErrors.push('An image in this post did not save properly.');
                         const retTagOnNoUrl: sanitize.Tag = {
                             tagName: 'img',
@@ -227,4 +238,9 @@ export interface TagsSanitizerOptions {
     noImage: boolean;
     isLinkSafeFn: (url: string) => boolean;
     addExternalCssClassToMatchingLinksFn: (url: string) => boolean;
+}
+
+export interface PostContext {
+    author?: string;
+    permlink?: string;
 }

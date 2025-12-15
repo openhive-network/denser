@@ -34,7 +34,7 @@ test.describe.skip('Api healthchecker setting page tests', () => {
     await profilePage.page.getByText('Set Main').first().click();
     // Reload the page to see new request endpiont and wait for expected endpoint
     await profilePage.page.reload({ waitUntil: 'load' });
-    await profilePage.page.waitForTimeout(3000);
+    // Wait for the request to complete
     const request = await requestPromise;
     expect(request.url()).toContain('/api.openhive.network');
 
@@ -226,12 +226,11 @@ test.describe.skip('Api healthchecker setting page tests', () => {
 
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
-    await homePage.page.waitForTimeout(1000);
 
-    // Validate color of the selected word
-    expect(await profilePage.getElementCssPropertyValue(profilePage.apiSelectedNodeText, 'color')).toBe(
-      'rgb(22, 163, 74)'
-    );
+    // Validate color of the selected word - wait for dark mode styles to apply
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(profilePage.apiSelectedNodeText, 'color');
+    }).toBe('rgb(22, 163, 74)');
     // Validate color of the selected node border
     expect(await profilePage.getElementCssPropertyValue(profilePage.apiEndpointCard.first(), 'border-bottom-color')).toBe(
       'rgb(255, 255, 255)'

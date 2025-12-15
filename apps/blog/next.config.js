@@ -51,6 +51,7 @@ const nextConfig = {
             value: 'no-cache, no-store, must-revalidate, max-age=0'
           }
         ]
+
       }
     ];
   },

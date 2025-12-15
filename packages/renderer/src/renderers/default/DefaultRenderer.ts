@@ -6,7 +6,7 @@ import {Localization, LocalizationOptions} from './Localization';
 import type {RendererPlugin} from './plugins/RendererPlugin';
 import remarkableSpoiler from './plugins/SpoilerPlugin';
 import {PreliminarySanitizer} from './sanitization/PreliminarySanitizer';
-import {TagTransformingSanitizer} from './sanitization/TagTransformingSanitizer';
+import {TagTransformingSanitizer, PostContext} from './sanitization/TagTransformingSanitizer';
 
 /**
  * DefaultRenderer is a configurable HTML/Markdown renderer that provides:
@@ -68,22 +68,24 @@ export class DefaultRenderer {
     /**
      * Renders the input text to HTML
      * @param input - Markdown or HTML text to render
+     * @param postContext - Optional context about the post (author/permlink) for logging
      * @returns Rendered and processed HTML
      * @throws Will throw if input is empty or invalid
      */
-    public render(input: string): string {
+    public render(input: string, postContext?: PostContext): string {
         // Validate input
         ow(input, 'input', ow.string.nonEmpty);
-        return this.doRender(input);
+        return this.doRender(input, postContext);
     }
 
     /**
      * Renders the input text to HTML with a specific locale
      * @param text - Markdown or HTML text to render
+     * @param postContext - Optional context about the post for logging
      * @returns Rendered and processed HTML
      * @throws Will throw if input is empty or invalid
      */
-    private doRender(text: string): string {
+    private doRender(text: string, postContext?: PostContext): string {
         // Pre-process with plugins
         text = this.runPluginPhase('preProcess', text);
         // Preliminary sanitization
@@ -98,7 +100,7 @@ export class DefaultRenderer {
         // Parse the HTML and sanitize it
         text = this.domParser.parse(text).getParsedDocumentAsString();
         // Check for script tags and other security issues
-        text = this.sanitize(text);
+        text = this.sanitize(text, postContext);
         // Check for security issues
         SecurityChecker.checkSecurity(text, {allowScriptTag: this.options.allowInsecureScriptTags});
         // Embed assets and resize them
@@ -183,6 +185,7 @@ export class DefaultRenderer {
     /**
      * Sanitizes the HTML text by removing potentially harmful content
      * @param text - The HTML text to sanitize
+     * @param postContext - Optional context about the post for logging
      * @returns Sanitized HTML text
      * @remarks
      * This method can be skipped if skipSanitization option is set to true.
@@ -191,12 +194,12 @@ export class DefaultRenderer {
      * - Transform certain tags according to renderer options
      * - Apply security policies to links and embedded content
      */
-    private sanitize(text: string): string {
+    private sanitize(text: string, postContext?: PostContext): string {
         if (this.options.skipSanitization) {
             return text;
         }
 
-        return this.tagTransformingSanitizer.sanitize(text);
+        return this.tagTransformingSanitizer.sanitize(text, postContext);
     }
     /**
      * Validates the renderer options

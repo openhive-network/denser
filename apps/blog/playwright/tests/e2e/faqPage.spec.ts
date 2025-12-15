@@ -52,7 +52,8 @@ test.describe('Faq page tests', () => {
     await homePage.moveToFaqPage();
 
     await faqPage.whatIsHiveBlogLink.click();
-    await faqPage.page.waitForTimeout(1000);
+    // Wait for page to settle before screenshot
+    await faqPage.page.waitForLoadState('networkidle');
     await expect(faqPage.page).toHaveScreenshot('whatishiveblog.png');
   });
 
@@ -65,10 +66,12 @@ test.describe('Faq page tests', () => {
     await homePage.moveToFaqPage();
 
     await faqPage.canIEarnDigitalTokensOnHiveLink.click();
-    await faqPage.page.waitForTimeout(1000);
+    // Wait for page to settle before screenshot
+    await faqPage.page.waitForLoadState('networkidle');
     await expect(faqPage.page).toHaveScreenshot('canIEarnDigitalTokensOnHiveDescription.png');
     await faqPage.caretSignCanIEarnDigitalTokensOnHiveLink.click();
-    await faqPage.page.waitForTimeout(1000);
+    // Wait for page to settle before screenshot
+    await faqPage.page.waitForLoadState('networkidle');
     await expect(faqPage.page).toHaveScreenshot('canIEarnDigitalTokensOnHiveComeBack.png');
   });
 

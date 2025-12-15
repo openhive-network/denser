@@ -479,6 +479,7 @@ const PostContent = () => {
                       mainPost={postData.depth === 0}
                       body={crossPostData?.body ?? postData.body}
                       author={postData.author}
+                      permlink={postData.permlink}
                       className={postClassName}
                     />
                   </ImageGallery>

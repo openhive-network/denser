@@ -772,7 +772,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
     await postPage.articleBody.waitFor({state: 'visible'});
     // Click 'View the direct parent'
-    commentViewPage.getViewDirectParent.click();
+    await commentViewPage.getViewDirectParent.click();
     await postPage.commentListLocator.first().waitFor({state: 'visible'});
     // Validate that the `sicarius` comment is visibled on the comment view page
     await expect(await commentViewPage.getMainCommentAuthorData).toBeVisible();
