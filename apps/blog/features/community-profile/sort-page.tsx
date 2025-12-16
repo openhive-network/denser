@@ -26,18 +26,20 @@ const SortPage = async ({
   const queryClient = getQueryClient();
   try {
     const observer = getObserverFromCookies();
-    await queryClient.prefetchQuery({
-      queryKey: ['community', tag],
-      queryFn: async () => await getCommunity(tag, observer)
-    });
-    await queryClient.prefetchQuery({
-      queryKey: ['subscribers', tag],
-      queryFn: async () => await getSubscribers(tag)
-    });
-    await queryClient.prefetchQuery({
-      queryKey: ['AccountNotification', tag],
-      queryFn: async () => await getAccountNotifications(tag)
-    });
+    if (tag.startsWith('hive-')) {
+      await queryClient.prefetchQuery({
+        queryKey: ['community', tag],
+        queryFn: async () => await getCommunity(tag, observer)
+      });
+      await queryClient.prefetchQuery({
+        queryKey: ['subscribers', tag],
+        queryFn: async () => await getSubscribers(tag)
+      });
+      await queryClient.prefetchQuery({
+        queryKey: ['AccountNotification', tag],
+        queryFn: async () => await getAccountNotifications(tag)
+      });
+    }
     await queryClient.prefetchInfiniteQuery({
       queryKey: ['entriesInfinite', sort, tag],
       queryFn: async ({ pageParam }) => {

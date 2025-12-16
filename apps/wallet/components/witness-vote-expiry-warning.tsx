@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { useTranslation } from 'next-i18next';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import HoverClickTooltip from './hover-click-tooltip';
 
 const HIVE_NULL_DATE = 2016; // The year when the Hive blockchain was created

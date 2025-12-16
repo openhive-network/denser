@@ -1,6 +1,6 @@
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { find_first_img } from '../list-of-posts/post-img';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import { useState } from 'react';
 import { getDefaultImageUrl } from '@hive/ui';
@@ -14,7 +14,7 @@ const SuggestionsCard = ({ entry }: { entry: Entry }) => {
   const [image, setImage] = useState<string>(cardImage);
   return (
     <div className="m-4 flex flex-col rounded-lg bg-background shadow-md">
-      <Link href={`/${entry.category}/@${entry.author}/${entry.permlink}`} data-testid="post-image" prefetch={false}>
+      <Link href={`/${entry.category}/@${entry.author}/${entry.permlink}`} data-testid="post-image">
         <>
           {image ? (
             <div className="flex h-24 items-center overflow-hidden rounded-t-lg bg-transparent">
@@ -38,7 +38,7 @@ const SuggestionsCard = ({ entry }: { entry: Entry }) => {
         <h2 className="p-1 text-xs font-semibold">{truncateTitle(entry.title)}</h2>
       </Link>
       <div className="flex flex-col p-1 text-sm text-gray-500">
-        <Link href={`/${entry.category}/@${entry.author}/${entry.permlink}`} prefetch={false}>{entry.author}</Link>
+        <Link href={`/${entry.category}/@${entry.author}/${entry.permlink}`}>{entry.author}</Link>
         <time>{new Date(entry.created).toLocaleDateString()}</time>
       </div>
     </div>

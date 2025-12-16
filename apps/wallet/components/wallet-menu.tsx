@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';

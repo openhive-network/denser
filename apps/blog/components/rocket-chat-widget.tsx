@@ -5,7 +5,7 @@ import { Drawer } from '@ui/components/drawer';
 import { useState, useRef, useEffect } from 'react';
 import { siteConfig } from '@ui/config/site';
 import { LoginType } from '@smart-signer/types/common';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { Button } from '@ui/components/button';
 import { inIframe } from '@smart-signer/lib/utils';
 import clsx from 'clsx';

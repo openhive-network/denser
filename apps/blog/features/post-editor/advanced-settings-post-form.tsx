@@ -11,7 +11,7 @@ import {
   DialogTrigger
 } from '@ui/components/dialog';
 import { ReactNode, useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
 import { useLocalStorage } from 'usehooks-ts';
 import { toast } from '@ui/components/hooks/use-toast';

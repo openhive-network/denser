@@ -44,7 +44,7 @@ const PostPage = async ({
 
     if (community.startsWith('hive-')) {
       await queryClient.prefetchQuery({
-        queryKey: ['communityData', community],
+        queryKey: ['community', community],
         queryFn: () => getCommunity(community, observer)
       });
       await queryClient.prefetchQuery({

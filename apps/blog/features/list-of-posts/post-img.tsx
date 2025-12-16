@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { proxifyImageUrl } from '@ui/lib/old-profixy';
 import { getDefaultImageUrl, getUserAvatarUrl } from '@ui/lib/avatar-utils';
 import { customEndsWith } from '@/blog/lib/ends-with';

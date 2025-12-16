@@ -1,7 +1,7 @@
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
 
 import env from '@beam-australia/react-env';

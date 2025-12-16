@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import parseDate from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from '@/blog/i18n/client';
@@ -92,7 +92,7 @@ function UserInfo({
       {authored ? (
         <span className="ml-1 text-xs">
           Authored by{' '}
-          <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${authored}`} prefetch={false}>
+          <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${authored}`}>
             @{authored}
           </Link>
         </span>

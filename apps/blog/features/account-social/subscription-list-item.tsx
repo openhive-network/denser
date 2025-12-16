@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from '@hive/ui';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 
 const SubscriptionListItem = ({ community }: { community: string[] }) => {
   return (

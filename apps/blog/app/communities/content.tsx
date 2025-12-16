@@ -8,7 +8,7 @@ import { Separator } from '@ui/components/separator';
 import CommunitiesSelectFilter from '@/blog/features/communities-list/communities-select-filter';
 import CommunitiesList from '@/blog/features/communities-list/communities-list';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import env from '@beam-australia/react-env';
 import { getCommunities } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';

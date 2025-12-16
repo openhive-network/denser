@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 
 function VotersItem({ username, hp, proxy }: { username: string; hp: number; proxy: number }) {
   return (

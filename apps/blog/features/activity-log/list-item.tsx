@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
 import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 
 const usernamePattern = /\B@[a-z0-9.-]+/gi;
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ReactNode, useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import clsx from 'clsx';
 import BasePathLink from '@/blog/components/base-path-link';
 import { useQuery } from '@tanstack/react-query';

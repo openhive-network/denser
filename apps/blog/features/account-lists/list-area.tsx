@@ -1,6 +1,6 @@
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import clsx from 'clsx';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';

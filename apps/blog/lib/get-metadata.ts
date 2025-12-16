@@ -52,7 +52,7 @@ export const getCommunityMetadata = async (
   };
 
   try {
-    if (secondParam === '') {
+    if (secondParam === '' || !secondParam.startsWith('hive-')) {
       const defaultMetadata = {
         tabTitle: '',
         description: '',

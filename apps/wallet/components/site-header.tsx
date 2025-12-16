@@ -3,7 +3,7 @@ import { Icons } from '@ui/components/icons';
 import { FC, useState, useEffect } from 'react';
 import Sidebar from './sidebar';
 import ModeToggle from './mode-toggle';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import LangToggle from '@/wallet/components/lang-toggle';
 import { useTranslation } from 'next-i18next';

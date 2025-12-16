@@ -20,7 +20,7 @@ import { powerdownHive, cn, convertToHP, numberWithCommas } from '@ui/lib/utils'
 import { convertStringToBig } from '@ui/lib/helpers';
 import { HiveOperation } from '@transaction/lib/extended-hive.chain';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import Loading from '@ui/components/loading';
 import TransfersHistoryFilter from '@/wallet/components/transfers-history-filter';
 import ProfileLayout from '@/wallet/components/common/profile-layout';

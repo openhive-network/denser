@@ -33,6 +33,7 @@ export * from "./toast";
 export * from "./toaster";
 export * from "./toggle";
 export * from "./tooltip";
+export * from "./link";
 
 // utility exports
 export * from "../lib/avatar-utils";

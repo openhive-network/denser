@@ -1,7 +1,7 @@
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@ui/components/sheet';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { Separator } from '@ui/components/separator';
 import clsx from 'clsx';
 import { ReactNode } from 'react';

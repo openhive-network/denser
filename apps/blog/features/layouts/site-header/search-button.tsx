@@ -4,7 +4,7 @@ import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { cn } from '@ui/lib/utils';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 
 const SearchButton = ({ aiTag, className }: { aiTag: boolean; className?: string }) => {
   return (

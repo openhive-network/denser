@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { Button } from '@ui/components/button';
 import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from '@/blog/i18n/client';

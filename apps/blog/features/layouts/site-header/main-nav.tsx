@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { usePathname } from 'next/navigation';
 import { cn } from '@ui/lib/utils';
 

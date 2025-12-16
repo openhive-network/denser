@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunities } from '@transaction/lib/bridge-api';
 import { cn } from '@ui/lib/utils';

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { ExtendWitness } from '@/wallet/pages/~witnesses';
 import clsx from 'clsx';
 import { DISABLED_SIGNING_KEY } from '@/wallet/lib/constants';

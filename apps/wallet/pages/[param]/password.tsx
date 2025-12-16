@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/components/form';
 import { useForm } from 'react-hook-form';
 import { Checkbox, Separator } from '@hive/ui';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';

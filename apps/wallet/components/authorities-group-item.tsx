@@ -4,7 +4,7 @@ import { FileKey, Trash, UserSquare } from 'lucide-react';
 import { cutPublicKey } from '@/wallet/lib/utils';
 import CopyToKeyboard from '@/wallet/components/copy-to-keyboard';
 import { Input } from '@ui/components';
-import Link from 'next/link';
+import { Link } from '@hive/ui';
 import ButtonTooltip from './button-tooltip';
 import NumberInput from './number-input';
 import { useTranslation } from 'next-i18next';
