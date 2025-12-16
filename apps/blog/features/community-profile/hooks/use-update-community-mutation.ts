@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Community } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
+import { handleError } from '@ui/lib/handle-error';
 
 interface UpdateCommunityMutationParams {
   communityName: string;
@@ -63,6 +64,12 @@ export function useUpdateCommunityMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['community', communityName] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useUpdateCommunityMutation',
+        params: variables
+      });
     }
   });
 

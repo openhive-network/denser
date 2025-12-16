@@ -5,6 +5,7 @@ import { transactionService } from '@transaction/index';
 import { Beneficiarie } from '@transaction/lib/app-types';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
+import { handleError } from '@ui/lib/handle-error';
 
 const logger = getLogger('app');
 
@@ -94,6 +95,12 @@ export function usePostMutation() {
         queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
         queryClient.invalidateQueries({ queryKey: ['accountEntriesInfinite'] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'usePostMutation',
+        params: variables
+      });
     }
   });
 
@@ -128,6 +135,12 @@ export function useDeletePostMutation() {
         queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
         queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useDeletePostMutation',
+        params: variables
+      });
     }
   });
 

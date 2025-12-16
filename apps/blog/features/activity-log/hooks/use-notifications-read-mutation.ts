@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { toast } from '@ui/components/hooks/use-toast';
+import { handleError } from '@ui/lib/handle-error';
 
 /**
  * Makes mark all notifications as read transaction.
@@ -35,6 +36,12 @@ export function useMarkAllNotificationsAsReadMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['unreadNotifications', username] });
       }, 6000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useMarkAllNotificationsAsReadMutation',
+        params: variables
+      });
     }
   });
 

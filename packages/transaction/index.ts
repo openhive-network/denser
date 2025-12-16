@@ -224,7 +224,7 @@ export class TransactionService {
       logger.error('Got error, logging and rethrowing it: %o', error);
       throw error;
     } finally {
-      if (this.observedTransactionsCounter === 0) {
+      if (--this.observedTransactionsCounter === 0) {
         // Stop bot
         if (this.bot) {
           logger.info('Stopping bot');

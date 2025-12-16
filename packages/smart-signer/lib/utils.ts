@@ -44,9 +44,9 @@ export function isStorageAvailable(
   // logger.info('Checking availability of %s', storageType);
   try {
     if (!isBrowser()) return false;
-    if ((storageType = 'localStorage')) {
+    if (storageType === 'localStorage') {
       storage = window.localStorage;
-    } else if ((storageType = 'sessionStorage')) {
+    } else if (storageType === 'sessionStorage') {
       storage = window.sessionStorage;
     } else {
       return false;

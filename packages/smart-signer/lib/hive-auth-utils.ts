@@ -113,7 +113,7 @@ const verifyChallenge = (
 const updateModalMessage = (message: string) => {
   const instructionsContainer = document.getElementById('hiveauth-instructions');
   if (instructionsContainer) {
-    instructionsContainer.innerHTML = message;
+    instructionsContainer.textContent = message;
   }
 };
 
@@ -263,7 +263,7 @@ const signChallenge = (
 const updateLoginInstructions = (message: string) => {
   const instructionsElement = document.getElementById('hiveauth-instructions');
   if (instructionsElement) {
-    instructionsElement.innerHTML = message;
+    instructionsElement.textContent = message;
     instructionsElement.classList.remove('hidden');
   }
 };

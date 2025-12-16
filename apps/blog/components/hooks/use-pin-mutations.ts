@@ -3,6 +3,7 @@ import { transactionService } from '@transaction/index';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
+import { handleError } from '@ui/lib/handle-error';
 const logger = getLogger('app');
 
 /**
@@ -51,6 +52,12 @@ export function usePinMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'usePinMutation',
+        params: variables
+      });
     }
   });
 
@@ -97,6 +104,12 @@ export function useUnpinMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useUnpinMutation',
+        params: variables
+      });
     }
   });
 

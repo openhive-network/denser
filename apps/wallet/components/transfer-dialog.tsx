@@ -81,7 +81,7 @@ export function TransferDialog({
     selectCurr: true,
     buttonTitle: t('transfers_page.next'),
     to: ['transferTo', 'powerUp', 'withdrawHive', 'withdrawHiveDollars'].includes(type) ? username : '',
-    onSubmit: new Function(),
+    onSubmit: () => {},
     memo: '',
     requestId: 0
   };
@@ -200,14 +200,13 @@ export function TransferDialog({
       data.description = t('transfers_page.savings_withdraw_desc');
       data.amount = amount.savingsHive;
       data.advancedBtn = true;
-      data.requestId = Math.floor((Date.now() / 1000) % 4294967295);
       data.onSubmit = async () => {
         const params = {
           fromAccount: username,
           toAccount: advanced ? data.to : username,
           memo: data.memo,
           amount: await getAsset(value, curr),
-          requestId: data.requestId
+          requestId: Math.floor((Date.now() / 1000) % 4294967295)
         };
         transfersTransaction('withdrawHive', params, withdrawFromSavingsMutation.mutateAsync);
       };
@@ -218,14 +217,13 @@ export function TransferDialog({
       data.description = t('transfers_page.savings_withdraw_desc');
       data.amount = amount.savingsHbd;
       data.advancedBtn = true;
-      data.requestId = Math.floor((Date.now() / 1000) % 4294967295);
       data.onSubmit = async () => {
         const params = {
           fromAccount: username,
           toAccount: advanced ? data.to : username,
           memo: data.memo,
           amount: await getAsset(value, curr),
-          requestId: data.requestId
+          requestId: Math.floor((Date.now() / 1000) % 4294967295)
         };
         transfersTransaction('withdrawHiveDollars', params, withdrawFromSavingsMutation.mutateAsync);
       };
@@ -239,7 +237,14 @@ export function TransferDialog({
           .string({ message: t('transfers_page.error.required') })
           .min(3, { message: t('transfers_page.error.account_length_min') })
           .max(16, { message: t('transfers_page.error.account_length_max') })
-          .refine(async (to) => !!(await getAccount(to)), { message: t('transfers_page.error.not_found') }),
+          .refine(
+            async (to) => {
+              // Skip validation on server-side to avoid SSR issues
+              if (typeof window === 'undefined') return true;
+              return !!(await getAccount(to));
+            },
+            { message: t('transfers_page.error.not_found') }
+          ),
         amount: z
           .number({ message: t('transfers_page.error.amount_empty') })
           .positive({ message: t('transfers_page.error.amount_not_positive') })
@@ -252,15 +257,16 @@ export function TransferDialog({
       }),
     [data.amount, t]
   );
+  type TransferFormValues = z.infer<typeof transferSchema>;
 
-  const form = useForm<z.infer<typeof transferSchema>>({
+  const form = useForm<TransferFormValues>({
     resolver: zodResolver(transferSchema),
     mode: 'onSubmit',
     defaultValues: {
       to: data.to
     }
   });
-  const onSubmit: SubmitHandler<z.infer<typeof transferSchema>> = () => {
+  const onSubmit: SubmitHandler<TransferFormValues> = () => {
     setNextOpen(true);
   };
 

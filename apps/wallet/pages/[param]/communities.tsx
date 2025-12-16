@@ -44,7 +44,11 @@ const getCommmunityName = () => {
 const COST_TOKEN = 1;
 const COST_HIVE = 3;
 
-function Communities({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function Communities({
+  username,
+  metadata,
+  initialCommunityTag
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { user } = useUser();
   const { data, isLoading } = useQuery(
     ['findAccounts', username],
@@ -56,7 +60,7 @@ function Communities({ username, metadata }: InferGetServerSidePropsType<typeof 
   const { t } = useTranslation('common_wallet');
   const [advanced, setAdvanced] = useState(false);
   const createCommunityMutation = useCreateCommunityMutation();
-  const [communityTag, setCommunityTag] = useState<string>('');
+  const [communityTag, setCommunityTag] = useState<string>(initialCommunityTag);
 
   const generateCommunity = async () => {
     let generatedName = getCommmunityName();
@@ -71,7 +75,17 @@ function Communities({ username, metadata }: InferGetServerSidePropsType<typeof 
   };
 
   useEffect(() => {
-    generateCommunity();
+    // Only regenerate if the initial tag is already taken
+    // This runs client-side after hydration is complete
+    const validateAndRegenerate = async () => {
+      const existentAccount = await getAccount(communityTag);
+      if (existentAccount) {
+        await generateCommunity();
+      }
+    };
+
+    validateAndRegenerate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const createCommunitySchema = z.object({
     title: z
@@ -390,10 +404,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  // Generate community tag server-side to avoid hydration mismatch
+  const initialCommunityTag = `hive-${Math.floor(Math.random() * 100000) + 100000}`;
+
   return {
     props: {
       username: username.replace('@', ''),
       metadata: await getAccountMetadata(username, 'Create Communities'),
+      initialCommunityTag,
       ...(await getTranslations(ctx))
     }
   };

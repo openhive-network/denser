@@ -9,9 +9,9 @@
   "dependencies": {
     "@hive/ui": "workspace:*",
     "@hiveio/dhive": "^1.3.0",
+    "@hiveio/hb-auth": "catalog:hiveio-toolset",
     "@hiveio/wax": "catalog:hiveio-toolset",
     "@hiveio/wax-signers-keychain": "catalog:hiveio-toolset",
-    "@hiveio/hb-auth": "catalog:hiveio-toolset",
     "@tanstack/react-query": "^4.36.1",
     "change-case": "^5.4.3",
     "cors": "^2.8.5",
@@ -27,7 +27,7 @@
     "react-modal-promise": "^1.0.2",
     "secure-random": "^1.1.2",
     "usehooks-ts": "^3.1.0",
-    "zod": "^3.21.4"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/cors": "^2.8.14",

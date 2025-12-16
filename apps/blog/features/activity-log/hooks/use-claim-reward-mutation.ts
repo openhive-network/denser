@@ -5,6 +5,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getLogger } from '@ui/lib/logging';
 import { FullAccount } from '@transaction/lib/app-types';
 import { toast } from '@ui/components/hooks/use-toast';
+import { handleError } from '@ui/lib/handle-error';
 const logger = getLogger('app');
 
 /**
@@ -50,6 +51,12 @@ export function useClaimRewardsMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
       }, 6000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useClaimRewardsMutation',
+        params: variables
+      });
     }
   });
 

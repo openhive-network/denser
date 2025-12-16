@@ -22,17 +22,17 @@
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
-    "@hiveio/healthchecker-component": "catalog:hiveio-toolset",
     "@hive/eslint-config-custom": "workspace:*",
-    "@hive/middleware": "workspace:*",
     "@hive/logger": "workspace:*",
+    "@hive/middleware": "workspace:*",
     "@hive/smart-signer": "workspace:*",
     "@hive/tailwindcss-config": "workspace:*",
     "@hive/transaction": "workspace:*",
     "@hive/tsconfig": "workspace:*",
     "@hive/ui": "workspace:*",
+    "@hiveio/healthchecker-component": "catalog:hiveio-toolset",
     "@hiveio/wax": "catalog:hiveio-toolset",
-    "@hookform/resolvers": "^3.3.2",
+    "@hookform/resolvers": "^3.10.0",
     "@next/bundle-analyzer": "^14.2.2",
     "@types/big.js": "^6.2.2",
     "@types/node": "20.10.4",
@@ -50,7 +50,7 @@
     "react": "18.3.0",
     "react-dom": "18.3.0",
     "recharts": "^2.10.3",
-    "zod": "^3.22.4"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@playwright/test": "^1.41.1",

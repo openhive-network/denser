@@ -5,6 +5,7 @@ import { Preferences } from '@transaction/lib/app-types';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
+import { handleError } from '@ui/lib/handle-error';
 const logger = getLogger('app');
 
 /**
@@ -106,6 +107,12 @@ export function useCommentMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
       }, 10000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useCommentMutation',
+        params: variables
+      });
     }
   });
 
@@ -181,6 +188,12 @@ export function useUpdateCommentMutation() {
         queryClient.invalidateQueries({ queryKey: ['discussionData', discussionPermlink] });
         queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
       }, 10000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useUpdateCommentMutation',
+        params: variables
+      });
     }
   });
 
@@ -233,6 +246,12 @@ export function useDeleteCommentMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['discussionData', discussionPermlink] });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useDeleteCommentMutation',
+        params: variables
+      });
     }
   });
 

@@ -44,6 +44,7 @@ const formSchema = z.object({
     required_error: 'loginType is required'
   })
 });
+type MethodsFormValues = z.infer<typeof formSchema>;
 
 const Methods: FC<MethodsProps> = ({
   onSetStep,
@@ -55,7 +56,7 @@ const Methods: FC<MethodsProps> = ({
   submit
 }) => {
   const [loading, setLoading] = useState(false);
-  const form = useForm({
+  const form = useForm<MethodsFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: username,

@@ -4,6 +4,7 @@ import { transactionService } from '@transaction/index';
 import { IFollowList } from '@transaction/lib/extended-hive.chain';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
+import { handleError } from '@ui/lib/handle-error';
 const logger = getLogger('app');
 
 /**
@@ -53,6 +54,12 @@ export function useBlacklistBlogMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useBlacklistBlogMutation',
+        params: variables
+      });
     }
   });
 
@@ -99,6 +106,12 @@ export function useUnblacklistBlogMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
       }, 4000);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useUnblacklistBlogMutation',
+        params: variables
+      });
     }
   });
 
@@ -136,6 +149,12 @@ export function useResetBlacklistBlogMutation() {
         queryClient.invalidateQueries({ queryKey });
       }, 4000);
       logger.info('useResetBlacklistBlogMutation onSuccess: %o', data);
+    },
+    onError: (error: any, variables) => {
+      handleError(error, {
+        method: 'useResetBlacklistBlogMutation',
+        params: variables
+      });
     }
   });
 

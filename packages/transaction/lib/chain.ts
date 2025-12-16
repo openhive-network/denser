@@ -1,5 +1,5 @@
 import type { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
-import { hiveChainService } from './hive-chain-service';
+import { getHiveChainService } from './hive-chain-service';
 import { TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { wrapChainWithLogging } from './chain-proxy';
 import pLimit from 'p-limit';
@@ -15,7 +15,8 @@ const wasmLock = pLimit(1);
 export async function getChain() {
   return wasmLock(async () => {
     if (!chain) {
-      const rawChain = await hiveChainService.getHiveChain();
+      const service = getHiveChainService();
+      const rawChain = await service.getHiveChain();
       chain = wrapChainWithLogging(rawChain);
     }
     return chain;
