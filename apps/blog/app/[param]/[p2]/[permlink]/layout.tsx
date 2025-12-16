@@ -12,7 +12,14 @@ export async function generateMetadata({
 }: {
   params: { param: string; p2: string; permlink: string };
 }): Promise<Metadata> {
-  const author = params?.p2?.replace('%40', '');
+  // p2 should start with @ or %40 for valid post URLs
+  if (!params?.p2?.startsWith('@') && !params?.p2?.startsWith('%40')) {
+    return {
+      title: 'Hive',
+      description: 'Hive: Communities Without Borders.'
+    };
+  }
+  const author = params.p2.replace('%40', '').replace('@', '');
   const permlink = params?.permlink;
   const observer = getObserverFromCookies();
 

@@ -27,11 +27,13 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
   const isRolesPage = pathname?.includes('/roles/');
   const { data: subsData } = useQuery({
     queryKey: ['subscribers', community],
-    queryFn: () => getSubscribers(community ?? '')
+    queryFn: () => getSubscribers(community ?? ''),
+    enabled: community?.startsWith('hive-')
   });
   const { data: notificationData } = useQuery({
     queryKey: ['AccountNotification', community],
-    queryFn: () => getAccountNotifications(community ?? '')
+    queryFn: () => getAccountNotifications(community ?? ''),
+    enabled: community?.startsWith('hive-')
   });
 
   const { data: mySubsData } = useQuery({
@@ -42,7 +44,8 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
 
   const { data: communityData } = useQuery({
     queryKey: ['community', community],
-    queryFn: () => getCommunity(community, observer)
+    queryFn: () => getCommunity(community, observer),
+    enabled: community?.startsWith('hive-')
   });
 
   return (

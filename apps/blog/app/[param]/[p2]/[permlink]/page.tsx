@@ -18,8 +18,13 @@ const PostPage = async ({
 }: {
   params: { param: string; p2: string; permlink: string };
 }) => {
+  // p2 should start with @ or %40 for valid post URLs
+  if (!p2?.startsWith('@') && !p2?.startsWith('%40')) {
+    notFound();
+  }
+
   const queryClient = getQueryClient();
-  const username = p2.replace('%40', '');
+  const username = p2.replace('%40', '').replace('@', '');
   const community = param;
   const validUser = await isUsernameValid(username);
   if (!validUser) notFound();

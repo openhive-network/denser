@@ -13,7 +13,14 @@ const logger = getLogger('app');
 
 export async function generateMetadata({ params }: { params: { param: string } }): Promise<Metadata> {
   const raw = params.param;
-  const username = raw.startsWith('%40') ? raw.replace('%40', '') : raw;
+  // Only process if it looks like a username (starts with @ or %40)
+  if (!raw.startsWith('@') && !raw.startsWith('%40')) {
+    return {
+      title: 'Hive',
+      description: 'Hive: Communities Without Borders.'
+    };
+  }
+  const username = raw.startsWith('%40') ? raw.replace('%40', '') : raw.replace('@', '');
   const queryClient = getQueryClient();
   try {
     const account = await queryClient.fetchQuery({
@@ -57,7 +64,13 @@ export async function generateMetadata({ params }: { params: { param: string } }
 const Layout = async ({ children, params }: { children: ReactNode; params: { param: string } }) => {
   const queryClient = getQueryClient();
   const { param } = params;
-  const username = param.startsWith('%40') ? param.replace('%40', '') : param;
+
+  // Only process if it looks like a username (starts with @ or %40)
+  if (!param.startsWith('@') && !param.startsWith('%40')) {
+    notFound();
+  }
+
+  const username = param.startsWith('%40') ? param.replace('%40', '') : param.replace('@', '');
 
   const valid = await isUsernameValid(username);
   if (!valid) {

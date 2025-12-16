@@ -110,7 +110,7 @@ export default function PostForm({
   const { data: communityData } = useQuery({
     queryKey: ['community', categoryParam],
     queryFn: () => getCommunity(categoryParam ?? storedPost.category, observer),
-    enabled: Boolean(categoryParam) || Boolean(storedPost.category)
+    enabled: categoryParam?.startsWith('hive-') || storedPost.category?.startsWith('hive-')
   });
   const { data: mySubsData } = useQuery({
     queryKey: ['subscriptions', username],

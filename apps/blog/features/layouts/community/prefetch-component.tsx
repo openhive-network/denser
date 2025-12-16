@@ -24,7 +24,7 @@ const PrefetchComponent = async ({ children, community }: { children: ReactNode;
       queryKey: ['communitiesList', sort],
       queryFn: () => getCommunities(sort, query, observer)
     });
-    if (community) {
+    if (community.startsWith('hive-')) {
       await queryClient.prefetchQuery({
         queryKey: ['community', community],
         queryFn: async () => await getCommunity(community, observer)
