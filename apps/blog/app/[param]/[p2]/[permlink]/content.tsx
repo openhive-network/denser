@@ -172,10 +172,10 @@ const PostContent = () => {
       commentsByParent.get(parentKey)!.push(comment);
     });
 
-    // Find all main comments (depth === 1, which are direct replies to the post)
+    // Find all main comments (direct replies to the current post/comment)
     const mainComments = discussionState.filter(
       (comment) =>
-        comment.depth === 1 &&
+        comment.depth === postData.depth + 1 &&
         comment.parent_author === postData.author &&
         comment.parent_permlink === postData.permlink
     );
