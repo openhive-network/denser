@@ -9,7 +9,7 @@ import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { LoginFormSchema as SignInFormSchema } from '../signin-form';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { getChain } from '@transaction/lib/chain';
 import { IOnlineTransaction, operation } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -46,7 +46,7 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
     };
 
     try {
-      const hiveChain = await hiveChainService.getHiveChain();
+      const hiveChain = await getChain();
       const operation: operation = await getOperationForLogin(username, keyType, loginChallenge, loginType);
 
       const expr = new Date();

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components'
 import { useHealthChecker } from '@ui/hooks/useHealthChecker';
 import { CircleCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { getChain } from '@transaction/lib/chain';
 
 type NodeApiCheckers = [
   ApiChecker<FullAccount[]>,
@@ -43,7 +44,7 @@ const HealthCheckersWrapper = () => {
   );
 
   const createApiCheckers = async () => {
-    const hiveChain = await hiveChainService.getHiveChain();
+    const hiveChain = await getChain();
     const nodeApiCheckers: NodeApiCheckers = [
       {
         title: 'Condenser - Get accounts',

@@ -3,7 +3,7 @@ import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { isBrowser } from '@ui/lib/logger';
 import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
 import { KeyType } from '@smart-signer/types/common';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { getChain } from '@transaction/lib/chain';
 import { getLogger } from '@ui/lib/logging';
 import { VerifySignaturesParams, VerifySignaturesResponse } from '@hive/transaction/lib/extended-hive.chain';
 
@@ -82,7 +82,7 @@ export async function getTransactionDigest(
   txString: string = '',
   hiveApiUrl = 'https://api.hive.blog'
 ): Promise<{ txString: string; digest: THexString }> {
-  const wax = await hiveChainService.getHiveChain();
+  const wax = await getChain();
 
   let txBuilder: ITransaction;
   if (txString) {
@@ -175,7 +175,7 @@ export async function verifySignature(
     params.required_active.push(username);
   }
 
-  const hiveChain = await hiveChainService.getHiveChain();
+  const hiveChain = await getChain();
 
   const { valid } = await hiveChain.api.database_api.verify_signatures(params);
 
@@ -216,7 +216,7 @@ export async function verifyPrivateKey(
   if (!strict) return valid;
 
   // Check whether username directly signed the string.
-  const hiveChain = await hiveChainService.getHiveChain();
+  const hiveChain = await getChain();
 
   const [referencedAccounts] = (
     await hiveChain.api.account_by_key_api.get_key_references({ keys: [publicKey.toString()] })
