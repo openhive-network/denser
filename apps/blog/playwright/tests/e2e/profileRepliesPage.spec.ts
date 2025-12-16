@@ -335,7 +335,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       await expect(firstCommentCardVote).toBeVisible();
       await firstCommentCardVote.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.postVotesTooltip.nth(0)).toContainText('votesvotes');
+      await expect(await profilePage.postVotesTooltip.nth(0)).toContainText(/\d+\s*votes\s*\d+\s*votes/);
     } else if (Number(firstCommentCardVoteText) == 1) {
       // equal 1 vote
       await expect(firstCommentCardVote).toBeVisible();
