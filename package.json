@@ -54,7 +54,10 @@
     "neverBuiltDependencies": [
       "secp256k1",
       "core-js"
-    ]
+    ],
+    "overrides": {
+      "@hiveio/wax": "1.28.4-rc0-251216100519"
+    }
   },
   "dependencies": {
     "@beam-australia/react-env": "3.1.1"
