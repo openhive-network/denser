@@ -6,7 +6,7 @@ import { THexString, TTransactionPackType } from '@hiveio/wax';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 import { getLogger } from '@ui/lib/logging';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { getChain } from '@transaction/lib/chain';
 
 const logger = getLogger('app');
 
@@ -81,7 +81,7 @@ export class SignerHbauth extends Signer {
   }
 
   async signTransaction({ digest, transaction, singleSignKeyType, requiredKeyType }: SignTransaction) {
-    const wax = await hiveChainService.getHiveChain();
+    const wax = await getChain();
 
     // When transaction is string, e.g. got from transaction.toApi().
     // const txBuilder = wax.TransactionBuilder.fromApi(transaction);

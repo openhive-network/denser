@@ -45,7 +45,6 @@ const HealthCheckersWrapper = () => {
 
   const createApiCheckers = async () => {
     const hiveChain = await getChain();
-    console.log('HIVE CHAIN', hiveChain);
     const nodeApiCheckers: NodeApiCheckers = [
       {
         title: 'Condenser - Get accounts',

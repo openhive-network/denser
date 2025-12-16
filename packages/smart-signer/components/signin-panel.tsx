@@ -11,7 +11,7 @@ import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { getChain } from '@transaction/lib/chain';
 import { operation } from '@hiveio/wax';
 import dynamic from 'next/dynamic';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
@@ -69,7 +69,7 @@ export function LoginPanel({
     };
 
     try {
-      const hiveChain = await hiveChainService.getHiveChain();
+      const hiveChain = await getChain();
       const operation: operation = await getOperationForLogin(username, keyType, loginChallenge, loginType);
       const txBuilder = await hiveChain.createTransaction();
       txBuilder.pushOperation(operation);

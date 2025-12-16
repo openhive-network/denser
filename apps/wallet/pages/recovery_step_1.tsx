@@ -1,4 +1,4 @@
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { getChain } from '@transaction/lib/chain';
 import { Button, Input, Separator } from '@ui/components';
 import { ChangeEvent, useState } from 'react';
 import { useDebounce } from '../components/hooks/use-debounce';
@@ -14,7 +14,7 @@ const RecoveryStep1 = () => {
   const [passwordError, setPassworError] = useState('');
 
   const accountSearch = async (accountName: string) => {
-    const chain = await hiveChainService.getHiveChain();
+    const chain = await getChain();
     const res = await chain.api.database_api.find_accounts({ accounts: [accountName], delayed_votes_active: false });
     if (!res.accounts.length) {
       setAccountSearchResult('error');
@@ -42,7 +42,7 @@ const RecoveryStep1 = () => {
   };
 
   const validateAccountOwner = async () => {
-    const wax = await hiveChainService.getHiveChain();
+    const wax = await getChain();
     const pubKey = wax.getPrivateKeyFromPassword(accountName, 'owner', password).associatedPublicKey;
     const history = await getOwnerHistory(accountName);
     const owners = history.filter((h) => {

@@ -4,7 +4,7 @@ import { TTransactionPackType, IOnlineSignatureProvider } from '@hiveio/wax';
 import KeychainProvider from '@hiveio/wax-signers-keychain';
 
 import { getLogger } from '@hive/ui/lib/logging';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { getChain } from '@transaction/lib/chain';
 const logger = getLogger('app');
 
 // See https://github.com/hive-keychain/keychain-sdk
@@ -66,7 +66,7 @@ export class SignerKeychain extends Signer {
 
   async signTransaction({ transaction, requiredKeyType }: SignTransaction): Promise<string> {
     try {
-      const authTx = await (await hiveChainService.getHiveChain()).createTransaction();
+      const authTx = await (await getChain()).createTransaction();
 
       transaction.operations.forEach((op) => authTx.pushOperation(op));
 
@@ -80,7 +80,7 @@ export class SignerKeychain extends Signer {
       // authority-checker.ts
       // we will use only this method to verify authority soon
       await (
-        await hiveChainService.getHiveChain()
+        await getChain()
       ).api.database_api.verify_authority({
         trx: authTx.toApiJson(),
         pack: TTransactionPackType.LEGACY

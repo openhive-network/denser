@@ -16,7 +16,7 @@ import { getAccountMetadata, getTranslations, MetadataProps } from '@/wallet/lib
 import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-password-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@ui/components/icons';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { getChain } from '@transaction/lib/chain';
 import { cn } from '@ui/lib/utils';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -126,7 +126,7 @@ export default function PostForm() {
       throw new Error('Generated password is required');
     }
 
-    const hiveChain = await hiveChainService.getHiveChain();
+    const hiveChain = await getChain();
 
     // password !== WIF
     const oldOwner = hiveChain.getPrivateKeyFromPassword(username, 'owner', password);
@@ -163,7 +163,7 @@ export default function PostForm() {
   }
 
   async function handleKey() {
-    const wax = await hiveChainService.getHiveChain();
+    const wax = await getChain();
     const brainKeyData = wax.suggestBrainKey();
     const passwordToBeSavedByUser = 'P' + brainKeyData.wifPrivateKey;
 

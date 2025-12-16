@@ -21,11 +21,11 @@ import {
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
-import { hiveChainService } from './lib/hive-chain-service';
 import { Beneficiarie, Preferences } from './lib/app-types';
 import WorkerBee, { IWorkerBee } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
+import { getChain } from './lib/chain';
 
 const logger = getLogger('app');
 
@@ -111,7 +111,7 @@ export class TransactionService {
       ...transactionOptions
     };
 
-    const txBuilder = await (await hiveChainService.getHiveChain()).createTransaction();
+    const txBuilder = await (await getChain()).createTransaction();
 
     // Create transaction from operation
     cb(txBuilder);
@@ -165,13 +165,13 @@ export class TransactionService {
     const transactionId = txBuilder.id;
     logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
     await (
-      await hiveChainService.getHiveChain()
+      await getChain()
     ).api.network_broadcast_api.broadcast_transaction({ max_block_age: -1, trx: txBuilder.toApiJson() });
     return { transactionId };
   }
 
   async getChain(): Promise<IHiveChainInterface> {
-    return await hiveChainService.getHiveChain();
+    return await getChain();
   }
 
   async getDynamicGlobalProperties(): Promise<GetDynamicGlobalPropertiesResponse> {
@@ -949,7 +949,7 @@ export class TransactionService {
   ) {
     try {
       const accountAuthorityUpdateOp = await AccountAuthorityUpdateOperation.createFor(
-        await hiveChainService.getHiveChain(),
+        await getChain(),
         account
       );
 
@@ -1022,7 +1022,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     const { median_props } = await (
-      await hiveChainService.getHiveChain()
+      await getChain()
     ).api.condenser_api.get_witness_schedule([]);
 
     const fee = await getAsset(median_props.account_creation_fee.split(' ')[0], 'HIVE');
