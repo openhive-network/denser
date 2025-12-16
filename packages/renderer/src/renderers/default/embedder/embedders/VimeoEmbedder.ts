@@ -1,5 +1,5 @@
 import {Log} from '../../../../Log';
-import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
+import {AbstractEmbedder, EmbedMetadata, EmbedSize} from './AbstractEmbedder';
 
 export class VimeoEmbedder extends AbstractEmbedder {
     public type = 'vimeo';
@@ -23,12 +23,8 @@ export class VimeoEmbedder extends AbstractEmbedder {
         return undefined;
     }
 
-    public processEmbed(id: string, size: {width: number; height: number}): string {
-        return `<div class="videoWrapper"><iframe src=${this.generateCanonicalUrl(id)} width=${size.width} height=${size.height} frameBorder="0" webkitallowfullscreen mozallowfullscreen allowFullScreen></iframe></div>`;
-    }
-
-    private generateCanonicalUrl(id: string) {
-        return `https://player.vimeo.com/video/${id}`;
+    public processEmbed(id: string, size: EmbedSize): string {
+        return this.createVideoWrapper(`https://player.vimeo.com/video/${id}`, size);
     }
 
     private extractMetadata(data: string) {
@@ -43,7 +39,7 @@ export class VimeoEmbedder extends AbstractEmbedder {
         return {
             id: m[1],
             url: m[0],
-            canonical: this.generateCanonicalUrl(m[1])
+            canonical: `https://player.vimeo.com/video/${m[1]}`
         };
     }
 }

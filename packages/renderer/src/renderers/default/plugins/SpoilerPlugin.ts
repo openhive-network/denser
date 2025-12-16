@@ -78,7 +78,7 @@ const remarkableSpoiler = (md: RemarkableInstance, config: SpoilerConfig = {}) =
                 return null;
             }
 
-            if (token.type === 'inline' && token.content.indexOf(prefix) === 0) {
+            if (token.type === 'inline' && token.content.startsWith(prefix)) {
                 const regex = new RegExp(`${prefix} {0,1}\\[([A-Za-z0-9 ?!]{1,${revealTextMaxLength}}?)\\] {0,1}`);
                 const match = token.content.match(regex);
 

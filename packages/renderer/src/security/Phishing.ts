@@ -1,8 +1,30 @@
 /**
+ * Phishing domain detection and management module.
+ *
+ * This module provides protection against phishing attacks by maintaining
+ * a list of known malicious domains. When URLs are checked against this list,
+ * matches are flagged as suspicious.
+ *
  * Based on: https://github.com/openhive-network/condenser/blob/master/src/app/utils/Phishing.js
+ *
+ * @module Phishing
+ * @security This is a critical security component. The domain list should be
+ * regularly updated to protect against new phishing attempts.
  */
 
-const domains = [
+/**
+ * Built-in Set of known phishing domains for O(1) lookup performance.
+ * This list is curated from known phishing attempts targeting Hive/Steem users.
+ *
+ * Categories of domains included:
+ * - Typosquatting domains (steemit variants, exchange impersonators)
+ * - Fake wallet/login pages
+ * - Auto-vote/bot scam sites
+ * - URL shorteners used for phishing
+ *
+ * @internal This is the default list. Use Phishing.addDomain() to add custom domains.
+ */
+const builtInDomains: ReadonlySet<string> = new Set([
     'aba.ae',
     'affiliatemarketer.website',
     'alphy.co.nf',
@@ -562,20 +584,247 @@ const domains = [
     'wheelspin.tk',
     'yoyou.co.nf',
     'zity.ga'
-];
+]);
 
+/**
+ * Custom domains added at runtime via addDomain() or addDomains().
+ * These are kept separate from built-in domains to allow for easy management.
+ * @internal
+ */
+const customDomains: Set<string> = new Set();
+
+/**
+ * Extracts the hostname from a URL string.
+ * Falls back to searching the full URL if parsing fails.
+ *
+ * @param url - The URL to extract hostname from
+ * @returns The hostname in lowercase, or the full lowercase URL if parsing fails
+ */
+function extractHostname(url: string): string {
+    try {
+        // Handle URLs without protocol
+        const urlToParse = url.startsWith('http') ? url : `https://${url}`;
+        return new URL(urlToParse).hostname.toLowerCase();
+    } catch {
+        return url.toLowerCase();
+    }
+}
+
+/**
+ * Checks if a hostname matches any domain in the provided set.
+ * Uses efficient Set-based lookup with suffix matching for subdomains.
+ *
+ * @param hostname - The hostname to check
+ * @param domains - Set of blocked domains
+ * @returns true if hostname matches any blocked domain
+ */
+function matchesDomain(hostname: string, domains: ReadonlySet<string> | Set<string>): boolean {
+    // Direct match (O(1) lookup)
+    if (domains.has(hostname)) {
+        return true;
+    }
+
+    // Check if hostname ends with any blocked domain (for subdomain matching)
+    // e.g., "sub.steemit.com" should match "steemit.com" if blocked
+    for (const domain of domains) {
+        if (hostname.endsWith(`.${domain}`)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Phishing detection and domain management class.
+ *
+ * Provides methods to:
+ * - Check if a URL appears to be a phishing attempt
+ * - Add custom domains to the blocklist
+ * - Remove domains from the blocklist
+ * - Retrieve the current list of blocked domains
+ *
+ * @example
+ * ```typescript
+ * // Check if URL is suspicious
+ * if (Phishing.looksPhishy('https://steemlt.com/login')) {
+ *     console.warn('Phishing URL detected!');
+ * }
+ *
+ * // Add custom domain
+ * Phishing.addDomain('my-phishing-domain.com');
+ *
+ * // Add multiple domains
+ * Phishing.addDomains(['domain1.com', 'domain2.com']);
+ *
+ * // Get all blocked domains
+ * const allDomains = Phishing.getDomains();
+ * ```
+ */
 export class Phishing {
     /**
-     * Does this URL look like a phishing attempt?
+     * Checks if a URL contains any known phishing domain.
      *
-     * @param {string} questionableUrl
-     * @returns {boolean}
+     * Uses efficient Set-based O(1) lookup for exact domain matches,
+     * with fallback to suffix matching for subdomain detection.
+     *
+     * @param questionableUrl - The URL to check for phishing indicators
+     * @returns `true` if the URL contains a known phishing domain, `false` otherwise
+     *
+     * @example
+     * ```typescript
+     * Phishing.looksPhishy('https://steemlt.com'); // true - typosquat of steemit
+     * Phishing.looksPhishy('https://hive.blog');   // false - legitimate domain
+     * Phishing.looksPhishy('https://sub.steemlt.com'); // true - subdomain of phishing site
+     * ```
      */
-    public static looksPhishy = (questionableUrl: string) => {
-        for (const domain of domains) {
-            if (questionableUrl.toLocaleLowerCase().indexOf(domain) > -1) return true;
+    public static looksPhishy = (questionableUrl: string): boolean => {
+        const hostname = extractHostname(questionableUrl);
+
+        // Check built-in domains (O(1) for exact match, O(n) worst case for subdomain)
+        if (matchesDomain(hostname, builtInDomains)) {
+            return true;
+        }
+
+        // Check custom domains
+        if (matchesDomain(hostname, customDomains)) {
+            return true;
         }
 
         return false;
     };
+
+    /**
+     * Adds a single domain to the phishing blocklist.
+     *
+     * The domain is normalized to lowercase before being added.
+     * Duplicate domains are silently ignored (Set behavior).
+     *
+     * @param domain - The domain to add (e.g., 'phishing-site.com')
+     *
+     * @example
+     * ```typescript
+     * Phishing.addDomain('new-phishing-site.com');
+     * Phishing.addDomain('UPPERCASE.COM'); // Stored as 'uppercase.com'
+     * ```
+     */
+    public static addDomain(domain: string): void {
+        if (domain && typeof domain === 'string') {
+            customDomains.add(domain.toLowerCase().trim());
+        }
+    }
+
+    /**
+     * Adds multiple domains to the phishing blocklist.
+     *
+     * Each domain is normalized to lowercase before being added.
+     * Invalid entries (non-strings, empty strings) are silently skipped.
+     *
+     * @param domains - Array of domains to add
+     *
+     * @example
+     * ```typescript
+     * Phishing.addDomains([
+     *     'phishing-site1.com',
+     *     'phishing-site2.com',
+     *     'fake-exchange.net'
+     * ]);
+     * ```
+     */
+    public static addDomains(domains: string[]): void {
+        if (Array.isArray(domains)) {
+            for (const domain of domains) {
+                Phishing.addDomain(domain);
+            }
+        }
+    }
+
+    /**
+     * Removes a domain from the custom blocklist.
+     *
+     * Note: This only removes domains added via addDomain()/addDomains().
+     * Built-in domains cannot be removed through this method for security reasons.
+     *
+     * @param domain - The domain to remove
+     * @returns `true` if the domain was removed, `false` if it wasn't in the custom list
+     *
+     * @example
+     * ```typescript
+     * Phishing.addDomain('example.com');
+     * Phishing.removeDomain('example.com'); // returns true
+     * Phishing.removeDomain('not-added.com'); // returns false
+     * ```
+     */
+    public static removeDomain(domain: string): boolean {
+        if (domain && typeof domain === 'string') {
+            return customDomains.delete(domain.toLowerCase().trim());
+        }
+        return false;
+    }
+
+    /**
+     * Retrieves all domains in the blocklist (both built-in and custom).
+     *
+     * Returns a new array each time to prevent external modification
+     * of the internal domain lists.
+     *
+     * @returns Array of all blocked domains (sorted alphabetically)
+     *
+     * @example
+     * ```typescript
+     * const domains = Phishing.getDomains();
+     * console.log(`Blocking ${domains.length} phishing domains`);
+     * ```
+     */
+    public static getDomains(): string[] {
+        return [...Array.from(builtInDomains), ...customDomains].sort();
+    }
+
+    /**
+     * Retrieves only the custom domains added via addDomain()/addDomains().
+     *
+     * Useful for persisting custom domain lists or debugging.
+     *
+     * @returns Array of custom-added domains
+     *
+     * @example
+     * ```typescript
+     * const custom = Phishing.getCustomDomains();
+     * // Save to database for persistence across restarts
+     * await db.savePhishingDomains(custom);
+     * ```
+     */
+    public static getCustomDomains(): string[] {
+        return [...customDomains].sort();
+    }
+
+    /**
+     * Clears all custom domains added via addDomain()/addDomains().
+     *
+     * Built-in domains are not affected by this operation.
+     * Useful for testing or resetting the custom list.
+     *
+     * @example
+     * ```typescript
+     * Phishing.clearCustomDomains();
+     * console.log(Phishing.getCustomDomains()); // []
+     * ```
+     */
+    public static clearCustomDomains(): void {
+        customDomains.clear();
+    }
+
+    /**
+     * Returns the count of all blocked domains (built-in + custom).
+     *
+     * @returns Total number of domains in the blocklist
+     *
+     * @example
+     * ```typescript
+     * console.log(`Protecting against ${Phishing.getDomainCount()} phishing domains`);
+     * ```
+     */
+    public static getDomainCount(): number {
+        return builtInDomains.size + customDomains.size;
+    }
 }

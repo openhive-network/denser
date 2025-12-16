@@ -1,5 +1,5 @@
 import {Log} from '../../../../Log';
-import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
+import {AbstractEmbedder, EmbedMetadata, EmbedSize} from './AbstractEmbedder';
 
 export class ThreeSpeakEmbedder extends AbstractEmbedder {
     public type = '3speak';
@@ -27,8 +27,7 @@ export class ThreeSpeakEmbedder extends AbstractEmbedder {
         return undefined;
     }
 
-    public processEmbed(id: string, size: {width: number; height: number}): string {
-        const embedUrl = `https://3speak.tv/embed?v=${id}`;
-        return `<div class="threeSpeakWrapper"><iframe width="${size.width}" height="${size.height}" src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+    public processEmbed(id: string, size: EmbedSize): string {
+        return this.createVideoWrapper(`https://3speak.tv/embed?v=${id}`, size, 'threeSpeakWrapper');
     }
 }

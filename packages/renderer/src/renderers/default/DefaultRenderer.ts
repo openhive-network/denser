@@ -1,12 +1,16 @@
 import ow from 'ow';
 import {Remarkable} from 'remarkable';
+import {Log} from '../../Log';
 import {SecurityChecker} from '../../security/SecurityChecker';
 import {HtmlDOMParser} from './embedder/HtmlDOMParser';
 import {Localization, LocalizationOptions} from './Localization';
 import type {RendererPlugin} from './plugins/RendererPlugin';
 import remarkableSpoiler from './plugins/SpoilerPlugin';
 import {PreliminarySanitizer} from './sanitization/PreliminarySanitizer';
-import {TagTransformingSanitizer, PostContext} from './sanitization/TagTransformingSanitizer';
+import {PostContext, TagTransformingSanitizer} from './sanitization/TagTransformingSanitizer';
+
+/** Default maximum input length (1MB) to prevent DoS attacks */
+const DEFAULT_MAX_INPUT_LENGTH = 1024 * 1024;
 
 /**
  * DefaultRenderer is a configurable HTML/Markdown renderer that provides:
@@ -30,6 +34,20 @@ export class DefaultRenderer {
     public constructor(options: RendererOptions, localization: LocalizationOptions = Localization.DEFAULT) {
         this.validate(options);
         this.options = options;
+
+        // Runtime security warnings for dangerous options
+        if (this.options.skipSanitization) {
+            Log.log().warn(
+                'SECURITY WARNING: skipSanitization is enabled. This disables HTML sanitization ' +
+                    'and may expose your application to XSS attacks. Only use this for trusted content.'
+            );
+        }
+        if (this.options.allowInsecureScriptTags) {
+            Log.log().warn(
+                'SECURITY WARNING: allowInsecureScriptTags is enabled. This allows script tags in output ' +
+                    'and is a serious security risk. Only use this in sandboxed environments.'
+            );
+        }
 
         Localization.validate(localization);
 
@@ -70,11 +88,21 @@ export class DefaultRenderer {
      * @param input - Markdown or HTML text to render
      * @param postContext - Optional context about the post (author/permlink) for logging
      * @returns Rendered and processed HTML
-     * @throws Will throw if input is empty or invalid
+     * @throws Will throw if input is empty, invalid, or exceeds maxInputLength
      */
     public render(input: string, postContext?: PostContext): string {
         // Validate input
         ow(input, 'input', ow.string.nonEmpty);
+
+        // Check input size to prevent DoS attacks
+        const maxLength = this.options.maxInputLength ?? DEFAULT_MAX_INPUT_LENGTH;
+        if (maxLength > 0 && input.length > maxLength) {
+            throw new Error(
+                `Input exceeds maximum allowed length. Got ${input.length} characters, maximum is ${maxLength}. ` +
+                    'Increase maxInputLength option if you need to process larger content.'
+            );
+        }
+
         return this.doRender(input, postContext);
     }
 
@@ -155,8 +183,8 @@ export class DefaultRenderer {
      * for further processing steps like sanitization and asset embedding.
      */
     private wrapRenderedTextWithHtmlIfNeeded(renderedText: string): string {
-        if (renderedText.indexOf('<html>') !== 0) {
-            renderedText = '<html>' + renderedText + '</html>';
+        if (!renderedText.startsWith('<html>')) {
+            return `<html>${renderedText}</html>`;
         }
         return renderedText;
     }
@@ -235,10 +263,26 @@ export interface RendererOptions {
     baseUrl: string;
     /** Enable line breaks in markdown */
     breaks: boolean;
-    /** Skip HTML sanitization (use with caution) */
+    /**
+     * Skip HTML sanitization.
+     * @deprecated This option is dangerous and may be removed in future versions.
+     * @security DANGER: Disabling sanitization exposes your application to XSS attacks.
+     * Only use this for content you fully trust (e.g., your own markdown files).
+     */
     skipSanitization: boolean;
-    /** Allow script tags in output (dangerous) */
+    /**
+     * Allow script tags in output.
+     * @deprecated This option is dangerous and may be removed in future versions.
+     * @security DANGER: Allowing script tags is a serious security risk.
+     * Only use this in sandboxed environments (e.g., iframes with sandbox attribute).
+     */
     allowInsecureScriptTags: boolean;
+    /**
+     * Maximum input length in characters. Set to 0 to disable limit.
+     * @default 1048576 (1MB)
+     * @security Prevents DoS attacks from extremely large inputs
+     */
+    maxInputLength?: number;
     /** Add nofollow attribute to links */
     addNofollowToLinks: boolean;
     /** Add target="_blank" to links */

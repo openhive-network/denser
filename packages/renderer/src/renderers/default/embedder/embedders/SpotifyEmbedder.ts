@@ -1,5 +1,5 @@
 import {Log} from '../../../../Log';
-import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
+import {AbstractEmbedder, EmbedMetadata, EmbedSize} from './AbstractEmbedder';
 
 interface SpotifyMetadata {
     id: string;
@@ -12,7 +12,7 @@ export class SpotifyEmbedder extends AbstractEmbedder {
 
     private static readonly regex = {
         main: /https?:\/\/open.spotify.com\/(playlist|show|episode|album|track|artist)\/(.*)/i,
-        sanitize: /^https:\/\/open\.spotify\.com\/(embed|embed-podcast)\/(playlist|show|episode|album|track|artist)\/(.*)/i // TODO ??
+        sanitize: /^https:\/\/open\.spotify\.com\/(embed|embed-podcast)\/(playlist|show|episode|album|track|artist)\/(.*)/i
     };
 
     private static extractMetadata(data: string): SpotifyMetadata | undefined {
@@ -45,8 +45,8 @@ export class SpotifyEmbedder extends AbstractEmbedder {
         }
         return undefined;
     }
-    public processEmbed(id: string, size: {width: number; height: number}): string {
-        const url = `https://open.spotify.com/${id}`;
-        return `<div class="videoWrapper"><iframe src="${url}" width="${size.width}" height="${size.height}" frameBorder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen ></iframe></div>`;
+
+    public processEmbed(id: string, size: EmbedSize): string {
+        return this.createVideoWrapper(`https://open.spotify.com/${id}`, size);
     }
 }

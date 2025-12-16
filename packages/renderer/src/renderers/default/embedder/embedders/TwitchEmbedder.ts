@@ -1,7 +1,14 @@
 import {Log} from '../../../../Log';
 import {AssetEmbedderOptions} from '../AssetEmbedder';
 import linksRe from '../utils/Links';
-import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
+import {AbstractEmbedder, EmbedMetadata, EmbedSize} from './AbstractEmbedder';
+
+/** Twitch-specific embed metadata */
+interface TwitchMetadata {
+    id: string;
+    url: string;
+    canonical: string;
+}
 
 export class TwitchEmbedder extends AbstractEmbedder {
     public type = 'twitch';
@@ -15,7 +22,7 @@ export class TwitchEmbedder extends AbstractEmbedder {
     public getEmbedMetadata(child: HTMLObjectElement): EmbedMetadata | undefined {
         try {
             const data = child.data;
-            const twitch = this.twitchId(data);
+            const twitch = this.extractMetadata(data);
             if (!twitch) {
                 return undefined;
             }
@@ -29,12 +36,11 @@ export class TwitchEmbedder extends AbstractEmbedder {
         return undefined;
     }
 
-    public processEmbed(id: string, size: {width: number; height: number}): string {
-        const url = `https://player.twitch.tv/${id}&parent=${this.domain}`;
-        return `<div class="videoWrapper"><iframe src=${url} width=${size.width} height=${size.height} frameBorder="0" allowFullScreen></iframe></div>`;
+    public processEmbed(id: string, size: EmbedSize): string {
+        return this.createVideoWrapper(`https://player.twitch.tv/${id}&parent=${this.domain}`, size);
     }
 
-    private twitchId(data: any) {
+    private extractMetadata(data: string | null): TwitchMetadata | null {
         if (!data) {
             return null;
         }
@@ -43,10 +49,11 @@ export class TwitchEmbedder extends AbstractEmbedder {
             return null;
         }
 
+        const isVideo = m[1] === 'videos';
         return {
-            id: m[1] === `videos` ? `?video=${m[2]}` : `?channel=${m[2]}`,
+            id: isVideo ? `?video=${m[2]}` : `?channel=${m[2]}`,
             url: m[0],
-            canonical: m[1] === `videos` ? `https://player.twitch.tv/?video=${m[2]}` : `https://player.twitch.tv/?channel=${m[2]}`
+            canonical: isVideo ? `https://player.twitch.tv/?video=${m[2]}` : `https://player.twitch.tv/?channel=${m[2]}`
         };
     }
 }

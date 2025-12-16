@@ -1,5 +1,9 @@
 /**
+ * HTML DOM Parser for processing Hive content.
+ *
  * Based on: https://github.com/openhive-network/condenser/blob/master/src/shared/HtmlReady.js
+ *
+ * @module HtmlDOMParser
  */
 
 import * as xmldom from '@xmldom/xmldom';
@@ -12,19 +16,52 @@ import {YoutubeEmbedder} from './embedders/YoutubeEmbedder';
 import {AccountNameValidator} from './utils/AccountNameValidator';
 import linksRe, {any as linksAny} from './utils/Links';
 
+// ============================================================================
+// Constants
+// ============================================================================
+
+/** HTML tag names used for processing */
+const HTML_TAGS = {
+    IMG: 'img',
+    IFRAME: 'iframe',
+    ANCHOR: 'a',
+    CODE: 'code',
+    DIV: 'div',
+    TEXT_NODE: '#text'
+} as const;
+
+/** CSS class names */
+const CSS_CLASSES = {
+    VIDEO_WRAPPER: 'videoWrapper',
+    IMAGE_URL_ONLY: 'image-url-only',
+    PHISHY: 'phishy'
+} as const;
+
+/** File extensions that should not be linkified (security risk) */
+const BLOCKED_FILE_EXTENSIONS = /\.(zip|exe)$/i;
+
+/** Pattern for protocol-relative URLs */
+const PROTOCOL_RELATIVE_URL = /^\/\//;
+
 export class HtmlDOMParser {
     private options: AssetEmbedderOptions;
     private localization: LocalizationOptions;
     private linkSanitizer: LinkSanitizer;
     public embedder: AssetEmbedder;
 
+    /**
+     * DOM parser with custom error handling.
+     * Errors are logged at debug level to help diagnose malformed HTML without
+     * flooding logs in production. DOM parsing errors are common with user-generated
+     * content and usually don't indicate security issues.
+     */
     private domParser = new xmldom.DOMParser({
         errorHandler: {
-            warning: () => {
-                /* */
+            warning: (msg: string) => {
+                Log.log().debug('DOM Parser warning: %s', msg);
             },
-            error: () => {
-                /* */
+            error: (msg: string) => {
+                Log.log().debug('DOM Parser error: %s', msg);
             }
         }
     });
@@ -111,230 +148,205 @@ export class HtmlDOMParser {
     /**
      * Recursively traverses the DOM tree and processes nodes based on their types.
      *
-     * This method performs the following operations:
-     * - Collects HTML tags encountered during traversal
-     * - Processes special tags (img, iframe, a) and text nodes
-     * - Updates the parser's state with found tags, links, and images
-     * - Applies mutations to the DOM if mutation is enabled
-     *
      * @param node - The DOM node to traverse (Document or ChildNode)
-     * @param depth - The current depth in the DOM tree (used for recursion)
      * @private
      */
-    private traverseDOMNode(node: Document | ChildNode, depth = 0) {
-        if (!node || !node.childNodes) {
+    private traverseDOMNode(node: Document | ChildNode): void {
+        if (!node?.childNodes) {
             return;
         }
 
-        Array.from(node.childNodes).forEach((child) => {
-            const tag = (child as any).tagName ? (child as any).tagName.toLowerCase() : null;
+        for (const child of Array.from(node.childNodes)) {
+            const tag = this.getTagName(child);
+
             if (tag) {
                 this.state.htmltags.add(tag);
-            }
-
-            if (tag === 'img') {
-                this.processImgTag(child as HTMLObjectElement);
-            } else if (tag === 'iframe') {
-                this.processIframeTag(child as HTMLObjectElement);
-            } else if (tag === 'a') {
-                this.processLinkTag(child as HTMLObjectElement);
-            } else if (child.nodeName === '#text') {
+                this.processElementByTag(child as HTMLObjectElement, tag);
+            } else if (child.nodeName === HTML_TAGS.TEXT_NODE) {
                 this.processTextNode(child as HTMLObjectElement);
             }
 
-            this.traverseDOMNode(child, depth + 1);
-        });
+            this.traverseDOMNode(child);
+        }
     }
 
     /**
-     * Processes an anchor tag in the DOM, handling link sanitization and phishing protection.
-     *
-     * This method:
-     * - Extracts the href URL from the anchor tag
-     * - Adds the URL to the state's links collection
-     * - If mutation is enabled:
-     *   - Sanitizes the link to protect against phishing attempts
-     *   - For potentially dangerous links:
-     *     - Replaces the anchor with a div containing phishing warning
-     *     - Adds 'phishy' class and warning title
-     *   - For safe links:
-     *     - Updates the href attribute with the sanitized URL
-     *
-     * @param child - The anchor element to process
-     * @private
-     *
-     * @example
-     * // Safe link:
-     * // Input:  <a href="http://example.com">Link</a>
-     * // Output: <a href="http://example.com">Link</a>
-     *
-     * // Suspicious link:
-     * // Input:  <a href="http://suspicious-site.com">Link</a>
-     * // Output: <div class="phishy" title="[phishing warning]">Link / http://suspicious-site.com</div>
+     * Extracts lowercase tag name from a DOM node.
      */
-    private processLinkTag(child: HTMLObjectElement) {
-        const parent = child.parentNode;
+    private getTagName(node: ChildNode): string | null {
+        const element = node as Element;
+        return element.tagName ? element.tagName.toLowerCase() : null;
+    }
+
+    /**
+     * Routes element processing based on tag type.
+     */
+    private processElementByTag(element: HTMLObjectElement, tag: string): void {
+        switch (tag) {
+            case HTML_TAGS.IMG:
+                this.processImgTag(element);
+                break;
+            case HTML_TAGS.IFRAME:
+                this.processIframeTag(element);
+                break;
+            case HTML_TAGS.ANCHOR:
+                this.processLinkTag(element);
+                break;
+        }
+    }
+
+    /**
+     * Processes an anchor tag, handling link sanitization and phishing protection.
+     *
+     * @param element - The anchor element to process
+     * @private
+     */
+    private processLinkTag(element: HTMLObjectElement): void {
+        const parent = element.parentNode;
         if (!parent) return;
 
-        const url = child.getAttribute('href');
+        const url = element.getAttribute('href');
+        if (!url) return;
+
+        this.state.links.add(url);
+
+        if (!this.mutate) return;
+
+        const urlTitle = element.textContent || '';
+        const sanitizedLink = this.linkSanitizer.sanitizeLink(url, urlTitle);
+
+        if (sanitizedLink === false) {
+            this.replaceWithPhishingWarning(element, url);
+        } else {
+            element.setAttribute('href', sanitizedLink);
+        }
+    }
+
+    /**
+     * Replaces an element with a phishing warning div.
+     */
+    private replaceWithPhishingWarning(element: HTMLObjectElement, url: string): void {
+        const parent = element.parentNode;
+        if (!parent) return;
+
+        const doc = element.ownerDocument as Document;
+        const warningDiv = doc.createElement(HTML_TAGS.DIV);
+        warningDiv.textContent = `${element.textContent} / ${url}`;
+        warningDiv.setAttribute('title', this.localization.phishingWarning);
+        warningDiv.setAttribute('class', CSS_CLASSES.PHISHY);
+
+        parent.insertBefore(warningDiv, element);
+        parent.removeChild(element);
+    }
+
+    /**
+     * Processes an iframe tag, wrapping it in a responsive video wrapper.
+     *
+     * @param element - The iframe element to process
+     * @private
+     */
+    private processIframeTag(element: HTMLObjectElement): void {
+        const url = element.getAttribute('src');
         if (url) {
-            this.state.links.add(url);
-            if (this.mutate) {
-                const urlTitle = child.textContent || '';
-                const sanitizedLink = this.linkSanitizer.sanitizeLink(url, urlTitle);
-                if (sanitizedLink === false) {
-                    const phishyDiv = (child.ownerDocument as Document).createElement('div');
-                    phishyDiv.textContent = `${child.textContent} / ${url}`;
-                    phishyDiv.setAttribute('title', this.localization.phishingWarning);
-                    phishyDiv.setAttribute('class', 'phishy');
-                    parent.insertBefore(phishyDiv, child);
-                    parent.removeChild(child);
-                } else {
-                    child.setAttribute('href', sanitizedLink);
-                }
-            }
+            this.extractYoutubeMetadata(url);
         }
+
+        if (!this.mutate) return;
+
+        if (this.isAlreadyWrapped(element)) return;
+
+        this.wrapInVideoWrapper(element);
     }
 
     /**
-     * Processes an iframe tag in the DOM, wrapping it in a div for responsive display.
-     *
-     * This method:
-     * - Extracts and reports the iframe's source URL
-     * - If mutation is enabled:
-     *   - Wraps the iframe in a div with class 'videoWrapper' for responsive sizing
-     *   - Only wraps if not already wrapped in a videoWrapper div
-     * - Maintains the original iframe attributes and content
-     *
-     * @param child - The iframe element to process
-     * @private
-     *
-     * @example
-     * // Input:  <iframe src="https://youtube.com/embed/123"></iframe>
-     * // Output: <div class="videoWrapper"><iframe src="https://youtube.com/embed/123"></iframe></div>
+     * Checks if an element is already wrapped in a video wrapper div.
      */
-    private processIframeTag(child: HTMLObjectElement) {
-        const url = child.getAttribute('src');
-        if (url) this.reportIframeLink(url);
+    private isAlreadyWrapped(element: HTMLObjectElement): boolean {
+        const parent = element.parentNode as Element | null;
+        if (!parent) return false;
 
-        if (!this.mutate) {
-            return;
-        }
+        const parentTag = parent.tagName?.toLowerCase();
+        const parentClass = parent.getAttribute?.('class');
 
-        const tag = (child as any).parentNode.tagName ? (child as any).parentNode.tagName.toLowerCase() : (child as any).parentNode.tagName;
-        if (tag === 'div' && (child as any).parentNode.getAttribute('class') === 'videoWrapper') {
-            return;
-        }
-        const html = this.xmlSerializer.serializeToString(child);
-        const wrapper = this.domParser.parseFromString(`<div class="videoWrapper">${html}</div>`);
-        const parent = child.parentNode;
-        if (parent) {
-            parent.appendChild(wrapper);
-            parent.removeChild(child);
-        }
+        return parentTag === HTML_TAGS.DIV && parentClass === CSS_CLASSES.VIDEO_WRAPPER;
     }
 
     /**
-     * Reports an iframe's source URL by extracting and storing its metadata.
-     * Currently only processes YouTube links, extracting video ID and thumbnail URL.
-     *
-     * @param url - The source URL of the iframe to process
-     * @private
-     *
-     * @example
-     * // For a YouTube iframe with URL 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-     * // Adds the following to state:
-     * // - links: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-     * // - images: 'https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg'
+     * Wraps an element in a video wrapper div for responsive display.
      */
-    private reportIframeLink(url: string) {
-        const yt = YoutubeEmbedder.getYoutubeMetadataFromLink(url);
-        if (yt) {
-            this.state.links.add(yt.url);
-            this.state.images.add('https://img.youtube.com/vi/' + yt.id + '/0.jpg');
+    private wrapInVideoWrapper(element: HTMLObjectElement): void {
+        const parent = element.parentNode;
+        if (!parent) return;
+
+        const html = this.xmlSerializer.serializeToString(element);
+        const wrapper = this.domParser.parseFromString(`<div class="${CSS_CLASSES.VIDEO_WRAPPER}">${html}</div>`);
+
+        parent.appendChild(wrapper);
+        parent.removeChild(element);
+    }
+
+    /**
+     * Extracts YouTube metadata from iframe URL and adds to state.
+     */
+    private extractYoutubeMetadata(url: string): void {
+        const metadata = YoutubeEmbedder.getYoutubeMetadataFromLink(url);
+        if (metadata) {
+            this.state.links.add(metadata.url);
+            this.state.images.add(metadata.thumbnail);
         }
     }
 
     /**
-     * Processes an image tag in the DOM, handling its source URL and applying necessary transformations.
+     * Processes an image tag, normalizing its URL.
      *
-     * This method:
-     * - Extracts the source URL from the img tag
-     * - Adds the URL to the state's image collection
-     * - If mutation is enabled:
-     *   - Normalizes the URL protocol (converts relative protocols to https)
-     *   - Updates the src attribute if the URL was modified
-     *
-     * @param child - The img element to process
+     * @param element - The img element to process
      * @private
      */
-    private processImgTag(child: HTMLObjectElement) {
-        const url = child.getAttribute('src');
-        if (url) {
-            this.state.images.add(url);
-            if (this.mutate) {
-                let url2 = this.normalizeUrl(url);
-                if (/^\/\//.test(url2)) {
-                    url2 = 'https:' + url2;
-                }
-                if (url2 !== url) {
-                    child.setAttribute('src', url2);
-                }
-            }
+    private processImgTag(element: HTMLObjectElement): void {
+        const url = element.getAttribute('src');
+        if (!url) return;
+
+        this.state.images.add(url);
+
+        if (!this.mutate) return;
+
+        const normalizedUrl = this.normalizeImageUrl(url);
+        if (normalizedUrl !== url) {
+            element.setAttribute('src', normalizedUrl);
         }
     }
 
     /**
-     * Processes a text node in the DOM, handling special content like hashtags, mentions, and links.
-     *
-     * This method:
-     * - Skips processing if the text node is within <code> or <a> tags
-     * - Processes embedded content through AssetEmbedder
-     * - Converts plain text URLs into clickable links
-     * - Processes hashtags and mentions
-     * - Updates the state with found links and images
-     *
-     * If mutation is enabled and content changes:
-     * - Creates a new span element with the processed content
-     * - Replaces the original text node with the new span
-     *
-     * @param child - The text node to process (as HTMLObjectElement)
-     * @returns The new node if content was mutated, undefined otherwise
-     * @throws Logs error if processing fails but continues execution
-     *
-     * @example
-     * // Input text node: "Check out #hive and @user"
-     * // Output: <span>Check out <a href="/tag/hive">#hive</a> and <a href="/@user">@user</a></span>
+     * Normalizes an image URL, converting protocol-relative to HTTPS.
      */
-    private processTextNode(child: HTMLObjectElement) {
+    private normalizeImageUrl(url: string): string {
+        let normalized = this.normalizeUrl(url);
+
+        if (PROTOCOL_RELATIVE_URL.test(normalized)) {
+            normalized = 'https:' + normalized;
+        }
+
+        return normalized;
+    }
+
+    /**
+     * Processes a text node, converting URLs, hashtags, and mentions to links.
+     *
+     * @param node - The text node to process
+     * @private
+     */
+    private processTextNode(node: HTMLObjectElement): void {
         try {
-            const tag = (child.parentNode as any).tagName ? (child.parentNode as any).tagName.toLowerCase() : (child.parentNode as any).tagName;
-            if (tag === 'code') {
-                return;
-            }
-            if (tag === 'a') {
-                return;
-            }
+            if (this.shouldSkipTextNode(node)) return;
+            if (!node.data) return;
 
-            if (!child.data) {
-                return;
-            }
+            this.processEmbeds(node);
 
-            const embedResp = this.embedder.processTextNodeAndInsertEmbeds(child);
-            embedResp.images.forEach((img) => this.state.images.add(img));
-            embedResp.links.forEach((link) => this.state.links.add(link));
+            const originalContent = this.xmlSerializer.serializeToString(node);
+            const processedContent = this.linkify(originalContent);
 
-            const data = this.xmlSerializer.serializeToString(child);
-            const content = this.linkify(data);
-            if (this.mutate && content !== data) {
-                const newChild = this.domParser.parseFromString(`<span>${content}</span>`).childNodes[0];
-                const parent = child.parentNode;
-                if (parent) {
-                    parent.insertBefore(newChild, child);
-                    parent.removeChild(child);
-                    parent.appendChild;
-                }
-                return;
+            if (this.mutate && processedContent !== originalContent) {
+                this.replaceTextNodeWithProcessedContent(node, processedContent);
             }
         } catch (error) {
             Log.log().error(error);
@@ -342,210 +354,181 @@ export class HtmlDOMParser {
     }
 
     /**
-     * Processes text content to convert various elements into clickable links.
-     *
-     * This method handles three types of conversions:
-     * 1. Plain text URLs into clickable links or images
-     * 2. Hashtags (#tag) into links to tag pages
-     * 3. User mentions (@user) into links to user profiles
-     *
-     * Processing rules:
-     * - URLs:
-     *   - Image URLs are converted to <img> tags
-     *   - .exe and .zip URLs are left as plain text
-     *   - Suspicious URLs are wrapped in warning divs
-     *   - Other URLs become clickable links
-     *
-     * - Hashtags:
-     *   - Must start with # followed by letters/numbers
-     *   - Pure numbers (e.g., #123) are not converted
-     *   - Converted to links using hashtagUrlFn
-     *
-     * - User mentions:
-     *   - Must be valid account names
-     *   - Converted to links using usertagUrlFn
-     *   - Invalid usernames remain as plain text
-     *
-     * @param content - The text content to process
-     * @returns Processed content with converted links
-     *
-     * @example
-     * // Plain URL
-     * linkify("Check https://example.com")
-     * // Returns: 'Check <a href="https://example.com">https://example.com</a>'
-     *
-     * // Image URL
-     * linkify("See https://example.com/img.jpg")
-     * // Returns: 'See <img src="https://example.com/img.jpg" />'
-     *
-     * // Hashtag
-     * linkify("Check #hive")
-     * // Returns: 'Check <a href="/tag/hive">#hive</a>'
-     *
-     * // User mention
-     * linkify("Hello @user")
-     * // Returns: 'Hello <a href="/@user">@user</a>'
+     * Checks if a text node should be skipped (inside code or anchor tags).
      */
-    private linkify(content: string) {
-        // plaintext links
-        content = content.replace(linksAny('gi'), (ln) => {
-            if (linksRe.image.test(ln)) {
-                this.state.images.add(ln);
-                return `<img src="${this.normalizeUrl(ln)}" alt="Embedded Image" />`;
-            }
+    private shouldSkipTextNode(node: HTMLObjectElement): boolean {
+        const parent = node.parentNode;
+        if (!parent) return false;
 
-            // do not linkify .exe or .zip urls
-            if (/\.(zip|exe)$/i.test(ln)) {
-                return ln;
-            }
+        const parentElement = parent as Element;
+        const parentTag = parentElement.tagName?.toLowerCase() || null;
+        return parentTag === HTML_TAGS.CODE || parentTag === HTML_TAGS.ANCHOR;
+    }
 
-            // do not linkify phishy links
-            const sanitizedLink = this.linkSanitizer.sanitizeLink(ln, ln);
-            if (sanitizedLink === false) {
-                return `<div title='${this.localization.phishingWarning}' class='phishy'>${ln}</div>`;
-            }
+    /**
+     * Processes embeds in a text node and updates state.
+     */
+    private processEmbeds(node: HTMLObjectElement): void {
+        const embedResult = this.embedder.processTextNodeAndInsertEmbeds(node);
+        embedResult.images.forEach((img) => this.state.images.add(img));
+        embedResult.links.forEach((link) => this.state.links.add(link));
+    }
 
-            this.state.links.add(sanitizedLink);
-            return `<a href="${this.normalizeUrl(ln)}">${sanitizedLink}</a>`;
-        });
+    /**
+     * Replaces a text node with processed HTML content.
+     */
+    private replaceTextNodeWithProcessedContent(node: HTMLObjectElement, content: string): void {
+        const parent = node.parentNode;
+        if (!parent) return;
 
-        // hashtag
-        content = content.replace(/(^|\s)(#[-a-z\d]+)/gi, (tag) => {
-            if (/#[\d]+$/.test(tag)) {
-                return tag;
-            } // Don't allow numbers to be tags
-            const space = /^\s/.test(tag) ? tag[0] : '';
-            const tag2 = tag.trim().substring(1);
-            const tagLower = tag2.toLowerCase();
-            this.state.hashtags.add(tagLower);
-            if (!this.mutate) {
-                return tag;
-            }
-            const tagUrl = this.options.hashtagUrlFn(tagLower);
-            return space + `<a href="${tagUrl}">${tag.trim()}</a>`;
-        });
+        const newNode = this.domParser.parseFromString(`<span>${content}</span>`).childNodes[0];
+        parent.insertBefore(newNode, node);
+        parent.removeChild(node);
+    }
 
-        // usertag (mention)
-        // Cribbed from https://github.com/twitter/twitter-text/blob/v1.14.7/js/twitter-text.js#L90
-        content = content.replace(/(^|[^a-zA-Z0-9_!#$%&*@＠/]|(^|[^a-zA-Z0-9_+~.-/#]))[@＠]([a-z][-.a-z\d]+[a-z\d])/gi, (_match, preceeding1, preceeding2, user) => {
-            const userLower = user.toLowerCase();
-            const valid = AccountNameValidator.validateAccountName(userLower, this.localization) == null;
-
-            if (valid && this.state.usertags) {
-                this.state.usertags.add(userLower);
-            }
-
-            // include the preceeding matches if they exist
-            const preceedings = (preceeding1 || '') + (preceeding2 || '');
-
-            if (!this.mutate) {
-                return `${preceedings}${user}`;
-            }
-
-            const userTagUrl = this.options.usertagUrlFn(userLower);
-            return valid ? `${preceedings}<a href="${userTagUrl}">@${user}</a>` : `${preceedings}@${user}`;
-        });
+    /**
+     * Converts URLs, hashtags, and mentions in text to clickable links.
+     *
+     * @param content - Text content to process
+     * @returns Processed content with links
+     */
+    private linkify(content: string): string {
+        content = this.linkifyUrls(content);
+        content = this.linkifyHashtags(content);
+        content = this.linkifyMentions(content);
         return content;
     }
 
     /**
-     * Performs post-processing operations on the parsed DOM.
-     *
-     * This method applies final transformations to the document after the main parsing
-     * is complete. It handles two specific operations:
-     * 1. Image hiding - If hideImages option is enabled, replaces images with their URLs
-     * 2. Image proxifying - If image proxying is enabled, adds proxy URLs to images
-     *
-     * These operations are only performed if mutation is enabled in the parser.
-     *
-     * @param doc - The Document object to post-process
-     * @private
+     * Converts plain text URLs to clickable links or embedded images.
      */
-    private postprocessDOM(doc: Document) {
-        this.hideImagesIfNeeded(doc);
-        this.proxifyImagesIfNeeded(doc);
-    }
-
-    /**
-     * Replaces image elements with their URLs if image hiding is enabled.
-     *
-     * This method checks if both mutation and hideImages options are enabled.
-     * If they are, it:
-     * 1. Finds all img elements in the document
-     * 2. Creates a pre element with class 'image-url-only' for each image
-     * 3. Sets the pre element's text content to the image's src URL
-     * 4. Replaces the original img element with the pre element
-     *
-     * @param doc - The Document object containing the DOM to process
-     * @private
-     *
-     * @example
-     * // Input:  <img src="https://example.com/image.jpg">
-     * // Output: <pre class="image-url-only">https://example.com/image.jpg</pre>
-     */
-    private hideImagesIfNeeded(doc: Document) {
-        if (this.mutate && this.options.hideImages) {
-            for (const image of Array.from(doc.getElementsByTagName('img'))) {
-                const pre = doc.createElement('pre');
-                pre.setAttribute('class', 'image-url-only');
-                pre.appendChild(doc.createTextNode(image.getAttribute('src') || ''));
-                const parent = image.parentNode;
-                if (parent) {
-                    parent.appendChild(pre);
-                    parent.removeChild(image);
-                }
+    private linkifyUrls(content: string): string {
+        return content.replace(linksAny('gi'), (url) => {
+            // Embed images directly
+            if (linksRe.image.test(url)) {
+                this.state.images.add(url);
+                return `<img src="${this.normalizeUrl(url)}" alt="Embedded Image" />`;
             }
-        }
-    }
 
-    /**
-     * Applies image proxying to all images in the document if enabled.
-     *
-     * This method checks if both mutation is enabled and image hiding is disabled.
-     * If these conditions are met, it calls proxifyImages to process all image URLs
-     * in the document through the configured image proxy.
-     *
-     * @param doc - The Document object containing the DOM to process
-     * @private
-     *
-     * @example
-     * // With imageProxyFn = url => `https://images.example.com/${url}`
-     * // Input:  <img src="https://original.com/image.jpg">
-     * // Output: <img src="https://images.example.com/https://original.com/image.jpg">
-     */
-    private proxifyImagesIfNeeded(doc: Document) {
-        if (this.mutate && !this.options.hideImages) {
-            this.proxifyImages(doc);
-        }
-    }
-
-    /**
-     * Applies proxy URLs to all non-local images in the document.
-     *
-     * This method:
-     * - Finds all img elements in the document
-     * - For each image with a non-local URL (not matching linksRe.local pattern):
-     *   - Transforms the src URL using the configured imageProxyFn
-     * - Local images are left unchanged
-     *
-     * @param doc - The Document object containing the DOM to process
-     * @private
-     *
-     * @example
-     * // With imageProxyFn = url => `https://proxy.com/${url}`
-     * // Input:  <img src="https://example.com/image.jpg">
-     * // Output: <img src="https://proxy.com/0x0/https://example.com/image.jpg">
-     */
-    private proxifyImages(doc: Document) {
-        if (!doc) {
-            return;
-        }
-        Array.from(doc.getElementsByTagName('img')).forEach((node) => {
-            const url: string = node.getAttribute('src') || '';
-            if (!linksRe.local.test(url)) {
-                node.setAttribute('src', this.options.imageProxyFn(url));
+            // Security: Don't linkify executable files
+            if (BLOCKED_FILE_EXTENSIONS.test(url)) {
+                return url;
             }
+
+            // Check for phishing
+            const sanitizedLink = this.linkSanitizer.sanitizeLink(url, url);
+            if (sanitizedLink === false) {
+                return `<div title='${this.localization.phishingWarning}' class='${CSS_CLASSES.PHISHY}'>${url}</div>`;
+            }
+
+            this.state.links.add(sanitizedLink);
+            return `<a href="${this.normalizeUrl(url)}">${sanitizedLink}</a>`;
         });
+    }
+
+    /**
+     * Converts hashtags to tag page links.
+     */
+    private linkifyHashtags(content: string): string {
+        const HASHTAG_PATTERN = /(^|\s)(#[-a-z\d]+)/gi;
+        const PURE_NUMBER_TAG = /#[\d]+$/;
+
+        return content.replace(HASHTAG_PATTERN, (tag) => {
+            // Skip pure numeric tags (e.g., #123)
+            if (PURE_NUMBER_TAG.test(tag)) {
+                return tag;
+            }
+
+            const leadingSpace = /^\s/.test(tag) ? tag[0] : '';
+            const tagText = tag.trim();
+            const tagName = tagText.substring(1).toLowerCase();
+
+            this.state.hashtags.add(tagName);
+
+            if (!this.mutate) {
+                return tag;
+            }
+
+            const tagUrl = this.options.hashtagUrlFn(tagName);
+            return `${leadingSpace}<a href="${tagUrl}">${tagText}</a>`;
+        });
+    }
+
+    /**
+     * Converts @mentions to user profile links.
+     */
+    private linkifyMentions(content: string): string {
+        // Regex based on Twitter's implementation
+        const MENTION_PATTERN = /(^|[^a-zA-Z0-9_!#$%&*@＠/]|(^|[^a-zA-Z0-9_+~.-/#]))[@＠]([a-z][-.a-z\d]+[a-z\d])/gi;
+
+        return content.replace(MENTION_PATTERN, (_match, preceding1, preceding2, username) => {
+            const usernameLower = username.toLowerCase();
+            const isValidAccount = AccountNameValidator.validateAccountName(usernameLower, this.localization) == null;
+            const precedingChars = (preceding1 || '') + (preceding2 || '');
+
+            if (isValidAccount) {
+                this.state.usertags.add(usernameLower);
+            }
+
+            if (!this.mutate) {
+                return `${precedingChars}@${username}`;
+            }
+
+            if (isValidAccount) {
+                const profileUrl = this.options.usertagUrlFn(usernameLower);
+                return `${precedingChars}<a href="${profileUrl}">@${username}</a>`;
+            }
+
+            return `${precedingChars}@${username}`;
+        });
+    }
+
+    /**
+     * Applies post-processing transformations to the parsed DOM.
+     */
+    private postprocessDOM(doc: Document): void {
+        if (this.options.hideImages) {
+            this.replaceImagesWithUrls(doc);
+        } else {
+            this.applyImageProxy(doc);
+        }
+    }
+
+    /**
+     * Replaces all images with plain text URLs.
+     */
+    private replaceImagesWithUrls(doc: Document): void {
+        const images = Array.from(doc.getElementsByTagName(HTML_TAGS.IMG));
+
+        for (const image of images) {
+            const parent = image.parentNode;
+            if (!parent) continue;
+
+            const urlText = doc.createElement('pre');
+            urlText.setAttribute('class', CSS_CLASSES.IMAGE_URL_ONLY);
+            urlText.appendChild(doc.createTextNode(image.getAttribute('src') || ''));
+
+            parent.appendChild(urlText);
+            parent.removeChild(image);
+        }
+    }
+
+    /**
+     * Applies image proxy to all non-local images.
+     */
+    private applyImageProxy(doc: Document): void {
+        if (!doc) return;
+
+        const images = Array.from(doc.getElementsByTagName(HTML_TAGS.IMG));
+
+        for (const image of images) {
+            const url = image.getAttribute('src') || '';
+            const isLocalImage = linksRe.local.test(url);
+
+            if (!isLocalImage) {
+                image.setAttribute('src', this.options.imageProxyFn(url));
+            }
+        }
     }
 
     /**
@@ -564,13 +547,16 @@ export class HtmlDOMParser {
      * normalizeUrl('ipfs://QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
      * // Returns: 'https://ipfs.io/QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG'
      */
-    private normalizeUrl(url: any) {
+    private normalizeUrl(url: string): string {
         if (this.options.ipfsPrefix) {
             // Convert //ipfs/xxx  or /ipfs/xxx or ipfs://xxx into  ${ipfsPrefix}/xxx
             if (linksRe.ipfsProtocol.test(url)) {
-                const [protocol] = url.match(linksRe.ipfsProtocol);
-                const cid = url.replace(protocol, '');
-                return `${this.options.ipfsPrefix.replace(/\/+$/, '')}/${cid}`;
+                const match = url.match(linksRe.ipfsProtocol);
+                if (match) {
+                    const protocol = match[0];
+                    const cid = url.replace(protocol, '');
+                    return `${this.options.ipfsPrefix.replace(/\/+$/, '')}/${cid}`;
+                }
             }
         }
         return url;
@@ -591,33 +577,49 @@ export class HtmlDOMParserError extends ChainedError {
     }
 }
 
+/** Block elements that need special preprocessing */
+const BLOCK_ELEMENTS_TO_UNWRAP = ['details', 'center'] as const;
+
 /**
- * Preprocesses HTML content before parsing to handle special cases.
+ * Preprocesses HTML content before parsing.
  *
- * This function performs the following transformations:
- * 1. Replaces GitHub gist embed code with a shortcode format
- * 2. Removes wrapping <p> tags from <details> elements
- * 3. Removes wrapping <p> tags from <center> elements
- * 4. Moves content after details/center tags outside of them
- *
- * @param child - The HTML string to preprocess
- * @returns The preprocessed HTML string
+ * Handles:
+ * - GitHub Gist embed codes → shortcode format
+ * - Block elements (<details>, <center>) wrapped in <p> tags
  */
-function preprocessHtml(child: string) {
+function preprocessHtml(html: string): string {
+    if (typeof html !== 'string') return html;
+
     try {
-        if (typeof child === 'string') {
-            const gist = extractMetadataFromEmbedCode(child);
-            if (gist) {
-                child = child.replace(regex.htmlReplacement, `~~~ embed:${gist.id} gist metadata:${Buffer.from(gist.fullId).toString('base64')} ~~~`);
-            }
-            child = preprocessDetails(child);
-            child = preprocessCenter(child);
-        }
+        html = convertGistEmbedsToShortcodes(html);
+        html = unwrapBlockElements(html);
     } catch (error) {
-        console.log(error);
+        Log.log().debug('Error preprocessing HTML: %o', error);
     }
 
-    return child;
+    return html;
+}
+
+/**
+ * Converts GitHub Gist script tags to shortcode format.
+ */
+function convertGistEmbedsToShortcodes(html: string): string {
+    const gist = extractGistMetadata(html);
+    if (gist) {
+        const base64Id = Buffer.from(gist.fullId).toString('base64');
+        html = html.replace(GIST_PATTERNS.htmlReplacement, `~~~ embed:${gist.id} gist metadata:${base64Id} ~~~`);
+    }
+    return html;
+}
+
+/**
+ * Unwraps all block elements that may be incorrectly wrapped in <p> tags.
+ */
+function unwrapBlockElements(html: string): string {
+    for (const tag of BLOCK_ELEMENTS_TO_UNWRAP) {
+        html = unwrapBlockElement(html, tag);
+    }
+    return html;
 }
 
 interface GistMetadata {
@@ -630,105 +632,49 @@ interface GistMetadata {
 }
 
 /**
- * Preprocesses HTML content to properly handle <details> tags.
+ * Removes wrapping <p> tags from block elements and fixes nested content.
  *
- * This function performs the following transformations:
- * 1. Removes wrapping <p> tags from <details> elements
- * 2. Moves any content that appears after <pre> tags outside of the <details> element
- *
- * @param html - The HTML string to preprocess
- * @returns The preprocessed HTML string with properly formatted <details> elements
- *
- * @example
- * const processed = preprocessDetails('<p><details></p>Content<p></details></p>');
- * // Returns: '<details>Content</details>'
+ * @param html - HTML string to process
+ * @param tagName - The block element tag name (e.g., 'details', 'center')
+ * @returns Processed HTML string
  */
-function preprocessDetails(html: string): string {
-    // Remove wrapping <p> from details
-    html = html.replace(/<p>\s*(<details>[\s\S]*?<\/details>)\s*<\/p>/g, '$1');
-    // Move content after details outside of it
-    html = html.replace(/(<details>[\s\S]*?<\/pre>)([\s\S]*?)(<\/details>)/g, '$1$3$2');
-    return html;
-}
+function unwrapBlockElement(html: string, tagName: string): string {
+    // Remove wrapping <p> from block element
+    const unwrapPattern = new RegExp(`<p>\\s*(<${tagName}>[\\s\\S]*?<\\/${tagName}>)\\s*<\\/p>`, 'g');
+    html = html.replace(unwrapPattern, '$1');
 
-/**
- * Preprocesses HTML content to properly handle <center> tags.
- *
- * This function performs the following transformations:
- * 1. Removes wrapping <p> tags from <center> elements
- * 2. Moves any content that appears after <pre> tags outside of the <center> element
- *
- * @param html - The HTML string to preprocess
- * @returns The preprocessed HTML string with properly formatted <center> elements
- *
- * @example
- * const processed = preprocessCenter('<p><center></p>Content<p></center></p>');
- * // Returns: '<center>Content</center>'
- */
-function preprocessCenter(html: string): string {
-    html = html.replace(/<p>\s*(<center>[\s\S]*?<\/center>)\s*<\/p>/g, '$1');
-    html = html.replace(/(<center>[\s\S]*?<\/pre>)([\s\S]*?)(<\/center>)/g, '$1$3$2');
+    // Move content after </pre> outside of the block element
+    const fixNestedPattern = new RegExp(`(<${tagName}>[\\s\\S]*?<\\/pre>)([\\s\\S]*?)(<\\/${tagName}>)`, 'g');
+    html = html.replace(fixNestedPattern, '$1$3$2');
+
     return html;
 }
 
 /**
  * Extracts metadata from a GitHub Gist embed code.
- *
- * @param data - The HTML string containing the Gist embed code
- * @returns A GistMetadata object containing the extracted information, or null if no valid Gist embed code is found
- *
- * @example
- * const embedCode = '<script src="https://gist.github.com/username/123456.js"></script>';
- * const metadata = extractMetadataFromEmbedCode(embedCode);
- * // Returns:
- * // {
- * //   id: '123456',
- * //   fullId: 'username/123456',
- * //   url: 'https://gist.github.com/username/123456.js',
- * //   canonical: 'https://gist.github.com/username/123456.js',
- * //   thumbnail: null,
- * //   username: 'username'
- *  }
  */
-function extractMetadataFromEmbedCode(data: string): GistMetadata | null {
-    if (!data) return null;
+function extractGistMetadata(html: string): GistMetadata | null {
+    if (!html) return null;
 
-    const match: RegExpMatchArray | null = data.match(regex.htmlReplacement);
-    if (match) {
-        const url: string = match[1];
-        const fullId: string = match[2];
-        const username: string = match[3];
-        const id: string = match[4];
+    const match = html.match(GIST_PATTERNS.htmlReplacement);
+    if (!match) return null;
 
-        return {
-            id,
-            fullId,
-            url,
-            canonical: url,
-            thumbnail: null,
-            username
-        };
-    }
-    return null;
+    return {
+        id: match[4],
+        fullId: match[2],
+        url: match[1],
+        canonical: match[1],
+        thumbnail: null,
+        username: match[3]
+    };
 }
 
-/**
- * Regular expressions used for GitHub Gist processing.
- *
- * @property {RegExp} main - Matches GitHub Gist URLs in the format:
- *                          https://gist.github.com/username/gistId
- *                          Groups: [full URL, username/gistId, username, gistId]
- *
- * @property {RegExp} sanitize - Matches GitHub Gist JavaScript URLs in the format:
- *                              https://gist.github.com/username/gistId.js
- *                              Groups: [full URL with .js, username/gistId, username, gistId]
- *
- * @property {RegExp} htmlReplacement - Matches GitHub Gist script embed tags in the format:
- *                                     <script src="https://gist.github.com/username/gistId.js"></script>
- *                                     Groups: [script URL, username/gistId, username, gistId]
- */
-const regex = {
+/** Regular expressions for GitHub Gist processing */
+const GIST_PATTERNS = {
+    /** Matches Gist URLs: https://gist.github.com/user/id */
     main: /(https?:\/\/gist\.github\.com\/((.*?)\/(.*)))/i,
+    /** Matches Gist JS URLs: https://gist.github.com/user/id.js */
     sanitize: /(https:\/\/gist\.github\.com\/((.*?)\/(.*?))\.js)/i,
+    /** Matches Gist script embeds: <script src="..."></script> */
     htmlReplacement: /<script src="(https:\/\/gist\.github\.com\/((.*?)\/(.*?))\.js)"><\/script>/i
 };

@@ -1,5 +1,5 @@
 import {Log} from '../../../../Log';
-import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
+import {AbstractEmbedder, EmbedMetadata, EmbedSize} from './AbstractEmbedder';
 
 export class YoutubeEmbedder extends AbstractEmbedder {
     public type = 'youtube';
@@ -27,7 +27,7 @@ export class YoutubeEmbedder extends AbstractEmbedder {
         return {
             id,
             url,
-            thumbnail: 'https://img.youtube.com/vi/' + id + '/0.jpg'
+            thumbnail: `https://img.youtube.com/vi/${id}/0.jpg`
         };
     }
 
@@ -48,8 +48,7 @@ export class YoutubeEmbedder extends AbstractEmbedder {
         return undefined;
     }
 
-    public processEmbed(id: string, size: {width: number; height: number}): string {
-        const ytUrl = `https://www.youtube.com/embed/${id}`;
-        return `<div class="videoWrapper"><iframe width="${size.width}" height="${size.height}" src="${ytUrl}" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" frameborder="0"></iframe></div>`;
+    public processEmbed(id: string, size: EmbedSize): string {
+        return this.createVideoWrapper(`https://www.youtube.com/embed/${id}`, size);
     }
 }

@@ -1,5 +1,34 @@
 /**
- * Based on: https://raw.githubusercontent.com/openhive-network/condenser/master/src/app/utils/BadActorList.js
+ * Bad Actor List - Known malicious or impersonating accounts.
+ *
+ * This file contains a curated list of account names that are known to be:
+ * - Impersonating legitimate exchanges (binance, poloniex, bittrex, etc.)
+ * - Typosquatting popular services (steemit variants, blocktrades, etc.)
+ * - Impersonating trusted community members
+ * - Phishing accounts designed to steal credentials
+ *
+ * ## Purpose
+ * When rendering @mentions in posts/comments, accounts in this list are NOT
+ * converted to clickable links. This prevents users from accidentally clicking
+ * on malicious account links that look similar to legitimate ones.
+ *
+ * ## Source
+ * Based on the condenser bad actor list, originally maintained by the Hive/Steem community.
+ * Original source: https://raw.githubusercontent.com/openhive-network/condenser/master/src/app/utils/BadActorList.js
+ *
+ * ## Categories of accounts in this list
+ * 1. **Exchange typosquats**: Variations of binance, bittrex, poloniex, huobi, etc.
+ * 2. **Service typosquats**: blocktrades, minnowbooster, smartsteem variants
+ * 3. **Community member impersonators**: Fake versions of known community accounts
+ * 4. **Generic phishing accounts**: Accounts with names designed to look trustworthy
+ *
+ * ## Maintenance
+ * This list should be periodically updated as new phishing accounts are discovered.
+ * Community members can report suspicious accounts through official channels.
+ *
+ * @module BadActorList
+ * @security This is a critical security component. Missing entries could allow
+ * phishing attacks; false positives could unfairly flag legitimate accounts.
  */
 
 const list = `

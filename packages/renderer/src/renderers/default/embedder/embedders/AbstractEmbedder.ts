@@ -1,3 +1,9 @@
+/** Size dimensions for embed iframes */
+export interface EmbedSize {
+    width: number;
+    height: number;
+}
+
 export abstract class AbstractEmbedder {
     public abstract type: string;
 
@@ -20,7 +26,20 @@ export abstract class AbstractEmbedder {
      * @param size - Object containing width and height dimensions for the embed
      * @returns HTML string representation of the processed embed
      */
-    public abstract processEmbed(id: string, size: {width: number; height: number}): string;
+    public abstract processEmbed(id: string, size: EmbedSize): string;
+
+    /**
+     * Creates a standardized video wrapper HTML for iframe embeds.
+     * This helper ensures consistent styling across all video embedders.
+     *
+     * @param src - The source URL for the iframe
+     * @param size - Object containing width and height dimensions
+     * @param wrapperClass - CSS class for the wrapper div (default: 'videoWrapper')
+     * @returns HTML string with wrapped iframe
+     */
+    protected createVideoWrapper(src: string, size: EmbedSize, wrapperClass = 'videoWrapper'): string {
+        return `<div class="${wrapperClass}"><iframe width="${size.width}" height="${size.height}" src="${src}" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>`;
+    }
 
     /**
      * Creates a standardized embed marker string for a given embed ID and type.
@@ -44,7 +63,7 @@ export abstract class AbstractEmbedder {
      * @param size - Object containing width and height dimensions for the embed
      * @returns The text with all embed markers replaced with their processed content
      */
-    public static insertAllEmbeds(embedders: AbstractEmbedder[], input: string, size: {width: number; height: number}): string {
+    public static insertAllEmbeds(embedders: AbstractEmbedder[], input: string, size: EmbedSize): string {
         const sections = [];
 
         // HtmlReady inserts ~~~ embed:${id} type ~~~
