@@ -62,7 +62,8 @@ function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType
           <div className="flex flex-col border-b-2 p-2 text-sm sm:flex-row sm:justify-between sm:p-4">
             <div>{t('profile.estimated_curation_rewards_last_week')}</div>
             <div className="flex flex-col">
-              <span>{weeklyRewards.toFixed(3)} HIVE POWER</span>
+              {/* Temporar solution for precision. With getting rid of conderser API this will be fixed properly. */}
+              <span>{weeklyRewards.toFixed(6)} HIVE POWER</span>
             </div>
           </div>
           <div className="flex flex-col gap-4 p-2 sm:p-4">
