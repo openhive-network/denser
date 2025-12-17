@@ -20,7 +20,10 @@ test.describe('Comments of post', () => {
   }) => {
     await homePage.goto();
     await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
+    await postPage.commentCardsHeaders.first().scrollIntoViewIfNeeded();
     await expect(postPage.commentCardsHeaders.first()).toBeVisible();
+    if (await postPage.commentCardsDescriptions.first().isHidden())
+      await postPage.commentCardsHeaders.first().click();
     await expect(postPage.commentCardsDescriptions.first()).toBeVisible();
     await expect(postPage.commentCardsFooters.first()).toBeVisible();
   });
@@ -28,6 +31,9 @@ test.describe('Comments of post', () => {
   test('Validate a hovered comment changes backgroundcolor style', async ({ page }) => {
     await homePage.goto();
     await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
+    await postPage.commentCardsHeaders.first().scrollIntoViewIfNeeded();
+    if (await postPage.commentCardsDescriptions.first().isHidden())
+      await postPage.commentCardsHeaders.first().click();
     // Before hover
     expect(
       await postPage.getElementCssPropertyValue(
@@ -56,7 +62,9 @@ test.describe('Comments of post', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
     await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
-
+    await postPage.commentCardsHeaders.first().scrollIntoViewIfNeeded();
+    if (await postPage.commentCardsDescriptions.first().isHidden())
+      await postPage.commentCardsHeaders.first().click();
     // Before hover
     expect(
       await postPage.getElementCssPropertyValue(
@@ -81,7 +89,10 @@ test.describe('Comments of post', () => {
 
     await homePage.goto();
     await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
+    await postPage.commentCardsHeaders.first().scrollIntoViewIfNeeded();
     await expect(postPage.commentCardsHeaders.first()).toBeVisible();
+    if (await postPage.commentCardsDescriptions.first().isHidden())
+      await postPage.commentCardsHeaders.first().click();
     await expect(postPage.commentCardsDescriptions.first()).toBeVisible();
     await expect(postPage.commentCardsFooters.first()).toBeVisible();
 

@@ -668,16 +668,25 @@ test.describe('Home page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
     await expect(homePage.loginBtn).toBeVisible();
-    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color')).toBe(
+
+    await expect.poll(async () => {
+      return await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'color');
+    }).toBe(
       'rgb(255, 255, 255)'
     );
-    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
+
+    await expect.poll(async () => {
+      return await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color');
+    }).toBe(
       'rgba(0, 0, 0, 0)'
     );
+
     await homePage.loginBtn.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
     await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(226, 18, 53)');
-    await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
+    await expect.poll( async () => {
+      return await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color');
+    }).toBe(
       'rgb(29, 40, 58)'
     );
   });

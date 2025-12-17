@@ -286,10 +286,14 @@ test.describe('Profile page of @gtg', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color')).toBe(
+    expect.poll(async () => {
+      await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color');
+    }).toBe(
       'rgb(2, 2, 5)'
     );
-    expect(await profilePage.getElementCssPropertyValue(profilePage.followButton, 'background-color')).toBe(
+    expect.poll(async () => {
+      await profilePage.getElementCssPropertyValue(profilePage.followButton, 'background-color');
+    }).toBe(
       'rgb(248, 250, 252)'
     );
 
@@ -298,9 +302,9 @@ test.describe('Profile page of @gtg', () => {
     await expect.poll(async () => {
       return await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color');
     }).toBe('rgb(226, 18, 53)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.followButton, 'background-color')
-    ).toBe('rgb(248, 250, 252)');
+    expect.poll(async () => {
+      await profilePage.getElementCssPropertyValue(await profilePage.followButton, 'background-color');
+    }).toBe('rgb(248, 250, 252)');
   });
 
   test("User Banner Row - Description",async ({page}) =>{
