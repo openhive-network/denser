@@ -283,6 +283,8 @@ extended_block_log_creation:
   - public-runner-docker
 
 block-log-extraction:
+  rules:
+    - when: never
   extends: .docker_image_builder_job_template
   stage: replay-and-sync
   allow_failure: true
@@ -297,6 +299,8 @@ block-log-extraction:
   - fast
 
 block_log_processing:
+  rules:
+    - when: never
   extends: .job-defaults
   image: 'registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}'
   stage: replay-and-sync
@@ -319,6 +323,8 @@ block_log_processing:
   - fast
 
 mirrornet-haf-node-replay:
+  rules:
+    - when: never
   extends: .haf-node-replay
   stage: replay-and-sync
   timeout: 3 hours
@@ -420,6 +426,8 @@ mirrornet-haf-node-replay:
       junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
 
 mirrornet-replay-data-copy:
+  rules:
+    - when: never
   extends: .haf_api_node_replay_data_copy
   stage: test
   allow_failure: true
@@ -430,6 +438,8 @@ mirrornet-replay-data-copy:
   - fast
 
 mirrornet-based-tests:
+  rules:
+    - when: never
   extends:
   - .haf_api_node_test
   - .node-job
