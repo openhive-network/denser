@@ -422,6 +422,8 @@ mirrornet-haf-node-replay:
       junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
 
 mirrornet-replay-data-copy:
+  rules:
+    - when: never
   extends: .haf_api_node_replay_data_copy
   stage: test
   allow_failure: true
