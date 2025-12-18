@@ -60,7 +60,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
       // swallow error
     }
   } else {
-    result = verifyLoginChallenge(chainAccount, signatures, JSON.stringify({ loginChallenge }));
+    result = await verifyLoginChallenge(chainAccount, signatures, JSON.stringify({ loginChallenge }));
   }
 
   if (!result) {

@@ -1,5 +1,3 @@
-// TODO: Next iteration - Remove this file and change references to @hive/common-hiveio-packages
-
 import {
   TWaxApiRequest,
   RcAccount,

@@ -17,21 +17,17 @@ registeredSigners[LoginType.hiveauth] = SignerHiveauth;
 registeredSigners[LoginType.keychain] = SignerKeychain;
 registeredSigners[LoginType.wif] = SignerWif;
 
-export function signerFactory({
+function signerFactory({
   username,
   loginType,
   keyType,
-  apiEndpoint,
   storageType,
-  chainId
 }: SignerOptions): SignerTool {
   return new registeredSigners[loginType]({
     username,
     loginType,
     keyType,
-    apiEndpoint,
     storageType,
-    chainId
   }) as SignerTool;
 }
 
@@ -45,9 +41,7 @@ export function signerFactory({
  * 2. [Keychain](https://hive-keychain.com/), handled in SignerKeychain
  *    class.
  * 3. [Hiveauth](https://hiveauth.com/), handled in SignerHiveauthclass.
- * 4. So known "Wif" custom tool, based on
- *    [@hiveio/dhive](https://openhive-network.github.io/dhive/) and
- *    browser's localStorage, handled in SignerWif class.
+ * 4. So known "Wif" custom tool
  *
  * @export
  * @param {SignerOptions} options

@@ -290,7 +290,8 @@ export const getByText = async ({
   observer,
   start_author = '',
   start_permlink = ''
-}: SearchType): Promise<Entry[]> => {
+}: Parameters<Awaited<ReturnType<typeof getChain>>['api']['search-api']['find_text']>[0] // Temporary solution
+): Promise<Entry[]> => {
   return (await getChain()).api['search-api'].find_text({
     pattern,
     sort,
@@ -301,15 +302,6 @@ export const getByText = async ({
     start_permlink
   });
 };
-export interface SearchType {
-  pattern: string;
-  sort?: string;
-  author?: string;
-  limit?: number;
-  observer?: string;
-  start_author?: string;
-  start_permlink?: string;
-}
 
 export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
   return (await getChain()).api.condenser_api.get_active_votes([author, permlink]);

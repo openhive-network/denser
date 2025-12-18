@@ -52,7 +52,7 @@ function getFormSchema() {
     })
     .superRefine((val, ctx) => {
       if (!val.userFound) {
-        const result = validateWifKey(val.wif, (v) => v);
+        const result = validateWifKey(val.wif);
         if (result) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,

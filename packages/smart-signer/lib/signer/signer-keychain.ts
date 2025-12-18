@@ -1,4 +1,3 @@
-import { KeychainSDK, KeychainKeyTypes } from 'keychain-sdk';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { TTransactionPackType, IOnlineSignatureProvider } from '@hiveio/wax';
 import KeychainProvider from '@hiveio/wax-signers-keychain';
@@ -7,7 +6,7 @@ import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 const logger = getLogger('app');
 
-// See https://github.com/hive-keychain/keychain-sdk
+// See https://github.com/hive-keychain/hive-keychain-extension/blob/master/documentation/README.md#requestsignbuffer
 
 declare global {
   interface Window {
@@ -39,24 +38,14 @@ export class SignerKeychain extends Signer {
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
-    const keychain = new KeychainSDK(window, { rpc: this.apiEndpoint });
     try {
-      if (!(await keychain.isKeychainInstalled())) {
-        throw new Error('Keychain is not installed');
-      }
-      const response = await keychain.signBuffer({
-        username,
-        message: typeof message === 'string' ? message : JSON.stringify(message),
-        method: KeychainKeyTypes[keyType]
-      });
-      // There's not digest in response.
-      logger.info('SignerKeychain.signChallenge keychain response: %o', response);
-      if (response.error) {
-        throw new Error(`Error in SignerKeychain.SignerKeychain.signChallenge: ${response.error}`);
-      }
-      // TODO We can also return response.publicKey. This could be
-      // useful in signature's verification.
-      const signature = response.result as unknown as string;
+      const provider = KeychainProvider.for(
+        this.username,
+        "memo"
+      );
+
+      const signature = provider.encryptData(typeof message === "string" ? message : JSON.stringify(message), username);
+
       logger.info('keychain', { signature });
       return signature;
     } catch (error) {

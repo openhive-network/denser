@@ -14,7 +14,7 @@ const logger = getLogger('app');
  *
  * @export
  * @class SignerHiveauth
- * @extends {StorageMixin(SignerHbauth)}
+ * @extends {StorageMixin(SignerKeychain)}
  */
 export class SignerHiveauth extends StorageMixin(SignerKeychain) {
 

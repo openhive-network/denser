@@ -69,30 +69,32 @@ export function validation(values: Settings, t: TFunction<'common_blog'>) {
 
 export const uploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
   try {
-    let data;
+    if (!file)
+      throw new Error("No file provided");
 
-    if (file) {
+    const data = await new Promise<Uint8Array>((resolve) => {
       const reader = new FileReader();
-
-      data = new Promise((resolve) => {
-        reader.addEventListener('load', () => {
-          const result = Buffer.from(reader.result!.toString(), 'binary');
-          resolve(result);
-        });
-        reader.readAsBinaryString(file);
+      reader.addEventListener('load', () => {
+        // reader.result is an ArrayBuffer
+        resolve(new Uint8Array(reader.result as ArrayBuffer));
       });
-    }
+      reader.readAsArrayBuffer(file);
+    });
 
     const formData = new FormData();
-    if (file) {
-      formData.append('file', file);
-    }
+    formData.append('file', file);
 
-    data = await data;
-    const prefix = Buffer.from('ImageSigningChallenge');
-    // @ts-ignore
-    const buf = Buffer.concat([prefix, data as unknown as Uint8Array]);
+    // 3. Create the prefix as a Uint8Array
+    const encoder = new TextEncoder();
+    const prefix = encoder.encode('ImageSigningChallenge');
 
+    // 4. Concatenate without Buffer.concat
+    // We create a new array of the total length and "set" the parts into it
+    const buf = new Uint8Array(prefix.length + data.length);
+    buf.set(prefix);
+    buf.set(data, prefix.length);
+
+    // 5. Sign (Works natively with Uint8Array)
     const sig = await signer.signChallenge({
       message: buf,
       password: ''

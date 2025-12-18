@@ -1,0 +1,24 @@
+{
+  "name": "@hive/common-hiveio-packages",
+  "version": "0.1.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@hive/ui": "workspace:*",
+    "@hiveio/hb-auth": "catalog:hiveio-toolset",
+    "@hiveio/wax": "catalog:hiveio-toolset"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json",
+    "./wax": "./src/wax/index.ts",
+    "./src/hb-auth": "./src/hb-auth/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "typescript": "5.3.3"
+  }
+}

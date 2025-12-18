@@ -1,8 +1,4 @@
-import { cryptoUtils, PublicKey, Signature } from '@hiveio/dhive';
-
-import { getLogger } from '@hive/ui/lib/logging';
-const logger = getLogger('app');
-
+import { getChain } from '@hive/common-hiveio-packages';
 
 /**
  * Verify signature when you know message and algorithm used to hash
@@ -10,23 +6,20 @@ const logger = getLogger('app');
  *
  * @export
  * @param {string} signature
- * @param {(string | PublicKey)} pubkey
+ * @param {(string)} pubkey
  * @param {string} message
- * @param {('sha256' | 'doubleSha256' | 'ripemd160')}
- * [hashFunction='sha256']
  * @returns
  */
-export function verifySignature(
+export async function verifySignature(
     signature: string,
-    pubkey: string | PublicKey, // take this from trusted party
-    message: string, // this string was signed
-    hashFunction: 'sha256' | 'doubleSha256' | 'ripemd160' = 'sha256'
+    pubkey: string,
+    message: string,
 ) {
     if (!signature) return false;
-    const hashFn = cryptoUtils[hashFunction];
-    const messageHash = hashFn(message);
-    const sig = Signature.fromString(signature);
-    const publicKey = PublicKey.from(pubkey);
-    const verified = publicKey.verify(messageHash, sig);
-    return verified;
+
+    const wax = await getChain();
+
+    const pkDeduced = wax.getPublicKeyFromSignature(message, signature);
+
+    return pkDeduced === pubkey;
 };

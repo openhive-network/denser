@@ -106,32 +106,32 @@ export function maxAcceptedPayout(customValue: number | string | undefined, maxP
  */
 const uploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
   try {
-    let data;
+    if (!file)
+      throw new Error("No file provided");
 
-    if (file) {
+    const fileData = await new Promise<Uint8Array>((resolve) => {
       const reader = new FileReader();
-
-      data = new Promise((resolve) => {
-        reader.addEventListener('load', () => {
-          const result = Buffer.from(reader.result!.toString(), 'binary');
-          resolve(result);
-        });
-        reader.readAsBinaryString(file);
+      reader.addEventListener('load', () => {
+        // reader.result is an ArrayBuffer; convert to Uint8Array immediately
+        resolve(new Uint8Array(reader.result as ArrayBuffer));
       });
-    }
+      reader.readAsArrayBuffer(file);
+    });
 
     const formData = new FormData();
-    if (file) {
-      formData.append('file', file);
-    }
+    formData.append('file', file);
 
-    data = await data;
-    const prefix = Buffer.from('ImageSigningChallenge');
-    const dataBuf = data as Buffer; // ensure Buffer
-    const combined = new Uint8Array(prefix.length + dataBuf.length);
-    combined.set(prefix, 0);
-    combined.set(dataBuf, prefix.length);
-    const buf = Buffer.from(combined);
+    // 3. Create prefix using TextEncoder (Native alternative to Buffer.from)
+    const encoder = new TextEncoder();
+    const prefix = encoder.encode('ImageSigningChallenge');
+
+    // 4. Standardized Concatenation
+    // Create a container of the total size
+    const buf = new Uint8Array(prefix.length + fileData.length);
+
+    // Copy prefix to the start, and fileData right after it
+    buf.set(prefix, 0);
+    buf.set(fileData, prefix.length);
 
     const sig = await signer.signChallenge({
       message: buf,

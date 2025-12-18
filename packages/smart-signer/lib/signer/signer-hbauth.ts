@@ -1,6 +1,5 @@
-import { cryptoUtils } from '@hiveio/dhive';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { AuthStatus, KeyAuthorityType } from '@hiveio/hb-auth';
+import type { AuthStatus, KeyAuthorityType, OfflineClient, OnlineClient } from '@hiveio/hb-auth';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { THexString, TTransactionPackType } from '@hiveio/wax';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
@@ -30,14 +29,25 @@ export class SignerHbauth extends Signer {
    */
   passwordPromise: Promise<any> | null;
 
+  get hbAuthClient(): Promise<OfflineClient | OnlineClient> {
+    return hbauthService.getOnlineClient();
+  }
+
   constructor(signerOptions: SignerOptions, pack: TTransactionPackType = TTransactionPackType.HF_26) {
     super(signerOptions, pack);
     this.passwordPromise = null;
   }
 
   async destroy() {
-    const authClient = await hbauthService.getOnlineClient();
+    const authClient = await this.hbAuthClient;
     await authClient.logout(this.username);
+  }
+
+  protected getPasswordPromise(passwordFormOptions: PasswordFormOptions): Promise<{ password: string }> {
+    return PasswordDialogModalPromise({
+      isOpen: true,
+      passwordFormOptions
+    });
   }
 
   /**
@@ -58,10 +68,7 @@ export class SignerHbauth extends Signer {
 
     try {
       if (!this.passwordPromise) {
-        this.passwordPromise = PasswordDialogModalPromise({
-          isOpen: true,
-          passwordFormOptions
-        });
+        this.passwordPromise = this.getPasswordPromise(passwordFormOptions);
       }
       const { password } = await this.passwordPromise;
       return password;
@@ -76,8 +83,14 @@ export class SignerHbauth extends Signer {
     singleSignKeyType?: KeyAuthorityType,
     requiredKeyType?: KeyAuthorityType
   ): Promise<string> {
-    const digest = cryptoUtils.sha256(message).toString('hex');
-    return this.signDigest(digest, password, singleSignKeyType, requiredKeyType);
+    // TODO: Temporary solution to remove legacy d hive crypto (using native solutions). But eventually we should remove this function
+    const msgUint8 = typeof message === "string" ? new TextEncoder().encode(message) : new Uint8Array(message as ArrayBuffer); // encode as (utf-8) ArrayBuffer | ArrayBufferView<ArrayBuffer>
+    const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8); // hash the message
+    const hashHex = Array.from(new Uint8Array(hashBuffer))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join(''); // Convert ArrayBuffer to hex string.
+
+    return this.signDigest(hashHex, password, singleSignKeyType, requiredKeyType);
   }
 
   async signTransaction({ digest, transaction, singleSignKeyType, requiredKeyType }: SignTransaction) {
@@ -108,7 +121,7 @@ export class SignerHbauth extends Signer {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
 
-    const authClient = await hbauthService.getOnlineClient();
+    const authClient = await this.hbAuthClient;
     const checkAuthResult = await this.checkAuth(username, keyType);
 
     if (!checkAuthResult) {
@@ -194,7 +207,7 @@ export class SignerHbauth extends Signer {
   }
 
   async checkAuth(username: string, keyType: string): Promise<boolean> {
-    const authClient = await hbauthService.getOnlineClient();
+    const authClient = await this.hbAuthClient;
     const auths = await authClient.getRegisteredUsers();
     logger.info('auths in safe storage %o', auths);
     const auth = await authClient.getRegisteredUserByUsername(username);
@@ -238,7 +251,7 @@ export class SignerHbauth extends Signer {
     digest: string,
     password: string
   ): Promise<string> {
-    const authClient = await hbauthService.getOnlineClient();
+    const authClient = await this.hbAuthClient;
     const auths = await authClient.getRegisteredUserByUsername(username);
     if (!auths) throw new Error('User not found');
 
