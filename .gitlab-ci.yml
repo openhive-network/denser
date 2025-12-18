@@ -299,6 +299,8 @@ block-log-extraction:
   - fast
 
 block_log_processing:
+  rules:
+    - when: never
   extends: .job-defaults
   image: 'registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}'
   stage: replay-and-sync
