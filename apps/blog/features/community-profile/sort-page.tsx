@@ -11,6 +11,7 @@ import {
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
+import { isCommunity } from '@ui/lib/utils';
 
 const logger = getLogger('app');
 
@@ -26,7 +27,7 @@ const SortPage = async ({
   const queryClient = getQueryClient();
   try {
     const observer = getObserverFromCookies();
-    if (tag.startsWith('hive-')) {
+    if (isCommunity(tag)) {
       await queryClient.prefetchQuery({
         queryKey: ['community', tag],
         queryFn: async () => await getCommunity(tag, observer)

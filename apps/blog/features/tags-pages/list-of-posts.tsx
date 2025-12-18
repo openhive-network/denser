@@ -10,6 +10,7 @@ import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@
 import { useTranslation } from '@/blog/i18n/client';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import PostList from '../list-of-posts/posts-loader';
+import { isCommunity } from '@ui/lib/utils';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
   const { user } = useUserClient();
@@ -72,7 +73,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
                   nsfwPreferences={preferences.nsfw}
                   data={page}
                   key={`f-${pageIndex}`}
-                  isCommunityPage={tag?.startsWith('hive-')}
+                  isCommunityPage={isCommunity(tag)}
                   testFilter={sort}
                 />
                 {/* Add prefetch trigger before the last page, when we have more than one page */}

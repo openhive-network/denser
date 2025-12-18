@@ -10,6 +10,7 @@ import Loading from '@ui/components/loading';
 import { isUsernameValid, isPermlinkValid } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
+import { isCommunity } from '@ui/lib/utils';
 
 const logger = getLogger('app');
 
@@ -47,7 +48,7 @@ const PostPage = async ({
       queryFn: () => getActiveVotes(username, permlink)
     });
 
-    if (community.startsWith('hive-')) {
+    if (isCommunity(community)) {
       await queryClient.prefetchQuery({
         queryKey: ['community', community],
         queryFn: () => getCommunity(community, observer)

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getCommunity } from '@transaction/lib/bridge-api';
 import { getLogger } from '@ui/lib/logging';
+import { isCommunity } from '@ui/lib/utils';
 
 const logger = getLogger('app');
 
@@ -11,7 +12,7 @@ export async function buildCommunityTagMetadata(
 ): Promise<Metadata> {
   const tag = params.tag;
 
-  if (!tag.startsWith('hive-')) return { title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive` };
+  if (!isCommunity(tag)) return { title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive` };
 
   const queryClient = getQueryClient();
   try {

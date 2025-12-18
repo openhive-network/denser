@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useRouter } from 'next/router';
+import { isCommunity } from '@ui/lib/utils';
 
 interface SiteParams {
   sort: string;
@@ -10,7 +11,7 @@ interface SiteParams {
 }
 
 const validSorts = ['trending', 'hot', 'created', 'payout', 'muted'] as const;
-type ValidSort = typeof validSorts[number];
+type ValidSort = (typeof validSorts)[number];
 
 function useSiteParams() {
   const router = useRouter();
@@ -20,8 +21,8 @@ function useSiteParams() {
     ? typeof router.query?.param === 'string'
       ? router.query.param
       : Array.isArray(router.query?.param)
-      ? router.query.param[0]
-      : ''
+        ? router.query.param[0]
+        : ''
     : '';
 
   // Get the tag from the URL
@@ -29,8 +30,8 @@ function useSiteParams() {
     ? typeof router.query?.param === 'string'
       ? router.query.param
       : Array.isArray(router.query?.param)
-      ? router.query.param[1]
-      : ''
+        ? router.query.param[1]
+        : ''
     : '';
 
   // Determine the current state based on URL parameters
@@ -54,7 +55,7 @@ function useSiteParams() {
       };
     }
 
-    if (param.startsWith('hive-') && typeof router.query === 'object') {
+    if (isCommunity(param) && typeof router.query === 'object') {
       return {
         ...baseState,
         sort: 'trending',

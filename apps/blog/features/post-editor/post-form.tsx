@@ -45,6 +45,7 @@ import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-s
 import MdEditor from '@/blog/features/post-editor/md-editor';
 import RendererContainer from '@/blog/features/post-rendering/rendererContainer';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { isCommunity } from '@ui/lib/utils';
 
 const logger = getLogger('app');
 
@@ -110,7 +111,7 @@ export default function PostForm({
   const { data: communityData } = useQuery({
     queryKey: ['community', categoryParam],
     queryFn: () => getCommunity(categoryParam ?? storedPost.category, observer),
-    enabled: categoryParam?.startsWith('hive-') || storedPost.category?.startsWith('hive-')
+    enabled: isCommunity(categoryParam) || isCommunity(storedPost.category)
   });
   const { data: mySubsData } = useQuery({
     queryKey: ['subscriptions', username],

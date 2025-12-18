@@ -2,6 +2,7 @@ import { getRenderer } from '@/blog/features/post-rendering/lib/renderer';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { configuredImagesEndpoint } from '@ui/config/public-vars';
 import { getLogger } from '@ui/lib/logging';
+import { isCommunity } from '@ui/lib/utils';
 import { TFunction } from 'i18next';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -29,7 +30,7 @@ export function validateTagInput(value: string, required: boolean, t: TFunction<
                 ? t('submit_page.category_selector.must_start_with_a_letter')
                 : tags.find((c) => !/[a-z0-9]$/.test(c))
                   ? t('submit_page.category_selector.must_end_with_a_letter_or_number')
-                  : tags.filter((c) => c.substring(0, 5) === 'hive-').length > 0
+                  : tags.filter((c) => isCommunity(c)).length > 0
                     ? t('submit_page.category_selector.must_not_include_hivemind_community_owner')
                     : tags.reduce((acc, tag, index, array) => {
                           const isDuplicate = array.slice(index + 1).some((b) => b === tag);

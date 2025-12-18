@@ -10,6 +10,7 @@ import {
 import CommunityLayout from './community-layout';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
+import { isCommunity } from '@ui/lib/utils';
 
 const sort = 'rank';
 const query = null;
@@ -24,7 +25,7 @@ const PrefetchComponent = async ({ children, community }: { children: ReactNode;
       queryKey: ['communitiesList', sort],
       queryFn: () => getCommunities(sort, query, observer)
     });
-    if (community.startsWith('hive-')) {
+    if (isCommunity(community)) {
       await queryClient.prefetchQuery({
         queryKey: ['community', community],
         queryFn: async () => await getCommunity(community, observer)

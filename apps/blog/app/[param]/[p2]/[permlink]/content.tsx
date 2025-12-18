@@ -63,6 +63,7 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { useLocalStorage } from 'usehooks-ts';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
+import { isCommunity } from '@ui/lib/utils';
 
 // Maximum number of comments per page
 const MAX_COMMENTS_PER_PAGE = 50;
@@ -88,7 +89,7 @@ const PostContent = () => {
   const [edit, setEdit] = useState(false);
   const [commentsPage, setCommentsPage] = useState(1);
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
-  const postInCommunity = category?.startsWith('hive-');
+  const postInCommunity = isCommunity(category);
   const { data: postData, isLoading: postIsLoading } = useQuery({
     queryKey: ['postData', author, permlink],
     queryFn: () => getPost(author, permlink, observer),

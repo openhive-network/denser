@@ -148,3 +148,27 @@ export const getCookie = (name: string) => {
   if (parts.length === 2) return parts.pop()?.split(';').shift();
   return null;
 };
+
+/**
+ * Checks if a string is a valid Hive community identifier.
+ * A valid community starts with 'hive-' followed by exactly 6 digits.
+ *
+ * @param value - The string to check (can be undefined)
+ * @returns true if the string is a valid community identifier, false otherwise
+ *
+ * @example
+ * isCommunity('hive-123456') // true
+ * isCommunity('hive-a23456') // false
+ * isCommunity('hive-12345')  // false (only 5 digits)
+ * isCommunity('hive-1234567') // false (7 digits)
+ * isCommunity(undefined)      // false
+ */
+export function isCommunity(value: string | undefined | null): boolean {
+  if (!value) return false;
+  if (!value.startsWith('hive-')) return false;
+
+  const digits = value.slice(5);
+  if (digits.length !== 6) return false;
+
+  return !Number.isNaN(Number(digits));
+}
