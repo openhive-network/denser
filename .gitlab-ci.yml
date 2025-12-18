@@ -283,6 +283,8 @@ extended_block_log_creation:
   - public-runner-docker
 
 block-log-extraction:
+  rules:
+    - when: never
   extends: .docker_image_builder_job_template
   stage: replay-and-sync
   allow_failure: true
