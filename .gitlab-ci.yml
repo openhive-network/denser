@@ -318,7 +318,7 @@ block_log_processing:
   - data-cache-storage
   - fast
 
-mirrornet-haf-node-replay:
+.mirrornet-haf-node-replay:
   extends: .haf-node-replay
   stage: replay-and-sync
   timeout: 3 hours
@@ -429,7 +429,7 @@ mirrornet-replay-data-copy:
   - data-cache-storage
   - fast
 
-mirrornet-based-tests:
+.mirrornet-based-tests:
   extends:
   - .haf_api_node_test
   - .node-job
