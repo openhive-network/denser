@@ -23,7 +23,7 @@ type ZodLoginTypeEnum = z.infer<typeof ZodLoginTypeEnum>;
 
 const passwordField = z.object({
   password: z.string().superRefine((val, ctx) => {
-    const result = validateWifKey(val, (v) => v);
+    const result = validateWifKey(val);
     if (result) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

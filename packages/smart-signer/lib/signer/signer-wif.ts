@@ -1,69 +1,72 @@
-import { PrivateKey, cryptoUtils } from '@hiveio/dhive';
-import { SignChallenge, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { KeyType } from '@smart-signer/types/common';
+import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
-import { StorageMixin } from '@smart-signer/lib/storage-mixin';
-import { TTransactionPackType, THexString } from '@hiveio/wax';
-import { verifyPrivateKey } from '@smart-signer/lib/utils';
+import { TTransactionPackType, THexString, transaction } from '@hiveio/wax';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@hive/ui/lib/logging';
+import { KeyAuthorityType } from '@hiveio/hb-auth';
+import { getChain } from '@hive/common-hiveio-packages';
+
 const logger = getLogger('app');
 
 /**
  * Signs challenges (any strings or byte arrays) or Hive transactions
- * with Hive private keys, using so known "Wif" custom tool, based on
- * [@hiveio/dhive](https://openhive-network.github.io/dhive/) and Web
- * Storage API.
+ * with Hive private keys.
+ *
+ * As we already have hb-auth, we can just reuse its beekeeper instance
  *
  * @export
  * @class SignerWif
- * @extends {StorageMixin(Signer)}
+ * @extends {SignerHbauth}
  */
-export class SignerWif extends StorageMixin(SignerHbauth) {
+export class SignerWif extends SignerHbauth {
   constructor(signerOptions: SignerOptions, pack: TTransactionPackType = TTransactionPackType.HF_26) {
     super(signerOptions, pack);
   }
 
-  async destroy() {
-    for (const k of Object.keys(KeyType)) {
-      const keyType = k as KeyType;
-      this.storage.removeItem(`wif.${this.username}@${KeyType[keyType]}`);
-    }
-  }
-
-  async signChallenge({
-    message,
-    password = '' // WIF private key,
-  }: SignChallenge): Promise<string> {
-    const digest: Buffer = cryptoUtils.sha256(message);
-    return this.signDigest(digest, password);
-  }
-
-  async signDigest(digest: THexString | Buffer, password: string) {
+  override async signDigest(
+    digest: THexString,
+    explicitPassword: string = '',
+    _singleSignKeyType?: KeyAuthorityType,
+    _requiredKeyType?: KeyAuthorityType
+  ) {
     const { username, keyType } = this;
-    const args = { username, password, digest, keyType };
-    logger.info('signDigest args: %o', args);
+    logger.info('signDigest #wif args: %o', { digest, username, keyType });
+
+    const validKeyTypes = ['posting', 'active', 'owner'];
+    if (!validKeyTypes.includes(keyType)) {
+      throw new Error(`Unsupported keyType: ${keyType}`);
+    }
+
+    const authClient = await this.hbAuthClient;
+    if (!validKeyTypes.includes(this.keyType)) {
+      throw new Error(`Unsupported singleSignKeyType: ${this.keyType}`);
+    }
+
     try {
-      // Resolve WIF key
-      let wif = password ? password : JSON.parse(this.storage.getItem(`wif.${username}@${keyType}`) || '""');
-      if (!wif) {
+      let wif = explicitPassword;
+
+      const keyFromStorage = window.localStorage.getItem(this.storageKey);
+      if (keyFromStorage)
+        wif = JSON.parse(keyFromStorage);
+
+      if (!wif)
         wif = await this.getPasswordFromUser();
-      }
-      if (!wif) throw new Error('login_form.zod_error.no_wif_key');
 
-      // Convert digest to Buffer, if it is string.
-      if (typeof digest === 'string') {
-        digest = Buffer.from(digest, 'hex');
-      }
+      if (!wif)
+        throw new Error("Failed to parse private key from storage");
 
-      // Sign digest
-      const privateKey = PrivateKey.fromString(wif);
-      const signature = privateKey.sign(digest).toString();
+      const signature = await authClient.singleSign(
+        username,
+        digest,
+        wif,
+        this.keyType
+      );
 
       return signature;
     } catch (error) {
+      logger.error('Error in single sign: %o', error);
       throw error;
     }
   }
@@ -109,6 +112,10 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     }
   }
 
+  private get storageKey() {
+    return `wif.${this.username}@${this.keyType}`;
+  }
+
   /**
    * Stores password (WIF key) in storage for future use.
    *
@@ -116,12 +123,11 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
    * @memberof SignerWif
    */
   async storePassword(wif: '') {
-    const { username, keyType, apiEndpoint } = this;
-    const storageKey = `wif.${username}@${keyType}`;
+    const storageKey = this.storageKey;
 
     // Check if we have the same key already stored (means also already
     // verified).
-    const wifInStorage = this.storage.getItem(storageKey);
+    const wifInStorage = window.localStorage.getItem(storageKey);
     if (wifInStorage) {
       logger.info('Found key in storage under key: %s', storageKey);
       if (JSON.parse(wifInStorage) === wif) {
@@ -138,7 +144,23 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     logger.info('Starting to verify wif');
     let valid = false;
     try {
-      valid = await verifyPrivateKey(username, wif, keyType, apiEndpoint);
+      const wax = await getChain();
+
+      const tx = await wax.createTransaction();
+      tx.pushOperation({
+        custom_json_operation: {
+          id: 'test',
+          json: '{}',
+          required_auths: this.keyType === 'posting' ? [] : [this.username],
+          required_posting_auths: this.keyType === 'posting' ? [this.username] : []
+        }
+      });
+      const signature = await this.signDigest(tx.sigDigest, wif);
+      tx.addSignature(signature);
+
+      const result = await wax.api.database_api.verify_authority({ pack: this.pack, trx: tx.toApiJson() });
+
+      valid = result.valid;
     } catch (error) {
       logger.error('Cannot verify private key: %o', error);
       throw error;
@@ -150,7 +172,7 @@ export class SignerWif extends StorageMixin(SignerHbauth) {
     }
 
     // Store key if it is valid.
-    this.storage.setItem(storageKey, JSON.stringify(wif));
+    window.localStorage.setItem(storageKey, JSON.stringify(wif));
 
     logger.info('Stored valid wif under key: %s', storageKey);
   }

@@ -7,7 +7,7 @@ catalogs:
   # NOTE: @hiveio/wax uses dev build (1.28.4-rc0-251216100519) via pnpm.overrides in package.json
   # This gets latest wax fixes while waiting for official release. Remove override when wax releases new tag.
   hiveio-toolset:
-    '@hiveio/beekeeper': 1.28.4-rc0
+    # '@hiveio/beekeeper': 1.28.4-rc0
     '@hiveio/wax': 1.28.4-rc0-251216100519
     '@hiveio/wax-signers-keychain': 1.28.4-rc0
     '@hiveio/workerbee': 1.28.4-rc0

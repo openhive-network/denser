@@ -17,7 +17,7 @@ async function initializeWasm() {
 
   try {
     // Dynamic import to avoid Edge Runtime issues
-    const waxModule = await import('@hiveio/wax');
+    const waxModule = await import('@hiveio/wax');// XXX: Analyze if we can somehow move this import to common-hiveio-packages
     wax = await waxModule.createHiveChain();
     custom_json = waxModule.custom_json;
     logger.debug('WASM authProofLoggermodules loaded successfully');

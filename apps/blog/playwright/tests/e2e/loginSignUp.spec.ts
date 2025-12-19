@@ -252,7 +252,7 @@ test.describe('Login and Sign Up tests', () =>{
   });
 
   // WIF should not be empty. - Wrong WIF (needs username)
-  // Invalid WIF format. - Wrong WIF (needs username)
+  // Invalid WIF key. - Wrong WIF (needs username)
   test('Validate the error message for wrong WIF format', async ({page}) =>{
     const loginForm = new LoginForm(page);
 
@@ -262,7 +262,8 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.usernameInput.fill(user.username);
     // Type wrong WIF format to the input
     await loginForm.wifInput.fill('wrongWif');
-    await expect(loginForm.wifInputErrorMessage).toHaveText('Invalid WIF format.');
+    // `Invalid WIF format.` message changed to `Invalid WIF key.`
+    await expect(loginForm.wifInputErrorMessage).toHaveText('Invalid WIF key.');
     // Type empty string to the WIF input
     await loginForm.wifInput.fill('');
     await expect(loginForm.wifInputErrorMessage).toHaveText('WIF should not be empty.');
@@ -290,7 +291,7 @@ test.describe('Login and Sign Up tests', () =>{
     await expect(loginForm.errorToastContentMessage).toHaveText('Error: No WIF key from user');
   });
 
-  // Invalid WIF checksum. - in Enter your WIF key
+  // Invalid WIF key. - in Enter your WIF key
   test('Validate Invalid WIF checksum in the Enter your WIF form', async ({page}) =>{
     const loginForm = new LoginForm(page);
 
@@ -306,7 +307,8 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateEnterYourWifKeyFormIsLoaded();
     await loginForm.postingPrivateKeyInput.fill(user.keys[0].private + '1'); // wrong wif
     await loginForm.postingPrivateKeySubmitButton.click();
-    await expect(loginForm.passwordErrorMessageEnterYourWifKey).toHaveText('Invalid WIF checksum.');
+    // `Invalid WIF checksum.` message changed to `Invalid WIF key.`
+    await expect(loginForm.passwordErrorMessageEnterYourWifKey).toHaveText('Invalid WIF key.');
     await loginForm.closeDialog.last().click();
     // Validate other sign in options form with error message is loaded
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);

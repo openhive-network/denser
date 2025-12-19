@@ -1,6 +1,5 @@
 import QRCode from 'qrcode';
 import { HasClient } from 'hive-auth-client';
-import { Signature, HexBuffer, cryptoUtils, PublicKey } from '@hiveio/dhive';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -79,35 +78,6 @@ const setExpire = (expire: number) => {
 
 const setKey = (key: string) => {
   auth.key = key;
-};
-
-// const isLoggedInWithHiveAuth = () => {
-//     if (!isLoggedIn()) {
-//         return false;
-//     }
-
-//     const now = new Date().getTime();
-//     const data = localStorage.getItem('autopost2');
-//     const [,,,,,,,, login_with_hiveauth, hiveauth_key, hiveauth_token, hiveauth_token_expires] = extractLoginData(data);
-//     return !!login_with_hiveauth
-//         && !!hiveauth_key
-//         && !!hiveauth_token
-//         && now < hiveauth_token_expires;
-// };
-
-const verifyChallenge = (
-  challenge: string | Buffer,
-  data: { challenge: string | Buffer | HexBuffer | number[]; pubkey: string | PublicKey }
-) => {
-  // Validate signature against account public key
-
-  // TODO We should get public key from Hive blockchain and validate
-  // against it. We shouldn't trust pubkey coming in data!
-
-  const sig = Signature.fromString(HexBuffer.from(data.challenge).toString());
-  const buf = cryptoUtils.sha256(challenge);
-  const publicKey = PublicKey.from(data.pubkey);
-  return publicKey.verify(buf, sig);
 };
 
 const updateModalMessage = (message: string) => {
@@ -355,28 +325,16 @@ const login = async (
     auth.expire = expire;
 
     logger.info('Hive Auth: user has approved the auth request', { challengeResponse, message, auth });
-    const verified = verifyChallenge(challenge, challengeResponse);
-
-    if (verified) {
-      logger.info('Hive Auth: challenge succeeded');
-      callbackFn({
-        success: true,
-        hiveAuthData: {
-          key: auth.key,
-          token,
-          expire,
-          uuid,
-          challengeHex: challengeResponse.challenge
-        }
-      });
-    } else {
-      logger.error('Hive Auth: challenge failed');
-      clearLoginInstructions();
-      callbackFn({
-        success: false,
-        error: translateFn('hiveauthservices.challengeValidationFailed')
-      });
-    }
+    callbackFn({
+      success: true,
+      hiveAuthData: {
+        key: auth.key,
+        token,
+        expire,
+        uuid,
+        challengeHex: challengeResponse.challenge
+      }
+    });
 
     removeEventHandlers();
   };

@@ -25,6 +25,9 @@ const nextConfig = {
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..')
   },
+  transpilePackages: [
+    '@hive/common-hiveio-packages',
+  ],
   async rewrites() {
     return [
       // Rewrite requests that incorrectly include /public in the path

@@ -15,7 +15,7 @@ export interface SignTransaction {
   requiredKeyType?: 'owner' | 'active' | 'posting';
 }
 export interface SignChallenge {
-  message: string | Buffer;
+  message: string | ArrayBufferView | ArrayBuffer;
   password?: string; // private key or password to unlock hbauth key
   translateFn?: (v: string) => string;
 }
@@ -24,9 +24,7 @@ export interface SignerOptions {
   username: string;
   loginType: LoginType;
   keyType: KeyType;
-  apiEndpoint: string;
   storageType: StorageType;
-  chainId: string;
   authorityUsername?: string;
 }
 
@@ -42,13 +40,11 @@ export abstract class Signer {
   username: string;
   loginType: LoginType;
   keyType: KeyType;
-  apiEndpoint: string;
   storageType: StorageType;
   pack: TTransactionPackType;
-  chainId: string;
   authorityUsername?: string;
   constructor(
-    { username, loginType, keyType, apiEndpoint, storageType, chainId }: SignerOptions,
+    { username, loginType, keyType, storageType }: SignerOptions,
     pack: TTransactionPackType
   ) {
     logger.info('Starting Signer constructor with options: %o and pack: %s', arguments[0], arguments[1]);
@@ -72,20 +68,10 @@ export abstract class Signer {
     } else {
       throw new Error('Signer constructor: keyType must be non-empty string');
     }
-    if (apiEndpoint) {
-      this.apiEndpoint = apiEndpoint;
-    } else {
-      throw new Error('Signer constructor: apiEndpoint must be non-empty string');
-    }
     if (storageType) {
       this.storageType = storageType;
     } else {
       throw new Error('Signer constructor: storageType must be non-empty string');
-    }
-    if (chainId) {
-      this.chainId = chainId;
-    } else {
-      throw new Error('Signer constructor: chainId must be non-empty string');
     }
   }
 

@@ -17,7 +17,7 @@ const logger = getLogger('app');
  * @param {('posting' | 'active')} [keyType='posting']
  * @returns
  */
-export function verifyLoginChallenge(
+export async function verifyLoginChallenge(
     chainAccount: FullAccount,
     signatures: Signatures,
     message: string = '',
@@ -37,7 +37,7 @@ export function verifyLoginChallenge(
         );
     }
 
-    return verifySignature(
+    return await verifySignature(
         signatures[keyType] || '',
         pubkey,
         message

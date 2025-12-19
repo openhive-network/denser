@@ -3,6 +3,7 @@ import { getHiveChainService } from './hive-chain-service';
 import { TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { wrapChainWithLogging } from './chain-proxy';
 import pLimit from 'p-limit';
+import type { HiveChain } from '@hive/common-hiveio-packages';
 
 let chain: TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>> | undefined = undefined;
 
@@ -12,7 +13,7 @@ let chain: TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>> | un
 // out of bounds" errors.
 const wasmLock = pLimit(1);
 
-export async function getChain() {
+export async function getChain(): Promise<HiveChain> {
   return wasmLock(async () => {
     if (!chain) {
       const service = getHiveChainService();
