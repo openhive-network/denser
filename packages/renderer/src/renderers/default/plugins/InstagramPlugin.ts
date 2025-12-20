@@ -6,11 +6,20 @@ declare global {
     }
 }
 
+/** Parsed Instagram post/reel data */
+interface InstagramPostData {
+    type: 'p' | 'reel';
+    id: string;
+}
+
 /**
  * Plugin for rendering Instagram embeds in the document.
  * Handles both posts and profile URLs, with support for dark mode.
  */
 export class InstagramPlugin implements RendererPlugin {
+    /** Valid Instagram shortcode: Base64URL, typically 11 chars (allow 10-14 for safety) */
+    private static readonly VALID_ID = /^[a-zA-Z0-9_-]{10,14}$/;
+
     /** Set of container IDs for Instagram posts that have been rendered to prevent duplicate rendering */
     private renderedPosts = new Set<string>();
     /** Flag indicating whether the Instagram embed script has been loaded */
@@ -55,12 +64,48 @@ export class InstagramPlugin implements RendererPlugin {
     }
 
     /**
-     * Renders an Instagram post in the specified container
-     * @param url - The Instagram post URL to embed
+     * Parses an Instagram URL and extracts validated post data.
+     * Returns null if URL is invalid or ID doesn't match expected format.
+     * @param url - The Instagram URL to parse
+     * @returns Parsed post data or null if invalid
+     * @private
+     */
+    private parseInstagramUrl(url: string): InstagramPostData | null {
+        if (!url) return null;
+
+        const match = url.match(
+            /^https:\/\/(?:www\.)?instagram\.com\/(?:[\w.]+\/)?(?<type>p|reels?)\/(?<id>[^/?#]+)/i
+        );
+
+        const id = match?.groups?.id;
+        if (!id || !InstagramPlugin.VALID_ID.test(id)) {
+            return null;
+        }
+
+        return {
+            type: match.groups!.type.includes('reel') ? 'reel' : 'p',
+            id
+        };
+    }
+
+    /**
+     * Builds a safe Instagram URL from validated components.
+     * @param type - Post type ('p' or 'reel')
+     * @param id - Validated post ID
+     * @returns Reconstructed Instagram URL
+     * @private
+     */
+    private buildUrl(type: 'p' | 'reel', id: string): string {
+        return `https://www.instagram.com/${type}/${id}/`;
+    }
+
+    /**
+     * Renders an Instagram post in the specified container using DOM APIs.
+     * @param postData - Validated Instagram post data
      * @param containerId - The DOM element ID where the post should be rendered
      * @private
      */
-    private renderPost(url: string, containerId: string) {
+    private renderPost(postData: InstagramPostData, containerId: string) {
         if (typeof window === 'undefined') return;
         if (this.renderedPosts.has(containerId)) return;
 
@@ -68,25 +113,30 @@ export class InstagramPlugin implements RendererPlugin {
         if (!container) return;
 
         this.renderedPosts.add(containerId);
+        const url = this.buildUrl(postData.type, postData.id);
         const isDarkMode = container.closest('.dark') !== null;
-        container.innerHTML = `
-      <blockquote 
-        class="instagram-media" 
-        data-instgrm-permalink="${url}"
-        data-instgrm-version="14"
-        ${isDarkMode ? 'data-instgrm-theme="dark"' : ''}
-      >
-        <div style="padding:16px;">
-          <a 
-            href="${url}" 
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Loading Instagram post...
-          </a>
-        </div>
-      </blockquote>
-    `;
+
+        // Use DOM APIs instead of innerHTML to prevent XSS
+        const blockquote = document.createElement('blockquote');
+        blockquote.className = 'instagram-media';
+        blockquote.dataset.instgrmPermalink = url;
+        blockquote.dataset.instgrmVersion = '14';
+        if (isDarkMode) {
+            blockquote.dataset.instgrmTheme = 'dark';
+        }
+
+        const wrapper = document.createElement('div');
+        wrapper.style.padding = '16px';
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'Loading Instagram post...';
+
+        wrapper.appendChild(link);
+        blockquote.appendChild(wrapper);
+        container.replaceChildren(blockquote);
 
         if (this.scriptLoaded) {
             this.processQueuedPosts();
@@ -104,11 +154,15 @@ export class InstagramPlugin implements RendererPlugin {
         }
         // Match Instagram URLs not wrapped in parentheses
         return text.replace(/(?<!\()(https?:\/\/(www\.)?instagram\.com\/[^\s)]+)/g, (match) => {
+            const postData = this.parseInstagramUrl(match);
+            if (!postData) return match; // Invalid URL, leave as-is
+
             const count = (this.linkCounts.get(match) || 0) + 1;
             this.linkCounts.set(match, count);
             const indexSuffix = count > 1 ? `${count}` : '';
-            const embedUrl = this.getInstagramMetadataFromLink(match);
-            return embedUrl ? `&nbsp;<div>instagram-url-${encodeURIComponent(embedUrl)}-count-${indexSuffix}</div>&nbsp;` : match;
+
+            // Store only validated type and id, not the original URL
+            return `&nbsp;<div>instagram-embed-${postData.type}-${postData.id}-count-${indexSuffix}</div>&nbsp;`;
         });
     };
 
@@ -118,40 +172,20 @@ export class InstagramPlugin implements RendererPlugin {
      * @returns The final text with Instagram embeds
      */
     postProcess = (text: string): string => {
-        // Replace Instagram URLs with embeds
-        return text.replace(/<div>instagram-url-(.*?)-count-(.*?)<\/div>/g, (_match, encodedUrl, count) => {
-            const url = decodeURIComponent(encodedUrl);
-            const match = url.match(/\/(p|reel|reels)\/([^/?]+)/);
-            if (!match || !match[2]) {
-                return `<a href="${url}" target="_blank">${url}</a>`;
+        return text.replace(
+            /<div>instagram-embed-(?<type>p|reel)-(?<id>[a-zA-Z0-9_-]{10,14})-count-(?<count>\d*)<\/div>/g,
+            (_match, type: 'p' | 'reel', id: string, count: string) => {
+                // Type and ID are validated by regex - safe to use in template
+                const postData: InstagramPostData = {type, id};
+                const url = this.buildUrl(type, id);
+                const containerId = `instagram-${type}-${id}-${count}`;
+
+                setTimeout(() => this.renderPost(postData, containerId), 1000);
+
+                // Safe: URL reconstructed from validated type (p|reel) and id ([a-zA-Z0-9_-]{10,14})
+                return `<div id="${containerId}" class="instagram-embed"><a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a></div>`;
             }
-            const containerId = `instagram-${match[2]}-${count}`;
-            setTimeout(() => this.renderPost(url, containerId), 1000);
-            return `<div id="${containerId}" class="instagram-embed"><a href="${url}" target="_blank">${url}</a></div>`;
-        });
+        );
     };
 
-    /**
-     * Extracts and normalizes Instagram URLs from links
-     * @param link - The Instagram URL to process
-     * @returns Normalized Instagram URL or undefined if invalid
-     * @private
-     */
-    private getInstagramMetadataFromLink(link: string): string | undefined {
-        if (!link) return undefined;
-        // Match profile URLs
-        const profileMatch = link.match(/^https:\/\/www\.instagram\.com\/([a-zA-Z0-9_.]+)\/?$/i);
-        if (profileMatch) {
-            return profileMatch[0];
-        }
-
-        // Match post/reel URLs
-        const postMatch = link.match(/^https:\/\/www\.instagram\.com\/(?:[a-zA-Z0-9_.]+\/)?(?<type>p|reel|reels)\/(?<id>[^/?]+)/i);
-        if (postMatch) {
-            const id = postMatch.groups?.id || '';
-            const type = postMatch.groups?.type.includes('reel') ? 'reel' : 'p';
-            return `https://www.instagram.com/${type}/${id}`;
-        }
-        return undefined;
-    }
 }
