@@ -11,6 +11,7 @@ import { LoginFormSchema as SignInFormSchema } from '../signin-form';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { getChain } from '@transaction/lib/chain';
 import { IOnlineTransaction, operation } from '@hiveio/wax';
+import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -89,7 +90,10 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
 
       await fetch('/api/auth/log_account', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          [csrfHeaderName]: '1'
+        },
         body: JSON.stringify({
           type: 'login',
           username,

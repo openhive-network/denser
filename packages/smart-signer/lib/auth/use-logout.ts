@@ -3,6 +3,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useSigner } from '@smart-signer/lib/use-signer';
+import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { getLogger } from '@hive/ui/lib/logging';
 import { useRouter } from 'next/navigation';
 
@@ -24,7 +25,10 @@ export function useLogout(redirect?: string) {
         try {
           await fetch('/api/auth/log_account', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              [csrfHeaderName]: '1'
+            },
             body: JSON.stringify({
               type: 'logout'
               // username and loginType will be read from the existing cookie

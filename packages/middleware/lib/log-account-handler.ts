@@ -9,11 +9,14 @@ import {
     logLoginEvent
 } from './auth-proof-cookie';
 import { getClientIp } from './common-utils';
+import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 
 export async function handleLogAccount(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
+
+    checkCsrfHeader(req);
 
     const { type, username, authProof } = req.body;
     const ip = getClientIp(req);
