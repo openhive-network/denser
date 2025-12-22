@@ -11,6 +11,16 @@ import {
 import { getClientIp } from './common-utils';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 
+/**
+ * Validates that input is safe to log (prevents log injection).
+ * Only allows lowercase letters, numbers, dots, and hyphens.
+ */
+function isSafeForLogging(input: string): boolean {
+    if (typeof input !== 'string') return false;
+    if (input.length === 0 || input.length > 16) return false;
+    return /^[a-z0-9.-]+$/.test(input);
+}
+
 export async function handleLogAccount(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
@@ -49,6 +59,11 @@ export async function handleLogAccount(req: NextApiRequest, res: NextApiResponse
     if (!username || !authProof) {
         res.status(400).json({ error: 'Missing required fields for login' });
         return;
+    }
+
+    // Validate username format to prevent log injection
+    if (!isSafeForLogging(username)) {
+        return res.status(400).json({ error: 'Invalid username format' });
     }
 
     // Parse authProof transaction to get loginChallenge and loginType
