@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import env from '@beam-australia/react-env';
 
 import { useTranslation } from '@/blog/i18n/client';
-import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, getUserAvatarUrl } from '@ui/components';
+import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, getUserAvatarUrl, escapeCssUrl, isSafeImageUrl } from '@ui/components';
 import { Separator } from '@hive/ui/components/separator';
 import TimeAgo from '@ui/components/time-ago';
 import { Icons } from '@hive/ui/components/icons';
@@ -28,6 +28,21 @@ import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/u
 import { getTwitterInfo } from '@transaction/lib/custom-api';
 import ListItem from './list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+
+const getCoverImageStyle = (profileData: { posting_json_metadata?: string } | null): string => {
+  try {
+    if (!profileData?.posting_json_metadata) return '';
+    const metadata = JSON.parse(profileData.posting_json_metadata);
+    const coverImage = metadata?.profile?.cover_image;
+
+    if (!coverImage || !isSafeImageUrl(coverImage)) return '';
+
+    const proxifiedUrl = proxifyImageSrc(coverImage, 2048, 512);
+    return `url('${escapeCssUrl(proxifiedUrl.replace(/ /g, '%20'))}')`;
+  } catch {
+    return '';
+  }
+};
 
 const ProfileLayout = ({ children }: { children: ReactNode }) => {
   const { user } = useUserClient();
@@ -105,15 +120,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
       >
         <div
           style={{
-            backgroundImage:
-              profileData?.posting_json_metadata &&
-              JSON.parse(profileData?.posting_json_metadata).profile?.cover_image
-                ? `url('${proxifyImageSrc(
-                    JSON.parse(profileData?.posting_json_metadata).profile?.cover_image,
-                    2048,
-                    512
-                  ).replace(/ /g, '%20')}')`
-                : '',
+            backgroundImage: getCoverImageStyle(profileData),
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover'

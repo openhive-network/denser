@@ -7,7 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToShow } from '@hive/ui/lib/parse-date';
-import { proxifyImageUrl } from '@hive/ui/lib/old-profixy';
+import { proxifyImageSrc } from '@ui/lib/proxify-images';
+import { escapeCssUrl, isSafeImageUrl } from '@ui/lib/css-utils';
 import clsx from 'clsx';
 import {
   DropdownMenu,
@@ -22,6 +23,21 @@ import { getUserAvatarUrl } from '@hive/ui';
 interface IProfileLayout {
   children: React.ReactNode;
 }
+
+const getCoverImageStyle = (profileData: { posting_json_metadata?: string } | null): string => {
+  try {
+    if (!profileData?.posting_json_metadata) return '';
+    const metadata = JSON.parse(profileData.posting_json_metadata);
+    const coverImage = metadata?.profile?.cover_image;
+
+    if (!coverImage || !isSafeImageUrl(coverImage)) return '';
+
+    const proxifiedUrl = proxifyImageSrc(coverImage, 2048, 512);
+    return `url('${escapeCssUrl(proxifiedUrl.replace(/ /g, '%20'))}')`;
+  } catch {
+    return '';
+  }
+};
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
   const { t } = useTranslation('common_wallet');
@@ -48,15 +64,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
         {profileData ? (
           <div
             style={{
-              background:
-                profileData?.posting_json_metadata &&
-                JSON.parse(profileData?.posting_json_metadata).profile?.cover_image
-                  ? `url('${proxifyImageUrl(
-                      JSON.parse(profileData?.posting_json_metadata).profile.cover_image,
-                      '2048x512'
-                    ).replace(/ /g, '%20')}') center center no-repeat`
-                  : '',
-
+              backgroundImage: getCoverImageStyle(profileData),
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover'
             }}
             className="flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center"

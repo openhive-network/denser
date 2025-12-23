@@ -38,3 +38,4 @@ export * from "./link";
 // utility exports
 export * from "../lib/avatar-utils";
 export * from "../lib/proxify-images";
+export * from "../lib/css-utils";
