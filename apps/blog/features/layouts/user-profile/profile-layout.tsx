@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import env from '@beam-australia/react-env';
 
 import { useTranslation } from '@/blog/i18n/client';
-import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, getUserAvatarUrl, escapeCssUrl, isSafeImageUrl } from '@ui/components';
+import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, getUserAvatarUrl, escapeCssUrl, isSafeImageUrl, isSafeExternalUrl } from '@ui/components';
 import { Separator } from '@hive/ui/components/separator';
 import TimeAgo from '@ui/components/time-ago';
 import { Icons } from '@hive/ui/components/icons';
@@ -172,7 +172,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                 />
               </Link>
             ) : null}
-            {twitterData ? (
+            {twitterData && isSafeExternalUrl(twitterData.twitter_profile) ? (
               <Link
                 href={twitterData.twitter_profile}
                 title={t('user_profile.twitter_badge_title')}

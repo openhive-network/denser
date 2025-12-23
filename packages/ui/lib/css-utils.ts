@@ -31,3 +31,17 @@ export function isSafeImageUrl(url: string): boolean {
     return false;
   }
 }
+
+/**
+ * Validates that a URL is safe for use as an external link.
+ * Only allows http/https protocols to prevent javascript: and other dangerous schemes.
+ */
+export function isSafeExternalUrl(url: string | null | undefined): boolean {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return ['http:', 'https:'].includes(parsed.protocol);
+  } catch {
+    return false;
+  }
+}
