@@ -50,8 +50,8 @@ export const siteConfig = {
   openhiveChatAllowNonStrictLogin: env('OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN')
     && env('OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN') === 'yes' ? true : false,
   openhiveChatIframeCreateUsers: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_IFRAME_CREATE_USERS`] || 'no',
-  openhiveChatAdminUserId: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_ID`] || 'DaMHvraiQbNBxi7W5',
-  openhiveChatAdminUserToken: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_TOKEN`] || 'VZhTOE20q3Xe9xTgA9QqjbQAYxYEhAfkUZpAm7xrQgd',
+  openhiveChatAdminUserId: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_ID`] || 'your-admin-user-id',
+  openhiveChatAdminUserToken: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_TOKEN`] || 'your-admin-user-token',
 };
 
 export type SiteConfig = typeof siteConfig;
