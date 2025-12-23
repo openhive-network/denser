@@ -24,10 +24,7 @@ const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: str
   const { data: account, isLoading } = useAccountQuery(author);
   const following = useFollowingInfiniteQuery(user.username || '', 1000, 'blog', ['blog']);
   const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
-  const about =
-    account && account.posting_json_metadata
-      ? JSON.parse(account.posting_json_metadata)?.profile?.about
-      : null;
+  const about = account?.profile?.about ?? null;
   const { data: dynamicData } = useDynamicGlobalData();
   const delegated_hive =
     dynamicData && account
@@ -77,9 +74,7 @@ const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: str
                 className="block font-bold hover:cursor-pointer"
                 data-testid="popover-card-user-name"
               >
-                {account.posting_json_metadata
-                  ? JSON.parse(account.posting_json_metadata)?.profile?.name
-                  : null}
+                {account.profile?.name ?? null}
               </BasePathLink>
               <BasePathLink
                 href={`/@${author}`}
