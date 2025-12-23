@@ -4,6 +4,7 @@ import { SignTransaction, SignerOptions } from '@smart-signer/lib/signer/signer'
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { TTransactionPackType } from '@hiveio/wax';
+import { safeJsonParse } from '@smart-signer/lib/safe-json-parse';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -35,12 +36,9 @@ export class SignerHiveauth extends StorageMixin(SignerKeychain) {
   }
 
   setHiveAuthData() {
-    let hiveAuthData = HiveAuthUtils.initialHiveAuthData;
-    // TODO check `expire` property – don't use expired token.
+    // TODO check `expire` property - don't use expired token.
     const data = this.storage.getItem('hiveAuthData');
-    if (data) {
-      hiveAuthData = JSON.parse(data);
-    }
+    const hiveAuthData = safeJsonParse(data, HiveAuthUtils.initialHiveAuthData, 'hiveAuthData');
     HiveAuthUtils.setUsername(hiveAuthData?.username || '');
     HiveAuthUtils.setToken(hiveAuthData?.token || '');
     HiveAuthUtils.setExpire(hiveAuthData?.expire || 0);
