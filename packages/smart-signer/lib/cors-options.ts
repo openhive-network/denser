@@ -10,7 +10,9 @@ const resolveOptionOrigin = (origin: string = ''): boolean | string => {
             return origin;
         }
     }
-    return true;
+    // Default to false (deny all) for security - fail-closed approach
+    console.warn('DENSER_SERVER_API_CORS_ALLOW_ORIGIN not set - defaulting to deny all origins');
+    return false;
 };
 
 //
