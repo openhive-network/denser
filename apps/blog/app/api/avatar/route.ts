@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
+import { isHiveAccountNameValid } from '@hive/transaction';
 
 /**
  * Proxy endpoint for user avatars that prevents caching
@@ -16,6 +17,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     if (!username) {
       return NextResponse.json({ error: 'Username is required' }, { status: 400 });
+    }
+
+    if (!(await isHiveAccountNameValid(username))) {
+      return NextResponse.json({ error: 'Invalid username' }, { status: 400 });
     }
 
     // Build the image hoster URL

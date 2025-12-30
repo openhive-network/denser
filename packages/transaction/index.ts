@@ -1158,3 +1158,5 @@ export class TransactionService {
   }
 }
 export const transactionService = new TransactionService();
+
+export { isHiveAccountNameValid, isHiveAccountNameValidFallback } from './lib/validate-hive-account';

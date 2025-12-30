@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
+import { isHiveAccountNameValid } from '@hive/transaction';
 
 type ResponseData = {
   error?: string;
@@ -23,6 +24,10 @@ export default async function handler(
 
     if (!username || typeof username !== 'string') {
       return res.status(400).json({ error: 'Username is required' });
+    }
+
+    if (!(await isHiveAccountNameValid(username))) {
+      return res.status(400).json({ error: 'Invalid username' });
     }
 
     // Build the image hoster URL
