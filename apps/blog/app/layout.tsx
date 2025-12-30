@@ -2,7 +2,7 @@ import '@hive/tailwindcss-config/globals.css';
 import { ReactNode } from 'react';
 import Script from 'next/script';
 import { Metadata } from 'next';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import MainBar from '../features/layouts/site-header/main-bar';
 import ClientEffects from '../features/layouts/site-header/client-effects';
 import { Providers } from '../features/layouts/providers';
@@ -10,6 +10,15 @@ import VisitLoggerClient from '../lib/visit-logger-client';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
+/**
+ * Get the CSP nonce from the request headers.
+ * The nonce is generated in middleware and passed via x-nonce header.
+ */
+function getNonce(): string {
+  const headersList = headers();
+  return headersList.get('x-nonce') || '';
+}
 
 const SITE_DESC =
   'Communities without borders. A social network owned and operated by its users, powered by Hive.';
@@ -48,6 +57,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
   const isRTL = locale === 'ar';
 
+  // Get nonce for CSP-compliant script loading
+  const nonce = getNonce();
+
   return (
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
       <body className="bg-background-secondary">
@@ -60,7 +72,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             </>
           </Providers>
         </div>
-        <Script src={`${basePath}/__ENV.js`} strategy="beforeInteractive" />
+        <Script src={`${basePath}/__ENV.js`} strategy="beforeInteractive" nonce={nonce} />
         <ClientEffects />
       </body>
     </html>
