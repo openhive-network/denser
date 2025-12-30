@@ -6,6 +6,7 @@ import { searchPosts } from '@transaction/lib/hivesense-api';
 import { getByText } from '@transaction/lib/hive-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
+import { parseSearchParams } from '@ui/lib/search-params';
 
 interface SearchPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -14,11 +15,12 @@ interface SearchPageProps {
 const logger = getLogger('app');
 
 const SearchPage = async ({ searchParams }: SearchPageProps) => {
-  const aiParam = searchParams.ai as string | undefined;
-  const classicQuery = searchParams.q as string | undefined;
-  const userTopicQuery = searchParams.a as string | undefined;
-  const topicQuery = searchParams.p as string | undefined;
-  const sortQuery = searchParams.s as SearchSort | undefined;
+  const validatedParams = parseSearchParams(searchParams);
+  const aiParam = validatedParams.ai;
+  const classicQuery = validatedParams.q;
+  const userTopicQuery = validatedParams.a;
+  const topicQuery = validatedParams.p;
+  const sortQuery = validatedParams.s as SearchSort | undefined;
 
   const queryClient = getQueryClient();
   try {
