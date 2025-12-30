@@ -29,9 +29,7 @@ export function validateHiveAccountName(
     if (!/^[a-z]/.test(label)) {
       return 'Each account segment should start with a letter.';
     }
-    if (/--/.test(label)) {
-      return 'Each account segment should have only one dash in a row.';
-    }
+    // Note: Consecutive dashes ARE valid in Hive account names (e.g., 'a--a')
     if (!/[a-z0-9]$/.test(label)) {
       return 'Each account segment should end with a letter or digit.';
     }
