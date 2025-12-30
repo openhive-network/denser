@@ -14,8 +14,12 @@ The following headers are configured in `apps/blog/next.config.js` and `apps/wal
 |--------|-------|---------|
 | X-Content-Type-Options | `nosniff` | Prevents MIME-sniffing attacks |
 | X-Frame-Options | `SAMEORIGIN` | Prevents clickjacking by restricting iframe embedding |
+| X-DNS-Prefetch-Control | `off` | Prevents DNS prefetching to protect privacy |
+| X-Download-Options | `noopen` | Prevents IE from executing downloads in site context |
 | Referrer-Policy | `strict-origin-when-cross-origin` | Controls referrer information sent to other sites |
 | Permissions-Policy | `camera=(), microphone=(), geolocation=()` | Disables unused browser features |
+
+Additionally, `poweredByHeader: false` is set in Next.js config to prevent exposing `X-Powered-By: Next.js`.
 
 ### Future Headers (Planned)
 
@@ -87,6 +91,8 @@ Strict-Transport-Security (HSTS) is an infrastructure concern because:
 |--------|-------|--------|
 | X-Content-Type-Options | Application | Version controlled, consistent behavior |
 | X-Frame-Options | Application | May need app-specific logic in future |
+| X-DNS-Prefetch-Control | Application | Privacy protection, version controlled |
+| X-Download-Options | Application | Security, version controlled |
 | Referrer-Policy | Application | Version controlled, consistent behavior |
 | Permissions-Policy | Application | App knows which features it needs |
 | Content-Security-Policy | Application | Will require nonces (dynamic per-request) |
@@ -104,9 +110,14 @@ curl -I https://your-domain.com/trending
 # Expected output should include:
 # X-Content-Type-Options: nosniff
 # X-Frame-Options: SAMEORIGIN
+# X-DNS-Prefetch-Control: off
+# X-Download-Options: noopen
 # Referrer-Policy: strict-origin-when-cross-origin
 # Permissions-Policy: camera=(), microphone=(), geolocation=()
 # Strict-Transport-Security: max-age=31536000; includeSubDomains
+#
+# Should NOT include:
+# X-Powered-By: Next.js
 
 # Check for duplicate headers (problem if same header appears twice)
 curl -I https://your-domain.com/trending 2>/dev/null | grep -i "x-frame-options"

@@ -22,6 +22,14 @@ const securityHeaders = [
     value: 'SAMEORIGIN'
   },
   {
+    key: 'X-DNS-Prefetch-Control',
+    value: 'off'
+  },
+  {
+    key: 'X-Download-Options',
+    value: 'noopen'
+  },
+  {
     key: 'Referrer-Policy',
     value: 'strict-origin-when-cross-origin'
   },
@@ -34,6 +42,7 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false, // Don't expose X-Powered-By: Next.js
   output: 'standalone',
   swcMinify: false,
   basePath: basePath,
