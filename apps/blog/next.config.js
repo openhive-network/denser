@@ -10,8 +10,7 @@ const withPWA = require('next-pwa')({
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 // Security headers applied to all responses
-// Note: CSP is intentionally not included here - it will be added separately
-// after proper testing with Report-Only mode. HSTS should be set at nginx level.
+// Note: CSP is handled separately below. HSTS should be set at nginx level.
 const securityHeaders = [
   {
     key: 'X-Content-Type-Options',
@@ -39,6 +38,40 @@ const securityHeaders = [
   }
 ];
 
+// Content Security Policy in Report-Only mode for monitoring.
+// This policy is intentionally permissive to avoid breaking functionality.
+// After monitoring violations, it can be tightened and switched to enforcing mode.
+// See docs/security-headers.md for details.
+const cspReportOnly = [
+  // Default fallback for unspecified resource types
+  "default-src 'self'",
+  // Scripts: self + inline (required for Next.js) + WASM (required for HBAuth/Beekeeper)
+  // Twitter platform for embedded tweets
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://platform.twitter.com",
+  // Styles: self + inline (required for React/Next.js styling)
+  "style-src 'self' 'unsafe-inline'",
+  // Images: self + any HTTPS + data URIs + blob (for image processing)
+  "img-src 'self' https: data: blob:",
+  // Fonts: self + data URIs (for inline fonts)
+  "font-src 'self' data:",
+  // API connections: whitelist of trusted Hive API nodes and services
+  // Only nodes running proper haf_api_node software are allowed
+  "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.openhive.network https://images.hive.blog",
+  // Embedded content: whitelist of allowed iframe sources
+  // Based on StaticConfig.ts iframe whitelist
+  "frame-src https://platform.twitter.com https://www.instagram.com https://player.vimeo.com https://www.youtube.com https://w.soundcloud.com https://player.twitch.tv https://open.spotify.com https://3speak.tv https://3speak.online https://3speak.co https://emb.d.tube https://odysee.com https://openhive.chat",
+  // Web Workers: self + blob (for HBAuth and service worker)
+  "worker-src 'self' blob:",
+  // Prevent site from being embedded in iframes (clickjacking protection)
+  "frame-ancestors 'self'",
+  // Restrict base URI to prevent base tag injection
+  "base-uri 'self'",
+  // Restrict form submissions to same origin
+  "form-action 'self'",
+  // Report violations to our endpoint
+  "report-uri /api/csp-report"
+].join('; ');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -57,10 +90,16 @@ const nextConfig = {
   /// According to notes: https://nextjs.org/docs/app/guides/progressive-web-apps#8-securing-your-application
   async headers() {
     return [
-      // Security headers for all routes
+      // Security headers and CSP Report-Only for all routes
       {
         source: '/:path*',
-        headers: securityHeaders
+        headers: [
+          ...securityHeaders,
+          {
+            key: 'Content-Security-Policy-Report-Only',
+            value: cspReportOnly
+          }
+        ]
       },
       {
         source: '/sw.js',
