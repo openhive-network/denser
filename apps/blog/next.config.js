@@ -9,6 +9,28 @@ const withPWA = require('next-pwa')({
 // Support serving from subdirectory like /blog
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
+// Security headers applied to all responses
+// Note: CSP is intentionally not included here - it will be added separately
+// after proper testing with Report-Only mode. HSTS should be set at nginx level.
+const securityHeaders = [
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff'
+  },
+  {
+    key: 'X-Frame-Options',
+    value: 'SAMEORIGIN'
+  },
+  {
+    key: 'Referrer-Policy',
+    value: 'strict-origin-when-cross-origin'
+  },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=()'
+  }
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -26,6 +48,11 @@ const nextConfig = {
   /// According to notes: https://nextjs.org/docs/app/guides/progressive-web-apps#8-securing-your-application
   async headers() {
     return [
+      // Security headers for all routes
+      {
+        source: '/:path*',
+        headers: securityHeaders
+      },
       {
         source: '/sw.js',
         headers: [
@@ -51,7 +78,6 @@ const nextConfig = {
             value: 'no-cache, no-store, must-revalidate, max-age=0'
           }
         ]
-
       }
     ];
   },
