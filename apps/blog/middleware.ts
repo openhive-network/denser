@@ -30,8 +30,9 @@ function buildCspHeader(nonce: string): string {
     "img-src 'self' https: data: blob:",
     // Fonts: self + data URIs
     "font-src 'self' data:",
-    // API connections: permissive for user-defined endpoints
-    "connect-src 'self' https:",
+    // API connections: whitelist of trusted Hive API nodes
+    // Only nodes running proper haf_api_node software are allowed
+    "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.openhive.network https://images.hive.blog",
     // Embedded content whitelist
     "frame-src https://platform.twitter.com https://www.instagram.com https://player.vimeo.com https://www.youtube.com https://w.soundcloud.com https://player.twitch.tv https://open.spotify.com https://3speak.tv https://3speak.online https://3speak.co https://emb.d.tube https://odysee.com https://openhive.chat",
     // Web Workers
