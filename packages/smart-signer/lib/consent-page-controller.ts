@@ -4,6 +4,7 @@ import { getLogger } from '@ui/lib/logging';
 import { getIronSession } from 'iron-session';
 import { IronSessionData } from '@smart-signer/types/common';
 import { sessionOptions } from './session';
+import { getSafeRedirectUrl } from './redirect-validation';
 
 const logger = getLogger('app');
 
@@ -74,7 +75,7 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
         return {
           props: {
             oidcClientDetails,
-            redirectTo: interactionDetails.returnTo
+            redirectTo: getSafeRedirectUrl(interactionDetails.returnTo)
           }
         };
       }

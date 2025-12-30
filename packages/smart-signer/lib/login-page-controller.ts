@@ -5,6 +5,7 @@ import { getIronSession } from 'iron-session';
 import { IronSessionData } from '@smart-signer/types/common';
 import { sessionOptions } from './session';
 import { siteConfig } from '@hive/ui/config/site';
+import { getSafeRedirectUrl } from './redirect-validation';
 
 const logger = getLogger('app');
 
@@ -74,7 +75,7 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
         throw new Error(message);
       }
 
-      return { props: { redirectTo: interactionDetails.returnTo } };
+      return { props: { redirectTo: getSafeRedirectUrl(interactionDetails.returnTo) } };
     } else {
       // logger.info('loginPageController: no uid, so we are not in oauth flow');
     }
