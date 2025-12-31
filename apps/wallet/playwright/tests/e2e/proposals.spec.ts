@@ -156,11 +156,7 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Expired$/).click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Expired$/);
     // Wait for proposals to load after filter change
-<<<<<<< HEAD
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-=======
-    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
->>>>>>> 43674508 (Fix flaky e2e tests: Replace waitForTimeout with proper Playwright waits)
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('finished');
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
@@ -193,11 +189,7 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Votable$/).click();
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Votable$/);
     // Wait for proposals to load after filter change
-<<<<<<< HEAD
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-=======
-    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
->>>>>>> 43674508 (Fix flaky e2e tests: Replace waitForTimeout with proper Playwright waits)
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -273,11 +265,7 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^Creator$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Creator$/);
     // Wait for proposals to load after filter change
-<<<<<<< HEAD
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-=======
-    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
->>>>>>> 43674508 (Fix flaky e2e tests: Replace waitForTimeout with proper Playwright waits)
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -315,11 +303,7 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^Start Date$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Start Date$/);
     // Wait for proposals to load after filter change
-<<<<<<< HEAD
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-=======
-    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
->>>>>>> 43674508 (Fix flaky e2e tests: Replace waitForTimeout with proper Playwright waits)
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -357,11 +341,7 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^End Date$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^End Date$/);
     // Wait for proposals to load after filter change
-<<<<<<< HEAD
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-=======
-    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
->>>>>>> 43674508 (Fix flaky e2e tests: Replace waitForTimeout with proper Playwright waits)
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -399,11 +379,7 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalsFilterOrderByConntent.getByText(/^Total Votes$/).click();
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Total Votes$/);
     // Wait for proposals to load after filter change
-<<<<<<< HEAD
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-=======
-    await proposalsPage.proposalListItem.first().or(proposalsPage.page.locator('text="Sorry, I can\'t show you any proposals right now."')).waitFor({ state: 'visible' });
->>>>>>> 43674508 (Fix flaky e2e tests: Replace waitForTimeout with proper Playwright waits)
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
