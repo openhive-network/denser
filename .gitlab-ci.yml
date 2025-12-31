@@ -176,33 +176,6 @@ validate_haf_commit:
   tags:
   - public-runner-docker
 
-# Validate that HAF_COMMIT variable matches both the submodule and include ref
-validate_haf_commit:
-  stage: build
-  image: alpine:latest
-  variables:
-    GIT_SUBMODULE_STRATEGY: none
-  before_script:
-  - apk add --no-cache git
-  script:
-  - |
-    SUBMODULE_COMMIT=$(git ls-tree HEAD haf | awk '{print $3}')
-    INCLUDE_REF=$(grep -A2 "project:.*hive/haf" .gitlab-ci.yml | grep -m1 "ref:" | sed "s/.*ref: *'\{0,1\}\([a-f0-9]*\)'\{0,1\}.*/\1/")
-    echo "HAF_COMMIT variable: $HAF_COMMIT"
-    echo "HAF submodule:       $SUBMODULE_COMMIT"
-    echo "Include ref:         $INCLUDE_REF"
-    if [[ "$HAF_COMMIT" != "$SUBMODULE_COMMIT" ]]; then
-      echo "ERROR: HAF_COMMIT does not match submodule commit!"
-      exit 1
-    fi
-    if [[ "$HAF_COMMIT" != "$INCLUDE_REF" ]]; then
-      echo "ERROR: HAF_COMMIT does not match include ref!"
-      exit 1
-    fi
-    echo "All HAF references are consistent."
-  tags:
-  - public-runner-docker
-
 mirrornet-haf-binaries-extraction:
   extends: .job-defaults
   stage: build
