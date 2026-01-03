@@ -9,25 +9,30 @@ Usage: $0 VERSION [OPTIONS]
 Deploy Denser services using Docker Swarm with zero downtime.
 
 Arguments:
-  VERSION                 Image version/tag to deploy (required)
+  VERSION                   Image version/tag to deploy (required)
 
 Options:
-  --env-file=PATH         Path to .env file (default: \$HOME/denser/.env)
-  --help                  Show this help
+  --blog-env=PATH           Path to blog .env file (default: \$HOME/denser/.env.blog)
+  --wallet-env=PATH         Path to wallet .env file (default: \$HOME/denser/.env.wallet)
+  --help                    Show this help
 
 Examples:
   $0 5e8618a0
-  $0 5e8618a0 --env-file=/opt/denser/.env
+  $0 5e8618a0 --blog-env=/opt/denser/.env.blog --wallet-env=/opt/denser/.env.wallet
 EOF
 }
 
 VERSION=""
-ENV_FILE=""
+BLOG_ENV_FILE=""
+WALLET_ENV_FILE=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        --env-file=*)
-            ENV_FILE="${1#*=}"
+        --blog-env=*)
+            BLOG_ENV_FILE="${1#*=}"
+            ;;
+        --wallet-env=*)
+            WALLET_ENV_FILE="${1#*=}"
             ;;
         --help|-h)
             print_help
@@ -57,18 +62,25 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-if [ -z "$ENV_FILE" ]; then
-    if [ -z "$HOME" ]; then
-        echo "ERROR: --env-file required (HOME not set)"
-        exit 1
-    fi
-    ENV_FILE="$HOME/denser/.env"
+if [ -z "$HOME" ]; then
+    echo "ERROR: HOME not set, use --blog-env and --wallet-env explicitly"
+    exit 1
 fi
 
-ENV_FILE="$(cd "$(dirname "$ENV_FILE")" && pwd)/$(basename "$ENV_FILE")"
+BLOG_ENV_FILE="${BLOG_ENV_FILE:-$HOME/denser/.env.blog}"
+WALLET_ENV_FILE="${WALLET_ENV_FILE:-$HOME/denser/.env.wallet}"
 
-if [ ! -f "$ENV_FILE" ]; then
-    echo "ERROR: Env file not found: $ENV_FILE"
+# Resolve to absolute paths
+BLOG_ENV_FILE="$(cd "$(dirname "$BLOG_ENV_FILE")" && pwd)/$(basename "$BLOG_ENV_FILE")"
+WALLET_ENV_FILE="$(cd "$(dirname "$WALLET_ENV_FILE")" && pwd)/$(basename "$WALLET_ENV_FILE")"
+
+if [ ! -f "$BLOG_ENV_FILE" ]; then
+    echo "ERROR: Blog env file not found: $BLOG_ENV_FILE"
+    exit 1
+fi
+
+if [ ! -f "$WALLET_ENV_FILE" ]; then
+    echo "ERROR: Wallet env file not found: $WALLET_ENV_FILE"
     exit 1
 fi
 
@@ -76,13 +88,15 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 COMPOSE_FILE="$SCRIPT_DIR/../docker/docker-compose.yml"
 
 echo "Deploying version: $VERSION"
-echo "Using env file: $ENV_FILE"
+echo "Blog env: $BLOG_ENV_FILE"
+echo "Wallet env: $WALLET_ENV_FILE"
 
 docker pull "registry.gitlab.syncad.com/hive/denser/blog:${VERSION}"
 docker pull "registry.gitlab.syncad.com/hive/denser/wallet:${VERSION}"
 
 export VERSION
-export ENV_FILE
+export BLOG_ENV_FILE
+export WALLET_ENV_FILE
 docker stack deploy -c "$COMPOSE_FILE" denser
 
 echo "Done. Check status: docker service ls"
