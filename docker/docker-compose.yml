@@ -1,54 +1,46 @@
 name: 'denser'
+
 services:
-  denser-auth:
-    image: registry.gitlab.syncad.com/hive/denser/auth:${AUTH_IMAGE_TAG:-latest}
-    environment:
-      PORT: ${AUTH_PORT}
-      REACT_APP_API_ENDPOINT:
-      REACT_APP_IMAGES_ENDPOINT:
-      REACT_APP_SITE_DOMAIN:
-      TURBO_APP_SCOPE: '@hive/auth'
-      TURBO_APP_PATH: '/apps/auth'
-    ports:
-      - '${AUTH_PORT}:${AUTH_PORT}'
-    healthcheck:
-      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1']
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
   denser-blog:
-    image: registry.gitlab.syncad.com/hive/denser/blog:${BLOG_IMAGE_TAG:-latest}
-    environment:
-      PORT: ${BLOG_PORT}
-      REACT_APP_API_ENDPOINT:
-      REACT_APP_IMAGES_ENDPOINT:
-      REACT_APP_SITE_DOMAIN:
-      TURBO_APP_SCOPE: '@hive/blog'
-      TURBO_APP_PATH: '/apps/blog'
+    image: registry.gitlab.syncad.com/hive/denser/blog:${VERSION:?VERSION required}
     ports:
-      - '${BLOG_PORT}:${BLOG_PORT}'
+      - '3000:3000'
+    environment:
+      PORT: 3000
+    volumes:
+      - ${BLOG_ENV_FILE:?BLOG_ENV_FILE must be set}:/app/apps/.env:ro
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+        failure_action: rollback
+      rollback_config:
+        order: start-first
     healthcheck:
-      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1']
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:3000/trending']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
   denser-wallet:
-    image: registry.gitlab.syncad.com/hive/denser/wallet:${WALLET_IMAGE_TAG:-latest}
-    environment:
-      PORT: ${WALLET_PORT}
-      REACT_APP_API_ENDPOINT:
-      REACT_APP_IMAGES_ENDPOINT:
-      REACT_APP_SITE_DOMAIN:
-      REACT_APP_BLOG_DOMAIN:
-      TURBO_APP_SCOPE: '@hive/wallet'
-      TURBO_APP_PATH: '/apps/wallet'
+    image: registry.gitlab.syncad.com/hive/denser/wallet:${VERSION:?VERSION required}
     ports:
-      - '${WALLET_PORT}:${WALLET_PORT}'
+      - '4000:3000'
+    environment:
+      PORT: 3000
+    volumes:
+      - ${WALLET_ENV_FILE:?WALLET_ENV_FILE must be set}:/app/apps/.env:ro
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+        failure_action: rollback
+      rollback_config:
+        order: start-first
     healthcheck:
-      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://$${HOSTNAME}:$${PORT}/ || exit 1']
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:3000/']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
