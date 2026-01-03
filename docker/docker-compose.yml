@@ -1,12 +1,14 @@
-name: 'denser'
-
 services:
   denser-blog:
     image: registry.gitlab.syncad.com/hive/denser/blog:${VERSION:?VERSION required}
     ports:
-      - '3000:3000'
+      - target: 3000
+        published: 3000
+        mode: host
     environment:
       PORT: 3000
+    # HOSTNAME must be set via command because Docker overrides env var with container ID
+    command: ["sh", "-c", "HOSTNAME=0.0.0.0 node ./apps/blog/server.js"]
     volumes:
       - ${BLOG_ENV_FILE:?BLOG_ENV_FILE must be set}:/app/apps/.env:ro
     deploy:
@@ -17,18 +19,22 @@ services:
       rollback_config:
         order: start-first
     healthcheck:
-      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:3000/trending']
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
       retries: 3
       start_period: 60s
 
   denser-wallet:
     image: registry.gitlab.syncad.com/hive/denser/wallet:${VERSION:?VERSION required}
     ports:
-      - '4000:3000'
+      - target: 3000
+        published: 4000
+        mode: host
     environment:
       PORT: 3000
+    # HOSTNAME must be set via command because Docker overrides env var with container ID
+    command: ["sh", "-c", "HOSTNAME=0.0.0.0 node ./apps/wallet/server.js"]
     volumes:
       - ${WALLET_ENV_FILE:?WALLET_ENV_FILE must be set}:/app/apps/.env:ro
     deploy:
@@ -39,8 +45,8 @@ services:
       rollback_config:
         order: start-first
     healthcheck:
-      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:3000/']
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
       retries: 3
       start_period: 60s

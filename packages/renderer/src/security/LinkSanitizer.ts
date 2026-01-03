@@ -25,7 +25,8 @@ export class LinkSanitizer {
     public sanitizeLink(url: string, urlTitle: string): string | false {
         url = this.prependUnknownProtocolLink(url);
 
-        Log.log().debug('LinkSanitizer#sanitizeLink', {url, urlTitle});
+        // Commented out: broken log that doesn't display url/urlTitle, just noise
+        // Log.log().debug('LinkSanitizer#sanitizeLink', {url, urlTitle});
 
         if (Phishing.looksPhishy(url)) {
             Log.log().debug('LinkSanitizer#sanitizeLink', 'phishing link detected', 'phishing list', url, {

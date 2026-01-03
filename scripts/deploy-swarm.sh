@@ -87,6 +87,13 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 COMPOSE_FILE="$SCRIPT_DIR/../docker/docker-compose.yml"
 
+# Initialize swarm if not already active (single-node, localhost only)
+SWARM_STATE=$(docker info --format '{{.Swarm.LocalNodeState}}' 2>/dev/null || echo "unknown")
+if [ "$SWARM_STATE" != "active" ]; then
+    echo "Initializing Docker Swarm (single-node, localhost only)..."
+    docker swarm init --advertise-addr 127.0.0.1 --listen-addr 127.0.0.1:2377
+fi
+
 echo "Deploying version: $VERSION"
 echo "Blog env: $BLOG_ENV_FILE"
 echo "Wallet env: $WALLET_ENV_FILE"
@@ -98,5 +105,11 @@ export VERSION
 export BLOG_ENV_FILE
 export WALLET_ENV_FILE
 docker stack deploy -c "$COMPOSE_FILE" denser
+
+# Force service update to ensure config changes are applied
+# (Docker Swarm sometimes caches service spec when image is unchanged)
+echo "Forcing service update..."
+docker service update --force denser_denser-blog
+docker service update --force denser_denser-wallet
 
 echo "Done. Check status: docker service ls"
