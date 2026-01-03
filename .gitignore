@@ -19,6 +19,9 @@ denser.code-workspace
 stack/*.env
 stack/haf-datadir
 apps/blog/test.env
+# Production env files with secrets (use .env.*.example as templates)
+.env.blog
+.env.wallet
 stack/certs/cert.pem
 stack/certs/key.pem
 Close
