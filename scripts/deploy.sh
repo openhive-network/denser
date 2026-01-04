@@ -123,9 +123,17 @@ export BLOG_ENV_FILE
 export WALLET_ENV_FILE
 
 cd "$COMPOSE_DIR"
+
+# Write .env for subsequent docker compose commands (ps, logs, etc.)
+cat > .env <<ENVEOF
+VERSION=$VERSION
+BLOG_ENV_FILE=$BLOG_ENV_FILE
+WALLET_ENV_FILE=$WALLET_ENV_FILE
+ENVEOF
+
 docker compose up -d --wait --wait-timeout 120
 
 echo ""
 echo "Deployment complete. All services healthy."
-echo "Check status with: docker ps"
-echo "Check logs with: docker logs docker-denser-blog-1"
+echo "Check status with: docker compose ps  (or: docker ps)"
+echo "Check logs with:   docker compose logs  (or: docker logs docker-denser-blog-1)"
