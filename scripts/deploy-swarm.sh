@@ -123,9 +123,9 @@ export BLOG_ENV_FILE
 export WALLET_ENV_FILE
 
 cd "$COMPOSE_DIR"
-docker compose up -d
+docker compose up -d --wait --wait-timeout 120
 
 echo ""
-echo "Deployment complete."
+echo "Deployment complete. All services healthy."
 echo "Check status with: docker ps"
 echo "Check logs with: docker logs docker-denser-blog-1"
