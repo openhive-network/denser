@@ -6,7 +6,7 @@ print_help() {
     cat <<EOF
 Usage: $0 VERSION [OPTIONS]
 
-Deploy Denser services using Docker Swarm with zero downtime.
+Deploy Denser services using Docker Compose.
 
 Arguments:
   VERSION                   Image version/tag to deploy (required)
@@ -14,17 +14,19 @@ Arguments:
 Options:
   --blog-env=PATH           Path to blog .env file (default: \$HOME/denser/.env.blog)
   --wallet-env=PATH         Path to wallet .env file (default: \$HOME/denser/.env.wallet)
+  --pull                    Force pull images from registry (default: use local if available)
   --help                    Show this help
 
 Examples:
-  $0 5e8618a0
-  $0 5e8618a0 --blog-env=/opt/denser/.env.blog --wallet-env=/opt/denser/.env.wallet
+  $0 5e8618a0                    # Uses local images if available
+  $0 5e8618a0 --pull             # Force pull from registry
 EOF
 }
 
 VERSION=""
 BLOG_ENV_FILE=""
 WALLET_ENV_FILE=""
+FORCE_PULL=false
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -33,6 +35,9 @@ while [ $# -gt 0 ]; do
             ;;
         --wallet-env=*)
             WALLET_ENV_FILE="${1#*=}"
+            ;;
+        --pull)
+            FORCE_PULL=true
             ;;
         --help|-h)
             print_help
@@ -85,28 +90,42 @@ if [ ! -f "$WALLET_ENV_FILE" ]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-COMPOSE_FILE="$SCRIPT_DIR/../docker/docker-compose.yml"
-
-# Initialize swarm if not already active (single-node, localhost only)
-SWARM_STATE=$(docker info --format '{{.Swarm.LocalNodeState}}' 2>/dev/null || echo "unknown")
-if [ "$SWARM_STATE" != "active" ]; then
-    echo "Initializing Docker Swarm (single-node, localhost only)..."
-    docker swarm init --advertise-addr 127.0.0.1 --listen-addr 127.0.0.1:2377
-fi
+COMPOSE_DIR="$SCRIPT_DIR/../docker"
 
 echo "Deploying version: $VERSION"
 echo "Blog env: $BLOG_ENV_FILE"
 echo "Wallet env: $WALLET_ENV_FILE"
 
-docker pull "registry.gitlab.syncad.com/hive/denser/blog:${VERSION}"
-docker pull "registry.gitlab.syncad.com/hive/denser/wallet:${VERSION}"
+BLOG_IMAGE="registry.gitlab.syncad.com/hive/denser/blog:${VERSION}"
+WALLET_IMAGE="registry.gitlab.syncad.com/hive/denser/wallet:${VERSION}"
+
+# Check for local images and pull only if needed
+pull_if_needed() {
+    local image="$1"
+    local name="$2"
+
+    if [ "$FORCE_PULL" = "true" ]; then
+        echo "Pulling $name (--pull specified)..."
+        docker pull "$image"
+    elif docker image inspect "$image" >/dev/null 2>&1; then
+        echo "Using local $name image"
+    else
+        echo "Local $name image not found, pulling from registry..."
+        docker pull "$image"
+    fi
+}
+
+pull_if_needed "$BLOG_IMAGE" "blog"
+pull_if_needed "$WALLET_IMAGE" "wallet"
 
 export VERSION
 export BLOG_ENV_FILE
 export WALLET_ENV_FILE
-docker stack deploy -c "$COMPOSE_FILE" denser
+
+cd "$COMPOSE_DIR"
+docker compose up -d
 
 echo ""
-echo "Deployment initiated. Services will update in the background."
-echo "Check status with: docker service ls"
-echo "Check logs with: docker service logs denser_denser-blog"
+echo "Deployment complete."
+echo "Check status with: docker ps"
+echo "Check logs with: docker logs docker-denser-blog-1"
