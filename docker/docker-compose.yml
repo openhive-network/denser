@@ -2,12 +2,10 @@ services:
   denser-blog:
     image: registry.gitlab.syncad.com/hive/denser/blog:${VERSION:?VERSION required}
     ports:
-      - target: 3000
-        published: 3000
-        mode: host
+      - "3000:3000"
     environment:
       PORT: 3000
-    # HOSTNAME must be set via command because Docker overrides env var with container ID
+    # HOSTNAME=0.0.0.0 ensures the app binds to all interfaces, required for Docker networking
     command: ["sh", "-c", "HOSTNAME=0.0.0.0 node ./apps/blog/server.js"]
     volumes:
       - ${BLOG_ENV_FILE:?BLOG_ENV_FILE must be set}:/app/apps/.env:ro
@@ -28,12 +26,10 @@ services:
   denser-wallet:
     image: registry.gitlab.syncad.com/hive/denser/wallet:${VERSION:?VERSION required}
     ports:
-      - target: 3000
-        published: 4000
-        mode: host
+      - "4000:3000"
     environment:
       PORT: 3000
-    # HOSTNAME must be set via command because Docker overrides env var with container ID
+    # HOSTNAME=0.0.0.0 ensures the app binds to all interfaces, required for Docker networking
     command: ["sh", "-c", "HOSTNAME=0.0.0.0 node ./apps/wallet/server.js"]
     volumes:
       - ${WALLET_ENV_FILE:?WALLET_ENV_FILE must be set}:/app/apps/.env:ro

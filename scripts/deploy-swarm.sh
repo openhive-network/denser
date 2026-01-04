@@ -106,10 +106,7 @@ export BLOG_ENV_FILE
 export WALLET_ENV_FILE
 docker stack deploy -c "$COMPOSE_FILE" denser
 
-# Force service update to ensure config changes are applied
-# (Docker Swarm sometimes caches service spec when image is unchanged)
-echo "Forcing service update..."
-docker service update --force denser_denser-blog
-docker service update --force denser_denser-wallet
-
-echo "Done. Check status: docker service ls"
+echo ""
+echo "Deployment initiated. Services will update in the background."
+echo "Check status with: docker service ls"
+echo "Check logs with: docker service logs denser_denser-blog"
