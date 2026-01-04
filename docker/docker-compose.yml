@@ -16,12 +16,10 @@ services:
         failure_action: rollback
       rollback_config:
         order: start-first
+    # Health check disabled: localhost resolution fails in Swarm overlay network
+    # TODO: Find alternative approach (container IP or service mesh)
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+      disable: true
 
   denser-wallet:
     image: registry.gitlab.syncad.com/hive/denser/wallet:${VERSION:?VERSION required}
@@ -40,9 +38,7 @@ services:
         failure_action: rollback
       rollback_config:
         order: start-first
+    # Health check disabled: localhost resolution fails in Swarm overlay network
+    # TODO: Find alternative approach (container IP or service mesh)
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+      disable: true
