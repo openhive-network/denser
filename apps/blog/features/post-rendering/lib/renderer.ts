@@ -1,4 +1,4 @@
-import { DefaultRenderer, InstagramPlugin, TablePlugin, TwitterPlugin } from '@hive/renderer';
+import { DefaultRenderer, TablePlugin, TwitterPlugin } from '@hive/renderer';
 import { getDoubleSize, proxifyImageUrl } from '@ui/lib/old-profixy';
 
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
@@ -20,7 +20,8 @@ const renderDefaultOptions = {
   ipfsPrefix: '',
   assetsWidth: 640,
   assetsHeight: 480,
-  plugins: [new TwitterPlugin(), new InstagramPlugin(), new TablePlugin()],
+  // Note: Instagram uses iframe-only via InstagramEmbedder (no external scripts needed)
+  plugins: [new TwitterPlugin(), new TablePlugin()],
   imageProxyFn: (url: string) => getDoubleSize(proxifyImageUrl(url, true).replace(/ /g, '%20')),
   usertagUrlFn: (account: string) => (basePath ? `${basePath}/@${account}` : `/@${account}`),
   hashtagUrlFn: (hashtag: string) => (basePath ? `${basePath}/trending/${hashtag}` : `/trending/${hashtag}`),
