@@ -55,7 +55,8 @@ const cspReportOnly = [
   "font-src 'self' data:",
   // API connections: whitelist of trusted Hive API nodes and services
   // Only nodes running proper haf_api_node software are allowed
-  "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.openhive.network https://images.hive.blog",
+  // Note: images.hive.blog not needed - wallet only uses it server-side (API routes)
+  "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.openhive.network",
   // Embedded content: wallet has fewer embeds than blog
   "frame-src 'self'",
   // Web Workers: self + blob (for HBAuth and service worker)

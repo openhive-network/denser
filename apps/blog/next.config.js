@@ -58,8 +58,9 @@ const cspReportOnly = [
   // Only nodes running proper haf_api_node software are allowed
   "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.openhive.network https://images.hive.blog",
   // Embedded content: whitelist of allowed iframe sources
-  // Based on StaticConfig.ts iframe whitelist
-  "frame-src https://platform.twitter.com https://www.instagram.com https://player.vimeo.com https://www.youtube.com https://w.soundcloud.com https://player.twitch.tv https://open.spotify.com https://3speak.tv https://3speak.online https://3speak.co https://emb.d.tube https://odysee.com https://openhive.chat",
+  // Note: 3speak.online/co removed (compromised/spam), code normalizes to 3speak.tv
+  // Note: emb.d.tube removed (subdomain down, no renderer support)
+  "frame-src https://platform.twitter.com https://www.instagram.com https://player.vimeo.com https://www.youtube.com https://w.soundcloud.com https://player.twitch.tv https://open.spotify.com https://3speak.tv https://odysee.com https://openhive.chat",
   // Web Workers: self + blob (for HBAuth and service worker)
   "worker-src 'self' blob:",
   // Prevent site from being embedded in iframes (clickjacking protection)
