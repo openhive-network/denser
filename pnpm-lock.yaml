@@ -464,6 +464,9 @@ importers:
       ow:
         specifier: 0.28.2
         version: 0.28.2
+      pino:
+        specifier: ^8.17.1
+        version: 8.21.0
       react-twitter-embed:
         specifier: ^4.0.4
         version: 4.0.4(react-dom@18.3.0(react@17.0.2))(react@17.0.2)
@@ -476,9 +479,6 @@ importers:
       typescript-chained-error:
         specifier: 1.6.0
         version: 1.6.0
-      universe-log:
-        specifier: 5.2.0
-        version: 5.2.0
     devDependencies:
       '@commitlint/cli':
         specifier: 19.3.0
@@ -7167,10 +7167,6 @@ packages:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
     engines: {node: '>=0.10.0'}
 
-  ow@0.13.2:
-    resolution: {integrity: sha512-9wvr+q+ZTDRvXDjL6eDOdFe5WUl/wa5sntf9kAolxqSpkBqaIObwLgFCGXSJASFw+YciXnOVtDWpxXa9cqV94A==}
-    engines: {node: '>=6'}
-
   ow@0.28.2:
     resolution: {integrity: sha512-dD4UpyBh/9m4X2NVjA+73/ZPBRF+uF4zIMFvvQsabMiEK8x41L3rQ8EENOi35kyyoaJwNxEeJcP6Fj1H4U409Q==}
     engines: {node: '>=12'}
@@ -9039,10 +9035,6 @@ packages:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
     engines: {node: '>=10'}
 
-  type-fest@0.5.2:
-    resolution: {integrity: sha512-DWkS49EQKVX//Tbupb9TFa19c7+MK1XmzkrZUR8TAktmE/DizXoaoJV6TZ/tSIPXipqNiRI6CyAe7x69Jb6RSw==}
-    engines: {node: '>=6'}
-
   type-fest@0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
@@ -9209,10 +9201,6 @@ packages:
   universalify@2.0.1:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
-
-  universe-log@5.2.0:
-    resolution: {integrity: sha512-8jSMiXIcm0Ea/N3zCj2Kl+BIihCV7ydvshAgGaDDsLgOSSchiDORUMmSYKMH3FXeKaUr6dKd7e1eScBUpe2+3Q==}
-    engines: {node: '>=8'}
 
   unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
@@ -17116,10 +17104,6 @@ snapshots:
 
   os-tmpdir@1.0.2: {}
 
-  ow@0.13.2:
-    dependencies:
-      type-fest: 0.5.2
-
   ow@0.28.2:
     dependencies:
       '@sindresorhus/is': 4.6.0
@@ -19254,8 +19238,6 @@ snapshots:
 
   type-fest@0.21.3: {}
 
-  type-fest@0.5.2: {}
-
   type-fest@0.8.1: {}
 
   type-fest@1.4.0: {}
@@ -19431,11 +19413,6 @@ snapshots:
   universalify@0.2.0: {}
 
   universalify@2.0.1: {}
-
-  universe-log@5.2.0:
-    dependencies:
-      ow: 0.13.2
-      typescript-chained-error: 1.6.0
 
   unpipe@1.0.0: {}
 
