@@ -10,6 +10,7 @@ import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@
 import { useTranslation } from '@/blog/i18n/client';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import PostList from '../list-of-posts/posts-loader';
+import NoDataError from '@/blog/components/no-data-error';
 import { isCommunity } from '@ui/lib/utils';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
@@ -30,7 +31,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     DEFAULT_PREFERENCES
   );
 
-  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({
+  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isLoading } = useInfiniteQuery({
     queryKey: ['entriesInfinite', sort, tag],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
@@ -62,6 +63,16 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   // Calculate total posts to determine when to show prefetch trigger
   const totalPosts = data?.pages?.reduce((acc, page) => acc + (page?.length || 0), 0) || 0;
 
+  // Handle API error - show error state with retry option
+  if (isError) {
+    return <NoDataError />;
+  }
+
+  // Handle initial loading state
+  if (isLoading) {
+    return null;
+  }
+
   return (
     <>
       {!data
@@ -89,9 +100,9 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
             <div>Loading...</div>
           ) : hasNextPage ? (
             t('user_profile.load_newer')
-          ) : (
+          ) : data?.pages?.[0] && data.pages[0].length > 0 ? (
             t('user_profile.nothing_more_to_load')
-          )}
+          ) : null}
         </button>
       </div>
       <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>

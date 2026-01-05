@@ -20,6 +20,7 @@ import { convertStringToBig } from '@ui/lib/helpers';
 
 import { accountReputation, compareDates } from '@/blog/lib/utils';
 import CustomError from '@/blog/components/custom-error';
+import NoDataError from '@/blog/components/no-data-error';
 import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 
 import ButtonsContainer from '@/blog/features/mute-follow/buttons-container';
@@ -54,7 +55,11 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   const explorerHost = env('EXPLORER_DOMAIN');
   const userFromGDPRList = gdprUserList.includes(username);
 
-  const { data: profileData } = useQuery({
+  const {
+    data: profileData,
+    isError: isProfileError,
+    isLoading: isProfilePending
+  } = useQuery({
     queryKey: ['profileData', username],
     queryFn: () => getAccountFull(username),
     enabled: !!username
@@ -76,19 +81,38 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
     retry: false,
     refetchOnWindowFocus: false
   });
-  const { data: dynamicGlobalData } = useQuery({
+  const {
+    data: dynamicGlobalData,
+    isError: isDynamicGlobalError,
+    isLoading: isDynamicGlobalPending
+  } = useQuery({
     queryKey: ['dynamicGlobalData'],
     queryFn: () => getDynamicGlobalProperties()
   });
 
+  // Handle API errors - show error state with retry option
+  if (isProfileError || isDynamicGlobalError) {
+    return <NoDataError />;
+  }
+
+  // Handle loading state - wait for data
+  if (isProfilePending || isDynamicGlobalPending) {
+    return null;
+  }
+
+  // Handle user not found - API succeeded but user doesn't exist
+  if (!profileData) {
+    return notFound();
+  }
+
+  // Handle missing required profile fields (data integrity issue)
   if (
     !dynamicGlobalData ||
-    !profileData ||
     !profileData.delegated_vesting_shares ||
     !profileData.received_vesting_shares ||
     !profileData.vesting_shares
   ) {
-    return notFound();
+    return <NoDataError />;
   }
 
   const delegated_hive = convertToHP(
