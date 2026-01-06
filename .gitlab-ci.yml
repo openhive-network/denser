@@ -733,7 +733,7 @@ main:deploy-blog-mainnet:
     APP_SESSION_TIME: 64800
     DEPLOYMENT_ENV_FILE: "MAINNET_PROD_DEPLOYMENT_ENV"
   rules:
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_COMMIT_BRANCH == "main"
     when: manual
   environment:
     name: main-blog-mainnet
@@ -751,7 +751,7 @@ main:deploy-wallet-mainnet:
     IMAGE_NAME: $WALLET_IMAGE_NAME
     DEPLOYMENT_ENV_FILE: "MAINNET_PROD_DEPLOYMENT_ENV"
   rules:
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_COMMIT_BRANCH == "main"
     when: manual
   environment:
     name: main-wallet-mainnet
@@ -774,7 +774,7 @@ main:deploy-blog-mirrornet:
     DEPLOYMENT_ENV_FILE: "MIRRORNET_PROD_DEPLOYMENT_ENV"
 
   rules:
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_COMMIT_BRANCH == "main"
     when: manual
   environment:
     name: main-blog-mirrornet
@@ -796,7 +796,7 @@ main:deploy-wallet-mirrornet:
     DEPLOYMENT_ENV_FILE: "MIRRORNET_PROD_DEPLOYMENT_ENV"
 
   rules:
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_COMMIT_BRANCH == "main"
     when: manual
   environment:
     name: main-wallet-mirrornet
@@ -825,7 +825,7 @@ main:stop-blog-mainnet:
   variables:
     CONTAINER_NAME: denser-main-blog
   rules:
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_COMMIT_BRANCH == "main"
     when: manual
     allow_failure: true
   environment:
@@ -840,7 +840,7 @@ main:stop-wallet-mainnet:
   variables:
     CONTAINER_NAME: denser-main-wallet
   rules:
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_COMMIT_BRANCH == "main"
     when: manual
     allow_failure: true
   environment:
@@ -855,7 +855,7 @@ main:stop-blog-mirrornet:
   variables:
     CONTAINER_NAME: denser-main-blog-mirror
   rules:
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_COMMIT_BRANCH == "main"
     when: manual
     allow_failure: true
   environment:
@@ -870,7 +870,7 @@ main:stop-wallet-mirrornet:
   variables:
     CONTAINER_NAME: denser-main-wallet-mirror
   rules:
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_COMMIT_BRANCH == "main"
     when: manual
     allow_failure: true
   environment:
