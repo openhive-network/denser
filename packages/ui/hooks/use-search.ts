@@ -29,6 +29,18 @@ export function useSearch() {
   const [inputValue, setInputValue] = useState(query ?? aiQuery ?? topicQuery ?? '');
   const [mode, setMode] = useState<SearchMode>(currentMode ?? 'ai');
   const [secondInputValue, setSecondInputValue] = useState(userTopicQuery ?? '');
+
+  // Sync state with URL params (e.g., when navigating back)
+  useEffect(() => {
+    const newMode = getMode(query, aiQuery, userTopicQuery);
+    if (newMode) {
+      setMode(newMode);
+    }
+    // Always sync with URL - use empty string as fallback for reset
+    setInputValue(aiQuery ?? query ?? topicQuery ?? '');
+    setSecondInputValue(userTopicQuery ?? '');
+  }, [query, aiQuery, userTopicQuery, topicQuery]);
+
   useEffect(() => {
     if (inputValue.startsWith('/')) {
       setMode('userTopic');

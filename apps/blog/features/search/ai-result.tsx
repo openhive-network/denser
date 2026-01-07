@@ -21,8 +21,8 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
   const { t } = useTranslation('common_blog');
 
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
-  const [currentPage, setCurrentPage] = useState(0);
-  const [displayedPosts, setDisplayedPosts] = useState<Entry[]>([]);
+  const [loadedStubPosts, setLoadedStubPosts] = useState<Entry[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // Fetch all results in a single call
@@ -48,7 +48,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
     staleTime: 5 * 60 * 1000 // Cache for 5 minutes
   });
 
-  // Separate full posts and stubs
+  // Separate full posts and stubs from search results
   const { fullPosts, stubPosts } = useMemo(() => {
     if (!searchResults) return { fullPosts: [], stubPosts: [] };
 
@@ -72,13 +72,11 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
     return { fullPosts: full, stubPosts: stubs };
   }, [searchResults]);
 
-  // Initialize displayed posts with full posts from initial response
-  useEffect(() => {
-    if (fullPosts.length > 0 && displayedPosts.length === 0) {
-      setDisplayedPosts(fullPosts);
-      setCurrentPage(1);
-    }
-  }, [fullPosts]);
+  // Combine initial full posts with additionally loaded stub posts
+  // This ensures data persists when navigating back (fullPosts comes from React Query cache)
+  const displayedPosts = useMemo(() => {
+    return [...fullPosts, ...loadedStubPosts];
+  }, [fullPosts, loadedStubPosts]);
 
   // Calculate if there are more posts to load
   const hasNextPage = useMemo(() => {
@@ -110,10 +108,10 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
       });
 
       if (fullPostData) {
-        // Filter out null or invalid posts before adding to displayed posts
+        // Filter out null or invalid posts before adding to loaded posts
         const validPosts = fullPostData.filter((post) => post && post.post_id);
         if (validPosts.length > 0) {
-          setDisplayedPosts((prev) => [...prev, ...validPosts]);
+          setLoadedStubPosts((prev) => [...prev, ...validPosts]);
         }
         setCurrentPage((prev) => prev + 1);
       }
@@ -131,10 +129,10 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
     }
   }, [inView, hasNextPage, isLoadingMore]);
 
-  // Reset on query change
+  // Reset loaded stub posts on query change
   useEffect(() => {
-    setCurrentPage(0);
-    setDisplayedPosts([]);
+    setCurrentPage(1);
+    setLoadedStubPosts([]);
   }, [query]);
 
   if (!query) return null;
