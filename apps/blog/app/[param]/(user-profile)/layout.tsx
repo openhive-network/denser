@@ -3,7 +3,8 @@ import { ReactNode } from 'react';
 import { Metadata } from 'next';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getQueryClient } from '@/blog/lib/react-query';
-import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
+import { getAccountFullCached } from '@/blog/lib/cached-api';
+import { getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { getTwitterInfo } from '@transaction/lib/custom-api';
 import { isUsernameValid } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
@@ -21,12 +22,9 @@ export async function generateMetadata({ params }: { params: { param: string } }
     };
   }
   const username = raw.startsWith('%40') ? raw.replace('%40', '') : raw.replace('@', '');
-  const queryClient = getQueryClient();
   try {
-    const account = await queryClient.fetchQuery({
-      queryKey: ['profileData', username],
-      queryFn: () => getAccountFull(username)
-    });
+    // Use cached version - deduplicated with Layout's prefetch within the same request
+    const account = await getAccountFullCached(username);
     const image = account?.profile?.profile_image || 'https://hive.blog/images/hive-blog-share.png';
     const about = account?.profile?.about || `Profile of @${username} on Hive.`;
     const title = `Blog ${username}`;
@@ -78,9 +76,10 @@ const Layout = async ({ children, params }: { children: ReactNode; params: { par
   }
 
   try {
+    // Use cached version - deduplicated with generateMetadata within the same request
     await queryClient.prefetchQuery({
       queryKey: ['profileData', username],
-      queryFn: () => getAccountFull(username)
+      queryFn: () => getAccountFullCached(username)
     });
     await queryClient.prefetchQuery({
       queryKey: ['accountReputationData', username],
