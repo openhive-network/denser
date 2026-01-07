@@ -2,16 +2,10 @@ import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { SortTypes } from '@/blog/lib/utils';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
-import {
-  getAccountNotifications,
-  getCommunity,
-  getPostsRanked,
-  getSubscribers
-} from '@transaction/lib/bridge-api';
+import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
-import { isCommunity } from '@ui/lib/utils';
 
 const logger = getLogger('app');
 
@@ -27,20 +21,7 @@ const SortPage = async ({
   const queryClient = getQueryClient();
   try {
     const observer = getObserverFromCookies();
-    if (isCommunity(tag)) {
-      await queryClient.prefetchQuery({
-        queryKey: ['community', tag],
-        queryFn: async () => await getCommunity(tag, observer)
-      });
-      await queryClient.prefetchQuery({
-        queryKey: ['subscribers', tag],
-        queryFn: async () => await getSubscribers(tag)
-      });
-      await queryClient.prefetchQuery({
-        queryKey: ['AccountNotification', tag],
-        queryFn: async () => await getAccountNotifications(tag)
-      });
-    }
+    // Community data (getCommunity) is already prefetched in the layout's PrefetchComponent
     await queryClient.prefetchInfiniteQuery({
       queryKey: ['entriesInfinite', sort, tag],
       queryFn: async ({ pageParam }) => {

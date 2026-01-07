@@ -1,12 +1,7 @@
 import { ReactNode } from 'react';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
-import {
-  getAccountNotifications,
-  getCommunities,
-  getCommunity,
-  getSubscribers
-} from '@transaction/lib/bridge-api';
+import { getCommunities, getCommunity } from '@transaction/lib/bridge-api';
 import CommunityLayout from './community-layout';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
@@ -26,17 +21,11 @@ const PrefetchComponent = async ({ children, community }: { children: ReactNode;
       queryFn: () => getCommunities(sort, query, observer)
     });
     if (isCommunity(community)) {
+      // Only prefetch what's needed for page metadata and initial render
+      // Subscribers and notifications are not critical for SSR - let client fetch
       await queryClient.prefetchQuery({
         queryKey: ['community', community],
-        queryFn: async () => await getCommunity(community, observer)
-      });
-      await queryClient.prefetchQuery({
-        queryKey: ['subscribers', community],
-        queryFn: async () => await getSubscribers(community)
-      });
-      await queryClient.prefetchQuery({
-        queryKey: ['AccountNotification', community],
-        queryFn: async () => await getAccountNotifications(community)
+        queryFn: () => getCommunity(community, observer)
       });
     }
   } catch (error) {
