@@ -6,6 +6,7 @@ import * as z from 'zod';
 
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { hasCompatiblePeakvault } from '@smart-signer/lib/signer/signer-peakvault';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginType, KeyType } from '@smart-signer/types/common';
 import { Icons } from '@ui/components/icons';
@@ -59,6 +60,10 @@ export const loginTypeDetails: LoginTypeDetails = {
     logo: '/smart-signer/images/hivekeychain.png',
     type: 'internal'
   },
+  peakvault: {
+    logo: '/smart-signer/images/peakvault.svg',
+    type: 'internal'
+  },
   wif: {
     logo: '/smart-signer/images/hive-blog-twshare.png',
     type: 'internal'
@@ -79,9 +84,11 @@ export default function LoginForm({
   i18nNamespace = 'smart-signer'
 }: LoginFormOptions) {
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
+  const [isPeakvaultSupported, setIsPeakvaultSupported] = useState(false);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
+    setIsPeakvaultSupported(hasCompatiblePeakvault());
   }, []);
 
   const {
@@ -129,7 +136,9 @@ export default function LoginForm({
                 ? 'Use HiveAuth'
                 : loginType === 'wif'
                   ? 'Use WIF'
-                  : loginType}
+                  : loginType === 'peakvault'
+                    ? 'Use PeakVault'
+                    : loginType /* TODO: Move stringification to a separate function - also search for similarities */ }
         </label>
       </div>
     );
@@ -141,6 +150,8 @@ export default function LoginForm({
       let element: JSX.Element;
       if (loginType === LoginType.keychain) {
         element = radioGroupItem(loginType, !isKeychainSupported);
+      } else if (loginType === LoginType.peakvault) {
+        element = radioGroupItem(loginType, !isPeakvaultSupported);
       } else {
         element = radioGroupItem(loginType, false);
       }

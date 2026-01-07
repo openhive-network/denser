@@ -204,6 +204,59 @@ export const Icons = {
       />
     </svg>
   ),
+  peakvault: (props: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 251.19255 251.18987" {...props}>
+      <defs>
+        <linearGradient id="linearGradient867">
+          <stop
+            style={{ stopColor: '#3730a3', stopOpacity: 1 }}
+            offset="0"
+            id="stop863" />
+          <stop
+            style={{ stopColor: '#e11d48', stopOpacity: 1 }}
+            offset="1"
+            id="stop865" />
+        </linearGradient>
+        <linearGradient
+          xlinkHref="#linearGradient867"
+          id="linearGradient869"
+          x1="2.6665275"
+          y1="2.4780953"
+          x2="97.284767"
+          y2="97.096336"
+          gradientUnits="userSpaceOnUse" />
+      </defs>
+      <g
+        transform="matrix(2.6802623,0,0,2.6802623,-8.4181798,-8.4181824)"
+        style={{ opacity: 0.97, fill: 'url(#linearGradient869)', stroke: 'none', fillOpacity: 1 }}>
+        <path
+          d="M 82.767,96.113 H 17.234 C 9.874,96.113 3.887,90.126 3.887,82.766 V 17.234 c 0,-7.36 5.987,-13.347 13.347,-13.347 h 65.533 c 7.359,0 13.347,5.987 13.347,13.347 V 82.767 C 96.113,90.126 90.126,96.113 82.767,96.113 Z M 17.234,9.887 c -4.051,0 -7.347,3.296 -7.347,7.347 v 65.533 c 0,4.051 3.296,7.347 7.347,7.347 h 65.533 c 4.051,0 7.347,-3.296 7.347,-7.347 V 17.234 c 0,-4.051 -3.296,-7.347 -7.347,-7.347 z"
+          style={{ fillOpacity: 1, fill: 'url(#linearGradient869)' }} />
+        <path
+          d="m 70.789768,50.000306 c 0,-1.019453 0.829414,-1.845645 1.847256,-1.845645 h 9.949731 A 32.498481,32.498481 0 0 0 74.352217,28.261642 l -7.037928,7.037929 a 1.8471383,1.8471384 0 1 1 -2.612248,-2.612248 l 7.037928,-7.037929 A 32.49204,32.49204 0 0 0 51.84695,17.413245 v 9.949731 a 1.8464497,1.8464498 0 0 1 -3.692899,0 v -9.949731 a 32.488818,32.488818 0 0 0 -19.893019,8.234538 l 7.039539,7.03954 a 1.847255,1.847255 0 1 1 -2.612247,2.612247 l -7.03954,-7.039539 A 32.488818,32.488818 0 0 0 17.414246,48.15305 h 9.949731 a 1.8464498,1.8464498 0 1 1 0,3.692899 h -9.949731 a 32.498481,32.498481 0 0 0 8.234538,19.893019 l 7.03954,-7.039539 a 1.8488655,1.8488655 0 0 1 2.612247,2.613859 l -7.03954,7.037928 a 32.488818,32.488818 0 0 0 19.89302,8.234538 v -9.949731 a 1.847255,1.847255 0 1 1 3.692899,0 v 9.949731 a 32.498481,32.498481 0 0 0 19.891409,-8.234538 l -7.03793,-7.037928 a 1.850476,1.850476 0 0 1 2.613858,-2.613859 l 7.03793,7.037929 a 32.480766,32.480766 0 0 0 8.234538,-19.891409 h -9.949732 a 1.847255,1.847255 0 0 1 -1.847255,-1.845643 z"
+          style={{ strokeWidth: 1.61051011, fillOpacity: 1, fill: 'url(#linearGradient869)' }} />
+      </g>
+      <g
+        transform="matrix(3.6560541,0,0,-3.6560541,57.754335,186.66394)"
+        style={{ opacity: 0.97, fill: '#ffffff' }}>
+        <path
+          style={{ fill: '#ffffff', fillOpacity: 1, fillRule: 'evenodd', stroke: 'none', strokeWidth: 0.124659 }}
+          d="m 18.626724,28.195882 3.07272,-4.819878 -3.07272,-4.81989 -3.072707,4.81989 z" />
+        <path
+          style={{ fill: '#ffffff', fillOpacity: 1, fillRule: 'evenodd', stroke: 'none', strokeWidth: 0.124659 }}
+          d="m 21.939026,22.978217 2.900266,-4.549418 -2.900266,-4.54943 -2.900279,4.54943 z" />
+        <path
+          style={{ fill: '#ffffff', fillOpacity: 1, fillRule: 'evenodd', stroke: 'none', strokeWidth: 0.124659 }}
+          d="m 15.256269,22.978217 2.900279,-4.549418 -2.900279,-4.54943 -2.900304,4.54943 z" />
+        <path
+          style={{ fill: '#ffffff', fillOpacity: 1, fillRule: 'evenodd', stroke: 'none', strokeWidth: 0.124659 }}
+          d="M 12.042111,17.912562 14.942378,13.363144 11.843517,8.4934028 H 6.0635027 Z" />
+        <path
+          style={{ fill: '#ffffff', fillOpacity: 1, fillRule: 'evenodd', stroke: 'none', strokeWidth: 0.124659 }}
+          d="m 25.069974,17.912562 -2.900279,-4.549418 3.098898,-4.8697412 h 5.780014 z" />
+      </g>
+    </svg>
+  ),
   hiveauth: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 166 165" {...props}>
       <rect x="0.5" width="165" height="165" fill="url(#pattern1)" />

@@ -1,6 +1,7 @@
 export enum LoginType {
     hbauth = 'hbauth',
     keychain = 'keychain',
+    peakvault = 'peakvault',
     hiveauth = 'hiveauth',
     wif = 'wif',
     hivesigner = 'hivesigner',

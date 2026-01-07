@@ -6,6 +6,7 @@ import * as z from 'zod';
 
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { hasCompatiblePeakvault } from '@smart-signer/lib/signer/signer-peakvault';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginType, StorageType, KeyType } from '@smart-signer/types/common';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
@@ -40,6 +41,7 @@ const commonFields = z.object({
   username,
   useHbauth: z.boolean(),
   useKeychain: z.boolean(),
+  usePeakvault: z.boolean(),
   useHiveauth: z.boolean(),
   remember: z.boolean(),
   keyType: z.nativeEnum(KeyType, {
@@ -55,6 +57,7 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hbauth) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hiveauth) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.keychain) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.peakvault) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hivesigner) }).merge(commonFields)
 ]);
 
@@ -67,6 +70,7 @@ const loginFormDefaultValues = {
   useHbauth: true,
   useHiveauth: false,
   useKeychain: false,
+  usePeakvault: false,
   username: '',
   keyType: KeyType.posting
 };
@@ -81,10 +85,12 @@ export function LoginForm({
   i18nNamespace?: string;
 }) {
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
+  const [isPeakvaultSupported, setIsPeakvaultSupported] = useState(false);
   const [disabledPasword, setDisabledPassword] = useState(true);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
+    setIsPeakvaultSupported(hasCompatiblePeakvault());
   }, []);
 
   const {
@@ -217,6 +223,29 @@ export function LoginForm({
                   alt="Hive Keychain logo"
                 />
                 Use Keychain
+              </label>
+            </div>
+
+            <div className="flex items-center py-1">
+              <input
+                type="checkbox"
+                id="usePeakvault"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register('usePeakvault')}
+                disabled={!isPeakvaultSupported}
+                onChange={(e) => onCheckboxToggle(e, LoginType.peakvault)}
+              />
+              <label
+                htmlFor="usePeakvault"
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+              >
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/smart-signer/images/peakvault.svg"
+                  alt="PeakVault logo"
+                />
+                Use PeakVault
               </label>
             </div>
 

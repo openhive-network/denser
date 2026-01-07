@@ -65,6 +65,7 @@
     "use_hbauth": "Use safe storage",
     "use_hiveauth": "Use HiveAuth",
     "use_keychain": "Use Keychain",
+    "use_peakvault": "Use Peakvault",
     "use_wif": "Use WIF",
     "username_placeholder": "Enter your username",
     "working": "Working…",
@@ -112,6 +113,7 @@
       "wif_required": "WIF key is required"
     },
     "signin_with_keychain": "Hive Keychain extension",
+    "signin_with_peakvault": "Peakvault extension",
     "signin_with_wif": "Sign in with WIF (Legacy)",
     "signin_with_hiveauth": "HiveAuth",
     "signin_with_hivesigner": "HiveSigner"

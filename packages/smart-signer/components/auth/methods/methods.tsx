@@ -186,6 +186,19 @@ const Methods: FC<MethodsProps> = ({
             </Button>
 
             <Separator className="my-1 w-full" />
+            <Button
+              disabled={!form.formState.isValid}
+              className="flex w-full justify-start py-6"
+              type="button"
+              variant="ghost"
+              onClick={form.handleSubmit(() => onSubmit(LoginType.peakvault))}
+              data-testid="peakvault-extension-button"
+            >
+              <Icons.peakvault className="mr-4 h-8 w-8" />
+              PeakVault extension
+            </Button>
+
+            <Separator className="my-1 w-full" />
 
             <Button
               disabled={!form.formState.isValid}

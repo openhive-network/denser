@@ -1,12 +1,12 @@
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { SignerHiveauth } from '@smart-signer/lib/signer/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { SignerPeakvault } from '@smart-signer/lib/signer/signer-peakvault';
 import { SignerWif } from '@smart-signer/lib/signer/signer-wif';
 import { LoginType } from '@smart-signer/types/common';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 
-export type SignerTool = SignerHbauth | SignerHiveauth | SignerKeychain | SignerWif;
-
+export type SignerTool = SignerHbauth | SignerHiveauth | SignerKeychain | SignerPeakvault | SignerWif;
 export type RegisteredSigners = {
   [key in LoginType]?: any;
 };
@@ -15,6 +15,7 @@ const registeredSigners: RegisteredSigners = {};
 registeredSigners[LoginType.hbauth] = SignerHbauth;
 registeredSigners[LoginType.hiveauth] = SignerHiveauth;
 registeredSigners[LoginType.keychain] = SignerKeychain;
+registeredSigners[LoginType.peakvault] = SignerPeakvault;
 registeredSigners[LoginType.wif] = SignerWif;
 
 function signerFactory({
@@ -42,6 +43,8 @@ function signerFactory({
  *    class.
  * 3. [Hiveauth](https://hiveauth.com/), handled in SignerHiveauthclass.
  * 4. So known "Wif" custom tool
+ * 5. [Peakvault](https://vault.peakd.com/), handled in SignerPeakvault
+ *    class.
  *
  * @export
  * @param {SignerOptions} options
