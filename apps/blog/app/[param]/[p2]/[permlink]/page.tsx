@@ -2,7 +2,8 @@ import { Suspense } from 'react';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import PostContent from './content';
-import { getCommunity, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
+import { getPostCached } from '@/blog/lib/cached-api';
+import { getCommunity, getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { getDiscussion } from '@transaction/lib/bridge-api';
 import { getActiveVotes } from '@transaction/lib/hive-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
@@ -33,9 +34,10 @@ const PostPage = async ({
   if (!isPermlinkValid(permlink)) notFound();
   try {
     const observer = getObserverFromCookies();
+    // Use cached version - deduplicated with layout's generateMetadata within the same request
     await queryClient.prefetchQuery({
       queryKey: ['postData', username, permlink],
-      queryFn: () => getPost(username, permlink, observer)
+      queryFn: () => getPostCached(username, permlink, observer)
     });
 
     await queryClient.prefetchQuery({

@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import React, { PropsWithChildren } from 'react';
-import { getPost } from '@transaction/lib/bridge-api';
-import { getQueryClient } from '@/blog/lib/react-query';
+import { getPostCached } from '@/blog/lib/cached-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
 
@@ -23,12 +22,9 @@ export async function generateMetadata({
   const permlink = params?.permlink;
   const observer = getObserverFromCookies();
 
-  const queryClient = getQueryClient();
   try {
-    const post = await queryClient.fetchQuery({
-      queryKey: ['postData', author, permlink],
-      queryFn: () => getPost(author, permlink, observer)
-    });
+    // Use cached version - deduplicated with page's prefetch within the same request
+    const post = await getPostCached(author, permlink, observer);
 
     const title = post?.title ? `${post.title} ` : 'Hive Blog';
     const description =
