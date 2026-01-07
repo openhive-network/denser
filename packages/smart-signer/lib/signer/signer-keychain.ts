@@ -41,7 +41,7 @@ export class SignerKeychain extends Signer {
     try {
       const provider = KeychainProvider.for(
         this.username,
-        "memo"
+        keyType
       );
 
       const signature = provider.encryptData(typeof message === "string" ? message : JSON.stringify(message), username);
