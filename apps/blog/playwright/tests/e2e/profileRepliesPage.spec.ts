@@ -238,8 +238,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     // Hover upvote button
     await profilePage.postUpvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
-    // Validate the tooltip message
-    expect(await profilePage.postUpvoteTooltip.textContent()).toBe('UpvoteUpvote');
+    // Validate the tooltip message (may include payout warning for old posts)
+    expect(await profilePage.postUpvoteTooltip.textContent()).toContain('Upvote');
     // Upvote icon color
     expect(
       await profilePage.getElementCssPropertyValue(
@@ -270,8 +270,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     // Hover Downvote button
     await profilePage.postDownvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
-    // Validate the tooltip message
-    expect(await profilePage.postDownvoteTooltip.textContent()).toBe('DownvoteDownvote');
+    // Validate the tooltip message (may include payout warning for old posts)
+    expect(await profilePage.postDownvoteTooltip.textContent()).toContain('Downvote');
     // Upvote icon color
     expect(
       await profilePage.getElementCssPropertyValue(

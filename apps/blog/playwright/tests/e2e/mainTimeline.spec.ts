@@ -757,7 +757,7 @@ test.describe('Home page tests', () => {
     // Wait for tooltip to be visible instead of fixed timeout
     await expect(homePage.getFirstPostUpvoteButtonTooltip).toBeVisible({ timeout: 15000 });
     // Validate the tooltip message
-    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toBe('UpvoteUpvote');
+    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toContain('Upvote');
     // Upvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
@@ -804,7 +804,7 @@ test.describe('Home page tests', () => {
     // Wait for tooltip to be visible instead of fixed timeout
     await expect(homePage.getFirstPostUpvoteButtonTooltip).toBeVisible({ timeout: 15000 });
     // Validate the tooltip message
-    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toBe('UpvoteUpvote');
+    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toContain('Upvote');
     // Upvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
@@ -858,7 +858,7 @@ test.describe('Home page tests', () => {
     // Wait for tooltip to be visible instead of fixed timeout
     await expect(homePage.getFirstPostDownvoteButtonTooltip).toBeVisible({ timeout: 15000 });
     // Validate the tooltip message
-    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toBe('DownvoteDownvote');
+    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toContain('Downvote');
     // Downvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
@@ -905,7 +905,7 @@ test.describe('Home page tests', () => {
     // Wait for tooltip to be visible instead of fixed timeout
     await expect(homePage.getFirstPostDownvoteButtonTooltip).toBeVisible({ timeout: 15000 });
     // Validate the tooltip message
-    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toBe('DownvoteDownvote');
+    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toContain('Downvote');
     // Downvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
