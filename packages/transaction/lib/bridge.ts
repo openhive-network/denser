@@ -1,17 +1,23 @@
-import { hiveChainService } from './hive-chain-service';
-import { getLogger } from '@ui/lib/logging';
-import { IGetPostHeader, IFollowList, IAccountRelationship, Entry, IUnreadNotifications, Community, IAccountNotification, FollowListType } from './extended-hive.chain';
-import {commonVariables} from'@ui/lib/common-variables';
+import { getChain } from './chain';
+import {
+  IAccountRelationship,
+  Entry,
+  Community,
+  IAccountNotification,
+  FollowListType,
+  IFollowList,
+  IGetPostHeader,
+  IUnreadNotifications
+} from './extended-hive.chain';
+import { commonVariables } from '@ui/lib/common-variables';
 
-const logger = getLogger('app');
-
-const chain = await hiveChainService.getHiveChain();
+const chain = await getChain();
 
 export type Subscription = Array<string>;
 
 export const DATA_LIMIT = 20;
 
-const resolvePost = (post: Entry, observer: string): Promise<Entry> => {
+const resolvePost = async (post: Entry, observer: string): Promise<Entry> => {
   const { json_metadata: json } = post;
 
   if (json.original_author && json.original_permlink && json.tags && json.tags[0] === 'cross-post') {
@@ -201,4 +207,39 @@ export const getTwitterInfo = async (username: string) => {
   }
 
   return data;
+};
+
+export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
+  return chain.api.bridge.get_post_header({
+    author,
+    permlink
+  });
+};
+
+export const getUnreadNotifications = async (account: string): Promise<IUnreadNotifications | null> => {
+  return chain.api.bridge.unread_notifications({
+    account
+  });
+};
+
+export const getSubscriptions = async (account: string): Promise<string[][] | null> => {
+  return chain.api.bridge.list_all_subscriptions({
+    account
+  });
+};
+
+export const getFollowList = async (
+  observer: string,
+  follow_type: FollowListType
+): Promise<IFollowList[]> => {
+  return chain.api.bridge.get_follow_list({
+    observer,
+    follow_type
+  });
+};
+
+export const getSubscribers = async (community: string): Promise<string[][] | null> => {
+  return chain.api.bridge.list_subscribers({
+    community
+  });
 };
