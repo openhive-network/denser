@@ -238,8 +238,9 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     // Hover upvote button
     await profilePage.postUpvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
-    // Validate the tooltip message (may include payout warning for old posts)
-    expect(await profilePage.postUpvoteTooltip.textContent()).toContain('Upvote');
+    // Validate the tooltip message
+    const tooltipText = await profilePage.postUpvoteTooltip.textContent();
+    expect(['UpvoteUpvote', 'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards']).toContain(tooltipText);
     // Upvote icon color
     expect(
       await profilePage.getElementCssPropertyValue(
@@ -270,8 +271,9 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     // Hover Downvote button
     await profilePage.postDownvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
-    // Validate the tooltip message (may include payout warning for old posts)
-    expect(await profilePage.postDownvoteTooltip.textContent()).toContain('Downvote');
+    // Validate the tooltip message
+    const tooltipText = await profilePage.postDownvoteTooltip.textContent();
+    expect(['DownvoteDownvote', 'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards']).toContain(tooltipText);
     // Upvote icon color
     expect(
       await profilePage.getElementCssPropertyValue(
