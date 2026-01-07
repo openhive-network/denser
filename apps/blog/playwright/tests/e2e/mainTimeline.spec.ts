@@ -756,8 +756,8 @@ test.describe('Home page tests', () => {
     await homePage.getFirstPostUpvoteButton.hover();
     // Wait for tooltip to be visible instead of fixed timeout
     await expect(homePage.getFirstPostUpvoteButtonTooltip).toBeVisible({ timeout: 15000 });
-    // Validate the tooltip message
-    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toBe('UpvoteUpvote');
+    // Validate the tooltip message (may include payout warning for old posts)
+    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toContain('Upvote');
     // Upvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
@@ -803,8 +803,8 @@ test.describe('Home page tests', () => {
     await homePage.getFirstPostUpvoteButton.hover();
     // Wait for tooltip to be visible instead of fixed timeout
     await expect(homePage.getFirstPostUpvoteButtonTooltip).toBeVisible({ timeout: 15000 });
-    // Validate the tooltip message
-    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toBe('UpvoteUpvote');
+    // Validate the tooltip message (may include payout warning for old posts)
+    expect(await homePage.getFirstPostUpvoteButtonTooltip.textContent()).toContain('Upvote');
     // Upvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
@@ -857,8 +857,8 @@ test.describe('Home page tests', () => {
     await homePage.getFirstPostDownvoteButton.hover();
     // Wait for tooltip to be visible instead of fixed timeout
     await expect(homePage.getFirstPostDownvoteButtonTooltip).toBeVisible({ timeout: 15000 });
-    // Validate the tooltip message
-    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toBe('DownvoteDownvote');
+    // Validate the tooltip message (may include payout warning for old posts)
+    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toContain('Downvote');
     // Downvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
@@ -904,8 +904,8 @@ test.describe('Home page tests', () => {
     await homePage.getFirstPostDownvoteButton.hover();
     // Wait for tooltip to be visible instead of fixed timeout
     await expect(homePage.getFirstPostDownvoteButtonTooltip).toBeVisible({ timeout: 15000 });
-    // Validate the tooltip message
-    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toBe('DownvoteDownvote');
+    // Validate the tooltip message (may include payout warning for old posts)
+    expect(await homePage.getFirstPostDownvoteButtonTooltip.textContent()).toContain('Downvote');
     // Downvote icon color
     expect(
       await homePage.getElementCssPropertyValue(
