@@ -47,7 +47,8 @@ import {
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { TransferDialog } from '@/wallet/components/transfer-dialog';
 import useFilters from '@/wallet/components/hooks/use-filters';
-import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translations';
+import { getAccountMetadata } from '@transaction/lib/metadata';
+import { getTranslations } from '@/wallet/lib/get-translations';
 import FinancialReport from '@/wallet/components/financial-report';
 import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';
 import { useMemo, useState } from 'react';

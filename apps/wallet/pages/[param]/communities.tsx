@@ -21,7 +21,8 @@ import {
   Textarea
 } from '@ui/components';
 import { useEffect, useState } from 'react';
-import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translations';
+import { getAccountMetadata } from '@transaction/lib/metadata';
+import { getTranslations } from '@/wallet/lib/get-translations';
 import { ESupportedLanguages } from '@hiveio/wax';
 import { useCreateCommunityMutation } from '@/wallet/components/hooks/use-create-community-mutation';
 import { z } from 'zod';

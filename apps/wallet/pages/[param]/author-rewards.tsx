@@ -1,7 +1,8 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ProfileLayout from '@/wallet/components/common/profile-layout';
 import { useTranslation } from 'next-i18next';
-import { getAccountMetadata, getTranslations } from '@/wallet/lib/get-translations';
+import { getAccountMetadata } from '@transaction/lib/metadata';
+import { getTranslations } from '@/wallet/lib/get-translations';
 import Head from 'next/head';
 import { useRewardsHistory } from '@/wallet/components/hooks/use-rewards-history';
 import { Link } from '@hive/ui';

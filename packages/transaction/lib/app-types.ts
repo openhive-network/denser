@@ -86,3 +86,13 @@ export interface Preferences {
   comment_rewards: '0%' | '50%' | '100%';
   referral_system: 'enabled' | 'disabled';
 }
+
+/**
+ * Metadata properties for SEO and page meta tags
+ */
+export interface MetadataProps {
+  tabTitle: string;
+  description: string;
+  image: string;
+  title: string;
+}
