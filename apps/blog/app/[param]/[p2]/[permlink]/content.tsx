@@ -9,7 +9,6 @@ import ChangeTitleDialog from '@/blog/features/community-profile/change-title-di
 import DetailsCardHover from '@/blog/features/list-of-posts/details-card-hover';
 import ReblogTrigger from '@/blog/features/list-of-posts/reblog-trigger';
 import { useDeletePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
-import { postClassName } from '@/blog/features/post-editor/lib/utils';
 import PostForm from '@/blog/features/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
@@ -18,10 +17,9 @@ import CommentsSection from '@/blog/features/post-rendering/comments-section';
 import ContextLinks from '@/blog/features/post-rendering/context-links';
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import FlagIcon from '@/blog/features/post-rendering/flag-icon';
-import ImageGallery from '@/blog/features/post-rendering/image-gallery';
 import MutePostDialog from '@/blog/features/post-rendering/mute-post-dialog';
+import PostBodySection from '@/blog/features/post-rendering/post-body-section';
 import { PostDeleteDialog } from '@/blog/features/post-rendering/post-delete-dialog';
-import RendererContainer from '@/blog/features/post-rendering/rendererContainer';
 import { SharePost } from '@/blog/features/post-rendering/share-post-dialog';
 import FacebookShare from '@/blog/features/post-rendering/share-post-facebook';
 import LinkedInShare from '@/blog/features/post-rendering/share-post-linkedin';
@@ -45,7 +43,6 @@ import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import Loading from '@ui/components/loading';
-import { Separator } from '@ui/components/separator';
 import TimeAgo from '@ui/components/time-ago';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import dmcaList from '@ui/config/lists/dmca-list';
@@ -359,6 +356,11 @@ const PostContent = () => {
     setCommentsPage(page);
   }, []);
 
+  // Stable callback for PostBodySection
+  const handleShowMutedContent = useCallback(() => {
+    setMutedPost(false);
+  }, []);
+
   if (userFromGDPR || (!postData && !postIsLoading)) return <NoDataError />;
 
   return (
@@ -367,7 +369,7 @@ const PostContent = () => {
         <div className="col-span-2 hidden md:block">
           {suggestionData ? <AnimatedList suggestions={suggestionData} /> : null}
         </div>
-        <div className="py-8 sm:col-span-8 sm:mx-auto sm:flex sm:flex-col">
+        <div className="w-full min-w-0 py-8 md:col-span-8 md:mx-auto md:flex md:flex-col">
           <div className={postContainerClasses}>
             {crossedPost ? (
               <div className="mb-4 flex items-center gap-2 bg-background-secondary p-5 text-sm">
@@ -470,26 +472,16 @@ const PostContent = () => {
                   <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                 ) : copyRightCheck || userFromDMCA ? (
                   <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
-                ) : mutedPost ? (
-                  <>
-                    <Separator />
-                    <div className="my-8 flex items-center justify-between text-destructive">
-                      {t('post_content.body.content_were_hidden')}
-                      <Button variant="outlineRed" onClick={() => setMutedPost(false)}>
-                        {t('post_content.body.show')}
-                      </Button>
-                    </div>
-                  </>
                 ) : (
-                  <ImageGallery>
-                    <RendererContainer
-                      mainPost={postData.depth === 0}
-                      body={crossPostData?.body ?? postData.body}
-                      author={postData.author}
-                      permlink={postData.permlink}
-                      className={postClassName}
-                    />
-                  </ImageGallery>
+                  <PostBodySection
+                    body={postData.body}
+                    author={postData.author}
+                    permlink={postData.permlink}
+                    mainPost={postData.depth === 0}
+                    crossPostBody={crossPostData?.body}
+                    mutedPost={mutedPost}
+                    onShowMutedContent={handleShowMutedContent}
+                  />
                 )}
                 <div className="clear-both">
                   {!commentSite ? (
