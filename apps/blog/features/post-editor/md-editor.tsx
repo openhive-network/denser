@@ -2,10 +2,9 @@
 
 import '@uiw/react-md-editor/markdown-editor.css';
 import {
-  Dispatch,
   FC,
+  KeyboardEvent,
   MutableRefObject,
-  SetStateAction,
   useCallback,
   useEffect,
   useRef,
@@ -105,6 +104,30 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     [setFormValue, signer]
   );
 
+  // Handle Ctrl+Home/End to ensure cursor scrolls into view (Firefox fix)
+  const keyDownHandler = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
+    const isCtrlOrCmd = event.ctrlKey || event.metaKey;
+    if (isCtrlOrCmd && (event.key === 'Home' || event.key === 'End')) {
+      // Let the default behavior happen first, then scroll
+      setTimeout(() => {
+        const textarea = document.querySelector('.w-md-editor-text-input') as HTMLTextAreaElement;
+        if (textarea) {
+          // Create a temporary span at cursor position to scroll to
+          const cursorPos = event.key === 'Home' ? 0 : textarea.value.length;
+          textarea.setSelectionRange(cursorPos, cursorPos);
+          textarea.blur();
+          textarea.focus();
+          // Ensure the textarea scrolls to show cursor
+          if (event.key === 'Home') {
+            textarea.scrollTop = 0;
+          } else {
+            textarea.scrollTop = textarea.scrollHeight;
+          }
+        }
+      }, 0);
+    }
+  }, []);
+
   const imgBtn = (inputRef: MutableRefObject<HTMLInputElement>): commands.ICommand => ({
     name: 'Text To Image',
     keyCommand: 'text2image',
@@ -189,7 +212,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         //@ts-ignore
         onChange={inputImageHandler}
       />
-      <div className="relative" onPaste={pasteHandler}>
+      <div className="relative" onPaste={pasteHandler} onKeyDown={keyDownHandler}>
         <div>
           <MDEditor
             ref={editorRef}
