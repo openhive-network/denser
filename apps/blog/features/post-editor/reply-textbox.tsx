@@ -1,6 +1,6 @@
 import { Link } from '@hive/ui';
 import { Button } from '@ui/components/button';
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
 import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
@@ -18,6 +18,75 @@ import { commentClassName } from '../post-rendering/comment-list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const logger = getLogger('app');
+
+// Comment draft storage with expiration (1 month)
+const COMMENT_DRAFT_PREFIX = 'replyTo-';
+const COMMENT_DRAFT_EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+interface CommentDraft {
+  text: string;
+  expiresAt: number;
+}
+
+function saveCommentDraft(key: string, text: string): void {
+  const draft: CommentDraft = {
+    text,
+    expiresAt: Date.now() + COMMENT_DRAFT_EXPIRY_MS
+  };
+  localStorage.setItem(key, JSON.stringify(draft));
+}
+
+function loadCommentDraft(key: string): string | null {
+  const stored = localStorage.getItem(key);
+  if (!stored) return null;
+
+  try {
+    const parsed = JSON.parse(stored);
+    // Handle legacy format (just string)
+    if (typeof parsed === 'string') {
+      return parsed;
+    }
+    // New format with expiration
+    const draft = parsed as CommentDraft;
+    if (draft.expiresAt && Date.now() > draft.expiresAt) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return draft.text;
+  } catch {
+    localStorage.removeItem(key);
+    return null;
+  }
+}
+
+function cleanupExpiredCommentDrafts(): void {
+  const keysToRemove: string[] = [];
+
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith(COMMENT_DRAFT_PREFIX)) {
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          // Check if it's the new format with expiration
+          if (typeof parsed === 'object' && parsed.expiresAt) {
+            if (Date.now() > parsed.expiresAt) {
+              keysToRemove.push(key);
+            }
+          }
+          // Legacy format without expiration - convert or remove if very old
+          // We can't know the age, so we leave them for now
+        } catch {
+          // Invalid JSON, remove it
+          keysToRemove.push(key);
+        }
+      }
+    }
+  }
+
+  keysToRemove.forEach((key) => localStorage.removeItem(key));
+}
 
 export function ReplyTextbox({
   onSetReply,
@@ -39,34 +108,103 @@ export function ReplyTextbox({
   discussionPermlink: string;
 }) {
   const { user } = useUserClient();
-  const [storedPost, storePost, removePost] = useLocalStorage<string>(
-    `replyTo-/${username}/${permlink}-${user.username}`,
-    ''
+  const storageKey = `replyTo-/${username}/${permlink}-${user.username}`;
+
+  // Memoize comment body to avoid recalculation on every render
+  const commentBody = useMemo(
+    () => (typeof comment === 'string' ? comment : comment?.body ?? ''),
+    [comment]
   );
+
   const { manabarsData } = useManabars(user.username);
   const [preferences] = useLocalStorage<Preferences>(
     `user-preferences-${user.username}`,
     DEFAULT_PREFERENCES
   );
   const { t } = useTranslation('common_blog');
-  const [text, setText] = useState(
-    storedPost ? storedPost : typeof comment === 'string' ? comment : comment.body ? comment.body : ''
-  );
+
+  // Initialize with empty string to avoid hydration mismatch, then hydrate from localStorage
+  const [text, setText] = useState('');
+  const [isHydrated, setIsHydrated] = useState(false);
+
   const commentMutation = useCommentMutation();
   const updateCommentMutation = useUpdateCommentMutation();
-
-  useEffect(() => {
-    storePost(text);
-  }, [text]);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Hydrate text from localStorage or comment body after mount
+  // Also cleanup expired drafts on first mount
+  useEffect(() => {
+    if (!isHydrated) {
+      // Cleanup expired drafts on component mount
+      cleanupExpiredCommentDrafts();
+
+      if (editMode) {
+        // In edit mode, always use current comment body
+        setText(commentBody);
+      } else {
+        // For new replies, check localStorage first
+        const storedText = loadCommentDraft(storageKey);
+        if (storedText) {
+          setText(storedText);
+        } else {
+          setText(commentBody);
+        }
+      }
+      setIsHydrated(true);
+    }
+  }, [isHydrated, editMode, commentBody, storageKey]);
+
+  // In edit mode, update text when comment changes (e.g., after save and re-edit)
+  useEffect(() => {
+    if (isHydrated && editMode) {
+      setText(commentBody);
+    }
+  }, [isHydrated, editMode, commentBody]);
+
+  // Debounced save to localStorage without causing re-renders
+  const saveToStorage = useCallback((value: string) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    debounceTimerRef.current = setTimeout(() => {
+      if (value) {
+        saveCommentDraft(storageKey, value);
+      } else {
+        localStorage.removeItem(storageKey);
+      }
+    }, 500);
+  }, [storageKey]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
+  const removePost = useCallback(() => {
+    localStorage.removeItem(storageKey);
+  }, [storageKey]);
 
   const handleCancel = () => {
+    // Always remove the reply box state
     localStorage.removeItem(storageId);
-    if (text === '') return onSetReply(false);
+
+    if (text === '') {
+      // No text to save, just close and cleanup any existing draft
+      removePost();
+      onSetReply(false);
+      return;
+    }
+
+    // Ask user to confirm discarding their draft
     const confirmed = confirm(t('post_content.footer.comment.exit_editor'));
     if (confirmed) {
-      onSetReply(false);
       removePost();
+      onSetReply(false);
     }
   };
 
@@ -107,8 +245,8 @@ export function ReplyTextbox({
         }
       }
       setText('');
-      removePost();
-      localStorage.removeItem(storageId);
+      removePost();  // Remove stored comment text
+      localStorage.removeItem(storageId);  // Remove reply box state
       onSetReply(false);
       if (btnRef.current) {
         btnRef.current.disabled = true;
@@ -135,12 +273,8 @@ export function ReplyTextbox({
           <MdEditor
             windowheight={200}
             onChange={(value) => {
-              if (value === '') {
-                setText(value);
-                removePost();
-              } else {
-                setText(value);
-              }
+              setText(value);
+              saveToStorage(value);
             }}
             persistedValue={text}
             placeholder={t('post_content.footer.comment.reply')}
