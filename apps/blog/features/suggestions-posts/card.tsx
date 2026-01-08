@@ -1,7 +1,7 @@
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { find_first_img } from '../list-of-posts/post-img';
 import { Link } from '@hive/ui';
-import { proxifyImageUrl } from '@ui/lib/old-profixy';
+import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { useState } from 'react';
 import { getDefaultImageUrl } from '@hive/ui';
 
@@ -20,7 +20,7 @@ const SuggestionsCard = ({ entry }: { entry: Entry }) => {
             <div className="flex h-24 items-center overflow-hidden rounded-t-lg bg-transparent">
               <picture className="articles__feature-img h-ful w-full">
                 <source
-                  srcSet={proxifyImageUrl(image, '256x512').replace(/ /g, '%20')}
+                  srcSet={proxifyImageSrc(image, 256, 512)}
                   media="(min-width: 600px)"
                   onError={() => setImage(getDefaultImageUrl())}
                 />

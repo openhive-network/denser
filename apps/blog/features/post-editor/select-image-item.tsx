@@ -1,5 +1,5 @@
 import { Button } from '@ui/components';
-import { proxifyImageUrl } from '@ui/lib/old-profixy';
+import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { imagePicker } from './lib/utils';
@@ -25,7 +25,7 @@ const SelectImageItem: React.FC<SelectImageItemTypes> = ({ data, onChange, value
         onClick={() => onChange(data)}
       >
         <img
-          src={proxifyImageUrl(imagePicker(data), true)}
+          src={proxifyImageSrc(imagePicker(data))}
           alt="cover img"
           onError={() => setInvalidImages(true)}
           loading="lazy"

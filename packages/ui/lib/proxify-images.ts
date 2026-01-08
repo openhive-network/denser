@@ -4,6 +4,14 @@ import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 
 const proxyBase = configuredImagesEndpoint;
 
+interface ProxyOptions {
+  [key: string]: string | number | undefined;
+  format: string;
+  mode: string;
+  width?: number;
+  height?: number;
+}
+
 export function extractPHash(url: string): string | null {
   if (url.startsWith(`${proxyBase}/p/`)) {
     const [hash] = url.split('/p/')[1].split('?');
@@ -42,9 +50,11 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
 
   // For other external images, use the complex /p/hash system
   const realUrl = getLatestUrl(url);
-  const pHash = extractPHash(realUrl);
+  // Encode spaces and special characters in URL
+  const encodedUrl = encodeURI(realUrl).replace(/ /g, '%20');
+  const pHash = extractPHash(encodedUrl);
 
-  const options: Record<string, string | number> = {
+  const options: ProxyOptions = {
     format,
     mode: 'fit'
   };
@@ -64,7 +74,10 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
     return `${proxyBase}/p/${pHash}?${qs}`;
   }
 
-  const b58url = multihash.toB58String(Buffer.from(realUrl.toString()) as unknown as Uint8Array);
+  // Use TextEncoder for browser compatibility instead of Buffer
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(encodedUrl);
+  const b58url = multihash.toB58String(bytes);
 
   return `${proxyBase}/p/${b58url}?${qs}`;
 }
