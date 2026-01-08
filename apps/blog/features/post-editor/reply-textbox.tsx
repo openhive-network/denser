@@ -108,11 +108,14 @@ export function ReplyTextbox({
   discussionPermlink: string;
 }) {
   const { user } = useUserClient();
-  const storageKey = `replyTo-/${username}/${permlink}-${user.username}`;
+  const storageKey = useMemo(
+    () => (user.username ? `replyTo-/${username}/${permlink}-${user.username}` : null),
+    [username, permlink, user.username]
+  );
 
   // Memoize comment body to avoid recalculation on every render
   const commentBody = useMemo(
-    () => (typeof comment === 'string' ? comment : comment?.body ?? ''),
+    () => (typeof comment === 'string' ? comment : (comment?.body ?? '')),
     [comment]
   );
 
@@ -135,7 +138,7 @@ export function ReplyTextbox({
   // Hydrate text from localStorage or comment body after mount
   // Also cleanup expired drafts on first mount
   useEffect(() => {
-    if (!isHydrated) {
+    if (!isHydrated && storageKey) {
       // Cleanup expired drafts on component mount
       cleanupExpiredCommentDrafts();
 
@@ -163,18 +166,22 @@ export function ReplyTextbox({
   }, [isHydrated, editMode, commentBody]);
 
   // Debounced save to localStorage without causing re-renders
-  const saveToStorage = useCallback((value: string) => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-    debounceTimerRef.current = setTimeout(() => {
-      if (value) {
-        saveCommentDraft(storageKey, value);
-      } else {
-        localStorage.removeItem(storageKey);
+  const saveToStorage = useCallback(
+    (value: string) => {
+      if (!storageKey) return;
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
       }
-    }, 500);
-  }, [storageKey]);
+      debounceTimerRef.current = setTimeout(() => {
+        if (value) {
+          saveCommentDraft(storageKey, value);
+        } else {
+          localStorage.removeItem(storageKey);
+        }
+      }, 500);
+    },
+    [storageKey]
+  );
 
   // Cleanup timer on unmount
   useEffect(() => {
@@ -186,7 +193,9 @@ export function ReplyTextbox({
   }, []);
 
   const removePost = useCallback(() => {
-    localStorage.removeItem(storageKey);
+    if (storageKey) {
+      localStorage.removeItem(storageKey);
+    }
   }, [storageKey]);
 
   const handleCancel = () => {
@@ -245,8 +254,8 @@ export function ReplyTextbox({
         }
       }
       setText('');
-      removePost();  // Remove stored comment text
-      localStorage.removeItem(storageId);  // Remove reply box state
+      removePost(); // Remove stored comment text
+      localStorage.removeItem(storageId); // Remove reply box state
       onSetReply(false);
       if (btnRef.current) {
         btnRef.current.disabled = true;
