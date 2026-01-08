@@ -14,8 +14,7 @@ import PostForm from '@/blog/features/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
 import { AlertDialogFlag } from '@/blog/features/post-rendering/alert-window-flag';
-import CommentList from '@/blog/features/post-rendering/comment-list';
-import CommentSelectFilter from '@/blog/features/post-rendering/comment-select-filter';
+import CommentsSection from '@/blog/features/post-rendering/comments-section';
 import ContextLinks from '@/blog/features/post-rendering/context-links';
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import FlagIcon from '@/blog/features/post-rendering/flag-icon';
@@ -33,6 +32,7 @@ import { UserPopoverCard } from '@/blog/features/post-rendering/user-popover-car
 import AnimatedList from '@/blog/features/suggestions-posts/animated-tab';
 import SuggestionsList from '@/blog/features/suggestions-posts/list';
 import { useTranslation } from '@/blog/i18n/client';
+import { postContainerClasses } from '@/blog/lib/post-layout-classes';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { getBasePath } from '@/blog/utils/PathUtils';
@@ -58,7 +58,7 @@ import { Clock, Link2 } from 'lucide-react';
 import moment from 'moment';
 import { Link } from '@hive/ui';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useLocalStorage } from 'usehooks-ts';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -353,6 +353,12 @@ const PostContent = () => {
   useEffect(() => {
     setCommentsPage(1);
   }, [author, permlink]);
+
+  // Stable callback for CommentsSection
+  const handleSetCommentsPage = useCallback((page: number | ((prev: number) => number)) => {
+    setCommentsPage(page);
+  }, []);
+
   if (userFromGDPR || (!postData && !postIsLoading)) return <NoDataError />;
 
   return (
@@ -362,7 +368,7 @@ const PostContent = () => {
           {suggestionData ? <AnimatedList suggestions={suggestionData} /> : null}
         </div>
         <div className="py-8 sm:col-span-8 sm:mx-auto sm:flex sm:flex-col">
-          <div className="relative mx-auto my-0 max-w-4xl bg-background p-4">
+          <div className={postContainerClasses}>
             {crossedPost ? (
               <div className="mb-4 flex items-center gap-2 bg-background-secondary p-5 text-sm">
                 <Icons.crossPost className="h-4 w-4" />
@@ -792,85 +798,16 @@ const PostContent = () => {
             ) : null}
           </div>
           {!!postData && paginatedDiscussionState ? (
-            <div className="max-w-4xl pr-2">
-              <div className="my-1 flex items-center justify-end" translate="no">
-                <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
-                <CommentSelectFilter />
-              </div>
-              <CommentList
-                highestAuthor={postData.author}
-                highestPermlink={postData.permlink}
-                permissionToMute={!!userCanModerate}
-                mutedList={mutedList || []}
-                data={paginatedDiscussionState.comments}
-                flagText={communityData?.flag_text}
-                parent={postData}
-                parent_depth={postData.depth}
-                discussionPermlink={permlink}
-              />
-              {paginatedDiscussionState.totalPages > 1 && (
-                <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setCommentsPage((prev) => Math.max(1, prev - 1));
-                    }}
-                    disabled={paginatedDiscussionState.currentPage === 1}
-                  >
-                    {t('user_profile.lists.list.previous_button')}
-                  </Button>
-                  {Array.from({ length: paginatedDiscussionState.totalPages }, (_, i) => i + 1).map(
-                    (pageNum) => {
-                      // Show only a few pages around the current page
-                      const showPage =
-                        pageNum === 1 ||
-                        pageNum === paginatedDiscussionState.totalPages ||
-                        (pageNum >= paginatedDiscussionState.currentPage - 2 &&
-                          pageNum <= paginatedDiscussionState.currentPage + 2);
-
-                      if (!showPage) {
-                        // Show ellipses
-                        if (
-                          pageNum === paginatedDiscussionState.currentPage - 3 ||
-                          pageNum === paginatedDiscussionState.currentPage + 3
-                        ) {
-                          return (
-                            <span key={pageNum} className="px-2">
-                              ...
-                            </span>
-                          );
-                        }
-                        return null;
-                      }
-
-                      return (
-                        <Button
-                          key={pageNum}
-                          variant={pageNum === paginatedDiscussionState.currentPage ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => {
-                            setCommentsPage(pageNum);
-                          }}
-                        >
-                          {pageNum}
-                        </Button>
-                      );
-                    }
-                  )}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setCommentsPage((prev) => Math.min(paginatedDiscussionState.totalPages, prev + 1));
-                    }}
-                    disabled={paginatedDiscussionState.currentPage === paginatedDiscussionState.totalPages}
-                  >
-                    {t('user_profile.lists.list.next_button')}
-                  </Button>
-                </div>
-              )}
-            </div>
+            <CommentsSection
+              postData={postData}
+              paginatedDiscussionState={paginatedDiscussionState}
+              userCanModerate={!!userCanModerate}
+              mutedList={mutedList || []}
+              flagText={communityData?.flag_text}
+              discussionPermlink={permlink}
+              commentsPage={commentsPage}
+              setCommentsPage={handleSetCommentsPage}
+            />
           ) : null}
         </div>
         <div className="col-span-2" />

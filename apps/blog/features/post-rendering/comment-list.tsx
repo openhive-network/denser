@@ -46,7 +46,7 @@ const CommentList = ({
     );
     const unmutedContent = filtered.filter((md) => mutedContent.every((fd) => fd.post_id !== md.post_id));
     return [...mutedContent, ...unmutedContent];
-  }, [JSON.stringify(data), JSON.stringify(parent)]);
+  }, [data, parent?.author, parent?.permlink]);
   return (
     <ul data-testid="comment-list">
       <>
