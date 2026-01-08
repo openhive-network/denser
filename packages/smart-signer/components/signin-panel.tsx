@@ -32,7 +32,7 @@ export function LoginPanel({
   authenticateOnBackend,
   strict,
   i18nNamespace = 'smart-signer',
-  enabledLoginTypes = [LoginType.hbauth, LoginType.keychain, LoginType.peakvault, LoginType.wif]
+  enabledLoginTypes = [LoginType.hbauth, LoginType.metamask, LoginType.keychain, LoginType.peakvault, LoginType.wif]
 }: LoginPanelOptions) {
   const router = useRouter();
   const [loginChallenge, setLoginChallenge] = useState('');

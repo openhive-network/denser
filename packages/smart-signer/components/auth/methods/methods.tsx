@@ -178,6 +178,20 @@ const Methods: FC<MethodsProps> = ({
               className="flex w-full justify-start py-6"
               type="button"
               variant="ghost"
+              onClick={form.handleSubmit(() => onSubmit(LoginType.metamask))}
+              data-testid="metamask-extension-button"
+            >
+              <Icons.metamask className="mr-4 h-8 w-8" />
+              MetaMask extension
+            </Button>
+
+            <Separator className="my-1 w-full" />
+
+            <Button
+              disabled={!form.formState.isValid}
+              className="flex w-full justify-start py-6"
+              type="button"
+              variant="ghost"
               onClick={form.handleSubmit(() => onSubmit(LoginType.keychain))}
               data-testid="hive-keychain-extension-button"
             >
@@ -186,6 +200,7 @@ const Methods: FC<MethodsProps> = ({
             </Button>
 
             <Separator className="my-1 w-full" />
+
             <Button
               disabled={!form.formState.isValid}
               className="flex w-full justify-start py-6"

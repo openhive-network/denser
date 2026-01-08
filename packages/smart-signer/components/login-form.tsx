@@ -6,6 +6,7 @@ import * as z from 'zod';
 
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { hasCompatibleMetaMask } from '@smart-signer/lib/signer/signer-metamask';
 import { hasCompatiblePeakvault } from '@smart-signer/lib/signer/signer-peakvault';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginType, StorageType, KeyType } from '@smart-signer/types/common';
@@ -42,6 +43,7 @@ const commonFields = z.object({
   useHbauth: z.boolean(),
   useKeychain: z.boolean(),
   usePeakvault: z.boolean(),
+  useMetaMask: z.boolean(),
   useHiveauth: z.boolean(),
   remember: z.boolean(),
   keyType: z.nativeEnum(KeyType, {
@@ -58,6 +60,7 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hiveauth) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.keychain) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.peakvault) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.metamask) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hivesigner) }).merge(commonFields)
 ]);
 
@@ -71,6 +74,7 @@ const loginFormDefaultValues = {
   useHiveauth: false,
   useKeychain: false,
   usePeakvault: false,
+  useMetaMask: false,
   username: '',
   keyType: KeyType.posting
 };
@@ -86,11 +90,17 @@ export function LoginForm({
 }) {
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
   const [isPeakvaultSupported, setIsPeakvaultSupported] = useState(false);
+  const [isMetaMaskSupported, setIsMetaMaskSupported] = useState(false);
   const [disabledPasword, setDisabledPassword] = useState(true);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
     setIsPeakvaultSupported(hasCompatiblePeakvault());
+    hasCompatibleMetaMask().then((supported) => {
+      setIsMetaMaskSupported(supported);
+    }).catch((error) => {
+      logger.error('Error checking MetaMask compatibility: %o', error);
+    });
   }, []);
 
   const {
@@ -200,6 +210,29 @@ export function LoginForm({
                   alt="Hbauth logo"
                 />
                 Use safe storage
+              </label>
+            </div>
+
+            <div className="flex items-center py-1">
+              <input
+                type="checkbox"
+                id="useMetaMask"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register('useMetaMask')}
+                disabled={!isMetaMaskSupported}
+                onChange={(e) => onCheckboxToggle(e, LoginType.metamask)}
+              />
+              <label
+                htmlFor="useMetaMask"
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+              >
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/smart-signer/images/metamask.svg"
+                  alt="MetaMask logo"
+                />
+                Use MetaMask
               </label>
             </div>
 

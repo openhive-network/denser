@@ -10,6 +10,7 @@ catalogs:
     # '@hiveio/beekeeper': 1.28.4-rc0
     '@hiveio/wax': 1.28.4-rc0-251216100519
     '@hiveio/wax-signers-keychain': 1.28.4-rc0
+    '@hiveio/wax-signers-metamask': 1.28.4-rc0
     '@hiveio/wax-signers-peakvault': 1.28.4-rc0
     '@hiveio/workerbee': 1.28.4-rc0
     '@hiveio/hb-auth': 1.28.4-rc0

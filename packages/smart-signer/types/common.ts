@@ -2,6 +2,7 @@ export enum LoginType {
     hbauth = 'hbauth',
     keychain = 'keychain',
     peakvault = 'peakvault',
+    metamask = 'metamask',
     hiveauth = 'hiveauth',
     wif = 'wif',
     hivesigner = 'hivesigner',

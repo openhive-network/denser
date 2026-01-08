@@ -6,6 +6,7 @@ import * as z from 'zod';
 
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { hasCompatibleMetaMask } from '@smart-signer/lib/signer/signer-metamask';
 import { hasCompatiblePeakvault } from '@smart-signer/lib/signer/signer-peakvault';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginType, KeyType } from '@smart-signer/types/common';
@@ -64,6 +65,10 @@ export const loginTypeDetails: LoginTypeDetails = {
     logo: '/smart-signer/images/peakvault.svg',
     type: 'internal'
   },
+  metamask: {
+    logo: '/smart-signer/images/metamask.svg',
+    type: 'internal'
+  },
   wif: {
     logo: '/smart-signer/images/hive-blog-twshare.png',
     type: 'internal'
@@ -85,10 +90,17 @@ export default function LoginForm({
 }: LoginFormOptions) {
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
   const [isPeakvaultSupported, setIsPeakvaultSupported] = useState(false);
+  const [isMetaMaskSupported, setIsMetaMaskSupported] = useState(false);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
     setIsPeakvaultSupported(hasCompatiblePeakvault());
+
+    hasCompatibleMetaMask().then((supported) => {
+      setIsMetaMaskSupported(supported);
+    }).catch((error) => {
+      logger.error('Error checking MetaMask compatibility: %o', error);
+    });
   }, []);
 
   const {
@@ -136,9 +148,11 @@ export default function LoginForm({
                 ? 'Use HiveAuth'
                 : loginType === 'wif'
                   ? 'Use WIF'
-                  : loginType === 'peakvault'
-                    ? 'Use PeakVault'
-                    : loginType /* TODO: Move stringification to a separate function - also search for similarities */ }
+                  : loginType === 'metamask'
+                    ? 'Use MetaMask'
+                    : loginType === 'peakvault'
+                      ? 'Use PeakVault'
+                      : loginType /* TODO: Move stringification to a separate function - also search for similarities */ }
         </label>
       </div>
     );
@@ -152,6 +166,8 @@ export default function LoginForm({
         element = radioGroupItem(loginType, !isKeychainSupported);
       } else if (loginType === LoginType.peakvault) {
         element = radioGroupItem(loginType, !isPeakvaultSupported);
+      } else if (loginType === LoginType.metamask) {
+        element = radioGroupItem(loginType, !isMetaMaskSupported);
       } else {
         element = radioGroupItem(loginType, false);
       }
