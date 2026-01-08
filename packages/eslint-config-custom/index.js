@@ -29,6 +29,24 @@ module.exports = {
       }
     ]
   },
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        // TypeScript strict typing rules - require proper types instead of "any"
+        '@typescript-eslint/no-explicit-any': 'warn',
+        // Discourage type assertions (as Type) - prefer proper typing
+        // Allows 'as const' and assertions in object literals passed as parameters
+        '@typescript-eslint/consistent-type-assertions': [
+          'warn',
+          {
+            assertionStyle: 'as',
+            objectLiteralTypeAssertions: 'allow-as-parameter'
+          }
+        ]
+      }
+    }
+  ],
   env: {
     browser: true,
     es2021: true,
