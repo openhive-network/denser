@@ -225,17 +225,50 @@ apps/blog/
 
 ## ESLint Rules for Code Quality
 
-### TypeScript Strict Typing (warnings)
-The project enforces strict typing via ESLint. Run `pnpm lint` after changes to check.
+The project enforces code quality and consistency via ESLint. Run `pnpm lint` after changes to check. All rules are set to **warn** to allow gradual adoption.
 
-**Enabled rules:**
-1. **`@typescript-eslint/no-explicit-any`** - Disallows `any` type
-   - Bad: `const data: any = ...`
-   - Good: `const data: UserProfile = ...` or use `unknown` with type guards
+### TypeScript Strict Typing
 
-2. **`@typescript-eslint/consistent-type-assertions`** - Disallows type assertions (`as Type`)
-   - Bad: `const user = data as User`
-   - Good: Define proper types upfront, use type guards, or generics
+| Rule | Purpose |
+|------|---------|
+| `@typescript-eslint/no-explicit-any` | Disallows `any` type - use `unknown` with type guards |
+| `@typescript-eslint/consistent-type-assertions` | Discourages `as Type` - prefer proper typing |
+| `@typescript-eslint/no-non-null-assertion` | Discourages `!` operator - prefer proper null checks |
+| `@typescript-eslint/no-unused-vars` | Detects unused variables (prefix with `_` to ignore) |
+| `@typescript-eslint/ban-ts-comment` | Requires description for `@ts-ignore` (min 10 chars) |
+
+### Naming Conventions
+
+| Rule | Convention |
+|------|------------|
+| Variables | `camelCase`, `UPPER_CASE` (constants), `PascalCase` (React components) |
+| Functions | `camelCase`, `PascalCase` (React components) |
+| Parameters | `camelCase` (prefix `_` for intentionally unused) |
+| Types/Interfaces | `PascalCase` |
+| Enum members | `PascalCase` or `UPPER_CASE` |
+
+**Example violations:**
+```typescript
+// Bad - snake_case variable
+const user_profile = fetchProfile();
+
+// Good - camelCase
+const userProfile = fetchProfile();
+
+// Bad - unused parameter
+function handleClick(event) { doSomething(); }
+
+// Good - prefix with underscore
+function handleClick(_event) { doSomething(); }
+```
+
+### Code Quality
+
+| Rule | Purpose |
+|------|---------|
+| `eqeqeq` | Enforce `===` instead of `==` (type-safe comparisons) |
+| `prefer-const` | Prefer `const` over `let` when never reassigned |
+| `no-console` | Discourage `console.log` - use logger instead |
 
 ### How to Fix Common Issues
 
@@ -274,6 +307,35 @@ const configSchema = z.object({ apiUrl: z.string() });
 const config = configSchema.parse(JSON.parse(data));
 ```
 
+**Instead of `@ts-ignore`:**
+```typescript
+// Bad - no explanation
+// @ts-ignore
+someCode();
+
+// Good - with explanation
+// @ts-ignore - Third-party library types are incorrect for this overload
+someCode();
+
+// Better - use @ts-expect-error (fails if error disappears)
+// @ts-expect-error - Third-party library types are incorrect
+someCode();
+```
+
+**Instead of non-null assertion:**
+```typescript
+// Bad
+const name = user!.name;
+
+// Good - explicit check
+if (user) {
+  const name = user.name;
+}
+
+// Good - optional chaining with fallback
+const name = user?.name ?? 'Anonymous';
+```
+
 ### Running Lint
 ```bash
 # Lint specific package
@@ -281,6 +343,9 @@ pnpm --filter @hive/blog lint
 
 # Lint all packages
 pnpm lint
+
+# Auto-fix fixable issues
+pnpm --filter @hive/blog lint -- --fix
 ```
 
 ### Translation Rules
