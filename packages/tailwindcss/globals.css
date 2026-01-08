@@ -191,6 +191,23 @@
   max-height: 75vw;
 }
 
+#articleBody .twitterWrapper,
+.prose .twitterWrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+#articleBody .twitterWrapper iframe,
+.prose .twitterWrapper iframe {
+  width: 100% !important;
+  max-width: 550px;
+  height: 600px;
+  max-height: 80vh;
+}
+
 .markdown-view {
   word-wrap: break-word;
   word-break: break-word;
