@@ -240,7 +240,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.page.waitForTimeout(1000);
     // Validate the tooltip message
     const tooltipText = await profilePage.postUpvoteTooltip.textContent();
-    expect(['UpvoteUpvote', 'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards']).toContain(tooltipText);
+    expect(['UpvoteUpvote', 'UpvoteVoting on Content after their payout does not generate any new rewardsUpvoteVoting on Content after their payout does not generate any new rewards']).toContain(tooltipText);
     // Upvote icon color
     expect(
       await profilePage.getElementCssPropertyValue(
