@@ -158,9 +158,27 @@ export const onImageUpload = async (
   signer: Signer
 ) => {
   const url = await uploadImg(file, username, signer);
-  const insertedMarkdown = insertToTextArea(` ![${file.name}](${!url ? 'UPLOAD FAILED' : url}) `);
-  if (!insertedMarkdown) return;
-  setMarkdown(insertedMarkdown);
+  const imageMarkdown = ` ![${file.name}](${!url ? 'UPLOAD FAILED' : url}) `;
+
+  // Get cursor position from textarea before updating state
+  const textarea = document.querySelector('.w-md-editor-text-input') as HTMLTextAreaElement;
+  const cursorPos = textarea?.selectionStart ?? 0;
+
+  // Use functional update to avoid race conditions with React state
+  setMarkdown((prevMarkdown) => {
+    const front = prevMarkdown.slice(0, cursorPos);
+    const back = prevMarkdown.slice(cursorPos);
+    return front + imageMarkdown + back;
+  });
+
+  // Restore cursor position after React re-renders
+  setTimeout(() => {
+    if (textarea) {
+      const newPos = cursorPos + imageMarkdown.length;
+      textarea.setSelectionRange(newPos, newPos);
+      textarea.focus();
+    }
+  }, 0);
 };
 
 export const onImageDrop = async (
@@ -198,27 +216,7 @@ export const onImagePaste = async (
   return true;
 };
 
-export const insertToTextArea = (insertString: string) => {
-  const textarea = document.querySelector('textarea');
-  if (!textarea) {
-    return null;
-  }
-
-  let sentence = textarea.value;
-  const len = sentence.length;
-  const pos = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-
-  const front = sentence.slice(0, pos);
-  const back = sentence.slice(pos, len);
-
-  sentence = front + insertString + back;
-
-  textarea.value = sentence;
-  textarea.selectionEnd = end + insertString.length;
-
-  return sentence;
-};
+// insertToTextArea removed - caused #672 by DOM manipulation instead of React state
 
 export const postClassName =
   'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer prose-img:max-w-full prose-img:h-auto';
