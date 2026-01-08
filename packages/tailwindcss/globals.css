@@ -150,7 +150,9 @@
 .prose a.link-external,
 .prose a {
   position: relative;
-  display: inline-block;
+  display: inline;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .prose a.link-external:after {
   content: '';
