@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { SidebarOpen } from 'lucide-react';
 import { siteConfig } from '@ui/config/site';
 import { cn } from '@ui/lib/utils';
-import { withBasePath } from '@/wallet/utils/PathUtils';
+import { withBasePath } from '@ui/lib/path-utils';
 import { Button } from '@ui/components/button';
 import { Sheet, SheetContent, SheetTrigger } from '@ui/components/sheet';
 import { Icons } from '@ui/components/icons';

@@ -33,7 +33,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { postContainerClasses } from '@/blog/lib/post-layout-classes';
 import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
-import { getBasePath } from '@/blog/utils/PathUtils';
+import { getBasePath } from '@ui/lib/path-utils';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
 import { Entry } from '@transaction/lib/extended-hive.chain';
