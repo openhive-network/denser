@@ -27,13 +27,13 @@ const CommentList = ({
   flagText: string | undefined;
   discussionPermlink: string;
 }) => {
-  const [markedHash, setMarkedHash] = useState<string>("");
+  const [markedHash, setMarkedHash] = useState<string>('');
 
   useEffect(() => {
-  if (typeof window !== "undefined") {
-    setMarkedHash(window.location.hash);
-  }
-}, []);
+    if (typeof window !== 'undefined') {
+      setMarkedHash(window.location.hash);
+    }
+  }, []);
 
   const arr = useMemo(() => {
     if (!data || !parent) return undefined;
@@ -48,20 +48,16 @@ const CommentList = ({
     return [...mutedContent, ...unmutedContent];
   }, [data, parent?.author, parent?.permlink]);
   return (
-    <ul data-testid="comment-list">
+    <ul data-testid="comment-list" className="w-full min-w-0 overflow-hidden">
       <>
         {!!arr
           ? arr.map((comment: Entry, index: number) => (
               <div
                 key={`parent-${comment.post_id}-index-${index}`}
-                className={clsx(
-                  'pl-2',
-                  {
-                    'm-2 border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
-                      markedHash?.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
-                  },
-                  { 'pl-3 sm:pl-12': comment.depth > 1 }
-                )}
+                className={clsx('min-w-0 pl-3', {
+                  'my-2 rounded border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
+                    markedHash?.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
+                })}
               >
                 <CommentListItem
                   parentPermlink={highestPermlink}
