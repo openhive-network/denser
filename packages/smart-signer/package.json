@@ -11,6 +11,7 @@
     "@hive/ui": "workspace:*",
     "@hiveio/hb-auth": "catalog:hiveio-toolset",
     "@hiveio/wax": "catalog:hiveio-toolset",
+    "@hiveio/wax-signers-external": "catalog:hiveio-toolset",
     "@hiveio/wax-signers-keychain": "catalog:hiveio-toolset",
     "@hiveio/wax-signers-peakvault": "catalog:hiveio-toolset",
     "@hiveio/wax-signers-metamask": "catalog:hiveio-toolset",
