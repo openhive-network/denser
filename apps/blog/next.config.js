@@ -43,8 +43,8 @@ const securityHeaders = [
 const csp = [
   // Default fallback for unspecified resource types
   "default-src 'self'",
-  // Scripts: self + inline (required for Next.js) + eval (required for HBAuth/Beekeeper WASM)
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'",
+  // Scripts: self + inline (required for Next.js) + eval (required for HBAuth/Beekeeper WASM) + Google Sign-In
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://accounts.google.com/gsi/",
   // Styles: self + inline (required for React/Next.js styling)
   "style-src 'self' 'unsafe-inline'",
   // Images: self + any HTTPS + data URIs + blob (for image processing)
@@ -53,7 +53,8 @@ const csp = [
   "font-src 'self' data:",
   // API connections: whitelist of trusted Hive API nodes and services
   // Only nodes running proper haf_api_node software are allowed
-  "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.openhive.network https://images.hive.blog",
+  // Google APIs for Drive wallet backup and Sign-In
+  "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.openhive.network https://images.hive.blog https://www.googleapis.com https://accounts.google.com",
   // Embedded content: whitelist of allowed iframe sources
   // Note: 3speak.online/co removed (compromised/spam), code normalizes to 3speak.tv
   // Note: emb.d.tube removed (subdomain down, no renderer support)

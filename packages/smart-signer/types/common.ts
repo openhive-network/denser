@@ -3,6 +3,7 @@ export enum LoginType {
     keychain = 'keychain',
     peakvault = 'peakvault',
     metamask = 'metamask',
+    google = 'google',
     hiveauth = 'hiveauth',
     wif = 'wif',
     hivesigner = 'hivesigner',

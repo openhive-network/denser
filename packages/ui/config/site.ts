@@ -31,6 +31,15 @@ export const siteConfig = {
   allowNonStrictLogin: env('ALLOW_NON_STRICT_LOGIN') === 'yes' ? true : false,
   loginAuthenticateOnBackend: env('LOGIN_AUTHENTICATE_ON_BACKEND') === 'yes' ? true : false,
 
+  googleDrive: {
+    clientId: env('GOOGLE_DRIVE_CLIENT_ID') || '',
+    walletFileName: env('GOOGLE_DRIVE_WALLET_FILE_NAME') || 'hivebridge_wallet.json',
+    scopes: [
+      'https://www.googleapis.com/auth/drive.readonly'
+    ].join(' '),
+    redirectUri: 'postmessage', // Using 'postmessage' to prevent reloading the page
+  },
+
   // OAUTH server
   oidcEnabled: process.env[`${SERVER_VAR_PREFIX}OIDC_ENABLED`] === 'yes' ? true : false,
   oidcUrlPrefix: process.env[`${SERVER_VAR_PREFIX}OIDC_URL_PREFIX`] || '/oidc',

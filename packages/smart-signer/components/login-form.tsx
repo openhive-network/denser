@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
 import { Separator } from '@hive/ui/components/separator';
+import { hasCompatibleGoogleDriveProvider } from '@smart-signer/lib/signer/signer-google-drive';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { hasCompatibleMetaMask } from '@smart-signer/lib/signer/signer-metamask';
 import { hasCompatiblePeakvault } from '@smart-signer/lib/signer/signer-peakvault';
@@ -44,6 +45,7 @@ const commonFields = z.object({
   useKeychain: z.boolean(),
   usePeakvault: z.boolean(),
   useMetaMask: z.boolean(),
+  useGoogle: z.boolean(),
   useHiveauth: z.boolean(),
   remember: z.boolean(),
   keyType: z.nativeEnum(KeyType, {
@@ -61,6 +63,7 @@ const loginFormSchema = z.discriminatedUnion('loginType', [
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.keychain) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.peakvault) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.metamask) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.google) }).merge(commonFields),
   z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hivesigner) }).merge(commonFields)
 ]);
 
@@ -75,6 +78,7 @@ const loginFormDefaultValues = {
   useKeychain: false,
   usePeakvault: false,
   useMetaMask: false,
+  useGoogle: false,
   username: '',
   keyType: KeyType.posting
 };
@@ -91,11 +95,13 @@ export function LoginForm({
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
   const [isPeakvaultSupported, setIsPeakvaultSupported] = useState(false);
   const [isMetaMaskSupported, setIsMetaMaskSupported] = useState(false);
+  const [isGoogleSupported, setIsGoogleSupported] = useState(false);
   const [disabledPasword, setDisabledPassword] = useState(true);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
     setIsPeakvaultSupported(hasCompatiblePeakvault());
+    setIsGoogleSupported(hasCompatibleGoogleDriveProvider());
     hasCompatibleMetaMask().then((supported) => {
       setIsMetaMaskSupported(supported);
     }).catch((error) => {
@@ -233,6 +239,29 @@ export function LoginForm({
                   alt="MetaMask logo"
                 />
                 Use MetaMask
+              </label>
+            </div>
+
+            <div className="flex items-center py-1">
+              <input
+                type="checkbox"
+                id="useGoogle"
+                value=""
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                {...register('useGoogle')}
+                disabled={!isGoogleSupported}
+                onChange={(e) => onCheckboxToggle(e, LoginType.google)}
+              />
+              <label
+                htmlFor="useGoogle"
+                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+              >
+                <img
+                  className="mr-1 h-4 w-4"
+                  src="/smart-signer/images/google-drive.svg"
+                  alt="Google Drive logo"
+                />
+                Use Google Account
               </label>
             </div>
 

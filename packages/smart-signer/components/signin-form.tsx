@@ -7,6 +7,7 @@ import * as z from 'zod';
 import { Separator } from '@hive/ui/components/separator';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { hasCompatibleMetaMask } from '@smart-signer/lib/signer/signer-metamask';
+import { hasCompatibleGoogleDriveProvider } from '@smart-signer/lib/signer/signer-google-drive';
 import { hasCompatiblePeakvault } from '@smart-signer/lib/signer/signer-peakvault';
 import { username } from '@smart-signer/lib/auth/utils';
 import { LoginType, KeyType } from '@smart-signer/types/common';
@@ -69,6 +70,10 @@ export const loginTypeDetails: LoginTypeDetails = {
     logo: '/smart-signer/images/metamask.svg',
     type: 'internal'
   },
+  google: {
+    logo: '/smart-signer/images/google-drive.svg',
+    type: 'internal'
+  },
   wif: {
     logo: '/smart-signer/images/hive-blog-twshare.png',
     type: 'internal'
@@ -91,10 +96,12 @@ export default function LoginForm({
   const [isKeychainSupported, setIsKeychainSupported] = useState(false);
   const [isPeakvaultSupported, setIsPeakvaultSupported] = useState(false);
   const [isMetaMaskSupported, setIsMetaMaskSupported] = useState(false);
+  const [isGoogleSupported, setIsGoogleSupported] = useState(false);
 
   useEffect(() => {
     setIsKeychainSupported(hasCompatibleKeychain());
     setIsPeakvaultSupported(hasCompatiblePeakvault());
+    setIsGoogleSupported(hasCompatibleGoogleDriveProvider());
 
     hasCompatibleMetaMask().then((supported) => {
       setIsMetaMaskSupported(supported);
@@ -150,9 +157,11 @@ export default function LoginForm({
                   ? 'Use WIF'
                   : loginType === 'metamask'
                     ? 'Use MetaMask'
-                    : loginType === 'peakvault'
-                      ? 'Use PeakVault'
-                      : loginType /* TODO: Move stringification to a separate function - also search for similarities */ }
+                    : loginType === 'google'
+                      ? 'Use Google Account'
+                      : loginType === 'peakvault'
+                        ? 'Use PeakVault'
+                        : loginType /* TODO: Move stringification to a separate function - also search for similarities */ }
         </label>
       </div>
     );
@@ -168,6 +177,8 @@ export default function LoginForm({
         element = radioGroupItem(loginType, !isPeakvaultSupported);
       } else if (loginType === LoginType.metamask) {
         element = radioGroupItem(loginType, !isMetaMaskSupported);
+      } else if (loginType === LoginType.google) {
+        element = radioGroupItem(loginType, !isGoogleSupported);
       } else {
         element = radioGroupItem(loginType, false);
       }

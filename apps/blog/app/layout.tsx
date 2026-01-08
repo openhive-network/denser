@@ -63,6 +63,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           </Providers>
         </div>
         <Script src={`${basePath}/__ENV.js`} strategy="beforeInteractive" />
+        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
         <ClientEffects />
       </body>
     </html>

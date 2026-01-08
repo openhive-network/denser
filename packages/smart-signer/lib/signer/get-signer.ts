@@ -1,3 +1,4 @@
+import { SignerGoogleDrive } from '@smart-signer/lib/signer/signer-google-drive';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { SignerHiveauth } from '@smart-signer/lib/signer/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
@@ -7,7 +8,7 @@ import { SignerWif } from '@smart-signer/lib/signer/signer-wif';
 import { LoginType } from '@smart-signer/types/common';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 
-export type SignerTool = SignerHbauth | SignerHiveauth | SignerKeychain | SignerPeakvault | SignerMetaMask | SignerWif;
+export type SignerTool = SignerHbauth | SignerHiveauth | SignerKeychain | SignerPeakvault | SignerMetaMask | SignerGoogleDrive | SignerWif;
 export type RegisteredSigners = {
   [key in LoginType]?: any;
 };
@@ -17,6 +18,7 @@ registeredSigners[LoginType.hbauth] = SignerHbauth;
 registeredSigners[LoginType.hiveauth] = SignerHiveauth;
 registeredSigners[LoginType.keychain] = SignerKeychain;
 registeredSigners[LoginType.metamask] = SignerMetaMask;
+registeredSigners[LoginType.google] = SignerGoogleDrive;
 registeredSigners[LoginType.peakvault] = SignerPeakvault;
 registeredSigners[LoginType.wif] = SignerWif;
 
@@ -48,6 +50,8 @@ function signerFactory({
  * 5. [Peakvault](https://vault.peakd.com/), handled in SignerPeakvault
  *    class.
  * 6. [MetaMask](https://metamask.io/), handled in SignerMetaMask class.
+ * 7. [Google Drive](https://gitlab.syncad.com/hive/wax/-/blob/develop/examples/ts/signers-external/README.md),
+ *    handled in SignerGoogleDrive class.
  *
  * @export
  * @param {SignerOptions} options

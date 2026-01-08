@@ -186,6 +186,19 @@ const Methods: FC<MethodsProps> = ({
             </Button>
 
             <Separator className="my-1 w-full" />
+            <Button
+              disabled={!form.formState.isValid}
+              className="flex w-full justify-start py-6"
+              type="button"
+              variant="ghost"
+              onClick={form.handleSubmit(() => onSubmit(LoginType.google))}
+              data-testid="google-button"
+            >
+              <Icons.google className="mr-4 h-8 w-8" />
+              Google Account
+            </Button>
+
+            <Separator className="my-1 w-full" />
 
             <Button
               disabled={!form.formState.isValid}
