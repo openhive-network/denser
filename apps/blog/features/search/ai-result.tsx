@@ -146,7 +146,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
   }
 
   if (!searchResults || searchResults.length === 0) {
-    return <div>{t('search.no_results')}</div>;
+    return <div>{t('search_page.no_results')}</div>;
   }
 
   return (
