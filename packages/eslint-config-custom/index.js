@@ -27,7 +27,13 @@ module.exports = {
           }
         ]
       }
-    ]
+    ],
+    // Enforce === instead of == for type-safe comparisons
+    eqeqeq: ['warn', 'always', { null: 'ignore' }],
+    // Prefer const over let when variable is never reassigned
+    'prefer-const': 'warn',
+    // Discourage console.log in production code - use logger instead
+    'no-console': ['warn', { allow: ['warn', 'error'] }]
   },
   overrides: [
     {
@@ -42,6 +48,91 @@ module.exports = {
           {
             assertionStyle: 'as',
             objectLiteralTypeAssertions: 'allow-as-parameter'
+          }
+        ],
+        // Discourage @ts-ignore - prefer proper typing or @ts-expect-error with explanation
+        '@typescript-eslint/ban-ts-comment': [
+          'warn',
+          {
+            'ts-ignore': 'allow-with-description',
+            'ts-nocheck': 'allow-with-description',
+            'ts-expect-error': 'allow-with-description',
+            minimumDescriptionLength: 10
+          }
+        ],
+        // Discourage non-null assertion operator (!) - prefer proper null checks
+        '@typescript-eslint/no-non-null-assertion': 'warn',
+        // Detect unused variables (TypeScript version)
+        '@typescript-eslint/no-unused-vars': [
+          'warn',
+          {
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_',
+            caughtErrorsIgnorePattern: '^_'
+          }
+        ],
+        // Enforce consistent naming conventions (camelCase for variables/functions)
+        '@typescript-eslint/naming-convention': [
+          'warn',
+          // Default: camelCase for everything
+          {
+            selector: 'default',
+            format: ['camelCase'],
+            leadingUnderscore: 'allow'
+          },
+          // Imports: allow PascalCase (React components) and camelCase
+          {
+            selector: 'import',
+            format: ['camelCase', 'PascalCase']
+          },
+          // Variables: camelCase or UPPER_CASE (for constants) or PascalCase (React components)
+          {
+            selector: 'variable',
+            format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+            leadingUnderscore: 'allow'
+          },
+          // Functions: camelCase or PascalCase (React components)
+          {
+            selector: 'function',
+            format: ['camelCase', 'PascalCase']
+          },
+          // Parameters: camelCase
+          {
+            selector: 'parameter',
+            format: ['camelCase'],
+            leadingUnderscore: 'allow'
+          },
+          // Properties: camelCase or snake_case (for API responses) or UPPER_CASE
+          {
+            selector: 'property',
+            format: ['camelCase', 'snake_case', 'UPPER_CASE', 'PascalCase'],
+            leadingUnderscore: 'allow'
+          },
+          // Allow any format for properties that require quotes (HTTP headers, data-*, CSS classes with dashes)
+          {
+            selector: 'property',
+            modifiers: ['requiresQuotes'],
+            format: null
+          },
+          // Object literal properties: allow more formats for flexibility with external APIs
+          {
+            selector: 'objectLiteralProperty',
+            format: null
+          },
+          // Type properties: allow more formats for external API types (CSP reports, etc.)
+          {
+            selector: 'typeProperty',
+            format: null
+          },
+          // Types/Interfaces: PascalCase
+          {
+            selector: 'typeLike',
+            format: ['PascalCase']
+          },
+          // Enum members: PascalCase or UPPER_CASE
+          {
+            selector: 'enumMember',
+            format: ['PascalCase', 'UPPER_CASE']
           }
         ]
       }
