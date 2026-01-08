@@ -15,6 +15,8 @@
     "postbuild": "pnpm run copy:worker && pnpm run copy:assets",
     "start": "react-env -- next start -p 3000",
     "lint": "eslint .",
+    "lint:translations": "node ../../scripts/check-blog-translations.js",
+    "lint:translations:usage": "node ../../scripts/check-blog-translation-usage.js",
     "pw:test:local": "playwright test --config=playwright.local3000.config.ts  --update-snapshots",
     "pw:test:local:chromium": "playwright test --project=chromium --config=playwright.local3000.config.ts --headed  --update-snapshots",
     "pw:test:local:firefox": "playwright test --project=firefox --config=playwright.local3000.config.ts --headed  --update-snapshots",
