@@ -55,9 +55,7 @@ export class SignerKeychain extends Signer {
 
   async signTransaction({ transaction, requiredKeyType }: SignTransaction): Promise<string> {
     try {
-      const authTx = await (await getChain()).createTransaction();
-
-      transaction.operations.forEach((op) => authTx.pushOperation(op));
+      const authTx = (await getChain()).createTransactionFromProto(transaction);
 
       const provider: IOnlineSignatureProvider = KeychainProvider.for(
         this.username,
