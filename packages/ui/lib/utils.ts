@@ -141,12 +141,19 @@ export function isJSON(value: string) {
   }
 }
 
-export const getCookie = (name: string) => {
-  if (typeof document === 'undefined') return null;
+/**
+ * Return cookie value for given cookie name. For use on client only.
+ * When cookie doesn't exist returns empty string.
+ *
+ * @param name - Cookie name
+ * @returns Cookie value or empty string if not found
+ */
+export const getCookie = (name: string): string => {
+  if (typeof document === 'undefined') return '';
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift();
-  return null;
+  if (parts.length === 2) return parts.pop()?.split(';').shift() ?? '';
+  return '';
 };
 
 /**
