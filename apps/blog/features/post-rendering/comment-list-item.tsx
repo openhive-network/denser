@@ -7,7 +7,7 @@ import { cn } from '@hive/ui/lib/utils';
 import { Link } from '@hive/ui';
 import { Separator } from '@ui/components/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import { ReplyTextbox } from '../post-editor/reply-textbox';
 import DetailsCardHover from '../list-of-posts/details-card-hover';
@@ -50,9 +50,9 @@ interface CommentListProps {
   children?: ReactNode;
 }
 export const commentClassName =
-  'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-img:max-w-[400px] prose-img:max-h-[400px]';
+  'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-img:max-w-full prose-img:h-auto prose-img:max-h-[400px]';
 
-const CommentListItem = ({
+const CommentListItem = memo(function CommentListItem({
   permissionToMute,
   comment,
   parent_depth,
@@ -63,7 +63,7 @@ const CommentListItem = ({
   discussionPermlink,
   onCommnentLinkClick,
   children
-}: CommentListProps) => {
+}: CommentListProps) {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const ref = useRef<HTMLTableRowElement>(null);
@@ -308,7 +308,7 @@ const CommentListItem = ({
                   </CardHeader>
                   <AccordionContent className="h-fit p-0">
                     <Separator orientation="horizontal" />
-                    <CardContent className="h-fit px-[5px] py-[1px] hover:bg-background-tertiary" data-testid="comment-card-to-hover">
+                    <CardContent className="h-fit overflow-hidden px-[5px] py-[1px] hover:bg-background-tertiary" data-testid="comment-card-to-hover">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (
@@ -486,6 +486,6 @@ const CommentListItem = ({
       ) : null}
     </>
   );
-};
+});
 
 export default CommentListItem;
