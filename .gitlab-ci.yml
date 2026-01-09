@@ -55,7 +55,7 @@ variables:
   PLAYWRIGHT_TAG: 'v1.49.1-jammy'
 
 include:
-- template: Workflows/Branch-Pipelines.gitlab-ci.yml
+- template: Workflows/MergeRequest-Pipelines.gitlab-ci.yml
 - project: 'hive/common-ci-configuration'
   ref: 9f5e12cd984bf12746ce9af081868e09ced8068f   # main
   file:
@@ -121,6 +121,7 @@ default:
 .docker_build_template:
   extends: .docker_image_builder_job_template
   stage: build
+  interruptible: true
   before_script:
   - !reference [.docker_image_builder_job_template, before_script]
   - |
@@ -242,6 +243,10 @@ docker-build-wallet:
 
 docker-build-blog-subdirectory:
   extends: .docker_build_template
+  rules:
+    - if: '$CI_COMMIT_TAG'           # Auto on tagged releases
+    - when: manual                    # Manual trigger on branches/MRs
+      allow_failure: true
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
@@ -250,6 +255,10 @@ docker-build-blog-subdirectory:
 
 docker-build-wallet-subdirectory:
   extends: .docker_build_template
+  rules:
+    - if: '$CI_COMMIT_TAG'           # Auto on tagged releases
+    - when: manual                    # Manual trigger on branches/MRs
+      allow_failure: true
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
@@ -407,6 +416,7 @@ mirrornet-haf-node-replay:
 
 .node-job:
   extends: .job-defaults
+  interruptible: true
   image:
     name: node:20.11.1-alpine3.18
     entrypoint: []
