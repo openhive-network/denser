@@ -60,8 +60,9 @@ const RendererContainer = ({
     threeSpeak?.forEach((link) => {
       link.classList.add('videoWrapper');
     });
-    const paragraphs = ref.current?.querySelectorAll('p');
-    if (!mainPost) paragraphs?.forEach((p) => (p.className = 'my-0'));
+    // Note: Previously removed margins from paragraphs when !mainPost (preview mode)
+    // This caused issue #759 where line breaks/spacing weren't visible in preview
+    // Now paragraphs keep their default prose styling in both preview and published view
     if (communityDescription) {
       const elementsWithVideoWrapper = document.querySelectorAll('.videoWrapper');
       elementsWithVideoWrapper.forEach((element) => {

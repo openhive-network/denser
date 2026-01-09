@@ -214,6 +214,19 @@
   hyphens: none;
 }
 
+/* Fix table cell content rendering - issue #632 */
+.prose table td a,
+.prose table th a {
+  word-break: normal;
+  white-space: nowrap;
+}
+
+.prose table td,
+.prose table th {
+  vertical-align: middle;
+  padding: 8px 12px;
+}
+
 .dark .w-md-editor-text .token.title {
   color: #fff !important;
 }

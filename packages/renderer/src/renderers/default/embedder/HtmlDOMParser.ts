@@ -327,12 +327,18 @@ export class HtmlDOMParser {
             const data = this.xmlSerializer.serializeToString(child);
             const content = this.linkify(data);
             if (this.mutate && content !== data) {
-                const newChild = this.domParser.parseFromString(`<span>${content}</span>`).childNodes[0];
                 const parent = child.parentNode;
                 if (parent) {
-                    parent.insertBefore(newChild, child);
+                    // Parse linkified content and insert children directly (without span wrapper)
+                    // This fixes issue #632 where span wrappers could break table cell rendering
+                    const tempDoc = this.domParser.parseFromString(`<span>${content}</span>`);
+                    const wrapper = tempDoc.childNodes[0] as Element;
+                    if (wrapper && wrapper.childNodes) {
+                        Array.from(wrapper.childNodes).forEach((newChild) => {
+                            parent.insertBefore(newChild.cloneNode(true), child);
+                        });
+                    }
                     parent.removeChild(child);
-                    parent.appendChild;
                 }
                 return;
             }
