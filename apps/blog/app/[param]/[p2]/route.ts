@@ -19,10 +19,17 @@ export async function GET(request: Request, { params }: { params: { param: strin
     if (!validUser) return NextResponse.json({ error: 'Not found' }, { status: 404 });
     if (!isPermlinkValid(params?.p2)) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-    const post = await queryClient.fetchQuery({
-      queryKey: ['post', username, String(params?.p2)],
-      queryFn: () => getPost(username, String(params?.p2), observer)
-    });
+    let post;
+    try {
+      post = await queryClient.fetchQuery({
+        queryKey: ['post', username, String(params?.p2)],
+        queryFn: () => getPost(username, String(params?.p2), observer)
+      });
+    } catch (fetchErr) {
+      logger.error(fetchErr, 'Failed to fetch post');
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
     if (!post) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
