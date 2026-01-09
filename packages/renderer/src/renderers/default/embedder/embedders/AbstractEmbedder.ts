@@ -1,3 +1,19 @@
+/**
+ * SECURITY-CRITICAL: This regex is the primary defense against attribute injection.
+ *
+ * The pattern [\w/?=.-]+ restricts embed IDs to safe characters only.
+ * This blocks dangerous characters like " < > ' ; ( ) { } ` that could
+ * break out of HTML attribute context.
+ *
+ * If an embedder extracts a malicious ID (e.g., from a crafted URL),
+ * this regex will fail to match, leaving the embed marker as harmless
+ * plain text instead of converting it to HTML.
+ *
+ * DO NOT modify this regex without security review.
+ * See: Issue #802, MR #815, MR #816 for security testing context.
+ */
+const SAFE_EMBED_ID_PATTERN = /^([\w/?=.-]+) ([^ ]*) ~~~/;
+
 export abstract class AbstractEmbedder {
     public abstract type: string;
 
@@ -49,7 +65,7 @@ export abstract class AbstractEmbedder {
 
         // HtmlReady inserts ~~~ embed:${id} type ~~~
         for (let section of input.split('~~~ embed:')) {
-            const match = section.match(/^([\w/?=.-]+) ([^ ]*) ~~~/);
+            const match = section.match(SAFE_EMBED_ID_PATTERN);
 
             if (match && match.length >= 3) {
                 const id = match[1];
