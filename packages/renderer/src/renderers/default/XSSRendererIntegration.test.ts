@@ -583,6 +583,62 @@ describe('XSS End-to-End Integration Tests', function () {
             expect(output).to.match(/href="[^"]*validtag[^"]*"/);
         });
     });
+
+    describe('12. Post-Processing Weaponization Prevention', function () {
+        // Tests that verify plain text containing payloads cannot be weaponized
+        // by downstream processing that might create links from text
+
+        it('special characters in unprocessed embed markers are safe text', function () {
+            // This tests the specific scenario where a malicious URL creates an embed marker
+            // with dangerous characters, but the marker isn't processed (invalid ID)
+            const input = '~~~ embed:ABC" onclick="alert(1) youtube ~~~';
+            const output = renderer.render(input);
+
+            // The marker should remain as text, not become an iframe
+            expect(output).to.not.include('<iframe');
+
+            // Critical: verify no unescaped event handlers in tag attributes
+            const issues = detectXSSInOutput(output);
+            expect(issues, `XSS found: ${output}`).to.be.empty;
+        });
+
+        it('quotes in plain text cannot break out of attributes if later linkified', function () {
+            // If post-processing code later creates links from text containing quotes,
+            // the quotes must be HTML-encoded to prevent attribute breakout
+            const input = 'Text with "quotes" and onclick= patterns';
+            const output = renderer.render(input);
+
+            // The output should be safe for further processing
+            // Check it doesn't have unquoted attribute patterns
+            expect(output).to.not.match(/<[a-z][^>]*\son\w+\s*=/i);
+        });
+
+        it('angle brackets in text are entity-encoded', function () {
+            // Text containing < and > should be encoded so it can't create new tags
+            const input = 'Text with <script>alert(1)</script> as literal text';
+            const output = renderer.render(input);
+
+            // Should be encoded or stripped - not executable
+            const issues = detectXSSInOutput(output);
+            expect(issues, `XSS found: ${output}`).to.be.empty;
+        });
+
+        it('URLs with injection payloads that become plain text are safe', function () {
+            // When a URL with injection payload isn't matched by embedders,
+            // it might become a link or plain text - verify it's safe either way
+            const input = 'https://unknown-site.com/page?x=" onclick="alert(1)';
+            const output = renderer.render(input);
+
+            // Whether it becomes a link or text, it should be safe
+            const issues = detectXSSInOutput(output);
+            expect(issues, `XSS found: ${output}`).to.be.empty;
+
+            // If it became a link, verify href is properly quoted
+            if (output.includes('<a ')) {
+                expect(output).to.not.match(/<a[^>]*onclick/i);
+            }
+        });
+    });
 });
 
 describe('XSS Integration - Allowlist Verification', function () {
