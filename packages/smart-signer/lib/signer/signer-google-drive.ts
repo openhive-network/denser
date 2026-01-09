@@ -13,11 +13,24 @@ const logger = getLogger('app');
 export const hasCompatibleGoogleDriveProvider = () => !!siteConfig.googleDrive.clientId;
 
 const GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY = 'google_refresh_token';
+const GOOGLE_DRIVE_PASSWORD_LOCALSTORAGE_KEY = 'gdrive_signer_password';
 
 declare global {
   interface Window {
-    google: any;
-    gapi: any;
+    google: {
+      accounts: {
+        oauth2: {
+          initCodeClient(config: {
+            client_id: string;
+            scope: string;
+            ux_mode: 'popup' | 'redirect';
+            callback: (response: { code?: string; }) => void;
+          }): {
+            requestCode: (options: { prompt: 'consent' | 'none' }) => void;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -130,9 +143,15 @@ export class SignerGoogleDrive extends Signer {
     this._accessToken = undefined;
     this.passwordPromise = undefined;
     localStorage.removeItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
+    localStorage.removeItem(GOOGLE_DRIVE_PASSWORD_LOCALSTORAGE_KEY);
   }
 
   private async getPasswordFromUser(): Promise<string> {
+    const password = localStorage.getItem(GOOGLE_DRIVE_PASSWORD_LOCALSTORAGE_KEY);
+    if (password) {
+      return password;
+    }
+
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
@@ -149,6 +168,9 @@ export class SignerGoogleDrive extends Signer {
         });
       }
       const { password } = await this.passwordPromise;
+
+      localStorage.setItem(GOOGLE_DRIVE_PASSWORD_LOCALSTORAGE_KEY, password);
+
       return password;
     } catch (error) {
       logger.error('Error in getPasswordFromUser: %o', error);
@@ -161,6 +183,7 @@ export class SignerGoogleDrive extends Signer {
       this.walletInstance = undefined;
       this._accessToken = undefined;
       this.passwordPromise = undefined;
+      localStorage.removeItem(GOOGLE_DRIVE_PASSWORD_LOCALSTORAGE_KEY);
     }
 
     if (this.walletInstance)
@@ -204,7 +227,15 @@ export class SignerGoogleDrive extends Signer {
     const { username, keyType } = this;
     logger.info('in SignerGoogleDrive.signChallenge %o', { message, username, keyType });
     try {
-      const provider = await this.getWallet(username, keyType);
+      let provider: IExternalWalletContent;
+
+      try {
+        provider = await this.getWallet(username, keyType);
+      } catch (error) {
+        logger.error('Error obtaining Google Drive wallet: %o Retrying with forceLogin=true', error);
+
+        provider = await this.getWallet(username, keyType, true);
+      }
 
       let pk: string | null = null;
       for(const key of provider.enumStoredHiveKeys(username, keyType)) {
@@ -228,7 +259,15 @@ export class SignerGoogleDrive extends Signer {
     try {
       const authTx = (await getChain()).createTransactionFromProto(transaction);
 
-      const provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType);
+      let provider: IExternalWalletContent;
+
+      try {
+        provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType);
+      } catch (error) {
+        logger.error('Error obtaining Google Drive wallet: %o Retrying with forceLogin=true', error);
+
+        provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType, true);
+      }
 
       await provider.signTransaction(authTx);
 
