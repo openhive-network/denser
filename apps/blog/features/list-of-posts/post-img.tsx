@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Link } from '@hive/ui';
-import { proxifyImageUrl } from '@ui/lib/old-profixy';
+import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { getDefaultImageUrl, getUserAvatarUrl } from '@ui/lib/avatar-utils';
 import { customEndsWith } from '@/blog/lib/ends-with';
 import {
@@ -25,57 +25,55 @@ export function find_first_img(post: Entry) {
         'jpg'
       ])
     ) {
-      return proxifyImageUrl(
-        post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1),
-        true
+      return proxifyImageSrc(
+        post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1)
       );
     }
     if (post.original_entry && post.original_entry.json_metadata.images) {
-      return proxifyImageUrl(post.original_entry.json_metadata.images[0], true);
+      return proxifyImageSrc(post.original_entry.json_metadata.images[0]);
     }
     if (post.original_entry && post.original_entry.json_metadata.image) {
-      return proxifyImageUrl(post.original_entry.json_metadata.image[0], true);
+      return proxifyImageSrc(post.original_entry.json_metadata.image[0]);
     }
     if (post.json_metadata.image && post.json_metadata.image[0]) {
       if (post.json_metadata.image[0].includes('youtu-')) {
-        return proxifyImageUrl(
-          `https://img.youtube.com/vi/${post.json_metadata.image[0].slice(6)}/0.jpg`,
-          true
+        return proxifyImageSrc(
+          `https://img.youtube.com/vi/${post.json_metadata.image[0].slice(6)}/0.jpg`
         );
       }
-      return proxifyImageUrl(post.json_metadata.image[0], true);
+      return proxifyImageSrc(post.json_metadata.image[0]);
     }
     const regex_any_img = /!\[.*?\]\((.*?)\)/;
     const match = post.body.match(regex_any_img);
     if (match && match[1]) {
-      return proxifyImageUrl(match[1], true);
+      return proxifyImageSrc(match[1]);
     }
     if (post.json_metadata.images && post.json_metadata.images[0]) {
-      return proxifyImageUrl(post.json_metadata.images[0], true);
+      return proxifyImageSrc(post.json_metadata.images[0]);
     }
     if (post.json_metadata.flow?.pictures && post.json_metadata.flow?.pictures[0]) {
-      return proxifyImageUrl(post.json_metadata.flow?.pictures[0].url, true);
+      return proxifyImageSrc(post.json_metadata.flow?.pictures[0].url);
     }
     const youtube_id = extractYouTubeVideoIds(extractUrlsFromJsonString(post.body));
     if (youtube_id[0]) {
-      return proxifyImageUrl(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`, true);
+      return proxifyImageSrc(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`);
     }
     if (post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')) {
-      return proxifyImageUrl(getUserAvatarUrl(post.author, 'small'), true);
+      return proxifyImageSrc(getUserAvatarUrl(post.author, 'small'));
     }
     const pictures_extracted = extractPictureFromPostBody(extractUrlsFromJsonString(post.body));
     if (pictures_extracted[0]) {
-      return proxifyImageUrl(pictures_extracted[0], true);
+      return proxifyImageSrc(pictures_extracted[0]);
     }
     const regex_for_peakd = /https:\/\/files\.peakd\.com\/[^\s]+\.jpg/;
     const peakd_img = post.body.match(regex_for_peakd);
     if (peakd_img !== null) {
-      return proxifyImageUrl(peakd_img[0], true);
+      return proxifyImageSrc(peakd_img[0]);
     }
     const regexgif = /<img\s+src="([^"]+)"/;
     const matchgif = post.body.match(regexgif);
     if (matchgif && matchgif[1]) {
-      return proxifyImageUrl(matchgif[1], true);
+      return proxifyImageSrc(matchgif[1]);
     }
     // Last fallback: use user profile image if available, otherwise use avatar
     if (!post.title.includes('RE: ') && post.depth === 0) {

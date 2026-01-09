@@ -255,6 +255,7 @@
     "no_pending_payouts": "No pending payouts.",
     "load_newer": "Load Newer",
     "nothing_more_to_load": "Nothing more to load",
+    "empty_feed_not_following": "You haven't followed anyone yet! Follow other users to see their posts here.",
     "no_replies_yet": "@{{username}} hasn't had any replies yet.",
     "no_notifications_yet": "@{{username}} hasn't had any notifications yet.",
     "lists": {

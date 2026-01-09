@@ -7,14 +7,13 @@ import { cn } from '@hive/ui/lib/utils';
 import { Link } from '@hive/ui';
 import { Separator } from '@ui/components/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import { ReplyTextbox } from '../post-editor/reply-textbox';
 import DetailsCardHover from '../list-of-posts/details-card-hover';
 import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
-import { useLocalStorage } from 'usehooks-ts';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '../../components/dialog-login';
 
@@ -50,9 +49,9 @@ interface CommentListProps {
   children?: ReactNode;
 }
 export const commentClassName =
-  'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-img:max-w-[400px] prose-img:max-h-[400px]';
+  'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-img:max-w-full prose-img:h-auto prose-img:max-h-[400px]';
 
-const CommentListItem = ({
+const CommentListItem = memo(function CommentListItem({
   permissionToMute,
   comment,
   parent_depth,
@@ -63,7 +62,7 @@ const CommentListItem = ({
   discussionPermlink,
   onCommnentLinkClick,
   children
-}: CommentListProps) => {
+}: CommentListProps) {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const ref = useRef<HTMLTableRowElement>(null);
@@ -73,20 +72,55 @@ const CommentListItem = ({
   const [openState, setOpenState] = useState<string>(comment.stats?.gray && hiddenComment ? '' : 'item-1');
   const [tempraryHidden, setTemporaryHidden] = useState(false);
   const commentId = `@${comment.author}/${comment.permlink}`;
-  const storageId = `replybox-/${comment.author}/${comment.permlink}-${user.username}`;
   const [edit, setEdit] = useState(false);
-  const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
-  const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  const [reply, setReplyState] = useState(false);
+
+  // Build storageId only when user is logged in
+  const storageId = user.isLoggedIn
+    ? `replybox-/${comment.author}/${comment.permlink}-${user.username}`
+    : null;
+
+  // Load reply state from localStorage on mount (with expiration check)
+  useEffect(() => {
+    if (!storageId) return;
+
+    const stored = localStorage.getItem(storageId);
+    if (stored) {
+      try {
+        const data = JSON.parse(stored);
+        // Check expiration (30 days)
+        if (data.expiresAt && Date.now() < data.expiresAt) {
+          setReplyState(true);
+        } else {
+          // Expired, remove it
+          localStorage.removeItem(storageId);
+        }
+      } catch {
+        // Legacy format or invalid - remove it
+        localStorage.removeItem(storageId);
+      }
+    }
+  }, [storageId]);
+
+  const setReply = (value: boolean | ((prev: boolean) => boolean)) => {
+    setReplyState((prev) => {
+      const newValue = typeof value === 'function' ? value(prev) : value;
+      if (storageId) {
+        if (newValue) {
+          // Save with 30-day expiration
+          const data = { expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000 };
+          localStorage.setItem(storageId, JSON.stringify(data));
+        } else {
+          localStorage.removeItem(storageId);
+        }
+      }
+      return newValue;
+    });
+  };
   const userFromDMCA = dmcaUserList.some((e) => e === comment.author);
   const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
   const userFromGDPR = gdprUserList.some((e) => e === comment.author);
   const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
-
-  useEffect(() => {
-    if (reply) {
-      storeBox(reply);
-    }
-  }, [reply]);
 
   useEffect(() => {
     setOpenState(comment.stats?.gray && hiddenComment ? '' : 'item-1');
@@ -117,10 +151,10 @@ const CommentListItem = ({
   return (
     <>
       {currentDepth < 8 ? (
-        <li data-testid="comment-list-item">
-          <div className="flex" id={commentId} ref={ref}>
+        <li data-testid="comment-list-item" className="w-full min-w-0">
+          <div className="flex w-full min-w-0" id={commentId} ref={ref}>
             <img
-              className={clsx('mr-3 hidden  rounded-3xl sm:block', {
+              className={clsx('mr-3 hidden shrink-0 rounded-3xl sm:block', {
                 'mx-[15px] h-[25px] w-[25px] opacity-50': hiddenComment,
                 'h-[40px] w-[40px]': !hiddenComment,
                 'opacity-50': tempraryHidden
@@ -131,10 +165,10 @@ const CommentListItem = ({
               alt={`${comment.author} profile picture`}
               loading="lazy"
             />
-            <Accordion type="single" collapsible value={openState} className="w-full">
-              <AccordionItem className="flex w-full flex-col p-0" value="item-1">
+            <Accordion type="single" collapsible value={openState} className="w-full min-w-0">
+              <AccordionItem className="w-full min-w-0" value="item-1">
                 <Card
-                  className={cn(`mb-4 w-full bg-background text-primary depth-${comment.depth}`, {
+                  className={cn(`mb-4 w-full min-w-0 overflow-hidden bg-background text-primary depth-${comment.depth}`, {
                     'opacity-50 hover:opacity-100': hiddenComment || tempraryHidden,
                     'border border-destructive': comment._temporary
                   })}
@@ -308,7 +342,7 @@ const CommentListItem = ({
                   </CardHeader>
                   <AccordionContent className="h-fit p-0">
                     <Separator orientation="horizontal" />
-                    <CardContent className="h-fit px-[5px] py-[1px] hover:bg-background-tertiary" data-testid="comment-card-to-hover">
+                    <CardContent className="h-fit w-full min-w-0 overflow-hidden px-[5px] py-[1px] hover:bg-background-tertiary" data-testid="comment-card-to-hover">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (
@@ -320,7 +354,7 @@ const CommentListItem = ({
                           username={comment.parent_author}
                           permlink={comment.permlink}
                           parentPermlink={comment.parent_permlink}
-                          storageId={storageId}
+                          storageId={storageId!}
                           comment={comment}
                           discussionPermlink={discussionPermlink}
                         />
@@ -379,9 +413,7 @@ const CommentListItem = ({
                           {user.isLoggedIn ? (
                             <button
                               disabled={deleteCommentMutation.isLoading}
-                              onClick={() => {
-                                setReply(!reply), removeBox();
-                              }}
+                              onClick={() => setReply(!reply)}
                               className="flex items-center hover:cursor-pointer hover:text-destructive"
                               data-testid="comment-card-footer-reply"
                             >
@@ -479,13 +511,13 @@ const CommentListItem = ({
           onSetReply={setReply}
           username={comment.author}
           permlink={comment.permlink}
-          storageId={storageId}
+          storageId={storageId!}
           comment=""
           discussionPermlink={discussionPermlink}
         />
       ) : null}
     </>
   );
-};
+});
 
 export default CommentListItem;

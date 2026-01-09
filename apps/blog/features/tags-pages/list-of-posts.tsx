@@ -73,6 +73,16 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     return null;
   }
 
+  // Handle empty feed for "my" (friends) page
+  const isEmpty = !data?.pages?.[0]?.length;
+  if (isEmpty && tag === 'my') {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <p className="text-lg text-primary/70">{t('user_profile.empty_feed_not_following')}</p>
+      </div>
+    );
+  }
+
   return (
     <>
       {!data

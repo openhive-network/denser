@@ -74,6 +74,7 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
       return t('user_profile.no_posts_yet', { username: username });
     if (query === 'payout') return t('user_profile.no_pending_payouts');
     if (query === 'replies') return t('user_profile.no_replies_yet', { username: username });
+    if (query === 'feed') return t('user_profile.empty_feed_not_following');
     return t('user_profile.no_blogging_yet', { username: username });
   };
 
