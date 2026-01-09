@@ -37,7 +37,8 @@ const NotificationActivities = ({
     queryFn: () => getUnreadNotifications(user?.username || ''),
     enabled: !!user?.username,
     refetchOnWindowFocus: false,
-    refetchOnMount: false
+    refetchOnMount: false,
+    refetchInterval: 20000
   });
   const newDate = new Date(Date.now());
   const lastRead = unreadNotifications?.lastread ? new Date(unreadNotifications.lastread) : newDate;
@@ -57,7 +58,8 @@ const NotificationActivities = ({
     queryFn: () => getAccountFull(user.username),
     enabled: !!user.username,
     refetchOnWindowFocus: false,
-    refetchOnMount: false
+    refetchOnMount: false,
+    refetchInterval: 20000
   });
 
   const accountOwner = user.username === username;
@@ -69,6 +71,12 @@ const NotificationActivities = ({
 
   const showButton = moreData?.length !== 0;
   const noNotifications = !state || !state.length || state.length === 0;
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setState(data);
+    }
+  }, [data]);
+
   useEffect(() => {
     if (state) {
       setLastStateElementId(state[state.length - 1].id);
