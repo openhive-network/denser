@@ -10,9 +10,14 @@ interface SpotifyMetadata {
 export class SpotifyEmbedder extends AbstractEmbedder {
     public type = 'spotify';
 
+    /**
+     * Matches Spotify content URLs.
+     * Spotify IDs are Base62 encoded (alphanumeric only), typically 22 characters.
+     * Examples: 37i9dQZF1DXcBWIGoYBM5M, 4iV5W9uYEdYUVa79Axb7Rh
+     */
     private static readonly regex = {
-        main: /https?:\/\/open.spotify.com\/(playlist|show|episode|album|track|artist)\/(.*)/i,
-        sanitize: /^https:\/\/open\.spotify\.com\/(embed|embed-podcast)\/(playlist|show|episode|album|track|artist)\/(.*)/i // TODO ??
+        main: /https?:\/\/open.spotify.com\/(playlist|show|episode|album|track|artist)\/([A-Za-z0-9]+)/i,
+        sanitize: /^https:\/\/open\.spotify\.com\/(embed|embed-podcast)\/(playlist|show|episode|album|track|artist)\/([A-Za-z0-9]+)/i
     };
 
     private static extractMetadata(data: string): SpotifyMetadata | undefined {

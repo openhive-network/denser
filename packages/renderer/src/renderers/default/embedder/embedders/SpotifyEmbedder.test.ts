@@ -71,6 +71,51 @@ describe('SpotifyEmbedder', () => {
             description: 'should return undefined for undefined input',
             input: undefined,
             expected: undefined
+        },
+        {
+            description: 'should strip quotes and extract only alphanumeric ID',
+            input: 'https://open.spotify.com/playlist/ABC" onclick="alert(1)',
+            expected: {
+                image: 'https://open.spotify.com/playlist/ABC',
+                id: 'embed/playlist/ABC',
+                url: 'https://open.spotify.com/playlist/ABC'
+            }
+        },
+        {
+            description: 'should strip HTML tags and extract only alphanumeric ID',
+            input: 'https://open.spotify.com/track/123<script>alert(1)</script>',
+            expected: {
+                image: 'https://open.spotify.com/track/123',
+                id: 'embed/track/123',
+                url: 'https://open.spotify.com/track/123'
+            }
+        },
+        {
+            description: 'should strip HTML entities and extract only alphanumeric ID',
+            input: 'https://open.spotify.com/album/ABC&lt;script&gt;',
+            expected: {
+                image: 'https://open.spotify.com/album/ABC',
+                id: 'embed/album/ABC',
+                url: 'https://open.spotify.com/album/ABC'
+            }
+        },
+        {
+            description: 'should strip special characters and extract only alphanumeric ID',
+            input: 'https://open.spotify.com/artist/ABC$%^&*()',
+            expected: {
+                image: 'https://open.spotify.com/artist/ABC',
+                id: 'embed/artist/ABC',
+                url: 'https://open.spotify.com/artist/ABC'
+            }
+        },
+        {
+            description: 'should only capture alphanumeric ID from URL with trailing garbage',
+            input: 'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M?extra=param',
+            expected: {
+                image: 'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M',
+                id: 'embed/playlist/37i9dQZF1DXcBWIGoYBM5M',
+                url: 'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M'
+            }
         }
     ].forEach((test) => {
         it(test.description, () => {
