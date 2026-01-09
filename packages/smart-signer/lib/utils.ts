@@ -3,46 +3,42 @@ import { isBrowser } from '@ui/lib/logger';
 const KEY_TYPES = ['active', 'posting'] as const;
 export type KeyAuthorityType = (typeof KEY_TYPES)[number];
 
-export function isStorageAvailable(
-  storageType: 'localStorage' | 'sessionStorage',
-  strict: boolean = false // if true also tries to read and write to storage
-) {
-  let storage: Storage;
-  // logger.info('Checking availability of %s', storageType);
+/**
+ * Checks if the specified storage type (localStorage or sessionStorage) is available
+ * and accessible in the current browser environment.
+ *
+ * @param storageType - The type of web storage to check ('localStorage' or 'sessionStorage')
+ * @returns true if the storage type is available and accessible, false otherwise
+ *
+ * @example
+ * if (isStorageAvailable('localStorage')) {
+ *   localStorage.setItem('key', 'value');
+ * }
+ */
+export function isStorageAvailable(storageType: 'localStorage' | 'sessionStorage'): boolean {
   try {
     if (!isBrowser()) return false;
-    if (storageType === 'localStorage') {
-      storage = window.localStorage;
-    } else if (storageType === 'sessionStorage') {
-      storage = window.sessionStorage;
-    } else {
-      return false;
-    }
-
-    // Disabled, because we experience too many writes here.
-    // TODO Check why.
-    // if (strict) {
-    //   const x = '__storage_test__';
-    //   storage.setItem(x, x);
-    //   storage.removeItem(x);
-    // }
-
-    return true;
-  } catch (e) {
+    return storageType in window && window[storageType] !== null;
+  } catch {
     return false;
   }
 }
 
 /**
- * Returns true if page is loaded in iframe, false otherwise.
+ * Determines if the current page is loaded inside an iframe.
+ * This is useful for security checks or adjusting behavior when embedded.
  *
- * @export
- * @returns {boolean}
+ * @returns true if running inside an iframe, false if running in the top-level window
+ *
+ * @example
+ * if (inIframe()) {
+ *   console.log('Running in an iframe');
+ * }
  */
 export function inIframe(): boolean {
   try {
     return window.self !== window.top;
-  } catch (e) {
+  } catch {
     return true;
   }
 }

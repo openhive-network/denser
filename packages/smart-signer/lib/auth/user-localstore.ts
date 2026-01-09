@@ -6,7 +6,7 @@ import { safeJsonParse } from '@smart-signer/lib/safe-json-parse';
 const USER_LOCAL_STORAGE_KEY = 'user';
 
 export function saveUser(user: User): void {
-  if (isStorageAvailable('localStorage', true)) {
+  if (isStorageAvailable('localStorage')) {
     localStorage.setItem(USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
   }
 }
@@ -20,7 +20,7 @@ export function getUser(): User {
 }
 
 export function removeUser(): void {
-  if (isStorageAvailable('localStorage', false)) {
+  if (isStorageAvailable('localStorage')) {
     localStorage.removeItem(USER_LOCAL_STORAGE_KEY);
   }
 }
