@@ -640,26 +640,3 @@ describe('XSS Integration - Allowlist Verification', function () {
         expect(output).to.include('<em>');
     });
 });
-
-function createTestRenderer(): DefaultRenderer {
-    const options: RendererOptions = {
-        baseUrl: 'https://hive.blog/',
-        breaks: true,
-        skipSanitization: false,
-        allowInsecureScriptTags: false,
-        addNofollowToLinks: true,
-        addTargetBlankToLinks: true,
-        cssClassForInternalLinks: 'internal',
-        cssClassForExternalLinks: 'external',
-        doNotShowImages: false,
-        ipfsPrefix: 'https://ipfs.io/ipfs/',
-        assetsWidth: 640,
-        assetsHeight: 480,
-        imageProxyFn: (url: string) => url,
-        hashtagUrlFn: (hashtag: string) => `/trending/${hashtag}`,
-        usertagUrlFn: (account: string) => `/@${account}`,
-        isLinkSafeFn: () => true,
-        addExternalCssClassToMatchingLinksFn: () => true
-    };
-    return new DefaultRenderer(options);
-}
