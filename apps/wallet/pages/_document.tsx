@@ -31,6 +31,9 @@ export default function Document() {
         <meta name="twitter:title" content="#Hive" />
         <meta name="twitter:description" content={SITE_DESC} />
         <meta name="twitter:image" content="https://hive.blog/images/hive-blog-share.png" />
+
+        {/* Google Sign-In */}
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
       </Head>
       <body className="bg-background-secondary">
         <Main />
