@@ -19,11 +19,37 @@ export async function GET(request: Request, { params }: { params: { param: strin
     if (!validUser) return NextResponse.json({ error: 'Not found' }, { status: 404 });
     if (!isPermlinkValid(params?.p2)) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-    const post = await queryClient.fetchQuery({
-      queryKey: ['post', username, String(params?.p2)],
-      queryFn: () => getPost(username, String(params?.p2), observer)
-    });
+    let post;
+    try {
+      post = await queryClient.fetchQuery({
+        queryKey: ['post', username, String(params?.p2)],
+        queryFn: () => getPost(username, String(params?.p2), observer)
+      });
+    } catch (fetchErr) {
+      logger.error(fetchErr, 'Failed to fetch post');
+
+      // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet
+      if (params?.p2 === 'transfers') {
+        const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
+        if (walletEndpoint) {
+          const walletUrl = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;
+          return NextResponse.redirect(walletUrl, { status: 302 });
+        }
+      }
+
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
     if (!post) {
+      // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet
+      if (params?.p2 === 'transfers') {
+        const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
+        if (walletEndpoint) {
+          const walletUrl = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;
+          return NextResponse.redirect(walletUrl, { status: 302 });
+        }
+      }
+
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
