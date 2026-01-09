@@ -415,6 +415,9 @@ importers:
       '@hive/eslint-config-custom':
         specifier: workspace:*
         version: link:../eslint-config-custom
+      '@hive/ui':
+        specifier: workspace:*
+        version: link:../ui
       pino:
         specifier: ^8.17.1
         version: 8.21.0
