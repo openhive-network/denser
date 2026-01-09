@@ -23,6 +23,12 @@ import Step from '../step';
 import { username } from '@smart-signer/lib/auth/utils';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { handleError } from '@ui/lib/handle-error';
+import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { hasCompatibleGoogleDriveProvider } from '@smart-signer/lib/signer/signer-google-drive';
+import { hasCompatibleMetaMask } from '@smart-signer/lib/signer/signer-metamask';
+import { hasCompatiblePeakvault } from '@smart-signer/lib/signer/signer-peakvault';
+import { logger } from '@ui/lib/logger';
+
 export interface MethodsProps {
   onSetStep: (step: Steps) => void;
   i18nNamespace: string;
@@ -65,6 +71,22 @@ const Methods: FC<MethodsProps> = ({
     },
     mode: 'onChange'
   });
+
+  const [isKeychainSupported, setIsKeychainSupported] = useState(false);
+  const [isPeakvaultSupported, setIsPeakvaultSupported] = useState(false);
+  const [isMetaMaskSupported, setIsMetaMaskSupported] = useState(false);
+  const [isGoogleSupported, setIsGoogleSupported] = useState(false);
+
+  useEffect(() => {
+    setIsKeychainSupported(hasCompatibleKeychain());
+    setIsPeakvaultSupported(hasCompatiblePeakvault());
+    setIsGoogleSupported(hasCompatibleGoogleDriveProvider());
+    hasCompatibleMetaMask().then((supported) => {
+      setIsMetaMaskSupported(supported);
+    }).catch((error) => {
+      logger.error('Error checking MetaMask compatibility: %o', error);
+    });
+  }, []);
 
   useEffect(() => {
     form.trigger('keyType');
@@ -174,7 +196,7 @@ const Methods: FC<MethodsProps> = ({
 
           <div className="flex flex-col items-start">
             <Button
-              disabled={!form.formState.isValid}
+              disabled={!form.formState.isValid || !isMetaMaskSupported}
               className="flex w-full justify-start py-6"
               type="button"
               variant="ghost"
@@ -187,7 +209,7 @@ const Methods: FC<MethodsProps> = ({
 
             <Separator className="my-1 w-full" />
             <Button
-              disabled={!form.formState.isValid}
+              disabled={!form.formState.isValid || !isGoogleSupported}
               className="flex w-full justify-start py-6"
               type="button"
               variant="ghost"
@@ -201,7 +223,7 @@ const Methods: FC<MethodsProps> = ({
             <Separator className="my-1 w-full" />
 
             <Button
-              disabled={!form.formState.isValid}
+              disabled={!form.formState.isValid || !isKeychainSupported}
               className="flex w-full justify-start py-6"
               type="button"
               variant="ghost"
@@ -215,7 +237,7 @@ const Methods: FC<MethodsProps> = ({
             <Separator className="my-1 w-full" />
 
             <Button
-              disabled={!form.formState.isValid}
+              disabled={!form.formState.isValid || !isPeakvaultSupported}
               className="flex w-full justify-start py-6"
               type="button"
               variant="ghost"
