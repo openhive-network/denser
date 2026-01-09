@@ -27,10 +27,29 @@ export async function GET(request: Request, { params }: { params: { param: strin
       });
     } catch (fetchErr) {
       logger.error(fetchErr, 'Failed to fetch post');
+
+      // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet
+      if (params?.p2 === 'transfers') {
+        const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
+        if (walletEndpoint) {
+          const walletUrl = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;
+          return NextResponse.redirect(walletUrl, { status: 302 });
+        }
+      }
+
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
     if (!post) {
+      // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet
+      if (params?.p2 === 'transfers') {
+        const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
+        if (walletEndpoint) {
+          const walletUrl = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;
+          return NextResponse.redirect(walletUrl, { status: 302 });
+        }
+      }
+
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
