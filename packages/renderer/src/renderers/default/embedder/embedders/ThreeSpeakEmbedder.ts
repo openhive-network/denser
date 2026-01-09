@@ -4,7 +4,13 @@ import {AbstractEmbedder, EmbedMetadata} from './AbstractEmbedder';
 export class ThreeSpeakEmbedder extends AbstractEmbedder {
     public type = '3speak';
 
-    private static readonly linkRegex = /(?:https?:\/\/)?(?:3speak\.(?:tv|online|co)\/(?:watch|embed)\?v=)([^&\s]+)/i;
+    /**
+     * Matches 3Speak video URLs.
+     * Video IDs are in format: username/permlink (Hive account format)
+     * - Username: lowercase alphanumeric, dots, dashes (2-16 chars)
+     * - Permlink: lowercase alphanumeric, dashes
+     */
+    private static readonly linkRegex = /(?:https?:\/\/)?(?:3[sS]peak\.(?:tv|online|co)\/(?:watch|embed)\?v=)([a-z0-9][a-z0-9.-]{1,15}\/[a-z0-9][a-z0-9-]*)/;
 
     public getEmbedMetadata(input: string | HTMLObjectElement): EmbedMetadata | undefined {
         const url = typeof input === 'string' ? input : input.data;
