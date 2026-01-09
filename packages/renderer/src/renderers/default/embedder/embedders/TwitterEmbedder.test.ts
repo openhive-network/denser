@@ -60,8 +60,9 @@ describe('TwitterEmbedder', () => {
         it('should generate correct iframe HTML', () => {
             const embedder = new TwitterEmbedder();
             const result = embedder.processEmbed('1234567890123456789', {width: 550, height: 400});
+            // Note: width/height are handled by CSS, not as attributes
             expect(result).to.equal(
-                '<div class="twitterWrapper"><iframe width="550" height="400" src="https://platform.twitter.com/embed/Tweet.html?id=1234567890123456789" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>'
+                '<div class="twitterWrapper"><iframe src="https://platform.twitter.com/embed/Tweet.html?id=1234567890123456789" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>'
             );
         });
 
