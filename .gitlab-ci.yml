@@ -452,6 +452,19 @@ mirrornet-haf-node-replay:
   tags:
   - public-runner-docker
 
+renderer-unit-tests:
+  extends: .node-job
+  stage: test
+  script:
+  - !reference [.node-job, script]
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):renderer-tests[collapsed=false]\r\e[0KRunning renderer unit tests..."
+    cd packages/renderer
+    pnpm test
+    echo -e "\e[0Ksection_end:$(date +%s):renderer-tests\r\e[0K"
+  tags:
+  - public-runner-docker
+
 .e2e_tests_template:
   extends: .node-job
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}

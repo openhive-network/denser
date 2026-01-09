@@ -1,3 +1,4 @@
+import {expect} from 'chai';
 import {InstagramEmbedder} from './InstagramEmbedder';
 
 describe('InstagramEmbedder', () => {
@@ -13,9 +14,9 @@ describe('InstagramEmbedder', () => {
             it(`should return correct metadata for Instagram post URL: ${url}`, () => {
                 const embedder = new InstagramEmbedder();
                 const result = embedder.getEmbedMetadata({data: url} as HTMLObjectElement);
-                expect(result).toBeDefined();
-                expect(result?.id).toBe('p/ABC123defgh');
-                expect(result?.url).toContain('instagram.com/p/ABC123defgh');
+                expect(result).to.not.be.undefined;
+                expect(result?.id).to.equal('p/ABC123defgh');
+                expect(result?.url).to.contain('instagram.com/p/ABC123defgh');
             });
         });
 
@@ -30,9 +31,9 @@ describe('InstagramEmbedder', () => {
             it(`should return correct metadata for Instagram reel URL: ${url}`, () => {
                 const embedder = new InstagramEmbedder();
                 const result = embedder.getEmbedMetadata({data: url} as HTMLObjectElement);
-                expect(result).toBeDefined();
-                expect(result?.id).toBe('reel/XYZ789abcde');
-                expect(result?.url).toContain('instagram.com/reel/XYZ789abcde');
+                expect(result).to.not.be.undefined;
+                expect(result?.id).to.equal('reel/XYZ789abcde');
+                expect(result?.url).to.contain('instagram.com/reel/XYZ789abcde');
             });
         });
 
@@ -50,7 +51,7 @@ describe('InstagramEmbedder', () => {
             it(`should return undefined for invalid URL: ${url}`, () => {
                 const embedder = new InstagramEmbedder();
                 const result = embedder.getEmbedMetadata({data: url} as HTMLObjectElement);
-                expect(result).toBeUndefined();
+                expect(result).to.be.undefined;
             });
         });
     });
@@ -59,7 +60,7 @@ describe('InstagramEmbedder', () => {
         it('should generate correct iframe HTML for post', () => {
             const embedder = new InstagramEmbedder();
             const result = embedder.processEmbed('p/ABC123defgh', {width: 640, height: 480});
-            expect(result).toBe(
+            expect(result).to.equal(
                 '<div class="instagramWrapper"><iframe width="640" height="480" src="https://www.instagram.com/p/ABC123defgh/embed/" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>'
             );
         });
@@ -67,7 +68,7 @@ describe('InstagramEmbedder', () => {
         it('should generate correct iframe HTML for reel', () => {
             const embedder = new InstagramEmbedder();
             const result = embedder.processEmbed('reel/XYZ789abcde', {width: 500, height: 600});
-            expect(result).toBe(
+            expect(result).to.equal(
                 '<div class="instagramWrapper"><iframe width="500" height="600" src="https://www.instagram.com/reel/XYZ789abcde/embed/" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>'
             );
         });
@@ -76,7 +77,7 @@ describe('InstagramEmbedder', () => {
     describe('type', () => {
         it('should have correct type identifier', () => {
             const embedder = new InstagramEmbedder();
-            expect(embedder.type).toBe('instagram');
+            expect(embedder.type).to.equal('instagram');
         });
     });
 });

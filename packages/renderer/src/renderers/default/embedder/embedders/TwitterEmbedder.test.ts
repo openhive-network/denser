@@ -1,3 +1,4 @@
+import {expect} from 'chai';
 import {TwitterEmbedder} from './TwitterEmbedder';
 
 describe('TwitterEmbedder', () => {
@@ -13,9 +14,9 @@ describe('TwitterEmbedder', () => {
             it(`should return correct metadata for Twitter URL: ${url}`, () => {
                 const embedder = new TwitterEmbedder();
                 const result = embedder.getEmbedMetadata({data: url} as HTMLObjectElement);
-                expect(result).toBeDefined();
-                expect(result?.id).toBe('1234567890123456789');
-                expect(result?.url).toContain('/status/1234567890123456789');
+                expect(result).to.not.be.undefined;
+                expect(result?.id).to.equal('1234567890123456789');
+                expect(result?.url).to.contain('/status/1234567890123456789');
             });
         });
 
@@ -30,9 +31,9 @@ describe('TwitterEmbedder', () => {
             it(`should return correct metadata for X.com URL: ${url}`, () => {
                 const embedder = new TwitterEmbedder();
                 const result = embedder.getEmbedMetadata({data: url} as HTMLObjectElement);
-                expect(result).toBeDefined();
-                expect(result?.id).toBe('9876543210987654321');
-                expect(result?.url).toContain('/status/9876543210987654321');
+                expect(result).to.not.be.undefined;
+                expect(result?.id).to.equal('9876543210987654321');
+                expect(result?.url).to.contain('/status/9876543210987654321');
             });
         });
 
@@ -50,7 +51,7 @@ describe('TwitterEmbedder', () => {
             it(`should return undefined for invalid URL: ${url}`, () => {
                 const embedder = new TwitterEmbedder();
                 const result = embedder.getEmbedMetadata({data: url} as HTMLObjectElement);
-                expect(result).toBeUndefined();
+                expect(result).to.be.undefined;
             });
         });
     });
@@ -59,7 +60,7 @@ describe('TwitterEmbedder', () => {
         it('should generate correct iframe HTML', () => {
             const embedder = new TwitterEmbedder();
             const result = embedder.processEmbed('1234567890123456789', {width: 550, height: 400});
-            expect(result).toBe(
+            expect(result).to.equal(
                 '<div class="twitterWrapper"><iframe width="550" height="400" src="https://platform.twitter.com/embed/Tweet.html?id=1234567890123456789" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>'
             );
         });
@@ -68,15 +69,15 @@ describe('TwitterEmbedder', () => {
             const embedder = new TwitterEmbedder();
             // Even if the original URL was x.com, the embed uses platform.twitter.com
             const result = embedder.processEmbed('9876543210987654321', {width: 640, height: 480});
-            expect(result).toContain('platform.twitter.com');
-            expect(result).not.toContain('x.com');
+            expect(result).to.contain('platform.twitter.com');
+            expect(result).to.not.contain('x.com');
         });
     });
 
     describe('type', () => {
         it('should have correct type identifier', () => {
             const embedder = new TwitterEmbedder();
-            expect(embedder.type).toBe('twitter');
+            expect(embedder.type).to.equal('twitter');
         });
     });
 });
