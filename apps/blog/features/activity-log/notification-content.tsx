@@ -36,8 +36,7 @@ const NotificationActivities = ({
     queryKey: ['unreadNotifications', user?.username],
     queryFn: () => getUnreadNotifications(user?.username || ''),
     enabled: !!user?.username,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchInterval: 20000
   });
   const newDate = new Date(Date.now());
@@ -57,8 +56,7 @@ const NotificationActivities = ({
     queryKey: ['profileData', user.username],
     queryFn: () => getAccountFull(user.username),
     enabled: !!user.username,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchInterval: 20000
   });
 
