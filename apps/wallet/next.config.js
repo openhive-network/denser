@@ -38,11 +38,9 @@ const securityHeaders = [
   }
 ];
 
-// Content Security Policy in Report-Only mode for monitoring.
-// This policy is intentionally permissive to avoid breaking functionality.
-// After monitoring violations, it can be tightened and switched to enforcing mode.
+// Content Security Policy - enforced.
 // See docs/security-headers.md for details.
-const cspReportOnly = [
+const csp = [
   // Default fallback for unspecified resource types
   "default-src 'self'",
   // Scripts: self + inline (required for Next.js) + WASM (required for HBAuth/Beekeeper)
@@ -67,7 +65,7 @@ const cspReportOnly = [
   "base-uri 'self'",
   // Restrict form submissions to same origin
   "form-action 'self'",
-  // Report violations to blog's endpoint (wallet doesn't have its own)
+  // Report violations to blog's endpoint for monitoring (wallet doesn't have its own)
   // Note: This will only work if both apps share the same origin
   "report-uri /api/csp-report"
 ].join('; ');
@@ -105,14 +103,14 @@ const nextConfig = {
   /// According to notes: https://nextjs.org/docs/app/guides/progressive-web-apps#8-securing-your-application
   async headers() {
     return [
-      // Security headers and CSP Report-Only for all routes
+      // Security headers and CSP for all routes
       {
         source: '/:path*',
         headers: [
           ...securityHeaders,
           {
-            key: 'Content-Security-Policy-Report-Only',
-            value: cspReportOnly
+            key: 'Content-Security-Policy',
+            value: csp
           }
         ]
       },
