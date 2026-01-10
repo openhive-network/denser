@@ -43,8 +43,8 @@ const securityHeaders = [
 const csp = [
   // Default fallback for unspecified resource types
   "default-src 'self'",
-  // Scripts: self + inline (required for Next.js) + WASM (required for HBAuth/Beekeeper)
-  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
+  // Scripts: self + inline (required for Next.js) + eval (required for HBAuth/Beekeeper WASM)
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'",
   // Styles: self + inline (required for React/Next.js styling)
   "style-src 'self' 'unsafe-inline'",
   // Images: self + any HTTPS + data URIs + blob (for image processing)
