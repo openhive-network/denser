@@ -17,6 +17,7 @@ import { convertToHP, numberWithCommas } from '@ui/lib/utils';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import { convertStringToBig } from '@ui/lib/helpers';
+import { getUserLevel, getLevelIconPath, getLevelDisplayName } from '@ui/lib/user-level';
 
 import { accountReputation, compareDates } from '@/blog/lib/utils';
 import CustomError from '@/blog/components/custom-error';
@@ -129,6 +130,10 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   );
   const hp = vesting_hive.minus(delegated_hive);
 
+  // Calculate user level from raw VESTS (not HP)
+  const userVests = convertStringToBig(profileData.vesting_shares);
+  const userLevel = getUserLevel(userVests);
+
   const legalBlockedUser = userIllegalContent.includes(username);
   if (userFromGDPRList) {
     return <CustomError />;
@@ -184,15 +189,18 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
               <Link
                 href={`https://hivebuzz.me/@${profileData.name}`}
                 target="_blank"
-                data-testid="profile-badge-link"
+                data-testid="profile-level-link"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  alt="fish image"
-                  title={t('user_profile.hive_buzz_badge_title', { username: profileData.name })}
+                  alt={`${getLevelDisplayName(userLevel)} level`}
+                  title={t('user_profile.user_level_title', {
+                    level: getLevelDisplayName(userLevel),
+                    username: profileData.name
+                  })}
                   className="mx-2 w-6 duration-500 ease-in-out hover:w-12"
-                  src={`https://hivebuzz.me/api/level/${profileData.name}?dead`}
-                  data-testid="profile-badge-image"
+                  src={getLevelIconPath(userLevel)}
+                  data-testid="profile-level-image"
                 />
               </Link>
             ) : null}
