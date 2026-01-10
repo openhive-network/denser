@@ -1,6 +1,26 @@
+import env from '@beam-australia/react-env';
 import { logApiCall } from './api-logger';
 
+/**
+ * Check if third-party API calls are enabled.
+ * When disabled, these APIs return null/empty to gracefully degrade:
+ * - hiveposh.com (Twitter verification)
+ * - hivebuzz.me (badges)
+ * - peakd.com (badges)
+ *
+ * Default: false (disabled) - CSP blocks these domains anyway.
+ * Set REACT_APP_ENABLE_THIRD_PARTY_API=true to enable.
+ */
+export function isThirdPartyApiEnabled(): boolean {
+  const value = env('ENABLE_THIRD_PARTY_API');
+  return value === 'true' || value === 'yes' || value === '1';
+}
+
 export const getTwitterInfo = async (username: string) => {
+  // Return null early if third-party APIs are disabled
+  if (!isThirdPartyApiEnabled()) {
+    return null;
+  }
   const start = Date.now();
   const api = 'hiveposh.twitter';
 
@@ -37,6 +57,10 @@ export const getTwitterInfo = async (username: string) => {
 };
 
 export const getHivebuzzBadges = async (username: string) => {
+  // Return empty array early if third-party APIs are disabled
+  if (!isThirdPartyApiEnabled()) {
+    return [];
+  }
   const start = Date.now();
   const api = 'hivebuzz.badges';
 
@@ -70,6 +94,10 @@ export const getHivebuzzBadges = async (username: string) => {
 };
 
 export const getPeakdBadges = async (username: string) => {
+  // Return empty array early if third-party APIs are disabled
+  if (!isThirdPartyApiEnabled()) {
+    return [];
+  }
   const start = Date.now();
   const api = 'peakd.badges';
 

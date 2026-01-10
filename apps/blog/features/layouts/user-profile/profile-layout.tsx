@@ -28,7 +28,7 @@ import { getChain } from '@transaction/lib/chain';
 import ButtonsContainer from '@/blog/features/mute-follow/buttons-container';
 import { notFound, usePathname } from 'next/navigation';
 import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
-import { getTwitterInfo } from '@transaction/lib/custom-api';
+import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
 import ListItem from './list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
@@ -198,7 +198,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                 )
               </span>
             </h4>
-            {profileData.name ? (
+            {profileData.name && isThirdPartyApiEnabled() ? (
               <Link
                 href={`https://hivebuzz.me/@${profileData.name}`}
                 target="_blank"
