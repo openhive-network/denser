@@ -59,11 +59,15 @@ include:
 - project: 'hive/common-ci-configuration'
   ref: 9f5e12cd984bf12746ce9af081868e09ced8068f   # main
   file:
+  - '/templates/base.gitlab-ci.yml'
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
   ref: 61042b2aab9f7f4967ff494c98108d55396c2756  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
+- project: 'hive/hive'
+  ref: develop
+  file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
   ref: denser-11
   file: 'ci/node-replay.gitlab-ci.yml'
