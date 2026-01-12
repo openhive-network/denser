@@ -7,7 +7,7 @@ import { cn } from '@hive/ui/lib/utils';
 import { Link } from '@hive/ui';
 import { Separator } from '@ui/components/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
-import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
+import { memo, useEffect, useRef, useState, useCallback, type ReactNode } from 'react';
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import { ReplyTextbox } from '../post-editor/reply-textbox';
 import DetailsCardHover from '../list-of-posts/details-card-hover';
@@ -16,6 +16,8 @@ import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '../../components/dialog-login';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
 import { PostDeleteDialog } from './post-delete-dialog';
 import moment from 'moment';
@@ -72,51 +74,55 @@ const CommentListItem = memo(function CommentListItem({
   const [openState, setOpenState] = useState<string>(comment.stats?.gray && hiddenComment ? '' : 'item-1');
   const [tempraryHidden, setTemporaryHidden] = useState(false);
   const commentId = `@${comment.author}/${comment.permlink}`;
-  const [edit, setEdit] = useState(false);
-  const [reply, setReplyState] = useState(false);
 
-  // Build storageId only when user is logged in
-  const storageId = user.isLoggedIn
+  // Build storage keys only when user is logged in (empty string disables hook)
+  const replyStorageId = user.isLoggedIn
     ? `replybox-/${comment.author}/${comment.permlink}-${user.username}`
-    : null;
+    : '';
+  const editStorageId = user.isLoggedIn
+    ? `editbox-/${comment.author}/${comment.permlink}-${user.username}`
+    : '';
 
-  // Load reply state from localStorage on mount (with expiration check)
-  useEffect(() => {
-    if (!storageId) return;
+  // Use hooks for reply and edit state - provides cross-tab sync and automatic TTL
+  const [storedReply, setStoredReply, removeStoredReply] = useStorageWithTTL<boolean>(
+    replyStorageId,
+    false,
+    StorageTTL.UI_STATE
+  );
+  const [storedEdit, setStoredEdit, removeStoredEdit] = useStorageWithTTL<boolean>(
+    editStorageId,
+    false,
+    StorageTTL.UI_STATE
+  );
 
-    const stored = localStorage.getItem(storageId);
-    if (stored) {
-      try {
-        const data = JSON.parse(stored);
-        // Check expiration (30 days)
-        if (data.expiresAt && Date.now() < data.expiresAt) {
-          setReplyState(true);
-        } else {
-          // Expired, remove it
-          localStorage.removeItem(storageId);
-        }
-      } catch {
-        // Legacy format or invalid - remove it
-        localStorage.removeItem(storageId);
+  // Wrapper to match expected interface and handle storage
+  const setReply = useCallback(
+    (value: boolean | ((prev: boolean) => boolean)) => {
+      if (typeof value === 'function') {
+        setStoredReply((prev) => value(prev));
+      } else if (value) {
+        setStoredReply(true);
+      } else {
+        removeStoredReply();
       }
-    }
-  }, [storageId]);
+    },
+    [setStoredReply, removeStoredReply]
+  );
 
-  const setReply = (value: boolean | ((prev: boolean) => boolean)) => {
-    setReplyState((prev) => {
-      const newValue = typeof value === 'function' ? value(prev) : value;
-      if (storageId) {
-        if (newValue) {
-          // Save with 30-day expiration
-          const data = { expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000 };
-          localStorage.setItem(storageId, JSON.stringify(data));
-        } else {
-          localStorage.removeItem(storageId);
-        }
+  const setEdit = useCallback(
+    (value: boolean) => {
+      if (value) {
+        setStoredEdit(true);
+      } else {
+        removeStoredEdit();
       }
-      return newValue;
-    });
-  };
+    },
+    [setStoredEdit, removeStoredEdit]
+  );
+
+  // Use stored values directly as state
+  const reply = storedReply;
+  const edit = storedEdit;
   const userFromDMCA = dmcaUserList.some((e) => e === comment.author);
   const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
   const userFromGDPR = gdprUserList.some((e) => e === comment.author);
@@ -354,7 +360,7 @@ const CommentListItem = memo(function CommentListItem({
                           username={comment.parent_author}
                           permlink={comment.permlink}
                           parentPermlink={comment.parent_permlink}
-                          storageId={storageId!}
+                          storageId={editStorageId}
                           comment={comment}
                           discussionPermlink={discussionPermlink}
                         />
@@ -488,6 +494,19 @@ const CommentListItem = memo(function CommentListItem({
                         </div>
                       )}
                     </CardFooter>
+                    {reply && user && user.isLoggedIn ? (
+                      <div className="px-2 pb-2">
+                        <ReplyTextbox
+                          editMode={false}
+                          onSetReply={setReply}
+                          username={comment.author}
+                          permlink={comment.permlink}
+                          storageId={replyStorageId}
+                          comment=""
+                          discussionPermlink={discussionPermlink}
+                        />
+                      </div>
+                    ) : null}
                   </AccordionContent>
                 </Card>
                 {children ? <AccordionContent className="h-fit p-0">{children}</AccordionContent> : null}
@@ -504,17 +523,6 @@ const CommentListItem = memo(function CommentListItem({
             {t('cards.comment_card.load_more')}...
           </Link>
         </div>
-      ) : null}
-      {reply && user && user.isLoggedIn ? (
-        <ReplyTextbox
-          editMode={edit}
-          onSetReply={setReply}
-          username={comment.author}
-          permlink={comment.permlink}
-          storageId={storageId!}
-          comment=""
-          discussionPermlink={discussionPermlink}
-        />
       ) : null}
     </>
   );
