@@ -53,7 +53,7 @@ export class SignerGoogleDrive extends Signer {
   private currentKeyType?: keyof THiveRoles;
 
   private getAccessTokenForRefreshToken = async (refreshToken: string): Promise<string> => {
-    const response = await fetch(`${siteConfig.url}/api/google-drive/refresh`, {
+    const response = await fetch(`${window.location.origin}/api/google-drive/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
@@ -108,7 +108,7 @@ export class SignerGoogleDrive extends Signer {
             }
 
             if (code) {
-              const res = await fetch(`${siteConfig.url}/api/google-drive/auth`, {
+              const res = await fetch(`${window.location.origin}/api/google-drive/auth`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code }),
