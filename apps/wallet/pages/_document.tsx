@@ -32,13 +32,16 @@ export default function Document() {
         <meta name="twitter:description" content={SITE_DESC} />
         <meta name="twitter:image" content="https://hive.blog/images/hive-blog-share.png" />
 
+        <script
+          src={`${basePath}/__ENV.js?v=${Date.now()}`}
+        />
+
         {/* Google Sign-In */}
         <script src="https://accounts.google.com/gsi/client" async defer></script>
       </Head>
       <body className="bg-background-secondary">
         <Main />
         <NextScript />
-        <Script src={`${basePath}/__ENV.js`} strategy="beforeInteractive" />
       </body>
     </Html>
   );

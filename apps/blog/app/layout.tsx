@@ -51,6 +51,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
   return (
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
+      <head>
+      <script
+          src={`${basePath}/__ENV.js?v=${Date.now()}`}
+      />
+      </head>
       <body className="bg-background-secondary">
         <div className="min-h-screen">
           <Providers>
@@ -62,7 +67,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             </>
           </Providers>
         </div>
-        <Script src={`${basePath}/__ENV.js`} strategy="beforeInteractive" />
         <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
         <ClientEffects />
       </body>
