@@ -76,7 +76,6 @@ This project uses **gitlab.syncad.com**, NOT gitlab.com.
 | `@hive/transaction` | Blockchain transaction handling |
 | `@hive/smart-signer` | Multi-method signing (Keychain, HiveAuth, etc.) |
 | `@hive/renderer` | Content rendering |
-| `@hive/logger` | Pino-based logging |
 | `@hive/middleware` | Shared Next.js middleware |
 | `@hive/tailwindcss-config` | Shared Tailwind config |
 | `@hive/tsconfig` | Shared TypeScript config |

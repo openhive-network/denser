@@ -276,21 +276,33 @@ export class ApiHelper {
   }
 
   // Get account history as json from API response
-  async getVestingDelegationsAPI(account: string, start_account: string, limit: number) {
+  async getVestingDelegationsAPI(account: string, startDelegatee: string = '', limit: number = 1000) {
     const url = process.env.REACT_APP_API_ENDPOINT;
 
-    const responseGetAccountHistory = await this.page.request.post(`${url}/`, {
+    const response = await this.page.request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: "2.0",
-        method: "condenser_api.get_vesting_delegations",
-        params: [account, start_account, limit],
+        method: "database_api.list_vesting_delegations",
+        params: {
+          start: [account, startDelegatee],
+          limit,
+          order: "by_delegation"
+        },
       },
       headers: {
         Accept: "application/json, text/plain, */*",
       },
     });
 
-    return responseGetAccountHistory.json();
+    const json = await response.json();
+    // Filter to only include delegations where the account is the delegator
+    // and transform to match expected format
+    if (json.result && json.result.delegations) {
+      json.result = json.result.delegations.filter(
+        (d: { delegator: string }) => d.delegator === account
+      );
+    }
+    return json;
   }
 }

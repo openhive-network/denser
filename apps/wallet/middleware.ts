@@ -1,6 +1,4 @@
-import { commonMiddleware } from '@hive/middleware/lib/common';
-import type { NextRequest, NextResponse } from 'next/server';
+import { createMiddleware } from '@hive/middleware/lib/common';
 
-export async function middleware(request: NextRequest): Promise<NextResponse> {
-  return await commonMiddleware(request);
-}
+// Wallet middleware: no root redirect (stays at /)
+export const middleware = createMiddleware();

@@ -13,21 +13,17 @@ import RevokeDialog from '@/wallet/components/revoke-dialog';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import Head from 'next/head';
 import TimeAgo from '@ui/components/time-ago';
-import { IDynamicGlobalProperties } from '@transaction/lib/extended-hive.chain';
 import RCTable from '@/wallet/feature/delegations/rc-table';
-
-const convertVestsToSteem = (vests: number, dynamicData: IDynamicGlobalProperties) => {
-  const totalFund = parseFloat(dynamicData.total_vesting_fund_hive);
-  const totalShares = parseFloat(dynamicData.total_vesting_shares);
-  return ((vests * totalFund) / totalShares).toFixed(2);
-};
+import { convertToFormattedHivePower } from '@/wallet/lib/utils';
+import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 function DelegationsPage({ username, metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation('common_wallet');
   const { user } = useUser();
   const accoutOwner = user.isLoggedIn && user.username === username;
+  const hiveChain = hiveChainService.reuseHiveChain();
   const { data: vestingData, isLoading: vestingLoading } = useQuery(['vestingDelegation', username], () =>
-    getVestingDelegations(username, '', 50)
+    getVestingDelegations(username)
   );
   const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalProperties'], () =>
     getDynamicGlobalProperties()
@@ -36,7 +32,7 @@ function DelegationsPage({ username, metadata }: InferGetServerSidePropsType<typ
   if (dynamicLoading || vestingLoading) {
     return <Loading loading={dynamicLoading || vestingLoading} />;
   }
-  if (!vestingData || !dynamicData) {
+  if (!vestingData || !dynamicData || !hiveChain) {
     return <p className="my-32 text-center text-3xl">{t('global.something_went_wrong')}</p>;
   }
   return (
@@ -63,7 +59,12 @@ function DelegationsPage({ username, metadata }: InferGetServerSidePropsType<typ
                     >
                       <td className="px-1 py-2 sm:px-4">
                         {numberWithCommas(
-                          convertVestsToSteem(parseFloat(element.vesting_shares), dynamicData)
+                          convertToFormattedHivePower(
+                            element.vesting_shares,
+                            dynamicData.total_vesting_fund_hive,
+                            dynamicData.total_vesting_shares,
+                            hiveChain
+                          ).replace(' HIVE POWER', '')
                         )}{' '}
                         HP
                       </td>

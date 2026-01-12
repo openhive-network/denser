@@ -6,7 +6,7 @@ import {
   IProposal,
   IGetProposalsParams,
   IProposalVote,
-  IDelegatedVestingShare,
+  IVestingDelegation,
   OwnerHistory,
   IRecentTradesData,
   IOrdersDataItem,
@@ -77,13 +77,26 @@ export interface IListItemProps {
   voted: boolean;
 }
 
+/**
+ * Fetches vesting delegations for a user using database_api.list_vesting_delegations
+ * @param username - Account name to fetch delegations for
+ * @param from - Starting delegatee for pagination (empty string for first page)
+ * @param limit - Maximum number of delegations to return (max 1000)
+ * @returns Array of vesting delegations with NaiAsset format for vesting_shares
+ */
 export const getVestingDelegations = async (
   username: string,
   from: string = '',
-  limit: number = 50
-): Promise<IDelegatedVestingShare[]> => {
+  limit: number = 1000
+): Promise<IVestingDelegation[]> => {
   const chain = await getChain();
-  return chain.api.condenser_api.get_vesting_delegations([username, from, limit]);
+  const response = await chain.api.database_api.list_vesting_delegations({
+    start: [username, from],
+    limit,
+    order: 'by_delegation'
+  });
+  // Filter to only include delegations where the user is the delegator
+  return response.delegations.filter(d => d.delegator === username);
 };
 
 const walletOperations = [
