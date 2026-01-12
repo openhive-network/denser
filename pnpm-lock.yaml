@@ -25,8 +25,8 @@ catalogs:
       specifier: 1.28.4-rc0-stable.251230055601
       version: 1.28.4-rc0-stable.251230055601
     '@hiveio/workerbee':
-      specifier: 1.28.4-rc0
-      version: 1.28.4-rc0
+      specifier: 1.28.4-rc0-stable.260112142145
+      version: 1.28.4-rc0-stable.260112142145
 
 overrides:
   '@hiveio/wax': 1.28.4-rc0-stable.260110090505
@@ -705,7 +705,7 @@ importers:
         version: 1.28.4-rc0-stable.260110090505
       '@hiveio/workerbee':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0
+        version: 1.28.4-rc0-stable.260112142145(@hiveio/wax@1.28.4-rc0-stable.260110090505)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -1776,9 +1776,11 @@ packages:
     resolution: {integrity: sha1-ULIi9pHMANKm7tWf2wI+cJk3Gxs=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.28.4-rc0-stable.260110090505.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/workerbee@1.28.4-rc0':
-    resolution: {integrity: sha1-PbZDybyE90diYSA7mKV5XRGvVJA=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.28.4-rc0.tgz}
+  '@hiveio/workerbee@1.28.4-rc0-stable.260112142145':
+    resolution: {integrity: sha1-bf02xajeyKAaJvDMQW046cDBBZ0=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.28.4-rc0-stable.260112142145.tgz}
     engines: {node: ^20.11 || >= 21.2}
+    peerDependencies:
+      '@hiveio/wax': 1.28.4-rc0-stable.260110090505
 
   '@hookform/resolvers@3.10.0':
     resolution: {integrity: sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==}
@@ -11084,7 +11086,7 @@ snapshots:
     dependencies:
       events: 3.3.0
 
-  '@hiveio/workerbee@1.28.4-rc0':
+  '@hiveio/workerbee@1.28.4-rc0-stable.260112142145(@hiveio/wax@1.28.4-rc0-stable.260110090505)':
     dependencies:
       '@hiveio/wax': 1.28.4-rc0-stable.260110090505
 

@@ -199,14 +199,12 @@ export class TransactionService {
       if (!this.bot) {
         logger.info('Creating bot');
         const hiveChain = await this.getChain();
-        this.bot = new WorkerBee({
-          explicitChain: hiveChain as any // TODO: replace this after workerbee is updated
-        });
+        this.bot = new WorkerBee(hiveChain);
       }
       // Start bot
       if (this.observedTransactionsCounter++ === 0) {
         logger.info('Starting bot');
-        await this.bot.start();
+        this.bot.start();
       }
 
       // Do broadcast
@@ -214,7 +212,7 @@ export class TransactionService {
       logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
 
       // First broadcast and wait for it to complete
-      await this.bot.broadcast(txBuilder, { verifySignatures: true });
+      await this.bot.broadcast(txBuilder, { verifySignatures: true, expireInMs: 10_000 });
 
       // Small delay to ensure that UI is ready to trigger update
       await new Promise((resolve) => setTimeout(resolve, 500));
