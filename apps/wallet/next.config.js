@@ -1,5 +1,4 @@
 const path = require('path');
-const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/transaction', '@hive/middleware']);
 const CopyPlugin = require('copy-webpack-plugin');
 const withPWA = require('next-pwa')({
   dest: 'public',
@@ -89,6 +88,10 @@ const nextConfig = {
   },
   transpilePackages: [
     '@hive/common-hiveio-packages',
+    '@hive/smart-signer',
+    '@hive/ui',
+    '@hive/transaction',
+    '@hive/middleware'
   ],
   async rewrites() {
     return [
@@ -195,4 +198,4 @@ const nextConfig = {
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
-module.exports = withPWA(withTM(withBundleAnalyzer(nextConfig)));
+module.exports = withPWA(withBundleAnalyzer(nextConfig));

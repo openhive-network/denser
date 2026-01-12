@@ -10,7 +10,7 @@ import {
 } from '@hive/ui/components/select';
 import { Icons } from '@hive/ui/components/icons';
 import { IGetProposalsParams } from '@transaction/lib/extended-hive.chain';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 
 export interface FilterProposalsProps {
   filterStatus: IGetProposalsParams['status'];

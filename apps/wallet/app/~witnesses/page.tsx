@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
@@ -7,20 +9,18 @@ import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
 import { FullAccount } from '@transaction/lib/app-types';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@hive/ui/components/button';
 import { getWitnessesByVote } from '@/wallet/lib/hive';
 import { IWitness } from '@transaction/lib/extended-hive.chain';
 import WitnessListItem from '@/wallet/components/witnesses-list-item';
-import DialogLogin from '../components/dialog-login';
-import { GetServerSideProps } from 'next';
-import { useTranslation } from 'next-i18next';
+import DialogLogin from '@/wallet/components/dialog-login';
+import { useTranslation } from '@/wallet/i18n/client';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getServerSidePropsDefault } from '../lib/get-translations';
-import { useWitnessVoteMutation } from '../components/hooks/use-vote-witness-mutation';
-import WitnessRemoveVote from '../components/witness-remove-vote';
+import { useWitnessVoteMutation } from '@/wallet/components/hooks/use-vote-witness-mutation';
+import WitnessRemoveVote from '@/wallet/components/witness-remove-vote';
 import { CircleSpinner } from 'react-spinners-kit';
-import { useSetProxyMutation } from '../components/hooks/use-set-proxy-mutation';
+import { useSetProxyMutation } from '@/wallet/components/hooks/use-set-proxy-mutation';
 import {
   Dialog,
   DialogContent,
@@ -31,10 +31,7 @@ import {
   Separator
 } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
-import Head from 'next/head';
 import { getAccount, getAccounts } from '@transaction/lib/hive-api';
-
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 // User can vote only for 30 witnesses
@@ -60,10 +57,55 @@ const mapWitnesses =
   };
 export type ExtendWitness = ReturnType<ReturnType<typeof mapWitnesses>>;
 
-const TAB_TITLE = 'Hive Wallet - Witnesses';
-function WitnessesPage() {
+const ProxyDialog = ({
+  loading,
+  onSetProxy,
+  description,
+  buttonTitle,
+  t
+}: {
+  loading: boolean;
+  onSetProxy: () => void;
+  description: string;
+  buttonTitle: string;
+  t: ReturnType<typeof useTranslation>['t'];
+}) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="h-fit" variant="destructive" disabled={loading}>
+          {loading ? <CircleSpinner loading={loading} size={20} color="#fff" /> : buttonTitle}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>{t('witnesses_page.proxy_form.title')}</DialogHeader>
+        <Separator />
+        <DialogDescription>{description}</DialogDescription>
+        <DialogFooter className="flex flex-row items-center justify-between pt-4">
+          <Button
+            variant="redHover"
+            onClick={() => {
+              onSetProxy();
+              setOpen(false);
+            }}
+          >
+            {t('witnesses_page.ok')}
+          </Button>
+          <Button variant="outlineRed" onClick={() => setOpen(false)}>
+            {t('witnesses_page.cancel_button')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default function WitnessesPage() {
   const { user } = useUser();
   const { t } = useTranslation('common_wallet');
+  const searchParams = useSearchParams();
   // value of input field for voting witness by name, not included in the list
   const [voteInput, setVoteInput] = useState('');
   const {
@@ -131,7 +173,7 @@ function WitnessesPage() {
     },
     { enabled: witnessesSuccess || Boolean(witnessesData) }
   );
-  const router = useRouter();
+
   // Mutation for handle voting witness
   const voteMutation = useWitnessVoteMutation();
   // Mutation for handle set proxy
@@ -168,21 +210,17 @@ function WitnessesPage() {
   };
 
   useEffect(() => {
-    if (Array.isArray(router.query.highlight)) {
-      setVoteInput(router.query.highlight[0]);
-    } else {
-      setVoteInput(router.query.highlight ?? '');
+    const highlight = searchParams.get('highlight');
+    if (highlight) {
+      setVoteInput(highlight);
     }
-  }, [router.query.highlight]);
+  }, [searchParams]);
 
   // Calculate how many votes user have left
   const votesLeft = MAX_VOTES - (observerData?.witness_votes.length ?? 0);
 
   return (
     <>
-      <Head>
-        <title>{TAB_TITLE}</title>
-      </Head>
       {!observerData || observerData.proxy === '' ? (
         <div className="mx-auto max-w-5xl">
           <div className="mx-2 flex flex-col gap-4">
@@ -352,50 +390,3 @@ function WitnessesPage() {
     </>
   );
 }
-
-export default WitnessesPage;
-
-const ProxyDialog = ({
-  loading,
-  onSetProxy,
-  description,
-  buttonTitle,
-  t
-}: {
-  loading: boolean;
-  onSetProxy: () => void;
-  description: string;
-  buttonTitle: string;
-  t: any;
-}) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="h-fit" variant="destructive" disabled={loading}>
-          {loading ? <CircleSpinner loading={loading} size={20} color="#fff" /> : buttonTitle}
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>{t('witnesses_page.proxy_form.title')}</DialogHeader>
-        <Separator />
-        <DialogDescription>{description}</DialogDescription>
-        <DialogFooter className="flex flex-row items-center justify-between pt-4">
-          <Button
-            variant="redHover"
-            onClick={() => {
-              onSetProxy();
-              setOpen(false);
-            }}
-          >
-            {t('witnesses_page.ok')}
-          </Button>
-          <Button variant="outlineRed" onClick={() => setOpen(false)}>
-            {t('witnesses_page.cancel_button')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};

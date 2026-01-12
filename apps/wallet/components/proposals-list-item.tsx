@@ -6,7 +6,7 @@ import { Icons } from '@hive/ui/components/icons';
 import moment from 'moment';
 import { Badge } from '@ui/components/badge';
 import VoteProposals from './votes-proposals-dialog';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { TFunction } from 'i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import DialogLogin from './dialog-login';

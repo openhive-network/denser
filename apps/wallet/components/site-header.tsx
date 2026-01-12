@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import { FC, useState, useEffect } from 'react';
@@ -6,7 +8,7 @@ import ModeToggle from './mode-toggle';
 import { Link } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import LangToggle from '@/wallet/components/lang-toggle';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { getLogger } from '@ui/lib/logging';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import UserMenu from './user-menu';

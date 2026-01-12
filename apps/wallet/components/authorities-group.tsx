@@ -3,7 +3,7 @@ import { Button, Separator } from '@ui/components';
 import AuthoritiesGroupItem from './authorities-group-item';
 import AddAuthorityDialog from './add-authority-dialog';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { KeyAuth } from '../lib/utils';
 import NumberInput from './number-input';
 import { LevelAuthority } from '@transaction/lib/hive';

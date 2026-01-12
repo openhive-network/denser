@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import { dateToRelative } from '@ui/lib/parse-date';
 import Big from 'big.js';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 
 export interface OrdersItem {
   total: number;

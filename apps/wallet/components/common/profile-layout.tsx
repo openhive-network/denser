@@ -1,6 +1,8 @@
+'use client';
+
 import React from 'react';
 import { Link } from '@hive/ui';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { useSiteParams } from '@ui/components/hooks/use-site-params';
 import Loading from '@ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
@@ -16,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { getExternalLink } from '@/wallet/lib/utils';
 import { getUserAvatarUrl } from '@hive/ui';
 
@@ -41,7 +43,7 @@ const getCoverImageStyle = (profileData: { posting_json_metadata?: string } | nu
 
 const ProfileLayout = ({ children }: IProfileLayout) => {
   const { t } = useTranslation('common_wallet');
-  const router = useRouter();
+  const pathname = usePathname();
   const { username } = useSiteParams();
   const {
     isLoading: profileDataIsLoading,
@@ -130,7 +132,7 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     href={getExternalLink(`/@${username}`)}
                     target="_blank"
                     className={`flex h-full items-center px-2 hover:bg-background hover:text-primary
-                    ${router.asPath === `/@${username}` ? 'bg-background text-primary' : ''}
+                    ${pathname === `/@${username}` ? 'bg-background text-primary' : ''}
                     `}
                   >
                     {t('navigation.profile_navbar.blog')}
@@ -165,8 +167,8 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
                     rel="noopener noreferrer"
                     className={clsx(
                       'mr-4 flex h-full items-center px-2 hover:bg-background hover:text-primary',
-                      router.asPath === `/@${username}/transfers` ||
-                        router.asPath === `/@${username}/delegations`
+                      pathname === `/@${username}/transfers` ||
+                        pathname === `/@${username}/delegations`
                         ? 'bg-background text-primary'
                         : ''
                     )}

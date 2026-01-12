@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@ui/components/sheet';
@@ -5,7 +7,7 @@ import { Link } from '@hive/ui';
 import { Separator } from '@ui/components/separator';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import DialogLogin from './dialog-login';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getLogger } from '@ui/lib/logging';

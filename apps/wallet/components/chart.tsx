@@ -3,7 +3,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { OrdersItem } from './market-table';
 import Big from 'big.js';
 import { getRoundedAbbreveration } from '@ui/lib/utils';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 
 export type PayloadOrder = {
   total: number;

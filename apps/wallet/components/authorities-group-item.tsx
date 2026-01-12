@@ -7,7 +7,7 @@ import { Input } from '@ui/components';
 import { Link } from '@hive/ui';
 import ButtonTooltip from './button-tooltip';
 import NumberInput from './number-input';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 
 const AuthoritiesGroupItem: FC<{
   item: { keyOrAccount: string; thresholdWeight: number };

@@ -1,7 +1,7 @@
 import { Link } from '@hive/ui';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 
 export default function WalletMenu({ username }: { username: string }) {

@@ -1,6 +1,6 @@
 import { Checkbox } from '@ui/components/checkbox';
 import { Input } from '@ui/components/input';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 
 export type TransferFilters = {
   search: string;

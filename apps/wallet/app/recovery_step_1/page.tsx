@@ -1,10 +1,12 @@
+'use client';
+
 import { getChain } from '@transaction/lib/chain';
 import { Button, Input, Separator } from '@ui/components';
 import { ChangeEvent, useState } from 'react';
-import { useDebounce } from '../components/hooks/use-debounce';
-import { getOwnerHistory } from '../lib/hive';
+import { useDebounce } from '@/wallet/components/hooks/use-debounce';
+import { getOwnerHistory } from '@/wallet/lib/hive';
 
-const RecoveryStep1 = () => {
+export default function RecoveryStep1() {
   const [accountName, setAccountName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -125,6 +127,4 @@ const RecoveryStep1 = () => {
       )}
     </div>
   );
-};
-
-export default RecoveryStep1;
+}

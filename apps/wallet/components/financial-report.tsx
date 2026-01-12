@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@ui/components';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { useState } from 'react';
 import { HiveOperation, OpType } from '@transaction/lib/extended-hive.chain';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';

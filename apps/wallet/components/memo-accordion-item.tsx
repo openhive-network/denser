@@ -1,6 +1,6 @@
 import { AccordionContent, AccordionItem, AccordionTrigger, Button } from '@ui/components';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { AuthorityAction } from './hooks/use-authority-operation';
 import MemoAuthorityValue from './memo-authority-value';
 

@@ -1,15 +1,17 @@
+'use client';
+
 import { Link } from '@hive/ui';
-import { ExtendWitness } from '@/wallet/pages/~witnesses';
+import { ExtendWitness } from '@/wallet/app/~witnesses/page';
 import clsx from 'clsx';
 import { DISABLED_SIGNING_KEY } from '@/wallet/lib/constants';
 import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import { FullAccount } from '@transaction/lib/app-types';
 import { dateToRelative } from '@hive/ui/lib/parse-date';
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import DialogLogin from './dialog-login';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { CircleSpinner } from 'react-spinners-kit';
 import WitnessRemoveVote from './witness-remove-vote';
 import TimeAgo from '@ui/components/time-ago';
@@ -87,21 +89,16 @@ function WitnessListItem({
     );
   }
 
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const highlight = searchParams.get('highlight');
 
   const ref = useRef<HTMLTableRowElement>(null);
-  const markedWitness = router.query.highlight === data.owner;
+  const markedWitness = highlight === data.owner;
   useEffect(() => {
-    let highlight = '';
-    if (Array.isArray(router.query.highlight)) {
-      highlight = router.query.highlight[0];
-    } else {
-      highlight = router.query.highlight ?? '';
-    }
     if (highlight === data.owner && ref.current) {
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [data.owner, router.query.highlight]);
+  }, [data.owner, highlight]);
 
   return (
     <tr
@@ -209,7 +206,7 @@ function WitnessListItem({
 
               <Link
                 href={
-                  router.query.highlight !== data.owner
+                  highlight !== data.owner
                     ? `/~witnesses?highlight=${data.owner}`
                     : `/~witnesses`
                 }

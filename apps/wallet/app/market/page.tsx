@@ -1,15 +1,12 @@
+'use client';
+
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import Loading from '@hive/ui/components/loading';
 import Big from 'big.js';
 import clsx from 'clsx';
 import { useMarket } from '@/wallet/components/hooks/use-market';
 import TradeHive from '@/wallet/components/trade-hive';
-import { GetServerSideProps } from 'next';
-import { useTranslation } from 'next-i18next';
-import { getServerSidePropsDefault } from '../lib/get-translations';
-import Head from 'next/head';
-
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
+import { useTranslation } from '@/wallet/i18n/client';
 
 const Box = ({
   label,
@@ -47,8 +44,7 @@ const Box = ({
   );
 };
 
-const TAB_TITLE = 'Hive Wallet - Market';
-function Market() {
+export default function Market() {
   const { t } = useTranslation('common_wallet');
   const { data: tickerData, isLoading: tickerLoading } = useMarket();
 
@@ -61,33 +57,26 @@ function Market() {
       .minus(tickerData.highest_bid)
       .div(tickerData.highest_bid.plus(tickerData.lowest_ask))
   );
-  return (
-    <>
-      <Head>
-        <title>{TAB_TITLE}</title>
-      </Head>
-      <div className="flex flex-col items-center gap-4 px-4 pb-8">
-        <div className="flex w-full flex-wrap justify-center gap-1">
-          <Box
-            label={t('market_page.last_price')}
-            value={convertStringToBig(tickerData.latest).toFixed(6)}
-            diff={convertStringToBig(tickerData.percent_change).toFixed(2)}
-            dollar
-          />
-          <Box
-            label={t('market_page.volume')}
-            value={convertStringToBig(tickerData?.hbd_volume).toFixed(2)}
-            dollar
-          />
-          <Box label={t('market_page.bid')} value={tickerData.highest_bid.toFixed(6)} dollar />
-          <Box label={t('market_page.ask')} value={tickerData.lowest_ask.toFixed(6)} dollar />
 
-          <Box label={t('market_page.spread')} value={spread.toFixed(3)} percent />
-        </div>
-        <TradeHive tickerData={tickerData} />
+  return (
+    <div className="flex flex-col items-center gap-4 px-4 pb-8">
+      <div className="flex w-full flex-wrap justify-center gap-1">
+        <Box
+          label={t('market_page.last_price')}
+          value={convertStringToBig(tickerData.latest).toFixed(6)}
+          diff={convertStringToBig(tickerData.percent_change).toFixed(2)}
+          dollar
+        />
+        <Box
+          label={t('market_page.volume')}
+          value={convertStringToBig(tickerData?.hbd_volume).toFixed(2)}
+          dollar
+        />
+        <Box label={t('market_page.bid')} value={tickerData.highest_bid.toFixed(6)} dollar />
+        <Box label={t('market_page.ask')} value={tickerData.lowest_ask.toFixed(6)} dollar />
+        <Box label={t('market_page.spread')} value={spread.toFixed(3)} percent />
       </div>
-    </>
+      <TradeHive tickerData={tickerData} />
+    </div>
   );
 }
-
-export default Market;

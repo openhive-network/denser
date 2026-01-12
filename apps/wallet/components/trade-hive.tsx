@@ -7,7 +7,7 @@ import { useTradeHistory } from './hooks/use-trade-history';
 import { useOrderBook } from './hooks/use-order-book';
 import moment from 'moment';
 import Chart from './chart';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getOpenOrder } from '../lib/hive';
 import OpenOrders from './open-orders';

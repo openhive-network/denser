@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { Button } from '@ui/components/button';
 import {
@@ -6,11 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getCookie } from '@ui/lib/utils';
 import clsx from 'clsx';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import TooltipContainer from '@ui/components/tooltip-container';
 
 export default function LangToggle({ logged }: { logged: Boolean }) {
@@ -22,9 +24,6 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
     const savedLang = getCookie('NEXT_LOCALE') || 'en';
     if (!lang) {
       setLang(savedLang);
-      if (router.locale !== savedLang) {
-        router.push(router.asPath, router.asPath, { locale: savedLang });
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -49,13 +48,10 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
     document.cookie = `NEXT_LOCALE=${locale}; path=/; SameSite=Lax`;
     setLang(locale);
 
-    // Update the URL and locale using Next.js router
-    router.push(router.asPath, router.asPath, { locale }).then(() => {
-      // Only reload if absolutely necessary
-      if (document.documentElement.lang !== locale) {
-        router.reload();
-      }
-    });
+    // Refresh the page to apply the new locale
+    router.refresh();
+    // Reload to ensure i18n picks up the change
+    window.location.reload();
   };
 
   return (
@@ -68,7 +64,7 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
             className={clsx('flex h-10 w-full p-0 text-start font-normal', { 'h-6': logged })}
             data-testid="toggle-language"
           >
-            <span>{lang ? languages.filter((language) => language.locale === lang)[0].label : null}</span>
+            <span>{lang ? languages.filter((language) => language.locale === lang)[0]?.label : null}</span>
             {logged ? <span className="ml-2 w-full">{t('navigation.user_menu.toggle_lang')}</span> : null}
           </Button>
         </DropdownMenuTrigger>

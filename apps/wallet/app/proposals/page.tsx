@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
@@ -9,14 +11,9 @@ import moment from 'moment';
 import { ProposalListItem } from '@/wallet/components/proposals-list-item';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { Skeleton } from '@ui/components/skeleton';
-import { GetServerSideProps } from 'next';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { TFunction } from 'i18next';
-import { getServerSidePropsDefault } from '../lib/get-translations';
-import Head from 'next/head';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 function timeStatus(status: string, t: TFunction<'common_wallet', undefined>) {
   switch (status) {
@@ -30,8 +27,8 @@ function timeStatus(status: string, t: TFunction<'common_wallet', undefined>) {
       return '';
   }
 }
-const TAB_TITLE = 'Hive Wallet - Proposals';
-function ProposalsPage() {
+
+export default function ProposalsPage() {
   const { user } = useUser();
   const { t } = useTranslation('common_wallet');
   const [filterStatus, setFilterStatus] = useState<IGetProposalsParams['status']>(
@@ -113,54 +110,48 @@ function ProposalsPage() {
       document.removeEventListener('scroll', handleScroll);
     };
   }, [proposalsData, proposalsData.fetchNextPage, proposalsData.hasNextPage]);
-  return (
-    <>
-      <Head>
-        <title>{TAB_TITLE}</title>
-      </Head>
-      <div className="mx-auto flex max-w-5xl flex-col gap-5 p-5" data-testid="proposals-body">
-        <ProposalsFilter
-          onChangeFilterStatus={setFilterStatus}
-          filterStatus={filterStatus}
-          onChangeSortOrder={setSortOrder}
-          orderValue={sortOrder}
-          orderDirection={orderDirection}
-          onOrderDirection={setOrderDirection}
-        />
 
-        {proposalsData.isLoading || dynamicLoading ? (
-          <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 p-5">
-            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-          </div>
-        ) : proposalsData.data?.pages[0].length === 0 || !dynamicData ? (
-          <main>
-            <p className="mt-32 text-center text-3xl" data-testid="cannot-show-you-any-proposals">
-              {t('global.sorry_cant_show')}
-            </p>
-            <p className="text-center text-xl text-gray-400">{t('global.its_probably')}</p>
-          </main>
-        ) : (
-          proposalsData.data?.pages.map((page) =>
-            page.map((proposal) => (
-              <ProposalListItem
-                voted={
-                  votes?.find((vote) => vote.proposal.proposal_id === proposal.proposal_id) ? true : false
-                }
-                totalVestingFund={dynamicData.total_vesting_fund_hive}
-                totalShares={dynamicData.total_vesting_shares}
-                proposalData={proposal}
-                key={proposal.proposal_id}
-              />
-            ))
-          )
-        )}
-      </div>
-    </>
+  return (
+    <div className="mx-auto flex max-w-5xl flex-col gap-5 p-5" data-testid="proposals-body">
+      <ProposalsFilter
+        onChangeFilterStatus={setFilterStatus}
+        filterStatus={filterStatus}
+        onChangeSortOrder={setSortOrder}
+        orderValue={sortOrder}
+        orderDirection={orderDirection}
+        onOrderDirection={setOrderDirection}
+      />
+
+      {proposalsData.isLoading || dynamicLoading ? (
+        <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 p-5">
+          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+        </div>
+      ) : proposalsData.data?.pages[0].length === 0 || !dynamicData ? (
+        <main>
+          <p className="mt-32 text-center text-3xl" data-testid="cannot-show-you-any-proposals">
+            {t('global.sorry_cant_show')}
+          </p>
+          <p className="text-center text-xl text-gray-400">{t('global.its_probably')}</p>
+        </main>
+      ) : (
+        proposalsData.data?.pages.map((page) =>
+          page.map((proposal) => (
+            <ProposalListItem
+              voted={
+                votes?.find((vote) => vote.proposal.proposal_id === proposal.proposal_id) ? true : false
+              }
+              totalVestingFund={dynamicData.total_vesting_fund_hive}
+              totalShares={dynamicData.total_vesting_shares}
+              proposalData={proposal}
+              key={proposal.proposal_id}
+            />
+          ))
+        )
+      )}
+    </div>
   );
 }
-
-export default ProposalsPage;

@@ -10,7 +10,7 @@ import {
   Label
 } from '@ui/components';
 import { PlusCircle } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { FC, useState } from 'react';
 import NumberInput from './number-input';
 import { LevelAuthority } from '@transaction/lib/hive';

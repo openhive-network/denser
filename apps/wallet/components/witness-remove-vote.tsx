@@ -7,7 +7,7 @@ import {
   DialogFooter,
   Button
 } from '@ui/components';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { ReactNode, useState } from 'react';
 
 interface WitnessRemoveVoteProps {

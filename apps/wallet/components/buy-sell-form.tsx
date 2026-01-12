@@ -3,7 +3,7 @@ import { Input } from '@ui/components/input';
 import { Button } from '@ui/components/button';
 import clsx from 'clsx';
 import { convertStringToBig } from '@ui/lib/helpers';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { useCreateMarketOrder } from './hooks/use-market-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { useUser } from '@smart-signer/lib/auth/use-user';
