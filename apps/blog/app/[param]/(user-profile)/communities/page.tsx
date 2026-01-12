@@ -12,20 +12,20 @@ const CommunitiesPage = async ({ params }: { params: { param: string } }) => {
   const username = params.param.replace('%40', '');
 
   try {
-    await queryClient.prefetchQuery({
-      queryKey: ['listAllSubscription', username],
-      queryFn: () => getSubscriptions(username)
-    });
-
-    await queryClient.prefetchQuery({
-      queryKey: ['hivebuzz', username],
-      queryFn: () => getHivebuzzBadges(username)
-    });
-
-    await queryClient.prefetchQuery({
-      queryKey: ['peakd', username],
-      queryFn: () => getPeakdBadges(username)
-    });
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: ['listAllSubscription', username],
+        queryFn: () => getSubscriptions(username)
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['hivebuzz', username],
+        queryFn: () => getHivebuzzBadges(username)
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['peakd', username],
+        queryFn: () => getPeakdBadges(username)
+      })
+    ]);
   } catch (error) {
     logger.error(error, 'Error in CommunitiesPage:');
   }
