@@ -11,17 +11,19 @@ const FollowedUsersPage = async ({ params }: { params: { param: string } }) => {
   const username = params.param.replace('%40', '');
 
   try {
-    await queryClient.prefetchQuery({
-      queryKey: ['profileData', username],
-      queryFn: () => getAccountFull(username)
-    });
-    await queryClient.prefetchInfiniteQuery({
-      queryKey: ['followingData', username],
-      queryFn: ({ pageParam: last_id }) => getFollowing({ account: username, start: last_id, limit: 50 }),
-      getNextPageParam: (lastPage) => {
-        return lastPage.length >= 50 ? lastPage[lastPage.length - 1].following : undefined;
-      }
-    });
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: ['profileData', username],
+        queryFn: () => getAccountFull(username)
+      }),
+      queryClient.prefetchInfiniteQuery({
+        queryKey: ['followingData', username],
+        queryFn: ({ pageParam: last_id }) => getFollowing({ account: username, start: last_id, limit: 50 }),
+        getNextPageParam: (lastPage) => {
+          return lastPage.length >= 50 ? lastPage[lastPage.length - 1].following : undefined;
+        }
+      })
+    ]);
   } catch (error) {
     logger.error(error, 'Error in FollowedUsersPage:');
   }

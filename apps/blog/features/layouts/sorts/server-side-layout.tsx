@@ -15,18 +15,22 @@ const ServerSideLayout = async ({ children }: { children: ReactNode }) => {
   const queryClient = getQueryClient();
   try {
     const observer = getObserverFromCookies();
-    await queryClient.prefetchQuery({
-      queryKey: ['communitiesList', sort],
-      queryFn: () => getCommunities(sort, query, observer)
-    });
-    // Only prefetch subscriptions if logged in (observer is actual username, not default)
-    // For non-logged-in users, client-side query is disabled anyway
-    if (observer !== DEFAULT_OBSERVER) {
-      await queryClient.prefetchQuery({
-        queryKey: ['subscriptions', observer],
-        queryFn: () => getSubscriptions(observer)
-      });
-    }
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: ['communitiesList', sort],
+        queryFn: () => getCommunities(sort, query, observer)
+      }),
+      // Only prefetch subscriptions if logged in (observer is actual username, not default)
+      // For non-logged-in users, client-side query is disabled anyway
+      ...(observer !== DEFAULT_OBSERVER
+        ? [
+            queryClient.prefetchQuery({
+              queryKey: ['subscriptions', observer],
+              queryFn: () => getSubscriptions(observer)
+            })
+          ]
+        : [])
+    ]);
   } catch (error) {
     logger.error(error, 'Error in ServerSideLayout:');
   }

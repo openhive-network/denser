@@ -12,14 +12,16 @@ const SettingsPage = async ({ params }: { params: { param: string } }) => {
   const queryClient = getQueryClient();
 
   try {
-    await queryClient.prefetchQuery({
-      queryKey: ['muted', username],
-      queryFn: () => getFollowList(username, 'muted')
-    });
-    await queryClient.prefetchQuery({
-      queryKey: ['profileData', username],
-      queryFn: () => getAccountFull(username)
-    });
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: ['muted', username],
+        queryFn: () => getFollowList(username, 'muted')
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['profileData', username],
+        queryFn: () => getAccountFull(username)
+      })
+    ]);
   } catch (error) {
     logger.error(error, 'Error in SettingsPage:');
   }
