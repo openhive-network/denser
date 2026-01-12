@@ -17,7 +17,8 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@hive/ui/components/form';
 import { useForm, useWatch } from 'react-hook-form';
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import useManabars from '@/blog/components/hooks/use-manabars';
 import { useQuery } from '@tanstack/react-query';
 import { Entry } from '@transaction/lib/extended-hive.chain';
@@ -72,7 +73,7 @@ export default function PostForm({
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const searchParams = useSearchParams();
   const categoryParam = searchParams?.get('category') ?? undefined;
-  const [preferences] = useLocalStorage<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES);
+  const [preferences] = useStorageWithTTL<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES, StorageTTL.PERMANENT);
   const defaultValues = {
     title: '',
     postArea: '',
@@ -84,9 +85,10 @@ export default function PostForm({
     maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
     payoutType: preferences.blog_rewards
   };
-  const [storedPost, storePost, removePost] = useLocalStorage<AccountFormValues>(
+  const [storedPost, storePost, removePost] = useStorageWithTTL<AccountFormValues>(
     editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
-    defaultValues
+    defaultValues,
+    StorageTTL.DRAFT
   );
 
   useEffect(() => {
@@ -106,6 +108,8 @@ export default function PostForm({
   const [imagePickerState, setImagePickerState] = useState('');
   const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
+  // Track if we've hydrated from localStorage to avoid resetting form during typing
+  const hasHydratedRef = useRef(false);
   const { t } = useTranslation('common_blog');
   const postMutation = usePostMutation();
   const { data: communityData } = useQuery({
@@ -140,12 +144,19 @@ export default function PostForm({
   });
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
+  // Check if we have a draft with actual changes (different from original post)
+  const hasDraftChanges = editMode && storedPost && (
+    (storedPost.postArea && storedPost.postArea !== post_s?.body) ||
+    (storedPost.title && storedPost.title !== post_s?.title)
+  );
+  // In edit mode: use draft if it has changes, otherwise use original post
+  // In new mode: use draft if available
   const entryValues = {
-    title: post_s?.title || storedPost?.title || '',
-    postArea: post_s?.body || storedPost?.postArea || '',
-    postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
-    tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
-    author: post_s?.json_metadata?.author || storedPost?.author || '',
+    title: hasDraftChanges ? (storedPost?.title || post_s?.title || '') : (post_s?.title || storedPost?.title || ''),
+    postArea: hasDraftChanges ? (storedPost?.postArea || post_s?.body || '') : (post_s?.body || storedPost?.postArea || ''),
+    postSummary: hasDraftChanges ? (storedPost?.postSummary || post_s?.json_metadata?.summary || '') : (post_s?.json_metadata?.summary || storedPost?.postSummary || ''),
+    tags: hasDraftChanges ? (storedPost?.tags || post_s?.json_metadata?.tags?.join(' ') || '') : (post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || ''),
+    author: hasDraftChanges ? (storedPost?.author || post_s?.json_metadata?.author || '') : (post_s?.json_metadata?.author || storedPost?.author || ''),
     category: categoryParam ?? storedPost?.category ?? post_s?.category ?? '',
     beneficiaries: storedPost?.beneficiaries || [],
     maxAcceptedPayout: post_s
@@ -159,6 +170,37 @@ export default function PostForm({
     resolver: zodResolver(accountFormSchema),
     defaultValues: entryValues
   });
+
+  // Hydrate form from localStorage after initial render
+  // This handles the case where SSR returns empty values but localStorage has data
+  useEffect(() => {
+    if (hasHydratedRef.current) return;
+
+    // Check if storedPost has actual data (not just defaults)
+    const hasStoredData = storedPost.postArea || storedPost.title || storedPost.tags;
+
+    // In edit mode, only hydrate if draft has changes different from original
+    // In new mode, hydrate if there's any stored data
+    const shouldHydrate = editMode ? hasDraftChanges : hasStoredData;
+
+    if (shouldHydrate) {
+      form.reset({
+        ...entryValues,
+        title: storedPost.title || entryValues.title,
+        postArea: storedPost.postArea || entryValues.postArea,
+        postSummary: storedPost.postSummary || entryValues.postSummary,
+        tags: storedPost.tags || entryValues.tags,
+        author: storedPost.author || entryValues.author,
+        category: storedPost.category || entryValues.category,
+        beneficiaries: storedPost.beneficiaries || entryValues.beneficiaries,
+        maxAcceptedPayout: storedPost.maxAcceptedPayout ?? entryValues.maxAcceptedPayout,
+        payoutType: storedPost.payoutType || entryValues.payoutType
+      });
+      setPreviewContent(storedPost.postArea);
+    }
+    hasHydratedRef.current = true;
+  }, [storedPost, editMode, hasDraftChanges]);
+
   const nsfwTagCheck = communityData?.is_nsfw && !storedPost.tags?.includes('nsfw');
   useEffect(() => {
     form.setValue('tags', nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);

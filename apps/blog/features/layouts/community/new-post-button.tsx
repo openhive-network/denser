@@ -1,4 +1,5 @@
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { Button } from '@ui/components';
 import { Link } from '@hive/ui';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
@@ -16,9 +17,11 @@ type AccountFormValues = {
 const NewPost = ({ name, disabled }: { name: string; disabled: boolean }) => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
-  const [preferences] = useLocalStorage<Preferences>(
-    `user-preferences-${user.username}`,
-    DEFAULT_PREFERENCES
+  // User preferences are permanent (no TTL) - use empty key when not logged in
+  const [preferences] = useStorageWithTTL<Preferences>(
+    user.username ? `user-preferences-${user.username}` : '',
+    DEFAULT_PREFERENCES,
+    StorageTTL.PERMANENT
   );
 
   const defaultValues = {
@@ -32,9 +35,11 @@ const NewPost = ({ name, disabled }: { name: string; disabled: boolean }) => {
     maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
     payoutType: preferences.blog_rewards
   };
-  const [storedPost, storePost] = useLocalStorage<AccountFormValues>(
-    `postData-new-${user.username}`,
-    defaultValues
+  // Post drafts expire after 30 days - use empty key when not logged in
+  const [storedPost, storePost] = useStorageWithTTL<AccountFormValues>(
+    user.username ? `postData-new-${user.username}` : '',
+    defaultValues,
+    StorageTTL.DRAFT
   );
   return (
     <Button

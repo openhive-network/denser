@@ -13,7 +13,8 @@ import {
 import { ReactNode, useEffect, useState } from 'react';
 import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { toast } from '@ui/components/hooks/use-toast';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import badActorList from '@ui/config/lists/bad-actor-list';
@@ -52,7 +53,12 @@ export function AdvancedSettingsPostForm({
   updateForm: (data: AccountFormValues) => void;
 }) {
   const { t } = useTranslation('common_blog');
-  const [preferences] = useLocalStorage<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES);
+  // Username is guaranteed here since this is only accessible when logged in
+  const [preferences] = useStorageWithTTL<Preferences>(
+    `user-preferences-${username}`,
+    DEFAULT_PREFERENCES,
+    StorageTTL.PERMANENT
+  );
 
   const maxPayoutOptions = [
     { value: 'no_max', label: t('submit_page.advanced_settings_dialog.no_limit') },
@@ -80,7 +86,12 @@ export function AdvancedSettingsPostForm({
     data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100'
   );
   const [open, setOpen] = useState(false);
-  const [storedTemplates, storeTemplates] = useLocalStorage<Template[]>(`hivePostTemplates-${username}`, []);
+  // Templates are permanent user data
+  const [storedTemplates, storeTemplates] = useStorageWithTTL<Template[]>(
+    `hivePostTemplates-${username}`,
+    [],
+    StorageTTL.PERMANENT
+  );
   const hasDuplicateUsernames = beneficiaries.reduce((acc, beneficiary, index, array) => {
     const isDuplicate = array.slice(index + 1).some((b) => b.account === beneficiary.account);
     return acc || isDuplicate;
