@@ -76,23 +76,25 @@ const Layout = async ({ children, params }: { children: ReactNode; params: { par
   }
 
   try {
-    // Use cached version - deduplicated with generateMetadata within the same request
-    await queryClient.prefetchQuery({
-      queryKey: ['profileData', username],
-      queryFn: () => getAccountFullCached(username)
-    });
-    await queryClient.prefetchQuery({
-      queryKey: ['accountReputationData', username],
-      queryFn: () => getAccountReputations(username, 1)
-    });
-    await queryClient.prefetchQuery({
-      queryKey: ['twitterData', username],
-      queryFn: () => getTwitterInfo(username)
-    });
-    await queryClient.prefetchQuery({
-      queryKey: ['dynamicGlobalData'],
-      queryFn: () => getDynamicGlobalProperties()
-    });
+    await Promise.all([
+      // Use cached version - deduplicated with generateMetadata within the same request
+      queryClient.prefetchQuery({
+        queryKey: ['profileData', username],
+        queryFn: () => getAccountFullCached(username)
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['accountReputationData', username],
+        queryFn: () => getAccountReputations(username, 1)
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['twitterData', username],
+        queryFn: () => getTwitterInfo(username)
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['dynamicGlobalData'],
+        queryFn: () => getDynamicGlobalProperties()
+      })
+    ]);
   } catch (error) {
     logger.error(error, 'Error in Layout:');
   }
