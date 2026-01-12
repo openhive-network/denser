@@ -81,7 +81,10 @@ export class TagTransformingSanitizer {
                 img: ['src', 'alt'],
 
                 // title is only set in the case of an external link warning
-                a: ['href', 'rel', 'title', 'class', 'target', 'id']
+                a: ['href', 'rel', 'title', 'class', 'target', 'id'],
+
+                // start attribute allows ordered lists to continue numbering after interruption
+                ol: ['start']
             },
             allowedSchemes: ['http', 'https', 'hive'],
             transformTags: {
