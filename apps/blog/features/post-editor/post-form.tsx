@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@hive/ui';
 import clsx from 'clsx';
 import * as z from 'zod';
@@ -205,11 +205,45 @@ export default function PostForm({
   useEffect(() => {
     form.setValue('tags', nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);
   }, [!!communityData?.is_nsfw]);
-  const { postArea, ...restFields } = useWatch({
+  // useWatch provides reactive values that update on every form change
+  const formValues = useWatch({
     control: form.control
   });
 
-  const watchedValues = form.getValues();
+  // Memoize beneficiaries separately - only recalculate when beneficiaries change
+  const beneficiaries = useMemo(() =>
+    (formValues.beneficiaries ?? []).map(b => ({
+      account: b.account ?? '',
+      weight: b.weight ?? ''
+    })),
+    [formValues.beneficiaries]
+  );
+
+  // Memoize other form values with granular dependencies
+  const watchedValues = useMemo(() => ({
+    title: formValues.title ?? '',
+    postArea: formValues.postArea ?? '',
+    postSummary: formValues.postSummary ?? '',
+    tags: formValues.tags ?? '',
+    author: formValues.author ?? '',
+    category: formValues.category ?? 'blog',
+    beneficiaries,
+    maxAcceptedPayout: formValues.maxAcceptedPayout ?? 1000000,
+    payoutType: formValues.payoutType ?? '50%'
+  }), [
+    formValues.title,
+    formValues.postArea,
+    formValues.postSummary,
+    formValues.tags,
+    formValues.author,
+    formValues.category,
+    beneficiaries,
+    formValues.maxAcceptedPayout,
+    formValues.payoutType
+  ]);
+
+  // Extract postArea for use in dependency arrays
+  const { postArea } = watchedValues;
   const tagsCheck = validateTagInput(
     watchedValues.tags,
     !categoryParam ? watchedValues.category === 'blog' : false,
@@ -236,11 +270,11 @@ export default function PostForm({
         setPreviewContent(postArea);
       }, 50)();
     }
-  }, [previewContent, watchedValues.postArea]);
+  }, [previewContent, postArea]);
 
   useEffect(() => {
     setImagePickerState(imagePicker(selectedImg));
-  }, [selectedImg, watchedValues.postArea]);
+  }, [selectedImg, postArea]);
 
   async function onSubmit(data: AccountFormValues) {
     const tags = data.tags.replace(/#/g, '').split(' ') ?? [];
@@ -448,38 +482,38 @@ export default function PostForm({
                 </FormItem>
               )}
             />
-            <SelectImageList content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} />
+            <SelectImageList content={postArea} value={selectedImg} onChange={setSelectedImg} />
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
 
-                {storedPost.maxAcceptedPayout < 1000000 && storedPost.maxAcceptedPayout > 0 ? (
+                {watchedValues.maxAcceptedPayout < 1000000 && watchedValues.maxAcceptedPayout > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}:{' '}
-                    {storedPost.maxAcceptedPayout} HBD
+                    {watchedValues.maxAcceptedPayout} HBD
                   </span>
                 ) : null}
 
-                {storedPost.beneficiaries.length > 0 ? (
+                {watchedValues.beneficiaries.length > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.beneficiaries', {
-                      num: storedPost.beneficiaries.length
+                      num: watchedValues.beneficiaries.length
                     })}
                   </span>
                 ) : null}
 
                 <span className="text-xs" data-testid="author-rewards-description">
                   {t('submit_page.author_rewards')}
-                  {storedPost.maxAcceptedPayout === 0
+                  {watchedValues.maxAcceptedPayout === 0
                     ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
-                    : storedPost.payoutType === '100%'
+                    : watchedValues.payoutType === '100%'
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}
                 </span>
                 <AdvancedSettingsPostForm
                   username={username}
                   updateForm={(e) => handleLoadTemplate(e)}
-                  data={storedPost}
+                  data={watchedValues}
                 >
                   <span
                     className="w-fit cursor-pointer text-xs text-destructive"
