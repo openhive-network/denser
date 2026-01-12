@@ -21,7 +21,7 @@ variables:
   GIT_STRATEGY: fetch
   GIT_DEPTH: 0
   GIT_SUBMODULE_DEPTH: 0
-  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_STRATEGY: none
   # Temporary: separate clone path prevents clone-strategy jobs from erasing
   # fetch workspaces during transition. Remove once all projects use fetch.
   GIT_CLONE_PATH: $CI_BUILDS_DIR/fetch/$CI_RUNNER_SHORT_TOKEN/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
@@ -160,24 +160,16 @@ validate_haf_commit:
   image: alpine:latest
   variables:
     GIT_SUBMODULE_STRATEGY: none
-  before_script:
-  - apk add --no-cache git
   script:
   - |
-    SUBMODULE_COMMIT=$(git ls-tree HEAD haf | awk '{print $3}')
     INCLUDE_REF=$(grep -A2 "project:.*hive/haf" .gitlab-ci.yml | grep -m1 "ref:" | sed "s/.*ref: *'\{0,1\}\([a-f0-9]*\)'\{0,1\}.*/\1/")
     echo "HAF_COMMIT variable: $HAF_COMMIT"
-    echo "HAF submodule:       $SUBMODULE_COMMIT"
     echo "Include ref:         $INCLUDE_REF"
-    if [[ "$HAF_COMMIT" != "$SUBMODULE_COMMIT" ]]; then
-      echo "ERROR: HAF_COMMIT does not match submodule commit!"
-      exit 1
-    fi
     if [[ "$HAF_COMMIT" != "$INCLUDE_REF" ]]; then
       echo "ERROR: HAF_COMMIT does not match include ref!"
       exit 1
     fi
-    echo "All HAF references are consistent."
+    echo "HAF_COMMIT and include ref are consistent."
   tags:
   - public-runner-docker
 
@@ -190,7 +182,7 @@ mirrornet-haf-binaries-extraction:
     entrypoint: ['']
   variables:
     BINARY_CACHE_PATH: '${CI_PROJECT_DIR}/hived-mirrornet-binaries'
-    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_STRATEGY: none
   script: 'cp --recursive /home/hived/bin ${BINARY_CACHE_PATH}'
   artifacts:
     when: on_success
@@ -309,6 +301,8 @@ docker-build-wallet-mirrornet-testenv:
 # library to function. This library has to be extracted from
 # the image and passed to job extended_block_log_creation.
 library_extraction:
+  rules:
+    - when: never
   extends: .job-defaults
   stage: build
   allow_failure: true
@@ -329,6 +323,8 @@ library_extraction:
   - public-runner-docker
 
 extended_block_log_creation:
+  rules:
+    - when: never
   extends: .extended_block_log_creation
   stage: build
   allow_failure: true
