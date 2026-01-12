@@ -47,6 +47,10 @@ export class LinkSanitizer {
     }
 
     private static getTopLevelBaseDomainFromBaseUrl(url: URL) {
+        // Check if hostname is a local network name (no dots)
+        if (!url.hostname.includes('.'))
+          return url.hostname;
+
         const regex = /([^\s/$.?#]+\.[^\s/$.?#]+)$/g;
         const m = regex.exec(url.hostname);
         if (m && m[0]) return m[0];
