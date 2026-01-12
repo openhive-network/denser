@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { ReactNode, useEffect, useState } from 'react';
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import clsx from 'clsx';
 import { CircleSpinner } from 'react-spinners-kit';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -24,20 +25,27 @@ const offsetSlider = {
   popoverAlignOfset: -19
 };
 
+// Default votes values - defined outside component for stable reference
+const DEFAULT_VOTES_VALUES = {
+  post: {
+    upvote: [100],
+    downvote: [100]
+  },
+  comment: {
+    upvote: [100],
+    downvote: [100]
+  }
+};
+
 const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' }) => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const [clickedVoteButton, setClickedVoteButton] = useState('');
-  const [storedVotesValues, storeVotesValues] = useLocalStorage('votesValues', {
-    post: {
-      upvote: [100],
-      downvote: [100]
-    },
-    comment: {
-      upvote: [100],
-      downvote: [100]
-    }
-  });
+  const [storedVotesValues, storeVotesValues] = useStorageWithTTL(
+    'votesValues',
+    DEFAULT_VOTES_VALUES,
+    StorageTTL.PERMANENT
+  );
   const [sliderUpvote, setSliderUpvote] = useState(
     type === 'post' ? storedVotesValues.post.upvote : storedVotesValues.comment.upvote
   );

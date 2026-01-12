@@ -8,7 +8,8 @@ import { useQuery } from '@tanstack/react-query';
 import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { SearchSort } from '@ui/hooks/use-search';
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
 interface SearchContentProps {
   aiParam: string | undefined;
@@ -32,9 +33,10 @@ const SearchContent = ({
     refetchOnMount: false
   });
   const { user } = useUserClient();
-  const [preferences] = useLocalStorage<Preferences>(
-    `user-preferences-${user.username}`,
-    DEFAULT_PREFERENCES
+  const [preferences] = useStorageWithTTL<Preferences>(
+    user.username ? `user-preferences-${user.username}` : '',
+    DEFAULT_PREFERENCES,
+    StorageTTL.PERMANENT
   );
   return (
     <div className="m-auto flex max-w-4xl flex-col gap-12 px-4 py-8">
