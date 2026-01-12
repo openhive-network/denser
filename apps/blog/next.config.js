@@ -54,7 +54,7 @@ const csp = [
   // API connections: whitelist of trusted Hive API nodes and services
   // Only nodes running proper haf_api_node software are allowed
   // Google APIs for Drive wallet backup and Sign-In
-  "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.dev.openhive.network https://api.fake.openhive.network https://api.openhive.network https://images.hive.blog https://www.googleapis.com https://accounts.google.com",
+  "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.dev.openhive.network https://api.fake.openhive.network https://blog.dev.openhive.network https://blog.openhive.network https://api.openhive.network https://images.hive.blog https://www.googleapis.com https://accounts.google.com",
   // Embedded content: whitelist of allowed iframe sources
   // Note: 3speak.online/co removed (compromised/spam), code normalizes to 3speak.tv
   // Note: emb.d.tube removed (subdomain down, no renderer support)
