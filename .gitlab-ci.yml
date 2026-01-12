@@ -29,9 +29,6 @@ variables:
   # Runner feature flags
   FF_ENABLE_JOB_CLEANUP: 1
 
-  # HAF submodule commit - must match the 'ref:' in the include section above
-  # This is needed for service containers which can't access dotenv artifacts
-  HAF_COMMIT: 'cedbc79839da2444c67e31901387ac52c4e560e5'
 
   # HAF API node configuration
   API_NODE_VERSION: '1.27.8'
@@ -151,25 +148,6 @@ default:
     reports:
       dotenv: ${TURBO_APP_NAME}-docker-build.env
     when: always # This ensures artifacts are created even if job fails
-  tags:
-  - public-runner-docker
-
-# Validate that HAF_COMMIT variable matches both the submodule and include ref
-validate_haf_commit:
-  stage: build
-  image: alpine:latest
-  variables:
-    GIT_SUBMODULE_STRATEGY: none
-  script:
-  - |
-    INCLUDE_REF=$(grep -A2 "project:.*hive/haf" .gitlab-ci.yml | grep -m1 "ref:" | sed "s/.*ref: *'\{0,1\}\([a-f0-9]*\)'\{0,1\}.*/\1/")
-    echo "HAF_COMMIT variable: $HAF_COMMIT"
-    echo "Include ref:         $INCLUDE_REF"
-    if [[ "$HAF_COMMIT" != "$INCLUDE_REF" ]]; then
-      echo "ERROR: HAF_COMMIT does not match include ref!"
-      exit 1
-    fi
-    echo "HAF_COMMIT and include ref are consistent."
   tags:
   - public-runner-docker
 
