@@ -34,32 +34,33 @@ const PostPage = async ({
   if (!isPermlinkValid(permlink)) notFound();
   try {
     const observer = getObserverFromCookies();
-    // Use cached version - deduplicated with layout's generateMetadata within the same request
-    await queryClient.prefetchQuery({
-      queryKey: ['postData', username, permlink],
-      queryFn: () => getPostCached(username, permlink, observer)
-    });
-
-    await queryClient.prefetchQuery({
-      queryKey: ['discussionData', permlink],
-      queryFn: () => getDiscussion(username, permlink, observer)
-    });
-
-    await queryClient.prefetchQuery({
-      queryKey: ['activeVotes', username, permlink],
-      queryFn: () => getActiveVotes(username, permlink)
-    });
-
-    if (isCommunity(community)) {
-      await queryClient.prefetchQuery({
-        queryKey: ['community', community],
-        queryFn: () => getCommunity(community, observer)
-      });
-      await queryClient.prefetchQuery({
-        queryKey: ['rolesList', community],
-        queryFn: () => getListCommunityRoles(community)
-      });
-    }
+    await Promise.all([
+      // Use cached version - deduplicated with layout's generateMetadata within the same request
+      queryClient.prefetchQuery({
+        queryKey: ['postData', username, permlink],
+        queryFn: () => getPostCached(username, permlink, observer)
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['discussionData', permlink],
+        queryFn: () => getDiscussion(username, permlink, observer)
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['activeVotes', username, permlink],
+        queryFn: () => getActiveVotes(username, permlink)
+      }),
+      ...(isCommunity(community)
+        ? [
+            queryClient.prefetchQuery({
+              queryKey: ['community', community],
+              queryFn: () => getCommunity(community, observer)
+            }),
+            queryClient.prefetchQuery({
+              queryKey: ['rolesList', community],
+              queryFn: () => getListCommunityRoles(community)
+            })
+          ]
+        : [])
+    ]);
   } catch (error) {
     logger.error(error, 'Error in PostPage:');
   }
