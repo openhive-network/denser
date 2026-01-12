@@ -2,7 +2,6 @@ import { Link } from '@hive/ui';
 import { Button } from '@ui/components/button';
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
-import { useLocalStorage } from 'usehooks-ts';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -16,77 +15,10 @@ import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
 import { commentClassName } from '../post-rendering/comment-list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 
 const logger = getLogger('app');
-
-// Comment draft storage with expiration (1 month)
-const COMMENT_DRAFT_PREFIX = 'replyTo-';
-const COMMENT_DRAFT_EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
-
-interface CommentDraft {
-  text: string;
-  expiresAt: number;
-}
-
-function saveCommentDraft(key: string, text: string): void {
-  const draft: CommentDraft = {
-    text,
-    expiresAt: Date.now() + COMMENT_DRAFT_EXPIRY_MS
-  };
-  localStorage.setItem(key, JSON.stringify(draft));
-}
-
-function loadCommentDraft(key: string): string | null {
-  const stored = localStorage.getItem(key);
-  if (!stored) return null;
-
-  try {
-    const parsed = JSON.parse(stored);
-    // Handle legacy format (just string)
-    if (typeof parsed === 'string') {
-      return parsed;
-    }
-    // New format with expiration
-    const draft = parsed as CommentDraft;
-    if (draft.expiresAt && Date.now() > draft.expiresAt) {
-      localStorage.removeItem(key);
-      return null;
-    }
-    return draft.text;
-  } catch {
-    localStorage.removeItem(key);
-    return null;
-  }
-}
-
-function cleanupExpiredCommentDrafts(): void {
-  const keysToRemove: string[] = [];
-
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key && key.startsWith(COMMENT_DRAFT_PREFIX)) {
-      const stored = localStorage.getItem(key);
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          // Check if it's the new format with expiration
-          if (typeof parsed === 'object' && parsed.expiresAt) {
-            if (Date.now() > parsed.expiresAt) {
-              keysToRemove.push(key);
-            }
-          }
-          // Legacy format without expiration - convert or remove if very old
-          // We can't know the age, so we leave them for now
-        } catch {
-          // Invalid JSON, remove it
-          keysToRemove.push(key);
-        }
-      }
-    }
-  }
-
-  keysToRemove.forEach((key) => localStorage.removeItem(key));
-}
 
 export function ReplyTextbox({
   onSetReply,
@@ -108,64 +40,71 @@ export function ReplyTextbox({
   discussionPermlink: string;
 }) {
   const { user } = useUserClient();
-  const storageKey = useMemo(
-    () => (user.username ? `replyTo-/${username}/${permlink}-${user.username}` : null),
+  // Use empty string when user is not logged in to disable storage
+  // Different storage keys for reply vs edit mode
+  const replyStorageKey = useMemo(
+    () => (user.username ? `replyTo-/${username}/${permlink}-${user.username}` : ''),
     [username, permlink, user.username]
   );
-
-  // Memoize comment body to avoid recalculation on every render
-  const commentBody = useMemo(
-    () => (typeof comment === 'string' ? comment : (comment?.body ?? '')),
-    [comment]
+  const editStorageKey = useMemo(
+    () => (user.username && editMode ? `editDraft-/${username}/${permlink}-${user.username}` : ''),
+    [username, permlink, user.username, editMode]
   );
+  // Use the appropriate key based on mode
+  const storageKey = editMode ? editStorageKey : replyStorageKey;
+
+  // Get the original comment body (works for both Entry object and string)
+  const commentBody = typeof comment === 'string' ? comment : (comment?.body ?? '');
 
   const { manabarsData } = useManabars(user.username);
-  const [preferences] = useLocalStorage<Preferences>(
-    `user-preferences-${user.username}`,
-    DEFAULT_PREFERENCES
+  // User preferences are permanent (no TTL) - use empty key when not logged in
+  const [preferences] = useStorageWithTTL<Preferences>(
+    user.username ? `user-preferences-${user.username}` : '',
+    DEFAULT_PREFERENCES,
+    StorageTTL.PERMANENT
   );
   const { t } = useTranslation('common_blog');
 
-  // Initialize with empty string to avoid hydration mismatch, then hydrate from localStorage
-  const [text, setText] = useState('');
-  const [isHydrated, setIsHydrated] = useState(false);
+  // Use hook for draft storage - provides cross-tab sync and SSR safety
+  // Both reply and edit modes now use storage (with different keys)
+  const [storedDraft, setStoredDraft, removeStoredDraft] = useStorageWithTTL<string>(
+    storageKey,
+    '',
+    StorageTTL.DRAFT
+  );
+
+  // Calculate initial text value:
+  // - In edit mode: use commentBody (the original content to edit)
+  // - In reply mode: start empty
+  // Note: storedDraft from localStorage will be applied via useEffect after hydration
+  const initialText = editMode ? commentBody : '';
+
+  const [text, setText] = useState(initialText);
+
+  // Track what value we last synced from storage (for cross-tab detection)
+  const lastSyncedDraftRef = useRef<string>('');
 
   const commentMutation = useCommentMutation();
   const updateCommentMutation = useUpdateCommentMutation();
   const btnRef = useRef<HTMLButtonElement>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Hydrate text from localStorage or comment body after mount
-  // Also cleanup expired drafts on first mount
+  // Apply stored draft after hydration (overrides initial text if draft exists)
+  // Also handles cross-tab sync when storedDraft changes
   useEffect(() => {
-    if (!isHydrated && storageKey) {
-      // Cleanup expired drafts on component mount
-      cleanupExpiredCommentDrafts();
-
-      if (editMode) {
-        // In edit mode, always use current comment body
+    if (lastSyncedDraftRef.current !== storedDraft) {
+      if (storedDraft) {
+        // There's a draft in storage - use it (takes priority over initial text)
+        setText(storedDraft);
+      } else if (editMode && lastSyncedDraftRef.current) {
+        // Draft was cleared (e.g., from another tab) - revert to original in edit mode
         setText(commentBody);
-      } else {
-        // For new replies, check localStorage first
-        const storedText = loadCommentDraft(storageKey);
-        if (storedText) {
-          setText(storedText);
-        } else {
-          setText(commentBody);
-        }
       }
-      setIsHydrated(true);
+      lastSyncedDraftRef.current = storedDraft;
     }
-  }, [isHydrated, editMode, commentBody, storageKey]);
+  }, [storedDraft, editMode, commentBody]);
 
-  // In edit mode, update text when comment changes (e.g., after save and re-edit)
-  useEffect(() => {
-    if (isHydrated && editMode) {
-      setText(commentBody);
-    }
-  }, [isHydrated, editMode, commentBody]);
-
-  // Debounced save to localStorage without causing re-renders
+  // Debounced save to localStorage (works for both reply and edit modes)
   const saveToStorage = useCallback(
     (value: string) => {
       if (!storageKey) return;
@@ -173,14 +112,25 @@ export function ReplyTextbox({
         clearTimeout(debounceTimerRef.current);
       }
       debounceTimerRef.current = setTimeout(() => {
-        if (value) {
-          saveCommentDraft(storageKey, value);
+        // In edit mode, only save if different from original
+        // In reply mode, save any non-empty value
+        if (editMode) {
+          if (value && value !== commentBody) {
+            setStoredDraft(value);
+          } else {
+            // If same as original or empty, remove draft
+            removeStoredDraft();
+          }
         } else {
-          localStorage.removeItem(storageKey);
+          if (value) {
+            setStoredDraft(value);
+          } else {
+            removeStoredDraft();
+          }
         }
       }, 500);
     },
-    [storageKey]
+    [storageKey, editMode, commentBody, setStoredDraft, removeStoredDraft]
   );
 
   // Cleanup timer on unmount
@@ -194,16 +144,19 @@ export function ReplyTextbox({
 
   const removePost = useCallback(() => {
     if (storageKey) {
-      localStorage.removeItem(storageKey);
+      removeStoredDraft();
     }
-  }, [storageKey]);
+  }, [storageKey, removeStoredDraft]);
 
   const handleCancel = () => {
     // Always remove the reply box state
-    localStorage.removeItem(storageId);
+    removeStorageItem(storageId);
 
-    if (text === '') {
-      // No text to save, just close and cleanup any existing draft
+    // Check if there are unsaved changes
+    const hasChanges = editMode ? text !== commentBody : text !== '';
+
+    if (!hasChanges) {
+      // No changes to save, just close and cleanup any existing draft
       removePost();
       onSetReply(false);
       return;
@@ -255,7 +208,7 @@ export function ReplyTextbox({
       }
       setText('');
       removePost(); // Remove stored comment text
-      localStorage.removeItem(storageId); // Remove reply box state
+      removeStorageItem(storageId); // Remove reply box state
       onSetReply(false);
       if (btnRef.current) {
         btnRef.current.disabled = true;
@@ -270,7 +223,7 @@ export function ReplyTextbox({
 
   return (
     <div
-      className="mx-8 mb-4 flex max-w-3xl flex-col gap-6 rounded-md border bg-background p-4 text-primary shadow-sm"
+      className="mb-4 flex w-full flex-col gap-6 rounded-md border bg-background-secondary p-4 text-primary shadow-sm"
       data-testid="reply-editor"
       suppressHydrationWarning
     >

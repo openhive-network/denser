@@ -4,13 +4,16 @@ import { Entry } from '@transaction/lib/extended-hive.chain';
 import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
 const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
   const { user } = useUserClient();
-  const [showSuggestions, storeShowSuggestions] = useLocalStorage<Boolean>(
-    `showSuggestions-/${user.username}`,
-    true
+  // Use empty key when user is not logged in to disable storage
+  const [showSuggestions, storeShowSuggestions] = useStorageWithTTL<boolean>(
+    user.username ? `showSuggestions-${user.username}` : '',
+    true,
+    StorageTTL.PERMANENT
   );
   return (
     <AnimatePresence>

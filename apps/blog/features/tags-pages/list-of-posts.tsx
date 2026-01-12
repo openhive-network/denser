@@ -5,7 +5,8 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
 import { Entry } from '@transaction/lib/extended-hive.chain';
@@ -26,9 +27,10 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     triggerOnce: false
   });
 
-  const [preferences] = useLocalStorage<Preferences>(
-    `user-preferences-${user.username}`,
-    DEFAULT_PREFERENCES
+  const [preferences] = useStorageWithTTL<Preferences>(
+    user.username ? `user-preferences-${user.username}` : '',
+    DEFAULT_PREFERENCES,
+    StorageTTL.PERMANENT
   );
 
   const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isLoading } = useInfiniteQuery({

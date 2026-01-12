@@ -10,6 +10,27 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'react', 'react-hooks'],
   rules: {
+    // Prevent raw localStorage usage - use storage-with-ttl utilities instead
+    // Use setStorageItem/getStorageItem from @ui/lib/storage-with-ttl
+    // or useStorageWithTTL hook for automatic TTL management
+    'no-restricted-globals': [
+      'warn',
+      {
+        name: 'localStorage',
+        message:
+          'Avoid direct localStorage usage. Use setStorageItem/getStorageItem from @ui/lib/storage-with-ttl or useStorageWithTTL hook for automatic TTL management.'
+      }
+    ],
+    // Also catch window.localStorage
+    'no-restricted-properties': [
+      'warn',
+      {
+        object: 'window',
+        property: 'localStorage',
+        message:
+          'Avoid direct localStorage usage. Use setStorageItem/getStorageItem from @ui/lib/storage-with-ttl or useStorageWithTTL hook for automatic TTL management.'
+      }
+    ],
     '@next/next/no-html-link-for-pages': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',

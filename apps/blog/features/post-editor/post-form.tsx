@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@hive/ui';
 import clsx from 'clsx';
 import * as z from 'zod';
@@ -17,7 +17,8 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@hive/ui/components/form';
 import { useForm, useWatch } from 'react-hook-form';
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import useManabars from '@/blog/components/hooks/use-manabars';
 import { useQuery } from '@tanstack/react-query';
 import { Entry } from '@transaction/lib/extended-hive.chain';
@@ -72,7 +73,7 @@ export default function PostForm({
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const searchParams = useSearchParams();
   const categoryParam = searchParams?.get('category') ?? undefined;
-  const [preferences] = useLocalStorage<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES);
+  const [preferences] = useStorageWithTTL<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES, StorageTTL.PERMANENT);
   const defaultValues = {
     title: '',
     postArea: '',
@@ -84,9 +85,10 @@ export default function PostForm({
     maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
     payoutType: preferences.blog_rewards
   };
-  const [storedPost, storePost, removePost] = useLocalStorage<AccountFormValues>(
+  const [storedPost, storePost, removePost] = useStorageWithTTL<AccountFormValues>(
     editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
-    defaultValues
+    defaultValues,
+    StorageTTL.DRAFT
   );
 
   useEffect(() => {
@@ -106,6 +108,8 @@ export default function PostForm({
   const [imagePickerState, setImagePickerState] = useState('');
   const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
+  // Track if we've hydrated from localStorage to avoid resetting form during typing
+  const hasHydratedRef = useRef(false);
   const { t } = useTranslation('common_blog');
   const postMutation = usePostMutation();
   const { data: communityData } = useQuery({
@@ -140,12 +144,19 @@ export default function PostForm({
   });
 
   type AccountFormValues = z.infer<typeof accountFormSchema>;
+  // Check if we have a draft with actual changes (different from original post)
+  const hasDraftChanges = editMode && storedPost && (
+    (storedPost.postArea && storedPost.postArea !== post_s?.body) ||
+    (storedPost.title && storedPost.title !== post_s?.title)
+  );
+  // In edit mode: use draft if it has changes, otherwise use original post
+  // In new mode: use draft if available
   const entryValues = {
-    title: post_s?.title || storedPost?.title || '',
-    postArea: post_s?.body || storedPost?.postArea || '',
-    postSummary: post_s?.json_metadata?.summary || storedPost?.postSummary || '',
-    tags: post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || '',
-    author: post_s?.json_metadata?.author || storedPost?.author || '',
+    title: hasDraftChanges ? (storedPost?.title || post_s?.title || '') : (post_s?.title || storedPost?.title || ''),
+    postArea: hasDraftChanges ? (storedPost?.postArea || post_s?.body || '') : (post_s?.body || storedPost?.postArea || ''),
+    postSummary: hasDraftChanges ? (storedPost?.postSummary || post_s?.json_metadata?.summary || '') : (post_s?.json_metadata?.summary || storedPost?.postSummary || ''),
+    tags: hasDraftChanges ? (storedPost?.tags || post_s?.json_metadata?.tags?.join(' ') || '') : (post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || ''),
+    author: hasDraftChanges ? (storedPost?.author || post_s?.json_metadata?.author || '') : (post_s?.json_metadata?.author || storedPost?.author || ''),
     category: categoryParam ?? storedPost?.category ?? post_s?.category ?? '',
     beneficiaries: storedPost?.beneficiaries || [],
     maxAcceptedPayout: post_s
@@ -159,15 +170,80 @@ export default function PostForm({
     resolver: zodResolver(accountFormSchema),
     defaultValues: entryValues
   });
+
+  // Hydrate form from localStorage after initial render
+  // This handles the case where SSR returns empty values but localStorage has data
+  useEffect(() => {
+    if (hasHydratedRef.current) return;
+
+    // Check if storedPost has actual data (not just defaults)
+    const hasStoredData = storedPost.postArea || storedPost.title || storedPost.tags;
+
+    // In edit mode, only hydrate if draft has changes different from original
+    // In new mode, hydrate if there's any stored data
+    const shouldHydrate = editMode ? hasDraftChanges : hasStoredData;
+
+    if (shouldHydrate) {
+      form.reset({
+        ...entryValues,
+        title: storedPost.title || entryValues.title,
+        postArea: storedPost.postArea || entryValues.postArea,
+        postSummary: storedPost.postSummary || entryValues.postSummary,
+        tags: storedPost.tags || entryValues.tags,
+        author: storedPost.author || entryValues.author,
+        category: storedPost.category || entryValues.category,
+        beneficiaries: storedPost.beneficiaries || entryValues.beneficiaries,
+        maxAcceptedPayout: storedPost.maxAcceptedPayout ?? entryValues.maxAcceptedPayout,
+        payoutType: storedPost.payoutType || entryValues.payoutType
+      });
+      setPreviewContent(storedPost.postArea);
+    }
+    hasHydratedRef.current = true;
+  }, [storedPost, editMode, hasDraftChanges]);
+
   const nsfwTagCheck = communityData?.is_nsfw && !storedPost.tags?.includes('nsfw');
   useEffect(() => {
     form.setValue('tags', nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);
   }, [!!communityData?.is_nsfw]);
-  const { postArea, ...restFields } = useWatch({
+  // useWatch provides reactive values that update on every form change
+  const formValues = useWatch({
     control: form.control
   });
 
-  const watchedValues = form.getValues();
+  // Memoize beneficiaries separately - only recalculate when beneficiaries change
+  const beneficiaries = useMemo(() =>
+    (formValues.beneficiaries ?? []).map(b => ({
+      account: b.account ?? '',
+      weight: b.weight ?? ''
+    })),
+    [formValues.beneficiaries]
+  );
+
+  // Memoize other form values with granular dependencies
+  const watchedValues = useMemo(() => ({
+    title: formValues.title ?? '',
+    postArea: formValues.postArea ?? '',
+    postSummary: formValues.postSummary ?? '',
+    tags: formValues.tags ?? '',
+    author: formValues.author ?? '',
+    category: formValues.category ?? 'blog',
+    beneficiaries,
+    maxAcceptedPayout: formValues.maxAcceptedPayout ?? 1000000,
+    payoutType: formValues.payoutType ?? '50%'
+  }), [
+    formValues.title,
+    formValues.postArea,
+    formValues.postSummary,
+    formValues.tags,
+    formValues.author,
+    formValues.category,
+    beneficiaries,
+    formValues.maxAcceptedPayout,
+    formValues.payoutType
+  ]);
+
+  // Extract postArea for use in dependency arrays
+  const { postArea } = watchedValues;
   const tagsCheck = validateTagInput(
     watchedValues.tags,
     !categoryParam ? watchedValues.category === 'blog' : false,
@@ -194,11 +270,11 @@ export default function PostForm({
         setPreviewContent(postArea);
       }, 50)();
     }
-  }, [previewContent, watchedValues.postArea]);
+  }, [previewContent, postArea]);
 
   useEffect(() => {
     setImagePickerState(imagePicker(selectedImg));
-  }, [selectedImg, watchedValues.postArea]);
+  }, [selectedImg, postArea]);
 
   async function onSubmit(data: AccountFormValues) {
     const tags = data.tags.replace(/#/g, '').split(' ') ?? [];
@@ -406,38 +482,38 @@ export default function PostForm({
                 </FormItem>
               )}
             />
-            <SelectImageList content={watchedValues.postArea} value={selectedImg} onChange={setSelectedImg} />
+            <SelectImageList content={postArea} value={selectedImg} onChange={setSelectedImg} />
             {!editMode ? (
               <div className="flex flex-col gap-2">
                 <span>{t('submit_page.post_options')}</span>
 
-                {storedPost.maxAcceptedPayout < 1000000 && storedPost.maxAcceptedPayout > 0 ? (
+                {watchedValues.maxAcceptedPayout < 1000000 && watchedValues.maxAcceptedPayout > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}:{' '}
-                    {storedPost.maxAcceptedPayout} HBD
+                    {watchedValues.maxAcceptedPayout} HBD
                   </span>
                 ) : null}
 
-                {storedPost.beneficiaries.length > 0 ? (
+                {watchedValues.beneficiaries.length > 0 ? (
                   <span className="text-xs">
                     {t('submit_page.advanced_settings_dialog.beneficiaries', {
-                      num: storedPost.beneficiaries.length
+                      num: watchedValues.beneficiaries.length
                     })}
                   </span>
                 ) : null}
 
                 <span className="text-xs" data-testid="author-rewards-description">
                   {t('submit_page.author_rewards')}
-                  {storedPost.maxAcceptedPayout === 0
+                  {watchedValues.maxAcceptedPayout === 0
                     ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
-                    : storedPost.payoutType === '100%'
+                    : watchedValues.payoutType === '100%'
                       ? t('submit_page.power_up')
                       : ' 50% HBD / 50% HP'}
                 </span>
                 <AdvancedSettingsPostForm
                   username={username}
                   updateForm={(e) => handleLoadTemplate(e)}
-                  data={storedPost}
+                  data={watchedValues}
                 >
                   <span
                     className="w-fit cursor-pointer text-xs text-destructive"

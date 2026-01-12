@@ -13,7 +13,8 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { QueryTypes } from './lib/utils';
 
 const PostsContent = ({ query }: { query: QueryTypes }) => {
@@ -31,9 +32,10 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
-  const [preferences] = useLocalStorage<Preferences>(
-    `user-preferences-${user.username}`,
-    DEFAULT_PREFERENCES
+  const [preferences] = useStorageWithTTL<Preferences>(
+    user.username ? `user-preferences-${user.username}` : '',
+    DEFAULT_PREFERENCES,
+    StorageTTL.PERMANENT
   );
 
   const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({

@@ -19,7 +19,8 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/components/select';
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { CircleSpinner } from 'react-spinners-kit';
 import { Signer } from '@smart-signer/lib/signer/signer';
@@ -31,9 +32,11 @@ const SettingsForm = ({ username }: { username: string }) => {
     queryKey: ['profileData', username],
     queryFn: () => getAccountFull(username)
   });
-  const [preferences, setPreferences] = useLocalStorage<Preferences>(
+  // User preferences are permanent (no TTL) - username is guaranteed here since this is a settings page
+  const [preferences, setPreferences] = useStorageWithTTL<Preferences>(
     `user-preferences-${username}`,
-    DEFAULT_PREFERENCES
+    DEFAULT_PREFERENCES,
+    StorageTTL.PERMANENT
   );
   const profileData = data?.profile;
 

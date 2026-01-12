@@ -57,7 +57,8 @@ import { Link } from '@hive/ui';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CircleSpinner } from 'react-spinners-kit';
-import { useLocalStorage } from 'usehooks-ts';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 import { isCommunity } from '@ui/lib/utils';
@@ -75,15 +76,49 @@ const PostContent = () => {
   const category = params?.param ?? '';
   const permlink = params?.permlink ?? '';
   const { user } = useUserClient();
-  const storageId = `replybox-/${author}/${permlink}-${user.username}`;
+  // Use empty key when user is not logged in to disable storage hooks
+  const replyStorageId = user.username ? `replybox-/${author}/${permlink}-${user.username}` : '';
+  const editStorageId = user.username ? `editbox-/${author}/${permlink}-${user.username}` : '';
 
   const { t } = useTranslation('common_blog');
-  const [storedBox, storeBox, removeBox] = useLocalStorage<Boolean>(storageId, false);
-  const [storedComment] = useLocalStorage<string>(`replyTo-/${author}/${permlink}-${user.username}`, '');
+  // Reply box state and drafts expire after 30 days
+  // Empty key disables the hook entirely, preventing garbage entries
+  const [storedReply, storeReply, removeReply] = useStorageWithTTL<boolean>(replyStorageId, false, StorageTTL.UI_STATE);
+  const [storedEdit, storeEdit, removeEdit] = useStorageWithTTL<boolean>(editStorageId, false, StorageTTL.UI_STATE);
+  const [storedComment] = useStorageWithTTL<string>(
+    user.username ? `replyTo-/${author}/${permlink}-${user.username}` : '',
+    '',
+    StorageTTL.DRAFT
+  );
 
-  const [reply, setReply] = useState<Boolean>(storedBox !== undefined ? storedBox : false);
+  // Use stored values directly - no useState needed
+  // This ensures proper hydration and cross-tab sync
+  const reply = storedReply;
+  const setReply = useCallback(
+    (value: boolean) => {
+      if (value) {
+        storeReply(true);
+      } else {
+        removeReply();
+      }
+    },
+    [storeReply, removeReply]
+  );
+
+  const edit = storedEdit;
+  const setEdit = useCallback(
+    (value: boolean | ((prev: boolean) => boolean)) => {
+      const newValue = typeof value === 'function' ? value(storedEdit) : value;
+      if (newValue) {
+        storeEdit(true);
+      } else {
+        removeEdit();
+      }
+    },
+    [storedEdit, storeEdit, removeEdit]
+  );
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [edit, setEdit] = useState(false);
   const [commentsPage, setCommentsPage] = useState(1);
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const postInCommunity = isCommunity(category);
@@ -340,12 +375,6 @@ const PostContent = () => {
     setMutedPost(postData?.stats?.gray ?? false);
   }, [postData?.stats?.gray]);
 
-  useEffect(() => {
-    if (reply) {
-      storeBox(reply);
-    }
-  }, [reply, storeBox]);
-
   // Reset comments pagination when the post changes
   useEffect(() => {
     setCommentsPage(1);
@@ -452,7 +481,7 @@ const PostContent = () => {
                     username={postData.parent_author}
                     permlink={postData.permlink}
                     parentPermlink={postData.parent_permlink}
-                    storageId={storageId}
+                    storageId={editStorageId}
                     comment={postData}
                     discussionPermlink={permlink}
                   />
@@ -610,7 +639,7 @@ const PostContent = () => {
                         <>
                           <button
                             onClick={() => {
-                              setReply(!reply), removeBox();
+                              setReply(!reply);
                             }}
                             className="flex items-center text-destructive"
                             data-testid="comment-reply"
@@ -751,6 +780,19 @@ const PostContent = () => {
                     </div>
                   </div>
                 </div>
+                {reply && postData && user.isLoggedIn ? (
+                  <div className="mt-4 px-4">
+                    <ReplyTextbox
+                      editMode={false}
+                      onSetReply={setReply}
+                      username={postData.author}
+                      permlink={permlink}
+                      storageId={replyStorageId}
+                      comment={storedComment}
+                      discussionPermlink={permlink}
+                    />
+                  </div>
+                ) : null}
                 {crossedPost ? (
                   <div className="mb-12 flex w-full justify-center">
                     <Link
@@ -776,19 +818,6 @@ const PostContent = () => {
             )}
           </div>
           <div id="comments" className="flex" />
-          <div>
-            {reply && postData && user.isLoggedIn ? (
-              <ReplyTextbox
-                editMode={edit}
-                onSetReply={setReply}
-                username={postData.author}
-                permlink={permlink}
-                storageId={storageId}
-                comment={storedComment}
-                discussionPermlink={permlink}
-              />
-            ) : null}
-          </div>
           {!!postData && paginatedDiscussionState ? (
             <CommentsSection
               postData={postData}
