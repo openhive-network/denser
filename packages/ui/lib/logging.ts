@@ -1,3 +1,15 @@
+/**
+ * Pino-based logging utilities for both server and client.
+ * This is the canonical logging implementation used across the monorepo.
+ * 
+ * @example
+ * ```ts
+ * import { getLogger } from '@ui/lib/logging';
+ * const logger = getLogger('app');
+ * logger.info('message');
+ * logger.error(error, 'error message'); // error first for Pino!
+ * ```
+ */
 import pino, { Logger } from 'pino';
 import env from '@beam-australia/react-env';
 

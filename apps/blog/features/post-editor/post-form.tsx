@@ -23,7 +23,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Entry } from '@transaction/lib/extended-hive.chain';
 import { getCommunity, getSubscriptions } from '@transaction/lib/bridge-api';
 import { Icons } from '@ui/components/icons';
-import { withBasePath } from '@/blog/utils/PathUtils';
+import { withBasePath } from '@ui/lib/path-utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { debounce, DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { getLogger } from '@ui/lib/logging';

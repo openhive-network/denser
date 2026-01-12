@@ -1,16 +1,29 @@
-import { getAccountFull } from '@transaction/lib/hive-api';
-import { getCommunity } from '@transaction/lib/bridge-api';
+import { getAccountFull } from './hive-api';
+import { getCommunity } from './bridge-api';
+import { MetadataProps } from './app-types';
 
+// Re-export MetadataProps type for consumers
+export type { MetadataProps } from './app-types';
+
+const DEFAULT_IMAGE = 'https://hive.blog/images/hive-blog-share.png';
+
+/**
+ * Get metadata for a user account page
+ * @param firstParam - The username with @ prefix (e.g. "@username")
+ * @param descriptionText - Text to prepend to description (e.g. "Posts by")
+ * @returns MetadataProps for SEO
+ */
 export const getAccountMetadata = async (
   firstParam: string,
   descriptionText: string
 ): Promise<MetadataProps> => {
-  let metadata = {
+  let metadata: MetadataProps = {
     tabTitle: '',
     description: '',
     image: '',
     title: firstParam
   };
+
   if (firstParam.startsWith('@')) {
     try {
       const username = firstParam.split('@')[1];
@@ -21,11 +34,10 @@ export const getAccountMetadata = async (
       }
 
       const displayName = data.profile?.name || data.name;
-      const defaultImage = 'https://hive.blog/images/hive-blog-share.png';
 
       metadata = {
         ...metadata,
-        image: data.profile?.profile_image || defaultImage,
+        image: data.profile?.profile_image || DEFAULT_IMAGE,
         tabTitle:
           displayName === username
             ? `${descriptionText} ${displayName} - Hive`
@@ -37,14 +49,23 @@ export const getAccountMetadata = async (
       console.error('Error fetching account:', error);
     }
   }
+
   return metadata;
 };
+
+/**
+ * Get metadata for a community page
+ * @param firstParam - Primary display param (e.g. page title)
+ * @param secondParam - Community identifier (e.g. "hive-123456")
+ * @param descriptionText - Text to prepend to description
+ * @returns MetadataProps for SEO
+ */
 export const getCommunityMetadata = async (
   firstParam: string,
   secondParam: string,
   descriptionText: string
 ): Promise<MetadataProps> => {
-  let metadata = {
+  let metadata: MetadataProps = {
     tabTitle: '',
     description: '',
     image: '',
@@ -53,25 +74,25 @@ export const getCommunityMetadata = async (
 
   try {
     if (secondParam === '' || !secondParam.startsWith('hive-')) {
-      const defaultMetadata = {
+      return {
         tabTitle: '',
         description: '',
-        image: 'https://hive.blog/images/hive-blog-share.png',
+        image: DEFAULT_IMAGE,
         title: firstParam
       };
-      return defaultMetadata;
     }
-    // Fetch community data
-    const data = await getCommunity(secondParam);
-    // If the community data does not exist, throw an error
-    if (!data) throw new Error(`Community ${secondParam} not found`);
 
-    // If the community data exists, set the username to the community title or name
+    const data = await getCommunity(secondParam);
+
+    if (!data) {
+      throw new Error(`Community ${secondParam} not found`);
+    }
+
     const communityName = data?.title ?? data.name;
     metadata.tabTitle = `${communityName} / ${firstParam} - Hive`;
     metadata.description =
       data?.description || `${descriptionText} ${secondParam}. Hive: Communities Without Borders.`;
-    metadata.image = data?.avatar_url || 'https://hive.blog/images/hive-blog-share.png';
+    metadata.image = data?.avatar_url || DEFAULT_IMAGE;
     metadata.title = communityName;
   } catch (error) {
     console.error('Error fetching community:', error);
@@ -79,9 +100,3 @@ export const getCommunityMetadata = async (
 
   return metadata;
 };
-export interface MetadataProps {
-  tabTitle: string;
-  description: string;
-  image: string;
-  title: string;
-}

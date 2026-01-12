@@ -12,7 +12,7 @@ import {
 } from '@ui/components/select';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from '@/blog/i18n/client';
-import { withBasePath } from '../../utils/PathUtils';
+import { withBasePath } from '@ui/lib/path-utils';
 import { getCommunities, getSubscriptions } from '@transaction/lib/bridge-api';
 import { useRouter } from 'next/navigation';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';

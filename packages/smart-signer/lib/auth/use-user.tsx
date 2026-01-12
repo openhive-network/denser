@@ -1,61 +1,21 @@
-import { useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useCallback } from 'react';
 import Router from 'next/router';
-import { QUERY_KEY } from '@smart-signer/lib/query-keys';
-import * as userLocalStorage from './user-localstore';
-import { useLocalStorage } from 'usehooks-ts';
-import { fetchJson } from '@smart-signer/lib/fetch-json';
-import { defaultUser } from '@smart-signer/lib/auth/utils';
-import { getLogger } from '@ui/lib/logging';
-import { User } from '@smart-signer/types/common';
+import { useUserCore, IUseUser, UseUserOptions } from './use-user-core';
 
-const logger = getLogger('app');
+// Re-export types for backwards compatibility
+export type { IUseUser, UseUserOptions } from './use-user-core';
 
-interface IUseUser {
-  user: User;
-}
+/**
+ * User authentication hook for Pages Router (next/router).
+ * Use useUserClient for App Router components.
+ * 
+ * @param options - Configuration options for redirects
+ * @returns User data
+ */
+export function useUser(options: UseUserOptions = {}): IUseUser {
+  const handleRedirect = useCallback((path: string) => {
+    Router.push(path);
+  }, []);
 
-async function getUser(): Promise<User> {
-  return await fetchJson(`/api/users/me`);
-}
-
-export function useUser({ redirectTo = '', redirectIfFound = false } = {}): IUseUser {
-  const [storedUser, storeUser] = useLocalStorage<User>('user', defaultUser);
-  const { data: user } = useQuery<User>({
-    queryKey: [QUERY_KEY.user],
-    queryFn: async (): Promise<User> => getUser(),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    initialData: storedUser,
-    onError: () => {
-      storeUser(defaultUser);
-    }
-  });
-
-  useEffect(() => {
-    userLocalStorage.saveUser(user || defaultUser);
-  }, [user]);
-
-  useEffect(() => {
-    // If no redirect needed, just return (example: already on
-    // /dashboard). If user data not yet there (fetch in progress,
-    // logged in or not) then don't do anything yet.
-    if (!redirectTo || !user) {
-      return;
-    }
-
-    if (
-      // If redirectTo is set, redirect if the user was not found.
-      (redirectTo && !redirectIfFound && !user?.isLoggedIn) ||
-      // If redirectIfFound is also set, redirect if the user was found.
-      (redirectIfFound && user?.isLoggedIn)
-    ) {
-      Router.push(redirectTo);
-    }
-  }, [user, redirectIfFound, redirectTo]);
-
-  return {
-    user: user ?? defaultUser
-  };
+  return useUserCore(options, handleRedirect);
 }

@@ -2,7 +2,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { getLogger } from '@ui/lib/logging';
 import { siteConfig } from '@ui/config/site';
-import { withBasePath } from '@/blog/utils/PathUtils';
+import { withBasePath } from '@ui/lib/path-utils';
 
 const logger = getLogger('app');
 
