@@ -16,18 +16,22 @@ const PrefetchComponent = async ({ children, community }: { children: ReactNode;
   const queryClient = getQueryClient();
   try {
     const observer = getObserverFromCookies();
-    await queryClient.prefetchQuery({
-      queryKey: ['communitiesList', sort],
-      queryFn: () => getCommunities(sort, query, observer)
-    });
-    if (isCommunity(community)) {
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: ['communitiesList', sort],
+        queryFn: () => getCommunities(sort, query, observer)
+      }),
       // Only prefetch what's needed for page metadata and initial render
       // Subscribers and notifications are not critical for SSR - let client fetch
-      await queryClient.prefetchQuery({
-        queryKey: ['community', community],
-        queryFn: () => getCommunity(community, observer)
-      });
-    }
+      ...(isCommunity(community)
+        ? [
+            queryClient.prefetchQuery({
+              queryKey: ['community', community],
+              queryFn: () => getCommunity(community, observer)
+            })
+          ]
+        : [])
+    ]);
   } catch (error) {
     logger.error(error, 'Error in PrefetchComponent:');
   }
