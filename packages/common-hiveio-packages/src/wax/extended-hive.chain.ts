@@ -439,12 +439,37 @@ export class VerifySignaturesResponse {
   public valid!: boolean;
 }
 
+/**
+ * @deprecated Use IVestingDelegation instead - this interface uses the old condenser_api format
+ */
 export interface IDelegatedVestingShare {
   id: number;
   delegatee: string;
   delegator: string;
   min_delegation_time: string;
   vesting_shares: string;
+}
+
+/**
+ * Vesting delegation from database_api.list_vesting_delegations
+ * Uses NaiAsset format for vesting_shares
+ */
+export interface IVestingDelegation {
+  id: number;
+  delegatee: string;
+  delegator: string;
+  min_delegation_time: string;
+  vesting_shares: NaiAsset;
+}
+
+export interface IListVestingDelegationsParams {
+  start: [string, string];
+  limit: number;
+  order: 'by_delegation';
+}
+
+export interface IListVestingDelegationsResponse {
+  delegations: IVestingDelegation[];
 }
 
 export type OpType =
@@ -915,6 +940,7 @@ export type ExtendedNodeApi = {
       },
       { votes: IVoteListItem[] }
     >;
+    list_vesting_delegations: TWaxApiRequest<IListVestingDelegationsParams, IListVestingDelegationsResponse>;
   };
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
