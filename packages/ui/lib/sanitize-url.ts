@@ -5,6 +5,12 @@
  * - URL manipulation (javascript:, data:, vbscript: protocols)
  * - DOM-based XSS via element IDs
  * - Hash fragment injection
+ * - Null byte injection attempts
+ *
+ * Known Limitations:
+ * - Null byte handling: We strip null bytes (\x00) before processing, but some
+ *   edge cases may still exist in downstream parsers. This is a defense-in-depth
+ *   measure, not a complete solution. See sanitize-html library limitations.
  *
  * @see https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
  * @see https://owasp.org/www-community/attacks/DOM_Based_XSS
@@ -26,6 +32,18 @@ const DANGEROUS_PROTOCOLS = [
   'mhtml:',
   'filesystem:'
 ];
+
+/**
+ * Strips null bytes from a string.
+ * Null bytes can be used to bypass security filters in some parsers.
+ *
+ * @param str - The string to clean
+ * @returns String with null bytes removed
+ */
+function stripNullBytes(str: string): string {
+  // eslint-disable-next-line no-control-regex
+  return str.replace(/\x00/g, '');
+}
 
 /**
  * Pattern for valid DOM element IDs.
@@ -61,9 +79,12 @@ export function isDangerousProtocol(url: string): boolean {
     return false;
   }
 
+  // Strip null bytes first - they can be used to bypass filters (e.g., "java\x00script:")
+  const withoutNullBytes = stripNullBytes(url);
+
   // Normalize: trim whitespace and convert to lowercase for comparison
   // Also handle encoded characters that might bypass simple checks
-  const normalized = url.trim().toLowerCase();
+  const normalized = withoutNullBytes.trim().toLowerCase();
 
   // Check for dangerous protocols
   for (const protocol of DANGEROUS_PROTOCOLS) {
@@ -75,7 +96,7 @@ export function isDangerousProtocol(url: string): boolean {
   // Check for encoded versions (e.g., javascript&#58; or java\nscript:)
   // Decode and re-check
   try {
-    const decoded = decodeURIComponent(normalized.replace(/\s+/g, ''));
+    const decoded = stripNullBytes(decodeURIComponent(normalized.replace(/\s+/g, '')));
     for (const protocol of DANGEROUS_PROTOCOLS) {
       if (decoded.startsWith(protocol)) {
         return true;
@@ -130,13 +151,21 @@ export function isValidElementId(id: string): boolean {
     return false;
   }
 
+  // Strip null bytes - they should never be in element IDs
+  const cleanId = stripNullBytes(id);
+
   // Check length to prevent ReDoS
-  if (id.length > MAX_ELEMENT_ID_LENGTH) {
+  if (cleanId.length > MAX_ELEMENT_ID_LENGTH) {
+    return false;
+  }
+
+  // Reject if null bytes were present (suspicious input)
+  if (cleanId.length !== id.length) {
     return false;
   }
 
   // Check against safe pattern
-  return SAFE_ELEMENT_ID_PATTERN.test(id);
+  return SAFE_ELEMENT_ID_PATTERN.test(cleanId);
 }
 
 /**

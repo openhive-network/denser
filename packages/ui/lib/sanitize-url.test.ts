@@ -112,6 +112,12 @@ describe('URL Sanitization Security Tests', () => {
       it('should handle encoded javascript:', () => {
         expect(isDangerousProtocol('javascript%3Aalert(1)')).to.be.true;
       });
+
+      it('should handle null bytes in protocol', () => {
+        expect(isDangerousProtocol('java\x00script:alert(1)')).to.be.true;
+        expect(isDangerousProtocol('javas\x00cript:alert(1)')).to.be.true;
+        expect(isDangerousProtocol('\x00javascript:alert(1)')).to.be.true;
+      });
     });
   });
 
@@ -182,6 +188,12 @@ describe('URL Sanitization Security Tests', () => {
       expect(isValidElementId(null)).to.be.false;
       // @ts-expect-error - Testing invalid input
       expect(isValidElementId(undefined)).to.be.false;
+    });
+
+    it('should reject IDs containing null bytes', () => {
+      expect(isValidElementId('section\x00-1')).to.be.false;
+      expect(isValidElementId('\x00section')).to.be.false;
+      expect(isValidElementId('section\x00')).to.be.false;
     });
   });
 
