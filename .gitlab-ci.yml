@@ -81,6 +81,8 @@ default:
         if [ -d ".git" ]; then
           # Remove stale lock files that block git operations
           find .git -name "*.lock" -delete 2>/dev/null || true
+          # Clean up removed haf submodule state (submodule was removed but old workspaces may have residual state)
+          rm -rf .git/modules/haf haf 2>/dev/null || true
 
           # Check if main repo is corrupt - if so, remove .git to force fresh clone
           if ! git rev-parse HEAD >/dev/null 2>&1; then
