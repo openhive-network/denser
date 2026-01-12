@@ -52,11 +52,3 @@ export function createMiddleware(config: MiddlewareConfig = {}) {
     return res;
   };
 }
-
-/**
- * Default middleware without any app-specific configuration
- * @deprecated Use createMiddleware() for new code
- */
-export async function commonMiddleware(request: NextRequest) {
-  return createMiddleware()(request);
-}

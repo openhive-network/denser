@@ -33,7 +33,6 @@
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
     "@hive/eslint-config-custom": "workspace:*",
-    "@hive/logger": "workspace:*",
     "@hive/middleware": "workspace:*",
     "@hive/prettier-config-custom": "workspace:*",
     "@hive/renderer": "workspace:*",

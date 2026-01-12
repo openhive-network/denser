@@ -440,17 +440,6 @@ export class VerifySignaturesResponse {
 }
 
 /**
- * @deprecated Use IVestingDelegation instead - this interface uses the old condenser_api format
- */
-export interface IDelegatedVestingShare {
-  id: number;
-  delegatee: string;
-  delegator: string;
-  min_delegation_time: string;
-  vesting_shares: string;
-}
-
-/**
  * Vesting delegation from database_api.list_vesting_delegations
  * Uses NaiAsset format for vesting_shares
  */
@@ -893,7 +882,6 @@ export type ExtendedNodeApi = {
     get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
     get_reblogged_by: TWaxApiRequest<[string, string], string[]>;
     get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
-    get_vesting_delegations: TWaxApiRequest<(string | number)[], IDelegatedVestingShare[]>;
     list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
     get_dynamic_global_properties: TWaxApiRequest<[], IDynamicGlobalProperties>;
     get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
