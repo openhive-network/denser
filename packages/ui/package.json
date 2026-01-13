@@ -7,7 +7,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hive/common-hiveio-packages": "workspace:*",
     "@hive/eslint-config-custom": "workspace:*",
     "@hive/prettier-config-custom": "workspace:*",
     "@hive/tailwindcss-config": "workspace:*",
