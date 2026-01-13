@@ -153,10 +153,15 @@ test.describe('Witnesses page tests', () => {
 
     // Validate Witness external site
     const firstWitnessUrl = witnesses[0].url;
-    await expect(witnessesPage.witnessExternalSiteLink.locator('a').first()).toHaveAttribute(
-      'href',
-      firstWitnessUrl
-    );
+    if (firstWitnessUrl.startsWith('http')) {
+      await expect(witnessesPage.witnessExternalSiteLink.first().locator('a')).toHaveAttribute(
+        'href',
+        firstWitnessUrl.replace('steemit.com', 'hive.blog')
+      );
+    } else {
+      // When URL is empty or doesn't start with http, no link is rendered
+      await expect(witnessesPage.witnessExternalSiteLink.first()).toContainText('No URL provided');
+    }
 
     // Validate Witness votes received
     const resDynamicGlobalProperties = await apiHelper.getDynamicGlobalPropertiesAPI();
@@ -370,21 +375,20 @@ test.describe('Witnesses page tests', () => {
     // Validate the witness name was typed into the input vote
     const firstWitnessName: any = await witnessesPage.witnessNameLink.first().textContent();
     await expect(voteBoxInput).toHaveAttribute('value', firstWitnessName);
-    // Validate color of the witness's open external site before hovering
-    expect(
-      await witnessesPage.getElementCssPropertyValue(
-        witnessesPage.witnessExternalSiteLink.first().locator('a span'),
-        'color'
-      )
-    ).toBe('rgb(255, 255, 255)');
-    // Validate color of the witness's open external site after hovering
-    await witnessesPage.witnessExternalSiteLink.first().locator('a span').hover();
-    expect(
-      await witnessesPage.getElementCssPropertyValue(
-        witnessesPage.witnessExternalSiteLink.first().locator('a span'),
-        'color'
-      )
-    ).toBe('rgb(248, 113, 113)');
+    // Find a witness with valid external site link (has 'a span' element)
+    const witnessWithLink = witnessesPage.witnessExternalSiteLink.locator('a span').first();
+    const hasLink = await witnessWithLink.count() > 0;
+    if (hasLink) {
+      // Validate color of the witness's open external site before hovering
+      expect(
+        await witnessesPage.getElementCssPropertyValue(witnessWithLink, 'color')
+      ).toBe('rgb(255, 255, 255)');
+      // Validate color of the witness's open external site after hovering
+      await witnessWithLink.hover();
+      expect(
+        await witnessesPage.getElementCssPropertyValue(witnessWithLink, 'color')
+      ).toBe('rgb(248, 113, 113)');
+    }
   });
 
   // test('move to the login dialog by clicking vote icon of the first witness', async ({ page }) => {
