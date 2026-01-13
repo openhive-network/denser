@@ -36,8 +36,10 @@ export const getOpTypes = async (): Promise<HiveOpTypeSchema[]> => {
 
 export const getWitnessesByVote = async (limit: number): Promise<IWitness[]> => {
   const chain = await getChain();
+  // Use very large votes value as starting point since API iterates downward from the start point
+  // This ensures we get witnesses sorted by votes in descending order
   const response = await chain.api.database_api.list_witnesses({
-    start: [0, ''],
+    start: [Number.MAX_SAFE_INTEGER, ''],
     limit,
     order: 'by_vote_name'
   });
