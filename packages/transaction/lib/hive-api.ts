@@ -1,7 +1,7 @@
-import { AccountFollowStats, AccountProfile, FullAccount } from './app-types';
-import { getChain } from './chain';
-import { ApiAccount, IManabarData } from '@hiveio/wax';
 import {
+  AccountFollowStats,
+  AccountProfile,
+  FullAccount,
   Entry,
   IAccountReputations,
   IDynamicGlobalProperties,
@@ -9,7 +9,9 @@ import {
   IFollow,
   IVote,
   IVoteListItem
-} from './extended-hive.chain';
+} from '@hive/common-hiveio-packages/wax';
+import { getChain } from './chain';
+import { ApiAccount, IManabarData } from '@hiveio/wax';
 import { DATA_LIMIT } from './bridge-api';
 
 interface ISingleManabar {

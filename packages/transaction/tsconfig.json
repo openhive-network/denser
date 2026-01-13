@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "paths": {
       "@smart-signer/*": ["../smart-signer/*"],
-      "@ui/*": ["../ui/*"]
+      "@ui/*": ["../ui/*"],
+      "@hive/common-hiveio-packages/*": ["../common-hiveio-packages/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

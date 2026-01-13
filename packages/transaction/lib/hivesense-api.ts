@@ -1,5 +1,5 @@
 import { logger } from '@ui/lib/logger';
-import { Entry, MixedPostsResponse, PostStub } from './extended-hive.chain';
+import { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-packages/wax';
 import { getChain } from './chain';
 
 const logStandarizedError = (methodName: string, error: unknown): null => {

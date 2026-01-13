@@ -1,9 +1,9 @@
 import { getAccountFull } from './hive-api';
 import { getCommunity } from './bridge-api';
-import { MetadataProps } from './app-types';
+import { MetadataProps } from '@hive/common-hiveio-packages/wax';
 
 // Re-export MetadataProps type for consumers
-export type { MetadataProps } from './app-types';
+export type { MetadataProps } from '@hive/common-hiveio-packages/wax';
 
 const DEFAULT_IMAGE = 'https://hive.blog/images/hive-blog-share.png';
 

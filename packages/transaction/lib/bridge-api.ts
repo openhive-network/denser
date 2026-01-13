@@ -1,12 +1,13 @@
 import { getLogger } from '@ui/lib/logging';
-import { Community, Entry } from './extended-hive.chain';
-import type {
+import {
+  Community,
+  Entry,
   FollowListType,
   IAccountNotification,
   IFollowList,
   IGetPostHeader,
   IUnreadNotifications
-} from './extended-hive.chain';
+} from '@hive/common-hiveio-packages/wax';
 import { getChain } from './chain';
 
 export const DATA_LIMIT = 20;
