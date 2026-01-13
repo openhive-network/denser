@@ -1,8 +1,7 @@
 import { useTranslation } from '@/blog/i18n/client';
 import ListArea from './list-area';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { FullAccount } from '@transaction/lib/app-types';
-import { IFollowList } from '@transaction/lib/extended-hive.chain';
+import { FullAccount, IFollowList } from '@hive/common-hiveio-packages/wax';
 import {
   useBlacklistBlogMutation,
   useResetBlacklistBlogMutation

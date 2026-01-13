@@ -6,7 +6,7 @@ import { commentsSectionClasses } from '@/blog/lib/post-layout-classes';
 import CommentList from './comment-list';
 import CommentSelectFilter from './comment-select-filter';
 import { Button } from '@ui/components/button';
-import { Entry, IFollowList } from '@transaction/lib/extended-hive.chain';
+import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 
 interface CommentsSectionProps {
   postData: Entry;

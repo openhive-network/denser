@@ -8,7 +8,7 @@ import Loading from '@ui/components/loading';
 import { getByText } from '@transaction/lib/hive-api';
 import { Link } from '@hive/ui';
 import { Activity } from 'lucide-react';
-import { Preferences } from '@transaction/lib/app-types';
+import { Preferences } from '@hive/common-hiveio-packages/wax';
 import PostCardSkeleton from '@hive/ui/components/card-skeleton';
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';

@@ -1,5 +1,5 @@
 'usle client';
-import { IFollowList } from '@transaction/lib/extended-hive.chain';
+import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { useMemo, useState } from 'react';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { useQuery } from '@tanstack/react-query';

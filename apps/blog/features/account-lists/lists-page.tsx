@@ -1,7 +1,7 @@
 import { getQueryClient } from '@/blog/lib/react-query';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getFollowList } from '@transaction/lib/bridge-api';
-import { FollowListType } from '@transaction/lib/extended-hive.chain';
+import { FollowListType } from '@hive/common-hiveio-packages/wax';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
 

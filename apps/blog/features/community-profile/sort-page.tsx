@@ -3,7 +3,7 @@ import { getQueryClient } from '@/blog/lib/react-query';
 import { SortTypes } from '@/blog/lib/utils';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
 

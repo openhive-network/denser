@@ -5,7 +5,7 @@ import Loading from '@ui/components/loading';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState, useMemo } from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { Entry, PostStub } from '@transaction/lib/extended-hive.chain';
+import { Entry, PostStub } from '@hive/common-hiveio-packages/wax';
 import { PER_PAGE } from './lib/utils';
 import { DEFAULT_OBSERVER, Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@ui/components/card-skeleton';

@@ -2,7 +2,7 @@
 
 import { Dialog, DialogTrigger } from '@ui/components/dialog';
 import { useTranslation } from '@/blog/i18n/client';
-import { Community } from '@transaction/lib/extended-hive.chain';
+import { Community } from '@hive/common-hiveio-packages/wax';
 import { useState } from 'react';
 import EditDialogContent from './edit-dialog-content';
 

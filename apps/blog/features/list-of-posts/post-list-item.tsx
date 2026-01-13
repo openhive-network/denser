@@ -14,7 +14,7 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
 import accountReputation from '@/blog/lib/account-reputation';
-import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
+import { IFollowList, Entry } from '@hive/common-hiveio-packages/wax';
 import DetailsCardHover from './details-card-hover';
 import PostImage from './post-img';
 import ReblogTrigger from './reblog-trigger';

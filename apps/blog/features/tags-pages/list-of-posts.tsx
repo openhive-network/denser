@@ -9,7 +9,7 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import PostList from '../list-of-posts/posts-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import { isCommunity } from '@ui/lib/utils';

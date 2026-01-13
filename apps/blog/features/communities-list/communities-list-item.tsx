@@ -4,7 +4,7 @@ import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { Link } from '@hive/ui';
 import BasePathLink from '@/blog/components/base-path-link';
-import { Community } from '@transaction/lib/extended-hive.chain';
+import { Community } from '@hive/common-hiveio-packages/wax';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import SubscribeCommunity from '../community-profile/subscribe-community';

@@ -1,5 +1,5 @@
 import { prepareVotes } from '@ui/lib/utils';
-import { Entry, IVote } from '@transaction/lib/extended-hive.chain';
+import { Entry, IVote } from '@hive/common-hiveio-packages/wax';
 import BasePathLink from '../../components/base-path-link';
 import { useActiveVotesQuery } from '../../components/hooks/use-active-votes';
 import { useTranslation } from '@/blog/i18n/client';

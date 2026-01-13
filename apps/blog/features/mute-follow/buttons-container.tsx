@@ -1,6 +1,6 @@
 'use client';
 
-import { IFollow } from '@transaction/lib/extended-hive.chain';
+import { IFollow } from '@hive/common-hiveio-packages/wax';
 import FollowButton from './follow-button';
 import MuteButton from './mute-button';
 import { User } from '@smart-signer/types/common';

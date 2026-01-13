@@ -1,7 +1,7 @@
 'use client';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { ReactNode, useRef, useState } from 'react';
 import VotersDetailsData from './votes-details-data';
 

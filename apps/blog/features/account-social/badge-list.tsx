@@ -1,4 +1,4 @@
-import type { Badge } from '@transaction/lib/extended-hive.chain';
+import type { Badge } from '@hive/common-hiveio-packages/wax';
 import BadgeListItem from './badge-list-item';
 
 const BadgeList = ({ data, username }: { data: Badge[]; username?: string }) => {

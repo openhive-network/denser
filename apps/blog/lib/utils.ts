@@ -1,10 +1,9 @@
 import Big from 'big.js';
 import sanitize from 'sanitize-html';
 import remarkableStripper from '../lib/remmarkable-stripper';
-import { Entry, JsonMetadata } from '@transaction/lib/extended-hive.chain';
+import { Entry, JsonMetadata, FullAccount } from '@hive/common-hiveio-packages/wax';
 import moment from 'moment';
 import { TFunction } from 'i18next';
-import { FullAccount } from '@transaction/lib/app-types';
 import { proxifyImageSrc } from '@hive/ui';
 
 export const DEFAULT_OBSERVER = 'hive.blog';

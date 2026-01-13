@@ -3,7 +3,7 @@ import { Progress } from '@hive/ui/components/progress';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
-import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
+import { IAccountNotification } from '@hive/common-hiveio-packages/wax';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { usePathname } from 'next/navigation';
 import { Link } from '@hive/ui';
