@@ -121,7 +121,10 @@ export class LoginForm {
       'Enter your username and select a sign in method'
     );
     await expect(this.otherSignInOptionsUsernameInput).toHaveAttribute('value', username);
-    await expect(this.hiveKeychainExtensionButton).toBeEnabled();
+    // Note: Keychain/MetaMask/PeakVault/Google buttons are only enabled if browser extensions
+    // or required configuration (e.g., GOOGLE_DRIVE_CLIENT_ID) are available.
+    // On CI (headless), these will typically be disabled. Locally with extensions, they may be enabled.
+    // We only assert that WIF is always enabled (no extension/config required)
     await expect(this.signInWithWifButton).toBeEnabled();
     await expect(this.hiveAuthButton).toBeDisabled();
     await expect(this.hiveSignerButton).toBeDisabled();
