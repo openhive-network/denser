@@ -118,8 +118,8 @@ export class ApiHelper {
         id: 0,
         jsonrpc: "2.0",
         method: "database_api.list_witnesses",
-        // Use very large votes value as starting point since API iterates downward
-        params: { start: [Number.MAX_SAFE_INTEGER, ""], limit: limit, order: "by_vote_name" },
+        // Use max int64 value as starting point since API iterates downward
+        params: { start: ["9223372036854775807", ""], limit: limit, order: "by_vote_name" },
       },
       headers: {
         Accept: "application/json, text/plain, */*",

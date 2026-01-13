@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { DISABLED_SIGNING_KEY } from '@/wallet/lib/constants';
 import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
-import { FullAccount } from '@hive/common-hiveio-packages/wax';
+import { FullAccount, reuseHiveChain } from '@hive/common-hiveio-packages/wax';
 import { dateToRelative } from '@hive/ui/lib/parse-date';
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
@@ -14,7 +14,6 @@ import { CircleSpinner } from 'react-spinners-kit';
 import WitnessRemoveVote from './witness-remove-vote';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl } from '@hive/ui';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 const getOwnersString = (owners?: string) => {
   if (!owners) return '';
@@ -272,7 +271,7 @@ function WitnessListItem({
       </td>
       <td className=" sm:p-2">
         <div className="font-medium" data-testid="witness-price-feed">
-          ${hiveChainService.reuseHiveChain()?.formatter.format(data.hbd_exchange_rate.base)}
+          ${(Number(data.hbd_exchange_rate.base.amount) / Math.pow(10, data.hbd_exchange_rate.base.precision)).toFixed(3)}
         </div>
         <div className="font-light">
           <TimeAgo date={data.last_hbd_exchange_update} />

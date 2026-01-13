@@ -36,10 +36,11 @@ export const getOpTypes = async (): Promise<HiveOpTypeSchema[]> => {
 
 export const getWitnessesByVote = async (limit: number): Promise<IWitness[]> => {
   const chain = await getChain();
-  // Use very large votes value as starting point since API iterates downward from the start point
+  // Use max int64 value as starting point since API iterates downward from the start point
   // This ensures we get witnesses sorted by votes in descending order
   const response = await chain.api.database_api.list_witnesses({
-    start: [Number.MAX_SAFE_INTEGER, ''],
+    // @ts-ignore Ignore first parameter type as JavaScript number cannot represent int64 accurately
+    start: ["9223372036854775807", ''],
     limit,
     order: 'by_vote_name'
   });
