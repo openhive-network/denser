@@ -194,8 +194,8 @@ export class ProfilePage {
   readonly userHasNotHadAnyRepliesYetMsg: Locator;
   readonly userDoesNotHaveAnySubscriptionsYetMsg: Locator;
   readonly userHasNotHadAnyNotificationsYetMsg: Locator;
-  readonly userBannerBadgeLink: Locator;
-  readonly userBannerBadgeImg: Locator;
+  readonly userBannerLevelLink: Locator;
+  readonly userBannerLevelImg: Locator;
   readonly userBannerTwitterBadgeLink: Locator;
   readonly profileNameString: string;
   readonly followBtn: string;
@@ -434,8 +434,8 @@ export class ProfilePage {
     this.userHasNotHadAnyRepliesYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
     this.userDoesNotHaveAnySubscriptionsYetMsg = page.locator('[data-testid="user-does-not-have-any-subscriptions-yet"]');
     this.userHasNotHadAnyNotificationsYetMsg = page.locator('[data-testid="user-has-not-had-any-notifications-yet"]');
-    this.userBannerBadgeLink = page.locator('[data-testid="profile-badge-link"]');
-    this.userBannerBadgeImg = page.locator('[data-testid="profile-badge-image"]');
+    this.userBannerLevelLink = page.locator('[data-testid="profile-level-link"]');
+    this.userBannerLevelImg = page.locator('[data-testid="profile-level-image"]');
     this.userBannerTwitterBadgeLink = page.locator('[data-testid="profile-twitter-badge"]');
   }
 
