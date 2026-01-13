@@ -739,6 +739,9 @@ importers:
 
   packages/ui:
     dependencies:
+      '@hive/common-hiveio-packages':
+        specifier: workspace:*
+        version: link:../common-hiveio-packages
       '@hive/eslint-config-custom':
         specifier: workspace:*
         version: link:../eslint-config-custom

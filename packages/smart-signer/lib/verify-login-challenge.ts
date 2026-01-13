@@ -1,5 +1,5 @@
 import { authority } from '@hiveio/wax';
-import { FullAccount } from '@transaction/lib/app-types';
+import { FullAccount } from '@hive/common-hiveio-packages/wax';
 import { Signatures } from '@smart-signer/lib/auth/utils';
 import { verifySignature } from '@smart-signer/lib/verify-signature';
 
