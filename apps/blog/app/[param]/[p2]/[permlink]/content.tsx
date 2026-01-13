@@ -36,7 +36,7 @@ import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { getBasePath } from '@ui/lib/path-utils';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { getActiveVotes } from '@transaction/lib/hive-api';
 import { getSimilarPostsByPost, isPostStub } from '@transaction/lib/hivesense-api';
 import { Badge } from '@ui/components/badge';

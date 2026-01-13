@@ -1,6 +1,6 @@
 import { getFollowList } from '@transaction/lib/bridge-api';
 import { useQuery } from '@tanstack/react-query';
-import { FollowListType } from '@transaction/lib/extended-hive.chain';
+import { FollowListType } from '@hive/common-hiveio-packages/wax';
 
 export const useFollowListQuery = (username: string, type: FollowListType) => {
   return useQuery({
