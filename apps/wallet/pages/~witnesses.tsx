@@ -5,12 +5,11 @@ import { getListWitnessVotes } from '@transaction/lib/hive';
 import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
-import { FullAccount } from '@transaction/lib/app-types';
+import { FullAccount, IWitness } from '@hive/common-hiveio-packages/wax';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { useRouter } from 'next/router';
 import { Button } from '@hive/ui/components/button';
 import { getWitnessesByVote } from '@/wallet/lib/hive';
-import { IWitness } from '@transaction/lib/extended-hive.chain';
 import WitnessListItem from '@/wallet/components/witnesses-list-item';
 import DialogLogin from '../components/dialog-login';
 import { GetServerSideProps } from 'next';
@@ -103,7 +102,7 @@ function WitnessesPage() {
     data: witnessesData,
     isLoading: witnessesLoading,
     isSuccess: witnessesSuccess
-  } = useQuery(['witnesses'], () => getWitnessesByVote('', 250), {
+  } = useQuery(['witnesses'], () => getWitnessesByVote(250), {
     select: (witnesses) => {
       const witnessVotes = listWitnessVotesData?.votes
         .filter((vote) => {

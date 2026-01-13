@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { IOpenOrdersData } from '@transaction/lib/extended-hive.chain'; 
+import { IOpenOrdersData } from '@hive/common-hiveio-packages/wax'; 
 import { useTranslation } from 'next-i18next';
 import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import { dateToFormatted } from '@ui/lib/parse-date';

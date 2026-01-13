@@ -8,7 +8,7 @@ import {
 } from '@ui/components';
 import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
-import { HiveOperation, OpType } from '@transaction/lib/extended-hive.chain';
+import { HiveOperation, OpType } from '@hive/common-hiveio-packages/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import moment from "moment";
 

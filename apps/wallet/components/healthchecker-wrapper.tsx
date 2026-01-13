@@ -1,7 +1,6 @@
 'use client';
 import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component'
-import { FullAccount } from '@transaction/lib/app-types';
-import { HiveOpTypeSchema, IGetOperationsByAccountResponse, SavingsWithdrawals } from '@transaction/lib/extended-hive.chain';
+import { FullAccount, HiveOpTypeSchema, IGetOperationsByAccountResponse, SavingsWithdrawals } from '@hive/common-hiveio-packages/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useHealthChecker } from '@ui/hooks/useHealthChecker';
 import { CircleCheck } from 'lucide-react';

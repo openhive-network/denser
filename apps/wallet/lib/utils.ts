@@ -2,7 +2,7 @@ import { TFunction } from 'i18next';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
-import { SavingsWithdrawals,  IFollow, IDynamicGlobalProperties, HiveOperation } from '@transaction/lib/extended-hive.chain';
+import { SavingsWithdrawals, IFollow, IDynamicGlobalProperties, HiveOperation } from '@hive/common-hiveio-packages/wax';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
 import Big from 'big.js';
