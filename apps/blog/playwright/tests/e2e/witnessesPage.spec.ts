@@ -70,11 +70,10 @@ test.describe.skip('Witnesses page tests', () => {
     await homePage.moveToNavWitnessesPage();
 
     // First witness's info from API
-    const firstWitnessInfoAPI = (await apiHelper.getListWitnessesByVoteAPI('', 5)).result[0]; // blocktrades expected
+    const firstWitnessInfoAPI = (await apiHelper.getListWitnessesByVoteAPI(5)).result.witnesses[0]; // blocktrades expected
     const nameFirstWitnessAPI = await firstWitnessInfoAPI.owner;
     const lastConfirmedBlockNumberOfFirstWitnessAPI = await firstWitnessInfoAPI.last_confirmed_block_num;
     const runningVersionOfFirstWitnessAPI = await firstWitnessInfoAPI.running_version;
-    const priceFeedOfFirstWitnessAPI = await firstWitnessInfoAPI.hbd_exchange_rate.base.amount;
 
     expect(nameFirstWitnessAPI).toBe(await witnessPage.firstWitnessNameLink.textContent());
     expect('#' + lastConfirmedBlockNumberOfFirstWitnessAPI).toBe(
@@ -84,17 +83,17 @@ test.describe.skip('Witnesses page tests', () => {
       runningVersionOfFirstWitnessAPI
     );
 
-    // Price feed for first witness
+    // Price feed for first witness (NaiAsset format: amount/10^precision)
     const priceFeedFrontEnd: any = await witnessPage.firstWitnessPriceFeed.innerText();
     const priceFeedString: any = await priceFeedFrontEnd.match(/\d.(\d){1,3}/g)[0];
-    const priceFeedOfFirstWitnessAPIString: any = await priceFeedOfFirstWitnessAPI.match(/\d.(\d){1,3}/g)[0];
+    const priceFeedFromAPI = Number(firstWitnessInfoAPI.hbd_exchange_rate.base.amount) / Math.pow(10, firstWitnessInfoAPI.hbd_exchange_rate.base.precision);
+    const priceFeedOfFirstWitnessAPIString: any = priceFeedFromAPI.toFixed(3).match(/\d.(\d){1,3}/g)[0];
     expect(await priceFeedOfFirstWitnessAPIString).toBe(await priceFeedString);
 
     // Calculate Votes received in HP
-    const totalVestingFoundHiveAPI = (await apiHelper.getDynamicGlobalPropertiesAPI()).result
-      .total_vesting_fund_hive;
-    const totalVestingSharesAPI = (await apiHelper.getDynamicGlobalPropertiesAPI()).result
-      .total_vesting_shares;
+    const dynamicGlobalPropertiesAPI = (await apiHelper.getDynamicGlobalPropertiesAPI()).result;
+    const totalVestingFoundHiveAPI = dynamicGlobalPropertiesAPI.total_vesting_fund_hive;
+    const totalVestingSharesAPI = dynamicGlobalPropertiesAPI.total_vesting_shares;
     const witnesVotesAPI = await firstWitnessInfoAPI.votes;
     const totalVestingFoundHiveAPIBig = Big(totalVestingFoundHiveAPI.match(/(\d)+.(\d)+/g)[0]);
     const totalVestingSharesAPIBig = Big(totalVestingSharesAPI.match(/(\d)+.(\d)+/g)[0]);
