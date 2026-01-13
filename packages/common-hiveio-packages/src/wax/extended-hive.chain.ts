@@ -920,7 +920,7 @@ export type ExtendedNodeApi = {
     get_collateralized_conversion_requests: TWaxApiRequest<string[], ICollateralizedConversionRequest[]>;
     list_witness_votes: TWaxApiRequest<{ start: string[]; limit: number; order: string }, IListWitnessVotes>;
     list_witnesses: TWaxApiRequest<
-      { start: [string, string] | string; limit: number; order: 'by_name' | 'by_vote_name' | 'by_schedule_time' },
+      { start: [number, string] | [string] | string; limit: number; order: 'by_name' | 'by_vote_name' | 'by_schedule_time' },
       { witnesses: IWitness[] }
     >;
     list_votes: TWaxApiRequest<

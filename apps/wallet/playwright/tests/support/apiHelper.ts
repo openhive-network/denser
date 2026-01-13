@@ -118,7 +118,7 @@ export class ApiHelper {
         id: 0,
         jsonrpc: "2.0",
         method: "database_api.list_witnesses",
-        params: { start: ["", ""], limit: limit, order: "by_vote_name" },
+        params: { start: [0, ""], limit: limit, order: "by_vote_name" },
       },
       headers: {
         Accept: "application/json, text/plain, */*",

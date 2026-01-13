@@ -37,7 +37,7 @@ export const getOpTypes = async (): Promise<HiveOpTypeSchema[]> => {
 export const getWitnessesByVote = async (limit: number): Promise<IWitness[]> => {
   const chain = await getChain();
   const response = await chain.api.database_api.list_witnesses({
-    start: ['', ''],
+    start: [0, ''],
     limit,
     order: 'by_vote_name'
   });
