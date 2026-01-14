@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { Input } from '@ui/components/input';
 import { Button } from '@ui/components/button';
 import { useTranslation } from '@/blog/i18n/client';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('ClipboardCopy');
 
 export default function ClipboardCopy({ copyText, label }: { copyText: string; label: string }) {
   const { t } = useTranslation('common_blog');
@@ -28,7 +31,7 @@ export default function ClipboardCopy({ copyText, label }: { copyText: string; l
         }, 1500);
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err, 'Failed to copy text to clipboard');
       });
   };
 

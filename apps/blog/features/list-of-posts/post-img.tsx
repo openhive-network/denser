@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import clsx from 'clsx';
 import { Link } from '@hive/ui';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
@@ -12,6 +12,9 @@ import {
   extractYouTubeVideoIds
 } from '@/blog/lib/utils';
 import { Entry } from '@hive/common-hiveio-packages/wax';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('PostImage');
 
 export function find_first_img(post: Entry) {
   try {
@@ -81,7 +84,7 @@ export function find_first_img(post: Entry) {
     }
     return '';
   } catch (e) {
-    console.error('Error in find_first_img:', e);
+    logger.error(e, 'Error in find_first_img');
     return '';
   }
 }

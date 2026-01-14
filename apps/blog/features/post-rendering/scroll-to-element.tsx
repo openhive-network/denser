@@ -1,6 +1,9 @@
 'use client';
 
 import { FC, RefObject, useLayoutEffect, useEffect } from 'react';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('ScrollToElement');
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
@@ -24,7 +27,8 @@ const ScrollToElement: FC<{ rendererRef: RefObject<HTMLDivElement> }> = ({ rende
         );
         await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (e) {
-        console.error(e);
+        // Image loading errors are expected and non-critical - scroll anyway
+        logger.debug({ error: e }, 'Image loading error during scroll preparation');
       } finally {
         document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
       }

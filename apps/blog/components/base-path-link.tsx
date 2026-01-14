@@ -39,11 +39,6 @@ const BasePathLink = ({
       // Force a full page reload
       // basePath already includes the basePath from next.config.js
       const fullPath = basePath + href;
-      console.log('BasePathLink forcing reload:', {
-        href,
-        basePath: basePath,
-        fullPath
-      });
       window.location.href = fullPath;
     }
   };

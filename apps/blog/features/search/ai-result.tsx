@@ -10,10 +10,13 @@ import { PER_PAGE } from './lib/utils';
 import { DEFAULT_OBSERVER, Preferences } from '@/blog/lib/utils';
 import PostCardSkeleton from '@ui/components/card-skeleton';
 import { commonVariables } from '@ui/lib/common-variables';
+import { getLogger } from '@ui/lib/logging';
 
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';
 import { getPostsByIds, isPostStub, searchPosts } from '@transaction/lib/hivesense-api';
+
+const logger = getLogger('AIResult');
 
 const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: Preferences['nsfw'] }) => {
   const { user } = useUserClient();
@@ -116,7 +119,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
         setCurrentPage((prev) => prev + 1);
       }
     } catch (error) {
-      console.error('Error fetching next page:', error);
+      logger.error(error, 'Error fetching next page');
     } finally {
       setIsLoadingMore(false);
     }

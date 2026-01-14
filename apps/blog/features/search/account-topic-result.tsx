@@ -118,9 +118,7 @@ const AccountTopicResult = ({
       <div>
         <button
           ref={ref}
-          onClick={() => {
-            fetchNextPage(), console.log('fetchNextPage');
-          }}
+          onClick={() => fetchNextPage()}
           disabled={!hasNextPage || isFetchingNextPage}
         >
           {isFetchingNextPage ? (
