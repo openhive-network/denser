@@ -9,7 +9,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@ui/components/alert-dialog';
-import { Input, Separator } from '@ui/components';
+import { Input, Label, Separator } from '@ui/components';
 import { ReactNode, useState } from 'react';
 import ln2list from '../../lib/ln2list';
 import { useTranslation } from '@/blog/i18n/client';
@@ -60,13 +60,24 @@ export function AlertDialogFlag({
             <div>{t('post_content.flag.flag_description')}</div>
 
             <Separator />
-            <h1 className="text-lg font-bold">{t('post_content.flag.community_rules')}</h1>
+            <h2 className="text-lg font-bold">{t('post_content.flag.community_rules')}</h2>
             {ln2list(flagText).map((x, i) => (
               <p key={i + 1}>{`${i + 1}. ${x}`}</p>
             ))}
             <Separator />
 
-            <Input className="mt-2" value={notes} onChange={(e) => setNotes(e.target.value)} />
+            <div className="mt-2">
+              <Label htmlFor="flag-notes" className="sr-only">
+                {t('post_content.flag.notes_label')}
+              </Label>
+              <Input
+                id="flag-notes"
+                className=""
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder={t('post_content.flag.notes_placeholder')}
+              />
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">

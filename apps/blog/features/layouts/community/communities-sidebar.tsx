@@ -4,7 +4,6 @@ import { Link } from '@hive/ui';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunities } from '@transaction/lib/bridge-api';
 import { cn } from '@ui/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -26,20 +25,21 @@ const CommunitiesSidebar: FC = () => {
   if (!data) return null;
 
   return (
-    <Card
-      className={cn('my-4 hidden h-fit w-full flex-col bg-background px-8 text-primary md:flex')}
+    <nav
+      aria-label={t('navigation.communities_nav.communities')}
+      className={cn('my-4 hidden h-fit w-full flex-col rounded-md border bg-card px-8 text-primary shadow-sm md:flex')}
       data-testid="card-trending-comunities"
       translate="no"
     >
-      <CardHeader className="px-0 py-4">
-        <CardTitle>
+      <div className="px-0 py-4">
+        <h2 className="text-lg font-semibold leading-none tracking-tight">
           <Link href="/trending" className="hover:text-destructive">
             {t('navigation.communities_nav.all_posts')}
           </Link>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <span className="text-sm text-gray-400">{t('navigation.communities_nav.trending_communities')}</span>
+        </h2>
+      </div>
+      <div className="p-6 pt-0">
+        <span className="text-sm text-muted-foreground">{t('navigation.communities_nav.trending_communities')}</span>
         <ul>
           {data?.slice(0, 12).map((community) => (
             <li key={community.id}>
@@ -61,8 +61,8 @@ const CommunitiesSidebar: FC = () => {
             </Link>
           </li>
         </ul>
-      </CardContent>
-    </Card>
+      </div>
+    </nav>
   );
 };
 

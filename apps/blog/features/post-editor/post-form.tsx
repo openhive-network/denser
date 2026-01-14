@@ -432,7 +432,7 @@ export default function PostForm({
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger type="button">
-                          <Icons.info className="ml-1 w-3" />
+                          <Icons.info className="ml-1 w-3" aria-hidden="true" />
                         </TooltipTrigger>
                         <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
                       </Tooltip>
@@ -564,7 +564,7 @@ export default function PostForm({
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
-                            <SelectGroup>{t('submit_page.my_communities')}</SelectGroup>
+                            <SelectGroup>{t('navigation.communities_nav.my_communities')}</SelectGroup>
                             {mySubsData?.map((e) => (
                               <SelectItem key={e[0]} value={e[0]}>
                                 {e[1]}
@@ -628,9 +628,10 @@ export default function PostForm({
           data-testid="preview-container"
         >
           <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
-            <span className="text-slate-500">{t('submit_page.preview')}</span>
+            <span className="text-muted-foreground">{t('submit_page.preview')}</span>
             <Link
               target="_blank"
+              rel="noopener noreferrer"
               href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
             >
               <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>

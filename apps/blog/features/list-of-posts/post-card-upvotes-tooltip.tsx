@@ -8,8 +8,8 @@ const PostCardUpvotesTooltip = ({ votes }: { votes: number }) => {
     <div className="flex items-center">
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger className="flex items-center" data-testid="post-total-votes">
-            <Icons.chevronUp className="h-4 w-4 sm:mr-1" />
+          <TooltipTrigger className="flex items-center" data-testid="post-total-votes" aria-label={t('cards.post_card.votes_label', { count: votes })}>
+            <Icons.chevronUp className="h-4 w-4 sm:mr-1" aria-hidden="true" />
             {votes}
           </TooltipTrigger>
           <TooltipContent data-testid="post-card-votes-tooltip">

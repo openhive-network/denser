@@ -55,7 +55,7 @@ const CommunitiesContent = () => {
       <div className="mt-4 flex w-full items-center justify-between gap-4" translate="no">
         <div className="relative w-full max-w-md">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <Icons.search className="h-5 w-5 rotate-90" />
+            <Icons.search className="h-5 w-5 rotate-90" aria-hidden="true" />
           </div>
           <Input
             type="search"

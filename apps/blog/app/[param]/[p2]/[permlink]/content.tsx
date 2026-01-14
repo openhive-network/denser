@@ -402,7 +402,7 @@ const PostContent = () => {
           <div className={postContainerClasses}>
             {crossedPost ? (
               <div className="mb-4 flex items-center gap-2 bg-background-secondary p-5 text-sm">
-                <Icons.crossPost className="h-4 w-4" />
+                <Icons.crossPost className="h-4 w-4" aria-hidden="true" />
                 <span>
                   <BasePathLink href={`/@${postData?.author}`} className="font-bold hover:text-destructive">
                     {postData?.author}{' '}
@@ -574,7 +574,7 @@ const PostContent = () => {
                           }
                         />
                         {postData.author_title ? (
-                          <Badge variant="outline" className="border-destructive text-slate-500">
+                          <Badge variant="outline" className="border-destructive text-muted-foreground">
                             <span className="mr-1">{postData.author_title}</span>
                             <ChangeTitleDialog
                               community={category}
@@ -606,7 +606,7 @@ const PostContent = () => {
                           data-testid="comment-payout"
                           className={`text-xs text-destructive hover:cursor-pointer sm:text-sm ${
                             Number(postData.max_accepted_payout.slice(0, 1)) === 0
-                              ? '!text-gray-600 line-through'
+                              ? '!text-muted-foreground line-through'
                               : ''
                           }`}
                         >
@@ -748,9 +748,9 @@ const PostContent = () => {
                           <TooltipTrigger className="flex items-center" data-testid="comment-respons">
                             <Link href={postData.url} className="flex cursor-pointer items-center">
                               {postData.children > 1 ? (
-                                <Icons.messagesSquare className="mr-1 h-4 w-4" />
+                                <Icons.messagesSquare className="mr-1 h-4 w-4" aria-hidden="true" />
                               ) : (
-                                <Icons.comment className="mr-1 h-4 w-4" />
+                                <Icons.comment className="mr-1 h-4 w-4" aria-hidden="true" />
                               )}
                             </Link>
                             <Link href={postData.url} className="text- flex cursor-pointer items-center">

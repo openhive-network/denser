@@ -2,7 +2,6 @@
 
 import { Link } from '@hive/ui';
 import { cn } from '@ui/lib/utils';
-import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
@@ -11,29 +10,33 @@ const CommunitiesMyBar = ({ data }: { data: string[][] }) => {
   const { user } = useUserClient();
 
   return (
-    <Card
-      className={cn('my-4 hidden h-fit w-full flex-col bg-background px-8 py-2 text-primary md:flex')}
+    <nav
+      aria-labelledby="communities-my-bar-heading"
+      className={cn('my-4 hidden h-fit w-full flex-col rounded-md border bg-card px-8 py-2 text-primary shadow-sm md:flex')}
       data-testid="card-trending-comunities"
     >
-      <CardTitle>
-        <Link href="/trending" className="text-base hover:text-destructive">
-          {t('navigation.communities_nav.all_posts')}
-        </Link>
-      </CardTitle>
-      <CardTitle>
-        <Link href={`/@${user.username}/feed`} className="text-base hover:text-destructive">
-          My friends
-        </Link>
-      </CardTitle>
-      <CardTitle>
-        <Link href="../trending/my" className="text-base hover:text-destructive">
-          My communities
-        </Link>
-      </CardTitle>
+      <h2 id="communities-my-bar-heading" className="sr-only">{t('navigation.communities_nav.communities')}</h2>
+      <ul className="space-y-1">
+        <li>
+          <Link href="/trending" className="block py-1.5 text-base font-semibold hover:text-destructive">
+            {t('navigation.communities_nav.all_posts')}
+          </Link>
+        </li>
+        <li>
+          <Link href={`/@${user.username}/feed`} className="block py-1.5 text-base font-semibold hover:text-destructive">
+            {t('navigation.communities_nav.my_friends')}
+          </Link>
+        </li>
+        <li>
+          <Link href="../trending/my" className="block py-1.5 text-base font-semibold hover:text-destructive">
+            {t('navigation.communities_nav.my_communities')}
+          </Link>
+        </li>
+      </ul>
 
       {data && data?.length > 0 ? (
-        <CardContent className="px-0 py-2">
-          <span className="text-sm opacity-60">My subscriptions</span>
+        <div className="px-0 py-2">
+          <span className="text-sm text-muted-foreground">{t('navigation.communities_nav.my_subscriptions')}</span>
           <ul>
             {data.map((e) => (
               <li key={e[0]}>
@@ -43,14 +46,16 @@ const CommunitiesMyBar = ({ data }: { data: string[][] }) => {
               </li>
             ))}
           </ul>
-        </CardContent>
+        </div>
       ) : null}
-      <CardTitle>
-        <Link href="/communities" className="text-base hover:text-destructive">
-          {t('navigation.communities_nav.explore_communities')}
-        </Link>
-      </CardTitle>
-    </Card>
+      <ul>
+        <li>
+          <Link href="/communities" className="block py-1.5 text-base font-semibold hover:text-destructive">
+            {t('navigation.communities_nav.explore_communities')}
+          </Link>
+        </li>
+      </ul>
+    </nav>
   );
 };
 

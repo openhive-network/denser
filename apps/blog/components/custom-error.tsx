@@ -8,7 +8,7 @@ const CustomError: FC = () => {
 
   return (
     <div className="mx-auto flex flex-col items-center py-8">
-      <Icons.hive className="h-16 w-16" />
+      <Icons.hive className="h-16 w-16" aria-hidden="true" />
       <h3 className="py-4 text-lg">{t('four_oh_four.this_page_does_not_exist')}</h3>
       <div className="text-md py-2">
         {t('four_oh_four.not_to_worry')}{' '}

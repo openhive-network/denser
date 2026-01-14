@@ -28,22 +28,22 @@ const NotificationListItem = ({
 
   switch (type) {
     case 'vote':
-      icon = <Icons.arrowUpCircle className="h-4 w-4" />;
+      icon = <Icons.arrowUpCircle className="h-4 w-4" aria-hidden="true" />;
       break;
     case 'reblog':
-      icon = <Icons.forward className="h-4 w-4" />;
+      icon = <Icons.forward className="h-4 w-4" aria-hidden="true" />;
       break;
     case 'reply_comment':
-      icon = <Icons.comment className="h-4 w-4" />;
+      icon = <Icons.comment className="h-4 w-4" aria-hidden="true" />;
       break;
     case 'mention':
-      icon = <Icons.atSign className="h-4 w-4" />;
+      icon = <Icons.atSign className="h-4 w-4" aria-hidden="true" />;
       break;
     case 'error':
-      icon = <Icons.settings className="h-4 w-4" />;
+      icon = <Icons.settings className="h-4 w-4" aria-hidden="true" />;
       break;
     default:
-      icon = <Icons.arrowUpCircle className="h-4 w-4" />;
+      icon = <Icons.arrowUpCircle className="h-4 w-4" aria-hidden="true" />;
   }
   const imageHosterUrl = configuredImagesEndpoint;
   const fixedUrl = url.startsWith('c') ? url.replace('c', 'trending') : url;
@@ -83,7 +83,7 @@ const NotificationListItem = ({
           ) : null}
           {participants}
           <div className="flex flex-col">
-            <Link href={`/${fixedUrl}`} className="visited:text-gray-500 dark:visited:text-gray-400">
+            <Link href={`/${fixedUrl}`} className="visited:text-muted-foreground">
               <span data-testid="notification-account-and-message">
                 <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
                 {mentions
@@ -94,7 +94,7 @@ const NotificationListItem = ({
               </span>
             </Link>
             <span
-              className="flex items-center gap-2 text-sm text-gray-400"
+              className="flex items-center gap-2 text-sm text-muted-foreground"
               data-testid="notification-timestamp"
             >
               {icon}

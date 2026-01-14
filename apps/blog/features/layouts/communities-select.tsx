@@ -48,7 +48,7 @@ export function CommunitiesSelect({ title }: { title: string }) {
           : router.push(withBasePath(`/trending/${e}`));
       }}
     >
-      <SelectTrigger className="bg-white dark:bg-background/95 dark:text-white">
+      <SelectTrigger className="bg-white dark:bg-background/95 dark:text-white" aria-label={t('navigation.communities_nav.select_community')}>
         <SelectValue placeholder={title} />
       </SelectTrigger>
       <SelectContent
@@ -65,11 +65,11 @@ export function CommunitiesSelect({ title }: { title: string }) {
         </SelectGroup>
         {user.isLoggedIn && (
           <SelectGroup>
-            <SelectItem value={`../@${user.username}/feed`}>My friends</SelectItem>
-            <SelectItem value={`../trending/my`}>My communities</SelectItem>
+            <SelectItem value={`../@${user.username}/feed`}>{t('navigation.communities_nav.my_friends')}</SelectItem>
+            <SelectItem value={`../trending/my`}>{t('navigation.communities_nav.my_communities')}</SelectItem>
             {mySubsData && mySubsData.length > 0 ? (
-              <SelectItem disabled value="my-communities" className="text-slate-400">
-                My communities
+              <SelectItem disabled value="my-communities" className="text-muted-foreground">
+                {t('navigation.communities_nav.my_communities')}
               </SelectItem>
             ) : null}
             {mySubsData && mySubsData.length > 0
@@ -82,7 +82,7 @@ export function CommunitiesSelect({ title }: { title: string }) {
           </SelectGroup>
         )}
         <SelectGroup>
-          <SelectItem disabled value="trending-communities" className="text-slate-400">
+          <SelectItem disabled value="trending-communities" className="text-muted-foreground">
             {t('navigation.communities_nav.trending_communities')}
           </SelectItem>
           {user && user.isLoggedIn

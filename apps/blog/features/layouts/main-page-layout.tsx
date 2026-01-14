@@ -49,13 +49,16 @@ const MainPageLayout = ({
   return (
     <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
-        <div className="hidden md:col-span-3 md:flex xl:col-span-2">
+        <aside className="hidden md:col-span-3 md:flex xl:col-span-2" aria-label={t('navigation.communities_nav.communities')}>
           {renderCommunitiesSidebar()}
-        </div>
-        <div className="col-span-12 md:col-span-9 xl:col-span-8">
+        </aside>
+        <section
+          className="col-span-12 md:col-span-9 xl:col-span-8"
+          aria-label={hidePostsHeader ? t('accessibility.main_content') : undefined}
+        >
           <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
             {hidePostsHeader ? null : (
-              <div className="my-4 flex w-full items-center justify-between" translate="no">
+              <header className="my-4 flex w-full items-center justify-between" translate="no">
                 <div className="mr-2 flex w-[320px] flex-col">
                   <span className="text-md hidden font-medium md:block" data-testid="community-name">
                     {renderListName()}
@@ -64,19 +67,19 @@ const MainPageLayout = ({
                     <CommunitiesSelect title={t('navigation.communities_nav.all_posts')} />
                   </span>
                 </div>
-                {tag !== 'feed' && 
+                {tag !== 'feed' &&
                   <div className="w-[180px]">
                     <PostSelectFilter param={tag} />
                   </div>
                 }
-              </div>
+              </header>
             )}
             {children}
           </div>
-        </div>
-        <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
+        </section>
+        <aside data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex" aria-label={t('navigation.explore_nav.explore_hive')}>
           {!!user.isLoggedIn ? <CommunitiesSidebar /> : <ExploreHive />}
-        </div>
+        </aside>
       </div>
     </div>
   );

@@ -16,13 +16,13 @@ const PostCardCommentTooltip = ({ comments, url }: PostCardCommentTooltipProps) 
     <div className="flex items-center" data-testid="post-children">
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger className="flex items-center">
+          <TooltipTrigger className="flex items-center" aria-label={t('cards.post_card.comments_label', { count: comments })}>
             <>
-              <Link href={url} className="flex cursor-pointer items-center">
+              <Link href={url} className="flex cursor-pointer items-center" aria-hidden="true" tabIndex={-1}>
                 {comments > 1 ? (
-                  <Icons.messagesSquare className="h-4 w-4 sm:mr-1" />
+                  <Icons.messagesSquare className="h-4 w-4 sm:mr-1" aria-hidden="true" />
                 ) : (
-                  <Icons.comment className="h-4 w-4 sm:mr-1" />
+                  <Icons.comment className="h-4 w-4 sm:mr-1" aria-hidden="true" />
                 )}
               </Link>
               <Link

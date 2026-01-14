@@ -40,7 +40,7 @@ const UserMenu = ({
         <DropdownMenuLabel className="flex w-full items-center justify-between">
           <span data-testid="user-name-in-profile-menu">{user.username}</span>
           <div className="flex items-center space-x-2" title="Logged in with Hive private key">
-            <Icons.hive className="h-4 w-4" />
+            <Icons.hive className="h-4 w-4" aria-hidden="true" />
             <div className="flex flex-col text-sm font-semibold">
               <span>Hive</span>
               <span className="text-destructive">Blog</span>
@@ -52,13 +52,13 @@ const UserMenu = ({
         <DropdownMenuGroup>
           <BasePathLink href={`/@${user.username}`} data-testid="user-profile-menu-profile-link">
             <DropdownMenuItem className="cursor-pointer">
-              <Icons.user className="mr-2" />
+              <Icons.user className="mr-2" aria-hidden="true" />
               <span className="w-full">{t('navigation.user_menu.profile')}</span>
             </DropdownMenuItem>
           </BasePathLink>
           <Link href={`/@${user.username}/notifications`} data-testid="user-profile-menu-notifications-link">
             <DropdownMenuItem className="cursor-pointer">
-              <Icons.clock className="mr-2" />
+              <Icons.clock className="mr-2" aria-hidden="true" />
               <span className="w-full">
                 {t('navigation.user_menu.notifications')}
                 {notifications ? `(${notifications})` : null}
@@ -67,13 +67,13 @@ const UserMenu = ({
           </Link>
           <Link href={`/@${user.username}/comments`} data-testid="user-profile-menu-comments-link">
             <DropdownMenuItem className="cursor-pointer">
-              <Icons.comment className="mr-2" />
+              <Icons.comment className="mr-2" aria-hidden="true" />
               <span className="w-full">{t('navigation.user_menu.comments')}</span>
             </DropdownMenuItem>
           </Link>
           <Link href={`/@${user.username}/replies`} data-testid="user-profile-menu-replies-link">
             <DropdownMenuItem className="cursor-pointer">
-              <Icons.undo className="mr-2" />
+              <Icons.undo className="mr-2" aria-hidden="true" />
               <span className="w-full">{t('navigation.user_menu.replies')}</span>
             </DropdownMenuItem>
           </Link>
@@ -86,8 +86,8 @@ const UserMenu = ({
                 data-testid="theme-mode"
               >
                 <div className="h-6 w-8">
-                  <Icons.sun className="absolute rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <Icons.sun className="absolute rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" aria-hidden="true" />
+                  <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" aria-hidden="true" />
                 </div>
                 <span className="w-full">{t('navigation.user_menu.toggle_theme')}</span>
               </Button>
@@ -99,11 +99,12 @@ const UserMenu = ({
           <DropdownMenuItem className="cursor-pointer">
             <Link
               target="_blank"
+              rel="noopener noreferrer"
               href={`${walletHost}/@${user.username}/transfers`}
               className="flex w-full items-center"
               data-testid="user-profile-menu-wallet-link"
             >
-              <Icons.wallet className="mr-2" />
+              <Icons.wallet className="mr-2" aria-hidden="true" />
               <span className="w-full">{t('navigation.user_menu.wallet')}</span>
             </Link>
           </DropdownMenuItem>
@@ -117,7 +118,7 @@ const UserMenu = ({
               className="flex w-full items-center"
               data-testid="user-profile-menu-logout-link"
             >
-              <Icons.doorOpen className="mr-2" />
+              <Icons.doorOpen className="mr-2" aria-hidden="true" />
               <span className="w-full">{t('navigation.user_menu.logout')}</span>
             </Link>
           </DropdownMenuItem>

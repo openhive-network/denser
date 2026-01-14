@@ -34,7 +34,7 @@ function UserInfo({
 }: UserInfoProps) {
   const { t } = useTranslation('common_blog');
   return (
-    <div className="flex flex-col py-4 text-slate-500 dark:text-slate-400" data-testid="author-data">
+    <div className="flex flex-col py-4 text-muted-foreground" data-testid="author-data">
       <div className="flex flex-wrap items-center">
         <UserPopoverCard
           author={author}
@@ -43,7 +43,7 @@ function UserInfo({
           blacklist={blacklist}
         />
         {author_title ? (
-          <Badge variant="outline" className="mr-1 border-destructive text-slate-500" translate="no">
+          <Badge variant="outline" className="mr-1 border-destructive text-muted-foreground" translate="no">
             <span className="mr-1">{author_title}</span>
             <ChangeTitleDialog
               permlink={permlink}

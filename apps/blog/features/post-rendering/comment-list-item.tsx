@@ -246,7 +246,7 @@ const CommentListItem = memo(function CommentListItem({
                                   href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
                                   data-testid="comment-page-link"
                                 >
-                                  <Icons.link className="h-3 w-3" />
+                                  <Icons.link className="h-3 w-3" aria-hidden="true" />
                                 </Link>
                               </>
                             )}

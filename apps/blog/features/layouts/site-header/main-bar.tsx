@@ -4,7 +4,7 @@ import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
-import { Link } from '@hive/ui';
+import { Link, useHydrated } from '@hive/ui';
 import React, { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -33,11 +33,7 @@ const MainBar: FC = () => {
   const { t } = useTranslation('common_blog');
   const pathname = usePathname();
   const { user } = useUserClient();
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const isClient = useHydrated();
 
   const { manabarsData } = useManabars(user.username);
   const { data } = useQuery({
@@ -90,7 +86,7 @@ const MainBar: FC = () => {
     >
       <div className="container flex h-16 w-full items-center justify-between">
         <Link href="/trending" className="flex items-center space-x-2">
-          <Icons.hive className="h-6 w-6" />
+          <Icons.hive className="h-6 w-6" aria-hidden="true" />
           <div className="flex flex-col md:flex-row">
             <span className="font-bold sm:inline-block">{siteConfig.name}</span>
             {siteConfig.chainEnv !== 'mainnet' && (
@@ -130,18 +126,29 @@ const MainBar: FC = () => {
             <SearchButton aiTag={!!hiveSense} className="lg:hidden" />
             <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
               <Link href="/submit.html">
-                <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
-                  <Icons.pencil className="h-5 w-5" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-10 w-10 px-0"
+                  data-testid="nav-pencil"
+                  aria-label={t('navigation.main_nav_bar.create_post')}
+                >
+                  <Icons.pencil className="h-5 w-5" aria-hidden="true" />
                 </Button>
               </Link>
             </TooltipContainer>
             {!user?.isLoggedIn ? (
               <div>
                 <ModeToggle>
-                  <Button variant="ghost" size="sm" className="h-10 w-full px-2" data-testid="theme-mode">
-                    <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="hidden">Language</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-10 w-full px-2"
+                    data-testid="theme-mode"
+                    aria-label={t('navigation.main_nav_bar.theme')}
+                  >
+                    <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" aria-hidden="true" />
+                    <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" aria-hidden="true" />
                   </Button>
                 </ModeToggle>
               </div>

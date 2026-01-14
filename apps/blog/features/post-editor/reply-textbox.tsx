@@ -246,7 +246,7 @@ export function ReplyTextbox({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <Icons.info className="ml-1 w-3" />
+                  <Icons.info className="ml-1 w-3" aria-hidden="true" />
                 </TooltipTrigger>
                 <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
               </Tooltip>
@@ -294,7 +294,7 @@ export function ReplyTextbox({
 
       <div className="flex flex-col gap-4">
         <div className="flex justify-between text-xs">
-          <span className="text-slate-500">{t('post_content.footer.comment.preview')}</span>
+          <span className="text-muted-foreground">{t('post_content.footer.comment.preview')}</span>
           <div className="flex flex-col gap-1 text-end">
             {editMode || preferences.comment_rewards === '50%' ? null : (
               <div>

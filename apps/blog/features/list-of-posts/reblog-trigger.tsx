@@ -47,7 +47,7 @@ const ReblogTrigger = ({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger disabled={isReblogged || reblogMutation.isLoading}>
+        <TooltipTrigger disabled={isReblogged || reblogMutation.isLoading} aria-label={isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')}>
           <ReblogDialog author={author} permlink={permlink} action={dialogAction}>
             {reblogMutation.isLoading ? (
               <CircleSpinner loading={reblogMutation.isLoading} size={18} color="#dc2626" />
@@ -58,6 +58,7 @@ const ReblogTrigger = ({
                   'cursor-default': isReblogged
                 })}
                 data-testid={dataTestidTooltipIcon}
+                aria-hidden="true"
               />
             )}
           </ReblogDialog>

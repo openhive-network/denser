@@ -37,7 +37,7 @@ const SuggestionsCard = ({ entry }: { entry: Entry }) => {
         </>
         <h2 className="p-1 text-xs font-semibold">{truncateTitle(entry.title)}</h2>
       </Link>
-      <div className="flex flex-col p-1 text-sm text-gray-500">
+      <div className="flex flex-col p-1 text-sm text-muted-foreground">
         <Link href={`/${entry.category}/@${entry.author}/${entry.permlink}`}>{entry.author}</Link>
         <time>{new Date(entry.created).toLocaleDateString()}</time>
       </div>

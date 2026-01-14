@@ -25,7 +25,7 @@ const PostSelectFilter = ({ param }: { param?: string }) => {
   };
   return (
     <Select value={currentPath} onValueChange={onValueChange}>
-      <SelectTrigger className="bg-background" data-testid="posts-filter">
+      <SelectTrigger className="bg-background" data-testid="posts-filter" aria-label={t('select_sort.filter_posts')}>
         <SelectValue placeholder={t('select_sort.posts_sort.trending')} />
       </SelectTrigger>
       <SelectContent data-testid="posts-filter-list">

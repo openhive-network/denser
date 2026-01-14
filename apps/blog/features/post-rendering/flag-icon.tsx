@@ -7,7 +7,7 @@ const FlagTooltip = React.forwardRef<HTMLButtonElement, { onClick: () => void }>
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger ref={ref}>
-          <Icons.flag className="h-4" onClick={onClick} />
+          <Icons.flag className="h-4" onClick={onClick} aria-hidden="true" />
         </TooltipTrigger>
         <TooltipContent>Flag post</TooltipContent>
       </Tooltip>

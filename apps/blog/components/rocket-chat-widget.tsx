@@ -242,7 +242,7 @@ const RocketChatWidget = () => {
                       onClick={() => setOpen(!open)}
                       disabled={disabled}
                     >
-                      <Icons.messageSquareText className={clsx('h-12 w-12', { 'opacity-25': disabled })} />
+                      <Icons.messageSquareText className={clsx('h-12 w-12', { 'opacity-25': disabled })} aria-hidden="true" />
                     </TooltipTrigger>
 
                     {/* Badge showing unread messages */}

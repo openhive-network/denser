@@ -58,8 +58,8 @@ const Sidebar = () => {
     <Sheet>
       <TooltipContainer title={t('navigation.main_nav_bar.menu_panel')}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-sidebar-menu-button">
-            <Icons.sidebarOpen className="h-5 w-5" />
+          <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-sidebar-menu-button" aria-label={t('navigation.main_nav_bar.menu_panel')}>
+            <Icons.sidebarOpen className="h-5 w-5" aria-hidden="true" />
           </Button>
         </SheetTrigger>
       </TooltipContainer>
@@ -82,10 +82,10 @@ const Sidebar = () => {
             )}
             {!user?.isLoggedIn && (
               <li className="cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive">
-                <Link href="https://signup.hive.io/" target="_blank">
+                <Link href="https://signup.hive.io/" target="_blank" rel="noopener noreferrer">
                   <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
                     {t('navigation.main_nav_bar.sign_up')}
-                    <Icons.forward className="w-4" />
+                    <Icons.forward className="w-4" aria-hidden="true" />
                   </SheetClose>
                 </Link>
               </li>
@@ -95,35 +95,35 @@ const Sidebar = () => {
             <Item href="/faq.html">{t('navigation.sidebar.faq')}</Item>
             <Item href={expolorerHost} target>
               Block Explorer
-              <Icons.forward className="w-4" />
+              <Icons.forward className="w-4" aria-hidden="true" />
             </Item>
             <Separator className="my-2" />
             <Item href={`${walletHost}/recover_account_step_1`} target disabled={true}>
               {t('navigation.sidebar.stolen_account_recovery')}
-              <Icons.forward className="w-4" />
+              <Icons.forward className="w-4" aria-hidden="true" />
             </Item>
             <Item href={`${walletHost}/${user.username}/password`} target disabled={!user?.isLoggedIn}>
               {t('navigation.sidebar.change_account_password')}
-              <Icons.forward className="w-4" />
+              <Icons.forward className="w-4" aria-hidden="true" />
             </Item>
             <Item href={`${walletHost}/~witnesses`} target>
               {t('navigation.sidebar.vote_for_witnesses')}
-              <Icons.forward className="w-4" />
+              <Icons.forward className="w-4" aria-hidden="true" />
             </Item>
             <Item href={`${walletHost}/proposals`} target>
               {t('navigation.sidebar.hive_proposals')}
-              <Icons.forward className="w-4" />
+              <Icons.forward className="w-4" aria-hidden="true" />
             </Item>
             <Separator className="my-2" />
             <Item href={siteConfig.openhiveChatUri} target>
-              {t('navigation.sidebar.openhive_chat')} <Icons.forward className="w-4" />
+              {t('navigation.sidebar.openhive_chat')} <Icons.forward className="w-4" aria-hidden="true" />
             </Item>
             <Separator className="my-2" />
             <Item href="https://developers.hive.io" target>
-              {t('navigation.sidebar.developer_portal')} <Icons.forward className="w-4" />
+              {t('navigation.sidebar.developer_portal')} <Icons.forward className="w-4" aria-hidden="true" />
             </Item>
             <Item href="https://hive.io/whitepaper.pdf" target>
-              {t('navigation.sidebar.hive_whitepaper')} <Icons.forward className="w-4" />
+              {t('navigation.sidebar.hive_whitepaper')} <Icons.forward className="w-4" aria-hidden="true" />
             </Item>
             <Separator className="my-2" />
             <Item href="/privacy.html">{t('navigation.sidebar.privacy_policy')}</Item>

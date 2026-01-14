@@ -1,5 +1,4 @@
 import { cn } from '@ui/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import { FC } from 'react';
 import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
@@ -11,14 +10,15 @@ const ExploreHive: FC = () => {
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
   return (
-    <Card
-      className={cn('my-4 hidden h-fit w-auto flex-col bg-background px-8 text-primary md:flex')}
+    <nav
+      aria-label={t('navigation.explore_nav.explore_hive')}
+      className={cn('my-4 hidden h-fit w-auto flex-col rounded-md border bg-card px-8 text-primary shadow-sm md:flex')}
       translate="no"
     >
-      <CardHeader className="px-0 py-4">
-        <CardTitle>{t('navigation.explore_nav.explore_hive')}</CardTitle>
-      </CardHeader>
-      <CardContent>
+      <div className="px-0 py-4">
+        <h2 className="text-lg font-semibold leading-none tracking-tight">{t('navigation.explore_nav.explore_hive')}</h2>
+      </div>
+      <div className="p-6 pt-0">
         <ul className="space-y-1 pb-4 font-light">
           <li>
             <Link
@@ -28,7 +28,7 @@ const ExploreHive: FC = () => {
               className="flex items-center hover:text-destructive"
             >
               {t('navigation.explore_nav.what_is_hive')}
-              <Icons.externalLink className="ml-1 h-4 w-4" />
+              <Icons.externalLink className="ml-1 h-4 w-4" aria-hidden="true" />
             </Link>
           </li>
           <li>
@@ -39,7 +39,7 @@ const ExploreHive: FC = () => {
               className="flex items-center hover:text-destructive"
             >
               {t('navigation.explore_nav.hive_dapps')}
-              <Icons.externalLink className="ml-1 h-4 w-4" />
+              <Icons.externalLink className="ml-1 h-4 w-4" aria-hidden="true" />
             </Link>
           </li>
           <li>
@@ -50,7 +50,7 @@ const ExploreHive: FC = () => {
               className="flex items-center hover:text-destructive"
             >
               {t('navigation.explore_nav.blockexplorer')}
-              <Icons.externalLink className="ml-1 h-4 w-4" />
+              <Icons.externalLink className="ml-1 h-4 w-4" aria-hidden="true" />
             </Link>
           </li>
           <li>
@@ -61,7 +61,7 @@ const ExploreHive: FC = () => {
               className="flex items-center hover:text-destructive"
             >
               {t('navigation.explore_nav.vote_for_witnesses')}
-              <Icons.externalLink className="ml-1 h-4 w-4" />
+              <Icons.externalLink className="ml-1 h-4 w-4" aria-hidden="true" />
             </Link>
           </li>
           <li>
@@ -72,12 +72,12 @@ const ExploreHive: FC = () => {
               className="flex items-center hover:text-destructive"
             >
               {t('navigation.explore_nav.hive_proposals')}
-              <Icons.externalLink className="ml-1 h-4 w-4" />
+              <Icons.externalLink className="ml-1 h-4 w-4" aria-hidden="true" />
             </Link>
           </li>
         </ul>
-      </CardContent>
-    </Card>
+      </div>
+    </nav>
   );
 };
 

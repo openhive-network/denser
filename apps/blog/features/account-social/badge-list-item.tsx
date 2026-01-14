@@ -20,6 +20,7 @@ const BadgeListItem = ({
             : `https://peakd.com/b/${href}`
         }
         target="_blank"
+        rel="noopener noreferrer"
       >
         <img src={url} alt={title} title={title}/>
       </Link>

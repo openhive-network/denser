@@ -22,15 +22,15 @@ export default function ModeToggle({ children }: { children: React.ReactNode }) 
       </TooltipContainer>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme('light')} data-testid="theme-mode-item">
-          <Icons.sun className="mr-2 h-4 w-4" />
+          <Icons.sun className="mr-2 h-4 w-4" aria-hidden="true" />
           <span>{t('navigation.main_nav_bar.light')}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')} data-testid="theme-mode-item">
-          <Icons.moon className="mr-2 h-4 w-4" />
+          <Icons.moon className="mr-2 h-4 w-4" aria-hidden="true" />
           <span>{t('navigation.main_nav_bar.dark')}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('system')} data-testid="theme-mode-item">
-          <Icons.laptop className="mr-2 h-4 w-4" />
+          <Icons.laptop className="mr-2 h-4 w-4" aria-hidden="true" />
           <span>{t('navigation.main_nav_bar.system')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

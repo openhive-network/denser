@@ -369,7 +369,7 @@ export function AdvancedSettingsPostForm({
                 <div className="relative col-span-3">
                   <Input disabled value={username} className="block w-full px-3 py-2.5 pl-11" />
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <Icons.atSign className="h-5 w-5" />
+                    <Icons.atSign className="h-5 w-5" aria-hidden="true" />
                   </div>
                 </div>
               </li>

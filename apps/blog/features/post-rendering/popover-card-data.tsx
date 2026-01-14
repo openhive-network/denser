@@ -78,7 +78,7 @@ const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: str
               </BasePathLink>
               <BasePathLink
                 href={`/@${author}`}
-                className="flex px-2 text-sm text-gray-500 hover:cursor-pointer"
+                className="flex px-2 text-sm text-muted-foreground hover:cursor-pointer"
                 data-testid="popover-card-user-nickname"
               >
                 <span className="block">{`@${author}`}</span>
@@ -116,7 +116,7 @@ const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: str
                   <span className="text-xs">HP</span>
                 </div>
               </div>
-              <p data-testid="user-about" className="text-sm text-gray-500" translate="no">
+              <p data-testid="user-about" className="text-sm text-muted-foreground" translate="no">
                 {about ? about.slice(0, 157) + (157 < about.length ? '...' : '') : null}
               </p>
               <div className="flex justify-center text-xs">

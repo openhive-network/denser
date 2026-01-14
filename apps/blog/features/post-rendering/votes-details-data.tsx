@@ -39,7 +39,7 @@ const VotersDetailsData = ({ post }: { post: Entry }) => {
           </li>
         ))}
       {votes && votes.length > 20 && post.stats ? (
-        <li className="pt-1.5 text-sm text-gray-500">
+        <li className="pt-1.5 text-sm text-muted-foreground">
           {t('post_content.footer.and_more', { value: post.stats.total_votes - 20 })}
         </li>
       ) : null}

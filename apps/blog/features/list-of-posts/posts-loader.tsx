@@ -5,6 +5,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { Preferences } from '@/blog/lib/utils';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
+import { useTranslation } from '@/blog/i18n/client';
 
 const PostList = ({
   data,
@@ -18,10 +19,11 @@ const PostList = ({
   nsfwPreferences: Preferences['nsfw'];
 }) => {
   const { user } = useUserClient();
+  const { t } = useTranslation('common_blog');
   const { data: blacklist } = useFollowListQuery(user.username, 'blacklisted');
 
   return (
-    <ul data-testid={`post-list-${testFilter}`}>
+    <div data-testid={`post-list-${testFilter}`} role="feed" aria-label={t('accessibility.posts_feed')}>
       {data
         ?.filter((post) => post && post.post_id)
         .map((post: Entry) => (
@@ -33,7 +35,7 @@ const PostList = ({
             blacklist={blacklist}
           />
         ))}
-    </ul>
+    </div>
   );
 };
 

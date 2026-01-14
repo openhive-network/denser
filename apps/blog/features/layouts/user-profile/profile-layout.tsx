@@ -189,6 +189,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
               <Link
                 href={`https://hivebuzz.me/@${profileData.name}`}
                 target="_blank"
+                rel="noopener noreferrer"
                 data-testid="profile-level-link"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -209,6 +210,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                 href={twitterData.twitter_profile}
                 title={t('user_profile.twitter_badge_title')}
                 target="_blank"
+                rel="noopener noreferrer"
                 data-testid="profile-twitter-badge"
               >
                 <Icons.twitter fill="#1da1f2" className="text-blue-400" />
@@ -325,13 +327,13 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
               <ul className="my-4 flex h-auto flex-wrap justify-center gap-1 text-xs sm:gap-4 sm:text-sm">
                 {profileData?.profile?.location ? (
                   <li className="flex items-center">
-                    <Icons.mapPin className="m-1" />
+                    <Icons.mapPin className="m-1" aria-hidden="true" />
                     <span data-testid="user-location">{profileData?.profile?.location}</span>
                   </li>
                 ) : null}
                 {profileData?.profile?.website ? (
                   <li className="flex items-center">
-                    <Icons.globe2 className="m-1" />
+                    <Icons.globe2 className="m-1" aria-hidden="true" />
                     <Link
                       target="_external"
                       className="website-link break-words "
@@ -342,14 +344,14 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                   </li>
                 ) : null}
                 <li className="flex items-center">
-                  <Icons.calendarHeart className="m-1" />
+                  <Icons.calendarHeart className="m-1" aria-hidden="true" />
                   <span data-testid="user-joined">
                     {t('user_profile.joined')}{' '}
                     {profileData?.created ? dateToShow(profileData.created, t) : null}
                   </span>
                 </li>
                 <li className="flex items-center">
-                  <Icons.calendarActive className="m-1" />
+                  <Icons.calendarActive className="m-1" aria-hidden="true" />
                   <span data-testid="user-last-time-active">
                     {t('user_profile.active')}{' '}
                     <TimeAgo
@@ -438,7 +440,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                       rel="noopener noreferrer"
                       className={`flex h-12 items-center px-2 hover:bg-background hover:text-primary ${
                         currentTab === `settings`
-                          ? 'bg-background text-primary dark:hover:text-slate-200'
+                          ? 'bg-background text-primary dark:hover:text-foreground'
                           : ''
                       }`}
                     >
