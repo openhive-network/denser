@@ -40,18 +40,26 @@ const DEFAULT_VOTES_VALUES = {
 const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' }) => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
+  const afterPayoutWarning = t('cards.post_card.after_payout_warning');
   const [clickedVoteButton, setClickedVoteButton] = useState('');
   const [storedVotesValues, storeVotesValues] = useStorageWithTTL(
     'votesValues',
     DEFAULT_VOTES_VALUES,
     StorageTTL.PERMANENT
   );
-  const [sliderUpvote, setSliderUpvote] = useState(
-    type === 'post' ? storedVotesValues.post.upvote : storedVotesValues.comment.upvote
-  );
-  const [sliderDownvote, setSliderDownvote] = useState(
-    type === 'post' ? storedVotesValues.post.downvote : storedVotesValues.comment.downvote
-  );
+
+  // Extract primitive values from stored preferences to avoid reference comparison issues
+  // Using [0] index since these are single-value arrays like [100]
+  const initialUpvoteValue = type === 'post'
+    ? storedVotesValues.post.upvote[0]
+    : storedVotesValues.comment.upvote[0];
+  const initialDownvoteValue = type === 'post'
+    ? storedVotesValues.post.downvote[0]
+    : storedVotesValues.comment.downvote[0];
+
+  const [sliderUpvote, setSliderUpvote] = useState([initialUpvoteValue]);
+  const [sliderDownvote, setSliderDownvote] = useState([initialDownvoteValue]);
+
   const voter = user.username;
   const pastPayout =
     moment(
@@ -59,12 +67,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         ? post.payout_at
         : `${post.payout_at}.000Z`
     ).diff(moment()) < 0;
-  useEffect(() => {
-    setSliderUpvote(type === 'post' ? storedVotesValues.post.upvote : storedVotesValues.comment.upvote);
-  }, [type, storedVotesValues.post.upvote, storedVotesValues.comment.upvote]);
-  useEffect(() => {
-    setSliderDownvote(type === 'post' ? storedVotesValues.post.downvote : storedVotesValues.comment.downvote);
-  }, [type, storedVotesValues.post.downvote, storedVotesValues.comment.downvote]);
+
   const checkVote = post.active_votes.find((e) => e.voter === voter);
 
   const { data: userVotes } = useQuery({
@@ -84,14 +87,20 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
   const vote_upvoted = userVote ? userVote.vote_percent > 0 : false;
   const vote_downvoted = userVote ? userVote.vote_percent < 0 : false;
 
+  // Sync slider values when stored preferences change or userVote is fetched
+  // Using primitive values in dependencies to prevent infinite loops from array reference changes
   useEffect(() => {
     if (userVote && userVote.vote_percent > 0) {
       setSliderUpvote([userVote.vote_percent / 100]);
+    } else {
+      setSliderUpvote([initialUpvoteValue]);
     }
     if (userVote && userVote.vote_percent < 0) {
       setSliderDownvote([-userVote.vote_percent / 100]);
+    } else {
+      setSliderDownvote([initialDownvoteValue]);
     }
-  }, [userVotes]);
+  }, [userVote, initialUpvoteValue, initialDownvoteValue]);
 
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
@@ -119,6 +128,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               text={t('cards.post_card.upvote')}
               dataTestId="upvote-button"
               afterPayout={pastPayout && !vote_upvoted}
+              afterPayoutText={afterPayoutWarning}
             >
               <Icons.arrowUpCircle
                 className={clsx(
@@ -141,6 +151,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 text={t('cards.post_card.upvote')}
                 dataTestId="upvote-button-slider"
                 afterPayout={pastPayout && !vote_upvoted}
+                afterPayoutText={afterPayoutWarning}
               >
                 <button
                   className="flex h-full items-center justify-center"
@@ -172,6 +183,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 min={1}
                 className="w-36"
                 onValueChange={(e: number[]) => setSliderUpvote(e)}
+                aria-label={t('cards.post_card.upvote')}
               />
               <div className="w-fit" data-testid="upvote-slider-percentage-value">
                 {sliderUpvote}%
@@ -193,6 +205,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           }
           dataTestId="upvote-button"
           afterPayout={pastPayout && !vote_upvoted}
+          afterPayoutText={afterPayoutWarning}
         >
           <button
             className="flex h-full items-center justify-center"
@@ -222,16 +235,17 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         </TooltipContainer>
       ) : (
         <DialogLogin>
-          <div className="flex items-center">
+          <button type="button" className="flex items-center" aria-label={t('cards.post_card.upvote')}>
             <TooltipContainer
               text={t('cards.post_card.upvote')}
               loading={voteMutation.isLoading || !!userVote?._temporary}
               dataTestId="upvote-button"
               afterPayout={pastPayout && !vote_upvoted}
+              afterPayoutText={afterPayoutWarning}
             >
-              <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" />
+              <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" aria-hidden="true" />
             </TooltipContainer>
-          </div>
+          </button>
         </DialogLogin>
       )}
       {/* Downvote with slider - trigger */}
@@ -249,11 +263,12 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               text={t('cards.post_card.downvote')}
               dataTestId="downvote-button"
               afterPayout={pastPayout && !vote_downvoted}
+              afterPayoutText={afterPayoutWarning}
             >
               <Icons.arrowDownCircle
                 className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
-                  { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 }
+                  'h-[18px] w-[18px] rounded-xl text-muted-foreground hover:bg-muted-foreground hover:text-background sm:mr-1',
+                  { 'bg-muted-foreground text-background': userVote && userVote.vote_percent < 0 }
                 )}
               />
             </TooltipContainer>
@@ -271,6 +286,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 text={t('cards.post_card.downvote')}
                 dataTestId="downvote-button-slider"
                 afterPayout={pastPayout && !vote_downvoted}
+                afterPayoutText={afterPayoutWarning}
               >
                 <button
                   className="flex h-full items-center justify-center"
@@ -289,7 +305,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 >
                   <Icons.arrowDownCircle
                     className={clsx(
-                      'h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                      'h-[24px] w-[24px] cursor-pointer rounded-xl text-muted-foreground hover:bg-muted-foreground hover:text-background sm:mr-1',
                       {
                         'animate-pulse': userVote?._temporary
                       }
@@ -304,6 +320,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 min={1}
                 className="w-36"
                 onValueChange={(e: number[]) => setSliderDownvote(e)}
+                aria-label={t('cards.post_card.downvote')}
               />
               <div className="w-fit text-destructive" data-testid="downvote-slider-percentage-value">
                 -{sliderDownvote}%
@@ -334,6 +351,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           }
           dataTestId="downvote-button"
           afterPayout={pastPayout && !vote_downvoted}
+          afterPayoutText={afterPayoutWarning}
         >
           <button
             className="flex h-full items-center justify-center"
@@ -353,9 +371,9 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           >
             <Icons.arrowDownCircle
               className={clsx(
-                'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                'h-[18px] w-[18px] rounded-xl text-muted-foreground hover:bg-muted-foreground hover:text-background sm:mr-1',
                 {
-                  'bg-destructive text-white opacity-80': userVote && userVote.vote_percent < 0,
+                  'bg-destructive text-background opacity-80': userVote && userVote.vote_percent < 0,
                   'animate-pulse': userVote?._temporary
                 }
               )}
@@ -364,16 +382,17 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         </TooltipContainer>
       ) : (
         <DialogLogin>
-          <div className="flex items-center">
+          <button type="button" className="flex items-center" aria-label={t('cards.post_card.downvote')}>
             <TooltipContainer
               text={t('cards.post_card.downvote')}
               loading={voteMutation.isLoading || !!userVote?._temporary}
               dataTestId="downvote-button"
               afterPayout={pastPayout && !vote_downvoted}
+              afterPayoutText={afterPayoutWarning}
             >
-              <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+              <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-muted-foreground hover:bg-muted-foreground hover:text-background sm:mr-1" aria-hidden="true" />
             </TooltipContainer>
-          </div>
+          </button>
         </DialogLogin>
       )}
     </div>
@@ -387,13 +406,15 @@ const TooltipContainer = ({
   loading,
   text,
   dataTestId,
-  afterPayout
+  afterPayout,
+  afterPayoutText
 }: {
   children: ReactNode;
   loading: boolean;
   text: string;
   dataTestId: string;
   afterPayout?: boolean;
+  afterPayoutText?: string;
 }) => {
   return (
     <TooltipProvider>
@@ -406,9 +427,9 @@ const TooltipContainer = ({
           className="flex flex-col items-center justify-center"
         >
           <div className="font-bold">{text}</div>
-          {afterPayout && (
+          {afterPayout && afterPayoutText && (
             <div className="text-xs text-destructive opacity-80">
-              Voting on Content after their payout does not generate any new rewards
+              {afterPayoutText}
             </div>
           )}
         </TooltipContent>
