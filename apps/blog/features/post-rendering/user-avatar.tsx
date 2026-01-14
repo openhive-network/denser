@@ -1,5 +1,6 @@
 import clsx from 'clsx';
-import { getUserAvatarUrl } from '@hive/ui';
+import Image from 'next/image';
+import { getUserAvatarUrlCDN } from '@hive/ui';
 
 interface Props {
   username: string;
@@ -7,18 +8,30 @@ interface Props {
   className?: string;
 }
 
+/**
+ * UserAvatar component displays user profile picture.
+ * Uses CDN URL (images.hive.blog) for optimal caching and Next.js Image optimization.
+ */
 function UserAvatar({ username, size, className }: Props) {
   const imgSize = size === 'xLarge' ? 'large' : size === 'normal' || size === 'small' ? 'small' : 'medium';
-  const imageSrc = getUserAvatarUrl(username, imgSize as 'small' | 'medium' | 'large');
+  // Use CDN URL for better performance and caching
+  const imageSrc = getUserAvatarUrlCDN(username, imgSize as 'small' | 'medium' | 'large');
 
   return (
     <span
       className={clsx(
-        `mr-2 block h-12 w-12 rounded-full bg-transparent bg-cover bg-center bg-no-repeat`,
+        'relative mr-2 block h-12 w-12 overflow-hidden rounded-full bg-transparent',
         className
       )}
-      style={{ backgroundImage: `url(${imageSrc})` }}
-    />
+    >
+      <Image
+        src={imageSrc}
+        alt={`${username}'s avatar`}
+        fill
+        sizes="48px"
+        className="object-cover"
+      />
+    </span>
   );
 }
 

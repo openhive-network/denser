@@ -12,7 +12,7 @@ import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import TimeAgo from '@ui/components/time-ago';
-import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
+import { getUserAvatarUrlCDN } from '@ui/lib/avatar-utils';
 import accountReputation from '@/blog/lib/account-reputation';
 import { IFollowList, Entry } from '@hive/common-hiveio-packages/wax';
 import DetailsCardHover from './details-card-hover';
@@ -55,13 +55,22 @@ const PostListItem = ({
   if (gdprUserList.includes(post.author)) return null;
 
   return (
-    <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
+    <article
+      data-testid="post-list-item"
+      className={post.stats?.gray ? 'relative opacity-60 hover:opacity-100 transition-opacity' : ''}
+      aria-label={post.stats?.gray ? t('cards.post_card.low_rated_post') : undefined}
+    >
+      {post.stats?.gray && (
+        <div className="absolute -left-1 top-0 z-10" aria-hidden="true">
+          <Icons.warning className="h-4 w-4 text-muted-foreground" />
+        </div>
+      )}
       {nsfw === 'hide' ? null : (
         <Card className="mb-4 bg-background px-2 text-primary">
           {post.original_entry ? (
             <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
               <p className="flex items-center gap-1 text-xs md:text-sm">
-                <Icons.crossPost className="h-4 w-4 text-slate-500 dark:text-slate-400" />{' '}
+                <Icons.crossPost className="h-4 w-4 text-muted-foreground" aria-hidden="true" />{' '}
                 <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${post.author}`}>
                   {post.author}
                 </Link>{' '}
@@ -77,7 +86,7 @@ const PostListItem = ({
           ) : null}
           {post.reblogged_by ? (
             <div className="flex items-center gap-2 py-1 text-sm">
-              <Icons.forward className="h-4 w-4" />
+              <Icons.forward className="h-4 w-4" aria-hidden="true" />
               <span data-testid="reblogged-label">
                 <Link
                   href={`/@${post.reblogged_by[0]}`}
@@ -93,12 +102,13 @@ const PostListItem = ({
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
               {nsfw === 'show' && post.blacklists.length < 1 ? (
-                <Link href={`/@${post.author}`} data-testid="post-card-avatar">
-                  <div
-                    className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
-                    style={{
-                      backgroundImage: `url(${getUserAvatarUrl(post.author, 'small')})`
-                    }}
+                <Link href={`/@${post.author}`} data-testid="post-card-avatar" aria-label={`${post.author}'s profile`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={getUserAvatarUrlCDN(post.author, 'small')}
+                    alt={`${post.author}'s avatar`}
+                    className="mr-3 h-[24px] w-[24px] rounded-3xl object-cover"
+                    loading="lazy"
                   />
                 </Link>
               ) : null}
@@ -161,13 +171,17 @@ const PostListItem = ({
                     <span className="ml-1 flex items-center">
                       <TooltipProvider>
                         <Tooltip>
-                          <TooltipTrigger data-testid="powered-up-100-trigger">
-                            <Link href={`/${post.category}/@${post.author}/${post.permlink}`}>
-                              <Icons.hive className="h-4 w-4" />
+                          <TooltipTrigger asChild>
+                            <Link
+                              href={`/${post.category}/@${post.author}/${post.permlink}`}
+                              data-testid="powered-up-100-trigger"
+                              aria-label={t('cards.post_card.powered_up_100')}
+                            >
+                              <Icons.hive className="h-4 w-4" aria-hidden="true" />
                             </Link>
                           </TooltipTrigger>
                           <TooltipContent data-testid="powered-up-100-tooltip">
-                            Powered Up 100%
+                            {t('cards.post_card.powered_up_100')}
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -214,7 +228,7 @@ const PostListItem = ({
                   <DetailsCardHover post={post} decline={Number(post.max_accepted_payout.slice(0, 1)) === 0}>
                     <div
                       className={`flex items-center hover:cursor-pointer hover:text-destructive ${
-                        Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-gray-600 line-through' : ''
+                        Number(post.max_accepted_payout.slice(0, 1)) === 0 ? 'text-muted-foreground line-through' : ''
                       }`}
                       data-testid="post-payout"
                     >
@@ -246,7 +260,7 @@ const PostListItem = ({
           </div>
         </Card>
       )}
-    </li>
+    </article>
   );
 };
 
