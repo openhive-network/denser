@@ -82,6 +82,15 @@ const nextConfig = {
   publicRuntimeConfig: {
     basePath: basePath
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.hive.blog',
+        pathname: '/**',
+      },
+    ],
+  },
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..'),
     instrumentationHook: true

@@ -1,5 +1,21 @@
 import env from '@beam-australia/react-env';
 
+// Size mappings for CDN avatar URLs
+const CDN_SIZE_MAP: Record<'small' | 'medium' | 'large', string> = {
+  small: 'u',      // small avatar
+  medium: 'u',     // medium avatar
+  large: 'u'       // large avatar (same endpoint, sizing handled by CSS)
+};
+
+/**
+ * Gets the images endpoint from environment or uses default
+ * @returns The images endpoint URL without trailing slash
+ */
+function getImagesEndpoint(): string {
+  const endpoint = env('IMAGES_ENDPOINT') ?? 'https://images.hive.blog/';
+  return endpoint.endsWith('/') ? endpoint.slice(0, -1) : endpoint;
+}
+
 /**
  * Gets the base path for API routes
  * @returns The base path or empty string
@@ -26,7 +42,21 @@ function getApiUrl(path: string): string {
 }
 
 /**
+ * Get a user avatar URL directly from CDN (images.hive.blog)
+ * Use this for Next.js Image component to leverage CDN caching and optimization
+ * @param username - The Hive username
+ * @param size - The avatar size ('small', 'medium', 'large')
+ * @returns Direct CDN URL for avatar
+ */
+export function getUserAvatarUrlCDN(username: string, size: 'small' | 'medium' | 'large' = 'small'): string {
+  const imagesEndpoint = getImagesEndpoint();
+  const sizePrefix = CDN_SIZE_MAP[size];
+  return `${imagesEndpoint}/${sizePrefix}/${username}`;
+}
+
+/**
  * Get a user avatar URL using internal API endpoint (prevents caching)
+ * Use this when you need to bypass CDN caching (e.g., after profile update)
  * @param username - The Hive username
  * @param size - The avatar size ('small', 'medium', 'large')
  * @returns Internal API URL for avatar
