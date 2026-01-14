@@ -521,3 +521,158 @@ Existing localStorage data without TTL structure is handled gracefully:
 - `getStorageItem()` returns legacy data as-is
 - Legacy items will be gradually replaced when users interact with the app
 - `cleanupExpiredItems()` only removes items with TTL structure that have expired
+
+---
+
+## Accessibility Guidelines
+
+**IMPORTANT: All UI code must be accessible!**
+
+The application must maintain WCAG 2.1 AA compliance. During code review, check for these accessibility requirements:
+
+### Color Contrast
+
+**Never use low-contrast text colors!**
+
+| Avoid | Use Instead |
+|-------|-------------|
+| `text-gray-400` | `text-muted-foreground` |
+| `text-gray-500` | `text-muted-foreground` |
+| `text-gray-600` | `text-muted-foreground` |
+| `text-slate-400` | `text-muted-foreground` |
+| `text-slate-500` | `text-muted-foreground` |
+| `opacity-60` (for text) | `text-muted-foreground` |
+
+The `text-muted-foreground` class is defined in our Tailwind theme and ensures proper contrast in both light and dark modes.
+
+### Images and Icons
+
+**All images must have alt text:**
+```tsx
+// Bad - no alt text
+<img src={avatarUrl} />
+<div style={{ backgroundImage: `url(${avatarUrl})` }} />
+
+// Good - proper alt text
+<img src={avatarUrl} alt={`${username}'s avatar`} />
+
+// Good - decorative icons hidden from screen readers
+<Icons.chevronUp aria-hidden="true" />
+```
+
+**Never use div with background-image for meaningful content:**
+```tsx
+// Bad - inaccessible background image
+<div
+  className="h-24 w-24 rounded-full bg-cover"
+  style={{ backgroundImage: `url(${avatarUrl})` }}
+/>
+
+// Good - proper img element
+<img
+  src={avatarUrl}
+  alt={`${username}'s avatar`}
+  className="h-24 w-24 rounded-full object-cover"
+/>
+```
+
+### Interactive Elements
+
+**Icon-only buttons must have aria-label:**
+```tsx
+// Bad - no accessible name
+<button>
+  <Icons.trash />
+</button>
+
+// Good - aria-label provides accessible name
+<button aria-label={t('actions.delete')}>
+  <Icons.trash aria-hidden="true" />
+</button>
+
+// Good - tooltip triggers with aria-label
+<TooltipTrigger aria-label={t('cards.post_card.reblog')}>
+  <Icons.forward aria-hidden="true" />
+</TooltipTrigger>
+```
+
+**Form inputs must have labels:**
+```tsx
+// Bad - no label
+<Slider value={value} onChange={setValue} />
+
+// Good - aria-label for sliders
+<Slider
+  value={value}
+  onChange={setValue}
+  aria-label={t('cards.post_card.upvote')}
+/>
+
+// Good - visible label for text inputs
+<label htmlFor="username">{t('form.username')}</label>
+<input id="username" type="text" />
+```
+
+### Semantic HTML
+
+**Use semantic elements:**
+```tsx
+// Bad - div soup
+<div className="nav-container">
+  <div>Home</div>
+  <div>About</div>
+</div>
+
+// Good - semantic navigation
+<nav aria-label={t('navigation.main')}>
+  <ul>
+    <li><Link href="/">Home</Link></li>
+    <li><Link href="/about">About</Link></li>
+  </ul>
+</nav>
+```
+
+**Use article for posts:**
+```tsx
+// Good - semantic article with aria-label for state
+<article
+  data-testid="post-list-item"
+  className={post.stats?.gray ? 'opacity-50' : ''}
+  aria-label={post.stats?.gray ? t('cards.post_card.low_rated_post') : undefined}
+>
+```
+
+### State Indication
+
+**Don't rely solely on color or opacity for state:**
+```tsx
+// Bad - only visual indication
+<div className={isActive ? 'bg-green-500' : 'bg-gray-500'} />
+
+// Good - also provide text/aria indication
+<div
+  className={isActive ? 'bg-green-500' : 'bg-gray-500'}
+  aria-label={isActive ? t('status.active') : t('status.inactive')}
+/>
+```
+
+### Keyboard Navigation
+
+**All interactive elements must be keyboard accessible:**
+- Use `<button>` for click actions, not `<div onClick>`
+- Ensure custom components forward focus properly
+- Test with Tab key navigation
+
+### Review Checklist
+
+When reviewing UI code, check:
+
+1. [ ] **Color contrast**: No `text-gray-400/500/600` or `text-slate-400/500`
+2. [ ] **Images**: All `<img>` have descriptive `alt` attributes
+3. [ ] **Icons**: Decorative icons have `aria-hidden="true"`
+4. [ ] **Buttons**: Icon-only buttons have `aria-label`
+5. [ ] **Forms**: All inputs have associated labels
+6. [ ] **Semantic HTML**: Proper use of `<nav>`, `<article>`, `<main>`, etc.
+7. [ ] **State**: Visual states have accessible alternatives
+8. [ ] **Links**: Link text is descriptive (avoid "click here")
+9. [ ] **Focus**: Custom components are keyboard navigable
