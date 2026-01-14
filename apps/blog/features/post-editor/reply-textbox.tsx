@@ -7,7 +7,7 @@ import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import useManabars from '../../components/hooks/use-manabars';
 import { DEFAULT_PREFERENCES, hoursAndMinutes, Preferences } from '@/blog/lib/utils';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import RendererContainer from '../post-rendering/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from '../post-rendering/hooks/use-comment-mutations';

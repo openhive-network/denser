@@ -3,11 +3,9 @@ import { twMerge } from 'tailwind-merge';
 import Big from 'big.js';
 import { convertStringToBig } from './helpers';
 import { TFunction } from 'i18next';
-import type { FullAccount } from '@hive/transaction/lib/app-types';
+import type { FullAccount, Entry, IDynamicGlobalProperties, IVote } from '@hive/common-hiveio-packages/wax';
 import { NaiAsset } from '@hiveio/wax';
-import { Entry } from '@hive/transaction/lib/extended-hive.chain';
 import { parseDate2 } from './parse-date';
-import { IDynamicGlobalProperties, IVote } from '@hive/transaction/lib/extended-hive.chain';
 
 export interface Asset {
   amount: number;

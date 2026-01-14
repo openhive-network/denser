@@ -2,7 +2,7 @@
 
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
+import { IAccountNotification } from '@hive/common-hiveio-packages/wax';
 import NotificationList from './list';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';

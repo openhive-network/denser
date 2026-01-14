@@ -1,7 +1,7 @@
 import { KeyType } from '@smart-signer/types/common';
 import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
-import { FullAccount } from '@transaction/lib/app-types';
+import { FullAccount } from '@hive/common-hiveio-packages/wax';
 
 interface AppState {
   currentProfile: FullAccount | null;

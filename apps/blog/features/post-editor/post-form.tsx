@@ -21,7 +21,7 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import useManabars from '@/blog/components/hooks/use-manabars';
 import { useQuery } from '@tanstack/react-query';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { getCommunity, getSubscriptions } from '@transaction/lib/bridge-api';
 import { Icons } from '@ui/components/icons';
 import { withBasePath } from '@ui/lib/path-utils';

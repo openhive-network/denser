@@ -1,4 +1,4 @@
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { useState } from 'react';
 import SuggestionsCard from './card';
 import { Button } from '@ui/components';

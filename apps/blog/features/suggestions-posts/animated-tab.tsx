@@ -1,6 +1,6 @@
 import SuggestionsList from '@/blog/features/suggestions-posts/list';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';

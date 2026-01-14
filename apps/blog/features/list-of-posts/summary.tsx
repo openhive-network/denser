@@ -3,7 +3,7 @@
 import PostCardHidden from '@/blog/features/list-of-posts/post-card-hidden';
 import { getPostSummary, Preferences } from '@/blog/lib/utils';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { Badge } from '@ui/components/badge';
 import { CardContent, CardDescription, CardTitle } from '@ui/components/card';
 import { Separator } from '@ui/components/separator';

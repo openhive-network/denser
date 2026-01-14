@@ -1,4 +1,4 @@
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { find_first_img } from '../list-of-posts/post-img';
 import { Link } from '@hive/ui';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';

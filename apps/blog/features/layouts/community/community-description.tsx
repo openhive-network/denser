@@ -3,8 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
 import BasePathLink from '@/blog/components/base-path-link';
 import ln2list from '@/blog/lib/ln2list';
-import { IAccountNotification } from '@transaction/lib/extended-hive.chain';
-import { Community } from '@transaction/lib/extended-hive.chain';
+import { IAccountNotification, Community } from '@hive/common-hiveio-packages/wax';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from '../../activity-log/dialog';
 import { Badge } from '@ui/components/badge';

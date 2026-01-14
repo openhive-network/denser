@@ -9,7 +9,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useUpdateCommunityMutation } from './hooks/use-update-community-mutation';
-import { Community } from '@transaction/lib/extended-hive.chain';
+import { Community } from '@hive/common-hiveio-packages/wax';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/components/form';
 import {
   Input,

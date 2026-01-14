@@ -4,10 +4,10 @@ import clsx from 'clsx';
 import { DISABLED_SIGNING_KEY } from '@/wallet/lib/constants';
 import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
-import { FullAccount } from '@transaction/lib/app-types';
+import { FullAccount, reuseHiveChain } from '@hive/common-hiveio-packages/wax';
 import { dateToRelative } from '@hive/ui/lib/parse-date';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import DialogLogin from './dialog-login';
 import { useTranslation } from 'next-i18next';
 import { CircleSpinner } from 'react-spinners-kit';
@@ -271,7 +271,7 @@ function WitnessListItem({
       </td>
       <td className=" sm:p-2">
         <div className="font-medium" data-testid="witness-price-feed">
-          ${parseFloat(data.hbd_exchange_rate.base)}
+          ${(Number(data.hbd_exchange_rate.base.amount) / Math.pow(10, data.hbd_exchange_rate.base.precision)).toFixed(3)}
         </div>
         <div className="font-light">
           <TimeAgo date={data.last_hbd_exchange_update} />

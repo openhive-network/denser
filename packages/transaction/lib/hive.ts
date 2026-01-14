@@ -1,6 +1,6 @@
 import { AccountAuthorityUpdateOperation } from '@hiveio/wax';
 import { getLogger } from '@ui/lib/logging';
-import { IListWitnessVotes, IPost } from './extended-hive.chain';
+import { IListWitnessVotes, IPost } from '@hive/common-hiveio-packages/wax';
 import { getChain } from './chain';
 
 const logger = getLogger('app');

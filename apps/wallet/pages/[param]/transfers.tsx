@@ -18,7 +18,7 @@ import {
 } from '@/wallet/lib/utils';
 import { powerdownHive, cn, convertToHP, numberWithCommas } from '@ui/lib/utils';
 import { convertStringToBig } from '@ui/lib/helpers';
-import { HiveOperation } from '@transaction/lib/extended-hive.chain';
+import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { Link } from '@hive/ui';
 import Loading from '@ui/components/loading';

@@ -8,7 +8,7 @@ import Big from 'big.js';
 import Loading from '@ui/components/loading';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { getFeedHistory } from '@transaction/lib/hive-api';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import moment from 'moment';
 import { useTranslation } from '@/blog/i18n/client';
 

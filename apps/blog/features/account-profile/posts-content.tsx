@@ -8,7 +8,7 @@ import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/u
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getAccountPosts } from '@transaction/lib/bridge-api';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';

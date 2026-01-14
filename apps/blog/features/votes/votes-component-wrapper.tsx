@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import VotesComponent from './votes-component';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 
 const VotesComponentWrapper = ({ post, type }: { post: Entry; type: 'comment' | 'post' }) => {
   const [isMounted, setIsMounted] = useState(false);

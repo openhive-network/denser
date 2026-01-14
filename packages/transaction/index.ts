@@ -21,7 +21,7 @@ import {
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
-import { Beneficiarie, Preferences } from './lib/app-types';
+import { Beneficiarie, Preferences } from '@hive/common-hiveio-packages/wax';
 import WorkerBee, { IWorkerBee } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';

@@ -11,7 +11,7 @@ import { memo, useEffect, useRef, useState, useCallback, type ReactNode } from '
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import { ReplyTextbox } from '../post-editor/reply-textbox';
 import DetailsCardHover from '../list-of-posts/details-card-hover';
-import { IFollowList, Entry } from '@transaction/lib/extended-hive.chain';
+import { IFollowList, Entry } from '@hive/common-hiveio-packages/wax';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';

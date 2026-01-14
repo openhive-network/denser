@@ -1,6 +1,6 @@
 import { TFunction } from 'i18next';
 import TimeAgo from '@hive/ui/components/time-ago';
-import { HiveOperation } from '@transaction/lib/extended-hive.chain';
+import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 
 interface HistoryTableProps {
   isLoading: boolean;

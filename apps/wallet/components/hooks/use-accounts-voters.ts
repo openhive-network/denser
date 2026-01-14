@@ -2,7 +2,7 @@ import { convertStringToBig } from '@ui/lib/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { getAccounts } from '@transaction/lib/hive-api';
 import Big from 'big.js';
-import { FullAccount } from '@transaction/lib/app-types';
+import { FullAccount } from '@hive/common-hiveio-packages/wax';
 
 export const useAccountQuery = (username: string[], totalShares: Big, totalVestingFund: Big) => {
   const calculateProxyHp = (account: FullAccount) => {

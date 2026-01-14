@@ -3,7 +3,7 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
 import { cn } from '@ui/lib/utils';
 import { ReactNode, useRef, useState } from 'react';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import PayoutHoverContent from './payout-hover-content';
 
 type DetailsCardHoverProps = {

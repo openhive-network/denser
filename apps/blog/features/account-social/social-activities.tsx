@@ -1,6 +1,6 @@
 import { useTranslation } from '@/blog/i18n/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hive/ui/components/tabs';
-import { Badge } from '@transaction/lib/extended-hive.chain';
+import { Badge } from '@hive/common-hiveio-packages/wax';
 import BadgeList from './badge-list';
 
 export default function SocialActivities({

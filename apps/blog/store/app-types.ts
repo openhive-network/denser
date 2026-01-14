@@ -1,4 +1,4 @@
-import { FullAccount } from "@transaction/lib/app-types";
+import { FullAccount } from '@hive/common-hiveio-packages/wax';
 
 export interface BaseAccount {
   name: string;

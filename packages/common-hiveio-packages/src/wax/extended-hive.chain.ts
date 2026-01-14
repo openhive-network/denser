@@ -187,20 +187,20 @@ export interface IWitness {
   total_missed: number;
   url: string;
   props: {
-    account_creation_fee: string;
+    account_creation_fee: NaiAsset;
     account_subsidy_budget: number;
     maximum_block_size: number;
   };
   hbd_exchange_rate: {
-    base: string;
-    quote: string;
+    base: NaiAsset;
+    quote: NaiAsset;
   };
   available_witness_account_subsidies: number;
   running_version: string;
   owner: string;
   signing_key: string;
   last_hbd_exchange_update: string;
-  votes: number;
+  votes: string;
   last_confirmed_block_num: number;
 }
 
@@ -868,7 +868,6 @@ export type ExtendedNodeApi = {
     get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
   };
   condenser_api: {
-    get_witnesses_by_vote: TWaxApiRequest<(string | number)[], IWitness[]>;
     get_ticker: TWaxApiRequest<void[], IMarketStatistics>;
     get_order_book: TWaxApiRequest<number[], IOrdersData>;
     get_open_orders: TWaxApiRequest<string[], IOpenOrdersData[]>;
@@ -920,6 +919,10 @@ export type ExtendedNodeApi = {
     get_trending_tags: TWaxApiRequest<(string | number)[], ITrendingTag[]>;
     get_collateralized_conversion_requests: TWaxApiRequest<string[], ICollateralizedConversionRequest[]>;
     list_witness_votes: TWaxApiRequest<{ start: string[]; limit: number; order: string }, IListWitnessVotes>;
+    list_witnesses: TWaxApiRequest<
+      { start: [number, string] | [string] | string; limit: number; order: 'by_name' | 'by_vote_name' | 'by_schedule_time' },
+      { witnesses: IWitness[] }
+    >;
     list_votes: TWaxApiRequest<
       {
         start: [string, string, string] | null;

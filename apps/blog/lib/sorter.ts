@@ -1,4 +1,4 @@
-import { Entry } from '@transaction/lib/extended-hive.chain'; 
+import { Entry } from '@hive/common-hiveio-packages/wax'; 
 import { parseAsset } from '@ui/lib/utils';
 
 export enum SortOrder {

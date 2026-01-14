@@ -1,7 +1,6 @@
 'use client';
 import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component'
-import { FullAccount } from '@transaction/lib/app-types';
-import { Community, Entry, MixedPostsResponse } from '@transaction/lib/extended-hive.chain';
+import { FullAccount, Community, Entry, MixedPostsResponse } from '@hive/common-hiveio-packages/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components'
 import { useHealthChecker } from '@ui/hooks/useHealthChecker';

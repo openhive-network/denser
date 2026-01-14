@@ -11,7 +11,7 @@ import {
   extractUrlsFromJsonString,
   extractYouTubeVideoIds
 } from '@/blog/lib/utils';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 
 export function find_first_img(post: Entry) {
   try {

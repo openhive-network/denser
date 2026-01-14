@@ -2,7 +2,7 @@
 
 import PostListItem from '@/blog/features/list-of-posts/post-list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { Entry } from '@transaction/lib/extended-hive.chain';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { Preferences } from '@/blog/lib/utils';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 

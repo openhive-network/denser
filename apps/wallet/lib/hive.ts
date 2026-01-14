@@ -13,12 +13,12 @@ import {
   IOpenOrdersData,
   IOrdersData,
   IMarketStatistics,
-  IWitness,
   IDirectDelegation,
   IGetOperationsByAccountResponse,
   HiveOperation,
-  HiveOpTypeSchema
-} from '@transaction/lib/extended-hive.chain';
+  HiveOpTypeSchema,
+  IWitness
+} from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
 import { getChain } from '@transaction/lib/chain';
 
@@ -34,9 +34,17 @@ export const getOpTypes = async (): Promise<HiveOpTypeSchema[]> => {
   return await chain.restApi['hafah-api']['operation-types']();
 };
 
-export const getWitnessesByVote = async (from: string, limit: number): Promise<IWitness[]> => {
+export const getWitnessesByVote = async (limit: number): Promise<IWitness[]> => {
   const chain = await getChain();
-  return chain.api.condenser_api.get_witnesses_by_vote([from, limit]);
+  // Use max int64 value as starting point since API iterates downward from the start point
+  // This ensures we get witnesses sorted by votes in descending order
+  const response = await chain.api.database_api.list_witnesses({
+    // @ts-ignore Ignore first parameter type as JavaScript number cannot represent int64 accurately
+    start: ["9223372036854775807", ''],
+    limit,
+    order: 'by_vote_name'
+  });
+  return response.witnesses;
 };
 
 export const findRcAccounts = async (username: string): Promise<{ rc_accounts: RcAccount[] }> => {

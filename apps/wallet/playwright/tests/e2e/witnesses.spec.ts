@@ -42,7 +42,8 @@ test.describe('Witnesses page tests', () => {
     const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
     const resDynamicGlobalProperties = await apiHelper.getDynamicGlobalPropertiesAPI();
     const headBlock = await resDynamicGlobalProperties.result.head_block_number;
-    const resWitnessesByVote = await apiHelper.getListWitnessesByVoteAPI('', 250);
+    const resWitnessesByVote = await apiHelper.getListWitnessesByVoteAPI(250);
+    const witnesses = resWitnessesByVote.result.witnesses;
 
     await witnessesPage.goToWitnessesPage();
 
@@ -54,14 +55,14 @@ test.describe('Witnesses page tests', () => {
 
     for (let i = 0; i < 250; i++) {
       if (i >= 0 && i < 101) {
-        witnessByVoteAPIArray.push(await resWitnessesByVote.result[i].owner);
+        witnessByVoteAPIArray.push(await witnesses[i].owner);
       }
       if (i >= 101 && i < 250) {
         witnessLastBlockAgeInSecs =
-          (headBlock - (await resWitnessesByVote.result[i].last_confirmed_block_num)) * 3;
+          (headBlock - (await witnesses[i].last_confirmed_block_num)) * 3;
 
         if (witnessLastBlockAgeInSecs < LAST_BLOCK_AGE_THRESHOLD_IN_SEC) {
-          witnessByVoteAPIArray.push(await resWitnessesByVote.result[i].owner);
+          witnessByVoteAPIArray.push(await witnesses[i].owner);
         }
       }
     }
@@ -136,25 +137,31 @@ test.describe('Witnesses page tests', () => {
 
     await witnessesPage.goToWitnessesPage();
 
-    const resWitnessesByVoteAPI = await apiHelper.getListWitnessesByVoteAPI('', 250);
-    const lastConfirmedBlockNum = await resWitnessesByVoteAPI.result[0].last_confirmed_block_num.toString();
+    const resWitnessesByVoteAPI = await apiHelper.getListWitnessesByVoteAPI(250);
+    const witnesses = resWitnessesByVoteAPI.result.witnesses;
+    const lastConfirmedBlockNum = witnesses[0].last_confirmed_block_num.toString();
     // Validate last confirmed block number
     expect(await witnessesPage.witnessLastBlockNumber.first()).toBeVisible();
     // Below assertion is too unstable
     // expect(await witnessesPage.witnessLastBlockNumber.first().textContent()).toContain(await lastConfirmedBlockNum);
 
-    const witnessCreatedAPI = await resWitnessesByVoteAPI.result[0].created;
+    const witnessCreatedAPI = witnesses[0].created;
     // Validate Witness's age
     expect(await witnessesPage.witnessCreated.first().textContent()).toContain(
       moment().from(witnessCreatedAPI, true)
     );
 
     // Validate Witness external site
-    const firstWitnessUrl = await resWitnessesByVoteAPI.result[0].url;
-    await expect(witnessesPage.witnessExternalSiteLink.locator('a').first()).toHaveAttribute(
-      'href',
-      firstWitnessUrl
-    );
+    const firstWitnessUrl = witnesses[0].url;
+    if (firstWitnessUrl.startsWith('http')) {
+      await expect(witnessesPage.witnessExternalSiteLink.first().locator('a')).toHaveAttribute(
+        'href',
+        firstWitnessUrl.replace('steemit.com', 'hive.blog')
+      );
+    } else {
+      // When URL is empty or doesn't start with http, no link is rendered
+      await expect(witnessesPage.witnessExternalSiteLink.first()).toContainText('No URL provided');
+    }
 
     // Validate Witness votes received
     const resDynamicGlobalProperties = await apiHelper.getDynamicGlobalPropertiesAPI();
@@ -163,7 +170,7 @@ test.describe('Witnesses page tests', () => {
       ''
     );
     const totalShares = await resDynamicGlobalProperties.result.total_vesting_shares.replace(/ VESTS/g, '');
-    const witnessVotesAPI = await resWitnessesByVoteAPI.result[0].votes;
+    const witnessVotesAPI = witnesses[0].votes;
     const vestsToHp: Big = Big(Big(totalVesting).times(Big(witnessVotesAPI).div(Big(totalShares)))).div(
       1000000
     );
@@ -171,12 +178,11 @@ test.describe('Witnesses page tests', () => {
       getRoundedAbbreveration(vestsToHp) + ' HP'
     );
 
-    // Validate Witness price feed
-    const firstWitnessPriceFeed = await resWitnessesByVoteAPI.result[0].hbd_exchange_rate.base.replace(
-      / HBD/g,
-      ''
-    );
-    expect('$' + firstWitnessPriceFeed).toContain(await witnessesPage.witnessPriceFeed.first().textContent());
+    // Validate Witness price feed (NaiAsset format: amount/10^precision)
+    const priceFeedNai = witnesses[0].hbd_exchange_rate.base;
+    const firstWitnessPriceFeedAPI = (Number(priceFeedNai.amount) / Math.pow(10, priceFeedNai.precision)).toFixed(3);
+    const firstWitnessPriceFeedUI = await witnessesPage.witnessPriceFeed.first().textContent();
+    expect(firstWitnessPriceFeedUI).toContain(firstWitnessPriceFeedAPI);
   });
 
   // It works on localhost but in CI it cannot move to the new domain page
@@ -369,21 +375,20 @@ test.describe('Witnesses page tests', () => {
     // Validate the witness name was typed into the input vote
     const firstWitnessName: any = await witnessesPage.witnessNameLink.first().textContent();
     await expect(voteBoxInput).toHaveAttribute('value', firstWitnessName);
-    // Validate color of the witness's open external site before hovering
-    expect(
-      await witnessesPage.getElementCssPropertyValue(
-        witnessesPage.witnessExternalSiteLink.first().locator('a span'),
-        'color'
-      )
-    ).toBe('rgb(255, 255, 255)');
-    // Validate color of the witness's open external site after hovering
-    await witnessesPage.witnessExternalSiteLink.first().locator('a span').hover();
-    expect(
-      await witnessesPage.getElementCssPropertyValue(
-        witnessesPage.witnessExternalSiteLink.first().locator('a span'),
-        'color'
-      )
-    ).toBe('rgb(248, 113, 113)');
+    // Find a witness with valid external site link (has 'a span' element)
+    const witnessWithLink = witnessesPage.witnessExternalSiteLink.locator('a span').first();
+    const hasLink = await witnessWithLink.count() > 0;
+    if (hasLink) {
+      // Validate color of the witness's open external site before hovering
+      expect(
+        await witnessesPage.getElementCssPropertyValue(witnessWithLink, 'color')
+      ).toBe('rgb(255, 255, 255)');
+      // Validate color of the witness's open external site after hovering
+      await witnessWithLink.hover();
+      expect(
+        await witnessesPage.getElementCssPropertyValue(witnessWithLink, 'color')
+      ).toBe('rgb(248, 113, 113)');
+    }
   });
 
   // test('move to the login dialog by clicking vote icon of the first witness', async ({ page }) => {

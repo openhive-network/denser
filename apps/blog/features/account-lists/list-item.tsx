@@ -2,7 +2,7 @@ import { useUnblacklistBlogMutation } from '@/blog/components/hooks/use-blacklis
 import { useUnfollowBlacklistBlogMutation } from '@/blog/components/hooks/use-follow-blacklist-mutation';
 import { useUnfollowMutedBlogMutation } from '@/blog/components/hooks/use-follow-muted-list-mutation';
 import { useUnmuteMutation } from '@/blog/features/mute-follow/hooks/use-mute-mutations';
-import { IFollowList } from '@transaction/lib/extended-hive.chain';
+import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { Button } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
 import BasePathLink from '@/blog/components/base-path-link';

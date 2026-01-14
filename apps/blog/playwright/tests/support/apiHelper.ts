@@ -104,15 +104,16 @@ export class ApiHelper {
   }
 
   // Get list of witnesses by vote as json from API
-  async getListWitnessesByVoteAPI(startName: string = '', limit: number = 100) {
+  async getListWitnessesByVoteAPI(limit: number = 100) {
     const url = process.env.REACT_APP_API_ENDPOINT;
 
     const response = await this.page.request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: '2.0',
-        method: 'condenser_api.get_witnesses_by_vote',
-        params: [`${startName}`, `${limit}`]
+        method: 'database_api.list_witnesses',
+        // Use max int64 value as starting point since API iterates downward
+        params: { start: ["9223372036854775807", ''], limit: limit, order: 'by_vote_name' }
       },
       headers: {
         Accept: 'application/json, text/plain, */*'

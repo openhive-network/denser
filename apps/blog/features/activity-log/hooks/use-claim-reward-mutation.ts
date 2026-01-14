@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getLogger } from '@ui/lib/logging';
-import { FullAccount } from '@transaction/lib/app-types';
+import { FullAccount } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
 const logger = getLogger('app');
