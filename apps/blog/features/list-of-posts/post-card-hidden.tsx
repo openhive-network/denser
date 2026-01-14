@@ -1,16 +1,15 @@
+import { memo } from 'react';
 import { User } from '@smart-signer/types/common';
-import { Badge } from '@ui/components';
+import { Badge, useHydrated } from '@hive/ui';
 import { Link } from '@hive/ui';
-import { useEffect, useState } from 'react';
 
 interface PostCardHiddenProps {
   user: User;
   revealPost: () => void;
 }
 
-const PostCardHidden = ({ user, revealPost }: PostCardHiddenProps) => {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+const PostCardHidden = memo(function PostCardHidden({ user, revealPost }: PostCardHiddenProps) {
+  const isHydrated = useHydrated();
 
   const accountLink = (
     <a
@@ -23,7 +22,7 @@ const PostCardHidden = ({ user, revealPost }: PostCardHiddenProps) => {
     </a>
   );
 
-  if (!mounted) {
+  if (!isHydrated) {
     return (
       <div>
         <Badge
@@ -83,6 +82,6 @@ const PostCardHidden = ({ user, revealPost }: PostCardHiddenProps) => {
       )}
     </div>
   );
-};
+});
 
 export default PostCardHidden;

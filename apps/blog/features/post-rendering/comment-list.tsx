@@ -1,21 +1,11 @@
 'use client';
 
+import { memo, useEffect, useMemo, useState } from 'react';
 import CommentListItem from '@/blog/features/post-rendering/comment-list-item';
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 import clsx from 'clsx';
-import { useEffect, useMemo, useState } from 'react';
 
-const CommentList = ({
-  highestAuthor,
-  highestPermlink,
-  permissionToMute,
-  data,
-  parent,
-  parent_depth,
-  mutedList,
-  flagText,
-  discussionPermlink
-}: {
+interface CommentListProps {
   highestAuthor: string;
   highestPermlink: string;
   permissionToMute: Boolean;
@@ -25,7 +15,19 @@ const CommentList = ({
   mutedList: IFollowList[];
   flagText: string | undefined;
   discussionPermlink: string;
-}) => {
+}
+
+const CommentList = memo(function CommentList({
+  highestAuthor,
+  highestPermlink,
+  permissionToMute,
+  data,
+  parent,
+  parent_depth,
+  mutedList,
+  flagText,
+  discussionPermlink
+}: CommentListProps) {
   const [markedHash, setMarkedHash] = useState<string>('');
 
   useEffect(() => {
@@ -89,5 +91,6 @@ const CommentList = ({
       </>
     </ul>
   );
-};
+});
+
 export default CommentList;

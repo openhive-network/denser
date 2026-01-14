@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { IFollow } from '@hive/common-hiveio-packages/wax';
 import FollowButton from './follow-button';
 import MuteButton from './mute-button';
@@ -12,13 +13,7 @@ import DialogLogin from '@/blog/components/dialog-login';
 import { handleError } from '@ui/lib/handle-error';
 import { useTranslation } from '@/blog/i18n/client';
 
-const ButtonsContainer = ({
-  username,
-  user,
-  variant,
-  follow,
-  mute
-}: {
+interface ButtonsContainerProps {
   username: string;
   user: User;
   variant:
@@ -35,7 +30,15 @@ const ButtonsContainer = ({
     | undefined;
   follow: UseInfiniteQueryResult<IFollow[], unknown>;
   mute: UseInfiniteQueryResult<IFollow[], unknown>;
-}) => {
+}
+
+const ButtonsContainer = memo(function ButtonsContainer({
+  username,
+  user,
+  variant,
+  follow,
+  mute
+}: ButtonsContainerProps) {
   const { t } = useTranslation('common_blog');
 
   const muteMutation = useMuteMutation();
@@ -132,6 +135,6 @@ const ButtonsContainer = ({
       )}
     </>
   );
-};
+});
 
 export default ButtonsContainer;
