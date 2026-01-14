@@ -1,11 +1,17 @@
 import { getAccountFull } from './hive-api';
 import { getCommunity } from './bridge-api';
 import { MetadataProps } from '@hive/common-hiveio-packages/wax';
+import { configuredSiteDomain } from '@ui/config/public-vars';
 
 // Re-export MetadataProps type for consumers
 export type { MetadataProps } from '@hive/common-hiveio-packages/wax';
 
-const DEFAULT_IMAGE = 'https://hive.blog/images/hive-blog-share.png';
+// Remove trailing slash from site domain
+const siteBaseUrl = configuredSiteDomain.endsWith('/')
+  ? configuredSiteDomain.slice(0, -1)
+  : configuredSiteDomain;
+
+const DEFAULT_IMAGE = `${siteBaseUrl}/images/hive-blog-share.png`;
 
 /**
  * Get metadata for a user account page
