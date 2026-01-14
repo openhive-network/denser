@@ -444,3 +444,356 @@ API:  trafalgar, appreciator, theycallmedan, curatorhulk, adm
 - Parametr `observer` w Bridge API pozwala na personalizację wyników
 - UI tooltipa sortuje głosujących po wartości ($), co odpowiada sortowaniu po `rshares` w API
 - Weryfikacja głosu przez API potwierdza dane z UI
+
+---
+
+## 12. Test: Weryfikacja liczby komentarzy (2026-01-14)
+
+### Scenariusz
+1. Wejdź na /trending (Playwright)
+2. Pobierz liczbę komentarzy z post card pierwszego posta
+3. Wejdź do posta i policz widoczne komentarze
+4. Zweryfikuj obie wartości przez Hive API
+
+### Kluczowe selektory
+
+| Selektor | Lokalizacja | Opis |
+|----------|-------------|------|
+| `post-card-response-link` | Post card | Liczba komentarzy na karcie posta |
+| `comment-list-item` | Strona posta | Pojedynczy komentarz |
+| `comment-respons-header` | Strona posta | Nagłówek sekcji komentarzy |
+
+### Skrypt
+
+```javascript
+import { chromium } from 'playwright';
+
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage();
+
+// 1. Wejdź na trending
+await page.goto('https://blog.openhive.network/trending', { waitUntil: 'domcontentloaded', timeout: 60000 });
+await page.waitForTimeout(8000);
+
+// 2. Znajdź pierwszy post
+const postLinks = await page.locator('a[href*="/@"]').all();
+let author = null;
+let postUrl = null;
+
+for (const link of postLinks) {
+  const href = await link.getAttribute('href');
+  const text = await link.textContent();
+
+  if (!author && href && href.match(/^\/@[a-z0-9.-]+$/) && text && text.trim().length > 0) {
+    author = text.trim();
+  }
+
+  if (!postUrl && href && href.split('/').length >= 3 && text && text.trim().length > 20) {
+    postUrl = href;
+  }
+
+  if (author && postUrl) break;
+}
+
+// 3. Pobierz liczbę komentarzy z post card
+const postCardComments = page.locator('[data-testid="post-card-response-link"]').first();
+const commentsOnCard = await postCardComments.textContent();
+console.log('Komentarze na post card:', commentsOnCard);
+
+// 4. Wejdź do posta
+await page.goto('https://blog.openhive.network' + postUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+await page.waitForTimeout(6000);
+
+// 5. Policz komentarze w poście
+const commentItems = await page.locator('[data-testid="comment-list-item"]').all();
+console.log('Komentarze w poście:', commentItems.length);
+
+await browser.close();
+
+// 6. Weryfikacja przez API
+const urlParts = postUrl.split('/');
+const permlink = urlParts[urlParts.length - 1];
+const authorClean = author.replace('@', '');
+
+const apiRequest = {
+  jsonrpc: '2.0',
+  method: 'bridge.get_post',
+  params: { author: authorClean, permlink: permlink, observer: '' },
+  id: 1
+};
+
+const response = await fetch('https://api.hive.blog', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(apiRequest)
+});
+
+const data = await response.json();
+console.log('API children:', data.result.children);
+```
+
+### Weryfikacja przez API
+
+```bash
+# Liczba komentarzy (pole children)
+curl -s "https://api.hive.blog" -d '{
+  "jsonrpc":"2.0",
+  "method":"bridge.get_post",
+  "params":{"author":"mynewlife","permlink":"last-frame-krakow-photowalk-at-hivebeecon-unshared","observer":""},
+  "id":1
+}' | jq '.result.children'
+
+# Pełna struktura dyskusji (wszystkie komentarze)
+curl -s "https://api.hive.blog" -d '{
+  "jsonrpc":"2.0",
+  "method":"bridge.get_discussion",
+  "params":{"author":"mynewlife","permlink":"last-frame-krakow-photowalk-at-hivebeecon-unshared"},
+  "id":1
+}' | jq 'keys | length - 1'  # -1 bo główny post też jest w wynikach
+```
+
+### Wynik testu
+
+```
+========================================
+TEST: Weryfikacja liczby komentarzy
+========================================
+
+CZĘŚĆ 1: LICZBA KOMENTARZY NA POST CARD
+
+Pierwszy post:
+  Autor: mynewlife
+  Tytuł: Last Frame - Krakow photowalk at hivebeecon - unshared
+
+=== KOMENTARZE NA POST CARD ===
+Liczba komentarzy (post card): 5
+
+========================================
+CZĘŚĆ 2: KOMENTARZE WEWNĄTRZ POSTA
+========================================
+
+=== KOMENTARZE W POŚCIE ===
+Liczba elementów comment-list-item: 5
+Nagłówek sekcji komentarzy: |Reply|5
+
+========================================
+CZĘŚĆ 3: HIVE API - WERYFIKACJA
+========================================
+
+=== DANE Z API ===
+Tytuł: Last Frame - Krakow photowalk at hivebeecon - unshared
+children (liczba komentarzy): 5
+Liczba wpisów w discussion: 6
+Liczba komentarzy (discussion - 1): 5
+
+========================================
+CZĘŚĆ 4: PORÓWNANIE WYNIKÓW
+========================================
+
+| Źródło                  | Wartość |
+|-------------------------|---------|
+| Post Card (UI)          | 5       |
+| Komentarze w poście     | 5       |
+| API children            | 5       |
+| API discussion count    | 5       |
+
+=== WERYFIKACJA ===
+✓ PASS: Post Card zgadza się z API (children)
+✓ PASS: Widoczne komentarze zgadzają się z API
+```
+
+### Wnioski
+- Pole `children` w API odpowiada liczbie komentarzy wyświetlanej w UI
+- `bridge.get_discussion` zwraca wszystkie komentarze + główny post (stąd `length - 1`)
+- Post card i strona posta pokazują tę samą liczbę komentarzy
+- Jeśli jest więcej komentarzy niż widocznych, UI może mieć przycisk "load more"
+
+---
+
+## 13. Test: Weryfikacja wartości posta - payout (2026-01-14)
+
+### Scenariusz
+1. Wejdź na /trending (Playwright)
+2. Pobierz wartość payout z post card pierwszego posta
+3. Sprawdź czy wartość > 0
+4. Wejdź do posta i pobierz wartość ze stopki
+5. Sprawdź czy wartość > 0
+6. Porównaj obie wartości z API
+
+### Kluczowe selektory
+
+| Selektor | Lokalizacja | Opis |
+|----------|-------------|------|
+| `post-payout` | Post card | Wartość payout na karcie posta |
+| `comment-payout` | Stopka posta | Wartość payout w stopce posta |
+| `payout-post-card-tooltip` | Post card | Tooltip z detalami payout |
+
+### Skrypt
+
+```javascript
+import { chromium } from 'playwright';
+
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage();
+
+// 1. Wejdź na trending
+await page.goto('https://blog.openhive.network/trending', { waitUntil: 'domcontentloaded', timeout: 60000 });
+await page.waitForTimeout(8000);
+
+// 2. Znajdź pierwszy post
+const postLinks = await page.locator('a[href*="/@"]').all();
+let author = null;
+let postUrl = null;
+
+for (const link of postLinks) {
+  const href = await link.getAttribute('href');
+  const text = await link.textContent();
+
+  if (!author && href && href.match(/^\/@[a-z0-9.-]+$/) && text && text.trim().length > 0) {
+    author = text.trim();
+  }
+
+  if (!postUrl && href && href.split('/').length >= 3 && text && text.trim().length > 20) {
+    postUrl = href;
+  }
+
+  if (author && postUrl) break;
+}
+
+// 3. Pobierz wartość payout z post card
+const postCardPayout = page.locator('[data-testid="post-payout"]').first();
+const payoutOnCard = await postCardPayout.textContent();
+const cardPayoutValue = parseFloat(payoutOnCard.replace('$', '').trim()) || 0;
+console.log('Payout na post card:', payoutOnCard, '| Wartość:', cardPayoutValue);
+
+// 4. Wejdź do posta
+await page.goto('https://blog.openhive.network' + postUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+await page.waitForTimeout(6000);
+
+// 5. Pobierz wartość payout ze stopki posta
+const footerPayout = page.locator('[data-testid="comment-payout"]').first();
+const payoutInPost = await footerPayout.textContent();
+const postPayoutValue = parseFloat(payoutInPost.replace('$', '').trim()) || 0;
+console.log('Payout w stopce:', payoutInPost, '| Wartość:', postPayoutValue);
+
+await browser.close();
+
+// 6. Weryfikacja przez API
+const urlParts = postUrl.split('/');
+const permlink = urlParts[urlParts.length - 1];
+const authorClean = author.replace('@', '');
+
+const apiRequest = {
+  jsonrpc: '2.0',
+  method: 'bridge.get_post',
+  params: { author: authorClean, permlink: permlink, observer: '' },
+  id: 1
+};
+
+const response = await fetch('https://api.hive.blog', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(apiRequest)
+});
+
+const data = await response.json();
+const post = data.result;
+
+// Oblicz payout z API
+const pendingPayout = parseFloat(post.pending_payout_value?.replace(' HBD', '') || '0');
+const curatorPayout = parseFloat(post.curator_payout_value?.replace(' HBD', '') || '0');
+const authorPayout = parseFloat(post.author_payout_value?.replace(' HBD', '') || '0');
+const apiPayoutValue = pendingPayout > 0 ? pendingPayout : (curatorPayout + authorPayout);
+
+console.log('API payout:', apiPayoutValue.toFixed(2));
+```
+
+### Weryfikacja przez API
+
+```bash
+# Pobierz wartości payout
+curl -s "https://api.hive.blog" -d '{
+  "jsonrpc":"2.0",
+  "method":"bridge.get_post",
+  "params":{"author":"mynewlife","permlink":"last-frame-krakow-photowalk-at-hivebeecon-unshared","observer":""},
+  "id":1
+}' | jq '{
+  pending_payout_value: .result.pending_payout_value,
+  curator_payout_value: .result.curator_payout_value,
+  author_payout_value: .result.author_payout_value,
+  is_paidout: .result.is_paidout
+}'
+```
+
+### Pola payout w API
+
+| Pole | Opis |
+|------|------|
+| `pending_payout_value` | Oczekująca wypłata (przed payout) |
+| `curator_payout_value` | Wypłata dla kuratorów (po payout) |
+| `author_payout_value` | Wypłata dla autora (po payout) |
+| `is_paidout` | Czy post został już wypłacony |
+
+**Logika obliczania payout:**
+- Przed wypłatą: `pending_payout_value`
+- Po wypłacie: `curator_payout_value + author_payout_value`
+
+### Wynik testu
+
+```
+========================================
+TEST: Weryfikacja wartości posta (payout)
+========================================
+
+CZĘŚĆ 1: WARTOŚĆ NA POST CARD
+
+Pierwszy post:
+  Autor: mynewlife
+  Tytuł: Last Frame - Krakow photowalk at hivebeecon - unshared
+
+=== WARTOŚĆ NA POST CARD ===
+Payout (post card): $46.45
+✓ Wartość na post card > 0
+
+========================================
+CZĘŚĆ 2: WARTOŚĆ W STOPCE POSTA
+========================================
+
+=== WARTOŚĆ W STOPCE POSTA ===
+Payout (stopka): $46.45
+✓ Wartość w stopce posta > 0
+
+========================================
+CZĘŚĆ 3: HIVE API - WERYFIKACJA
+========================================
+
+=== DANE Z API ===
+Tytuł: Last Frame - Krakow photowalk at hivebeecon - unshared
+payout (pending_payout_value): 46.449 HBD
+curator_payout_value: 0.000 HBD
+author_payout_value: 0.000 HBD
+
+Obliczony payout z API: 46.45
+
+========================================
+CZĘŚĆ 4: PORÓWNANIE WYNIKÓW
+========================================
+
+| Źródło                  | Wartość    |
+|-------------------------|------------|
+| Post Card (UI)          | $46.45    |
+| Stopka posta (UI)       | $46.45    |
+| API payout              | $46.45    |
+
+=== WERYFIKACJA ===
+✓ PASS: Wszystkie wartości > 0
+✓ PASS: Post card zgadza się z API
+✓ PASS: Stopka posta zgadza się z API
+✓ PASS: Post card zgadza się ze stopką posta
+```
+
+### Wnioski
+- UI wyświetla wartość z `pending_payout_value` (zaokrągloną do 2 miejsc po przecinku)
+- Post card i stopka posta pokazują identyczną wartość
+- Wartość w HBD jest konwertowana na $ (w tym przypadku 1:1)
+- Tolerancja porównania: 0.02 (na zaokrąglenia)
