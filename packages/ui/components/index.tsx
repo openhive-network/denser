@@ -44,3 +44,4 @@ export * from "../lib/storage-with-ttl";
 
 // hook exports
 export * from "../hooks/useStorageWithTTL";
+export * from "../hooks/use-hydrated";
