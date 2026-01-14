@@ -1,9 +1,11 @@
 import { Facebook } from 'lucide-react';
+import { configuredSiteDomain } from '@ui/config/public-vars';
 import { useTranslation } from '@/blog/i18n/client';
 
 export default function FacebookShare({ url }: { url: string }) {
   const { t } = useTranslation('common_blog');
-  const href = 'https://hive.blog' + url;
+  const baseUrl = configuredSiteDomain.endsWith('/') ? configuredSiteDomain.slice(0, -1) : configuredSiteDomain;
+  const href = baseUrl + url;
   const openWindow = () => {
     return window.open(
       `https://www.facebook.com/sharer/sharer.php?u=${href}`,
@@ -11,14 +13,17 @@ export default function FacebookShare({ url }: { url: string }) {
       'width=600, height=400, scrollbars=no'
     );
   };
+  const shareLabel = `${t('post_content.footer.share_on')} Facebook`;
   return (
-    <div
+    <button
+      type="button"
       className="cursor-pointer hover:text-destructive"
       onClick={openWindow}
-      title={t('post_content.footer.share_on') + `Facebook`}
+      title={shareLabel}
+      aria-label={shareLabel}
       data-testid="share-on-facebook"
     >
       <Facebook />
-    </div>
+    </button>
   );
 }

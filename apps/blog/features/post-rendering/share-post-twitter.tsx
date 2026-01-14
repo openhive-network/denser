@@ -1,9 +1,11 @@
 import { Twitter } from 'lucide-react';
+import { configuredSiteDomain } from '@ui/config/public-vars';
 import { useTranslation } from '@/blog/i18n/client';
 
 export default function TwitterShare({ title, url }: { title: string; url: string }) {
   const { t } = useTranslation('common_blog');
-  const href = 'https://hive.blog' + url;
+  const baseUrl = configuredSiteDomain.endsWith('/') ? configuredSiteDomain.slice(0, -1) : configuredSiteDomain;
+  const href = baseUrl + url;
   const postTitle = title + ' — ' + 'Hive';
   const winWidth = 640;
   const winHeight = 320;
@@ -12,19 +14,22 @@ export default function TwitterShare({ title, url }: { title: string; url: strin
   const q = 'text=' + encodeURIComponent(postTitle) + '&url=' + encodeURIComponent(href);
   const openWindow = () => {
     return window.open(
-      'http://twitter.com/share?' + q,
+      'https://twitter.com/share?' + q,
       'Share',
       'top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width=' + winWidth + ',height=' + winHeight
     );
   };
+  const shareLabel = `${t('post_content.footer.share_on')} Twitter`;
   return (
-    <div
+    <button
+      type="button"
       className="cursor-pointer hover:text-destructive"
       onClick={openWindow}
-      title={t('post_content.footer.share_on') + `Twitter`}
+      title={shareLabel}
+      aria-label={shareLabel}
       data-testid="share-on-twitter"
     >
       <Twitter />
-    </div>
+    </button>
   );
 }
