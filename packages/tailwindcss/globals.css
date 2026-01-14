@@ -35,6 +35,9 @@
     --destructive: 0, 70%, 51%;
     --destructive-foreground: 210 40% 98%;
 
+    --brand: 217 91% 60%;
+    --brand-foreground: 210 40% 98%;
+
     --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
@@ -72,6 +75,9 @@
     --destructive: 350, 85%, 48%; /* red */
     --destructive-foreground: 210 40% 98%;
 
+    --brand: 217 91% 60%;
+    --brand-foreground: 210 40% 98%;
+
     --ring: 216 34% 17%;
 
     --radius: 0.5rem;
@@ -93,6 +99,21 @@
     font-feature-settings:
       'rlig' 1,
       'calt' 1;
+  }
+  /* Global focus-visible styles for accessibility
+     Use specific selectors to avoid conflicts with Radix UI components
+     which have their own focus management.
+     Buttons/links: no offset (cleaner on small interactive elements)
+     Form inputs: with offset (better visibility for text fields) */
+  button:focus-visible,
+  a:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    @apply outline-none ring-2 ring-ring;
+  }
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
 }
 
