@@ -1,4 +1,9 @@
 {
+  "accessibility": {
+    "skip_to_main": "Skip to main content",
+    "posts_feed": "Posts feed",
+    "main_content": "Main content"
+  },
   "global": {
     "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
@@ -79,9 +84,13 @@
     },
     "communities_nav": {
       "my_friends": "My friends",
+      "my_communities": "My communities",
       "all_posts": "All posts",
       "trending_communities": "Trending Communities",
-      "explore_communities": "Explore communities..."
+      "explore_communities": "Explore communities...",
+      "communities": "Communities",
+      "my_subscriptions": "My subscriptions",
+      "select_community": "Select community"
     },
     "explore_nav": {
       "explore_hive": "Explore Hive",
@@ -158,7 +167,8 @@
       "newest": "Newest",
       "popularity": "Popularity",
       "relevance": "Relevance"
-    }
+    },
+    "filter_posts": "Filter posts"
   },
   "cards": {
     "reblogged": "reblogged",
@@ -193,7 +203,12 @@
       "you_downvoted": "You downvoted {{votePercent}}%",
       "you_voted": "You voted {{votePercent}}%",
       "vote_polling_error_message_title": "Warning",
-      "vote_polling_error_message_description": "Failure in checking if user's vote has been included."
+      "vote_polling_error_message_description": "Failure in checking if user's vote has been included.",
+      "after_payout_warning": "Voting on Content after their payout does not generate any new rewards",
+      "votes_label": "{{count}} votes",
+      "comments_label": "{{count}} comments",
+      "low_rated_post": "Low-rated post, content may be hidden",
+      "powered_up_100": "Powered Up 100%"
     },
     "comment_card": {
       "reveal_comment": "Reveal Comment",
@@ -511,14 +526,15 @@
       "flag_description": "Please provide a note regarding your decision to flag this post, it will be reviewed by community moderators.",
       "community_rules": "Community rules",
       "cancel": "Cancel",
-      "ok": "OK"
+      "ok": "OK",
+      "notes_label": "Notes",
+      "notes_placeholder": "Add your notes here..."
     }
   },
   "submit_page": {
     "log_in_to_post": "Log in to make a post.",
     "clean_post_editor": "Are you sure you want to clear the post editor?",
     "cover_image": "Select your cover image:",
-    "my_communities": "My Communities",
     "others_communities": "Others Communities",
     "disable_side": "Disable side-by-side editor",
     "enable_side": "Enable side-by-side editor",
@@ -669,5 +685,11 @@
     "hot_posts": "hot posts",
     "trending_posts": "trending posts",
     "muted_posts": "muted posts"
+  },
+  "errors": {
+    "no_data_available": "No Data Available",
+    "problem_fetching_data": "There was a problem fetching the data.",
+    "check_permlink_or_node": "Please check if permlink is correct or the node is running properly.",
+    "check_node_status": "Check Node Status"
   }
 }
