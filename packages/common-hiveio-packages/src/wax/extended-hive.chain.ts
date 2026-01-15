@@ -588,17 +588,6 @@ export interface IProposalVote {
   voter: string;
 }
 
-export interface IDynamicGlobalProperties {
-  hbd_print_rate: number;
-  total_vesting_fund_hive: string;
-  total_vesting_shares: string;
-  hbd_interest_rate: number;
-  head_block_number: number;
-  head_block_id: string;
-  vesting_reward_percent: number;
-  virtual_supply: string;
-}
-
 export interface IAccountReputations {
   account: string;
   reputation: number;
@@ -882,7 +871,6 @@ export type ExtendedNodeApi = {
     get_reblogged_by: TWaxApiRequest<[string, string], string[]>;
     get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
     list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
-    get_dynamic_global_properties: TWaxApiRequest<[], IDynamicGlobalProperties>;
     get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
     get_account_reputations: TWaxApiRequest<
       {

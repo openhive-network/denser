@@ -4,12 +4,12 @@ import {
   FullAccount,
   Entry,
   IAccountReputations,
-  IDynamicGlobalProperties,
   IFeedHistory,
   IFollow,
   IVote,
   IVoteListItem
 } from '@hive/common-hiveio-packages/wax';
+import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { getChain } from './chain';
 import { ApiAccount, IManabarData } from '@hiveio/wax';
 import { DATA_LIMIT } from './bridge-api';
@@ -255,19 +255,8 @@ export const getAccountReputations = async (
 ): Promise<IAccountReputations[]> => {
   return (await getChain()).api.condenser_api.get_account_reputations({ account_lower_bound, limit });
 };
-export const getDynamicGlobalProperties = async (): Promise<IDynamicGlobalProperties> => {
-  return (await getChain()).api.condenser_api.get_dynamic_global_properties([]).then((r: any) => {
-    return {
-      total_vesting_fund_hive: r.total_vesting_fund_hive || r.total_vesting_fund_steem,
-      total_vesting_shares: r.total_vesting_shares,
-      hbd_print_rate: r.hbd_print_rate || r.sbd_print_rate,
-      hbd_interest_rate: r.hbd_interest_rate,
-      head_block_number: r.head_block_number,
-      head_block_id: r.head_block_id,
-      vesting_reward_percent: r.vesting_reward_percent,
-      virtual_supply: r.virtual_supply
-    };
-  });
+export const getDynamicGlobalProperties = async (): Promise<GetDynamicGlobalPropertiesResponse> => {
+  return (await getChain()).api.database_api.get_dynamic_global_properties({});
 };
 
 export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {

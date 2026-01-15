@@ -2,15 +2,15 @@ import { TFunction } from 'i18next';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
-import { SavingsWithdrawals, IFollow, IDynamicGlobalProperties, HiveOperation } from '@hive/common-hiveio-packages/wax';
+import { SavingsWithdrawals, IFollow, HiveOperation } from '@hive/common-hiveio-packages/wax';
+import { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
 import Big from 'big.js';
 import { HIVE_NAI_STRING, VESTS_PRECISION } from '@transaction/lib/utils';
-import { NaiAsset } from '@hiveio/wax';
 import { HiveChain } from '@transaction/lib/hive-chain-service';
 
-export function getCurrentHpApr(data: IDynamicGlobalProperties) {
+export function getCurrentHpApr(data: GetDynamicGlobalPropertiesResponse) {
   // The inflation was set to 9.5% at block 7m
   const initialInflationRate = 9.5;
   const initialBlock = 7000000;
@@ -252,14 +252,10 @@ export function createListWithSuggestions(
 export const prepareRC = (rc: string): string => {
   return `${numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(1))}bil`;
 };
-export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: string | undefined, totalVestingShares: string | undefined, hiveChain: HiveChain): string {
+export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined, hiveChain: HiveChain): string {
   let operationHp = hiveChain?.hiveSatoshis(0);
-  if (vests) {
-    // TODO: Replace with better NAI conversion
-    // operationHp = hiveChain?.vestsToHp(vests, totalVestingFund!, totalVestingShares!);
-    const totalVestingFundNai = hiveChain!.hiveCoins(Number((totalVestingFund || "0").replace(" HIVE", "")));
-    const totalVestingSharesNai = hiveChain!.vestsCoins(Number((totalVestingShares || "0").replace(" VESTS", "")));
-    operationHp = hiveChain?.vestsToHp(vests, totalVestingFundNai, totalVestingSharesNai);
+  if (vests && totalVestingFund && totalVestingShares) {
+    operationHp = hiveChain?.vestsToHp(vests, totalVestingFund, totalVestingShares);
   }
   return hiveChain.formatter.format(operationHp).replace("HIVE", "HIVE POWER");
 }

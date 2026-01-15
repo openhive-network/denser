@@ -3,8 +3,8 @@ import { twMerge } from 'tailwind-merge';
 import Big from 'big.js';
 import { convertStringToBig } from './helpers';
 import { TFunction } from 'i18next';
-import type { FullAccount, Entry, IDynamicGlobalProperties, IVote } from '@hive/common-hiveio-packages/wax';
-import { NaiAsset } from '@hiveio/wax';
+import type { FullAccount, Entry, IVote } from '@hive/common-hiveio-packages/wax';
+import { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { parseDate2 } from './parse-date';
 
 export interface Asset {
@@ -96,12 +96,12 @@ export function getRoundedAbbreveration(
   return numToRefactor.div(new Big(1000).pow(mulIndex)).toFixed(toComma) + multiplicators[mulIndex - 1];
 }
 
-export const numberWithCommas = (x: string) => x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+export const numberWithCommas = (x: string) => x.replace(/\\B(?=(\d{3})+(?!\d))/g, ',');
 
 export function convertToHP(
   vests: Big,
-  totalVestingShares: string,
-  totalVestingFundHive: string,
+  totalVestingShares: string | NaiAsset,
+  totalVestingFundHive: string | NaiAsset,
   div: number = 1
 ) {
   const total_vests = convertStringToBig(totalVestingShares);
@@ -109,7 +109,7 @@ export function convertToHP(
   const vesting_hivef = total_vest_hive.times(vests.div(total_vests));
   return vesting_hivef.div(div);
 }
-export function powerdownHive(accountData: FullAccount, dynamicData: IDynamicGlobalProperties) {
+export function powerdownHive(accountData: FullAccount, dynamicData: GetDynamicGlobalPropertiesResponse) {
   const withdraw_rate_vests = parseFloat(accountData.vesting_withdraw_rate.split(' ')[0]);
   const to_withdraw =
     typeof accountData.to_withdraw === 'number'
