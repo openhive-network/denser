@@ -96,7 +96,7 @@ export function getRoundedAbbreveration(
   return numToRefactor.div(new Big(1000).pow(mulIndex)).toFixed(toComma) + multiplicators[mulIndex - 1];
 }
 
-export const numberWithCommas = (x: string) => x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+export const numberWithCommas = (x: string) => x.replace(/\\B(?=(\d{3})+(?!\d))/g, ',');
 
 export function convertToHP(
   vests: Big,
