@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@ui/components/dialog';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
@@ -73,7 +73,6 @@ export function AdvancedSettingsPostForm({
   const [rewards, setRewards] = useState(
     preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards
   );
-  const [splitRewards, setSplitRewards] = useState(100);
   const [templateTitle, setTemplateTitle] = useState('');
   const [maxPayout, setMaxPayout] = useState<'no_max' | '0' | 'custom'>(
     preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0'
@@ -82,6 +81,12 @@ export function AdvancedSettingsPostForm({
   const [beneficiaries, setBeneficiaries] = useState<{ weight: string; account: string }[]>(
     data.beneficiaries
   );
+  const splitRewards = useMemo(() => {
+    const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
+      return acc + Number(beneficiary.weight);
+    }, 0);
+    return 100 - combinedPercentage;
+  }, [beneficiaries]);
   const [customValue, setCustomValue] = useState(
     data.maxAcceptedPayout !== 1000000 ? data.maxAcceptedPayout : '100'
   );
@@ -107,6 +112,16 @@ export function AdvancedSettingsPostForm({
   const isTemplateStored = storedTemplates.some((template) => template.templateTitle === templateTitle);
   const currentTemplate = storedTemplates.find((e) => e.templateTitle === selectTemplate);
 
+  const getBeneficiaryError = (): string | null => {
+    if (splitRewards < 0) return t('submit_page.advanced_settings_dialog.your_percent');
+    if (hasDuplicateUsernames) return t('submit_page.advanced_settings_dialog.beneficiaries_cannot');
+    if (beneficiariesNames) return t('submit_page.advanced_settings_dialog.account_name');
+    if (selfBeneficiary) return t('submit_page.advanced_settings_dialog.beneficiary_cannot_be_self');
+    if (smallWeight) return t('submit_page.advanced_settings_dialog.beneficiary_percent_invalid');
+    if (badActor) return t('submit_page.advanced_settings_dialog.bad_actor');
+    return null;
+  };
+
   useEffect(() => {
     setMaxPayout(preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0');
     setRewards(preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards);
@@ -124,13 +139,6 @@ export function AdvancedSettingsPostForm({
       setRewards('50%');
     }
   }, [maxPayout]);
-
-  useEffect(() => {
-    const combinedPercentage = beneficiaries.reduce<number>((acc, beneficiary) => {
-      return acc + Number(beneficiary.weight);
-    }, 0);
-    setSplitRewards(100 - combinedPercentage);
-  }, [JSON.stringify(beneficiaries)]);
 
   const handleAddAccount = () => {
     setBeneficiaries((prev) => [...prev, { weight: '0', account: '' }]);
@@ -162,7 +170,7 @@ export function AdvancedSettingsPostForm({
     setSelectTemplate('/');
   }
 
-  function handleTamplates(e: string) {
+  function handleTemplates(e: string) {
     const template = storedTemplates.find((template) => template.templateTitle === e);
     if (template) {
       setBeneficiaries(template.beneficiaries);
@@ -294,9 +302,9 @@ export function AdvancedSettingsPostForm({
             </span>
             <span>{t('submit_page.advanced_settings_dialog.value_of_the_maximum')}</span>
             <div className="flex flex-col gap-1">
-              <div className="my-8 flex justify-around">
+              <div className="my-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:justify-center">
                 {maxPayoutOptions.map((e) => (
-                  <div key={e.value}>
+                  <div key={e.value} className="text-center">
                     <Checkbox
                       id={e.value}
                       className="hidden"
@@ -304,7 +312,7 @@ export function AdvancedSettingsPostForm({
                     />
                     <Label
                       htmlFor={e.value}
-                      className={clsx('cursor-pointer rounded-lg border p-2', {
+                      className={clsx('inline-block cursor-pointer rounded-lg border p-2', {
                         'border-destructive bg-border': maxPayout === e.value,
                         'text-muted-foreground': maxPayout !== e.value
                       })}
@@ -333,9 +341,9 @@ export function AdvancedSettingsPostForm({
               {t('submit_page.advanced_settings_dialog.author_rewards')}
             </span>
             <span>{t('submit_page.advanced_settings_dialog.what_type_of_tokens')}</span>
-            <div className="my-8 flex justify-around">
+            <div className="my-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:justify-center">
               {authorRewardsOptions.map((e) => (
-                <div key={e.value}>
+                <div key={e.value} className="text-center">
                   <Checkbox
                     id={e.value}
                     className="hidden"
@@ -344,7 +352,7 @@ export function AdvancedSettingsPostForm({
                   />
                   <Label
                     htmlFor={e.value}
-                    className={clsx('cursor-pointer rounded-lg border p-2', {
+                    className={clsx('inline-block cursor-pointer rounded-lg border p-2', {
                       'border-destructive bg-border': rewards === e.value,
                       'text-muted-foreground': rewards !== e.value
                     })}
@@ -390,21 +398,7 @@ export function AdvancedSettingsPostForm({
                 </div>
               ))}
             </ul>
-            <div className="p-2 text-destructive">
-              {splitRewards < 0
-                ? t('submit_page.advanced_settings_dialog.your_percent')
-                : hasDuplicateUsernames
-                  ? t('submit_page.advanced_settings_dialog.beneficiaries_cannot')
-                  : beneficiariesNames
-                    ? t('submit_page.advanced_settings_dialog.account_name')
-                    : selfBeneficiary
-                      ? t('submit_page.advanced_settings_dialog.beneficiary_cannot_be_self')
-                      : smallWeight
-                        ? t('submit_page.advanced_settings_dialog.beneficiary_percent_invalid')
-                        : badActor
-                          ? t('submit_page.advanced_settings_dialog.bad_actor')
-                          : null}
-            </div>
+            <div className="p-2 text-destructive">{getBeneficiaryError()}</div>
             {beneficiaries.length < 8 ? (
               <Button
                 variant="link"
@@ -426,7 +420,7 @@ export function AdvancedSettingsPostForm({
                   ? storedTemplates.map((e) => (
                       <div
                         key={e.templateTitle}
-                        onClick={() => handleTamplates(e.templateTitle)}
+                        onClick={() => handleTemplates(e.templateTitle)}
                         className={clsx(
                           'cursor-pointer border-b border-border p-1 text-base hover:bg-border',
                           {
@@ -437,7 +431,7 @@ export function AdvancedSettingsPostForm({
                         {e.templateTitle}
                       </div>
                     ))
-                  : 'No templates found.'}
+                  : t('submit_page.advanced_settings_dialog.no_templates_found')}
               </ScrollArea>
               <Input
                 placeholder={t('submit_page.advanced_settings_dialog.name_of_a_new_template')}
@@ -477,7 +471,7 @@ export function AdvancedSettingsPostForm({
             </Button>
           ) : null}
           {selectTemplate !== '/' ? (
-            <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)} className="mb-2">
+            <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)}>
               {t('submit_page.advanced_settings_dialog.delete_template')}
             </Button>
           ) : null}
