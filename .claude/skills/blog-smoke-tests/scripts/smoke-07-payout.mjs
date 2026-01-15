@@ -1,31 +1,43 @@
 /**
  * SMOKE-07: Payout
  * Priority: P1 (Important)
- * Verifies payout value on card matches API
+ * Verifies payout value matches API calculation
  */
 import { chromium } from 'playwright';
+import { mkdir } from 'fs/promises';
+import { join } from 'path';
 
 const BASE_URL = 'https://blog.openhive.network';
 const API_URL = 'https://api.hive.blog';
+const TEST_ID = 'SMOKE-07';
+const TEST_NAME = 'Payout';
+const TEST_PRIORITY = 'P1';
 
 async function runTest() {
   console.log('========================================');
-  console.log('SMOKE-07: Payout');
+  console.log(`${TEST_ID}: ${TEST_NAME}`);
   console.log('========================================\n');
 
   const headless = process.env.HEADLESS === 'true';
+  const reportDir = process.env.REPORT_DIR || './playwright/temp_ai_report_tests';
+
+  await mkdir(reportDir, { recursive: true });
+
   const browser = await chromium.launch({ headless });
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
+
+  let allPassed = true;
+  let errorMessage = null;
 
   try {
-    let allPassed = true;
-
     console.log('1. Opening /trending...');
     await page.goto(`${BASE_URL}/trending`, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await page.locator('[data-testid="post-list-item"]').first().waitFor({ state: 'visible', timeout: 30000 });
 
     const firstPost = page.locator('[data-testid="post-list-item"]').first();
-
     const authorElement = firstPost.locator('[data-testid="post-author"]');
     const authorText = await authorElement.textContent();
     const author = authorText?.trim().replace('@', '') || '';
@@ -34,36 +46,37 @@ async function runTest() {
     const postLink = await titleElement.getAttribute('href');
     const permlink = postLink?.split('/').pop() || '';
 
+    console.log(`   Post: @${author}/${permlink}`);
+
     const payoutElement = firstPost.locator('[data-testid="post-payout"]');
     const payoutText = await payoutElement.textContent();
-    const uiPayout = parseFloat(payoutText?.replace('$', '').trim() || '0');
-
-    console.log(`   Post: @${author}/${permlink}`);
+    const uiPayout = parseFloat(payoutText?.replace(/[^0-9.]/g, '') || '0');
     console.log(`   UI Payout: $${uiPayout.toFixed(2)}`);
 
     console.log('\n2. Getting API data...');
     const apiRequest = {
       jsonrpc: '2.0',
-      method: 'bridge.get_post',
-      params: { author, permlink, observer: '' },
+      method: 'bridge.get_ranked_posts',
+      params: { sort: 'trending', tag: '', observer: '', limit: 20 },
       id: 1
     };
-
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(apiRequest)
     });
     const data = await response.json();
-    const post = data.result;
+    const apiPost = data.result.find(p => p.author === author && p.permlink === permlink);
 
-    const pendingPayout = parseFloat(post.pending_payout_value?.replace(' HBD', '') || '0');
-    const curatorPayout = parseFloat(post.curator_payout_value?.replace(' HBD', '') || '0');
-    const authorPayout = parseFloat(post.author_payout_value?.replace(' HBD', '') || '0');
+    const isPaidout = apiPost?.is_paidout || false;
+    console.log(`   API is_paidout: ${isPaidout}`);
 
-    const apiPayout = post.is_paidout ? (curatorPayout + authorPayout) : pendingPayout;
-
-    console.log(`   API is_paidout: ${post.is_paidout}`);
+    let apiPayout = 0;
+    if (isPaidout) {
+      apiPayout = parseFloat(apiPost?.payout || '0');
+    } else {
+      apiPayout = parseFloat(apiPost?.pending_payout_value?.replace(' HBD', '') || '0');
+    }
     console.log(`   API Payout: $${apiPayout.toFixed(2)}`);
 
     console.log('\n3. Comparison (tolerance: $0.10)...');
@@ -76,17 +89,46 @@ async function runTest() {
       allPassed = false;
     }
 
-    console.log('\n========================================');
-    console.log(allPassed ? '✓ SMOKE-07: PASS' : '✗ SMOKE-07: FAIL');
-    console.log('========================================');
-    return allPassed;
-
   } catch (error) {
     console.error('✗ ERROR:', error.message);
-    return false;
-  } finally {
-    await browser.close();
+    errorMessage = error.message;
+    allPassed = false;
   }
+
+  if (!allPassed) {
+    const screenshotPath = join(reportDir, `${TEST_ID}-failure.png`);
+    const tracePath = join(reportDir, `${TEST_ID}-trace.zip`);
+
+    try {
+      await page.screenshot({ path: screenshotPath, fullPage: true });
+      console.log(`   Screenshot saved: ${screenshotPath}`);
+    } catch (e) {
+      console.log(`   Could not save screenshot: ${e.message}`);
+    }
+
+    await context.tracing.stop({ path: tracePath });
+    console.log(`   Trace saved: ${tracePath}`);
+  } else {
+    await context.tracing.stop();
+  }
+
+  await browser.close();
+
+  console.log('\n========================================');
+  console.log(allPassed ? `✓ ${TEST_ID}: PASS` : `✗ ${TEST_ID}: FAIL`);
+  console.log('========================================');
+
+  const result = {
+    id: TEST_ID,
+    name: TEST_NAME,
+    priority: TEST_PRIORITY,
+    passed: allPassed,
+    error: errorMessage,
+    artifacts: allPassed ? [] : [`${TEST_ID}-failure.png`, `${TEST_ID}-trace.zip`]
+  };
+  console.log('\n__RESULT__' + JSON.stringify(result));
+
+  return allPassed;
 }
 
 runTest().then(passed => process.exit(passed ? 0 : 1));

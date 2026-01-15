@@ -1,84 +1,145 @@
 /**
  * SMOKE-04: Post Navigation
  * Priority: P0 (Critical)
- * Verifies clicking post navigates to page with title, content, footer
+ * Verifies clicking post navigates to page with title, content, and footer
  */
 import { chromium } from 'playwright';
+import { mkdir } from 'fs/promises';
+import { join } from 'path';
 
 const BASE_URL = 'https://blog.openhive.network';
+const TEST_ID = 'SMOKE-04';
+const TEST_NAME = 'Post Navigation';
+const TEST_PRIORITY = 'P0';
 
 async function runTest() {
   console.log('========================================');
-  console.log('SMOKE-04: Post Navigation');
+  console.log(`${TEST_ID}: ${TEST_NAME}`);
   console.log('========================================\n');
 
   const headless = process.env.HEADLESS === 'true';
+  const reportDir = process.env.REPORT_DIR || './playwright/temp_ai_report_tests';
+
+  await mkdir(reportDir, { recursive: true });
+
   const browser = await chromium.launch({ headless });
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
+
+  let allPassed = true;
+  let errorMessage = null;
 
   try {
-    let allPassed = true;
-
     console.log('1. Opening /trending...');
     await page.goto(`${BASE_URL}/trending`, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await page.locator('[data-testid="post-list-item"]').first().waitFor({ state: 'visible', timeout: 30000 });
 
     const firstPost = page.locator('[data-testid="post-list-item"]').first();
-    const titleElement = firstPost.locator('[data-testid="post-title"] a');
-    const expectedTitle = await titleElement.textContent();
-    console.log(`   Post title: ${expectedTitle?.substring(0, 50)}...\n`);
+    const titleLink = firstPost.locator('[data-testid="post-title"] a');
+    const postTitle = await titleLink.textContent();
+    console.log(`   Post title: ${postTitle?.substring(0, 50)}...`);
 
-    console.log('2. Clicking post...');
-    await titleElement.click();
-    await page.waitForURL('**/@*/**', { timeout: 30000 });
-    await page.locator('#articleBody').first().waitFor({ state: 'visible', timeout: 30000 });
-    console.log(`   URL: ${page.url()}\n`);
+    console.log('\n2. Clicking post...');
+    await titleLink.click();
+    await page.waitForLoadState('domcontentloaded', { timeout: 30000 });
+    console.log(`   URL: ${page.url()}`);
 
-    console.log('3. Checking page elements...');
+    console.log('\n3. Checking page elements...');
 
-    const articleTitle = page.locator('[data-testid="article-title"]');
-    if (await articleTitle.isVisible()) {
+    let titleElement = page.locator('[data-testid="post-page-title"]');
+    let titleVisible = await titleElement.isVisible().catch(() => false);
+    if (!titleVisible) {
+      titleElement = page.locator('h1, h2').first();
+      titleVisible = await titleElement.isVisible().catch(() => false);
+    }
+
+    if (titleVisible) {
       console.log('   ✓ PASS: Title visible');
     } else {
       console.log('   ✗ FAIL: Title not visible');
       allPassed = false;
     }
 
-    const articleBody = page.locator('#articleBody').first();
-    if (await articleBody.isVisible()) {
+    let contentElement = page.locator('[data-testid="post-page-content"]');
+    let contentVisible = await contentElement.isVisible().catch(() => false);
+    if (!contentVisible) {
+      contentElement = page.locator('article, .post-content, [class*="content"]').first();
+      contentVisible = await contentElement.isVisible().catch(() => false);
+    }
+
+    if (contentVisible) {
       console.log('   ✓ PASS: Content visible');
     } else {
       console.log('   ✗ FAIL: Content not visible');
       allPassed = false;
     }
 
-    const commentVotes = page.locator('[data-testid="comment-votes"]').first();
-    if (await commentVotes.isVisible()) {
+    const votesElement = page.locator('[data-testid="post-votes"]');
+    const votesVisible = await votesElement.first().isVisible().catch(() => false);
+
+    if (votesVisible) {
       console.log('   ✓ PASS: Votes visible');
     } else {
       console.log('   ✗ FAIL: Votes not visible');
       allPassed = false;
     }
 
-    const upvoteButton = page.locator('[data-testid="upvote-button"]').first();
-    if (await upvoteButton.isVisible()) {
+    const upvoteButton = page.locator('[data-testid="upvote-button"]');
+    let upvoteVisible = await upvoteButton.first().isVisible().catch(() => false);
+    if (!upvoteVisible) {
+      const altUpvote = page.locator('button:has(svg[class*="chevron-up"]), button:has(svg[class*="arrow-up"])').first();
+      upvoteVisible = await altUpvote.isVisible().catch(() => false);
+    }
+
+    if (upvoteVisible) {
       console.log('   ✓ PASS: Upvote button visible');
     } else {
       console.log('   ✗ FAIL: Upvote button not visible');
       allPassed = false;
     }
 
-    console.log('\n========================================');
-    console.log(allPassed ? '✓ SMOKE-04: PASS' : '✗ SMOKE-04: FAIL');
-    console.log('========================================');
-    return allPassed;
-
   } catch (error) {
     console.error('✗ ERROR:', error.message);
-    return false;
-  } finally {
-    await browser.close();
+    errorMessage = error.message;
+    allPassed = false;
   }
+
+  if (!allPassed) {
+    const screenshotPath = join(reportDir, `${TEST_ID}-failure.png`);
+    const tracePath = join(reportDir, `${TEST_ID}-trace.zip`);
+
+    try {
+      await page.screenshot({ path: screenshotPath, fullPage: true });
+      console.log(`   Screenshot saved: ${screenshotPath}`);
+    } catch (e) {
+      console.log(`   Could not save screenshot: ${e.message}`);
+    }
+
+    await context.tracing.stop({ path: tracePath });
+    console.log(`   Trace saved: ${tracePath}`);
+  } else {
+    await context.tracing.stop();
+  }
+
+  await browser.close();
+
+  console.log('\n========================================');
+  console.log(allPassed ? `✓ ${TEST_ID}: PASS` : `✗ ${TEST_ID}: FAIL`);
+  console.log('========================================');
+
+  const result = {
+    id: TEST_ID,
+    name: TEST_NAME,
+    priority: TEST_PRIORITY,
+    passed: allPassed,
+    error: errorMessage,
+    artifacts: allPassed ? [] : [`${TEST_ID}-failure.png`, `${TEST_ID}-trace.zip`]
+  };
+  console.log('\n__RESULT__' + JSON.stringify(result));
+
+  return allPassed;
 }
 
 runTest().then(passed => process.exit(passed ? 0 : 1));

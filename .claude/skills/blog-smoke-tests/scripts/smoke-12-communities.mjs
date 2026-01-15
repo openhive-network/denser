@@ -4,21 +4,34 @@
  * Verifies /communities loads list and navigation works
  */
 import { chromium } from 'playwright';
+import { mkdir } from 'fs/promises';
+import { join } from 'path';
 
 const BASE_URL = 'https://blog.openhive.network';
+const TEST_ID = 'SMOKE-12';
+const TEST_NAME = 'Communities';
+const TEST_PRIORITY = 'P3';
 
 async function runTest() {
   console.log('========================================');
-  console.log('SMOKE-12: Communities');
+  console.log(`${TEST_ID}: ${TEST_NAME}`);
   console.log('========================================\n');
 
   const headless = process.env.HEADLESS === 'true';
+  const reportDir = process.env.REPORT_DIR || './playwright/temp_ai_report_tests';
+
+  await mkdir(reportDir, { recursive: true });
+
   const browser = await chromium.launch({ headless });
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
+
+  let allPassed = true;
+  let errorMessage = null;
 
   try {
-    let allPassed = true;
-
     console.log('1. Opening /communities...');
     await page.goto(`${BASE_URL}/communities`, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await page.waitForLoadState('networkidle', { timeout: 30000 });
@@ -79,17 +92,46 @@ async function runTest() {
       allPassed = false;
     }
 
-    console.log('\n========================================');
-    console.log(allPassed ? '✓ SMOKE-12: PASS' : '✗ SMOKE-12: FAIL');
-    console.log('========================================');
-    return allPassed;
-
   } catch (error) {
     console.error('✗ ERROR:', error.message);
-    return false;
-  } finally {
-    await browser.close();
+    errorMessage = error.message;
+    allPassed = false;
   }
+
+  if (!allPassed) {
+    const screenshotPath = join(reportDir, `${TEST_ID}-failure.png`);
+    const tracePath = join(reportDir, `${TEST_ID}-trace.zip`);
+
+    try {
+      await page.screenshot({ path: screenshotPath, fullPage: true });
+      console.log(`   Screenshot saved: ${screenshotPath}`);
+    } catch (e) {
+      console.log(`   Could not save screenshot: ${e.message}`);
+    }
+
+    await context.tracing.stop({ path: tracePath });
+    console.log(`   Trace saved: ${tracePath}`);
+  } else {
+    await context.tracing.stop();
+  }
+
+  await browser.close();
+
+  console.log('\n========================================');
+  console.log(allPassed ? `✓ ${TEST_ID}: PASS` : `✗ ${TEST_ID}: FAIL`);
+  console.log('========================================');
+
+  const result = {
+    id: TEST_ID,
+    name: TEST_NAME,
+    priority: TEST_PRIORITY,
+    passed: allPassed,
+    error: errorMessage,
+    artifacts: allPassed ? [] : [`${TEST_ID}-failure.png`, `${TEST_ID}-trace.zip`]
+  };
+  console.log('\n__RESULT__' + JSON.stringify(result));
+
+  return allPassed;
 }
 
 runTest().then(passed => process.exit(passed ? 0 : 1));
