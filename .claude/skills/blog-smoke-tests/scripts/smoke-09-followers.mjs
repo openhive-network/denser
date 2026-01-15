@@ -40,39 +40,35 @@ async function runTest() {
 
     console.log('\n2. Getting UI stats...');
 
-    const statsElements = page.locator('[class*="flex"] span, [class*="stat"] span').filter({ hasText: /\d/ });
-    const statsCount = await statsElements.count();
+    // Profile stats are in ul[data-testid="profile-stats"] with li children
+    const profileStats = page.locator('[data-testid="profile-stats"]');
+    await profileStats.waitFor({ state: 'visible', timeout: 10000 });
 
-    const uiStats = [];
-    for (let i = 0; i < Math.min(statsCount, 10); i++) {
-      const text = await statsElements.nth(i).textContent();
-      if (text && /[\d,]+/.test(text)) {
-        const num = parseInt(text.replace(/[^0-9]/g, ''), 10);
-        if (num > 0) {
-          uiStats.push({ text, num });
-        }
+    const statsItems = profileStats.locator('li');
+    const statsCount = await statsItems.count();
+
+    let uiFollowers = 0;
+    let uiPosts = 0;
+    let uiFollowing = 0;
+
+    for (let i = 0; i < statsCount; i++) {
+      const itemText = await statsItems.nth(i).textContent();
+      const text = itemText?.toLowerCase() || '';
+      const numMatch = itemText?.match(/[\d,]+/);
+      const num = numMatch ? parseInt(numMatch[0].replace(/,/g, ''), 10) : 0;
+
+      if (text.includes('follower')) {
+        uiFollowers = num;
+      } else if (text.includes('post')) {
+        uiPosts = num;
+      } else if (text.includes('follow')) {
+        uiFollowing = num;
       }
     }
 
-    const followersElement = page.locator('[data-testid="user-followers"]');
-    const postsElement = page.locator('[data-testid="user-post-count"]');
-    const followingElement = page.locator('[data-testid="user-following"]');
-
-    const followersText = await followersElement.textContent().catch(() => '0');
-    const postsText = await postsElement.textContent().catch(() => '0');
-    const followingText = await followingElement.textContent().catch(() => '0');
-
-    const uiFollowers = parseInt(followersText?.replace(/[^0-9]/g, '') || '0', 10);
-    const uiPosts = parseInt(postsText?.replace(/[^0-9]/g, '') || '0', 10);
-    const uiFollowing = parseInt(followingText?.replace(/[^0-9]/g, '') || '0', 10);
-
-    console.log(`   Stat 0: ${uiFollowers} followers`);
-    console.log(`   Stat 1: ${uiPosts} posts`);
-    console.log(`   Stat 2:  ${uiFollowing} following`);
-
-    if (uiStats.length > 3) {
-      console.log(`   Stat 3: ${uiStats[3]?.text || 'N/A'}`);
-    }
+    console.log(`   Followers: ${uiFollowers}`);
+    console.log(`   Posts: ${uiPosts}`);
+    console.log(`   Following: ${uiFollowing}`);
 
     console.log('\n3. Getting API stats...');
 
@@ -136,10 +132,10 @@ async function runTest() {
       allPassed = false;
     }
 
-    if (uiStats.length >= 4) {
-      console.log(`   ✓ PASS: All 4 stats displayed`);
+    if (statsCount >= 3) {
+      console.log(`   ✓ PASS: All ${statsCount} stats displayed`);
     } else {
-      console.log(`   (i) INFO: Only ${uiStats.length} stats found`);
+      console.log(`   (i) INFO: Only ${statsCount} stats found`);
     }
 
   } catch (error) {

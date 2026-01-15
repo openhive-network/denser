@@ -40,17 +40,31 @@ async function runTest() {
 
     console.log('\n2. Getting UI stats...');
 
-    const followersElement = page.locator('[data-testid="user-followers"]');
-    const postsElement = page.locator('[data-testid="user-post-count"]');
-    const followingElement = page.locator('[data-testid="user-following"]');
+    // Profile stats are in ul[data-testid="profile-stats"] with li children
+    const profileStats = page.locator('[data-testid="profile-stats"]');
+    await profileStats.waitFor({ state: 'visible', timeout: 10000 });
 
-    const followersText = await followersElement.textContent().catch(() => '0');
-    const postsText = await postsElement.textContent().catch(() => '0');
-    const followingText = await followingElement.textContent().catch(() => '0');
+    const statsItems = profileStats.locator('li');
+    const statsCount = await statsItems.count();
 
-    const uiFollowers = parseInt(followersText?.replace(/[^0-9]/g, '') || '0', 10);
-    const uiPosts = parseInt(postsText?.replace(/[^0-9]/g, '') || '0', 10);
-    const uiFollowing = parseInt(followingText?.replace(/[^0-9]/g, '') || '0', 10);
+    let uiFollowers = 0;
+    let uiPosts = 0;
+    let uiFollowing = 0;
+
+    for (let i = 0; i < statsCount; i++) {
+      const itemText = await statsItems.nth(i).textContent();
+      const text = itemText?.toLowerCase() || '';
+      const numMatch = itemText?.match(/[\d,]+/);
+      const num = numMatch ? parseInt(numMatch[0].replace(/,/g, ''), 10) : 0;
+
+      if (text.includes('follower')) {
+        uiFollowers = num;
+      } else if (text.includes('post')) {
+        uiPosts = num;
+      } else if (text.includes('follow')) {
+        uiFollowing = num;
+      }
+    }
 
     console.log(`   Followers: ${uiFollowers}`);
     console.log(`   Posts: ${uiPosts}`);

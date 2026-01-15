@@ -48,7 +48,7 @@ async function runTest() {
 
     for (let i = 0; i < Math.min(postCount, 5); i++) {
       const post = posts.nth(i);
-      const commentsElement = post.locator('[data-testid="post-comments"]');
+      const commentsElement = post.locator('[data-testid="post-children"]');
       const commentsVisible = await commentsElement.isVisible().catch(() => false);
 
       if (commentsVisible) {

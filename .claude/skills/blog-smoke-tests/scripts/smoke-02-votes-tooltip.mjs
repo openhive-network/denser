@@ -38,7 +38,7 @@ async function runTest() {
 
     console.log('\n2. Checking votes element on card...');
 
-    const votesElement = page.locator('[data-testid="post-list-item"]').first().locator('[data-testid="post-votes"]');
+    const votesElement = page.locator('[data-testid="post-list-item"]').first().locator('[data-testid="post-total-votes"]');
     const votesVisible = await votesElement.isVisible().catch(() => false);
 
     if (votesVisible) {
