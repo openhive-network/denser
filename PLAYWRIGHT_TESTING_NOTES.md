@@ -10,6 +10,17 @@
 4. **Skrypty tymczasowe**: `apps/blog/playwright/temp_ai_script_tests/*.mjs`
 5. **Po testach USUŃ skrypty** z folderu `temp_ai_script_tests/`
 
+### Tryby uruchamiania przeglądarki
+
+Testy można uruchamiać w dwóch trybach zależnie od preferencji użytkownika:
+
+| Tryb | Kod | Kiedy używać |
+|------|-----|--------------|
+| **Headed** (z przeglądarką) | `chromium.launch({ headless: false })` | Debugowanie, pokazywanie userowi, nauka |
+| **Headless** (bez przeglądarki) | `chromium.launch({ headless: true })` | CI/CD, szybsze testy, automatyzacja |
+
+**Domyślnie używaj `headless: false`** aby użytkownik widział działanie testu w przeglądarce.
+
 ### Uruchomienie testu
 
 ```bash
@@ -90,7 +101,9 @@ async function runTest() {
   console.log('SMOKE-XX: Nazwa testu');
   console.log('========================================\n');
 
-  const browser = await chromium.launch({ headless: true });
+  // headless: true  = bez widocznej przeglądarki (szybsze, dla CI)
+  // headless: false = z widoczną przeglądarką (do debugowania, pokazywania userowi)
+  const browser = await chromium.launch({ headless: false });
   const page = await browser.newPage();
 
   try {
