@@ -797,3 +797,438 @@ CZĘŚĆ 4: PORÓWNANIE WYNIKÓW
 - Post card i stopka posta pokazują identyczną wartość
 - Wartość w HBD jest konwertowana na $ (w tym przypadku 1:1)
 - Tolerancja porównania: 0.02 (na zaokrąglenia)
+
+---
+
+## 14. Smoke Testy - Wzorce i Best Practices (2026-01-15)
+
+### Struktura smoke testu
+
+Każdy smoke test powinien mieć następującą strukturę:
+
+```javascript
+/**
+ * SMOKE-XX: Nazwa testu
+ *
+ * Cel: Krótki opis celu testu
+ *
+ * Kroki:
+ * 1. Krok pierwszy
+ * 2. Krok drugi
+ * ...
+ */
+
+import { chromium } from 'playwright';
+
+const BASE_URL = 'https://blog.openhive.network';
+const API_URL = 'https://api.hive.blog';
+
+async function runTest() {
+  console.log('========================================');
+  console.log('SMOKE-XX: Nazwa testu');
+  console.log('========================================\n');
+
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+
+  try {
+    // CZĘŚĆ 1: Akcje UI (Playwright)
+    // CZĘŚĆ 2: Weryfikacja z API
+    // CZĘŚĆ 3: Porównanie wyników
+    // PODSUMOWANIE
+
+    return allPassed;
+  } catch (error) {
+    console.error('\n✗ BŁĄD:', error.message);
+    return false;
+  } finally {
+    await browser.close();
+  }
+}
+
+// Uruchom test
+runTest()
+  .then(passed => process.exit(passed ? 0 : 1))
+  .catch(error => {
+    console.error('Nieoczekiwany błąd:', error);
+    process.exit(1);
+  });
+```
+
+### Kluczowe selektory dla smoke testów
+
+#### Strona główna (Post Card)
+| Selektor | Opis |
+|----------|------|
+| `post-list-item` | Pojedyncza karta posta |
+| `post-author` | Nazwa autora (@username) |
+| `post-title` | Tytuł posta (zawiera link `a`) |
+| `post-payout` | Wartość payout ($XX.XX) |
+| `post-total-votes` | Liczba głosów |
+| `post-card-response-link` | Liczba komentarzy |
+
+#### Strona posta
+| Selektor | Opis |
+|----------|------|
+| `article-title` | Tytuł artykułu |
+| `#articleBody` | Treść artykułu (użyj `.first()` - wiele elementów!) |
+| `comment-votes` | Głosy w stopce (użyj `.first()`) |
+| `comment-payout` | Payout w stopce (użyj `.first()`) |
+| `upvote-button` | Przycisk upvote |
+| `downvote-button` | Przycisk downvote |
+| `comment-reply` | Przycisk reply |
+| `comment-list-item` | Pojedynczy komentarz |
+| `author-name-link` | Link do autora w poście |
+
+#### Profil użytkownika
+| Selektor | Opis |
+|----------|------|
+| `profile-name` | Nazwa wyświetlana (np. "Gandalf the Grey (75)") |
+| `profile-about` | Opis profilu |
+| `user-joined` | Data dołączenia |
+| `profile-stats` | Kontener statystyk |
+| `profile-stats li:nth(0)` | Followers |
+| `profile-stats li:nth(1)` | Posts |
+| `profile-stats li:nth(2)` | Following |
+| `profile-stats li:nth(3)` | HP |
+| `profile-follow-button` | Przycisk Follow |
+
+#### Social Media Share
+| Selektor | Opis |
+|----------|------|
+| `share-on-facebook` | Udostępnij na Facebook |
+| `share-on-twitter` | Udostępnij na Twitter |
+| `share-on-linkedin` | Udostępnij na LinkedIn |
+| `share-on-reddit` | Udostępnij na Reddit |
+
+### Wzorce pobierania danych
+
+#### Pobieranie pierwszego posta z /trending
+
+```javascript
+const firstPost = page.locator('[data-testid="post-list-item"]').first();
+
+// Autor
+const authorElement = firstPost.locator('[data-testid="post-author"]');
+const authorText = await authorElement.textContent();
+const author = authorText?.trim().replace('@', '') || '';
+
+// Tytuł i link
+const titleElement = firstPost.locator('[data-testid="post-title"] a');
+const title = await titleElement.textContent();
+const postLink = await titleElement.getAttribute('href');
+
+// Permlink z URL
+const urlParts = postLink?.split('/') || [];
+const permlink = urlParts[urlParts.length - 1] || '';
+```
+
+#### Pobieranie statystyk profilu
+
+```javascript
+const profileStats = page.locator('[data-testid="profile-stats"]');
+await profileStats.waitFor({ state: 'visible', timeout: 10000 });
+
+// Followers - li.nth(0), Posts - li.nth(1), Following - li.nth(2), HP - li.nth(3)
+const followersElement = profileStats.locator('li').nth(0);
+const followersText = await followersElement.textContent() || '0';
+const followersUI = parseInt(followersText.replace(/[^\d]/g, '')) || 0;
+```
+
+### Wzorce API
+
+#### bridge.get_ranked_posts (trending)
+
+```javascript
+const apiRequest = {
+  jsonrpc: '2.0',
+  method: 'bridge.get_ranked_posts',
+  params: { sort: 'trending', tag: '', observer: '', limit: 1 },
+  id: 1
+};
+const response = await fetch(API_URL, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(apiRequest)
+});
+const data = await response.json();
+const post = data.result[0];
+```
+
+#### bridge.get_post (szczegóły posta)
+
+```javascript
+const apiRequest = {
+  jsonrpc: '2.0',
+  method: 'bridge.get_post',
+  params: { author: 'username', permlink: 'post-slug', observer: '' },
+  id: 1
+};
+// Dostępne pola: title, children, pending_payout_value, active_votes, is_paidout
+```
+
+#### condenser_api.get_accounts (dane konta)
+
+```javascript
+const apiRequest = {
+  jsonrpc: '2.0',
+  method: 'condenser_api.get_accounts',
+  params: [['username']],
+  id: 1
+};
+// Dostępne pola: name, post_count, posting_json_metadata (zawiera profile.name, profile.about)
+```
+
+#### condenser_api.get_follow_count (followers/following)
+
+```javascript
+const apiRequest = {
+  jsonrpc: '2.0',
+  method: 'condenser_api.get_follow_count',
+  params: ['username'],
+  id: 1
+};
+// Dostępne pola: follower_count, following_count
+```
+
+### Ważne uwagi i pułapki
+
+#### 1. Elementy z wieloma wystąpieniami
+```javascript
+// ŹLE - błąd "strict mode violation"
+const articleBody = page.locator('#articleBody');
+
+// DOBRZE - użyj .first()
+const articleBody = page.locator('#articleBody').first();
+```
+
+#### 2. API ograniczenia
+- `active_votes` w `bridge.get_post` jest **ograniczone do 1000 wpisów**
+- Jeśli post ma więcej głosów, UI pokaże więcej niż API
+
+#### 3. Tolerancje porównań
+| Typ danych | Tolerancja | Powód |
+|------------|------------|-------|
+| Payout | ±$0.10 | Zaokrąglenia, opóźnienie cache |
+| Followers/Following | ±50 | Cache może być nieaktualny |
+| Posts count | ±10 | Cache może być nieaktualny |
+| Vote count | ±10 lub API limit | API ogranicza do 1000 |
+
+#### 4. Czas ładowania stron
+```javascript
+// Strona główna - dłuższy timeout
+await page.goto(`${BASE_URL}/trending`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+await page.waitForTimeout(8000);
+
+// Strona posta - krótszy timeout
+await page.goto(postUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+await page.waitForTimeout(6000);
+
+// Profil - średni timeout
+await page.goto(`${BASE_URL}/@username`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+await page.waitForTimeout(6000);
+```
+
+#### 5. Parsowanie wartości z UI
+```javascript
+// Payout: "$61.28" -> 61.28
+const payoutValue = parseFloat(payoutText.replace('$', '').trim()) || 0;
+
+// Liczba z separatorami: "10,925 followers" -> 10925
+const followers = parseInt(text.replace(/[^\d]/g, '')) || 0;
+
+// Autor: "@username" -> "username"
+const author = authorText?.trim().replace('@', '') || '';
+```
+
+### Lista wszystkich smoke testów (P0-P4)
+
+#### Priorytet P0 (Krytyczne)
+| ID | Nazwa | Opis | Plik |
+|----|-------|------|------|
+| SMOKE-01 | Strona główna | Ładowanie postów, weryfikacja z API | `smoke-01-homepage-posts.mjs` |
+| SMOKE-04 | Nawigacja do posta | Kliknięcie → tytuł, treść, stopka | `smoke-04-navigate-to-post.mjs` |
+| SMOKE-08 | Profil użytkownika | Statystyki vs API accounts/follow_count | `smoke-08-profile-basic-info.mjs` |
+
+#### Priorytet P1 (Ważne)
+| ID | Nazwa | Opis | Plik |
+|----|-------|------|------|
+| SMOKE-05 | Głosy z API | Tooltip głosów vs API active_votes | `smoke-05-post-votes-api.mjs` |
+| SMOKE-06 | Komentarze | Post card vs strona vs API children | `smoke-06-comments-count.mjs` |
+| SMOKE-07 | Payout | Post card vs stopka vs API payout | `smoke-07-payout-value.mjs` |
+
+#### Priorytet P2 (Tooltips)
+| ID | Nazwa | Opis | Plik |
+|----|-------|------|------|
+| SMOKE-02 | Tooltip głosów (post card) | Hover na głosach → tooltip | `smoke-02-postcard-votes-tooltip.mjs` |
+| SMOKE-03 | Tooltip payout (post card) | Hover na payout → breakdown | `smoke-03-postcard-payout-tooltip.mjs` |
+| SMOKE-09 | Followers/Following | Szczegółowe statystyki profilu vs API | `smoke-09-profile-followers-api.mjs` |
+
+#### Priorytet P3 (Nawigacja)
+| ID | Nazwa | Opis | Plik |
+|----|-------|------|------|
+| SMOKE-10 | Nawigacja przez tagi | Kliknięcie tag → filtrowanie postów | `smoke-10-tag-navigation.mjs` |
+| SMOKE-11 | Kategorie | /trending vs /hot vs /created | `smoke-11-category-navigation.mjs` |
+| SMOKE-12 | Communities | Lista communities, nawigacja | `smoke-12-communities-list.mjs` |
+
+#### Priorytet P4 (Dodatkowe)
+| ID | Nazwa | Opis | Plik |
+|----|-------|------|------|
+| SMOKE-13 | Strony statyczne | FAQ, Privacy, ToS, Welcome | `smoke-13-static-pages.mjs` |
+| SMOKE-14 | Theme toggle | Przełączanie dark/light mode | `smoke-14-theme-toggle.mjs` |
+| SMOKE-15 | Login modal | Otwieranie modalu logowania | `smoke-15-login-modal.mjs` |
+
+---
+
+## 15. Uruchamianie Smoke Testów
+
+### Wymagania
+- Node.js 20+
+- pnpm
+- Playwright zainstalowany w projekcie
+
+### Uruchamianie pojedynczego testu
+
+```bash
+cd /storage1/denser/apps/blog
+pnpm exec node playwright/temp_ai_script_tests/smoke-01-homepage-posts.mjs
+```
+
+### Uruchamianie wszystkich smoke testów
+
+```bash
+cd /storage1/denser/apps/blog
+
+# Wszystkie testy z wynikami
+for f in playwright/temp_ai_script_tests/smoke-*.mjs; do
+  echo "========================================"
+  echo "Running: $f"
+  echo "========================================"
+  pnpm exec node "$f"
+  EXIT_CODE=$?
+  if [ $EXIT_CODE -eq 0 ]; then
+    echo "✓ PASS"
+  else
+    echo "✗ FAIL (exit code: $EXIT_CODE)"
+  fi
+  echo ""
+done
+```
+
+### Uruchamianie testów według priorytetu
+
+```bash
+cd /storage1/denser/apps/blog
+
+# P0 - Krytyczne
+pnpm exec node playwright/temp_ai_script_tests/smoke-01-homepage-posts.mjs
+pnpm exec node playwright/temp_ai_script_tests/smoke-04-navigate-to-post.mjs
+pnpm exec node playwright/temp_ai_script_tests/smoke-08-profile-basic-info.mjs
+
+# P1 - Ważne
+pnpm exec node playwright/temp_ai_script_tests/smoke-05-post-votes-api.mjs
+pnpm exec node playwright/temp_ai_script_tests/smoke-06-comments-count.mjs
+pnpm exec node playwright/temp_ai_script_tests/smoke-07-payout-value.mjs
+
+# P2 - Tooltips
+pnpm exec node playwright/temp_ai_script_tests/smoke-02-postcard-votes-tooltip.mjs
+pnpm exec node playwright/temp_ai_script_tests/smoke-03-postcard-payout-tooltip.mjs
+pnpm exec node playwright/temp_ai_script_tests/smoke-09-profile-followers-api.mjs
+
+# P3 - Nawigacja
+pnpm exec node playwright/temp_ai_script_tests/smoke-10-tag-navigation.mjs
+pnpm exec node playwright/temp_ai_script_tests/smoke-11-category-navigation.mjs
+pnpm exec node playwright/temp_ai_script_tests/smoke-12-communities-list.mjs
+
+# P4 - Dodatkowe
+pnpm exec node playwright/temp_ai_script_tests/smoke-13-static-pages.mjs
+pnpm exec node playwright/temp_ai_script_tests/smoke-14-theme-toggle.mjs
+pnpm exec node playwright/temp_ai_script_tests/smoke-15-login-modal.mjs
+```
+
+### Skrypt do uruchomienia wszystkich testów z raportem
+
+```bash
+#!/bin/bash
+# save as: run-smoke-tests.sh
+
+cd /storage1/denser/apps/blog
+
+PASS=0
+FAIL=0
+RESULTS=""
+
+for f in playwright/temp_ai_script_tests/smoke-*.mjs; do
+  NAME=$(basename "$f" .mjs)
+  pnpm exec node "$f" > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    RESULTS="$RESULTS\n✓ $NAME"
+    ((PASS++))
+  else
+    RESULTS="$RESULTS\n✗ $NAME"
+    ((FAIL++))
+  fi
+done
+
+echo "========================================"
+echo "SMOKE TESTS REPORT"
+echo "========================================"
+echo -e "$RESULTS"
+echo "----------------------------------------"
+echo "PASS: $PASS | FAIL: $FAIL | TOTAL: $((PASS+FAIL))"
+echo "========================================"
+
+exit $FAIL
+```
+
+### Interpretacja wyników
+
+Każdy test kończy się jednym z trzech stanów:
+- `✓ PASS` - Test przeszedł pomyślnie (exit code 0)
+- `✗ FAIL` - Test nie przeszedł (exit code 1)
+- `✗ BŁĄD` - Wystąpił błąd podczas wykonywania testu
+
+### Co sprawdzają poszczególne testy
+
+| Test | Sprawdza |
+|------|----------|
+| **SMOKE-01** | Czy /trending ładuje >= 20 postów, zgodność pierwszego posta z API |
+| **SMOKE-02** | Czy hover na głosach pokazuje tooltip z liczbą głosów |
+| **SMOKE-03** | Czy hover na payout pokazuje breakdown (HBD, data wypłaty) |
+| **SMOKE-04** | Czy kliknięcie na post otwiera stronę z tytułem, treścią, stopką |
+| **SMOKE-05** | Czy top głosujący z tooltipa zgadza się z API (rshares) |
+| **SMOKE-06** | Czy liczba komentarzy: post card = strona = API children |
+| **SMOKE-07** | Czy payout: post card = stopka = API pending_payout_value |
+| **SMOKE-08** | Czy statystyki profilu zgadzają się z API get_accounts |
+| **SMOKE-09** | Czy followers/following zgadzają się z API get_follow_count |
+| **SMOKE-10** | Czy kliknięcie na tag filtruje posty do tej kategorii |
+| **SMOKE-11** | Czy /trending, /hot, /created pokazują różne posty |
+| **SMOKE-12** | Czy /communities ładuje listę, nawigacja do community działa |
+| **SMOKE-13** | Czy /faq.html, /privacy.html, /tos.html zwracają 200 |
+| **SMOKE-14** | Czy przycisk theme toggle jest widoczny i działa |
+| **SMOKE-15** | Czy kliknięcie Login otwiera modal logowania |
+
+### Typowe błędy i rozwiązania
+
+| Błąd | Przyczyna | Rozwiązanie |
+|------|-----------|-------------|
+| `Timeout 60000ms exceeded` | Strona nie załadowała się | Zwiększ timeout lub sprawdź połączenie |
+| `strict mode violation` | Selektor zwraca wiele elementów | Dodaj `.first()` do selektora |
+| `element is not visible` | Element nie jest w viewport | Użyj `scrollIntoViewIfNeeded()` |
+| `Różnica > tolerancja` | Cache API jest nieaktualny | Zwiększ tolerancję lub poczekaj |
+| `locator.fill: element is disabled` | Pole jest wyłączone | Sprawdź `isDisabled()` przed akcją |
+
+### Czyszczenie po testach
+
+Po zakończeniu testowania **USUŃ** pliki z `temp_ai_script_tests/`:
+```bash
+rm -f apps/blog/playwright/temp_ai_script_tests/smoke-*.mjs
+```
+
+### Dobre praktyki
+
+1. **Uruchamiaj testy P0 najpierw** - jeśli te nie przejdą, reszta też może failować
+2. **Sprawdź połączenie z API** - `curl https://api.hive.blog` przed testami
+3. **Używaj headless: false do debugowania** - zmień na `chromium.launch({ headless: false })`
+4. **Zwiększ timeout dla wolnych połączeń** - `waitForTimeout(10000)` zamiast 6000
+5. **Loguj więcej danych przy debugowaniu** - dodaj `console.log()` dla wartości pośrednich
