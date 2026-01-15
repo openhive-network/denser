@@ -96,9 +96,10 @@ async function runTest() {
   try {
     let allPassed = true;
 
-    // CZĘŚĆ 1: Akcje UI
+    // CZĘŚĆ 1: Akcje UI - nawigacja z oczekiwaniem na element
     await page.goto(`${BASE_URL}/trending`, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await page.waitForTimeout(6000);
+    // Czekaj na konkretny element zamiast timeout
+    await page.locator('[data-testid="post-list-item"]').first().waitFor({ state: 'visible', timeout: 30000 });
 
     // CZĘŚĆ 2: Pobierz dane z UI
     const element = page.locator('[data-testid="..."]').first();
@@ -291,10 +292,10 @@ const permlink = postLink?.split('/').pop() || '';
 const element = page.locator('[data-testid="post-total-votes"]').first();
 await element.scrollIntoViewIfNeeded();
 await element.hover();
-await page.waitForTimeout(2000);
 
-// Szukaj otwartego tooltipa
-const tooltip = page.locator('[data-state="open"]').first();
+// Czekaj na pojawienie się tooltipa zamiast timeout
+const tooltip = page.locator('[data-state="open"]');
+await tooltip.waitFor({ state: 'visible', timeout: 5000 });
 const tooltipText = await tooltip.textContent();
 ```
 
@@ -336,21 +337,68 @@ const payout = post.is_paidout ? (curatorPayout + authorPayout) : pendingPayout;
 
 ---
 
-## Czas ładowania stron
+## Oczekiwanie na załadowanie stron (Best Practices)
+
+**WAŻNE: Unikaj `waitForTimeout` - używaj jawnych oczekiwań na elementy!**
+
+### Strona główna (/trending, /hot, /created)
 
 ```javascript
-// Strona główna - potrzebuje więcej czasu
 await page.goto(`${BASE_URL}/trending`, { waitUntil: 'domcontentloaded', timeout: 60000 });
-await page.waitForTimeout(6000);  // lub 8000 dla wolniejszych połączeń
-
-// Strona posta
-await page.goto(postUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
-await page.waitForTimeout(5000);
-
-// Profil
-await page.goto(`${BASE_URL}/@username`, { waitUntil: 'domcontentloaded', timeout: 60000 });
-await page.waitForTimeout(5000);
+// Czekaj na pierwszy post - to znaczy że lista się załadowała
+await page.locator('[data-testid="post-list-item"]').first().waitFor({ state: 'visible', timeout: 30000 });
 ```
+
+### Strona posta
+
+```javascript
+await page.goto(postUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+// Czekaj na treść artykułu
+await page.locator('#articleBody').first().waitFor({ state: 'visible', timeout: 30000 });
+```
+
+### Profil użytkownika
+
+```javascript
+await page.goto(`${BASE_URL}/@username`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+// Czekaj na statystyki profilu
+await page.locator('[data-testid="profile-stats"]').waitFor({ state: 'visible', timeout: 30000 });
+```
+
+### Lista communities
+
+```javascript
+await page.goto(`${BASE_URL}/communities`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+// Czekaj na pierwszy element listy
+await page.locator('[data-testid="community-list-item"]').first().waitFor({ state: 'visible', timeout: 30000 });
+```
+
+### Po kliknięciu (nawigacja)
+
+```javascript
+await titleElement.click();
+// Czekaj na URL lub element docelowej strony
+await page.waitForURL('**/@*/**', { timeout: 30000 });
+// LUB czekaj na element
+await page.locator('[data-testid="article-title"]').waitFor({ state: 'visible', timeout: 30000 });
+```
+
+### Po hover (tooltip)
+
+```javascript
+await element.hover();
+// Czekaj na tooltip
+await page.locator('[data-state="open"]').waitFor({ state: 'visible', timeout: 5000 });
+```
+
+### Wzorzec ogólny
+
+| Zamiast | Użyj |
+|---------|------|
+| `waitForTimeout(5000)` | `element.waitFor({ state: 'visible', timeout: 30000 })` |
+| `waitForTimeout(X)` po goto | `page.waitForLoadState('networkidle')` lub `element.waitFor()` |
+| `waitForTimeout(X)` po click | `page.waitForURL()` lub `targetElement.waitFor()` |
+| `waitForTimeout(X)` po hover | `tooltip.waitFor({ state: 'visible' })` |
 
 ---
 
@@ -373,8 +421,11 @@ await page.waitForTimeout(5000);
 // Włącz widoczną przeglądarkę
 const browser = await chromium.launch({ headless: false });
 
-// Zwiększ timeout dla wolnych połączeń
-await page.waitForTimeout(10000);
+// Spowolnij wykonywanie (500ms między akcjami)
+const browser = await chromium.launch({ headless: false, slowMo: 500 });
+
+// Zatrzymaj test interaktywnie (wymaga headless: false)
+await page.pause();
 
 // Loguj więcej danych
 console.log('HTML:', await element.innerHTML());
