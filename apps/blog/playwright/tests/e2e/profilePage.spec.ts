@@ -60,20 +60,22 @@ test.describe('Profile page of @gtg', () => {
     expect(await profilePage.profileNumberOfPosts.textContent()).toContain(String(profilePostCountApi));
 
     // Compare follower and following number from api to the respondent on the website
-    const responseGetFollowCount = await request.post(`${url}/`, {
+    // Using bridge.get_profile instead of deprecated condenser_api.get_follow_count
+    const responseGetProfile = await request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: '2.0',
-        method: 'condenser_api.get_follow_count',
-        params: ['gtg']
+        method: 'bridge.get_profile',
+        params: { account: 'gtg' }
       },
       headers: {
         Accept: 'application/json, text/plain, */*'
       }
     });
 
-    const followerCount = (await responseGetFollowCount.json()).result.follower_count;
-    const followingCount = (await responseGetFollowCount.json()).result.following_count;
+    const profileResult = (await responseGetProfile.json()).result;
+    const followerCount = profileResult?.stats?.followers ?? 0;
+    const followingCount = profileResult?.stats?.following ?? 0;
 
     await expect(profilePage.profileFollowers).toContainText(String(followerCount));
     await expect(profilePage.profileFollowing).toContainText(String(followingCount));

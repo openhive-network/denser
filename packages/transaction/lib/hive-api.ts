@@ -187,7 +187,19 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
   });
 
 export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
-  return (await getChain()).api.condenser_api.get_follow_count([username]);
+  const profile = await (await getChain()).api.bridge.get_profile({ account: username });
+  if (!profile || !profile.stats) {
+    return {
+      account: username,
+      follower_count: 0,
+      following_count: 0
+    };
+  }
+  return {
+    account: username,
+    follower_count: profile.stats.followers,
+    following_count: profile.stats.following
+  };
 };
 
 /**

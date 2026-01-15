@@ -26,23 +26,31 @@ export class ApiHelper {
     return responseGetAccounts.json();
   }
 
-  // Get Follow count info as json from API response
+  // Get Follow count info as json from API response using bridge.get_profile
   async getFollowCountAPI(username: string) {
     const url = process.env.REACT_APP_API_ENDPOINT;
 
-    const responseGetFollowCount = await this.page.request.post(`${url}/`, {
+    const response = await this.page.request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: '2.0',
-        method: 'condenser_api.get_follow_count',
-        params: [`${username}`]
+        method: 'bridge.get_profile',
+        params: { account: `${username}` }
       },
       headers: {
         Accept: 'application/json, text/plain, */*'
       }
     });
 
-    return responseGetFollowCount.json();
+    const json = await response.json();
+    // Transform response to match the old format for backward compatibility in tests
+    return {
+      result: {
+        follower_count: json.result?.stats?.followers ?? 0,
+        following_count: json.result?.stats?.following ?? 0,
+        account: username
+      }
+    };
   }
 
   // Get ranked post (default: sort'tranding', limit=20)
