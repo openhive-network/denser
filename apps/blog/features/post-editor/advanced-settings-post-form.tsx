@@ -153,16 +153,11 @@ export function AdvancedSettingsPostForm({
   };
 
   const handleEditBeneficiary = (index: number, weight: string, account: string) => {
-    setBeneficiaries((prev) => {
-      const updated = prev.map((beneficiary, beneficiaryIndex) =>
+    setBeneficiaries((prev) =>
+      prev.map((beneficiary, beneficiaryIndex) =>
         index !== beneficiaryIndex ? beneficiary : { weight, account }
-      );
-      const combinedPercentage = updated.reduce<number>((acc, beneficiary) => {
-        return acc + Number(beneficiary.weight);
-      }, 0);
-      setSplitRewards(100 - combinedPercentage);
-      return updated;
-    });
+      )
+    );
   };
 
   function deleteTemplate(templateName: string) {
