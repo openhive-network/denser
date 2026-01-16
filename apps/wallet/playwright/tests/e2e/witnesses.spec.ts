@@ -165,13 +165,13 @@ test.describe('Witnesses page tests', () => {
 
     // Validate Witness votes received
     const resDynamicGlobalProperties = await apiHelper.getDynamicGlobalPropertiesAPI();
-    const totalVesting = await resDynamicGlobalProperties.result.total_vesting_fund_hive.replace(
-      / HIVE/g,
-      ''
-    );
-    const totalShares = await resDynamicGlobalProperties.result.total_vesting_shares.replace(/ VESTS/g, '');
+    // NaiAsset format: convert to actual values by dividing amount by 10^precision
+    const totalVestingNai = resDynamicGlobalProperties.result.total_vesting_fund_hive;
+    const totalSharesNai = resDynamicGlobalProperties.result.total_vesting_shares;
+    const totalVesting = Big(totalVestingNai.amount).div(Big(10).pow(totalVestingNai.precision));
+    const totalShares = Big(totalSharesNai.amount).div(Big(10).pow(totalSharesNai.precision));
     const witnessVotesAPI = witnesses[0].votes;
-    const vestsToHp: Big = Big(Big(totalVesting).times(Big(witnessVotesAPI).div(Big(totalShares)))).div(
+    const vestsToHp: Big = totalVesting.times(Big(witnessVotesAPI).div(totalShares)).div(
       1000000
     );
     expect(await witnessesPage.witnessVotesReceived.first().textContent()).toBe(

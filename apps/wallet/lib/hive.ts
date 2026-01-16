@@ -1,6 +1,6 @@
 import Big from 'big.js';
 import moment from 'moment';
-import { RcAccount, GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
+import { RcAccount } from '@hiveio/wax';
 import {
   SavingsWithdrawals,
   IProposal,
@@ -251,9 +251,4 @@ export const getSavingsWithdrawals = async (account: string): Promise<SavingsWit
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
   const chain = await getChain();
   return chain.api.condenser_api.get_owner_history([account]);
-};
-
-export const getDynamicGlobalPropertiesData = async (): Promise<GetDynamicGlobalPropertiesResponse> => {
-  const chain = await getChain();
-  return chain.api.database_api.get_dynamic_global_properties({});
 };

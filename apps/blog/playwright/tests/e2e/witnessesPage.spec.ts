@@ -91,12 +91,13 @@ test.describe.skip('Witnesses page tests', () => {
     expect(await priceFeedOfFirstWitnessAPIString).toBe(await priceFeedString);
 
     // Calculate Votes received in HP
+    // NaiAsset format: convert to actual values by dividing amount by 10^precision
     const dynamicGlobalPropertiesAPI = (await apiHelper.getDynamicGlobalPropertiesAPI()).result;
-    const totalVestingFoundHiveAPI = dynamicGlobalPropertiesAPI.total_vesting_fund_hive;
-    const totalVestingSharesAPI = dynamicGlobalPropertiesAPI.total_vesting_shares;
+    const totalVestingFoundHiveNai = dynamicGlobalPropertiesAPI.total_vesting_fund_hive;
+    const totalVestingSharesNai = dynamicGlobalPropertiesAPI.total_vesting_shares;
     const witnesVotesAPI = await firstWitnessInfoAPI.votes;
-    const totalVestingFoundHiveAPIBig = Big(totalVestingFoundHiveAPI.match(/(\d)+.(\d)+/g)[0]);
-    const totalVestingSharesAPIBig = Big(totalVestingSharesAPI.match(/(\d)+.(\d)+/g)[0]);
+    const totalVestingFoundHiveAPIBig = Big(totalVestingFoundHiveNai.amount).div(Big(10).pow(totalVestingFoundHiveNai.precision));
+    const totalVestingSharesAPIBig = Big(totalVestingSharesNai.amount).div(Big(10).pow(totalVestingSharesNai.precision));
     const witnesVotesAPIBig = Big(witnesVotesAPI);
 
     const votesReceived = Big(
@@ -104,7 +105,7 @@ test.describe.skip('Witnesses page tests', () => {
     ).div(1000000);
 
     await expect(await witnessPage.firstWitnessVotesReceived.textContent()).toContain(
-      Big(votesReceived).div(1000000).toNumber().toPrecision(4).toString()
+      Big(votesReceived).toNumber().toPrecision(4).toString()
     );
   });
 

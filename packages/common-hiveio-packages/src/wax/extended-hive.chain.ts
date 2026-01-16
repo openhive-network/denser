@@ -588,17 +588,6 @@ export interface IProposalVote {
   voter: string;
 }
 
-export interface IDynamicGlobalProperties {
-  hbd_print_rate: number;
-  total_vesting_fund_hive: string;
-  total_vesting_shares: string;
-  hbd_interest_rate: number;
-  head_block_number: number;
-  head_block_id: string;
-  vesting_reward_percent: number;
-  virtual_supply: string;
-}
-
 export interface IAccountReputations {
   account: string;
   reputation: number;
@@ -799,6 +788,41 @@ export interface IDirectDelegation {
     to: string;
   }[];
 }
+
+export interface IProfileStats {
+  rank: number;
+  following: number;
+  followers: number;
+}
+
+export interface IProfileMetadata {
+  profile?: {
+    name?: string;
+    about?: string;
+    website?: string;
+    location?: string;
+    cover_image?: string;
+    profile_image?: string;
+    blacklist_description?: string;
+    muted_list_description?: string;
+  };
+}
+
+export interface IProfile {
+  id: number;
+  name: string;
+  created: string;
+  active: string;
+  post_count: number;
+  reputation: number;
+  blacklists: string[];
+  stats: IProfileStats;
+  metadata: IProfileMetadata;
+  context?: {
+    followed: boolean;
+  };
+}
+
 export interface GetOperationsByAccountParams {
   'account-name'?: string;
   'observer-name'?: string;
@@ -866,6 +890,7 @@ export type ExtendedNodeApi = {
     unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
     get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
     get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
+    get_profile: TWaxApiRequest<{ account: string; observer?: string }, IProfile | null>;
   };
   condenser_api: {
     get_ticker: TWaxApiRequest<void[], IMarketStatistics>;
@@ -874,7 +899,6 @@ export type ExtendedNodeApi = {
     get_trade_history: TWaxApiRequest<(string | number)[], IOrdersDataItem[]>;
     get_recent_trades: TWaxApiRequest<number[], IRecentTradesData[]>;
     get_owner_history: TWaxApiRequest<string[], OwnerHistory>;
-    get_follow_count: TWaxApiRequest<string[], AccountFollowStats>;
     get_content: TWaxApiRequest<string[], IPost>;
     get_market_history_buckets: TWaxApiRequest<void[], number[]>;
     get_active_votes: TWaxApiRequest<string[], IVote[]>;
@@ -882,7 +906,6 @@ export type ExtendedNodeApi = {
     get_reblogged_by: TWaxApiRequest<[string, string], string[]>;
     get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
     list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
-    get_dynamic_global_properties: TWaxApiRequest<[], IDynamicGlobalProperties>;
     get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
     get_account_reputations: TWaxApiRequest<
       {
