@@ -1,6 +1,7 @@
 'use client';
 import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component'
-import { FullAccount, Community, Entry, MixedPostsResponse } from '@hive/common-hiveio-packages/wax';
+import { Community, Entry, MixedPostsResponse } from '@hive/common-hiveio-packages/wax';
+import { ApiAccount } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components'
 import { useHealthChecker } from '@ui/hooks/useHealthChecker';
@@ -9,7 +10,7 @@ import { useEffect, useState } from 'react';
 import { getChain } from '@transaction/lib/chain';
 
 type NodeApiCheckers = [
-  ApiChecker<FullAccount[]>,
+  ApiChecker<{ accounts: ApiAccount[] }>,
   ApiChecker<Entry | null>,
   ApiChecker<Community[] | null>,
   ApiChecker<Entry[] | null>
@@ -46,17 +47,13 @@ const HealthCheckersWrapper = () => {
     const hiveChain = await getChain();
     const nodeApiCheckers: NodeApiCheckers = [
       {
-        title: 'Condenser - Get accounts',
-        method: hiveChain.api.condenser_api.get_accounts,
-        params: [['guest4test']],
-        validatorFunction: (data: FullAccount[]) =>
-          Array.isArray(data) &&
-          data[0] &&
-          typeof data[0] === 'object' &&
-          'name' in data[0] &&
-          data[0].name === 'guest4test'
+        title: 'Database - Find accounts',
+        method: hiveChain.api.database_api.find_accounts,
+        params: { accounts: ['guest4test'], delayed_votes_active: false },
+        validatorFunction: (data: { accounts: ApiAccount[] }) =>
+          data?.accounts?.[0]?.name === 'guest4test'
             ? true
-            : 'Get account error'
+            : 'Find accounts error'
       },
       {
         title: 'Bridge - Get post',

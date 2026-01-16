@@ -9,3 +9,21 @@ export function convertStringToBig(number: string | NaiAsset): Big {
   // For NaiAsset, divide amount by 10^precision to get actual value
   return new Big(number.amount).div(new Big(10).pow(number.precision));
 }
+
+const NAI_SYMBOLS: Record<string, string> = {
+  '@@000000021': 'HIVE',
+  '@@000000013': 'HBD',
+  '@@000000037': 'VESTS'
+};
+
+/**
+ * Formats a NaiAsset to a human-readable string like "1.234 HIVE"
+ * @param asset - The NaiAsset to format
+ * @param overrideSymbol - Optional symbol override (e.g., 'HP' instead of 'HIVE')
+ * @returns Formatted string like "1.234 HIVE"
+ */
+export function formatNaiAsset(asset: NaiAsset, overrideSymbol?: string): string {
+  const amount = Big(asset.amount).div(Big(10).pow(asset.precision));
+  const symbol = overrideSymbol || NAI_SYMBOLS[asset.nai] || '';
+  return `${amount.toFixed(asset.precision)} ${symbol}`;
+}

@@ -175,7 +175,7 @@ function WitnessesPage() {
   }, [router.query.highlight]);
 
   // Calculate how many votes user have left
-  const votesLeft = MAX_VOTES - (observerData?.witness_votes.length ?? 0);
+  const votesLeft = MAX_VOTES - (observerData?.witness_votes?.length ?? 0);
 
   return (
     <>
@@ -237,7 +237,7 @@ function WitnessesPage() {
                     key={element.id}
                     headBlock={headBlock}
                     voteEnabled={user?.isLoggedIn}
-                    isVoted={observerData?.witness_votes.includes(element.owner) ?? false}
+                    isVoted={observerData?.witness_votes?.includes(element.owner) ?? false}
                     voteLoading={voteMutation.isLoading && voteMutation.variables?.witness === element.owner}
                   />
                 ))
@@ -263,7 +263,7 @@ function WitnessesPage() {
                         {t('witnesses_page.vote')}
                       </Button>
                     </DialogLogin>
-                  ) : !observerData?.witness_votes.includes(voteInput) ? (
+                  ) : !observerData?.witness_votes?.includes(voteInput) ? (
                     <Button
                       className="h-fit"
                       variant="destructive"

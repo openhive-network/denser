@@ -11,19 +11,21 @@ export class ApiHelper {
   async getAccountInfoAPI(username: string) {
     const url = process.env.REACT_APP_API_ENDPOINT;
 
-    const responseGetAccounts = await this.page.request.post(`${url}/`, {
+    const response = await this.page.request.post(`${url}/`, {
       data: {
         id: 0,
         jsonrpc: "2.0",
-        method: "condenser_api.get_accounts",
-        params: [[`${username}`]],
+        method: "database_api.find_accounts",
+        params: { accounts: [username], delayed_votes_active: false },
       },
       headers: {
         Accept: "application/json, text/plain, */*",
       },
     });
 
-    return responseGetAccounts.json();
+    const json = await response.json();
+    // Transform response to match the old format for backward compatibility in tests
+    return { result: json.result?.accounts };
   }
 
   // Get Follow count info as json from API response using bridge.get_profile

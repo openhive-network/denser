@@ -5,6 +5,7 @@ import { Entry, JsonMetadata, FullAccount } from '@hive/common-hiveio-packages/w
 import moment from 'moment';
 import { TFunction } from 'i18next';
 import { proxifyImageSrc } from '@hive/ui';
+import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
 
 export const DEFAULT_OBSERVER = 'hive.blog';
 export type SortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted';
@@ -294,14 +295,13 @@ export function hoursAndMinutes(date: Date, t: TFunction<'common_blog', undefine
 
 export function getRewardsString(account: FullAccount, t: TFunction<'common_blog', undefined>): string {
   const nothingToClaim = t('global.no_rewards');
-  const reward_hive =
-    parseFloat(account.reward_hive_balance.split(' ')[0]) > 0 ? account.reward_hive_balance : null;
-  const reward_hbd =
-    parseFloat(account.reward_hbd_balance.split(' ')[0]) > 0 ? account.reward_hbd_balance : null;
-  const reward_hp =
-    parseFloat(account.reward_vesting_hive.split(' ')[0]) > 0
-      ? account.reward_vesting_hive.replace('HIVE', 'HP')
-      : null;
+  const hiveAmount = convertStringToBig(account.reward_hive_balance);
+  const hbdAmount = convertStringToBig(account.reward_hbd_balance);
+  const vestingHiveAmount = convertStringToBig(account.reward_vesting_hive);
+
+  const reward_hive = hiveAmount.gt(0) ? formatNaiAsset(account.reward_hive_balance, 'HIVE') : null;
+  const reward_hbd = hbdAmount.gt(0) ? formatNaiAsset(account.reward_hbd_balance, 'HBD') : null;
+  const reward_hp = vestingHiveAmount.gt(0) ? formatNaiAsset(account.reward_vesting_hive, 'HP') : null;
 
   const rewards = [];
   if (reward_hive) rewards.push(reward_hive);
@@ -326,10 +326,10 @@ export function getRewardsString(account: FullAccount, t: TFunction<'common_blog
 }
 
 export function netVests(account: FullAccount) {
-  const vests = parseFloat(account.vesting_shares);
-  const delegated = parseFloat(account.delegated_vesting_shares);
-  const received = parseFloat(account.received_vesting_shares);
-  return vests - delegated + received;
+  const vests = convertStringToBig(account.vesting_shares);
+  const delegated = convertStringToBig(account.delegated_vesting_shares);
+  const received = convertStringToBig(account.received_vesting_shares);
+  return vests.minus(delegated).plus(received).toNumber();
 }
 
 export function compareDates(dateStrings: string[]) {
