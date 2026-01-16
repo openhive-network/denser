@@ -1,4 +1,4 @@
-import { authority } from '@hiveio/wax';
+import { ApiAuthority } from '@hiveio/wax';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
 import { Signatures } from '@smart-signer/lib/auth/utils';
 import { verifySignature } from '@smart-signer/lib/verify-signature';
@@ -23,11 +23,13 @@ export async function verifyLoginChallenge(
     message: string = '',
     keyType: 'posting' | 'active' = 'posting'
 ) {
-    const authority: authority = chainAccount[keyType];
+    const authority: ApiAuthority = chainAccount[keyType];
     const { key_auths, weight_threshold } = authority;
 
-    const pubkey = Object.keys(key_auths)[0];
-    const weight = key_auths[pubkey];
+    // ApiAuthority has key_auths as Array<{0: pubkey, 1: weight}>
+    const firstKeyAuth = key_auths[0];
+    const pubkey = firstKeyAuth?.['0'] || '';
+    const weight = firstKeyAuth?.['1'] || 0;
 
     // We do not support situation when more than one account should be
     // involved in signing.

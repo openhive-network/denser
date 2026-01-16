@@ -96,7 +96,7 @@ export function getRoundedAbbreveration(
   return numToRefactor.div(new Big(1000).pow(mulIndex)).toFixed(toComma) + multiplicators[mulIndex - 1];
 }
 
-export const numberWithCommas = (x: string) => x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+export const numberWithCommas = (x: string) => x.replace(/\\B(?=(\d{3})+(?!\d))/g, ',');
 
 export function convertToHP(
   vests: Big,
@@ -110,13 +110,13 @@ export function convertToHP(
   return vesting_hivef.div(div);
 }
 export function powerdownHive(accountData: FullAccount, dynamicData: GetDynamicGlobalPropertiesResponse) {
-  const withdraw_rate_vests = parseFloat(accountData.vesting_withdraw_rate.split(' ')[0]);
+  const withdraw_rate_vests = convertStringToBig(accountData.vesting_withdraw_rate).toNumber();
   const to_withdraw =
     typeof accountData.to_withdraw === 'number'
       ? accountData.to_withdraw
-      : parseFloat(accountData.to_withdraw);
+      : parseFloat(String(accountData.to_withdraw));
   const withdrawn =
-    typeof accountData.withdrawn === 'number' ? accountData.withdrawn : parseFloat(accountData.withdrawn);
+    typeof accountData.withdrawn === 'number' ? accountData.withdrawn : parseFloat(String(accountData.withdrawn));
   const remaining_vests = (to_withdraw - withdrawn) / 1000000;
   const vests = Math.min(withdraw_rate_vests, remaining_vests);
   const total_vests = convertStringToBig(dynamicData.total_vesting_shares);

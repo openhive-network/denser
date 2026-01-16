@@ -179,9 +179,9 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                 title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
               >
                 (
-                {accountReputationData && accountReputationData[0].reputation
+                {accountReputationData && accountReputationData[0]?.reputation
                   ? accountReputation(accountReputationData[0].reputation)
-                  : accountReputation(profileData.reputation)}
+                  : 25}
                 )
               </span>
             </h4>

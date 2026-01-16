@@ -17,7 +17,7 @@ import {
   getFilter
 } from '@/wallet/lib/utils';
 import { powerdownHive, cn, convertToHP, numberWithCommas } from '@ui/lib/utils';
-import { convertStringToBig } from '@ui/lib/helpers';
+import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
 import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { Link } from '@hive/ui';
@@ -118,10 +118,16 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
 
   const rewardsStr = useMemo(() => {
     const allRewards = [
-      accountData?.reward_hive_balance,
-      accountData?.reward_hbd_balance,
-      accountData?.reward_vesting_hive.replace('HIVE', 'HP')
-    ].filter((reward) => Number(reward?.split(' ')[0]) > 0);
+      accountData?.reward_hive_balance && convertStringToBig(accountData.reward_hive_balance).gt(0)
+        ? formatNaiAsset(accountData.reward_hive_balance, 'HIVE')
+        : null,
+      accountData?.reward_hbd_balance && convertStringToBig(accountData.reward_hbd_balance).gt(0)
+        ? formatNaiAsset(accountData.reward_hbd_balance, 'HBD')
+        : null,
+      accountData?.reward_vesting_hive && convertStringToBig(accountData.reward_vesting_hive).gt(0)
+        ? formatNaiAsset(accountData.reward_vesting_hive, 'HP')
+        : null
+    ].filter(Boolean);
 
     return allRewards.length > 2
       ? `${allRewards[0]}, ${allRewards[1]} ${t('global.and')} ${allRewards[2]}`

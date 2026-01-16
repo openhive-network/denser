@@ -102,76 +102,75 @@ export const getManabar = async (accountName: string): Promise<Manabar | null> =
 };
 
 export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> => {
-  return (await getChain()).api.condenser_api.get_accounts([usernames]).then((resp: any[]): FullAccount[] =>
-    resp.map((x) => {
-      const account: FullAccount = {
-        name: x.name,
-        owner: x.owner,
-        active: x.active,
-        posting: x.posting,
-        memo_key: x.memo_key,
-        post_count: x.post_count,
-        created: x.created,
-        reputation: x.reputation,
-        posting_json_metadata: x.posting_json_metadata,
-        last_vote_time: x.last_vote_time,
-        last_post: x.last_post,
-        json_metadata: x.json_metadata,
-        reward_hive_balance: x.reward_hive_balance,
-        reward_hbd_balance: x.reward_hbd_balance,
-        reward_vesting_hive: x.reward_vesting_hive,
-        governance_vote_expiration_ts: x.governance_vote_expiration_ts,
-        reward_vesting_balance: x.reward_vesting_balance,
-        balance: x.balance,
-        hbd_balance: x.hbd_balance,
-        savings_balance: x.savings_balance,
-        savings_hbd_balance: x.savings_hbd_balance,
-        savings_hbd_last_interest_payment: x.savings_hbd_last_interest_payment,
-        savings_hbd_seconds_last_update: x.savings_hbd_seconds_last_update,
-        savings_hbd_seconds: x.savings_hbd_seconds,
-        next_vesting_withdrawal: x.next_vesting_withdrawal,
-        vesting_shares: x.vesting_shares,
-        delegated_vesting_shares: x.delegated_vesting_shares,
-        received_vesting_shares: x.received_vesting_shares,
-        vesting_withdraw_rate: x.vesting_withdraw_rate,
-        to_withdraw: x.to_withdraw,
-        withdrawn: x.withdrawn,
-        witness_votes: x.witness_votes,
-        proxy: x.proxy,
-        proxied_vsf_votes: x.proxied_vsf_votes,
-        voting_manabar: x.voting_manabar,
-        voting_power: x.voting_power,
-        downvote_manabar: x.downvote_manabar,
-        vesting_balance: x.vesting_balance,
-        __loaded: true
-      };
+  const result = await (await getChain()).api.database_api.find_accounts({
+    accounts: usernames,
+    delayed_votes_active: false
+  });
 
-      let profile: AccountProfile | undefined;
+  return result.accounts.map((x) => {
+    const account: FullAccount = {
+      name: x.name,
+      owner: x.owner,
+      active: x.active,
+      posting: x.posting,
+      memo_key: x.memo_key,
+      post_count: x.post_count,
+      created: x.created,
+      posting_json_metadata: x.posting_json_metadata,
+      last_vote_time: x.last_vote_time,
+      last_post: x.last_post,
+      json_metadata: x.json_metadata,
+      reward_hive_balance: x.reward_hive_balance,
+      reward_hbd_balance: x.reward_hbd_balance,
+      reward_vesting_hive: x.reward_vesting_hive,
+      governance_vote_expiration_ts: x.governance_vote_expiration_ts,
+      reward_vesting_balance: x.reward_vesting_balance,
+      balance: x.balance,
+      hbd_balance: x.hbd_balance,
+      savings_balance: x.savings_balance,
+      savings_hbd_balance: x.savings_hbd_balance,
+      savings_hbd_last_interest_payment: x.hbd_last_interest_payment,
+      savings_hbd_seconds_last_update: x.savings_hbd_seconds_last_update,
+      savings_hbd_seconds: x.savings_hbd_seconds,
+      next_vesting_withdrawal: x.next_vesting_withdrawal,
+      vesting_shares: x.vesting_shares,
+      delegated_vesting_shares: x.delegated_vesting_shares,
+      received_vesting_shares: x.received_vesting_shares,
+      vesting_withdraw_rate: x.vesting_withdraw_rate,
+      to_withdraw: x.to_withdraw,
+      withdrawn: x.withdrawn,
+      proxy: x.proxy,
+      proxied_vsf_votes: x.proxied_vsf_votes,
+      voting_manabar: x.voting_manabar,
+      downvote_manabar: x.downvote_manabar,
+      __loaded: true
+    };
 
+    let profile: AccountProfile | undefined;
+
+    try {
+      profile = JSON.parse(x.posting_json_metadata!).profile;
+    } catch (e) {}
+
+    if (!profile) {
       try {
-        profile = JSON.parse(x.posting_json_metadata!).profile;
+        profile = JSON.parse(x.json_metadata!).profile;
       } catch (e) {}
+    }
 
-      if (!profile) {
-        try {
-          profile = JSON.parse(x.json_metadata!).profile;
-        } catch (e) {}
-      }
+    if (!profile) {
+      profile = {
+        about: '',
+        cover_image: '',
+        location: '',
+        name: '',
+        profile_image: '',
+        website: ''
+      };
+    }
 
-      if (!profile) {
-        profile = {
-          about: '',
-          cover_image: '',
-          location: '',
-          name: '',
-          profile_image: '',
-          website: ''
-        };
-      }
-
-      return { ...account, profile };
-    })
-  );
+    return { ...account, profile };
+  });
 };
 
 export const getAccount = (username: string): Promise<FullAccount> =>

@@ -35,9 +35,9 @@ export function useClaimRewardsMutation() {
       if (prevData) {
         queryClient.setQueryData(queryKey, () => ({
           ...prevData,
-          reward_hbd_balance: '0.000 HBD',
-          reward_hive_balance: '0.000 HIVE',
-          reward_vesting_hive: '0.000 HIVE'
+          reward_hbd_balance: { amount: '0', nai: '@@000000013', precision: 3 },
+          reward_hive_balance: { amount: '0', nai: '@@000000021', precision: 3 },
+          reward_vesting_hive: { amount: '0', nai: '@@000000021', precision: 3 }
         }));
       }
     },

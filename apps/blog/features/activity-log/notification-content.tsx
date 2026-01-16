@@ -11,6 +11,7 @@ import { getAccountFull, getFindAccounts } from '@transaction/lib/hive-api';
 import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications-read-mutation';
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';
 import { handleError } from '@ui/lib/handle-error';
+import { convertStringToBig } from '@ui/lib/helpers';
 import { CircleSpinner } from 'react-spinners-kit';
 import { getAccountNotifications, getUnreadNotifications } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';
@@ -120,9 +121,9 @@ const NotificationActivities = ({
     <Tabs defaultValue="all" className="w-full">
       {profileData &&
       accountOwner &&
-      (parseFloat(profileData.reward_hive_balance.split(' ')[0]) > 0 ||
-        parseFloat(profileData.reward_hbd_balance.split(' ')[0]) > 0 ||
-        parseFloat(profileData.reward_vesting_hive.split(' ')[0]) > 0) ? (
+      (convertStringToBig(profileData.reward_hive_balance).gt(0) ||
+        convertStringToBig(profileData.reward_hbd_balance).gt(0) ||
+        convertStringToBig(profileData.reward_vesting_hive).gt(0)) ? (
         <div className="flex flex-col items-center justify-center px-2 py-4 md:flex-row md:justify-between">
           <span>
             {t('navigation.profile_notifications_tab_navbar.unclaimed_rewards')}
