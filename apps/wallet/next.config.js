@@ -55,7 +55,7 @@ const csp = [
   // Only nodes running proper haf_api_node software are allowed
   // Note: images.hive.blog not needed - wallet only uses it server-side (API routes)
   // Google APIs for Drive wallet backup and Sign-In (OAuth)
-  "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.openhive.network https://api.dev.openhive.network https://api.fake.openhive.network https://wallet.dev.openhive.network https://wallet.openhive.network https://www.googleapis.com https://accounts.google.com https://oauth2.googleapis.com",
+  "connect-src 'self' https://api.hive.blog https://api.syncad.com https://api.openhive.network https://www.googleapis.com https://accounts.google.com https://oauth2.googleapis.com",
   // Embedded content: allow Google accounts for OAuth popup/iframe
   "frame-src 'self' https://accounts.google.com",
   // Web Workers: self + blob (for HBAuth and service worker)
