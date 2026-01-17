@@ -54,19 +54,19 @@ variables:
 include:
 - template: Workflows/MergeRequest-Pipelines.gitlab-ci.yml
 - project: 'hive/common-ci-configuration'
-  ref: develop
+  ref: 0a1e1a9d53d6b1c8ae1bdc652e19740134a359b4
   file:
   - '/templates/base.gitlab-ci.yml'
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
-  ref: cedbc79839da2444c67e31901387ac52c4e560e5  # develop
+  ref: af15e7f4348569a168ea4489fe9f5143e1e0d90d  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/hive'
-  ref: develop
+  ref: 6772421f10f6ca1bda07b7880f751fc9116cbb05
   file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
-  ref: b5896c4b3d03e41d90b3dedd7e7fa7d98510c3fd
+  ref: 0b03c3a61864e5ed71ae66702f00837c1e3c773e
   file: 'ci/node-replay.gitlab-ci.yml'
 
 default:
@@ -74,52 +74,52 @@ default:
     pre_get_sources_script:
       # Clean corrupt git state left by cancelled pipelines (see GitLab #296638, #4600)
       # Wrapped in subshell to avoid changing working directory for subsequent git operations
-      - |
-        (
-        cd "${CI_PROJECT_DIR:-/builds}" 2>/dev/null || exit 0
-        echo "pre_get_sources: checking $(pwd) for corrupt git state"
-        if [ -d ".git" ]; then
-          # Remove stale lock files that block git operations
-          find .git -name "*.lock" -delete 2>/dev/null || true
-          # Clean up removed haf submodule state (submodule was removed but old workspaces may have residual state)
-          rm -rf .git/modules/haf haf 2>/dev/null || true
+    - |
+      (
+      cd "${CI_PROJECT_DIR:-/builds}" 2>/dev/null || exit 0
+      echo "pre_get_sources: checking $(pwd) for corrupt git state"
+      if [ -d ".git" ]; then
+        # Remove stale lock files that block git operations
+        find .git -name "*.lock" -delete 2>/dev/null || true
+        # Clean up removed haf submodule state (submodule was removed but old workspaces may have residual state)
+        rm -rf .git/modules/haf haf 2>/dev/null || true
 
-          # Check if main repo is corrupt - if so, remove .git to force fresh clone
-          if ! git rev-parse HEAD >/dev/null 2>&1; then
-            echo "pre_get_sources: main repository corrupt, forcing fresh clone"
-            rm -rf .git
-          else
-            # Main repo OK - check and clean corrupt submodules
-            # Check both the working dir and .git/modules/ since either can be corrupt
-            if [ -f ".gitmodules" ]; then
-              git config --file .gitmodules --get-regexp path 2>/dev/null | awk '{print $2}' | while read submod; do
-                needs_clean=false
-                [ -z "$submod" ] && continue
-                # Check if submodule working directory exists but is corrupt
-                if [ -d "$submod" ] && [ -f "$submod/.git" ]; then
-                  if ! git -C "$submod" rev-parse HEAD >/dev/null 2>&1; then
-                    needs_clean=true
-                  fi
-                fi
-                # Check if .git/modules exists but is corrupt (even if working dir is gone)
-                if [ -d ".git/modules/$submod" ]; then
-                  if ! git --git-dir=".git/modules/$submod" rev-parse HEAD >/dev/null 2>&1; then
-                    echo "pre_get_sources: $submod corrupt (rev-parse failed)"
-                    needs_clean=true
-                  fi
-                fi
-                if [ "$needs_clean" = true ]; then
-                  echo "pre_get_sources: cleaning corrupt submodule: $submod"
-                  rm -rf "$submod" ".git/modules/$submod"
-                fi
-              done
-            fi
-            echo "pre_get_sources: existing repo OK"
-          fi
+        # Check if main repo is corrupt - if so, remove .git to force fresh clone
+        if ! git rev-parse HEAD >/dev/null 2>&1; then
+          echo "pre_get_sources: main repository corrupt, forcing fresh clone"
+          rm -rf .git
         else
-          echo "pre_get_sources: no .git directory (fresh workspace)"
+          # Main repo OK - check and clean corrupt submodules
+          # Check both the working dir and .git/modules/ since either can be corrupt
+          if [ -f ".gitmodules" ]; then
+            git config --file .gitmodules --get-regexp path 2>/dev/null | awk '{print $2}' | while read submod; do
+              needs_clean=false
+              [ -z "$submod" ] && continue
+              # Check if submodule working directory exists but is corrupt
+              if [ -d "$submod" ] && [ -f "$submod/.git" ]; then
+                if ! git -C "$submod" rev-parse HEAD >/dev/null 2>&1; then
+                  needs_clean=true
+                fi
+              fi
+              # Check if .git/modules exists but is corrupt (even if working dir is gone)
+              if [ -d ".git/modules/$submod" ]; then
+                if ! git --git-dir=".git/modules/$submod" rev-parse HEAD >/dev/null 2>&1; then
+                  echo "pre_get_sources: $submod corrupt (rev-parse failed)"
+                  needs_clean=true
+                fi
+              fi
+              if [ "$needs_clean" = true ]; then
+                echo "pre_get_sources: cleaning corrupt submodule: $submod"
+                rm -rf "$submod" ".git/modules/$submod"
+              fi
+            done
+          fi
+          echo "pre_get_sources: existing repo OK"
         fi
-        )
+      else
+        echo "pre_get_sources: no .git directory (fresh workspace)"
+      fi
+      )
 
 .docker_build_template:
   extends: .docker_image_builder_job_template
@@ -220,9 +220,9 @@ docker-build-wallet:
 docker-build-blog-subdirectory:
   extends: .docker_build_template
   rules:
-    - if: '$CI_COMMIT_TAG'           # Auto on tagged releases
-    - when: manual                    # Manual trigger on branches/MRs
-      allow_failure: true
+  - if: '$CI_COMMIT_TAG'             # Auto on tagged releases
+  - when: manual                      # Manual trigger on branches/MRs
+    allow_failure: true
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
@@ -232,9 +232,9 @@ docker-build-blog-subdirectory:
 docker-build-wallet-subdirectory:
   extends: .docker_build_template
   rules:
-    - if: '$CI_COMMIT_TAG'           # Auto on tagged releases
-    - when: manual                    # Manual trigger on branches/MRs
-      allow_failure: true
+  - if: '$CI_COMMIT_TAG'             # Auto on tagged releases
+  - when: manual                      # Manual trigger on branches/MRs
+    allow_failure: true
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
@@ -282,7 +282,7 @@ docker-build-wallet-mirrornet-testenv:
 # the image and passed to job extended_block_log_creation.
 library_extraction:
   rules:
-    - when: never
+  - when: never
   extends: .job-defaults
   stage: build
   allow_failure: true
@@ -304,7 +304,7 @@ library_extraction:
 
 extended_block_log_creation:
   rules:
-    - when: never
+  - when: never
   extends: .extended_block_log_creation
   stage: build
   allow_failure: true
@@ -330,7 +330,7 @@ extended_block_log_creation:
 
 block-log-extraction:
   rules:
-    - when: never
+  - when: never
   extends: .docker_image_builder_job_template
   stage: replay-and-sync
   allow_failure: true
@@ -346,7 +346,7 @@ block-log-extraction:
 
 block_log_processing:
   rules:
-    - when: never
+  - when: never
   extends: .job-defaults
   image: 'registry.gitlab.syncad.com/hive/hive/ci-base-image${TEST_IMAGE_TAG}'
   stage: replay-and-sync
@@ -370,7 +370,7 @@ block_log_processing:
 
 mirrornet-haf-node-replay:
   rules:
-    - when: never
+  - when: never
   extends: .haf-node-replay
   stage: replay-and-sync
   timeout: 3 hours
@@ -487,7 +487,7 @@ renderer-unit-tests:
 
 mirrornet-replay-data-copy:
   rules:
-    - when: never
+  - when: never
   extends: .haf_api_node_replay_data_copy
   stage: test
   allow_failure: true
@@ -499,7 +499,7 @@ mirrornet-replay-data-copy:
 
 mirrornet-based-tests:
   rules:
-    - when: never
+  - when: never
   extends:
   - .haf_api_node_test
   - .node-job
