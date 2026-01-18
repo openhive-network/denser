@@ -60,10 +60,10 @@ include:
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
-  ref: af15e7f4348569a168ea4489fe9f5143e1e0d90d  # develop
+  ref: 2f3a9bfee3e4620ef9c357129b9217492398768f  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/hive'
-  ref: 604b1f639e54dd7280bdc16c950cbf44b271726a
+  ref: 7321cb91e1f02071fdca49dfaaa77eadaf49423b
   file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
   ref: 0b03c3a61864e5ed71ae66702f00837c1e3c773e
