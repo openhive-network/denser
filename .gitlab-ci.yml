@@ -60,7 +60,7 @@ include:
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
-  ref: 2f3a9bfee3e4620ef9c357129b9217492398768f  # develop
+  ref: 6c2a49f90ad0007b8bb2e54bb964c9f52eea1601  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/hive'
   ref: 7321cb91e1f02071fdca49dfaaa77eadaf49423b
@@ -72,9 +72,9 @@ include:
 # Override MergeRequest-Pipelines workflow to also run on tags
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_TAG
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  - if: $CI_COMMIT_TAG
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 default:
   hooks:
