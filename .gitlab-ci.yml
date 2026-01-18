@@ -54,7 +54,7 @@ variables:
 include:
 - template: Workflows/MergeRequest-Pipelines.gitlab-ci.yml
 - project: 'hive/common-ci-configuration'
-  ref: 0a1e1a9d53d6b1c8ae1bdc652e19740134a359b4
+  ref: 4e60cec43a1c72b5faebf5d34e8b5b6caa9fa159
   file:
   - '/templates/base.gitlab-ci.yml'
   - '/templates/docker_image_jobs.gitlab-ci.yml'
@@ -63,10 +63,10 @@ include:
   ref: af15e7f4348569a168ea4489fe9f5143e1e0d90d  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/hive'
-  ref: 6772421f10f6ca1bda07b7880f751fc9116cbb05
+  ref: e1f480e9cf5797363c8e73cac811ac72b4b4a059
   file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
-  ref: 0b03c3a61864e5ed71ae66702f00837c1e3c773e
+  ref: 881deb27160702d4d1c130b832b29e120bb62394
   file: 'ci/node-replay.gitlab-ci.yml'
 
 default:
