@@ -54,7 +54,7 @@ variables:
 include:
 - template: Workflows/MergeRequest-Pipelines.gitlab-ci.yml
 - project: 'hive/common-ci-configuration'
-  ref: 4e60cec43a1c72b5faebf5d34e8b5b6caa9fa159
+  ref: develop
   file:
   - '/templates/base.gitlab-ci.yml'
   - '/templates/docker_image_jobs.gitlab-ci.yml'
