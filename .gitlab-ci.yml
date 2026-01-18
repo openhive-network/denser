@@ -63,7 +63,7 @@ include:
   ref: 6c2a49f90ad0007b8bb2e54bb964c9f52eea1601  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/hive'
-  ref: 7321cb91e1f02071fdca49dfaaa77eadaf49423b
+  ref: 7da86bfddbf48b9c93cb0155b6396963baf8bb19
   file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
   ref: 0b03c3a61864e5ed71ae66702f00837c1e3c773e
