@@ -69,6 +69,13 @@ include:
   ref: 0b03c3a61864e5ed71ae66702f00837c1e3c773e
   file: 'ci/node-replay.gitlab-ci.yml'
 
+# Override MergeRequest-Pipelines workflow to also run on tags
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
 default:
   hooks:
     pre_get_sources_script:
