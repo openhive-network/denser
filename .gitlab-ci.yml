@@ -52,7 +52,7 @@ variables:
   PLAYWRIGHT_TAG: 'v1.49.1-jammy'
 
 include:
-- template: Workflows/MergeRequest-Pipelines.gitlab-ci.yml
+- template: Workflows/Branch-Pipelines.gitlab-ci.yml
 - project: 'hive/common-ci-configuration'
   ref: develop
   file:
@@ -68,13 +68,6 @@ include:
 - project: 'hive/haf_api_node'
   ref: 0b03c3a61864e5ed71ae66702f00837c1e3c773e
   file: 'ci/node-replay.gitlab-ci.yml'
-
-# Override MergeRequest-Pipelines workflow to also run on tags
-workflow:
-  rules:
-  - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  - if: $CI_COMMIT_TAG
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 default:
   hooks:
