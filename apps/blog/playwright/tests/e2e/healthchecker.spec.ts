@@ -102,7 +102,7 @@ test.describe('Healthchecker page - Tab functionality', () => {
         // Find all API endpoint cards with "Condenser - Get accounts" checker
         const condenserCards = page
             .locator('.rounded-lg.border')
-            .filter({ has: page.getByText('Condenser - Get accounts') });
+            .filter({ has: page.getByText('Database - Find accounts') });
 
         const cardsCount = await condenserCards.count();
         expect(cardsCount).toBeGreaterThan(1); // Should have at least 2 nodes to switch between
@@ -127,7 +127,7 @@ test.describe('Healthchecker page - Tab functionality', () => {
         console.log('Target node to switch to:', targetNodeUrl);
 
         // Click Set Main button for the target node
-        await healthcheckerPage.clickSetMainForApiChecker('Condenser - Get accounts', targetNodeUrl!);
+        await healthcheckerPage.clickSetMainForApiChecker('Database - Find accounts', targetNodeUrl!);
 
         // Wait for the confirmation dialog to appear and click the Confirm button
         const confirmDialog = page.locator('[role="dialog"]');
