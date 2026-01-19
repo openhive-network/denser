@@ -483,6 +483,7 @@
       "post_templates": "帖子模板",
       "manage_your_post_templates": "管理您的帖子模板，这里的其他设置也将被保存/加载。",
       "choose_a_template_to_load": "选择要加载的模板",
+      "no_templates_found": "未找到模板",
       "name_of_a_new_template": "新模板名称",
       "template_name_is_taken": "模板名称已被使用",
       "save": "保存",

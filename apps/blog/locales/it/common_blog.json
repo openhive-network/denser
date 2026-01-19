@@ -483,6 +483,7 @@
       "post_templates": "Modelli di pubblicazione",
       "manage_your_post_templates": "Gestisci i tuoi modelli di pubblicazione, altri impostazioni saranno salvate/caricate qui.",
       "choose_a_template_to_load": "Scegli un modello da caricare",
+      "no_templates_found": "Nessun modello trovato",
       "name_of_a_new_template": "Nome di un nuovo modello",
       "template_name_is_taken": "Il nome del modello è già stato preso",
       "save": "Salva",

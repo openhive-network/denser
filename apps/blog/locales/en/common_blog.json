@@ -580,6 +580,7 @@
       "post_templates": "Post templates",
       "manage_your_post_templates": "Manage your post templates, other settings here will also be saved/loaded.",
       "choose_a_template_to_load": "Choose a template to load",
+      "no_templates_found": "No templates found",
       "name_of_a_new_template": "Name of a new template",
       "template_name_is_taken": "Template name is taken",
       "save": "Save",

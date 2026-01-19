@@ -489,6 +489,7 @@
       "post_templates": "Шаблоны постов",
       "manage_your_post_templates": "Управляйте вашими шаблонами постов, другие настройки также будут сохранены/загружены здесь.",
       "choose_a_template_to_load": "Выберите шаблон для загрузки",
+      "no_templates_found": "Шаблоны не найдены",
       "name_of_a_new_template": "Имя нового шаблона",
       "template_name_is_taken": "Имя шаблона уже занято",
       "save": "Сохранить",
