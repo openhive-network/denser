@@ -62,6 +62,16 @@ export function MainNav() {
         >
           {t('navigation.main_nav_bar.out_dapps')}
         </Link>
+        <Link
+          href="/avatars"
+          className={cn(
+            'flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
+            pathname === '/avatars' ? 'text-destructive' : 'text-primary'
+          )}
+          data-testid="nav-avatars-link"
+        >
+          {t('navigation.main_nav_bar.avatars')}
+        </Link>
       </nav>
     </div>
   );
