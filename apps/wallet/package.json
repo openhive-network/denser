@@ -33,6 +33,7 @@
     "@hiveio/wax": "catalog:hiveio-toolset",
     "@hookform/resolvers": "^3.10.0",
     "@next/bundle-analyzer": "^14.2.2",
+    "@sentry/nextjs": "^10",
     "@types/big.js": "^6.2.2",
     "@types/node": "20.10.4",
     "@types/react": "18.3.0",
