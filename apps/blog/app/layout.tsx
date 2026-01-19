@@ -1,4 +1,5 @@
 import '@hive/tailwindcss-config/globals.css';
+import * as Sentry from '@sentry/nextjs';
 import { ReactNode } from 'react';
 import Script from 'next/script';
 import { Metadata } from 'next';
@@ -15,7 +16,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 const SITE_DESC =
   'Communities without borders. A social network owned and operated by its users, powered by Hive.';
 
-export const metadata: Metadata = {
+const metadata = {
   title: {
     default: 'Hive',
     template: '%s - Hive'
@@ -41,6 +42,20 @@ export const metadata: Metadata = {
   other: {
     'fb:app_id': 'YOUR_FB_APP_ID'
   }
+} as const satisfies Metadata;
+
+export function generateMetadata(): Metadata {
+  if (!process.env.NEXT_PUBLIC_SENTRY_DSN) {
+    return metadata;
+  }
+
+  return {
+    ...metadata,
+    other: {
+      ...metadata.other,
+      ...Sentry.getTraceData()
+    }
+  };
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {

@@ -50,3 +50,6 @@ public/locales
 public/smart-signer
 
 public/auth/assets/
+
+# Sentry Config File
+.env.sentry-build-plugin
