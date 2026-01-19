@@ -483,6 +483,7 @@
       "post_templates": "Plantillas de publicación",
       "manage_your_post_templates": "Administra tus plantillas de publicación, aquí también se guardarán/cargarán otros ajustes.",
       "choose_a_template_to_load": "Elige una plantilla para cargar",
+      "no_templates_found": "No se encontraron plantillas",
       "name_of_a_new_template": "Nombre de una nueva plantilla",
       "template_name_is_taken": "El nombre de la plantilla ya está en uso",
       "save": "Guardar",

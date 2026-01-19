@@ -531,6 +531,7 @@
       "post_templates": "قوالب المشاركة",
       "manage_your_post_templates": "إدارة قوالب المشاركة الخاصة بك، سيتم أيضًا حفظ/تحميل الإعدادات الأخرى هنا.",
       "choose_a_template_to_load": "اختر قالبًا لتحميله",
+      "no_templates_found": "لم يتم العثور على قوالب",
       "name_of_a_new_template": "اسم القالب الجديد",
       "template_name_is_taken": "اسم القالب مستخدم بالفعل",
       "save": "حفظ",

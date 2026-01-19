@@ -72,7 +72,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     }
 
     return (
-      <div className="flex h-min max-h-[100vh] overflow-y-auto pb-4">
+      <div className="flex max-h-[calc(100dvh-10rem)] overflow-y-auto pb-4">
         {step === Steps.SAFE_STORAGE_LOGIN && (
           <SafeStorage
             ref={safeStorageRef}

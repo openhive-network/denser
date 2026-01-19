@@ -498,6 +498,7 @@
       "post_templates": "Szablony publikacji",
       "manage_your_post_templates": "Zarządzaj swoimi szablonami publikacji, inne ustawienia będą także tutaj zapisane/załadowane.",
       "choose_a_template_to_load": "Wybierz szablon do załadowania",
+      "no_templates_found": "Nie znaleziono szablonów",
       "name_of_a_new_template": "Nazwa nowego szablonu",
       "template_name_is_taken": "Nazwa szablonu jest już zajęta",
       "save": "Zapisz",
