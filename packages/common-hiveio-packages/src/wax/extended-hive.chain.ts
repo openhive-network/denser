@@ -316,12 +316,14 @@ export interface IWitnessSchedule {
   next_shuffle_block_num: number;
   current_shuffled_witnesses: string[];
   num_scheduled_witnesses: number;
-  top19_weight: number;
+  elected_weight: number;
   timeshare_weight: number;
   miner_weight: number;
   witness_pay_normalization_factor: number;
   median_props: {
-    account_creation_fee: string;
+    account_creation_fee: NaiAsset;
+    account_subsidy_budget: number;
+    account_subsidy_decay: number;
     maximum_block_size: number;
     hbd_interest_rate: number;
   };
@@ -330,6 +332,7 @@ export interface IWitnessSchedule {
   max_miner_witnesses: number;
   max_runner_witnesses: number;
   hardfork_required_witnesses: number;
+  min_witness_account_subsidy_decay: number;
 }
 
 export interface IFeedHistory {
@@ -851,7 +854,6 @@ export type ExtendedNodeApi = {
     get_owner_history: TWaxApiRequest<string[], OwnerHistory>;
     get_market_history_buckets: TWaxApiRequest<void[], number[]>;
     get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
-    get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
     list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
     get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
     get_market_history: TWaxApiRequest<(string | number)[], IMarketCandlestickDataItem[]>;
@@ -904,6 +906,7 @@ export type ExtendedNodeApi = {
       { votes: IVoteListItem[] }
     >;
     list_vesting_delegations: TWaxApiRequest<IListVestingDelegationsParams, IListVestingDelegationsResponse>;
+    get_witness_schedule: TWaxApiRequest<Record<string, never>, IWitnessSchedule>;
   };
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;

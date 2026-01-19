@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
 import { getListWitnessVotes } from '@transaction/lib/hive';
@@ -94,6 +94,14 @@ function WitnessesPage() {
     }
   );
 
+  // Extract list of witnesses the user has voted for from listWitnessVotesData
+  const userWitnessVotes = useMemo(() => {
+    if (!listWitnessVotesData?.votes || !user?.username) return [];
+    return listWitnessVotesData.votes
+      .filter((vote) => vote.account === user.username)
+      .map((vote) => vote.witness);
+  }, [listWitnessVotesData?.votes, user?.username]);
+
   const headBlock = dynamicData?.head_block_number ?? 0;
   const totalVesting = dynamicData?.total_vesting_fund_hive ?? Big(0);
   const totalShares = dynamicData?.total_vesting_shares ?? Big(0);
@@ -105,10 +113,8 @@ function WitnessesPage() {
   } = useQuery(['witnesses'], () => getWitnessesByVote(250), {
     select: (witnesses) => {
       const witnessVotes = listWitnessVotesData?.votes
-        .filter((vote) => {
-          if (vote.witness === user?.username) return vote;
-        })
-        .map((witnessObj) => witnessObj.witness);
+        .filter((vote) => vote.account === user?.username)
+        .map((vote) => vote.witness);
       return witnesses
         .map(mapWitnesses(totalVesting, totalShares, headBlock, witnessVotes))
         .filter(
@@ -175,7 +181,7 @@ function WitnessesPage() {
   }, [router.query.highlight]);
 
   // Calculate how many votes user have left
-  const votesLeft = MAX_VOTES - (observerData?.witness_votes?.length ?? 0);
+  const votesLeft = MAX_VOTES - userWitnessVotes.length;
 
   return (
     <>
@@ -237,7 +243,7 @@ function WitnessesPage() {
                     key={element.id}
                     headBlock={headBlock}
                     voteEnabled={user?.isLoggedIn}
-                    isVoted={observerData?.witness_votes?.includes(element.owner) ?? false}
+                    isVoted={userWitnessVotes.includes(element.owner)}
                     voteLoading={voteMutation.isLoading && voteMutation.variables?.witness === element.owner}
                   />
                 ))
@@ -263,7 +269,7 @@ function WitnessesPage() {
                         {t('witnesses_page.vote')}
                       </Button>
                     </DialogLogin>
-                  ) : !observerData?.witness_votes?.includes(voteInput) ? (
+                  ) : !userWitnessVotes.includes(voteInput) ? (
                     <Button
                       className="h-fit"
                       variant="destructive"

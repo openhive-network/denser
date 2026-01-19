@@ -1021,9 +1021,14 @@ export class TransactionService {
   ) {
     const { median_props } = await (
       await getChain()
-    ).api.condenser_api.get_witness_schedule([]);
+    ).api.database_api.get_witness_schedule({});
 
-    const fee = await getAsset(median_props.account_creation_fee.split(' ')[0], 'HIVE');
+    // Transform NAI format to amount string
+    const feeAmount = (
+      parseInt(median_props.account_creation_fee.amount) /
+      Math.pow(10, median_props.account_creation_fee.precision)
+    ).toString();
+    const fee = await getAsset(feeAmount, 'HIVE');
     return (
       await this.processHiveAppOperation((builder) => {
         builder.pushOperation({
