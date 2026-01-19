@@ -341,6 +341,7 @@ block-log-extraction:
     BLOCK_LOG_DIRECTORY: '${REPLAY_PIPELINE_DIRECTORY}_block_log'
   script: scripts/ci-helpers/block-log-extraction.sh
   tags:
+  - public-runner-docker
   - data-cache-storage
   - fast
 
@@ -365,6 +366,7 @@ block_log_processing:
     - '*.log'
     - 'block_log_data.env'
   tags:
+  - public-runner-docker
   - data-cache-storage
   - fast
 
@@ -391,6 +393,7 @@ mirrornet-haf-node-replay:
     HAF_IMAGE: ${HAF_IMAGE_REGISTRY}
     HIVE_API_NODE_VERSION: ${API_NODE_VERSION}
   tags:
+  - public-runner-docker
   - data-cache-storage
   - fast
 
@@ -494,6 +497,7 @@ mirrornet-replay-data-copy:
   needs:
   - mirrornet-haf-node-replay
   tags:
+  - public-runner-docker
   - data-cache-storage
   - fast
 
@@ -579,6 +583,7 @@ mirrornet-based-tests:
     reports:
       junit: 'apps/blog/junit/results.xml'
   tags:
+  - public-runner-docker
   - data-cache-storage
   - fast
 
