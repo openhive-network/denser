@@ -903,24 +903,25 @@ export type ExtendedNodeApi = {
     get_market_history_buckets: TWaxApiRequest<void[], number[]>;
     get_active_votes: TWaxApiRequest<string[], IVote[]>;
     get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
-    get_reblogged_by: TWaxApiRequest<[string, string], string[]>;
     get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
     list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
     get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
-    get_account_reputations: TWaxApiRequest<
-      {
-        account_lower_bound: string;
-        limit: number;
-      },
-      IAccountReputations[]
-    >;
     get_market_history: TWaxApiRequest<(string | number)[], IMarketCandlestickDataItem[]>;
-    get_followers: TWaxApiRequest<(string | number | null)[], IFollow[]>;
-    get_following: TWaxApiRequest<(string | number | null)[], IFollow[]>;
   };
   rc_api: {
     find_rc_accounts: TWaxApiRequest<string[], { rc_accounts: RcAccount[] }>;
     list_rc_direct_delegations: TWaxApiRequest<{ limit: number; start: [string, string] }, IDirectDelegation>;
+  };
+  follow_api: {
+    get_reblogged_by: TWaxApiRequest<{ author: string; permlink: string }, string[]>;
+    get_followers: TWaxApiRequest<
+      { account: string; start: string; type: string; limit: number },
+      IFollow[]
+    >;
+    get_following: TWaxApiRequest<
+      { account: string; start: string; type: string; limit: number },
+      IFollow[]
+    >;
   };
   database_api: {
     list_proposals: TWaxApiRequest<Partial<IGetProposalsParams>, { proposals: IProposal[] }>;

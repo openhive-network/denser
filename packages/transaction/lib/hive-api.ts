@@ -210,7 +210,7 @@ export const getFollowCount = async (username: string): Promise<AccountFollowSta
  * @returns
  */
 export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
-  return (await getChain()).api.condenser_api.get_reblogged_by([author, permlink]);
+  return (await getChain()).api.follow_api.get_reblogged_by({ author, permlink });
 };
 
 export const getFeedHistory = async (): Promise<IFeedHistory> => {
@@ -248,12 +248,12 @@ export const DEFAULT_PARAMS_FOR_FOLLOW: IGetFollowParams = {
 
 export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    return (await getChain()).api.condenser_api.get_following([
-      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
-      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
-      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
-      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
-    ]);
+    return (await getChain()).api.follow_api.get_following({
+      account: params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
+      start: params?.start || '',
+      type: params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
+      limit: params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
+    });
   } catch (error) {
     console.error('Error:', error);
     throw error;
@@ -262,9 +262,18 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
 
 export const getAccountReputations = async (
   account_lower_bound: string,
-  limit: number
+  _limit: number
 ): Promise<IAccountReputations[]> => {
-  return (await getChain()).api.condenser_api.get_account_reputations({ account_lower_bound, limit });
+  const profile = await (await getChain()).api.bridge.get_profile({ account: account_lower_bound });
+  if (!profile) {
+    return [];
+  }
+  return [
+    {
+      account: profile.name,
+      reputation: profile.reputation
+    }
+  ];
 };
 export const getDynamicGlobalProperties = async (): Promise<GetDynamicGlobalPropertiesResponse> => {
   return (await getChain()).api.database_api.get_dynamic_global_properties({});
@@ -272,12 +281,12 @@ export const getDynamicGlobalProperties = async (): Promise<GetDynamicGlobalProp
 
 export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    return (await getChain()).api.condenser_api.get_followers([
-      params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
-      params?.start || DEFAULT_PARAMS_FOR_FOLLOW.start,
-      params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
-      params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
-    ]);
+    return (await getChain()).api.follow_api.get_followers({
+      account: params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
+      start: params?.start || '',
+      type: params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
+      limit: params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
+    });
   } catch (error) {
     console.error('Error:', error);
     throw error;
