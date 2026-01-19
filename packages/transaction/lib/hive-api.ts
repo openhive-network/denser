@@ -345,3 +345,12 @@ export const getActiveVotes = async (author: string, permlink: string): Promise<
     reputation: 0 // Not available in database_api.list_votes
   }));
 };
+
+export const lookupAccounts = async (lowerBoundName: string, limit: number): Promise<string[]> => {
+  return (await getChain()).api.condenser_api.lookup_accounts([lowerBoundName, limit]);
+};
+
+export const getTopWitnesses = async (limit: number): Promise<string[]> => {
+  const witnesses = await (await getChain()).api.condenser_api.get_witnesses_by_vote(['', limit]);
+  return witnesses.map((w: { owner: string }) => w.owner);
+};

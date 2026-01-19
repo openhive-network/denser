@@ -857,6 +857,8 @@ export type ExtendedNodeApi = {
     list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
     get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
     get_market_history: TWaxApiRequest<(string | number)[], IMarketCandlestickDataItem[]>;
+    lookup_accounts: TWaxApiRequest<[string, number], string[]>;
+    get_witnesses_by_vote: TWaxApiRequest<[string, number], { owner: string }[]>;
   };
   rc_api: {
     find_rc_accounts: TWaxApiRequest<string[], { rc_accounts: RcAccount[] }>;
