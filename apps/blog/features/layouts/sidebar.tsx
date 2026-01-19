@@ -66,7 +66,7 @@ const Sidebar = () => {
       <SheetContent
         position="right"
         size="sm"
-        className="w-5/6 overflow-auto px-0 pt-12 md:w-2/6"
+        className="w-3/4 overflow-auto px-0 pt-12 md:w-1/4"
         data-testid="nav-sidebar-menu-content"
       >
         <div className="flex flex-col">
