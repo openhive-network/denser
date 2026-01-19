@@ -291,56 +291,6 @@ export type SavingsWithdrawals = {
   }[];
 };
 
-export interface IPost {
-  active_votes: {
-    rshares: number;
-    voter: string;
-  };
-  author: string;
-  author_payout_value: string;
-  author_reputation: number;
-  author_role: string;
-  author_title: string;
-  beneficiaries: Array<unknown>;
-  blacklists: Array<unknown>;
-  body: string;
-  category: string;
-  children: number;
-  community: string;
-  community_title: string;
-  created: string;
-  curator_payout_value: string;
-  depth: number;
-  is_paidout: boolean;
-  json_metadata: {
-    app: string;
-    description: string;
-    format: string;
-    image: [string];
-    tags: string[];
-    users: Array<unknown>;
-  };
-  max_accepted_payout: string;
-  net_rshares: number;
-  payout: number;
-  payout_at: string;
-  pending_payout_value: string;
-  percent_hbd: number;
-  permlink: string;
-  post_id: number;
-  promoted: string;
-  replies: Array<unknown>;
-  stats: {
-    flag_weight: number;
-    gray: boolean;
-    hide: boolean;
-    total_votes: number;
-  };
-  title: string;
-  updated: string;
-  url: string;
-}
-
 export interface IVote {
   percent: number;
   reputation: number;
@@ -899,9 +849,7 @@ export type ExtendedNodeApi = {
     get_trade_history: TWaxApiRequest<(string | number)[], IOrdersDataItem[]>;
     get_recent_trades: TWaxApiRequest<number[], IRecentTradesData[]>;
     get_owner_history: TWaxApiRequest<string[], OwnerHistory>;
-    get_content: TWaxApiRequest<string[], IPost>;
     get_market_history_buckets: TWaxApiRequest<void[], number[]>;
-    get_active_votes: TWaxApiRequest<string[], IVote[]>;
     get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
     get_witness_schedule: TWaxApiRequest<[], IWitnessSchedule>;
     list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;

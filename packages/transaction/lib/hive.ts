@@ -1,9 +1,6 @@
 import { AccountAuthorityUpdateOperation } from '@hiveio/wax';
-import { getLogger } from '@ui/lib/logging';
-import { IListWitnessVotes, IPost } from '@hive/common-hiveio-packages/wax';
+import { Entry, IListWitnessVotes } from '@hive/common-hiveio-packages/wax';
 import { getChain } from './chain';
-
-const logger = getLogger('app');
 
 export interface IDynamicProps {
   hivePerMVests: number;
@@ -20,9 +17,13 @@ export interface IDynamicProps {
   vestingRewardPercent: number;
 }
 
-export const getPost = async (username: string, permlink: string): Promise<IPost> => {
+export const getPost = async (
+  username: string,
+  permlink: string,
+  observer: string = ''
+): Promise<Entry | null> => {
   const chain = await getChain();
-  return chain.api.condenser_api.get_content([username, permlink]);
+  return chain.api.bridge.get_post({ author: username, permlink, observer });
 };
 
 export const getListWitnessVotes = async (

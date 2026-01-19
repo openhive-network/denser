@@ -315,5 +315,33 @@ export const getByText = async ({
 };
 
 export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
-  return (await getChain()).api.condenser_api.get_active_votes([author, permlink]);
+  const BATCH_SIZE = 1000;
+  const allVotes: IVoteListItem[] = [];
+  let lastVoter = '';
+
+  // Paginate through all votes for this post
+  while (true) {
+    const response = await getListVotesByCommentVoter([author, permlink, lastVoter], BATCH_SIZE);
+    const postVotes = response.votes.filter((vote) => vote.author === author && vote.permlink === permlink);
+
+    if (postVotes.length === 0) break;
+
+    allVotes.push(...postVotes);
+
+    // If we got fewer votes than requested, we've reached the end
+    if (postVotes.length < BATCH_SIZE) break;
+
+    // Set up for next page - start after the last voter
+    lastVoter = postVotes[postVotes.length - 1].voter;
+  }
+
+  // Transform to IVote format
+  return allVotes.map((vote) => ({
+    voter: vote.voter,
+    percent: vote.vote_percent,
+    rshares: vote.rshares,
+    time: vote.last_update,
+    weight: typeof vote.weight === 'string' ? parseInt(vote.weight, 10) : vote.weight,
+    reputation: 0 // Not available in database_api.list_votes
+  }));
 };
