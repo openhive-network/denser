@@ -45,7 +45,7 @@ const metadata = {
 } as const satisfies Metadata;
 
 export function generateMetadata(): Metadata {
-  if (!process.env.NEXT_PUBLIC_SENTRY_DSN) {
+  if (!process.env.REACT_APP_SENTRY_DSN) {
     return metadata;
   }
 

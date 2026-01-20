@@ -9,101 +9,9 @@ const withPWA = require('next-pwa')({
 // Support serving from subdirectory like /blog
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
-// Security headers applied to all responses
-// Note: CSP is handled separately below. HSTS should be set at nginx level.
-const securityHeaders = [
-  {
-    key: 'X-Content-Type-Options',
-    value: 'nosniff'
-  },
-  {
-    key: 'X-Frame-Options',
-    value: 'SAMEORIGIN'
-  },
-  {
-    key: 'X-DNS-Prefetch-Control',
-    value: 'off'
-  },
-  {
-    key: 'X-Download-Options',
-    value: 'noopen'
-  },
-  {
-    key: 'Referrer-Policy',
-    value: 'strict-origin-when-cross-origin'
-  },
-  {
-    key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=()'
-  }
-];
-
-const connectSrcAllowedHosts = new Set([
-  "https://api.hive.blog",
-  "https://api.syncad.com",
-  "https://api.openhive.network",
-  "https://images.hive.blog"
-]);
-
-if (!!process.env.REACT_APP_ALLOWED_HIVE_API_NODES) {
-  const nodes = process.env.REACT_APP_ALLOWED_HIVE_API_NODES.split(/[ ,]+/);
-  if (nodes.length > 0) {
-    connectSrcAllowedHosts.clear();
-  }
-  nodes.forEach(node => {
-    connectSrcAllowedHosts.add(node);
-  });
-}
-
-if (!!process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID) {
-  connectSrcAllowedHosts.add("https://www.googleapis.com");
-  connectSrcAllowedHosts.add("https://accounts.google.com");
-}
-
-if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
-  connectSrcAllowedHosts.add("https://*.ingest.sentry.io");
-  connectSrcAllowedHosts.add("https://*.ingest.us.sentry.io");
-}
-
-let scriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'";
-
-if (!!process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID) {
-  scriptSrc += " https://accounts.google.com/gsi/";
-}
-
-
-// Content Security Policy - enforced.
-// See docs/security-headers.md for details.
-const csp = [
-  // Default fallback for unspecified resource types
-  "default-src 'self'",
-  // Scripts: self + inline (required for Next.js) + eval (required for HBAuth/Beekeeper WASM) + Google Sign-In
-  scriptSrc,
-  // Styles: self + inline (required for React/Next.js styling)
-  "style-src 'self' 'unsafe-inline'",
-  // Images: self + any HTTPS + data URIs + blob (for image processing)
-  "img-src 'self' https: data: blob:",
-  // Fonts: self + data URIs (for inline fonts)
-  "font-src 'self' data:",
-  // API connections: whitelist of trusted Hive API nodes and services
-  // Only nodes running proper haf_api_node software are allowed
-  // Google APIs for Drive wallet backup and Sign-In
-  `connect-src 'self' ${[...connectSrcAllowedHosts].join(' ')}`,
-  // Embedded content: whitelist of allowed iframe sources
-  // Note: 3speak.online/co removed (compromised/spam), code normalizes to 3speak.tv
-  // Note: emb.d.tube removed (subdomain down, no renderer support)
-  "frame-src https://platform.twitter.com https://www.instagram.com https://player.vimeo.com https://www.youtube.com https://w.soundcloud.com https://player.twitch.tv https://open.spotify.com https://3speak.tv https://odysee.com https://openhive.chat",
-  // Web Workers: self + blob (for HBAuth and service worker)
-  "worker-src 'self' blob:",
-  // Prevent site from being embedded in iframes (clickjacking protection)
-  "frame-ancestors 'self'",
-  // Restrict base URI to prevent base tag injection
-  "base-uri 'self'",
-  // Restrict form submissions to same origin
-  "form-action 'self'",
-  // Report violations to our endpoint for monitoring
-  "report-uri /api/csp-report"
-].join('; ');
+// Note: Security headers (CSP, X-Content-Type-Options, etc.) are now applied
+// via middleware for runtime environment variable evaluation.
+// See packages/middleware/lib/csp.ts and apps/blog/middleware.ts
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -120,20 +28,9 @@ const nextConfig = {
     outputFileTracingRoot: path.join(__dirname, '../..'),
     instrumentationHook: true
   },
-  /// According to notes: https://nextjs.org/docs/app/guides/progressive-web-apps#8-securing-your-application
+  // Worker files need specific headers (security headers are applied via middleware)
   async headers() {
     return [
-      // Security headers and CSP for all routes
-      {
-        source: '/:path*',
-        headers: [
-          ...securityHeaders,
-          {
-            key: 'Content-Security-Policy',
-            value: csp
-          }
-        ]
-      },
       {
         source: '/sw.js',
         headers: [
@@ -227,48 +124,24 @@ const nextConfig = {
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
-module.exports = withPWA(withBundleAnalyzer(removeImports(nextConfig)));
 
-if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
+// Sentry configuration - always included so builds are identical regardless of env vars.
+// Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
+const { withSentryConfig } = require('@sentry/nextjs');
 
-// Injected content via Sentry wizard below
-const { withSentryConfig } = require("@sentry/nextjs");
+module.exports = withSentryConfig(withPWA(withBundleAnalyzer(removeImports(nextConfig))), {
+  // Disable source map upload - env vars not available at build time
+  // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
+  sourcemaps: {
+    disable: true,
+  },
 
-module.exports = withSentryConfig(module.exports, {
-  // For all available options, see:
-  // https://www.npmjs.com/package/@sentry/webpack-plugin#options
-
-  org: process.env.NEXT_PUBLIC_SENTRY_GROUP,
-  project: process.env.NEXT_PUBLIC_SENTRY_PROJECT,
-
-  // Only print logs for uploading source maps in CI
-  silent: !process.env.CI,
-
-  // For all available options, see:
-  // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
-
-  // Upload a larger set of source maps for prettier stack traces (increases build time)
-  widenClientFileUpload: true,
-
-  // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-  // This can increase your server load as well as your hosting bill.
-  // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-  // side errors will fail.
-  // tunnelRoute: "/monitoring",
+  silent: true,
 
   webpack: {
-    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-    // See the following for more information:
-    // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
-    automaticVercelMonitors: true,
-
     // Tree-shaking options for reducing bundle size
     treeshake: {
-      // Automatically tree-shake Sentry logger statements to reduce bundle size
       removeDebugLogging: true,
     },
   },
 });
-
-}

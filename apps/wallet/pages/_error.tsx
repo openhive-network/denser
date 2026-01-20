@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 import Error from "next/error";
 import type { NextPageContext } from "next/types";
+import env from "@beam-australia/react-env";
 
 const CustomErrorComponent = (props: { statusCode: number; title?: string; withDarkMode?: boolean; }) => {
   return <Error statusCode={props.statusCode} />;
@@ -10,7 +11,7 @@ CustomErrorComponent.getInitialProps = async (contextData: NextPageContext) => {
   // In case this is running in a serverless function, await this in order to give Sentry
   // time to send the error before the lambda exits
 
-  if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
+  if (!!env('SENTRY_DSN')) {
     await Sentry.captureUnderscoreErrorException(contextData);
   }
 
