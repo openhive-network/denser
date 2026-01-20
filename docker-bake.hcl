@@ -25,12 +25,6 @@ variable "PUSH_TO_HIVE_BLOG" {
 variable "REACT_APP_SENTRY_DSN" {
   default = ""
 }
-variable "REACT_APP_SENTRY_GROUP" {
-  default = ""
-}
-variable "REACT_APP_SENTRY_PROJECT" {
-  default = ""
-}
 variable "REACT_APP_ALLOWED_HIVE_API_NODES" {
   default = ""
 }
@@ -65,8 +59,6 @@ target "local-build" {
     BASE_PATH = "${BASE_PATH}",
     // Env vars for next.config.js at build time
     REACT_APP_SENTRY_DSN = "${REACT_APP_SENTRY_DSN}",
-    REACT_APP_SENTRY_GROUP = "${REACT_APP_SENTRY_GROUP}",
-    REACT_APP_SENTRY_PROJECT = "${REACT_APP_SENTRY_PROJECT}",
     REACT_APP_ALLOWED_HIVE_API_NODES = "${REACT_APP_ALLOWED_HIVE_API_NODES}",
     REACT_APP_GOOGLE_DRIVE_CLIENT_ID = "${REACT_APP_GOOGLE_DRIVE_CLIENT_ID}",
   }
