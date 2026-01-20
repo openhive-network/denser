@@ -7,7 +7,7 @@ import { chromium } from 'playwright';
 import { mkdir } from 'fs/promises';
 import { join } from 'path';
 
-const BASE_URL = 'https://blog.openhive.network';
+const BASE_URL = process.env.BASE_URL || 'https://blog.openhive.network';
 const API_URL = 'https://api.hive.blog';
 const TEST_ID = 'SMOKE-06';
 const TEST_NAME = 'Comments';

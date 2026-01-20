@@ -7,7 +7,7 @@ import { chromium } from 'playwright';
 import { mkdir } from 'fs/promises';
 import { join } from 'path';
 
-const BASE_URL = 'https://blog.openhive.network';
+const BASE_URL = process.env.BASE_URL || 'https://blog.openhive.network';
 const TEST_ID = 'SMOKE-14';
 const TEST_NAME = 'Theme Toggle';
 const TEST_PRIORITY = 'P4';

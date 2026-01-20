@@ -1,6 +1,6 @@
 ---
 name: blog-smoke-tests
-description: Run Playwright smoke tests for Denser blog application. Executes 15 tests (SMOKE-01 to SMOKE-15) against https://blog.openhive.network with retry support (max 3 attempts per failing test). Supports headed (visible browser) and headless modes. Collects artifacts (screenshots, trace.zip) on failures and generates HTML report. Use when testing blog functionality, verifying deployments, checking UI/API consistency, or when user requests smoke tests, playwright tests, or blog testing.
+description: Run Playwright smoke tests for Denser blog application. Executes 15 tests (SMOKE-01 to SMOKE-15) against configurable environment (production, dev, or localhost) with retry support (max 3 attempts per failing test). Supports headed (visible browser) and headless modes. Collects artifacts (screenshots, trace.zip) on failures and generates HTML report. Use when testing blog functionality, verifying deployments, checking UI/API consistency, or when user requests smoke tests, playwright tests, or blog testing.
 allowed-tools:
   - Bash
   - Read
@@ -10,7 +10,7 @@ allowed-tools:
 
 # Blog Smoke Tests Skill
 
-Run Playwright smoke tests against the Denser blog application at https://blog.openhive.network.
+Run Playwright smoke tests against the Denser blog application.
 
 ## Features
 
@@ -27,11 +27,16 @@ Run Playwright smoke tests against the Denser blog application at https://blog.o
 
 Before running tests, ask user:
 
-1. **Browser mode**:
+1. **Target environment**:
+   - **Production** (default) - https://blog.openhive.network
+   - **Dev** - https://blog.dev.openhive.network
+   - **Localhost** - http://localhost:3000
+
+2. **Browser mode**:
    - **Headed** (default) - visible browser, good for debugging
    - **Headless** - faster, for CI/CD
 
-2. **Test scope**:
+3. **Test scope**:
    - **All** - run all 15 tests
    - **P0** - critical tests only (SMOKE-01, 04, 08)
    - **P1** - important tests (SMOKE-05, 06, 07)
@@ -62,10 +67,12 @@ For each test:
 **Command to run single test:**
 ```bash
 cd /storage1/denser/apps/blog
-HEADLESS=false REPORT_DIR=./playwright/temp_ai_report_tests pnpm exec node playwright/temp_ai_script_tests/smoke-XX-name.mjs
+BASE_URL=https://blog.openhive.network HEADLESS=false REPORT_DIR=./playwright/temp_ai_report_tests pnpm exec node playwright/temp_ai_script_tests/smoke-XX-name.mjs
 ```
 
-Replace `HEADLESS=false` with `HEADLESS=true` for headless mode.
+Replace:
+- `BASE_URL=https://blog.openhive.network` with chosen environment URL
+- `HEADLESS=false` with `HEADLESS=true` for headless mode
 
 **Parsing JSON result:**
 Each test outputs a JSON line prefixed with `__RESULT__`:
@@ -206,8 +213,17 @@ for (const test of tests) {
 
 | Variable | Description | Default |
 |----------|-------------|---------|
+| `BASE_URL` | Target environment URL | `https://blog.openhive.network` |
 | `HEADLESS` | Run browser in headless mode | `false` (headed) |
 | `REPORT_DIR` | Directory for artifacts and report | `./playwright/temp_ai_report_tests` |
+
+### Available Environments
+
+| Environment | URL |
+|-------------|-----|
+| Production | `https://blog.openhive.network` |
+| Dev | `https://blog.dev.openhive.network` |
+| Localhost | `http://localhost:3000` |
 
 ## Reference Documentation
 
@@ -220,6 +236,8 @@ for (const test of tests) {
 | Path | Purpose |
 |------|---------|
 | Production URL | https://blog.openhive.network |
+| Dev URL | https://blog.dev.openhive.network |
+| Localhost URL | http://localhost:3000 |
 | API URL | https://api.hive.blog |
 | Working directory | /storage1/denser/apps/blog |
 | Temp scripts | playwright/temp_ai_script_tests/ |
