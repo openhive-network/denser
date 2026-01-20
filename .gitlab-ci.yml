@@ -125,6 +125,10 @@ default:
   extends: .docker_image_builder_job_template
   stage: build
   interruptible: true
+  variables:
+    # DEPLOYMENT_ENV_FILE: Override in child jobs to source env vars from a file
+    # e.g., DEPLOYMENT_ENV_FILE: "MAINNET_DEV_DEPLOYMENT_ENV"
+    DEPLOYMENT_ENV_FILE: ""
   before_script:
   - !reference [.docker_image_builder_job_template, before_script]
   - |
@@ -132,6 +136,20 @@ default:
     docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     echo -e "\e[0Ksection_end:$(date +%s):login\r\e[0K"
   script:
+  - |
+    # Source env vars from deployment file if specified
+    if [[ -n "${DEPLOYMENT_ENV_FILE}" ]]; then
+      # GitLab file variables: variable name contains path to file
+      ENV_FILE_PATH="${!DEPLOYMENT_ENV_FILE}"
+      if [[ -f "${ENV_FILE_PATH}" ]]; then
+        echo "Sourcing build env vars from ${DEPLOYMENT_ENV_FILE}..."
+        set -a  # auto-export all variables
+        source "${ENV_FILE_PATH}"
+        set +a
+      else
+        echo "Warning: DEPLOYMENT_ENV_FILE specified but file not found: ${ENV_FILE_PATH}"
+      fi
+    fi
   - |
     # Set PUSH_TO_HIVE_BLOG for protected tags matching pattern
     if [[ "${CI_COMMIT_TAG}" =~ ^[v01].* ]] && [[ "${CI_COMMIT_REF_PROTECTED}" == "true" ]]; then
@@ -203,15 +221,33 @@ mirrornet-haf-binaries-extraction:
   tags:
   - public-runner-docker
 
+# Blog builds - separate for main (prod) and develop (dev) with different env vars
 docker-build-blog:
   extends: .docker_build_template
+  rules:
+  - if: $CI_COMMIT_BRANCH == "main"
+    variables:
+      DEPLOYMENT_ENV_FILE: "MAINNET_PROD_DEPLOYMENT_ENV"
+  - if: $CI_COMMIT_BRANCH == "develop"
+    variables:
+      DEPLOYMENT_ENV_FILE: "MAINNET_DEV_DEPLOYMENT_ENV"
+  - when: on_success  # Other branches: build without env file (no Sentry)
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
     TURBO_APP_NAME: 'blog'
 
+# Wallet builds - separate for main (prod) and develop (dev) with different env vars
 docker-build-wallet:
   extends: .docker_build_template
+  rules:
+  - if: $CI_COMMIT_BRANCH == "main"
+    variables:
+      DEPLOYMENT_ENV_FILE: "MAINNET_PROD_DEPLOYMENT_ENV"
+  - if: $CI_COMMIT_BRANCH == "develop"
+    variables:
+      DEPLOYMENT_ENV_FILE: "MAINNET_DEV_DEPLOYMENT_ENV"
+  - when: on_success  # Other branches: build without env file (no Sentry)
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'

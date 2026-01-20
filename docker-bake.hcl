@@ -21,6 +21,22 @@ variable "BASE_PATH" {
 variable "PUSH_TO_HIVE_BLOG" {
   default = ""
 }
+// Environment variables needed at build time for next.config.js
+variable "NEXT_PUBLIC_SENTRY_DSN" {
+  default = ""
+}
+variable "NEXT_PUBLIC_SENTRY_GROUP" {
+  default = ""
+}
+variable "NEXT_PUBLIC_SENTRY_PROJECT" {
+  default = ""
+}
+variable "REACT_APP_ALLOWED_HIVE_API_NODES" {
+  default = ""
+}
+variable "REACT_APP_GOOGLE_DRIVE_CLIENT_ID" {
+  default = ""
+}
 
 function "notempty" {
   params = [variable]
@@ -47,6 +63,12 @@ target "local-build" {
     GIT_LAST_COMMITTER = "${GIT_LAST_COMMITTER}",
     GIT_LAST_COMMIT_DATE = "${GIT_LAST_COMMIT_DATE}",
     BASE_PATH = "${BASE_PATH}",
+    // Env vars for next.config.js at build time
+    NEXT_PUBLIC_SENTRY_DSN = "${NEXT_PUBLIC_SENTRY_DSN}",
+    NEXT_PUBLIC_SENTRY_GROUP = "${NEXT_PUBLIC_SENTRY_GROUP}",
+    NEXT_PUBLIC_SENTRY_PROJECT = "${NEXT_PUBLIC_SENTRY_PROJECT}",
+    REACT_APP_ALLOWED_HIVE_API_NODES = "${REACT_APP_ALLOWED_HIVE_API_NODES}",
+    REACT_APP_GOOGLE_DRIVE_CLIENT_ID = "${REACT_APP_GOOGLE_DRIVE_CLIENT_ID}",
   }
   output = [
     "type=docker"
