@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer, useState } from 'react';
 import { Input } from '@ui/components/input';
 import { Button } from '@ui/components/button';
 import clsx from 'clsx';
-import { convertStringToBig } from '@ui/lib/helpers';
+import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
 import { useTranslation } from 'next-i18next';
 import { useCreateMarketOrder } from './hooks/use-market-mutation';
 import { handleError } from '@ui/lib/handle-error';
@@ -205,7 +205,11 @@ export default function BuyOrSellForm({
             >
               {t('market_page.available')}:{' '}
             </span>
-            <span>{transaction === 'buy' ? `${accountData?.hbd_balance}` : `${accountData?.balance}`}</span>
+            <span>
+              {transaction === 'buy'
+                ? accountData?.hbd_balance && formatNaiAsset(accountData.hbd_balance)
+                : accountData?.balance && formatNaiAsset(accountData.balance)}
+            </span>
           </div>
           <div>
             <span

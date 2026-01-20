@@ -1,18 +1,19 @@
 import { getRecentTrades } from '@/wallet/lib/hive';
-import { convertStringToBig } from '@ui/lib/helpers';
+import { convertStringToBig, isHbd } from '@ui/lib/helpers';
 import { useQuery } from '@tanstack/react-query';
-interface useTradeHistoryOptions {
+
+interface UseTradeHistoryOptions {
   refetchInterval: number;
 }
 
-export const useTradeHistory = (config?: useTradeHistoryOptions) => {
+export const useTradeHistory = (config?: UseTradeHistoryOptions) => {
   return useQuery(['recentTrades'], () => getRecentTrades(), {
     ...config,
     select: (data) => {
       return data.map((e) => ({
         ...e,
-        hbd: convertStringToBig(e.current_pays.includes('HBD') ? e.current_pays : e.open_pays),
-        hive: convertStringToBig(e.current_pays.includes('HIVE') ? e.current_pays : e.open_pays)
+        hbd: convertStringToBig(isHbd(e.current_pays) ? e.current_pays : e.open_pays),
+        hive: convertStringToBig(isHbd(e.current_pays) ? e.open_pays : e.current_pays)
       }));
     }
   });

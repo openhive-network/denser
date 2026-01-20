@@ -173,9 +173,9 @@ export interface JsonMetadata {
 export type FollowListType = 'follow_blacklist' | 'followed_muted_lists' | 'blacklisted' | 'muted';
 
 export interface IMarketStatistics {
-  hbd_volume: string;
+  hbd_volume: NaiAsset;
   highest_bid: string;
-  hive_volume: string;
+  hive_volume: NaiAsset;
   latest: string;
   lowest_ask: string;
   percent_change: string;
@@ -209,15 +209,14 @@ export interface IOrdersDataItem {
   hbd: number;
   hive: number;
   order_price: {
-    base: string;
-    quote: string;
+    base: NaiAsset;
+    quote: NaiAsset;
   };
   real_price: string;
 }
 export interface IOrdersData {
   bids: IOrdersDataItem[];
   asks: IOrdersDataItem[];
-  trading: IOrdersDataItem[];
 }
 
 export interface IOpenOrdersData {
@@ -228,17 +227,17 @@ export interface IOpenOrdersData {
   orderid: number;
   for_sale: number;
   sell_price: {
-    base: string;
-    quote: string;
+    base: NaiAsset;
+    quote: NaiAsset;
   };
-  real_price: string;
-  rewarded: boolean;
 }
 
 export interface IRecentTradesData {
   date: string;
-  current_pays: string;
-  open_pays: string;
+  current_pays: NaiAsset;
+  open_pays: NaiAsset;
+  maker: string;
+  taker: string;
 }
 
 export type OwnerHistory = {
@@ -566,6 +565,17 @@ export interface IMarketCandlestickDataItem {
   seconds: number;
 }
 
+// database_api list_limit_orders types
+export interface IListLimitOrdersParams {
+  start: [string, number];
+  limit: number;
+  order: 'by_price' | 'by_account';
+}
+
+export interface IListLimitOrdersResponse {
+  orders: IOpenOrdersData[];
+}
+
 export interface ITrendingTag {
   comments: number;
   name: string;
@@ -846,17 +856,18 @@ export type ExtendedNodeApi = {
     get_profile: TWaxApiRequest<{ account: string; observer?: string }, IProfile | null>;
   };
   condenser_api: {
-    get_ticker: TWaxApiRequest<void[], IMarketStatistics>;
-    get_order_book: TWaxApiRequest<number[], IOrdersData>;
-    get_open_orders: TWaxApiRequest<string[], IOpenOrdersData[]>;
-    get_trade_history: TWaxApiRequest<(string | number)[], IOrdersDataItem[]>;
-    get_recent_trades: TWaxApiRequest<number[], IRecentTradesData[]>;
     get_owner_history: TWaxApiRequest<string[], OwnerHistory>;
     get_market_history_buckets: TWaxApiRequest<void[], number[]>;
     get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
     list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
     get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
     get_market_history: TWaxApiRequest<(string | number)[], IMarketCandlestickDataItem[]>;
+  };
+  market_history_api: {
+    get_ticker: TWaxApiRequest<Record<string, never>, IMarketStatistics>;
+    get_order_book: TWaxApiRequest<{ limit: number }, IOrdersData>;
+    get_trade_history: TWaxApiRequest<{ start: string; end: string; limit: number }, { trades: IRecentTradesData[] }>;
+    get_recent_trades: TWaxApiRequest<{ limit: number }, { trades: IRecentTradesData[] }>;
   };
   rc_api: {
     find_rc_accounts: TWaxApiRequest<string[], { rc_accounts: RcAccount[] }>;
@@ -907,6 +918,7 @@ export type ExtendedNodeApi = {
     >;
     list_vesting_delegations: TWaxApiRequest<IListVestingDelegationsParams, IListVestingDelegationsResponse>;
     get_witness_schedule: TWaxApiRequest<Record<string, never>, IWitnessSchedule>;
+    list_limit_orders: TWaxApiRequest<IListLimitOrdersParams, IListLimitOrdersResponse>;
   };
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;

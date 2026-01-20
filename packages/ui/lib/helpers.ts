@@ -10,11 +10,29 @@ export function convertStringToBig(number: string | NaiAsset): Big {
   return new Big(number.amount).div(new Big(10).pow(number.precision));
 }
 
-const NAI_SYMBOLS: Record<string, string> = {
+export const NAI_SYMBOLS: Record<string, string> = {
   '@@000000021': 'HIVE',
   '@@000000013': 'HBD',
   '@@000000037': 'VESTS'
 };
+
+export const NAI_HBD = '@@000000013';
+export const NAI_HIVE = '@@000000021';
+export const NAI_VESTS = '@@000000037';
+
+/**
+ * Checks if a NaiAsset is HBD
+ */
+export function isHbd(asset: NaiAsset): boolean {
+  return asset.nai === NAI_HBD;
+}
+
+/**
+ * Checks if a NaiAsset is HIVE
+ */
+export function isHive(asset: NaiAsset): boolean {
+  return asset.nai === NAI_HIVE;
+}
 
 /**
  * Formats a NaiAsset to a human-readable string like "1.234 HIVE"

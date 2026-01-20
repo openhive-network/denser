@@ -9,7 +9,6 @@ import {
   IVestingDelegation,
   OwnerHistory,
   IRecentTradesData,
-  IOrdersDataItem,
   IOpenOrdersData,
   IOrdersData,
   IMarketStatistics,
@@ -218,29 +217,40 @@ export const getUserVotes = async (voter: string, limit: number = 1000): Promise
 
 export const getMarketStatistics = async (): Promise<IMarketStatistics> => {
   const chain = await getChain();
-  return chain.api.condenser_api.get_ticker([]);
+  return chain.api.market_history_api.get_ticker({});
 };
 
 export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> => {
   const chain = await getChain();
-  return chain.api.condenser_api.get_order_book([limit]);
+  return chain.api.market_history_api.get_order_book({ limit });
 };
 
 export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => {
   const chain = await getChain();
-  return chain.api.condenser_api.get_open_orders([user]);
+  const response = await chain.api.database_api.list_limit_orders({
+    start: [user, 0],
+    limit: 1000,
+    order: 'by_account'
+  });
+  return response.orders.filter((order) => order.seller === user);
 };
 
-export const getTradeHistory = async (limit: number = 1000): Promise<IOrdersDataItem[]> => {
+export const getTradeHistory = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
   const chain = await getChain();
-  let todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
-  let todayNow = moment(Date.now()).format().split('+')[0];
-  return chain.api.condenser_api.get_trade_history([todayEarlier, todayNow, limit]);
+  const todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
+  const todayNow = moment(Date.now()).format().split('+')[0];
+  const response = await chain.api.market_history_api.get_trade_history({
+    start: todayEarlier,
+    end: todayNow,
+    limit
+  });
+  return response.trades;
 };
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
   const chain = await getChain();
-  return chain.api.condenser_api.get_recent_trades([limit]);
+  const response = await chain.api.market_history_api.get_recent_trades({ limit });
+  return response.trades;
 };
 
 export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {

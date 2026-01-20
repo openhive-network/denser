@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { IOpenOrdersData } from '@hive/common-hiveio-packages/wax'; 
+import { IOpenOrdersData } from '@hive/common-hiveio-packages/wax';
 import { useTranslation } from 'next-i18next';
 import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import { dateToFormatted } from '@ui/lib/parse-date';
@@ -8,6 +8,7 @@ import Loading from '@ui/components/loading';
 import { useCancelMarketOrder } from './hooks/use-market-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { useQueryClient } from '@tanstack/react-query';
+import { convertStringToBig, isHive } from '@ui/lib/helpers';
 
 interface OpenOrderProps {
   user: string;
@@ -67,11 +68,14 @@ const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
             <tbody>
               {orders && orders.length ? (
                 (sortAsc ? orders : orders.toReversed()).map((order: IOpenOrdersData) => {
-                  const currency = [
-                    order.sell_price.base.split(' ')[0],
-                    order.sell_price.quote.split(' ')[0]
-                  ];
-                  if (order.sell_price.base.includes('HBD')) currency.reverse();
+                  const baseAmount = convertStringToBig(order.sell_price.base);
+                  const quoteAmount = convertStringToBig(order.sell_price.quote);
+                  const isSellOrder = isHive(order.sell_price.base);
+                  const realPrice = isSellOrder
+                    ? quoteAmount.div(baseAmount)
+                    : baseAmount.div(quoteAmount);
+                  const hiveAmount = isSellOrder ? baseAmount : quoteAmount;
+                  const hbdAmount = isSellOrder ? quoteAmount : baseAmount;
 
                   return (
                     <tr className="even:bg-background-tertiary" key={order.orderid}>
@@ -79,16 +83,14 @@ const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
                         {dateToFormatted(order.created, 'YYYY-MM-DD HH:mm:ss')}
                       </td>
                       <td>
-                        {order.sell_price.base.includes('HIVE')
-                          ? t('market_page.sell')
-                          : t('market_page.buy')}
+                        {isSellOrder ? t('market_page.sell') : t('market_page.buy')}
                       </td>
-                      <td>{Number(order.real_price).toFixed(6)}</td>
-                      <td>{currency[0]}</td>
-                      <td>{currency[1]}</td>
+                      <td>{realPrice.toFixed(6)}</td>
+                      <td>{hiveAmount.toFixed(3)}</td>
+                      <td>{hbdAmount.toFixed(3)}</td>
                       <td>
                         {(
-                          (1 - order.for_sale / 1000 / parseFloat(order.sell_price.base.split(' ')[0])) *
+                          (1 - order.for_sale / 1000 / baseAmount.toNumber()) *
                           100
                         ).toFixed(2)}
                         %

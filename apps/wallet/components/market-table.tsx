@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { dateToRelative } from '@ui/lib/parse-date';
 import Big from 'big.js';
 import { useTranslation } from 'next-i18next';
+import { NaiAsset } from '@hiveio/wax';
+import { isHbd } from '@ui/lib/helpers';
 
 export interface OrdersItem {
   total: number;
@@ -11,8 +13,8 @@ export interface OrdersItem {
   hbd: number;
   hive: number;
   order_price: {
-    base: string;
-    quote: string;
+    base: NaiAsset;
+    quote: NaiAsset;
   };
   real_price: string;
 }
@@ -20,8 +22,8 @@ type TradeHistory = {
   hbd: Big;
   hive: Big;
   date: string;
-  current_pays: string;
-  open_pays: string;
+  current_pays: NaiAsset;
+  open_pays: NaiAsset;
 };
 const PAGE_SIZE = 10;
 export function MarketTable({
@@ -150,8 +152,8 @@ export function HistoryTable({ data, params, label }: { data: any[]; params: str
                 <td title={e.date.replace('T', ' ')}>{dateToRelative(e.date, t)}</td>
                 <td
                   className={clsx({
-                    'text-destructive': e.current_pays.includes('HIVE'),
-                    'text-green-500': e.current_pays.includes('HBD')
+                    'text-destructive': !isHbd(e.current_pays),
+                    'text-green-500': isHbd(e.current_pays)
                   })}
                 >
                   {e.hbd.div(e.hive).toFixed(6)}
