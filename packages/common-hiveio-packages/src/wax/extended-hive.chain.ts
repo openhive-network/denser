@@ -7,7 +7,6 @@ import {
   NaiAsset,
   transaction
 } from '@hiveio/wax';
-import { AccountFollowStats, FullAccount } from './app-types';
 
 export interface SearchType {
   pattern: string;
@@ -411,6 +410,26 @@ export interface IListVestingDelegationsParams {
 
 export interface IListVestingDelegationsResponse {
   delegations: IVestingDelegation[];
+}
+
+export interface IFindOwnerHistoriesParams {
+  owner: string;
+}
+
+export interface IFindOwnerHistoriesResponse {
+  owner_auths: OwnerHistory;
+}
+
+export interface IListProposalVotesParams {
+  start: (string | number)[];
+  limit: number;
+  order: 'by_voter_proposal' | 'by_proposal_voter';
+  order_direction: 'ascending' | 'descending';
+  status: 'all' | 'votable' | 'active' | 'inactive' | 'expired';
+}
+
+export interface IListProposalVotesResponse {
+  proposal_votes: IProposalVote[];
 }
 
 export type OpType =
@@ -855,14 +874,6 @@ export type ExtendedNodeApi = {
     get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
     get_profile: TWaxApiRequest<{ account: string; observer?: string }, IProfile | null>;
   };
-  condenser_api: {
-    get_owner_history: TWaxApiRequest<string[], OwnerHistory>;
-    get_market_history_buckets: TWaxApiRequest<void[], number[]>;
-    get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
-    list_proposal_votes: TWaxApiRequest<(string | number | (string | number)[])[], IProposalVote[]>;
-    get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
-    get_market_history: TWaxApiRequest<(string | number)[], IMarketCandlestickDataItem[]>;
-  };
   market_history_api: {
     get_ticker: TWaxApiRequest<Record<string, never>, IMarketStatistics>;
     get_order_book: TWaxApiRequest<{ limit: number }, IOrdersData>;
@@ -919,6 +930,8 @@ export type ExtendedNodeApi = {
     list_vesting_delegations: TWaxApiRequest<IListVestingDelegationsParams, IListVestingDelegationsResponse>;
     get_witness_schedule: TWaxApiRequest<Record<string, never>, IWitnessSchedule>;
     list_limit_orders: TWaxApiRequest<IListLimitOrdersParams, IListLimitOrdersResponse>;
+    find_owner_histories: TWaxApiRequest<IFindOwnerHistoriesParams, IFindOwnerHistoriesResponse>;
+    list_proposal_votes: TWaxApiRequest<IListProposalVotesParams, IListProposalVotesResponse>;
   };
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;

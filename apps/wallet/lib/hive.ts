@@ -203,16 +203,26 @@ export const getProposalVotes = async (
   limit: number = 1000
 ): Promise<IProposalVote[]> => {
   const chain = await getChain();
-  return chain.api.condenser_api
-    .list_proposal_votes([[proposalId, voter], limit, 'by_proposal_voter'])
-    .then((r) => r.filter((x: IProposalVote) => x.proposal.proposal_id === proposalId));
+  const result = await chain.api.database_api.list_proposal_votes({
+    start: [proposalId, voter],
+    limit,
+    order: 'by_proposal_voter',
+    order_direction: 'ascending',
+    status: 'all'
+  });
+  return result.proposal_votes.filter((x) => x.proposal.proposal_id === proposalId);
 };
 
 export const getUserVotes = async (voter: string, limit: number = 1000): Promise<IProposalVote[]> => {
   const chain = await getChain();
-  return chain.api.condenser_api
-    .list_proposal_votes([[voter], limit, 'by_voter_proposal'])
-    .then((r) => r.filter((x: IProposalVote) => x.voter === voter));
+  const result = await chain.api.database_api.list_proposal_votes({
+    start: [voter],
+    limit,
+    order: 'by_voter_proposal',
+    order_direction: 'ascending',
+    status: 'all'
+  });
+  return result.proposal_votes.filter((x) => x.voter === voter);
 };
 
 export const getMarketStatistics = async (): Promise<IMarketStatistics> => {
@@ -260,5 +270,6 @@ export const getSavingsWithdrawals = async (account: string): Promise<SavingsWit
 
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
   const chain = await getChain();
-  return chain.api.condenser_api.get_owner_history([account]);
+  const result = await chain.api.database_api.find_owner_histories({ owner: account });
+  return result.owner_auths;
 };

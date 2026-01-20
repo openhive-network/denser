@@ -209,31 +209,6 @@ export class ApiHelper {
     return responseGetCommunitySubscribers.json();
   }
 
-  // Get list of proposals as json from API response from condenser_api.list_proposals
-  async getListOfProposalsAPI(
-    start: [] = [],
-    limit: number = 30,
-    order: string = "by_total_votes",
-    order_direction: string = "descending",
-    status: string = "votable"
-  ) {
-    const url = process.env.REACT_APP_API_ENDPOINT;
-
-    const responseGetListOfProposals = await this.page.request.post(`${url}/`, {
-      data: {
-        id: 0,
-        jsonrpc: "2.0",
-        method: "condenser_api.list_proposals",
-        params: [start, limit, order, order_direction, status],
-      },
-      headers: {
-        Accept: "application/json, text/plain, */*",
-      },
-    });
-
-    return responseGetListOfProposals.json();
-  }
-
   // Get list of proposals as json from API response from database_api.list_proposals
   async getListOfProposalsDatabaseAPI(
     start: [] = [],
@@ -267,7 +242,7 @@ export class ApiHelper {
     return responseGetListOfProposals.json();
   }
 
-  // Get account history as json from API response
+  // Get account history as json from API response using account_history_api
   async getAccountHistoryAPI(account: string, start: number, limit: number) {
     const url = process.env.REACT_APP_API_ENDPOINT;
 
@@ -275,15 +250,27 @@ export class ApiHelper {
       data: {
         id: 0,
         jsonrpc: "2.0",
-        method: "condenser_api.get_account_history",
-        params: [account, start, limit, "199284866418737180"], // last parameter: ...wallet_operations_bitmask
+        method: "account_history_api.get_account_history",
+        params: {
+          account,
+          start,
+          limit,
+          operation_filter_low: 199284866418737180,
+          include_reversible: true
+        },
       },
       headers: {
         Accept: "application/json, text/plain, */*",
       },
     });
 
-    return responseGetAccountHistory.json();
+    const json = await responseGetAccountHistory.json();
+    // Transform response to maintain backward compatibility with tests
+    // account_history_api returns { result: { history: [...] } }
+    if (json.result && json.result.history) {
+      json.result = json.result.history;
+    }
+    return json;
   }
 
   // Get account history as json from API response

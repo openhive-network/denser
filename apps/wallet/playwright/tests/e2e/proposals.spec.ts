@@ -25,8 +25,8 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.goToProposalsPage();
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
-      const resListOfProposalsAPI = await apiHelper.getListOfProposalsAPI(); // default parameters
-      const amountListOfProposalsItemsAPI = resListOfProposalsAPI.result.length;
+      const resListOfProposalsAPI = await apiHelper.getListOfProposalsDatabaseAPI(); // default parameters
+      const amountListOfProposalsItemsAPI = resListOfProposalsAPI.result.proposals.length;
 
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
 
