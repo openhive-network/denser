@@ -79,10 +79,11 @@ async function runTest() {
     console.log(`   Page votes: ${pageVotes}`);
 
     console.log('\n3. Getting API data...');
+    // Use database_api.list_votes instead of deprecated condenser_api.get_active_votes
     const apiRequest = {
       jsonrpc: '2.0',
-      method: 'condenser_api.get_active_votes',
-      params: [author, permlink],
+      method: 'database_api.list_votes',
+      params: { start: [author, permlink, ''], limit: 1000, order: 'by_comment_voter' },
       id: 1
     };
     const response = await fetch(API_URL, {
@@ -91,9 +92,12 @@ async function runTest() {
       body: JSON.stringify(apiRequest)
     });
     const data = await response.json();
-    const apiVotes = data.result?.length || 0;
+    // Filter votes to only those matching our post (API may return votes beyond our post)
+    const allVotes = data.result?.votes || [];
+    const postVotes = allVotes.filter(v => v.author === author && v.permlink === permlink);
+    const apiVotes = postVotes.length;
 
-    console.log(`   API active_votes: ${apiVotes}`);
+    console.log(`   API list_votes: ${apiVotes}`);
     console.log('   (API limit: 1000)');
 
     console.log('\n4. Comparison...');

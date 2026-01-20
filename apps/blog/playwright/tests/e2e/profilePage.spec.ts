@@ -34,6 +34,7 @@ test.describe('Profile page of @gtg', () => {
 
     // Compare profile api nickname with nickname displayed on the website
     // and number of posts
+    // Use database_api.find_accounts instead of deprecated condenser_api.get_accounts
     const responseGetAccounts = await request.post(`${url}/`, {
       data: {
         id: 0,
@@ -46,7 +47,8 @@ test.describe('Profile page of @gtg', () => {
       }
     });
 
-    const profileNameApi = (await responseGetAccounts.json()).result.accounts[0].name;
+    const accountsData = await responseGetAccounts.json();
+    const profileNameApi = accountsData.result.accounts[0].name;
 
     await page.waitForSelector(profilePage.profileName['_selector']);
     expect(await profilePage.profileName).toBeVisible();
@@ -56,7 +58,7 @@ test.describe('Profile page of @gtg', () => {
       profileNameApi
     );
 
-    const profilePostCountApi = (await responseGetAccounts.json()).result.accounts[0].post_count;
+    const profilePostCountApi = accountsData.result.accounts[0].post_count;
     expect(await profilePage.profileNumberOfPosts.textContent()).toContain(String(profilePostCountApi));
 
     // Compare follower and following number from api to the respondent on the website

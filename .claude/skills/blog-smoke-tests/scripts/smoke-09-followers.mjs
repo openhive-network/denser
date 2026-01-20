@@ -72,26 +72,28 @@ async function runTest() {
 
     console.log('\n3. Getting API stats...');
 
-    const followCountRequest = {
+    // Use bridge.get_profile instead of deprecated condenser_api.get_follow_count
+    const profileRequest = {
       jsonrpc: '2.0',
-      method: 'condenser_api.get_follow_count',
-      params: [TEST_USER],
+      method: 'bridge.get_profile',
+      params: { account: TEST_USER },
       id: 1
     };
-    const followResponse = await fetch(API_URL, {
+    const profileResponse = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(followCountRequest)
+      body: JSON.stringify(profileRequest)
     });
-    const followData = await followResponse.json();
+    const profileData = await profileResponse.json();
 
-    const apiFollowers = followData.result?.follower_count || 0;
-    const apiFollowing = followData.result?.following_count || 0;
+    const apiFollowers = profileData.result?.stats?.followers || 0;
+    const apiFollowing = profileData.result?.stats?.following || 0;
 
+    // Use database_api.find_accounts instead of deprecated condenser_api.get_accounts
     const accountRequest = {
       jsonrpc: '2.0',
-      method: 'condenser_api.get_accounts',
-      params: [[TEST_USER]],
+      method: 'database_api.find_accounts',
+      params: { accounts: [TEST_USER], delayed_votes_active: false },
       id: 2
     };
     const accountResponse = await fetch(API_URL, {
@@ -100,7 +102,7 @@ async function runTest() {
       body: JSON.stringify(accountRequest)
     });
     const accountData = await accountResponse.json();
-    const apiPosts = accountData.result?.[0]?.post_count || 0;
+    const apiPosts = accountData.result?.accounts?.[0]?.post_count || 0;
 
     console.log(`   API Followers: ${apiFollowers}`);
     console.log(`   API Posts: ${apiPosts}`);
