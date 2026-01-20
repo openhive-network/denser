@@ -43,8 +43,8 @@ const connectSrcAllowedHosts = new Set([
   "https://api.syncad.com",
   "https://api.openhive.network",
   "https://images.hive.blog",
-  "ws://localhost:3001",
-  "wss://localhost:3001"
+  "ws://localhost:3101",
+  "wss://localhost:3101"
 ]);
 
 if (!!process.env.REACT_APP_ALLOWED_HIVE_API_NODES) {

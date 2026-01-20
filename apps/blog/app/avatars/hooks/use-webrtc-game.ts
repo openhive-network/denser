@@ -47,7 +47,7 @@ interface UseWebRTCGameReturn {
   sendGameMessage: (message: GameMessage) => void;
 }
 
-const DEFAULT_SERVER_URL = 'ws://localhost:3001';
+const DEFAULT_SERVER_URL = 'ws://localhost:3101';
 
 export function useWebRTCGame(options: UseWebRTCGameOptions = {}): UseWebRTCGameReturn {
   const { serverUrl = DEFAULT_SERVER_URL, onGameMessage, onConnectionChange } = options;

@@ -2,7 +2,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { RoomManager } from './room-manager.js';
 import type { ClientMessage, ServerMessage } from './types.js';
 
-const PORT = parseInt(process.env.GAME_SERVER_PORT ?? '3001', 10);
+const PORT = parseInt(process.env.GAME_SERVER_PORT ?? '3101', 10);
 
 const roomManager = new RoomManager();
 
