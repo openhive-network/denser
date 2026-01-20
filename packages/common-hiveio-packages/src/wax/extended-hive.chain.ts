@@ -7,7 +7,6 @@ import {
   NaiAsset,
   transaction
 } from '@hiveio/wax';
-import { AccountFollowStats, FullAccount } from './app-types';
 
 export interface SearchType {
   pattern: string;
@@ -874,12 +873,6 @@ export type ExtendedNodeApi = {
     get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
     get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
     get_profile: TWaxApiRequest<{ account: string; observer?: string }, IProfile | null>;
-  };
-  condenser_api: {
-    get_market_history_buckets: TWaxApiRequest<void[], number[]>;
-    get_blog_entries: TWaxApiRequest<(string | number)[], BlogEntry[]>;
-    get_accounts: TWaxApiRequest<[string[]], FullAccount[]>;
-    get_market_history: TWaxApiRequest<(string | number)[], IMarketCandlestickDataItem[]>;
   };
   market_history_api: {
     get_ticker: TWaxApiRequest<Record<string, never>, IMarketStatistics>;

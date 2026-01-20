@@ -38,15 +38,15 @@ test.describe('Profile page of @gtg', () => {
       data: {
         id: 0,
         jsonrpc: '2.0',
-        method: 'condenser_api.get_accounts',
-        params: [['gtg']]
+        method: 'database_api.find_accounts',
+        params: { accounts: ['gtg'], delayed_votes_active: false }
       },
       headers: {
         Accept: 'application/json, text/plain, */*'
       }
     });
 
-    const profileNameApi = (await responseGetAccounts.json()).result[0].name;
+    const profileNameApi = (await responseGetAccounts.json()).result.accounts[0].name;
 
     await page.waitForSelector(profilePage.profileName['_selector']);
     expect(await profilePage.profileName).toBeVisible();
@@ -56,11 +56,10 @@ test.describe('Profile page of @gtg', () => {
       profileNameApi
     );
 
-    const profilePostCountApi = (await responseGetAccounts.json()).result[0].post_count;
+    const profilePostCountApi = (await responseGetAccounts.json()).result.accounts[0].post_count;
     expect(await profilePage.profileNumberOfPosts.textContent()).toContain(String(profilePostCountApi));
 
     // Compare follower and following number from api to the respondent on the website
-    // Using bridge.get_profile instead of deprecated condenser_api.get_follow_count
     const responseGetProfile = await request.post(`${url}/`, {
       data: {
         id: 0,
