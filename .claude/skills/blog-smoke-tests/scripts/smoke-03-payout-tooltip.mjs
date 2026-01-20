@@ -3,114 +3,63 @@
  * Priority: P2 (Content)
  * Verifies payout element exists and hover shows tooltip with breakdown
  */
-import { chromium } from 'playwright';
-import { mkdir } from 'fs/promises';
-import { join } from 'path';
+import {
+  runSmokeTest,
+  gotoAndWaitForPosts,
+  hoverAndWaitForTooltip,
+  SELECTORS,
+  TIMEOUTS
+} from './test-utils.mjs';
 
-const BASE_URL = process.env.BASE_URL || 'https://blog.openhive.network';
 const TEST_ID = 'SMOKE-03';
 const TEST_NAME = 'Payout Tooltip';
 const TEST_PRIORITY = 'P2';
 
-async function runTest() {
-  console.log('========================================');
-  console.log(`${TEST_ID}: ${TEST_NAME} (Post Card)`);
-  console.log('========================================\n');
-
-  const headless = process.env.HEADLESS === 'true';
-  const reportDir = process.env.REPORT_DIR || './playwright/temp_ai_report_tests';
-
-  await mkdir(reportDir, { recursive: true });
-
-  const browser = await chromium.launch({ headless });
-  const context = await browser.newContext();
-  const page = await context.newPage();
-
-  await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
-
+async function test({ page }) {
   let allPassed = true;
-  let errorMessage = null;
 
-  try {
-    console.log('1. Opening /trending...');
-    await page.goto(`${BASE_URL}/trending`, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await page.locator('[data-testid="post-list-item"]').first().waitFor({ state: 'visible', timeout: 30000 });
+  console.log('1. Opening /trending...');
+  await gotoAndWaitForPosts(page, '/trending');
 
-    console.log('\n2. Checking payout element on card...');
+  console.log('\n2. Checking payout element on card...');
+  const firstPost = page.locator(SELECTORS.POST_LIST_ITEM).first();
+  const payoutElement = firstPost.locator(SELECTORS.POST_PAYOUT);
+  const payoutVisible = await payoutElement.isVisible().catch(() => false);
 
-    const payoutElement = page.locator('[data-testid="post-list-item"]').first().locator('[data-testid="post-payout"]');
-    const payoutVisible = await payoutElement.isVisible().catch(() => false);
+  if (payoutVisible) {
+    const payoutText = await payoutElement.textContent();
+    console.log(`   ✓ Payout element visible: ${payoutText}`);
 
-    if (payoutVisible) {
-      const payoutText = await payoutElement.textContent();
-      console.log(`   ✓ Payout element visible: ${payoutText}`);
-
-      if (payoutText && /\$[\d.]+/.test(payoutText)) {
-        console.log('   ✓ PASS: Element contains payout value');
-      } else {
-        console.log('   ✗ FAIL: Element does not contain payout value');
-        allPassed = false;
-      }
-
-      console.log('\n3. Hover on payout...');
-      await payoutElement.hover();
-      await page.waitForTimeout(500);
-
-      const tooltip = page.locator('[role="tooltip"]');
-      const tooltipVisible = await tooltip.isVisible().catch(() => false);
-
-      if (tooltipVisible) {
-        const tooltipText = await tooltip.textContent();
-        console.log(`   ✓ PASS: Tooltip visible: ${tooltipText?.substring(0, 50)}...`);
-      } else {
-        console.log('   (i) INFO: Tooltip not found');
-        console.log('   ✓ PASS: Payout element works, tooltip optional');
-      }
+    if (payoutText && /\$[\d.]+/.test(payoutText)) {
+      console.log('   ✓ PASS: Element contains payout value');
     } else {
-      console.log('   ✗ FAIL: Payout element not visible');
+      console.log('   ✗ FAIL: Element does not contain payout value');
       allPassed = false;
     }
 
-  } catch (error) {
-    console.error('✗ ERROR:', error.message);
-    errorMessage = error.message;
+    console.log('\n3. Hover on payout...');
+    // Use proper wait instead of waitForTimeout
+    const tooltip = await hoverAndWaitForTooltip(page, payoutElement, TIMEOUTS.TOOLTIP);
+    const tooltipVisible = await tooltip.isVisible().catch(() => false);
+
+    if (tooltipVisible) {
+      const tooltipText = await tooltip.textContent();
+      console.log(`   ✓ PASS: Tooltip visible: ${tooltipText?.substring(0, 50)}...`);
+    } else {
+      console.log('   (i) INFO: Tooltip not found');
+      console.log('   ✓ PASS: Payout element works, tooltip optional');
+    }
+  } else {
+    console.log('   ✗ FAIL: Payout element not visible');
     allPassed = false;
   }
-
-  if (!allPassed) {
-    const screenshotPath = join(reportDir, `${TEST_ID}-failure.png`);
-    const tracePath = join(reportDir, `${TEST_ID}-trace.zip`);
-
-    try {
-      await page.screenshot({ path: screenshotPath, fullPage: true });
-      console.log(`   Screenshot saved: ${screenshotPath}`);
-    } catch (e) {
-      console.log(`   Could not save screenshot: ${e.message}`);
-    }
-
-    await context.tracing.stop({ path: tracePath });
-    console.log(`   Trace saved: ${tracePath}`);
-  } else {
-    await context.tracing.stop();
-  }
-
-  await browser.close();
-
-  console.log('\n========================================');
-  console.log(allPassed ? `✓ ${TEST_ID}: PASS` : `✗ ${TEST_ID}: FAIL`);
-  console.log('========================================');
-
-  const result = {
-    id: TEST_ID,
-    name: TEST_NAME,
-    priority: TEST_PRIORITY,
-    passed: allPassed,
-    error: errorMessage,
-    artifacts: allPassed ? [] : [`${TEST_ID}-failure.png`, `${TEST_ID}-trace.zip`]
-  };
-  console.log('\n__RESULT__' + JSON.stringify(result));
 
   return allPassed;
 }
 
-runTest().then(passed => process.exit(passed ? 0 : 1));
+runSmokeTest({
+  id: TEST_ID,
+  name: TEST_NAME,
+  priority: TEST_PRIORITY,
+  headerSuffix: '(Post Card)'
+}, test).then(passed => process.exit(passed ? 0 : 1));

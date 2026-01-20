@@ -3,183 +3,111 @@
  * Priority: P2 (Content)
  * Verifies followers/following counts match API
  */
-import { chromium } from 'playwright';
-import { mkdir } from 'fs/promises';
-import { join } from 'path';
+import {
+  runSmokeTest,
+  config,
+  getUserProfile,
+  getAccountInfo,
+  parseInteger,
+  SELECTORS,
+  TIMEOUTS
+} from './test-utils.mjs';
 
-const BASE_URL = process.env.BASE_URL || 'https://blog.openhive.network';
-const API_URL = 'https://api.hive.blog';
-const TEST_USER = 'gtg';
 const TEST_ID = 'SMOKE-09';
 const TEST_NAME = 'Followers/Following';
 const TEST_PRIORITY = 'P2';
 
-async function runTest() {
-  console.log('========================================');
-  console.log(`${TEST_ID}: ${TEST_NAME} @${TEST_USER}`);
-  console.log('========================================\n');
-
-  const headless = process.env.HEADLESS === 'true';
-  const reportDir = process.env.REPORT_DIR || './playwright/temp_ai_report_tests';
-
-  await mkdir(reportDir, { recursive: true });
-
-  const browser = await chromium.launch({ headless });
-  const context = await browser.newContext();
-  const page = await context.newPage();
-
-  await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
-
+async function test({ page }) {
   let allPassed = true;
-  let errorMessage = null;
+  const testUser = config.TEST_USER;
 
-  try {
-    console.log(`1. Opening /@${TEST_USER}...`);
-    await page.goto(`${BASE_URL}/@${TEST_USER}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await page.waitForLoadState('networkidle', { timeout: 30000 });
+  console.log(`1. Opening /@${testUser}...`);
+  await page.goto(`${config.BASE_URL}/@${testUser}`, {
+    waitUntil: 'domcontentloaded',
+    timeout: TIMEOUTS.NAVIGATION
+  });
+  await page.waitForLoadState('networkidle', { timeout: TIMEOUTS.NETWORK_IDLE });
 
-    console.log('\n2. Getting UI stats...');
+  console.log('\n2. Getting UI stats...');
+  const profileStats = page.locator(SELECTORS.PROFILE_STATS);
+  await profileStats.waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });
 
-    // Profile stats are in ul[data-testid="profile-stats"] with li children
-    const profileStats = page.locator('[data-testid="profile-stats"]');
-    await profileStats.waitFor({ state: 'visible', timeout: 10000 });
+  const statsItems = profileStats.locator('li');
+  const statsCount = await statsItems.count();
 
-    const statsItems = profileStats.locator('li');
-    const statsCount = await statsItems.count();
+  let uiFollowers = 0;
+  let uiPosts = 0;
+  let uiFollowing = 0;
 
-    let uiFollowers = 0;
-    let uiPosts = 0;
-    let uiFollowing = 0;
+  for (let i = 0; i < statsCount; i++) {
+    const itemText = await statsItems.nth(i).textContent();
+    const text = itemText?.toLowerCase() || '';
+    const num = parseInteger(itemText?.match(/[\d,]+/)?.[0]?.replace(/,/g, ''));
 
-    for (let i = 0; i < statsCount; i++) {
-      const itemText = await statsItems.nth(i).textContent();
-      const text = itemText?.toLowerCase() || '';
-      const numMatch = itemText?.match(/[\d,]+/);
-      const num = numMatch ? parseInt(numMatch[0].replace(/,/g, ''), 10) : 0;
-
-      if (text.includes('follower')) {
-        uiFollowers = num;
-      } else if (text.includes('post')) {
-        uiPosts = num;
-      } else if (text.includes('follow')) {
-        uiFollowing = num;
-      }
+    if (text.includes('follower')) {
+      uiFollowers = num;
+    } else if (text.includes('post')) {
+      uiPosts = num;
+    } else if (text.includes('follow')) {
+      uiFollowing = num;
     }
+  }
 
-    console.log(`   Followers: ${uiFollowers}`);
-    console.log(`   Posts: ${uiPosts}`);
-    console.log(`   Following: ${uiFollowing}`);
+  console.log(`   Followers: ${uiFollowers}`);
+  console.log(`   Posts: ${uiPosts}`);
+  console.log(`   Following: ${uiFollowing}`);
 
-    console.log('\n3. Getting API stats...');
+  console.log('\n3. Getting API stats...');
+  const profileData = await getUserProfile(testUser);
+  const apiFollowers = profileData.result?.stats?.followers || 0;
+  const apiFollowing = profileData.result?.stats?.following || 0;
 
-    // Use bridge.get_profile instead of deprecated condenser_api.get_follow_count
-    const profileRequest = {
-      jsonrpc: '2.0',
-      method: 'bridge.get_profile',
-      params: { account: TEST_USER },
-      id: 1
-    };
-    const profileResponse = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(profileRequest)
-    });
-    const profileData = await profileResponse.json();
+  const accountData = await getAccountInfo(testUser);
+  const apiPosts = accountData.result?.accounts?.[0]?.post_count || 0;
 
-    const apiFollowers = profileData.result?.stats?.followers || 0;
-    const apiFollowing = profileData.result?.stats?.following || 0;
+  console.log(`   API Followers: ${apiFollowers}`);
+  console.log(`   API Posts: ${apiPosts}`);
+  console.log(`   API Following: ${apiFollowing}`);
 
-    // Use database_api.find_accounts instead of deprecated condenser_api.get_accounts
-    const accountRequest = {
-      jsonrpc: '2.0',
-      method: 'database_api.find_accounts',
-      params: { accounts: [TEST_USER], delayed_votes_active: false },
-      id: 2
-    };
-    const accountResponse = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(accountRequest)
-    });
-    const accountData = await accountResponse.json();
-    const apiPosts = accountData.result?.accounts?.[0]?.post_count || 0;
+  console.log('\n4. Comparison UI vs API...');
+  const TOLERANCE = 50;
 
-    console.log(`   API Followers: ${apiFollowers}`);
-    console.log(`   API Posts: ${apiPosts}`);
-    console.log(`   API Following: ${apiFollowing}`);
-
-    console.log('\n4. Comparison UI vs API...');
-
-    const followersDiff = Math.abs(uiFollowers - apiFollowers);
-    if (followersDiff <= 50) {
-      console.log(`   ✓ PASS: Followers UI:${uiFollowers} API:${apiFollowers} (diff:${followersDiff})`);
-    } else {
-      console.log(`   ✗ FAIL: Followers UI:${uiFollowers} API:${apiFollowers} (diff:${followersDiff})`);
-      allPassed = false;
-    }
-
-    const postsDiff = Math.abs(uiPosts - apiPosts);
-    if (postsDiff <= 50) {
-      console.log(`   ✓ PASS: Posts UI:${uiPosts} API:${apiPosts} (diff:${postsDiff})`);
-    } else {
-      console.log(`   ✗ FAIL: Posts UI:${uiPosts} API:${apiPosts} (diff:${postsDiff})`);
-      allPassed = false;
-    }
-
-    const followingDiff = Math.abs(uiFollowing - apiFollowing);
-    if (followingDiff <= 50) {
-      console.log(`   ✓ PASS: Following UI:${uiFollowing} API:${apiFollowing} (diff:${followingDiff})`);
-    } else {
-      console.log(`   ✗ FAIL: Following UI:${uiFollowing} API:${apiFollowing} (diff:${followingDiff})`);
-      allPassed = false;
-    }
-
-    if (statsCount >= 3) {
-      console.log(`   ✓ PASS: All ${statsCount} stats displayed`);
-    } else {
-      console.log(`   (i) INFO: Only ${statsCount} stats found`);
-    }
-
-  } catch (error) {
-    console.error('✗ ERROR:', error.message);
-    errorMessage = error.message;
+  const followersDiff = Math.abs(uiFollowers - apiFollowers);
+  if (followersDiff <= TOLERANCE) {
+    console.log(`   ✓ PASS: Followers UI:${uiFollowers} API:${apiFollowers} (diff:${followersDiff})`);
+  } else {
+    console.log(`   ✗ FAIL: Followers UI:${uiFollowers} API:${apiFollowers} (diff:${followersDiff})`);
     allPassed = false;
   }
 
-  if (!allPassed) {
-    const screenshotPath = join(reportDir, `${TEST_ID}-failure.png`);
-    const tracePath = join(reportDir, `${TEST_ID}-trace.zip`);
-
-    try {
-      await page.screenshot({ path: screenshotPath, fullPage: true });
-      console.log(`   Screenshot saved: ${screenshotPath}`);
-    } catch (e) {
-      console.log(`   Could not save screenshot: ${e.message}`);
-    }
-
-    await context.tracing.stop({ path: tracePath });
-    console.log(`   Trace saved: ${tracePath}`);
+  const postsDiff = Math.abs(uiPosts - apiPosts);
+  if (postsDiff <= TOLERANCE) {
+    console.log(`   ✓ PASS: Posts UI:${uiPosts} API:${apiPosts} (diff:${postsDiff})`);
   } else {
-    await context.tracing.stop();
+    console.log(`   ✗ FAIL: Posts UI:${uiPosts} API:${apiPosts} (diff:${postsDiff})`);
+    allPassed = false;
   }
 
-  await browser.close();
+  const followingDiff = Math.abs(uiFollowing - apiFollowing);
+  if (followingDiff <= TOLERANCE) {
+    console.log(`   ✓ PASS: Following UI:${uiFollowing} API:${apiFollowing} (diff:${followingDiff})`);
+  } else {
+    console.log(`   ✗ FAIL: Following UI:${uiFollowing} API:${apiFollowing} (diff:${followingDiff})`);
+    allPassed = false;
+  }
 
-  console.log('\n========================================');
-  console.log(allPassed ? `✓ ${TEST_ID}: PASS` : `✗ ${TEST_ID}: FAIL`);
-  console.log('========================================');
-
-  const result = {
-    id: TEST_ID,
-    name: TEST_NAME,
-    priority: TEST_PRIORITY,
-    passed: allPassed,
-    error: errorMessage,
-    artifacts: allPassed ? [] : [`${TEST_ID}-failure.png`, `${TEST_ID}-trace.zip`]
-  };
-  console.log('\n__RESULT__' + JSON.stringify(result));
+  if (statsCount >= 3) {
+    console.log(`   ✓ PASS: All ${statsCount} stats displayed`);
+  } else {
+    console.log(`   (i) INFO: Only ${statsCount} stats found`);
+  }
 
   return allPassed;
 }
 
-runTest().then(passed => process.exit(passed ? 0 : 1));
+runSmokeTest({
+  id: TEST_ID,
+  name: TEST_NAME,
+  priority: TEST_PRIORITY,
+  headerSuffix: `@${config.TEST_USER}`
+}, test).then(passed => process.exit(passed ? 0 : 1));

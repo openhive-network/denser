@@ -7,6 +7,7 @@ node_modules
 out
 playwright-report
 test-results
+playwright/temp_ai_report_tests
 version.json
 *.tsbuildinfo
 */**/auth/worker.js
