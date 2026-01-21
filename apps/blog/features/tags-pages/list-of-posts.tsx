@@ -13,6 +13,7 @@ import { Entry } from '@hive/common-hiveio-packages/wax';
 import PostList from '../list-of-posts/posts-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import { isCommunity } from '@ui/lib/utils';
+import { PostListSkeleton } from '@hive/ui';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
   const { user } = useUserClient();
@@ -72,7 +73,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
 
   // Handle initial loading state
   if (isLoading) {
-    return null;
+    return <PostListSkeleton count={5} />;
   }
 
   // Handle empty feed for "my" (friends) page

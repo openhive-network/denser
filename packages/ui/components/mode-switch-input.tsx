@@ -5,6 +5,7 @@ import SearchSortSelect from './search-select';
 import ModeSelect from './mode-select';
 import clsx from 'clsx';
 import { Separator } from '@radix-ui/react-dropdown-menu';
+import { Search } from 'lucide-react';
 
 interface ModeInputProps {
   className?: string;
@@ -35,11 +36,15 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      if (mode === 'userTopic') {
-        handleSearch(secondInputValue, mode, inputValue);
-      } else {
-        handleSearch(inputValue, mode, secondInputValue);
-      }
+      onSearchClick();
+    }
+  };
+
+  const onSearchClick = () => {
+    if (mode === 'userTopic') {
+      handleSearch(secondInputValue, mode, inputValue);
+    } else {
+      handleSearch(inputValue, mode, secondInputValue);
     }
   };
   const placeholder = getPlaceholder(mode);
@@ -78,6 +83,15 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
             />
           </>
         ) : null}
+        <button
+          type="button"
+          onClick={onSearchClick}
+          disabled={!aiAvailable && mode === 'ai'}
+          className="mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="Search"
+        >
+          <Search className="h-4 w-4" />
+        </button>
       </div>
       {searchPage && (mode === 'classic' || mode === 'userTopic') && (
         <SearchSortSelect value={inputValue} secondValue={secondInputValue} mode={mode} />

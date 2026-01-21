@@ -1,6 +1,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useNavigationProgress } from '@ui/components/navigation-progress';
 
 export type SearchMode = 'ai' | 'classic' | 'account' | 'userTopic' | 'tag';
 export type SearchSort = 'created' | 'relevance';
@@ -18,6 +19,7 @@ const getMode = (
 export function useSearch() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { startNavigation } = useNavigationProgress();
 
   const query = searchParams?.get('q') ?? undefined;
   const aiQuery = searchParams?.get('ai') ?? undefined;
@@ -71,6 +73,7 @@ export function useSearch() {
     currenySort?: SearchSort
   ) => {
     if (!value) return;
+    startNavigation();
     switch (currentMode) {
       case 'account':
         router.push(`/@${encodeURIComponent(value)}`);

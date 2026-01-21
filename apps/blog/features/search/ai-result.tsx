@@ -8,7 +8,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Entry, PostStub } from '@hive/common-hiveio-packages/wax';
 import { PER_PAGE } from './lib/utils';
 import { DEFAULT_OBSERVER, Preferences } from '@/blog/lib/utils';
-import PostCardSkeleton from '@ui/components/card-skeleton';
+import { PostListItemSkeleton } from '@hive/ui';
 import { commonVariables } from '@ui/lib/common-variables';
 
 import PostList from '../list-of-posts/posts-loader';
@@ -160,7 +160,7 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
           disabled={!hasNextPage || isLoadingMore}
           style={{ display: hasNextPage ? 'block' : 'none' }}
         >
-          {isLoadingMore ? <PostCardSkeleton /> : hasNextPage ? t('user_profile.load_newer') : null}
+          {isLoadingMore ? <PostListItemSkeleton /> : hasNextPage ? t('user_profile.load_newer') : null}
         </button>
 
         {!hasNextPage && displayedPosts.length > 0 && <div>{t('user_profile.nothing_more_to_load')}</div>}

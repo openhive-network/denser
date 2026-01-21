@@ -9,7 +9,7 @@ import { getByText } from '@transaction/lib/hive-api';
 import { Link } from '@hive/ui';
 import { Activity } from 'lucide-react';
 import { Preferences } from '@hive/common-hiveio-packages/wax';
-import PostCardSkeleton from '@hive/ui/components/card-skeleton';
+import { PostListItemSkeleton } from '@hive/ui';
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';
 import NoDataError from '@/blog/components/no-data-error';
@@ -124,7 +124,7 @@ const AccountTopicResult = ({
           disabled={!hasNextPage || isFetchingNextPage}
         >
           {isFetchingNextPage ? (
-            <PostCardSkeleton />
+            <PostListItemSkeleton />
           ) : hasNextPage ? (
             t('user_profile.load_newer')
           ) : !isLoading ? (

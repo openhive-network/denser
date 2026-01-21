@@ -12,6 +12,11 @@ import { LoggedUserProvider } from '@/blog/features/votes/hooks/use-logged-user'
 import { ThemeProvider } from '@/blog/features/layouts/theme-provider';
 import { ModalContainer } from '@smart-signer/components/modal-container';
 import { Toaster } from '@ui/components/toaster';
+import {
+  NavigationProgressProvider,
+  NavigationProgress,
+  NavigationProgressHandler
+} from '@hive/ui';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useMemo(() => getQueryClient(), []);
@@ -24,9 +29,13 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
       </Head>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <SignerProvider>
-            <LoggedUserProvider>{children}</LoggedUserProvider>
-          </SignerProvider>
+          <NavigationProgressProvider>
+            <NavigationProgress />
+            <NavigationProgressHandler />
+            <SignerProvider>
+              <LoggedUserProvider>{children}</LoggedUserProvider>
+            </SignerProvider>
+          </NavigationProgressProvider>
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
         <ModalContainer />

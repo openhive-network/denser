@@ -35,6 +35,7 @@ export * from "./toggle";
 export * from "./tooltip";
 export * from "./link";
 export * from "./storage-cleanup";
+export * from "./navigation-progress";
 
 // utility exports
 export * from "../lib/avatar-utils";
