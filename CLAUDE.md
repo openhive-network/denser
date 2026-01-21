@@ -10,6 +10,7 @@ This project uses **gitlab.syncad.com**, NOT gitlab.com.
 - **Main branch**: Periodically synced from `develop` (not direct commits)
 - **Issue linking**: Always link issues in MR descriptions using `Closes #123` or `Fixes #123`
 - **Separate MRs**: Create separate MRs for separate topics/issues
+- **Pre-MR for Blog**: Before creating MR with blog changes, ask user if they want to run `blog-smoke-tests` skill to verify basic functionality
 
 ## Package Management
 - Check `.gitlab-ci.yml` for current Node/pnpm versions
@@ -68,6 +69,7 @@ This project uses **gitlab.syncad.com**, NOT gitlab.com.
 
 ### Testing
 - **Playwright**: E2E tests with multiple configs (local, mirrornet)
+- **Blog Smoke Tests**: Before creating MR for blog changes, consider running smoke tests via `blog-smoke-tests` skill (15 tests covering homepage, navigation, profiles, tooltips, etc.)
 
 ### Internal Packages (`packages/`)
 | Package | Purpose |

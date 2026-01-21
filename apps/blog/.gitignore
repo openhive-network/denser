@@ -45,6 +45,8 @@ public/__ENV.js
 /playwright/.cache/
 /merged-html-report/
 /playwright/.auth/
+/playwright/temp_ai_report_tests/
+/playwright/temp_ai_script_tests/
 
 public/locales
 public/smart-signer
