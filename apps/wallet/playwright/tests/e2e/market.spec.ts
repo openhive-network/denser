@@ -294,8 +294,9 @@ test.describe('Market Page', () => {
       await expect(marketPage.sellOrdersPaginationPrev).toBeVisible();
       await expect(marketPage.sellOrdersPaginationNext).toBeVisible();
 
-      // First page - next (lower) button should be disabled for sell orders
-      await expect(marketPage.sellOrdersPaginationNext).toBeDisabled();
+      // First page - prev (higher) button should be disabled for sell orders
+      // because we're already at the lowest prices
+      await expect(marketPage.sellOrdersPaginationPrev).toBeDisabled();
     });
   });
 
@@ -460,11 +461,11 @@ test.describe('Market Page - Order Table Pagination', () => {
       // Get first row price before pagination
       const firstPriceBefore = await marketPage.getSellOrderPrice(0).textContent();
 
-      // Navigate to next page (prev button navigates to higher prices for sell)
-      await marketPage.goToPrevSellOrdersPage();
+      // Navigate to next page using "Lower" button (next button goes to higher page numbers)
+      await marketPage.goToNextSellOrdersPage();
 
-      // Next button should now be enabled
-      await expect(marketPage.sellOrdersPaginationNext).toBeEnabled();
+      // Prev button should now be enabled (we're no longer on page 0)
+      await expect(marketPage.sellOrdersPaginationPrev).toBeEnabled();
 
       // First row price should be different
       const firstPriceAfter = await marketPage.getSellOrderPrice(0).textContent();
