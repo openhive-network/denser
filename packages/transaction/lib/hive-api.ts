@@ -210,7 +210,7 @@ export const getFollowCount = async (username: string): Promise<AccountFollowSta
  * @returns
  */
 export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
-  return (await getChain()).api.follow_api.get_reblogged_by({ author, permlink });
+  return (await getChain()).api.condenser_api.get_reblogged_by({ author, permlink });
 };
 
 export const getFeedHistory = async (): Promise<IFeedHistory> => {
@@ -248,7 +248,7 @@ export const DEFAULT_PARAMS_FOR_FOLLOW: IGetFollowParams = {
 
 export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    return (await getChain()).api.follow_api.get_following({
+    return (await getChain()).api.condenser_api.get_following({
       account: params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
       start: params?.start || '',
       type: params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
@@ -281,7 +281,7 @@ export const getDynamicGlobalProperties = async (): Promise<GetDynamicGlobalProp
 
 export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    return (await getChain()).api.follow_api.get_followers({
+    return (await getChain()).api.condenser_api.get_followers({
       account: params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
       start: params?.start || '',
       type: params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,

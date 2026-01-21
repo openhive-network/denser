@@ -884,7 +884,7 @@ export type ExtendedNodeApi = {
     find_rc_accounts: TWaxApiRequest<string[], { rc_accounts: RcAccount[] }>;
     list_rc_direct_delegations: TWaxApiRequest<{ limit: number; start: [string, string] }, IDirectDelegation>;
   };
-  follow_api: {
+  condenser_api: { /* XXX: Temporary until we resolve follow_api not working for those methods: */
     get_reblogged_by: TWaxApiRequest<{ author: string; permlink: string }, string[]>;
     get_followers: TWaxApiRequest<
       { account: string; start: string; type: string; limit: number },
