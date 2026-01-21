@@ -35,38 +35,85 @@ interface IManabars {
   rcCooldown: Date;
 }
 
+const PERCENT_VALUE_DOUBLE_PRECISION = 100;
+const ONE_HUNDRED_PERCENT = BigInt(100) * BigInt(PERCENT_VALUE_DOUBLE_PRECISION);
+
 export const getManabars = async (accountName: string): Promise<IManabars | null> => {
   try {
-    const upvoteCooldownPromise = (await getChain()).calculateManabarFullRegenerationTimeForAccount(
-      accountName,
-      0
-    );
-    const downvoteCooldownPromise = (await getChain()).calculateManabarFullRegenerationTimeForAccount(
-      accountName,
-      1
-    );
-    const rcCooldownPromise = (await getChain()).calculateManabarFullRegenerationTimeForAccount(
-      accountName,
-      2
-    );
-    const upvotePromise = (await getChain()).calculateCurrentManabarValueForAccount(accountName, 0);
-    const downvotePromise = (await getChain()).calculateCurrentManabarValueForAccount(accountName, 1);
-    const rcPromise = (await getChain()).calculateCurrentManabarValueForAccount(accountName, 2);
-    const manabars = await Promise.all([
-      upvotePromise,
-      upvoteCooldownPromise,
-      downvotePromise,
-      downvoteCooldownPromise,
-      rcPromise,
-      rcCooldownPromise
+    const chain = await getChain();
+
+    const [dgpo, {
+      accounts: [account]
+    }, {
+      rc_accounts: [rcAccount]
+    }] = await Promise.all([
+      chain.api.database_api.get_dynamic_global_properties({}),
+      chain.api.database_api.find_accounts({
+        accounts: [accountName],
+        delayed_votes_active: false
+      }),
+      chain.api.rc_api.find_rc_accounts({ accounts: [ accountName ] })
     ]);
+
+    if (!account || !rcAccount) {
+      return null;
+    }
+
+    const time = new Date(`${dgpo.time}Z`).getTime() / 1000;
+
+    const upvoteCooldown = new Date(chain.calculateManabarFullRegenerationTime(
+      time,
+      account.post_voting_power.amount,
+      account.voting_manabar.current_mana,
+      account.voting_manabar.last_update_time
+    ) * 1000);
+
+    // This code is copied from Wax repository. We should implement an easier way to manually calculate multiple manabars in the future.
+    let max = BigInt(account.post_voting_power.amount);
+    const downvotePoolPercent = BigInt(dgpo.downvote_pool_percent);
+    if(max / ONE_HUNDRED_PERCENT > ONE_HUNDRED_PERCENT)
+      max = (max / ONE_HUNDRED_PERCENT) * downvotePoolPercent;
+    else
+      max = (max * downvotePoolPercent) / ONE_HUNDRED_PERCENT;
+
+    const downvoteCooldown = new Date(chain.calculateManabarFullRegenerationTime(
+      time,
+      max,
+      account.downvote_manabar.current_mana,
+      account.downvote_manabar.last_update_time
+    ) * 1000);
+    const rcCooldown = new Date(chain.calculateManabarFullRegenerationTime(
+      time,
+      rcAccount.max_rc,
+      rcAccount.rc_manabar.current_mana,
+      rcAccount.rc_manabar.last_update_time
+    ) * 1000);
+    const upvote = chain.calculateCurrentManabarValue(
+      time,
+      account.post_voting_power.amount,
+      account.voting_manabar.current_mana,
+      account.voting_manabar.last_update_time
+    );
+    const downvote = chain.calculateCurrentManabarValue(
+      time,
+      max,
+      account.downvote_manabar.current_mana,
+      account.downvote_manabar.last_update_time
+    );
+    const rc = chain.calculateCurrentManabarValue(
+      time,
+      rcAccount.max_rc,
+      rcAccount.rc_manabar.current_mana,
+      rcAccount.rc_manabar.last_update_time
+    );
+
     return {
-      upvote: manabars[0],
-      upvoteCooldown: manabars[1],
-      downvote: manabars[2],
-      downvoteCooldown: manabars[3],
-      rc: manabars[4],
-      rcCooldown: manabars[5]
+      upvote,
+      upvoteCooldown,
+      downvote,
+      downvoteCooldown,
+      rc,
+      rcCooldown
     };
   } catch (error) {
     console.error(error);
