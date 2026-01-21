@@ -1,175 +1,382 @@
-import { Locator, Page, expect } from "@playwright/test";
+import { Locator, Page, expect } from '@playwright/test';
 
+/**
+ * Page Object Model for the Market page.
+ * Uses data-testid selectors for reliability and maintainability.
+ */
 export class MarketPage {
   readonly page: Page;
 
-  // Header statistics boxes
+  // Main container
+  readonly marketPage: Locator;
+  readonly marketStatistics: Locator;
+
+  // Statistics boxes
   readonly lastPriceBox: Locator;
+  readonly lastPriceValue: Locator;
+  readonly lastPriceDiff: Locator;
   readonly volumeBox: Locator;
+  readonly volumeValue: Locator;
   readonly bidBox: Locator;
+  readonly bidValue: Locator;
   readonly askBox: Locator;
+  readonly askValue: Locator;
   readonly spreadBox: Locator;
+  readonly spreadValue: Locator;
 
   // Chart
   readonly chart: Locator;
 
-  // Buy/Sell forms
-  readonly buyHiveSection: Locator;
-  readonly sellHiveSection: Locator;
-  readonly buyHiveButton: Locator;
-  readonly sellHiveButton: Locator;
+  // Buy form
+  readonly buyFormSection: Locator;
+  readonly buyFormLabel: Locator;
+  readonly buyFormPriceInput: Locator;
+  readonly buyFormAmountInput: Locator;
+  readonly buyFormTotalInput: Locator;
+  readonly buyFormSubmitButton: Locator;
+  readonly buyFormAvailable: Locator;
+  readonly buyFormLowestAsk: Locator;
 
-  // Order tables
-  readonly buyOrdersTable: Locator;
-  readonly sellOrdersTable: Locator;
-  readonly tradeHistoryTable: Locator;
+  // Sell form
+  readonly sellFormSection: Locator;
+  readonly sellFormLabel: Locator;
+  readonly sellFormPriceInput: Locator;
+  readonly sellFormAmountInput: Locator;
+  readonly sellFormTotalInput: Locator;
+  readonly sellFormSubmitButton: Locator;
+  readonly sellFormAvailable: Locator;
+  readonly sellFormHighestBid: Locator;
 
-  // Table headers
+  // Buy Orders table
+  readonly buyOrdersSection: Locator;
   readonly buyOrdersHeader: Locator;
+  readonly buyOrdersTable: Locator;
+  readonly buyOrdersTbody: Locator;
+  readonly buyOrdersPagination: Locator;
+  readonly buyOrdersPaginationPrev: Locator;
+  readonly buyOrdersPaginationNext: Locator;
+
+  // Sell Orders table
+  readonly sellOrdersSection: Locator;
   readonly sellOrdersHeader: Locator;
+  readonly sellOrdersTable: Locator;
+  readonly sellOrdersTbody: Locator;
+  readonly sellOrdersPagination: Locator;
+  readonly sellOrdersPaginationPrev: Locator;
+  readonly sellOrdersPaginationNext: Locator;
+
+  // Trade History table
+  readonly tradeHistorySection: Locator;
   readonly tradeHistoryHeader: Locator;
-
-  // Table rows
-  readonly buyOrdersRows: Locator;
-  readonly sellOrdersRows: Locator;
-  readonly tradeHistoryRows: Locator;
-
-  // Pagination buttons
-  readonly buyOrdersPaginationHigher: Locator;
-  readonly buyOrdersPaginationLower: Locator;
-  readonly sellOrdersPaginationHigher: Locator;
-  readonly sellOrdersPaginationLower: Locator;
-  readonly tradeHistoryPaginationOlder: Locator;
-  readonly tradeHistoryPaginationNewer: Locator;
-
-  // Form inputs
-  readonly buyPriceInput: Locator;
-  readonly buyAmountInput: Locator;
-  readonly buyTotalInput: Locator;
-  readonly sellPriceInput: Locator;
-  readonly sellAmountInput: Locator;
-  readonly sellTotalInput: Locator;
+  readonly tradeHistoryTable: Locator;
+  readonly tradeHistoryTbody: Locator;
+  readonly tradeHistoryPagination: Locator;
+  readonly tradeHistoryPaginationPrev: Locator;
+  readonly tradeHistoryPaginationNext: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
-    // Header statistics boxes - using text labels within the header flex container
-    const statsContainer = page.locator('.flex.w-full.flex-wrap.justify-center.gap-1');
-    this.lastPriceBox = statsContainer.locator('.bg-background-secondary').filter({ hasText: 'Last price' });
-    this.volumeBox = statsContainer.locator('.bg-background-secondary').filter({ hasText: '24h volume' });
-    this.bidBox = statsContainer.locator('.bg-background-secondary').filter({ hasText: /Bid/ });
-    this.askBox = statsContainer.locator('.bg-background-secondary').filter({ hasText: /Ask/ });
-    this.spreadBox = statsContainer.locator('.bg-background-secondary').filter({ hasText: 'Spread' });
+    // Main containers
+    this.marketPage = page.getByTestId('market-page');
+    this.marketStatistics = page.getByTestId('market-statistics');
 
-    // Chart - using recharts class
-    this.chart = page.locator('.recharts-wrapper');
+    // Statistics boxes - using data-testid
+    this.lastPriceBox = page.getByTestId('market-last-price');
+    this.lastPriceValue = page.getByTestId('market-last-price-value');
+    this.lastPriceDiff = page.getByTestId('market-last-price-diff');
+    this.volumeBox = page.getByTestId('market-volume');
+    this.volumeValue = page.getByTestId('market-volume-value');
+    this.bidBox = page.getByTestId('market-bid');
+    this.bidValue = page.getByTestId('market-bid-value');
+    this.askBox = page.getByTestId('market-ask');
+    this.askValue = page.getByTestId('market-ask-value');
+    this.spreadBox = page.getByTestId('market-spread');
+    this.spreadValue = page.getByTestId('market-spread-value');
 
-    // Buy/Sell sections
-    this.buyHiveSection = page.locator('div').filter({ hasText: /^Buy HIVE$/ }).first();
-    this.sellHiveSection = page.locator('div').filter({ hasText: /^Sell HIVE$/ }).first();
-    this.buyHiveButton = page.getByRole('button', { name: 'Buy HIVE' });
-    this.sellHiveButton = page.getByRole('button', { name: 'Sell HIVE' });
+    // Chart
+    this.chart = page.getByTestId('market-chart');
 
-    // Order tables - using section headers
-    this.buyOrdersTable = page.locator('div').filter({ hasText: /^Buy Orders/ }).locator('table').first();
-    this.sellOrdersTable = page.locator('div').filter({ hasText: /^Sell Orders/ }).locator('table').first();
-    this.tradeHistoryTable = page.locator('div').filter({ hasText: /^Trade History/ }).locator('table').first();
+    // Buy form
+    this.buyFormSection = page.getByTestId('buy-form-section');
+    this.buyFormLabel = page.getByTestId('buy-form-label');
+    this.buyFormPriceInput = page.getByTestId('buy-form-price-input');
+    this.buyFormAmountInput = page.getByTestId('buy-form-amount-input');
+    this.buyFormTotalInput = page.getByTestId('buy-form-total-input');
+    this.buyFormSubmitButton = page.getByTestId('buy-form-submit-button');
+    this.buyFormAvailable = page.getByTestId('buy-form-available');
+    this.buyFormLowestAsk = page.getByTestId('buy-form-default-price');
 
-    // Table headers
-    this.buyOrdersHeader = page.getByText('Buy Orders');
-    this.sellOrdersHeader = page.getByText('Sell Orders');
-    this.tradeHistoryHeader = page.getByText('Trade History');
+    // Sell form
+    this.sellFormSection = page.getByTestId('sell-form-section');
+    this.sellFormLabel = page.getByTestId('sell-form-label');
+    this.sellFormPriceInput = page.getByTestId('sell-form-price-input');
+    this.sellFormAmountInput = page.getByTestId('sell-form-amount-input');
+    this.sellFormTotalInput = page.getByTestId('sell-form-total-input');
+    this.sellFormSubmitButton = page.getByTestId('sell-form-submit-button');
+    this.sellFormAvailable = page.getByTestId('sell-form-available');
+    this.sellFormHighestBid = page.getByTestId('sell-form-default-price');
 
-    // Table rows - first tbody inside each table container
-    this.buyOrdersRows = page.locator('div').filter({ hasText: /^Buy Orders/ }).locator('table tbody tr');
-    this.sellOrdersRows = page.locator('div').filter({ hasText: /^Sell Orders/ }).locator('table tbody tr');
-    this.tradeHistoryRows = page.locator('div').filter({ hasText: /^Trade History/ }).locator('table tbody tr');
+    // Buy Orders table
+    this.buyOrdersSection = page.getByTestId('buy-orders-section');
+    this.buyOrdersHeader = page.getByTestId('buy-orders-header');
+    this.buyOrdersTable = page.getByTestId('buy-orders-table');
+    this.buyOrdersTbody = page.getByTestId('buy-orders-tbody');
+    this.buyOrdersPagination = page.getByTestId('buy-orders-pagination');
+    this.buyOrdersPaginationPrev = page.getByTestId('buy-orders-pagination-prev');
+    this.buyOrdersPaginationNext = page.getByTestId('buy-orders-pagination-next');
 
-    // Pagination buttons - by position in table containers
-    const buyOrdersContainer = page.locator('div.h-\\[342px\\]').filter({ hasText: /^Buy Orders/ });
-    const sellOrdersContainer = page.locator('div.h-\\[342px\\]').filter({ hasText: /^Sell Orders/ });
-    const tradeHistoryContainer = page.locator('div.h-\\[342px\\]').filter({ hasText: /^Trade History/ });
+    // Sell Orders table
+    this.sellOrdersSection = page.getByTestId('sell-orders-section');
+    this.sellOrdersHeader = page.getByTestId('sell-orders-header');
+    this.sellOrdersTable = page.getByTestId('sell-orders-table');
+    this.sellOrdersTbody = page.getByTestId('sell-orders-tbody');
+    this.sellOrdersPagination = page.getByTestId('sell-orders-pagination');
+    this.sellOrdersPaginationPrev = page.getByTestId('sell-orders-pagination-prev');
+    this.sellOrdersPaginationNext = page.getByTestId('sell-orders-pagination-next');
 
-    this.buyOrdersPaginationHigher = buyOrdersContainer.getByRole('button', { name: 'Higher' });
-    this.buyOrdersPaginationLower = buyOrdersContainer.getByRole('button', { name: 'Lower' });
-    this.sellOrdersPaginationHigher = sellOrdersContainer.getByRole('button', { name: 'Higher' });
-    this.sellOrdersPaginationLower = sellOrdersContainer.getByRole('button', { name: 'Lower' });
-    this.tradeHistoryPaginationOlder = tradeHistoryContainer.getByRole('button', { name: 'Older' });
-    this.tradeHistoryPaginationNewer = tradeHistoryContainer.getByRole('button', { name: 'Older' }).first();
-
-    // Form inputs - within buy/sell sections
-    const buyForm = page.locator('div').filter({ has: page.locator('div.text-green-600:has-text("Buy HIVE")') });
-    const sellForm = page.locator('div').filter({ has: page.locator('div.text-destructive:has-text("Sell HIVE")') });
-
-    this.buyPriceInput = buyForm.locator('input[type="number"]').first();
-    this.buyAmountInput = buyForm.locator('input[type="number"]').nth(1);
-    this.buyTotalInput = buyForm.locator('input[type="number"]').nth(2);
-    this.sellPriceInput = sellForm.locator('input[type="number"]').first();
-    this.sellAmountInput = sellForm.locator('input[type="number"]').nth(1);
-    this.sellTotalInput = sellForm.locator('input[type="number"]').nth(2);
+    // Trade History table
+    this.tradeHistorySection = page.getByTestId('trade-history-section');
+    this.tradeHistoryHeader = page.getByTestId('trade-history-header');
+    this.tradeHistoryTable = page.getByTestId('trade-history-table');
+    this.tradeHistoryTbody = page.getByTestId('trade-history-tbody');
+    this.tradeHistoryPagination = page.getByTestId('trade-history-pagination');
+    this.tradeHistoryPaginationPrev = page.getByTestId('trade-history-pagination-prev');
+    this.tradeHistoryPaginationNext = page.getByTestId('trade-history-pagination-next');
   }
 
-  async goToMarketPage() {
-    await this.page.goto("/market");
-    await this.page.waitForLoadState("networkidle");
+  /**
+   * Navigate to the market page and wait for it to load.
+   */
+  async goto(): Promise<void> {
+    await this.page.goto('/market');
+    await this.waitForPageLoaded();
   }
 
-  async waitForMarketDataLoaded() {
-    // Wait for the statistics container to be visible (indicates data loaded)
-    await this.lastPriceBox.waitFor({ state: 'visible', timeout: 30000 });
-    // Wait for chart to be visible
-    await this.chart.waitFor({ state: 'visible', timeout: 30000 });
-    // Wait for order tables to be visible
-    await this.buyOrdersHeader.waitFor({ state: 'visible', timeout: 30000 });
+  /**
+   * Wait for the market page to be fully loaded with data.
+   */
+  async waitForPageLoaded(): Promise<void> {
+    await expect(this.marketPage).toBeVisible({ timeout: 30000 });
+    await expect(this.lastPriceBox).toBeVisible({ timeout: 30000 });
+    await expect(this.chart).toBeVisible({ timeout: 30000 });
+    await expect(this.buyOrdersSection).toBeVisible({ timeout: 30000 });
   }
 
-  async getElementCssPropertyValue(element: Locator, cssProperty: string) {
-    const value = await element.evaluate((ele, css) => {
-      return window.getComputedStyle(ele).getPropertyValue(css);
-    }, cssProperty);
-    return value;
-  }
-
+  /**
+   * Get the last price value from the statistics box.
+   * @returns The price value (e.g., "0.298145")
+   */
   async getLastPriceValue(): Promise<string> {
-    const text = await this.lastPriceBox.textContent();
-    // Extract the price value (e.g., "Last price$0.298145(+2.36%)" -> "0.298145")
-    const match = text?.match(/\$?([\d.]+)/);
-    return match ? match[1] : '';
+    const text = await this.lastPriceValue.textContent();
+    // Remove $ prefix if present
+    return text?.replace('$', '').trim() ?? '';
   }
 
+  /**
+   * Get the volume value from the statistics box.
+   * @returns The volume value
+   */
   async getVolumeValue(): Promise<string> {
-    const text = await this.volumeBox.textContent();
-    const match = text?.match(/\$?([\d,.]+)/);
-    return match ? match[1] : '';
+    const text = await this.volumeValue.textContent();
+    return text?.replace('$', '').trim() ?? '';
   }
 
+  /**
+   * Get the bid price value from the statistics box.
+   * @returns The bid price value
+   */
   async getBidValue(): Promise<string> {
-    const text = await this.bidBox.textContent();
-    const match = text?.match(/\$?([\d.]+)/);
-    return match ? match[1] : '';
+    const text = await this.bidValue.textContent();
+    return text?.replace('$', '').trim() ?? '';
   }
 
+  /**
+   * Get the ask price value from the statistics box.
+   * @returns The ask price value
+   */
   async getAskValue(): Promise<string> {
-    const text = await this.askBox.textContent();
-    const match = text?.match(/\$?([\d.]+)/);
-    return match ? match[1] : '';
+    const text = await this.askValue.textContent();
+    return text?.replace('$', '').trim() ?? '';
   }
 
+  /**
+   * Get the spread value from the statistics box.
+   * @returns The spread percentage value (e.g., "0.123")
+   */
   async getSpreadValue(): Promise<string> {
-    const text = await this.spreadBox.textContent();
-    const match = text?.match(/([\d.]+)%/);
-    return match ? match[1] : '';
+    const text = await this.spreadValue.textContent();
+    return text?.replace('%', '').trim() ?? '';
   }
 
-  async getBuyOrdersCount(): Promise<number> {
-    return await this.buyOrdersRows.count();
+  /**
+   * Get the number of visible rows in buy orders table.
+   * @returns Number of rows
+   */
+  async getBuyOrdersRowCount(): Promise<number> {
+    return this.buyOrdersTbody.locator('tr').count();
   }
 
-  async getSellOrdersCount(): Promise<number> {
-    return await this.sellOrdersRows.count();
+  /**
+   * Get the number of visible rows in sell orders table.
+   * @returns Number of rows
+   */
+  async getSellOrdersRowCount(): Promise<number> {
+    return this.sellOrdersTbody.locator('tr').count();
   }
 
-  async getTradeHistoryCount(): Promise<number> {
-    return await this.tradeHistoryRows.count();
+  /**
+   * Get the number of visible rows in trade history table.
+   * @returns Number of rows
+   */
+  async getTradeHistoryRowCount(): Promise<number> {
+    return this.tradeHistoryTbody.locator('tr').count();
+  }
+
+  /**
+   * Get a specific buy order row by index.
+   * @param index Row index (0-based)
+   */
+  getBuyOrderRow(index: number): Locator {
+    return this.page.getByTestId(`buy-orders-row-${index}`);
+  }
+
+  /**
+   * Get a specific sell order row by index.
+   * @param index Row index (0-based)
+   */
+  getSellOrderRow(index: number): Locator {
+    return this.page.getByTestId(`sell-orders-row-${index}`);
+  }
+
+  /**
+   * Get a specific trade history row by index.
+   * @param index Row index (0-based)
+   */
+  getTradeHistoryRow(index: number): Locator {
+    return this.page.getByTestId(`trade-history-row-${index}`);
+  }
+
+  /**
+   * Get the price cell of a buy order row.
+   * @param rowIndex Row index (0-based)
+   */
+  getBuyOrderPrice(rowIndex: number): Locator {
+    return this.page.getByTestId(`buy-orders-row-${rowIndex}-price`);
+  }
+
+  /**
+   * Get the price cell of a sell order row.
+   * @param rowIndex Row index (0-based)
+   */
+  getSellOrderPrice(rowIndex: number): Locator {
+    return this.page.getByTestId(`sell-orders-row-${rowIndex}-price`);
+  }
+
+  /**
+   * Get the price cell of a trade history row.
+   * @param rowIndex Row index (0-based)
+   */
+  getTradeHistoryPrice(rowIndex: number): Locator {
+    return this.page.getByTestId(`trade-history-row-${rowIndex}-price`);
+  }
+
+  /**
+   * Navigate to next page of buy orders.
+   */
+  async goToNextBuyOrdersPage(): Promise<void> {
+    await this.buyOrdersPaginationNext.click();
+  }
+
+  /**
+   * Navigate to previous page of buy orders.
+   */
+  async goToPrevBuyOrdersPage(): Promise<void> {
+    await this.buyOrdersPaginationPrev.click();
+  }
+
+  /**
+   * Navigate to next page of sell orders.
+   */
+  async goToNextSellOrdersPage(): Promise<void> {
+    await this.sellOrdersPaginationNext.click();
+  }
+
+  /**
+   * Navigate to previous page of sell orders.
+   */
+  async goToPrevSellOrdersPage(): Promise<void> {
+    await this.sellOrdersPaginationPrev.click();
+  }
+
+  /**
+   * Navigate to next page of trade history.
+   */
+  async goToNextTradeHistoryPage(): Promise<void> {
+    await this.tradeHistoryPaginationNext.click();
+  }
+
+  /**
+   * Navigate to previous page of trade history.
+   */
+  async goToPrevTradeHistoryPage(): Promise<void> {
+    await this.tradeHistoryPaginationPrev.click();
+  }
+
+  /**
+   * Fill the buy form with specified values.
+   */
+  async fillBuyForm(price: string, amount: string): Promise<void> {
+    await this.buyFormPriceInput.fill(price);
+    await this.buyFormAmountInput.fill(amount);
+  }
+
+  /**
+   * Fill the sell form with specified values.
+   */
+  async fillSellForm(price: string, amount: string): Promise<void> {
+    await this.sellFormPriceInput.fill(price);
+    await this.sellFormAmountInput.fill(amount);
+  }
+
+  /**
+   * Get computed CSS property value for an element.
+   * @param element The locator element
+   * @param property CSS property name
+   */
+  async getCssProperty(element: Locator, property: string): Promise<string> {
+    return element.evaluate((el, prop) => {
+      return window.getComputedStyle(el).getPropertyValue(prop);
+    }, property);
+  }
+
+  /**
+   * Switch language to Polish.
+   */
+  async switchToPolish(): Promise<void> {
+    const languageToggle = this.page.getByTestId('toggle-language');
+    await languageToggle.click();
+    const polishOption = this.page.getByTestId('pl');
+    await polishOption.click();
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  /**
+   * Toggle dark mode.
+   */
+  async toggleDarkMode(): Promise<void> {
+    const themeToggle = this.page.getByTestId('theme-mode');
+    await themeToggle.click();
+    // Select dark mode from dropdown
+    const darkOption = this.page.getByTestId('theme-mode-item').filter({ hasText: 'Dark' });
+    await darkOption.click();
+  }
+
+  /**
+   * Check if dark mode is active.
+   */
+  async isDarkModeActive(): Promise<boolean> {
+    const htmlClass = await this.page.locator('html').getAttribute('class');
+    return htmlClass?.includes('dark') ?? false;
   }
 }

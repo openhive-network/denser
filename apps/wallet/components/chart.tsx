@@ -146,7 +146,7 @@ export default function Chart({ bids, asks }: { bids: OrdersItem[]; asks: Orders
     asks.map((a) => +a.real_price)
   );
   return (
-    <>
+    <div data-testid="market-chart">
       <AreaChart
         width={Math.min(windowWidth / 1.1, 1200)}
         height={250}
@@ -191,7 +191,7 @@ export default function Chart({ bids, asks }: { bids: OrdersItem[]; asks: Orders
           fill="rgb(239 68 68)"
           activeDot={({ cx, cy, payload }) => <CustomizedDot cx={cx} cy={cy} payload={payload} type="ask" />}
         />
-      </AreaChart>{' '}
-    </>
+      </AreaChart>
+    </div>
   );
 }

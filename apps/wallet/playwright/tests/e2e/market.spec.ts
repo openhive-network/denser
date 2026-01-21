@@ -1,470 +1,556 @@
 import { expect, test } from '@playwright/test';
 import { MarketPage } from '../support/pages/marketPage';
 import { ApiHelper } from '../support/apiHelper';
-import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
 
-test.describe('Market page tests', () => {
+/**
+ * Market Page E2E Tests
+ *
+ * These tests verify the functionality of the Hive Wallet Market page,
+ * including market statistics, order tables, trade history, and forms.
+ *
+ * Best practices applied:
+ * - Uses data-testid selectors for reliability
+ * - Groups related assertions to minimize navigation
+ * - Uses web-first assertions with auto-retry
+ * - Avoids hardcoded timeouts
+ * - Page Object Model for maintainability
+ */
+
+test.describe('Market Page', () => {
   let marketPage: MarketPage;
   let apiHelper: ApiHelper;
 
   test.beforeEach(async ({ page }) => {
     marketPage = new MarketPage(page);
     apiHelper = new ApiHelper(page);
+    await marketPage.goto();
   });
 
-  test('validate that market page is loaded', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await expect(page).toHaveURL(/\/market/);
-    await expect(page).toHaveTitle('Hive Wallet - Market');
+  test.describe('Page Load', () => {
+    test('should load market page with correct title and URL', async ({ page }) => {
+      await expect(page).toHaveURL(/\/market/);
+      await expect(page).toHaveTitle('Hive Wallet - Market');
+    });
+
+    test('should display all main sections', async () => {
+      // Statistics
+      await expect(marketPage.marketStatistics).toBeVisible();
+
+      // Chart
+      await expect(marketPage.chart).toBeVisible();
+
+      // Buy/Sell forms
+      await expect(marketPage.buyFormSection).toBeVisible();
+      await expect(marketPage.sellFormSection).toBeVisible();
+
+      // Order tables (visible on desktop)
+      await expect(marketPage.buyOrdersSection).toBeVisible();
+      await expect(marketPage.sellOrdersSection).toBeVisible();
+      await expect(marketPage.tradeHistorySection).toBeVisible();
+    });
   });
 
-  test('validate market statistics boxes are visible', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
+  test.describe('Market Statistics', () => {
+    test('should display all statistics boxes', async () => {
+      await expect(marketPage.lastPriceBox).toBeVisible();
+      await expect(marketPage.volumeBox).toBeVisible();
+      await expect(marketPage.bidBox).toBeVisible();
+      await expect(marketPage.askBox).toBeVisible();
+      await expect(marketPage.spreadBox).toBeVisible();
+    });
 
-    await expect(marketPage.lastPriceBox).toBeVisible();
-    await expect(marketPage.volumeBox).toBeVisible();
-    await expect(marketPage.bidBox).toBeVisible();
-    await expect(marketPage.askBox).toBeVisible();
-    await expect(marketPage.spreadBox).toBeVisible();
+    test('should display last price with correct format (6 decimal places)', async () => {
+      const lastPrice = await marketPage.getLastPriceValue();
+      expect(lastPrice).toBeTruthy();
+      expect(lastPrice).toMatch(/^\d+\.\d{6}$/);
+    });
+
+    test('should display last price matching API data', async () => {
+      const tickerData = await apiHelper.getMarketTickerAPI();
+      const apiLastPrice = parseFloat(tickerData.result.latest).toFixed(6);
+      const uiLastPrice = await marketPage.getLastPriceValue();
+
+      expect(uiLastPrice).toBe(apiLastPrice);
+    });
+
+    test('should display bid price matching API data', async () => {
+      const tickerData = await apiHelper.getMarketTickerAPI();
+      const apiBidPrice = parseFloat(tickerData.result.highest_bid).toFixed(6);
+      const uiBidPrice = await marketPage.getBidValue();
+
+      expect(uiBidPrice).toBe(apiBidPrice);
+    });
+
+    test('should display ask price matching API data', async () => {
+      const tickerData = await apiHelper.getMarketTickerAPI();
+      const apiAskPrice = parseFloat(tickerData.result.lowest_ask).toFixed(6);
+      const uiAskPrice = await marketPage.getAskValue();
+
+      expect(uiAskPrice).toBe(apiAskPrice);
+    });
+
+    test('should calculate and display spread correctly', async () => {
+      const tickerData = await apiHelper.getMarketTickerAPI();
+      const highestBid = parseFloat(tickerData.result.highest_bid);
+      const lowestAsk = parseFloat(tickerData.result.lowest_ask);
+
+      // Spread formula: 200 * (lowest_ask - highest_bid) / (highest_bid + lowest_ask)
+      const expectedSpread = ((200 * (lowestAsk - highestBid)) / (highestBid + lowestAsk)).toFixed(3);
+      const uiSpread = await marketPage.getSpreadValue();
+
+      expect(uiSpread).toBe(expectedSpread);
+    });
+
+    test('should display volume with valid numeric format', async () => {
+      const volume = await marketPage.getVolumeValue();
+      expect(volume).toBeTruthy();
+      // Volume can contain commas for thousands separator
+      expect(volume).toMatch(/^[\d,.]+$/);
+    });
   });
 
-  test('validate last price box contains valid data', async () => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
+  test.describe('Chart', () => {
+    test('should display chart with bid and ask areas', async ({ page }) => {
+      await expect(marketPage.chart).toBeVisible();
 
-    const tickerData = await apiHelper.getMarketTickerAPI();
-    const apiLatestPrice = parseFloat(tickerData.result.latest).toFixed(6);
+      // Chart should have recharts wrapper
+      const rechartsWrapper = page.locator('.recharts-wrapper');
+      await expect(rechartsWrapper).toBeVisible();
 
-    const uiLastPrice = await marketPage.getLastPriceValue();
-    expect(uiLastPrice).toBeTruthy();
-    // UI shows 6 decimal places for price
-    expect(uiLastPrice).toMatch(/^\d+\.\d{6}$/);
-    // Validate UI matches API (allowing for small timing differences)
-    expect(uiLastPrice).toBe(apiLatestPrice);
+      // Should have two area elements (bids and asks)
+      const chartAreas = page.locator('.recharts-area');
+      await expect(chartAreas).toHaveCount(2);
+    });
   });
 
-  test('validate bid price box contains valid data', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
+  test.describe('Buy Form', () => {
+    test('should display buy form with all elements', async () => {
+      await expect(marketPage.buyFormSection).toBeVisible();
+      await expect(marketPage.buyFormLabel).toBeVisible();
+      await expect(marketPage.buyFormPriceInput).toBeVisible();
+      await expect(marketPage.buyFormAmountInput).toBeVisible();
+      await expect(marketPage.buyFormTotalInput).toBeVisible();
+      await expect(marketPage.buyFormSubmitButton).toBeVisible();
+    });
 
-    const tickerData = await apiHelper.getMarketTickerAPI();
-    const apiBidPrice = parseFloat(tickerData.result.highest_bid).toFixed(6);
+    test('should display buy form with correct styling (green)', async () => {
+      await expect(marketPage.buyFormLabel).toHaveClass(/text-green-600/);
+    });
 
-    const uiBidPrice = await marketPage.getBidValue();
-    expect(uiBidPrice).toBeTruthy();
-    expect(uiBidPrice).toBe(apiBidPrice);
+    test('should have submit button disabled when no amount entered', async () => {
+      await expect(marketPage.buyFormSubmitButton).toBeDisabled();
+    });
+
+    test('should display lowest ask price', async () => {
+      await expect(marketPage.buyFormLowestAsk).toBeVisible();
+      await expect(marketPage.buyFormLowestAsk).toContainText('Lowest ask');
+    });
+
+    test('should display available balance label', async () => {
+      await expect(marketPage.buyFormAvailable).toBeVisible();
+      await expect(marketPage.buyFormAvailable).toContainText('Available');
+    });
   });
 
-  test('validate ask price box contains valid data', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
+  test.describe('Sell Form', () => {
+    test('should display sell form with all elements', async () => {
+      await expect(marketPage.sellFormSection).toBeVisible();
+      await expect(marketPage.sellFormLabel).toBeVisible();
+      await expect(marketPage.sellFormPriceInput).toBeVisible();
+      await expect(marketPage.sellFormAmountInput).toBeVisible();
+      await expect(marketPage.sellFormTotalInput).toBeVisible();
+      await expect(marketPage.sellFormSubmitButton).toBeVisible();
+    });
 
-    const tickerData = await apiHelper.getMarketTickerAPI();
-    const apiAskPrice = parseFloat(tickerData.result.lowest_ask).toFixed(6);
+    test('should display sell form with correct styling (red)', async () => {
+      await expect(marketPage.sellFormLabel).toHaveClass(/text-destructive/);
+    });
 
-    const uiAskPrice = await marketPage.getAskValue();
-    expect(uiAskPrice).toBeTruthy();
-    expect(uiAskPrice).toBe(apiAskPrice);
+    test('should have submit button disabled when no amount entered', async () => {
+      await expect(marketPage.sellFormSubmitButton).toBeDisabled();
+    });
+
+    test('should display highest bid price', async () => {
+      await expect(marketPage.sellFormHighestBid).toBeVisible();
+      await expect(marketPage.sellFormHighestBid).toContainText('Highest bid');
+    });
+
+    test('should display available balance label', async () => {
+      await expect(marketPage.sellFormAvailable).toBeVisible();
+      await expect(marketPage.sellFormAvailable).toContainText('Available');
+    });
   });
 
-  test('validate spread is calculated correctly', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
+  test.describe('Buy Orders Table', () => {
+    test('should display buy orders section with header', async () => {
+      await expect(marketPage.buyOrdersSection).toBeVisible();
+      await expect(marketPage.buyOrdersHeader).toBeVisible();
+      await expect(marketPage.buyOrdersHeader).toContainText('Buy Orders');
+    });
 
-    const tickerData = await apiHelper.getMarketTickerAPI();
-    const highestBid = parseFloat(tickerData.result.highest_bid);
-    const lowestAsk = parseFloat(tickerData.result.lowest_ask);
+    test('should display table with correct headers', async () => {
+      const table = marketPage.buyOrdersTable;
+      await expect(table).toBeVisible();
 
-    // Spread formula: 200 * (lowest_ask - highest_bid) / (highest_bid + lowest_ask)
-    const expectedSpread = (200 * (lowestAsk - highestBid) / (highestBid + lowestAsk)).toFixed(3);
+      // Check headers: Total HBD($), HBD($), HIVE, Price
+      const headers = table.locator('th');
+      await expect(headers).toHaveCount(4);
+      await expect(headers.nth(0)).toContainText('Total HBD($)');
+      await expect(headers.nth(1)).toContainText('HBD($)');
+      await expect(headers.nth(2)).toContainText('HIVE');
+      await expect(headers.nth(3)).toContainText('Price');
+    });
 
-    const uiSpread = await marketPage.getSpreadValue();
-    expect(uiSpread).toBeTruthy();
-    expect(uiSpread).toBe(expectedSpread);
+    test('should display data rows (max 10 per page)', async () => {
+      const orderBook = await apiHelper.getOrderBookAPI(500);
+      const apiBidsCount = orderBook.result.bids.length;
+
+      if (apiBidsCount > 0) {
+        const rowCount = await marketPage.getBuyOrdersRowCount();
+        expect(rowCount).toBeGreaterThan(0);
+        expect(rowCount).toBeLessThanOrEqual(10);
+      }
+    });
+
+    test('should display first row with correct data format', async () => {
+      const rowCount = await marketPage.getBuyOrdersRowCount();
+
+      if (rowCount > 0) {
+        const firstRow = marketPage.getBuyOrderRow(0);
+        await expect(firstRow).toBeVisible();
+
+        // Total should have 3 decimal places
+        const totalCell = firstRow.locator('[data-testid="buy-orders-row-0-total"]');
+        const totalText = await totalCell.textContent();
+        expect(totalText).toMatch(/^\d+\.\d{3}$/);
+
+        // Price should have 6 decimal places
+        const priceText = await marketPage.getBuyOrderPrice(0).textContent();
+        expect(priceText).toMatch(/^\d+\.\d{6}$/);
+      }
+    });
+
+    test('should display pagination buttons', async () => {
+      await expect(marketPage.buyOrdersPagination).toBeVisible();
+      await expect(marketPage.buyOrdersPaginationPrev).toBeVisible();
+      await expect(marketPage.buyOrdersPaginationNext).toBeVisible();
+
+      // First page - prev button should be disabled
+      await expect(marketPage.buyOrdersPaginationPrev).toBeDisabled();
+    });
   });
 
-  test('validate 24h volume box contains valid data', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
+  test.describe('Sell Orders Table', () => {
+    test('should display sell orders section with header', async () => {
+      await expect(marketPage.sellOrdersSection).toBeVisible();
+      await expect(marketPage.sellOrdersHeader).toBeVisible();
+      await expect(marketPage.sellOrdersHeader).toContainText('Sell Orders');
+    });
 
-    const uiVolume = await marketPage.getVolumeValue();
-    expect(uiVolume).toBeTruthy();
-    // Volume should be a number (possibly with commas for thousands)
-    expect(uiVolume).toMatch(/^[\d,.]+$/);
+    test('should display table with correct headers', async () => {
+      const table = marketPage.sellOrdersTable;
+      await expect(table).toBeVisible();
+
+      // Check headers: Price, HIVE, HBD($), Total HBD($)
+      const headers = table.locator('th');
+      await expect(headers).toHaveCount(4);
+      await expect(headers.nth(0)).toContainText('Price');
+      await expect(headers.nth(1)).toContainText('HIVE');
+      await expect(headers.nth(2)).toContainText('HBD($)');
+      await expect(headers.nth(3)).toContainText('Total HBD($)');
+    });
+
+    test('should display data rows (max 10 per page)', async () => {
+      const orderBook = await apiHelper.getOrderBookAPI(500);
+      const apiAsksCount = orderBook.result.asks.length;
+
+      if (apiAsksCount > 0) {
+        const rowCount = await marketPage.getSellOrdersRowCount();
+        expect(rowCount).toBeGreaterThan(0);
+        expect(rowCount).toBeLessThanOrEqual(10);
+      }
+    });
+
+    test('should display first row with correct data format', async () => {
+      const rowCount = await marketPage.getSellOrdersRowCount();
+
+      if (rowCount > 0) {
+        const firstRow = marketPage.getSellOrderRow(0);
+        await expect(firstRow).toBeVisible();
+
+        // Price should have 6 decimal places (first column for sell orders)
+        const priceText = await marketPage.getSellOrderPrice(0).textContent();
+        expect(priceText).toMatch(/^\d+\.\d{6}$/);
+
+        // Total should have 3 decimal places
+        const totalCell = firstRow.locator('[data-testid="sell-orders-row-0-total"]');
+        const totalText = await totalCell.textContent();
+        expect(totalText).toMatch(/^\d+\.\d{3}$/);
+      }
+    });
+
+    test('should display pagination buttons', async () => {
+      await expect(marketPage.sellOrdersPagination).toBeVisible();
+      await expect(marketPage.sellOrdersPaginationPrev).toBeVisible();
+      await expect(marketPage.sellOrdersPaginationNext).toBeVisible();
+
+      // First page - next (lower) button should be disabled for sell orders
+      await expect(marketPage.sellOrdersPaginationNext).toBeDisabled();
+    });
   });
 
-  test('validate chart is displayed', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    await expect(marketPage.chart).toBeVisible();
-    // Chart should have area elements for bids and asks
-    const chartAreas = page.locator('.recharts-area');
-    await expect(chartAreas).toHaveCount(2);
-  });
-
-  test('validate buy/sell forms are visible', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    // Buy HIVE section
-    await expect(page.getByText('Buy HIVE').first()).toBeVisible();
-    await expect(marketPage.buyHiveButton).toBeVisible();
-    await expect(marketPage.buyHiveButton).toBeDisabled(); // Disabled when no amount entered
-
-    // Sell HIVE section
-    await expect(page.getByText('Sell HIVE').first()).toBeVisible();
-    await expect(marketPage.sellHiveButton).toBeVisible();
-    await expect(marketPage.sellHiveButton).toBeDisabled(); // Disabled when no amount entered
-  });
-
-  test('validate buy form has correct styling (green)', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const buyLabel = page.locator('div.text-green-600').filter({ hasText: 'Buy HIVE' });
-    await expect(buyLabel).toBeVisible();
-  });
-
-  test('validate sell form has correct styling (red)', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const sellLabel = page.locator('div.text-destructive').filter({ hasText: 'Sell HIVE' });
-    await expect(sellLabel).toBeVisible();
-  });
-
-  test('validate form labels are displayed', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    // Check Price, Amount, Total labels appear in the buy/sell form sections
-    // Use more specific selectors to avoid matching table headers
-    const formSection = page.locator('.flex.flex-col.gap-8');
-
-    // Buy form should have Price, Amount, Total labels
-    await expect(formSection.filter({ hasText: 'Buy HIVE' }).getByText('Price').first()).toBeVisible();
-    await expect(formSection.filter({ hasText: 'Buy HIVE' }).getByText('Amount').first()).toBeVisible();
-    await expect(formSection.filter({ hasText: 'Buy HIVE' }).getByText('Total').first()).toBeVisible();
-
-    // Sell form should have Price, Amount, Total labels
-    await expect(formSection.filter({ hasText: 'Sell HIVE' }).getByText('Price').first()).toBeVisible();
-    await expect(formSection.filter({ hasText: 'Sell HIVE' }).getByText('Amount').first()).toBeVisible();
-    await expect(formSection.filter({ hasText: 'Sell HIVE' }).getByText('Total').first()).toBeVisible();
-  });
-
-  test('validate buy orders table is visible with headers', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    await expect(marketPage.buyOrdersHeader).toBeVisible();
-
-    // Check table headers: Total HBD($), HBD($), HIVE, Price
-    // Use first() to get just the Buy Orders table (not other tables)
-    const buyOrdersTable = page.locator('table').filter({ has: page.locator('th:has-text("Total HBD($)")') }).first();
-    await expect(buyOrdersTable.locator('th').filter({ hasText: 'Total HBD($)' })).toBeVisible();
-    await expect(buyOrdersTable.locator('th').filter({ hasText: /^HBD\(\$\)$/ })).toBeVisible();
-    await expect(buyOrdersTable.locator('th').filter({ hasText: /^HIVE$/ })).toBeVisible();
-    await expect(buyOrdersTable.locator('th').filter({ hasText: /^Price$/ })).toBeVisible();
-  });
-
-  test('validate sell orders table is visible with headers', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    await expect(marketPage.sellOrdersHeader).toBeVisible();
-
-    // Check table headers: Price, HIVE, HBD($), Total HBD($)
-    const sellOrdersSection = page.locator('div').filter({ hasText: /^Sell Orders/ });
-    await expect(sellOrdersSection.locator('th').filter({ hasText: /^Price$/ })).toBeVisible();
-    await expect(sellOrdersSection.locator('th').filter({ hasText: /^HIVE$/ })).toBeVisible();
-    await expect(sellOrdersSection.locator('th').filter({ hasText: /^HBD\(\$\)$/ })).toBeVisible();
-    await expect(sellOrdersSection.locator('th').filter({ hasText: 'Total HBD($)' })).toBeVisible();
-  });
-
-  test('validate trade history table is visible with headers', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    await expect(marketPage.tradeHistoryHeader).toBeVisible();
-
-    // Check table headers: Date, Price, HIVE, HBD($)
-    const tradeHistorySection = page.locator('div').filter({ hasText: /^Trade History/ });
-    await expect(tradeHistorySection.locator('th').filter({ hasText: /^Date$/ })).toBeVisible();
-    await expect(tradeHistorySection.locator('th').filter({ hasText: /^Price$/ })).toBeVisible();
-    await expect(tradeHistorySection.locator('th').filter({ hasText: /^HIVE$/ })).toBeVisible();
-    await expect(tradeHistorySection.locator('th').filter({ hasText: /^HBD\(\$\)$/ })).toBeVisible();
-  });
-
-  test('validate buy orders table has data rows', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const orderBook = await apiHelper.getOrderBookAPI(500);
-    const apiBidsCount = orderBook.result.bids.length;
-
-    // Get buy orders from the Buy Orders section only
-    const buyOrdersSection = page.locator('div.h-\\[342px\\]').filter({ hasText: /Buy Orders/ }).first();
-    const buyOrdersRows = buyOrdersSection.locator('table tbody tr');
-    const uiBuyOrdersCount = await buyOrdersRows.count();
-
-    // UI shows max 10 rows per page
-    if (apiBidsCount > 0) {
-      expect(uiBuyOrdersCount).toBeGreaterThan(0);
-      expect(uiBuyOrdersCount).toBeLessThanOrEqual(10);
-    }
-  });
-
-  test('validate sell orders table has data rows', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const orderBook = await apiHelper.getOrderBookAPI(500);
-    const apiAsksCount = orderBook.result.asks.length;
-
-    // Get sell orders from the Sell Orders section only
-    const sellOrdersSection = page.locator('div.h-\\[342px\\]').filter({ hasText: /Sell Orders/ }).first();
-    const sellOrdersRows = sellOrdersSection.locator('table tbody tr');
-    const uiSellOrdersCount = await sellOrdersRows.count();
-
-    // UI shows max 10 rows per page
-    if (apiAsksCount > 0) {
-      expect(uiSellOrdersCount).toBeGreaterThan(0);
-      expect(uiSellOrdersCount).toBeLessThanOrEqual(10);
-    }
-  });
-
-  test('validate trade history table has data rows', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const recentTrades = await apiHelper.getRecentTradesAPI(1000);
-    const apiTradesCount = recentTrades.result.trades.length;
-
-    // Get trade history from the Trade History section only
-    const tradeHistorySection = page.locator('div.h-\\[342px\\]').filter({ hasText: /Trade History/ }).first();
-    const tradeHistoryRows = tradeHistorySection.locator('table tbody tr');
-    const uiTradeHistoryCount = await tradeHistoryRows.count();
-
-    // UI shows max 10 rows per page
-    if (apiTradesCount > 0) {
-      expect(uiTradeHistoryCount).toBeGreaterThan(0);
-      expect(uiTradeHistoryCount).toBeLessThanOrEqual(10);
-    }
-  });
-
-  test('validate buy orders pagination buttons are visible', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const buyOrdersSection = page.locator('div.h-\\[342px\\]').filter({ hasText: /^Buy Orders/ });
-    const higherButton = buyOrdersSection.getByRole('button', { name: 'Higher' });
-    const lowerButton = buyOrdersSection.getByRole('button', { name: 'Lower' });
-
-    await expect(higherButton).toBeVisible();
-    await expect(lowerButton).toBeVisible();
-
-    // Higher (prev) should be disabled on first page
-    await expect(higherButton).toBeDisabled();
-  });
-
-  test('validate sell orders pagination buttons are visible', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const sellOrdersSection = page.locator('div.h-\\[342px\\]').filter({ hasText: /^Sell Orders/ });
-    const higherButton = sellOrdersSection.getByRole('button', { name: 'Higher' });
-    const lowerButton = sellOrdersSection.getByRole('button', { name: 'Lower' });
-
-    await expect(higherButton).toBeVisible();
-    await expect(lowerButton).toBeVisible();
-
-    // Higher (prev for sell) should be disabled on first page
-    await expect(lowerButton).toBeDisabled();
-  });
-
-  test('validate trade history pagination buttons are visible', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const tradeHistorySection = page.locator('div.h-\\[342px\\]').filter({ hasText: /^Trade History/ });
-    const olderButtons = tradeHistorySection.getByRole('button', { name: 'Older' });
-
-    // Both buttons show "Older" label based on the component
-    await expect(olderButtons.first()).toBeVisible();
-    await expect(olderButtons.last()).toBeVisible();
-  });
-
-  test('validate buy order first row data format', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const buyOrdersSection = page.locator('div.h-\\[342px\\]').filter({ hasText: /Buy Orders/ }).first();
-    const buyOrdersRows = buyOrdersSection.locator('table tbody tr');
-    const buyOrdersCount = await buyOrdersRows.count();
-
-    if (buyOrdersCount > 0) {
-      const firstRow = buyOrdersRows.first();
-      const cells = firstRow.locator('td');
-
-      // Should have 4 cells: Total, HBD, HIVE, Price
-      await expect(cells).toHaveCount(4);
-
-      // Total (first cell) should be a number with 3 decimal places
-      const totalText = await cells.nth(0).textContent();
-      expect(totalText).toMatch(/^\d+\.\d{3}$/);
-
-      // Price (last cell) should be a number with 6 decimal places
-      const priceText = await cells.nth(3).textContent();
-      expect(priceText).toMatch(/^\d+\.\d{6}$/);
-    }
-  });
-
-  test('validate sell order first row data format', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const sellOrdersSection = page.locator('div.h-\\[342px\\]').filter({ hasText: /Sell Orders/ }).first();
-    const sellOrdersRows = sellOrdersSection.locator('table tbody tr');
-    const sellOrdersCount = await sellOrdersRows.count();
-
-    if (sellOrdersCount > 0) {
-      const firstRow = sellOrdersRows.first();
-      const cells = firstRow.locator('td');
-
-      // Should have 4 cells: Price, HIVE, HBD, Total
-      await expect(cells).toHaveCount(4);
-
-      // Price (first cell) should be a number with 6 decimal places
-      const priceText = await cells.nth(0).textContent();
-      expect(priceText).toMatch(/^\d+\.\d{6}$/);
-
-      // Total (last cell) should be a number with 3 decimal places
-      const totalText = await cells.nth(3).textContent();
-      expect(totalText).toMatch(/^\d+\.\d{3}$/);
-    }
-  });
-
-  test('validate trade history first row data format', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const tradeHistorySection = page.locator('div.h-\\[342px\\]').filter({ hasText: /Trade History/ }).first();
-    const tradeHistoryRows = tradeHistorySection.locator('table tbody tr');
-    const tradeHistoryCount = await tradeHistoryRows.count();
-
-    if (tradeHistoryCount > 0) {
-      const firstRow = tradeHistoryRows.first();
-      const cells = firstRow.locator('td');
-
-      // Should have 4 cells: Date, Price, HIVE, HBD
-      await expect(cells).toHaveCount(4);
-
-      // Date (first cell) should contain relative time text
-      const dateText = await cells.nth(0).textContent();
-      expect(dateText).toBeTruthy();
-
-      // Price (second cell) should be a number with 6 decimal places
-      const priceText = await cells.nth(1).textContent();
-      expect(priceText).toMatch(/^\d+\.\d{6}$/);
-    }
-  });
-
-  test('validate trade history price color (green for buy, red for sell)', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    const tradeHistorySection = page.locator('div.h-\\[342px\\]').filter({ hasText: /Trade History/ }).first();
-    const tradeHistoryRows = tradeHistorySection.locator('table tbody tr');
-    const tradeHistoryCount = await tradeHistoryRows.count();
-
-    if (tradeHistoryCount > 0) {
-      const firstRow = tradeHistoryRows.first();
-      const priceCell = firstRow.locator('td').nth(1);
-
-      // Price cell should have either text-destructive (red) or text-green-500 class
-      const className = await priceCell.getAttribute('class');
-      expect(className).toMatch(/text-(destructive|green-500)/);
-    }
-  });
-
-  test('validate lowest ask and highest bid are displayed in forms', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    // Buy form should show "Lowest ask"
-    await expect(page.getByText('Lowest ask:').first()).toBeVisible();
-
-    // Sell form should show "Highest bid"
-    await expect(page.getByText('Highest bid:').first()).toBeVisible();
-  });
-
-  test('validate available balance text in forms (for anonymous user)', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    // Both forms should show "Available:" text
-    const availableTexts = page.getByText('Available:');
-    await expect(availableTexts).toHaveCount(2);
+  test.describe('Trade History Table', () => {
+    test('should display trade history section with header', async () => {
+      await expect(marketPage.tradeHistorySection).toBeVisible();
+      await expect(marketPage.tradeHistoryHeader).toBeVisible();
+      await expect(marketPage.tradeHistoryHeader).toContainText('Trade History');
+    });
+
+    test('should display table with correct headers', async () => {
+      const table = marketPage.tradeHistoryTable;
+      await expect(table).toBeVisible();
+
+      // Check headers: Date, Price, HIVE, HBD($)
+      const headers = table.locator('th');
+      await expect(headers).toHaveCount(4);
+      await expect(headers.nth(0)).toContainText('Date');
+      await expect(headers.nth(1)).toContainText('Price');
+      await expect(headers.nth(2)).toContainText('HIVE');
+      await expect(headers.nth(3)).toContainText('HBD($)');
+    });
+
+    test('should display data rows (max 10 per page)', async () => {
+      const recentTrades = await apiHelper.getRecentTradesAPI(1000);
+      const apiTradesCount = recentTrades.result.trades.length;
+
+      if (apiTradesCount > 0) {
+        const rowCount = await marketPage.getTradeHistoryRowCount();
+        expect(rowCount).toBeGreaterThan(0);
+        expect(rowCount).toBeLessThanOrEqual(10);
+      }
+    });
+
+    test('should display first row with correct data format', async () => {
+      const rowCount = await marketPage.getTradeHistoryRowCount();
+
+      if (rowCount > 0) {
+        const firstRow = marketPage.getTradeHistoryRow(0);
+        await expect(firstRow).toBeVisible();
+
+        // Date cell should have content
+        const dateCell = firstRow.locator('[data-testid="trade-history-row-0-date"]');
+        await expect(dateCell).not.toBeEmpty();
+
+        // Price should have 6 decimal places
+        const priceText = await marketPage.getTradeHistoryPrice(0).textContent();
+        expect(priceText).toMatch(/^\d+\.\d{6}$/);
+      }
+    });
+
+    test('should color-code prices (green for buy, red for sell)', async () => {
+      const rowCount = await marketPage.getTradeHistoryRowCount();
+
+      if (rowCount > 0) {
+        const priceCell = marketPage.getTradeHistoryPrice(0);
+        const tradeType = await priceCell.getAttribute('data-trade-type');
+
+        // Should have trade type attribute
+        expect(tradeType).toMatch(/^(buy|sell)$/);
+
+        // Should have corresponding color class
+        const className = await priceCell.getAttribute('class');
+        if (tradeType === 'buy') {
+          expect(className).toContain('text-green-500');
+        } else {
+          expect(className).toContain('text-destructive');
+        }
+      }
+    });
+
+    test('should display pagination buttons', async () => {
+      await expect(marketPage.tradeHistoryPagination).toBeVisible();
+      await expect(marketPage.tradeHistoryPaginationPrev).toBeVisible();
+      await expect(marketPage.tradeHistoryPaginationNext).toBeVisible();
+    });
   });
 });
 
-test.describe('Market page - internationalization tests', () => {
-  let marketPage: MarketPage;
-  let homePage: HomePage;
-
-  test.beforeEach(async ({ page }) => {
-    marketPage = new MarketPage(page);
-    homePage = new HomePage(page);
-  });
-
-  test('Market page - translation polish', async ({ page }) => {
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
-
-    // Switch to Polish
-    await homePage.toggleLanguage.click();
-    await expect(homePage.languageMenu.first()).toBeVisible();
-    await homePage.languageMenuPl.click();
-
-    // Wait for page to reload with new language
-    await page.waitForLoadState('networkidle');
-
-    // Validate Polish translations for market page elements
-    await expect(page.getByText('Ostatnia cena')).toBeVisible();
-    await expect(page.getByText('Wolumen 24h')).toBeVisible();
-    await expect(page.getByText('Kup HIVE').first()).toBeVisible();
-    await expect(page.getByText('Sprzedaj HIVE').first()).toBeVisible();
-    await expect(page.getByText('Oferty zakupu')).toBeVisible();
-    await expect(page.getByText('Oferty sprzedaży').first()).toBeVisible();
-    await expect(page.getByText('Historia transakcji')).toBeVisible();
-  });
-});
-
-test.describe('Market page - dark mode tests', () => {
+test.describe('Market Page - Internationalization', () => {
   let marketPage: MarketPage;
 
   test.beforeEach(async ({ page }) => {
     marketPage = new MarketPage(page);
+    await marketPage.goto();
   });
 
-  test('validate market page in dark mode', async ({ page, browserName }) => {
+  test('should display Polish translations when language is switched', async () => {
+    await marketPage.switchToPolish();
+
+    // Wait for translations to load
+    await expect(marketPage.lastPriceBox).toContainText('Ostatnia cena');
+    await expect(marketPage.volumeBox).toContainText('Wolumen 24h');
+    await expect(marketPage.buyFormLabel).toContainText('Kup HIVE');
+    await expect(marketPage.sellFormLabel).toContainText('Sprzedaj HIVE');
+    await expect(marketPage.buyOrdersHeader).toContainText('Oferty zakupu');
+    await expect(marketPage.sellOrdersHeader).toContainText('Oferty sprzedaży');
+    await expect(marketPage.tradeHistoryHeader).toContainText('Historia transakcji');
+  });
+});
+
+test.describe('Market Page - Dark Mode', () => {
+  let marketPage: MarketPage;
+
+  test.beforeEach(async ({ page }) => {
+    marketPage = new MarketPage(page);
+    await marketPage.goto();
+  });
+
+  test('should toggle dark mode successfully', async ({ page, browserName }) => {
     // Skip on Firefox due to known dark mode issues
     test.skip(browserName === 'firefox', 'Dark mode tests skipped on Firefox');
 
-    await marketPage.goToMarketPage();
-    await marketPage.waitForMarketDataLoaded();
+    await marketPage.toggleDarkMode();
 
-    // Toggle dark mode
-    const themeToggle = page.locator('[data-testid="theme-toggle"]');
-    if (await themeToggle.isVisible()) {
-      await themeToggle.click();
-      await page.waitForTimeout(500); // Wait for theme transition
+    // Validate dark mode is applied
+    await expect(page.locator('html')).toHaveClass(/dark/);
 
-      // Validate dark mode is applied
-      const html = page.locator('html');
-      await expect(html).toHaveClass(/dark/);
+    // Verify dark mode is active
+    const isDarkMode = await marketPage.isDarkModeActive();
+    expect(isDarkMode).toBe(true);
+  });
+});
+
+test.describe('Market Page - Order Table Pagination', () => {
+  let marketPage: MarketPage;
+  let apiHelper: ApiHelper;
+
+  test.beforeEach(async ({ page }) => {
+    marketPage = new MarketPage(page);
+    apiHelper = new ApiHelper(page);
+    await marketPage.goto();
+  });
+
+  test('should navigate to next page of buy orders when clicking pagination', async () => {
+    const orderBook = await apiHelper.getOrderBookAPI(500);
+    const apiBidsCount = orderBook.result.bids.length;
+
+    // Only test pagination if there are more than 10 orders
+    if (apiBidsCount > 10) {
+      // Get first row price before pagination
+      const firstPriceBefore = await marketPage.getBuyOrderPrice(0).textContent();
+
+      // Navigate to next page
+      await marketPage.goToNextBuyOrdersPage();
+
+      // Prev button should now be enabled
+      await expect(marketPage.buyOrdersPaginationPrev).toBeEnabled();
+
+      // First row price should be different
+      const firstPriceAfter = await marketPage.getBuyOrderPrice(0).textContent();
+      expect(firstPriceAfter).not.toBe(firstPriceBefore);
+    }
+  });
+
+  test('should navigate to next page of sell orders when clicking pagination', async () => {
+    const orderBook = await apiHelper.getOrderBookAPI(500);
+    const apiAsksCount = orderBook.result.asks.length;
+
+    // Only test pagination if there are more than 10 orders
+    if (apiAsksCount > 10) {
+      // Get first row price before pagination
+      const firstPriceBefore = await marketPage.getSellOrderPrice(0).textContent();
+
+      // Navigate to next page (prev button navigates to higher prices for sell)
+      await marketPage.goToPrevSellOrdersPage();
+
+      // Next button should now be enabled
+      await expect(marketPage.sellOrdersPaginationNext).toBeEnabled();
+
+      // First row price should be different
+      const firstPriceAfter = await marketPage.getSellOrderPrice(0).textContent();
+      expect(firstPriceAfter).not.toBe(firstPriceBefore);
+    }
+  });
+
+  test('should navigate to next page of trade history when clicking pagination', async () => {
+    const recentTrades = await apiHelper.getRecentTradesAPI(1000);
+    const apiTradesCount = recentTrades.result.trades.length;
+
+    // Only test pagination if there are more than 10 trades
+    if (apiTradesCount > 10) {
+      // Get first row date before pagination
+      const firstRow = marketPage.getTradeHistoryRow(0);
+      const dateCell = firstRow.locator('[data-testid="trade-history-row-0-date"]');
+      const firstDateBefore = await dateCell.textContent();
+
+      // Navigate to next page
+      await marketPage.goToNextTradeHistoryPage();
+
+      // Prev button should now be enabled
+      await expect(marketPage.tradeHistoryPaginationPrev).toBeEnabled();
+
+      // First row date should be different
+      const firstDateAfter = await dateCell.textContent();
+      expect(firstDateAfter).not.toBe(firstDateBefore);
+    }
+  });
+});
+
+test.describe('Market Page - Form Interaction', () => {
+  let marketPage: MarketPage;
+
+  test.beforeEach(async ({ page }) => {
+    marketPage = new MarketPage(page);
+    await marketPage.goto();
+  });
+
+  test('should enable buy button when amount is entered', async () => {
+    // Initially disabled
+    await expect(marketPage.buyFormSubmitButton).toBeDisabled();
+
+    // Fill amount
+    await marketPage.buyFormAmountInput.fill('100');
+
+    // Button should be enabled
+    await expect(marketPage.buyFormSubmitButton).toBeEnabled();
+  });
+
+  test('should enable sell button when amount is entered', async () => {
+    // Initially disabled
+    await expect(marketPage.sellFormSubmitButton).toBeDisabled();
+
+    // Fill amount
+    await marketPage.sellFormAmountInput.fill('100');
+
+    // Button should be enabled
+    await expect(marketPage.sellFormSubmitButton).toBeEnabled();
+  });
+
+  test('should calculate total automatically when price and amount are entered', async () => {
+    const price = '0.3';
+    const amount = '100';
+    const expectedTotal = (parseFloat(price) * parseFloat(amount)).toFixed(3);
+
+    await marketPage.fillBuyForm(price, amount);
+
+    // Total should be calculated
+    const totalValue = await marketPage.buyFormTotalInput.inputValue();
+    expect(totalValue).toBe(expectedTotal);
+  });
+
+  test('should update price in buy form when clicking order row', async () => {
+    const rowCount = await marketPage.getBuyOrdersRowCount();
+
+    if (rowCount > 0) {
+      // Get the price from first row
+      const orderPrice = await marketPage.getBuyOrderPrice(0).textContent();
+
+      // Click the row
+      await marketPage.getBuyOrderRow(0).click();
+
+      // Price input should be updated
+      const priceInputValue = await marketPage.buyFormPriceInput.inputValue();
+      expect(priceInputValue).toBe(orderPrice);
     }
   });
 });

@@ -16,18 +16,20 @@ const Box = ({
   value,
   diff,
   percent = false,
-  dollar = false
+  dollar = false,
+  testId
 }: {
   label: string;
   value: string;
   diff?: string;
   percent?: boolean;
   dollar?: boolean;
+  testId?: string;
 }) => {
   return (
-    <div className="flex bg-background-secondary px-2 text-xs drop-shadow-md">
-      <span className="border-r-[1px] border-border py-1 pr-2 font-semibold">{label}</span>
-      <span className="py-1 pl-2">
+    <div className="flex bg-background-secondary px-2 text-xs drop-shadow-md" data-testid={testId}>
+      <span className="border-r-[1px] border-border py-1 pr-2 font-semibold" data-testid={testId ? `${testId}-label` : undefined}>{label}</span>
+      <span className="py-1 pl-2" data-testid={testId ? `${testId}-value` : undefined}>
         {dollar ? '$' : null}
         {value}
         {percent ? '%' : null}
@@ -38,6 +40,7 @@ const Box = ({
             'text-red-500': Number(diff) < 0,
             'text-green-500': Number(diff) > 0
           })}
+          data-testid={testId ? `${testId}-diff` : undefined}
         >
           ({Number(diff) > 0 ? '+' : null}
           {diff + '%'})
@@ -66,23 +69,25 @@ function Market() {
       <Head>
         <title>{TAB_TITLE}</title>
       </Head>
-      <div className="flex flex-col items-center gap-4 px-4 pb-8">
-        <div className="flex w-full flex-wrap justify-center gap-1">
+      <div className="flex flex-col items-center gap-4 px-4 pb-8" data-testid="market-page">
+        <div className="flex w-full flex-wrap justify-center gap-1" data-testid="market-statistics">
           <Box
             label={t('market_page.last_price')}
             value={convertStringToBig(tickerData.latest).toFixed(6)}
             diff={convertStringToBig(tickerData.percent_change).toFixed(2)}
             dollar
+            testId="market-last-price"
           />
           <Box
             label={t('market_page.volume')}
             value={convertStringToBig(tickerData?.hbd_volume).toFixed(2)}
             dollar
+            testId="market-volume"
           />
-          <Box label={t('market_page.bid')} value={tickerData.highest_bid.toFixed(6)} dollar />
-          <Box label={t('market_page.ask')} value={tickerData.lowest_ask.toFixed(6)} dollar />
+          <Box label={t('market_page.bid')} value={tickerData.highest_bid.toFixed(6)} dollar testId="market-bid" />
+          <Box label={t('market_page.ask')} value={tickerData.lowest_ask.toFixed(6)} dollar testId="market-ask" />
 
-          <Box label={t('market_page.spread')} value={spread.toFixed(3)} percent />
+          <Box label={t('market_page.spread')} value={spread.toFixed(3)} percent testId="market-spread" />
         </div>
         <TradeHive tickerData={tickerData} />
       </div>
