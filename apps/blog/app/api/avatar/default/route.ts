@@ -9,30 +9,29 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     const defaultUrl = `${configuredImagesEndpoint}DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4`;
 
-    // Fetch the image from the image hoster
+    // Fetch the image from the image hoster and stream it to the client
     const response = await fetch(defaultUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0',
       },
     });
 
-    if (!response.ok) {
+    if (!response.ok || !response.body) {
       return NextResponse.json({ error: 'Failed to fetch default avatar' }, { status: response.status });
     }
 
-    const imageBuffer = await response.arrayBuffer();
-    const contentType = response.headers.get('content-type') || 'image/png';
+    const headers = new Headers({
+      'Content-Type': response.headers.get('content-type') || 'image/png',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'X-Content-Type-Options': 'nosniff',
+    });
 
-    // Return the image with cache-preventing headers
-    return new NextResponse(imageBuffer, {
+    // Stream the response body directly
+    return new NextResponse(response.body, {
       status: 200,
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-        'X-Content-Type-Options': 'nosniff',
-      },
+      headers,
     });
   } catch (error) {
     console.error('Error fetching default avatar:', error);

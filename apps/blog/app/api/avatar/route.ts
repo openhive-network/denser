@@ -28,40 +28,36 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     if (size && ['small', 'medium', 'large'].includes(size)) {
       imageUrl = `${configuredImagesEndpoint}u/${username}/avatar/${size}`;
     } else if (width && height) {
-      // Use proxify logic for dimensions - image hoster uses /p/ hash format with query params
       const baseUrl = `${configuredImagesEndpoint}u/${username}/avatar`;
-      // For now, use the base URL and let the image hoster handle dimensions
-      // The actual proxification would happen client-side, but we'll fetch the base avatar
       imageUrl = baseUrl;
     } else {
-      // Default to small if no size specified
       imageUrl = `${configuredImagesEndpoint}u/${username}/avatar/small`;
     }
 
-    // Fetch the image from the image hoster
+    // Fetch the image from the image hoster and stream it to the client
     const response = await fetch(imageUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0',
       },
     });
 
-    if (!response.ok) {
+    if (!response.ok || !response.body) {
       return NextResponse.json({ error: 'Failed to fetch avatar' }, { status: response.status });
     }
 
-    const imageBuffer = await response.arrayBuffer();
-    const contentType = response.headers.get('content-type') || 'image/png';
+    // Prepare headers, copying content-type from the origin
+    const headers = new Headers({
+      'Content-Type': response.headers.get('content-type') || 'image/png',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'X-Content-Type-Options': 'nosniff',
+    });
 
-    // Return the image with cache-preventing headers
-    return new NextResponse(imageBuffer, {
+    // Stream the response body directly
+    return new NextResponse(response.body, {
       status: 200,
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-        'X-Content-Type-Options': 'nosniff',
-      },
+      headers,
     });
   } catch (error) {
     console.error('Error fetching avatar:', error);

@@ -20,28 +20,28 @@ export default async function handler(
   try {
     const defaultUrl = `${configuredImagesEndpoint}DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4`;
 
-    // Fetch the image from the image hoster
+    // Fetch the image from the image hoster and stream it to the client
     const response = await fetch(defaultUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0',
       },
     });
 
-    if (!response.ok) {
+    if (!response.ok || !response.body) {
       return res.status(response.status).json({ error: 'Failed to fetch default avatar' });
     }
 
-    const imageBuffer = await response.arrayBuffer();
     const contentType = response.headers.get('content-type') || 'image/png';
-
-    // Return the image with cache-preventing headers
     res.setHeader('Content-Type', contentType);
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    
-    return res.status(200).send(Buffer.from(imageBuffer));
+
+    // Stream the response body directly to the client
+    // @ts-ignore
+    response.body.pipe(res);
+    return;
   } catch (error) {
     console.error('Error fetching default avatar:', error);
     return res.status(500).json({ error: 'Internal server error' });

@@ -60,7 +60,7 @@ export async function parseAuthProofTransaction(
       return null;
     }
 
-    const tx = wax.convertTransactionFromBinaryForm(Buffer.from(authProof, 'base64').toString());
+    const tx = wax.convertTransactionFromBinaryForm(atob(authProof));
     const op = tx.operations[0].value as typeof custom_json;
 
     // Extract loginChallenge from the custom_json operation
@@ -81,7 +81,7 @@ export async function parseAuthProofTransaction(
  */
 export function parseAuthProofCookie(cookieValue: string): AuthProofCookieData | null {
   try {
-    const decoded = Buffer.from(cookieValue, 'base64').toString('utf-8');
+    const decoded = atob(cookieValue);
     const parsed = JSON.parse(decoded);
 
     // Validate required fields (username and loginType can be null for logged out users)
@@ -100,7 +100,7 @@ export function parseAuthProofCookie(cookieValue: string): AuthProofCookieData |
  * Set the auth proof cookie in the response
  */
 export function setAuthProofCookie(res: NextApiResponse, data: AuthProofCookieData): void {
-  const cookieValue = Buffer.from(JSON.stringify(data)).toString('base64');
+  const cookieValue = btoa(JSON.stringify(data));
 
   res.setHeader('Set-Cookie', [
     `${AUTH_PROOF_COOKIE_NAME}=${cookieValue}; Path=/; SameSite=Lax; HttpOnly; ${
