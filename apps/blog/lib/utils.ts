@@ -1,11 +1,14 @@
-import Big from 'big.js';
 import sanitize from 'sanitize-html';
 import remarkableStripper from '../lib/remmarkable-stripper';
 import { Entry, JsonMetadata, FullAccount } from '@hive/common-hiveio-packages/wax';
 import moment from 'moment';
 import { TFunction } from 'i18next';
-import { proxifyImageSrc } from '@hive/ui';
+import { proxifyImageSrc, Symbol, accountReputation } from '@hive/ui';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
+
+// Re-export Symbol and accountReputation for backwards compatibility
+export { Symbol, accountReputation };
+// NaiMap is replaced by NaiToSymbol from @hive/ui
 
 export const DEFAULT_OBSERVER = 'hive.blog';
 export type SortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted';
@@ -23,19 +26,6 @@ export const DEFAULT_PREFERENCES: Preferences = {
   comment_rewards: '50%',
   referral_system: 'enabled'
 };
-
-export enum Symbol {
-  HIVE = 'HIVE',
-  HBD = 'HBD',
-  VESTS = 'VESTS',
-  SPK = 'SPK'
-}
-
-export enum NaiMap {
-  '@@000000021' = 'HIVE',
-  '@@000000013' = 'HBD',
-  '@@000000037' = 'VESTS'
-}
 
 export type sortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted';
 export const sortToTitle = (sort: sortTypes) => {
@@ -63,57 +53,6 @@ export const debounce = (fn: Function, delay: number) => {
       fn(...args);
     }, delay);
   };
-};
-
-const isHumanReadable = (input: number): boolean => {
-  return Math.abs(input) > 0 && Math.abs(input) <= 100;
-};
-
-export const accountReputation = (input: string | number): number => {
-  if (typeof input === 'number' && isHumanReadable(input)) {
-    return Math.floor(input);
-  }
-
-  if (typeof input === 'string') {
-    input = Number(input);
-
-    if (isHumanReadable(input)) {
-      return Math.floor(input);
-    }
-  }
-
-  if (input === 0) {
-    return 25;
-  }
-
-  let neg = false;
-
-  if (input < 0) neg = true;
-
-  let reputationLevel = Math.log10(Math.abs(input));
-  reputationLevel = Math.max(reputationLevel - 9, 0);
-
-  if (reputationLevel < 0) reputationLevel = 0;
-
-  if (neg) reputationLevel *= -1;
-
-  reputationLevel = reputationLevel * 9 + 25;
-
-  return Math.floor(reputationLevel);
-};
-
-export const getHivePower = (
-  totalHive: number,
-  totalVests: number,
-  vesting_shares: number,
-  delegated_vesting_shares: number,
-  received_vesting_shares: number
-) => {
-  const hive = new Big(vesting_shares)
-    .minus(new Big(delegated_vesting_shares))
-    .plus(new Big(received_vesting_shares));
-  const hiveDividedByVests = new Big(totalVests).div(new Big(totalHive));
-  return hive.div(hiveDividedByVests).toFixed(0);
 };
 
 export function extractBodySummary(body: string, stripQuotes = false) {

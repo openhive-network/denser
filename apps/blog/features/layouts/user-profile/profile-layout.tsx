@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { Link } from '@hive/ui';
 import clsx from 'clsx';
 import BasePathLink from '@/blog/components/base-path-link';
@@ -23,6 +23,7 @@ import { accountReputation, compareDates } from '@/blog/lib/utils';
 import CustomError from '@/blog/components/custom-error';
 import NoDataError from '@/blog/components/no-data-error';
 import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
+import { getChain } from '@transaction/lib/chain';
 
 import ButtonsContainer from '@/blog/features/mute-follow/buttons-container';
 import { notFound, usePathname } from 'next/navigation';
@@ -91,13 +92,23 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
     queryFn: () => getDynamicGlobalProperties()
   });
 
+  const {
+    data: hiveChain,
+    isError: isChainError,
+    isLoading: isChainPending
+  } = useQuery({
+    queryKey: ['hiveChain'],
+    queryFn: () => getChain(),
+    staleTime: Infinity
+  });
+
   // Handle API errors - show error state with retry option
-  if (isProfileError || isDynamicGlobalError) {
+  if (isProfileError || isDynamicGlobalError || isChainError) {
     return <NoDataError />;
   }
 
-  // Handle loading state - wait for data
-  if (isProfilePending || isDynamicGlobalPending) {
+  // Handle loading state - wait for data (including hiveChain initialization)
+  if (isProfilePending || isDynamicGlobalPending || isChainPending || !hiveChain) {
     return null;
   }
 
@@ -120,11 +131,13 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
     convertStringToBig(profileData.delegated_vesting_shares).minus(
       convertStringToBig(profileData.received_vesting_shares)
     ),
+    hiveChain,
     dynamicGlobalData.total_vesting_shares,
     dynamicGlobalData.total_vesting_fund_hive
   );
   const vesting_hive = convertToHP(
     convertStringToBig(profileData.vesting_shares),
+    hiveChain,
     dynamicGlobalData.total_vesting_shares,
     dynamicGlobalData.total_vesting_fund_hive
   );
@@ -191,8 +204,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                 target="_blank"
                 data-testid="profile-level-link"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                  <img
                   alt={`${getLevelDisplayName(userLevel)} level`}
                   title={t('user_profile.user_level_title', {
                     level: getLevelDisplayName(userLevel),

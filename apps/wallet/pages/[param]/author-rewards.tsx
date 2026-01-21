@@ -33,7 +33,7 @@ function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<t
   const totalPages = data ? Math.ceil(data.length / itemsPerPage) : 0;
   const currentItems = data?.reverse()?.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
   const weeklyRewards = useMemo(() => {
-    if (!data || !dynamicData) return { hbd: 0, hive: 0, hp: 0 };
+    if (!data || !dynamicData || !hiveChain) return { hbd: 0, hive: 0, hp: 0 };
 
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -43,6 +43,7 @@ function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<t
         (total, reward) => {
           const rewardHP = convertToHP(
             convertStringToBig(reward.op.vesting_payout ?? '0'),
+            hiveChain,
             dynamicData.total_vesting_shares,
             dynamicData.total_vesting_fund_hive
           );
@@ -56,7 +57,7 @@ function AuthorRewardsPage({ username, metadata }: InferGetServerSidePropsType<t
         },
         { hbd: 0, hive: 0, hp: 0 }
       );
-  }, [data, dynamicData]);
+  }, [data, dynamicData, hiveChain]);
   return (
     <>
       <Head>

@@ -1,12 +1,28 @@
+/**
+ * Calculates human-readable reputation score from Hive blockchain reputation value.
+ *
+ * The reputation on Hive blockchain is stored as a large number that needs to be
+ * converted to a human-readable score (typically between -25 and 75+).
+ *
+ * Formula: reputation = (log10(abs(raw_reputation)) - 9) * 9 + 25
+ *
+ * @param input - Raw reputation value from blockchain (string or number)
+ * @returns Human-readable reputation score (integer)
+ *
+ * @example
+ * accountReputation('95832978796820') // returns 72
+ * accountReputation(0) // returns 25 (default for new accounts)
+ * accountReputation(-1000000000) // returns negative score
+ */
 const isHumanReadable = (input: number): boolean => {
   return Math.abs(input) > 0 && Math.abs(input) <= 100;
 };
 
-const accountReputation = (input: string | number): number => {
+export const accountReputation = (input: string | number): number => {
   if (typeof input === 'number' && isHumanReadable(input)) {
     return Math.floor(input);
   }
-  //
+
   if (typeof input === 'string') {
     input = Number(input);
 

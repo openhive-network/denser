@@ -1,5 +1,5 @@
 import UserAvatar from '@/blog/features/post-rendering/user-avatar';
-import accountReputation from '@/blog/lib/account-reputation';
+import { accountReputation } from '@hive/ui';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/components/popover';
 import PopoverCardData from './popover-card-data';
 import { useTranslation } from '@/blog/i18n/client';

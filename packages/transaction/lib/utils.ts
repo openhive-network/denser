@@ -2,40 +2,27 @@ import getSlug from 'speakingurl';
 import base58 from 'bs58';
 import secureRandom from 'secure-random';
 import { getPostHeader } from './bridge-api';
-import { asset as assetFn } from '@hiveio/wax';
+import { asset as assetFn, EAssetName } from '@hiveio/wax';
+import { getChain } from './chain';
 
-export const HIVE_NAI_STRING = '@@000000021';
-export const HIVE_PRECISION = 3;
+// Re-export EAssetName for convenience
+export { EAssetName };
 
-export const HBD_NAI_STRING = '@@000000013';
-export const HBD_PRECISION = 3;
+// Token type that accepts both enum values and string literals
+type TokenType = EAssetName | 'HIVE' | 'HBD' | 'VESTS';
 
-export const ASSET_PRECISION = 3;
-
-export const VESTS_NAI_STRING = '@@000000037';
-export const VESTS_PRECISION = 6;
-
-export const createAsset = (amount: string, token: 'HIVE' | 'HBD' | 'VESTS') => {
-  switch (token) {
-    case 'HIVE':
-      return assetFn.create({
-        amount,
-        precision: HIVE_PRECISION,
-        nai: HIVE_NAI_STRING
-      });
-    case 'HBD':
-      return assetFn.create({
-        amount,
-        precision: HBD_PRECISION,
-        nai: HBD_NAI_STRING
-      });
-    case 'VESTS':
-      return assetFn.create({
-        amount,
-        precision: VESTS_PRECISION,
-        nai: VESTS_NAI_STRING
-      });
-  }
+/**
+ * Creates a NaiAsset using wax's chain.ASSETS for NAI and precision values.
+ * This ensures consistency with the wax library's native asset definitions.
+ */
+export const createAsset = async (amount: string, token: TokenType) => {
+  const chain = await getChain();
+  const assetConfig = chain.ASSETS[token as EAssetName];
+  return assetFn.create({
+    amount,
+    precision: assetConfig.precision,
+    nai: assetConfig.nai
+  });
 };
 export async function createPermlink(title: string, author: string) {
   let permlink;
@@ -70,25 +57,20 @@ export async function createPermlink(title: string, author: string) {
   return permlink;
 }
 
-export const getAsset = async (value: string, curr: 'HIVE' | 'HBD' | 'VESTS') => {
-  switch (curr) {
-    case 'HIVE':
-      if (value.slice(value.indexOf('.')).length > HIVE_PRECISION + 1) {
-        throw new Error('There should be maximum of 3 decimal places in amount');
-      }
-      const hiveAmount = Number(value).toFixed(HIVE_PRECISION).replace('.', '');
-      return createAsset(hiveAmount, curr);
-    case 'HBD':
-      if (value.slice(value.indexOf('.')).length > HBD_PRECISION + 1) {
-        throw new Error('There should be maximum of 3 decimal places in amount');
-      }
-      const hbdAmount = Number(value).toFixed(HBD_PRECISION).replace('.', '');
-      return createAsset(hbdAmount, curr);
-    case 'VESTS':
-      if (value.slice(value.indexOf('.')).length > VESTS_PRECISION + 1) {
-        throw new Error('There should be maximum of 3 decimal places in amount');
-      }
-      const vestsAmount = Number(value).toFixed(VESTS_PRECISION).replace('.', '');
-      return createAsset(vestsAmount, curr);
+/**
+ * Parses a string value and creates a NaiAsset with proper precision validation.
+ * Uses wax's chain.ASSETS for precision values to ensure consistency.
+ */
+export const getAsset = async (value: string, token: TokenType) => {
+  const chain = await getChain();
+  const { precision } = chain.ASSETS[token as EAssetName];
+
+  // Validate decimal places
+  const dotIndex = value.indexOf('.');
+  if (dotIndex !== -1 && value.slice(dotIndex).length > precision + 1) {
+    throw new Error(`There should be maximum of ${precision} decimal places in ${token} amount`);
   }
+
+  const amount = Number(value).toFixed(precision).replace('.', '');
+  return createAsset(amount, token);
 };

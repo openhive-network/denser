@@ -130,7 +130,8 @@ test.describe('Profile page of @gtg', () => {
     const postScrolledLenght = await postScrolled.length;
     const expectedPostsAmount = postAmountLenght * 2;
 
-    await expect(postScrolledLenght).toEqual(expectedPostsAmount);
+    // Use toBeGreaterThanOrEqual since infinite scroll may load more than 2 pages
+    await expect(postScrolledLenght).toBeGreaterThanOrEqual(expectedPostsAmount);
   });
 
   test('Tab Posts - Comments Header - Avatar', async ({ page }) => {

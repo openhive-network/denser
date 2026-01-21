@@ -1,13 +1,13 @@
 import { TFunction } from 'i18next';
-import { convertStringToBig } from '@hive/ui/lib/helpers';
+import { convertStringToBig, isHive } from '@hive/ui/lib/helpers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
 import { SavingsWithdrawals, IFollow, HiveOperation } from '@hive/common-hiveio-packages/wax';
-import { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
+import { EAssetName, GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
 import Big from 'big.js';
-import { HIVE_NAI_STRING, VESTS_PRECISION } from '@transaction/lib/utils';
+import { getPrecision } from '@ui/lib/asset-constants';
 import { HiveChain } from '@transaction/lib/hive-chain-service';
 
 export function getCurrentHpApr(data: GetDynamicGlobalPropertiesResponse) {
@@ -110,12 +110,12 @@ export const transformWithdraw = (
   const multiplication = total_vests.times(divide);
   if (format === 'big') return multiplication;
   if (format === 'number') return multiplication.toNumber();
-  return numberWithCommas(multiplication.toFixed(VESTS_PRECISION));
+  return numberWithCommas(multiplication.toFixed(getPrecision(EAssetName.VESTS)));
 };
 
 export const getAmountFromWithdrawal = (withdrawal: SavingsWithdrawals['withdrawals'][number]) => {
   const amount = Number(withdrawal.amount.amount) / 10 ** withdrawal.amount.precision;
-  const currency = withdrawal.amount.nai === HIVE_NAI_STRING ? 'HIVE' : 'HBD';
+  const currency = isHive(withdrawal.amount) ? 'HIVE' : 'HBD';
 
   return `${amount.toFixed(3)} ${currency}`;
 };

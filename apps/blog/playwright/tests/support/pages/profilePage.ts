@@ -463,8 +463,8 @@ export class ProfilePage {
     await this.page.goto(`/${nickName}/payout`);
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
-    if (!await this.userNoPendingPayoutsMsg.isVisible())
-      await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
+    // Wait for either the posts list OR the "no payouts" message to appear
+    await this.profileBlogPostsList.or(this.userNoPendingPayoutsMsg).waitFor();
   }
 
   async gotoRepliesProfilePage(nickName: string) {

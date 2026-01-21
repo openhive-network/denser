@@ -572,7 +572,7 @@ export class TransactionService {
       replyOperationData.percentHbd = 10000;
     }
     if (preferences.comment_rewards === '0%') {
-      replyOperationData.maxAcceptedPayout = createAsset('0', 'HBD');
+      replyOperationData.maxAcceptedPayout = await createAsset('0', 'HBD');
     }
 
     const reply = new ReplyOperation(replyOperationData);

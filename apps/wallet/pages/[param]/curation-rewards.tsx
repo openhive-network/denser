@@ -33,7 +33,7 @@ function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType
   const currentItems = data?.reverse()?.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   const weeklyRewards = useMemo(() => {
-    if (!data || !dynamicData) return 0;
+    if (!data || !dynamicData || !hiveChain) return 0;
 
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -43,12 +43,13 @@ function CurationRewardsPage({ username, metadata }: InferGetServerSidePropsType
       .reduce((total, reward) => {
         const rewardHP = convertToHP(
           convertStringToBig(reward.op.reward ?? '0'),
+          hiveChain,
           dynamicData.total_vesting_shares,
           dynamicData.total_vesting_fund_hive
         );
         return Number(Big(total).plus(rewardHP));
       }, 0);
-  }, [data, dynamicData]);
+  }, [data, dynamicData, hiveChain]);
 
   return (
     <>

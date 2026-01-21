@@ -350,12 +350,12 @@ test.describe('Healthchecker page - Accessibility', () => {
         // Focus on first tab
         await healthcheckerPage.hiveApiTab.focus();
 
-        // Press Tab key to move to next tab
-        await page.keyboard.press('Tab');
+        // Press ArrowRight key to move to next tab (standard ARIA tab navigation)
+        await page.keyboard.press('ArrowRight');
 
-        // Verify focus moved
+        // Verify focus moved to the second tab
         const focusedElement = await page.evaluate(() => document.activeElement?.getAttribute('role'));
-        expect(focusedElement).toBeTruthy();
+        expect(focusedElement).toBe('tab');
     });
 
     test('Validate tab activation with Enter key', async ({ page }) => {

@@ -1,5 +1,13 @@
 import { NaiAsset } from '@hiveio/wax';
 import Big from 'big.js';
+import {
+  getAssetConfig,
+  getNaiSymbols,
+  isAssetConstantsInitialized
+} from './asset-constants';
+
+// Re-export helper functions from asset-constants
+export { isAssetConstantsInitialized };
 
 export function convertStringToBig(number: string | NaiAsset): Big {
   if (number === '') throw new Error('Number cant be empty string');
@@ -10,28 +18,28 @@ export function convertStringToBig(number: string | NaiAsset): Big {
   return new Big(number.amount).div(new Big(10).pow(number.precision));
 }
 
-export const NAI_SYMBOLS: Record<string, string> = {
-  '@@000000021': 'HIVE',
-  '@@000000013': 'HBD',
-  '@@000000037': 'VESTS'
-};
-
-export const NAI_HBD = '@@000000013';
-export const NAI_HIVE = '@@000000021';
-export const NAI_VESTS = '@@000000037';
-
 /**
- * Checks if a NaiAsset is HBD
+ * Checks if a NaiAsset is HBD.
+ * Requires asset constants to be initialized via initializeAssetConstants().
  */
 export function isHbd(asset: NaiAsset): boolean {
-  return asset.nai === NAI_HBD;
+  return asset.nai === getAssetConfig().HBD.nai;
 }
 
 /**
- * Checks if a NaiAsset is HIVE
+ * Checks if a NaiAsset is HIVE.
+ * Requires asset constants to be initialized via initializeAssetConstants().
  */
 export function isHive(asset: NaiAsset): boolean {
-  return asset.nai === NAI_HIVE;
+  return asset.nai === getAssetConfig().HIVE.nai;
+}
+
+/**
+ * Checks if a NaiAsset is VESTS.
+ * Requires asset constants to be initialized via initializeAssetConstants().
+ */
+export function isVests(asset: NaiAsset): boolean {
+  return asset.nai === getAssetConfig().VESTS.nai;
 }
 
 /**
@@ -42,6 +50,7 @@ export function isHive(asset: NaiAsset): boolean {
  */
 export function formatNaiAsset(asset: NaiAsset, overrideSymbol?: string): string {
   const amount = Big(asset.amount).div(Big(10).pow(asset.precision));
-  const symbol = overrideSymbol || NAI_SYMBOLS[asset.nai] || '';
+  const naiSymbols = getNaiSymbols();
+  const symbol = overrideSymbol || naiSymbols[asset.nai] || '';
   return `${amount.toFixed(asset.precision)} ${symbol}`;
 }

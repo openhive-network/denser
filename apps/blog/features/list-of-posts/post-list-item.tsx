@@ -13,7 +13,7 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
-import accountReputation from '@/blog/lib/account-reputation';
+import { accountReputation } from '@hive/ui';
 import { IFollowList, Entry } from '@hive/common-hiveio-packages/wax';
 import DetailsCardHover from './details-card-hover';
 import PostImage from './post-img';

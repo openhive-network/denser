@@ -3,6 +3,7 @@ import { siteConfig } from '@hive/ui/config/site'; // Maybe move this to package
 import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
 import { setOnlineClientRpcEndpoint as setHbAuthRpcEndoint } from '../hb-auth/hbauth-service';
 import { getLogger } from '@hive/ui/lib/logging';
+import { initializeAssetConstants } from '@hive/ui/lib/asset-constants';
 
 export type HiveChain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
 
@@ -159,6 +160,9 @@ const setChainClient = (options: Partial<IWaxOptionsChain> = {}): Promise<HiveCh
     });
 
     hiveChain = extended;
+
+    // Initialize asset constants from wax's chain.ASSETS
+    initializeAssetConstants(hiveChain.ASSETS);
 
     const aiEndpoint = getAIDefaultEndpoint();
 

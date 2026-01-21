@@ -278,7 +278,7 @@ export default function PostForm({
 
   async function onSubmit(data: AccountFormValues) {
     const tags = data.tags.replace(/#/g, '').split(' ') ?? [];
-    const maxAcceptedPayout = createAsset((data.maxAcceptedPayout * 1000).toString(), 'HBD');
+    const maxAcceptedPayout = await createAsset((data.maxAcceptedPayout * 1000).toString(), 'HBD');
     const postPermlink = await createPermlink(data?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
     try {

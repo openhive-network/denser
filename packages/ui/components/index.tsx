@@ -42,6 +42,8 @@ export * from "../lib/avatar-utils";
 export * from "../lib/proxify-images";
 export * from "../lib/css-utils";
 export * from "../lib/storage-with-ttl";
+export * from "../lib/asset-constants";
+export * from "../lib/reputation";
 
 // hook exports
 export * from "../hooks/useStorageWithTTL";

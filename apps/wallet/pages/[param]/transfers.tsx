@@ -78,6 +78,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
   const blogURL = env('BLOG_DOMAIN');
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
   const { user } = useUser();
+  const hiveChain = hiveChainService.reuseHiveChain();
   const [open, setOpen] = useState(false);
   const [openCancelTransfer, setOpenCancelTransfer] = useState(false);
   const { data: accountData, isLoading: accountLoading } = useQuery(
@@ -145,7 +146,8 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
     historyFeedLoading ||
     !accountData ||
     !dynamicData ||
-    !historyFeedData
+    !historyFeedData ||
+    !hiveChain
   ) {
     return (
       <Loading
@@ -155,12 +157,12 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
           historyFeedLoading ||
           !accountData ||
           !dynamicData ||
-          !historyFeedData
+          !historyFeedData ||
+          !hiveChain
         }
       />
     );
   }
-  const totalFund = convertStringToBig(dynamicData.total_vesting_fund_hive);
   const price_per_hive = Big(
     Number(historyFeedData?.current_median_history.base.amount) *
       10 ** -historyFeedData?.current_median_history.base.precision
@@ -172,9 +174,9 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
     days === 0
       ? `${remainingHours} ${t('global.time.hours')}`
       : `${days} ${t('global.time.days')} ${remainingHours} ${t('global.time.hours')}`;
-  const totalShares = convertStringToBig(dynamicData.total_vesting_shares);
   const vesting_hive = convertToHP(
     convertStringToBig(accountData.vesting_shares),
+    hiveChain,
     dynamicData.total_vesting_shares,
     dynamicData.total_vesting_fund_hive
   );
@@ -182,10 +184,11 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
     convertStringToBig(accountData.delegated_vesting_shares).minus(
       convertStringToBig(accountData.received_vesting_shares)
     ),
+    hiveChain,
     dynamicData.total_vesting_shares,
     dynamicData.total_vesting_fund_hive
   );
-  const powerdown_hive = powerdownHive(accountData, dynamicData);
+  const powerdown_hive = powerdownHive(accountData, dynamicData, hiveChain);
   const received_power_balance =
     (delegated_hive.lt(0) ? '+' : '') + numberWithCommas((-delegated_hive).toFixed(3));
   const saving_balance_hive = convertStringToBig(accountData.savings_balance);
@@ -210,6 +213,7 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
   const total_value = numberWithCommas(total_hive.times(price_per_hive).plus(total_hbd).toFixed(2));
   const delegatedVesting = convertToHP(
     convertStringToBig(accountData.delegated_vesting_shares),
+    hiveChain,
     dynamicData.total_vesting_shares,
     dynamicData.total_vesting_fund_hive
   );
@@ -227,12 +231,14 @@ function TransfersPage({ username, metadata }: InferGetServerSidePropsType<typeo
     delegatedVesting: delegatedVesting,
     to_withdraw: convertToHP(
       Big(accountData.to_withdraw),
+      hiveChain,
       dynamicData.total_vesting_shares,
       dynamicData.total_vesting_fund_hive,
       1000000
     ),
     withdraw: convertToHP(
       Big(accountData.withdrawn),
+      hiveChain,
       dynamicData.total_vesting_shares,
       dynamicData.total_vesting_fund_hive,
       1000000

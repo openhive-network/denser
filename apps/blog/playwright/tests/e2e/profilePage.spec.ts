@@ -289,24 +289,20 @@ test.describe('Profile page of @gtg', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    expect.poll(async () => {
-      await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color');
-    }).toBe(
-      'rgb(2, 2, 5)'
-    );
-    expect.poll(async () => {
-      await profilePage.getElementCssPropertyValue(profilePage.followButton, 'background-color');
-    }).toBe(
-      'rgb(248, 250, 252)'
-    );
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color');
+    }).toBe('rgb(2, 2, 5)');
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(profilePage.followButton, 'background-color');
+    }).toBe('rgb(248, 250, 252)');
 
     await profilePage.followButton.hover();
     // Wait for hover color to change
     await expect.poll(async () => {
       return await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color');
     }).toBe('rgb(226, 18, 53)');
-    expect.poll(async () => {
-      await profilePage.getElementCssPropertyValue(await profilePage.followButton, 'background-color');
+    await expect.poll(async () => {
+      return await profilePage.getElementCssPropertyValue(profilePage.followButton, 'background-color');
     }).toBe('rgb(248, 250, 252)');
   });
 

@@ -3,26 +3,32 @@ import { twMerge } from 'tailwind-merge';
 import Big from 'big.js';
 import { convertStringToBig } from './helpers';
 import { TFunction } from 'i18next';
-import type { FullAccount, Entry, IVote } from '@hive/common-hiveio-packages/wax';
-import { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
+import type { FullAccount, Entry, IVote, HiveChain } from '@hive/common-hiveio-packages/wax';
+import { EAssetName, GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { parseDate2 } from './parse-date';
+import { Symbol, getNaiToSymbol, getPrecision } from './asset-constants';
+
+// Re-export getRoundedAbbreveration from math-utils for backward compatibility
+export { getRoundedAbbreveration } from './math-utils';
 
 export interface Asset {
   amount: number;
   symbol: Symbol;
 }
 
+/**
+ * Parses a string or NaiAsset into an Asset object.
+ * Requires asset constants to be initialized via initializeAssetConstants().
+ */
 export const parseAsset = (sval: string | NaiAsset): Asset => {
   if (typeof sval === 'string') {
     const sp = sval.split(' ');
-    // @ts-ignore
-    return { amount: parseFloat(sp[0]), symbol: Symbol[sp[1]] };
+    return { amount: parseFloat(sp[0]), symbol: Symbol[sp[1] as keyof typeof Symbol] };
   } else {
-    // @ts-ignore
+    const naiToSymbol = getNaiToSymbol();
     return {
       amount: parseFloat(sval.amount.toString()) / Math.pow(10, sval.precision),
-      // @ts-ignore
-      symbol: NaiMap[sval.nai]
+      symbol: naiToSymbol[sval.nai]
     };
   }
 };
@@ -82,47 +88,64 @@ export const blockGap = (
   if (months < 24) return months + t('witnesses_page.bock_gap.months_ago');
   return years + t('witnesses_page.bock_gap.years_ago');
 };
-export function getRoundedAbbreveration(
-  numToRefactor: Big,
-  toComma = 2,
-  multiplicators = ['K', 'M', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q']
-) {
-  if (numToRefactor.lt(1000)) return numToRefactor.toFixed(toComma);
-  let mulIndex = 0;
-  for (let t = numToRefactor; t.div(1000).gte(1); mulIndex++) {
-    t = t.div(1000);
-  }
-
-  return numToRefactor.div(new Big(1000).pow(mulIndex)).toFixed(toComma) + multiplicators[mulIndex - 1];
-}
 
 export const numberWithCommas = (x: string) => x.replace(/\\B(?=(\d{3})+(?!\d))/g, ',');
 
 export function convertToHP(
-  vests: Big,
-  totalVestingShares: string | NaiAsset,
-  totalVestingFundHive: string | NaiAsset,
+  vests: Big | NaiAsset,
+  chain: HiveChain,
+  totalVestingShares: NaiAsset,
+  totalVestingFundHive: NaiAsset,
   div: number = 1
-) {
-  const total_vests = convertStringToBig(totalVestingShares);
-  const total_vest_hive = convertStringToBig(totalVestingFundHive);
-  const vesting_hivef = total_vest_hive.times(vests.div(total_vests));
-  return vesting_hivef.div(div);
+): Big {
+  // Convert Big to NaiAsset if needed
+  let vestsAsNai: NaiAsset;
+  if ('nai' in vests) {
+    vestsAsNai = vests;
+  } else {
+    // Convert Big to satoshis (multiply by 10^precision)
+    const vestsPrecision = getPrecision(EAssetName.VESTS);
+    const satoshis = vests.times(Big(10).pow(vestsPrecision)).toFixed(0);
+    vestsAsNai = chain.vestsSatoshis(satoshis);
+  }
+
+  // Use wax's vestsToHp for the conversion
+  const hpAsset = chain.vestsToHp(vestsAsNai, totalVestingFundHive, totalVestingShares);
+
+  // Convert NaiAsset back to Big and apply divisor
+  const hpBig = Big(hpAsset.amount).div(Big(10).pow(hpAsset.precision));
+  return hpBig.div(div);
 }
-export function powerdownHive(accountData: FullAccount, dynamicData: GetDynamicGlobalPropertiesResponse) {
-  const withdraw_rate_vests = convertStringToBig(accountData.vesting_withdraw_rate).toNumber();
-  const to_withdraw =
+
+export function powerdownHive(
+  accountData: FullAccount,
+  dynamicData: GetDynamicGlobalPropertiesResponse,
+  chain: HiveChain
+): Big {
+  const withdrawRateVests = convertStringToBig(accountData.vesting_withdraw_rate).toNumber();
+  const toWithdraw =
     typeof accountData.to_withdraw === 'number'
       ? accountData.to_withdraw
       : parseFloat(String(accountData.to_withdraw));
   const withdrawn =
-    typeof accountData.withdrawn === 'number' ? accountData.withdrawn : parseFloat(String(accountData.withdrawn));
-  const remaining_vests = (to_withdraw - withdrawn) / 1000000;
-  const vests = Math.min(withdraw_rate_vests, remaining_vests);
-  const total_vests = convertStringToBig(dynamicData.total_vesting_shares);
-  const total_vest_hive = convertStringToBig(dynamicData.total_vesting_fund_hive);
-  const powerdown_hivef = total_vest_hive.times(Big(vests).div(total_vests));
-  return powerdown_hivef;
+    typeof accountData.withdrawn === 'number'
+      ? accountData.withdrawn
+      : parseFloat(String(accountData.withdrawn));
+  const remainingVests = (toWithdraw - withdrawn) / 1000000;
+  const vests = Math.min(withdrawRateVests, remainingVests);
+
+  // Convert vests to NaiAsset and use wax for conversion
+  const vestsPrecision = getPrecision(EAssetName.VESTS);
+  const satoshis = Math.floor(vests * Math.pow(10, vestsPrecision)).toString();
+  const vestsAsNai = chain.vestsSatoshis(satoshis);
+
+  const hpAsset = chain.vestsToHp(
+    vestsAsNai,
+    dynamicData.total_vesting_fund_hive,
+    dynamicData.total_vesting_shares
+  );
+
+  return Big(hpAsset.amount).div(Big(10).pow(hpAsset.precision));
 }
 
 export function findAndParseJSON(value: string) {
