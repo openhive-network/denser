@@ -283,44 +283,50 @@ export class MarketPage {
 
   /**
    * Navigate to next page of buy orders.
+   * Uses force:true due to potential overlap with adjacent tables in WebKit.
    */
   async goToNextBuyOrdersPage(): Promise<void> {
-    await this.buyOrdersPaginationNext.click();
+    await this.buyOrdersPaginationNext.click({ force: true });
   }
 
   /**
    * Navigate to previous page of buy orders.
+   * Uses force:true due to potential overlap with adjacent tables in WebKit.
    */
   async goToPrevBuyOrdersPage(): Promise<void> {
-    await this.buyOrdersPaginationPrev.click();
+    await this.buyOrdersPaginationPrev.click({ force: true });
   }
 
   /**
    * Navigate to next page of sell orders.
+   * Uses force:true due to potential overlap with adjacent tables in WebKit.
    */
   async goToNextSellOrdersPage(): Promise<void> {
-    await this.sellOrdersPaginationNext.click();
+    await this.sellOrdersPaginationNext.click({ force: true });
   }
 
   /**
    * Navigate to previous page of sell orders.
+   * Uses force:true due to potential overlap with adjacent tables in WebKit.
    */
   async goToPrevSellOrdersPage(): Promise<void> {
-    await this.sellOrdersPaginationPrev.click();
+    await this.sellOrdersPaginationPrev.click({ force: true });
   }
 
   /**
    * Navigate to next page of trade history.
+   * Uses force:true due to potential overlap with adjacent tables in WebKit.
    */
   async goToNextTradeHistoryPage(): Promise<void> {
-    await this.tradeHistoryPaginationNext.click();
+    await this.tradeHistoryPaginationNext.click({ force: true });
   }
 
   /**
    * Navigate to previous page of trade history.
+   * Uses force:true due to potential overlap with adjacent tables in WebKit.
    */
   async goToPrevTradeHistoryPage(): Promise<void> {
-    await this.tradeHistoryPaginationPrev.click();
+    await this.tradeHistoryPaginationPrev.click({ force: true });
   }
 
   /**
