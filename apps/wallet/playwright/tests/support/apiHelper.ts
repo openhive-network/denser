@@ -303,4 +303,61 @@ export class ApiHelper {
     }
     return json;
   }
+
+  // Get market ticker (statistics) as json from API response
+  async getMarketTickerAPI() {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: "2.0",
+        method: "market_history_api.get_ticker",
+        params: {},
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+    });
+
+    return response.json();
+  }
+
+  // Get order book as json from API response
+  async getOrderBookAPI(limit: number = 500) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: "2.0",
+        method: "market_history_api.get_order_book",
+        params: { limit },
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+    });
+
+    return response.json();
+  }
+
+  // Get recent trades as json from API response
+  async getRecentTradesAPI(limit: number = 1000) {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: "2.0",
+        method: "market_history_api.get_recent_trades",
+        params: { limit },
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+    });
+
+    return response.json();
+  }
 }
