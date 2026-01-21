@@ -102,7 +102,9 @@ const MainBar: FC = () => {
         <MainNav />
         <div className="flex items-center space-x-2 sm:space-x-4">
           <nav className="flex items-center space-x-1">
-            {user?.isLoggedIn ? null : (
+            {!isClient ? (
+              <Skeleton className="mx-1 hidden h-9 w-32 sm:block" />
+            ) : !user?.isLoggedIn ? (
               <div className="mx-1 hidden gap-1 sm:flex">
                 <DialogLogin>
                   <Button
@@ -119,7 +121,7 @@ const MainBar: FC = () => {
                   </Button>
                 </Link>
               </div>
-            )}
+            ) : null}
             <div className="hidden lg:block">
               {pathname === '/search' ? (
                 <SearchButton aiTag={!!hiveSense} />
@@ -135,7 +137,9 @@ const MainBar: FC = () => {
                 </Button>
               </Link>
             </TooltipContainer>
-            {!user?.isLoggedIn ? (
+            {!isClient ? (
+              <Skeleton className="h-10 w-10 rounded" />
+            ) : !user?.isLoggedIn ? (
               <div>
                 <ModeToggle>
                   <Button variant="ghost" size="sm" className="h-10 w-full px-2" data-testid="theme-mode">
