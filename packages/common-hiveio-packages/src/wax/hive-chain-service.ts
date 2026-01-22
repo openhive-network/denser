@@ -1,7 +1,6 @@
 import { createHiveChain, IWaxOptionsChain, TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { siteConfig } from '@hive/ui/config/site'; // Maybe move this to package specific only to config
 import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
-import { setOnlineClientRpcEndpoint as setHbAuthRpcEndoint } from '../hb-auth/hbauth-service';
 import { getLogger } from '@hive/ui/lib/logging';
 import { initializeAssetConstants } from '@hive/ui/lib/asset-constants';
 
@@ -69,7 +68,6 @@ export const setRpcEndpoint = (newEndpoint: string): void => {
     throw new Error('Wax Chain is not initialized yet. Call initChain() first.');
   }
 
-  setHbAuthRpcEndoint(newEndpoint);
   hiveChain.api.endpointUrl = newEndpoint;
 
   window.localStorage.setItem('node-endpoint', JSON.stringify(newEndpoint));

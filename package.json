@@ -56,7 +56,7 @@
       "core-js"
     ],
     "overrides": {
-      "@hiveio/wax": "1.28.4-rc0-stable.260110090505"
+      "@hiveio/wax": "1.28.6-alpha-stable.260121074158"
     }
   },
   "dependencies": {

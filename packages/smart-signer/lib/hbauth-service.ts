@@ -1,13 +1,13 @@
-import type { OnlineClient } from '@hiveio/hb-auth';
+import type { OnlineClient, OfflineClient } from '@hiveio/hb-auth';
 
-import { getOnlineClient } from "@hive/common-hiveio-packages";
+import { getOnlineClient, getOfflineClient } from "@hive/common-hiveio-packages";
 
 class HbauthService {
   async getOnlineClient(): Promise<OnlineClient> {
     return await getOnlineClient();
   }
-  async getOfflineClient(): Promise<OnlineClient> {
-    return await getOnlineClient();
+  async getOfflineClient(): Promise<OfflineClient> {
+    return await getOfflineClient();
   }
 }
 
