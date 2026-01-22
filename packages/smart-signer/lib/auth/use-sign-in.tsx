@@ -47,6 +47,9 @@ export function useSignIn() {
     onSuccess: (data) => {
       const { user } = data;
       queryClient.setQueryData([QUERY_KEY.user], user);
+      // Invalidate observer-dependent queries to refetch with new user context
+      queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
+      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
     },
     onError: (error) => {
       throw error;

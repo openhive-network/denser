@@ -36,6 +36,9 @@ export function useSignOut() {
     },
     onSuccess: (user) => {
       queryClient.setQueryData([QUERY_KEY.user], user);
+      // Invalidate observer-dependent queries to refetch with default observer
+      queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
+      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
     },
     onError: (error) => {
       throw error;
