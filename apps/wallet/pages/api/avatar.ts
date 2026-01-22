@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { Readable } from 'stream';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { isHiveAccountNameValid } from '@hive/transaction';
 
@@ -60,9 +61,9 @@ export default async function handler(
     res.setHeader('Expires', '0');
     res.setHeader('X-Content-Type-Options', 'nosniff');
 
-    // Stream the response body directly to the client
-    // @ts-ignore
-    response.body.pipe(res);
+    // Convert Web ReadableStream to Node.js stream and pipe to response
+    const nodeStream = Readable.fromWeb(response.body as import('stream/web').ReadableStream);
+    nodeStream.pipe(res);
     return;
   } catch (error) {
     console.error('Error fetching avatar:', error);
