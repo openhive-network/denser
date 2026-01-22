@@ -257,7 +257,7 @@ export const getFollowCount = async (username: string): Promise<AccountFollowSta
  * @returns
  */
 export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
-  return (await getChain()).api.condenser_api.get_reblogged_by({ author, permlink });
+  return (await getChain()).api.condenser_api.get_reblogged_by([ author, permlink ]);
 };
 
 export const getFeedHistory = async (): Promise<IFeedHistory> => {
@@ -295,12 +295,17 @@ export const DEFAULT_PARAMS_FOR_FOLLOW: IGetFollowParams = {
 
 export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    return (await getChain()).api.condenser_api.get_following({
-      account: params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
-      start: params?.start || '',
-      type: params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
-      limit: params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
-    });
+    const account = params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account;
+    const start = params?.start || '';
+    const type = params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type;
+    const limit = params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit;
+
+    return (await getChain()).api.condenser_api.get_following([
+      account,
+      start,
+      type,
+      limit
+    ]);
   } catch (error) {
     console.error('Error:', error);
     throw error;
@@ -328,12 +333,17 @@ export const getDynamicGlobalProperties = async (): Promise<GetDynamicGlobalProp
 
 export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
   try {
-    return (await getChain()).api.condenser_api.get_followers({
-      account: params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account,
-      start: params?.start || '',
-      type: params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type,
-      limit: params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit
-    });
+    const account = params?.account || DEFAULT_PARAMS_FOR_FOLLOW.account;
+    const start = params?.start || '';
+    const type = params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type;
+    const limit = params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit;
+
+    return (await getChain()).api.condenser_api.get_followers([
+      account,
+      start,
+      type,
+      limit
+    ]);
   } catch (error) {
     console.error('Error:', error);
     throw error;
