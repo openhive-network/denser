@@ -4,6 +4,7 @@ import CommentListItem from '@/blog/features/post-rendering/comment-list-item';
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
+import { sanitizeHash } from '@ui/lib/sanitize-url';
 
 const CommentList = ({
   highestAuthor,
@@ -30,7 +31,11 @@ const CommentList = ({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setMarkedHash(window.location.hash);
+      // Security: Sanitize hash to prevent potential injection
+      const hash = sanitizeHash(window.location.hash);
+      if (hash) {
+        setMarkedHash(hash);
+      }
     }
   }, []);
 
@@ -55,7 +60,7 @@ const CommentList = ({
                 key={`parent-${comment.post_id}-index-${index}`}
                 className={clsx('min-w-0 pl-3', {
                   'my-2 rounded border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
-                    markedHash?.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
+                    markedHash?.includes(`${comment.author}/${comment.permlink}`) && comment.depth < 8
                 })}
               >
                 <CommentListItem

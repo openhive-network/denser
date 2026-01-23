@@ -1,14 +1,15 @@
 'use client';
 
 import { FC, RefObject, useLayoutEffect, useEffect } from 'react';
+import { safeScrollToElement } from '@ui/lib/sanitize-url';
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 const ScrollToElement: FC<{ rendererRef: RefObject<HTMLDivElement> }> = ({ rendererRef }) => {
   useIsomorphicLayoutEffect(() => {
-    const hash = window.location.hash.slice(1);
+    const hash = window.location.hash;
     const handleScroll = async () => {
-      if (!rendererRef.current) return;
+      if (!rendererRef.current || !hash) return;
 
       try {
         const selectors = Array.from(rendererRef.current.querySelectorAll<HTMLImageElement>('img'));
@@ -23,10 +24,11 @@ const ScrollToElement: FC<{ rendererRef: RefObject<HTMLDivElement> }> = ({ rende
           })
         );
         await new Promise((resolve) => setTimeout(resolve, 500));
-      } catch (e) {
-        console.error(e);
+      } catch {
+        // Image loading failed - continue to scroll anyway
       } finally {
-        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+        // Use sanitized scroll to prevent DOM-based XSS via malicious hash fragments
+        safeScrollToElement(hash, { behavior: 'smooth' });
       }
     };
     handleScroll();

@@ -51,6 +51,7 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import { handleError } from '@ui/lib/handle-error';
 import parseDate from '@ui/lib/parse-date';
+import { buildSafePath } from '@ui/lib/sanitize-url';
 import { Clock, Link2 } from 'lucide-react';
 import moment from 'moment';
 import { Link } from '@hive/ui';
@@ -359,8 +360,15 @@ const PostContent = () => {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Use window.location for subdirectory deployments to ensure catch-all route works
-      if (!!basepath) {
-        window.location.href = `${basepath}/@${author}/posts`;
+      if (basepath) {
+        // Security: Build path safely to prevent XSS
+        const safePath = buildSafePath(basepath, `/@${author}/posts`);
+        if (safePath) {
+          window.location.href = safePath;
+        } else {
+          // Fallback to client navigation if path construction fails
+          router.push(`/@${author}/posts`);
+        }
       } else {
         // Use client-side navigation for root deployments (faster)
         router.push(`/@${author}/posts`);

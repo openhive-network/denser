@@ -1,6 +1,10 @@
 // eslint-disable-next-line no-restricted-imports -- This is a wrapper component that needs direct access to next/link
 import Link from 'next/link';
 import { MouseEvent, ReactNode } from 'react';
+import { buildSafePath, isInternalPath } from '@ui/lib/sanitize-url';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('BasePathLink');
 
 interface BasePathLinkProps {
   href: string;
@@ -16,6 +20,8 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
  * For user profile links (starting with @) and comment links (containing #@),
  * it forces a full page reload when using basePath to ensure getServerSideProps
  * is called and the correct page type is rendered.
+ *
+ * Security: All hrefs are validated to prevent XSS via javascript: or other dangerous protocols.
  */
 const BasePathLink = ({
   href,
@@ -25,6 +31,13 @@ const BasePathLink = ({
   prefetch = false
 }: BasePathLinkProps) => {
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    // Security: Validate that href is an internal path before navigation
+    if (!isInternalPath(href)) {
+      logger.warn({ href }, 'BasePathLink blocked potentially dangerous href');
+      e.preventDefault();
+      return;
+    }
+
     // Force full page reload for certain link types when using basePath
     // This ensures getServerSideProps runs and the correct page component is rendered
     // For root deployments (no basePath), use normal Next.js navigation
@@ -36,14 +49,13 @@ const BasePathLink = ({
 
     if ((needsReload || isStaticPage) && basePath) {
       e.preventDefault();
-      // Force a full page reload
-      // basePath already includes the basePath from next.config.js
-      const fullPath = basePath + href;
-      console.log('BasePathLink forcing reload:', {
-        href,
-        basePath: basePath,
-        fullPath
-      });
+      // Security: Build path safely to prevent XSS
+      const fullPath = buildSafePath(basePath, href);
+      if (!fullPath) {
+        logger.warn({ href, basePath }, 'BasePathLink blocked unsafe path construction');
+        return;
+      }
+      logger.debug({ href, basePath, fullPath }, 'BasePathLink forcing reload');
       window.location.href = fullPath;
     }
   };
