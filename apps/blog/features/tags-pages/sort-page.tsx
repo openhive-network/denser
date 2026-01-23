@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { SortTypes } from '@/blog/lib/utils';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
@@ -6,7 +5,6 @@ import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { ReactNode } from 'react';
-import Loading from '@ui/components/loading';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -41,11 +39,8 @@ const SortPage = async ({
   } catch (error) {
     logger.error(error, 'Error in SortPage:');
   }
-  return (
-    <Hydrate state={dehydrate(queryClient)}>
-      <Suspense fallback={<Loading loading={true} />}>{children}</Suspense>
-    </Hydrate>
-  );
+  // Route-level loading.tsx handles loading states; data is already prefetched
+  return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
 };
 
 export default SortPage;
