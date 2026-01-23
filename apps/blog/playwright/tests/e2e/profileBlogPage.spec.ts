@@ -126,9 +126,9 @@ test.describe('Profile page of @gtg', () => {
       console.log('Fist Post Community Name ', await firstPostCommunityLinkName);
 
       await postCommunityLink.first().click();
-      expect(await communityPage.communityNameTitle.textContent()).toBe(firstPostCommunityLinkName);
+      await expect(communityPage.communityNameTitle).toHaveText(firstPostCommunityLinkName);
 
-      expect(await communityPage.communityInfoSidebar.locator('h3').textContent()).toBe(firstPostCommunityLinkName);
+      await expect(communityPage.communityInfoSidebar.locator('h3')).toHaveText(firstPostCommunityLinkName);
       await communityPage.validataCommunitiesPageIsLoaded(await firstPostCommunityLinkName);
     }
 
@@ -137,7 +137,7 @@ test.describe('Profile page of @gtg', () => {
       // console.log('Fist Post Category Name ', await firstPostCategoryLinkName);
 
       await postCategoryLink.first().click();
-      expect(await communityPage.communityNameTitle.textContent()).toBe(firstPostCategoryLinkName);
+      await expect(communityPage.communityNameTitle).toHaveText(firstPostCategoryLinkName);
     }
   });
 

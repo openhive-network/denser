@@ -19,6 +19,7 @@ import BasePathLink from '@/blog/components/base-path-link';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { t } from 'i18next';
+import { Skeleton } from '@hive/ui';
 
 const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
   const { user } = useUserClient();
@@ -42,7 +43,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
     enabled: Boolean(user?.username)
   });
 
-  const { data: communityData } = useQuery({
+  const { data: communityData, isLoading: isCommunityLoading } = useQuery({
     queryKey: ['community', community],
     queryFn: () => getCommunity(community, observer),
     enabled: community?.startsWith('hive-')
@@ -76,25 +77,37 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
                         className="text-md ml-10 font-medium text-destructive"
                         data-testid="community-name"
                       >
-                        {communityData?.title || `#${community}`}
+                        {isCommunityLoading ? (
+                          <Skeleton className="inline-block h-6 w-48" />
+                        ) : (
+                          communityData?.title || `#${community}`
+                        )}
                       </span>
                     </BasePathLink>
                   ) : (
                     <>
                       <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                        {communityData?.title || `#${community}`}
+                        {isCommunityLoading ? (
+                          <Skeleton className="inline-block h-6 w-48" />
+                        ) : (
+                          communityData?.title || `#${community}`
+                        )}
                       </span>
                       <span className="md:hidden">
-                        <CommunitiesSelect title={communityData?.title || community} />
+                        <CommunitiesSelect title={isCommunityLoading ? '' : (communityData?.title || community)} />
                       </span>
 
                         <span
                           className="hidden text-xs font-light md:block"
                           data-testid="community-name-unmoderated"
                         >
-                          { communityData
-                            ? t('communities.community')
-                            : t('communities.unmoderated_tag')}
+                          {isCommunityLoading ? (
+                            <Skeleton className="inline-block h-4 w-32" />
+                          ) : communityData ? (
+                            t('communities.community')
+                          ) : (
+                            t('communities.unmoderated_tag')
+                          )}
                         </span>
 
                     </>
