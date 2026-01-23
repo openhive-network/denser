@@ -523,57 +523,62 @@ test.describe('Profile page of @gtg', () => {
     await expect(await postPage.page.url()).toContain('#comments');
   });
 
-  test('validate reblog button styles in the light theme', async ({ page }) => {
+  test('validate reblog count display styles in the light theme', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
-    // Color of reblog button
-    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblog.first(), 'color')).toBe(
+    // Color of reblog count display
+    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountDisplay.first(), 'color')).toBe(
       'rgb(24, 30, 42)'
     );
 
-    // The tooltip message and colors
-    await profilePage.postReblog.first().hover();
+    // The tooltip message and colors (now shows reblog count)
+    await profilePage.postReblogCountDisplay.first().hover();
     // Wait for the tooltip to be visible before checking its content
-    await expect(profilePage.postReblogTooltip.first()).toBeVisible();
-    expect(await profilePage.postReblogTooltip.first().textContent()).toContain('Reblog');
-    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogTooltip, 'color')).toBe(
+    await expect(profilePage.postReblogCountTooltip.first()).toBeVisible();
+    // Tooltip now shows "No reblogs", "1 reblog", or "X reblogs"
+    expect(await profilePage.postReblogCountTooltip.first().textContent()).toMatch(/reblog/i);
+    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountTooltip, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
     expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.postReblogTooltip, 'background-color')
+      await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountTooltip, 'background-color')
     ).toBe('rgb(247, 247, 247)');
   });
 
-  test('validate reblog button styles in the dark theme', async ({ page }) => {
+  test('validate reblog count display styles in the dark theme', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    // Color of reblog button
-    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblog.first(), 'color')).toBe(
+    // Color of reblog count display
+    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountDisplay.first(), 'color')).toBe(
       'rgb(248, 250, 252)'
     );
 
-    // The tooltip message and colors
-    await profilePage.postReblog.first().hover();
+    // The tooltip message and colors (now shows reblog count)
+    await profilePage.postReblogCountDisplay.first().hover();
     // Wait for the tooltip to be visible before checking its content
-    await expect(profilePage.postReblogTooltip.first()).toBeVisible();
-    expect(await profilePage.postReblogTooltip.textContent()).toContain('Reblog');
-    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogTooltip, 'color')).toBe(
+    await expect(profilePage.postReblogCountTooltip.first()).toBeVisible();
+    // Tooltip now shows "No reblogs", "1 reblog", or "X reblogs"
+    expect(await profilePage.postReblogCountTooltip.textContent()).toMatch(/reblog/i);
+    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
     expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.postReblogTooltip, 'background-color')
+      await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountTooltip, 'background-color')
     ).toBe('rgb(34, 38, 42)');
   });
 
   test('move to the reblog dialog of the first post ', async ({ page }) => {
-    let reblogDialog = new ReblogThisPostDialog(page);
+    const reblogDialog = new ReblogThisPostDialog(page);
     await profilePage.gotoProfilePage('@gtg');
 
-    // Wait for the reblog button to be ready and click it
-    await expect(profilePage.postReblog.first()).toBeVisible();
-    await profilePage.postReblog.first().click();
+    // Navigate to first post page (reblog is now interactive only on post pages)
+    await profilePage.postTitle.first().click();
+    await page.waitForSelector('[data-testid="article-title"]');
+
+    // Click reblog icon on post page
+    await postPage.footerReblogIcon.click();
     // Wait for the dialog to appear before validating
     await expect(reblogDialog.getDialogHeader).toBeVisible({ timeout: 15000 });
     await reblogDialog.validateReblogThisPostHeaderIsVisible();
@@ -581,6 +586,5 @@ test.describe('Profile page of @gtg', () => {
     await expect(reblogDialog.getDialogOkButton).toBeVisible();
     await expect(reblogDialog.getDialogCancelButton).toBeVisible();
     await reblogDialog.closeReblogDialog();
-    await profilePage.profileBlogTabIsSelected();
   });
 });

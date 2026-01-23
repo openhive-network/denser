@@ -47,8 +47,8 @@ export class ProfilePage {
   readonly postVotesTooltip: Locator;
   readonly postResponse: Locator;
   readonly postResponseTooltip: Locator;
-  readonly postReblog: Locator;
-  readonly postReblogTooltip: Locator;
+  readonly postReblogCountDisplay: Locator;
+  readonly postReblogCountTooltip: Locator;
   readonly postAvatar: Locator;
   readonly postReputation: Locator;
   readonly postReputationTooltip: Locator;
@@ -269,8 +269,9 @@ export class ProfilePage {
     this.postVotesTooltip = page.locator('[data-testid="post-card-votes-tooltip"]');
     this.postResponse = page.locator('[data-testid="post-card-response-link"]');
     this.postResponseTooltip = page.locator('[data-testid="post-card-responses"]');
-    this.postReblog = page.locator('[data-testid="post-card-reblog"]');
-    this.postReblogTooltip = page.locator('[data-testid="post-card-reblog-tooltip"]');
+    // Reblog count display on profile list pages (static, non-interactive)
+    this.postReblogCountDisplay = page.locator('[data-testid="post-card-reblog-count"]');
+    this.postReblogCountTooltip = page.locator('[data-testid="post-card-reblog-count-tooltip"]');
     this.postAvatar = page.locator('[data-testid="post-card-avatar"]');
     this.postReputation = page.locator('[data-testid="post-author-reputation"]');
     this.postReputationTooltip = page.locator('[data-testid="post-reputation-tooltip"]');
