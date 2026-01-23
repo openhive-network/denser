@@ -1,3 +1,5 @@
+'use client';
+
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from '@/blog/i18n/client';
@@ -35,7 +37,7 @@ export const ReblogCountDisplay = ({
     <div className="flex items-center">
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger className="flex items-center" data-testid={dataTestid}>
+          <TooltipTrigger className="flex items-center cursor-default" data-testid={dataTestid}>
             <Icons.forward className="h-4 w-4 sm:mr-1" />
             {reblogCount}
           </TooltipTrigger>
