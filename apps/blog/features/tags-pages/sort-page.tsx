@@ -1,11 +1,16 @@
 import { Suspense } from 'react';
-import { SortTypes } from '@/blog/lib/utils';
+import { getQueryClient } from '@/blog/lib/react-query';
+import { DEFAULT_OBSERVER, SortTypes } from '@/blog/lib/utils';
+import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { getPostsRanked } from '@transaction/lib/bridge-api';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { ReactNode } from 'react';
 import Loading from '@ui/components/loading';
+import { getLogger } from '@ui/lib/logging';
 
-// No server-side prefetch for observer-dependent queries to avoid hydration mismatch
-// Client will fetch with correct observer after mount
-const SortPage = ({
+const logger = getLogger('app');
+
+const SortPage = async ({
   children,
   sort,
   tag = ''
@@ -14,7 +19,31 @@ const SortPage = ({
   sort: SortTypes;
   tag?: string;
 }) => {
-  return <Suspense fallback={<Loading loading={true} />}>{children}</Suspense>;
+  const queryClient = getQueryClient();
+  try {
+    // Prefetch with DEFAULT_OBSERVER for SEO - client will refetch with user's observer if logged in
+    await queryClient.prefetchInfiniteQuery({
+      queryKey: ['entriesInfinite', sort, tag, DEFAULT_OBSERVER],
+      queryFn: async ({ pageParam }) => {
+        const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
+        const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', DEFAULT_OBSERVER);
+        return postsData ?? [];
+      },
+      getNextPageParam: (lastPage: Entry[]) => {
+        if (!Array.isArray(lastPage) || lastPage.length === 0) return undefined;
+        const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
+        if (!last?.author || !last?.permlink) return undefined;
+        return { author: last.author, permlink: last.permlink };
+      }
+    });
+  } catch (error) {
+    logger.error(error, 'Error in SortPage:');
+  }
+  return (
+    <Hydrate state={dehydrate(queryClient)}>
+      <Suspense fallback={<Loading loading={true} />}>{children}</Suspense>
+    </Hydrate>
+  );
 };
 
 export default SortPage;

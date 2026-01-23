@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import { useIsMounted } from 'usehooks-ts';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
@@ -17,8 +16,7 @@ import { isCommunity } from '@ui/lib/utils';
 import { PostListSkeleton } from '@hive/ui';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
-  const { user } = useUserClient();
-  const isMounted = useIsMounted();
+  const { user, isHydrated } = useUserClient();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();
@@ -49,7 +47,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
       if (!last?.author || !last?.permlink) return undefined;
       return { author: last.author, permlink: last.permlink };
     },
-    enabled: isMounted() // Wait for hydration to complete before fetching with correct observer
+    enabled: isHydrated // Wait for hydration to complete before fetching with correct observer
   });
 
   // Prefetch when user is getting close to the end

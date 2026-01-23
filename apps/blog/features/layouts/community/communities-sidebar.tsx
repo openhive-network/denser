@@ -2,7 +2,6 @@
 
 import { Link } from '@hive/ui';
 import { useQuery } from '@tanstack/react-query';
-import { useIsMounted } from 'usehooks-ts';
 import { getCommunities } from '@transaction/lib/bridge-api';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@hive/ui/components/card';
@@ -13,16 +12,15 @@ import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 
 const CommunitiesSidebar: FC = () => {
   const { t } = useTranslation('common_blog');
-  const isMounted = useIsMounted();
   const sort = 'rank';
   const query = null;
-  const { user } = useUserClient();
+  const { user, isHydrated } = useUserClient();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
 
   const { data } = useQuery({
     queryKey: ['communitiesList', sort, query, observer],
     queryFn: () => getCommunities(sort, query, observer),
-    enabled: isMounted() // Wait for hydration to complete before fetching with correct observer
+    enabled: isHydrated // Wait for hydration to complete before fetching with correct observer
   });
 
   // Only show a fallback if data is truly missing (not hydrated)

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
@@ -12,6 +12,8 @@ const logger = getLogger('app');
 
 export interface IUseUser {
   user: User;
+  /** True when user state from localStorage is stable (after hydration completes) */
+  isHydrated: boolean;
 }
 
 export interface UseUserOptions {
@@ -78,7 +80,17 @@ export function useUserCore(
     ? (!isMounted() || !user ? defaultUser : user)
     : (user ?? defaultUser);
 
+  // Track hydration state - true when user state from localStorage is stable
+  // This ensures queries wait for proper user state before fetching
+  const [isHydrated, setIsHydrated] = useState(false);
+  useEffect(() => {
+    if (isMounted && isMounted()) {
+      setIsHydrated(true);
+    }
+  }, [isMounted]);
+
   return {
-    user: resolvedUser
+    user: resolvedUser,
+    isHydrated: isMounted ? isHydrated : true // For Pages Router (no isMounted), always hydrated
   };
 }

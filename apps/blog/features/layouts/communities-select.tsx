@@ -11,7 +11,6 @@ import {
   SelectValue
 } from '@ui/components/select';
 import { useQuery } from '@tanstack/react-query';
-import { useIsMounted } from 'usehooks-ts';
 import { useTranslation } from '@/blog/i18n/client';
 import { withBasePath } from '@ui/lib/path-utils';
 import { getCommunities, getSubscriptions } from '@transaction/lib/bridge-api';
@@ -20,8 +19,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 
 export function CommunitiesSelect({ title }: { title: string }) {
-  const { user } = useUserClient();
-  const isMounted = useIsMounted();
+  const { user, isHydrated } = useUserClient();
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
@@ -31,7 +29,7 @@ export function CommunitiesSelect({ title }: { title: string }) {
   const { isLoading, data } = useQuery({
     queryKey: ['communitiesList', sort, query, observer],
     queryFn: () => getCommunities(sort, query, observer),
-    enabled: isMounted() // Wait for hydration to complete before fetching with correct observer
+    enabled: isHydrated // Wait for hydration to complete before fetching with correct observer
   });
   const { data: mySubsData } = useQuery({
     queryKey: ['subscriptions', user.username],
