@@ -1,5 +1,5 @@
 import { getQueryClient } from '@/blog/lib/react-query';
-import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getCommunities } from '@transaction/lib/bridge-api';
 import { ReactNode } from 'react';
@@ -12,12 +12,13 @@ const logger = getLogger('app');
 
 const ServerSideLayout = async ({ children }: { children: ReactNode }) => {
   const queryClient = getQueryClient();
+  // Get observer from cookies - returns user's observer if logged in, DEFAULT_OBSERVER for anonymous
+  // Subscriptions are user-specific and not SSR-critical, so only prefetch communitiesList
+  const observer = getObserverFromCookies();
   try {
-    // Prefetch with DEFAULT_OBSERVER for SEO - client will refetch with user's observer if logged in
-    // Subscriptions are user-specific and not SSR-critical, so only prefetch communitiesList
     await queryClient.prefetchQuery({
-      queryKey: ['communitiesList', sort, query, DEFAULT_OBSERVER],
-      queryFn: () => getCommunities(sort, query, DEFAULT_OBSERVER)
+      queryKey: ['communitiesList', sort, query, observer],
+      queryFn: () => getCommunities(sort, query, observer)
     });
   } catch (error) {
     logger.error(error, 'Error in ServerSideLayout:');

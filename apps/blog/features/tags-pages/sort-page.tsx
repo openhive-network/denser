@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { getQueryClient } from '@/blog/lib/react-query';
-import { DEFAULT_OBSERVER, SortTypes } from '@/blog/lib/utils';
+import { SortTypes } from '@/blog/lib/utils';
+import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { Entry } from '@hive/common-hiveio-packages/wax';
@@ -20,13 +21,14 @@ const SortPage = async ({
   tag?: string;
 }) => {
   const queryClient = getQueryClient();
+  // Get observer from cookies - returns user's observer if logged in, DEFAULT_OBSERVER for anonymous
+  const observer = getObserverFromCookies();
   try {
-    // Prefetch with DEFAULT_OBSERVER for SEO - client will refetch with user's observer if logged in
     await queryClient.prefetchInfiniteQuery({
-      queryKey: ['entriesInfinite', sort, tag, DEFAULT_OBSERVER],
+      queryKey: ['entriesInfinite', sort, tag, observer],
       queryFn: async ({ pageParam }) => {
         const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
-        const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', DEFAULT_OBSERVER);
+        const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer);
         return postsData ?? [];
       },
       getNextPageParam: (lastPage: Entry[]) => {
