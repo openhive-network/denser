@@ -60,7 +60,7 @@ const CommentList = ({
                 key={`parent-${comment.post_id}-index-${index}`}
                 className={clsx('min-w-0 pl-3', {
                   'my-2 rounded border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
-                    markedHash?.includes(`${comment.author}/${comment.permlink}`) && comment.depth < 8
+                    markedHash?.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
                 })}
               >
                 <CommentListItem
