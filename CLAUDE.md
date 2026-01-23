@@ -70,6 +70,7 @@ This project uses **gitlab.syncad.com**, NOT gitlab.com.
 ### Testing
 - **Playwright**: E2E tests with multiple configs (local, mirrornet)
 - **Blog Smoke Tests**: Before creating MR for blog changes, consider running smoke tests via `blog-smoke-tests` skill (15 tests covering homepage, navigation, profiles, tooltips, etc.)
+- **Percy Visual Testing**: Visual regression testing with BrowserStack Percy (see Percy Visual Testing section below)
 
 ### Internal Packages (`packages/`)
 | Package | Purpose |
@@ -523,3 +524,95 @@ Existing localStorage data without TTL structure is handled gracefully:
 - `getStorageItem()` returns legacy data as-is
 - Legacy items will be gradually replaced when users interact with the app
 - `cleanupExpiredItems()` only removes items with TTL structure that have expired
+
+---
+
+## Percy Visual Testing
+
+Percy (BrowserStack) provides visual regression testing - comparing screenshots between builds to detect unintended UI changes.
+
+### Prerequisites
+
+1. **Percy Token**: Get from https://percy.io/settings and add to `apps/blog/.env.local`:
+   ```bash
+   PERCY_TOKEN=your_token_here
+   ```
+
+2. **Running Blog App**: Percy tests require the blog to be running on `localhost:3000`:
+   ```bash
+   # Build and start the blog
+   pnpm --filter @hive/blog build
+   pnpm --filter @hive/blog start
+   ```
+
+### Running Percy Tests
+
+```bash
+cd apps/blog
+
+# Load env and run tests
+source .env.local && pnpm pw:percy
+
+# Run with visible browser
+source .env.local && pnpm pw:percy:headed
+```
+
+### What Gets Tested
+
+Percy captures 8 snapshots (4 pages × 2 themes):
+
+| Page | Light Mode | Dark Mode |
+|------|------------|-----------|
+| Homepage | ✓ | ✓ |
+| Profile (@gtg) | ✓ | ✓ |
+| Post (first from homepage) | ✓ | ✓ |
+| Community (LeoFinance) | ✓ | ✓ |
+
+### Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `apps/blog/percy.yml` | Percy config - viewport size, CSS to hide dynamic elements |
+| `apps/blog/playwright.percy.config.ts` | Playwright config for Percy (single worker, no parallel) |
+| `apps/blog/playwright/tests/visual/*.spec.ts` | Visual test specs |
+
+### Handling Dynamic Content
+
+Percy config (`percy.yml`) hides elements that change between runs:
+- Timestamps (`[data-testid="post-card-timestamp"]`)
+- Healthchecker indicator
+- User avatars (may vary)
+
+### Viewing Results
+
+After tests complete, Percy provides a build URL:
+```
+[percy] Finalized build #N: https://percy.io/.../builds/...
+```
+
+In the Percy dashboard you can:
+- Review visual diffs between builds
+- Approve or reject changes
+- Set baseline snapshots
+
+### Adding New Visual Tests
+
+1. Create spec in `apps/blog/playwright/tests/visual/`
+2. Use `percySnapshot(page, 'Unique Snapshot Name')`
+3. Test both Light and Dark themes
+4. Use `HomePage` page object for theme switching
+
+Example:
+```typescript
+import { test } from '@playwright/test';
+import percySnapshot from '@percy/playwright';
+import { HomePage } from '../support/pages/homePage';
+
+test('My Page - Light mode', async ({ page }) => {
+  const homePage = new HomePage(page);
+  await page.goto('/my-page');
+  await page.waitForLoadState('networkidle');
+  await homePage.changeThemeMode('Light');
+  await percySnapshot(page, 'My Page - Light');
+});
+```
