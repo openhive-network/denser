@@ -77,6 +77,7 @@ export interface Entry {
   id?: number;
   promoted: string;
   reblogged_by?: string[];
+  reblogs?: number;
   replies: Array<unknown>;
   stats?: EntryStat;
   title: string;

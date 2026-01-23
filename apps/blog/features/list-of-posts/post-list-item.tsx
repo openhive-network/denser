@@ -17,7 +17,7 @@ import { accountReputation } from '@hive/ui';
 import { IFollowList, Entry } from '@hive/common-hiveio-packages/wax';
 import DetailsCardHover from './details-card-hover';
 import PostImage from './post-img';
-import ReblogTrigger from './reblog-trigger';
+import { ReblogCountDisplay } from './reblog-count-display';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
@@ -40,6 +40,7 @@ const PostListItem = ({
   const { t } = useTranslation('common_blog');
   const tagExists = Array.isArray(post.json_metadata?.tags) && post.json_metadata.tags.includes('nsfw');
   const [nsfw, setNSFW] = useState<Preferences['nsfw']>(tagExists ? 'warn' : 'show');
+  const reblogCount = post.reblogs ?? 0;
 
   useEffect(() => {
     if (tagExists) {
@@ -232,11 +233,9 @@ const PostListItem = ({
                   <Separator orientation="vertical" />
                   {!post.title.includes('RE: ') ? (
                     <div className="flex items-center" data-testid="post-card-reblog">
-                      <ReblogTrigger
-                        author={post.author}
-                        permlink={post.permlink}
-                        dataTestidTooltipContent="post-card-reblog-tooltip"
-                        dataTestidTooltipIcon="post-card-reblog-icon"
+                      <ReblogCountDisplay
+                        reblogCount={reblogCount}
+                        dataTestid="post-card-reblog-count"
                       />
                     </div>
                   ) : null}

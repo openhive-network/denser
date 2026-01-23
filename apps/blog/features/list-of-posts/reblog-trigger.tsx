@@ -11,6 +11,17 @@ import { useReblogMutation } from './hooks/use-reblog-mutation';
 import { ReblogDialog } from './reblog-dialog';
 import { useTranslation } from '@/blog/i18n/client';
 
+/**
+ * Interactive reblog trigger for INDIVIDUAL POST PAGES ONLY.
+ *
+ * DO NOT use on list pages - use ReblogCountDisplay instead.
+ *
+ * This component:
+ * - Makes API call to check if user has reblogged
+ * - Shows interactive icon that changes color based on reblog status
+ * - Opens confirmation dialog when clicked
+ * - Handles reblog mutation
+ */
 const ReblogTrigger = ({
   author,
   permlink,
