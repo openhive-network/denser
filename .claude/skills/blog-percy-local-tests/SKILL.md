@@ -1,6 +1,6 @@
 ---
 name: blog-percy-local-tests
-description: Run Percy visual regression tests for Denser blog against LOCAL localhost:3000. IMPORTANT - requires blog app running locally first (pnpm build && pnpm start). Captures 8 visual snapshots (Homepage, Profile, Post, Community in Light/Dark themes) and uploads to BrowserStack Percy. Also requires PERCY_TOKEN in .env.local. Use for visual regression testing, UI consistency checks, or when user requests Percy/visual tests.
+description: Run Percy visual regression tests for Denser blog against LOCAL localhost:3000. IMPORTANT - requires blog app running locally first (pnpm build && pnpm start). Captures 8 visual snapshots (Homepage, Profile, Post, Community in Light/Dark themes) and uploads to BrowserStack Percy. Also requires PERCY_TOKEN in any .env* file. Use for visual regression testing, UI consistency checks, or when user requests Percy/visual tests.
 allowed-tools:
   - Bash
   - Read
@@ -22,16 +22,16 @@ Run Percy visual regression tests against the Denser blog application running lo
 
 ### 1. Percy Token
 
-Check if `PERCY_TOKEN` is configured in `.env.local`:
+Check if `PERCY_TOKEN` is configured in any `.env*` file:
 
 ```bash
 cd /storage1/denser/apps/blog
-grep -q "PERCY_TOKEN" .env.local && echo "Token configured" || echo "Token missing"
+grep -l "PERCY_TOKEN=." .env* 2>/dev/null && echo "Token configured" || echo "Token missing"
 ```
 
 If missing, inform user to:
 1. Get token from https://percy.io/settings
-2. Add to `apps/blog/.env.local`: `PERCY_TOKEN=your_token_here`
+2. Add to any `apps/blog/.env*` file (e.g., `.env.local`): `PERCY_TOKEN=your_token_here`
 
 ### 2. Blog Application Running
 
@@ -62,11 +62,11 @@ Run these checks first:
 ```bash
 cd /storage1/denser/apps/blog
 
-# Check Percy token
-if grep -q "PERCY_TOKEN=." .env.local 2>/dev/null; then
+# Check Percy token in any .env* file
+if grep -l "PERCY_TOKEN=." .env* 2>/dev/null | head -1; then
   echo "✓ Percy token configured"
 else
-  echo "✗ Percy token missing - add PERCY_TOKEN to .env.local"
+  echo "✗ Percy token missing - add PERCY_TOKEN to any .env* file"
 fi
 
 # Check blog is running on localhost:3000
@@ -78,7 +78,7 @@ else
 fi
 ```
 
-**If Percy token is missing:** Stop and inform user to add token to `.env.local`.
+**If Percy token is missing:** Stop and inform user to add token to any `.env*` file (e.g., `.env.local`).
 
 **If blog is NOT running:** Stop and ask user if they want to start it:
 - Ask: "Blog nie działa na localhost:3000. Czy chcesz, żebym go uruchomił? (pnpm build && pnpm start)"
@@ -100,13 +100,13 @@ Ask user about browser mode:
 **Headed mode (default):**
 ```bash
 cd /storage1/denser/apps/blog
-set -a && source .env.local && set +a && pnpm pw:percy:headed
+set -a && for f in .env*; do [ -f "$f" ] && source "$f"; done && set +a && pnpm pw:percy:headed
 ```
 
 **Headless mode:**
 ```bash
 cd /storage1/denser/apps/blog
-set -a && source .env.local && set +a && pnpm pw:percy
+set -a && for f in .env*; do [ -f "$f" ] && source "$f"; done && set +a && pnpm pw:percy
 ```
 
 ### Step 4: Parse Results
@@ -194,7 +194,7 @@ pnpm build && pnpm start
 ```
 
 ### "Percy token not found"
-Add token to `.env.local`:
+Add token to any `.env*` file (e.g., `.env.local`):
 ```bash
 echo "PERCY_TOKEN=your_token_here" >> /storage1/denser/apps/blog/.env.local
 ```
@@ -210,4 +210,4 @@ Check Percy token is valid and not expired at https://percy.io/settings
 | Visual tests | playwright/tests/visual/ |
 | Percy config | percy.yml |
 | Playwright config | playwright.percy.config.ts |
-| Environment file | .env.local |
+| Environment files | .env* (any .env file) |
