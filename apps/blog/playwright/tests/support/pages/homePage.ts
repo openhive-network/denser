@@ -50,7 +50,7 @@ export class HomePage {
   readonly getSecondPostDownvoteButtonIcon: Locator;
   readonly getUpvoteButtonTooltip: Locator;
   readonly getDownvoteButton: Locator;
-  readonly getReblogButton: Locator;
+  readonly getReblogCountDisplay: Locator;
   readonly getFirstPostDownvoteButton: Locator;
   readonly getDownvoteButtonTooltip: Locator;
   readonly getFirstPostDownvoteButtonTooltip: Locator;
@@ -75,10 +75,10 @@ export class HomePage {
   readonly getFirstPostChildernIcon: Locator;
   readonly getFirstPostChildernCommentNumber: Locator;
   readonly getFirstPostChildernTooltip: Locator;
-  readonly getFirstPostReblogButton: Locator;
-  readonly getFirstPostReblogTooltip: Locator;
-  readonly getSecondPostReblogButton: Locator;
-  readonly getSecondPostReblogTooltip: Locator;
+  readonly getFirstPostReblogCountDisplay: Locator;
+  readonly getFirstPostReblogCountTooltip: Locator;
+  readonly getSecondPostReblogCountDisplay: Locator;
+  readonly getSecondPostReblogCountTooltip: Locator;
   readonly getPostChildren: Locator;
   readonly getBody: Locator;
   readonly getThemeModeButton: Locator;
@@ -207,11 +207,12 @@ export class HomePage {
     this.getFirstPostDownvoteButton = this.getDownvoteButton.first();
     this.getDownvoteButtonTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
     this.getFirstPostDownvoteButtonTooltip = this.getDownvoteButtonTooltip.first();
-    this.getReblogButton = page.locator('[data-testid="post-card-reblog"] > button > svg');
-    this.getFirstPostReblogButton = this.getReblogButton.first();
-    this.getFirstPostReblogTooltip = page.locator('[data-testid="post-card-reblog-tooltip"]').first();
-    this.getSecondPostReblogButton = this.getReblogButton.nth(1);
-    this.getSecondPostReblogTooltip = page.locator('[data-testid="post-card-reblog-tooltip"]').nth(1);
+    // Reblog count display on list pages (static, non-interactive)
+    this.getReblogCountDisplay = page.locator('[data-testid="post-card-reblog-count"]');
+    this.getFirstPostReblogCountDisplay = this.getReblogCountDisplay.first();
+    this.getFirstPostReblogCountTooltip = page.locator('[data-testid="post-card-reblog-count-tooltip"]').first();
+    this.getSecondPostReblogCountDisplay = this.getReblogCountDisplay.nth(1);
+    this.getSecondPostReblogCountTooltip = page.locator('[data-testid="post-card-reblog-count-tooltip"]').nth(1);
     this.getBody = page.locator('body');
     this.getThemeModeButton = page.locator('[data-testid="theme-mode"]');
     this.getThemeModeItem = page.locator('[data-testid="theme-mode-item"]');

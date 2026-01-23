@@ -463,45 +463,47 @@ test.describe('Communities page tests', () => {
     }
   });
 
-  test('validate reblog button styles in the light theme', async ({ page }) => {
+  test('validate reblog count display styles in the light theme', async ({ page }) => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
-    // Color of reblog button
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogButton, 'color')).toBe(
+    // Color of reblog count display
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountDisplay, 'color')).toBe(
       'rgb(24, 30, 42)'
     );
 
-    // The tooltip message and colors
-    await homePage.getFirstPostReblogButton.hover();
-    expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog');
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')).toBe(
+    // The tooltip message and colors (now shows reblog count)
+    await homePage.getFirstPostReblogCountDisplay.hover();
+    // Tooltip now shows "No reblogs", "1 reblog", or "X reblogs"
+    expect(await homePage.getFirstPostReblogCountTooltip.textContent()).toMatch(/reblog/i);
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountTooltip, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
     expect(
-      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'background-color')
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountTooltip, 'background-color')
     ).toBe('rgb(247, 247, 247)');
   });
 
-  test('validate reblog button styles in the dark theme', async ({ page }) => {
+  test('validate reblog count display styles in the dark theme', async ({ page }) => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    // Color of reblog button
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogButton, 'color')).toBe(
+    // Color of reblog count display
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountDisplay, 'color')).toBe(
       'rgb(248, 250, 252)'
     );
 
-    // The tooltip message and colors
-    await homePage.getFirstPostReblogButton.hover();
-    expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog');
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')).toBe(
+    // The tooltip message and colors (now shows reblog count)
+    await homePage.getFirstPostReblogCountDisplay.hover();
+    // Tooltip now shows "No reblogs", "1 reblog", or "X reblogs"
+    expect(await homePage.getFirstPostReblogCountTooltip.textContent()).toMatch(/reblog/i);
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
     expect(
-      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'background-color')
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountTooltip, 'background-color')
     ).toBe('rgb(34, 38, 42)');
   });
 
@@ -509,13 +511,17 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
 
-    await homePage.getFirstPostReblogButton.click();
+    // Navigate to first post page (reblog is now interactive only on post pages)
+    await homePage.getFirstPostTitle.click();
+    await page.waitForSelector('[data-testid="article-title"]');
+
+    // Click reblog icon on post page
+    await postPage.footerReblogIcon.click();
     await reblogThisPostDialog.validateReblogThisPostHeaderIsVisible();
     await reblogThisPostDialog.validateReblogThisPostDescriptionIsVisible();
     await expect(reblogThisPostDialog.getDialogOkButton).toBeVisible();
     await expect(reblogThisPostDialog.getDialogCancelButton).toBeVisible();
     await reblogThisPostDialog.closeReblogDialog();
-    await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
   });
   // new tests
   test('check if posts in specific communities loading correctly', async ({ page }) => {

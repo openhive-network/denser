@@ -294,8 +294,8 @@ test.describe.skip('Translation tests', () => {
     await expect(postPage.postVoterList).toBeVisible();
     // Validate post reblog button tooltip
     const expectedReblogTooltipText: string = 'Rebloguj';
-    await postPage.footerReblogBtn.hover();
-    await expect(postPage.footerReblogBtnCardList).toContainText(expectedReblogTooltipText);
+    await postPage.footerReblogIcon.hover();
+    await expect(postPage.footerReblogTooltip).toContainText(expectedReblogTooltipText);
     // Validate post response button tooltip
     const expectedResponseTooltipText: RegExp = /odpowied[zź]i?/;
     await postPage.commentResponse.hover();
@@ -442,7 +442,7 @@ test.describe.skip('Translation tests', () => {
     await expect(homePage.getFirstPostResponseButtonTooltip).toContainText(expectedResponsesTooltipText);
   });
 
-  test('Home page - validate tooltips of the first post card reblog', async ({ page }) => {
+  test('Post page - validate tooltips of the reblog button', async ({ page }) => {
     // Load home page
     await homePage.goto();
     await expect(homePage.getFirstPostTitle).toBeVisible();
@@ -454,10 +454,13 @@ test.describe.skip('Translation tests', () => {
     await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
+    // Navigate to first post page (reblog tooltip with "Reblog" text is only on post pages)
+    await homePage.getFirstPostTitle.click();
+    await page.waitForSelector('[data-testid="article-title"]');
     // Validate post reblog button tooltip
     const expectedReblogTooltipText: string = 'Rebloguj';
-    await homePage.getFirstPostReblogButton.hover();
-    await expect(homePage.getFirstPostReblogTooltip).toContainText(expectedReblogTooltipText);
+    await postPage.footerReblogIcon.hover();
+    await expect(postPage.footerReblogTooltip).toContainText(expectedReblogTooltipText);
   });
 
   // Skipped due to new login form

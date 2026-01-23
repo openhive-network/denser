@@ -23,16 +23,21 @@ test.describe('Reblog a post', () => {
       denserAutoTest4Page
     }) => {
       const homePage = new HomePage(denserAutoTest4Page.page);
+      const postPage = new PostPage(denserAutoTest4Page.page);
 
-      // The tooltip message and colors of the second post
-      await homePage.getSecondPostReblogButton.hover();
-      expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog');
+      // Navigate to first post page (interactive reblog is only on post pages)
+      await homePage.getFirstPostTitle.click();
+      await denserAutoTest4Page.page.waitForSelector('[data-testid="article-title"]');
+
+      // The tooltip message and colors of the reblog button on post page
+      await postPage.footerReblogIcon.hover();
+      expect(await postPage.footerReblogTooltip.textContent()).toContain('Reblog');
       expect(
-        await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')
+        await postPage.getElementCssPropertyValue(await postPage.footerReblogTooltip, 'color')
       ).toBe('rgb(15, 23, 42)');
       expect(
-        await homePage.getElementCssPropertyValue(
-          await homePage.getFirstPostReblogTooltip,
+        await postPage.getElementCssPropertyValue(
+          await postPage.footerReblogTooltip,
           'background-color'
         )
       ).toBe('rgb(247, 247, 247)');
@@ -40,40 +45,49 @@ test.describe('Reblog a post', () => {
 
     test('reblog a first post', async ({ denserAutoTest4Page }) => {
       const homePage = new HomePage(denserAutoTest4Page.page);
+      const postPage = new PostPage(denserAutoTest4Page.page);
       const reblogDialog = new ReblogThisPostDialog(denserAutoTest4Page.page);
       const loginForm = new LoginForm(denserAutoTest4Page.page);
 
-      if (await homePage.getFirstPostReblogButton.isEnabled()) {
-        await homePage.getFirstPostReblogButton.click();
-        await reblogDialog.validateReblogThisPostHeaderIsVisible();
-        await reblogDialog.validateReblogThisPostDescriptionIsVisible();
-        await expect(reblogDialog.getDialogOkButton).toBeVisible();
-        await expect(reblogDialog.getDialogCancelButton).toBeVisible();
-        await reblogDialog.clickOkButton();
-      }
+      // Navigate to first post page (interactive reblog is only on post pages)
+      await homePage.getFirstPostTitle.click();
+      await denserAutoTest4Page.page.waitForSelector('[data-testid="article-title"]');
+
+      // Click reblog button on post page
+      await postPage.footerReblogIcon.click();
+      await reblogDialog.validateReblogThisPostHeaderIsVisible();
+      await reblogDialog.validateReblogThisPostDescriptionIsVisible();
+      await expect(reblogDialog.getDialogOkButton).toBeVisible();
+      await expect(reblogDialog.getDialogCancelButton).toBeVisible();
+      await reblogDialog.clickOkButton();
+
       // If a password to unlock key is needed
       await loginForm.page.waitForTimeout(1000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Wait for reblog button will be viewed again
       await waitForCircleSpinnerIsDetatched(denserAutoTest4Page.page);
-      await homePage.getFirstPostReblogButton.waitFor( {state: 'visible'});
+      await postPage.footerReblogIcon.waitFor({ state: 'visible' });
       // Validate the reblog icon changed color for red
-      await homePage.page.waitForTimeout(1000);
+      await denserAutoTest4Page.page.waitForTimeout(1000);
       expect(
-        await homePage.getElementCssPropertyValue(homePage.getFirstPostReblogButton, 'color')
+        await postPage.getElementCssPropertyValue(postPage.footerReblogIcon, 'color')
       ).toBe('rgb(218, 43, 43)');
     });
 
     test('reblog a first post validate tooltip after hovering', async ({ denserAutoTest4Page }) => {
       const homePage = new HomePage(denserAutoTest4Page.page);
+      const postPage = new PostPage(denserAutoTest4Page.page);
+
+      // Navigate to first post page (interactive reblog is only on post pages)
+      await homePage.getFirstPostTitle.click();
+      await denserAutoTest4Page.page.waitForSelector('[data-testid="article-title"]');
 
       // Validate the reblog tooltip after hovering
-      await homePage.getFirstPostReblogButton.hover();
-      expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('You reblogged');
+      await postPage.footerReblogIcon.hover();
+      expect(await postPage.footerReblogTooltip.textContent()).toContain('You reblogged');
     });
 
     test('validate reblogged post is visible in a blog tab in a user profile page', async ({ denserAutoTest4Page }) => {
-      const homePage = new HomePage(denserAutoTest4Page.page);
       const profilePage = new ProfilePage(denserAutoTest4Page.page);
 
       await profilePage.gotoProfilePage('@' + users.denserautotest4.username);

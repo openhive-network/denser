@@ -373,8 +373,8 @@ test.describe('Post page tests', () => {
     });
 
     await test.step('Post Footer - Reblog', async () => {
-      await expect(postPage.footerReblogBtn).toBeVisible();
-      await postPage.footerReblogBtn.click();
+      await expect(postPage.footerReblogIcon).toBeVisible();
+      await postPage.footerReblogIcon.click();
       await expect(postPage.reblogDialogHeader).toBeVisible();
       await expect(postPage.reblogDialogHeader).toHaveText('Reblog This Post');
 

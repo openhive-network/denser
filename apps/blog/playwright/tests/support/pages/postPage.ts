@@ -63,8 +63,8 @@ export class PostPage {
   readonly downvoteButton: Locator;
   readonly footerPayouts: Locator;
   readonly footerPayoutsTooltip: Locator;
-  readonly footerReblogBtn: Locator;
-  readonly footerReblogBtnCardList: Locator;
+  readonly footerReblogIcon: Locator;
+  readonly footerReblogTooltip: Locator;
   readonly reblogDialogHeader: Locator;
   readonly reblogDialogDescription: Locator;
   readonly reblogDialogCancelBtn: Locator;
@@ -191,8 +191,9 @@ export class PostPage {
     this.downvoteButton = this.articleFooter.locator('[data-testid="downvote-button"]');
     this.footerPayouts = page.locator('[data-testid="comment-payout"]');
     this.footerPayoutsTooltip = page.locator('[data-testid="payout-post-card-tooltip"]');
-    this.footerReblogBtn = page.locator('[data-testid="comment-respons-header"] svg.h-4.w-4.cursor-pointer');
-    this.footerReblogBtnCardList = page.locator('[data-testid="post-footer-reblog-tooltip"]');
+    // Interactive reblog on post pages
+    this.footerReblogIcon = page.locator('[data-testid="post-footer-reblog-icon"]');
+    this.footerReblogTooltip = page.locator('[data-testid="post-footer-reblog-tooltip"]');
     this.reblogDialogHeader = page.locator('[data-testid="reblog-dialog-header"]');
     this.reblogDialogDescription = page.locator('[data-testid="reblog-dialog-description"]');
     this.reblogDialogCancelBtn = page.locator('[data-testid="reblog-dialog-cancel"]');

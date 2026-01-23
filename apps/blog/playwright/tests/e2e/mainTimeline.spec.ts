@@ -3,17 +3,20 @@ import { HomePage } from '../support/pages/homePage';
 import { LoginForm } from '../support/pages/loginForm';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 import { ProfilePage } from '../support/pages/profilePage';
+import { PostPage } from '../support/pages/postPage';
 import { ApiHelper } from '../support/apiHelper';
 
 test.describe('Home page tests', () => {
   let homePage: HomePage;
   let loginDialog: LoginForm;
   let reblogDialog: ReblogThisPostDialog;
+  let postPage: PostPage;
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
     loginDialog = new LoginForm(page);
     reblogDialog = new ReblogThisPostDialog(page);
+    postPage = new PostPage(page);
   });
 
   test('has the main timeline of posts (20 posts are displayed by default)', async ({ page }) => {
@@ -932,57 +935,63 @@ test.describe('Home page tests', () => {
     await homePage.isTrendingCommunitiesVisible();
   });
 
-  test('validate reblog button styles in the light theme', async ({ page }) => {
+  test('validate reblog count display styles in the light theme', async ({ page }) => {
     await homePage.goto();
 
-    // Color of reblog button
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogButton, 'color')).toBe(
+    // Color of reblog count display
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountDisplay, 'color')).toBe(
       'rgb(24, 30, 42)'
     );
 
-    // The tooltip message and colors
-    await homePage.getFirstPostReblogButton.hover();
-    expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog');
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')).toBe(
+    // The tooltip message and colors (now shows reblog count)
+    await homePage.getFirstPostReblogCountDisplay.hover();
+    // Tooltip now shows "No reblogs", "1 reblog", or "X reblogs"
+    expect(await homePage.getFirstPostReblogCountTooltip.textContent()).toMatch(/reblog/i);
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountTooltip, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
     expect(
-      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'background-color')
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountTooltip, 'background-color')
     ).toBe('rgb(247, 247, 247)');
   });
 
-  test('validate reblog button styles in the dark theme', async ({ page }) => {
+  test('validate reblog count display styles in the dark theme', async ({ page }) => {
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    // Color of reblog button
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogButton, 'color')).toBe(
+    // Color of reblog count display
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountDisplay, 'color')).toBe(
       'rgb(248, 250, 252)'
     );
 
-    // The tooltip message and colors
-    await homePage.getFirstPostReblogButton.hover();
-    expect(await homePage.getFirstPostReblogTooltip.textContent()).toContain('Reblog');
-    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'color')).toBe(
+    // The tooltip message and colors (now shows reblog count)
+    await homePage.getFirstPostReblogCountDisplay.hover();
+    // Tooltip now shows "No reblogs", "1 reblog", or "X reblogs"
+    expect(await homePage.getFirstPostReblogCountTooltip.textContent()).toMatch(/reblog/i);
+    expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
     expect(
-      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogTooltip, 'background-color')
+      await homePage.getElementCssPropertyValue(await homePage.getFirstPostReblogCountTooltip, 'background-color')
     ).toBe('rgb(34, 38, 42)');
   });
 
   test('move to the reblog this post dialog ', async ({ page }) => {
     await homePage.goto();
 
-    await homePage.getFirstPostReblogButton.click();
+    // Navigate to first post page (reblog is now interactive only on post pages)
+    await homePage.getFirstPostTitle.click();
+    await page.waitForSelector('[data-testid="article-title"]');
+
+    // Click reblog icon on post page
+    await postPage.footerReblogIcon.click();
     await reblogDialog.validateReblogThisPostHeaderIsVisible();
     await reblogDialog.validateReblogThisPostDescriptionIsVisible();
     // TODO: Check it only if user logged in
     // await expect(reblogDialog.getDialogOkButton).toBeVisible();
     await expect(reblogDialog.getDialogCancelButton).toBeVisible();
     await reblogDialog.closeReblogDialog();
-    await expect(homePage.getTrandingCommunitiesHeader).toBeVisible();
   });
 
   test('validate styles of the reputation in the post card header in the light mode', async ({ page }) => {
