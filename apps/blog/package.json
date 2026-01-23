@@ -28,7 +28,9 @@
     "pw:blog:test:mir:chromium:container:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000.config.ts --headed --update-snapshots",
     "pw:blog:test:mir:chromium:ui:container:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000.config.ts --update-snapshots --ui",
     "pw:blog:test:mir:chromium:container13:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000-13.config.ts --headed --update-snapshots",
-    "pw:blog:test:mir:chromium:ui:container13:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000-13.config.ts --update-snapshots --ui"
+    "pw:blog:test:mir:chromium:ui:container13:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000-13.config.ts --update-snapshots --ui",
+    "pw:percy": "percy exec -- playwright test --config=playwright.percy.config.ts",
+    "pw:percy:headed": "percy exec -- playwright test --config=playwright.percy.config.ts --headed"
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
@@ -95,6 +97,8 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@percy/cli": "^1.31.8",
+    "@percy/playwright": "^1.0.10",
     "@playwright/test": "^1.41.1",
     "@tanstack/react-query-devtools": "^4.36.1",
     "@types/cors": "^2.8.17",

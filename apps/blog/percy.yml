@@ -1,0 +1,19 @@
+version: 2
+snapshot:
+  widths:
+    - 1920
+  min-height: 1080
+  percy-css: |
+    /* Hide dynamic elements that change frequently */
+    [data-testid="post-card-timestamp"],
+    [data-testid="healthchecker-indicator"] {
+      visibility: hidden !important;
+    }
+    /* Hide avatars (may change) */
+    img[src*="/avatar/"] {
+      opacity: 0 !important;
+    }
+discovery:
+  allowed-hosts:
+    - localhost
+  network-idle-timeout: 500
