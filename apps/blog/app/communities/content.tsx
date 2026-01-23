@@ -2,6 +2,7 @@
 
 import { useState, KeyboardEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useIsMounted } from 'usehooks-ts';
 import { Input } from '@ui/components/input';
 import { Icons } from '@ui/components/icons';
 import { Separator } from '@ui/components/separator';
@@ -46,13 +47,15 @@ const CommunitiesContent = () => {
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
+  const isMounted = useIsMounted();
   const [sort, setSort] = useState('rank');
   const [inputQuery, setInputQuery] = useState<string>('');
   const [query, setQuery] = useState<string | null>();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const { data: communitiesData, isFetching } = useQuery({
-    queryKey: ['communitiesList', sort, query],
-    queryFn: async () => await getCommunities(sort, query, observer)
+    queryKey: ['communitiesList', sort, query, observer],
+    queryFn: async () => await getCommunities(sort, query, observer),
+    enabled: isMounted() // Wait for hydration to complete before fetching with correct observer
   });
 
   function handleSearchCommunity(e: KeyboardEvent<HTMLInputElement>) {

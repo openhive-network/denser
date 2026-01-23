@@ -71,7 +71,9 @@ export function useUserCore(
     }
   }, [user, redirectIfFound, redirectTo, onRedirect]);
 
-  // For App Router, check if mounted before returning user
+  // For App Router, check if mounted before returning user to prevent hydration mismatch
+  // Server uses cookies, client uses localStorage - these may differ during hydration
+  // Post-hydration invalidation in useUserClient ensures queries refetch with correct observer
   const resolvedUser = isMounted
     ? (!isMounted() || !user ? defaultUser : user)
     : (user ?? defaultUser);

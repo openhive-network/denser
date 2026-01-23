@@ -7,7 +7,7 @@ import { useUserCore, IUseUser, UseUserOptions } from './use-user-core';
 /**
  * User authentication hook for App Router (next/navigation).
  * Use useUser for Pages Router components.
- * 
+ *
  * @param options - Configuration options for redirects
  * @returns User data
  */
