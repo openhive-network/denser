@@ -82,6 +82,16 @@ export class HtmlDOMParser {
      * parser.parse('<p>Hello <a href="https://example.com">world</a></p>');
      */
     public parse(html: string): HtmlDOMParser {
+        // Reset state for each parse call to prevent memory leaks when parser is reused.
+        // This matches the original condenser behavior where fresh state is created per call.
+        this.state = {
+            hashtags: new Set(),
+            usertags: new Set(),
+            htmltags: new Set(),
+            images: new Set(),
+            links: new Set()
+        };
+
         try {
             const doc: Document = this.domParser.parseFromString(preprocessHtml(html), 'text/html');
             this.traverseDOMNode(doc);
