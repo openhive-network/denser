@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useTransition, createContext, useContext, useCallback } from 'react';
+import { useEffect, useState, createContext, useContext, useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 interface NavigationProgressContextType {
@@ -32,6 +32,17 @@ export function NavigationProgressProvider({ children }: { children: React.React
     }
     setCurrentPath(newPath);
   }, [pathname, searchParams, currentPath]);
+
+  // Safety timeout to prevent progress bar from getting stuck
+  useEffect(() => {
+    if (!isNavigating) return;
+
+    const timeout = setTimeout(() => {
+      setIsNavigating(false);
+    }, 10000); // 10 second max navigation time
+
+    return () => clearTimeout(timeout);
+  }, [isNavigating]);
 
   const startNavigation = useCallback(() => {
     setIsNavigating(true);
@@ -100,17 +111,22 @@ export function useNavigationProgressHandler() {
 
       if (link) {
         const href = link.getAttribute('href');
-        const target = link.getAttribute('target');
+        const linkTarget = link.getAttribute('target');
 
         // Only trigger for internal navigation links
         if (
           href &&
-          !target &&
+          !linkTarget &&
           !href.startsWith('http') &&
           !href.startsWith('mailto:') &&
           !href.startsWith('#') &&
           !link.hasAttribute('download')
         ) {
+          // Don't start navigation if clicking on the current URL
+          const currentPath = window.location.pathname + window.location.search;
+          if (href === currentPath || href === window.location.pathname) {
+            return;
+          }
           startNavigation();
         }
       }
