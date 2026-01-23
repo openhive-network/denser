@@ -16,9 +16,11 @@ services:
         failure_action: rollback
       rollback_config:
         order: start-first
-    # Use 127.0.0.1 instead of localhost - DNS resolution fails in Swarm overlay network
+    # Use dedicated /api/health endpoint to avoid TransformStream corruption.
+    # Root (/) redirects to /trending which uses streaming; health checkers close
+    # connections early, corrupting the stream. See: github.com/vercel/next.js/discussions/75995
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -41,9 +43,10 @@ services:
         failure_action: rollback
       rollback_config:
         order: start-first
-    # Use 127.0.0.1 instead of localhost - DNS resolution fails in Swarm overlay network
+    # Use dedicated /api/health endpoint to avoid TransformStream corruption.
+    # See: github.com/vercel/next.js/discussions/75995
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
