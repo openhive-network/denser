@@ -1,4 +1,4 @@
-import { OnlineClient, ClientOptions, OfflineClient } from '@hiveio/hb-auth';
+import { OnlineClient, ClientOptions, OfflineClient, DEFAULT_INIT_TIMEOUT } from '@hiveio/hb-auth';
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { configuredSessionTime } from '@hive/ui/config/public-vars';
@@ -36,7 +36,8 @@ const getWorkerUrl = (): string => {
 const getDefaultClientOptions = (): ClientOptions => {
   return {
     sessionTimeout: Number(configuredSessionTime),
-    workerUrl: getWorkerUrl() // This will be overridden in getOnlineClient
+    workerUrl: getWorkerUrl(),
+    initTimeout: DEFAULT_INIT_TIMEOUT
   };
 };
 
