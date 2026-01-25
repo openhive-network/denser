@@ -1,9 +1,12 @@
 import { OnlineClient, ClientOptions, OfflineClient } from '@hiveio/hb-auth';
-import { siteConfig } from '@hive/ui/config/site';
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { configuredSessionTime } from '@hive/ui/config/public-vars';
 import env from '@beam-australia/react-env';
+
+// Import chain service lazily to avoid circular dependency issues at module load time.
+// The getChain function is only called inside async functions after both modules are loaded.
+import { getChain } from '../wax/hive-chain-service';
 
 const logger = getLogger('app');
 
@@ -33,26 +36,11 @@ const getWorkerUrl = (): string => {
   return workerUrl;
 };
 
+// ClientOptions no longer includes chainId and node - these are now part of the chain instance
 const getDefaultClientOptions = (): ClientOptions => {
-  // I don't think this logic should be here, but for now it is easier to keep it. We have dedicated MemoryMixin (?)
-  let node: string | undefined = undefined;
-  // Check if user has selected a custom node in localStorage
-  if (typeof window === 'object' && window.localStorage) {
-    const storedNode = window.localStorage.getItem('node-endpoint');
-    if (storedNode) {
-      try {
-        node = JSON.parse(storedNode);
-      } catch (err) {
-        logger.error('Error parsing stored node-endpoint from localStorage: %o', err);
-      }
-    }
-  }
-
   return {
     sessionTimeout: Number(configuredSessionTime),
-    chainId: siteConfig.chainId,
-    node: node || siteConfig.endpoint,
-    workerUrl: getWorkerUrl() // This will be overridden in getOnlineClient
+    workerUrl: getWorkerUrl()
   };
 };
 
@@ -70,9 +58,15 @@ const setOnlineClient = (options: Partial<ClientOptions> = {}): Promise<OnlineCl
   };
   logger.info('Creating instance of HB-Auth OnlineClient with options: %o', clientOptions);
 
-  onlineClientPromise = new OnlineClient(clientOptions).initialize();
+  // Get the shared chain instance and pass it to initialize()
+  // The chain is managed by hive-chain-service which handles endpoint configuration
+  onlineClientPromise = getChain().then(async (chain) => {
+    const client = await new OnlineClient(clientOptions).initialize(chain);
+    onlineClient = client;
+    return client;
+  });
 
-  return onlineClientPromise.then(client => onlineClient = client);
+  return onlineClientPromise;
 };
 
 // This is intentionally non-async method as we don't want any race condition for offlineClientPromise !== undefined check
@@ -81,9 +75,12 @@ const setOfflineClient = (options: Partial<ClientOptions> = {}): Promise<Offline
     ...getDefaultClientOptions(),
     ...options
   };
-  logger.info('Creating instance of HB-Auth OnlineClient with options: %o', clientOptions);
+  logger.info('Creating instance of HB-Auth OfflineClient with options: %o', clientOptions);
 
-  offlineClientPromise = new OfflineClient(clientOptions).initialize();
+  // Get the shared chain instance and pass it to initialize()
+  offlineClientPromise = getChain().then(async (chain) => {
+    return await new OfflineClient(clientOptions).initialize(chain);
+  });
 
   return offlineClientPromise;
 };
@@ -95,15 +92,15 @@ export const initOnlineClient = (): Promise<OnlineClient> => {
   return setOnlineClient();
 }
 
-export const setOnlineClientRpcEndpoint = (newEndpoint: string): void => {
-  // Even though we are calling setOnlineClient again, we should ensure the call flow is correct (init first -> modify next)
-  if (!onlineClient) {
-    throw new Error('OnlineClient is not initialized yet. Call initOnlineClient() first.');
-  }
-
-  // XXX: This is breaking interface, but we should implement specific sync method in hb-auth to change endpointUrl as it
-  // can be changed without re-initialization of the entire hb-auth, just like here:
-  (onlineClient as any).hiveChain.api.endpointUrl = newEndpoint;
+/**
+ * @deprecated No longer needed - hb-auth now shares the chain instance with hive-chain-service.
+ * Endpoint changes via setRpcEndpoint() in hive-chain-service automatically affect hb-auth.
+ * Kept for backwards compatibility.
+ */
+export const setOnlineClientRpcEndpoint = (_newEndpoint: string): void => {
+  // No-op: hb-auth now shares the chain instance with hive-chain-service.
+  // Endpoint changes are handled automatically via the shared chain reference.
+  logger.debug('setOnlineClientRpcEndpoint is deprecated - endpoint changes are now automatic via shared chain');
 };
 
 export const getOnlineClient = (): Promise<OnlineClient> => {
