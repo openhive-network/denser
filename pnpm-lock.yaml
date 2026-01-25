@@ -7,8 +7,8 @@ settings:
 catalogs:
   hiveio-toolset:
     '@hiveio/hb-auth':
-      specifier: 1.28.4-rc0
-      version: 1.28.4-rc0
+      specifier: 1.28.4-rc0-stable.260125121028
+      version: 1.28.4-rc0-stable.260125121028
     '@hiveio/healthchecker-component':
       specifier: 1.28.4-rc0-stable.251202134057
       version: 1.28.4-rc0-stable.251202134057
@@ -373,7 +373,7 @@ importers:
         version: link:../ui
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0
+        version: 1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.4-rc0-stable.260110090505)
       '@hiveio/wax':
         specifier: 1.28.4-rc0-stable.260110090505
         version: 1.28.4-rc0-stable.260110090505
@@ -593,7 +593,7 @@ importers:
         version: link:../ui
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0
+        version: 1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.4-rc0-stable.260110090505)
       '@hiveio/wax':
         specifier: 1.28.4-rc0-stable.260110090505
         version: 1.28.4-rc0-stable.260110090505
@@ -1754,9 +1754,11 @@ packages:
     resolution: {integrity: sha1-qLgaAY/l+gXAdleuIeyaMAo6wxA=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.4-rc0.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/hb-auth@1.28.4-rc0':
-    resolution: {integrity: sha1-BSdkPZskmAIgG4ndYkCjIhjjjy8=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0.tgz}
+  '@hiveio/hb-auth@1.28.4-rc0-stable.260125121028':
+    resolution: {integrity: sha1-2agAt2e3H6Zge7guzthY4XKRwdo=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-stable.260125121028.tgz}
     engines: {node: ^20.11 || >= 21.2}
+    peerDependencies:
+      '@hiveio/wax': 1.28.4-rc0-stable.260110090505
 
   '@hiveio/healthchecker-component@1.28.4-rc0-stable.251202134057':
     resolution: {integrity: sha1-vskKzVbouTzcxkj1a4EplsS7Q2A=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-1.28.4-rc0-stable.251202134057.tgz}
@@ -11662,7 +11664,7 @@ snapshots:
 
   '@hiveio/beekeeper@1.28.4-rc0': {}
 
-  '@hiveio/hb-auth@1.28.4-rc0':
+  '@hiveio/hb-auth@1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.4-rc0-stable.260110090505)':
     dependencies:
       '@hiveio/wax': 1.28.4-rc0-stable.260110090505
       comlink: 4.4.2
