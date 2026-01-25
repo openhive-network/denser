@@ -14,5 +14,5 @@ catalogs:
     '@hiveio/wax-signers-metamask': 1.28.6-alpha-stable.260121074158
     '@hiveio/wax-signers-peakvault': 1.28.6-alpha-stable.260121074158
     '@hiveio/workerbee': 1.28.4-rc0-260122112600
-    '@hiveio/hb-auth': 1.28.4-rc0-260122114110
+    '@hiveio/hb-auth': 1.28.4-rc0-stable.260125121028
     '@hiveio/healthchecker-component': 1.28.4-rc0-stable.251202134057
