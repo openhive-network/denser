@@ -7,8 +7,8 @@ settings:
 catalogs:
   hiveio-toolset:
     '@hiveio/hb-auth':
-      specifier: 1.28.4-rc0-260122114110
-      version: 1.28.4-rc0-260122114110
+      specifier: 1.28.4-rc0-stable.260125121028
+      version: 1.28.4-rc0-stable.260125121028
     '@hiveio/healthchecker-component':
       specifier: 1.28.4-rc0-stable.251202134057
       version: 1.28.4-rc0-stable.251202134057
@@ -373,7 +373,7 @@ importers:
         version: link:../ui
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-260122114110(@hiveio/wax@1.28.6-alpha-stable.260121074158)
+        version: 1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.6-alpha-stable.260121074158)
       '@hiveio/wax':
         specifier: 1.28.6-alpha-stable.260121074158
         version: 1.28.6-alpha-stable.260121074158
@@ -593,7 +593,7 @@ importers:
         version: link:../ui
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-260122114110(@hiveio/wax@1.28.6-alpha-stable.260121074158)
+        version: 1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.6-alpha-stable.260121074158)
       '@hiveio/wax':
         specifier: 1.28.6-alpha-stable.260121074158
         version: 1.28.6-alpha-stable.260121074158
@@ -1754,8 +1754,8 @@ packages:
     resolution: {integrity: sha1-qLgaAY/l+gXAdleuIeyaMAo6wxA=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.4-rc0.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/hb-auth@1.28.4-rc0-260122114110':
-    resolution: {integrity: sha1-kqWN5jjDe3FemAcnnN5W4txZ5qY=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-260122114110.tgz}
+  '@hiveio/hb-auth@1.28.4-rc0-stable.260125121028':
+    resolution: {integrity: sha1-2agAt2e3H6Zge7guzthY4XKRwdo=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-stable.260125121028.tgz}
     engines: {node: ^20.11 || >= 21.2}
     peerDependencies:
       '@hiveio/wax': 1.28.6-alpha-stable.260121074158
@@ -11664,7 +11664,7 @@ snapshots:
 
   '@hiveio/beekeeper@1.28.4-rc0': {}
 
-  '@hiveio/hb-auth@1.28.4-rc0-260122114110(@hiveio/wax@1.28.6-alpha-stable.260121074158)':
+  '@hiveio/hb-auth@1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.6-alpha-stable.260121074158)':
     dependencies:
       '@hiveio/wax': 1.28.6-alpha-stable.260121074158
       comlink: 4.4.2
