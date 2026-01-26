@@ -1,5 +1,5 @@
 import { expect, type Page } from '@playwright/test';
-import { PAGINATION } from './constants';
+import { PAGINATION, TIMEOUTS } from './constants';
 
 /**
  * Feed types that support pagination
@@ -28,23 +28,18 @@ export async function testFeedPagination(
   feedType: FeedType,
   options: { timeout?: number } = {}
 ): Promise<void> {
-  const { timeout = 10000 } = options;
+  const { timeout = TIMEOUTS.HYDRATION } = options;
   const config = FEED_CONFIG[feedType];
 
   await page.goto(config.url);
-  await page.waitForLoadState('domcontentloaded');
 
-  // Wait for initial posts
-  await page.waitForSelector('[data-testid="post-list-item"]');
+  await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.SEARCH_RESULTS });
 
-  // Verify initial posts count
   const initialCount = await page.locator('[data-testid="post-list-item"]').count();
   expect(initialCount).toBe(PAGINATION.INITIAL_POSTS_COUNT);
 
-  // Scroll down to trigger infinite loading
   await page.keyboard.press('End');
 
-  // Wait for more posts to load
   await page.waitForFunction(
     (minPosts) => document.querySelectorAll('[data-testid="post-list-item"]').length >= minPosts,
     PAGINATION.MIN_POSTS_AFTER_SCROLL,
@@ -54,49 +49,4 @@ export async function testFeedPagination(
   const postsCount = await page.locator('[data-testid="post-list-item"]').count();
   expect(postsCount).toBeGreaterThanOrEqual(PAGINATION.MIN_POSTS_AFTER_SCROLL);
   expect(postsCount).toBeLessThanOrEqual(PAGINATION.MAX_POSTS_AFTER_SCROLL);
-}
-
-/**
- * Tests that a feed page loads correctly with expected elements
- * @param page - Playwright page object
- * @param feedType - Type of feed to test
- */
-export async function testFeedPageLoads(
-  page: Page,
-  feedType: FeedType
-): Promise<void> {
-  const config = FEED_CONFIG[feedType];
-
-  await page.goto(config.url);
-  await page.waitForLoadState('domcontentloaded');
-
-  // Verify URL
-  await expect(page).toHaveURL(config.url);
-
-  // Verify filter shows correct text
-  await expect(page.locator('[data-testid="posts-filter"]')).toHaveText(config.filterText);
-
-  // Verify post list is visible with correct data-testid
-  await expect(page.locator(`[data-testid="post-list-${feedType === 'created' ? 'created' : feedType}"]`)).toBeVisible();
-}
-
-/**
- * Tests navigation between different feed pages
- * @param page - Playwright page object
- * @param feedTypes - Array of feed types to navigate through
- */
-export async function testFeedNavigation(
-  page: Page,
-  feedTypes: FeedType[]
-): Promise<void> {
-  for (const feedType of feedTypes) {
-    const config = FEED_CONFIG[feedType];
-
-    await page.locator('[data-testid="posts-filter"]').click();
-    await page.locator('[data-testid="posts-filter-list"]').getByText(config.filterText).click();
-    await page.waitForLoadState('domcontentloaded');
-
-    await expect(page).toHaveURL(config.url);
-    await expect(page.locator('[data-testid="posts-filter"]')).toHaveText(config.filterText);
-  }
 }
