@@ -3,7 +3,22 @@ const CopyPlugin = require('copy-webpack-plugin');
 const removeImports = require('next-remove-imports')();
 const withPWA = require('next-pwa')({
   dest: 'public',
-  disable: process.env.NODE_ENV !== 'production'
+  disable: process.env.NODE_ENV !== 'production',
+  runtimeCaching: [
+    // User-specific pages - never cache (notifications, settings, feed)
+    // These rules must come BEFORE the defaults to take precedence
+    {
+      urlPattern: /\/@[^/]+\/(notifications|settings|feed)/i,
+      handler: 'NetworkOnly',
+    },
+    // Next.js data (RSC) for these pages - never cache
+    {
+      urlPattern: /\/_next\/data\/.+\/%40[^/]+\/(notifications|settings|feed)\.json$/i,
+      handler: 'NetworkOnly',
+    },
+    // Include all default caching rules for static assets (JS, CSS, images, fonts, etc.)
+    ...require('next-pwa/cache'),
+  ],
 });
 
 // Support serving from subdirectory like /blog
