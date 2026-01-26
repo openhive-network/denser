@@ -781,6 +781,8 @@ lighthouse-metrics-wallet:
     LIGHTHOUSE_URL: 'https://caddy'
     PORT: 4000
 
+# Posts Lighthouse summary as MR comment
+# Requires GITLAB_TOKEN CI variable with api scope (CI_JOB_TOKEN lacks MR comment permissions)
 lighthouse-mr-comment:
   extends: .job-defaults
   stage: test-report-aggregate

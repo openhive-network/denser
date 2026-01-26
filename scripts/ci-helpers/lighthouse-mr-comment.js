@@ -23,12 +23,18 @@ const {
   CI_JOB_TOKEN,
   CI_PIPELINE_URL,
   CI_COMMIT_REF_NAME,
+  GITLAB_TOKEN,        // Project/group access token (preferred for MR comments)
+  PRIVATE_TOKEN,       // Alternative token name
 } = process.env;
+
+// Use GITLAB_TOKEN or PRIVATE_TOKEN for auth (CI_JOB_TOKEN can't post MR comments)
+const authToken = GITLAB_TOKEN || PRIVATE_TOKEN || CI_JOB_TOKEN;
+const authHeader = (GITLAB_TOKEN || PRIVATE_TOKEN) ? 'PRIVATE-TOKEN' : 'JOB-TOKEN';
 
 let mergeRequestIid = process.env.CI_MERGE_REQUEST_IID;
 
-if (!CI_API_V4_URL || !CI_PROJECT_ID || !CI_JOB_TOKEN) {
-  console.error('Missing required CI environment variables');
+if (!CI_API_V4_URL || !CI_PROJECT_ID || !authToken) {
+  console.error('Missing required CI environment variables (need GITLAB_TOKEN or CI_JOB_TOKEN)');
   process.exit(1);
 }
 
@@ -130,7 +136,7 @@ function apiRequest(method, path, body = null) {
       path: url.pathname + url.search,
       method,
       headers: {
-        'JOB-TOKEN': CI_JOB_TOKEN,
+        [authHeader]: authToken,
         'Content-Type': 'application/json',
       },
     };
