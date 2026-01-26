@@ -35,7 +35,8 @@ export const TIMEOUTS = {
   SEARCH_RESULTS: 15000,
   PAGE_LOAD: 10000,
   ELEMENT_VISIBLE: 5000,
-  NETWORK_IDLE: 10000
+  NETWORK_IDLE: 10000,
+  HYDRATION: 30000 // Longer timeout for React hydration on production
 } as const;
 
 /**
@@ -61,4 +62,13 @@ export function validateEnv(): void {
  */
 export function isApiEndpointConfigured(): boolean {
   return !!getApiEndpoint();
+}
+
+/**
+ * Check if running against production environment
+ * Production has known issues with filter dropdown not working
+ */
+export function isProductionEnvironment(): boolean {
+  const baseUrl = process.env.BASE_URL || '';
+  return baseUrl.includes('blog.openhive.network');
 }

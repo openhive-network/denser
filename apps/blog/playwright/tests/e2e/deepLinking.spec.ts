@@ -1,11 +1,18 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
+import { PostPage } from '../support/pages/postPage';
+import { SearchPage } from '../support/pages/searchPage';
+import { TIMEOUTS } from '../support/constants';
 
 test.describe('Deep Linking tests', () => {
   let homePage: HomePage;
+  let postPage: PostPage;
+  let searchPage: SearchPage;
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
+    postPage = new PostPage(page);
+    searchPage = new SearchPage(page);
   });
 
   /**
@@ -13,37 +20,30 @@ test.describe('Deep Linking tests', () => {
    */
 
   test('direct link to post loads correctly', async ({ page }) => {
-    // Navigate to trending to get a real post URL
-    await page.goto('/trending');
-    await page.waitForSelector('[data-testid="post-list-item"]', { timeout: 15000 });
+    await homePage.goto();
 
-    // Get the first post link
-    const firstPostLink = page.locator('li[data-testid="post-list-item"] h3 a').first();
-    const postTitle = await firstPostLink.textContent();
-    const postHref = await firstPostLink.getAttribute('href');
+    const postTitle = await homePage.getFirstPostTitle.textContent();
+    const postHref = await homePage.getFirstPostTitle.getAttribute('href');
 
-    // Navigate directly to the post URL
-    await page.goto(postHref!);
-    await page.waitForLoadState('domcontentloaded');
+    if (!postHref) {
+      throw new Error('Post href is null - cannot proceed with deep link test');
+    }
 
-    // Verify post page loaded
-    await expect(page.locator('[data-testid="article-title"]')).toBeVisible({ timeout: 15000 });
-    const articleTitle = await page.locator('[data-testid="article-title"]').textContent();
+    await page.goto(postHref);
+
+    await expect(postPage.articleTitle).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+    const articleTitle = await postPage.articleTitle.textContent();
     expect(articleTitle).toBe(postTitle);
   });
 
-  test('post URL format is correct', async ({ page }) => {
-    await page.goto('/trending');
-    await page.waitForSelector('[data-testid="post-list-item"]', { timeout: 15000 });
+  test('post URL format is correct', async () => {
+    await homePage.goto();
 
-    // Get first post link
-    const firstPostLink = page.locator('li[data-testid="post-list-item"] h3 a').first();
-    const postHref = await firstPostLink.getAttribute('href');
+    const postHref = await homePage.getFirstPostTitle.getAttribute('href');
 
-    // Verify URL format - can be:
-    // - /@author/permlink (simple posts)
-    // - /community/@author/permlink (community posts)
-    expect(postHref).toMatch(/(\/@[\w.-]+\/[\w-]+|\/[\w-]+\/@[\w.-]+\/[\w-]+)$/);
+    expect(postHref).not.toBeNull();
+    // URL format: /@author/permlink OR /community/@author/permlink
+    expect(postHref).toMatch(/(\/@[\w.-]+\/[^\s/]+|\/[\w-]+\/@[\w.-]+\/[^\s/]+)$/);
   });
 
   /**
@@ -51,52 +51,33 @@ test.describe('Deep Linking tests', () => {
    */
 
   test('direct link to user profile loads correctly', async ({ page }) => {
-    await page.goto('/@gtg');
-    await page.waitForLoadState('domcontentloaded');
+    const response = await page.goto('/@gtg');
 
-    // Verify URL is correct
+    expect(response?.status()).toBe(200);
     await expect(page).toHaveURL(/@gtg/);
-
-    // Wait for page content to load
-    await page.waitForLoadState('networkidle');
-
-    // Profile page should have loaded (body visible)
-    await expect(page.locator('body')).toBeVisible();
   });
 
   test('profile URL with @ prefix works', async ({ page }) => {
-    await page.goto('/@arcange');
-    await page.waitForLoadState('domcontentloaded');
+    const response = await page.goto('/@arcange');
 
-    // Verify URL
+    expect(response?.status()).toBe(200);
     await expect(page).toHaveURL(/@arcange/);
-
-    // Wait for page to fully load
-    await page.waitForLoadState('networkidle');
-    await expect(page.locator('body')).toBeVisible();
   });
 
   test('direct link to profile posts tab loads correctly', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Profile navigation timing issues on WebKit');
 
-    await page.goto('/@gtg/posts');
-    await page.waitForLoadState('domcontentloaded');
+    const response = await page.goto('/@gtg/posts');
 
-    // Verify we're on posts tab
+    expect(response?.status()).toBe(200);
     await expect(page).toHaveURL(/@gtg\/posts/);
-
-    // Wait for page to load
-    await page.waitForLoadState('networkidle');
-    await expect(page.locator('body')).toBeVisible();
   });
 
   test('direct link to profile replies tab loads correctly', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Profile navigation timing issues on WebKit');
 
     await page.goto('/@gtg/replies');
-    await page.waitForLoadState('domcontentloaded');
 
-    // Verify we're on replies tab
     await expect(page).toHaveURL(/@gtg\/replies/);
   });
 
@@ -105,28 +86,18 @@ test.describe('Deep Linking tests', () => {
    */
 
   test('direct link to communities page loads correctly', async ({ page }) => {
-    await page.goto('/communities');
-    await page.waitForLoadState('domcontentloaded');
+    const response = await page.goto('/communities');
 
+    expect(response?.status()).toBe(200);
     await expect(page).toHaveURL('/communities');
-
-    // Wait for page to fully load
-    await page.waitForLoadState('networkidle');
-
-    // Verify body is visible (page loaded without crash)
-    await expect(page.locator('body')).toBeVisible();
   });
 
   test('direct link to specific community loads correctly', async ({ page }) => {
-    // LeoFinance community
     await page.goto('/trending/hive-167922');
-    await page.waitForLoadState('domcontentloaded');
 
-    // Wait for posts to load
-    await page.waitForSelector('[data-testid="post-list-item"]', { timeout: 15000 });
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
 
-    // Verify posts are loaded on the community page
-    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    const postsCount = await homePage.getMainTimeLineOfPosts.count();
     expect(postsCount).toBeGreaterThan(0);
   });
 
@@ -135,18 +106,14 @@ test.describe('Deep Linking tests', () => {
    */
 
   test('search URL with query parameter loads correctly', async ({ page }) => {
-    await page.goto('/search?q=hive&s=relevance');
-    await page.waitForLoadState('domcontentloaded');
+    await searchPage.gotoWithClassicQuery('hive', 'relevance');
 
     await expect(page).toHaveURL(/\/search\?q=hive/);
-
-    // Verify search page loaded
-    await expect(page.locator('button[aria-label="Search"]')).toBeVisible();
+    await expect(searchPage.searchButton).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
   });
 
   test('search URL with sort parameter is respected', async ({ page }) => {
     await page.goto('/search?q=blockchain&s=created');
-    await page.waitForLoadState('domcontentloaded');
 
     await expect(page).toHaveURL(/s=created/);
   });
@@ -157,37 +124,36 @@ test.describe('Deep Linking tests', () => {
 
   test('direct link to FAQ page loads correctly', async ({ page }) => {
     await page.goto('/faq.html');
-    await page.waitForLoadState('domcontentloaded');
 
     await expect(page).toHaveURL('/faq.html');
-    await expect(page.getByRole('heading', { name: 'Hive.blog FAQ' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Hive.blog FAQ' })).toBeVisible({
+      timeout: TIMEOUTS.ELEMENT_VISIBLE
+    });
   });
 
   test('direct link to privacy policy page loads correctly', async ({ page }) => {
     await page.goto('/privacy.html');
-    await page.waitForLoadState('domcontentloaded');
 
     await expect(page).toHaveURL('/privacy.html');
-    await expect(page.locator('h1').getByText('Privacy Policy')).toBeVisible();
+    await expect(page.locator('h1').getByText('Privacy Policy')).toBeVisible({
+      timeout: TIMEOUTS.ELEMENT_VISIBLE
+    });
   });
 
   test('direct link to terms of service page loads correctly', async ({ page }) => {
     await page.goto('/tos.html');
-    await page.waitForLoadState('domcontentloaded');
+    await page.waitForLoadState('networkidle');
 
     await expect(page).toHaveURL('/tos.html');
-
-    // Wait for page content to load
-    await page.waitForLoadState('networkidle');
-    await expect(page.locator('body')).toBeVisible();
   });
 
   test('direct link to welcome page loads correctly', async ({ page }) => {
     await page.goto('/welcome');
-    await page.waitForLoadState('domcontentloaded');
 
     await expect(page).toHaveURL('/welcome');
-    await expect(page.getByText('Welcome to Hive!')).toBeVisible();
+    await expect(page.getByText('Welcome to Hive!')).toBeVisible({
+      timeout: TIMEOUTS.ELEMENT_VISIBLE
+    });
   });
 
   /**
@@ -196,37 +162,31 @@ test.describe('Deep Linking tests', () => {
 
   test('direct link to hot feed loads correctly', async ({ page }) => {
     await page.goto('/hot');
-    await page.waitForLoadState('domcontentloaded');
 
     await expect(page).toHaveURL('/hot');
 
-    // Wait for posts to load
-    await page.waitForSelector('[data-testid="post-list-item"]', { timeout: 15000 });
-    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+    const postsCount = await homePage.getMainTimeLineOfPosts.count();
     expect(postsCount).toBeGreaterThan(0);
   });
 
   test('direct link to created/new feed loads correctly', async ({ page }) => {
     await page.goto('/created');
-    await page.waitForLoadState('domcontentloaded');
 
     await expect(page).toHaveURL('/created');
 
-    // Wait for posts to load
-    await page.waitForSelector('[data-testid="post-list-item"]', { timeout: 15000 });
-    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+    const postsCount = await homePage.getMainTimeLineOfPosts.count();
     expect(postsCount).toBeGreaterThan(0);
   });
 
   test('direct link to payout feed loads correctly', async ({ page }) => {
     await page.goto('/payout');
-    await page.waitForLoadState('domcontentloaded');
 
     await expect(page).toHaveURL('/payout');
 
-    // Wait for posts to load
-    await page.waitForSelector('[data-testid="post-list-item"]', { timeout: 15000 });
-    const postsCount = await page.locator('[data-testid="post-list-item"]').count();
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+    const postsCount = await homePage.getMainTimeLineOfPosts.count();
     expect(postsCount).toBeGreaterThan(0);
   });
 });
