@@ -51,8 +51,24 @@ function buildConnectSrcHosts(): Set<string> {
 
   // Sentry error reporting
   if (process.env.REACT_APP_SENTRY_DSN) {
-    hosts.add('https://*.ingest.sentry.io');
-    hosts.add('https://*.ingest.us.sentry.io');
+    // Support both Sentry SaaS and self-hosted instances
+    // DSN format: https://<key>@<host>/<project_id>
+    try {
+      const dsnUrl = new URL(process.env.REACT_APP_SENTRY_DSN);
+      const sentryHost = dsnUrl.hostname;
+      if (sentryHost.endsWith('.sentry.io')) {
+        // Sentry SaaS - use ingest subdomains
+        hosts.add('https://*.ingest.sentry.io');
+        hosts.add('https://*.ingest.us.sentry.io');
+      } else {
+        // Self-hosted Sentry
+        hosts.add(`https://${sentryHost}`);
+      }
+    } catch {
+      // Fallback to SaaS domains if DSN parsing fails
+      hosts.add('https://*.ingest.sentry.io');
+      hosts.add('https://*.ingest.us.sentry.io');
+    }
   }
 
   return hosts;
