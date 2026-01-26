@@ -1,0 +1,201 @@
+#!/usr/bin/env node
+/**
+ * Post Lighthouse results as a GitLab MR comment
+ * Removes previous Lighthouse comments before posting new one
+ *
+ * Required env vars:
+ *   CI_API_V4_URL, CI_PROJECT_ID, CI_MERGE_REQUEST_IID, CI_JOB_TOKEN
+ *
+ * Usage: node lighthouse-mr-comment.js [blog-report.json] [wallet-report.json]
+ */
+
+const fs = require('fs');
+const https = require('https');
+const http = require('http');
+
+const COMMENT_MARKER = '<!-- lighthouse-metrics-comment -->';
+
+const {
+  CI_API_V4_URL,
+  CI_PROJECT_ID,
+  CI_MERGE_REQUEST_IID,
+  CI_JOB_TOKEN,
+  CI_PIPELINE_URL,
+} = process.env;
+
+if (!CI_MERGE_REQUEST_IID) {
+  console.log('Not an MR pipeline, skipping comment');
+  process.exit(0);
+}
+
+if (!CI_API_V4_URL || !CI_PROJECT_ID || !CI_JOB_TOKEN) {
+  console.error('Missing required CI environment variables');
+  process.exit(1);
+}
+
+const blogReportPath = process.argv[2];
+const walletReportPath = process.argv[3];
+
+function parseReport(path, appName) {
+  if (!path || !fs.existsSync(path)) {
+    return null;
+  }
+  try {
+    const report = JSON.parse(fs.readFileSync(path, 'utf8'));
+    const categories = report.categories || {};
+    const audits = report.audits || {};
+
+    return {
+      app: appName,
+      scores: {
+        performance: Math.round((categories.performance?.score || 0) * 100),
+        accessibility: Math.round((categories.accessibility?.score || 0) * 100),
+        'best-practices': Math.round((categories['best-practices']?.score || 0) * 100),
+        seo: Math.round((categories.seo?.score || 0) * 100),
+      },
+      metrics: {
+        FCP: audits['first-contentful-paint']?.displayValue || 'N/A',
+        LCP: audits['largest-contentful-paint']?.displayValue || 'N/A',
+        TBT: audits['total-blocking-time']?.displayValue || 'N/A',
+        CLS: audits['cumulative-layout-shift']?.displayValue || 'N/A',
+        SI: audits['speed-index']?.displayValue || 'N/A',
+        TTI: audits['interactive']?.displayValue || 'N/A',
+      },
+    };
+  } catch (err) {
+    console.error(`Failed to parse ${path}:`, err.message);
+    return null;
+  }
+}
+
+function scoreEmoji(score) {
+  if (score >= 90) return '🟢';
+  if (score >= 50) return '🟠';
+  return '🔴';
+}
+
+function formatReport(data) {
+  if (!data) return null;
+
+  const { app, scores, metrics } = data;
+  const lines = [
+    `### ${app.charAt(0).toUpperCase() + app.slice(1)}`,
+    '',
+    '| Category | Score |',
+    '|----------|-------|',
+    `| Performance | ${scoreEmoji(scores.performance)} ${scores.performance} |`,
+    `| Accessibility | ${scoreEmoji(scores.accessibility)} ${scores.accessibility} |`,
+    `| Best Practices | ${scoreEmoji(scores['best-practices'])} ${scores['best-practices']} |`,
+    `| SEO | ${scoreEmoji(scores.seo)} ${scores.seo} |`,
+    '',
+    '**Core Web Vitals:**',
+    `- FCP: ${metrics.FCP} | LCP: ${metrics.LCP} | TBT: ${metrics.TBT}`,
+    `- CLS: ${metrics.CLS} | Speed Index: ${metrics.SI} | TTI: ${metrics.TTI}`,
+  ];
+
+  return lines.join('\n');
+}
+
+function buildComment(blogData, walletData) {
+  const parts = [
+    COMMENT_MARKER,
+    '## 🚦 Lighthouse Results',
+    '',
+  ];
+
+  const blogReport = formatReport(blogData);
+  const walletReport = formatReport(walletData);
+
+  if (blogReport) parts.push(blogReport, '');
+  if (walletReport) parts.push(walletReport, '');
+
+  if (!blogReport && !walletReport) {
+    parts.push('_No Lighthouse reports available._', '');
+  }
+
+  parts.push('---');
+  parts.push(`_View full reports in [pipeline artifacts](${CI_PIPELINE_URL})_`);
+
+  return parts.join('\n');
+}
+
+function apiRequest(method, path, body = null) {
+  return new Promise((resolve, reject) => {
+    const url = new URL(`${CI_API_V4_URL}${path}`);
+    const isHttps = url.protocol === 'https:';
+    const lib = isHttps ? https : http;
+
+    const options = {
+      hostname: url.hostname,
+      port: url.port || (isHttps ? 443 : 80),
+      path: url.pathname + url.search,
+      method,
+      headers: {
+        'JOB-TOKEN': CI_JOB_TOKEN,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const req = lib.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => (data += chunk));
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          resolve(data ? JSON.parse(data) : null);
+        } else {
+          reject(new Error(`API ${method} ${path} failed: ${res.statusCode} ${data}`));
+        }
+      });
+    });
+
+    req.on('error', reject);
+    if (body) req.write(JSON.stringify(body));
+    req.end();
+  });
+}
+
+async function deleteOldComments() {
+  const path = `/projects/${encodeURIComponent(CI_PROJECT_ID)}/merge_requests/${CI_MERGE_REQUEST_IID}/notes?per_page=100`;
+
+  try {
+    const notes = await apiRequest('GET', path);
+    for (const note of notes) {
+      if (note.body && note.body.includes(COMMENT_MARKER)) {
+        console.log(`Deleting old Lighthouse comment (note_id: ${note.id})`);
+        await apiRequest(
+          'DELETE',
+          `/projects/${encodeURIComponent(CI_PROJECT_ID)}/merge_requests/${CI_MERGE_REQUEST_IID}/notes/${note.id}`
+        );
+      }
+    }
+  } catch (err) {
+    console.warn('Failed to delete old comments:', err.message);
+  }
+}
+
+async function postComment(body) {
+  const path = `/projects/${encodeURIComponent(CI_PROJECT_ID)}/merge_requests/${CI_MERGE_REQUEST_IID}/notes`;
+  await apiRequest('POST', path, { body });
+  console.log('Posted Lighthouse comment to MR');
+}
+
+async function main() {
+  const blogData = parseReport(blogReportPath, 'blog');
+  const walletData = parseReport(walletReportPath, 'wallet');
+
+  if (!blogData && !walletData) {
+    console.log('No reports found, skipping comment');
+    process.exit(0);
+  }
+
+  const comment = buildComment(blogData, walletData);
+  console.log('Generated comment:\n', comment);
+
+  await deleteOldComments();
+  await postComment(comment);
+}
+
+main().catch((err) => {
+  console.error('Error:', err);
+  process.exit(1);
+});

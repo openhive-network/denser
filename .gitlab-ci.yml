@@ -724,13 +724,13 @@ e2e-report-aggregate-wallet:
     lighthouse "$LIGHTHOUSE_URL" \
       --preset=desktop \
       --output=json,html \
-      --output-path=lighthouse \
+      --output-path="${TURBO_APP_NAME}-lighthouse" \
       --chrome-flags="--headless --no-sandbox --disable-gpu --ignore-certificate-errors"
-  - node scripts/ci-helpers/lighthouse-metrics.js lighthouse.report.json "$TURBO_APP_NAME"
+  - node scripts/ci-helpers/lighthouse-metrics.js "${TURBO_APP_NAME}-lighthouse.report.json" "$TURBO_APP_NAME"
   artifacts:
     paths:
-    - lighthouse.report.html
-    - lighthouse.report.json
+    - ${TURBO_APP_NAME}-lighthouse.report.html
+    - ${TURBO_APP_NAME}-lighthouse.report.json
     - metrics.txt
     reports:
       metrics: metrics.txt
@@ -780,6 +780,25 @@ lighthouse-metrics-wallet:
     TURBO_APP_NAME: 'wallet'
     LIGHTHOUSE_URL: 'https://caddy'
     PORT: 4000
+
+lighthouse-mr-comment:
+  extends: .job-defaults
+  stage: test-report-aggregate
+  image: node:20.11.1-alpine3.18
+  needs:
+  - job: lighthouse-metrics-blog
+    optional: true
+    artifacts: true
+  - job: lighthouse-metrics-wallet
+    optional: true
+    artifacts: true
+  rules:
+  - if: $CI_MERGE_REQUEST_IID
+  script:
+  - node scripts/ci-helpers/lighthouse-mr-comment.js blog-lighthouse.report.json wallet-lighthouse.report.json
+  allow_failure: true
+  tags:
+  - public-runner-docker
 
 publish:
   image:
