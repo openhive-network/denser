@@ -138,7 +138,6 @@ export const getPostCached = cache(async (author: string, permlink: string) => {
 
 **Chain Service** (`chain.ts`):
 - Singleton wrapper around WAX (Hive SDK)
-- Uses p-limit with concurrency of 1 (serializes WASM calls)
 
 ---
 
