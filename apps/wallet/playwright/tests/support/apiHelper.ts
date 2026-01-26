@@ -1,5 +1,59 @@
 import { Page } from "@playwright/test";
 
+// Market API Response Types
+export interface MarketTickerResult {
+  latest: string;
+  lowest_ask: string;
+  highest_bid: string;
+  percent_change: string;
+  hive_volume: { amount: string; precision: number; nai: string };
+  hbd_volume: { amount: string; precision: number; nai: string };
+}
+
+export interface MarketTickerResponse {
+  id: number;
+  jsonrpc: string;
+  result: MarketTickerResult;
+}
+
+export interface OrderBookOrder {
+  order_price: {
+    base: { amount: string; precision: number; nai: string };
+    quote: { amount: string; precision: number; nai: string };
+  };
+  real_price: string;
+  hive: number;
+  hbd: number;
+  created: string;
+}
+
+export interface OrderBookResult {
+  bids: OrderBookOrder[];
+  asks: OrderBookOrder[];
+}
+
+export interface OrderBookResponse {
+  id: number;
+  jsonrpc: string;
+  result: OrderBookResult;
+}
+
+export interface RecentTrade {
+  date: string;
+  current_pays: { amount: string; precision: number; nai: string };
+  open_pays: { amount: string; precision: number; nai: string };
+}
+
+export interface RecentTradesResult {
+  trades: RecentTrade[];
+}
+
+export interface RecentTradesResponse {
+  id: number;
+  jsonrpc: string;
+  result: RecentTradesResult;
+}
+
 export class ApiHelper {
   readonly page: Page;
 
@@ -302,5 +356,71 @@ export class ApiHelper {
       );
     }
     return json;
+  }
+
+  /**
+   * Get market ticker (statistics) from API.
+   * Returns latest price, highest bid, lowest ask, percent change, and volumes.
+   */
+  async getMarketTickerAPI(): Promise<MarketTickerResponse> {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: "2.0",
+        method: "market_history_api.get_ticker",
+        params: {},
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+    });
+
+    return response.json();
+  }
+
+  /**
+   * Get order book (buy and sell orders) from API.
+   * @param limit Maximum number of orders to return (default: 500)
+   */
+  async getOrderBookAPI(limit: number = 500): Promise<OrderBookResponse> {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: "2.0",
+        method: "market_history_api.get_order_book",
+        params: { limit },
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+    });
+
+    return response.json();
+  }
+
+  /**
+   * Get recent trades from API.
+   * @param limit Maximum number of trades to return (default: 1000)
+   */
+  async getRecentTradesAPI(limit: number = 1000): Promise<RecentTradesResponse> {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: "2.0",
+        method: "market_history_api.get_recent_trades",
+        params: { limit },
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+    });
+
+    return response.json();
   }
 }

@@ -93,6 +93,7 @@ export default function BuyOrSellForm({
     enabled: !!user.username
   });
   const queryClient = useQueryClient();
+  const testIdPrefix = transaction === 'buy' ? 'buy-form' : 'sell-form';
 
   useEffect(() => {
     dispatch({ type: ActionType.ChangeCostValue, cost: price });
@@ -126,24 +127,26 @@ export default function BuyOrSellForm({
   const disabled = Boolean(state.amount || state.total);
   const label = transaction === 'sell' ? t('market_page.sell_hive') : t('market_page.buy_hive');
   return (
-    <div className="flex w-full flex-col gap-8">
+    <div className="flex w-full flex-col gap-8" data-testid={`${testIdPrefix}-section`}>
       <div
         className={clsx('sm:text-xl', {
           'text-destructive': transaction === 'sell',
           'text-green-600': transaction === 'buy'
         })}
+        data-testid={`${testIdPrefix}-label`}
       >
         {label}
       </div>
       <div className="flex flex-col gap-4">
         <div className="flex w-full justify-between text-sm">
-          <div className="flex w-24 items-center">{t('market_page.price')}</div>
+          <div className="flex w-24 items-center" data-testid={`${testIdPrefix}-price-label`}>{t('market_page.price')}</div>
           <div className="flex w-full">
             <Input
               className="h-8 rounded-none text-end focus-visible:ring-0"
               placeholder="0.0"
               value={state.cost}
               type="number"
+              data-testid={`${testIdPrefix}-price-input`}
               onChange={(e) =>
                 dispatch({
                   type: ActionType.ChangeCostValue,
@@ -155,13 +158,14 @@ export default function BuyOrSellForm({
           </div>
         </div>{' '}
         <div className="flex w-full justify-between text-sm">
-          <div className="flex w-24 items-center">{t('market_page.amount')}</div>
+          <div className="flex w-24 items-center" data-testid={`${testIdPrefix}-amount-label`}>{t('market_page.amount')}</div>
           <div className="flex w-full">
             <Input
               className="h-8 rounded-none text-end focus-visible:ring-0"
               placeholder="0.0"
               value={state.amount}
               type="number"
+              data-testid={`${testIdPrefix}-amount-input`}
               onChange={(e) =>
                 dispatch({
                   type: ActionType.ChangeAmountValue,
@@ -173,13 +177,14 @@ export default function BuyOrSellForm({
           </div>
         </div>{' '}
         <div className="flex w-full justify-between text-sm">
-          <div className="flex w-24 items-center">{t('market_page.total')}</div>
+          <div className="flex w-24 items-center" data-testid={`${testIdPrefix}-total-label`}>{t('market_page.total')}</div>
           <div className="flex w-full">
             <Input
               className="h-8 rounded-none text-end focus-visible:ring-0"
               placeholder="0.0"
               value={state.total}
               type="number"
+              data-testid={`${testIdPrefix}-total-input`}
               onChange={(e) =>
                 dispatch({
                   type: ActionType.ChangeTotalValue,
@@ -192,8 +197,8 @@ export default function BuyOrSellForm({
         </div>
       </div>{' '}
       <div className="flex justify-between">
-        <div className="text-xs">
-          <div>
+        <div className="text-xs" data-testid={`${testIdPrefix}-info`}>
+          <div data-testid={`${testIdPrefix}-available`}>
             <span
               className="cursor-pointer text-destructive"
               onClick={() =>
@@ -205,13 +210,13 @@ export default function BuyOrSellForm({
             >
               {t('market_page.available')}:{' '}
             </span>
-            <span>
+            <span data-testid={`${testIdPrefix}-available-value`}>
               {transaction === 'buy'
                 ? accountData?.hbd_balance && formatNaiAsset(accountData.hbd_balance)
                 : accountData?.balance && formatNaiAsset(accountData.balance)}
             </span>
           </div>
-          <div>
+          <div data-testid={`${testIdPrefix}-default-price`}>
             <span
               className="cursor-pointer text-destructive"
               onClick={() =>
@@ -223,7 +228,7 @@ export default function BuyOrSellForm({
             >
               {transaction === 'sell' ? t('market_page.highest_bid') : t('market_page.lowest_ask')}:{' '}
             </span>
-            <span>{defaultPrice}</span>
+            <span data-testid={`${testIdPrefix}-default-price-value`}>{defaultPrice}</span>
           </div>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -231,6 +236,7 @@ export default function BuyOrSellForm({
             <Button
               disabled={!disabled}
               variant="outline"
+              data-testid={`${testIdPrefix}-submit-button`}
               className={clsx({
                 'border-destructive bg-background-secondary text-destructive hover:bg-red-950 hover:text-red-400':
                   transaction === 'sell',
@@ -241,7 +247,7 @@ export default function BuyOrSellForm({
               {label}
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent data-testid={`${testIdPrefix}-dialog`}>
             {t('market_page.buy_sell_prompt', {
               operation: transaction === 'buy' ? t('market_page.buy') : t('market_page.sell'),
               hive: state.amount,
@@ -249,8 +255,8 @@ export default function BuyOrSellForm({
               rate: `${price}/HIVE`
             })}
             <DialogFooter className="flex w-full items-center !justify-between">
-              <Button onClick={submitOrder}>{t('market_page.ok')}</Button>
-              <Button variant="secondary" onClick={() => setDialogOpen(false)}>
+              <Button onClick={submitOrder} data-testid={`${testIdPrefix}-dialog-ok`}>{t('market_page.ok')}</Button>
+              <Button variant="secondary" onClick={() => setDialogOpen(false)} data-testid={`${testIdPrefix}-dialog-close`}>
                 {t('market_page.close')}
               </Button>
             </DialogFooter>
