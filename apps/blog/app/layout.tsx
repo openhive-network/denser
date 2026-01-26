@@ -1,13 +1,13 @@
 import '@hive/tailwindcss-config/globals.css';
 import * as Sentry from '@sentry/nextjs';
 import { ReactNode } from 'react';
-import Script from 'next/script';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import MainBar from '../features/layouts/site-header/main-bar';
 import ClientEffects from '../features/layouts/site-header/client-effects';
 import { Providers } from '../features/layouts/providers';
 import { StorageCleanup } from '@hive/ui';
+import { getEnvVersion } from '../lib/env-version';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -63,12 +63,15 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
   const isRTL = locale === 'ar';
 
+  // Generate stable version hash for __ENV.js cache-busting
+  // Only changes when REACT_APP_* env variables change
+  const envVersion = getEnvVersion();
+
   return (
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
       <head>
-      <script
-          src={`${basePath}/__ENV.js?v=${Date.now()}`}
-      />
+        {/* Use plain script tag for guaranteed synchronous loading of env globals */}
+        <script src={`${basePath}/__ENV.js?v=${envVersion}`} />
       </head>
       <body className="bg-background-secondary">
         <div className="min-h-screen">
@@ -80,7 +83,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             </>
           </Providers>
         </div>
-        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
         <ClientEffects />
       </body>
     </html>
