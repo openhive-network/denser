@@ -45,6 +45,7 @@
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
     "cmdk": "^0.2.1",
+    "dayjs": "^1.11.10",
     "lucide-react": "^0.482.0",
     "multihashes": "^4.0.3",
     "next": "^14.2.5",

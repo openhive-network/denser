@@ -1,7 +1,7 @@
 import sanitize from 'sanitize-html';
 import remarkableStripper from '../lib/remmarkable-stripper';
 import { Entry, JsonMetadata, FullAccount } from '@hive/common-hiveio-packages/wax';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { TFunction } from 'i18next';
 import { proxifyImageSrc, Symbol, accountReputation } from '@hive/ui';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
@@ -213,9 +213,9 @@ export function extractPictureFromPostBody(urls: string[]): string[] {
 }
 
 export function hoursAndMinutes(date: Date, t: TFunction<'common_blog', undefined>) {
-  const today = moment();
-  const cooldownMin = moment(date).diff(today, 'minutes') % 60;
-  const cooldownH = moment(date).diff(today, 'hours');
+  const today = dayjs();
+  const cooldownMin = dayjs(date).diff(today, 'minute') % 60;
+  const cooldownH = dayjs(date).diff(today, 'hour');
 
   return (
     (cooldownH === 1
@@ -272,14 +272,14 @@ export function netVests(account: FullAccount) {
 }
 
 export function compareDates(dateStrings: string[]) {
-  const dates = dateStrings.map((dateStr) => moment(dateStr));
+  const dates = dateStrings.map((dateStr) => dayjs(dateStr));
 
-  const today = moment();
+  const today = dayjs();
   let closestDate = dates[0];
-  let minDiff = Math.abs(today.diff(dates[0], 'days'));
+  let minDiff = Math.abs(today.diff(dates[0], 'day'));
 
   dates.forEach((date) => {
-    const diff = Math.abs(date.diff(today, 'days'));
+    const diff = Math.abs(date.diff(today, 'day'));
     if (diff < minDiff) {
       minDiff = diff;
       closestDate = date;

@@ -53,7 +53,6 @@ import { handleError } from '@ui/lib/handle-error';
 import parseDate from '@ui/lib/parse-date';
 import { buildSafePath } from '@ui/lib/sanitize-url';
 import { Clock, Link2 } from 'lucide-react';
-import moment from 'moment';
 import { Link } from '@hive/ui';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -708,7 +707,7 @@ const PostContent = () => {
                       {postData.children === 0 &&
                       user.isLoggedIn &&
                       postData.author === user.username &&
-                      moment().format('YYYY-MM-DDTHH:mm:ss') < postData.payout_at ? (
+                      new Date() < new Date(`${postData.payout_at}Z`) ? (
                         <>
                           <span className="mx-1">|</span>
                           <PostDeleteDialog

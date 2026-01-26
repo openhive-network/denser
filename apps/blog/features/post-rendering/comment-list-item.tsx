@@ -20,7 +20,6 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
 import { PostDeleteDialog } from './post-delete-dialog';
-import moment from 'moment';
 import dmcaUserList from '@hive/ui/config/lists/dmca-user-list';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
@@ -453,7 +452,7 @@ const CommentListItem = memo(function CommentListItem({
                           {comment.replies.length === 0 &&
                           user.isLoggedIn &&
                           comment.author === user.username &&
-                          moment().format('YYYY-MM-DDTHH:mm:ss') < comment.payout_at ? (
+                          new Date() < new Date(`${comment.payout_at}Z`) ? (
                             <>
                               <Separator orientation="vertical" className="h-5" />
                               <PostDeleteDialog

@@ -1,15 +1,14 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { TFunction } from 'i18next';
 
-moment.relativeTimeThreshold('s', 60);
-moment.relativeTimeThreshold('m', 60);
-moment.relativeTimeThreshold('h', 24);
-moment.relativeTimeThreshold('d', 30);
-moment.relativeTimeThreshold('M', 12);
+dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
 
 export const dateToShow = (d: string, t: TFunction<'common_wallet', undefined>): string => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
-  const dm = moment(new Date(isTimeZoned)).format('MMMM YYYY');
+  const dm = dayjs(new Date(isTimeZoned)).format('MMMM YYYY');
   const dd = dm
     .replace('January', t('global.months.first'))
     .replace('February', t('global.months.second'))
@@ -29,7 +28,7 @@ export const dateToShow = (d: string, t: TFunction<'common_wallet', undefined>):
 
 export const dateToRelative = (d: string, t: TFunction<'common_wallet', undefined>): string => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
-  const dm = moment(new Date(isTimeZoned));
+  const dm = dayjs(new Date(isTimeZoned));
 
   const dd = dm
     .fromNow()
@@ -50,7 +49,7 @@ export const dateToRelative = (d: string, t: TFunction<'common_wallet', undefine
 
 export const dateToFormatted = (d: string, format: string = 'LLLL'): string => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
-  const dm = moment(new Date(isTimeZoned));
+  const dm = dayjs(new Date(isTimeZoned));
   return dm.format(format);
 };
 
@@ -81,19 +80,22 @@ export const secondDiff = (d: string) => {
 
 const parseDate = (d: string): string => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
-  if (!d) moment(new Date(isTimeZoned));
+  if (!d) dayjs(new Date(isTimeZoned));
   try {
-    const date = moment(d).isValid() ? moment(d).toDate() : new Date();
-    return moment(new Date(date.getTime() - date.getTimezoneOffset() * 60000)).toString();
+    const date = dayjs(d).isValid() ? dayjs(d).toDate() : new Date();
+    // Format: "Fri Jun 18 2021"
+    return dayjs(new Date(date.getTime() - date.getTimezoneOffset() * 60000)).format(
+      'ddd MMM DD YYYY'
+    );
   } catch (e) {
-    return moment(new Date(isTimeZoned)).toString();
+    return dayjs(new Date(isTimeZoned)).format('ddd MMM DD YYYY');
   }
 };
 
 export const parseDate2 = (d: string): Date => {
   if (!d) return new Date();
   try {
-    const date = moment(d).isValid() ? moment(d).toDate() : new Date();
+    const date = dayjs(d).isValid() ? dayjs(d).toDate() : new Date();
     return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
   } catch (e) {
     return new Date();

@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { ReactNode, useEffect, useState } from 'react';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
@@ -62,12 +61,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
     getVoteValue(storedVotesValues, type, 'downvote')
   );
   const voter = user.username;
-  const pastPayout =
-    moment(
-      post.payout_at.indexOf('.') !== -1 || post.payout_at.indexOf('+') !== -1
-        ? post.payout_at
-        : `${post.payout_at}.000Z`
-    ).diff(moment()) < 0;
+  const pastPayout = new Date(`${post.payout_at}Z`) < new Date();
   useEffect(() => {
     setSliderUpvote(getVoteValue(storedVotesValues, type, 'upvote'));
   }, [type, storedVotesValues]);
