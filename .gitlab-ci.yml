@@ -705,6 +705,81 @@ e2e-report-aggregate-wallet:
     PROJECTS: '["chromium", "firefox", "webkit"]'
     SHARD_TOTAL: 5
 
+# Lighthouse metrics job template
+# Uses pre-built image with Chrome + Lighthouse: https://gitlab.com/gitlab-ci-utils/lighthouse
+.lighthouse_metrics_template:
+  extends: .job-defaults
+  stage: test
+  image: registry.gitlab.com/gitlab-ci-utils/lighthouse:latest
+  variables:
+    NODE_TLS_REJECT_UNAUTHORIZED: '0'
+  script:
+  - |
+    # Wait for the service to be ready
+    echo "Waiting for $LIGHTHOUSE_URL to be ready..."
+    wait-on "$LIGHTHOUSE_URL" --timeout 120000 || {
+      echo "Service not ready after timeout"; exit 1;
+    }
+  - |
+    lighthouse "$LIGHTHOUSE_URL" \
+      --preset=desktop \
+      --output=json,html \
+      --output-path=lighthouse \
+      --chrome-flags="--headless --no-sandbox --disable-gpu"
+  - node scripts/ci-helpers/lighthouse-metrics.js lighthouse.report.json "$TURBO_APP_NAME"
+  artifacts:
+    paths:
+    - lighthouse.report.html
+    - lighthouse.report.json
+    - metrics.txt
+    reports:
+      metrics: metrics.txt
+    expire_in: 1 week
+  tags:
+  - public-runner-docker
+
+lighthouse-metrics-blog:
+  extends: .lighthouse_metrics_template
+  allow_failure: true
+  needs:
+  - docker-build-blog-testenv
+  services:
+  - name: $DENSER_BLOG_IMAGE_NAME
+    alias: denser
+    variables:
+      HEALTHCHECK_TCP_PORT: '3000'
+  - name: caddy:${CADDY_TAG}
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy
+    - --to=denser:3000
+    - --internal-certs
+  variables:
+    TURBO_APP_NAME: 'blog'
+    LIGHTHOUSE_URL: 'https://caddy'
+
+lighthouse-metrics-wallet:
+  extends: .lighthouse_metrics_template
+  allow_failure: true
+  needs:
+  - docker-build-wallet-testenv
+  services:
+  - name: $DENSER_WALLET_IMAGE_NAME
+    alias: denser
+    variables:
+      HEALTHCHECK_TCP_PORT: '4000'
+  - name: caddy:${CADDY_TAG}
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy
+    - --to=denser:4000
+    - --internal-certs
+  variables:
+    TURBO_APP_NAME: 'wallet'
+    LIGHTHOUSE_URL: 'https://caddy'
+
 publish:
   image:
     name: node:20.11.1-alpine3.18
