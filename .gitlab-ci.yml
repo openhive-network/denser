@@ -792,8 +792,6 @@ lighthouse-mr-comment:
   - job: lighthouse-metrics-wallet
     optional: true
     artifacts: true
-  rules:
-  - if: $CI_MERGE_REQUEST_IID
   script:
   - node scripts/ci-helpers/lighthouse-mr-comment.js blog-lighthouse.report.json wallet-lighthouse.report.json
   allow_failure: true

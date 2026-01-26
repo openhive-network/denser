@@ -4,7 +4,9 @@
  * Removes previous Lighthouse comments before posting new one
  *
  * Required env vars:
- *   CI_API_V4_URL, CI_PROJECT_ID, CI_MERGE_REQUEST_IID, CI_JOB_TOKEN
+ *   CI_API_V4_URL, CI_PROJECT_ID, CI_JOB_TOKEN
+ *   CI_MERGE_REQUEST_IID (optional - will find MR from branch if not set)
+ *   CI_COMMIT_REF_NAME (branch name, used to find MR)
  *
  * Usage: node lighthouse-mr-comment.js [blog-report.json] [wallet-report.json]
  */
@@ -18,15 +20,12 @@ const COMMENT_MARKER = '<!-- lighthouse-metrics-comment -->';
 const {
   CI_API_V4_URL,
   CI_PROJECT_ID,
-  CI_MERGE_REQUEST_IID,
   CI_JOB_TOKEN,
   CI_PIPELINE_URL,
+  CI_COMMIT_REF_NAME,
 } = process.env;
 
-if (!CI_MERGE_REQUEST_IID) {
-  console.log('Not an MR pipeline, skipping comment');
-  process.exit(0);
-}
+let mergeRequestIid = process.env.CI_MERGE_REQUEST_IID;
 
 if (!CI_API_V4_URL || !CI_PROJECT_ID || !CI_JOB_TOKEN) {
   console.error('Missing required CI environment variables');
@@ -154,8 +153,35 @@ function apiRequest(method, path, body = null) {
   });
 }
 
-async function deleteOldComments() {
-  const path = `/projects/${encodeURIComponent(CI_PROJECT_ID)}/merge_requests/${CI_MERGE_REQUEST_IID}/notes?per_page=100`;
+async function findMergeRequestIid() {
+  if (mergeRequestIid) {
+    return mergeRequestIid;
+  }
+
+  if (!CI_COMMIT_REF_NAME) {
+    console.log('No branch name available to find MR');
+    return null;
+  }
+
+  console.log(`Looking for open MR for branch: ${CI_COMMIT_REF_NAME}`);
+  const path = `/projects/${encodeURIComponent(CI_PROJECT_ID)}/merge_requests?source_branch=${encodeURIComponent(CI_COMMIT_REF_NAME)}&state=opened&per_page=1`;
+
+  try {
+    const mrs = await apiRequest('GET', path);
+    if (mrs && mrs.length > 0) {
+      console.log(`Found MR !${mrs[0].iid}: ${mrs[0].title}`);
+      return mrs[0].iid;
+    }
+    console.log('No open MR found for this branch');
+    return null;
+  } catch (err) {
+    console.warn('Failed to find MR:', err.message);
+    return null;
+  }
+}
+
+async function deleteOldComments(mrIid) {
+  const path = `/projects/${encodeURIComponent(CI_PROJECT_ID)}/merge_requests/${mrIid}/notes?per_page=100`;
 
   try {
     const notes = await apiRequest('GET', path);
@@ -164,7 +190,7 @@ async function deleteOldComments() {
         console.log(`Deleting old Lighthouse comment (note_id: ${note.id})`);
         await apiRequest(
           'DELETE',
-          `/projects/${encodeURIComponent(CI_PROJECT_ID)}/merge_requests/${CI_MERGE_REQUEST_IID}/notes/${note.id}`
+          `/projects/${encodeURIComponent(CI_PROJECT_ID)}/merge_requests/${mrIid}/notes/${note.id}`
         );
       }
     }
@@ -173,10 +199,10 @@ async function deleteOldComments() {
   }
 }
 
-async function postComment(body) {
-  const path = `/projects/${encodeURIComponent(CI_PROJECT_ID)}/merge_requests/${CI_MERGE_REQUEST_IID}/notes`;
+async function postComment(mrIid, body) {
+  const path = `/projects/${encodeURIComponent(CI_PROJECT_ID)}/merge_requests/${mrIid}/notes`;
   await apiRequest('POST', path, { body });
-  console.log('Posted Lighthouse comment to MR');
+  console.log(`Posted Lighthouse comment to MR !${mrIid}`);
 }
 
 async function main() {
@@ -188,11 +214,17 @@ async function main() {
     process.exit(0);
   }
 
+  const mrIid = await findMergeRequestIid();
+  if (!mrIid) {
+    console.log('No MR found, skipping comment');
+    process.exit(0);
+  }
+
   const comment = buildComment(blogData, walletData);
   console.log('Generated comment:\n', comment);
 
-  await deleteOldComments();
-  await postComment(comment);
+  await deleteOldComments(mrIid);
+  await postComment(mrIid, comment);
 }
 
 main().catch((err) => {
