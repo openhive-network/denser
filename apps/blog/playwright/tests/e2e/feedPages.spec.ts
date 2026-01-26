@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
+import { PAGINATION, getApiEndpoint, isApiEndpointConfigured } from '../support/constants';
+import { testFeedPagination, FEED_CONFIG, type FeedType } from '../support/feedTestHelpers';
 
 test.describe('Feed pages tests', () => {
   let homePage: HomePage;
@@ -48,26 +50,27 @@ test.describe('Feed pages tests', () => {
   });
 
   test('hot feed pagination loads more posts', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'webkit', 'Pagination scroll has timing issues on WebKit');
 
     await page.goto('/hot');
     await page.waitForLoadState('domcontentloaded');
 
     // Verify initial posts count
-    await homePage.mainPostsTimelineVisible(20);
+    await homePage.mainPostsTimelineVisible(PAGINATION.INITIAL_POSTS_COUNT);
 
     // Scroll down
     await page.keyboard.press('End');
 
     // Wait for more posts to load
     await page.waitForFunction(
-      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      (minPosts) => document.querySelectorAll('[data-testid="post-list-item"]').length >= minPosts,
+      PAGINATION.MIN_POSTS_AFTER_SCROLL,
       { timeout: 10000 }
     );
 
     const postsCount = await page.locator('[data-testid="post-list-item"]').count();
-    expect(postsCount).toBeGreaterThanOrEqual(40);
-    expect(postsCount).toBeLessThanOrEqual(60);
+    expect(postsCount).toBeGreaterThanOrEqual(PAGINATION.MIN_POSTS_AFTER_SCROLL);
+    expect(postsCount).toBeLessThanOrEqual(PAGINATION.MAX_POSTS_AFTER_SCROLL);
   });
 
   test('hot feed URL is correct', async ({ page }) => {
@@ -109,6 +112,8 @@ test.describe('Feed pages tests', () => {
 
   test('created feed displays posts sorted by time', async ({ page, request, browserName }) => {
     test.skip(browserName === 'firefox', 'API validation timing issues on Firefox');
+    test.skip(!isApiEndpointConfigured(), 'REACT_APP_API_ENDPOINT not configured');
+
     await page.goto('/created');
     await page.waitForLoadState('domcontentloaded');
 
@@ -116,7 +121,7 @@ test.describe('Feed pages tests', () => {
     await page.waitForSelector('[data-testid="post-list-item"]');
 
     // Fetch data from API to validate sorting
-    const url = process.env.REACT_APP_API_ENDPOINT;
+    const url = getApiEndpoint();
     const response = await request.post(`${url}/`, {
       data: {
         id: 0,
@@ -141,26 +146,27 @@ test.describe('Feed pages tests', () => {
   });
 
   test('created feed pagination works', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'webkit', 'Pagination scroll has timing issues on WebKit');
 
     await page.goto('/created');
     await page.waitForLoadState('domcontentloaded');
 
     // Verify initial posts count
-    await homePage.mainPostsTimelineVisible(20);
+    await homePage.mainPostsTimelineVisible(PAGINATION.INITIAL_POSTS_COUNT);
 
     // Scroll down
     await page.keyboard.press('End');
 
     // Wait for more posts to load
     await page.waitForFunction(
-      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      (minPosts) => document.querySelectorAll('[data-testid="post-list-item"]').length >= minPosts,
+      PAGINATION.MIN_POSTS_AFTER_SCROLL,
       { timeout: 10000 }
     );
 
     const postsCount = await page.locator('[data-testid="post-list-item"]').count();
-    expect(postsCount).toBeGreaterThanOrEqual(40);
-    expect(postsCount).toBeLessThanOrEqual(60);
+    expect(postsCount).toBeGreaterThanOrEqual(PAGINATION.MIN_POSTS_AFTER_SCROLL);
+    expect(postsCount).toBeLessThanOrEqual(PAGINATION.MAX_POSTS_AFTER_SCROLL);
   });
 
   /**
@@ -185,6 +191,8 @@ test.describe('Feed pages tests', () => {
   });
 
   test('payout feed shows pending payouts', async ({ page, request }) => {
+    test.skip(!isApiEndpointConfigured(), 'REACT_APP_API_ENDPOINT not configured');
+
     await page.goto('/payout');
     await page.waitForLoadState('domcontentloaded');
 
@@ -192,7 +200,7 @@ test.describe('Feed pages tests', () => {
     await page.waitForSelector('[data-testid="post-list-item"]');
 
     // Fetch data from API
-    const url = process.env.REACT_APP_API_ENDPOINT;
+    const url = getApiEndpoint();
     const response = await request.post(`${url}/`, {
       data: {
         id: 0,
@@ -219,26 +227,27 @@ test.describe('Feed pages tests', () => {
   });
 
   test('payout feed pagination works', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
+    test.skip(browserName === 'webkit', 'Pagination scroll has timing issues on WebKit');
 
     await page.goto('/payout');
     await page.waitForLoadState('domcontentloaded');
 
     // Verify initial posts count
-    await homePage.mainPostsTimelineVisible(20);
+    await homePage.mainPostsTimelineVisible(PAGINATION.INITIAL_POSTS_COUNT);
 
     // Scroll down
     await page.keyboard.press('End');
 
     // Wait for more posts to load
     await page.waitForFunction(
-      () => document.querySelectorAll('[data-testid="post-list-item"]').length >= 40,
+      (minPosts) => document.querySelectorAll('[data-testid="post-list-item"]').length >= minPosts,
+      PAGINATION.MIN_POSTS_AFTER_SCROLL,
       { timeout: 10000 }
     );
 
     const postsCount = await page.locator('[data-testid="post-list-item"]').count();
-    expect(postsCount).toBeGreaterThanOrEqual(40);
-    expect(postsCount).toBeLessThanOrEqual(60);
+    expect(postsCount).toBeGreaterThanOrEqual(PAGINATION.MIN_POSTS_AFTER_SCROLL);
+    expect(postsCount).toBeLessThanOrEqual(PAGINATION.MAX_POSTS_AFTER_SCROLL);
   });
 
   /**
@@ -264,8 +273,8 @@ test.describe('Feed pages tests', () => {
     await page.goto('/muted');
     await page.waitForLoadState('domcontentloaded');
 
-    // Wait for posts to load or empty state message
-    await page.waitForTimeout(2000);
+    // Wait for posts to load or network to settle
+    await page.waitForLoadState('networkidle');
 
     // For non-logged-in user, the list may be empty or show muted posts
     const postsCount = await homePage.getMainTimeLineOfPosts.count();
@@ -278,7 +287,10 @@ test.describe('Feed pages tests', () => {
       await expect(homePage.getFirstPostAuthor).toBeVisible();
     } else {
       // Empty feed is expected for non-logged-in user
-      console.log('Muted feed is empty (expected for non-logged-in user)');
+      test.info().annotations.push({
+        type: 'note',
+        description: 'Muted feed is empty (expected for non-logged-in user)'
+      });
     }
 
     // Verify navigation from home page works
@@ -300,39 +312,31 @@ test.describe('Feed pages tests', () => {
     await homePage.goto();
     await expect(homePage.getFilterPosts).toHaveText('Trending');
 
-    // Navigate to Hot
-    await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('Hot').click();
-    await page.waitForLoadState('domcontentloaded');
-    await expect(page).toHaveURL('/hot');
-    await expect(homePage.getFilterPosts).toHaveText('Hot');
+    // Navigate through all feed types using config
+    const feedTypes: FeedType[] = ['hot', 'created', 'payout', 'muted', 'trending'];
 
-    // Navigate to New
-    await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('New').click();
-    await page.waitForLoadState('domcontentloaded');
-    await expect(page).toHaveURL('/created');
-    await expect(homePage.getFilterPosts).toHaveText('New');
-
-    // Navigate to Payouts
-    await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('Payouts').click();
-    await page.waitForLoadState('domcontentloaded');
-    await expect(page).toHaveURL('/payout');
-    await expect(homePage.getFilterPosts).toHaveText('Payouts');
-
-    // Navigate to Muted
-    await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('Muted').click();
-    await page.waitForLoadState('domcontentloaded');
-    await expect(page).toHaveURL('/muted');
-    await expect(homePage.getFilterPosts).toHaveText('Muted');
-
-    // Return to Trending
-    await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('Trending').click();
-    await page.waitForLoadState('domcontentloaded');
-    await expect(page).toHaveURL('/trending');
-    await expect(homePage.getFilterPosts).toHaveText('Trending');
+    for (const feedType of feedTypes) {
+      const config = FEED_CONFIG[feedType];
+      await homePage.getFilterPosts.click();
+      await homePage.getFilterPostsList.getByText(config.filterText).click();
+      await page.waitForLoadState('domcontentloaded');
+      await expect(page).toHaveURL(config.url);
+      await expect(homePage.getFilterPosts).toHaveText(config.filterText);
+    }
   });
+});
+
+/**
+ * PARAMETRIZED PAGINATION TESTS
+ * These tests use shared helper to reduce code duplication
+ */
+test.describe('Feed pagination tests (parametrized)', () => {
+  const paginationFeedTypes: FeedType[] = ['hot', 'created', 'payout'];
+
+  for (const feedType of paginationFeedTypes) {
+    test(`${feedType} feed pagination using helper`, async ({ page, browserName }) => {
+      test.skip(browserName === 'webkit', 'Pagination scroll has timing issues on WebKit');
+      await testFeedPagination(page, feedType);
+    });
+  }
 });

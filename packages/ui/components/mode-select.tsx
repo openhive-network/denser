@@ -17,16 +17,16 @@ const ModeSelect = ({
         <SelectValue />
       </SelectTrigger>
       <CustomSelectContent className="w-fit min-w-fit">
-        <CustomSelectItem value="classic" className="p-2">
+        <CustomSelectItem value="classic" className="p-2" data-testid="search-mode-classic">
           <Search className="h-4 w-4" />
         </CustomSelectItem>
-        <CustomSelectItem value="ai" className="w-fit p-2" disabled={!aiAvailable}>
+        <CustomSelectItem value="ai" className="w-fit p-2" disabled={!aiAvailable} data-testid="search-mode-ai">
           <Bot className="h-4 w-4" />
         </CustomSelectItem>
-        <CustomSelectItem value="account" className="p-2">
+        <CustomSelectItem value="account" className="p-2" data-testid="search-mode-account">
           <User className="h-4 w-4" />
         </CustomSelectItem>
-        <CustomSelectItem value="userTopic" className="p-2">
+        <CustomSelectItem value="userTopic" className="p-2" data-testid="search-mode-user-topic">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -42,7 +42,7 @@ const ModeSelect = ({
             <circle cx="10" cy="7" r="4" />
           </svg>
         </CustomSelectItem>
-        <CustomSelectItem value="tag" className="p-2">
+        <CustomSelectItem value="tag" className="p-2" data-testid="search-mode-tag">
           <Hash className="h-4 w-4" />
         </CustomSelectItem>
       </CustomSelectContent>

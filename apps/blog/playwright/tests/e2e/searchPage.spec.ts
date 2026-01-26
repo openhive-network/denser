@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { SearchPage } from '../support/pages/searchPage';
+import { THEME_COLORS } from '../support/constants';
 
 test.describe('Search page tests', () => {
   let homePage: HomePage;
@@ -146,8 +147,8 @@ test.describe('Search page tests', () => {
     // Try to load page with AI search
     await searchPage.gotoWithAiQuery('What is Hive blockchain?');
 
-    // Wait for results
-    await page.waitForTimeout(5000);
+    // Wait for results with explicit state handling
+    const searchState = await searchPage.waitForSearchResults(15000);
 
     // Check state - may have results or error (HiveSense may be unavailable)
     const resultsCount = await searchPage.getResultsCount();
@@ -157,7 +158,10 @@ test.describe('Search page tests', () => {
     if (resultsCount > 0) {
       await expect(searchPage.firstPostItem).toBeVisible();
     } else {
-      console.log('AI search returned no results - HiveSense may be unavailable');
+      test.info().annotations.push({
+        type: 'note',
+        description: `AI search returned no results (state: ${searchState}) - HiveSense may be unavailable`
+      });
     }
   });
 
@@ -229,7 +233,7 @@ test.describe('Search page tests', () => {
       'background-color'
     );
     // Dark mode background
-    expect(backgroundColor).toBe('rgb(34, 38, 42)');
+    expect(backgroundColor).toBe(THEME_COLORS.dark.background);
   });
 
   test('search results styles in light and dark theme', async ({ page }) => {
@@ -244,7 +248,7 @@ test.describe('Search page tests', () => {
         searchPage.firstPostAuthor,
         'color'
       );
-      expect(lightAuthorColor).toBe('rgb(24, 30, 42)');
+      expect(lightAuthorColor).toBe(THEME_COLORS.light.authorText);
 
       // Switch to dark theme
       await homePage.changeThemeMode('Dark');
@@ -255,7 +259,7 @@ test.describe('Search page tests', () => {
         searchPage.firstPostAuthor,
         'color'
       );
-      expect(darkAuthorColor).toBe('rgb(248, 250, 252)');
+      expect(darkAuthorColor).toBe(THEME_COLORS.dark.authorText);
     }
   });
 

@@ -44,13 +44,12 @@ export class SearchPage {
     // Search button
     this.searchButton = page.locator('button[aria-label="Search"]');
 
-    // Mode options - using nth selector as order is fixed:
-    // 0: classic, 1: ai, 2: account, 3: userTopic, 4: tag
-    this.modeClassic = page.locator('[role="option"]').nth(0);
-    this.modeAi = page.locator('[role="option"]').nth(1);
-    this.modeAccount = page.locator('[role="option"]').nth(2);
-    this.modeUserTopic = page.locator('[role="option"]').nth(3);
-    this.modeTag = page.locator('[role="option"]').nth(4);
+    // Mode options - using data-testid for robust selection
+    this.modeClassic = page.getByTestId('search-mode-classic');
+    this.modeAi = page.getByTestId('search-mode-ai');
+    this.modeAccount = page.getByTestId('search-mode-account');
+    this.modeUserTopic = page.getByTestId('search-mode-user-topic');
+    this.modeTag = page.getByTestId('search-mode-tag');
 
     // Sort select - second combobox (visible only for classic/userTopic)
     this.sortSelectTrigger = page.locator('button[role="combobox"]').nth(1);
@@ -105,8 +104,8 @@ export class SearchPage {
         await this.modeTag.click();
         break;
     }
-    // Wait for menu to close
-    await this.page.waitForTimeout(300);
+    // Wait for menu to close by checking options are no longer visible
+    await this.page.locator('[role="option"]').first().waitFor({ state: 'hidden', timeout: 5000 });
   }
 
   async performSearch(query: string) {
@@ -133,20 +132,27 @@ export class SearchPage {
     await this.page.waitForLoadState('domcontentloaded');
   }
 
-  async waitForSearchResults(timeout: number = 15000) {
+  async waitForSearchResults(timeout: number = 15000): Promise<'results' | 'empty' | 'timeout'> {
     // Wait for results to appear or no results message
     try {
       await Promise.race([
         this.firstPostItem.waitFor({ state: 'visible', timeout }),
         this.noResultsMessage.waitFor({ state: 'visible', timeout })
       ]);
+      // Determine which state we're in
+      if (await this.firstPostItem.isVisible()) {
+        return 'results';
+      }
+      return 'empty';
     } catch {
-      // Timeout - state will be checked in test
+      // Timeout reached - return explicit state for test to handle
+      return 'timeout';
     }
   }
 
   async getResultsCount(): Promise<number> {
-    await this.page.waitForTimeout(1000);
+    // Wait for either results or empty state to stabilize
+    await this.page.waitForLoadState('networkidle');
     return await this.postListItems.count();
   }
 
@@ -161,8 +167,19 @@ export class SearchPage {
   }
 
   async scrollToLoadMore() {
+    const initialCount = await this.postListItems.count();
     await this.page.keyboard.press('End');
-    await this.page.waitForTimeout(2000);
+    // Wait for new items to load or network to settle
+    try {
+      await this.page.waitForFunction(
+        (initial) => document.querySelectorAll('[data-testid="post-list-item"]').length > initial,
+        initialCount,
+        { timeout: 10000 }
+      );
+    } catch {
+      // No new items loaded - that's acceptable, test will verify count
+      await this.page.waitForLoadState('networkidle');
+    }
   }
 
   // Helpers
