@@ -64,7 +64,9 @@ export async function parseAuthProofTransaction(
     const op = tx.operations[0].value as typeof custom_json;
 
     // Extract loginChallenge from the custom_json operation
-    const loginChallenge = JSON.parse(op.json);
+    // op.json is a JSON string like '{"loginChallenge": "uuid-value"}'
+    const parsedJson = JSON.parse(op.json);
+    const loginChallenge = parsedJson.loginChallenge || JSON.stringify(parsedJson);
 
     // Extract loginType from the operation ID (format: "denser_${loginType}")
     const loginType = op.id.replace('denser_', '');
