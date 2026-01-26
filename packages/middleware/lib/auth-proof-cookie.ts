@@ -27,9 +27,14 @@ async function initializeWasm() {
   }
 }
 
+// Interface for the login challenge (used as uuid in cookie)
+export interface LoginChallenge {
+  challenge: string;
+}
+
 // Interface for the auth proof cookie data
 export interface AuthProofCookieData {
-  uuid: string;
+  uuid: LoginChallenge;
   username: string | null;
   loginType: string | null;
   authProof: string;
@@ -49,7 +54,7 @@ interface AuthRequestBody {
  */
 export async function parseAuthProofTransaction(
   authProof: string
-): Promise<{ loginChallenge: string; loginType: string } | null> {
+): Promise<{ loginChallenge: LoginChallenge; loginType: string } | null> {
   try {
     // Initialize WASM if not already done
     await initializeWasm();
@@ -64,7 +69,9 @@ export async function parseAuthProofTransaction(
     const op = tx.operations[0].value as typeof custom_json;
 
     // Extract loginChallenge from the custom_json operation
-    const loginChallenge = JSON.parse(op.json);
+    // The json field contains {"challenge": "uuid-string"} - we return the whole object
+    // so it can be used as a valid JSON object for challenge signing in other libraries
+    const loginChallenge = JSON.parse(op.json) as { challenge: string };
 
     // Extract loginType from the operation ID (format: "denser_${loginType}")
     const loginType = op.id.replace('denser_', '');
@@ -124,11 +131,11 @@ export function logLogoutAndKeepCookie(
   res: NextApiResponse,
   username: string,
   loginType: string,
-  uuid: string,
+  uuid: LoginChallenge,
   ip: string
 ): void {
   // Log the logout event
-  logLogoutEvent(ip, username, loginType, uuid);
+  logLogoutEvent(ip, username, loginType, uuid.challenge);
 
   // Update the cookie to set username and login_type to null, but keep uuid and other fields
   const existingCookie = req.cookies[AUTH_PROOF_COOKIE_NAME];
@@ -168,7 +175,7 @@ export async function validateAndGetAuthProofCookie(
 
     if (username && loginType && loginChallenge && authProof) {
       cookieData = {
-        uuid: loginChallenge,
+        uuid: { challenge: loginChallenge },
         username,
         loginType,
         authProof,
@@ -199,7 +206,7 @@ export async function validateAndGetAuthProofCookie(
           ) {
             // if different, set new cookie in response
             cookieData = {
-              uuid: loginChallenge, // use new loginChallenge as UUID
+              uuid: { challenge: loginChallenge },
               username,
               loginType,
               authProof,
@@ -259,7 +266,7 @@ export function logPageVisit(req: NextRequest, pathname: string): void {
 
         // Log the page visit with cookie data
         console.log(
-          `Page visit: ${pathname} --> ip=${ip} account=${username} login_type=${loginType} uuid=${cookieData.uuid}`
+          `Page visit: ${pathname} --> ip=${ip} account=${username} login_type=${loginType} uuid=${cookieData.uuid.challenge}`
         );
       } else {
         // Cookie exists but is invalid - log with defaults

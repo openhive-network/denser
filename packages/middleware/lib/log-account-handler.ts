@@ -76,7 +76,7 @@ export async function handleLogAccount(req: NextApiRequest, res: NextApiResponse
     const { loginChallenge, loginType } = parsedData;
 
     // Log the login event using parsed data
-    logLoginEvent(ip, username, loginType, loginChallenge);
+    logLoginEvent(ip, username, loginType, loginChallenge.challenge);
 
     // Check if we need to set/update the cookie
     const existingCookie = req.cookies[AUTH_PROOF_COOKIE_NAME];
