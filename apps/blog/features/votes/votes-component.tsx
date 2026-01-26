@@ -37,6 +37,15 @@ const DEFAULT_VOTES_VALUES = {
   }
 };
 
+// Safe accessor for vote values - handles legacy/malformed localStorage data
+const getVoteValue = (
+  stored: typeof DEFAULT_VOTES_VALUES | null | undefined,
+  voteType: 'post' | 'comment',
+  direction: 'upvote' | 'downvote'
+): number[] => {
+  return stored?.[voteType]?.[direction] ?? DEFAULT_VOTES_VALUES[voteType][direction];
+};
+
 const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' }) => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
@@ -46,11 +55,11 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
     DEFAULT_VOTES_VALUES,
     StorageTTL.PERMANENT
   );
-  const [sliderUpvote, setSliderUpvote] = useState(
-    type === 'post' ? storedVotesValues.post.upvote : storedVotesValues.comment.upvote
+  const [sliderUpvote, setSliderUpvote] = useState(() =>
+    getVoteValue(storedVotesValues, type, 'upvote')
   );
-  const [sliderDownvote, setSliderDownvote] = useState(
-    type === 'post' ? storedVotesValues.post.downvote : storedVotesValues.comment.downvote
+  const [sliderDownvote, setSliderDownvote] = useState(() =>
+    getVoteValue(storedVotesValues, type, 'downvote')
   );
   const voter = user.username;
   const pastPayout =
@@ -60,11 +69,11 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         : `${post.payout_at}.000Z`
     ).diff(moment()) < 0;
   useEffect(() => {
-    setSliderUpvote(type === 'post' ? storedVotesValues.post.upvote : storedVotesValues.comment.upvote);
-  }, [type, storedVotesValues.post.upvote, storedVotesValues.comment.upvote]);
+    setSliderUpvote(getVoteValue(storedVotesValues, type, 'upvote'));
+  }, [type, storedVotesValues]);
   useEffect(() => {
-    setSliderDownvote(type === 'post' ? storedVotesValues.post.downvote : storedVotesValues.comment.downvote);
-  }, [type, storedVotesValues.post.downvote, storedVotesValues.comment.downvote]);
+    setSliderDownvote(getVoteValue(storedVotesValues, type, 'downvote'));
+  }, [type, storedVotesValues]);
   const checkVote = post.active_votes.find((e) => e.voter === voter);
 
   const { data: userVotes } = useQuery({
