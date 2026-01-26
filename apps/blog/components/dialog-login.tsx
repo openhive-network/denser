@@ -1,11 +1,14 @@
 'use client';
 
-import { ReactNode, useRef } from 'react';
+import { ReactNode, useRef, useCallback } from 'react';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from '@ui/components/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
 import { siteConfig } from '@ui/config/site';
+
+const GOOGLE_GSI_SCRIPT_ID = 'google-gsi-script';
+const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
 function DialogLogin({ children }: { children: ReactNode }) {
   const signInFormRef = useRef<SignInFormRef>(null);
@@ -14,11 +17,26 @@ function DialogLogin({ children }: { children: ReactNode }) {
     // do smth when completed here
   }
 
+  // Load Google Sign-In script on demand when dialog opens
+  const loadGoogleScript = useCallback(() => {
+    if (!siteConfig.googleDrive.clientId) return;
+    if (typeof document === 'undefined') return;
+    if (document.getElementById(GOOGLE_GSI_SCRIPT_ID)) return;
+
+    const script = document.createElement('script');
+    script.id = GOOGLE_GSI_SCRIPT_ID;
+    script.src = GOOGLE_GSI_SCRIPT_SRC;
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
+
   return (
     <Dialog
       modal={true}
       onOpenChange={async (open) => {
-        if (!open) {
+        if (open) {
+          loadGoogleScript();
+        } else {
           await signInFormRef?.current?.cancel();
         }
       }}
