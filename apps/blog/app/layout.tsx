@@ -7,7 +7,6 @@ import { cookies } from 'next/headers';
 import MainBar from '../features/layouts/site-header/main-bar';
 import ClientEffects from '../features/layouts/site-header/client-effects';
 import { Providers } from '../features/layouts/providers';
-import VisitLoggerClient from '../lib/visit-logger-client';
 import { StorageCleanup } from '@hive/ui';
 
 // Get basePath from build-time environment
@@ -76,7 +75,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <Providers>
             <>
               <StorageCleanup />
-              <VisitLoggerClient />
               <MainBar />
               <main className="mx-auto">{children}</main>
             </>
