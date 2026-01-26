@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage, Skeleton } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
 import { getUnreadNotifications } from '@transaction/lib/bridge-api';
 import UserMenu from '@/blog/features/layouts/site-header/user-menu';
-import { PieChart, Pie } from 'recharts';
+import { ManabarRing } from './manabar-ring';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
@@ -56,10 +56,9 @@ const MainBar: FC = () => {
     refetchOnWindowFocus: false,
     refetchOnMount: false
   });
-  const upvoteAngle = (360 * (manabarsData ? manabarsData?.upvote.percentageValue : 0)) / 100;
-  const downvoteAngle = (360 * (manabarsData ? manabarsData?.downvote.percentageValue : 0)) / 100;
-  const rcAngle = (360 * (manabarsData ? manabarsData?.rc.percentageValue : 0)) / 100;
-  const chart = [{ name: '', value: 1 }];
+  const upvotePercent = manabarsData?.upvote.percentageValue ?? 0;
+  const downvotePercent = manabarsData?.downvote.percentageValue ?? 0;
+  const rcPercent = manabarsData?.rc.percentageValue ?? 0;
 
   const [isNavHidden, setIsNavHidden] = useState(false);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
@@ -173,71 +172,37 @@ const MainBar: FC = () => {
                                 {data.unread}
                               </div>
                             ) : null}
-                            <div className="absolute z-20 group-hover:invisible group-hover:delay-300 group-hover:duration-300 group-hover:animate-out group-hover:zoom-out-75">
-                              <PieChart width={50} height={50}>
-                                <Pie
-                                  data={chart}
-                                  cx={20}
-                                  cy={20}
-                                  startAngle={90}
-                                  endAngle={-rcAngle + 90}
-                                  innerRadius={18}
-                                  outerRadius={24}
-                                  fill="#0088FE"
-                                  paddingAngle={0}
-                                  dataKey="value"
-                                ></Pie>
-                              </PieChart>
-                            </div>
+                            {/* Default state: RC ring only */}
+                            <ManabarRing
+                              percentage={rcPercent}
+                              color="#0088FE"
+                              size={48}
+                              thickness={6}
+                              className="absolute z-20 group-hover:invisible group-hover:delay-300 group-hover:duration-300 group-hover:animate-out group-hover:zoom-out-75"
+                            />
 
-                            <div className="invisible absolute z-20 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                              <PieChart width={50} height={50}>
-                                <Pie
-                                  data={chart}
-                                  cx={20}
-                                  cy={20}
-                                  startAngle={90}
-                                  endAngle={-downvoteAngle + 90}
-                                  innerRadius={18}
-                                  outerRadius={21.5}
-                                  fill="#C01000"
-                                  paddingAngle={0}
-                                  dataKey="value"
-                                ></Pie>
-                              </PieChart>
-                            </div>
-                            <div className="invisible absolute z-10 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                              <PieChart width={60} height={60}>
-                                <Pie
-                                  data={chart}
-                                  cx={25}
-                                  cy={25}
-                                  startAngle={90}
-                                  endAngle={-upvoteAngle + 90}
-                                  innerRadius={21.5}
-                                  outerRadius={25}
-                                  fill="#00C040"
-                                  paddingAngle={0}
-                                  dataKey="value"
-                                ></Pie>
-                              </PieChart>
-                            </div>
-                            <div className="invisible absolute group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50">
-                              <PieChart width={70} height={70}>
-                                <Pie
-                                  data={chart}
-                                  cx={30}
-                                  cy={30}
-                                  startAngle={90}
-                                  endAngle={-rcAngle + 90}
-                                  innerRadius={25}
-                                  outerRadius={28.5}
-                                  fill="#0088FE"
-                                  paddingAngle={0}
-                                  dataKey="value"
-                                ></Pie>
-                              </PieChart>
-                            </div>
+                            {/* Hover state: Three concentric rings */}
+                            <ManabarRing
+                              percentage={downvotePercent}
+                              color="#C01000"
+                              size={43}
+                              thickness={3.5}
+                              className="invisible absolute z-20 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50"
+                            />
+                            <ManabarRing
+                              percentage={upvotePercent}
+                              color="#00C040"
+                              size={50}
+                              thickness={3.5}
+                              className="invisible absolute z-10 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50"
+                            />
+                            <ManabarRing
+                              percentage={rcPercent}
+                              color="#0088FE"
+                              size={57}
+                              thickness={3.5}
+                              className="invisible absolute group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50"
+                            />
                             <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
                               <AvatarImage
                                 className="h-full w-full object-cover"
