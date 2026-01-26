@@ -126,7 +126,18 @@
       "toggle_theme": "التبديل بين الموضوعات",
       "toggle_lang": "تغيير اللغة",
       "wallet": "المحفظة",
-      "logout": "خروج"
+      "logout": "خروج",
+      "logged_in_with": "تسجيل الدخول باستخدام {{method}}",
+      "login_method": {
+        "hbauth": "التخزين الآمن",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "مفتاح WIF",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {
@@ -231,7 +242,17 @@
     "use_hbauth": "استخدام Hbauth",
     "use_hiveauth": "استخدام HiveAuth",
     "use_keychain": "استخدام Keychain",
-    "username_placeholder": "أدخل اسم المستخدم الخاص بك"
+    "username_placeholder": "أدخل اسم المستخدم الخاص بك",
+    "other_signin_options": "خيارات تسجيل دخول أخرى",
+    "other_signin_description": "أدخل اسم المستخدم الخاص بك واختر طريقة تسجيل الدخول",
+    "google_password_placeholder": "كلمة المرور لفتح محفظة Google Drive",
+    "google_tooltip": "سجل الدخول باستخدام محفظة Hive المخزنة في Google Drive الخاص بك. أنشئ واحدة على auth.openhive.network",
+    "google_wallet_not_found_title": "محفظة Google Drive غير موجودة",
+    "google_wallet_not_found_description": "لا يحتوي Google Drive الخاص بك على ملف محفظة Hive. تحتاج إلى إنشاء واحدة أولاً باستخدام Hive Bridge.",
+    "google_wallet_not_found_help": "Hive Bridge هو تطبيق آمن يساعدك على إنشاء وتخزين محفظة Hive في Google Drive الخاص بك. يتيح لك ذلك توقيع معاملات Hive بدون تثبيت ملحقات المتصفح.",
+    "google_key_not_found_title": "المفتاح غير موجود في المحفظة",
+    "google_key_not_found_description": "لم يتم العثور على مفتاح {{keyType}} لـ Hive للمستخدم {{username}} في محفظة Google Drive.",
+    "go_to_hive_bridge": "اذهب إلى Hive Bridge"
   },
   "user_profile": {
     "reputation": "السمعة",

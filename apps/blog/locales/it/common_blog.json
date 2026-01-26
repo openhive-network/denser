@@ -116,6 +116,27 @@
       "follows": "Follows",
       "upvotes": "Upvotes",
       "reblogs": "Reblogs"
+    },
+    "user_menu": {
+      "profile": "Profilo",
+      "notifications": "Notifiche",
+      "comments": "Commenti",
+      "replies": "Risposte",
+      "toggle_theme": "Tema",
+      "toggle_lang": "Lingua",
+      "wallet": "Portafoglio",
+      "logout": "Esci",
+      "logged_in_with": "Accesso con {{method}}",
+      "login_method": {
+        "hbauth": "Archiviazione Sicura",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "Chiave WIF",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {
@@ -207,7 +228,17 @@
     "authorize_button": "Autorizzare",
     "login_button": "Login",
     "cancel_button": "Cancella",
-    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
+    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password.",
+    "other_signin_options": "Altre opzioni di accesso",
+    "other_signin_description": "Inserisci il tuo nome utente e seleziona un metodo di accesso",
+    "google_password_placeholder": "Password per sbloccare il portafoglio Google Drive",
+    "google_tooltip": "Accedi utilizzando un portafoglio Hive memorizzato nel tuo Google Drive. Creane uno su auth.openhive.network",
+    "google_wallet_not_found_title": "Portafoglio Google Drive non trovato",
+    "google_wallet_not_found_description": "Il tuo Google Drive non contiene un file portafoglio Hive. Devi prima crearne uno usando Hive Bridge.",
+    "google_wallet_not_found_help": "Hive Bridge è un'applicazione sicura che ti aiuta a creare e memorizzare un portafoglio Hive nel tuo Google Drive. Questo ti permette di firmare le transazioni Hive senza installare estensioni del browser.",
+    "google_key_not_found_title": "Chiave non trovata nel portafoglio",
+    "google_key_not_found_description": "Nessuna chiave {{keyType}} di Hive trovata per l'utente {{username}} nel portafoglio Google Drive.",
+    "go_to_hive_bridge": "Vai a Hive Bridge"
   },
   "user_profile": {
     "reputation": "Reputazione",

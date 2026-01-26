@@ -116,6 +116,27 @@
       "follows": "Follows",
       "upvotes": "Upvotes",
       "reblogs": "Reblogs"
+    },
+    "user_menu": {
+      "profile": "プロフィール",
+      "notifications": "通知",
+      "comments": "コメント",
+      "replies": "返信",
+      "toggle_theme": "テーマ",
+      "toggle_lang": "言語",
+      "wallet": "ウォレット",
+      "logout": "ログアウト",
+      "logged_in_with": "{{method}}でログイン",
+      "login_method": {
+        "hbauth": "セーフストレージ",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "WIFキー",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {
@@ -207,7 +228,17 @@
     "authorize_button": "承認する",
     "login_button": "ログイン",
     "cancel_button": "キャンセル",
-    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
+    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password.",
+    "other_signin_options": "その他のサインインオプション",
+    "other_signin_description": "ユーザー名を入力し、サインイン方法を選択してください",
+    "google_password_placeholder": "Google Driveウォレットのロック解除パスワード",
+    "google_tooltip": "Google Driveに保存されたHiveウォレットを使用してサインインします。auth.openhive.networkで作成してください",
+    "google_wallet_not_found_title": "Google Driveウォレットが見つかりません",
+    "google_wallet_not_found_description": "お使いのGoogle DriveにHiveウォレットファイルが見つかりません。まずHive Bridgeを使用して作成する必要があります。",
+    "google_wallet_not_found_help": "Hive Bridgeは、Google DriveでHiveウォレットを作成・保存するための安全なアプリケーションです。ブラウザ拡張機能をインストールせずにHiveトランザクションに署名できます。",
+    "google_key_not_found_title": "ウォレットにキーが見つかりません",
+    "google_key_not_found_description": "Google Driveウォレットにユーザー{{username}}のHive {{keyType}}キーが見つかりません。",
+    "go_to_hive_bridge": "Hive Bridgeへ移動"
   },
   "user_profile": {
     "reputation": "評価",

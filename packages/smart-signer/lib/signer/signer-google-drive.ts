@@ -196,7 +196,14 @@ export class SignerGoogleDrive extends Signer {
           () => this.getAccessToken(),
           async (missingStorageFile) => {
             if (missingStorageFile) {
-              throw new Error('Google Drive wallet file not found. Please create your wallet first at Hive Bridge.');
+              // Show error dialog with link to Hive Bridge
+              const { GoogleDriveErrorDialogPromise } = await import('@smart-signer/components/google-drive-error-dialog');
+              await GoogleDriveErrorDialogPromise({
+                isOpen: true,
+                errorType: 'wallet_not_found'
+              });
+              // Dialog will reject if user closes it, but if we somehow get here, still throw
+              throw new Error('Google Drive wallet file not found');
             }
 
             const password = await this.getPasswordFromUser();
@@ -243,6 +250,15 @@ export class SignerGoogleDrive extends Signer {
         break;
       }
       if (!pk) {
+        // Show error dialog with link to Hive Bridge
+        const { GoogleDriveErrorDialogPromise } = await import('@smart-signer/components/google-drive-error-dialog');
+        await GoogleDriveErrorDialogPromise({
+          isOpen: true,
+          errorType: 'key_not_found',
+          username,
+          keyType
+        });
+        // Dialog will reject if user closes it, but if we somehow get here, still throw
         throw new Error(`No stored Hive ${keyType} key found for user ${username} in Google Drive wallet`);
       }
 

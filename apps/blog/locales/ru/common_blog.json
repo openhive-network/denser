@@ -116,6 +116,27 @@
       "follows": "Follows",
       "upvotes": "Upvotes",
       "reblogs": "Reblogs"
+    },
+    "user_menu": {
+      "profile": "Профиль",
+      "notifications": "Уведомления",
+      "comments": "Комментарии",
+      "replies": "Ответы",
+      "toggle_theme": "Тема",
+      "toggle_lang": "Язык",
+      "wallet": "Кошелек",
+      "logout": "Выйти",
+      "logged_in_with": "Вход через {{method}}",
+      "login_method": {
+        "hbauth": "Безопасное хранилище",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "WIF ключ",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {
@@ -207,7 +228,17 @@
     "authorize_button": "Авторизовать",
     "login_button": "Войти",
     "cancel_button": "Отмена",
-    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
+    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password.",
+    "other_signin_options": "Другие варианты входа",
+    "other_signin_description": "Введите имя пользователя и выберите способ входа",
+    "google_password_placeholder": "Пароль для разблокировки кошелька Google Drive",
+    "google_tooltip": "Войдите, используя кошелек Hive, хранящийся на вашем Google Drive. Создайте его на auth.openhive.network",
+    "google_wallet_not_found_title": "Кошелек Google Drive не найден",
+    "google_wallet_not_found_description": "Ваш Google Drive не содержит файла кошелька Hive. Сначала вам нужно создать его с помощью Hive Bridge.",
+    "google_wallet_not_found_help": "Hive Bridge - это безопасное приложение, которое помогает создать и хранить кошелек Hive на вашем Google Drive. Это позволяет подписывать транзакции Hive без установки расширений браузера.",
+    "google_key_not_found_title": "Ключ не найден в кошельке",
+    "google_key_not_found_description": "Ключ {{keyType}} Hive для пользователя {{username}} не найден в кошельке Google Drive.",
+    "go_to_hive_bridge": "Перейти в Hive Bridge"
   },
   "user_profile": {
     "reputation": "Репутация",

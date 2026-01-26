@@ -16,9 +16,31 @@ import { Button } from '@ui/components';
 import LangToggle from '../lang-toggle';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import env from '@beam-australia/react-env';
-import { User } from '@smart-signer/types/common';
+import { User, LoginType } from '@smart-signer/types/common';
 import { useTranslation } from '@/blog/i18n/client';
-import { SquareActivity } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+
+// Helper function to get login method icon
+const getLoginMethodIcon = (loginType: LoginType) => {
+  switch (loginType) {
+    case LoginType.google:
+      return <Icons.google className="h-4 w-4" />;
+    case LoginType.keychain:
+      return <Icons.hivekeychain className="h-4 w-4" />;
+    case LoginType.peakvault:
+      return <Icons.peakvault className="h-4 w-4" />;
+    case LoginType.metamask:
+      return <Icons.metamask className="h-4 w-4" />;
+    case LoginType.hiveauth:
+      return <Icons.hiveauth className="h-4 w-4" />;
+    case LoginType.hivesigner:
+      return <Icons.hivesigner className="h-4 w-4" />;
+    case LoginType.hbauth:
+    case LoginType.wif:
+    default:
+      return <Icons.keyRound className="h-4 w-4" />;
+  }
+};
 
 const UserMenu = ({
   children,
@@ -39,13 +61,29 @@ const UserMenu = ({
       <DropdownMenuContent className="w-56 bg-background-secondary" data-testid="user-profile-menu-content">
         <DropdownMenuLabel className="flex w-full items-center justify-between">
           <span data-testid="user-name-in-profile-menu">{user.username}</span>
-          <div className="flex items-center space-x-2" title="Logged in with Hive private key">
-            <Icons.hive className="h-4 w-4" />
-            <div className="flex flex-col text-sm font-semibold">
-              <span>Hive</span>
-              <span className="text-destructive">Blog</span>
-            </div>
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  className="flex items-center space-x-2"
+                  data-testid="login-method-indicator"
+                >
+                  {getLoginMethodIcon(user.loginType)}
+                  <div className="flex flex-col text-sm font-semibold">
+                    <span>Hive</span>
+                    <span className="text-destructive">Blog</span>
+                  </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>
+                  {t('navigation.user_menu.logged_in_with', {
+                    method: t(`navigation.user_menu.login_method.${user.loginType}`)
+                  })}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />

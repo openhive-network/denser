@@ -116,6 +116,27 @@
       "follows": "Follows",
       "upvotes": "Upvotes",
       "reblogs": "Reblogs"
+    },
+    "user_menu": {
+      "profile": "Profil",
+      "notifications": "Notifications",
+      "comments": "Commentaires",
+      "replies": "Réponses",
+      "toggle_theme": "Thème",
+      "toggle_lang": "Langue",
+      "wallet": "Portefeuille",
+      "logout": "Déconnexion",
+      "logged_in_with": "Connecté avec {{method}}",
+      "login_method": {
+        "hbauth": "Stockage Sécurisé",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "Clé WIF",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {
@@ -207,7 +228,17 @@
     "authorize_button": "Autoriser",
     "login_button": "Se connecter",
     "cancel_button": "Annuler",
-    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
+    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password.",
+    "other_signin_options": "Autres options de connexion",
+    "other_signin_description": "Entrez votre nom d'utilisateur et sélectionnez une méthode de connexion",
+    "google_password_placeholder": "Mot de passe pour déverrouiller le portefeuille Google Drive",
+    "google_tooltip": "Connectez-vous en utilisant un portefeuille Hive stocké dans votre Google Drive. Créez-en un sur auth.openhive.network",
+    "google_wallet_not_found_title": "Portefeuille Google Drive introuvable",
+    "google_wallet_not_found_description": "Votre Google Drive ne contient pas de fichier de portefeuille Hive. Vous devez d'abord en créer un avec Hive Bridge.",
+    "google_wallet_not_found_help": "Hive Bridge est une application sécurisée qui vous aide à créer et stocker un portefeuille Hive dans votre Google Drive. Cela vous permet de signer des transactions Hive sans installer d'extensions de navigateur.",
+    "google_key_not_found_title": "Clé non trouvée dans le portefeuille",
+    "google_key_not_found_description": "Aucune clé {{keyType}} Hive trouvée pour l'utilisateur {{username}} dans le portefeuille Google Drive.",
+    "go_to_hive_bridge": "Aller à Hive Bridge"
   },
   "user_profile": {
     "reputation": "Réputation",

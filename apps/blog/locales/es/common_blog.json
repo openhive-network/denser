@@ -116,6 +116,27 @@
       "follows": "Follows",
       "upvotes": "Upvotes",
       "reblogs": "Reblogueos"
+    },
+    "user_menu": {
+      "profile": "Perfil",
+      "notifications": "Notificaciones",
+      "comments": "Comentarios",
+      "replies": "Respuestas",
+      "toggle_theme": "Tema",
+      "toggle_lang": "Idioma",
+      "wallet": "Monedero",
+      "logout": "Cerrar sesión",
+      "logged_in_with": "Conectado con {{method}}",
+      "login_method": {
+        "hbauth": "Almacenamiento Seguro",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "Clave WIF",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {
@@ -207,7 +228,17 @@
     "authorize_button": "Autorizar",
     "login_button": "Iniciar sesión",
     "cancel_button": "Cancelar",
-    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
+    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password.",
+    "other_signin_options": "Otras opciones de inicio de sesión",
+    "other_signin_description": "Ingresa tu nombre de usuario y selecciona un método de inicio de sesión",
+    "google_password_placeholder": "Contraseña para desbloquear la billetera de Google Drive",
+    "google_tooltip": "Inicia sesión usando una billetera Hive almacenada en tu Google Drive. Crea una en auth.openhive.network",
+    "google_wallet_not_found_title": "Billetera de Google Drive No Encontrada",
+    "google_wallet_not_found_description": "Tu Google Drive no contiene un archivo de billetera Hive. Necesitas crear uno primero usando Hive Bridge.",
+    "google_wallet_not_found_help": "Hive Bridge es una aplicación segura que te ayuda a crear y almacenar una billetera Hive en tu Google Drive. Esto te permite firmar transacciones de Hive sin instalar extensiones del navegador.",
+    "google_key_not_found_title": "Clave no encontrada en la billetera",
+    "google_key_not_found_description": "No se encontró la clave {{keyType}} de Hive para el usuario {{username}} en la billetera de Google Drive.",
+    "go_to_hive_bridge": "Ir a Hive Bridge"
   },
   "user_profile": {
     "reputation": "Reputación",

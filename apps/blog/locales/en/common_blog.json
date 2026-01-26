@@ -132,7 +132,18 @@
       "toggle_theme": "Theme",
       "toggle_lang": "Language",
       "wallet": "Wallet",
-      "logout": "Logout"
+      "logout": "Logout",
+      "logged_in_with": "Logged in with {{method}}",
+      "login_method": {
+        "hbauth": "Safe Storage",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "WIF Key",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {
@@ -241,7 +252,17 @@
     "use_hiveauth": "Use HiveAuth",
     "use_keychain": "Use Keychain",
     "use_peakvault": "Use PeakVault",
-    "username_placeholder": "Enter your username"
+    "username_placeholder": "Enter your username",
+    "other_signin_options": "Other sign in options",
+    "other_signin_description": "Enter your username and select a sign in method",
+    "google_password_placeholder": "Password to unlock Google Drive wallet",
+    "google_tooltip": "Sign in using a Hive wallet stored in your Google Drive. Create one at auth.openhive.network",
+    "google_wallet_not_found_title": "Google Drive Wallet Not Found",
+    "google_wallet_not_found_description": "Your Google Drive does not contain a Hive wallet file. You need to create one first using Hive Bridge.",
+    "google_wallet_not_found_help": "Hive Bridge is a secure application that helps you create and store a Hive wallet in your Google Drive. This allows you to sign Hive transactions without installing browser extensions.",
+    "google_key_not_found_title": "Key Not Found in Wallet",
+    "google_key_not_found_description": "No stored Hive {{keyType}} key found for user {{username}} in Google Drive wallet.",
+    "go_to_hive_bridge": "Go to Hive Bridge"
   },
   "user_profile": {
     "reputation": "Reputation",

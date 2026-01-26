@@ -116,6 +116,27 @@
       "follows": "Follows",
       "upvotes": "Upvotes",
       "reblogs": "Reblogs"
+    },
+    "user_menu": {
+      "profile": "个人资料",
+      "notifications": "通知",
+      "comments": "评论",
+      "replies": "回复",
+      "toggle_theme": "主题",
+      "toggle_lang": "语言",
+      "wallet": "钱包",
+      "logout": "登出",
+      "logged_in_with": "通过{{method}}登录",
+      "login_method": {
+        "hbauth": "安全存储",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "WIF密钥",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {
@@ -207,7 +228,17 @@
     "authorize_button": "授权",
     "login_button": "登录",
     "cancel_button": "取消",
-    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password."
+    "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password.",
+    "other_signin_options": "其他登录选项",
+    "other_signin_description": "输入您的用户名并选择登录方式",
+    "google_password_placeholder": "解锁Google Drive钱包的密码",
+    "google_tooltip": "使用存储在Google Drive中的Hive钱包登录。请在auth.openhive.network创建一个",
+    "google_wallet_not_found_title": "未找到Google Drive钱包",
+    "google_wallet_not_found_description": "您的Google Drive中没有Hive钱包文件。您需要先使用Hive Bridge创建一个。",
+    "google_wallet_not_found_help": "Hive Bridge是一个安全的应用程序，可帮助您在Google Drive中创建和存储Hive钱包。这使您无需安装浏览器扩展即可签署Hive交易。",
+    "google_key_not_found_title": "钱包中未找到密钥",
+    "google_key_not_found_description": "在Google Drive钱包中未找到用户{{username}}的Hive {{keyType}}密钥。",
+    "go_to_hive_bridge": "前往Hive Bridge"
   },
   "user_profile": {
     "reputation": "声誉",
