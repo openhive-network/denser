@@ -58,17 +58,18 @@ export function getLoginChallengeFromTransactionForLogin(tx: ApiTransaction, key
  *
  * @export
  * @param {ApiOperation} operation
- * @param {KeyType} keyType
+ * @param {KeyType} _keyType
  * @returns {string}
  */
-export function getLoginChallengeFromOperationForLogin(operation: ApiOperation, keyType: KeyType): string {
-  let loginChallenge = '';
-  if (keyType === KeyType.posting) {
-    loginChallenge = (operation as any).value['permlink'];
-  } else if (keyType === KeyType.active) {
-    loginChallenge = (operation as any).value['memo'];
-  } else {
-    throw new Error('Unsupported keyType');
+export function getLoginChallengeFromOperationForLogin(operation: ApiOperation, _keyType: KeyType): string {
+  // The login operation is always a custom_json_operation with the challenge in the json field
+  const jsonString = (operation as any).value?.json;
+  if (!jsonString) {
+    throw new Error('Missing json field in custom_json operation');
   }
-  return loginChallenge;
+  const parsed = JSON.parse(jsonString);
+  if (!parsed.challenge) {
+    throw new Error('Missing challenge in custom_json operation');
+  }
+  return parsed.challenge;
 }
