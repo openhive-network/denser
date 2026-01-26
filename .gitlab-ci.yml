@@ -9,7 +9,7 @@ stages:
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: 'c5a368f7cdb5b4acacb710094971d48a3432af5b'
+  CI_COMMON_JOB_VERSION: 'cafb362f9b025cf91caebccd91e6275e2d0d6b60'
   DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
   DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
   IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
@@ -54,7 +54,7 @@ variables:
 include:
 - template: Workflows/MergeRequest-Pipelines.gitlab-ci.yml
 - project: 'hive/common-ci-configuration'
-  ref: c5a368f7cdb5b4acacb710094971d48a3432af5b   # develop
+  ref: cafb362f9b025cf91caebccd91e6275e2d0d6b60   # develop
   file:
   - '/templates/base.gitlab-ci.yml'
   - '/templates/docker_image_jobs.gitlab-ci.yml'
