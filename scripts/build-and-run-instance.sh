@@ -27,15 +27,23 @@ build_instance() {
 run_instance() {
   echo "Starting application ${APP} in docker container denser-${APP}, published on port ${PORT} on localhost"
 
+  # Use .env.${APP} if it exists, otherwise create a minimal temp file
+  local ENV_FILE=".env.${APP}"
+  if [ ! -f "${ENV_FILE}" ]; then
+    echo "Warning: ${ENV_FILE} not found, creating temporary env file"
+    ENV_FILE="${TMPDIR:-/tmp}/denser-${APP}-local.env"
+    cat > "${ENV_FILE}" << EOF
+PORT=${PORT}
+REACT_APP_API_ENDPOINT=${REACT_APP_API_ENDPOINT:-https://api.hive.blog}
+REACT_APP_IMAGES_ENDPOINT=${REACT_APP_IMAGES_ENDPOINT:-https://images.hive.blog/}
+EOF
+  fi
+
   ./scripts/run_instance.sh \
     --image="registry.gitlab.syncad.com/hive/denser/${APP}:latest" \
-    --app-scope="@hive/${APP}" \
-    --app-path="/apps/${APP}" \
-    --api-endpoint="https://api.hive.blog" \
-    --chain-id="${CHAIN_ID}" \
-    --images-endpoint="https://images.hive.blog/" \
     --name="denser-${APP}" \
     --port="${PORT}" \
+    --env-file="${ENV_FILE}" \
     --detach
 
   echo "Application ${APP} is running in docker container denser-${APP}."

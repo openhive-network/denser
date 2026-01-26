@@ -64,6 +64,11 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+# Pull the image BEFORE stopping the old container to minimize downtime
+# This way, layer downloads happen while the old container is still serving traffic
+echo "Pulling image: $IMAGE_NAME"
+docker pull "$IMAGE_NAME"
+
 (docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop "$CONTAINER_NAME") || true
 
 docker container rm --force "$CONTAINER_NAME" || true

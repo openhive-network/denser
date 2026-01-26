@@ -1,17 +1,51 @@
+# Git
 .git
 .gitignore
 .gitlab-ci.yml
 
-.env.local
-
+# IDE
 .idea
+.vscode
+*.swp
+*.swo
+
+# Environment files (secrets)
+.env.local
+.env*.local
+**/.env.local
+
+# Build caches (rebuilt in Docker)
 .turbo
 **/.turbo
 **/.next
 **/node_modules
 node_modules
+**/dist
+**/.cache
+
+# Generated files
 **/public/auth/worker.js
 ssl
 
+# Test artifacts
 **/playwright-report
 **/test-results
+**/coverage
+**/junit
+**/*.test.ts
+**/*.spec.ts
+**/playwright.config.ts
+**/playwright.*.config.ts
+
+# Documentation (not needed in image)
+README.md
+CLAUDE.md
+CONTRIBUTING.md
+CHANGELOG.md
+docs/
+
+# Development files
+**/*.log
+**/*.tsbuildinfo
+.eslintcache
+.prettier-cache
