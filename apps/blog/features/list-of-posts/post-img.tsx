@@ -13,6 +13,8 @@ import {
 } from '@/blog/lib/utils';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 
+const UX_IMAGE_WIDTH = 300;
+
 export function find_first_img(post: Entry) {
   try {
     if (
@@ -26,54 +28,56 @@ export function find_first_img(post: Entry) {
       ])
     ) {
       return proxifyImageSrc(
-        post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1)
+        post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1),
+        UX_IMAGE_WIDTH
       );
     }
     if (post.original_entry && post.original_entry.json_metadata.images) {
-      return proxifyImageSrc(post.original_entry.json_metadata.images[0]);
+      return proxifyImageSrc(post.original_entry.json_metadata.images[0], UX_IMAGE_WIDTH);
     }
     if (post.original_entry && post.original_entry.json_metadata.image) {
-      return proxifyImageSrc(post.original_entry.json_metadata.image[0]);
+      return proxifyImageSrc(post.original_entry.json_metadata.image[0], UX_IMAGE_WIDTH);
     }
     if (post.json_metadata.image && post.json_metadata.image[0]) {
       if (post.json_metadata.image[0].includes('youtu-')) {
         return proxifyImageSrc(
-          `https://img.youtube.com/vi/${post.json_metadata.image[0].slice(6)}/0.jpg`
+          `https://img.youtube.com/vi/${post.json_metadata.image[0].slice(6)}/0.jpg`,
+          UX_IMAGE_WIDTH
         );
       }
-      return proxifyImageSrc(post.json_metadata.image[0]);
+      return proxifyImageSrc(post.json_metadata.image[0], UX_IMAGE_WIDTH);
     }
     const regex_any_img = /!\[.*?\]\((.*?)\)/;
     const match = post.body.match(regex_any_img);
     if (match && match[1]) {
-      return proxifyImageSrc(match[1]);
+      return proxifyImageSrc(match[1], UX_IMAGE_WIDTH);
     }
     if (post.json_metadata.images && post.json_metadata.images[0]) {
-      return proxifyImageSrc(post.json_metadata.images[0]);
+      return proxifyImageSrc(post.json_metadata.images[0], UX_IMAGE_WIDTH);
     }
     if (post.json_metadata.flow?.pictures && post.json_metadata.flow?.pictures[0]) {
-      return proxifyImageSrc(post.json_metadata.flow?.pictures[0].url);
+      return proxifyImageSrc(post.json_metadata.flow?.pictures[0].url, UX_IMAGE_WIDTH);
     }
     const youtube_id = extractYouTubeVideoIds(extractUrlsFromJsonString(post.body));
     if (youtube_id[0]) {
-      return proxifyImageSrc(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`);
+      return proxifyImageSrc(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`, UX_IMAGE_WIDTH);
     }
     if (post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')) {
-      return proxifyImageSrc(getUserAvatarUrl(post.author, 'small'));
+      return proxifyImageSrc(getUserAvatarUrl(post.author, 'small'), UX_IMAGE_WIDTH);
     }
     const pictures_extracted = extractPictureFromPostBody(extractUrlsFromJsonString(post.body));
     if (pictures_extracted[0]) {
-      return proxifyImageSrc(pictures_extracted[0]);
+      return proxifyImageSrc(pictures_extracted[0], UX_IMAGE_WIDTH);
     }
     const regex_for_peakd = /https:\/\/files\.peakd\.com\/[^\s]+\.jpg/;
     const peakd_img = post.body.match(regex_for_peakd);
     if (peakd_img !== null) {
-      return proxifyImageSrc(peakd_img[0]);
+      return proxifyImageSrc(peakd_img[0], UX_IMAGE_WIDTH);
     }
     const regexgif = /<img\s+src="([^"]+)"/;
     const matchgif = post.body.match(regexgif);
     if (matchgif && matchgif[1]) {
-      return proxifyImageSrc(matchgif[1]);
+      return proxifyImageSrc(matchgif[1], UX_IMAGE_WIDTH);
     }
     // Last fallback: use user profile image if available, otherwise use avatar
     if (!post.title.includes('RE: ') && post.depth === 0) {
