@@ -779,6 +779,7 @@ lighthouse-metrics-wallet:
   variables:
     TURBO_APP_NAME: 'wallet'
     LIGHTHOUSE_URL: 'https://caddy'
+    PORT: 4000
 
 publish:
   image:
