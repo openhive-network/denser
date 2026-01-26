@@ -16,6 +16,7 @@ const SITE_DESC =
   'Communities without borders. A social network owned and operated by its users, powered by Hive.';
 
 const metadata = {
+  metadataBase: new URL(process.env.REACT_APP_SITE_DOMAIN || 'https://hive.blog'),
   title: {
     default: 'Hive',
     template: '%s - Hive'
