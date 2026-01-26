@@ -9,10 +9,9 @@ stages:
 
 variables:
   # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: 'cafb362f9b025cf91caebccd91e6275e2d0d6b60'
-  DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
-  DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
-  IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
+  DOCKER_BUILDER_TAG: 'latest'
+  DOCKER_DIND_TAG: 'latest'
+  IMAGE_REMOVER_TAG: 'latest'
 
   # Git configuration
   # Fetch strategy reuses workspace between jobs, reducing GitLab server load.
@@ -54,7 +53,7 @@ variables:
 include:
 - template: Workflows/MergeRequest-Pipelines.gitlab-ci.yml
 - project: 'hive/common-ci-configuration'
-  ref: cafb362f9b025cf91caebccd91e6275e2d0d6b60   # develop
+  ref: develop
   file:
   - '/templates/base.gitlab-ci.yml'
   - '/templates/docker_image_jobs.gitlab-ci.yml'
