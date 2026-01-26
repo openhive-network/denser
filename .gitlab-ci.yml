@@ -725,7 +725,7 @@ e2e-report-aggregate-wallet:
       --preset=desktop \
       --output=json,html \
       --output-path=lighthouse \
-      --chrome-flags="--headless --no-sandbox --disable-gpu"
+      --chrome-flags="--headless --no-sandbox --disable-gpu --ignore-certificate-errors"
   - node scripts/ci-helpers/lighthouse-metrics.js lighthouse.report.json "$TURBO_APP_NAME"
   artifacts:
     paths:
