@@ -5,6 +5,8 @@ import { useTranslation } from '@/blog/i18n/client';
 import { Icons } from '@ui/components/icons';
 import MdEditor from './md-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { Progress } from '@ui/components/progress';
+import { Separator } from '@ui/components';
 import useManabars from '../../components/hooks/use-manabars';
 import { DEFAULT_PREFERENCES, hoursAndMinutes, Preferences } from '@/blog/lib/utils';
 import { Entry } from '@hive/common-hiveio-packages/wax';
@@ -223,14 +225,25 @@ export function ReplyTextbox({
 
   return (
     <div
-      className="mb-4 flex w-full flex-col gap-6 rounded-md border bg-background-secondary p-4 text-primary shadow-sm"
+      className="mb-4 flex w-full flex-col gap-4 rounded-lg border border-border bg-background p-4 text-primary shadow-sm"
       data-testid="reply-editor"
       suppressHydrationWarning
     >
       <div className="flex flex-col gap-4">
-        <Link href={`#`}>
-          <h1 className="text-sm text-destructive">{t('post_content.footer.comment.disable_editor')}</h1>
-        </Link>
+        <div className="flex items-center justify-between rounded-md bg-background-secondary px-3 py-1.5">
+          <span className="text-xs text-muted-foreground">
+            {editMode ? t('post_content.footer.comment.editing') : t('post_content.footer.comment.replying')}
+          </span>
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+            onClick={() => handleCancel()}
+          >
+            {t('post_content.footer.comment.disable_editor')}
+          </Button>
+        </div>
+
         <div>
           <MdEditor
             windowheight={200}
@@ -241,7 +254,7 @@ export function ReplyTextbox({
             persistedValue={text}
             placeholder={t('post_content.footer.comment.reply')}
           />
-          <p className="flex items-center border-2 border-t-0 border-background-tertiary bg-background-secondary/70 p-1 text-xs font-light">
+          <div className="flex items-center rounded-b-md border-x border-b border-border bg-background-secondary/50 px-3 py-1.5 text-xs text-muted-foreground">
             {t('post_content.footer.comment.insert_images')} {t('post_content.footer.comment.selecting_them')}
             <TooltipProvider>
               <Tooltip>
@@ -251,74 +264,96 @@ export function ReplyTextbox({
                 <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <span>{t('post_content.footer.comment.account_stats')}</span>
-          <span className="text-xs">
-            {t('post_content.footer.comment.resource_credits', { value: manabarsData?.rc.percentageValue })}{' '}
-            {manabarsData?.rc.percentageValue !== 100 && manabarsData?.rc.cooldown ? (
-              <span>
-                {t('post_content.footer.comment.full_in')}
-                {hoursAndMinutes(manabarsData.rc.cooldown, t)}
-              </span>
-            ) : null}
-          </span>
-        </div>
-        <div className="flex flex-col md:flex-row">
-          <Button
-            ref={btnRef}
-            disabled={text === '' || commentMutation.isLoading || updateCommentMutation.isLoading}
-            onClick={() => postComment()}
-          >
-            {commentMutation.isLoading || updateCommentMutation.isLoading ? (
-              <CircleSpinner
-                loading={commentMutation.isLoading || updateCommentMutation.isLoading}
-                size={18}
-                color="#dc2626"
-              />
-            ) : (
-              t('post_content.footer.comment.post')
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            disabled={commentMutation.isLoading || updateCommentMutation.isLoading}
-            onClick={() => handleCancel()}
-            className="font-thiny hover:text-destructive"
-          >
-            {t('post_content.footer.comment.cancel')}
-          </Button>
+
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Button
+              ref={btnRef}
+              variant="redHover"
+              className="w-24"
+              disabled={text === '' || commentMutation.isLoading || updateCommentMutation.isLoading}
+              onClick={() => postComment()}
+            >
+              {commentMutation.isLoading || updateCommentMutation.isLoading ? (
+                <CircleSpinner
+                  loading={commentMutation.isLoading || updateCommentMutation.isLoading}
+                  size={18}
+                  color="#dc2626"
+                />
+              ) : (
+                t('post_content.footer.comment.post')
+              )}
+            </Button>
+            <Button
+              variant="ghost"
+              disabled={commentMutation.isLoading || updateCommentMutation.isLoading}
+              onClick={() => handleCancel()}
+              className="text-foreground/60 hover:text-destructive"
+            >
+              {t('post_content.footer.comment.cancel')}
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Progress
+              value={manabarsData?.rc.percentageValue ?? 0}
+              className="h-2 w-20"
+              indicatorClassName="bg-[#0088FE]"
+            />
+            <span className="text-xs tabular-nums text-muted-foreground">
+              {manabarsData?.rc.percentageValue ?? 0}% RC
+              {manabarsData?.rc.percentageValue !== 100 && manabarsData?.rc.cooldown ? (
+                <span className="ml-1 text-muted-foreground/60">
+                  ({hoursAndMinutes(manabarsData.rc.cooldown, t)})
+                </span>
+              ) : null}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between text-xs">
-          <span className="text-slate-500">{t('post_content.footer.comment.preview')}</span>
-          <div className="flex flex-col gap-1 text-end">
+      <Separator />
+
+      <div className="flex flex-col">
+        <div className="flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-background-secondary/50 px-3 py-1.5">
+          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            {t('post_content.footer.comment.preview')}
+          </span>
+          <div className="flex items-center gap-3 text-xs">
             {editMode || preferences.comment_rewards === '50%' ? null : (
-              <div>
+              <span className="text-muted-foreground">
                 {t('post_content.footer.comment.rewards')}
                 {preferences.comment_rewards === '0%'
                   ? t('post_content.footer.comment.decline_payout')
                   : t('post_content.footer.comment.power_up')}{' '}
-                <Link className="text-destructive" href={`/@${user.username}/settings`}>
+                <Link className="text-destructive hover:underline" href={`/@${user.username}/settings`}>
                   {t('post_content.footer.comment.update_settings')}
                 </Link>
-              </div>
+              </span>
             )}
             <Link href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
-              <span className="text-destructive">
+              <span className="text-muted-foreground hover:text-destructive transition-colors">
                 {t('post_content.footer.comment.markdown_styling_guide')}
               </span>
             </Link>
           </div>
         </div>
-        <RendererContainer
-          body={text}
-          author=""
-          className={commentClassName + ' max-w-full border-2 border-background-tertiary p-2'}
-        />
+        <div className="rounded-b-lg border border-border">
+          {text ? (
+            <RendererContainer
+              body={text}
+              author=""
+              className={commentClassName + ' max-w-full p-3'}
+            />
+          ) : (
+            <div className="flex w-full flex-col items-center justify-center gap-2 p-6 text-muted-foreground">
+              <Icons.eye className="h-6 w-6 opacity-20" />
+              <span className="text-xs">{t('submit_page.preview_placeholder')}</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

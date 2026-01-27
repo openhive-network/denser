@@ -422,7 +422,9 @@
         "open_in": "Open in Block Explorers"
       },
       "comment": {
-        "disable_editor": "Disable side-by-side editor",
+        "disable_editor": "Chiudi editor",
+        "editing": "Modifica commento",
+        "replying": "Rispondendo",
         "reply": "Reply",
         "insert_images": "Insert images by dragging & dropping, pasting from the clipboard, or by ",
         "selecting_them": "selecting them.",

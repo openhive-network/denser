@@ -427,7 +427,9 @@
         "open_in": "Otwórz w Block Explorers"
       },
       "comment": {
-        "disable_editor": "Disable side-by-side editor",
+        "disable_editor": "Zamknij edytor",
+        "editing": "Edytowanie komentarza",
+        "replying": "Odpowiadanie",
         "reply": "Odpowiedz",
         "insert_images": "Wstaw obrazy, przeciągając i upuszczając, wklejając ze schowka lub za pomocą",
         "selecting_them": "wyboru ich.",

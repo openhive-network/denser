@@ -422,7 +422,9 @@
         "open_in": "Open in Block Explorers"
       },
       "comment": {
-        "disable_editor": "Disable side-by-side editor",
+        "disable_editor": "关闭编辑器",
+        "editing": "编辑评论",
+        "replying": "回复中",
         "reply": "Reply",
         "insert_images": "Insert images by dragging & dropping, pasting from the clipboard, or by ",
         "selecting_them": "selecting them.",
