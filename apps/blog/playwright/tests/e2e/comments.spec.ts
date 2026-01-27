@@ -38,6 +38,10 @@ test.describe('Comments of post', () => {
     await postPage.commentCardsHeaders.first().scrollIntoViewIfNeeded();
     if (await postPage.commentCardsDescriptions.first().isHidden())
       await postPage.commentCardsHeaders.first().click();
+
+    // Move cursor away to clear any hover state from clicking
+    await page.mouse.move(0, 0);
+
     // Before hover
     expect(
       await postPage.getElementCssPropertyValue(
@@ -70,6 +74,10 @@ test.describe('Comments of post', () => {
     await postPage.commentCardsHeaders.first().scrollIntoViewIfNeeded();
     if (await postPage.commentCardsDescriptions.first().isHidden())
       await postPage.commentCardsHeaders.first().click();
+
+    // Move cursor away to clear any hover state from clicking
+    await page.mouse.move(0, 0);
+
     // Before hover
     expect(
       await postPage.getElementCssPropertyValue(
