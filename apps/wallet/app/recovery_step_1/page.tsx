@@ -1,21 +1,23 @@
+'use client';
+
 import { getChain } from '@transaction/lib/chain';
 import { Button, Input, Separator } from '@ui/components';
 import { ChangeEvent, useState } from 'react';
-import { useDebounce } from '../components/hooks/use-debounce';
-import { getOwnerHistory } from '../lib/hive';
+import { useDebounce } from '@/wallet/components/hooks/use-debounce';
+import { getOwnerHistory } from '@/wallet/lib/hive';
 
-const RecoveryStep1 = () => {
+export default function RecoveryStep1() {
   const [accountName, setAccountName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [confirmEmail, setConfirmEmail] = useState(false);
   const [accountSearchResult, setAccountSearchResult] = useState<'default' | 'loading' | 'error'>('default');
   const [nameError, setNameError] = useState('');
-  const [passwordError, setPassworError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
-  const accountSearch = async (accountName: string) => {
+  const accountSearch = async (name: string) => {
     const chain = await getChain();
-    const res = await chain.api.database_api.find_accounts({ accounts: [accountName], delayed_votes_active: false });
+    const res = await chain.api.database_api.find_accounts({ accounts: [name], delayed_votes_active: false });
     if (!res.accounts.length) {
       setAccountSearchResult('error');
       setNameError('Account not found');
@@ -56,7 +58,7 @@ const RecoveryStep1 = () => {
     if (await validateAccountOwner()) {
       setConfirmEmail(true);
     } else {
-      setPassworError('This password was not used on this account in the last 30 days.');
+      setPasswordError('This password was not used on this account in the last 30 days.');
     }
   };
 
@@ -89,7 +91,7 @@ const RecoveryStep1 = () => {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              setPassworError('');
+              setPasswordError('');
             }}
             type="password"
           />
@@ -125,6 +127,4 @@ const RecoveryStep1 = () => {
       )}
     </div>
   );
-};
-
-export default RecoveryStep1;
+}

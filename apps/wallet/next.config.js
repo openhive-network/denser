@@ -1,5 +1,4 @@
 const path = require('path');
-const withTM = require('next-transpile-modules')(['@hive/smart-signer', '@hive/ui', '@hive/transaction', '@hive/middleware']);
 const CopyPlugin = require('copy-webpack-plugin');
 const withPWA = require('next-pwa')({
   dest: 'public',
@@ -32,6 +31,10 @@ const nextConfig = {
   },
   transpilePackages: [
     '@hive/common-hiveio-packages',
+    '@hive/smart-signer',
+    '@hive/ui',
+    '@hive/transaction',
+    '@hive/middleware',
   ],
   async rewrites() {
     return [
@@ -132,7 +135,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
 const { withSentryConfig } = require('@sentry/nextjs');
 
-module.exports = withSentryConfig(withPWA(withTM(withBundleAnalyzer(nextConfig))), {
+module.exports = withSentryConfig(withPWA(withBundleAnalyzer(nextConfig)), {
   // Disable source map upload - env vars not available at build time
   // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
   sourcemaps: {
