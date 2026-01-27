@@ -45,6 +45,7 @@ import {
   MAX_TAGS
 } from '@/blog/features/post-editor/lib/utils';
 import { Separator } from '@ui/components';
+import { Progress } from '@ui/components/progress';
 import SelectImageList from '@/blog/features/post-editor/select-image-list';
 import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-settings-post-form';
 import MdEditor from '@/blog/features/post-editor/md-editor';
@@ -374,7 +375,7 @@ export default function PostForm({
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
-        className={clsx('flex flex-col gap-4 bg-background p-8', {
+        className={clsx('flex flex-col gap-4 bg-background p-4 sm:p-6 lg:p-8', {
           'lg:flex-row': sideBySide
         })}
         data-testid="form-and-preview-container"
@@ -382,14 +383,14 @@ export default function PostForm({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className={clsx('space-y-8 lg:w-1/2', { 'lg:w-full': !preview || !sideBySide })}
+            className={clsx('flex flex-col gap-6 lg:w-1/2', { 'lg:w-full': !preview || !sideBySide })}
             data-testid="form-container"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between rounded-md bg-background-secondary px-3 py-2">
               <Button
                 type="button"
-                variant="link"
-                className="h-auto p-0 text-sm text-destructive hover:text-destructive/80"
+                variant="ghost"
+                className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
                 onClick={() => setSideBySide((prev) => !prev)}
                 data-testid="enable-disable-side-by-side-editor"
               >
@@ -398,25 +399,32 @@ export default function PostForm({
               <Button
                 type="button"
                 onClick={() => setPreview((prev) => !prev)}
-                variant="link"
-                className="h-auto p-0 text-sm hover:text-destructive"
+                variant="ghost"
+                className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
                 data-testid="hide-show-preview"
               >
                 {preview ? t('submit_page.hide_preview') : t('submit_page.show_preview')}
               </Button>
             </div>
+
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder={t('submit_page.title')} {...field} data-testid="post-title-input" />
+                    <Input
+                      placeholder={t('submit_page.title')}
+                      className="h-12 border-0 border-b border-border bg-transparent px-1 text-lg font-semibold placeholder:font-normal placeholder:text-muted-foreground/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-destructive rounded-none"
+                      {...field}
+                      data-testid="post-title-input"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="postArea"
@@ -433,7 +441,7 @@ export default function PostForm({
                       />
                     </>
                   </FormControl>
-                  <div className="flex items-center border-x-2 border-b-2 border-border px-3 pb-1 text-xs text-destructive">
+                  <div className="flex items-center rounded-b-md border-x border-b border-border bg-background-secondary/50 px-3 py-1.5 text-xs text-muted-foreground">
                     {t('submit_page.insert_images_by_dragging')} {t('submit_page.selecting_them')}
                     <TooltipProvider>
                       <Tooltip>
@@ -448,113 +456,126 @@ export default function PostForm({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="postSummary"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder={t('submit_page.post_summary')}
-                        className={clsx(
-                          'pr-16',
-                          { 'border-red-500 focus-visible:ring-red-500': summaryCheck }
-                        )}
-                        {...field}
-                      />
-                      <span
-                        className={clsx(
-                          'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs tabular-nums',
-                          field.value.length > 140 ? 'text-red-500' : 'text-muted-foreground'
-                        )}
-                      >
-                        {field.value.length}/140
-                      </span>
-                    </div>
-                  </FormControl>
-                  <div className="text-xs text-destructive">{summaryCheck}</div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="tags"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder={t('submit_page.enter_your_tags')}
-                        className={clsx(
-                          'pr-12',
-                          { 'border-red-500 focus-visible:ring-red-500': tagsCheck }
-                        )}
-                        {...field}
-                        onChange={(e) => {
-                          const normalized = e.target.value.replace(/,/g, ' ');
-                          field.onChange(normalized);
-                        }}
-                      />
-                      {parseTags(field.value).length > 0 && (
+            <Separator />
+
+            <div className="flex flex-col gap-4 rounded-lg border border-border bg-background-secondary/30 p-4">
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                {t('submit_page.metadata_section')}
+              </span>
+
+              <FormField
+                control={form.control}
+                name="postSummary"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder={t('submit_page.post_summary')}
+                          className={clsx(
+                            'pr-16 bg-background',
+                            { 'border-red-500 focus-visible:ring-red-500': summaryCheck }
+                          )}
+                          {...field}
+                        />
                         <span
                           className={clsx(
                             'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs tabular-nums',
-                            parseTags(field.value).length > MAX_TAGS ? 'text-red-500' : 'text-muted-foreground'
+                            field.value.length > 140 ? 'text-red-500' : 'text-muted-foreground'
                           )}
                         >
-                          {parseTags(field.value).length}/{MAX_TAGS}
+                          {field.value.length}/140
                         </span>
-                      )}
-                    </div>
-                  </FormControl>
-                  {parseTags(field.value).length > 0 && (
-                    <div className="flex flex-wrap gap-1.5" data-testid="tag-chips">
-                      {parseTags(field.value).map((tag, index) => (
-                        <Badge
-                          key={`${tag}-${index}`}
-                          variant="secondary"
-                          className="cursor-pointer gap-1 pr-1 text-xs font-normal"
-                          onClick={() => {
-                            const tags = parseTags(field.value);
-                            tags.splice(index, 1);
-                            form.setValue('tags', tags.join(' '));
+                      </div>
+                    </FormControl>
+                    <div className="text-xs text-destructive">{summaryCheck}</div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder={t('submit_page.enter_your_tags')}
+                          className={clsx(
+                            'pr-12 bg-background',
+                            { 'border-red-500 focus-visible:ring-red-500': tagsCheck }
+                          )}
+                          {...field}
+                          onChange={(e) => {
+                            const normalized = e.target.value.replace(/,/g, ' ');
+                            field.onChange(normalized);
                           }}
-                        >
-                          {tag}
-                          <Icons.x className="h-3 w-3 opacity-60 hover:opacity-100" />
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                  <div className="text-xs text-destructive">{tagsCheck}</div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="author"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder={t('submit_page.author_if_different')}
-                      className={clsx({ 'border-red-500 focus-visible:ring-red-500': altUsernameCheck })}
-                      {...field}
-                    />
-                  </FormControl>
-                  <div className="text-xs text-red-500">{altUsernameCheck}</div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <SelectImageList content={postArea} value={selectedImg} onChange={setSelectedImg} />
+                        />
+                        {parseTags(field.value).length > 0 && (
+                          <span
+                            className={clsx(
+                              'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs tabular-nums',
+                              parseTags(field.value).length > MAX_TAGS ? 'text-red-500' : 'text-muted-foreground'
+                            )}
+                          >
+                            {parseTags(field.value).length}/{MAX_TAGS}
+                          </span>
+                        )}
+                      </div>
+                    </FormControl>
+                    {parseTags(field.value).length > 0 && (
+                      <div className="flex flex-wrap gap-1.5" data-testid="tag-chips">
+                        {parseTags(field.value).map((tag, index) => (
+                          <Badge
+                            key={`${tag}-${index}`}
+                            variant="secondary"
+                            className="cursor-pointer gap-1 pr-1 text-xs font-normal transition-colors hover:bg-destructive/10 hover:text-destructive"
+                            onClick={() => {
+                              const tags = parseTags(field.value);
+                              tags.splice(index, 1);
+                              form.setValue('tags', tags.join(' '));
+                            }}
+                          >
+                            {tag}
+                            <Icons.x className="h-3 w-3 opacity-60 hover:opacity-100" />
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                    <div className="text-xs text-destructive">{tagsCheck}</div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <Separator className="my-2" />
+              <FormField
+                control={form.control}
+                name="author"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder={t('submit_page.author_if_different')}
+                        className={clsx('bg-background', { 'border-red-500 focus-visible:ring-red-500': altUsernameCheck })}
+                        {...field}
+                      />
+                    </FormControl>
+                    <div className="text-xs text-red-500">{altUsernameCheck}</div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="flex flex-col gap-4 rounded-md border border-border p-4">
+              <SelectImageList content={postArea} value={selectedImg} onChange={setSelectedImg} />
+            </div>
+
+            <div className="flex flex-col gap-4 rounded-lg border border-border bg-background-secondary/30 p-4">
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                {t('submit_page.publishing_section')}
+              </span>
+
               {!editMode ? (
                 <div className="flex flex-col gap-2">
                   <span className="text-sm font-medium">{t('submit_page.post_options')}</span>
@@ -588,7 +609,7 @@ export default function PostForm({
                     data={watchedValues}
                   >
                     <span
-                      className="w-fit cursor-pointer text-xs text-destructive"
+                      className="w-fit cursor-pointer text-xs text-destructive hover:underline"
                       title={t('submit_page.advanced_tooltip')}
                       data-testid="advanced-settings-button"
                     >
@@ -600,9 +621,15 @@ export default function PostForm({
 
               <div className="flex flex-col gap-2">
                 <span className="text-sm font-medium">{t('submit_page.account_stats')}</span>
-                <span className="text-xs text-muted-foreground" data-testid="resource-credits-description">
-                  {t('submit_page.resource_credits', { value: manabarsData?.rc.percentageValue })}
-                </span>
+                <div className="flex items-center gap-3">
+                  <Progress
+                    value={manabarsData?.rc.percentageValue ?? 0}
+                    className="h-2 flex-1"
+                  />
+                  <span className="text-xs tabular-nums text-muted-foreground" data-testid="resource-credits-description">
+                    {manabarsData?.rc.percentageValue ?? 0}% RC
+                  </span>
+                </div>
               </div>
 
               {!editMode ? (
@@ -611,8 +638,8 @@ export default function PostForm({
                   name="category"
                   render={() => (
                     <FormItem>
-                      <div className="flex flex-wrap items-center gap-4 text-sm">
-                        {t('submit_page.posting_to')}
+                      <div className="flex flex-wrap items-center gap-3 text-sm">
+                        <span className="text-muted-foreground">{t('submit_page.posting_to')}</span>
                         <FormControl>
                           <Select
                             value={
@@ -631,7 +658,7 @@ export default function PostForm({
                             }}
                           >
                             <FormControl>
-                              <SelectTrigger data-testid="posting-to-list-trigger">
+                              <SelectTrigger className="w-auto min-w-[140px]" data-testid="posting-to-list-trigger">
                                 <SelectValue placeholder="Select category" />
                               </SelectTrigger>
                             </FormControl>
@@ -662,12 +689,12 @@ export default function PostForm({
               ) : null}
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 pt-2">
               <Button
                 ref={btnRef}
                 type="submit"
                 variant="redHover"
-                className="w-24"
+                className="w-28"
                 disabled={
                   !storedPost?.title ||
                   Boolean(tagsCheck) ||
@@ -688,7 +715,7 @@ export default function PostForm({
                 onClick={() => handleCancel()}
                 type="reset"
                 variant="ghost"
-                className="font-thiny text-foreground/60 hover:text-destructive"
+                className="text-foreground/60 hover:text-destructive"
                 data-testid="clean-post-button"
               >
                 {editMode ? t('submit_page.cancel') : t('submit_page.clean')}
@@ -697,35 +724,40 @@ export default function PostForm({
           </form>
         </Form>
         <div
-          className={clsx('flex flex-col gap-4 lg:w-1/2', {
+          className={clsx('flex flex-col lg:w-1/2', {
             hidden: !preview,
             'lg:w-full': !sideBySide,
-            'h-[80vh] ': sideBySide
+            'h-[80vh]': sideBySide
           })}
           data-testid="preview-container"
         >
-          <div className="flex flex-col-reverse sm:flex-row sm:justify-between">
-            <span className="text-slate-500">{t('submit_page.preview')}</span>
+          <div className="flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-background-secondary/50 px-4 py-2">
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              {t('submit_page.preview')}
+            </span>
             <Link
               target="_blank"
               href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
             >
-              <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
+              <span className="text-xs text-muted-foreground hover:text-destructive transition-colors">
+                {t('submit_page.markdown_styling_guide')}
+              </span>
             </Link>
           </div>
-          <div className="flex h-full overflow-y-auto">
+          <div className="flex h-full overflow-y-auto rounded-b-lg border border-border">
             {previewContent ? (
               <RendererContainer
                 body={previewContent}
                 author=""
                 className={
                   postClassName +
-                  ' w-full min-w-full self-center break-words border-2 border-border p-2'
+                  ' w-full min-w-full self-center break-words p-4'
                 }
               />
             ) : (
-              <div className="flex w-full items-center justify-center border-2 border-dashed border-border p-8 text-sm text-muted-foreground">
-                {t('submit_page.preview_placeholder')}
+              <div className="flex w-full flex-col items-center justify-center gap-2 p-8 text-muted-foreground">
+                <Icons.eye className="h-8 w-8 opacity-20" />
+                <span className="text-sm">{t('submit_page.preview_placeholder')}</span>
               </div>
             )}
           </div>

@@ -461,6 +461,8 @@
     "hide_preview": "隐藏预览",
     "show_preview": "显示预览",
     "preview_placeholder": "Start typing to see a preview of your post",
+    "metadata_section": "元数据",
+    "publishing_section": "发布",
     "title": "标题",
     "insert_images_by_dragging": "通过拖放插入图像 ",
     "insert_images_info": "通过图片图标在编辑器工具栏中提供选择图像",

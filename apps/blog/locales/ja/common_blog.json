@@ -461,6 +461,8 @@
     "hide_preview": "プレビューを非表示",
     "show_preview": "プレビューを表示",
     "preview_placeholder": "Start typing to see a preview of your post",
+    "metadata_section": "メタデータ",
+    "publishing_section": "公開設定",
     "title": "タイトル",
     "insert_images_by_dragging": "画像の挿入はドラッグ＆ドロップ または ",
     "insert_images_info": "画像の選択は、画像アイコンを介してエディターのツールバーに表示されます",

@@ -499,6 +499,8 @@
     "hide_preview": "إخفاء المعاينة",
     "show_preview": "إظهار المعاينة",
     "preview_placeholder": "Start typing to see a preview of your post",
+    "metadata_section": "البيانات الوصفية",
+    "publishing_section": "النشر",
     "title": "العنوان",
     "insert_images_by_dragging": "أدراج الصور عن طريق السحب والإفلات أو عن طريق",
     "insert_images_info": "تتوفر إمكانية تحديد الصورة في شريط أدوات المحرر عبر رمز الصورة",

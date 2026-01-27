@@ -461,6 +461,8 @@
     "hide_preview": "Nascondi anteprima",
     "show_preview": "Mostra anteprima",
     "preview_placeholder": "Start typing to see a preview of your post",
+    "metadata_section": "Metadati",
+    "publishing_section": "Pubblicazione",
     "title": "Titolo",
     "insert_images_by_dragging": "Inserisci immagini trascinandole e rilasciandole o ",
     "insert_images_info": "La selezione dell'immagine viene fornita nella barra degli strumenti dell'editor tramite l'icona dell'immagine",

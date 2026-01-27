@@ -461,6 +461,8 @@
     "hide_preview": "Masquer l'aperçu",
     "show_preview": "Afficher l'aperçu",
     "preview_placeholder": "Start typing to see a preview of your post",
+    "metadata_section": "Métadonnées",
+    "publishing_section": "Publication",
     "title": "Titre",
     "insert_images_by_dragging": "Insérer des images en les faisant glisser et en les déposant ou en ",
     "insert_images_info": "La sélection de l'image est fournie dans la barre d'outils de l'éditeur via l'icône d'image",
