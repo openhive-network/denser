@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from '
 import { Link } from '@hive/ui';
 import clsx from 'clsx';
 import * as z from 'zod';
+import { Badge } from '@hive/ui/components/badge';
 import { Button } from '@hive/ui/components/button';
 import { Input } from '@hive/ui/components/input';
 import {
@@ -39,7 +40,8 @@ import {
   validateTagInput,
   validateSummaryInput,
   validateAltUsernameInput,
-  imagePicker
+  imagePicker,
+  parseTags
 } from '@/blog/features/post-editor/lib/utils';
 import SelectImageList from '@/blog/features/post-editor/select-image-list';
 import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-settings-post-form';
@@ -277,7 +279,7 @@ export default function PostForm({
   }, [selectedImg, postArea]);
 
   async function onSubmit(data: AccountFormValues) {
-    const tags = data.tags.replace(/#/g, '').split(' ') ?? [];
+    const tags = parseTags(data.tags);
     const maxAcceptedPayout = await createAsset((data.maxAcceptedPayout * 1000).toString(), 'HBD');
     const postPermlink = await createPermlink(data?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
@@ -450,7 +452,11 @@ export default function PostForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder={t('submit_page.post_summary')} {...field} />
+                    <Input
+                      placeholder={t('submit_page.post_summary')}
+                      className={clsx({ 'border-red-500 focus-visible:ring-red-500': summaryCheck })}
+                      {...field}
+                    />
                   </FormControl>
                   <div className="text-xs text-destructive">{summaryCheck}</div>
 
@@ -464,8 +470,36 @@ export default function PostForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder={t('submit_page.enter_your_tags')} {...field} />
+                    <Input
+                      placeholder={t('submit_page.enter_your_tags')}
+                      className={clsx({ 'border-red-500 focus-visible:ring-red-500': tagsCheck })}
+                      {...field}
+                      onChange={(e) => {
+                        const normalized = e.target.value.replace(/,/g, ' ');
+                        field.onChange(normalized);
+                      }}
+                    />
                   </FormControl>
+                  {parseTags(field.value).length > 0 && (
+                    <div className="flex flex-wrap gap-1.5" data-testid="tag-chips">
+                      {parseTags(field.value).map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="cursor-pointer gap-1 pr-1 text-xs font-normal"
+                          onClick={() => {
+                            const remaining = parseTags(field.value)
+                              .filter((t) => t !== tag)
+                              .join(' ');
+                            form.setValue('tags', remaining);
+                          }}
+                        >
+                          {tag}
+                          <Icons.x className="h-3 w-3 opacity-60 hover:opacity-100" />
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                   <div className="text-xs text-destructive">{tagsCheck}</div>
                   <FormMessage />
                 </FormItem>
@@ -477,7 +511,11 @@ export default function PostForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder={t('submit_page.author_if_different')} {...field} />
+                    <Input
+                      placeholder={t('submit_page.author_if_different')}
+                      className={clsx({ 'border-red-500 focus-visible:ring-red-500': altUsernameCheck })}
+                      {...field}
+                    />
                   </FormControl>
                   <div className="text-xs text-red-500">{altUsernameCheck}</div>
                   <FormMessage />

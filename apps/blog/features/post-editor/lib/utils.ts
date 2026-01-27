@@ -9,9 +9,28 @@ import { Dispatch, SetStateAction } from 'react';
 const logger = getLogger('app');
 
 export const MAX_TAGS = 8;
+/**
+ * Normalizes a raw tag input string by replacing commas with spaces
+ * and collapsing multiple spaces into one.
+ */
+export function normalizeTagInput(value: string): string {
+  return value.replace(/,/g, ' ').replace(/ {2,}/g, ' ');
+}
+
+/**
+ * Parses a normalized tag string into an array of non-empty tags.
+ */
+export function parseTags(value: string): string[] {
+  return normalizeTagInput(value)
+    .trim()
+    .replace(/#/g, '')
+    .split(/ +/)
+    .filter(Boolean);
+}
+
 export function validateTagInput(value: string, required: boolean, t: TFunction<'common_blog', undefined>) {
   if (!value || value.trim() === '') return required ? t('submit_page.category_selector.required') : null;
-  const tags = value.trim().replace(/#/g, '').split(/ +/);
+  const tags = parseTags(value);
   return tags.length > MAX_TAGS
     ? t('submit_page.category_selector.use_limited_amount_of_categories', {
         amount: MAX_TAGS
@@ -20,24 +39,22 @@ export function validateTagInput(value: string, required: boolean, t: TFunction<
       ? t('submit_page.category_selector.maximum_tag_length_is_24_characters')
       : tags.find((c) => c.split('-').length > 2)
         ? t('submit_page.category_selector.use_one_dash')
-        : tags.find((c) => c.indexOf(',') >= 0)
-          ? t('submit_page.category_selector.use_spaces_to_separate_tags')
-          : tags.find((c) => /[A-Z]/.test(c))
-            ? t('submit_page.category_selector.use_only_lowercase_letters')
-            : tags.find((c) => !/^[a-z0-9-#]+$/.test(c))
-              ? t('submit_page.category_selector.use_only_allowed_characters')
-              : tags.find((c) => !/^[a-z-#]/.test(c))
-                ? t('submit_page.category_selector.must_start_with_a_letter')
-                : tags.find((c) => !/[a-z0-9]$/.test(c))
-                  ? t('submit_page.category_selector.must_end_with_a_letter_or_number')
-                  : tags.filter((c) => isCommunity(c)).length > 0
-                    ? t('submit_page.category_selector.must_not_include_hivemind_community_owner')
-                    : tags.reduce((acc, tag, index, array) => {
-                          const isDuplicate = array.slice(index + 1).some((b) => b === tag);
-                          return acc || isDuplicate;
-                        }, false)
-                      ? t('submit_page.category_selector.tags_cannot_be_repeated')
-                      : null;
+        : tags.find((c) => /[A-Z]/.test(c))
+          ? t('submit_page.category_selector.use_only_lowercase_letters')
+          : tags.find((c) => !/^[a-z0-9-#]+$/.test(c))
+            ? t('submit_page.category_selector.use_only_allowed_characters')
+            : tags.find((c) => !/^[a-z-#]/.test(c))
+              ? t('submit_page.category_selector.must_start_with_a_letter')
+              : tags.find((c) => !/[a-z0-9]$/.test(c))
+                ? t('submit_page.category_selector.must_end_with_a_letter_or_number')
+                : tags.filter((c) => isCommunity(c)).length > 0
+                  ? t('submit_page.category_selector.must_not_include_hivemind_community_owner')
+                  : tags.reduce((acc, tag, index, array) => {
+                        const isDuplicate = array.slice(index + 1).some((b) => b === tag);
+                        return acc || isDuplicate;
+                      }, false)
+                    ? t('submit_page.category_selector.tags_cannot_be_repeated')
+                    : null;
 }
 
 export function validateSummaryInput(value: string, t: TFunction<'common_wallet', undefined>) {
