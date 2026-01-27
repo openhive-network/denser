@@ -625,6 +625,7 @@ export default function PostForm({
                   <Progress
                     value={manabarsData?.rc.percentageValue ?? 0}
                     className="h-2 flex-1"
+                    indicatorClassName="bg-[#0088FE]"
                   />
                   <span className="text-xs tabular-nums text-muted-foreground" data-testid="resource-credits-description">
                     {manabarsData?.rc.percentageValue ?? 0}% RC
