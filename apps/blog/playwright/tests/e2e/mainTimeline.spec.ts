@@ -367,12 +367,13 @@ test.describe('Home page tests', () => {
   test('validate the first post (for New filter)', async ({ page, request, browserName }) => {
     await homePage.goto();
 
+    // Wait for posts to load before interacting with filter
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible();
     // click 'New' value of posts filter
     await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('New').locator('..').waitFor();
-    await homePage.getFilterPostsList.getByText('New').locator('..').click();
+    await homePage.getFilterPostsList.getByText('New').click();
+    await expect(homePage.getPostListNew).toBeVisible();
     await expect(homePage.getFilterPosts).toHaveText('New');
-    await homePage.page.waitForSelector(homePage.getPostListNew['_selector']);
 
     const url = process.env.REACT_APP_API_ENDPOINT;
 
@@ -503,33 +504,28 @@ test.describe('Home page tests', () => {
     await expect(homePage.getFilterPosts).toHaveText('Trending');
     // click 'New' value of posts filter
     await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('New').locator('..').waitFor();
-    await homePage.getFilterPostsList.getByText('New').locator('..').click();
-    await homePage.page.waitForSelector(homePage.getPostListNew['_selector']);
+    await homePage.getFilterPostsList.getByText('New').click();
+    await expect(homePage.getPostListNew).toBeVisible();
     await expect(homePage.getFilterPosts).toHaveText('New');
     // click 'Hot' value of posts filter
     await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('Hot').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Hot').click();
-    await homePage.page.waitForSelector(homePage.getPostListHot['_selector']);
+    await expect(homePage.getPostListHot).toBeVisible();
     await expect(homePage.getFilterPosts).toHaveText('Hot');
     // click 'Payout' value of posts filter
     await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('Payouts').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Payouts').click();
-    await homePage.page.waitForSelector(homePage.getPostListPayouts['_selector']);
+    await expect(homePage.getPostListPayouts).toBeVisible();
     await expect(homePage.getFilterPosts).toHaveText('Payouts');
-    // click 'Promoted' value of posts filter
+    // click 'Muted' value of posts filter
     await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('Muted').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Muted').click();
-    await homePage.page.waitForSelector(homePage.getPostListMuted['_selector']);
+    await expect(homePage.getPostListMuted).toBeVisible();
     await expect(homePage.getFilterPosts).toHaveText('Muted');
     // click 'Trending' value of posts filter
     await homePage.getFilterPosts.click();
-    await homePage.getFilterPostsList.getByText('Trending').locator('..').waitFor();
     await homePage.getFilterPostsList.getByText('Trending').click();
-    await homePage.page.waitForSelector(homePage.getPostListTrending['_selector']);
+    await expect(homePage.getPostListTrending).toBeVisible();
     await expect(homePage.getFilterPosts).toHaveText('Trending');
   });
 

@@ -402,7 +402,8 @@ export class HomePage {
 
     let numberOfCommentsInPost: Locator;
     let postTitle: Locator;
-    let postTitleText: any;
+    let postTitleText: string | null;
+    let foundPostWithVisibleComments = false;
 
     for (let postIndex = 0; postIndex < postsComments.length; postIndex++) {
       numberOfCommentsInPost = postsComments[postIndex];
@@ -419,8 +420,29 @@ export class HomePage {
         await expect(this.postPage.articleTitle).toBeVisible();
         expect(await this.postPage.articleTitle.textContent()).toBe(postTitleText);
 
-        break;
+        // Wait for comments to load since we navigated to a post with comments
+        // Use commentListItems (individual items) instead of commentListLocator (empty container)
+        // The container <ul> is always rendered but has zero height until items load
+        // Some posts may show comment count > 0 but have no visible comments
+        // (e.g., GDPR-deleted users, muted content), so use a shorter timeout
+        // and try the next post if comments don't appear
+        try {
+          await this.postPage.commentListItems.first().waitFor({ state: 'visible', timeout: 15000 });
+          // Comments found and visible - success!
+          foundPostWithVisibleComments = true;
+          break;
+        } catch {
+          // Comments didn't appear within timeout, try next post
+          console.log(`No visible comments found for "${postTitleText}", trying next post...`);
+          await this.page.goBack();
+          await this.page.waitForLoadState('domcontentloaded');
+          continue;
+        }
       }
+    }
+
+    if (!foundPostWithVisibleComments) {
+      throw new Error('Could not find any post with visible comments on the page');
     }
   }
 
