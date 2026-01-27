@@ -511,16 +511,15 @@ export default function PostForm({
                   </FormControl>
                   {parseTags(field.value).length > 0 && (
                     <div className="flex flex-wrap gap-1.5" data-testid="tag-chips">
-                      {parseTags(field.value).map((tag) => (
+                      {parseTags(field.value).map((tag, index) => (
                         <Badge
-                          key={tag}
+                          key={`${tag}-${index}`}
                           variant="secondary"
                           className="cursor-pointer gap-1 pr-1 text-xs font-normal"
                           onClick={() => {
-                            const remaining = parseTags(field.value)
-                              .filter((t) => t !== tag)
-                              .join(' ');
-                            form.setValue('tags', remaining);
+                            const tags = parseTags(field.value);
+                            tags.splice(index, 1);
+                            form.setValue('tags', tags.join(' '));
                           }}
                         >
                           {tag}
@@ -638,7 +637,7 @@ export default function PostForm({
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
-                              <SelectGroup>{t('submit_page.my_communities')}</SelectGroup>
+                              <SelectGroup className="py-2 ml-2">{t('submit_page.my_communities')}</SelectGroup>
                               {mySubsData?.map((e) => (
                                 <SelectItem key={e[0]} value={e[0]}>
                                   {e[1]}
