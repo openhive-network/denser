@@ -40,7 +40,7 @@ export default function ParamLayout({ children }: { children: ReactNode }) {
   const { t } = useTranslation('common_wallet');
   const params = useParams<{ param: string }>();
   const pathname = usePathname();
-  const param = params.param ?? '';
+  const param = params?.param ?? '';
   const username = param.startsWith('@') ? param.slice(1) : '';
 
   const {
