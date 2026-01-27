@@ -4,6 +4,8 @@ const removeImports = require('next-remove-imports')();
 const withPWA = require('next-pwa')({
   dest: 'public',
   disable: process.env.NODE_ENV !== 'production',
+  skipWaiting: true,
+  clientsClaim: true,
   runtimeCaching: [
     // User-specific pages - never cache (notifications, settings, feed)
     // These rules must come BEFORE the defaults to take precedence
