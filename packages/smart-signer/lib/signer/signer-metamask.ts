@@ -73,7 +73,7 @@ export class SignerMetaMask extends Signer {
         trx: authTx.toApiJson(),
         pack: TTransactionPackType.HF_26
       });
-      console.log('authTx.transaction.signatures', authTx.transaction.signatures);
+      logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
       logger.error('SignerMetaMask.signTransaction error: %o', error);

@@ -78,7 +78,7 @@ export class SignerKeychain extends Signer {
         trx: authTx.toApiJson(),
         pack: TTransactionPackType.LEGACY
       });
-      console.log('authTx.transaction.signatures', authTx.transaction.signatures);
+      logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
       logger.error('SignerKeychain.signTransaction error: %o', error);

@@ -217,7 +217,7 @@ export function ReplyTextbox({
       }
     } catch (error) {
       if (btnRef.current) {
-        btnRef.current.disabled = true;
+        btnRef.current.disabled = false;
       }
       logger.error(error);
     }
