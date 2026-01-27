@@ -15,7 +15,12 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http');
 
+const path = require('path');
+
 const COMMENT_MARKER = '<!-- lighthouse-metrics-comment -->';
+const thresholds = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'lighthouse-thresholds.json'), 'utf8')
+);
 
 const {
   CI_API_V4_URL,
@@ -23,18 +28,18 @@ const {
   CI_JOB_TOKEN,
   CI_PIPELINE_URL,
   CI_COMMIT_REF_NAME,
-  GITLAB_TOKEN,        // Project/group access token (preferred for MR comments)
-  PRIVATE_TOKEN,       // Alternative token name
+  LIGHTHOUSE_MR_COMMENT_TOKEN, // Project/group access token (preferred for MR comments)
+  PRIVATE_TOKEN,               // Alternative token name
 } = process.env;
 
-// Use GITLAB_TOKEN or PRIVATE_TOKEN for auth (CI_JOB_TOKEN can't post MR comments)
-const authToken = GITLAB_TOKEN || PRIVATE_TOKEN || CI_JOB_TOKEN;
-const authHeader = (GITLAB_TOKEN || PRIVATE_TOKEN) ? 'PRIVATE-TOKEN' : 'JOB-TOKEN';
+// Use LIGHTHOUSE_MR_COMMENT_TOKEN or PRIVATE_TOKEN for auth (CI_JOB_TOKEN can't post MR comments)
+const authToken = LIGHTHOUSE_MR_COMMENT_TOKEN || PRIVATE_TOKEN || CI_JOB_TOKEN;
+const authHeader = (LIGHTHOUSE_MR_COMMENT_TOKEN || PRIVATE_TOKEN) ? 'PRIVATE-TOKEN' : 'JOB-TOKEN';
 
 let mergeRequestIid = process.env.CI_MERGE_REQUEST_IID;
 
 if (!CI_API_V4_URL || !CI_PROJECT_ID || !authToken) {
-  console.error('Missing required CI environment variables (need GITLAB_TOKEN or CI_JOB_TOKEN)');
+  console.error('Missing required CI environment variables (need LIGHTHOUSE_MR_COMMENT_TOKEN or CI_JOB_TOKEN)');
   process.exit(1);
 }
 
@@ -73,25 +78,36 @@ function parseReport(path, appName) {
   }
 }
 
-function scoreEmoji(score) {
+function scoreEmoji(score, threshold) {
+  if (threshold !== undefined && score < threshold) return '❌';
   if (score >= 90) return '🟢';
   if (score >= 50) return '🟠';
   return '🔴';
+}
+
+function formatScoreCell(score, threshold) {
+  const emoji = scoreEmoji(score, threshold);
+  if (threshold !== undefined) {
+    return `${emoji} ${score} (≥${threshold})`;
+  }
+  return `${emoji} ${score}`;
 }
 
 function formatReport(data) {
   if (!data) return null;
 
   const { app, scores, metrics } = data;
+  const appThresholds = thresholds[app] || {};
+
   const lines = [
     `### ${app.charAt(0).toUpperCase() + app.slice(1)}`,
     '',
-    '| Category | Score |',
-    '|----------|-------|',
-    `| Performance | ${scoreEmoji(scores.performance)} ${scores.performance} |`,
-    `| Accessibility | ${scoreEmoji(scores.accessibility)} ${scores.accessibility} |`,
-    `| Best Practices | ${scoreEmoji(scores['best-practices'])} ${scores['best-practices']} |`,
-    `| SEO | ${scoreEmoji(scores.seo)} ${scores.seo} |`,
+    '| Category | Score (threshold) |',
+    '|----------|-------------------|',
+    `| Performance | ${formatScoreCell(scores.performance, appThresholds.performance)} |`,
+    `| Accessibility | ${formatScoreCell(scores.accessibility, appThresholds.accessibility)} |`,
+    `| Best Practices | ${formatScoreCell(scores['best-practices'], appThresholds['best-practices'])} |`,
+    `| SEO | ${formatScoreCell(scores.seo, appThresholds.seo)} |`,
     '',
     '**Core Web Vitals:**',
     `- FCP: ${metrics.FCP} | LCP: ${metrics.LCP} | TBT: ${metrics.TBT}`,

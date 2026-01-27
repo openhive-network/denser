@@ -727,6 +727,7 @@ e2e-report-aggregate-wallet:
       --output-path="${TURBO_APP_NAME}-lighthouse" \
       --chrome-flags="--headless --no-sandbox --disable-gpu --ignore-certificate-errors"
   - node scripts/ci-helpers/lighthouse-metrics.js "${TURBO_APP_NAME}-lighthouse.report.json" "$TURBO_APP_NAME"
+  - node scripts/ci-helpers/lighthouse-check-thresholds.js "${TURBO_APP_NAME}-lighthouse.report.json" "$TURBO_APP_NAME"
   artifacts:
     paths:
     - ${TURBO_APP_NAME}-lighthouse.report.html
@@ -782,7 +783,7 @@ lighthouse-metrics-wallet:
     PORT: 4000
 
 # Posts Lighthouse summary as MR comment
-# Requires GITLAB_TOKEN CI variable with api scope (CI_JOB_TOKEN lacks MR comment permissions)
+# Requires LIGHTHOUSE_MR_COMMENT_TOKEN CI variable with api scope (CI_JOB_TOKEN lacks MR comment permissions)
 lighthouse-mr-comment:
   extends: .job-defaults
   stage: test-report-aggregate

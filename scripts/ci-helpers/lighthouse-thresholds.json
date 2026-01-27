@@ -1,0 +1,14 @@
+{
+  "blog": {
+    "performance": 90,
+    "accessibility": 70,
+    "best-practices": 90,
+    "seo": 90
+  },
+  "wallet": {
+    "performance": 90,
+    "accessibility": 70,
+    "best-practices": 90,
+    "seo": 90
+  }
+}
