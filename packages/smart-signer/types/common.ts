@@ -32,8 +32,16 @@ export type User = {
     strict: boolean;
 }
 
+export interface OAuthState {
+    clientId: string;
+    redirectUri: string;
+    scope?: string;
+    state?: string;
+}
+
 export interface IronSessionData {
     user?: User;
+    oauthState?: OAuthState;
 }
 
 export interface SiteConfigItem {
