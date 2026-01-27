@@ -608,10 +608,8 @@ test.describe('Home page tests', () => {
 
   test('navigation search link is visible', async ({ page }) => {
     await homePage.goto();
-    // await page.getByRole('banner').getByRole('combobox').click();
-    // await page.getByRole('option').nth(1).click();
 
-    await expect(homePage.getNavSearchAIInput).toBeVisible();
+    await expect(homePage.getNavSearchClassicInput).toBeVisible();
   });
 
   test('move to the test trending page for searching by tags', async ({ page }) => {

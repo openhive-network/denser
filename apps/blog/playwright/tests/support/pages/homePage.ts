@@ -30,6 +30,7 @@ export class HomePage {
   readonly getNavSearchInput: Locator;
   readonly getNavSearchLink: Locator;
   readonly getNavSearchAIInput: Locator;
+  readonly getNavSearchClassicInput: Locator;
   readonly getNavSearchTagsInput: Locator;
   readonly getNavUserAvatar: Locator;
   readonly getNavCreatePost: Locator;
@@ -229,7 +230,8 @@ export class HomePage {
     // this.getNavSearchInput = page.locator('header div nav input[type="search"]'); // old one
     this.getNavSearchInput = page.locator('input[type="search"]');
     this.getNavSearchLink = page.locator('[data-testid="navbar-search-link"]');
-    this.getNavSearchAIInput = page.getByPlaceholder('AI Search');
+    this.getNavSearchAIInput = page.getByPlaceholder('AI Search', { exact: true });
+    this.getNavSearchClassicInput = page.getByPlaceholder('Search...', { exact: true });
     this.getNavSearchTagsInput = page.getByPlaceholder('Search tags...');
     this.getNavUserAvatar = page.locator('[data-testid="profile-menu"]');
     this.getNavProfileMenuContent = page.locator('[data-testid="profile-menu-content"]');
