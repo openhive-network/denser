@@ -382,18 +382,20 @@ export default function PostForm({
             data-testid="form-container"
           >
             <div className="flex items-center justify-between">
-              <h1
-                className="cursor-pointer text-sm text-destructive"
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto p-0 text-sm text-destructive hover:text-destructive/80"
                 onClick={() => setSideBySide((prev) => !prev)}
                 data-testid="enable-disable-side-by-side-editor"
               >
                 {sideBySide ? t('submit_page.disable_side') : t('submit_page.enable_side')}
-              </h1>
+              </Button>
               <Button
                 type="button"
                 onClick={() => setPreview((prev) => !prev)}
                 variant="link"
-                className="hover:text-destructive"
+                className="h-auto p-0 text-sm hover:text-destructive"
                 data-testid="hide-show-preview"
               >
                 {preview ? t('submit_page.hide_preview') : t('submit_page.show_preview')}
@@ -636,18 +638,22 @@ export default function PostForm({
               <span className="text-sm text-destructive">{t('submit_page.markdown_styling_guide')}</span>
             </Link>
           </div>
-          {previewContent ? (
-            <div className="flex h-full overflow-y-scroll">
+          <div className="flex h-full overflow-y-auto">
+            {previewContent ? (
               <RendererContainer
                 body={previewContent}
                 author=""
                 className={
                   postClassName +
-                  ' w-full min-w-full self-center overflow-y-scroll break-words border-2 border-border p-2'
+                  ' w-full min-w-full self-center break-words border-2 border-border p-2'
                 }
               />
-            </div>
-          ) : null}
+            ) : (
+              <div className="flex w-full items-center justify-center border-2 border-dashed border-border p-8 text-sm text-muted-foreground">
+                {t('submit_page.preview_placeholder')}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

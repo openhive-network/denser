@@ -550,6 +550,7 @@
     "must_contain_only": "Must contain only letters and numbers",
     "hide_preview": "Hide preview",
     "show_preview": "Show preview",
+    "preview_placeholder": "Start typing to see a preview of your post",
     "title": "Title",
     "insert_images_by_dragging": "Insert images by dragging & dropping or by ",
     "insert_images_info": "Selecting image is provide in editor toolbar via picture icon",

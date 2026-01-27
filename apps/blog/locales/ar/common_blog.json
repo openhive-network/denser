@@ -498,6 +498,7 @@
     "must_contain_only": "يجب أن يحتوي على أحرف وأرقام فقط",
     "hide_preview": "إخفاء المعاينة",
     "show_preview": "إظهار المعاينة",
+    "preview_placeholder": "Start typing to see a preview of your post",
     "title": "العنوان",
     "insert_images_by_dragging": "أدراج الصور عن طريق السحب والإفلات أو عن طريق",
     "insert_images_info": "تتوفر إمكانية تحديد الصورة في شريط أدوات المحرر عبر رمز الصورة",

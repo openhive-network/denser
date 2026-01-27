@@ -466,6 +466,7 @@
     "must_contain_only": "Должно содержать только буквы и цифры",
     "hide_preview": "Скрыть превью",
     "show_preview": "Показать превью",
+    "preview_placeholder": "Start typing to see a preview of your post",
     "title": "Заголовок",
     "insert_images_by_dragging": "Вставить изображения перетаскиванием или ",
     "insert_images_info": "Выбор изображения осуществляется на панели инструментов редактора с помощью значка изображения.",

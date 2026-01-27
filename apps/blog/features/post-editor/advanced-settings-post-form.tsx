@@ -283,7 +283,7 @@ export function AdvancedSettingsPostForm({
   return (
     <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="h-full overflow-scroll sm:max-w-[425px]">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-2xl">
             {t('submit_page.advanced_settings_dialog.advanced_settings')}
@@ -297,7 +297,7 @@ export function AdvancedSettingsPostForm({
             </span>
             <span>{t('submit_page.advanced_settings_dialog.value_of_the_maximum')}</span>
             <div className="flex flex-col gap-1">
-              <div className="my-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:justify-center">
+              <div className="my-3 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:justify-center">
                 {maxPayoutOptions.map((e) => (
                   <div key={e.value} className="text-center">
                     <Checkbox
@@ -336,7 +336,7 @@ export function AdvancedSettingsPostForm({
               {t('submit_page.advanced_settings_dialog.author_rewards')}
             </span>
             <span>{t('submit_page.advanced_settings_dialog.what_type_of_tokens')}</span>
-            <div className="my-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:justify-center">
+            <div className="my-3 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:justify-center">
               {authorRewardsOptions.map((e) => (
                 <div key={e.value} className="text-center">
                   <Checkbox

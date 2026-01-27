@@ -465,6 +465,7 @@
     "must_contain_only": "Może zawierać tylko litery i liczby",
     "hide_preview": "Schowaj podgląd",
     "show_preview": "Pokaż podgląd",
+    "preview_placeholder": "Start typing to see a preview of your post",
     "title": "Tytuł",
     "insert_images_by_dragging": "Wstaw obrazki przez przeciągnij i upuść lub przez ",
     "insert_images_info": "Wybór zdjęcia odbywa się przez ikone obrazka na pasku narzędzi edytora",
