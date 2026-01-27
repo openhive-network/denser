@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useRef } from 'react';
+import React, { KeyboardEvent, useEffect, useRef } from 'react';
 import { cn } from '@ui/lib/utils';
 import { SearchMode, useSearch } from '@ui/hooks/use-search';
 import SearchSortSelect from './search-select';
@@ -33,6 +33,20 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
   const { inputValue, setInputValue, secondInputValue, setSecondInputValue, mode, setMode, handleSearch } =
     useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasUserSelectedMode = useRef(false);
+
+  // Auto-switch to AI mode when HiveSense becomes available,
+  // but only if the user hasn't manually changed the mode and has no active query
+  useEffect(() => {
+    if (aiAvailable && mode === 'classic' && !hasUserSelectedMode.current && !inputValue) {
+      setMode('ai');
+    }
+  }, [aiAvailable]);
+
+  const handleModeChange = (newMode: SearchMode) => {
+    hasUserSelectedMode.current = true;
+    setMode(newMode);
+  };
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -51,7 +65,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
   return (
     <div className={cn('w-full', className)}>
       <div className="relative flex w-full items-center rounded-full border border-input bg-background ring-offset-background">
-        <ModeSelect handleMode={(e) => setMode(e)} mode={mode} aiAvailable={aiAvailable} />
+        <ModeSelect handleMode={handleModeChange} mode={mode} aiAvailable={aiAvailable} />
         <input
           disabled={!aiAvailable && mode === 'ai'}
           ref={inputRef}

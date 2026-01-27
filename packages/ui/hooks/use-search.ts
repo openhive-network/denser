@@ -29,7 +29,7 @@ export function useSearch() {
 
   const currentMode = getMode(query, aiQuery, userTopicQuery);
   const [inputValue, setInputValue] = useState(query ?? aiQuery ?? topicQuery ?? '');
-  const [mode, setMode] = useState<SearchMode>(currentMode ?? 'ai');
+  const [mode, setMode] = useState<SearchMode>(currentMode ?? 'classic');
   const [secondInputValue, setSecondInputValue] = useState(userTopicQuery ?? '');
 
   // Sync state with URL params (e.g., when navigating back)
