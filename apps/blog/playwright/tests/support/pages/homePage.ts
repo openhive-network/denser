@@ -446,6 +446,55 @@ export class HomePage {
     }
   }
 
+  /**
+   * Find and navigate to the first post that has VISIBLE comments.
+   * For non-logged users, some comments may be hidden due to low reputation or muted status.
+   * This method will iterate through posts until it finds one with actually visible comments.
+   * @returns true if a post with visible comments was found, false otherwise
+   */
+  async moveToTheFirstPostWithVisibleComments(): Promise<boolean> {
+    const postsCard = await this.getMainTimeLineOfPosts.all();
+    const postsComments = await this.getPostChildren.all();
+
+    for (let postIndex = 0; postIndex < postsComments.length; postIndex++) {
+      const numberOfCommentsInPost = postsComments[postIndex];
+      const postTitle = postsCard[postIndex].locator('[data-testid="post-title"] a');
+      const commentsCount = await numberOfCommentsInPost.textContent();
+
+      // Skip posts with 0 comments
+      if (commentsCount === '0') {
+        continue;
+      }
+
+      const postTitleText = await postTitle.textContent();
+      console.log(`Checking post "${postTitleText}" with ${commentsCount} comments...`);
+
+      // Navigate to the post
+      await postTitle.click();
+      await this.postPage.page.waitForSelector(this.postPage.articleAuthorData['_selector']);
+      await expect(this.postPage.articleTitle).toBeVisible();
+
+      // Wait for comments to potentially load
+      await this.page.waitForLoadState('networkidle');
+
+      // Check if there are VISIBLE comments (not hidden for non-logged users)
+      const visibleCommentsCount = await this.postPage.commentCardsHeaders.count();
+
+      if (visibleCommentsCount > 0) {
+        console.log(`Found post with ${visibleCommentsCount} visible comments: "${postTitleText}"`);
+        return true;
+      }
+
+      // No visible comments, go back and try next post
+      console.log(`Post "${postTitleText}" has no visible comments for non-logged user, trying next...`);
+      await this.page.goBack();
+      await this.page.waitForSelector('[data-testid="post-list-item"]');
+    }
+
+    console.log('No posts with visible comments found on the current page');
+    return false;
+  }
+
   async moveToTheFirstPostCommentContantPageByClickingResponses() {
     const firstPostCardTitle = await this.getFirstPostTitle.textContent();
 
