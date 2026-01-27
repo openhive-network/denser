@@ -6,6 +6,7 @@ import { CommentViewPage } from '../support/pages/commentViewPage';
 import { ApiHelper } from '../support/apiHelper';
 import { LoginForm } from '../support/pages/loginForm';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
+import { navigateToPostWithVisibleCommentsOrSkip } from '../support/commentsTestHelper';
 
 test.describe('Comments of post', () => {
   let homePage: HomePage;
@@ -15,11 +16,13 @@ test.describe('Comments of post', () => {
     homePage = new HomePage(page);
     postPage = new PostPage(page);
   });
+
   test('Validate a first comment of a first post page with number of comments is visible', async ({
     page
   }) => {
     await homePage.goto();
-    await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
+    await navigateToPostWithVisibleCommentsOrSkip(page, homePage, postPage);
+
     await postPage.commentCardsHeaders.first().scrollIntoViewIfNeeded();
     await expect(postPage.commentCardsHeaders.first()).toBeVisible();
     if (await postPage.commentCardsDescriptions.first().isHidden())
@@ -30,7 +33,8 @@ test.describe('Comments of post', () => {
 
   test('Validate a hovered comment changes backgroundcolor style', async ({ page }) => {
     await homePage.goto();
-    await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
+    await navigateToPostWithVisibleCommentsOrSkip(page, homePage, postPage);
+
     await postPage.commentCardsHeaders.first().scrollIntoViewIfNeeded();
     if (await postPage.commentCardsDescriptions.first().isHidden())
       await postPage.commentCardsHeaders.first().click();
@@ -61,7 +65,8 @@ test.describe('Comments of post', () => {
     await homePage.goto();
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
-    await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
+    await navigateToPostWithVisibleCommentsOrSkip(page, homePage, postPage);
+
     await postPage.commentCardsHeaders.first().scrollIntoViewIfNeeded();
     if (await postPage.commentCardsDescriptions.first().isHidden())
       await postPage.commentCardsHeaders.first().click();
@@ -88,7 +93,8 @@ test.describe('Comments of post', () => {
     const commentViewPage = new CommentViewPage(page);
 
     await homePage.goto();
-    await homePage.moveToTheFirstPostWithCommentsNumberMoreThanZero();
+    await navigateToPostWithVisibleCommentsOrSkip(page, homePage, postPage);
+
     await postPage.commentCardsHeaders.first().scrollIntoViewIfNeeded();
     await expect(postPage.commentCardsHeaders.first()).toBeVisible();
     if (await postPage.commentCardsDescriptions.first().isHidden())
