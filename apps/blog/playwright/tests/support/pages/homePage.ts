@@ -395,64 +395,12 @@ export class HomePage {
     expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
   }
 
-  async moveToTheFirstPostWithCommentsNumberMoreThanZero() {
-    // Find first post with comments go inside
-    const postsCard = await this.getMainTimeLineOfPosts.all();
-    const postsComments = await this.getPostChildren.all();
-
-    let numberOfCommentsInPost: Locator;
-    let postTitle: Locator;
-    let postTitleText: string | null;
-    let foundPostWithVisibleComments = false;
-
-    for (let postIndex = 0; postIndex < postsComments.length; postIndex++) {
-      numberOfCommentsInPost = postsComments[postIndex];
-      postTitle = postsCard[postIndex].locator('[data-testid="post-title"] a');
-
-      console.log('Number comments of a post: ', await numberOfCommentsInPost.textContent());
-      console.log('Post Title:  ', await postTitle.textContent());
-
-      if ((await numberOfCommentsInPost.textContent()) !== '0') {
-        postTitleText = await postTitle.textContent();
-
-        await postTitle.click();
-        await this.postPage.page.waitForSelector(this.postPage.articleAuthorData['_selector']);
-        await expect(this.postPage.articleTitle).toBeVisible();
-        expect(await this.postPage.articleTitle.textContent()).toBe(postTitleText);
-
-        // Wait for comments to load since we navigated to a post with comments
-        // Use commentListItems (individual items) instead of commentListLocator (empty container)
-        // The container <ul> is always rendered but has zero height until items load
-        // Some posts may show comment count > 0 but have no visible comments
-        // (e.g., GDPR-deleted users, muted content), so use a shorter timeout
-        // and try the next post if comments don't appear
-        try {
-          await this.postPage.commentListItems.first().waitFor({ state: 'visible', timeout: 15000 });
-          // Comments found and visible - success!
-          foundPostWithVisibleComments = true;
-          break;
-        } catch {
-          // Comments didn't appear within timeout, try next post
-          console.log(`No visible comments found for "${postTitleText}", trying next post...`);
-          await this.page.goBack();
-          await this.page.waitForLoadState('domcontentloaded');
-          continue;
-        }
-      }
-    }
-
-    if (!foundPostWithVisibleComments) {
-      throw new Error('Could not find any post with visible comments on the page');
-    }
-  }
-
-  /**
-   * Find and navigate to the first post that has VISIBLE comments.
-   * For non-logged users, some comments may be hidden due to low reputation or muted status.
-   * This method will iterate through posts until it finds one with actually visible comments.
-   * @returns true if a post with visible comments was found, false otherwise
+/**
+   * Find and navigate to the first post that has comments count > 0.
+   * Note: This only checks the comment count badge, not whether comments are actually visible.
+   * For non-logged users who need to verify visible comments, use commentsTestHelper instead.
    */
-  async moveToTheFirstPostWithVisibleComments(): Promise<boolean> {
+  async moveToTheFirstPostWithCommentsNumberMoreThanZero() {
     const postsCard = await this.getMainTimeLineOfPosts.all();
     const postsComments = await this.getPostChildren.all();
 
@@ -461,38 +409,17 @@ export class HomePage {
       const postTitle = postsCard[postIndex].locator('[data-testid="post-title"] a');
       const commentsCount = await numberOfCommentsInPost.textContent();
 
-      // Skip posts with 0 comments
-      if (commentsCount === '0') {
-        continue;
+      if (commentsCount !== '0') {
+        const postTitleText = await postTitle.textContent();
+
+        await postTitle.click();
+        await this.postPage.articleAuthorData.waitFor({ state: 'visible' });
+        await expect(this.postPage.articleTitle).toBeVisible();
+        expect(await this.postPage.articleTitle.textContent()).toBe(postTitleText);
+
+        break;
       }
-
-      const postTitleText = await postTitle.textContent();
-      console.log(`Checking post "${postTitleText}" with ${commentsCount} comments...`);
-
-      // Navigate to the post
-      await postTitle.click();
-      await this.postPage.page.waitForSelector(this.postPage.articleAuthorData['_selector']);
-      await expect(this.postPage.articleTitle).toBeVisible();
-
-      // Wait for comments to potentially load
-      await this.page.waitForLoadState('networkidle');
-
-      // Check if there are VISIBLE comments (not hidden for non-logged users)
-      const visibleCommentsCount = await this.postPage.commentCardsHeaders.count();
-
-      if (visibleCommentsCount > 0) {
-        console.log(`Found post with ${visibleCommentsCount} visible comments: "${postTitleText}"`);
-        return true;
-      }
-
-      // No visible comments, go back and try next post
-      console.log(`Post "${postTitleText}" has no visible comments for non-logged user, trying next...`);
-      await this.page.goBack();
-      await this.page.waitForSelector('[data-testid="post-list-item"]');
     }
-
-    console.log('No posts with visible comments found on the current page');
-    return false;
   }
 
   async moveToTheFirstPostCommentContantPageByClickingResponses() {
