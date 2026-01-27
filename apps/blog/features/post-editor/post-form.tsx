@@ -41,8 +41,10 @@ import {
   validateSummaryInput,
   validateAltUsernameInput,
   imagePicker,
-  parseTags
+  parseTags,
+  MAX_TAGS
 } from '@/blog/features/post-editor/lib/utils';
+import { Separator } from '@ui/components';
 import SelectImageList from '@/blog/features/post-editor/select-image-list';
 import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-settings-post-form';
 import MdEditor from '@/blog/features/post-editor/md-editor';
@@ -452,14 +454,26 @@ export default function PostForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      placeholder={t('submit_page.post_summary')}
-                      className={clsx({ 'border-red-500 focus-visible:ring-red-500': summaryCheck })}
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Input
+                        placeholder={t('submit_page.post_summary')}
+                        className={clsx(
+                          'pr-16',
+                          { 'border-red-500 focus-visible:ring-red-500': summaryCheck }
+                        )}
+                        {...field}
+                      />
+                      <span
+                        className={clsx(
+                          'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs tabular-nums',
+                          field.value.length > 140 ? 'text-red-500' : 'text-muted-foreground'
+                        )}
+                      >
+                        {field.value.length}/140
+                      </span>
+                    </div>
                   </FormControl>
                   <div className="text-xs text-destructive">{summaryCheck}</div>
-
                   <FormMessage />
                 </FormItem>
               )}
@@ -470,15 +484,30 @@ export default function PostForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      placeholder={t('submit_page.enter_your_tags')}
-                      className={clsx({ 'border-red-500 focus-visible:ring-red-500': tagsCheck })}
-                      {...field}
-                      onChange={(e) => {
-                        const normalized = e.target.value.replace(/,/g, ' ');
-                        field.onChange(normalized);
-                      }}
-                    />
+                    <div className="relative">
+                      <Input
+                        placeholder={t('submit_page.enter_your_tags')}
+                        className={clsx(
+                          'pr-12',
+                          { 'border-red-500 focus-visible:ring-red-500': tagsCheck }
+                        )}
+                        {...field}
+                        onChange={(e) => {
+                          const normalized = e.target.value.replace(/,/g, ' ');
+                          field.onChange(normalized);
+                        }}
+                      />
+                      {parseTags(field.value).length > 0 && (
+                        <span
+                          className={clsx(
+                            'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs tabular-nums',
+                            parseTags(field.value).length > MAX_TAGS ? 'text-red-500' : 'text-muted-foreground'
+                          )}
+                        >
+                          {parseTags(field.value).length}/{MAX_TAGS}
+                        </span>
+                      )}
+                    </div>
                   </FormControl>
                   {parseTags(field.value).length > 0 && (
                     <div className="flex flex-wrap gap-1.5" data-testid="tag-chips">
@@ -523,140 +552,149 @@ export default function PostForm({
               )}
             />
             <SelectImageList content={postArea} value={selectedImg} onChange={setSelectedImg} />
-            {!editMode ? (
-              <div className="flex flex-col gap-2">
-                <span>{t('submit_page.post_options')}</span>
 
-                {watchedValues.maxAcceptedPayout < 1000000 && watchedValues.maxAcceptedPayout > 0 ? (
-                  <span className="text-xs">
-                    {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}:{' '}
-                    {watchedValues.maxAcceptedPayout} HBD
+            <Separator className="my-2" />
+
+            <div className="flex flex-col gap-4 rounded-md border border-border p-4">
+              {!editMode ? (
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium">{t('submit_page.post_options')}</span>
+
+                  {watchedValues.maxAcceptedPayout < 1000000 && watchedValues.maxAcceptedPayout > 0 ? (
+                    <span className="text-xs text-muted-foreground">
+                      {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}:{' '}
+                      {watchedValues.maxAcceptedPayout} HBD
+                    </span>
+                  ) : null}
+
+                  {watchedValues.beneficiaries.length > 0 ? (
+                    <span className="text-xs text-muted-foreground">
+                      {t('submit_page.advanced_settings_dialog.beneficiaries', {
+                        num: watchedValues.beneficiaries.length
+                      })}
+                    </span>
+                  ) : null}
+
+                  <span className="text-xs text-muted-foreground" data-testid="author-rewards-description">
+                    {t('submit_page.author_rewards')}
+                    {watchedValues.maxAcceptedPayout === 0
+                      ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
+                      : watchedValues.payoutType === '100%'
+                        ? t('submit_page.power_up')
+                        : ' 50% HBD / 50% HP'}
                   </span>
-                ) : null}
-
-                {watchedValues.beneficiaries.length > 0 ? (
-                  <span className="text-xs">
-                    {t('submit_page.advanced_settings_dialog.beneficiaries', {
-                      num: watchedValues.beneficiaries.length
-                    })}
-                  </span>
-                ) : null}
-
-                <span className="text-xs" data-testid="author-rewards-description">
-                  {t('submit_page.author_rewards')}
-                  {watchedValues.maxAcceptedPayout === 0
-                    ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
-                    : watchedValues.payoutType === '100%'
-                      ? t('submit_page.power_up')
-                      : ' 50% HBD / 50% HP'}
-                </span>
-                <AdvancedSettingsPostForm
-                  username={username}
-                  updateForm={(e) => handleLoadTemplate(e)}
-                  data={watchedValues}
-                >
-                  <span
-                    className="w-fit cursor-pointer text-xs text-destructive"
-                    title={t('submit_page.advanced_tooltip')}
-                    data-testid="advanced-settings-button"
+                  <AdvancedSettingsPostForm
+                    username={username}
+                    updateForm={(e) => handleLoadTemplate(e)}
+                    data={watchedValues}
                   >
-                    {t('submit_page.advanced_settings')}
-                  </span>
-                </AdvancedSettingsPostForm>
-              </div>
-            ) : null}
+                    <span
+                      className="w-fit cursor-pointer text-xs text-destructive"
+                      title={t('submit_page.advanced_tooltip')}
+                      data-testid="advanced-settings-button"
+                    >
+                      {t('submit_page.advanced_settings')}
+                    </span>
+                  </AdvancedSettingsPostForm>
+                </div>
+              ) : null}
 
-            <div className="flex flex-col gap-2">
-              <span>{t('submit_page.account_stats')}</span>
-              <span className="text-xs" data-testid="resource-credits-description">
-                {t('submit_page.resource_credits', { value: manabarsData?.rc.percentageValue })}
-              </span>
-            </div>
-            {!editMode ? (
-              <FormField
-                control={form.control}
-                name="category"
-                render={() => (
-                  <FormItem>
-                    <div className="flex flex-wrap items-center gap-4">
-                      {t('submit_page.posting_to')}
-                      <FormControl>
-                        <Select
-                          value={
-                            communityPosting
-                              ? communityPosting
-                              : storedPost?.category
-                                ? storedPost.category
-                                : 'blog'
-                          }
-                          onValueChange={(e) => {
-                            form.setValue('category', e);
-                            storePost({ ...storedPost, category: e });
-                            if (categoryParam) {
-                              router.replace(withBasePath(`/submit.html`));
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-medium">{t('submit_page.account_stats')}</span>
+                <span className="text-xs text-muted-foreground" data-testid="resource-credits-description">
+                  {t('submit_page.resource_credits', { value: manabarsData?.rc.percentageValue })}
+                </span>
+              </div>
+
+              {!editMode ? (
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={() => (
+                    <FormItem>
+                      <div className="flex flex-wrap items-center gap-4 text-sm">
+                        {t('submit_page.posting_to')}
+                        <FormControl>
+                          <Select
+                            value={
+                              communityPosting
+                                ? communityPosting
+                                : storedPost?.category
+                                  ? storedPost.category
+                                  : 'blog'
                             }
-                          }}
-                        >
-                          <FormControl>
-                            <SelectTrigger data-testid="posting-to-list-trigger">
-                              <SelectValue placeholder="Select category" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
-                            <SelectGroup>{t('submit_page.my_communities')}</SelectGroup>
-                            {mySubsData?.map((e) => (
-                              <SelectItem key={e[0]} value={e[0]}>
-                                {e[1]}
-                              </SelectItem>
-                            ))}
-                            {!mySubsData?.some((e) => e[0] === storedPost.category) &&
-                            storedPost.category !== 'blog' ? (
-                              <>
-                                <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>
-                                <SelectItem value={communityData?.name ?? storedPost.category}>
-                                  {communityData?.title}
+                            onValueChange={(e) => {
+                              form.setValue('category', e);
+                              storePost({ ...storedPost, category: e });
+                              if (categoryParam) {
+                                router.replace(withBasePath(`/submit.html`));
+                              }
+                            }}
+                          >
+                            <FormControl>
+                              <SelectTrigger data-testid="posting-to-list-trigger">
+                                <SelectValue placeholder="Select category" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
+                              <SelectGroup>{t('submit_page.my_communities')}</SelectGroup>
+                              {mySubsData?.map((e) => (
+                                <SelectItem key={e[0]} value={e[0]}>
+                                  {e[1]}
                                 </SelectItem>
-                              </>
-                            ) : null}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </FormItem>
+                              ))}
+                              {!mySubsData?.some((e) => e[0] === storedPost.category) &&
+                              storedPost.category !== 'blog' ? (
+                                <>
+                                  <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>
+                                  <SelectItem value={communityData?.name ?? storedPost.category}>
+                                    {communityData?.title}
+                                  </SelectItem>
+                                </>
+                              ) : null}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              ) : null}
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button
+                ref={btnRef}
+                type="submit"
+                variant="redHover"
+                className="w-24"
+                disabled={
+                  !storedPost?.title ||
+                  Boolean(tagsCheck) ||
+                  Boolean(summaryCheck) ||
+                  Boolean(altUsernameCheck) ||
+                  postMutation.isPending
+                }
+                data-testid="submit-post-button"
+              >
+                {postMutation.isPending ? (
+                  <CircleSpinner loading={postMutation.isPending} size={18} color="#dc2626" />
+                ) : (
+                  t('submit_page.submit')
                 )}
-              />
-            ) : null}
-            <Button
-              ref={btnRef}
-              type="submit"
-              variant="redHover"
-              className="w-24"
-              disabled={
-                !storedPost?.title ||
-                Boolean(tagsCheck) ||
-                Boolean(summaryCheck) ||
-                Boolean(altUsernameCheck) ||
-                postMutation.isPending
-              }
-              data-testid="submit-post-button"
-            >
-              {postMutation.isPending ? (
-                <CircleSpinner loading={postMutation.isPending} size={18} color="#dc2626" />
-              ) : (
-                t('submit_page.submit')
-              )}
-            </Button>
-            <Button
-              disabled={postMutation.isPending}
-              onClick={() => handleCancel()}
-              type="reset"
-              variant="ghost"
-              className="font-thiny text-foreground/60 hover:text-destructive"
-              data-testid="clean-post-button"
-            >
-              {editMode ? t('submit_page.cancel') : t('submit_page.clean')}
-            </Button>
+              </Button>
+              <Button
+                disabled={postMutation.isPending}
+                onClick={() => handleCancel()}
+                type="reset"
+                variant="ghost"
+                className="font-thiny text-foreground/60 hover:text-destructive"
+                data-testid="clean-post-button"
+              >
+                {editMode ? t('submit_page.cancel') : t('submit_page.clean')}
+              </Button>
+            </div>
           </form>
         </Form>
         <div
