@@ -32,13 +32,18 @@ async function test({ page }) {
   await page.waitForLoadState('domcontentloaded', { timeout: TIMEOUTS.ELEMENT_VISIBLE });
   console.log(`   URL: ${page.url()}`);
 
+  // Wait for page content to fully load
+  await page.waitForLoadState('networkidle', { timeout: TIMEOUTS.NAVIGATION }).catch(() => {});
+
   console.log('\n3. Checking page elements...');
 
-  // Article title on post page
+  // Article title on post page - wait for it to appear
   let titleElement = page.locator(SELECTORS.ARTICLE_TITLE);
+  await titleElement.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE }).catch(() => {});
   let titleVisible = await titleElement.isVisible().catch(() => false);
   if (!titleVisible) {
     titleElement = page.locator('h1, h2').first();
+    await titleElement.waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT }).catch(() => {});
     titleVisible = await titleElement.isVisible().catch(() => false);
   }
 
@@ -51,9 +56,11 @@ async function test({ page }) {
 
   // Check for post content
   let contentElement = page.locator('[data-testid="author-data-post-footer"], [data-testid="hashtags-post"]');
+  await contentElement.first().waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT }).catch(() => {});
   let contentVisible = await contentElement.first().isVisible().catch(() => false);
   if (!contentVisible) {
     contentElement = page.locator('article, [class*="prose"], [class*="markdown"]').first();
+    await contentElement.waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT }).catch(() => {});
     contentVisible = await contentElement.isVisible().catch(() => false);
   }
 
@@ -66,6 +73,7 @@ async function test({ page }) {
 
   // Check for votes element
   const votesElement = page.locator(`${SELECTORS.COMMENT_VOTES}, [data-testid="post-total-votes"]`);
+  await votesElement.first().waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT }).catch(() => {});
   const votesVisible = await votesElement.first().isVisible().catch(() => false);
 
   if (votesVisible) {
