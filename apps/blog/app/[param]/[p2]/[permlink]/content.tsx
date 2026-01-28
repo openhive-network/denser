@@ -469,6 +469,12 @@ const PostContent = () => {
                       noContext={!!discussionState && !discussionState.some((e) => e.depth === 1)}
                     />
                   )}
+                  {postData._optimistic && (
+                    <div className="my-2 flex items-center gap-2 rounded-md border border-blue-400/50 bg-blue-50 px-3 py-2 text-sm text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">
+                      <CircleSpinner size={14} color="#3b82f6" loading />
+                      <span>{t('global.publishing')}</span>
+                    </div>
+                  )}
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <UserInfo
                       permlink={permlink}

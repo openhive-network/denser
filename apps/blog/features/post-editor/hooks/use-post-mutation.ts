@@ -11,6 +11,7 @@ const logger = getLogger('app');
 
 /**
  * Makes post transaction.
+ * Uses optimistic UI - post page is available immediately after broadcast.
  *
  * @export
  * @return {*}
@@ -18,7 +19,64 @@ const logger = getLogger('app');
 export function usePostMutation() {
   const queryClient = useQueryClient();
   const { user } = useUserClient();
+
   const postMutation = useMutation({
+    // Seed cache with optimistic post data before broadcast
+    onMutate: async (params: {
+      permlink: string;
+      title: string;
+      body: string;
+      tags: string[];
+      category: string;
+      summary: string;
+      altAuthor: string;
+      image?: string;
+      editMode: boolean;
+      beneficiaries: Beneficiarie[];
+      maxAcceptedPayout: NaiAsset;
+      percentHbd: number;
+    }) => {
+      const { permlink, title, body, tags, category, summary, image, editMode } = params;
+      const username = user.username;
+
+      // For new posts, seed the post data cache so the post page renders immediately
+      if (!editMode) {
+        const optimisticPost = {
+          author: username,
+          permlink,
+          title,
+          body,
+          category,
+          tags,
+          json_metadata: {
+            tags,
+            image: image ? [image] : [],
+            description: summary,
+            app: 'denser/0.1'
+          },
+          created: new Date().toISOString(),
+          updated: new Date().toISOString(),
+          active_votes: [],
+          children: 0,
+          author_reputation: 40,
+          pending_payout_value: '0.000 HBD',
+          curator_payout_value: '0.000 HBD',
+          author_payout_value: '0.000 HBD',
+          payout: 0,
+          payout_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          is_paidout: false,
+          net_rshares: 0,
+          url: `/${category}/@${username}/${permlink}`,
+          _optimistic: true
+        };
+
+        // Seed the post data cache
+        queryClient.setQueryData(['postData', username, permlink], optimisticPost);
+      }
+
+      return { username, permlink, editMode };
+    },
+
     mutationFn: async (params: {
       permlink: string;
       title: string;
@@ -48,6 +106,8 @@ export function usePostMutation() {
         editMode
       } = params;
 
+      // Use observe: false - don't wait for blockchain confirmation
+      // A successful broadcast guarantees inclusion in the blockchain
       if (!editMode && !!maxAcceptedPayout) {
         const broadcastResult = await transactionService.post(
           permlink,
@@ -61,8 +121,9 @@ export function usePostMutation() {
           altAuthor,
           percentHbd,
           image,
-          { observe: true }
+          { observe: false }
         );
+        logger.info('Post broadcast successful: %o', { permlink, broadcastResult });
         return { ...params, broadcastResult };
       }
       if (editMode) {
@@ -75,13 +136,15 @@ export function usePostMutation() {
           summary,
           altAuthor,
           image,
-          { observe: true }
+          { observe: false }
         );
+        logger.info('Post update broadcast successful: %o', { permlink, broadcastResult });
         return { ...params, broadcastResult };
       } else {
         throw new Error('maxAcceptedPayout is required for new posts');
       }
     },
+
     onSuccess: (data) => {
       const { permlink } = data;
       const { username } = user;
@@ -90,13 +153,20 @@ export function usePostMutation() {
         description: 'Your post has been submitted',
         variant: 'success'
       });
+      // Invalidate after delay to fetch real data from Hivemind
+      // Block time is ~3 seconds, but Hivemind indexing can take up to 8 seconds
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
         queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
         queryClient.invalidateQueries({ queryKey: ['accountEntriesInfinite'] });
-      }, 4000);
+      }, 8000);
     },
-    onError: (error: any, variables) => {
+
+    onError: (error: unknown, variables, context) => {
+      // Remove optimistic post data on error
+      if (context && !variables.editMode) {
+        queryClient.removeQueries({ queryKey: ['postData', context.username, context.permlink] });
+      }
       handleError(error, {
         method: 'usePostMutation',
         params: variables
@@ -119,7 +189,7 @@ export function useDeletePostMutation() {
   const deletePostMutation = useMutation({
     mutationFn: async (params: { permlink: string }) => {
       const { permlink } = params;
-      const broadcastResult = await transactionService.deleteComment(permlink, { observe: true });
+      const broadcastResult = await transactionService.deleteComment(permlink, { observe: false });
       const response = { ...params, broadcastResult };
       return response;
     },
@@ -134,7 +204,7 @@ export function useDeletePostMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
         queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-      }, 4000);
+      }, 8000);
     },
     onError: (error: any, variables) => {
       handleError(error, {

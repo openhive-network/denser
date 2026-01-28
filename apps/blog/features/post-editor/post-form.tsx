@@ -313,9 +313,8 @@ export default function PostForm({
       };
       try {
         await postMutation.mutateAsync(postParams);
-        setIsSubmitting(true);
-        // Wait 2 seconds before redirecting
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Broadcast succeeded - post is guaranteed to be in blockchain
+        // No need to wait, redirect immediately to the post page
       } catch (error) {
         setIsSubmitting(false);
         handleError(error, { method: 'post', params: postParams });
@@ -332,11 +331,10 @@ export default function PostForm({
           refreshPage();
         }
       } else {
-        if (categoryParam) {
-          await router.push(withBasePath(`/created/${categoryParam}`), undefined);
-        } else {
-          await router.push(withBasePath(`/created/${tags[0]}`), undefined);
-        }
+        // Redirect to the actual post page for instant viewing
+        // The post data is already seeded in React Query cache via onMutate
+        const postUrl = `/${postParams.category}/@${username}/${postParams.permlink}`;
+        await router.push(withBasePath(postUrl), undefined);
       }
       if (btnRef.current) {
         btnRef.current.disabled = false;

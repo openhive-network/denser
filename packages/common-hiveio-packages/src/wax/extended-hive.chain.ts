@@ -86,6 +86,7 @@ export interface Entry {
   original_entry?: Entry;
   //added only when using optimistic update, not backend property
   _temporary?: boolean;
+  _optimistic?: boolean;
 }
 
 export interface JsonMetadata {

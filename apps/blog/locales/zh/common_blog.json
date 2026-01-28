@@ -2,6 +2,7 @@
   "global": {
     "no_rewards": "没有等待兑换的奖励",
     "loading": "Loading",
+    "publishing": "发布中...",
     "something_went_wrong": "Something went wrong",
     "unavailable_for_legal_reasons": "因法律原因不可用",
     "time_ago": {

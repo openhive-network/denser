@@ -9,6 +9,7 @@ const logger = getLogger('app');
 
 /**
  * Makes comment transaction.
+ * Uses optimistic UI - comment appears immediately with full interactivity.
  *
  * @export
  * @return {*}
@@ -18,41 +19,33 @@ export function useCommentMutation() {
   const { user } = useUserClient();
 
   const commentMutation = useMutation({
-    mutationFn: async (params: {
+    // Optimistic update BEFORE broadcast
+    onMutate: async (params: {
       parentAuthor: string;
       parentPermlink: string;
       body: string;
       preferences: Preferences;
       discussionPermlink: string;
     }) => {
-      const { parentAuthor, parentPermlink, body, preferences, discussionPermlink } = params;
+      const { parentAuthor, parentPermlink, body, discussionPermlink } = params;
       const queryKey = ['discussionData', discussionPermlink];
-      const broadcastResult = await transactionService.comment(
-        parentAuthor,
-        parentPermlink,
-        body,
-        preferences,
-        { observe: true }
-      );
+
+      // Cancel any outgoing refetches to avoid overwriting optimistic update
+      await queryClient.cancelQueries({ queryKey });
+
+      // Snapshot previous data for rollback
       const prevData: Record<string, Entry> | undefined = queryClient.getQueryData(queryKey);
-      const response = { ...params, broadcastResult, prevData, queryKey };
-      logger.info('Done comment transaction: %o', response);
-      return response;
-    },
-    onSettled: (data) => {
-      if (!data) return;
-      const { queryKey, prevData, body, parentAuthor, parentPermlink } = data;
-      if (!!prevData) {
-        const list = [...Object.keys(prevData).map((key) => prevData[key])].map((post) => {
-          if (post.permlink === parentPermlink && post.author === parentAuthor) {
-            const newPostData = { ...post, children: 1, replies: [...(post.replies || [])] };
-            return newPostData;
-          }
-          return post;
-        });
-        const parentPost = list.find(
+
+      if (prevData) {
+        // Find parent post for context
+        const parentPost = Object.values(prevData).find(
           (post) => post.author === parentAuthor && post.permlink === parentPermlink
         );
+
+        // Generate temporary permlink for optimistic comment
+        const tempPermlink = `re-${parentAuthor}-${Date.now()}`;
+
+        // Create optimistic comment with _optimistic flag (allows full interactivity)
         const newComment = {
           active_votes: [],
           author: user.username,
@@ -80,34 +73,89 @@ export function useCommentMutation() {
           payout_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
           pending_payout_value: '0.000 HBD',
           percent_hbd: 10000,
-          permlink: `${user.username}/re-${parentAuthor}-${parentPost?.post_id ?? 0}`,
+          permlink: tempPermlink,
           post_id: (parentPost?.post_id ?? 0) + 1,
           promoted: '',
           replies: [],
           title: `Re: ${parentPost?.title ?? 'No title'}`,
           updated: new Date().toISOString(),
-          url: `/${parentAuthor}/${parentPermlink}/@${user.username}/${parentPermlink}`,
-          _temporary: true
+          url: `/${parentPost?.category ?? ''}/@${user.username}/${tempPermlink}`,
+          _optimistic: true
         };
-        const newData: Record<string, Entry> = { ...prevData, [newComment.permlink]: newComment };
-        queryClient.setQueryData<Record<string, Entry>>(queryKey, () => {
-          return newData;
-        });
+
+        // Update parent's children count
+        const updatedData: Record<string, Entry> = {};
+        for (const [key, post] of Object.entries(prevData)) {
+          if (post.permlink === parentPermlink && post.author === parentAuthor) {
+            updatedData[key] = {
+              ...post,
+              children: (post.children || 0) + 1,
+              replies: [...(post.replies || []), tempPermlink]
+            };
+          } else {
+            updatedData[key] = post;
+          }
+        }
+
+        // Add the new comment
+        updatedData[tempPermlink] = newComment as Entry;
+
+        // Update cache immediately
+        queryClient.setQueryData<Record<string, Entry>>(queryKey, updatedData);
       }
+
+      // Return context for rollback
+      return { prevData, queryKey };
     },
+
+    mutationFn: async (params: {
+      parentAuthor: string;
+      parentPermlink: string;
+      body: string;
+      preferences: Preferences;
+      discussionPermlink: string;
+    }) => {
+      const { parentAuthor, parentPermlink, body, preferences, discussionPermlink } = params;
+
+      // Broadcast without waiting for blockchain confirmation
+      // A successful broadcast guarantees inclusion in the blockchain
+      const broadcastResult = await transactionService.comment(
+        parentAuthor,
+        parentPermlink,
+        body,
+        preferences,
+        { observe: false }
+      );
+
+      logger.info('Comment broadcast successful: %o', { discussionPermlink, broadcastResult });
+      return { ...params, broadcastResult };
+    },
+
     onSuccess: (data) => {
-      const { queryKey } = data;
+      const { discussionPermlink } = data;
+      const queryKey = ['discussionData', discussionPermlink];
+
       logger.info('useCommentMutation onSuccess data: %o', data);
       toast({
         title: 'Comment posted successfully',
         description: 'Your comment has been posted successfully.',
         variant: 'success'
       });
+
+      // Invalidate after delay to fetch real data from Hivemind
+      // Block time is ~3 seconds, but Hivemind indexing can take up to 8 seconds
+      // Use 8 seconds to ensure the comment is indexed before we refetch
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey });
-      }, 10000);
+      }, 8000);
     },
-    onError: (error: any, variables) => {
+
+    onError: (error: unknown, variables, context) => {
+      // Rollback to previous data on error
+      if (context?.prevData && context?.queryKey) {
+        queryClient.setQueryData(context.queryKey, context.prevData);
+      }
+
       handleError(error, {
         method: 'useCommentMutation',
         params: variables
@@ -142,7 +190,7 @@ export function useUpdateCommentMutation() {
         permlink,
         body,
         {
-          observe: true
+          observe: false
         }
       );
       const prevData: Record<string, Entry> | undefined = queryClient.getQueryData([
@@ -186,7 +234,7 @@ export function useUpdateCommentMutation() {
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['discussionData', discussionPermlink] });
         queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
-      }, 10000);
+      }, 8000);
     },
     onError: (error: any, variables) => {
       handleError(error, {
@@ -210,7 +258,7 @@ export function useDeleteCommentMutation() {
   const deleteCommentMutation = useMutation({
     mutationFn: async (params: { permlink: string; discussionPermlink: string }) => {
       const { permlink, discussionPermlink } = params;
-      const broadcastResult = await transactionService.deleteComment(permlink, { observe: true });
+      const broadcastResult = await transactionService.deleteComment(permlink, { observe: false });
       const prevData: Record<string, Entry> | undefined = queryClient.getQueryData([
         'discussionData',
         discussionPermlink

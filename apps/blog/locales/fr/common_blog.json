@@ -2,6 +2,7 @@
   "global": {
     "no_rewards": "Aucune récompense en attente d'échange.",
     "loading": "Loading",
+    "publishing": "Publication...",
     "something_went_wrong": "Something went wrong",
     "unavailable_for_legal_reasons": "Indisponible pour des raisons légales",
     "time_ago": {

@@ -2,6 +2,7 @@
   "global": {
     "no_rewards": "引き換えが保留中の特典はありません。",
     "loading": "Loading",
+    "publishing": "投稿中...",
     "something_went_wrong": "Something went wrong",
     "unavailable_for_legal_reasons": "法的な理由により利用できません",
     "time_ago": {

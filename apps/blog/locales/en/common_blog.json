@@ -2,6 +2,7 @@
   "global": {
     "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
+    "publishing": "Publishing...",
     "something_went_wrong": "Something went wrong",
     "unavailable_for_legal_reasons": "Unavailable For Legal Reasons",
     "time_ago": {

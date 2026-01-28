@@ -175,7 +175,8 @@ const CommentListItem = memo(function CommentListItem({
                 <Card
                   className={cn(`mb-4 w-full min-w-0 overflow-hidden bg-background text-primary depth-${comment.depth}`, {
                     'opacity-50 hover:opacity-100': hiddenComment || tempraryHidden,
-                    'border border-destructive': comment._temporary
+                    'border border-destructive': comment._temporary,
+                    'border border-blue-400/50': comment._optimistic
                   })}
                 >
                   <CardHeader className="px-0 py-0">
@@ -186,12 +187,18 @@ const CommentListItem = memo(function CommentListItem({
                       >
                         <div className="flex w-full items-center justify-between text-xs sm:text-sm">
                           <div className="my-1 flex flex-wrap items-center pl-1">
-                            {comment._temporary ? (
+                            {comment._temporary && !comment._optimistic ? (
                               <div className="flex items-center pl-1 font-bold hover:cursor-pointer hover:text-destructive">
                                 {comment.author}
                               </div>
                             ) : (
                               <>
+                                {comment._optimistic && (
+                                  <span className="mr-2 flex items-center gap-1 text-xs text-blue-500">
+                                    <CircleSpinner size={10} color="#3b82f6" loading />
+                                    {t('global.publishing')}
+                                  </span>
+                                )}
                                 <img
                                   className=" h-[20px] w-[20px] rounded-3xl sm:hidden"
                                   height="20"
@@ -250,7 +257,7 @@ const CommentListItem = memo(function CommentListItem({
                               </>
                             )}
                           </div>
-                          {comment._temporary ? null : !hiddenComment ? (
+                          {comment._temporary && !comment._optimistic ? null : !hiddenComment ? (
                             <div className="flex items-center">
                               {flagText && comment.community && !user.isLoggedIn ? (
                                 <DialogLogin>
@@ -277,7 +284,7 @@ const CommentListItem = memo(function CommentListItem({
                           <span className="ml-4 text-xs">{t('cards.comment_card.will_be_hidden')}</span>
                         ) : null}
 
-                        {comment._temporary ? null : hiddenComment ? (
+                        {comment._temporary && !comment._optimistic ? null : hiddenComment ? (
                           <div className="flex w-full justify-between">
                             <AccordionTrigger
                               className="pb-0 pt-1 !no-underline "
@@ -307,7 +314,7 @@ const CommentListItem = memo(function CommentListItem({
                           </div>
                         ) : null}
 
-                        {comment._temporary ? null : !openState ? (
+                        {comment._temporary && !comment._optimistic ? null : !openState ? (
                           <div
                             className="ml-4 flex h-5 items-center gap-2 text-xs sm:text-sm"
                             data-testid="comment-card-footer"
@@ -376,7 +383,7 @@ const CommentListItem = memo(function CommentListItem({
                     </CardContent>
                     <Separator orientation="horizontal" />{' '}
                     <CardFooter className="px-2 py-1">
-                      {comment._temporary ? null : (
+                      {comment._temporary && !comment._optimistic ? null : (
                         <div
                           className="flex items-center gap-2 pt-1 text-xs sm:text-sm"
                           data-testid="comment-card-footer"
