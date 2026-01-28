@@ -280,7 +280,7 @@ test.describe('Post page tests', () => {
     await expect(page.locator('span[title]').nth(1)).toBeVisible();
     await expect(page.locator('span[title]').nth(1)).toHaveText(timestampText);
 
-    await expect(page.locator('.px-1').first()).toHaveText(timestampText);
+    await expect(page.locator('[data-testid="post-footer-timestamp"]')).toHaveText(timestampText);
   });
 
   test('Post Footer - Authored by', async ({ page, browserName }) => {

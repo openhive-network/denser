@@ -566,7 +566,7 @@ const PostContent = () => {
                     {/* Meta info */}
                     <div className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
                       <Clock className="mr-1 h-4 w-4" />
-                      <span title={String(parseDate(postData.created))}>
+                      <span title={String(parseDate(postData.created))} data-testid="post-footer-timestamp">
                         <TimeAgo date={postData.created} />
                       </span>
                       <span className="mx-1">·</span>
