@@ -26,16 +26,25 @@ const ReblogTrigger = ({
   author,
   permlink,
   dataTestidTooltipContent,
-  dataTestidTooltipIcon
+  dataTestidTooltipIcon,
+  isReblogged: isRebloggedProp
 }: {
   author: string;
   permlink: string;
   dataTestidTooltipContent: string;
   dataTestidTooltipIcon: string;
+  /** Optional: pass from parent to avoid duplicate queries when multiple triggers exist */
+  isReblogged?: boolean;
 }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
-  const { data: isReblogged } = useRebloggedByQuery(author, permlink, user.username);
+  // Skip query if isReblogged is provided from parent
+  const { data: isRebloggedQuery } = useRebloggedByQuery(
+    isRebloggedProp !== undefined ? '' : author,
+    isRebloggedProp !== undefined ? '' : permlink,
+    isRebloggedProp !== undefined ? '' : user.username
+  );
+  const isReblogged = isRebloggedProp ?? isRebloggedQuery;
 
   const reblogMutation = useReblogMutation();
 

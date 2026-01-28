@@ -8,6 +8,7 @@ import NoDataError from '@/blog/components/no-data-error';
 import ChangeTitleDialog from '@/blog/features/community-profile/change-title-dialog';
 import DetailsCardHover from '@/blog/features/list-of-posts/details-card-hover';
 import ReblogTrigger from '@/blog/features/list-of-posts/reblog-trigger';
+import { useRebloggedByQuery } from '@/blog/features/list-of-posts/hooks/use-reblogged-by-query';
 import { useDeletePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
 import PostForm from '@/blog/features/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
@@ -131,6 +132,12 @@ const PostContent = () => {
     }
   });
   const [mutedPost, setMutedPost] = useState<boolean>(postData?.stats?.gray || false);
+  // Single reblog query shared by header and footer ReblogTrigger components
+  const { data: isReblogged } = useRebloggedByQuery(
+    postData?.author ?? '',
+    postData?.permlink ?? '',
+    user.username
+  );
   const userFromGDPR = gdprUserList.some((e) => e === postData?.author);
 
   const crossedPost = postData?.json_metadata.tags?.includes('cross-post');
@@ -490,6 +497,7 @@ const PostContent = () => {
                           permlink={postData.permlink}
                           dataTestidTooltipContent="post-header-reblog-tooltip"
                           dataTestidTooltipIcon="post-header-reblog-icon"
+                          isReblogged={isReblogged}
                         />
                         <span className="text-xs font-medium">
                           {t('cards.post_card.reblog')}
@@ -668,6 +676,7 @@ const PostContent = () => {
                         permlink={postData.permlink}
                         dataTestidTooltipContent="post-footer-reblog-tooltip"
                         dataTestidTooltipIcon="post-footer-reblog-icon"
+                        isReblogged={isReblogged}
                       />
                       <span className="text-border">|</span>
                       {user && user.isLoggedIn ? (
