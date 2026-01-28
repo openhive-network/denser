@@ -170,6 +170,7 @@ export default function WitnessesPage() {
   };
 
   useEffect(() => {
+    if (!searchParams) return;
     const highlight = searchParams.get('highlight');
     setVoteInput(highlight ?? '');
   }, [searchParams]);
