@@ -44,7 +44,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
   });
 
   const { data: communityData, isLoading: isCommunityLoading } = useQuery({
-    queryKey: ['community', community],
+    queryKey: ['community', community, observer],
     queryFn: () => getCommunity(community, observer),
     enabled: community?.startsWith('hive-')
   });

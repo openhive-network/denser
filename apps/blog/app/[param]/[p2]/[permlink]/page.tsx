@@ -51,7 +51,7 @@ const PostPage = async ({
       ...(isCommunity(community)
         ? [
             queryClient.prefetchQuery({
-              queryKey: ['community', community],
+              queryKey: ['community', community, observer],
               queryFn: () => getCommunity(community, observer)
             }),
             queryClient.prefetchQuery({

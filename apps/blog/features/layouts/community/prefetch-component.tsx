@@ -26,7 +26,7 @@ const PrefetchComponent = async ({ children, community }: { children: ReactNode;
       ...(isCommunity(community)
         ? [
             queryClient.prefetchQuery({
-              queryKey: ['community', community],
+              queryKey: ['community', community, observer],
               queryFn: () => getCommunity(community, observer)
             })
           ]

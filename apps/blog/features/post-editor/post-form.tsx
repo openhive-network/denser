@@ -118,7 +118,7 @@ export default function PostForm({
   const { t } = useTranslation('common_blog');
   const postMutation = usePostMutation();
   const { data: communityData } = useQuery({
-    queryKey: ['community', categoryParam],
+    queryKey: ['community', categoryParam, observer],
     queryFn: () => getCommunity(categoryParam ?? storedPost.category, observer),
     enabled: isCommunity(categoryParam) || isCommunity(storedPost.category)
   });

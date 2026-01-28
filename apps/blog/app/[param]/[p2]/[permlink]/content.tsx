@@ -175,7 +175,7 @@ const PostContent = () => {
     }
   });
   const { data: communityData } = useQuery({
-    queryKey: ['community', category],
+    queryKey: ['community', category, observer],
     queryFn: () => getCommunity(category, observer),
     enabled: postInCommunity,
     onError: (error) => {
