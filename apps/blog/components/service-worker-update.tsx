@@ -16,13 +16,20 @@ import { useEffect } from 'react';
  */
 export default function ServiceWorkerUpdate() {
   useEffect(() => {
-    if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
+    if (!('serviceWorker' in navigator)) {
       return;
     }
 
-    // When a new service worker takes control, reload to get fresh assets
+    // Track the initial controller so we only reload on actual SW changes,
+    // not on first visit when a SW is installed for the first time.
+    const initialController = navigator.serviceWorker.controller;
+
     const handleControllerChange = () => {
-      window.location.reload();
+      // Only reload if there was a previous controller — this means
+      // an existing SW was replaced. Skip on first-ever SW install.
+      if (initialController) {
+        window.location.reload();
+      }
     };
 
     navigator.serviceWorker.addEventListener('controllerchange', handleControllerChange);
@@ -30,12 +37,12 @@ export default function ServiceWorkerUpdate() {
     // Trigger update check when app loads
     navigator.serviceWorker.ready
       .then((registration) => {
-        registration.update().catch(() => {
-          // Update check failed, ignore silently
+        registration.update().catch((error: unknown) => {
+          console.warn('Service worker update check failed:', error);
         });
       })
-      .catch(() => {
-        // SW not ready, ignore silently
+      .catch((error: unknown) => {
+        console.warn('Service worker not ready:', error);
       });
 
     return () => {
