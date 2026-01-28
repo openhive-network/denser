@@ -8,9 +8,7 @@ const logger = getLogger('app');
 
 /**
  * Makes vote transaction.
- *
- * See [TanStack Query
- * mutations](https://tanstack.com/query/v4/docs/framework/react/guides/mutations)
+ * Uses optimistic UI - vote updates immediately after broadcast.
  *
  * @export
  * @return {*}
@@ -18,23 +16,18 @@ const logger = getLogger('app');
 export function useVoteMutation() {
   const queryClient = useQueryClient();
   const voteMutation = useMutation({
-    mutationFn: async (params: { voter: string; author: string; permlink: string; weight: number }) => {
+    // Optimistic update BEFORE broadcast
+    onMutate: async (params: { voter: string; author: string; permlink: string; weight: number }) => {
       const { voter, author, permlink, weight } = params;
-      const broadcastResult: TransactionBroadcastResult = await transactionService.upVote(
-        author,
-        permlink,
-        weight,
-        {
-          observe: true
-        }
-      );
+      const queryKey = ['votes', author, permlink, voter];
 
-      const response = { voter, author, permlink, weight, broadcastResult };
-      return response;
-    },
-    onSettled: (data) => {
-      if (!data) return;
-      const { voter, author, permlink, weight } = data;
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey });
+
+      // Snapshot previous data for rollback
+      const prevVoteData = queryClient.getQueryData(queryKey);
+
+      // Optimistically update the vote data
       const newVoteData = {
         votes: [
           {
@@ -50,8 +43,27 @@ export function useVoteMutation() {
           }
         ]
       };
-      queryClient.setQueryData(['votes', author, permlink, voter], newVoteData);
+      queryClient.setQueryData(queryKey, newVoteData);
+
+      // Return context for rollback
+      return { prevVoteData, queryKey };
     },
+
+    mutationFn: async (params: { voter: string; author: string; permlink: string; weight: number }) => {
+      const { voter, author, permlink, weight } = params;
+      // Use observe: false - don't wait for blockchain confirmation
+      // A successful broadcast guarantees inclusion in the blockchain
+      const broadcastResult: TransactionBroadcastResult = await transactionService.upVote(
+        author,
+        permlink,
+        weight,
+        { observe: false }
+      );
+
+      logger.info('Vote broadcast successful: %o', { voter, author, permlink, weight, broadcastResult });
+      return { voter, author, permlink, weight, broadcastResult };
+    },
+
     onSuccess: async (data) => {
       const { voter, author, permlink, weight } = data;
       toast({
@@ -64,18 +76,25 @@ export function useVoteMutation() {
               : 'Your vote has been removed.',
         variant: 'success'
       });
+
+      // Invalidate after delay to fetch real data from Hivemind
+      // Block time is ~3 seconds, but Hivemind indexing can take up to 8 seconds
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['discussionData'] });
         queryClient.invalidateQueries({ queryKey: [permlink, voter, 'ActiveVotes'] });
         queryClient.invalidateQueries({ queryKey: ['postData', author, permlink] });
         queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
         queryClient.invalidateQueries({ queryKey: ['manabars', voter] });
-      }, 3000);
-      setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['votes', author, permlink, voter] });
-      }, 6000);
+      }, 8000);
     },
-    onError: (error: any, variables) => {
+
+    onError: (error: unknown, variables, context) => {
+      // Rollback to previous data on error
+      if (context?.prevVoteData && context?.queryKey) {
+        queryClient.setQueryData(context.queryKey, context.prevVoteData);
+      }
+
       handleError(error, {
         method: 'useVoteMutation',
         params: variables
