@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-export const hasCompatibleKeychain = () => KeychainProvider.isExtensionInstalled();
+export const hasCompatibleKeychain = () => typeof window === "object" && typeof window.hive_keychain === "object";
 
 /**
  * Signs challenges (any strings) or Hive transactions with Hive private
