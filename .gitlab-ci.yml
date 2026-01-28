@@ -770,9 +770,32 @@ smoke-tests-blog:
       REPORT_DIR="${REPORT_DIR}" node playwright/smoke-scripts/generate-report.mjs "$RESULTS"
 
       echo ""
-      echo "========================================"
-      echo "SMOKE TEST SUMMARY: $PASSED_COUNT / $((PASSED_COUNT + FAILED_COUNT)) PASSED"
-      echo "========================================"
+      echo "╔══════════════════════════════════════════════════════════════╗"
+      echo "║                    SMOKE TEST RESULTS                        ║"
+      echo "╠══════════════════════════════════════════════════════════════╣"
+
+      # Print each test result
+      echo "$RESULTS" | jq -r '.[] | "\(.passed)\t\(.id)\t\(.name)\t\(.priority // "N/A")\t\(.error // "")"' | while IFS=$'\t' read -r passed id name priority error; do
+        if [ "$passed" = "true" ]; then
+          printf "║  \e[32m✓ PASS\e[0m  %-10s %-30s [%s]\n" "$id" "$name" "$priority"
+        else
+          printf "║  \e[31m✗ FAIL\e[0m  %-10s %-30s [%s]\n" "$id" "$name" "$priority"
+        fi
+      done
+
+      echo "╠══════════════════════════════════════════════════════════════╣"
+
+      TOTAL=$((PASSED_COUNT + FAILED_COUNT))
+      if [ $FAILED_COUNT -eq 0 ]; then
+        echo -e "║  \e[32m✓ ALL TESTS PASSED: $PASSED_COUNT / $TOTAL\e[0m"
+      else
+        echo -e "║  \e[31m✗ SOME TESTS FAILED: $PASSED_COUNT / $TOTAL passed, $FAILED_COUNT failed\e[0m"
+        echo "║"
+        echo "║  Failed tests:"
+        echo "$RESULTS" | jq -r '.[] | select(.passed == false) | "║    - \(.id): \(.name)"'
+      fi
+
+      echo "╚══════════════════════════════════════════════════════════════╝"
       echo ""
 
       echo -e "\e[0Ksection_end:$(date +%s):smoke_report\r\e[0K"
@@ -780,7 +803,6 @@ smoke-tests-blog:
       rm -rf playwright/smoke-scripts
 
       if [ $FAILED_COUNT -gt 0 ]; then
-        echo "Some smoke tests failed. Check report for details."
         exit 1
       fi
   artifacts:
