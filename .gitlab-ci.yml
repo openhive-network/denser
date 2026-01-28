@@ -695,7 +695,7 @@ smoke-tests-blog:
     CI_DEBUG_SERVICES: true
     BASE_URL: 'https://caddy'
     HEADLESS: 'true'
-    REPORT_DIR: './apps/blog/playwright/smoke-report'
+    REPORT_DIR: './playwright/smoke-report'
     API_URL: 'https://api.hive.blog'
     NODE_TLS_REJECT_UNAUTHORIZED: '0'
   script:
@@ -703,13 +703,13 @@ smoke-tests-blog:
     - |
       echo -e "\e[0Ksection_start:$(date +%s):smoke_setup[collapsed=true]\r\e[0KSetting up smoke tests..."
       apt-get update && apt-get install -y jq
-      mkdir -p ./apps/blog/playwright/smoke-scripts
-      mkdir -p ./apps/blog/playwright/smoke-report
-      cp .claude/skills/blog-smoke-tests/scripts/*.mjs ./apps/blog/playwright/smoke-scripts/
+      cd ./apps/blog
+      mkdir -p ./playwright/smoke-scripts
+      mkdir -p ./playwright/smoke-report
+      cp ../../.claude/skills/blog-smoke-tests/scripts/*.mjs ./playwright/smoke-scripts/
       echo -e "\e[0Ksection_end:$(date +%s):smoke_setup\r\e[0K"
 
       echo -e "\e[0Ksection_start:$(date +%s):smoke_run[collapsed=false]\r\e[0KRunning smoke tests..."
-      cd ./apps/blog
 
       RESULTS='[]'
       PASSED_COUNT=0
