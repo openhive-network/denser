@@ -1,5 +1,4 @@
 import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
-import { toast } from '@ui/components/hooks/use-toast';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useSigner } from '@smart-signer/lib/use-signer';
@@ -16,42 +15,43 @@ export function useLogout(redirect?: string) {
   const router = useRouter();
 
   const onLogout = async () => {
-    try {
-      if (user && user.isLoggedIn) {
-        const signer = getSigner(signerOptions);
-        await signer.destroy();
+    // Delete auth_proof cookie immediately
+    document.cookie = 'auth_proof=; path=/; max-age=0';
 
-        // Log logout event to the backend
+    // Trigger sign out mutation - this updates UI immediately via optimistic update
+    signOut.mutate({ user });
+
+    // Redirect immediately if specified
+    if (redirect) {
+      router.push(redirect);
+    }
+
+    // Run cleanup operations in background (fire and forget)
+    if (user && user.isLoggedIn) {
+      // Signer cleanup
+      Promise.resolve().then(async () => {
         try {
-          await fetch('/api/auth/log_account', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              [csrfHeaderName]: '1'
-            },
-            body: JSON.stringify({
-              type: 'logout'
-              // username and loginType will be read from the existing cookie
-            })
-          });
-        } catch (logError) {
-          logger.error(logError, 'Failed to log logout event');
+          const signer = getSigner(signerOptions);
+          await signer.destroy();
+        } catch (error) {
+          logger.error(error, 'Failed to destroy signer during logout');
         }
-      }
-      await signOut.mutateAsync({ user });
-      // Delete auth_proof cookie
-      document.cookie = 'auth_proof=; path=/; max-age=0';
-    } catch (error) {
-      toast({
-        title: 'Error!',
-        description: 'Logout failed',
-        variant: 'destructive'
       });
-      logger.error(error, 'Error in logout');
-    } finally {
-      if (redirect) {
-        router.push(redirect);
-      }
+
+      // Log logout event to the backend
+      fetch('/api/auth/log_account', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          [csrfHeaderName]: '1'
+        },
+        body: JSON.stringify({
+          type: 'logout'
+          // username and loginType will be read from the existing cookie
+        })
+      }).catch((logError) => {
+        logger.error(logError, 'Failed to log logout event');
+      });
     }
   };
   return onLogout;

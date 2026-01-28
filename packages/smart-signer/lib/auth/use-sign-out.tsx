@@ -30,18 +30,25 @@ async function signOut(user: User): Promise<User> {
 export function useSignOut() {
   const queryClient = useQueryClient();
   const signOutMutation = useMutation({
-    mutationFn: (params: { user: User; }) => {
+    mutationFn: (params: { user: User }) => {
       const { user } = params;
       return signOut(user);
     },
-    onSuccess: (user) => {
-      queryClient.setQueryData([QUERY_KEY.user], user);
+    onMutate: () => {
+      // Optimistically update user to logged-out state immediately for instant UI feedback
+      const previousUser = queryClient.getQueryData<User>([QUERY_KEY.user]);
+      queryClient.setQueryData([QUERY_KEY.user], defaultUser);
       // Invalidate observer-dependent queries to refetch with default observer
       queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
       queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+      return { previousUser };
     },
-    onError: (error) => {
-      throw error;
+    onError: (error, _variables, context) => {
+      // Rollback on error
+      if (context?.previousUser) {
+        queryClient.setQueryData([QUERY_KEY.user], context.previousUser);
+      }
+      logger.error(error, 'Sign out failed');
     }
   });
   return signOutMutation;
