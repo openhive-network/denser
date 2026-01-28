@@ -5,12 +5,14 @@ import SubscriptionList from '@/blog/features/account-social/subscription-list';
 import { useTranslation } from '@/blog/i18n/client';
 import { useQuery } from '@tanstack/react-query';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
-import { getHivebuzzBadges, getPeakdBadges } from '@transaction/lib/custom-api';
+import { getHivebuzzBadges, getPeakdBadges, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
 import { Link } from '@hive/ui';
 
 const CommunityContent = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');
+  const thirdPartyEnabled = isThirdPartyApiEnabled();
+
   const { data } = useQuery({
     queryKey: ['listAllSubscription', username],
     queryFn: () => getSubscriptions(username)
@@ -18,12 +20,14 @@ const CommunityContent = ({ username }: { username: string }) => {
 
   const { data: hivebuzz } = useQuery({
     queryKey: ['hivebuzz', username],
-    queryFn: () => getHivebuzzBadges(username)
+    queryFn: () => getHivebuzzBadges(username),
+    enabled: thirdPartyEnabled
   });
 
   const { data: peakd } = useQuery({
     queryKey: ['peakd', username],
     queryFn: () => getPeakdBadges(username),
+    enabled: thirdPartyEnabled,
     select: (data) =>
       data.map((e: { id: string; name: string; title: string }) => ({
         id: e.title,
@@ -54,19 +58,42 @@ const CommunityContent = ({ username }: { username: string }) => {
       <h2 className="text-xl font-semibold" data-testid="badges-achievements-label">
         {t('user_profile.social_tab.badges_and_achievements_title')}
       </h2>
-      <p data-testid="badges-achievements-description">
-        {t('user_profile.social_tab.these_are_badges_received_by_the_author')}
-        <Link href="https://peakd.com/" className="text-destructive hover:underline" target="_blank">
-          Peakd
-        </Link>
-        {` & `}
-        <Link href="https://hivebuzz.me/" className="text-destructive hover:underline" target="_blank">
-          Hivebuzz
-        </Link>
-        .
-      </p>
-
-      <SocialActivities data={hivebuzz ?? []} peakd={peakd ?? []} username={username} />
+      {thirdPartyEnabled ? (
+        <>
+          <p data-testid="badges-achievements-description">
+            {t('user_profile.social_tab.these_are_badges_received_by_the_author')}
+            <Link href="https://peakd.com/" className="text-destructive hover:underline" target="_blank">
+              Peakd
+            </Link>
+            {` & `}
+            <Link href="https://hivebuzz.me/" className="text-destructive hover:underline" target="_blank">
+              Hivebuzz
+            </Link>
+            .
+          </p>
+          <SocialActivities data={hivebuzz ?? []} peakd={peakd ?? []} username={username} />
+        </>
+      ) : (
+        <p data-testid="badges-achievements-description">
+          {t('user_profile.social_tab.view_badges_on')}{' '}
+          <Link
+            href={`https://peakd.com/@${username}/badges`}
+            className="text-destructive hover:underline"
+            target="_blank"
+          >
+            Peakd
+          </Link>
+          {` & `}
+          <Link
+            href={`https://hivebuzz.me/@${username}`}
+            className="text-destructive hover:underline"
+            target="_blank"
+          >
+            Hivebuzz
+          </Link>
+          .
+        </p>
+      )}
     </div>
   );
 };
