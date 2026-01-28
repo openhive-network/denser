@@ -1,22 +1,63 @@
 'use client';
 
 import { useEffect } from 'react';
+import version from '../version.json';
+
+const CACHE_VERSION_KEY = 'sw-cache-version';
 
 /**
- * Component that handles service worker updates.
+ * Clears all service worker caches.
+ * Returns true if any caches were cleared.
+ */
+async function clearAllCaches(): Promise<boolean> {
+  if (typeof caches === 'undefined') {
+    return false;
+  }
+
+  const keys = await caches.keys();
+  if (keys.length === 0) {
+    return false;
+  }
+
+  await Promise.all(keys.map((key) => caches.delete(key)));
+  return true;
+}
+
+/**
+ * Component that handles service worker updates and cache management.
  *
- * With skipWaiting: true and clientsClaim: true in next-pwa config,
- * new service workers activate immediately. This component:
- * 1. Triggers an update check on mount
- * 2. Listens for the controllerchange event (when new SW takes control)
- * 3. Reloads the page to ensure fresh assets are loaded
+ * This component:
+ * 1. Clears stale caches on version change (prevents WASM hash mismatch issues)
+ * 2. Triggers SW update check on mount
+ * 3. Listens for controllerchange event and reloads when new SW takes control
  *
- * This prevents issues where old cached assets (especially WASM files)
- * cause errors after deployments.
+ * The version-based cache cleanup ensures users with old cached assets
+ * (especially auth worker and WASM files) get fresh content after deployments.
  */
 export default function ServiceWorkerUpdate() {
   useEffect(() => {
     if (!('serviceWorker' in navigator)) {
+      return;
+    }
+
+    const currentVersion = version.commithash;
+    const storedVersion = localStorage.getItem(CACHE_VERSION_KEY);
+
+    // If version changed, clear all caches to prevent stale asset issues
+    if (storedVersion !== currentVersion) {
+      clearAllCaches()
+        .then((cleared) => {
+          localStorage.setItem(CACHE_VERSION_KEY, currentVersion);
+          if (cleared && storedVersion !== null) {
+            // Only reload if we actually cleared caches AND there was a previous version
+            // (skip reload on first visit when storedVersion is null)
+            window.location.reload();
+          }
+        })
+        .catch(() => {
+          // Cache clearing failed, still update version to avoid retry loops
+          localStorage.setItem(CACHE_VERSION_KEY, currentVersion);
+        });
       return;
     }
 
