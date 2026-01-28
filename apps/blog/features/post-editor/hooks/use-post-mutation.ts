@@ -6,6 +6,7 @@ import { Beneficiarie } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
+import { formatNaiAsset } from '@ui/lib/helpers';
 
 const logger = getLogger('app');
 
@@ -36,11 +37,28 @@ export function usePostMutation() {
       maxAcceptedPayout: NaiAsset;
       percentHbd: number;
     }) => {
-      const { permlink, title, body, tags, category, summary, image, editMode } = params;
+      const {
+        permlink,
+        title,
+        body,
+        tags,
+        category,
+        summary,
+        image,
+        editMode,
+        beneficiaries,
+        maxAcceptedPayout,
+        percentHbd
+      } = params;
       const username = user.username;
 
       // For new posts, seed the post data cache so the post page renders immediately
       if (!editMode) {
+        // Convert NaiAsset to string format using wax helper (e.g., "1000000.000 HBD")
+        const maxPayoutString = maxAcceptedPayout
+          ? formatNaiAsset(maxAcceptedPayout)
+          : '1000000.000 HBD';
+
         const optimisticPost = {
           author: username,
           permlink,
@@ -67,12 +85,13 @@ export function usePostMutation() {
           is_paidout: false,
           net_rshares: 0,
           url: `/${category}/@${username}/${permlink}`,
-          // Required fields for post page rendering
-          max_accepted_payout: '1000000.000 HBD',
-          beneficiaries: [],
+          // Use actual user-selected values for payout settings
+          max_accepted_payout: maxPayoutString,
+          beneficiaries: beneficiaries ?? [],
+          percent_hbd: percentHbd ?? 10000,
+          // Default values for other required fields
           blacklists: [],
           depth: 0,
-          percent_hbd: 10000,
           promoted: '0.000 HBD',
           replies: [],
           stats: {
