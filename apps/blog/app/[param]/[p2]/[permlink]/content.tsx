@@ -447,38 +447,57 @@ const PostContent = () => {
 
             {postData ? (
               <div>
-                {!commentSite ? (
-                  <h1
-                    className="font-sanspro text-[21px] font-extrabold sm:text-[25.6px]"
-                    data-testid="article-title"
-                  >
-                    {postData.title}
-                  </h1>
-                ) : (
-                  <ContextLinks
-                    data={postData}
-                    noContext={!!discussionState && !discussionState.some((e) => e.depth === 1)}
-                  />
-                )}
-                <UserInfo
-                  permlink={permlink}
-                  moderateEnabled={!!userCanModerate}
-                  author={postData.author}
-                  author_reputation={
-                    crossPostData ? crossPostData.author_reputation : postData.author_reputation
-                  }
-                  author_title={postData.author_title}
-                  authored={postData.json_metadata?.author}
-                  community_title={
-                    crossPostData?.community ? crossPostData.community : communityData?.title || ''
-                  }
-                  community={crossPostData?.community ? crossPostData.community : category}
-                  category={postData.category}
-                  created={postData.created}
-                  blacklist={
-                    firstPost ? firstPost.blacklists : thisPost ? thisPost.blacklists : postData.blacklists
-                  }
-                />
+                {/* Post Header Section */}
+                <div className="mb-5 border-b-2 border-border pb-5">
+                  {!commentSite ? (
+                    <h1
+                      className="font-sanspro text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-3xl"
+                      data-testid="article-title"
+                    >
+                      {postData.title}
+                    </h1>
+                  ) : (
+                    <ContextLinks
+                      data={postData}
+                      noContext={!!discussionState && !discussionState.some((e) => e.depth === 1)}
+                    />
+                  )}
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <UserInfo
+                      permlink={permlink}
+                      moderateEnabled={!!userCanModerate}
+                      author={postData.author}
+                      author_reputation={
+                        crossPostData ? crossPostData.author_reputation : postData.author_reputation
+                      }
+                      author_title={postData.author_title}
+                      authored={postData.json_metadata?.author}
+                      community_title={
+                        crossPostData?.community ? crossPostData.community : communityData?.title || ''
+                      }
+                      community={crossPostData?.community ? crossPostData.community : category}
+                      category={postData.category}
+                      created={postData.created}
+                      blacklist={
+                        firstPost ? firstPost.blacklists : thisPost ? thisPost.blacklists : postData.blacklists
+                      }
+                    />
+                    {/* Repost Button in Header */}
+                    {!commentSite && (
+                      <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-background-secondary/50 px-4 py-2 transition-colors hover:bg-background-secondary">
+                        <ReblogTrigger
+                          author={postData.author}
+                          permlink={postData.permlink}
+                          dataTestidTooltipContent="post-header-reblog-tooltip"
+                          dataTestidTooltipIcon="post-header-reblog-icon"
+                        />
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {t('cards.post_card.reblog')}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
                 {postIsLoading ? (
                   <Loading loading={postIsLoading} />
                 ) : edit && commentSite && postData.parent_author && postData.parent_permlink ? (
@@ -519,7 +538,8 @@ const PostContent = () => {
                     onShowMutedContent={handleShowMutedContent}
                   />
                 )}
-                <div className="clear-both">
+                {/* Tags Section */}
+                <div className="clear-both mt-6 border-t border-border pt-5">
                   {!commentSite ? (
                     <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
                       {postData.json_metadata.tags
@@ -528,7 +548,7 @@ const PostContent = () => {
                           <li key={tag}>
                             <Link
                               href={`/trending/${tag}`}
-                              className="my-2 rounded-md border-[1px] border-border bg-background-secondary px-2 py-1 text-[14px] hover:border-[#788187]"
+                              className="inline-block rounded-full border border-border bg-background-secondary px-3 py-1 text-sm font-medium text-muted-foreground transition-all hover:border-destructive hover:bg-destructive/10 hover:text-destructive"
                             >
                               #{tag}
                             </Link>
@@ -537,22 +557,25 @@ const PostContent = () => {
                     </ul>
                   ) : null}
                 </div>
+                {/* Post Footer */}
                 <div
-                  className="flex flex-col items-start text-sm text-primary sm:flex-row sm:justify-between"
+                  className="mt-5 rounded-lg border border-border bg-background-secondary/30 p-4 text-sm text-primary"
                   data-testid="author-data-post-footer"
                 >
-                  <div className="my-4 flex flex-wrap gap-4">
-                    <div className="flex flex-wrap items-center">
-                      <Clock className="h-4 w-4" />
-                      <span className="px-1" title={String(parseDate(postData.created))}>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    {/* Meta info */}
+                    <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
+                      <Clock className="mr-1 h-4 w-4" />
+                      <span title={String(parseDate(postData.created))}>
                         <TimeAgo date={postData.created} />
                       </span>
-                      {t('post_content.footer.in')}
-                      <span className="px-1 text-destructive">
+                      <span className="mx-1">·</span>
+                      <span>{t('post_content.footer.in')}</span>
+                      <span className="font-semibold text-destructive">
                         {postData.community_title ? (
                           <Link
                             href={`/trending/${crossPostData?.community ?? postData.community}`}
-                            className="hover:cursor-pointer"
+                            className="hover:underline"
                             data-testid="footer-comment-community-category-link"
                           >
                             {crossPostData?.community ?? postData.community_title}
@@ -560,15 +583,16 @@ const PostContent = () => {
                         ) : (
                           <Link
                             href={`/trending/${postData.category}`}
-                            className="hover:cursor-pointer"
+                            className="hover:underline"
                             data-testid="footer-comment-community-category-link"
                           >
                             #{postData.category}
                           </Link>
                         )}
                       </span>
-                      {t('post_content.footer.by')}
-                      <div className="flex">
+                      <span className="mx-1">·</span>
+                      <span>{t('post_content.footer.by')}</span>
+                      <div className="flex items-center">
                         <UserPopoverCard
                           author={postData.json_metadata.original_author ?? postData.author}
                           author_reputation={crossPostData?.author_reputation ?? postData.author_reputation}
@@ -581,7 +605,7 @@ const PostContent = () => {
                           }
                         />
                         {postData.author_title ? (
-                          <Badge variant="outline" className="border-destructive text-slate-500">
+                          <Badge variant="outline" className="ml-1 border-destructive text-slate-500">
                             <span className="mr-1">{postData.author_title}</span>
                             <ChangeTitleDialog
                               community={category}
@@ -602,8 +626,10 @@ const PostContent = () => {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 sm:gap-4">
+                    {/* Stats */}
+                    <div className="flex items-center gap-3 rounded-md border border-border bg-background px-3 py-2">
                       <VotesComponentWrapper post={postData} type="post" />
+                      <span className="h-4 w-px bg-border" />
                       <DetailsCardHover
                         post={postData}
                         decline={Number(postData.max_accepted_payout.slice(0, 1)) === 0}
@@ -611,7 +637,7 @@ const PostContent = () => {
                       >
                         <span
                           data-testid="comment-payout"
-                          className={`text-xs text-destructive hover:cursor-pointer sm:text-sm ${
+                          className={`font-bold text-destructive hover:cursor-pointer ${
                             Number(postData.max_accepted_payout.slice(0, 1)) === 0
                               ? '!text-gray-600 line-through'
                               : ''
@@ -620,35 +646,37 @@ const PostContent = () => {
                           ${postData.payout?.toFixed(2)}
                         </span>
                       </DetailsCardHover>
-                      {activeVotesData ? (
-                        <DetailsCardVoters post={postData}>
-                          {!!postData.stats?.total_votes && postData.stats?.total_votes !== 0 ? (
-                            <span className="text-xs text-destructive sm:text-sm">
+                      {activeVotesData && !!postData.stats?.total_votes && postData.stats?.total_votes !== 0 ? (
+                        <>
+                          <span className="h-4 w-px bg-border" />
+                          <DetailsCardVoters post={postData}>
+                            <span className="font-medium text-destructive">
                               {postData.stats?.total_votes > 1
                                 ? t('post_content.footer.votes', { votes: postData.stats?.total_votes })
                                 : t('post_content.footer.vote')}
                             </span>
-                          ) : null}
-                        </DetailsCardVoters>
+                          </DetailsCardVoters>
+                        </>
                       ) : null}
                     </div>
                   </div>
-                  <div className="my-4 flex items-end gap-4 sm:flex-col">
-                    <div className="flex items-center" data-testid="comment-respons-header">
+                  {/* Actions Row */}
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+                    <div className="flex flex-wrap items-center gap-2" data-testid="comment-respons-header">
                       <ReblogTrigger
                         author={postData.author}
                         permlink={postData.permlink}
                         dataTestidTooltipContent="post-footer-reblog-tooltip"
                         dataTestidTooltipIcon="post-footer-reblog-icon"
                       />
-                      <span className="mx-1">|</span>
+                      <span className="text-border">|</span>
                       {user && user.isLoggedIn ? (
                         <>
                           <button
                             onClick={() => {
                               setReply(!reply);
                             }}
-                            className="flex items-center text-destructive"
+                            className="flex items-center font-medium text-destructive transition-colors hover:text-destructive/80"
                             data-testid="comment-reply"
                           >
                             {t('post_content.footer.reply')}
@@ -749,19 +777,17 @@ const PostContent = () => {
                           </button>
                         </>
                       ) : null}
-                      <span className="mx-1">|</span>
+                      <span className="text-border">|</span>
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger className="flex items-center" data-testid="comment-respons">
-                            <Link href={postData.url} className="flex cursor-pointer items-center">
+                            <Link href={postData.url} className="flex cursor-pointer items-center text-muted-foreground transition-colors hover:text-foreground">
                               {postData.children > 1 ? (
                                 <Icons.messagesSquare className="mr-1 h-4 w-4" />
                               ) : (
                                 <Icons.comment className="mr-1 h-4 w-4" />
                               )}
-                            </Link>
-                            <Link href={postData.url} className="text- flex cursor-pointer items-center">
-                              {postData.children}
+                              <span className="font-medium">{postData.children}</span>
                             </Link>
                           </TooltipTrigger>
                           <TooltipContent data-testid="post-footer-response-tooltip">
@@ -776,13 +802,14 @@ const PostContent = () => {
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    <div className="flex items-center gap-2">
+                    {/* Share buttons */}
+                    <div className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1.5">
                       <FacebookShare url={postData.url} />
                       <TwitterShare title={postData.title} url={postData.url} />
                       <LinkedInShare title={postData.title} url={postData.url} />
                       <RedditShare title={postData.title} url={postData.url} />
                       <SharePost path={postData.url} title={postData.title}>
-                        <Link2 className="cursor-pointer hover:text-destructive" data-testid="share-post" />
+                        <Link2 className="h-4 w-4 cursor-pointer transition-colors hover:text-destructive" data-testid="share-post" />
                       </SharePost>
                     </div>
                   </div>

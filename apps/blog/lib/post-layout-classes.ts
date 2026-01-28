@@ -7,7 +7,7 @@
 export const postContentWidthClasses = 'w-full max-w-4xl';
 
 /** Post content container with background and padding */
-export const postContainerClasses = `relative mx-auto my-0 bg-background p-4 ${postContentWidthClasses}`;
+export const postContainerClasses = `relative mx-auto my-0 rounded-xl border border-border bg-background px-5 py-6 shadow-md sm:px-7 ${postContentWidthClasses}`;
 
 /** Comments section container */
 export const commentsSectionClasses = `mx-auto w-full max-w-4xl overflow-hidden`;
