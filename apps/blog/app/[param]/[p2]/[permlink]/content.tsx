@@ -309,7 +309,9 @@ const PostContent = () => {
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
 
   const thisPost = discussionState?.find((post) => post.permlink === permlink && postData?.author === author);
-  const commentSite = thisPost?.depth !== 0 ? true : false;
+  // Use thisPost.depth if available, fallback to postData.depth (for optimistic posts), default to 0
+  const postDepth = thisPost?.depth ?? postData?.depth ?? 0;
+  const commentSite = postDepth !== 0;
   const userFromDMCA = dmcaUserList.some((e) => e === postData?.author);
 
   const { data: userCanModerate } = useQuery({
