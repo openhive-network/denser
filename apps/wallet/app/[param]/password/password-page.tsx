@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,28 +9,13 @@ import { useForm } from 'react-hook-form';
 import { Checkbox, Separator } from '@hive/ui';
 import { Link } from '@hive/ui';
 import { useEffect, useMemo, useState } from 'react';
-import { GetServerSideProps } from 'next';
-import { useTranslation } from 'next-i18next';
-import { useSiteParams } from '@ui/components/hooks/use-site-params';
-import ProfileLayout from '@/wallet/components/common/profile-layout';
+import { useTranslation } from '@/wallet/i18n/client';
 import WalletMenu from '@/wallet/components/wallet-menu';
-import { getAccountMetadata, MetadataProps } from '@transaction/lib/metadata';
-import { getTranslations } from '@/wallet/lib/get-translations';
 import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-password-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@ui/components/icons';
 import { getChain } from '@transaction/lib/chain';
 import { cn } from '@ui/lib/utils';
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const username = ctx.params?.param as string;
-  return {
-    props: {
-      metadata: await getAccountMetadata(username, 'Change Password'),
-      ...(await getTranslations(ctx))
-    }
-  };
-};
 
 // New type for derived keys
 interface DerivedKeys {
@@ -46,18 +33,15 @@ interface KeyDisplay {
   description: string;
 }
 
-export default function PostForm() {
+export default function PasswordPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
   const [isKeyGenerated, setIsKeyGenerated] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const { username } = useSiteParams();
   const changePasswordMutation = useChangePasswordMutation();
   const [generatedPassword, setGeneratedPassword] = useState<string>('');
   const [derivedKeys, setDerivedKeys] = useState<DerivedKeys | null>(null);
   const [securityAccepted, setSecurityAccepted] = useState(false);
-  const [copiedStates, setCopiedStates] = useState<Record<string, boolean>>({});
 
   const accountFormSchema = useMemo(
     () =>
@@ -107,11 +91,6 @@ export default function PostForm() {
       await changePasswordMutation.mutateAsync({ ...components });
       form.reset();
     } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError('An error occurred while processing your request');
-      }
       handleError(error, { method: 'changePassword', params: { ..._data } });
     } finally {
       setLoading(false);
@@ -348,7 +327,7 @@ IMPORTANT:
   };
 
   return (
-    <ProfileLayout>
+    <>
       <WalletMenu username={username} />
       <div className="m-auto flex max-w-2xl flex-col gap-4 bg-background p-2 pb-8">
         <div className="text-2xl font-bold">{t('change_password_page.change_password')}</div>
@@ -469,6 +448,6 @@ IMPORTANT:
           </form>
         </Form>
       </div>
-    </ProfileLayout>
+    </>
   );
 }
