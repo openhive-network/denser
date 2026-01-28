@@ -731,6 +731,11 @@ smoke-tests-blog:
         "smoke-13-static-pages.mjs"
         "smoke-14-theme.mjs"
         "smoke-15-login.mjs"
+        "smoke-16-search.mjs"
+        "smoke-17-mobile.mjs"
+        "smoke-18-error-handling.mjs"
+        "smoke-19-sidebar.mjs"
+        "smoke-20-keyboard-nav.mjs"
       )
 
       for TEST in "${TESTS[@]}"; do
