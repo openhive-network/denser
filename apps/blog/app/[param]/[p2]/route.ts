@@ -2,13 +2,18 @@ import { NextResponse } from 'next/server';
 import { getPost } from '@transaction/lib/bridge-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getQueryClient } from '@/blog/lib/react-query';
-import { isPermlinkValid, isUsernameValid } from '@/blog/utils/validate-links';
+import { isPermlinkValid, isUsernameValid, isValidUserParam } from '@/blog/utils/validate-links';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
 export async function GET(request: Request, { params }: { params: { param: string; p2: string } }) {
   try {
+    // For /@username/permlink routes, param must start with @
+    if (!isValidUserParam(params?.param)) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
     const rawParam = params?.param ?? '';
     const decoded = decodeURIComponent(rawParam);
     const username = decoded.replace(/^@/, '').trim();

@@ -8,7 +8,7 @@ import { getDiscussion } from '@transaction/lib/bridge-api';
 import { getActiveVotes } from '@transaction/lib/hive-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import Loading from '@ui/components/loading';
-import { isUsernameValid, isPermlinkValid } from '@/blog/utils/validate-links';
+import { isUsernameValid, isPermlinkValid, isValidUserParam } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
@@ -21,7 +21,7 @@ const PostPage = async ({
   params: { param: string; p2: string; permlink: string };
 }) => {
   // p2 should start with @ or %40 for valid post URLs
-  if (!p2?.startsWith('@') && !p2?.startsWith('%40')) {
+  if (!isValidUserParam(p2)) {
     notFound();
   }
 

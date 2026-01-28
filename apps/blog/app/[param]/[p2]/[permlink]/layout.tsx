@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import React, { PropsWithChildren } from 'react';
+import { notFound } from 'next/navigation';
 import { getPostCached } from '@/blog/lib/cached-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
+import { isValidUserParam } from '@/blog/utils/validate-links';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -11,11 +13,11 @@ export async function generateMetadata({
 }: {
   params: { param: string; p2: string; permlink: string };
 }): Promise<Metadata> {
-  // p2 should start with @ or %40 for valid post URLs
-  if (!params?.p2?.startsWith('@') && !params?.p2?.startsWith('%40')) {
+  // p2 should start with @ or %40 for valid post URLs - skip metadata fetch for invalid URLs
+  if (!isValidUserParam(params?.p2)) {
     return {
-      title: 'Hive',
-      description: 'Hive: Communities Without Borders.'
+      title: 'Not Found',
+      description: 'Page not found'
     };
   }
   const author = params.p2.replace('%40', '').replace('@', '');
@@ -64,6 +66,14 @@ export async function generateMetadata({
   }
 }
 
-export default function Layout({ children }: PropsWithChildren) {
+export default async function Layout({
+  children,
+  params
+}: PropsWithChildren<{ params: { param: string; p2: string; permlink: string } }>) {
+  // Validate p2 param - must start with @ or %40 for valid post URLs
+  if (!isValidUserParam(params?.p2)) {
+    notFound();
+  }
+
   return <>{children}</>;
 }
