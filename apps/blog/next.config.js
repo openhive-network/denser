@@ -6,7 +6,18 @@ const withPWA = require('next-pwa')({
   disable: process.env.NODE_ENV !== 'production',
   skipWaiting: true,
   clientsClaim: true,
+  cleanupOutdatedCaches: true,
   runtimeCaching: [
+    // Auth worker and WASM assets - NEVER cache (prevents stale WASM hash issues)
+    // These MUST come first as Workbox uses first-match-wins
+    {
+      urlPattern: /\/auth\/worker\.js$/i,
+      handler: 'NetworkOnly',
+    },
+    {
+      urlPattern: /\/auth\/assets\/.+\.wasm$/i,
+      handler: 'NetworkOnly',
+    },
     // User-specific pages - never cache (notifications, settings, feed)
     // These rules must come BEFORE the defaults to take precedence
     {
