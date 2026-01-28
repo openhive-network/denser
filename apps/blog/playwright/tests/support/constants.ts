@@ -72,3 +72,19 @@ export function isProductionEnvironment(): boolean {
   const baseUrl = process.env.BASE_URL || '';
   return baseUrl.includes('blog.openhive.network');
 }
+
+/**
+ * Accessibility test constants
+ */
+export const ACCESSIBILITY = {
+  /** Number of Tab key presses to test keyboard navigation */
+  TAB_NAVIGATION_STEPS: 10,
+  /** Number of Tab presses to verify focus trap in dialogs */
+  FOCUS_TRAP_TAB_COUNT: 15,
+  /** Maximum number of buttons to check for accessible names */
+  MAX_BUTTONS_TO_CHECK: 20,
+  /** Maximum number of links to check for accessible names */
+  MAX_LINKS_TO_CHECK: 30,
+  /** Minimum expected focus trap hits (out of FOCUS_TRAP_TAB_COUNT) */
+  MIN_FOCUS_TRAP_HITS: 5
+} as const;
