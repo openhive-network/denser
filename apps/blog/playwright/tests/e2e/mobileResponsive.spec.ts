@@ -111,8 +111,8 @@ test.describe('Mobile Responsive tests', () => {
     await page.goto('/search');
     await page.waitForLoadState('domcontentloaded');
 
-    // Search input should be visible and functional
-    await expect(homePage.getNavSearchAIInput).toBeVisible();
+    // Search input should be visible and functional (default is classic mode)
+    await expect(homePage.getNavSearchClassicInput).toBeVisible();
   });
 
   /**
