@@ -1,6 +1,13 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { PostPage } from './postPage';
 import { ProfilePage } from './profilePage';
+
+/**
+ * Common viewport sizes for responsive testing
+ */
+export const MOBILE_VIEWPORT = { width: 375, height: 667 }; // iPhone SE
+export const TABLET_VIEWPORT = { width: 768, height: 1024 }; // iPad
+
 export class HomePage {
   readonly page: Page;
   readonly postPage: PostPage;
@@ -113,6 +120,7 @@ export class HomePage {
   readonly languageMenu: Locator;
   readonly languageMenuPl: Locator;
   readonly themeMode: Locator;
+  readonly articleTitle: Locator;
   readonly articleBodyString: string;
   readonly articleAuthor: string;
   readonly userPopoverCardContent: string;
@@ -262,6 +270,7 @@ export class HomePage {
     this.languageMenu = page.locator('[role="menuitem"]');
     this.languageMenuPl = page.locator('[data-testid="pl"]').locator('..');
     this.themeMode = page.locator('[data-testid="theme-mode"]');
+    this.articleTitle = page.locator('[data-testid="article-title"]');
     this.articleBodyString = '#articleBody';
     this.articleAuthor = '[data-testid="author-name-link"]';
     this.userPopoverCardContent = '[data-testid="user-popover-card-content"]';
@@ -563,5 +572,40 @@ export class HomePage {
         .locator('..')
         .locator('..')
         .click({ force: true });
+  }
+
+  /**
+   * Navigate to homepage with mobile viewport
+   */
+  async gotoMobile() {
+    await this.page.setViewportSize(MOBILE_VIEWPORT);
+    await this.page.goto('/');
+    await this.page.waitForLoadState('domcontentloaded');
+    await expect(this.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: 15000 });
+  }
+
+  /**
+   * Navigate to homepage with tablet viewport
+   */
+  async gotoTablet() {
+    await this.page.setViewportSize(TABLET_VIEWPORT);
+    await this.page.goto('/');
+    await this.page.waitForLoadState('domcontentloaded');
+    await expect(this.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: 15000 });
+  }
+
+  /**
+   * Close sidebar menu by pressing Escape
+   */
+  async closeSidebar() {
+    await this.page.keyboard.press('Escape');
+    await expect(this.getNavSidebarMenuContent).not.toBeVisible();
+  }
+
+  /**
+   * Get count of posts in the main timeline
+   */
+  async getPostsCount(): Promise<number> {
+    return await this.getMainTimeLineOfPosts.count();
   }
 }
