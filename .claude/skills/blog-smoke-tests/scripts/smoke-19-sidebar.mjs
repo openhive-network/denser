@@ -26,10 +26,9 @@ async function test({ page }) {
 
   console.log('\n2. Checking trending communities sidebar...');
   const sidebarSelectors = [
+    '[data-testid="card-trending-comunities"]', // Note: typo "comunities" is intentional - matches actual data-testid
     '[data-testid="trending-communities-sidebar"]',
-    'aside[class*="sidebar"]',
-    '[class*="trending-communities"]',
-    '[class*="TrendingCommunities"]'
+    '[class*="trending-communities"]'
   ];
 
   let sidebarElement = null;

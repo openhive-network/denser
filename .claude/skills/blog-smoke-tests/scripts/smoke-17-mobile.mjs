@@ -33,12 +33,10 @@ async function test({ page, context }) {
 
   console.log('\n2. Checking hamburger menu visibility...');
   const hamburgerSelectors = [
+    '[data-testid="nav-sidebar-menu-button"]',
     '[data-testid="nav-sidebar-menu-trigger"]',
-    '[data-testid="hamburger-menu"]',
     'button[aria-label*="menu"]',
-    'button[aria-label*="Menu"]',
-    '[class*="hamburger"]',
-    '[class*="mobile-menu"]'
+    'button[aria-label*="Menu"]'
   ];
 
   let hamburgerFound = false;
