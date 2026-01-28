@@ -11,14 +11,14 @@ export default function RedditShare({ title, url }: { title: string; url: string
 
   return (
     <div
-      className="w-6 cursor-pointer hover:text-destructive"
+      className="cursor-pointer text-muted-foreground transition-colors hover:text-destructive"
       onClick={openWindow}
       title={t('post_content.footer.share_on') + `Reddit`}
       data-testid="share-on-reddit"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="h-7 w-7 text-primary transition-colors duration-300 hover:text-destructive"
+        className="h-4 w-4"
         viewBox="0 0 24 24"
         fill="currentColor"
       >

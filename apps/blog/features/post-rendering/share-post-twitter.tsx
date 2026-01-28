@@ -19,12 +19,12 @@ export default function TwitterShare({ title, url }: { title: string; url: strin
   };
   return (
     <div
-      className="cursor-pointer hover:text-destructive"
+      className="cursor-pointer text-muted-foreground transition-colors hover:text-destructive"
       onClick={openWindow}
       title={t('post_content.footer.share_on') + `Twitter`}
       data-testid="share-on-twitter"
     >
-      <Twitter />
+      <Twitter className="h-4 w-4" />
     </div>
   );
 }

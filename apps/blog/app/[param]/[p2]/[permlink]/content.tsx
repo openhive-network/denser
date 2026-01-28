@@ -428,7 +428,7 @@ const PostContent = () => {
                 </span>
               </div>
             ) : null}
-            <div className="absolute right-0 top-1 cursor-pointer hover:text-destructive">
+            <div className="absolute right-2 top-2 cursor-pointer rounded-full border border-transparent p-1.5 text-muted-foreground transition-colors hover:border-border hover:bg-background-secondary hover:text-destructive">
               {postInCommunity && !user.isLoggedIn ? (
                 <DialogLogin>
                   <FlagIcon onClick={() => {}} />
@@ -484,14 +484,14 @@ const PostContent = () => {
                     />
                     {/* Repost Button in Header */}
                     {!commentSite && (
-                      <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-background-secondary/50 px-4 py-2 transition-colors hover:bg-background-secondary">
+                      <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-background-secondary/30 px-3 py-1.5 text-muted-foreground transition-colors hover:bg-background-secondary hover:text-foreground">
                         <ReblogTrigger
                           author={postData.author}
                           permlink={postData.permlink}
                           dataTestidTooltipContent="post-header-reblog-tooltip"
                           dataTestidTooltipIcon="post-header-reblog-icon"
                         />
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-xs font-medium">
                           {t('cards.post_card.reblog')}
                         </span>
                       </div>
@@ -559,12 +559,12 @@ const PostContent = () => {
                 </div>
                 {/* Post Footer */}
                 <div
-                  className="mt-5 rounded-lg border border-border bg-background-secondary/30 p-4 text-sm text-primary"
+                  className="mt-5 rounded-lg border border-border bg-background-secondary/20 px-4 py-3 text-sm text-primary"
                   data-testid="author-data-post-footer"
                 >
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     {/* Meta info */}
-                    <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
                       <Clock className="mr-1 h-4 w-4" />
                       <span title={String(parseDate(postData.created))}>
                         <TimeAgo date={postData.created} />
@@ -627,7 +627,7 @@ const PostContent = () => {
                       </div>
                     </div>
                     {/* Stats */}
-                    <div className="flex items-center gap-3 rounded-md border border-border bg-background px-3 py-2">
+                    <div className="flex items-center gap-2 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs">
                       <VotesComponentWrapper post={postData} type="post" />
                       <span className="h-4 w-px bg-border" />
                       <DetailsCardHover
@@ -661,7 +661,7 @@ const PostContent = () => {
                     </div>
                   </div>
                   {/* Actions Row */}
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-xs">
                     <div className="flex flex-wrap items-center gap-2" data-testid="comment-respons-header">
                       <ReblogTrigger
                         author={postData.author}
@@ -803,13 +803,13 @@ const PostContent = () => {
                       </TooltipProvider>
                     </div>
                     {/* Share buttons */}
-                    <div className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1.5">
+                    <div className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-1">
                       <FacebookShare url={postData.url} />
                       <TwitterShare title={postData.title} url={postData.url} />
                       <LinkedInShare title={postData.title} url={postData.url} />
                       <RedditShare title={postData.title} url={postData.url} />
                       <SharePost path={postData.url} title={postData.title}>
-                        <Link2 className="h-4 w-4 cursor-pointer transition-colors hover:text-destructive" data-testid="share-post" />
+                        <Link2 className="h-4 w-4 cursor-pointer text-muted-foreground transition-colors hover:text-destructive" data-testid="share-post" />
                       </SharePost>
                     </div>
                   </div>
