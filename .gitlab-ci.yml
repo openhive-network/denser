@@ -628,6 +628,8 @@ e2e-tests-blog:
   allow_failure: true
   needs:
   - docker-build-blog-testenv
+  - job: smoke-tests-blog
+    artifacts: false
 
   services:
   - name: $DENSER_BLOG_IMAGE_NAME
