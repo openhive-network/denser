@@ -67,6 +67,20 @@ export function usePostMutation() {
           is_paidout: false,
           net_rshares: 0,
           url: `/${category}/@${username}/${permlink}`,
+          // Required fields for post page rendering
+          max_accepted_payout: '1000000.000 HBD',
+          beneficiaries: [],
+          blacklists: [],
+          depth: 0,
+          percent_hbd: 10000,
+          promoted: '0.000 HBD',
+          replies: [],
+          stats: {
+            total_votes: 0,
+            hide: false,
+            gray: false,
+            flag_weight: 0
+          },
           _optimistic: true
         };
 
