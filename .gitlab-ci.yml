@@ -704,7 +704,6 @@ smoke-tests-blog:
     - !reference [.node-job, script]
     - |
       echo -e "\e[0Ksection_start:$(date +%s):smoke_setup[collapsed=true]\r\e[0KSetting up smoke tests..."
-      apt-get update && apt-get install -y jq
       cd ./apps/blog
       mkdir -p ./playwright/smoke-scripts
       mkdir -p ./playwright/smoke-report
@@ -712,106 +711,13 @@ smoke-tests-blog:
       echo -e "\e[0Ksection_end:$(date +%s):smoke_setup\r\e[0K"
 
       echo -e "\e[0Ksection_start:$(date +%s):smoke_run[collapsed=false]\r\e[0KRunning smoke tests..."
-
-      RESULTS='[]'
-      PASSED_COUNT=0
-      FAILED_COUNT=0
-
-      TESTS=(
-        "smoke-01-homepage-posts.mjs"
-        "smoke-02-votes-tooltip.mjs"
-        "smoke-03-payout-tooltip.mjs"
-        "smoke-04-post-navigation.mjs"
-        "smoke-05-votes-api.mjs"
-        "smoke-06-comments.mjs"
-        "smoke-07-payout.mjs"
-        "smoke-08-profile.mjs"
-        "smoke-09-followers.mjs"
-        "smoke-10-tags.mjs"
-        "smoke-11-categories.mjs"
-        "smoke-12-communities.mjs"
-        "smoke-13-static-pages.mjs"
-        "smoke-14-theme.mjs"
-        "smoke-15-login.mjs"
-        "smoke-16-search.mjs"
-        "smoke-17-mobile.mjs"
-        "smoke-18-error-handling.mjs"
-        "smoke-19-sidebar.mjs"
-        "smoke-20-keyboard-nav.mjs"
-      )
-
-      for TEST in "${TESTS[@]}"; do
-        echo ""
-        echo "============================================"
-        echo "Running: $TEST"
-        echo "============================================"
-
-        OUTPUT=$(BASE_URL="${BASE_URL}" HEADLESS="${HEADLESS}" REPORT_DIR="${REPORT_DIR}" API_URL="${API_URL}" \
-          node playwright/smoke-scripts/"$TEST" 2>&1) || true
-
-        echo "$OUTPUT"
-
-        RESULT_LINE=$(echo "$OUTPUT" | grep "^__RESULT__" | sed 's/^__RESULT__//')
-
-        if [ -n "$RESULT_LINE" ]; then
-          TEST_PASSED=$(echo "$RESULT_LINE" | jq -r '.passed')
-          RESULTS=$(echo "$RESULTS" | jq --argjson r "$RESULT_LINE" '. + [$r]')
-
-          if [ "$TEST_PASSED" = "true" ]; then
-            PASSED_COUNT=$((PASSED_COUNT + 1))
-          else
-            FAILED_COUNT=$((FAILED_COUNT + 1))
-          fi
-        else
-          FAILED_COUNT=$((FAILED_COUNT + 1))
-          RESULTS=$(echo "$RESULTS" | jq --arg t "$TEST" '. + [{"id": $t, "name": $t, "passed": false, "error": "No result output"}]')
-        fi
-      done
-
+      node playwright/smoke-scripts/smoke-runner.mjs
+      SMOKE_EXIT_CODE=$?
       echo -e "\e[0Ksection_end:$(date +%s):smoke_run\r\e[0K"
-
-      echo -e "\e[0Ksection_start:$(date +%s):smoke_report[collapsed=false]\r\e[0KGenerating report..."
-
-      echo "$RESULTS" > "${REPORT_DIR}/smoke-results.json"
-
-      REPORT_DIR="${REPORT_DIR}" node playwright/smoke-scripts/generate-report.mjs "$RESULTS"
-
-      echo ""
-      echo "╔══════════════════════════════════════════════════════════════╗"
-      echo "║                    SMOKE TEST RESULTS                        ║"
-      echo "╠══════════════════════════════════════════════════════════════╣"
-
-      # Print each test result
-      echo "$RESULTS" | jq -r '.[] | "\(.passed)\t\(.id)\t\(.name)\t\(.priority // "N/A")\t\(.error // "")"' | while IFS=$'\t' read -r passed id name priority error; do
-        if [ "$passed" = "true" ]; then
-          printf "║  \e[32m✓ PASS\e[0m  %-10s %-30s [%s]\n" "$id" "$name" "$priority"
-        else
-          printf "║  \e[31m✗ FAIL\e[0m  %-10s %-30s [%s]\n" "$id" "$name" "$priority"
-        fi
-      done
-
-      echo "╠══════════════════════════════════════════════════════════════╣"
-
-      TOTAL=$((PASSED_COUNT + FAILED_COUNT))
-      if [ $FAILED_COUNT -eq 0 ]; then
-        echo -e "║  \e[32m✓ ALL TESTS PASSED: $PASSED_COUNT / $TOTAL\e[0m"
-      else
-        echo -e "║  \e[31m✗ SOME TESTS FAILED: $PASSED_COUNT / $TOTAL passed, $FAILED_COUNT failed\e[0m"
-        echo "║"
-        echo "║  Failed tests:"
-        echo "$RESULTS" | jq -r '.[] | select(.passed == false) | "║    - \(.id): \(.name)"'
-      fi
-
-      echo "╚══════════════════════════════════════════════════════════════╝"
-      echo ""
-
-      echo -e "\e[0Ksection_end:$(date +%s):smoke_report\r\e[0K"
 
       rm -rf playwright/smoke-scripts
 
-      if [ $FAILED_COUNT -gt 0 ]; then
-        exit 1
-      fi
+      exit $SMOKE_EXIT_CODE
   artifacts:
     paths:
       - ./apps/blog/playwright/smoke-report/
