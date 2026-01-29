@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useRef, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from '@ui/components/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
@@ -10,11 +11,19 @@ import { siteConfig } from '@ui/config/site';
 const GOOGLE_GSI_SCRIPT_ID = 'google-gsi-script';
 const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
-function DialogLogin({ children }: { children: ReactNode }) {
-  const signInFormRef = useRef<SignInFormRef>(null);
+interface DialogLoginProps {
+  children: ReactNode;
+  redirectTo?: string;
+}
 
-  async function onComplete(username: string) {
-    // do smth when completed here
+function DialogLogin({ children, redirectTo }: DialogLoginProps) {
+  const signInFormRef = useRef<SignInFormRef>(null);
+  const router = useRouter();
+
+  async function onComplete(_username: string) {
+    if (redirectTo) {
+      router.push(redirectTo);
+    }
   }
 
   // Load Google Sign-In script on demand when dialog opens

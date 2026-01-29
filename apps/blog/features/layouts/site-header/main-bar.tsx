@@ -137,7 +137,7 @@ const MainBar: FC = () => {
                   </Button>
                 </Link>
               ) : (
-                <DialogLogin>
+                <DialogLogin redirectTo="/submit.html">
                   <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
                     <Icons.pencil className="h-5 w-5" />
                   </Button>
