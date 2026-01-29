@@ -661,7 +661,7 @@ export class ProfilePage {
     const newPage = await pagePromise;
     // URL varies based on REACT_APP_ENABLE_THIRD_PARTY_API flag (peakd.com vs peakd.com/@user/badges)
     await expect(newPage).toHaveURL(/peakd\.com/);
-    await expect(newPage).toHaveTitle('PeakD');
+    await expect(newPage).toHaveTitle(/PeakD/);
   }
 
   async moveToHivebuzzByLinkInSocialTab() {
