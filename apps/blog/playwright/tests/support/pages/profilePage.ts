@@ -401,8 +401,9 @@ export class ProfilePage {
     this.advancedSettingsApiEndpointAddButton = this.advancedSettingsApiEndpointAdd.locator('button')
     this.advancedSettingsApiResetEndpointsButton = page.getByText('Reset Endpoints')
 
-    this.thirdPartyAppPeakdLink = page.locator('a[href="https://peakd.com/"]');
-    this.thirdPartyAppHivebuzzLink = page.locator('a[href="https://hivebuzz.me/"]');
+    // Use partial href matching - URL varies based on REACT_APP_ENABLE_THIRD_PARTY_API flag
+    this.thirdPartyAppPeakdLink = page.locator('[data-testid="badges-achievements-description"] a[href*="peakd.com"]');
+    this.thirdPartyAppHivebuzzLink = page.locator('[data-testid="badges-achievements-description"] a[href*="hivebuzz.me"]');
     this.communitySubscriptionHeader = page.getByText('Community Subscriptions');
     this.followedBlacklists = page.getByText('Followed Blacklists');
     this.followedBlacklistsHeader = page.locator('h1.text-xl.font-bold').first();
@@ -582,12 +583,9 @@ export class ProfilePage {
     await expect(
       this.page.getByText('The author has subscribed to the following Hive Communities')
     ).toBeVisible();
-    await expect(this.page.getByText('Badges and achievements')).toBeVisible();
-    await expect(
-      this.page.getByText(
-        'These are badges received by the author via the third-party apps Peakd & Hivebuzz.'
-      )
-    ).toBeVisible();
+    // Use data-testid instead of hardcoded text (text varies based on REACT_APP_ENABLE_THIRD_PARTY_API flag)
+    await expect(this.socialBadgesAchivementsLabel).toBeVisible();
+    await expect(this.socialBadgesAchivementsDescription).toBeVisible();
   }
 
   async profileSocialTabIsNotSelected() {
@@ -661,7 +659,8 @@ export class ProfilePage {
     const pagePromise = this.page.context().waitForEvent('page');
     await this.thirdPartyAppPeakdLink.click();
     const newPage = await pagePromise;
-    await expect(newPage).toHaveURL('https://peakd.com/');
+    // URL varies based on REACT_APP_ENABLE_THIRD_PARTY_API flag (peakd.com vs peakd.com/@user/badges)
+    await expect(newPage).toHaveURL(/peakd\.com/);
     await expect(newPage).toHaveTitle('PeakD');
   }
 
@@ -669,7 +668,8 @@ export class ProfilePage {
     const pagePromise = this.page.context().waitForEvent('page');
     await this.thirdPartyAppHivebuzzLink.click();
     const newPage = await pagePromise;
-    await expect(newPage).toHaveURL('https://hivebuzz.me/');
+    // URL varies based on REACT_APP_ENABLE_THIRD_PARTY_API flag (hivebuzz.me vs hivebuzz.me/@user)
+    await expect(newPage).toHaveURL(/hivebuzz\.me/);
     await expect(newPage).toHaveTitle('HiveBuzz');
   }
 }
