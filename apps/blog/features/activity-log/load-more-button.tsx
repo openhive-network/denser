@@ -20,7 +20,7 @@ export function LoadMoreButton({ isFetching, onClick }: LoadMoreButtonProps) {
       {isFetching ? (
         <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
       ) : (
-        t('post_content.load_more')
+        t('cards.comment_card.load_more')
       )}
     </Button>
   );
