@@ -1,10 +1,10 @@
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { toast } from '@ui/components/hooks/use-toast';
 
 export const useDelegateRCMutation = () => {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const queryClient = useQueryClient();
   const delegateMutation = useMutation({
     mutationFn: async (params: { toAccount: string; amount: string }) => {

@@ -3,7 +3,7 @@ import { Link } from '@hive/ui';
 import { useUndelegateMutation } from './hooks/use-undelegate-mutation';
 import { Button } from '@ui/components';
 import { CircleSpinner } from 'react-spinners-kit';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string; account: string }) => {
   const undelegateMutation = useUndelegateMutation();
@@ -12,7 +12,7 @@ const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string
       undelegateMutation.mutate(toAccount);
     }
   };
-  const { user } = useUser();
+  const { user } = useUserClient();
   const userOwner = account === user.username;
 
   return (

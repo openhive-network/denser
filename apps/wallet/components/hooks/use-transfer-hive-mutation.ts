@@ -1,5 +1,5 @@
 import { asset } from '@hiveio/wax';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { logger } from '@ui/lib/logger';
@@ -74,7 +74,7 @@ export function useTransferToSavingsMutation() {
  */
 export function useWithdrawFromSavingsMutation() {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useUserClient();
   const withdrawFromSavingsMutation = useMutation({
     mutationFn: async (params: {
       fromAccount: string;

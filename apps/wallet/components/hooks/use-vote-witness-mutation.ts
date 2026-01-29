@@ -1,4 +1,4 @@
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -12,7 +12,7 @@ import { logger } from '@ui/lib/logger';
  */
 export function useWitnessVoteMutation() {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useUserClient();
 
   const witnessVoteMutation = useMutation({
     mutationFn: async (params: { account: string; witness: string; approve: boolean }) => {
