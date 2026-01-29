@@ -14,8 +14,8 @@ Sentry.init({
   enableLogs: true,
 
   // SECURITY: Disable PII collection by default for staging/production.
-  // Set SENTRY_SEND_PII=true for local development debugging only.
+  // Set REACT_APP_SENTRY_SEND_PII=true for local development debugging only.
   // This prevents Sentry from capturing IP addresses, cookies, and headers.
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: process.env.SENTRY_SEND_PII === 'true',
+  sendDefaultPii: process.env.REACT_APP_SENTRY_SEND_PII === 'true',
 });

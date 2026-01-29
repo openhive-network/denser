@@ -5,7 +5,7 @@
  * with DENSER_SERVER_SECRET_COOKIE_PASSWORD.
  */
 
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { getJwtSecret, TOKEN_LIFETIME } from './config';
 
 // Base64URL encoding (RFC 4648)
@@ -76,16 +76,15 @@ export const verifyJwt = (token: string): JwtPayload | null => {
 
     const [headerB64, payloadB64, signatureB64] = parts;
 
-    // Verify signature
+    // Verify signature using timing-safe comparison
     const signatureInput = `${headerB64}.${payloadB64}`;
     const expectedSignature = createHmac('sha256', secret)
       .update(signatureInput)
-      .digest('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
+      .digest();
+    const actualSignature = Uint8Array.from(Buffer.from(signatureB64, 'base64url'));
 
-    if (signatureB64 !== expectedSignature) {
+    if (expectedSignature.length !== actualSignature.length ||
+        !timingSafeEqual(expectedSignature, actualSignature)) {
       return null;
     }
 

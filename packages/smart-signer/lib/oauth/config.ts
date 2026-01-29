@@ -5,6 +5,8 @@
  * Rocket.Chat SSO using Hive blockchain authentication.
  */
 
+import { timingSafeEqual } from 'crypto';
+
 export interface OAuthClient {
   clientId: string;
   clientSecret: string;
@@ -64,7 +66,9 @@ export const validateClientCredentials = (
 ): OAuthClient | null => {
   const client = findClient(clientId);
   if (!client) return null;
-  if (client.clientSecret !== clientSecret) return null;
+  const expected = Buffer.from(client.clientSecret);
+  const actual = Buffer.from(clientSecret);
+  if (expected.length !== actual.length || !timingSafeEqual(expected, actual)) return null;
   return client;
 };
 
