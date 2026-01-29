@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { ReactNode } from 'react';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
+import Script from 'next/script';
 import { Providers } from './providers';
 import ClientEffects from './client-effects';
 import { getEnvVersion } from '../lib/env-version';
@@ -66,14 +67,21 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const envVersion = getEnvVersion();
 
   return (
-    <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
-      <head>
-        {/* Use plain script tag for guaranteed synchronous loading of env globals */}
-        <script src={`${basePath}/__ENV.js?v=${envVersion}`} />
-        {/* Google Sign-In */}
-        <script src="https://accounts.google.com/gsi/client" async defer />
-      </head>
-      <body className="bg-background-secondary">
+    // suppressHydrationWarning needed because browser extensions (like Hive Keychain)
+    // inject scripts into the DOM, causing hydration mismatches
+    <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'} suppressHydrationWarning>
+      <head suppressHydrationWarning />
+      <body className="bg-background-secondary" suppressHydrationWarning>
+        {/* Use beforeInteractive for guaranteed synchronous loading of env globals */}
+        <Script
+          src={`${basePath}/__ENV.js?v=${envVersion}`}
+          strategy="beforeInteractive"
+        />
+        {/* Google Sign-In - loaded lazily, CSP needs to allow accounts.google.com */}
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="lazyOnload"
+        />
         <Providers>
           <>{children}</>
         </Providers>

@@ -8,11 +8,12 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  if (!params.param.startsWith('@')) {
+  const param = decodeURIComponent(params.param);
+  if (!param.startsWith('@')) {
     return {};
   }
 
-  const metadata = await getAccountMetadata(params.param, 'Curation Rewards');
+  const metadata = await getAccountMetadata(param, 'Curation Rewards');
   return {
     title: { absolute: metadata.tabTitle },
     openGraph: {
@@ -24,9 +25,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default function Page({ params }: PageProps) {
-  if (!params.param.startsWith('@')) {
+  const param = decodeURIComponent(params.param);
+  if (!param.startsWith('@')) {
     notFound();
   }
 
-  return <CurationRewardsPage username={params.param.replace('@', '')} />;
+  return <CurationRewardsPage username={param.replace('@', '')} />;
 }

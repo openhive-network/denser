@@ -40,13 +40,14 @@ export default function ParamLayout({ children }: { children: ReactNode }) {
   const { t } = useTranslation('common_wallet');
   const params = useParams<{ param: string }>();
   const pathname = usePathname();
-  const param = params?.param ?? '';
+  // Decode URL-encoded param (e.g., %40gtg -> @gtg)
+  const param = decodeURIComponent(params?.param ?? '');
   const username = param.startsWith('@') ? param.slice(1) : '';
 
-  const {
-    isLoading: profileDataIsLoading,
-    data: profileData
-  } = useQuery(['profileData', username], () => getAccountFull(username), {
+  const { isLoading: profileDataIsLoading, data: profileData } = useQuery(
+    ['profileData', username],
+    () => getAccountFull(username),
+    {
     enabled: !!username
   });
 
