@@ -1,7 +1,9 @@
+'use client';
+
 import { useState } from 'react';
 import Big from 'big.js';
 import moment from 'moment';
-import { useTranslation, Trans } from 'next-i18next';
+import { useTranslation, Trans } from '@/wallet/i18n/client';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { FullAccount, IFeedHistory, HiveChain } from '@hive/common-hiveio-packages/wax';
 import { Link } from '@hive/ui';

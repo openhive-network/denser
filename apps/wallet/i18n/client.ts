@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import i18next from 'i18next';
-import { initReactI18next, useTranslation as useTranslationOrg } from 'react-i18next';
+import { initReactI18next, useTranslation as useTranslationOrg, Trans } from 'react-i18next';
+
+export { Trans };
 import resourcesToBackend from 'i18next-resources-to-backend';
 import { getOptions, languages, cookieName, defaultLocale } from './settings';
 

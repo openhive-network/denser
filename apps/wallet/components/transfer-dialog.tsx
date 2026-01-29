@@ -1,3 +1,5 @@
+'use client';
+
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@ui/components';
 import { Button } from '@ui/components/button';
 import {
@@ -27,7 +29,7 @@ import { TransactionBroadcastResult } from '@transaction/index';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { getAccount } from '@transaction/lib/hive-api';
 import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
