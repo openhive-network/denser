@@ -11,7 +11,8 @@ const NotificationContent = ({ username }: { username: string }) => {
   const { data } = useQuery({
     queryKey: ['AccountNotification', username],
     queryFn: () => getAccountNotifications(username),
-    refetchOnMount: true
+    refetchOnMount: true,
+    staleTime: 0
   });
 
   return (

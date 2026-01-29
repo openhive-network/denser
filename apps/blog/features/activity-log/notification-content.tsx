@@ -45,12 +45,13 @@ const NotificationActivities = ({
 
   const {
     isLoading,
-    refetch,
+    isFetching,
     data: moreData
   } = useQuery({
-    queryKey: ['AccountNotificationMoreData', username],
+    queryKey: ['AccountNotificationMoreData', username, lastStateElementId],
     queryFn: () => getAccountNotifications(username, lastStateElementId, 50),
-    enabled: !!username
+    enabled: !!username && !!lastStateElementId,
+    staleTime: 0
   });
 
   const { data: profileData } = useQuery({
@@ -68,7 +69,7 @@ const NotificationActivities = ({
     enabled: !!username
   });
 
-  const showButton = moreData?.length !== 0;
+  const showButton = isFetching || (moreData && moreData.length > 0);
   const noNotifications = !state || !state.length || state.length === 0;
   useEffect(() => {
     if (data && data.length > 0) {
@@ -77,14 +78,10 @@ const NotificationActivities = ({
   }, [data]);
 
   useEffect(() => {
-    if (state) {
+    if (state && state.length > 0) {
       setLastStateElementId(state[state.length - 1].id);
     }
   }, [state, state?.length]);
-
-  useEffect(() => {
-    refetch();
-  }, [lastStateElementId, refetch]);
 
   async function handleMarkAllAsRead() {
     if (markAllNotificationsAsReadMutation.isPending) return;
@@ -112,8 +109,8 @@ const NotificationActivities = ({
   }
 
   function handleLoadMore() {
-    if (!isLoading) {
-      setState([...(state ?? []), ...(moreData || [])]);
+    if (!isLoading && !isFetching && moreData && moreData.length > 0) {
+      setState([...(state ?? []), ...moreData]);
     }
   }
 
@@ -187,8 +184,13 @@ const NotificationActivities = ({
             variant="outline"
             className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
             onClick={handleLoadMore}
+            disabled={isFetching}
           >
-            Load more
+            {isFetching ? (
+              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
+            ) : (
+              t('post_content.load_more')
+            )}
           </Button>
         ) : null}
       </TabsContent>
@@ -206,10 +208,15 @@ const NotificationActivities = ({
         ) : showButton ? (
           <Button
             variant="outline"
-            className="hover:secondarydark:border-destructive mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive"
+            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
             onClick={handleLoadMore}
+            disabled={isFetching}
           >
-            Load more
+            {isFetching ? (
+              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
+            ) : (
+              t('post_content.load_more')
+            )}
           </Button>
         ) : null}
       </TabsContent>
@@ -225,10 +232,15 @@ const NotificationActivities = ({
         ) : showButton ? (
           <Button
             variant="outline"
-            className="hover:secondarydark:border-destructive mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive"
+            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
             onClick={handleLoadMore}
+            disabled={isFetching}
           >
-            Load more
+            {isFetching ? (
+              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
+            ) : (
+              t('post_content.load_more')
+            )}
           </Button>
         ) : null}
       </TabsContent>
@@ -244,10 +256,15 @@ const NotificationActivities = ({
         ) : showButton ? (
           <Button
             variant="outline"
-            className="hover:secondarydark:border-destructive mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive"
+            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
             onClick={handleLoadMore}
+            disabled={isFetching}
           >
-            Load more
+            {isFetching ? (
+              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
+            ) : (
+              t('post_content.load_more')
+            )}
           </Button>
         ) : null}
       </TabsContent>
@@ -263,10 +280,15 @@ const NotificationActivities = ({
         ) : showButton ? (
           <Button
             variant="outline"
-            className="hover:secondarydark:border-destructive mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive"
+            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
             onClick={handleLoadMore}
+            disabled={isFetching}
           >
-            Load more
+            {isFetching ? (
+              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
+            ) : (
+              t('post_content.load_more')
+            )}
           </Button>
         ) : null}
       </TabsContent>
@@ -282,10 +304,15 @@ const NotificationActivities = ({
         ) : showButton ? (
           <Button
             variant="outline"
-            className="hover:secondarydark:border-destructive mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive"
+            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
             onClick={handleLoadMore}
+            disabled={isFetching}
           >
-            Load more
+            {isFetching ? (
+              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
+            ) : (
+              t('post_content.load_more')
+            )}
           </Button>
         ) : null}
       </TabsContent>
