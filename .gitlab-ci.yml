@@ -712,12 +712,9 @@ smoke-tests-blog:
 
       echo -e "\e[0Ksection_start:$(date +%s):smoke_run[collapsed=false]\r\e[0KRunning smoke tests..."
       node playwright/smoke-scripts/smoke-runner.mjs
-      SMOKE_EXIT_CODE=$?
       echo -e "\e[0Ksection_end:$(date +%s):smoke_run\r\e[0K"
-
-      rm -rf playwright/smoke-scripts
-
-      exit $SMOKE_EXIT_CODE
+  after_script:
+    - rm -rf ./apps/blog/playwright/smoke-scripts
   artifacts:
     paths:
       - ./apps/blog/playwright/smoke-report/
