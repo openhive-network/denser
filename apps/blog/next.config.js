@@ -8,15 +8,25 @@ const withPWA = require('next-pwa')({
   clientsClaim: true,
   cleanupOutdatedCaches: true,
   runtimeCaching: [
-    // Auth worker and WASM assets - NEVER cache (prevents stale WASM hash issues)
-    // These MUST come first as Workbox uses first-match-wins
+    // Auth worker - never cache (no content hash in filename; stale copies
+    // reference old WASM hashes that no longer exist after deployments)
+    // Must come first as Workbox uses first-match-wins
     {
       urlPattern: /\/auth\/worker\.js$/i,
       handler: 'NetworkOnly',
     },
+    // Auth WASM - cache aggressively (content hash in filename makes this safe;
+    // worker.js always fetches fresh so it references the correct hash)
     {
       urlPattern: /\/auth\/assets\/.+\.wasm$/i,
-      handler: 'NetworkOnly',
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'auth-wasm',
+        expiration: {
+          maxEntries: 3,
+          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+        },
+      },
     },
     // User-specific pages - never cache (notifications, settings, feed)
     // These rules must come BEFORE the defaults to take precedence
