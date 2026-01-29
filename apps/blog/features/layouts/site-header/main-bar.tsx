@@ -139,20 +139,35 @@ const MainBar: FC = () => {
             {!isClient ? (
               <Skeleton className="h-10 w-10 rounded" />
             ) : !user?.isLoggedIn ? (
-              <div>
-                <ModeToggle>
-                  <Button variant="ghost" size="sm" className="h-10 w-full px-2" data-testid="theme-mode">
-                    <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="hidden">Language</span>
+              <>
+                {/* Mobile login icon - visible only on xs screens */}
+                <DialogLogin>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-10 w-10 px-0 sm:hidden"
+                    data-testid="login-btn-mobile"
+                  >
+                    <Icons.user className="h-5 w-5" />
+                    <span className="sr-only">{t('navigation.main_nav_bar.login')}</span>
                   </Button>
-                </ModeToggle>
-              </div>
+                </DialogLogin>
+                {/* Theme toggle - hidden on mobile */}
+                <div className="hidden sm:block">
+                  <ModeToggle>
+                    <Button variant="ghost" size="sm" className="h-10 w-full px-2" data-testid="theme-mode">
+                      <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                      <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                      <span className="hidden">Theme</span>
+                    </Button>
+                  </ModeToggle>
+                </div>
+              </>
             ) : null}
             {!isClient && !user?.isLoggedIn ? (
-              <Skeleton className="h-9 w-9 rounded-full" />
+              <Skeleton className="h-9 w-9 rounded-full hidden sm:block" />
             ) : !user?.isLoggedIn ? (
-              <div>
+              <div className="hidden sm:block">
                 <LangToggle logged={user ? user?.isLoggedIn : false} className="px-2" />
               </div>
             ) : null}
