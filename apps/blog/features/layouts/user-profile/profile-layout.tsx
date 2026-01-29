@@ -199,7 +199,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                 )
               </span>
             </h4>
-            {profileData.name && isThirdPartyApiEnabled() ? (
+            {profileData.name ? (
               <Link
                 href={`https://hivebuzz.me/@${profileData.name}`}
                 target="_blank"
