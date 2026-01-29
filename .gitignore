@@ -28,3 +28,4 @@ stack/certs/cert.pem
 stack/certs/key.pem
 Close
 docker/.env
+NOTES/

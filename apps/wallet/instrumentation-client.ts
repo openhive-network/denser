@@ -11,7 +11,12 @@ Sentry.init({
   dsn: env('SENTRY_DSN'),
 
   // Add optional integrations for additional features
-  integrations: [Sentry.replayIntegration()],
+  integrations: [
+    Sentry.replayIntegration({
+      // SECURITY: Mask all input fields to prevent capturing passwords/keys in session replays
+      maskAllInputs: true,
+    }),
+  ],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1,
@@ -26,9 +31,11 @@ Sentry.init({
   // Define how likely Replay events are sampled when an error occurs.
   replaysOnErrorSampleRate: 1.0,
 
-  // Enable sending user PII (Personally Identifiable Information)
+  // SECURITY: Disable PII collection by default for staging/production.
+  // Set SENTRY_SEND_PII=true for local development debugging only.
+  // This prevents Sentry from capturing IP addresses, cookies, and headers.
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  sendDefaultPii: env('SENTRY_SEND_PII') === 'true',
 });
 
 }

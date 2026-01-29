@@ -78,7 +78,8 @@ export function DialogHBAuth({
     const keyType = form.get('keyType') as KeyAuthorityType;
     const key = form.get('key') as string;
 
-    logger.info('handleSubmit input data: %o', { username, keyType, keyTypeSwitch, password, key });
+    // SECURITY: Never log passwords or private keys - they could be captured by error tracking
+    logger.info('handleSubmit input data: %o', { username, keyType, keyTypeSwitch });
 
     if (isBrowser) {
       const authClient = await hbauthService.getOnlineClient();
