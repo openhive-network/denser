@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@ui/components/card';
+import { Card, CardTitle } from '@ui/components/card';
 import { Community, IAccountNotification } from '@hive/common-hiveio-packages/wax';
 import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from '../../activity-log/dialog';
@@ -8,7 +8,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import SubscribeCommunity from '../../community-profile/subscribe-community';
 import NewPost from './new-post-button';
 import { useEffect, useState } from 'react';
-import { Badge, Separator } from '@ui/components';
+import { Badge } from '@ui/components';
 import BasePathLink from '@/blog/components/base-path-link';
 import EditCommunityDialog from '../../community-profile/edit-dialog';
 import clsx from 'clsx';
@@ -39,59 +39,18 @@ const CommunitySimpleDescription = ({
 
   return (
     <Card
-      className={clsx('my-4 grid h-fit w-full grid-cols-3 gap-4 p-2 text-primary dark:bg-background', {
+      className={clsx('my-4 flex h-fit w-full flex-col gap-3 p-3 text-primary dark:bg-background sm:p-4', {
         'animate-pulse': data._temporary
       })}
       data-testid="community-simple-description-sidebar"
     >
-      <CardHeader className="col-span-2 p-0">
-        <CardTitle className="flex items-center gap-1">
+      {/* Header: Title + Action Buttons */}
+      <div className="flex items-start justify-between gap-2">
+        <CardTitle className="flex flex-wrap items-center gap-1 text-base sm:text-lg">
           <span>{data.title}</span>
           {data.is_nsfw ? <Badge variant="red">NSFW</Badge> : null}
         </CardTitle>
-        <div className="flex">
-          <div className="flex w-full text-sm">
-            <SubsListDialog
-              title={data.title}
-              subs={subs}
-              moderateEnabled={Boolean(userCanModerate)}
-              community={username}
-            >
-              <div className="flex flex-col items-center" data-testid="community-simple-subscribers">
-                {data.subscribers} {t('communities.buttons.subscribers')}
-              </div>
-            </SubsListDialog>
-            <span className="mx-1">•</span>
-            <div className="flex flex-col items-center" data-testid="community-simple-active-posters">
-              {data.num_authors} {t('communities.titles.active_posters')}
-            </div>
-          </div>
-          <div className="flex flex-col justify-self-end whitespace-nowrap text-sm">
-            <ActivityLogDialog username={username} data={notificationData}>
-              {t('communities.buttons.activity_log')}
-            </ActivityLogDialog>
-            <div className="flex items-center gap-1">
-              {userRole ? (
-                <>
-                  <span>{userRole[1].charAt(0).toUpperCase() + userRole[1].slice(1)}:</span>{' '}
-                  <BasePathLink href={`/roles/${username}`} className="text-destructive">
-                    {t('communities.roles')}
-                  </BasePathLink>
-                </>
-              ) : null}
-              {adminRole ? (
-                <>
-                  <Separator orientation="vertical" className="h-6" />
-                  <EditCommunityDialog data={data} />
-                </>
-              ) : null}
-            </div>
-          </div>
-        </div>
-        <span className="text-sm">{data.about}</span>
-      </CardHeader>
-      <CardContent className="col-span-1 flex items-center justify-center p-0">
-        <div className="my-4 flex flex-col gap-4">
+        <div className="flex shrink-0 gap-2">
           <SubscribeCommunity
             user={user}
             community={data.name}
@@ -102,7 +61,46 @@ const CommunitySimpleDescription = ({
           />
           <NewPost disabled={!isSubscribed} name={data.name} />
         </div>
-      </CardContent>
+      </div>
+
+      {/* Stats Row */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm">
+        <SubsListDialog
+          title={data.title}
+          subs={subs}
+          moderateEnabled={Boolean(userCanModerate)}
+          community={username}
+        >
+          <span data-testid="community-simple-subscribers">
+            <strong>{data.subscribers}</strong> {t('communities.buttons.subscribers')}
+          </span>
+        </SubsListDialog>
+        <span className="text-muted-foreground">•</span>
+        <span data-testid="community-simple-active-posters">
+          <strong>{data.num_authors}</strong> {t('communities.titles.active_posters')}
+        </span>
+        <span className="text-muted-foreground">•</span>
+        <ActivityLogDialog username={username} data={notificationData}>
+          <span className="text-destructive">{t('communities.buttons.activity_log')}</span>
+        </ActivityLogDialog>
+        {userRole ? (
+          <>
+            <span className="text-muted-foreground">•</span>
+            <BasePathLink href={`/roles/${username}`} className="text-destructive">
+              {t('communities.roles')}
+            </BasePathLink>
+          </>
+        ) : null}
+        {adminRole ? (
+          <>
+            <span className="text-muted-foreground">•</span>
+            <EditCommunityDialog data={data} />
+          </>
+        ) : null}
+      </div>
+
+      {/* About */}
+      {data.about ? <p className="text-xs text-muted-foreground sm:text-sm">{data.about}</p> : null}
     </Card>
   );
 };
