@@ -60,7 +60,8 @@ export async function createBrowserContext() {
 
   const browser = await chromium.launch({ headless: config.HEADLESS });
   const context = await browser.newContext({
-    viewport: { width: 1280, height: 720 }
+    viewport: { width: 1280, height: 720 },
+    ignoreHTTPSErrors: true
   });
   const page = await context.newPage();
 

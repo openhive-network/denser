@@ -628,6 +628,8 @@ e2e-tests-blog:
   allow_failure: true
   needs:
   - docker-build-blog-testenv
+  - job: smoke-tests-blog
+    artifacts: false
 
   services:
   - name: $DENSER_BLOG_IMAGE_NAME
@@ -670,6 +672,56 @@ e2e-tests-wallet:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
     PORT: 4000
+
+smoke-tests-blog:
+  extends: .node-job
+  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  stage: test
+  allow_failure: true
+  needs:
+    - docker-build-blog-testenv
+  services:
+    - name: $DENSER_BLOG_IMAGE_NAME
+      alias: denser
+      variables:
+        HEALTHCHECK_TCP_PORT: '3000'
+    - name: caddy:${CADDY_TAG}
+      command:
+        - caddy
+        - reverse-proxy
+        - --from=https://caddy
+        - --to=denser:3000
+        - --internal-certs
+  variables:
+    FF_NETWORK_PER_BUILD: 1
+    CI_DEBUG_SERVICES: true
+    BASE_URL: 'https://caddy'
+    HEADLESS: 'true'
+    REPORT_DIR: './playwright/smoke-report'
+    API_URL: 'https://api.hive.blog'
+    NODE_TLS_REJECT_UNAUTHORIZED: '0'
+  script:
+    - !reference [.node-job, script]
+    - |
+      echo -e "\e[0Ksection_start:$(date +%s):smoke_setup[collapsed=true]\r\e[0KSetting up smoke tests..."
+      cd ./apps/blog
+      mkdir -p ./playwright/smoke-scripts
+      mkdir -p ./playwright/smoke-report
+      cp ../../.claude/skills/blog-smoke-tests/scripts/*.mjs ./playwright/smoke-scripts/
+      echo -e "\e[0Ksection_end:$(date +%s):smoke_setup\r\e[0K"
+
+      echo -e "\e[0Ksection_start:$(date +%s):smoke_run[collapsed=false]\r\e[0KRunning smoke tests..."
+      node playwright/smoke-scripts/smoke-runner.mjs
+      echo -e "\e[0Ksection_end:$(date +%s):smoke_run\r\e[0K"
+  after_script:
+    - rm -rf ./apps/blog/playwright/smoke-scripts
+  artifacts:
+    paths:
+      - ./apps/blog/playwright/smoke-report/
+    when: always
+    expire_in: 1 week
+  tags:
+    - public-runner-docker
 
 .e2e_report_aggregate_template:
   extends: .node-job
