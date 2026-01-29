@@ -50,7 +50,7 @@ const CommunitySimpleDescription = ({
           <span>{data.title}</span>
           {data.is_nsfw ? <Badge variant="red">NSFW</Badge> : null}
         </CardTitle>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex shrink-0 gap-2 [&_button]:w-auto [&_button]:whitespace-nowrap">
           <SubscribeCommunity
             user={user}
             community={data.name}
