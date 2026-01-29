@@ -40,9 +40,12 @@ export class SignerMetaMask extends Signer {
 
       await this.ensureMetaMaskSnapInitialized(provider);
 
-      const key = await provider.getPublicKey(keyType);
+      if (typeof message !== "string")
+        throw new Error('MetaMask signChallenge only supports string messages. In order to sign binary data, use other signers.');
 
-      const signature = await provider.encryptData(typeof message === "string" ? message : JSON.stringify(message), key);
+      const key = await provider.getPublicKeys(keyType);
+
+      const signature = await provider.encryptData(message, key[keyType]);
 
       logger.info('metamask', { signature });
       return signature;

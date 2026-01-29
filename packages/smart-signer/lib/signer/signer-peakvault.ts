@@ -12,8 +12,7 @@ declare global {
   }
 }
 
-// XXX: Currently we can't make peakvault provider work with Uint8Array buffer signing, so temporarily disable it.
-export const hasCompatiblePeakvault = () => false; // PeakVaultProvider.isExtensionInstalled();
+export const hasCompatiblePeakvault = () => PeakVaultProvider.isExtensionInstalled();
 
 /**
  * Signs challenges (any strings) or Hive transactions with Hive private
@@ -43,7 +42,10 @@ export class SignerPeakvault extends Signer {
 
       // Temporary fix for the signChallenge method
 
-      const msg = typeof message === "string" ? message : JSON.stringify({type:"Buffer", data: Array.from(new Uint8Array(message as ArrayBuffer))});
+      if (typeof message !== "string")
+        throw new Error('PeakVault signChallenge only supports string messages. In order to sign binary data, use other signers.');
+
+      const msg = message;
       const response = await window.peakvault.requestSignBuffer(this.username, this.keyType, msg);
       const signature = response.result as string;
 
