@@ -5,7 +5,7 @@ import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getAccountFullCached } from '@/blog/lib/cached-api';
 import { getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
-import { getTwitterInfo } from '@transaction/lib/custom-api';
+import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
 import { isUsernameValid } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
@@ -76,7 +76,7 @@ const Layout = async ({ children, params }: { children: ReactNode; params: { par
   }
 
   try {
-    await Promise.all([
+    const prefetchPromises = [
       // Use cached version - deduplicated with generateMetadata within the same request
       queryClient.prefetchQuery({
         queryKey: ['profileData', username],
@@ -87,14 +87,22 @@ const Layout = async ({ children, params }: { children: ReactNode; params: { par
         queryFn: () => getAccountReputations(username, 1)
       }),
       queryClient.prefetchQuery({
-        queryKey: ['twitterData', username],
-        queryFn: () => getTwitterInfo(username)
-      }),
-      queryClient.prefetchQuery({
         queryKey: ['dynamicGlobalData'],
         queryFn: () => getDynamicGlobalProperties()
       })
-    ]);
+    ];
+
+    // Only prefetch Twitter data if third-party APIs are enabled
+    if (isThirdPartyApiEnabled()) {
+      prefetchPromises.push(
+        queryClient.prefetchQuery({
+          queryKey: ['twitterData', username],
+          queryFn: () => getTwitterInfo(username)
+        })
+      );
+    }
+
+    await Promise.all(prefetchPromises);
   } catch (error) {
     logger.error(error, 'Error in Layout:');
   }

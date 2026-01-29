@@ -56,6 +56,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   const walletHost = env('WALLET_ENDPOINT');
   const explorerHost = env('EXPLORER_DOMAIN');
   const userFromGDPRList = gdprUserList.includes(username);
+  const thirdPartyEnabled = isThirdPartyApiEnabled();
 
   const {
     data: profileData,
@@ -79,7 +80,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   const { data: twitterData } = useQuery({
     queryKey: ['twitterData', username],
     queryFn: () => getTwitterInfo(username),
-    enabled: !!username,
+    enabled: !!username && thirdPartyEnabled,
     retry: false,
     refetchOnWindowFocus: false
   });
