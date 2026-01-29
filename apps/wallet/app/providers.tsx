@@ -2,10 +2,9 @@
 
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { FC, PropsWithChildren, useMemo } from 'react';
-import Head from 'next/head';
+import { FC, PropsWithChildren, useEffect, useMemo } from 'react';
 import { useTheme } from 'next-themes';
-import { SignerProvider } from '@smart-signer/components/signer-provider';
+import { SignerProviderClient } from '@smart-signer/components/signer-provider-client';
 import { getQueryClient } from '@/wallet/lib/react-query';
 import { ThemeProvider } from '@/wallet/components/theme-provider';
 import SiteHeader from '@/wallet/components/site-header';
@@ -22,7 +21,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SignerProvider>
+      <SignerProviderClient>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ThemeColorMeta />
           <div className="relative flex min-h-screen flex-col">
@@ -30,7 +29,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
             <div className="flex-1">{children}</div>
           </div>
         </ThemeProvider>
-      </SignerProvider>
+      </SignerProviderClient>
       <ModalContainer />
       <Toaster />
       <ReactQueryDevtools initialIsOpen={false} />
@@ -42,12 +41,21 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
 /**
  * Sets the theme-color meta tag based on current theme.
  * Extracted to avoid useTheme() at the Providers level (before ThemeProvider).
+ * Uses useEffect to update the meta tag in App Router (next/head doesn't work in App Router).
  */
 function ThemeColorMeta() {
   const { resolvedTheme } = useTheme();
-  return (
-    <Head>
-      <meta name="theme-color" content={resolvedTheme === 'dark' ? '#030711' : '#ffffff'} />
-    </Head>
-  );
+
+  useEffect(() => {
+    const themeColor = resolvedTheme === 'dark' ? '#030711' : '#ffffff';
+    let meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'theme-color');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', themeColor);
+  }, [resolvedTheme]);
+
+  return null;
 }

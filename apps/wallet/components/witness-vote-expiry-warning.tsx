@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { Link } from '@hive/ui';
 import HoverClickTooltip from './hover-click-tooltip';
 

@@ -1,6 +1,8 @@
+'use client';
+
 import clsx from 'clsx';
 import { IOpenOrdersData } from '@hive/common-hiveio-packages/wax';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import { dateToFormatted } from '@ui/lib/parse-date';
 import { useState } from 'react';

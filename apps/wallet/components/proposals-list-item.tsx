@@ -6,9 +6,9 @@ import { Icons } from '@hive/ui/components/icons';
 import moment from 'moment';
 import { Badge } from '@ui/components/badge';
 import VoteProposals from './votes-proposals-dialog';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { TFunction } from 'i18next';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from './dialog-login';
 import { useUpdateProposalVotesMutation } from '@hive/wallet/components/hooks/use-update-proposal-votes-mutation';
 import env from '@beam-australia/react-env';
@@ -61,7 +61,7 @@ function translateShorDate(data: string, t: TFunction<'common_wallet', undefined
 
 export function ProposalListItem({ proposalData, totalShares, totalVestingFund, voted }: IListItemProps) {
   const { t } = useTranslation('common_wallet');
-  const { user } = useUser();
+  const { user } = useUserClient();
   const updateProposalVotesMutation = useUpdateProposalVotesMutation();
   const [loading, setLoading] = useState(false);
   const [voteSuccess, setVotesSuccess] = useState(voted);

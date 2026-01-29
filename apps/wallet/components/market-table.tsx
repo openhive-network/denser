@@ -1,9 +1,11 @@
+'use client';
+
 import { Button } from '@hive/ui';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { dateToRelative } from '@ui/lib/parse-date';
 import Big from 'big.js';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { NaiAsset } from '@hiveio/wax';
 import { isHbd } from '@ui/lib/helpers';
 

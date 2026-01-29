@@ -16,7 +16,7 @@ import LangToggle from './lang-toggle';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import { getLogger } from '@ui/lib/logging';
 import { User } from '@smart-signer/types/common';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 
 const logger = getLogger('app');
 
