@@ -4,6 +4,7 @@ import { SyntheticEvent, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { IAccountNotification } from '@hive/common-hiveio-packages/wax';
 import NotificationList from './list';
+import { LoadMoreButton } from './load-more-button';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { getRewardsString } from '../../lib/utils';
@@ -180,18 +181,7 @@ const NotificationActivities = ({
             <span>{t('navigation.profile_notifications_tab_navbar.no_notifications_yet')}</span>
           </div>
         ) : showButton ? (
-          <Button
-            variant="outline"
-            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
-            onClick={handleLoadMore}
-            disabled={isFetching}
-          >
-            {isFetching ? (
-              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
-            ) : (
-              t('post_content.load_more')
-            )}
-          </Button>
+          <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
         ) : null}
       </TabsContent>
       <TabsContent value="replies" data-testid="notifications-content-replies">
@@ -206,18 +196,7 @@ const NotificationActivities = ({
             <span>{t('navigation.profile_notifications_tab_navbar.no_notifications_yet')}</span>
           </div>
         ) : showButton ? (
-          <Button
-            variant="outline"
-            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
-            onClick={handleLoadMore}
-            disabled={isFetching}
-          >
-            {isFetching ? (
-              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
-            ) : (
-              t('post_content.load_more')
-            )}
-          </Button>
+          <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
         ) : null}
       </TabsContent>
       <TabsContent value="mentions" data-testid="notifications-content-mentions">
@@ -230,18 +209,7 @@ const NotificationActivities = ({
             <span>{t('navigation.profile_notifications_tab_navbar.no_notifications_yet')}</span>
           </div>
         ) : showButton ? (
-          <Button
-            variant="outline"
-            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
-            onClick={handleLoadMore}
-            disabled={isFetching}
-          >
-            {isFetching ? (
-              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
-            ) : (
-              t('post_content.load_more')
-            )}
-          </Button>
+          <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
         ) : null}
       </TabsContent>
       <TabsContent value="follows" data-testid="notifications-content-follows">
@@ -254,18 +222,7 @@ const NotificationActivities = ({
             <span>{t('navigation.profile_notifications_tab_navbar.no_notifications_yet')}</span>
           </div>
         ) : showButton ? (
-          <Button
-            variant="outline"
-            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
-            onClick={handleLoadMore}
-            disabled={isFetching}
-          >
-            {isFetching ? (
-              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
-            ) : (
-              t('post_content.load_more')
-            )}
-          </Button>
+          <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
         ) : null}
       </TabsContent>
       <TabsContent value="upvotes" data-testid="notifications-content-upvotes">
@@ -278,18 +235,7 @@ const NotificationActivities = ({
             <span>{t('navigation.profile_notifications_tab_navbar.no_notifications_yet')}</span>
           </div>
         ) : showButton ? (
-          <Button
-            variant="outline"
-            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
-            onClick={handleLoadMore}
-            disabled={isFetching}
-          >
-            {isFetching ? (
-              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
-            ) : (
-              t('post_content.load_more')
-            )}
-          </Button>
+          <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
         ) : null}
       </TabsContent>
       <TabsContent value="reblogs" data-testid="notifications-content-reblogs">
@@ -302,18 +248,7 @@ const NotificationActivities = ({
             <span>{t('navigation.profile_notifications_tab_navbar.no_notifications_yet')}</span>
           </div>
         ) : showButton ? (
-          <Button
-            variant="outline"
-            className="mb-8 mt-4 border-destructive text-base text-destructive hover:bg-destructive hover:text-secondary dark:border-destructive"
-            onClick={handleLoadMore}
-            disabled={isFetching}
-          >
-            {isFetching ? (
-              <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
-            ) : (
-              t('post_content.load_more')
-            )}
-          </Button>
+          <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
         ) : null}
       </TabsContent>
     </Tabs>
