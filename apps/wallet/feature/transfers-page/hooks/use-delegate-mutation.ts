@@ -18,7 +18,7 @@ export const useDelegateRCMutation = () => {
     },
     onSuccess: (data) => {
       const { amount, toAccount } = data;
-      queryClient.invalidateQueries(['manabar', user.username]);
+      queryClient.invalidateQueries({ queryKey: ['manabar', user.username] });
       toast({
         variant: 'success',
         description: `Successfully delegated ${amount} RC to ${toAccount}`

@@ -6,7 +6,7 @@ import Big from 'big.js';
 import RCRow from './rc-row';
 
 const RCTable = ({ account }: { account: string }) => {
-  const { data, isLoading } = useQuery(['resourceCredits', account], () => getDirectDelegations(account), {
+  const { data, isLoading } = useQuery({ queryKey: ['resourceCredits', account], queryFn: () => getDirectDelegations(account),
     select: (data) => {
       return {
         list: data.rc_direct_delegations,

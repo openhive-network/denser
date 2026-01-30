@@ -74,11 +74,11 @@ const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWith
                         <Button
                           variant="redHover"
                           onClick={() => cancelTransferFromSavings(withdrawal.request_id)}
-                          disabled={cancelTransferFromSavingsMutation.isLoading}
+                          disabled={cancelTransferFromSavingsMutation.isPending}
                         >
-                          {cancelTransferFromSavingsMutation.isLoading ? (
+                          {cancelTransferFromSavingsMutation.isPending ? (
                             <CircleSpinner
-                              loading={cancelTransferFromSavingsMutation.isLoading}
+                              loading={cancelTransferFromSavingsMutation.isPending}
                               size={18}
                               color="#dc2626"
                             />

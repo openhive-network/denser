@@ -39,13 +39,13 @@ export function getCurrentHpApr(data: GetDynamicGlobalPropertiesResponse) {
   return virtualSupply.times(currentInflationRate).times(vestingRewardPercent).div(totalVestingFunds);
 }
 
-interface getFilterArgs {
+interface GetFilterArgs {
   filter: TransferFilters;
   username: string;
 }
 
 export const getFilter =
-  ({ filter, username }: getFilterArgs) =>
+  ({ filter, username }: GetFilterArgs) =>
   ({ op }: HiveOperation) => {
     const opValue = op?.value;
     if (!opValue) return false;
@@ -102,12 +102,12 @@ export const getFilter =
 
 export const transformWithdraw = (
   withdraw: Big,
-  total_vest_hive: Big,
-  total_vests: Big,
+  totalVestHive: Big,
+  totalVests: Big,
   format: 'string' | 'big' | 'number'
 ) => {
-  const divide = withdraw.div(total_vest_hive);
-  const multiplication = total_vests.times(divide);
+  const divide = withdraw.div(totalVestHive);
+  const multiplication = totalVests.times(divide);
   if (format === 'big') return multiplication;
   if (format === 'number') return multiplication.toNumber();
   return numberWithCommas(multiplication.toFixed(getPrecision(EAssetName.VESTS)));
@@ -150,7 +150,7 @@ export function handleAuthorityError(
 ) {
   if (!updateAuthorityMutation.isError) return '';
   const rejectedError = updateAuthorityMutation.error;
-  if (rejectedError === 'rejected') {
+  if (rejectedError && typeof rejectedError === 'object' && 'message' in rejectedError && rejectedError.message === 'rejected') {
     return 'Operation rejected due of Owner Key';
   }
   const transactionError = updateAuthorityMutation.error as Error;
@@ -236,11 +236,12 @@ export function createListWithSuggestions(
       })
       .filter((item) => item !== undefined)
       .reduce((acc: { username: string; about: string; counter: number }[], curr) => {
-        const existing = acc.find((item) => item.username === curr!.username);
+        if (!curr) return acc;
+        const existing = acc.find((item) => item.username === curr.username);
         if (existing) {
           existing.counter += 1;
         } else {
-          acc.push({ username: curr!.username, about: t('profile.previous_transfers'), counter: 1 });
+          acc.push({ username: curr.username, about: t('profile.previous_transfers'), counter: 1 });
         }
         return acc;
       }, [])

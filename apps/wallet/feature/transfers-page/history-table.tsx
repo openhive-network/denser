@@ -1,3 +1,4 @@
+import React from 'react';
 import { TFunction } from 'i18next';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { HiveOperation } from '@hive/common-hiveio-packages/wax';
@@ -21,7 +22,7 @@ function formatOperationDescription(
   username: string,
   dynamicData: DynamicData,
   t: TFunction<'common_wallet', undefined>
-): JSX.Element {
+): React.JSX.Element {
   const hiveChain = hiveChainService.reuseHiveChain();
   if (!hiveChain) return <></>;
 
@@ -30,8 +31,9 @@ function formatOperationDescription(
 
   switch (formattedOperation.op.type) {
     case 'claim_reward_balance_operation': {
+      const rewardVests = operation?.op?.value?.reward_vests;
       const formattedHp = convertToFormattedHivePower(
-        operation!.op!.value!.reward_vests,
+        rewardVests,
         dynamicData.total_vesting_fund_hive,
         dynamicData.total_vesting_shares,
         hiveChain

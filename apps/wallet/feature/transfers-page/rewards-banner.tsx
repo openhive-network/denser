@@ -75,10 +75,10 @@ const RewardsBanner = ({ username, isOwner, rewardBalances }: RewardsBannerProps
             className="h-fit flex-shrink-0 text-sm md:text-base"
             variant="redHover"
             onClick={() => claimRewards()}
-            disabled={claimRewardsMutation.isLoading}
+            disabled={claimRewardsMutation.isPending}
           >
             {t('transfers_page.redeem_rewards')}
-            {claimRewardsMutation.isLoading ? <CircleSpinner size={18} color="#dc2626" /> : null}
+            {claimRewardsMutation.isPending ? <CircleSpinner size={18} color="#dc2626" /> : null}
           </Button>
         )}
       </div>

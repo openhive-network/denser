@@ -1,46 +1,12 @@
 const path = require('path');
-const CopyPlugin = require('copy-webpack-plugin');
-const withPWA = require('next-pwa')({
-  dest: 'public',
+const withSerwistInit = require('@serwist/next').default;
+
+const withSerwist = withSerwistInit({
+  swSrc: 'src/sw.ts',
+  swDest: 'public/sw.js',
   disable: process.env.NODE_ENV !== 'production',
-  skipWaiting: true,
-  clientsClaim: true,
-  cleanupOutdatedCaches: true,
-  runtimeCaching: [
-    // Auth worker - never cache (no content hash in filename; stale copies
-    // reference old WASM hashes that no longer exist after deployments)
-    // Must come first as Workbox uses first-match-wins
-    {
-      urlPattern: /\/auth\/worker\.js$/i,
-      handler: 'NetworkOnly',
-    },
-    // Auth WASM - cache aggressively (content hash in filename makes this safe;
-    // worker.js always fetches fresh so it references the correct hash)
-    {
-      urlPattern: /\/auth\/assets\/.+\.wasm$/i,
-      handler: 'CacheFirst',
-      options: {
-        cacheName: 'auth-wasm',
-        expiration: {
-          maxEntries: 3,
-          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-        },
-      },
-    },
-    // User-specific pages - never cache (notifications, settings, feed)
-    // These rules must come BEFORE the defaults to take precedence
-    {
-      urlPattern: /\/@[^/]+\/(notifications|settings|feed)/i,
-      handler: 'NetworkOnly',
-    },
-    // Next.js data (RSC) for these pages - never cache
-    {
-      urlPattern: /\/_next\/data\/.+\/%40[^/]+\/(notifications|settings|feed)\.json$/i,
-      handler: 'NetworkOnly',
-    },
-    // Include all default caching rules for static assets (JS, CSS, images, fonts, etc.)
-    ...require('next-pwa/cache'),
-  ],
+  cacheOnNavigation: true,
+  reloadOnOnline: false,
 });
 
 // Get basePath from environment variable at build time
@@ -54,8 +20,13 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Don't expose X-Powered-By: Next.js
+  // TODO: Re-enable after ESLint 8→9 migration (eslint-config-next@15 requires flat config)
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   output: 'standalone',
-  swcMinify: false,
+  outputFileTracingRoot: path.join(__dirname, '../..'),
+  serverExternalPackages: ['@hiveio/wax', '@hiveio/beekeeper'],
   // basePath is set at build time from NEXT_PUBLIC_BASE_PATH env variable
   // This allows building separate images for root (/) and subdirectory (/wallet) deployments
   basePath: basePath,
@@ -64,16 +35,29 @@ const nextConfig = {
   publicRuntimeConfig: {
     basePath: basePath,
   },
-  experimental: {
-    outputFileTracingRoot: path.join(__dirname, '../..')
-  },
   transpilePackages: [
     '@hive/common-hiveio-packages',
     '@hive/smart-signer',
     '@hive/ui',
     '@hive/transaction',
-    '@hive/middleware',
+    '@hive/middleware'
   ],
+
+  // WebAssembly support for Webpack
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = { fs: false };
+    }
+
+    // Enable WebAssembly support
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+      layers: true,
+    };
+
+    return config;
+  },
   async rewrites() {
     return [
       // Rewrite requests that incorrectly include /public in the path
@@ -87,6 +71,19 @@ const nextConfig = {
   // Worker files need specific headers (security headers are applied via middleware)
   async headers() {
     return [
+      {
+        source: '/__ENV.js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate, max-age=0',
+          }
+        ]
+      },
       {
         source: '/sw.js',
         headers: [
@@ -114,41 +111,6 @@ const nextConfig = {
         ]
       }
     ];
-  },
-
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = { fs: false };
-    }
-
-    config.plugins.push(
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/worker.js'),
-            to: path.join(__dirname, 'public/auth/')
-          },
-          {
-            from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/assets'),
-            to: path.join(__dirname, 'public/auth/assets')
-          },
-          {
-            from: path.join(__dirname, './locales'),
-            to: path.join(__dirname, 'public/locales/')
-          },
-          {
-            from: path.join(__dirname, '../../packages/smart-signer/locales'),
-            to: path.join(__dirname, 'public/locales/')
-          },
-          {
-            from: path.join(__dirname, '../../packages/smart-signer/public/smart-signer'),
-            to: path.join(__dirname, 'public/smart-signer/')
-          }
-        ]
-      })
-    );
-
-    return config;
   }
 };
 
@@ -160,7 +122,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
 const { withSentryConfig } = require('@sentry/nextjs');
 
-module.exports = withSentryConfig(withPWA(withBundleAnalyzer(nextConfig)), {
+module.exports = withSentryConfig(withSerwist(withBundleAnalyzer(nextConfig)), {
   // Disable source map upload - env vars not available at build time
   // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
   sourcemaps: {

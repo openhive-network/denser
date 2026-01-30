@@ -181,12 +181,12 @@ export type ICurationReward = {
 
 export const getRestApiAccountRewardsHistory = async (
   username: string,
-  op_type: 'author_reward_operation' | 'curation_reward_operation',
+  opType: 'author_reward_operation' | 'curation_reward_operation',
   limit: number = 20
 ): Promise<HiveOperation[]> => {
   const chain = await getChain();
   const opTypes = await chain.restApi['hafah-api']['operation-types']();
-  const opTypeId = opTypes.find((opType) => opType.operation_name === op_type)?.op_type_id;
+  const opTypeId = opTypes.find((operationType) => operationType.operation_name === opType)?.op_type_id;
   const operations = (
     await chain.restApi['hivemind-api'].accountsOperations({
       'account-name': username,

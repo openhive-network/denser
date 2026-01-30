@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
@@ -9,17 +7,19 @@ import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
 import { FullAccount, IWitness } from '@hive/common-hiveio-packages/wax';
 import { convertStringToBig } from '@hive/ui/lib/helpers';
-import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { Button } from '@hive/ui/components/button';
 import { getWitnessesByVote } from '@/wallet/lib/hive';
 import WitnessListItem from '@/wallet/components/witnesses-list-item';
-import DialogLogin from '@/wallet/components/dialog-login';
-import { useTranslation } from '@/wallet/i18n/client';
-import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useWitnessVoteMutation } from '@/wallet/components/hooks/use-vote-witness-mutation';
-import WitnessRemoveVote from '@/wallet/components/witness-remove-vote';
+import DialogLogin from '../components/dialog-login';
+import { GetServerSideProps } from 'next';
+import { useTranslation } from 'next-i18next';
+import { useUser } from '@smart-signer/lib/auth/use-user';
+import { getServerSidePropsDefault } from '../lib/get-translations';
+import { useWitnessVoteMutation } from '../components/hooks/use-vote-witness-mutation';
+import WitnessRemoveVote from '../components/witness-remove-vote';
 import { CircleSpinner } from 'react-spinners-kit';
-import { useSetProxyMutation } from '@/wallet/components/hooks/use-set-proxy-mutation';
+import { useSetProxyMutation } from '../components/hooks/use-set-proxy-mutation';
 import {
   Dialog,
   DialogContent,
@@ -30,7 +30,10 @@ import {
   Separator
 } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
+import Head from 'next/head';
 import { getAccount, getAccounts } from '@transaction/lib/hive-api';
+
+export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 // User can vote only for 30 witnesses
@@ -56,17 +59,17 @@ const mapWitnesses =
   };
 export type ExtendWitness = ReturnType<ReturnType<typeof mapWitnesses>>;
 
-export default function WitnessesPage() {
-  const { user } = useUserClient();
+const TAB_TITLE = 'Hive Wallet - Witnesses';
+function WitnessesPage() {
+  const { user } = useUser();
   const { t } = useTranslation('common_wallet');
-  const searchParams = useSearchParams();
   // value of input field for voting witness by name, not included in the list
   const [voteInput, setVoteInput] = useState('');
   const {
     data: dynamicData,
     isSuccess: dynamicSuccess,
     isLoading: dynamicLoading
-  } = useQuery(['dynamicGlobalProperties'], () => getDynamicGlobalProperties(), {
+  } = useQuery({ queryKey: ['dynamicGlobalProperties'], queryFn: () => getDynamicGlobalProperties(),
     select: (data) => {
       return {
         ...data,
@@ -75,21 +78,18 @@ export default function WitnessesPage() {
       };
     }
   });
-  const { data: observerData } = useQuery(
-    ['accountData', user?.username || ''],
-    () => getAccount(user?.username || ''),
-
-    { enabled: user?.isLoggedIn }
-  );
+  const { data: observerData } = useQuery({
+    queryKey: ['accountData', user?.username || ''],
+    queryFn: () => getAccount(user?.username || ''),
+    enabled: user?.isLoggedIn
+  });
   // value of input field for set proxy witness by name
   const [proxy, setProxy] = useState('');
-  const { data: listWitnessVotesData } = useQuery(
-    ['listWitnessVotesData', user?.username || ''],
-    () => getListWitnessVotes(user?.username, 30, 'by_account_witness'),
-    {
-      enabled: user?.isLoggedIn
-    }
-  );
+  const { data: listWitnessVotesData } = useQuery({
+    queryKey: ['listWitnessVotesData', user?.username || ''],
+    queryFn: () => getListWitnessVotes(user?.username, 30, 'by_account_witness'),
+    enabled: user?.isLoggedIn
+  });
 
   // Extract list of witnesses the user has voted for from listWitnessVotesData
   const userWitnessVotes = useMemo(() => {
@@ -107,7 +107,9 @@ export default function WitnessesPage() {
     data: witnessesData,
     isLoading: witnessesLoading,
     isSuccess: witnessesSuccess
-  } = useQuery(['witnesses'], () => getWitnessesByVote(250), {
+  } = useQuery({
+    queryKey: ['witnesses'],
+    queryFn: () => getWitnessesByVote(250),
     select: (witnesses) => {
       const witnessVotes = listWitnessVotesData?.votes
         .filter((vote) => vote.account === user?.username)
@@ -122,9 +124,9 @@ export default function WitnessesPage() {
     enabled: dynamicSuccess
   });
 
-  const { data: accountData, isLoading: accountLoading } = useQuery(
-    ['accountsData'],
-    async () => {
+  const { data: accountData, isLoading: accountLoading } = useQuery({
+    queryKey: ['accountsData'],
+    queryFn: async () => {
       if (!witnessesData) return new Map<string, FullAccount>();
       const res = await getAccounts(witnessesData.map((wit) => wit.owner));
       return res.reduce((prev, curr) => {
@@ -132,9 +134,9 @@ export default function WitnessesPage() {
         return prev;
       }, new Map<string, FullAccount>());
     },
-    { enabled: witnessesSuccess || Boolean(witnessesData) }
-  );
-
+    enabled: witnessesSuccess || Boolean(witnessesData)
+  });
+  const router = useRouter();
   // Mutation for handle voting witness
   const voteMutation = useWitnessVoteMutation();
   // Mutation for handle set proxy
@@ -171,16 +173,21 @@ export default function WitnessesPage() {
   };
 
   useEffect(() => {
-    if (!searchParams) return;
-    const highlight = searchParams.get('highlight');
-    setVoteInput(highlight ?? '');
-  }, [searchParams]);
+    if (Array.isArray(router.query.highlight)) {
+      setVoteInput(router.query.highlight[0]);
+    } else {
+      setVoteInput(router.query.highlight ?? '');
+    }
+  }, [router.query.highlight]);
 
   // Calculate how many votes user have left
   const votesLeft = MAX_VOTES - userWitnessVotes.length;
 
   return (
     <>
+      <Head>
+        <title>{TAB_TITLE}</title>
+      </Head>
       {!observerData || observerData.proxy === '' ? (
         <div className="mx-auto max-w-5xl">
           <div className="mx-2 flex flex-col gap-4">
@@ -237,7 +244,7 @@ export default function WitnessesPage() {
                     headBlock={headBlock}
                     voteEnabled={user?.isLoggedIn}
                     isVoted={userWitnessVotes.includes(element.owner)}
-                    voteLoading={voteMutation.isLoading && voteMutation.variables?.witness === element.owner}
+                    voteLoading={voteMutation.isPending && voteMutation.variables?.witness === element.owner}
                   />
                 ))
               )}
@@ -267,19 +274,19 @@ export default function WitnessesPage() {
                       className="h-fit"
                       variant="destructive"
                       onClick={() => onVote(voteInput, true)}
-                      disabled={voteMutation.isLoading}
+                      disabled={voteMutation.isPending}
                     >
-                      {voteMutation.isLoading ? (
-                        <CircleSpinner loading={voteMutation.isLoading} size={20} color="#fff" />
+                      {voteMutation.isPending ? (
+                        <CircleSpinner loading={voteMutation.isPending} size={20} color="#fff" />
                       ) : (
                         t('witnesses_page.vote')
                       )}
                     </Button>
                   ) : (
                     <WitnessRemoveVote onVote={() => onVote(voteInput, false)}>
-                      <Button className="h-fit" variant="destructive" disabled={voteMutation.isLoading}>
-                        {voteMutation.isLoading ? (
-                          <CircleSpinner loading={voteMutation.isLoading} size={20} color="#fff" />
+                      <Button className="h-fit" variant="destructive" disabled={voteMutation.isPending}>
+                        {voteMutation.isPending ? (
+                          <CircleSpinner loading={voteMutation.isPending} size={20} color="#fff" />
                         ) : (
                           t('witnesses_page.vote')
                         )}
@@ -309,7 +316,7 @@ export default function WitnessesPage() {
                     </DialogLogin>
                   ) : (
                     <ProxyDialog
-                      loading={proxyMutation.isLoading}
+                      loading={proxyMutation.isPending}
                       onSetProxy={() => onSetProxy(proxy)}
                       description={t('witnesses_page.proxy_form.set_proxy_to', { proxy: proxy })}
                       buttonTitle={t('witnesses_page.set_proxy')}
@@ -338,7 +345,7 @@ export default function WitnessesPage() {
               <Input value={observerData?.proxy} disabled className="block p-4 pl-10 pr-28 text-sm" />
               <div className="items absolute bottom-[1px] right-[1px]">
                 <ProxyDialog
-                  loading={proxyMutation.isLoading}
+                  loading={proxyMutation.isPending}
                   onSetProxy={() => onSetProxy('')}
                   description={t('witnesses_page.proxy_form.description')}
                   buttonTitle={t('witnesses_page.clear_proxy')}
@@ -353,6 +360,8 @@ export default function WitnessesPage() {
   );
 }
 
+export default WitnessesPage;
+
 const ProxyDialog = ({
   loading,
   onSetProxy,
@@ -364,7 +373,7 @@ const ProxyDialog = ({
   onSetProxy: () => void;
   description: string;
   buttonTitle: string;
-  t: ReturnType<typeof useTranslation>['t'];
+  t: (key: string) => string;
 }) => {
   const [open, setOpen] = useState(false);
 

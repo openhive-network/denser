@@ -8,7 +8,7 @@ import { prepareRC } from '@/wallet/lib/utils';
 import DelegateRCDialog from './delegate-rc-dialog';
 
 const RCRow = ({ username }: { username: string }) => {
-  const { data, isLoading } = useQuery(['manabar', username], () => getManabar(username), {
+  const { data, isLoading } = useQuery({ queryKey: ['manabar', username], queryFn: () => getManabar(username),
     select: (e) =>
       e
         ? {

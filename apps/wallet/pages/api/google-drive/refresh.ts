@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getGoogleDriveOAuth2Client } from './client';
+import { getGoogleDriveOAuth2Client } from '../../../lib/google-drive-client';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('google-drive-auth');
@@ -37,7 +37,7 @@ export default async function handler(
     const { credentials } = await oauth2Client.refreshAccessToken();
 
     return res.status(200).json({
-      accessToken: credentials.access_token!
+      accessToken: credentials.access_token ?? ''
     });
   } catch (error) {
     console.error('Error refreshing Google Drive access token:', error);

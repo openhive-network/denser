@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getGoogleDriveOAuth2Client } from './client';
+import { getGoogleDriveOAuth2Client } from '../../../lib/google-drive-client';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('google-drive-auth');
@@ -39,8 +39,8 @@ export default async function handler(
     oauth2Client.setCredentials(tokens);
 
     return res.status(200).json({
-      accessToken: tokens.access_token!,
-      refreshToken: tokens.refresh_token!, // May be undefined if the user logged in before and did not revoke consent
+      accessToken: tokens.access_token ?? '',
+      refreshToken: tokens.refresh_token ?? '', // May be undefined if the user logged in before and did not revoke consent
     });
   } catch (error) {
     console.error('Error exchanging code for tokens:', error);
