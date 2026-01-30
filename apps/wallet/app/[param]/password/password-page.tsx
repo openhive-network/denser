@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
 import { zodResolver } from '@hookform/resolvers/zod';
