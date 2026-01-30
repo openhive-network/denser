@@ -42,8 +42,6 @@ const getDefaultClientOptions = (): ClientOptions => {
 };
 
 let onlineClientPromise: Promise<OnlineClient> | undefined = undefined;
-// This should be just a reference retrieved from the onlineClientPromise.
-let onlineClient: OnlineClient | undefined = undefined;
 
 let offlineClientPromise: Promise<OfflineClient> | undefined = undefined;
 

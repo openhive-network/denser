@@ -3,6 +3,7 @@ import { siteConfig } from '@hive/ui/config/site'; // Maybe move this to package
 import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
 import { getLogger } from '@hive/ui/lib/logging';
 import { initializeAssetConstants } from '@hive/ui/lib/asset-constants';
+import { getStorageItem, setStorageItem, StorageTTL } from '@hive/ui/lib/storage-with-ttl';
 
 export type HiveChain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
 
@@ -13,22 +14,22 @@ const getDefaultClientOptions = (): IWaxOptionsChain => {
   let jsonRpcNode: string | undefined = undefined;
   let restNode: string | undefined = undefined;
   // Check if user has selected a custom node in localStorage
-  if (typeof window === 'object' && window.localStorage) {
-    const storedJsonRpcEndpoint = window.localStorage.getItem('node-endpoint');
+  if (typeof window === 'object') {
+    const storedJsonRpcEndpoint = getStorageItem<string>('node-endpoint');
     if (storedJsonRpcEndpoint) {
       try {
         jsonRpcNode = JSON.parse(storedJsonRpcEndpoint);
       } catch (err) {
-        logger.error('Error parsing stored node-endpoint from localStorage: %o', err);
+        logger.error({ err }, 'Error parsing stored node-endpoint from localStorage');
       }
     }
 
-    const storedRestEndpoint = window.localStorage.getItem('rest-node-endpoint');
+    const storedRestEndpoint = getStorageItem<string>('rest-node-endpoint');
     if (storedRestEndpoint) {
       try {
         restNode = JSON.parse(storedRestEndpoint);
       } catch (err) {
-        logger.error('Error parsing stored rest-node-endpoint from localStorage: %o', err);
+        logger.error({ err }, 'Error parsing stored rest-node-endpoint from localStorage');
       }
     }
   }
@@ -42,13 +43,13 @@ const getDefaultClientOptions = (): IWaxOptionsChain => {
 };
 
 const getAIDefaultEndpoint = (): string | undefined => {
-  if (typeof window === 'object' && window.localStorage) {
-    const storedJsonRpcNode = window.localStorage.getItem('ai-search-endpoint');
+  if (typeof window === 'object') {
+    const storedJsonRpcNode = getStorageItem<string>('ai-search-endpoint');
     if (storedJsonRpcNode) {
       try {
         return JSON.parse(storedJsonRpcNode);
       } catch (err) {
-        logger.error('Error parsing stored ai-search-endpoint from localStorage: %o', err);
+        logger.error({ err }, 'Error parsing stored ai-search-endpoint from localStorage');
       }
     }
   }
@@ -70,7 +71,7 @@ export const setRpcEndpoint = (newEndpoint: string): void => {
 
   hiveChain.api.endpointUrl = newEndpoint;
 
-  window.localStorage.setItem('node-endpoint', JSON.stringify(newEndpoint));
+  setStorageItem('node-endpoint', JSON.stringify(newEndpoint), StorageTTL.PERMANENT);
 };
 
 export const setRestApiEndpoint = (newEndpoint: string): void => {
@@ -82,7 +83,7 @@ export const setRestApiEndpoint = (newEndpoint: string): void => {
   }
 
   hiveChain.restApi.endpointUrl = newEndpoint;
-  window.localStorage.setItem('rest-node-endpoint', JSON.stringify(newEndpoint));
+  setStorageItem('rest-node-endpoint', JSON.stringify(newEndpoint), StorageTTL.PERMANENT);
 };
 
 export const setAiEndpoint = (newEndpoint: string): void => {
@@ -97,7 +98,7 @@ export const setAiEndpoint = (newEndpoint: string): void => {
   hiveChain.restApi['hivesense-api'].endpointUrl = newEndpoint;
   hiveChain.api['search-api'].find_text.endpointUrl = newEndpoint;
 
-  window.localStorage.setItem('ai-search-endpoint', JSON.stringify(newEndpoint));
+  setStorageItem('ai-search-endpoint', JSON.stringify(newEndpoint), StorageTTL.PERMANENT);
 };
 
 // This is intentionally non-async method as we don't want any race condition for hiveChainPromise !== undefined check
