@@ -1,6 +1,7 @@
 {
   "extends": "@engrave/eslint-config-engrave",
   "parserOptions": {
+    "tsconfigRootDir": ".",
     "project": "./tsconfig.eslint.json"
   }
 }

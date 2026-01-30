@@ -1,18 +1,7 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
-});
+import hiveConfig from '@hive/eslint-config-custom';
 
 const config = [
-  ...compat.extends('@hive/eslint-config-custom'),
+  ...hiveConfig,
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
