@@ -11,8 +11,8 @@ export class PromiseTools {
      * @returns {Promise<any>}
      * @memberof Tools
      */
-    public static async promiseDelay(ms: number = 1000, promise: Promise<any>)
-        : Promise<any> {
+    public static async promiseDelay<T>(ms: number = 1000, promise: Promise<T>)
+        : Promise<T> {
         const data = await Promise.all([
             promise,
             PromiseTools.promiseTimeout(ms),
@@ -31,8 +31,8 @@ export class PromiseTools {
      * @returns
      * @memberof Tools
      */
-    public static promiseTimeoutWrapper(ms: number, promise: Promise<any>)
-        : Promise<any> {
+    public static promiseTimeoutWrapper<T>(ms: number, promise: Promise<T>)
+        : Promise<T> {
         // Create a promise that rejects in <ms> milliseconds.
         const promiseTimeout = PromiseTools.promiseTimeout(ms, false);
         // Return a race between our timeout and the passed in promise.
@@ -51,7 +51,7 @@ export class PromiseTools {
      * @returns {Promise<any>}
      * @memberof Tools
      */
-    public static promiseTimeout(ms: number = 1000, success = true): Promise<any> {
+    public static promiseTimeout(ms: number = 1000, success = true): Promise<string> {
         // Create a promise that rejects in <ms> milliseconds.
         const myPromise = new Promise((resolve, reject) => {
             const id = setTimeout(() => {
@@ -78,12 +78,12 @@ export class PromiseTools {
      * @returns
      * @memberof PromiseTools
      */
-    public static async promiseInterval(
-        callback: () => Promise<any>,
+    public static async promiseInterval<T>(
+        callback: () => Promise<T>,
         ms = 1000,
         triesLeft = 5,
         rejectValue = 'Failure'
-    ) {
+    ): Promise<T> {
         return new Promise((resolve, reject) => {
             const interval = setIntervalAsync(async () => {
                 const result = await callback();

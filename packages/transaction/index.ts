@@ -219,7 +219,7 @@ export class TransactionService {
 
       return { transactionId };
     } catch (error) {
-      logger.error('Got error, logging and rethrowing it: %o', error);
+      logger.error({ error }, 'Got error, logging and rethrowing it');
       throw error;
     } finally {
       if (--this.observedTransactionsCounter === 0) {

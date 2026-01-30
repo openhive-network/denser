@@ -29,7 +29,7 @@ export async function createPermlink(title: string, author: string) {
   if (title && title.trim() !== '') {
     let s = getSlug(title.replace(/[<>]/g, ''), { truncate: 128 });
     if (s === '') {
-      s = base58.encode(secureRandom.randomBuffer(4));
+      s = base58.encode(Uint8Array.from(secureRandom.randomBuffer(4)));
     }
     // only letters numbers and dashes shall survive
     s = s.toLowerCase().replace(/[^a-z0-9-]+/g, '');
@@ -38,9 +38,9 @@ export async function createPermlink(title: string, author: string) {
     let head;
     try {
       head = await getPostHeader(author, s);
-    } catch (e) {}
+    } catch (_e) {}
     if (head && !!head.category) {
-      const noise = base58.encode(secureRandom.randomBuffer(4)).toLowerCase();
+      const noise = base58.encode(Uint8Array.from(secureRandom.randomBuffer(4))).toLowerCase();
       permlink = noise + '-' + s;
     } else {
       permlink = s;

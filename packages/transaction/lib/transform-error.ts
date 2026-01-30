@@ -27,6 +27,7 @@ const wellKnownErrorDescriptions = [
  * @param {{ method: string, params: T }} ctx
  * @returns error description
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- error param needs any for Pino logger overload compatibility
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   console.trace('DEBUG: in transformError: got error (will be swallowed): %o on %o', e, ctx, defaultDescription);
   logger.error('in transformError: got error (will be swallowed): %o on %o', e, ctx);
@@ -41,7 +42,7 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
   }
 
   if (!defaultDescription) {
-    let errorDescription = 'Error';
+    const errorDescription = 'Error';
 
     let wellKnownErrorDescription;
     for (const wked of wellKnownErrorDescriptions) {

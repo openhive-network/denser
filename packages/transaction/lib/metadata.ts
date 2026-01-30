@@ -65,7 +65,7 @@ export const getCommunityMetadata = async (
   secondParam: string,
   descriptionText: string
 ): Promise<MetadataProps> => {
-  let metadata: MetadataProps = {
+  const metadata: MetadataProps = {
     tabTitle: '',
     description: '',
     image: '',

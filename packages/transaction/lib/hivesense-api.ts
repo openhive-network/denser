@@ -21,14 +21,14 @@ export const getHiveSenseStatus = async (): Promise<boolean> => {
 export const searchPosts = async ({
   query,
   truncate = 100,
-  result_limit = 100,
-  full_posts = 10,
+  resultLimit = 100,
+  fullPosts = 10,
   observer
 }: {
   query: string;
   truncate?: number;
-  result_limit?: number;
-  full_posts?: number;
+  resultLimit?: number;
+  fullPosts?: number;
   observer: string;
 }): Promise<MixedPostsResponse | null> => {
   try {
@@ -36,8 +36,8 @@ export const searchPosts = async ({
     const response = await chain.restApi['hivesense-api'].posts.search({
       q: query,
       truncate,
-      result_limit,
-      full_posts,
+      result_limit: resultLimit,
+      full_posts: fullPosts,
       observer
     });
     return response;
@@ -50,20 +50,20 @@ export const getSimilarPostsByPost = async ({
   author,
   permlink,
   truncate = 100,
-  result_limit = 100,
-  full_posts = 10,
+  resultLimit = 100,
+  fullPosts = 10,
   observer
 }: {
   author: string;
   permlink: string;
   truncate?: number;
-  result_limit?: number;
-  full_posts?: number;
+  resultLimit?: number;
+  fullPosts?: number;
   observer: string;
 }): Promise<MixedPostsResponse | null> => {
   try {
         const chain = await getChain();
-    const response = await chain.restApi['hivesense-api'].posts.author.permlink.similar({author, permlink, truncate, result_limit, full_posts, observer})
+    const response = await chain.restApi['hivesense-api'].posts.author.permlink.similar({author, permlink, truncate, result_limit: resultLimit, full_posts: fullPosts, observer})
     return response;
   } catch (error) {
     return logStandarizedError('getSimilarPostsByPost', error);

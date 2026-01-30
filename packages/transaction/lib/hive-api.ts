@@ -121,7 +121,7 @@ export const getManabars = async (accountName: string): Promise<IManabars | null
   }
 };
 export const getManabar = async (accountName: string): Promise<Manabar | null> => {
-  const manabars = await getManabars(accountName!);
+  const manabars = await getManabars(accountName);
   if (!manabars) return null;
   const { upvote, upvoteCooldown, downvote, downvoteCooldown, rc, rcCooldown } = manabars;
 
@@ -196,13 +196,17 @@ export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> =
     let profile: AccountProfile | undefined;
 
     try {
-      profile = JSON.parse(x.posting_json_metadata!).profile;
-    } catch (e) {}
+      if (x.posting_json_metadata) {
+        profile = JSON.parse(x.posting_json_metadata).profile;
+      }
+    } catch (_e) {}
 
     if (!profile) {
       try {
-        profile = JSON.parse(x.json_metadata!).profile;
-      } catch (e) {}
+        if (x.json_metadata) {
+          profile = JSON.parse(x.json_metadata).profile;
+        }
+      } catch (_e) {}
     }
 
     if (!profile) {
@@ -225,11 +229,11 @@ export const getAccount = (username: string): Promise<FullAccount> =>
 
 export const getAccountFull = (username: string): Promise<FullAccount> =>
   getAccount(username).then(async (account) => {
-    let follow_stats: AccountFollowStats | undefined;
+    let followStats: AccountFollowStats | undefined;
     try {
-      follow_stats = await getFollowCount(username);
-    } catch (e) {}
-    return { ...account, follow_stats };
+      followStats = await getFollowCount(username);
+    } catch (_e) {}
+    return { ...account, follow_stats: followStats };
   });
 
 export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
@@ -313,10 +317,10 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
 };
 
 export const getAccountReputations = async (
-  account_lower_bound: string,
+  accountLowerBound: string,
   _limit: number
 ): Promise<IAccountReputations[]> => {
-  const profile = await (await getChain()).api.bridge.get_profile({ account: account_lower_bound });
+  const profile = await (await getChain()).api.bridge.get_profile({ account: accountLowerBound });
   if (!profile) {
     return [];
   }
@@ -356,8 +360,8 @@ export const getByText = async ({
   author = '',
   limit = DATA_LIMIT,
   observer,
-  start_author = '',
-  start_permlink = ''
+  start_author: startAuthor = '',
+  start_permlink: startPermlink = ''
 }: Parameters<Awaited<ReturnType<typeof getChain>>['api']['search-api']['find_text']>[0] // Temporary solution
 ): Promise<Entry[]> => {
   return (await getChain()).api['search-api'].find_text({
@@ -366,8 +370,8 @@ export const getByText = async ({
     author,
     limit,
     observer,
-    start_author,
-    start_permlink
+    start_author: startAuthor,
+    start_permlink: startPermlink
   });
 };
 
