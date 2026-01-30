@@ -36,7 +36,7 @@ export const getJwtSecret = (): string => {
 
 // OAuth2 clients configuration
 // Currently only openhive.chat is supported
-const OPENHIVE_CHAT_SECRET = process.env.OAUTH_OPENHIVE_CHAT_SECRET;
+const OPENHIVE_CHAT_SECRET = process.env.DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET;
 
 export const getOAuthClients = (): OAuthClient[] => {
   const clients: OAuthClient[] = [];

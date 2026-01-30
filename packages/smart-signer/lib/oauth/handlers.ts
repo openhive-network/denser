@@ -332,8 +332,10 @@ export const handleUserInfo: NextApiHandler = async (req, res) => {
 
   // Build userinfo response
   // Standard OIDC claims from Hive blockchain profile
+  // Note: 'username' is included for Rocket.Chat compatibility (configured as username_field)
   const userinfo: Record<string, string | undefined> = {
     sub: username,
+    username: username,
     preferred_username: username,
     name: hiveProfile.name || username,
     picture: hiveProfile.picture || `https://images.hive.blog/u/${username}/avatar`,
