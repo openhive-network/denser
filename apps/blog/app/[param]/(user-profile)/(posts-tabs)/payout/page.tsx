@@ -3,9 +3,10 @@ import Content from './content';
 
 const query = 'payout';
 
-const Page = ({ params }: { params: { param: string } }) => {
+const Page = async ({ params }: { params: Promise<{ param: string }> }) => {
+  const { param } = await params;
   return (
-    <PostsPage param={params.param} query={query}>
+    <PostsPage param={param} query={query}>
       <Content />
     </PostsPage>
   );

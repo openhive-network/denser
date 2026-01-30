@@ -1,14 +1,15 @@
 import { getQueryClient } from '@/blog/lib/react-query';
 import SettingsContent from './content';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { getFollowList } from '@transaction/lib/bridge-api';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-const SettingsPage = async ({ params }: { params: { param: string } }) => {
-  const username = params.param.replace('%40', '');
+const SettingsPage = async ({ params }: { params: Promise<{ param: string }> }) => {
+  const { param } = await params;
+  const username = param.replace('%40', '');
   const queryClient = getQueryClient();
 
   try {
@@ -27,9 +28,9 @@ const SettingsPage = async ({ params }: { params: { param: string } }) => {
   }
 
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <SettingsContent username={username} />
-    </Hydrate>
+    </HydrationBoundary>
   );
 };
 

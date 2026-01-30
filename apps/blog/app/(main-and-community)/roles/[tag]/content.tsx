@@ -15,7 +15,7 @@ const Content = ({ community }: { community: string }) => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isPending, isError } = useQuery({
     queryKey: ['rolesList', community],
     queryFn: () => getListCommunityRoles(community),
     enabled: Boolean(community),
@@ -38,7 +38,7 @@ const Content = ({ community }: { community: string }) => {
     title: ''
   };
 
-  if (isLoading) return <Loading loading={isLoading} />;
+  if (isPending) return <Loading loading={isPending} />;
   if (isError) return <NoDataError />;
 
   return (
@@ -54,7 +54,7 @@ const Content = ({ community }: { community: string }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((e) => (
+            {data?.map((e) => (
               <TableItem loggedUserValue={loggedUser.value} item={e} community={community} key={e.name} />
             ))}
           </TableBody>

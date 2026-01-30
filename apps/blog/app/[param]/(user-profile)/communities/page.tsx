@@ -1,4 +1,4 @@
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import CommunityContent from './content';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getHivebuzzBadges, getPeakdBadges, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
@@ -7,9 +7,10 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-const CommunitiesPage = async ({ params }: { params: { param: string } }) => {
+const CommunitiesPage = async ({ params }: { params: Promise<{ param: string }> }) => {
   const queryClient = getQueryClient();
-  const username = params.param.replace('%40', '');
+  const { param } = await params;
+  const username = param.replace('%40', '');
 
   try {
     const prefetchPromises = [
@@ -38,9 +39,9 @@ const CommunitiesPage = async ({ params }: { params: { param: string } }) => {
     logger.error(error, 'Error in CommunitiesPage:');
   }
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <CommunityContent username={username} />
-    </Hydrate>
+    </HydrationBoundary>
   );
 };
 

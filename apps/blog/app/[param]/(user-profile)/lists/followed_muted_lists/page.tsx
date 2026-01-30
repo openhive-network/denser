@@ -4,12 +4,12 @@ import FollowedMutedListsContent from './content';
 const type = 'followed_muted_lists';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     param: string;
-  };
+  }>;
 }
-const FollowedMutedListsPage = ({ params }: PageProps) => {
-  const { param } = params;
+const FollowedMutedListsPage = async ({ params }: PageProps) => {
+  const { param } = await params;
 
   return (
     <ListsPage username={param} type={type}>

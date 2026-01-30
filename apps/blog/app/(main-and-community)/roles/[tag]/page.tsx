@@ -5,17 +5,18 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-const Page = async ({ params }: { params: { tag: string } }) => {
+const Page = async ({ params }: { params: Promise<{ tag: string }> }) => {
+  const { tag } = await params;
   const queryClient = getQueryClient();
   try {
     await queryClient.prefetchQuery({
-      queryKey: ['community', params.tag],
-      queryFn: () => getListCommunityRoles(params.tag)
+      queryKey: ['community', tag],
+      queryFn: () => getListCommunityRoles(tag)
     });
   } catch (error) {
     logger.error(error, 'Error in Page:');
   }
-  return <Content community={params.tag} />;
+  return <Content community={tag} />;
 };
 
 export default Page;

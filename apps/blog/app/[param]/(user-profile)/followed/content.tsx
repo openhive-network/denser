@@ -39,6 +39,8 @@ const FollowedContent = ({ username }: { username: string }) => {
     setPage((prev) => prev - 1);
   };
 
+  const currentPage = followingData.data?.pages[page];
+
   return (
     <div className="flex flex-col gap-2 p-2">
       <h1 className="self-center p-2">
@@ -57,7 +59,7 @@ const FollowedContent = ({ username }: { username: string }) => {
         isLoading={followingData.isFetchingNextPage}
       />
       <ul>
-        {followingData.data?.pages[page].map((e) => (
+        {currentPage && Array.isArray(currentPage) ? currentPage.map((e) => (
           <li
             key={e.following}
             className="flex items-center justify-between bg-background-tertiary px-3 font-semibold text-destructive odd:bg-background"
@@ -75,7 +77,7 @@ const FollowedContent = ({ username }: { username: string }) => {
               </div>
             )}
           </li>
-        ))}
+        )) : null}
       </ul>
       <PrevNextButtons
         onNextPage={handleNextPage}

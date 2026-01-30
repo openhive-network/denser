@@ -11,18 +11,18 @@ const logger = getLogger('app');
 export async function generateMetadata({
   params
 }: {
-  params: { param: string; p2: string; permlink: string };
+  params: Promise<{ param: string; p2: string; permlink: string }>;
 }): Promise<Metadata> {
+  const { p2, permlink } = await params;
   // p2 should start with @ or %40 for valid post URLs - skip metadata fetch for invalid URLs
-  if (!isValidUserParam(params?.p2)) {
+  if (!p2?.startsWith('@') && !p2?.startsWith('%40')) {
     return {
       title: 'Not Found',
       description: 'Page not found'
     };
   }
-  const author = params.p2.replace('%40', '').replace('@', '');
-  const permlink = params?.permlink;
-  const observer = getObserverFromCookies();
+  const author = p2.replace('%40', '').replace('@', '');
+  const observer = await getObserverFromCookies();
 
   try {
     // Use cached version - deduplicated with page's prefetch within the same request

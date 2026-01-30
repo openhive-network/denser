@@ -5,7 +5,7 @@ import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
  * Proxy endpoint for default avatar image that prevents caching
  * Usage: /api/avatar/default
  */
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export async function GET(_req: NextRequest): Promise<NextResponse> {
   try {
     const defaultUrl = `${configuredImagesEndpoint}DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4`;
 

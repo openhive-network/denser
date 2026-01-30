@@ -1,13 +1,14 @@
 import { getQueryClient } from '@/blog/lib/react-query';
 import FollowersContent from './content';
 import { getAccountFull, getFollowers } from '@transaction/lib/hive-api';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
-const FollowersPage = async ({ params }: { params: { param: string } }) => {
+const FollowersPage = async ({ params }: { params: Promise<{ param: string }> }) => {
   const queryClient = getQueryClient();
-  const username = params.param.replace('%40', '');
+  const { param } = await params;
+  const username = param.replace('%40', '');
 
   try {
     await Promise.all([
@@ -17,9 +18,10 @@ const FollowersPage = async ({ params }: { params: { param: string } }) => {
       }),
       queryClient.prefetchInfiniteQuery({
         queryKey: ['followersData', username],
-        queryFn: ({ pageParam: last_id }) =>
-          getFollowers({ account: username, start: last_id, type: 'blog', limit: 50 }),
-        getNextPageParam: (lastPage) => {
+        queryFn: ({ pageParam: lastId }: { pageParam?: string }) =>
+          getFollowers({ account: username, start: lastId, type: 'blog', limit: 50 }),
+        initialPageParam: undefined as string | undefined,
+        getNextPageParam: (lastPage: Awaited<ReturnType<typeof getFollowers>>) => {
           return lastPage.length >= 50 ? lastPage[lastPage.length - 1].follower : undefined;
         }
       })
@@ -28,9 +30,9 @@ const FollowersPage = async ({ params }: { params: { param: string } }) => {
     logger.error(error, 'Error in FollowersPage:');
   }
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <FollowersContent username={username} />
-    </Hydrate>
+    </HydrationBoundary>
   );
 };
 

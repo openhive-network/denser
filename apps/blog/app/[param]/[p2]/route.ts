@@ -7,34 +7,33 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-export async function GET(request: Request, { params }: { params: { param: string; p2: string } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ param: string; p2: string }> }
+) {
   try {
-    // For /@username/permlink routes, param must start with @
-    if (!isValidUserParam(params?.param)) {
-      return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    }
-
-    const rawParam = params?.param ?? '';
+    const { param, p2 } = await params;
+    const rawParam = param ?? '';
     const decoded = decodeURIComponent(rawParam);
     const username = decoded.replace(/^@/, '').trim();
-    const observer = getObserverFromCookies();
+    const observer = await getObserverFromCookies();
     const queryClient = getQueryClient();
     const validUser = await isUsernameValid(username);
 
     if (!validUser) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    if (!isPermlinkValid(params?.p2)) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    if (!isPermlinkValid(p2)) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
     let post;
     try {
       post = await queryClient.fetchQuery({
-        queryKey: ['post', username, String(params?.p2)],
-        queryFn: () => getPost(username, String(params?.p2), observer)
+        queryKey: ['post', username, String(p2)],
+        queryFn: () => getPost(username, String(p2), observer)
       });
     } catch (fetchErr) {
       logger.error(fetchErr, 'Failed to fetch post');
 
       // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet
-      if (params?.p2 === 'transfers') {
+      if (p2 === 'transfers') {
         const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
         if (walletEndpoint) {
           const walletUrl = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;
@@ -47,7 +46,7 @@ export async function GET(request: Request, { params }: { params: { param: strin
 
     if (!post) {
       // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet
-      if (params?.p2 === 'transfers') {
+      if (p2 === 'transfers') {
         const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
         if (walletEndpoint) {
           const walletUrl = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;

@@ -1,5 +1,4 @@
 import '@hive/tailwindcss-config/globals.css';
-import * as Sentry from '@sentry/nextjs';
 import { ReactNode } from 'react';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
@@ -46,22 +45,14 @@ const metadata = {
 } as const satisfies Metadata;
 
 export function generateMetadata(): Metadata {
-  if (!process.env.REACT_APP_SENTRY_DSN) {
-    return metadata;
-  }
-
-  return {
-    ...metadata,
-    other: {
-      ...metadata.other,
-      ...Sentry.getTraceData()
-    }
-  };
+  // Note: Sentry.getTraceData() removed due to Next.js 15 metadata compatibility issues
+  // Trace propagation is still handled by Sentry's automatic instrumentation
+  return metadata;
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   // Server-side locale and language handling
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
   const isRTL = locale === 'ar';
 
@@ -70,7 +61,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const envVersion = getEnvVersion();
 
   return (
-    <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
+    <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <head>
         {/* Use plain script tag for guaranteed synchronous loading of env globals */}
         <script src={`${basePath}/__ENV.js?v=${envVersion}`} />

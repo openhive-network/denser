@@ -6,8 +6,8 @@ import { notFound } from 'next/navigation';
 
 const query = 'blog';
 
-const Page = async ({ params }: { params: { param: string } }) => {
-  const raw = params.param;
+const Page = async ({ params }: { params: Promise<{ param: string }> }) => {
+  const { param: raw } = await params;
   const username = raw.startsWith('%40') ? raw.replace('%40', '') : raw;
 
   const valid = await isUsernameValid(username);
@@ -16,7 +16,7 @@ const Page = async ({ params }: { params: { param: string } }) => {
   }
 
   return (
-    <PostsPage param={params.param} query={query}>
+    <PostsPage param={raw} query={query}>
       <Content />
     </PostsPage>
   );

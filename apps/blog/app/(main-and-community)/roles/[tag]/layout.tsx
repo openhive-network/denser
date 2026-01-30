@@ -3,10 +3,22 @@ import PrefetchComponent from '@/blog/features/layouts/community/prefetch-compon
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
-export async function generateMetadata({ params }: { params: { tag: string } }): Promise<Metadata> {
-  return buildCommunityTagMetadata(params, 'roles');
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ tag: string }>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  return buildCommunityTagMetadata(resolvedParams, 'roles');
 }
-const Layout = ({ children, params }: { children: ReactNode; params: { tag: string } }) => {
-  return <PrefetchComponent community={params.tag}>{children}</PrefetchComponent>;
+const Layout = async ({
+  children,
+  params
+}: {
+  children: ReactNode;
+  params: Promise<{ tag: string }>;
+}) => {
+  const { tag } = await params;
+  return <PrefetchComponent community={tag}>{children}</PrefetchComponent>;
 };
 export default Layout;

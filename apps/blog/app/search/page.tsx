@@ -1,6 +1,6 @@
 import { SearchSort } from '@ui/hooks/use-search';
 import SearchContent from './content';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { searchPosts } from '@transaction/lib/hivesense-api';
 import { getByText } from '@transaction/lib/hive-api';
@@ -9,13 +9,14 @@ import { getLogger } from '@ui/lib/logging';
 import { parseSearchParams } from '@ui/lib/search-params';
 
 interface SearchPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const logger = getLogger('app');
 
 const SearchPage = async ({ searchParams }: SearchPageProps) => {
-  const validatedParams = parseSearchParams(searchParams);
+  const resolvedSearchParams = await searchParams;
+  const validatedParams = parseSearchParams(resolvedSearchParams);
   const aiParam = validatedParams.ai;
   const classicQuery = validatedParams.q;
   const userTopicQuery = validatedParams.a;
@@ -24,7 +25,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
 
   const queryClient = getQueryClient();
   try {
-    const observer = getObserverFromCookies();
+    const observer = await getObserverFromCookies();
     const prefetchPromises: Promise<void>[] = [];
 
     if (aiParam) {
@@ -35,8 +36,8 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
             return await searchPosts({
               query: aiParam,
               observer,
-              result_limit: 1000,
-              full_posts: 20
+              resultLimit: 1000,
+              fullPosts: 20
             });
           }
         })
@@ -56,13 +57,15 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
               sort: sortQuery
             });
           },
-          getNextPageParam: (lastPage) => {
+          initialPageParam: undefined as { author: string; permlink: string } | undefined,
+          getNextPageParam: (lastPage: Awaited<ReturnType<typeof getByText>>) => {
             if (lastPage && lastPage.length === 20) {
               return {
                 author: lastPage[lastPage.length - 1].author,
                 permlink: lastPage[lastPage.length - 1].permlink
               };
             }
+            return undefined;
           }
         })
       );
@@ -82,13 +85,15 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
               sort: sortQuery
             });
           },
-          getNextPageParam: (lastPage) => {
+          initialPageParam: undefined as { author: string; permlink: string } | undefined,
+          getNextPageParam: (lastPage: Awaited<ReturnType<typeof getByText>>) => {
             if (lastPage && lastPage.length === 20) {
               return {
                 author: lastPage[lastPage.length - 1].author,
                 permlink: lastPage[lastPage.length - 1].permlink
               };
             }
+            return undefined;
           }
         })
       );
@@ -99,7 +104,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
     logger.error(error, 'Error in SearchPage:');
   }
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <SearchContent
         aiParam={aiParam}
         classicQuery={classicQuery}
@@ -107,7 +112,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
         topicQuery={topicQuery}
         sortQuery={sortQuery}
       />
-    </Hydrate>
+    </HydrationBoundary>
   );
 };
 

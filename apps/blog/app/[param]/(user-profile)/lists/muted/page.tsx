@@ -4,12 +4,12 @@ import MutedContent from './content';
 const type = 'muted';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     param: string;
-  };
+  }>;
 }
-const MutedPage = ({ params }: PageProps) => {
-  const { param } = params;
+const MutedPage = async ({ params }: PageProps) => {
+  const { param } = await params;
 
   return (
     <ListsPage username={param} type={type}>

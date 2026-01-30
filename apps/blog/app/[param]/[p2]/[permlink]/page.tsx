@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { getQueryClient } from '@/blog/lib/react-query';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import PostContent from './content';
 import { getPostCached } from '@/blog/lib/cached-api';
 import { getCommunity, getListCommunityRoles } from '@transaction/lib/bridge-api';
@@ -16,10 +16,11 @@ import { isCommunity } from '@ui/lib/utils';
 const logger = getLogger('app');
 
 const PostPage = async ({
-  params: { param, p2, permlink }
+  params
 }: {
-  params: { param: string; p2: string; permlink: string };
+  params: Promise<{ param: string; p2: string; permlink: string }>;
 }) => {
+  const { param, p2, permlink } = await params;
   // p2 should start with @ or %40 for valid post URLs
   if (!isValidUserParam(p2)) {
     notFound();
@@ -33,7 +34,7 @@ const PostPage = async ({
 
   if (!isPermlinkValid(permlink)) notFound();
   try {
-    const observer = getObserverFromCookies();
+    const observer = await getObserverFromCookies();
     await Promise.all([
       // Use cached version - deduplicated with layout's generateMetadata within the same request
       queryClient.prefetchQuery({
@@ -66,11 +67,11 @@ const PostPage = async ({
   }
 
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <Suspense fallback={<Loading loading={true} />}>
         <PostContent />
       </Suspense>
-    </Hydrate>
+    </HydrationBoundary>
   );
 };
 export default PostPage;

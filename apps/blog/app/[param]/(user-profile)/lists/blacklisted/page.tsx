@@ -4,12 +4,12 @@ import BlacklistedUsersContent from './content';
 const type = 'blacklisted';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     param: string;
-  };
+  }>;
 }
-const BlacklistedUsersPage = ({ params }: PageProps) => {
-  const { param } = params;
+const BlacklistedUsersPage = async ({ params }: PageProps) => {
+  const { param } = await params;
 
   return (
     <ListsPage username={param} type={type}>

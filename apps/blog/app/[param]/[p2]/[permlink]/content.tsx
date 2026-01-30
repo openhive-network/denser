@@ -123,14 +123,19 @@ const PostContent = () => {
   const [commentsPage, setCommentsPage] = useState(1);
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const postInCommunity = isCommunity(category);
-  const { data: postData, isLoading: postIsLoading } = useQuery({
+  const { data: postData, isPending: postIsLoading, error: postError } = useQuery({
     queryKey: ['postData', author, permlink, observer],
     queryFn: () => getPost(author, permlink, observer),
-    enabled: !!author && !!permlink && isHydrated, // Wait for hydration to complete before fetching with correct observer
-    onError: (error) => {
-      handleError(error, { method: 'getPost', params: { author, permlink, observer } });
-    }
+    enabled: !!author && !!permlink && isHydrated
   });
+
+  // Handle errors using useEffect (v5 migration - onError callback removed)
+  useEffect(() => {
+    if (postError) {
+      handleError(postError, { method: 'getPost', params: { author, permlink, observer } });
+    }
+  }, [postError, author, permlink, observer]);
+
   const [mutedPost, setMutedPost] = useState<boolean>(postData?.stats?.gray || false);
   // Single reblog query shared by header and footer ReblogTrigger components
   const { data: isReblogged } = useRebloggedByQuery(
@@ -162,8 +167,8 @@ const PostContent = () => {
         author,
         permlink,
         observer,
-        result_limit: 10, // Only get 10 suggestions
-        full_posts: 10 // Get all as full posts
+        resultLimit: 10, // Only get 10 suggestions
+        fullPosts: 10 // Get all as full posts
       });
 
       if (!results) return null;
@@ -175,23 +180,31 @@ const PostContent = () => {
       return fullPosts;
     }
   });
-  const { data: communityData } = useQuery({
+  const { data: communityData, error: communityError } = useQuery({
     queryKey: ['community', category, observer],
     queryFn: () => getCommunity(category, observer),
-    enabled: postInCommunity,
-    onError: (error) => {
-      handleError(error, { method: 'getCommunity', params: { category, observer } });
-    }
+    enabled: postInCommunity
   });
 
-  const { data: discussionData } = useQuery({
+  const { data: discussionData, error: discussionError } = useQuery({
     queryKey: ['discussionData', author, permlink, observer],
     queryFn: () => getDiscussion(author, permlink, observer),
-    enabled: isHydrated, // Wait for hydration to complete before fetching with correct observer
-    onError: (error) => {
-      handleError(error, { method: 'getDiscussion', params: { author, permlink, observer } });
-    }
+    enabled: isHydrated
   });
+
+  // Handle community data errors
+  useEffect(() => {
+    if (communityError) {
+      handleError(communityError, { method: 'getCommunity', params: { category, observer } });
+    }
+  }, [communityError, category, observer]);
+
+  // Handle discussion data errors
+  useEffect(() => {
+    if (discussionError) {
+      handleError(discussionError, { method: 'getDiscussion', params: { author, permlink, observer } });
+    }
+  }, [discussionError, author, permlink, observer]);
   const discussionState = useMemo(() => {
     if (!discussionData) return undefined;
     const list = [...Object.keys(discussionData).map((key) => discussionData[key])];
@@ -211,7 +224,10 @@ const PostContent = () => {
       if (!commentsByParent.has(parentKey)) {
         commentsByParent.set(parentKey, []);
       }
-      commentsByParent.get(parentKey)!.push(comment);
+      const parentComments = commentsByParent.get(parentKey);
+      if (parentComments) {
+        parentComments.push(comment);
+      }
     });
 
     // Find all main comments (direct replies to the current post/comment)
@@ -266,7 +282,8 @@ const PostContent = () => {
       const visited = new Set<number>([mainComment.post_id]);
 
       while (queue.length > 0 && currentPageCount < MAX_COMMENTS_PER_PAGE) {
-        const current = queue.shift()!;
+        const current = queue.shift();
+        if (!current) continue;
         if (visited.has(current.post_id)) continue;
         if (currentPageIds.has(current.post_id)) continue;
 
@@ -308,7 +325,6 @@ const PostContent = () => {
     };
   }, [discussionState, postData, commentsPage]);
   const firstPost = discussionState?.find((post) => post.depth === 0);
-  const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
 
   const thisPost = discussionState?.find((post) => post.permlink === permlink && postData?.author === author);
   // Use thisPost.depth if available, fallback to postData.depth (for optimistic posts), default to 0
@@ -316,13 +332,10 @@ const PostContent = () => {
   const commentSite = postDepth !== 0;
   const userFromDMCA = dmcaUserList.some((e) => e === postData?.author);
 
-  const { data: userCanModerate } = useQuery({
+  const { data: userCanModerate, error: rolesError } = useQuery({
     queryKey: ['rolesList', category],
     queryFn: () => getListCommunityRoles(category),
     enabled: postInCommunity,
-    onError: (error) => {
-      handleError(error, { method: 'getListCommunityRoles', params: { category } });
-    },
     select: (data) => {
       const userRole = data?.find((e) => e[0] === user.username);
       const userCanModerate = userRole
@@ -332,13 +345,24 @@ const PostContent = () => {
     }
   });
 
-  const { data: activeVotesData } = useQuery({
+  const { data: activeVotesData, error: activeVotesError } = useQuery({
     queryKey: ['activeVotes'],
-    queryFn: () => getActiveVotes(author, permlink),
-    onError: (error) => {
-      handleError(error, { method: 'getActiveVotes', params: { author, permlink } });
-    }
+    queryFn: () => getActiveVotes(author, permlink)
   });
+
+  // Handle roles list errors
+  useEffect(() => {
+    if (rolesError) {
+      handleError(rolesError, { method: 'getListCommunityRoles', params: { category } });
+    }
+  }, [rolesError, category]);
+
+  // Handle active votes errors
+  useEffect(() => {
+    if (activeVotesError) {
+      handleError(activeVotesError, { method: 'getActiveVotes', params: { author, permlink } });
+    }
+  }, [activeVotesError, author, permlink]);
 
   const { data: mutedList } = useFollowListQuery(user.username, 'muted');
 
@@ -718,10 +742,10 @@ const PostContent = () => {
                           >
                             {t('post_content.footer.reply')}
                           </button>
-                          {pinMutations.isLoading || unpinMutation.isLoading ? (
+                          {pinMutations.isPending || unpinMutation.isPending ? (
                             <div className="ml-2">
                               <CircleSpinner
-                                loading={pinMutations.isLoading || unpinMutation.isLoading}
+                                loading={pinMutations.isPending || unpinMutation.isPending}
                                 size={18}
                                 color="#dc2626"
                               />
@@ -783,13 +807,13 @@ const PostContent = () => {
                             label="Post"
                           >
                             <button
-                              disabled={edit || deletePostMutation.isLoading}
+                              disabled={edit || deletePostMutation.isPending}
                               className="flex items-center text-destructive"
                               data-testid="comment-card-footer-delete"
                             >
-                              {deletePostMutation.isLoading ? (
+                              {deletePostMutation.isPending ? (
                                 <CircleSpinner
-                                  loading={deletePostMutation.isLoading}
+                                  loading={deletePostMutation.isPending}
                                   size={18}
                                   color="#dc2626"
                                 />

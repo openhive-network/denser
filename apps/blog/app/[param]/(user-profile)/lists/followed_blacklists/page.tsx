@@ -4,12 +4,12 @@ import FollowedBlacklistContent from './content';
 const type = 'follow_blacklist';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     param: string;
-  };
+  }>;
 }
-const FollowedBlacklistPage = ({ params }: PageProps) => {
-  const { param } = params;
+const FollowedBlacklistPage = async ({ params }: PageProps) => {
+  const { param } = await params;
 
   return (
     <ListsPage username={param} type={type}>

@@ -1,7 +1,7 @@
 import ProfileLayout from '@/blog/features/layouts/user-profile/profile-layout';
 import { ReactNode } from 'react';
 import { Metadata } from 'next';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getAccountFullCached } from '@/blog/lib/cached-api';
 import { getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
@@ -12,8 +12,12 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-export async function generateMetadata({ params }: { params: { param: string } }): Promise<Metadata> {
-  const raw = params.param;
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ param: string }>;
+}): Promise<Metadata> {
+  const { param: raw } = await params;
   // Only process if it looks like a username (starts with @ or %40)
   if (!raw.startsWith('@') && !raw.startsWith('%40')) {
     return {
@@ -59,9 +63,15 @@ export async function generateMetadata({ params }: { params: { param: string } }
   }
 }
 
-const Layout = async ({ children, params }: { children: ReactNode; params: { param: string } }) => {
+const Layout = async ({
+  children,
+  params
+}: {
+  children: ReactNode;
+  params: Promise<{ param: string }>;
+}) => {
   const queryClient = getQueryClient();
-  const { param } = params;
+  const { param } = await params;
 
   // Only process if it looks like a username (starts with @ or %40)
   if (!param.startsWith('@') && !param.startsWith('%40')) {
@@ -107,9 +117,9 @@ const Layout = async ({ children, params }: { children: ReactNode; params: { par
     logger.error(error, 'Error in Layout:');
   }
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <ProfileLayout>{children}</ProfileLayout>
-    </Hydrate>
+    </HydrationBoundary>
   );
 };
 
