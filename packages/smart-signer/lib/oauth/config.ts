@@ -43,13 +43,12 @@ export const getOAuthClients = (): OAuthClient[] => {
 
   if (OPENHIVE_CHAT_SECRET) {
     clients.push({
-      clientId: 'openhive_chat',
+      clientId: 'openhive_blog',
       clientSecret: OPENHIVE_CHAT_SECRET,
       redirectUris: [
-        'https://openhive.chat/_oauth/openhive_chat',
-        'https://openhive.chat/_oauth/openhive_blog', // Alternative callback
+        'https://openhive.chat/_oauth/openhive_blog',
       ],
-      clientName: 'OpenHive Chat',
+      clientName: 'OpenHive Blog',
     });
   }
 
