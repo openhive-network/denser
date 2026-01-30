@@ -1,8 +1,4 @@
 import { Html, Head, Main, NextScript } from 'next/document';
-import Script from 'next/script';
-
-// Get basePath from build-time environment
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 const SITE_DESC = 'Hive Wallet is an online wallet for managing Hive accounts.';
 
@@ -31,13 +27,6 @@ export default function Document() {
         <meta name="twitter:title" content="#Hive" />
         <meta name="twitter:description" content={SITE_DESC} />
         <meta name="twitter:image" content="https://hive.blog/images/hive-blog-share.png" />
-
-        <script
-          src={`${basePath}/__ENV.js?v=${Date.now()}`}
-        />
-
-        {/* Google Sign-In */}
-        <script src="https://accounts.google.com/gsi/client" async defer></script>
       </Head>
       <body className="bg-background-secondary">
         <Main />

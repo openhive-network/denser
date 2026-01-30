@@ -2,7 +2,45 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const withPWA = require('next-pwa')({
   dest: 'public',
-  disable: process.env.NODE_ENV !== 'production'
+  disable: process.env.NODE_ENV !== 'production',
+  skipWaiting: true,
+  clientsClaim: true,
+  cleanupOutdatedCaches: true,
+  runtimeCaching: [
+    // Auth worker - never cache (no content hash in filename; stale copies
+    // reference old WASM hashes that no longer exist after deployments)
+    // Must come first as Workbox uses first-match-wins
+    {
+      urlPattern: /\/auth\/worker\.js$/i,
+      handler: 'NetworkOnly',
+    },
+    // Auth WASM - cache aggressively (content hash in filename makes this safe;
+    // worker.js always fetches fresh so it references the correct hash)
+    {
+      urlPattern: /\/auth\/assets\/.+\.wasm$/i,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'auth-wasm',
+        expiration: {
+          maxEntries: 3,
+          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+        },
+      },
+    },
+    // User-specific pages - never cache (notifications, settings, feed)
+    // These rules must come BEFORE the defaults to take precedence
+    {
+      urlPattern: /\/@[^/]+\/(notifications|settings|feed)/i,
+      handler: 'NetworkOnly',
+    },
+    // Next.js data (RSC) for these pages - never cache
+    {
+      urlPattern: /\/_next\/data\/.+\/%40[^/]+\/(notifications|settings|feed)\.json$/i,
+      handler: 'NetworkOnly',
+    },
+    // Include all default caching rules for static assets (JS, CSS, images, fonts, etc.)
+    ...require('next-pwa/cache'),
+  ],
 });
 
 // Get basePath from environment variable at build time
@@ -49,19 +87,6 @@ const nextConfig = {
   // Worker files need specific headers (security headers are applied via middleware)
   async headers() {
     return [
-      {
-        source: '/__ENV.js',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/javascript; charset=utf-8',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate, max-age=0',
-          }
-        ]
-      },
       {
         source: '/sw.js',
         headers: [

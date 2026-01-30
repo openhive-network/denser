@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import Script from 'next/script';
 import { Providers } from './providers';
 import ClientEffects from './client-effects';
+import ServiceWorkerUpdate from '../components/service-worker-update';
 import { getEnvVersion } from '../lib/env-version';
 
 // Get basePath from build-time environment
@@ -70,19 +71,18 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     // suppressHydrationWarning needed because browser extensions (like Hive Keychain)
     // inject scripts into the DOM, causing hydration mismatches
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'} suppressHydrationWarning>
-      <head suppressHydrationWarning />
+      <head>
+        {/* Use plain script tag for guaranteed synchronous loading of env globals */}
+        <script src={`${basePath}/__ENV.js?v=${envVersion}`} />
+      </head>
       <body className="bg-background-secondary" suppressHydrationWarning>
-        {/* Use beforeInteractive for guaranteed synchronous loading of env globals */}
-        <Script
-          src={`${basePath}/__ENV.js?v=${envVersion}`}
-          strategy="beforeInteractive"
-        />
         {/* Google Sign-In - loaded lazily, CSP needs to allow accounts.google.com */}
         <Script
           src="https://accounts.google.com/gsi/client"
           strategy="lazyOnload"
         />
         <Providers>
+          <ServiceWorkerUpdate />
           <>{children}</>
         </Providers>
         <ClientEffects />
