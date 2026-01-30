@@ -40,16 +40,18 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
 
   const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({
     queryKey: ['accountEntriesInfinite', username, query],
-    queryFn: async ({ pageParam }: { pageParam?: Entry }) => {
+    queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
       return await getAccountPosts(query, username, observer, pageParam?.author, pageParam?.permlink);
     },
-    getNextPageParam: (lastPage) => {
+    initialPageParam: undefined as { author: string; permlink: string } | undefined,
+    getNextPageParam: (lastPage: Awaited<ReturnType<typeof getAccountPosts>>) => {
       if (lastPage && lastPage.length === PER_PAGE) {
         return {
           author: lastPage[lastPage.length - 1].author,
           permlink: lastPage[lastPage.length - 1].permlink
         };
       }
+      return undefined;
     },
     enabled: Boolean(username)
   });

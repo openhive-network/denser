@@ -37,7 +37,7 @@ export function useMarkAllNotificationsAsReadMutation() {
         queryClient.invalidateQueries({ queryKey: ['unreadNotifications', username] });
       }, 6000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useMarkAllNotificationsAsReadMutation',
         params: variables

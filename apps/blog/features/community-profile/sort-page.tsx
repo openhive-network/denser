@@ -1,7 +1,7 @@
 import { getQueryClient } from '@/blog/lib/react-query';
 import { SortTypes } from '@/blog/lib/utils';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { ReactNode } from 'react';
@@ -21,7 +21,7 @@ const SortPage = async ({
   const queryClient = getQueryClient();
   // Get observer from cookies - returns user's observer if logged in, DEFAULT_OBSERVER for anonymous
   // Community data (getCommunity) is already prefetched in the layout's PrefetchComponent
-  const observer = getObserverFromCookies();
+  const observer = await getObserverFromCookies();
   try {
     await queryClient.prefetchInfiniteQuery({
       queryKey: ['entriesInfinite', sort, tag, observer],
@@ -30,6 +30,7 @@ const SortPage = async ({
         const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer);
         return postsData ?? [];
       },
+      initialPageParam: undefined as { author: string; permlink: string } | undefined,
       getNextPageParam: (lastPage: Entry[]) => {
         if (!Array.isArray(lastPage) || lastPage.length === 0) return undefined;
         const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
@@ -40,7 +41,7 @@ const SortPage = async ({
   } catch (error) {
     logger.error(error, 'Error in SortPage:');
   }
-  return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
+  return <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>;
 };
 
 export default SortPage;

@@ -37,8 +37,8 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
       return await searchPosts({
         query,
         observer: user.username !== '' ? user.username : commonVariables.defaultObserver,
-        result_limit: 1000, // Get up to 1000 results
-        full_posts: PER_PAGE // Get first page fully expanded
+        resultLimit: 1000, // Get up to 1000 results
+        fullPosts: PER_PAGE // Get first page fully expanded
       });
     },
     refetchOnWindowFocus: false,

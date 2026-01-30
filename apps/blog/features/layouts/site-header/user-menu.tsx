@@ -23,20 +23,20 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 // Helper function to get login method icon
 const getLoginMethodIcon = (loginType: LoginType) => {
   switch (loginType) {
-    case LoginType.google:
+    case LoginType.Google:
       return <Icons.google className="h-4 w-4" />;
-    case LoginType.keychain:
+    case LoginType.Keychain:
       return <Icons.hivekeychain className="h-4 w-4" />;
-    case LoginType.peakvault:
+    case LoginType.Peakvault:
       return <Icons.peakvault className="h-4 w-4" />;
-    case LoginType.metamask:
+    case LoginType.Metamask:
       return <Icons.metamask className="h-4 w-4" />;
-    case LoginType.hiveauth:
+    case LoginType.Hiveauth:
       return <Icons.hiveauth className="h-4 w-4" />;
-    case LoginType.hivesigner:
+    case LoginType.Hivesigner:
       return <Icons.hivesigner className="h-4 w-4" />;
-    case LoginType.hbauth:
-    case LoginType.wif:
+    case LoginType.Hbauth:
+    case LoginType.Wif:
     default:
       return <Icons.keyRound className="h-4 w-4" />;
   }

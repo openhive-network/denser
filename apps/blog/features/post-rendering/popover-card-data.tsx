@@ -53,8 +53,8 @@ const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: str
   const legalBlockedUser = userIllegalContent.some((e) => e === account?.name);
 
   return (
-    <div>
-      {account && !isLoading && follows.data && !follows.isLoading ? (
+    <div className="space-y-2">
+      {account && !isLoading && follows.data && !follows.isPending ? (
         <>
           {/* Header with avatar and name */}
           <div className="flex items-start gap-3 border-b border-border p-4">

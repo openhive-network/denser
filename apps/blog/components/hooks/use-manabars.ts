@@ -21,7 +21,10 @@ const useManabars = (accountName?: string) => {
     isError: manabarsDataError
   }: UseQueryResult<Manabars | null> = useQuery({
     queryKey: ['manabars', accountName],
-    queryFn: async () => await getManabar(accountName!),
+    queryFn: async () => {
+      if (!accountName) return null;
+      return await getManabar(accountName);
+    },
     enabled: !!accountName,
     refetchOnWindowFocus: false,
     refetchInterval: 60000 // 1 minute in milliseconds

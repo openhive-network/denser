@@ -2,7 +2,7 @@ import React from 'react';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
-const FlagTooltip = React.forwardRef<HTMLButtonElement, { onClick: () => void }>(({ onClick }, ref) => {
+const FlagTooltip = ({ onClick, ref }: { onClick: () => void; ref?: React.Ref<HTMLButtonElement> }) => {
   return (
     <TooltipProvider>
       <Tooltip>
@@ -13,8 +13,6 @@ const FlagTooltip = React.forwardRef<HTMLButtonElement, { onClick: () => void }>
       </Tooltip>
     </TooltipProvider>
   );
-});
-
-FlagTooltip.displayName = 'FlagTooltip';
+};
 
 export default FlagTooltip;

@@ -65,7 +65,7 @@ export function useUpdateCommunityMutation() {
         queryClient.invalidateQueries({ queryKey: ['community', communityName] });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useUpdateCommunityMutation',
         params: variables

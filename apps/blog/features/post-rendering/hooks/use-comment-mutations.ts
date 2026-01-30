@@ -11,7 +11,6 @@ const logger = getLogger('app');
 
 /**
  * Makes comment transaction.
- * Uses optimistic UI - comment appears immediately with full interactivity.
  *
  * @export
  * @return {*}
@@ -21,8 +20,7 @@ export function useCommentMutation() {
   const { user } = useUserClient();
 
   const commentMutation = useMutation({
-    // Optimistic update BEFORE broadcast
-    onMutate: async (params: {
+    mutationFn: async (params: {
       parentAuthor: string;
       parentPermlink: string;
       body: string;
@@ -32,7 +30,7 @@ export function useCommentMutation() {
       discussionPermlink: string;
       observer: string;
     }) => {
-      const { parentAuthor, parentPermlink, body, discussionAuthor, discussionPermlink, observer } = params;
+      const { parentAuthor, parentPermlink, body, preferences, discussionAuthor, discussionPermlink, observer } = params;
       const queryKey = ['discussionData', discussionAuthor, discussionPermlink, observer];
 
       // Cancel any outgoing refetches to avoid overwriting optimistic update
@@ -121,21 +119,6 @@ export function useCommentMutation() {
 
       logger.info('Optimistic comment added: %o', { tempPermlink, queryKey, hasPrevData: !!prevData });
 
-      // Return context for rollback
-      return { prevData, queryKey };
-    },
-
-    mutationFn: async (params: {
-      parentAuthor: string;
-      parentPermlink: string;
-      body: string;
-      preferences: Preferences;
-      discussionAuthor: string;
-      discussionPermlink: string;
-      observer: string;
-    }) => {
-      const { parentAuthor, parentPermlink, body, preferences, discussionPermlink } = params;
-
       // Broadcast without waiting for blockchain confirmation
       // A successful broadcast guarantees inclusion in the blockchain
       const broadcastResult = await transactionService.comment(
@@ -147,7 +130,7 @@ export function useCommentMutation() {
       );
 
       logger.info('Comment broadcast successful: %o', { discussionPermlink, broadcastResult });
-      return { ...params, broadcastResult };
+      return { ...params, broadcastResult, prevData, queryKey };
     },
 
     onSuccess: (data) => {
@@ -170,14 +153,11 @@ export function useCommentMutation() {
 
     onError: (error: unknown, variables, context) => {
       // Rollback to previous data on error
-      if (context?.queryKey) {
-        if (context.prevData) {
-          // Restore previous data
-          queryClient.setQueryData(context.queryKey, context.prevData);
-        } else {
-          // If there was no previous data, remove the optimistic update
-          queryClient.removeQueries({ queryKey: context.queryKey });
-        }
+      const queryKey = ['discussionData', variables.discussionAuthor, variables.discussionPermlink, variables.observer];
+      const prevData = queryClient.getQueryData(queryKey);
+      if (prevData) {
+        // Restore previous data by removing the optimistic comment
+        queryClient.invalidateQueries({ queryKey });
       }
 
       handleError(error, {
@@ -216,7 +196,7 @@ export function useUpdateCommentMutation() {
         permlink,
         body,
         {
-          observe: false
+          observe: true
         }
       );
       const prevData: Record<string, Entry> | undefined = queryClient.getQueryData([
@@ -265,7 +245,7 @@ export function useUpdateCommentMutation() {
         ['postData', username, permlink, observer]
       ]);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useUpdateCommentMutation',
         params: variables
@@ -333,7 +313,7 @@ export function useDeleteCommentMutation() {
         [4000, 10000, 20000]
       );
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useDeleteCommentMutation',
         params: variables

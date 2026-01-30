@@ -26,9 +26,9 @@ const ChangeTitleDialog = ({
   return moderateEnabled ? (
     <Dialog open={open} onOpenChange={(e) => setOpen(e)}>
       <DialogTrigger>
-        {titleMutation.isLoading ? (
+        {titleMutation.isPending ? (
           <div className="ml-2">
-            <CircleSpinner loading={titleMutation.isLoading} size={18} color="#dc2626" />
+            <CircleSpinner loading={titleMutation.isPending} size={18} color="#dc2626" />
           </div>
         ) : (
           <span title={t('communities.edit_title')}>

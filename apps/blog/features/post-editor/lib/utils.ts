@@ -164,7 +164,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
     const resJSON = await response.json();
     return resJSON.url;
   } catch (error) {
-    logger.error('Error when uploading file %s: %o', file.name, error);
+    logger.error({ fileName: file.name, error }, 'Error when uploading file');
     handleError(error);
   }
   return '';

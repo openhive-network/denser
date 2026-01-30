@@ -2,9 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
-import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
-const logger = getLogger('app');
 
 /**
  * Pin/Unpin posts in community.
@@ -53,7 +51,7 @@ export function usePinMutation() {
         queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'usePinMutation',
         params: variables
@@ -105,7 +103,7 @@ export function useUnpinMutation() {
         queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useUnpinMutation',
         params: variables

@@ -55,7 +55,7 @@ export function useBlacklistBlogMutation() {
         queryClient.invalidateQueries({ queryKey });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useBlacklistBlogMutation',
         params: variables
@@ -107,7 +107,7 @@ export function useUnblacklistBlogMutation() {
         queryClient.invalidateQueries({ queryKey });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useUnblacklistBlogMutation',
         params: variables
@@ -150,7 +150,7 @@ export function useResetBlacklistBlogMutation() {
       }, 4000);
       logger.info('useResetBlacklistBlogMutation onSuccess: %o', data);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useResetBlacklistBlogMutation',
         params: variables

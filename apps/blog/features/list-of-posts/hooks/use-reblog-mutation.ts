@@ -38,7 +38,7 @@ export function useReblogMutation() {
         queryClient.invalidateQueries({ queryKey: ['PostRebloggedBy', author, permlink, username] });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useReblogMutation',
         params: variables

@@ -52,7 +52,7 @@ export function useClaimRewardsMutation() {
         queryClient.invalidateQueries({ queryKey });
       }, 6000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useClaimRewardsMutation',
         params: variables

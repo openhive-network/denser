@@ -27,11 +27,11 @@ const logger = getLogger('app');
  * - Fixed in RC 8.0.0 (PR #37829)
  *
  * @param {{ chatAuthToken: string, loginType: LoginType }} data
- * @param {React.RefObject<HTMLIFrameElement>} iframeRef
+ * @param {React.RefObject<HTMLIFrameElement | null>} iframeRef
  */
 const chatLogin = (
   data: { chatAuthToken: string; loginType: LoginType },
-  iframeRef: React.RefObject<HTMLIFrameElement>
+  iframeRef: React.RefObject<HTMLIFrameElement | null>
 ): void => {
   logger.info('chatLogin start');
   if (siteConfig.openhiveChatIframeIntegrationEnable) {
@@ -44,13 +44,13 @@ const chatLogin = (
           externalCommand: 'login-with-token',
           token: data.chatAuthToken
         };
-        logger.info('chatLogin posting externalCommand message');
+        logger.info({ message, data }, 'chatLogin posting message');
         iframeRef.current?.contentWindow?.postMessage(message, `${siteConfig.openhiveChatUri}`);
       } else {
-        logger.warn('chatLogin not posting message, data is wrong', data);
+        logger.warn({ data }, 'chatLogin not posting message, data is wrong');
       }
     } catch (error) {
-      logger.error(data, 'chatLogin not posting message');
+      logger.error({ error, data }, 'chatLogin not posting message');
     }
   } else {
     logger.info('chatLogin siteConfig.openhiveChatIframeIntegrationEnable is false');
@@ -63,9 +63,9 @@ const chatLogin = (
  * Uses externalCommand format to match chatLogin approach.
  *
  * @export
- * @param {React.RefObject<HTMLIFrameElement>} iframeRef
+ * @param {React.RefObject<HTMLIFrameElement | null>} iframeRef
  */
-export const chatLogout = (iframeRef: React.RefObject<HTMLIFrameElement>): void => {
+export const chatLogout = (iframeRef: React.RefObject<HTMLIFrameElement | null>): void => {
   if (siteConfig.openhiveChatIframeIntegrationEnable) {
     try {
       logger.info('chatLogout posting externalCommand message');
@@ -95,7 +95,7 @@ const RocketChatWidget = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
   const [open, setOpen] = useState(false);
-  const iframeRef = useRef(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const getChatAuthToken = useGetChatAuthToken();
 
   const onMessageReceivedFromIframe = (event: MessageEvent) => {
@@ -109,7 +109,7 @@ const RocketChatWidget = () => {
       return;
     }
 
-    logger.info('chat onMessageReceivedFromIframe event', event.origin, event.data, event);
+    logger.info({ origin: event.origin, data: event.data, event }, 'chat onMessageReceivedFromIframe event');
 
     // Fires when iframe window's title changes. This way we replay
     // the behavior of native Rocket Chat's badge in our badge.
@@ -205,6 +205,7 @@ const RocketChatWidget = () => {
     }
 
     return removeIframeListener;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatAuthToken, init, isIframeLoaded, loginType]);
 
   const onIframeLoad = () => {

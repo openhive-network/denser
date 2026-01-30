@@ -19,32 +19,36 @@ import {
 } from '@hive/ui';
 import RocketChatWidget from '@/blog/components/rocket-chat-widget';
 
+const ThemeColorMeta: FC = () => {
+  const { resolvedTheme } = useTheme();
+  return (
+    <Head>
+      <meta name="theme-color" content={resolvedTheme === 'dark' ? '#030711' : '#ffffff'} />
+    </Head>
+  );
+};
+
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useMemo(() => getQueryClient(), []);
-  const { resolvedTheme } = useTheme();
 
   return (
-    <>
-      <Head>
-        <meta name="theme-color" content={resolvedTheme === 'dark' ? '#030711' : '#ffffff'} />
-      </Head>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <NavigationProgressProvider>
-            <NavigationProgress />
-            <NavigationProgressHandler />
-            <SignerProvider>
-              <LoggedUserProvider>
-                {children}
-                <RocketChatWidget />
-              </LoggedUserProvider>
-            </SignerProvider>
-          </NavigationProgressProvider>
-        </ThemeProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <ModalContainer />
-        <Toaster />
-      </QueryClientProvider>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeColorMeta />
+        <NavigationProgressProvider>
+          <NavigationProgress />
+          <NavigationProgressHandler />
+          <SignerProvider>
+            <LoggedUserProvider>
+              {children}
+              <RocketChatWidget />
+            </LoggedUserProvider>
+          </SignerProvider>
+        </NavigationProgressProvider>
+      </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+      <ModalContainer />
+      <Toaster />
+    </QueryClientProvider>
   );
 };

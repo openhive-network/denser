@@ -1,7 +1,7 @@
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getAccountPosts } from '@transaction/lib/bridge-api';
 import { Entry } from '@hive/common-hiveio-packages/wax';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { ReactNode } from 'react';
 import { QueryTypes } from './lib/utils';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
@@ -21,7 +21,7 @@ const PostsPage = async ({
   const queryClient = getQueryClient();
   const username = param.replace('%40', '');
   try {
-    const observer = getObserverFromCookies();
+    const observer = await getObserverFromCookies();
     await queryClient.prefetchInfiniteQuery({
       queryKey: ['accountEntriesInfinite', username, query],
       queryFn: async ({ pageParam }) => {
@@ -29,6 +29,7 @@ const PostsPage = async ({
         const postsData = await getAccountPosts(query, username, observer, author ?? '', permlink ?? '');
         return postsData ?? [];
       },
+      initialPageParam: undefined as { author: string; permlink: string } | undefined,
       getNextPageParam: (lastPage: Entry[]) => {
         if (!Array.isArray(lastPage) || lastPage.length === 0) return undefined;
         const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
@@ -39,6 +40,6 @@ const PostsPage = async ({
   } catch (error) {
     logger.error(error, 'Error in PostsPage:');
   }
-  return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
+  return <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>;
 };
 export default PostsPage;

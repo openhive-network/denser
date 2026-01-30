@@ -1,4 +1,5 @@
 'use client';
+import '@/blog/lib/react-internals-shim';
 import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component'
 import { Community, Entry, MixedPostsResponse } from '@hive/common-hiveio-packages/wax';
 import { ApiAccount } from '@hiveio/wax';

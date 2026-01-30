@@ -101,10 +101,10 @@ const ReblogTrigger = ({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger disabled={isReblogged || reblogMutation.isLoading}>
+        <TooltipTrigger disabled={isReblogged || reblogMutation.isPending}>
           <ReblogDialog author={author} permlink={permlink} action={dialogAction}>
-            {reblogMutation.isLoading ? (
-              <CircleSpinner loading={reblogMutation.isLoading} size={18} color="#dc2626" />
+            {reblogMutation.isPending ? (
+              <CircleSpinner loading={reblogMutation.isPending} size={18} color="#dc2626" />
             ) : (
               <Icons.forward
                 className={cn('h-4 w-4 cursor-pointer', {

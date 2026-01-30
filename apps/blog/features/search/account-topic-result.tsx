@@ -37,7 +37,7 @@ const AccountTopicResult = ({
   });
 
   const { t } = useTranslation('common_blog');
-  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({
+  const { data, isPending, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({
     queryKey: ['similarPosts', query, author, sort],
     queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
       return await getByText({
@@ -50,13 +50,15 @@ const AccountTopicResult = ({
         sort
       });
     },
-    getNextPageParam: (lastPage) => {
+    initialPageParam: undefined as { author: string; permlink: string } | undefined,
+    getNextPageParam: (lastPage: Awaited<ReturnType<typeof getByText>>) => {
       if (lastPage && lastPage.length === PER_PAGE) {
         return {
           author: lastPage[lastPage.length - 1].author,
           permlink: lastPage[lastPage.length - 1].permlink
         };
       }
+      return undefined;
     },
 
     refetchOnWindowFocus: false,
@@ -84,8 +86,8 @@ const AccountTopicResult = ({
 
   return (
     <div>
-      {!query ? null : isLoading ? (
-        <Loading loading={isLoading} />
+      {!query ? null : isPending ? (
+        <Loading loading={isPending} />
       ) : data ? (
         data.pages.map((page, pageIndex) => {
           return page ? (
@@ -127,7 +129,7 @@ const AccountTopicResult = ({
             <PostListItemSkeleton />
           ) : hasNextPage ? (
             t('user_profile.load_newer')
-          ) : !isLoading ? (
+          ) : !isPending ? (
             t('user_profile.nothing_more_to_load')
           ) : null}
         </button>

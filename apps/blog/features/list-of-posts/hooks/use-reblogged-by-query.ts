@@ -12,7 +12,7 @@ export const useRebloggedByQuery = (author: string = '', permlink: string = '', 
     enabled: !!(username && author && permlink),
 
     // See https://www.codemzy.com/blog/react-query-cachetime-staletime
-    cacheTime: 1000 * 60 * 60 + 5000, // 1 hour 5 seconds
+    gcTime: 1000 * 60 * 60 + 5000, // 1 hour 5 seconds
     staleTime: 1000 * 60 * 60 // 1 hour
   });
   // logger.info('Reblog data author: %s, permlink: %s, isReblogged: %o', author, permlink, isReblogged);

@@ -59,7 +59,7 @@ export function useSubscribeMutation() {
         queryClient.invalidateQueries({ queryKey: ['AccountNotification', community] });
       }, 5000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useSubscribeMutation',
         params: variables
@@ -125,7 +125,7 @@ export function useUnsubscribeMutation() {
         queryClient.invalidateQueries({ queryKey: ['AccountNotification', community] });
       }, 5000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useUnsubscribeMutation',
         params: variables

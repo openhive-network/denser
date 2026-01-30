@@ -4,7 +4,7 @@ import { IFollow } from '@hive/common-hiveio-packages/wax';
 import FollowButton from './follow-button';
 import MuteButton from './mute-button';
 import { User } from '@smart-signer/types/common';
-import { UseInfiniteQueryResult } from '@tanstack/react-query';
+import { UseInfiniteQueryResult, InfiniteData } from '@tanstack/react-query';
 import { useMuteMutation, useUnmuteMutation } from './hooks/use-mute-mutations';
 import { useFollowMutation, useUnfollowMutation } from './hooks/use-follow-mutations';
 import { Button } from '@hive/ui';
@@ -33,8 +33,8 @@ const ButtonsContainer = ({
     | 'basic'
     | null
     | undefined;
-  follow: UseInfiniteQueryResult<IFollow[], unknown>;
-  mute: UseInfiniteQueryResult<IFollow[], unknown>;
+  follow: UseInfiniteQueryResult<InfiniteData<IFollow[]>, Error>;
+  mute: UseInfiniteQueryResult<InfiniteData<IFollow[]>, Error>;
 }) => {
   const { t } = useTranslation('common_blog');
 
@@ -91,11 +91,11 @@ const ButtonsContainer = ({
   };
 
   const loading =
-    mute.isLoading ||
+    mute.isPending ||
     mute.isFetching ||
     muteMutation.isPending ||
     unmuteMutation.isPending ||
-    follow.isLoading ||
+    follow.isPending ||
     follow.isFetching ||
     followMutation.isPending ||
     unfollowMutation.isPending;

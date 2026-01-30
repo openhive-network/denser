@@ -1,5 +1,5 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { UseInfiniteQueryResult, useMutation, useQueryClient } from '@tanstack/react-query';
+import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { IFollow, IFollowList } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -18,15 +18,15 @@ export function useFollowMutation() {
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
       const broadcastResult = await transactionService.follow(username, { observe: true });
-      const prevIgnoredData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData(
+      const prevIgnoredData: InfiniteData<IFollow[]> | undefined = queryClient.getQueryData(
         ['followingData', user.username, 'ignore']
       );
-      const prevBlogData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData([
+      const prevBlogData: InfiniteData<IFollow[]> | undefined = queryClient.getQueryData([
         'followingData',
         user.username,
         'blog'
       ]);
-      const prevFollowersData: UseInfiniteQueryResult<IFollow[]>['data'] = queryClient.getQueryData([
+      const prevFollowersData: InfiniteData<IFollow[]> | undefined = queryClient.getQueryData([
         'followersData',
         username
       ]);
@@ -97,7 +97,7 @@ export function useFollowMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useFollowMutation',
         params: variables
@@ -121,7 +121,7 @@ export function useUnfollowMutation() {
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
       const broadcastResult = await transactionService.unfollow(username, { observe: true });
-      const prevBlogData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData([
+      const prevBlogData: InfiniteData<IFollow[]> | undefined = queryClient.getQueryData([
         'followingData',
         user.username,
         'blog'
@@ -158,7 +158,7 @@ export function useUnfollowMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useUnfollowMutation',
         params: variables

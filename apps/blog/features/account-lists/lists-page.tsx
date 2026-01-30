@@ -1,5 +1,5 @@
 import { getQueryClient } from '@/blog/lib/react-query';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getFollowList } from '@transaction/lib/bridge-api';
 import { FollowListType } from '@hive/common-hiveio-packages/wax';
 import { ReactNode } from 'react';
@@ -26,6 +26,6 @@ const ListsPage = async ({
   } catch (error) {
     logger.error(error, 'Error in ListsPage:');
   }
-  return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
+  return <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>;
 };
 export default ListsPage;

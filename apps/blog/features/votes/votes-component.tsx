@@ -108,17 +108,17 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
   return (
     <div className="flex items-center gap-1.5">
       {/* Upvote with slider - trigger */}
-      {clickedVoteButton === 'up' && voteMutation.isLoading ? (
+      {clickedVoteButton === 'up' && voteMutation.isPending ? (
         <CircleSpinner
-          loading={clickedVoteButton === 'up' && voteMutation.isLoading}
-          size={20}
+          loading={clickedVoteButton === 'up' && voteMutation.isPending}
+          size={18}
           color="#dc2626"
         />
       ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
         <Popover>
-          <PopoverTrigger disabled={voteMutation.isLoading}>
+          <PopoverTrigger disabled={userVote?._temporary}>
             <TooltipContainer
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isPending || !!userVote?._temporary}
               text={t('cards.post_card.upvote')}
               dataTestId="upvote-button"
               afterPayout={pastPayout && !vote_upvoted}
@@ -140,14 +140,14 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
-                loading={voteMutation.isLoading}
+                loading={voteMutation.isPending || !!userVote?._temporary}
                 text={t('cards.post_card.upvote')}
                 dataTestId="upvote-button-slider"
                 afterPayout={pastPayout && !vote_upvoted}
               >
                 <button
                   className="flex h-full items-center justify-center"
-                  disabled={voteMutation.isLoading}
+                  disabled={voteMutation.isPending || !!userVote?._temporary}
                   onClick={() => {
                     setClickedVoteButton('up');
                     submitVote(sliderUpvote[0] * 100);
@@ -161,7 +161,10 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                   }}
                 >
                   <Icons.arrowUpCircle
-                    className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive-icon hover:text-white sm:mr-1"
+                    className={clsx(
+                      'h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive-icon hover:text-white sm:mr-1',
+                      { 'animate-pulse': userVote?._temporary }
+                    )}
                   />
                 </button>
               </TooltipContainer>
@@ -181,7 +184,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         </Popover>
       ) : user.isLoggedIn ? (
         <TooltipContainer
-          loading={voteMutation.isLoading}
+          loading={voteMutation.isPending || !!userVote?._temporary}
           text={
             userVote && userVote.vote_percent > 0
               ? userVote.vote_percent === 10000 && !enable_slider
@@ -196,9 +199,8 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         >
           <button
             className="flex h-full items-center justify-center"
-            disabled={voteMutation.isLoading}
             onClick={() => {
-              if (voteMutation.isLoading) return;
+              if (voteMutation.isPending || !!userVote?._temporary) return;
               setClickedVoteButton('up');
               {
                 // We vote either 100% or 0%.
@@ -214,7 +216,8 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               className={clsx(
                 'h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white',
                 {
-                  'bg-destructive-icon text-white': userVote && userVote.vote_percent > 0
+                  'bg-destructive-icon text-white': userVote && userVote.vote_percent > 0,
+                  'animate-pulse': userVote?._temporary
                 }
               )}
             />
@@ -225,7 +228,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           <div className="flex items-center">
             <TooltipContainer
               text={t('cards.post_card.upvote')}
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isPending || !!userVote?._temporary}
               dataTestId="upvote-button"
               afterPayout={pastPayout && !vote_upvoted}
             >
@@ -235,17 +238,17 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         </DialogLogin>
       )}
       {/* Downvote with slider - trigger */}
-      {clickedVoteButton === 'down' && voteMutation.isLoading ? (
+      {clickedVoteButton === 'down' && voteMutation.isPending ? (
         <CircleSpinner
-          loading={clickedVoteButton === 'down' && voteMutation.isLoading}
-          size={20}
+          loading={clickedVoteButton === 'down' && voteMutation.isPending}
+          size={18}
           color="#dc2626"
         />
       ) : user.isLoggedIn && enable_slider && !vote_downvoted ? (
         <Popover>
-          <PopoverTrigger disabled={voteMutation.isLoading}>
+          <PopoverTrigger disabled={userVote?._temporary}>
             <TooltipContainer
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isPending || !!userVote?._temporary}
               text={t('cards.post_card.downvote')}
               dataTestId="downvote-button"
               afterPayout={pastPayout && !vote_downvoted}
@@ -267,14 +270,14 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           >
             <div className="flex h-full items-center gap-2">
               <TooltipContainer
-                loading={voteMutation.isLoading}
+                loading={voteMutation.isPending || !!userVote?._temporary}
                 text={t('cards.post_card.downvote')}
                 dataTestId="downvote-button-slider"
                 afterPayout={pastPayout && !vote_downvoted}
               >
                 <button
                   className="flex h-full items-center justify-center"
-                  disabled={voteMutation.isLoading}
+                  disabled={voteMutation.isPending || !!userVote?._temporary}
                   onClick={() => {
                     setClickedVoteButton('down');
                     submitVote(-sliderDownvote[0] * 100);
@@ -288,7 +291,12 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                   }}
                 >
                   <Icons.arrowDownCircle
-                    className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
+                    className={clsx(
+                      'h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                      {
+                        'animate-pulse': userVote?._temporary
+                      }
+                    )}
                   />
                 </button>
               </TooltipContainer>
@@ -317,7 +325,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         </Popover>
       ) : user.isLoggedIn ? (
         <TooltipContainer
-          loading={voteMutation.isLoading}
+          loading={voteMutation.isPending || !!userVote?._temporary}
           text={
             userVote && userVote.vote_percent < 0
               ? userVote.vote_percent === -10000 && !enable_slider
@@ -332,9 +340,9 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         >
           <button
             className="flex h-full items-center justify-center"
-            disabled={voteMutation.isLoading}
+            disabled={voteMutation.isPending || !!userVote?._temporary}
             onClick={() => {
-              if (voteMutation.isLoading) return;
+              if (voteMutation.isPending || !!userVote?._temporary) return;
               setClickedVoteButton('down');
               {
                 // We vote either -100% or 0%.
@@ -350,7 +358,8 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               className={clsx(
                 'h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white',
                 {
-                  'bg-destructive-icon text-white opacity-80': userVote && userVote.vote_percent < 0
+                  'bg-gray-600 text-white opacity-80': userVote && userVote.vote_percent < 0,
+                  'animate-pulse': userVote?._temporary
                 }
               )}
             />
@@ -361,7 +370,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           <div className="flex items-center">
             <TooltipContainer
               text={t('cards.post_card.downvote')}
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isPending || !!userVote?._temporary}
               dataTestId="downvote-button"
               afterPayout={pastPayout && !vote_downvoted}
             >

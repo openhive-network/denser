@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { getQueryClient } from '@/blog/lib/react-query';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getCommunities, getCommunity } from '@transaction/lib/bridge-api';
 import CommunityLayout from './community-layout';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
@@ -15,7 +15,7 @@ const logger = getLogger('app');
 const PrefetchComponent = async ({ children, community }: { children: ReactNode; community: string }) => {
   const queryClient = getQueryClient();
   // Get observer from cookies - returns user's observer if logged in, DEFAULT_OBSERVER for anonymous
-  const observer = getObserverFromCookies();
+  const observer = await getObserverFromCookies();
   try {
     await Promise.all([
       queryClient.prefetchQuery({
@@ -36,9 +36,9 @@ const PrefetchComponent = async ({ children, community }: { children: ReactNode;
     logger.error(error, 'Error in PrefetchComponent:');
   }
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <CommunityLayout community={community}>{children}</CommunityLayout>
-    </Hydrate>
+    </HydrationBoundary>
   );
 };
 

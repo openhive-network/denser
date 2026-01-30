@@ -55,7 +55,7 @@ const AddRole = ({ community, loggedUserLevel }: { loggedUserLevel: number; comm
             <div>
               <span>{t('communities.role')}</span>
               <RolesSelect
-                disabled={setRoleMutation.isLoading}
+                disabled={setRoleMutation.isPending}
                 loggedUserLevel={loggedUserLevel}
                 value={selectValue}
                 onValueChange={(e) => setSelectValue(e)}
@@ -65,10 +65,10 @@ const AddRole = ({ community, loggedUserLevel }: { loggedUserLevel: number; comm
               onClick={onUpdateRole}
               variant="redHover"
               className="w-fit justify-self-end"
-              disabled={setRoleMutation.isLoading}
+              disabled={setRoleMutation.isPending}
             >
-              {setRoleMutation.isLoading ? (
-                <CircleSpinner loading={setRoleMutation.isLoading} size={18} color="#dc2626" />
+              {setRoleMutation.isPending ? (
+                <CircleSpinner loading={setRoleMutation.isPending} size={18} color="#dc2626" />
               ) : (
                 t('communities.save')
               )}

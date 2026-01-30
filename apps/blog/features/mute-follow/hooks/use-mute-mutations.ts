@@ -1,5 +1,5 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { UseInfiniteQueryResult, useMutation, useQueryClient } from '@tanstack/react-query';
+import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { IFollow, IFollowList } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -21,15 +21,15 @@ export function useMuteMutation() {
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
       const broadcastResult = await transactionService.mute(username, '', { observe: true });
-      const prevIgnoredData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData(
+      const prevIgnoredData: InfiniteData<IFollow[]> | undefined = queryClient.getQueryData(
         ['followingData', user.username, 'ignore']
       );
-      const prevBlogData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData([
+      const prevBlogData: InfiniteData<IFollow[]> | undefined = queryClient.getQueryData([
         'followingData',
         user.username,
         'blog'
       ]);
-      const prevFollowersData: UseInfiniteQueryResult<IFollow[]>['data'] = queryClient.getQueryData([
+      const prevFollowersData: InfiniteData<IFollow[]> | undefined = queryClient.getQueryData([
         'followersData',
         username
       ]);
@@ -97,7 +97,7 @@ export function useMuteMutation() {
         queryClient.invalidateQueries({ queryKey: ['discussionData'] });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useMuteMutation',
         params: variables
@@ -120,7 +120,7 @@ export function useUnmuteMutation() {
       const { username } = params;
       const broadcastResult = await transactionService.unmute(username, { observe: true });
       const prevMutedList: IFollowList[] | undefined = queryClient.getQueryData(['muted', user.username]);
-      const prevFollowingData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined =
+      const prevFollowingData: InfiniteData<IFollow[]> | undefined =
         queryClient.getQueryData(['followingData', user.username, 'ignore']);
       const response = { ...params, broadcastResult, prevMutedList, prevFollowingData };
       logger.info('Done unmute transaction: %o', response);
@@ -159,7 +159,7 @@ export function useUnmuteMutation() {
         queryClient.invalidateQueries({ queryKey: ['discussionData'] });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useUnmuteMutation',
         params: variables
@@ -205,7 +205,7 @@ export function useResetBlogListMutation() {
         logger.info('useResetBlogListMutation onSuccess: %o', data);
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables) => {
       handleError(error, {
         method: 'useResetBlogListMutation',
         params: variables

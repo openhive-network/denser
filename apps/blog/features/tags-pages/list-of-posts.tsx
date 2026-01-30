@@ -34,13 +34,14 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     StorageTTL.PERMANENT
   );
 
-  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isLoading } = useInfiniteQuery({
+  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isPending } = useInfiniteQuery({
     queryKey: ['entriesInfinite', sort, tag, observer],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
       const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer);
       return postsData ?? [];
     },
+    initialPageParam: undefined as { author: string; permlink: string } | undefined,
     getNextPageParam: (lastPage: Entry[]) => {
       if (!Array.isArray(lastPage) || lastPage.length === 0) return undefined;
       const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
@@ -73,7 +74,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   }
 
   // Handle initial loading state
-  if (isLoading) {
+  if (isPending) {
     return <PostListSkeleton count={5} />;
   }
 
