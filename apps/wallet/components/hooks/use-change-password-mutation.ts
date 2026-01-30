@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { toast } from '@ui/components/hooks/use-toast';
 import { logger } from '@ui/lib/logger';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { KeyAuthorityType } from '@smart-signer/lib/utils';
 
@@ -13,7 +13,7 @@ import { KeyAuthorityType } from '@smart-signer/lib/utils';
  * @returns
  */
 export function useChangePasswordMutation() {
-  const { user } = useUser();
+  const { user } = useUserClient();
   const changePasswordMutation = useMutation({
     mutationFn: async (params: {
       account: string;

@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { RcAccount } from '@hiveio/wax';
 import {
   SavingsWithdrawals,
@@ -247,8 +247,8 @@ export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => 
 
 export const getTradeHistory = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
   const chain = await getChain();
-  const todayEarlier = moment(Date.now()).subtract(10, 'h').format().split('+')[0];
-  const todayNow = moment(Date.now()).format().split('+')[0];
+  const todayEarlier = dayjs().subtract(10, 'hour').format().split('+')[0];
+  const todayNow = dayjs().format().split('+')[0];
   const response = await chain.api.market_history_api.get_trade_history({
     start: todayEarlier,
     end: todayNow,

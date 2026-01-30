@@ -4,7 +4,7 @@ import { ApiHelper } from '../support/apiHelper';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
 import { getRoundedAbbreveration } from '../../../../../packages/ui/lib/math-utils';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import Big from 'big.js';
 
 test.describe('Proposals page tests', () => {
@@ -422,10 +422,10 @@ test.describe('Proposals page tests', () => {
       resListOfProposalsStatusAllAPI.result.proposals[0].daily_pay.amount
     ).div(1000);
 
-    const totalDays = moment(firstProposalEndDateAPI).diff(firstProposalStartDateAPI, `d`);
+    const totalDays = dayjs(firstProposalEndDateAPI).diff(dayjs(firstProposalStartDateAPI), 'day');
 
     const totalHBD = firstProposalDailyPayAmountAPI.times(
-      moment(firstProposalEndDateAPI).diff(moment(firstProposalStartDateAPI), 'd')
+      dayjs(firstProposalEndDateAPI).diff(dayjs(firstProposalStartDateAPI), 'day')
     );
 
     let totalDaysBrackets: string;
@@ -437,10 +437,10 @@ test.describe('Proposals page tests', () => {
       await expect(proposalsPage.proposalTitle.first()).toContainText('#' + firstProposalIdAPI);
       // Validate start/end date
       await expect(proposalsPage.proposalDates.first()).toContainText(
-        moment(firstProposalStartDateAPI).format('MMM D, YYYY')
+        dayjs(firstProposalStartDateAPI).format('MMM D, YYYY')
       );
       await expect(proposalsPage.proposalDates.first()).toContainText(
-        moment(firstProposalEndDateAPI).format('MMM D, YYYY')
+        dayjs(firstProposalEndDateAPI).format('MMM D, YYYY')
       );
 
       // Validate amount of days in date

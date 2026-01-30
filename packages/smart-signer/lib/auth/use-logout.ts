@@ -1,8 +1,10 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
+import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import { getLogger } from '@hive/ui/lib/logging';
 import { useRouter } from 'next/navigation';
 
@@ -13,6 +15,7 @@ export function useLogout(redirect?: string) {
   const { user } = useUser();
   const { signerOptions } = useSigner();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const onLogout = async () => {
     // Delete auth_proof cookie immediately
@@ -23,6 +26,15 @@ export function useLogout(redirect?: string) {
 
     // Redirect immediately if specified
     if (redirect) {
+      // Clear all non-user queries to force loading states on the current page.
+      // This provides instant visual feedback while the navigation completes,
+      // preventing stale page content from being visible during the redirect.
+      queryClient.removeQueries({
+        predicate: (query) => {
+          const firstKey = Array.isArray(query.queryKey) ? query.queryKey[0] : query.queryKey;
+          return firstKey !== QUERY_KEY.user;
+        }
+      });
       router.push(redirect);
     }
 

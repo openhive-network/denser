@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { SavingsWithdrawals } from '@hive/common-hiveio-packages/wax';
 import { cn } from '@ui/lib/utils';
 import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';

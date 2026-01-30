@@ -1,7 +1,10 @@
-import moment from 'moment';
-import { useTranslation } from 'next-i18next';
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import { useTranslation } from '@/wallet/i18n/client';
 import { Link } from '@hive/ui';
 import HoverClickTooltip from './hover-click-tooltip';
+
+dayjs.extend(localizedFormat);
 
 const HIVE_NULL_DATE = 2016; // The year when the Hive blockchain was created
 
@@ -11,10 +14,10 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
     expirationTime ??
     new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('.')[0];
 
-  const now = moment();
-  const expiryDate = moment(`${governanceVoteExpirationTime}Z`);
+  const now = dayjs();
+  const expiryDate = dayjs(`${governanceVoteExpirationTime}Z`);
   const expiryYear = parseInt(expiryDate.format('YYYY'));
-  const expiryDiff = expiryDate.diff(now, 'months');
+  const expiryDiff = expiryDate.diff(now, 'month');
 
   if (expiryDiff > 3 || !expiryDiff || !expiryDate) {
     return null;

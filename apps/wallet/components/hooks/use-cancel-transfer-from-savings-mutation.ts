@@ -1,11 +1,11 @@
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { logger } from '@ui/lib/logger';
 
 export function useCancelTransferFromSavingsMutation() {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useUserClient();
   const cancelTransferFromSavingsMutation = useMutation({
     mutationFn: async (params: { fromAccount: string; requestId: number }) => {
       const broadcastResult = await transactionService.cancelTransferFromSavings(

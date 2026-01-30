@@ -1,4 +1,6 @@
-import { useTranslation } from 'next-i18next';
+'use client';
+
+import { useTranslation } from '@/wallet/i18n/client';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import TransfersHistoryFilter, { TransferFilters } from '@/wallet/components/transfers-history-filter';

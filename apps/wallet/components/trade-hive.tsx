@@ -1,3 +1,5 @@
+'use client';
+
 import Big from 'big.js';
 import { useState } from 'react';
 import BuyOrSellForm from './buy-sell-form';
@@ -5,10 +7,10 @@ import { MarketTable, HistoryTable, OrdersItem } from './market-table';
 import Loading from '@ui/components/loading';
 import { useTradeHistory } from './hooks/use-trade-history';
 import { useOrderBook } from './hooks/use-order-book';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import Chart from './chart';
-import { useTranslation } from 'next-i18next';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useTranslation } from '@/wallet/i18n/client';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getOpenOrder } from '../lib/hive';
 import OpenOrders from './open-orders';
 import { useQuery } from '@tanstack/react-query';
@@ -67,7 +69,7 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
   const paramsBuy = [t('market_page.total') + ' HBD($)', 'HBD($)', 'HIVE', t('market_page.price')];
   const paramsSell = [t('market_page.price'), 'HIVE', 'HBD($)', t('market_page.total') + ' HBD($)'];
   const paramsHistory = [t('market_page.date'), t('market_page.price'), 'HIVE', 'HBD($)'];
-  const { user } = useUser();
+  const { user } = useUserClient();
 
   const { data: openOrders, isLoading: ordersLoading } = useQuery(
     ['openOrders', user.username],
@@ -122,7 +124,7 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
             handleSetterPrices={handleSetterPrices}
           />
           <HistoryTable
-            data={data.recent.sort((a, b) => moment(b.date).diff(moment(a.date)))}
+            data={data.recent.sort((a, b) => dayjs(b.date).diff(dayjs(a.date)))}
             params={paramsHistory}
             label={t('market_page.trade_history')}
           />

@@ -1,5 +1,7 @@
+'use client';
+
 import { useMemo } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { NaiAsset } from '@hiveio/wax';
 import { Button } from '@ui/components';
 import { CircleSpinner } from 'react-spinners-kit';

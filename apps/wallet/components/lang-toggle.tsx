@@ -6,11 +6,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getCookie } from '@ui/lib/utils';
 import clsx from 'clsx';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import TooltipContainer from '@ui/components/tooltip-container';
 
 export default function LangToggle({ logged }: { logged: Boolean }) {
@@ -22,9 +22,6 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
     const savedLang = getCookie('NEXT_LOCALE') || 'en';
     if (!lang) {
       setLang(savedLang);
-      if (router.locale !== savedLang) {
-        router.push(router.asPath, router.asPath, { locale: savedLang });
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -49,13 +46,11 @@ export default function LangToggle({ logged }: { logged: Boolean }) {
     document.cookie = `NEXT_LOCALE=${locale}; path=/; SameSite=Lax`;
     setLang(locale);
 
-    // Update the URL and locale using Next.js router
-    router.push(router.asPath, router.asPath, { locale }).then(() => {
-      // Only reload if absolutely necessary
-      if (document.documentElement.lang !== locale) {
-        router.reload();
-      }
-    });
+    // In App Router, reload the page to apply the new locale
+    router.refresh();
+    if (document.documentElement.lang !== locale) {
+      window.location.reload();
+    }
   };
 
   return (

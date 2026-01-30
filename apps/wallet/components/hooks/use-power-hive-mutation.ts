@@ -1,5 +1,5 @@
 import { asset, TNaiAssetSource } from '@hiveio/wax';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
@@ -14,7 +14,7 @@ import { createAsset } from '@transaction/lib/utils';
  */
 export function usePowerUpMutation() {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useUserClient();
   const powerUpMutation = useMutation({
     mutationFn: async (params: { fromAccount: string; toAccount: string; amount: asset }) => {
       const { amount, fromAccount, toAccount } = params;
@@ -44,7 +44,7 @@ export function usePowerUpMutation() {
  */
 export function usePowerDownMutation() {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useUserClient();
   const powerDownMutation = useMutation({
     mutationFn: async (params: { account: string; hp: asset }) => {
       const { account, hp } = params;
@@ -72,7 +72,7 @@ export function usePowerDownMutation() {
  */
 export function useCancelPowerDownMutation() {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user } = useUserClient();
   const cancelPowerDownMutation = useMutation({
     mutationFn: async (params: { account: string }) => {
       const { account } = params;

@@ -1,12 +1,14 @@
+'use client';
+
 import { useCallback, useEffect, useReducer, useState } from 'react';
 import { Input } from '@ui/components/input';
 import { Button } from '@ui/components/button';
 import clsx from 'clsx';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { useCreateMarketOrder } from './hooks/use-market-mutation';
 import { handleError } from '@ui/lib/handle-error';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAccount } from '@transaction/lib/hive-api';
@@ -87,7 +89,7 @@ export default function BuyOrSellForm({
     total: ''
   });
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { user } = useUser();
+  const { user } = useUserClient();
   const createBuyOrderMutation = useCreateMarketOrder();
   const { data: accountData } = useQuery(['accountData', user.username], () => getAccount(user.username), {
     enabled: !!user.username

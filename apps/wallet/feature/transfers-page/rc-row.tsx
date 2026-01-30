@@ -3,7 +3,7 @@ import { getManabar } from '@transaction/lib/hive-api';
 import { CircleSpinner } from 'react-spinners-kit';
 import { hoursAndMinutes } from './lib/utils';
 import RCStats from './rc-stats';
-import { useUser } from '@smart-signer/lib/auth/use-user';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { prepareRC } from '@/wallet/lib/utils';
 import DelegateRCDialog from './delegate-rc-dialog';
 
@@ -34,7 +34,7 @@ const RCRow = ({ username }: { username: string }) => {
           }
         : null
   });
-  const { user } = useUser();
+  const { user } = useUserClient();
 
   return (
     <div className="flex w-full flex-col bg-background-secondary sm:table-row">

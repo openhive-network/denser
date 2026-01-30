@@ -1,9 +1,10 @@
 import { Twitter } from 'lucide-react';
 import { useTranslation } from '@/blog/i18n/client';
+import { configuredBlogDomain } from '@ui/config/public-vars';
 
 export default function TwitterShare({ title, url }: { title: string; url: string }) {
   const { t } = useTranslation('common_blog');
-  const href = 'https://hive.blog' + url;
+  const href = `https://${configuredBlogDomain}${url}`;
   const postTitle = title + ' — ' + 'Hive';
   const winWidth = 640;
   const winHeight = 320;

@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Dialog,
   DialogTrigger,
@@ -9,7 +11,7 @@ import {
   DialogFooter,
   Label
 } from '@ui/components';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { useState } from 'react';
 
 interface PasswordDialogProps {

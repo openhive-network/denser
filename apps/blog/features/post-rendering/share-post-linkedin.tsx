@@ -1,5 +1,6 @@
 import { Linkedin } from 'lucide-react';
 import { useTranslation } from '@/blog/i18n/client';
+import { configuredBlogDomain } from '@ui/config/public-vars';
 
 export default function LinkedInShare({ title, url }: { title: string; url: string }) {
   const { t } = useTranslation('common_blog');
@@ -8,10 +9,10 @@ export default function LinkedInShare({ title, url }: { title: string; url: stri
   const winTop = 0;
   const winLeft = 0;
   const postTitle = title + ' — ' + 'Hive';
-  const href = 'https://hive.blog' + url;
+  const href = `https://${configuredBlogDomain}${url}`;
 
   const q =
-    'title=' + encodeURIComponent(title) + '&url=' + encodeURIComponent(url) + '&source=Steemit&mini=true';
+    'title=' + encodeURIComponent(postTitle) + '&url=' + encodeURIComponent(href) + '&source=Steemit&mini=true';
   const openWindow = () => {
     return window.open(
       'https://www.linkedin.com/shareArticle?' + q,

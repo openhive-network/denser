@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Button,
   DropdownMenu,
@@ -6,11 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@ui/components';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/wallet/i18n/client';
 import { useState } from 'react';
 import { HiveOperation, OpType } from '@hive/common-hiveio-packages/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import moment from "moment";
+import dayjs from 'dayjs';
 
 interface FinancialReportProps {
   username: string;
@@ -32,7 +34,7 @@ const opTypes: OpType[] = [
 ];
 
 const dateDiffInDays = (a: Date, b: Date) => {
-  return moment(b).diff(moment(a), "days");
+  return dayjs(b).diff(dayjs(a), 'day');
 };
 
 const convertHistoryToCSV = (transactions: HiveOperation[]) => {

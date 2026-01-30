@@ -1,5 +1,5 @@
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 export const initialFilters: TransferFilters = {
   search: '',
@@ -87,9 +87,9 @@ export type Operation =
 
 
 export function hoursAndMinutes(date: Date) {
-  const today = moment();
-  const cooldownMin = moment(date).diff(today, 'minutes') % 60;
-  const cooldownH = moment(date).diff(today, 'hours');
+  const today = dayjs();
+  const cooldownMin = dayjs(date).diff(today, 'minute') % 60;
+  const cooldownH = dayjs(date).diff(today, 'hour');
   return (
     (cooldownH === 1 ? 'an hour' : cooldownH > 1 ? cooldownH + ' hours' : '') +
     (cooldownH && cooldownMin ? ' and ' : '') +

@@ -1,0 +1,156 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import Big from 'big.js';
+import { DEFAULT_PARAMS_FOR_PROPOSALS, getProposals, getUserVotes } from '@/wallet/lib/hive';
+import { IGetProposalsParams } from '@hive/common-hiveio-packages/wax';
+import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
+import { ProposalsFilter } from '@/wallet/components/proposals-filter';
+import dayjs from 'dayjs';
+import { ProposalListItem } from '@/wallet/components/proposals-list-item';
+import { convertStringToBig } from '@ui/lib/helpers';
+import { Skeleton } from '@ui/components/skeleton';
+import { useTranslation } from '@/wallet/i18n/client';
+import { TFunction } from 'i18next';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+
+function timeStatus(status: string, t: TFunction<'common_wallet', undefined>) {
+  switch (status) {
+    case 'active':
+      return t('proposals_page.started');
+    case 'inactive':
+      return t('proposals_page.not_started');
+    case 'expired':
+      return t('proposals_page.finished');
+    default:
+      return '';
+  }
+}
+
+export default function ProposalsPage() {
+  const { user } = useUserClient();
+  const { t } = useTranslation('common_wallet');
+  const [filterStatus, setFilterStatus] = useState<IGetProposalsParams['status']>(
+    DEFAULT_PARAMS_FOR_PROPOSALS.status
+  );
+  const [sortOrder, setSortOrder] = useState<IGetProposalsParams['order']>(
+    DEFAULT_PARAMS_FOR_PROPOSALS.order
+  );
+  const [orderDirection, setOrderDirection] = useState<IGetProposalsParams['order_direction']>(
+    DEFAULT_PARAMS_FOR_PROPOSALS.order_direction
+  );
+  const { data: votes } = useQuery(['accountVotes', user.username], () => getUserVotes(user.username), {
+    enabled: !!user?.username
+  });
+  const proposalsData = useInfiniteQuery(
+    ['proposals', filterStatus, sortOrder, orderDirection],
+    ({ pageParam: last_id }) =>
+      getProposals({
+        last_id,
+        status: filterStatus,
+        order: sortOrder,
+        order_direction: orderDirection
+      }),
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage.length >= DEFAULT_PARAMS_FOR_PROPOSALS.limit
+          ? lastPage[lastPage.length - 1].id
+          : undefined;
+      },
+
+      select: (proposals) => {
+        return {
+          ...proposals,
+          pages: proposals.pages.map((page) =>
+            page.map((proposal) => ({
+              ...proposal,
+              total_votes: new Big(parseFloat(proposal.total_votes).toFixed(2)),
+              daily_pay: {
+                amount: new Big(proposal.daily_pay.amount).div(1000)
+              },
+              start_date: dayjs(proposal.start_date).format('MMM D, YYYY'),
+              end_date: dayjs(proposal.end_date).format('MMM D, YYYY'),
+              status: timeStatus(proposal.status, t)
+            }))
+          )
+        };
+      }
+    }
+  );
+  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(
+    ['dynamicGlobalProperties'],
+    () => getDynamicGlobalProperties(),
+    {
+      select: (data) => {
+        return {
+          ...data,
+          total_vesting_fund_hive: convertStringToBig(data.total_vesting_fund_hive),
+          total_vesting_shares: convertStringToBig(data.total_vesting_shares)
+        };
+      }
+    }
+  );
+
+  useEffect(() => {
+    let fetching = false;
+    const handleScroll = async (e: Event) => {
+      const target = e.target as Document | undefined;
+      if (!target?.scrollingElement) return;
+
+      const { scrollHeight, scrollTop, clientHeight } = target.scrollingElement;
+      if (!fetching && scrollHeight - scrollTop <= clientHeight * 1.2) {
+        fetching = true;
+        if (proposalsData.hasNextPage) await proposalsData.fetchNextPage();
+        fetching = false;
+      }
+    };
+    document.addEventListener('scroll', handleScroll);
+    return () => {
+      document.removeEventListener('scroll', handleScroll);
+    };
+  }, [proposalsData, proposalsData.fetchNextPage, proposalsData.hasNextPage]);
+  return (
+    <div className="mx-auto flex max-w-5xl flex-col gap-5 p-5" data-testid="proposals-body">
+      <ProposalsFilter
+        onChangeFilterStatus={setFilterStatus}
+        filterStatus={filterStatus}
+        onChangeSortOrder={setSortOrder}
+        orderValue={sortOrder}
+        orderDirection={orderDirection}
+        onOrderDirection={setOrderDirection}
+      />
+
+      {proposalsData.isLoading || dynamicLoading ? (
+        <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 p-5">
+          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+        </div>
+      ) : proposalsData.data?.pages[0].length === 0 || !dynamicData ? (
+        <main>
+          <p className="mt-32 text-center text-3xl" data-testid="cannot-show-you-any-proposals">
+            {t('global.sorry_cant_show')}
+          </p>
+          <p className="text-center text-xl text-gray-400">{t('global.its_probably')}</p>
+        </main>
+      ) : (
+        proposalsData.data?.pages.map((page) =>
+          page.map((proposal) => (
+            <ProposalListItem
+              voted={
+                votes?.find((vote) => vote.proposal.proposal_id === proposal.proposal_id) ? true : false
+              }
+              totalVestingFund={dynamicData.total_vesting_fund_hive}
+              totalShares={dynamicData.total_vesting_shares}
+              proposalData={proposal}
+              key={proposal.proposal_id}
+            />
+          ))
+        )
+      )}
+    </div>
+  );
+}
