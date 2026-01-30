@@ -13,15 +13,15 @@ import { useRouter } from 'next/router';
 import { Button } from '@hive/ui/components/button';
 import { getWitnessesByVote } from '@/wallet/lib/hive';
 import WitnessListItem from '@/wallet/components/witnesses-list-item';
-import DialogLogin from '../components/dialog-login';
+import DialogLogin from '@/wallet/components/dialog-login';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { getServerSidePropsDefault } from '../lib/get-translations';
-import { useWitnessVoteMutation } from '../components/hooks/use-vote-witness-mutation';
-import WitnessRemoveVote from '../components/witness-remove-vote';
+import { useWitnessVoteMutation } from '@/wallet/components/hooks/use-vote-witness-mutation';
+import WitnessRemoveVote from '@/wallet/components/witness-remove-vote';
 import { CircleSpinner } from 'react-spinners-kit';
-import { useSetProxyMutation } from '../components/hooks/use-set-proxy-mutation';
+import { useSetProxyMutation } from '@/wallet/components/hooks/use-set-proxy-mutation';
 import {
   Dialog,
   DialogContent,

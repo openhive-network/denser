@@ -69,9 +69,10 @@ export async function generateMetadata({
 export default async function Layout({
   children,
   params
-}: PropsWithChildren<{ params: { param: string; p2: string; permlink: string } }>) {
+}: PropsWithChildren<{ params: Promise<{ param: string; p2: string; permlink: string }> }>) {
+  const { p2 } = await params;
   // Validate p2 param - must start with @ or %40 for valid post URLs
-  if (!isValidUserParam(params?.p2)) {
+  if (!isValidUserParam(p2)) {
     notFound();
   }
 
