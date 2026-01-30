@@ -219,10 +219,11 @@ export class SignerGoogleDrive extends Signer {
       return this.walletInstance;
 
     this.walletInstance = new Promise<IExternalWalletContent>(async (resolve, reject) => {
-      try {
-        // Track whether we used password (not cached WIF) to know if we need to cache WIF
-        let usedPassword = false;
+      // Track whether we used cached WIF (to know if we should retry on failure)
+      let usedCachedWif = false;
+      let usedPassword = false;
 
+      const attemptWalletLoad = async (): Promise<IExternalWalletContent> => {
         const wallet = await createExternalWallet(
           await getChain(),
           () => this.getAccessToken(),
@@ -240,8 +241,10 @@ export class SignerGoogleDrive extends Signer {
 
             const credentials = await this.getEncryptionCredentials();
 
-            // Track if we're using a password (not cached WIF)
-            if ('password' in credentials) {
+            // Track what type of credentials we're using
+            if ('encryptionKey' in credentials) {
+              usedCachedWif = true;
+            } else {
               usedPassword = true;
             }
 
@@ -272,8 +275,32 @@ export class SignerGoogleDrive extends Signer {
 
         this.currentKeyType = keyType;
 
+        return provider;
+      };
+
+      try {
+        const provider = await attemptWalletLoad();
         resolve(provider);
       } catch (error) {
+        // If we used cached WIF and it failed, it might be from a different Google account
+        // Clear WIF and retry with password prompt
+        if (usedCachedWif && !usedPassword) {
+          logger.info('Wallet load failed with cached WIF, clearing and retrying with password prompt');
+          clearStoredEncryptionKeyWif();
+          this.passwordPromise = undefined;
+          usedCachedWif = false;
+
+          try {
+            const provider = await attemptWalletLoad();
+            resolve(provider);
+            return;
+          } catch (retryError) {
+            logger.error('Error in getWallet retry: %o', retryError);
+            reject(retryError);
+            return;
+          }
+        }
+
         logger.error('Error in getWallet: %o', error);
         reject(error);
       }
