@@ -59,7 +59,11 @@
       "search": "Szukaj...",
       "light": "Tryb jasny",
       "dark": "Tryb ciemny",
-      "system": "Domyślny z systemu"
+      "system": "Domyślny z systemu",
+      "create_post": "Create Post",
+      "theme": "Theme",
+      "language": "Language",
+      "menu_panel": "Menu Panel"
     },
     "sidebar": {
       "welcome": "Witaj",
@@ -77,7 +81,8 @@
     "communities_nav": {
       "all_posts": "Wszystkie posty",
       "trending_communities": "Popularne Społeczności",
-      "explore_communities": "Pokaż więcej społeczności..."
+      "explore_communities": "Pokaż więcej społeczności...",
+      "my_friends": "My friends"
     },
     "explore_nav": {
       "explore_hive": " Dowiedz się więcej o Hive",
@@ -195,7 +200,16 @@
       "responses": "{{responses}} odpowiedzi. ",
       "click_to_respond": "Kliknij by odpowiedzieć",
       "reblog": "Rebloguj",
-      "powered_up_100": "100% Hive Power"
+      "powered_up_100": "100% Hive Power",
+      "you_reblogged": "You reblogged",
+      "no_reblogs": "no reblogs",
+      "reblog_count_one": "1 reblog",
+      "reblog_count": "{{count}} reblogs",
+      "you_upvoted": "You upvoted {{votePercent}}%",
+      "you_downvoted": "You downvoted {{votePercent}}%",
+      "you_voted": "You voted {{votePercent}}%",
+      "vote_polling_error_message_title": "Warning",
+      "vote_polling_error_message_description": "Failure in checking if user's vote has been included."
     },
     "comment_card": {
       "reveal_comment": "Pokaż komentarz",
@@ -219,9 +233,7 @@
     "max_accepted_payout": "Maksymalna wypłata: ${{value}}"
   },
   "login_form": {
-    "title": "Powracający: ",
     "title_action_login": "Zaloguj się",
-    "title_action_login_to_vote": "Zaloguj się, aby zagłosować",
     "username_placeholder": "Podaj nazwę użytkownika",
     "password_placeholder": "Hasło lub WIF",
     "use_keychain": "Użyj Keychain",
@@ -229,9 +241,6 @@
     "use_hbauth": "Użyj HB Auth",
     "keep_me_logged_in": "Nie wylogowuj mnie",
     "more_login_methods": "więcej metod logowania",
-    "select_a_key_type": "Wybierz typ klucza",
-    "key_type": "Typ klucza",
-    "authorize_button": "Autoryzuj",
     "login_button": "Zaloguj się",
     "reset_button": "Wyczyść formularz",
     "cancel_button": "Anuluj",
@@ -245,7 +254,12 @@
     "google_wallet_not_found_help": "Hive Bridge to bezpieczna aplikacja, która pomaga utworzyć i przechowywać portfel Hive na Google Drive. Pozwala to podpisywać transakcje Hive bez instalowania rozszerzeń przeglądarki.",
     "google_key_not_found_title": "Nie znaleziono klucza w portfelu",
     "google_key_not_found_description": "Nie znaleziono klucza {{keyType}} Hive dla użytkownika {{username}} w portfelu Google Drive.",
-    "go_to_hive_bridge": "Przejdź do Hive Bridge"
+    "go_to_hive_bridge": "Przejdź do Hive Bridge",
+    "password_hbauth_placeholder": "Hbauth password to unlock key",
+    "title_action_unlock_key": "Unlock Key",
+    "title_action_add_key": "Add Key",
+    "title_hbauth_form": "Hbauth: ",
+    "use_peakvault": "Use PeakVault"
   },
   "user_profile": {
     "reputation": "Reputacja",
@@ -336,7 +350,8 @@
       "followed_you": "@{{username}} zaobserwował twój profil",
       "mentioned_you_and_others": "@{{username}} wspomniał o tobie i {{others}} innych osobach",
       "subscribed_to": "@{{username}} zasubskrybował społeczność {{community}}"
-    }
+    },
+    "empty_feed_not_following": "You haven't followed anyone yet! Follow other users to see their posts here."
   },
   "communities": {
     "set_title_for_user": "Ustaw tytuł dla @{{username}}",
@@ -374,6 +389,69 @@
       "description": "Opis",
       "rules": "Zasady",
       "language": "Języki"
+    },
+    "save": "Save",
+    "edit_roles": "Edit Roles",
+    "edit_props": "Settings",
+    "roles": "Roles",
+    "user_roles": "User roles",
+    "account": "Account",
+    "role": "Role",
+    "title": "Title",
+    "add_user": "Add user",
+    "add_user_role": "Add User Role",
+    "set_the_role_of_a_user_in_this_community": "Set the role of a user in this community.",
+    "username": "Username",
+    "role_permissions": "Role Permissions",
+    "owner": "Owner",
+    "mod": "Moderator",
+    "member": "Member",
+    "guest": "Guest",
+    "muted": "Muted",
+    "description_owner": "assign Admins",
+    "description_admin": "edit settings, assign mods",
+    "description_mod": "mute, pin, set user titles",
+    "description_member": "listed on leadership team",
+    "description_guest": "default; can post and comment",
+    "description_muted": "new posts automaticly muted",
+    "edit_props_dialog": {
+      "community_settings": "Community Settings",
+      "title": "Title*",
+      "save": "Save",
+      "cancel": "Cancel",
+      "about": "About",
+      "description": "Description",
+      "flag_text": "Rules(one per line)",
+      "lang": "Language",
+      "sav": "Save",
+      "community_settings_description": "What does your community stand for?",
+      "assigned_owner_account": "Assigned owner account",
+      "communities_are_built": "Communities are built on top a special Hive account",
+      "next": "Next",
+      "nsfw": "NSFW",
+      "i_have_saved_password": "I have securely saved my owner name and password.",
+      "payment_confirm": "This operation will cost 3 HIVE. I understand*",
+      "manage_confirm": "I understand, to manage {{communityName}} account I have to use {{username}} keys*",
+      "go_to_community": "Go to your community ",
+      "community_created": "Community created!!!",
+      "languages": {
+        "en": "English",
+        "kr": "Korean",
+        "zh": "Chinese",
+        "ms": "Malay",
+        "pl": "Polish",
+        "pt": "Portuguese",
+        "ru": "Russian",
+        "it": "Italian",
+        "de": "German",
+        "es": "Spanish",
+        "sv": "Swedish"
+      },
+      "errors": {
+        "required": "Required",
+        "maximum_characters": "Maximum {{value}} characters",
+        "minimum_characters": "Minimum {{value}} characters"
+      }
     }
   },
   "post_content": {
@@ -450,7 +528,8 @@
         "resource_credits": "Resource Credits (RC) level: {{value}} %",
         "update_settings": "Zaktualizuj ustawienia",
         "full_in": "Pełny za: "
-      }
+      },
+      "you_reblogged": "You reblogged"
     },
     "flag": {
       "flag_post": "Zgłoś post",
@@ -624,5 +703,11 @@
     "hot_posts": "gorące posty",
     "trending_posts": "trendingowe posty",
     "muted_posts": "wyciszone posty"
+  },
+  "alert_dialog_reblog": {
+    "action": "OK",
+    "cancel": "Cancel",
+    "description": "This post will be added to your blog and shared with your followers.",
+    "title": "Reblog This Post"
   }
 }

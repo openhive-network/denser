@@ -59,7 +59,11 @@
       "search": "Rechercher...",
       "light": "Light",
       "dark": "Dark",
-      "system": "System"
+      "system": "System",
+      "create_post": "Create Post",
+      "theme": "Theme",
+      "language": "Language",
+      "menu_panel": "Menu Panel"
     },
     "sidebar": {
       "welcome": "Bienvenue",
@@ -77,7 +81,8 @@
     "communities_nav": {
       "all_posts": "All posts",
       "trending_communities": "Trending Communities",
-      "explore_communities": "Révéler plus de sujets..."
+      "explore_communities": "Révéler plus de sujets...",
+      "my_friends": "My friends"
     },
     "explore_nav": {
       "explore_hive": "Explore Hive",
@@ -93,7 +98,8 @@
       "replies": "Réponses",
       "social": "Social",
       "notifications": "Notifications",
-      "wallet": "Portefeuille"
+      "wallet": "Portefeuille",
+      "settings": "Settings"
     },
     "profile_posts_tab_navbar": {
       "posts": "Articles",
@@ -116,7 +122,8 @@
       "mentions": "Mentions",
       "follows": "Follows",
       "upvotes": "Upvotes",
-      "reblogs": "Reblogs"
+      "reblogs": "Reblogs",
+      "no_notifications_yet": "No notifications yet"
     },
     "user_menu": {
       "profile": "Profil",
@@ -193,7 +200,16 @@
       "responses": "{{responses}} réponses. ",
       "click_to_respond": "Cliquez ici pour répondre",
       "reblog": "Reblog",
-      "powered_up_100": "100% Hive Power"
+      "powered_up_100": "100% Hive Power",
+      "you_reblogged": "You reblogged",
+      "no_reblogs": "no reblogs",
+      "reblog_count_one": "1 reblog",
+      "reblog_count": "{{count}} reblogs",
+      "you_upvoted": "You upvoted {{votePercent}}%",
+      "you_downvoted": "You downvoted {{votePercent}}%",
+      "you_voted": "You voted {{votePercent}}%",
+      "vote_polling_error_message_title": "Warning",
+      "vote_polling_error_message_description": "Failure in checking if user's vote has been included."
     },
     "comment_card": {
       "reveal_comment": "Afficher le commentaire",
@@ -217,18 +233,13 @@
     "max_accepted_payout": "Max accepted payout: ${{value}}"
   },
   "login_form": {
-    "title": "Utilisateurs de retour: ",
     "title_action_login": "Se connecter",
-    "title_action_login_to_vote": "S'identifier pour voter",
     "username_placeholder": "Entrez votre nom d'utilisateur",
     "password_placeholder": "Mot de passe ou WIF",
     "use_hiveauth": "Use HiveAuth",
     "use_hbauth": "Use HB Auth",
     "keep_me_logged_in": "Gardez-moi connecté",
     "more_login_methods": "plus de méthodes de connexion",
-    "select_a_key_type": "Sélectionnez un type de clé",
-    "key_type": "Type de clé",
-    "authorize_button": "Autoriser",
     "login_button": "Se connecter",
     "cancel_button": "Annuler",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password.",
@@ -241,7 +252,14 @@
     "google_wallet_not_found_help": "Hive Bridge est une application sécurisée qui vous aide à créer et stocker un portefeuille Hive dans votre Google Drive. Cela vous permet de signer des transactions Hive sans installer d'extensions de navigateur.",
     "google_key_not_found_title": "Clé non trouvée dans le portefeuille",
     "google_key_not_found_description": "Aucune clé {{keyType}} Hive trouvée pour l'utilisateur {{username}} dans le portefeuille Google Drive.",
-    "go_to_hive_bridge": "Aller à Hive Bridge"
+    "go_to_hive_bridge": "Aller à Hive Bridge",
+    "password_hbauth_placeholder": "Hbauth password to unlock key",
+    "reset_button": "Reset",
+    "title_action_unlock_key": "Unlock Key",
+    "title_action_add_key": "Add Key",
+    "title_hbauth_form": "Hbauth: ",
+    "use_keychain": "Use Keychain",
+    "use_peakvault": "Use PeakVault"
   },
   "user_profile": {
     "reputation": "Réputation",
@@ -331,7 +349,9 @@
       "followed_you": "@{{username}} followed you",
       "mentioned_you_and_others": "@{{username}} mentioned you and {{others}} others",
       "subscribed_to": "@{{username}} subscribed to {{community}}"
-    }
+    },
+    "user_level_title": "{{username}} is a {{level}} (based on staked VESTS). Click for more stats on HiveBuzz.",
+    "empty_feed_not_following": "You haven't followed anyone yet! Follow other users to see their posts here."
   },
   "communities": {
     "set_title_for_user": "Définir le titre pour @{{username}}",
@@ -369,6 +389,69 @@
       "description": "Description",
       "rules": "Rules",
       "language": "Language"
+    },
+    "save": "Save",
+    "edit_roles": "Edit Roles",
+    "edit_props": "Settings",
+    "roles": "Roles",
+    "user_roles": "User roles",
+    "account": "Account",
+    "role": "Role",
+    "title": "Title",
+    "add_user": "Add user",
+    "add_user_role": "Add User Role",
+    "set_the_role_of_a_user_in_this_community": "Set the role of a user in this community.",
+    "username": "Username",
+    "role_permissions": "Role Permissions",
+    "owner": "Owner",
+    "mod": "Moderator",
+    "member": "Member",
+    "guest": "Guest",
+    "muted": "Muted",
+    "description_owner": "assign Admins",
+    "description_admin": "edit settings, assign mods",
+    "description_mod": "mute, pin, set user titles",
+    "description_member": "listed on leadership team",
+    "description_guest": "default; can post and comment",
+    "description_muted": "new posts automaticly muted",
+    "edit_props_dialog": {
+      "community_settings": "Community Settings",
+      "title": "Title*",
+      "save": "Save",
+      "cancel": "Cancel",
+      "about": "About",
+      "description": "Description",
+      "flag_text": "Rules(one per line)",
+      "lang": "Language",
+      "sav": "Save",
+      "community_settings_description": "What does your community stand for?",
+      "assigned_owner_account": "Assigned owner account",
+      "communities_are_built": "Communities are built on top a special Hive account",
+      "next": "Next",
+      "nsfw": "NSFW",
+      "i_have_saved_password": "I have securely saved my owner name and password.",
+      "payment_confirm": "This operation will cost 3 HIVE. I understand*",
+      "manage_confirm": "I understand, to manage {{communityName}} account I have to use {{username}} keys*",
+      "go_to_community": "Go to your community ",
+      "community_created": "Community created!!!",
+      "languages": {
+        "en": "English",
+        "kr": "Korean",
+        "zh": "Chinese",
+        "ms": "Malay",
+        "pl": "Polish",
+        "pt": "Portuguese",
+        "ru": "Russian",
+        "it": "Italian",
+        "de": "German",
+        "es": "Spanish",
+        "sv": "Swedish"
+      },
+      "errors": {
+        "required": "Required",
+        "maximum_characters": "Maximum {{value}} characters",
+        "minimum_characters": "Minimum {{value}} characters"
+      }
     }
   },
   "post_content": {
@@ -445,7 +528,8 @@
         "resource_credits": "Niveau de crédits de ressources (RC) : {{value}} %",
         "update_settings": "Mettre à jour les paramètres",
         "full_in": "Complet en: "
-      }
+      },
+      "you_reblogged": "You reblogged"
     },
     "flag": {
       "flag_post": "Signaler le post",
@@ -556,7 +640,6 @@
     "no_results": "Nothing was found.",
     "error": "There was an error"
   },
-
   "settings_page": {
     "invalid_url": "URL invalide",
     "name_is_too_long": "Le nom est trop long",
@@ -620,5 +703,11 @@
     "hot_posts": "posts populaires",
     "trending_posts": "posts tendances",
     "muted_posts": "posts muets"
+  },
+  "alert_dialog_reblog": {
+    "action": "OK",
+    "cancel": "Cancel",
+    "description": "This post will be added to your blog and shared with your followers.",
+    "title": "Reblog This Post"
   }
 }
