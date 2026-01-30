@@ -1,5 +1,9 @@
-const path = require('path');
-const withSerwistInit = require('@serwist/next').default;
+import path from 'path';
+import { fileURLToPath } from 'url';
+import withSerwistInit from '@serwist/next';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const withSerwist = withSerwistInit({
   swSrc: 'src/sw.ts',
@@ -105,15 +109,16 @@ const nextConfig = {
   }
 };
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+const { default: withBundleAnalyzer } = await import('@next/bundle-analyzer');
+const analyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true'
 });
 
 // Sentry configuration - always included so builds are identical regardless of env vars.
 // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
-const { withSentryConfig } = require('@sentry/nextjs');
+const { withSentryConfig } = await import('@sentry/nextjs');
 
-module.exports = withSentryConfig(withSerwist(withBundleAnalyzer(nextConfig)), {
+export default withSentryConfig(withSerwist(analyzer(nextConfig)), {
   // Disable source map upload - env vars not available at build time
   // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
   sourcemaps: {
