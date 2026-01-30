@@ -24,6 +24,7 @@ declare global {
             client_id: string;
             scope: string;
             ux_mode: 'popup' | 'redirect';
+            include_granted_scopes?: boolean;
             callback: (response: { code?: string; }) => void;
           }): {
             requestCode: (options: { prompt: 'consent' | 'none' }) => void;
@@ -98,6 +99,7 @@ export class SignerGoogleDrive extends Signer {
         client_id: siteConfig.googleDrive.clientId,
         scope: siteConfig.googleDrive.scopes,
         ux_mode: 'popup',
+        include_granted_scopes: false,
         callback: async (response: any) => {
           try {
             const code = response.code as string;
