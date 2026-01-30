@@ -1,9 +1,11 @@
 import { useTranslation } from '@/blog/i18n/client';
+import { configuredBlogDomain } from '@ui/config/public-vars';
 
 export default function RedditShare({ title, url }: { title: string; url: string }) {
   const { t } = useTranslation('common_blog');
-  const fullUrl = 'https://hive.blog' + url;
-  const q = 'title=' + encodeURIComponent(title) + '&url=' + encodeURIComponent(fullUrl);
+  const postTitle = title + ' — ' + 'Hive';
+  const fullUrl = `https://${configuredBlogDomain}${url}`;
+  const q = 'title=' + encodeURIComponent(postTitle) + '&url=' + encodeURIComponent(fullUrl);
 
   const openWindow = () => {
     return window.open('https://www.reddit.com/submit?' + q, 'Share');
