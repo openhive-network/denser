@@ -43,12 +43,12 @@ export const getOAuthClients = (): OAuthClient[] => {
 
   if (OPENHIVE_CHAT_SECRET) {
     clients.push({
-      clientId: 'openhive_blog',
+      clientId: 'denser',
       clientSecret: OPENHIVE_CHAT_SECRET,
       redirectUris: [
-        'https://openhive.chat/_oauth/openhive_blog',
+        'https://openhive.chat/_oauth/denser',
       ],
-      clientName: 'OpenHive Blog',
+      clientName: 'Denser',
     });
   }
 
