@@ -39,7 +39,7 @@ interface RemarkableOptions {
 
 /** Remarkable environment object */
 interface RemarkableEnvironment {
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 /** Remarkable renderer interface */

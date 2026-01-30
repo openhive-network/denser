@@ -2,7 +2,8 @@ import {RendererPlugin} from './RendererPlugin';
 
 declare global {
     interface Window {
-        twttr: any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Twitter widget SDK injects untyped API on window
+        twttr?: any;
     }
 }
 
@@ -62,7 +63,7 @@ export class TwitterPlugin implements RendererPlugin {
                     .createTweet(id, container, {
                         theme: isDarkMode ? 'dark' : 'light'
                     })
-                    .then((el: any) => {
+                    .then((el: HTMLElement | null) => {
                         if (!el) this.renderedTweets.delete(containerId);
                     });
             }

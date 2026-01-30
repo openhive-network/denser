@@ -208,8 +208,8 @@ describe('DefaultRender', () => {
             const renderedNode = JSDOM.fragment(rendered);
             const comparisonNode = JSDOM.fragment(test.expected);
 
-            Log.log().debug('rendered', rendered);
-            Log.log().debug('expected', test.expected);
+            Log.log().debug('rendered: %s', rendered);
+            Log.log().debug('expected: %s', test.expected);
 
             expect(renderedNode.isEqualNode(comparisonNode)).to.be.equal(true);
         });

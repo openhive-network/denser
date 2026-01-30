@@ -24,7 +24,6 @@ export class StaticConfig {
     public static sanitization = {
         iframeWhitelist: [
             {
-                // eslint-disable-next-line security/detect-unsafe-regex
                 re: /^(?:@?(?:https?:)?\/\/)?(?:www\.)?(twitter|x)\.com\/(?:\w+\/status|status)\/(\d{1,20})/i,
                 fn: (src: string) => {
                     if (!src) {
@@ -39,7 +38,6 @@ export class StaticConfig {
                 }
             },
             {
-                // eslint-disable-next-line security/detect-unsafe-regex
                 re: /^(https?:)?\/\/player.vimeo.com\/video\/.*/i,
                 fn: (src: string) => {
                     // <iframe src="https://player.vimeo.com/video/179213493" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
@@ -54,7 +52,6 @@ export class StaticConfig {
                 }
             },
             {
-                // eslint-disable-next-line security/detect-unsafe-regex
                 re: /^(https?:)?\/\/www.youtube.com\/embed\/.*/i,
                 fn: (src: string) => {
                     return src.replace(/\?.+$/, ''); // strip query string (yt: autoplay=1,controls=0,showinfo=0, etc)
@@ -75,7 +72,6 @@ export class StaticConfig {
                 }
             },
             {
-                // eslint-disable-next-line security/detect-unsafe-regex
                 re: /^(https?:)?\/\/player.twitch.tv\/.*/i,
                 fn: (src: string) => {
                     // <iframe src="https://player.twitch.tv/?channel=ninja" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620">
@@ -89,7 +85,6 @@ export class StaticConfig {
                 }
             },
             {
-                // eslint-disable-next-line security/detect-unsafe-regex
                 re: /^(?:https?:)?\/\/(?:3speak\.(?:tv|online|co))\/embed\?v=([^&\s]+)/i,
                 fn: (src: string) => {
                     if (!src) return null;
@@ -99,7 +94,6 @@ export class StaticConfig {
                 }
             },
             {
-                // eslint-disable-next-line security/detect-unsafe-regex
                 re: /^(?:https?:)?\/\/(?:3speak\.(?:tv|online|co))\/watch\?v=([^&\s]+)/i,
                 fn: (src: string) => {
                     if (!src) return null;

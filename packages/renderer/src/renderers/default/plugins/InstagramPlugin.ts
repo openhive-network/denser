@@ -2,7 +2,11 @@ import {RendererPlugin} from './RendererPlugin';
 
 declare global {
     interface Window {
-        instgrm?: any;
+        instgrm?: {
+            Embeds?: {
+                process: () => void;
+            };
+        };
     }
 }
 
@@ -82,8 +86,9 @@ export class InstagramPlugin implements RendererPlugin {
             return null;
         }
 
+        const type = match.groups?.type ?? 'p';
         return {
-            type: match.groups!.type.includes('reel') ? 'reel' : 'p',
+            type: type.includes('reel') ? 'reel' : 'p',
             id
         };
     }

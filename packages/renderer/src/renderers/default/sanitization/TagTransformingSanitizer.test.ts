@@ -10,8 +10,8 @@ const options = {
     cssClassForInternalLinks: 'internal',
     cssClassForExternalLinks: 'external',
     noImage: false,
-    isLinkSafeFn: (url: string) => url != 'https://unsafe.com',
-    addExternalCssClassToMatchingLinksFn: (url: string) => url != 'https://engrave.dev'
+    isLinkSafeFn: (url: string) => url !== 'https://unsafe.com',
+    addExternalCssClassToMatchingLinksFn: (url: string) => url !== 'https://engrave.dev'
 };
 
 describe('TagTransformingSanitizer', () => {

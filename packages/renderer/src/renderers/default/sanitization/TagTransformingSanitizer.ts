@@ -129,7 +129,6 @@ export class TagTransformingSanitizer {
                     }
                     // See https://github.com/punkave/sanitize-html/issues/117
                     const {src, alt} = attribs;
-                    // eslint-disable-next-line security/detect-unsafe-regex
                     if (!/^(https?:)?\/\//i.test(src)) {
                         Log.log().warn(`Blocked image (invalid src)${this.formatPostContext()}: src="${src || '(empty)'}"`);
                         this.sanitizationErrors.push('An image in this post did not save properly.');

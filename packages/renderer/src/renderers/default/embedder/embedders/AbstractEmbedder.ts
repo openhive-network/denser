@@ -71,7 +71,7 @@ export abstract class AbstractEmbedder {
                 const id = match[1];
                 const type = match[2];
                 for (const embedder of embedders) {
-                    if (embedder.type == type) {
+                    if (embedder.type === type) {
                         sections.push(embedder.processEmbed(id, size));
                         break;
                     }

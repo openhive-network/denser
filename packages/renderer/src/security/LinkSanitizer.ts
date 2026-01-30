@@ -50,18 +50,22 @@ export class LinkSanitizer {
         // Log.log().debug('LinkSanitizer#sanitizeLink', {url, urlTitle});
 
         if (Phishing.looksPhishy(url)) {
-            Log.log().debug('LinkSanitizer#sanitizeLink', 'phishing link detected', 'phishing list', url, {
+            Log.log().debug({
+                message: 'phishing link detected',
+                list: 'phishing list',
                 url,
                 urlTitle
-            });
+            }, 'LinkSanitizer#sanitizeLink');
             return false;
         }
 
         if (this.isPseudoLocalUrl(url, urlTitle)) {
-            Log.log().debug('LinkSanitizer#sanitizeLink', 'phishing link detected', 'pseudo local url', url, {
+            Log.log().debug({
+                message: 'phishing link detected',
+                type: 'pseudo local url',
                 url,
                 urlTitle
-            });
+            }, 'LinkSanitizer#sanitizeLink');
             return false;
         }
 

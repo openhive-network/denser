@@ -1,4 +1,3 @@
-/* eslint-disable security/detect-non-literal-regexp */
 /**
  * Based on: https://raw.githubusercontent.com/openhive-network/condenser/master/src/app/utils/Links.js
  */

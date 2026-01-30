@@ -172,7 +172,7 @@ describe('XSS Payload Database Tests', function () {
     const sanitizer = new TagTransformingSanitizer(sanitizerOptions, Localization.DEFAULT);
 
     // Generate tests for each payload file
-    for (const [sourceName, payloadFile] of payloadFiles) {
+    for (const [_sourceName, payloadFile] of payloadFiles) {
         describe(`Source: ${payloadFile.source}`, function () {
             const activePayloads = payloadFile.payloads.filter(p => !p.skip);
             const skippedPayloads = payloadFile.payloads.filter(p => p.skip);
