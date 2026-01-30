@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Big from 'big.js';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { FullAccount, IFeedHistory, HiveChain } from '@hive/common-hiveio-packages/wax';
@@ -73,7 +73,7 @@ const WalletBalancesTable = ({
       10 ** -historyFeedData.current_median_history.base.precision
   );
 
-  const hours = moment(accountData.next_vesting_withdrawal).diff(moment(), 'hours');
+  const hours = dayjs(accountData.next_vesting_withdrawal).diff(dayjs(), 'hour');
   const days = Math.floor(hours / 24);
   const remainingHours = hours % 24;
   const totalTime =

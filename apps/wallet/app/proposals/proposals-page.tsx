@@ -7,7 +7,7 @@ import { DEFAULT_PARAMS_FOR_PROPOSALS, getProposals, getUserVotes } from '@/wall
 import { IGetProposalsParams } from '@hive/common-hiveio-packages/wax';
 import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { ProposalsFilter } from '@/wallet/components/proposals-filter';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { ProposalListItem } from '@/wallet/components/proposals-list-item';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { Skeleton } from '@ui/components/skeleton';
@@ -69,8 +69,8 @@ export default function ProposalsPage() {
               daily_pay: {
                 amount: new Big(proposal.daily_pay.amount).div(1000)
               },
-              start_date: moment(proposal.start_date).format('MMM D, YYYY'),
-              end_date: moment(proposal.end_date).format('MMM D, YYYY'),
+              start_date: dayjs(proposal.start_date).format('MMM D, YYYY'),
+              end_date: dayjs(proposal.end_date).format('MMM D, YYYY'),
               status: timeStatus(proposal.status, t)
             }))
           )

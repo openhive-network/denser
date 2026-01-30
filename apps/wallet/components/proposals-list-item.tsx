@@ -3,7 +3,7 @@ import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { IListItemProps } from '@/wallet/lib/hive';
 import { cn, getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Badge } from '@ui/components/badge';
 import VoteProposals from './votes-proposals-dialog';
 import { useTranslation } from '@/wallet/i18n/client';
@@ -67,9 +67,9 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund, 
   const [voteSuccess, setVotesSuccess] = useState(voted);
 
   const totalHBD = proposalData.daily_pay?.amount.times(
-    moment(proposalData?.end_date).diff(moment(proposalData.start_date), 'd')
+    dayjs(proposalData?.end_date).diff(dayjs(proposalData.start_date), 'day')
   );
-  const totalDays = moment(proposalData.end_date).diff(proposalData.start_date, `d`);
+  const totalDays = dayjs(proposalData.end_date).diff(dayjs(proposalData.start_date), 'day');
 
   const totalVotes = totalVestingFund.times(proposalData.total_votes).div(totalShares).times(0.000001);
 

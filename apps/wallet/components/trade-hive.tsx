@@ -7,7 +7,7 @@ import { MarketTable, HistoryTable, OrdersItem } from './market-table';
 import Loading from '@ui/components/loading';
 import { useTradeHistory } from './hooks/use-trade-history';
 import { useOrderBook } from './hooks/use-order-book';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import Chart from './chart';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -124,7 +124,7 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
             handleSetterPrices={handleSetterPrices}
           />
           <HistoryTable
-            data={data.recent.sort((a, b) => moment(b.date).diff(moment(a.date)))}
+            data={data.recent.sort((a, b) => dayjs(b.date).diff(dayjs(a.date)))}
             params={paramsHistory}
             label={t('market_page.trade_history')}
           />

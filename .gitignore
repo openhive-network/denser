@@ -29,3 +29,4 @@ stack/certs/key.pem
 Close
 docker/.env
 NOTES/
+.claude/settings.local.json

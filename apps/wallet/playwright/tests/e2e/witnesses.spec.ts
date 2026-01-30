@@ -6,8 +6,11 @@ import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePa
 import { WitnessPage } from '../../../../blog/playwright/tests/support/pages/witnessesPage';
 import { ConfirmAccountWitnessProxyDialog } from '../support/pages/confirmAccountWitnessProxyDialog';
 import { getRoundedAbbreveration } from '../../../../../packages/ui/lib/math-utils';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import Big from 'big.js';
+
+dayjs.extend(relativeTime);
 
 test.describe('Witnesses page tests', () => {
   let witnessesPage: WitnessesPage;
@@ -148,7 +151,7 @@ test.describe('Witnesses page tests', () => {
     const witnessCreatedAPI = witnesses[0].created;
     // Validate Witness's age
     expect(await witnessesPage.witnessCreated.first().textContent()).toContain(
-      moment().from(witnessCreatedAPI, true)
+      dayjs().from(dayjs(witnessCreatedAPI), true)
     );
 
     // Validate Witness external site
