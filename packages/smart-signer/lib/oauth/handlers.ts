@@ -341,9 +341,15 @@ export const handleUserInfo: NextApiHandler = async (req, res) => {
     picture: hiveProfile.picture || `https://images.hive.blog/u/${username}/avatar`,
   };
 
-  // Add website if available
+  // Add optional profile fields if available
   if (hiveProfile.website) {
     userinfo.website = hiveProfile.website;
+  }
+  if (hiveProfile.about) {
+    userinfo.about = hiveProfile.about;
+  }
+  if (hiveProfile.location) {
+    userinfo.location = hiveProfile.location;
   }
 
   logger.info('OAuth userinfo: returned profile for user %s', username);

@@ -7,55 +7,74 @@ export interface HiveUserProfile {
   name?: string;
   picture?: string;
   website?: string;
+  about?: string;
+  location?: string;
+}
+
+interface ProfileData {
+  name?: string;
+  profile_image?: string;
+  website?: string;
+  about?: string;
+  location?: string;
 }
 
 /**
- * Get Hive user's profile data from posting_json_metadata. Then output
- * properties as standard or custom id_token jwt claims.
+ * Extract profile fields from a metadata profile object.
+ */
+const extractProfileFields = (profile: ProfileData): HiveUserProfile => {
+  const result: HiveUserProfile = {};
+  if (profile.name) result.name = profile.name;
+  if (profile.profile_image) result.picture = profile.profile_image;
+  if (profile.website) result.website = profile.website;
+  if (profile.about) result.about = profile.about;
+  if (profile.location) result.location = profile.location;
+  return result;
+};
+
+/**
+ * Safely parse JSON metadata and extract profile.
+ */
+const parseMetadataProfile = (jsonString: string | undefined): ProfileData | null => {
+  if (!jsonString || jsonString === '' || jsonString === '{}') return null;
+  try {
+    const parsed = JSON.parse(jsonString);
+    return parsed?.profile || null;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Get Hive user's profile data from posting_json_metadata, with fallback
+ * to json_metadata if posting_json_metadata is empty.
  *
  * @param {string} hiveUsername
  * @return {*}
  */
 export const getHiveUserProfile = async (hiveUsername: string): Promise<HiveUserProfile> => {
-  const hiveUserProfile: HiveUserProfile = {};
-
-  // Add properties to user profile.
   try {
     const chainAccount = await getAccount(hiveUsername);
     if (!chainAccount) {
-      logger.error('gethiveUserProfile error: missing blockchain account %s', hiveUsername);
-      return hiveUserProfile;
+      logger.error('getHiveUserProfile error: missing blockchain account %s', hiveUsername);
+      return {};
     }
 
-    if (Object.prototype.hasOwnProperty.call(chainAccount, 'posting_json_metadata')) {
-      const postingJsonMetadata = JSON.parse(chainAccount.posting_json_metadata);
-      if (Object.prototype.hasOwnProperty.call(postingJsonMetadata, 'profile')) {
-        if (Object.prototype.hasOwnProperty.call(postingJsonMetadata.profile, 'name')) {
-          hiveUserProfile.name = postingJsonMetadata.profile.name;
-        }
-
-        // The property `profile_image` is read in Rocket
-        // Chat on each login, but changes don't cause
-        // changing existing avatar. However a new image is
-        // addded to the list of available avatars in Rocket
-        // Chat.
-        if (Object.prototype.hasOwnProperty.call(postingJsonMetadata.profile, 'profile_image')) {
-          hiveUserProfile.picture = postingJsonMetadata.profile.profile_image;
-        }
-
-        // The property `website` does nothing in Rocket
-        // Chat – there's not such field there.
-        if (Object.prototype.hasOwnProperty.call(postingJsonMetadata.profile, 'website')) {
-          hiveUserProfile.website = postingJsonMetadata.profile.website;
-        }
-      }
+    // Try posting_json_metadata first (preferred - updated by posting key)
+    const postingProfile = parseMetadataProfile(chainAccount.posting_json_metadata);
+    if (postingProfile) {
+      return extractProfileFields(postingProfile);
     }
 
-    // TODO We can also try to read profile from
-    // chainAccount.json_metadata, when
-    // chainAccount.posting_json_metadata doesn't exist.
+    // Fallback to json_metadata (updated by active key, may be older)
+    const jsonProfile = parseMetadataProfile(chainAccount.json_metadata);
+    if (jsonProfile) {
+      return extractProfileFields(jsonProfile);
+    }
+
+    return {};
   } catch (error) {
-    logger.error(error, 'gethiveUserProfile error');
+    logger.error(error, 'getHiveUserProfile error');
+    return {};
   }
-  return hiveUserProfile;
 };
