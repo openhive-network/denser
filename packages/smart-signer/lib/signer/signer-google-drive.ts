@@ -4,7 +4,7 @@ import { siteConfig } from "@hive/ui/config/site";
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
-import { createExternalWallet, IExternalWalletContent } from '@hiveio/wax-signers-external';
+import { createExternalWallet, IExternalWallet, IExternalWalletContent } from '@hiveio/wax-signers-external';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 
@@ -13,7 +13,24 @@ const logger = getLogger('app');
 export const hasCompatibleGoogleDriveProvider = () => !!siteConfig.googleDrive.clientId;
 
 const GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY = 'google_refresh_token';
-const GOOGLE_DRIVE_PASSWORD_LOCALSTORAGE_KEY = 'gdrive_signer_password';
+const GOOGLE_DRIVE_ENCRYPTION_KEY_WIF_LOCALSTORAGE_KEY = 'gdrive_encryption_key_wif';
+
+/* eslint-disable no-restricted-properties -- WIF key is stored permanently without TTL (safe: WIF alone cannot access wallet without Google token) */
+function getStoredEncryptionKeyWif(): string | null {
+  if (typeof window === 'undefined') return null;
+  return window.localStorage.getItem(GOOGLE_DRIVE_ENCRYPTION_KEY_WIF_LOCALSTORAGE_KEY);
+}
+
+function setStoredEncryptionKeyWif(wif: string): void {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(GOOGLE_DRIVE_ENCRYPTION_KEY_WIF_LOCALSTORAGE_KEY, wif);
+}
+
+function clearStoredEncryptionKeyWif(): void {
+  if (typeof window === 'undefined') return;
+  window.localStorage.removeItem(GOOGLE_DRIVE_ENCRYPTION_KEY_WIF_LOCALSTORAGE_KEY);
+}
+/* eslint-enable no-restricted-properties */
 
 declare global {
   interface Window {
@@ -49,6 +66,7 @@ export class SignerGoogleDrive extends Signer {
   }
 
   private walletInstance?: Promise<IExternalWalletContent>;
+  private rawWallet?: IExternalWallet;
   private _accessToken?: Promise<string>;
   private passwordPromise?: Promise<{ password: string }>;
   private currentKeyType?: keyof THiveRoles;
@@ -144,16 +162,21 @@ export class SignerGoogleDrive extends Signer {
   async destroy(): Promise<void> {
     this._accessToken = undefined;
     this.passwordPromise = undefined;
+    this.rawWallet = undefined;
     localStorage.removeItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
-    localStorage.removeItem(GOOGLE_DRIVE_PASSWORD_LOCALSTORAGE_KEY);
+    // Note: We do NOT remove the encryption key WIF here.
+    // The WIF alone cannot access the wallet without the Google OAuth token.
   }
 
-  private async getPasswordFromUser(): Promise<string> {
-    const password = localStorage.getItem(GOOGLE_DRIVE_PASSWORD_LOCALSTORAGE_KEY);
-    if (password) {
-      return password;
+  private async getEncryptionCredentials(): Promise<{ password: string } | { encryptionKey: string }> {
+    // Check for cached WIF key first
+    const cachedWif = getStoredEncryptionKeyWif();
+    if (cachedWif) {
+      logger.info('Using cached encryption key WIF for Google Drive wallet');
+      return { encryptionKey: cachedWif };
     }
 
+    // No cached WIF - prompt user for password
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
@@ -171,11 +194,11 @@ export class SignerGoogleDrive extends Signer {
       }
       const { password } = await this.passwordPromise;
 
-      localStorage.setItem(GOOGLE_DRIVE_PASSWORD_LOCALSTORAGE_KEY, password);
-
-      return password;
+      // Note: We do NOT store the password here.
+      // The WIF will be extracted and cached after wallet loads successfully.
+      return { password };
     } catch (error) {
-      logger.error('Error in getPasswordFromUser: %o', error);
+      logger.error('Error in getEncryptionCredentials: %o', error);
       throw new Error('No password from user');
     }
   }
@@ -185,7 +208,11 @@ export class SignerGoogleDrive extends Signer {
       this.walletInstance = undefined;
       this._accessToken = undefined;
       this.passwordPromise = undefined;
-      localStorage.removeItem(GOOGLE_DRIVE_PASSWORD_LOCALSTORAGE_KEY);
+      this.rawWallet = undefined;
+      // Only clear WIF on forceLogin (explicit re-auth request)
+      if (forceLogin) {
+        clearStoredEncryptionKeyWif();
+      }
     }
 
     if (this.walletInstance)
@@ -193,6 +220,9 @@ export class SignerGoogleDrive extends Signer {
 
     this.walletInstance = new Promise<IExternalWalletContent>(async (resolve, reject) => {
       try {
+        // Track whether we used password (not cached WIF) to know if we need to cache WIF
+        let usedPassword = false;
+
         const wallet = await createExternalWallet(
           await getChain(),
           () => this.getAccessToken(),
@@ -208,17 +238,37 @@ export class SignerGoogleDrive extends Signer {
               throw new Error('Google Drive wallet file not found');
             }
 
-            const password = await this.getPasswordFromUser();
+            const credentials = await this.getEncryptionCredentials();
 
-            return { password };
+            // Track if we're using a password (not cached WIF)
+            if ('password' in credentials) {
+              usedPassword = true;
+            }
+
+            return credentials;
           },
           siteConfig.googleDrive.walletFileName
         );
 
-        // Store a key
+        // Store reference to raw wallet for WIF extraction
+        this.rawWallet = wallet;
+
+        // Load the wallet for the specified key type
         const provider = await wallet.loadForHiveKey(username, keyType);
 
-        logger.info('Obtained Google Drive wallet for user %s with key type %s : %s', username, keyType, provider.enumStoredHiveKeys(username, keyType));
+        logger.info('Obtained Google Drive wallet for user %s with key type %s', username, keyType);
+
+        // If we used a password (not cached WIF), extract and cache the WIF now
+        if (usedPassword) {
+          try {
+            const wif = wallet.getEncryptionKeyWif();
+            setStoredEncryptionKeyWif(wif);
+            logger.info('Cached encryption key WIF for Google Drive wallet');
+          } catch (wifError) {
+            logger.error('Failed to extract/cache encryption key WIF: %o', wifError);
+            // Non-fatal: wallet is already loaded, just won't have cached WIF next time
+          }
+        }
 
         this.currentKeyType = keyType;
 
