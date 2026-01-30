@@ -1,7 +1,6 @@
 import { isBrowser } from '@ui/lib/logger';
 
-const KEY_TYPES = ['active', 'posting'] as const;
-export type KeyAuthorityType = (typeof KEY_TYPES)[number];
+export type KeyAuthorityType = 'active' | 'posting';
 
 /**
  * Checks if the specified storage type (localStorage or sessionStorage) is available

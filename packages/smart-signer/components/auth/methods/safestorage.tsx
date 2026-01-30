@@ -44,8 +44,7 @@ function getFormSchema() {
       }),
       wif: z.string(),
       keyType: z.nativeEnum(KeyType, {
-        invalid_type_error: 'Invalid keyType',
-        required_error: 'keyType is required'
+        message: 'Invalid keyType'
       }),
       userFound: z.boolean(),
       strict: z.boolean()
@@ -60,10 +59,8 @@ function getFormSchema() {
             path: ['wif'],
             fatal: true
           });
-          return z.NEVER;
         }
       }
-      return true;
     });
 }
 
@@ -93,7 +90,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     }));
 
-    const authClient = useRef<OnlineClient>();
+    const authClient = useRef<OnlineClient | null>(null);
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
@@ -169,7 +166,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       /* TODO: Re-work offline flow */
     }
     // async function onSign({ username, keyType }: SafeStorageForm): Promise<void> {
-    //     await sign(LoginType.hbauth, username, KeyType[keyType]);
+    //     await sign(LoginType.Hbauth, username, keyType);
     // }
 
     {
@@ -184,7 +181,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     async function finalize({ username, keyType }: SafeStorageForm) {
       try {
         setLoading(true);
-        await sign(LoginType.hbauth, username, KeyType[keyType]);
+        await sign(LoginType.Hbauth, username, keyType);
         await submit(username);
       } catch (error) {
         setError((error as Error).message);
@@ -219,25 +216,30 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       /* eslint-disable react-hooks/exhaustive-deps */
     }, []);
 
-    const userFound = useMemo(() => {
-      const formUsername = form.getValues().username;
-      onUsernameChange(formUsername);
-      const found = authUsers.filter((user) => user.username === formUsername)[0];
+    const watchedUsername = form.watch('username');
 
-      if (found?.username) {
-        if (found?.unlocked) {
-          setDescription(`Unlocked with ${form.getValues().keyType} key`);
+    const userFound = useMemo(() => {
+      return authUsers.find((user) => user.username === watchedUsername) ?? null;
+    }, [watchedUsername, authUsers]);
+
+    useEffect(() => {
+      onUsernameChange(watchedUsername);
+    }, [watchedUsername, onUsernameChange]);
+
+    useEffect(() => {
+      const keyType = form.getValues().keyType;
+      if (userFound?.username) {
+        if (userFound.unlocked) {
+          setDescription(`Unlocked with ${keyType} key`);
         } else {
           setDescription('Unlock user with password');
         }
       } else {
-        setDescription(`Save your ${form.getValues().keyType} key by filling form below`);
+        setDescription(`Save your ${keyType} key by filling form below`);
       }
 
-      form.setValue('userFound', found ? true : false);
-      return found;
-      /* eslint-disable react-hooks/exhaustive-deps */
-    }, [form.watch('username'), authUsers]);
+      form.setValue('userFound', !!userFound);
+    }, [userFound, form]);
 
     if (loading === undefined) return <Step loading={true}></Step>;
 

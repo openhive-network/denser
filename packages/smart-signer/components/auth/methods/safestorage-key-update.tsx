@@ -53,8 +53,7 @@ function getFormSchema() {
         message: 'Invalid WIF key'
       }),
       keyType: z.nativeEnum(KeyType, {
-        invalid_type_error: 'Invalid keyType',
-        required_error: 'keyType is required'
+        message: 'Invalid keyType'
       }),
       isStrict: z.boolean().default(false)
     })
@@ -67,15 +66,13 @@ function getFormSchema() {
           path: ['wif'],
           fatal: true
         });
-        return z.NEVER;
       }
-      return true;
     });
 }
 
 export type SafeStorageKeyUpdateRef = { cancel: () => Promise<void> };
 
-type SafeStorageKeyUpdateForm = z.infer<ReturnType<typeof getFormSchema>>;
+type SafeStorageKeyUpdateForm = z.input<ReturnType<typeof getFormSchema>>;
 
 const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyUpdateProps>(
   ({ onSetStep, preferredKeyTypes, i18nNamespace, username, onUsernameChange }, ref) => {
@@ -85,7 +82,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
       }
     }));
 
-    const authClient = useRef<OnlineClient>();
+    const authClient = useRef<OnlineClient | null>(null);
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
     const [registeredUser, setRegisteredUser] = useState<AuthUser | null>(null);

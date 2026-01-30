@@ -1,5 +1,5 @@
 /* Component that manages all available sign-in options */
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react';
 import SafeStorage, { SafeStorageRef } from './methods/safestorage';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useProcessAuth, LoginFormSchema } from './process';
@@ -39,6 +39,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
     const [username, setUsername] = useState<string>(lastLoggedInUser);
+    const handleUsernameChange = useCallback((value: string) => setUsername(value), []);
 
     // provide methods to outside from here
     useImperativeHandle(ref, () => ({
@@ -83,7 +84,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             i18nNamespace={i18nNamespace}
             isSigned={isSigned}
             username={username}
-            onUsernameChange={(username) => setUsername(username)}
+            onUsernameChange={handleUsernameChange}
           />
         )}
 
@@ -93,7 +94,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             i18nNamespace={i18nNamespace}
             preferredKeyTypes={preferredKeyTypes}
             username={username}
-            onUsernameChange={(username) => setUsername(username)}
+            onUsernameChange={handleUsernameChange}
             sign={sign}
             submit={submit}
           />
@@ -105,7 +106,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             i18nNamespace={i18nNamespace}
             preferredKeyTypes={preferredKeyTypes}
             username={username}
-            onUsernameChange={(username) => setUsername(username)}
+            onUsernameChange={handleUsernameChange}
           />
         )}
       </div>

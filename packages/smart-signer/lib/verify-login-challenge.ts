@@ -24,16 +24,16 @@ export async function verifyLoginChallenge(
     keyType: 'posting' | 'active' = 'posting'
 ) {
     const authority: ApiAuthority = chainAccount[keyType];
-    const { key_auths, weight_threshold } = authority;
+    const { key_auths: keyAuths, weight_threshold: weightThreshold } = authority;
 
     // ApiAuthority has key_auths as Array<{0: pubkey, 1: weight}>
-    const firstKeyAuth = key_auths[0];
+    const firstKeyAuth = keyAuths[0];
     const pubkey = firstKeyAuth?.['0'] || '';
     const weight = firstKeyAuth?.['1'] || 0;
 
     // We do not support situation when more than one account should be
     // involved in signing.
-    if (weight !== 1 || weight_threshold !== 1) {
+    if (weight !== 1 || weightThreshold !== 1) {
         logger.error(
             `verifySignature unsupported ${keyType} auth configuration for user ${chainAccount.name}`
         );

@@ -120,7 +120,7 @@ export const consentPageController: GetServerSideProps = async (ctx) => {
       logger.info('consentPageController: no uid');
     }
   } catch (e) {
-    logger.error('Error in ConsentController: %o', e);
+    logger.error({ error: e }, 'Error in ConsentController');
     // throw e;
     // Do something wiser here.
     res.statusCode = 404;

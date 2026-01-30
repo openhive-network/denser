@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+import React from 'react';
 import { RadioGroupItem as RadioGroupItemRoot } from '@ui/components/radio-group';
 
 export interface IRadioGroupItem {
@@ -17,7 +17,7 @@ export interface RadioGroupItemProps {
 export function RadioGroupItem({
   item,
   randomValue = crypto.randomUUID() // needed to keep radio inputs' ids unique on html page
-}: RadioGroupItemProps): JSX.Element {
+}: RadioGroupItemProps): React.JSX.Element {
   return (
     <div className="flex align-items: center">
       <RadioGroupItemRoot
@@ -45,8 +45,8 @@ export function RadioGroupItem({
 
 export function radioGroupItems (
   items: IRadioGroupItem[]
-): JSX.Element[] {
-  const radioGroupItems: JSX.Element[] = [];
+): React.JSX.Element[] {
+  const radioGroupItems: React.JSX.Element[] = [];
   items.forEach((item: IRadioGroupItem, index: number) => {
     const element = (
       <RadioGroupItem

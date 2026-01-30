@@ -18,7 +18,7 @@ export async function getOperationForLogin(
   loginType: string
 ): Promise<operation> {
   let operation: operation;
-  if (keyType === KeyType.posting) {
+  if (keyType === KeyType.Posting) {
     const customJsonLoginChallenge: custom_json = custom_json.create({
       id: `denser_${loginType}`,
       json: JSON.stringify({ challenge: loginChallenge }),
@@ -26,7 +26,7 @@ export async function getOperationForLogin(
       required_posting_auths: [username]
     });
     operation = { custom_json_operation: customJsonLoginChallenge };
-  } else if (keyType === KeyType.active) {
+  } else if (keyType === KeyType.Active) {
     const customJsonLoginChallenge: custom_json = custom_json.create({
       id: `denser_${loginType}`,
       json: JSON.stringify({ challenge: loginChallenge }),

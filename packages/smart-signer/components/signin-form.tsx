@@ -1,5 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -31,9 +30,9 @@ export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
   username: '',
-  loginType: LoginType.hbauth,
+  loginType: LoginType.Hbauth,
   remember: false,
-  keyType: KeyType.posting
+  keyType: KeyType.Posting
 };
 
 export interface LoginTypeDetail {
@@ -42,39 +41,39 @@ export interface LoginTypeDetail {
 }
 
 export type LoginTypeDetails = {
-  [key in keyof typeof LoginType]: LoginTypeDetail;
+  [key in LoginType]: LoginTypeDetail;
 };
 
 export const loginTypeDetails: LoginTypeDetails = {
-  hbauth: {
+  [LoginType.Hbauth]: {
     logo: '/smart-signer/images/hive-blog-twshare.png',
     type: 'internal'
   },
-  hiveauth: {
+  [LoginType.Hiveauth]: {
     logo: '/smart-signer/images/hiveauth.png',
     type: 'internal'
   },
-  hivesigner: {
+  [LoginType.Hivesigner]: {
     logo: '/smart-signer/images/hivesigner.svg',
     type: 'external'
   },
-  keychain: {
+  [LoginType.Keychain]: {
     logo: '/smart-signer/images/hivekeychain.png',
     type: 'internal'
   },
-  peakvault: {
+  [LoginType.Peakvault]: {
     logo: '/smart-signer/images/peakvault.svg',
     type: 'internal'
   },
-  metamask: {
+  [LoginType.Metamask]: {
     logo: '/smart-signer/images/metamask.svg',
     type: 'internal'
   },
-  google: {
+  [LoginType.Google]: {
     logo: '/smart-signer/images/google-drive.svg',
     type: 'internal'
   },
-  wif: {
+  [LoginType.Wif]: {
     logo: '/smart-signer/images/hive-blog-twshare.png',
     type: 'internal'
   }
@@ -106,7 +105,7 @@ export default function LoginForm({
     hasCompatibleMetaMask().then((supported) => {
       setIsMetaMaskSupported(supported);
     }).catch((error) => {
-      logger.error('Error checking MetaMask compatibility: %o', error);
+      logger.error({ error }, 'Error checking MetaMask compatibility');
     });
   }, []);
 
@@ -129,7 +128,7 @@ export default function LoginForm({
     });
   };
 
-  const radioGroupItem = (loginType: LoginType, disabled: boolean = false): JSX.Element => {
+  const radioGroupItem = (loginType: LoginType, disabled: boolean = false): React.JSX.Element => {
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <RadioGroupItem
@@ -167,17 +166,17 @@ export default function LoginForm({
     );
   };
 
-  const loginTypeRadioGroupItems: JSX.Element[] = [];
+  const loginTypeRadioGroupItems: React.JSX.Element[] = [];
   enabledLoginTypes.forEach((loginType: LoginType, index: number) => {
     if (loginTypeDetails[loginType].type === 'internal') {
-      let element: JSX.Element;
-      if (loginType === LoginType.keychain) {
+      let element: React.JSX.Element;
+      if (loginType === LoginType.Keychain) {
         element = radioGroupItem(loginType, !isKeychainSupported);
-      } else if (loginType === LoginType.peakvault) {
+      } else if (loginType === LoginType.Peakvault) {
         element = radioGroupItem(loginType, !isPeakvaultSupported);
-      } else if (loginType === LoginType.metamask) {
+      } else if (loginType === LoginType.Metamask) {
         element = radioGroupItem(loginType, !isMetaMaskSupported);
-      } else if (loginType === LoginType.google) {
+      } else if (loginType === LoginType.Google) {
         element = radioGroupItem(loginType, !isGoogleSupported);
       } else {
         element = radioGroupItem(loginType, false);
@@ -303,7 +302,7 @@ export default function LoginForm({
             </p>
           </div>
 
-          {enabledLoginTypes.includes(LoginType.hiveauth) && (
+          {enabledLoginTypes.includes(LoginType.Hiveauth) && (
             <div className="hiveauth-info">
               <div id="hiveauth-instructions" className="hiveauth-instructions hidden" />
               <a
@@ -318,7 +317,7 @@ export default function LoginForm({
             </div>
           )}
 
-          {enabledLoginTypes.includes(LoginType.hivesigner) && (
+          {enabledLoginTypes.includes(LoginType.Hivesigner) && (
             <div className="mt-4 flex w-full items-center">
               <Separator orientation="horizontal" className="w-1/3" />
               <span className="w-1/3 text-center text-sm">more login methods</span>
@@ -326,7 +325,7 @@ export default function LoginForm({
             </div>
           )}
 
-          {enabledLoginTypes.includes(LoginType.hivesigner) && (
+          {enabledLoginTypes.includes(LoginType.Hivesigner) && (
             <div className="flex justify-center">
               <button
                 className="mt-4 flex w-fit justify-center rounded-lg bg-gray-400 px-5 py-2.5 hover:bg-gray-500 focus:outline-none "
@@ -336,7 +335,7 @@ export default function LoginForm({
                   onHivesignerButtonClick();
                 }}
               >
-                <img src={loginTypeDetails[LoginType.hivesigner].logo} alt="Hivesigner logo" />
+                <img src={loginTypeDetails[LoginType.Hivesigner].logo} alt="Hivesigner logo" />
               </button>
             </div>
           )}

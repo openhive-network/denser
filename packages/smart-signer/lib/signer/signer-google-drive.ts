@@ -7,6 +7,7 @@ import { getChain } from '@transaction/lib/chain';
 import { createExternalWallet, IExternalWallet, IExternalWalletContent } from '@hiveio/wax-signers-external';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
+import { getStorageItem, setStorageItem, removeStorageItem, StorageTTL } from '@hive/ui/lib/storage-with-ttl';
 
 const logger = getLogger('app');
 
@@ -84,7 +85,7 @@ export class SignerGoogleDrive extends Signer {
 
     const data = await response.json();
 
-    localStorage.setItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY, refreshToken);
+    setStorageItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY, refreshToken, StorageTTL.PERMANENT);
 
     return data.accessToken;
   }
@@ -97,19 +98,22 @@ export class SignerGoogleDrive extends Signer {
       throw new Error('Google Drive Signer is not properly configured.');
     }
 
-    const savedRefresh = localStorage.getItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
+    const savedRefresh = getStorageItem<string>(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
     if (savedRefresh) {
       this._accessToken = this.getAccessTokenForRefreshToken(savedRefresh).catch((err) => {
-        logger.error('Error refreshing Google Drive access token: %o', err);
+        logger.error({ err }, 'Error refreshing Google Drive access token');
 
-        localStorage.removeItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
+        removeStorageItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
 
         this.destroy().catch(() => {});
 
         throw err;
       });
 
-      return this._accessToken!;
+      if (!this._accessToken) {
+        throw new Error('Failed to refresh access token');
+      }
+      return this._accessToken;
     }
 
     this._accessToken = new Promise<string>((resolve, reject) => {
@@ -142,7 +146,7 @@ export class SignerGoogleDrive extends Signer {
               const data = await res.json();
 
               if (data.refreshToken) {
-                localStorage.setItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY, data.refreshToken);
+                setStorageItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY, data.refreshToken, StorageTTL.PERMANENT);
               }
 
               resolve(data.accessToken);
@@ -156,14 +160,17 @@ export class SignerGoogleDrive extends Signer {
       tokenClient.requestCode({ prompt: 'consent' });
     });
 
-    return this._accessToken!;
+    if (!this._accessToken) {
+      throw new Error('Failed to initialize access token');
+    }
+    return this._accessToken;
   }
 
   async destroy(): Promise<void> {
     this._accessToken = undefined;
     this.passwordPromise = undefined;
     this.rawWallet = undefined;
-    localStorage.removeItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
+    removeStorageItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
     // Note: We do NOT remove the encryption key WIF here.
     // The WIF alone cannot access the wallet without the Google OAuth token.
   }
@@ -318,7 +325,7 @@ export class SignerGoogleDrive extends Signer {
       try {
         provider = await this.getWallet(username, keyType);
       } catch (error) {
-        logger.error('Error obtaining Google Drive wallet: %o Retrying with forceLogin=true', error);
+        logger.error({ error }, 'Error obtaining Google Drive wallet - Retrying with forceLogin=true');
 
         provider = await this.getWallet(username, keyType, true);
       }
@@ -349,7 +356,7 @@ export class SignerGoogleDrive extends Signer {
 
       const signature = await provider.encryptData(message, pk);
 
-      logger.info('google', { signature });
+      logger.info({ signature }, 'google');
       return signature;
     } catch (error) {
       throw error;
@@ -365,7 +372,7 @@ export class SignerGoogleDrive extends Signer {
       try {
         provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType);
       } catch (error) {
-        logger.error('Error obtaining Google Drive wallet: %o Retrying with forceLogin=true', error);
+        logger.error({ error }, 'Error obtaining Google Drive wallet - Retrying with forceLogin=true');
 
         provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType, true);
       }
@@ -384,7 +391,7 @@ export class SignerGoogleDrive extends Signer {
       logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
-      logger.error('SignerGoogleDrive.signTransaction error: %o', error);
+      logger.error({ error }, 'SignerGoogleDrive.signTransaction error');
       throw error;
     }
   }

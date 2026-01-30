@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,9 +32,7 @@ const passwordField = z.object({
         message: result,
         fatal: true
       });
-      return z.NEVER;
     }
-    return true;
   })
 });
 
@@ -49,28 +46,27 @@ const commonFields = z.object({
   useHiveauth: z.boolean(),
   remember: z.boolean(),
   keyType: z.nativeEnum(KeyType, {
-    invalid_type_error: 'Invalid keyType',
-    required_error: 'keyType is required'
+    message: 'Invalid keyType'
   })
 });
 
 const commonFieldsWithPassword = commonFields.merge(passwordField);
 
 const loginFormSchema = z.discriminatedUnion('loginType', [
-  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.wif) }).merge(commonFieldsWithPassword),
-  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hbauth) }).merge(commonFields),
-  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hiveauth) }).merge(commonFields),
-  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.keychain) }).merge(commonFields),
-  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.peakvault) }).merge(commonFields),
-  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.metamask) }).merge(commonFields),
-  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.google) }).merge(commonFields),
-  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.hivesigner) }).merge(commonFields)
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.Wif) }).merge(commonFieldsWithPassword),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.Hbauth) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.Hiveauth) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.Keychain) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.Peakvault) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.Metamask) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.Google) }).merge(commonFields),
+  z.object({ loginType: z.literal(ZodLoginTypeEnum.enum.Hivesigner) }).merge(commonFields)
 ]);
 
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 const loginFormDefaultValues = {
-  loginType: LoginType.hbauth,
+  loginType: LoginType.Hbauth,
   password: '',
   remember: false,
   useHbauth: true,
@@ -80,7 +76,7 @@ const loginFormDefaultValues = {
   useMetaMask: false,
   useGoogle: false,
   username: '',
-  keyType: KeyType.posting
+  keyType: KeyType.Posting
 };
 
 export function LoginForm({
@@ -105,7 +101,7 @@ export function LoginForm({
     hasCompatibleMetaMask().then((supported) => {
       setIsMetaMaskSupported(supported);
     }).catch((error) => {
-      logger.error('Error checking MetaMask compatibility: %o', error);
+      logger.error({ error }, 'Error checking MetaMask compatibility');
     });
   }, []);
 
@@ -133,7 +129,7 @@ export function LoginForm({
       trigger('password');
       setDisabledPassword(true);
     } else {
-      setValue('loginType', LoginType.wif);
+      setValue('loginType', LoginType.Wif);
       setDisabledPassword(false);
     }
   };
@@ -204,7 +200,7 @@ export function LoginForm({
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useHbauth')}
-                onChange={(e) => onCheckboxToggle(e, LoginType.hbauth)}
+                onChange={(e) => onCheckboxToggle(e, LoginType.Hbauth)}
               />
               <label
                 htmlFor="useHbauth"
@@ -227,7 +223,7 @@ export function LoginForm({
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useMetaMask')}
                 disabled={!isMetaMaskSupported}
-                onChange={(e) => onCheckboxToggle(e, LoginType.metamask)}
+                onChange={(e) => onCheckboxToggle(e, LoginType.Metamask)}
               />
               <label
                 htmlFor="useMetaMask"
@@ -250,7 +246,7 @@ export function LoginForm({
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useGoogle')}
                 disabled={!isGoogleSupported}
-                onChange={(e) => onCheckboxToggle(e, LoginType.google)}
+                onChange={(e) => onCheckboxToggle(e, LoginType.Google)}
               />
               <label
                 htmlFor="useGoogle"
@@ -273,7 +269,7 @@ export function LoginForm({
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useKeychain')}
                 disabled={!isKeychainSupported}
-                onChange={(e) => onCheckboxToggle(e, LoginType.keychain)}
+                onChange={(e) => onCheckboxToggle(e, LoginType.Keychain)}
               />
               <label
                 htmlFor="useKeychain"
@@ -296,7 +292,7 @@ export function LoginForm({
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('usePeakvault')}
                 disabled={!isPeakvaultSupported}
-                onChange={(e) => onCheckboxToggle(e, LoginType.peakvault)}
+                onChange={(e) => onCheckboxToggle(e, LoginType.Peakvault)}
               />
               <label
                 htmlFor="usePeakvault"
@@ -318,7 +314,7 @@ export function LoginForm({
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('useHiveauth')}
-                onChange={(e) => onCheckboxToggle(e, LoginType.hiveauth)}
+                onChange={(e) => onCheckboxToggle(e, LoginType.Hiveauth)}
               />
               <label
                 htmlFor="useHiveauth"

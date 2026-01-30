@@ -8,6 +8,7 @@ const logger = getLogger('app');
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- PeakVault extension injects untyped API on window
     peakvault: any;
   }
 }
@@ -37,7 +38,7 @@ export class SignerPeakvault extends Signer {
 
       const signature = provider.encryptData(message, username);
 
-      logger.info('peakvault', { signature });
+      logger.info({ signature }, 'peakvault');
       return signature;
     } catch (error) {
       throw error;
@@ -66,7 +67,7 @@ export class SignerPeakvault extends Signer {
       logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
-      logger.error('SignerPeakvault.signTransaction error: %o', error);
+      logger.error({ error }, 'SignerPeakvault.signTransaction error');
       throw error;
     }
   }

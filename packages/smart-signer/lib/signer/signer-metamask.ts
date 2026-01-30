@@ -46,7 +46,7 @@ export class SignerMetaMask extends Signer {
 
       const signature = await provider.encryptData(message, key);
 
-      logger.info('metamask', { signature });
+      logger.info({ signature }, 'metamask');
       return signature;
     } catch (error) {
       throw error;
@@ -79,7 +79,7 @@ export class SignerMetaMask extends Signer {
       logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
-      logger.error('SignerMetaMask.signTransaction error: %o', error);
+      logger.error({ error }, 'SignerMetaMask.signTransaction error');
       throw error;
     }
   }

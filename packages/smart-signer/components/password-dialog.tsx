@@ -34,7 +34,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
   const [errorMsg, setErrorMsg] = useState('');
 
   const onSubmit = async (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {
-    logger.info('onSubmit form data', data);
+    logger.info({ data }, 'onSubmit form data');
     const { password } = data;
     setErrorMsg('');
     setPassword(password);

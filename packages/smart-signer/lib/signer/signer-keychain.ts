@@ -10,7 +10,9 @@ const logger = getLogger('app');
 
 declare global {
   interface Window {
-    hive_keychain: any;
+    hive_keychain: {
+      requestSignBuffer: (username: string, message: string, keyType: string, callback: (response: { error?: unknown; result: string }) => void) => void;
+    };
   }
 }
 
@@ -35,11 +37,20 @@ export class SignerKeychain extends Signer {
     const { username, keyType } = this;
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     try {
-      const provider = KeychainProvider.for(this.username, keyType);
+      if (!KeychainProvider.isExtensionInstalled())
+        throw new Error('Hive Keychain extension is not installed');
 
-      const signature = provider.encryptData(message, username);
+      // Very important: We are using requestSignBuffer instead of encryptData here as it is bugged - chooses invalid keys on Keychain-side
+      const msg = typeof message === "string" ? message : JSON.stringify({type:"Buffer", data: Array.from(new Uint8Array(message as ArrayBuffer))});
+      const response = await new Promise<string>((resolve, reject) => window.hive_keychain.requestSignBuffer(this.username, msg, this.keyType, (response: { error?: unknown; result: string}) => {
+        if (response.error)
+          reject(response);
+        else
+          resolve(response.result);
+      }));
+      const signature = response;
 
-      logger.info('keychain', { signature });
+      logger.info({ signature }, 'keychain');
       return signature;
     } catch (error) {
       throw error;
@@ -68,7 +79,7 @@ export class SignerKeychain extends Signer {
       logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
-      logger.error('SignerKeychain.signTransaction error: %o', error);
+      logger.error({ error }, 'SignerKeychain.signTransaction error');
       throw error;
     }
   }

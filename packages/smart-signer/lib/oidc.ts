@@ -49,6 +49,14 @@ const configuration: Configuration = {
             interaction: 'oidc_interaction',
             resume: 'oidc_resume',
         },
+        // Explicitly set sameSite to maintain v8 behavior
+        // v9 changed default from 'none' to 'lax'
+        long: {
+            sameSite: 'none',
+        },
+        short: {
+            sameSite: 'none',
+        },
     },
     claims: {
         openid: ['sub'],

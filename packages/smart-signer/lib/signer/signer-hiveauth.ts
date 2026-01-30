@@ -31,7 +31,7 @@ export class SignerHiveauth extends StorageMixin(SignerKeychain) {
     this.storage.removeItem('hiveAuthData');
   }
 
-  async signTransaction({ digest, transaction }: SignTransaction): Promise<string> {
+  async signTransaction({ digest: _digest, transaction: _transaction }: SignTransaction): Promise<string> {
     throw new Error('Not implemented');
   }
 
@@ -50,7 +50,7 @@ export class SignerHiveauth extends StorageMixin(SignerKeychain) {
     logger.info('in SignerHiveauth.signChallenge %o', { message, username, keyType });
     try {
       this.setHiveAuthData();
-      const authResponse: any = await new Promise((resolve) => {
+      const authResponse: { success: boolean; hiveAuthData?: { token: string; expire: number; key: string; challengeHex: string } } = await new Promise((resolve) => {
         HiveAuthUtils.login(
           username,
           typeof message === 'string' ? message : JSON.stringify(message),
@@ -64,7 +64,7 @@ export class SignerHiveauth extends StorageMixin(SignerKeychain) {
       if (authResponse.success && authResponse.hiveAuthData) {
         const { token, expire, key, challengeHex: signature } = authResponse.hiveAuthData;
         this.storage.setItem('hiveAuthData', JSON.stringify({ username, token, expire, key }));
-        logger.info('hiveauth', { signature });
+        logger.info({ signature }, 'hiveauth');
         return signature as string;
       } else {
         throw new Error('Hiveauth login failed');

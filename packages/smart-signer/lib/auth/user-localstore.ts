@@ -1,26 +1,22 @@
 import { User } from '@smart-signer/types/common';
 import { defaultUser } from '@smart-signer/lib/auth/utils';
-import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { safeJsonParse } from '@smart-signer/lib/safe-json-parse';
+import { getStorageItem, setStorageItem, removeStorageItem, StorageTTL } from '@hive/ui/lib/storage-with-ttl';
 
 const USER_LOCAL_STORAGE_KEY = 'user';
 
 export function saveUser(user: User): void {
-  if (isStorageAvailable('localStorage')) {
-    localStorage.setItem(USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
-  }
+  setStorageItem(USER_LOCAL_STORAGE_KEY, user, StorageTTL.PERMANENT);
 }
 
 export function getUser(): User {
-  if (isStorageAvailable('localStorage')) {
-    const user = localStorage.getItem(USER_LOCAL_STORAGE_KEY);
-    return safeJsonParse(user, defaultUser, USER_LOCAL_STORAGE_KEY);
+  const user = getStorageItem<User>(USER_LOCAL_STORAGE_KEY);
+  if (user) {
+    return user;
   }
   return defaultUser;
 }
 
 export function removeUser(): void {
-  if (isStorageAvailable('localStorage')) {
-    localStorage.removeItem(USER_LOCAL_STORAGE_KEY);
-  }
+  removeStorageItem(USER_LOCAL_STORAGE_KEY);
 }

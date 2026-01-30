@@ -42,12 +42,10 @@ export interface MethodsProps {
 const formSchema = z.object({
   username,
   keyType: z.nativeEnum(KeyType, {
-    invalid_type_error: 'Invalid keyType',
-    required_error: 'keyType is required'
+    message: 'Invalid keyType'
   }),
   loginType: z.nativeEnum(LoginType, {
-    invalid_type_error: 'Invalid loginType',
-    required_error: 'loginType is required'
+    message: 'Invalid loginType'
   })
 });
 type MethodsFormValues = z.infer<typeof formSchema>;
@@ -67,7 +65,7 @@ const Methods: FC<MethodsProps> = ({
     defaultValues: {
       username: username,
       keyType: preferredKeyTypes[0],
-      loginType: LoginType.hbauth
+      loginType: LoginType.Hbauth
     },
     mode: 'onChange'
   });
@@ -84,7 +82,7 @@ const Methods: FC<MethodsProps> = ({
     hasCompatibleMetaMask().then((supported) => {
       setIsMetaMaskSupported(supported);
     }).catch((error) => {
-      logger.error('Error checking MetaMask compatibility: %o', error);
+      logger.error({ error }, 'Error checking MetaMask compatibility');
     });
   }, []);
 
@@ -200,7 +198,7 @@ const Methods: FC<MethodsProps> = ({
               className="flex w-full justify-start py-6"
               type="button"
               variant="ghost"
-              onClick={form.handleSubmit(() => onSubmit(LoginType.metamask))}
+              onClick={form.handleSubmit(() => onSubmit(LoginType.Metamask))}
               data-testid="metamask-extension-button"
             >
               <Icons.metamask className="mr-4 h-8 w-8" />
@@ -213,7 +211,7 @@ const Methods: FC<MethodsProps> = ({
               className="flex w-full justify-start py-6"
               type="button"
               variant="ghost"
-              onClick={form.handleSubmit(() => onSubmit(LoginType.google))}
+              onClick={form.handleSubmit(() => onSubmit(LoginType.Google))}
               data-testid="google-button"
             >
               <Icons.google className="mr-4 h-8 w-8" />
@@ -227,7 +225,7 @@ const Methods: FC<MethodsProps> = ({
               className="flex w-full justify-start py-6"
               type="button"
               variant="ghost"
-              onClick={form.handleSubmit(() => onSubmit(LoginType.keychain))}
+              onClick={form.handleSubmit(() => onSubmit(LoginType.Keychain))}
               data-testid="hive-keychain-extension-button"
             >
               <Icons.hivekeychain className="mr-4 h-8 w-8" />
@@ -241,7 +239,7 @@ const Methods: FC<MethodsProps> = ({
               className="flex w-full justify-start py-6"
               type="button"
               variant="ghost"
-              onClick={form.handleSubmit(() => onSubmit(LoginType.peakvault))}
+              onClick={form.handleSubmit(() => onSubmit(LoginType.Peakvault))}
               data-testid="peakvault-extension-button"
             >
               <Icons.peakvault className="mr-4 h-8 w-8" />
@@ -255,7 +253,7 @@ const Methods: FC<MethodsProps> = ({
               className="flex w-full py-6"
               type="button"
               variant="ghost"
-              onClick={form.handleSubmit(() => onSubmit(LoginType.wif))}
+              onClick={form.handleSubmit(() => onSubmit(LoginType.Wif))}
               data-testid="sign-in-with-wif-button"
             >
               <div className="flex flex-1 items-center">

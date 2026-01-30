@@ -67,7 +67,7 @@ export async function getRCAuthToken(userId: string, username = '') {
                   || 'getRCAuthToken unspecified in responseData3'
       };
   } catch (error) {
-      logger.error('getRCAuthToken error: %o', error);
+      logger.error({ error }, 'getRCAuthToken error');
       return {
           success: false,
           error: 'getRCAuthToken unknown'
@@ -110,7 +110,7 @@ export async function getChatAuthToken(username = '') {
       if (error.data && error.data.error === 'User not found.') {
           responseData1 = error.data;
       } else {
-          logger.error('Error code 2 in getChatAuthToken: %o', error);
+          logger.error({ error }, 'Error code 2 in getChatAuthToken');
           return {
               success: false,
               error: 'Error code 2'
@@ -166,7 +166,7 @@ export async function getChatAuthToken(username = '') {
                   error: 'Error code 4. ' + responseData2.error
               };
           } catch (error) {
-              logger.error('Error code 3 in getChatAuthToken: %o', error);
+              logger.error({ error }, 'Error code 3 in getChatAuthToken');
               return {
                   success: false,
                   error: 'Error code 3'

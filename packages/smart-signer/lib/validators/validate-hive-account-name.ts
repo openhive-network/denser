@@ -3,7 +3,7 @@ import dmcaUserList from '@ui/config/lists/dmca-user-list';
 
 export function validateHiveAccountName(
   value: string,
-  translateFn: (v: string) => string = (v) => v
+  _translateFn: (v: string) => string = (v) => v
 ): string | null {
   let i, label, len;
 

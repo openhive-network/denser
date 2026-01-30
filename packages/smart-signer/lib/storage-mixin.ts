@@ -3,6 +3,7 @@ import { memoryStorage } from '@smart-signer/lib/memory-storage';
 
 export type StorageType = 'localStorage' | 'sessionStorage' | 'memoryStorage';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- TypeScript mixin pattern requires any[] for constructor args
 type GConstructor<T = {}> = new (...args: any[]) => T;
 type WithStorage = GConstructor<{ storageType: StorageType }>;
 
@@ -26,19 +27,22 @@ export class StorageBase {
  *
  * @export
  * @template TBase
- * @param {TBase} Base
+ * @param {TBase} Base - Base class to extend with storage capabilities
  * @returns
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Base is PascalCase by convention for class mixins
 export function StorageMixin<TBase extends WithStorage>(Base: TBase) {
 
     return class extends Base {
 
         storage: Storage;
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TypeScript mixin pattern requires any[] for constructor args
         constructor(...args: any[]) {
             super(...args);
             if (this.storageType === 'localStorage'
                     && isStorageAvailable(this.storageType)) {
+                // eslint-disable-next-line no-restricted-properties -- This is a low-level storage abstraction mixin that provides direct storage access
                 this.storage = window.localStorage;
             } else if (this.storageType === 'sessionStorage'
                     && isStorageAvailable(this.storageType)) {

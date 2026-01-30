@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 
 export const setLoginChallengeCookies = (req: NextRequest, res: NextResponse) => {
-  let cookieLoginChallengeServer = req.cookies.has(`${cookieNamePrefix}login_challenge_server`);
+  const cookieLoginChallengeServer = req.cookies.has(`${cookieNamePrefix}login_challenge_server`);
 
   if (!cookieLoginChallengeServer) {
     const loginChallenge = crypto.randomUUID();

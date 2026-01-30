@@ -7,6 +7,7 @@ import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/
 import { getLogger } from '@hive/ui/lib/logging';
 import { KeyAuthorityType } from '@hiveio/hb-auth';
 import { getChain } from '@hive/common-hiveio-packages';
+import { getStorageItem, setStorageItem, StorageTTL } from '@hive/ui/lib/storage-with-ttl';
 
 const logger = getLogger('app');
 
@@ -47,7 +48,7 @@ export class SignerWif extends SignerHbauth {
     try {
       let wif = explicitPassword;
 
-      const keyFromStorage = window.localStorage.getItem(this.storageKey);
+      const keyFromStorage = getStorageItem<string>(this.storageKey);
       if (keyFromStorage)
         wif = JSON.parse(keyFromStorage);
 
@@ -66,7 +67,7 @@ export class SignerWif extends SignerHbauth {
 
       return signature;
     } catch (error) {
-      logger.error('Error in single sign: %o', error);
+      logger.error({ error }, 'Error in single sign');
       throw error;
     }
   }
@@ -107,7 +108,7 @@ export class SignerWif extends SignerHbauth {
       const wif: string = await this.passwordPromise;
       return wif;
     } catch (error) {
-      logger.error('Error in getPasswordFromUser: %o', error);
+      logger.error({ error }, 'Error in getPasswordFromUser');
       throw new Error('No WIF key from user');
     }
   }
@@ -127,7 +128,7 @@ export class SignerWif extends SignerHbauth {
 
     // Check if we have the same key already stored (means also already
     // verified).
-    const wifInStorage = window.localStorage.getItem(storageKey);
+    const wifInStorage = getStorageItem<string>(storageKey);
     if (wifInStorage) {
       logger.info('Found key in storage under key: %s', storageKey);
       if (JSON.parse(wifInStorage) === wif) {
@@ -162,7 +163,7 @@ export class SignerWif extends SignerHbauth {
 
       valid = result.valid;
     } catch (error) {
-      logger.error('Cannot verify private key: %o', error);
+      logger.error({ error }, 'Cannot verify private key');
       throw error;
     }
 
@@ -172,7 +173,7 @@ export class SignerWif extends SignerHbauth {
     }
 
     // Store key if it is valid.
-    window.localStorage.setItem(storageKey, JSON.stringify(wif));
+    setStorageItem(storageKey, JSON.stringify(wif), StorageTTL.PERMANENT);
 
     logger.info('Stored valid wif under key: %s', storageKey);
   }

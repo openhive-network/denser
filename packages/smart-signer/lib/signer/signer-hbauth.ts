@@ -27,6 +27,7 @@ export class SignerHbauth extends Signer {
    * @type {(Promise<any> | null)}
    * @memberof SignerHbauth
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- getPasswordPromise returns { password: string } from dialog
   passwordPromise: Promise<any> | null;
 
   get hbAuthClient(): Promise<OfflineClient | OnlineClient> {
@@ -73,7 +74,7 @@ export class SignerHbauth extends Signer {
       const { password } = await this.passwordPromise;
       return password;
     } catch (error) {
-      logger.error('Error in getPasswordFromUser: %o', error);
+      logger.error({ error }, 'Error in getPasswordFromUser');
       throw new Error('No password from user');
     }
   }
@@ -134,7 +135,7 @@ export class SignerHbauth extends Signer {
       try {
         authStatus = await authClient.authenticate(username, password, keyType);
       } catch (error) {
-        logger.error('Error in signDigest, when trying to authenticate user: %o', error);
+        logger.error({ error }, 'Error in signDigest, when trying to authenticate user');
 
         //
         // TODO AuthorizationError is not exported in hb-auth yet (issue
@@ -153,7 +154,7 @@ export class SignerHbauth extends Signer {
         }
       }
 
-      logger.info('authStatus', { authStatus });
+      logger.info({ authStatus }, 'authStatus');
       if (!authStatus.ok) {
         throw new Error(`Unlocking key failed`);
       }
@@ -191,7 +192,7 @@ export class SignerHbauth extends Signer {
         );
         return signature;
       } catch (error) {
-        logger.error('Error in single sign: %o', error);
+        logger.error({ error }, 'Error in single sign');
         throw error;
       }
     }
@@ -276,7 +277,7 @@ export class SignerHbauth extends Signer {
         // Import other key to safe storage
         await authClient.register(username, password, keyToUse, keyType);
       } catch (error) {
-        logger.error('Error in getPasswordFromUser: %o', error);
+        logger.error({ error }, 'Error in getPasswordFromUser');
         throw new Error('Invalid key');
       }
     }

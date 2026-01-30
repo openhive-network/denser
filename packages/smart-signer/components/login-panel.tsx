@@ -59,7 +59,7 @@ export function LoginPanel({ authenticateOnBackend, strict }: LoginPanelOptions)
 
     try {
       let password = '';
-      if (data.loginType === LoginType.wif) {
+      if (data.loginType === LoginType.Wif) {
         password = data.password;
       }
       const message = JSON.stringify({ loginChallenge });

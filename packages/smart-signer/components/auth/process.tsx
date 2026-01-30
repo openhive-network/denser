@@ -31,10 +31,10 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
   }, []);
 
   const signAuth = async (data: LoginFormSchema): Promise<void> => {
-    logger.info('onSubmit form data', data);
+    logger.info({ data }, 'onSubmit form data');
     const { loginType, username, keyType } = data;
     const signatures: Signatures = { posting: '', active: '' };
-    let hivesignerToken = '';
+    const hivesignerToken = '';
     let signInData: PostLoginSchema;
 
     const loginSignerOptions: SignerOptions = {

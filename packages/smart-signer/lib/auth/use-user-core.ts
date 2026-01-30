@@ -39,17 +39,21 @@ export function useUserCore(
   isMounted?: () => boolean
 ): IUseUser {
   const [storedUser, storeUser] = useLocalStorage<User>('user', defaultUser);
-  const { data: user } = useQuery<User>({
+  const { data: user, error } = useQuery<User>({
     queryKey: [QUERY_KEY.user],
     queryFn: async (): Promise<User> => getUser(),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    initialData: storedUser,
-    onError: () => {
+    initialData: storedUser
+  });
+
+  // Handle query errors
+  useEffect(() => {
+    if (error) {
       storeUser(defaultUser);
     }
-  });
+  }, [error, storeUser]);
 
   useEffect(() => {
     userLocalStorage.saveUser(user || defaultUser);

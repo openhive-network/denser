@@ -1,23 +1,23 @@
 export enum LoginType {
-    hbauth = 'hbauth',
-    keychain = 'keychain',
-    peakvault = 'peakvault',
-    metamask = 'metamask',
-    google = 'google',
-    hiveauth = 'hiveauth',
-    wif = 'wif',
-    hivesigner = 'hivesigner',
+    Hbauth = 'hbauth',
+    Keychain = 'keychain',
+    Peakvault = 'peakvault',
+    Metamask = 'metamask',
+    Google = 'google',
+    Hiveauth = 'hiveauth',
+    Wif = 'wif',
+    Hivesigner = 'hivesigner',
 }
 
 export enum KeyType {
-    posting = 'posting',
-    active = 'active'
+    Posting = 'posting',
+    Active = 'active'
 }
 
 export enum StorageType {
-    localStorage = 'localStorage',
-    sessionStorage = 'sessionStorage',
-    memoryStorage = 'memoryStorage',
+    LocalStorage = 'localStorage',
+    SessionStorage = 'sessionStorage',
+    MemoryStorage = 'memoryStorage',
 }
 
 export type User = {

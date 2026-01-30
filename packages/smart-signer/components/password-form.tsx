@@ -1,3 +1,5 @@
+'use client';
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -36,9 +38,7 @@ export const passwordWif = z.string().superRefine((val, ctx) => {
       message: result,
       fatal: true
     });
-    return z.NEVER;
   }
-  return true;
 });
 
 const passwordFormSchemaWif = z.object({

@@ -25,7 +25,7 @@ export const corsOptionsDefault: CorsOptions = {
     methods: process.env.DENSER_SERVER_API_CORS_ALLOW_METHODS || "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: process.env.DENSER_SERVER_API_CORS_ALLOW_HEADERS || undefined,
     exposedHeaders: process.env.DENSER_SERVER_API_CORS_EXPOSE_HEADERS || undefined,
-    credentials: process.env.DENSER_SERVER_API_CORS_ALLOW_CREDENTIALS == "true" || false,
+    credentials: process.env.DENSER_SERVER_API_CORS_ALLOW_CREDENTIALS === "true" || false,
     maxAge: process.env.DENSER_SERVER_API_CORS_MAX_AGE
         && parseInt(process.env.DENSER_SERVER_API_CORS_MAX_AGE) || undefined,
     preflightContinue: false,
