@@ -346,7 +346,9 @@ test.describe('Healthchecker page - Accessibility', () => {
         await expect(healthcheckerPage.hiveSenseApiTab).toHaveAttribute('data-state', 'inactive');
     });
 
-    test('Validate tab navigation with keyboard', async ({ page }) => {
+    test('Validate tab navigation with keyboard', async ({ page, browserName }) => {
+        test.skip(browserName === 'webkit', 'WebKit has limited ARIA tab keyboard navigation support');
+
         // Focus on first tab
         await healthcheckerPage.hiveApiTab.focus();
 
@@ -354,8 +356,7 @@ test.describe('Healthchecker page - Accessibility', () => {
         await page.keyboard.press('ArrowRight');
 
         // Verify focus moved to the second tab
-        const focusedElement = await page.evaluate(() => document.activeElement?.getAttribute('role'));
-        expect(focusedElement).toBe('tab');
+        await expect(healthcheckerPage.hiveSenseApiTab).toBeFocused();
     });
 
     test('Validate tab activation with Enter key', async ({ page }) => {
