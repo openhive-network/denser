@@ -2,7 +2,9 @@ import { getAccountFull } from '@transaction/lib/hive-api';
 import { useQuery } from '@tanstack/react-query';
 
 const useAccountData = (username: string) => {
-  const { data } = useQuery(['accountData', username], () => getAccountFull(username), {
+  const { data } = useQuery({
+    queryKey: ['accountData', username],
+    queryFn: () => getAccountFull(username),
     enabled: Boolean(username)
   });
 

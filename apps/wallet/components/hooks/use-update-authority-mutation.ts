@@ -28,7 +28,7 @@ export function useUpdateAuthorityOperationMutation() {
     },
     onSuccess: (data) => {
       const { username } = data;
-      queryClient.invalidateQueries(['authority', username]);
+      queryClient.invalidateQueries({ queryKey: ['authority', username] });
       logger.info('useUpdateAuthorityOperationMutation onSuccess data: %o', data);
     }
   });

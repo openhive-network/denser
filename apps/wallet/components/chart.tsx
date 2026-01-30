@@ -38,12 +38,12 @@ const CustomizedDot = ({
   payload,
   type
 }: {
-  cy: number;
-  cx: number;
+  cy?: number;
+  cx?: number;
   payload: PayloadOrder;
   type: Extract<keyof PayloadOrder, 'ask' | 'bid'>;
 }) => {
-  if (payload[type] === 0) return null;
+  if (payload[type] === 0 || cx === undefined || cy === undefined) return null;
 
   return (
     <circle cx={cx} cy={cy} r={5} stroke="black" strokeWidth={1} fill={type === 'ask' ? 'red' : 'green'} />
@@ -102,19 +102,19 @@ const CustomTooltip = ({
     );
   }
 };
-const XTick = ({ x, y, payload }: { x: number; y: number; payload: any }) => {
+const XTick = ({ x, y, payload }: { x: string | number; y: string | number; payload: { value: number } }) => {
   if (payload)
     return (
-      <text x={x - 12} y={y + 12} className="text-xs">
+      <text x={Number(x) - 12} y={Number(y) + 12} className="text-xs">
         {(+payload.value).toFixed(2)}
       </text>
     );
   return <></>;
 };
-const YTick = ({ x, y, payload }: { x: number; y: number; payload: any }) => {
+const YTick = ({ x, y, payload }: { x: string | number; y: string | number; payload: any }) => {
   if (payload)
     return (
-      <text x={x} y={y + 12} className="text-xs">
+      <text x={Number(x)} y={Number(y) + 12} className="text-xs">
         {getRoundedAbbreveration(new Big(payload.value), 0)}
       </text>
     );

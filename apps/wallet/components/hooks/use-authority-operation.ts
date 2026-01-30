@@ -56,7 +56,7 @@ const getAuthorityState = (operationsData?: AccountAuthorityUpdateOperation) => 
   if (!operationsData) return { authorityLevels: [] };
 
   const memo = operationsData.role('memo').value;
-  let authorityLevels = [];
+  const authorityLevels = [];
   for (const role of operationsData.roles('hive') || []) {
     if (role.level !== 'memo') {
       const level = role.level;
@@ -72,17 +72,15 @@ const getAuthorityState = (operationsData?: AccountAuthorityUpdateOperation) => 
 export type AuthorityAction = Dispatch<Actions>;
 
 export const useAuthorityOperations = (username: string) => {
-  const { data: operationsData, isLoading } = useQuery(
-    ['authority', username],
-    () => getAuthority(username),
-    {
-      enabled: !!username,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
-      staleTime: Infinity
-    }
-  );
+  const { data: operationsData, isLoading } = useQuery({
+    queryKey: ['authority', username],
+    queryFn: () => getAuthority(username),
+    enabled: !!username,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+    staleTime: Infinity
+  });
   const updateAuthorityMutation = useUpdateAuthorityOperationMutation();
 
   function reducer(
@@ -93,7 +91,7 @@ export const useAuthorityOperations = (username: string) => {
     },
     action: Actions
   ) {
-    let operationError = false;
+    const operationError = false;
     if (action.type === 'initializeOperations') {
       return { operations: action.payload, data: getAuthorityState(action.payload) };
     }
@@ -174,7 +172,7 @@ export const useAuthorityOperations = (username: string) => {
     actions: dispatch,
     handleSubmit,
     isLoading,
-    isSubmitting: updateAuthorityMutation.isLoading,
+    isSubmitting: updateAuthorityMutation.isPending,
     error: handleAuthorityError(updateAuthorityMutation),
     submitSuccess: updateAuthorityMutation.isSuccess
   };

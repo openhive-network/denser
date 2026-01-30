@@ -47,7 +47,9 @@ const ProfileLayout = ({ children }: IProfileLayout) => {
     isLoading: profileDataIsLoading,
     error: errorProfileData,
     data: profileData
-  } = useQuery(['profileData', username], () => getAccountFull(username), {
+  } = useQuery({
+    queryKey: ['profileData', username],
+    queryFn: () => getAccountFull(username),
     enabled: !!username
   });
 

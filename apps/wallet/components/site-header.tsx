@@ -53,20 +53,16 @@ const SiteHeader: FC = () => {
   useEffect(() => {
     setIsClient(true);
   }, []);
-  const { data: rcData } = useQuery(
-    [['findRcAcconut', user?.username]],
-    () => findRcAccounts(user?.username || ''),
-    {
-      enabled: !!user?.username
-    }
-  );
-  const { data: accountData } = useQuery(
-    [['accountData', user?.username]],
-    () => getAccount(user?.username || ''),
-    {
-      enabled: !!user?.username
-    }
-  );
+  const { data: rcData } = useQuery({
+    queryKey: [['findRcAcconut', user?.username]],
+    queryFn: () => findRcAccounts(user?.username || ''),
+    enabled: !!user?.username
+  });
+  const { data: accountData } = useQuery({
+    queryKey: [['accountData', user?.username]],
+    queryFn: () => getAccount(user?.username || ''),
+    enabled: !!user?.username
+  });
   const stats = rcData
     ? calculateRcStats(rcData.rc_accounts)
     : {

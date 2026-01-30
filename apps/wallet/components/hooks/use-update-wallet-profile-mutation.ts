@@ -18,9 +18,9 @@ export function useUpdateProfileMutation() {
     mutationFn: async (params: {
       memo_key: string;
       json_metadata: string;
-      owner: any;
-      active: any;
-      posting: any;
+      owner: { account_auths: { account: string; threshold: number }[]; key_auths: { key: string; threshold: number }[]; weight_threshold: number };
+      active: { account_auths: { account: string; threshold: number }[]; key_auths: { key: string; threshold: number }[]; weight_threshold: number };
+      posting: { account_auths: { account: string; threshold: number }[]; key_auths: { key: string; threshold: number }[]; weight_threshold: number };
     }) => {
       const { memo_key, json_metadata, owner, active, posting } = params;
 

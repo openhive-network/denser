@@ -5,7 +5,9 @@ interface UseOrderBookOptions {
   refetchInterval: number;
 }
 export const useOrderBook = (config?: UseOrderBookOptions) => {
-  return useQuery(["orderBook"], () => getOrderBook(), {
+  return useQuery({
+    queryKey: ["orderBook"],
+    queryFn: () => getOrderBook(),
     ...config,
     select: (data) => {
       return {

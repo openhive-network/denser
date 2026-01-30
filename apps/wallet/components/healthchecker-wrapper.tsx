@@ -1,4 +1,5 @@
 'use client';
+import '@/wallet/lib/react-internals-shim';
 import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component'
 import { HiveOpTypeSchema, IGetOperationsByAccountResponse, SavingsWithdrawals } from '@hive/common-hiveio-packages/wax';
 import { ApiAccount } from '@hiveio/wax';

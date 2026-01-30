@@ -27,7 +27,7 @@ function DialogLogin({ children }: { children: ReactNode }) {
       >
         <SignInForm
           ref={signInFormRef}
-          preferredKeyTypes={[KeyType.active]}
+          preferredKeyTypes={[KeyType.Active]}
           onComplete={onComplete}
         />
       </DialogContent>

@@ -7,7 +7,9 @@ interface UseTradeHistoryOptions {
 }
 
 export const useTradeHistory = (config?: UseTradeHistoryOptions) => {
-  return useQuery(['recentTrades'], () => getRecentTrades(), {
+  return useQuery({
+    queryKey: ['recentTrades'],
+    queryFn: () => getRecentTrades(),
     ...config,
     select: (data) => {
       return data.map((e) => ({

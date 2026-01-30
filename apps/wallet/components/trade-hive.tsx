@@ -71,13 +71,11 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
   const paramsHistory = [t('market_page.date'), t('market_page.price'), 'HIVE', 'HBD($)'];
   const { user } = useUserClient();
 
-  const { data: openOrders, isLoading: ordersLoading } = useQuery(
-    ['openOrders', user.username],
-    () => getOpenOrder(user.username),
-    {
-      enabled: Boolean(user.username)
-    }
-  );
+  const { data: openOrders, isPending: ordersLoading } = useQuery({
+    queryKey: ['openOrders', user.username],
+    queryFn: () => getOpenOrder(user.username),
+    enabled: Boolean(user.username)
+  });
 
   if (!data.order || !data.recent || isLoading) {
     return <Loading loading />;
