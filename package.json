@@ -39,8 +39,8 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@turbo/gen": "^2.1.1",
-    "turbo": "^2.1.1"
+    "@turbo/gen": "^2.8.0",
+    "turbo": "^2.8.0"
   },
   "engines": {
     "pnpm": ">=9.5.0",

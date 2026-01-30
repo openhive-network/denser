@@ -3,8 +3,8 @@
     "main": "base-prettier.js",
     "version": "1.0.0",
     "dependencies": {
-        "eslint-config-prettier": "latest",
-        "prettier-plugin-tailwindcss": "^0.3.0",
-        "prettier": "3.3.3"
+        "eslint-config-prettier": "^10.0.1",
+        "prettier-plugin-tailwindcss": "^0.7.2",
+        "prettier": "3.8.1"
     }
 }
