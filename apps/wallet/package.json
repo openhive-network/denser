@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "predev": "node scripts/prebuild.js",
+    "predev": "tsx scripts/prebuild.ts",
     "dev": "react-env -- next dev -p 4000",
     "devssl": "react-env -- next dev --port 4000 --experimental-https --experimental-https-key ../../ssl/server-key.pem --experimental-https-cert ../../ssl/server-cert.pem",
-    "prebuild": "node scripts/prebuild.js",
+    "prebuild": "tsx scripts/prebuild.ts",
     "build": "react-env -- next build",
     "start": "react-env -- next start -p 4000",
     "lint": "eslint .",

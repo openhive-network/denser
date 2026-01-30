@@ -1,37 +1,26 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
-/**
- * Translation Keys Validator
- *
- * Compares translation JSON files across all locales to find:
- * - Missing keys (present in reference locale but missing in others)
- * - Extra keys (present in other locales but not in reference)
- *
- * Usage: node scripts/check-blog-translations.js
- *
- * Reference locale: English (en)
- */
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const fs = require('fs');
-const path = require('path');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const LOCALES_DIR = path.join(__dirname, '../apps/blog/locales');
-const REFERENCE_LOCALE = 'en';
+const LOCALES_DIR = path.join(__dirname, "../apps/blog/locales");
+const REFERENCE_LOCALE = "en";
 
-/**
- * Recursively extract all keys from a nested object
- * @param {object} obj - The object to extract keys from
- * @param {string} prefix - Current key path prefix
- * @returns {Set<string>} Set of dot-notation key paths
- */
-function getAllKeys(obj, prefix = '') {
-  const keys = new Set();
+type JsonValue = string | number | boolean | null | JsonObject | JsonValue[];
+type JsonObject = { [key: string]: JsonValue };
+
+function getAllKeys(obj: JsonObject, prefix = ""): Set<string> {
+  const keys = new Set<string>();
 
   for (const [key, value] of Object.entries(obj)) {
     const fullKey = prefix ? `${prefix}.${key}` : key;
 
-    if (value && typeof value === 'object' && !Array.isArray(value)) {
-      const nestedKeys = getAllKeys(value, fullKey);
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      const nestedKeys = getAllKeys(value as JsonObject, fullKey);
       nestedKeys.forEach((k) => keys.add(k));
     } else {
       keys.add(fullKey);
@@ -41,51 +30,35 @@ function getAllKeys(obj, prefix = '') {
   return keys;
 }
 
-/**
- * Load and parse a JSON file
- * @param {string} filePath - Path to the JSON file
- * @returns {object|null} Parsed JSON or null if error
- */
-function loadJson(filePath) {
+function loadJson(filePath: string): JsonObject | null {
   try {
-    const content = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(content);
+    const content = fs.readFileSync(filePath, "utf8");
+    return JSON.parse(content) as JsonObject;
   } catch (error) {
-    console.error(`Error loading ${filePath}: ${error.message}`);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`Error loading ${filePath}: ${message}`);
     return null;
   }
 }
 
-/**
- * Get all locale directories
- * @returns {string[]} Array of locale codes
- */
-function getLocales() {
+function getLocales(): string[] {
   return fs
     .readdirSync(LOCALES_DIR, { withFileTypes: true })
     .filter((dirent) => dirent.isDirectory())
     .map((dirent) => dirent.name);
 }
 
-/**
- * Get all JSON files in a locale directory
- * @param {string} locale - Locale code
- * @returns {string[]} Array of JSON filenames
- */
-function getJsonFiles(locale) {
+function getJsonFiles(locale: string): string[] {
   const localeDir = path.join(LOCALES_DIR, locale);
-  return fs.readdirSync(localeDir).filter((file) => file.endsWith('.json'));
+  return fs.readdirSync(localeDir).filter((file) => file.endsWith(".json"));
 }
 
-/**
- * Compare keys between reference and target locale
- * @param {Set<string>} referenceKeys - Keys from reference locale
- * @param {Set<string>} targetKeys - Keys from target locale
- * @returns {{ missing: string[], extra: string[] }}
- */
-function compareKeys(referenceKeys, targetKeys) {
-  const missing = [];
-  const extra = [];
+function compareKeys(
+  referenceKeys: Set<string>,
+  targetKeys: Set<string>
+): { missing: string[]; extra: string[] } {
+  const missing: string[] = [];
+  const extra: string[] = [];
 
   referenceKeys.forEach((key) => {
     if (!targetKeys.has(key)) {
@@ -102,10 +75,7 @@ function compareKeys(referenceKeys, targetKeys) {
   return { missing, extra };
 }
 
-/**
- * Main validation function
- */
-function validateTranslations() {
+function validateTranslations(): void {
   const locales = getLocales();
 
   if (!locales.includes(REFERENCE_LOCALE)) {
@@ -120,7 +90,7 @@ function validateTranslations() {
 
   console.log(`\n📋 Translation Keys Validator (Blog)`);
   console.log(`   Reference locale: ${REFERENCE_LOCALE}`);
-  console.log(`   Checking locales: ${locales.filter((l) => l !== REFERENCE_LOCALE).join(', ')}\n`);
+  console.log(`   Checking locales: ${locales.filter((l) => l !== REFERENCE_LOCALE).join(", ")}\n`);
 
   for (const jsonFile of referenceFiles) {
     const referenceFilePath = path.join(LOCALES_DIR, REFERENCE_LOCALE, jsonFile);
@@ -180,10 +150,9 @@ function validateTranslations() {
         }
       }
     }
-    console.log('');
+    console.log("");
   }
 
-  // Check for files that exist in other locales but not in reference
   for (const locale of locales) {
     if (locale === REFERENCE_LOCALE) continue;
 
@@ -191,13 +160,12 @@ function validateTranslations() {
     const extraFiles = localeFiles.filter((f) => !referenceFiles.includes(f));
 
     if (extraFiles.length > 0) {
-      console.log(`⚠️  ${locale} has extra files not in ${REFERENCE_LOCALE}: ${extraFiles.join(', ')}`);
+      console.log(`⚠️  ${locale} has extra files not in ${REFERENCE_LOCALE}: ${extraFiles.join(", ")}`);
       hasErrors = true;
     }
   }
 
-  // Summary
-  console.log('\n' + '─'.repeat(50));
+  console.log("\n" + "─".repeat(50));
   if (hasErrors) {
     console.log(`\n❌ Validation failed!`);
     console.log(`   Total missing keys: ${totalMissing}`);

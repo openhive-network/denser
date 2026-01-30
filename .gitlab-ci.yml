@@ -779,8 +779,8 @@ e2e-report-aggregate-wallet:
       --output=json,html \
       --output-path="${TURBO_APP_NAME}-lighthouse" \
       --chrome-flags="--headless --no-sandbox --disable-gpu --ignore-certificate-errors"
-  - node scripts/ci-helpers/lighthouse-metrics.js "${TURBO_APP_NAME}-lighthouse.report.json" "$TURBO_APP_NAME"
-  - node scripts/ci-helpers/lighthouse-check-thresholds.js "${TURBO_APP_NAME}-lighthouse.report.json" "$TURBO_APP_NAME"
+  - npx tsx scripts/ci-helpers/lighthouse-metrics.ts "${TURBO_APP_NAME}-lighthouse.report.json" "$TURBO_APP_NAME"
+  - npx tsx scripts/ci-helpers/lighthouse-check-thresholds.ts "${TURBO_APP_NAME}-lighthouse.report.json" "$TURBO_APP_NAME"
   artifacts:
     paths:
     - ${TURBO_APP_NAME}-lighthouse.report.html
@@ -849,7 +849,7 @@ lighthouse-mr-comment:
     optional: true
     artifacts: true
   script:
-  - node scripts/ci-helpers/lighthouse-mr-comment.js blog-lighthouse.report.json wallet-lighthouse.report.json
+  - npx tsx scripts/ci-helpers/lighthouse-mr-comment.ts blog-lighthouse.report.json wallet-lighthouse.report.json
   allow_failure: true
   tags:
   - public-runner-docker

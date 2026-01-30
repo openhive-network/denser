@@ -1,47 +1,39 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
-/**
- * Translation Usage Validator
- *
- * Scans source files for translation key usage and validates:
- * - All used translation keys exist in the reference locale (English)
- * - Reports unused translation keys (optional, with --unused flag)
- *
- * Usage:
- *   node scripts/check-blog-translation-usage.js          # Check for missing keys
- *   node scripts/check-blog-translation-usage.js --unused # Also report unused keys
- */
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const fs = require('fs');
-const path = require('path');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const BLOG_DIR = path.join(__dirname, '../apps/blog');
-const LOCALES_DIR = path.join(BLOG_DIR, 'locales');
-const REFERENCE_LOCALE = 'en';
-const SOURCE_DIRS = ['app', 'components', 'features', 'lib', 'pages'];
-const SOURCE_EXTENSIONS = ['.tsx', '.ts', '.jsx', '.js'];
+const BLOG_DIR = path.join(__dirname, "../apps/blog");
+const LOCALES_DIR = path.join(BLOG_DIR, "locales");
+const REFERENCE_LOCALE = "en";
+const SOURCE_DIRS = ["app", "components", "features", "lib", "pages"];
+const SOURCE_EXTENSIONS = [".tsx", ".ts", ".jsx", ".js"];
 
-// Patterns to match translation function calls
-// Matches: t('key'), t("key"), t(`key`), <Trans i18nKey="key">
 const TRANSLATION_PATTERNS = [
   /\bt\(\s*['"`]([^'"`\n]+?)['"`]\s*(?:,|\))/g,
   /i18nKey\s*=\s*['"`]([^'"`\n]+?)['"`]/g
 ];
 
-/**
- * Recursively get all keys from a nested object
- * @param {object} obj
- * @param {string} prefix
- * @returns {Set<string>}
- */
-function getAllKeys(obj, prefix = '') {
-  const keys = new Set();
+type JsonValue = string | number | boolean | null | JsonObject | JsonValue[];
+type JsonObject = { [key: string]: JsonValue };
+
+interface KeyLocation {
+  file: string;
+  lines: number[];
+}
+
+function getAllKeys(obj: JsonObject, prefix = ""): Set<string> {
+  const keys = new Set<string>();
 
   for (const [key, value] of Object.entries(obj)) {
     const fullKey = prefix ? `${prefix}.${key}` : key;
 
-    if (value && typeof value === 'object' && !Array.isArray(value)) {
-      const nestedKeys = getAllKeys(value, fullKey);
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      const nestedKeys = getAllKeys(value as JsonObject, fullKey);
       nestedKeys.forEach((k) => keys.add(k));
     } else {
       keys.add(fullKey);
@@ -51,12 +43,8 @@ function getAllKeys(obj, prefix = '') {
   return keys;
 }
 
-/**
- * Load translation keys from reference locale
- * @returns {Set<string>}
- */
-function loadTranslationKeys() {
-  const keys = new Set();
+function loadTranslationKeys(): Set<string> {
+  const keys = new Set<string>();
   const localeDir = path.join(LOCALES_DIR, REFERENCE_LOCALE);
 
   if (!fs.existsSync(localeDir)) {
@@ -64,29 +52,25 @@ function loadTranslationKeys() {
     process.exit(1);
   }
 
-  const files = fs.readdirSync(localeDir).filter((f) => f.endsWith('.json'));
+  const files = fs.readdirSync(localeDir).filter((f) => f.endsWith(".json"));
 
   for (const file of files) {
     const filePath = path.join(localeDir, file);
     try {
-      const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      const content = JSON.parse(fs.readFileSync(filePath, "utf8")) as JsonObject;
       const fileKeys = getAllKeys(content);
       fileKeys.forEach((k) => keys.add(k));
     } catch (error) {
-      console.error(`Error loading ${filePath}: ${error.message}`);
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Error loading ${filePath}: ${message}`);
     }
   }
 
   return keys;
 }
 
-/**
- * Recursively find all source files
- * @param {string} dir
- * @returns {string[]}
- */
-function findSourceFiles(dir) {
-  const files = [];
+function findSourceFiles(dir: string): string[] {
+  const files: string[] = [];
 
   if (!fs.existsSync(dir)) return files;
 
@@ -96,8 +80,7 @@ function findSourceFiles(dir) {
     const fullPath = path.join(dir, entry.name);
 
     if (entry.isDirectory()) {
-      // Skip node_modules, .next, etc.
-      if (!entry.name.startsWith('.') && entry.name !== 'node_modules') {
+      if (!entry.name.startsWith(".") && entry.name !== "node_modules") {
         files.push(...findSourceFiles(fullPath));
       }
     } else if (SOURCE_EXTENSIONS.some((ext) => entry.name.endsWith(ext))) {
@@ -108,36 +91,29 @@ function findSourceFiles(dir) {
   return files;
 }
 
-/**
- * Extract translation keys from a source file
- * @param {string} filePath
- * @returns {{ keys: Map<string, number[]>, file: string }}
- */
-function extractKeysFromFile(filePath) {
-  const content = fs.readFileSync(filePath, 'utf8');
-  const lines = content.split('\n');
-  const keys = new Map(); // key -> [line numbers]
+function extractKeysFromFile(filePath: string): { keys: Map<string, number[]>; file: string } {
+  const content = fs.readFileSync(filePath, "utf8");
+  const lines = content.split("\n");
+  const keys = new Map<string, number[]>();
 
   for (let lineNum = 0; lineNum < lines.length; lineNum++) {
     const line = lines[lineNum];
 
     for (const pattern of TRANSLATION_PATTERNS) {
-      // Reset regex state
       pattern.lastIndex = 0;
-      let match;
+      let match: RegExpExecArray | null;
 
       while ((match = pattern.exec(line)) !== null) {
         const key = match[1];
 
-        // Skip dynamic keys (containing variables)
-        if (key.includes('${') || key.includes('{') || key.includes('+')) {
+        if (key.includes("${") || key.includes("{") || key.includes("+")) {
           continue;
         }
 
         if (!keys.has(key)) {
           keys.set(key, []);
         }
-        keys.get(key).push(lineNum + 1);
+        keys.get(key)!.push(lineNum + 1);
       }
     }
   }
@@ -145,30 +121,24 @@ function extractKeysFromFile(filePath) {
   return { keys, file: filePath };
 }
 
-/**
- * Main validation function
- */
-function validateTranslationUsage() {
-  const showUnused = process.argv.includes('--unused');
+function validateTranslationUsage(): void {
+  const showUnused = process.argv.includes("--unused");
 
-  console.log('\n📋 Translation Usage Validator (Blog)');
+  console.log("\n📋 Translation Usage Validator (Blog)");
   console.log(`   Reference locale: ${REFERENCE_LOCALE}`);
-  console.log(`   Scanning: ${SOURCE_DIRS.join(', ')}\n`);
+  console.log(`   Scanning: ${SOURCE_DIRS.join(", ")}\n`);
 
-  // Load all valid translation keys
   const validKeys = loadTranslationKeys();
   console.log(`   Found ${validKeys.size} translation keys in ${REFERENCE_LOCALE}\n`);
 
-  // Find all source files
-  const sourceFiles = [];
+  const sourceFiles: string[] = [];
   for (const dir of SOURCE_DIRS) {
     sourceFiles.push(...findSourceFiles(path.join(BLOG_DIR, dir)));
   }
   console.log(`   Scanning ${sourceFiles.length} source files...\n`);
 
-  // Extract and validate keys
-  const usedKeys = new Set();
-  const missingKeys = new Map(); // key -> [{file, lines}]
+  const usedKeys = new Set<string>();
+  const missingKeys = new Map<string, KeyLocation[]>();
   let totalUsages = 0;
 
   for (const filePath of sourceFiles) {
@@ -183,12 +153,11 @@ function validateTranslationUsage() {
         if (!missingKeys.has(key)) {
           missingKeys.set(key, []);
         }
-        missingKeys.get(key).push({ file: relativePath, lines: lineNumbers });
+        missingKeys.get(key)!.push({ file: relativePath, lines: lineNumbers });
       }
     }
   }
 
-  // Report missing keys
   let hasErrors = false;
 
   if (missingKeys.size > 0) {
@@ -200,26 +169,24 @@ function validateTranslationUsage() {
     for (const [key, locations] of sortedKeys) {
       console.log(`   "${key}"`);
       for (const { file, lines } of locations) {
-        console.log(`      └─ ${file}:${lines.join(', ')}`);
+        console.log(`      └─ ${file}:${lines.join(", ")}`);
       }
     }
-    console.log('');
+    console.log("");
   } else {
     console.log(`✅ All ${totalUsages} translation usages reference valid keys\n`);
   }
 
-  // Report unused keys (optional)
   if (showUnused) {
     const unusedKeys = [...validKeys].filter((k) => !usedKeys.has(k));
 
     if (unusedKeys.length > 0) {
       console.log(`⚠️  Potentially unused translation keys (${unusedKeys.length} keys):\n`);
-      console.log('   Note: Some keys may be used dynamically and not detected.\n');
+      console.log("   Note: Some keys may be used dynamically and not detected.\n");
 
-      // Group by top-level namespace
-      const grouped = {};
+      const grouped: Record<string, string[]> = {};
       for (const key of unusedKeys) {
-        const namespace = key.split('.')[0];
+        const namespace = key.split(".")[0];
         if (!grouped[namespace]) {
           grouped[namespace] = [];
         }
@@ -233,14 +200,13 @@ function validateTranslationUsage() {
           console.log(`      ... and ${keys.length - 5} more`);
         }
       }
-      console.log('');
+      console.log("");
     } else {
       console.log(`✅ All translation keys appear to be used\n`);
     }
   }
 
-  // Summary
-  console.log('─'.repeat(50));
+  console.log("─".repeat(50));
   console.log(`\n   Total translation keys: ${validKeys.size}`);
   console.log(`   Keys used in code: ${usedKeys.size}`);
   console.log(`   Total usages found: ${totalUsages}`);
