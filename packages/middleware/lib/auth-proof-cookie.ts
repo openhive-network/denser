@@ -22,7 +22,7 @@ async function initializeWasm() {
     custom_json = waxModule.custom_json;
     logger.debug('WASM authProofLoggermodules loaded successfully');
   } catch (error) {
-    logger.debug('WASM modules not available (likely Edge Runtime):', error);
+    logger.debug({ error }, 'WASM modules not available (likely Edge Runtime)');
     // Continue without WASM - functions will handle this gracefully
   }
 }
@@ -78,7 +78,7 @@ export async function parseAuthProofTransaction(
 
     return { loginChallenge, loginType };
   } catch (error) {
-    logger.error('Error parsing auth proof transaction: %o', error);
+    logger.error({ error }, 'Error parsing auth proof transaction');
     return null;
   }
 }
@@ -98,7 +98,7 @@ export function parseAuthProofCookie(cookieValue: string): AuthProofCookieData |
 
     return null;
   } catch (error) {
-    logger.error('Failed to parse auth proof cookie: %o', error);
+    logger.error({ error }, 'Failed to parse auth proof cookie');
     return null;
   }
 }
@@ -155,7 +155,7 @@ export function logLogoutAndKeepCookie(
         logger.debug('Updated auth proof cookie with null username/login_type for logged out user');
       }
     } catch (error) {
-      logger.debug('Failed to update cookie on logout:', error);
+      logger.debug({ error }, 'Failed to update cookie on logout');
     }
   }
 }
@@ -165,7 +165,7 @@ export async function validateAndGetAuthProofCookie(
   res: NextApiResponse
 ): Promise<AuthProofCookieData | null> {
   // get auth proof cookie from request
-  let cookie = req.cookies[AUTH_PROOF_COOKIE_NAME];
+  const cookie = req.cookies[AUTH_PROOF_COOKIE_NAME];
   let cookieData: AuthProofCookieData | null = null;
 
   // if cookie is not set, build it and set it in response
@@ -222,7 +222,7 @@ export async function validateAndGetAuthProofCookie(
         }
       }
     } catch (error) {
-      logger.error('Error parsing auth proof cookie: %o', error);
+      logger.error({ error }, 'Error parsing auth proof cookie');
       cookieData = null;
     }
   }
@@ -282,7 +282,7 @@ export function logPageVisit(req: NextRequest, pathname: string): void {
     }
   } catch (error) {
     // Silently fail - don't break the middleware if logging fails
-    logger.debug('Failed to log page visit: %o', error);
+    logger.debug({ error }, 'Failed to log page visit');
   }
 }
 
