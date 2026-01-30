@@ -18,7 +18,9 @@
       ]
     },
     "module": "esnext",
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "lib": ["DOM", "dom.iterable", "esnext", "webworker"],
+    "types": ["node", "@serwist/next/typings"]
   },
   "include": [
     "next-env.d.ts",
