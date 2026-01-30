@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
-require('dotenv').config({ path: '../../stack/mirrornet-stack.env' });
-require('dotenv').config({ path: '../.env.local' });
-require('dotenv').config({ path: './test.env' });
+require('dotenv').config({ path: '../../stack/mirrornet-stack.env', quiet: true });
+require('dotenv').config({ path: '../.env.local', quiet: true });
+require('dotenv').config({ path: './test.env', quiet: true });
 
 /**
  * Read environment variables from file.
@@ -11,7 +11,7 @@ require('dotenv').config({ path: './test.env' });
 
 /* The same default value as in site.ts */
 process.env.REACT_APP_API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT || `https://${process.env.PUBLIC_HOSTNAME}:${process.env.API_HTTPS_PORT}/`;
-if (process.env.REACT_APP_API_ENDPOINT.substr(-1) != '/') process.env.REACT_APP_API_ENDPOINT += '/';
+if (process.env.REACT_APP_API_ENDPOINT.substr(-1) !== '/') process.env.REACT_APP_API_ENDPOINT += '/';
 
 
 /**

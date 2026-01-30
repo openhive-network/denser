@@ -5,6 +5,7 @@ export default remarkable;
 
 /** Removes all markdown leaving just plain text */
 const remarkableStripper = (md: Remarkable) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Remarkable tokens type is not exported
   md.renderer.render = (tokens: any, options, env) => {
     let str = '';
     for (let i = 0; i < tokens.length; i += 1) {

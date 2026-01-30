@@ -27,8 +27,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   referral_system: 'enabled'
 };
 
-export type sortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted';
-export const sortToTitle = (sort: sortTypes) => {
+export const sortToTitle = (sort: SortTypes) => {
   switch (sort) {
     case 'trending':
       return 'Trending';
@@ -45,9 +44,9 @@ export const sortToTitle = (sort: sortTypes) => {
   }
 };
 
-export const debounce = (fn: Function, delay: number) => {
+export const debounce = <T extends (...args: unknown[]) => unknown>(fn: T, delay: number) => {
   let timer: ReturnType<typeof setTimeout>;
-  return function (...args: any[]) {
+  return function (...args: Parameters<T>) {
     clearTimeout(timer);
     timer = setTimeout(() => {
       fn(...args);
@@ -67,7 +66,6 @@ export function extractBodySummary(body: string, stripQuotes = false) {
   desc = desc.replace(/https?:\/\/[^\s]+/g, '');
 
   // Grab only the first line (not working as expected. does rendering/sanitizing strip newlines?)
-  // eslint-disable-next-line prefer-destructuring
   desc = desc.trim().split('\n')[0];
 
   if (desc.length > 200) {
@@ -95,7 +93,7 @@ export function getPostSummary(jsonMetadata: JsonMetadata, body: string, stripQu
 
 export const htmlDecode = (txt: string) =>
   txt.replace(/&[a-z]+;/g, (ch: string) => {
-    // @ts-ignore
+    // @ts-ignore - Dynamic property access for HTML entity decoding, all keys are validated strings
     const char = htmlCharMap[ch.substring(1, ch.length - 1)];
     return char ? char : ch;
   });
@@ -116,46 +114,45 @@ const htmlCharMap = {
   copy: ''
 };
 
-export function amt(string_amount: string) {
-  return parsePayoutAmount(string_amount);
+export function amt(stringAmount: string) {
+  return parsePayoutAmount(stringAmount);
 }
 
 export function parsePayoutAmount(amount: string) {
   return parseFloat(String(amount).replace(/\s[A-Z]*$/, ''));
 }
 
-export function fmt(decimal_amount: number | string, asset = null) {
-  return formatDecimal(Number(decimal_amount)).join('') + (asset ? ' ' + asset : '');
+export function fmt(decimalAmount: number | string, asset = null) {
+  return formatDecimal(Number(decimalAmount)).join('') + (asset ? ' ' + asset : '');
 }
 
-function fractional_part_len(value: number) {
+function fractionalPartLen(value: number) {
   const parts = (Number(value) + '').split('.');
   return parts.length < 2 ? 0 : parts[1].length;
 }
 
 export function formatDecimal(value: number, decPlaces = 2, truncate0s = true) {
   let fl, j;
-  // eslint-disable-next-line no-void,no-restricted-globals
   if (value === null || value === void 0 || isNaN(value)) {
     return ['N', 'a', 'N'];
   }
   if (truncate0s) {
-    fl = fractional_part_len(value);
+    fl = fractionalPartLen(value);
     if (fl < 2) fl = 2;
     if (fl < decPlaces) decPlaces = fl;
   }
   const decSeparator = '.';
   const thouSeparator = ',';
   const sign = value < 0 ? '-' : '';
-  const abs_value = Math.abs(value);
-  const i = parseInt(abs_value.toFixed(decPlaces), 10) + '';
+  const absValue = Math.abs(value);
+  const i = parseInt(absValue.toFixed(decPlaces), 10) + '';
   j = i.length;
   j = i.length > 3 ? j % 3 : 0;
-  // @ts-ignore
+  // @ts-ignore - Ternary operator returns compatible string/boolean types for formatting logic
   const decPart = decPlaces
     ? decSeparator +
-      // @ts-ignore
-      Math.abs(abs_value - i)
+      // @ts-ignore - Type coercion for decimal calculation is intentional for number formatting
+      Math.abs(absValue - i)
         .toFixed(decPlaces)
         .slice(2)
     : '';
@@ -238,30 +235,30 @@ export function getRewardsString(account: FullAccount, t: TFunction<'common_blog
   const hbdAmount = convertStringToBig(account.reward_hbd_balance);
   const vestingHiveAmount = convertStringToBig(account.reward_vesting_hive);
 
-  const reward_hive = hiveAmount.gt(0) ? formatNaiAsset(account.reward_hive_balance, 'HIVE') : null;
-  const reward_hbd = hbdAmount.gt(0) ? formatNaiAsset(account.reward_hbd_balance, 'HBD') : null;
-  const reward_hp = vestingHiveAmount.gt(0) ? formatNaiAsset(account.reward_vesting_hive, 'HP') : null;
+  const rewardHive = hiveAmount.gt(0) ? formatNaiAsset(account.reward_hive_balance, 'HIVE') : null;
+  const rewardHbd = hbdAmount.gt(0) ? formatNaiAsset(account.reward_hbd_balance, 'HBD') : null;
+  const rewardHp = vestingHiveAmount.gt(0) ? formatNaiAsset(account.reward_vesting_hive, 'HP') : null;
 
   const rewards = [];
-  if (reward_hive) rewards.push(reward_hive);
-  if (reward_hbd) rewards.push(reward_hbd);
-  if (reward_hp) rewards.push(reward_hp);
+  if (rewardHive) rewards.push(rewardHive);
+  if (rewardHbd) rewards.push(rewardHbd);
+  if (rewardHp) rewards.push(rewardHp);
 
-  let rewards_str;
+  let rewardsStr;
   switch (rewards.length) {
     case 3:
-      rewards_str = `${rewards[0]}, ${rewards[1]} and ${rewards[2]}`;
+      rewardsStr = `${rewards[0]}, ${rewards[1]} and ${rewards[2]}`;
       break;
     case 2:
-      rewards_str = `${rewards[0]} and ${rewards[1]}`;
+      rewardsStr = `${rewards[0]} and ${rewards[1]}`;
       break;
     case 1:
-      rewards_str = `${rewards[0]}`;
+      rewardsStr = `${rewards[0]}`;
       break;
     default:
-      rewards_str = nothingToClaim;
+      rewardsStr = nothingToClaim;
   }
-  return rewards_str;
+  return rewardsStr;
 }
 
 export function netVests(account: FullAccount) {

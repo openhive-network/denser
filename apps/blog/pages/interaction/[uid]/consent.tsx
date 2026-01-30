@@ -1,14 +1,11 @@
 import { GetServerSideProps, GetServerSidePropsResult, Redirect } from 'next';
 import { consentPageController } from '@smart-signer/lib/consent-page-controller';
 
-import { getLogger } from '@ui/lib/logging';
 import { OidcClientDetails } from '@smart-signer/lib/oidc';
 import { useConsent } from '@smart-signer/lib/auth/use-consent';
 import { PostConsentSchema } from '@smart-signer/lib/auth/utils';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useEffect, useState } from 'react';
-
-const logger = getLogger('app');
 
 export default function ConsentPage({
   oidcClientDetails,
@@ -31,7 +28,7 @@ export default function ConsentPage({
     } else {
       setRunningAction('not');
     }
-    if (registerConsentMutation.isLoading) return;
+    if (registerConsentMutation.isPending) return;
     const data: PostConsentSchema = {
       oauthClientId: oidcClientDetails.clientId,
       consent
@@ -41,7 +38,7 @@ export default function ConsentPage({
       if (redirectTo) {
         location.replace(redirectTo);
       }
-    } catch (error) {
+    } catch (_error) {
       // do something
     } finally {
       setRunningAction('');
@@ -95,11 +92,14 @@ export default function ConsentPage({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- consentPageController returns dynamic props structure
   const result: GetServerSidePropsResult<{ [key: string]: any }> & {
     redirect?: Redirect;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic props from consent controller
     props?: { [key: string]: any };
   } = await consentPageController(ctx);
   if (Object.hasOwnProperty.call(result, 'props')) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic props from consent controller
     const output: GetServerSidePropsResult<{ [key: string]: any }> = {
       props: {
         ...result.props

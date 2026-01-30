@@ -6,10 +6,10 @@ import { DEFAULT_OBSERVER } from './utils';
  * Server-side function to extract observer from authentication cookies.
  * Used for SSR prefetching to render content with the correct observer.
  *
- * @returns {string} The username from auth proof cookie if logged in, or DEFAULT_OBSERVER for anonymous users
+ * @returns {Promise<string>} The username from auth proof cookie if logged in, or DEFAULT_OBSERVER for anonymous users
  */
-export function getObserverFromCookies(): string {
-  const cookieStore = cookies();
+export async function getObserverFromCookies(): Promise<string> {
+  const cookieStore = await cookies();
   const authCookie = cookieStore.get(AUTH_PROOF_COOKIE_NAME);
 
   if (authCookie) {

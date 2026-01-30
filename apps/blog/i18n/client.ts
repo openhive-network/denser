@@ -9,24 +9,15 @@ import { getOptions, languages, cookieName, defaultLocale } from './settings';
 import { isServer } from '@tanstack/react-query';
 
 /**
- * Gets the language from cookie, works on both server and client side
- * On server: tries to use Next.js cookies() if available
- * On client: uses document.cookie
- * Returns the language code or empty string if not found
+ * Gets the language from cookie on the client side.
+ * This is a client-side only function ('use client' directive).
+ * Uses document.cookie to read the language preference.
+ * Returns the language code or empty string if not found.
  */
 export const getLanguageFromCookie = (): string => {
-  // Server-side: try to use Next.js cookies() if available
+  // This is a client component - should only run on client side
   if (typeof window === 'undefined') {
-    try {
-      // Dynamic import to avoid issues in client components
-      const { cookies } = require('next/headers');
-      const cookieStore = cookies();
-      const cookie = cookieStore.get(cookieName);
-      return cookie?.value || '';
-    } catch (error) {
-      // If cookies() is not available (e.g., in client component), return empty string
-      return '';
-    }
+    return '';
   }
 
   // Client-side: use document.cookie
@@ -77,7 +68,7 @@ i18next
     preload: languages 
   });
 
-export function useTranslation(ns: string, options?: any) {
+export function useTranslation(ns: string, options?: Record<string, unknown>) {
   const lng = getLanguageFromCookie();
   const ret = useTranslationOrg(ns, options);
 
@@ -85,19 +76,18 @@ export function useTranslation(ns: string, options?: any) {
   if (isServer && lng && i18n.resolvedLanguage !== lng) {
     i18n.changeLanguage(lng);
   } else {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+    // eslint-disable-next-line react-hooks/rules-of-hooks -- i18next pattern: isServer is constant, branch is stable
     const [activeLng, setActiveLng] = useState(i18n.resolvedLanguage);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+    // eslint-disable-next-line react-hooks/rules-of-hooks -- i18next pattern: isServer is constant, branch is stable
     useEffect(() => {
       if (activeLng === i18n.resolvedLanguage) return;
       setActiveLng(i18n.resolvedLanguage);
     }, [activeLng, i18n.resolvedLanguage]);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+    // eslint-disable-next-line react-hooks/rules-of-hooks -- i18next pattern: isServer is constant, branch is stable
     useEffect(() => {
       if (!lng || i18n.resolvedLanguage === lng) return;
       i18n.changeLanguage(lng);
     }, [lng, i18n]);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
   }
   return ret;
 }

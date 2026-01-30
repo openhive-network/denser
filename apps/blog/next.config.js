@@ -1,47 +1,12 @@
 const path = require('path');
-const CopyPlugin = require('copy-webpack-plugin');
-const removeImports = require('next-remove-imports')();
-const withPWA = require('next-pwa')({
-  dest: 'public',
+const withSerwistInit = require('@serwist/next').default;
+
+const withSerwist = withSerwistInit({
+  swSrc: 'src/sw.ts',
+  swDest: 'public/sw.js',
   disable: process.env.NODE_ENV !== 'production',
-  skipWaiting: true,
-  clientsClaim: true,
-  cleanupOutdatedCaches: true,
-  runtimeCaching: [
-    // Auth worker - never cache (no content hash in filename; stale copies
-    // reference old WASM hashes that no longer exist after deployments)
-    // Must come first as Workbox uses first-match-wins
-    {
-      urlPattern: /\/auth\/worker\.js$/i,
-      handler: 'NetworkOnly',
-    },
-    // Auth WASM - cache aggressively (content hash in filename makes this safe;
-    // worker.js always fetches fresh so it references the correct hash)
-    {
-      urlPattern: /\/auth\/assets\/.+\.wasm$/i,
-      handler: 'CacheFirst',
-      options: {
-        cacheName: 'auth-wasm',
-        expiration: {
-          maxEntries: 3,
-          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-        },
-      },
-    },
-    // User-specific pages - never cache (notifications, settings, feed)
-    // These rules must come BEFORE the defaults to take precedence
-    {
-      urlPattern: /\/@[^/]+\/(notifications|settings|feed)/i,
-      handler: 'NetworkOnly',
-    },
-    // Next.js data (RSC) for these pages - never cache
-    {
-      urlPattern: /\/_next\/data\/.+\/%40[^/]+\/(notifications|settings|feed)\.json$/i,
-      handler: 'NetworkOnly',
-    },
-    // Include all default caching rules for static assets (JS, CSS, images, fonts, etc.)
-    ...require('next-pwa/cache'),
-  ],
+  cacheOnNavigation: true,
+  reloadOnOnline: false,
 });
 
 // Support serving from subdirectory like /blog
@@ -56,16 +21,12 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Don't expose X-Powered-By: Next.js
   output: 'standalone',
-  swcMinify: false,
   basePath: basePath,
   assetPrefix: basePath,
-  publicRuntimeConfig: {
-    basePath: basePath
-  },
-  experimental: {
-    outputFileTracingRoot: path.join(__dirname, '../..'),
-    instrumentationHook: true
-  },
+  outputFileTracingRoot: path.join(__dirname, '../..'),
+  // Disable streaming metadata to fix build errors in Next.js 15.3+
+  // This ensures metadata is always placed in <head> before page is sent
+  htmlLimitedBots: /.*/,
   // Worker files need specific headers (security headers are applied via middleware)
   async headers() {
     return [
@@ -106,6 +67,25 @@ const nextConfig = {
     '@hive/middleware'
   ],
 
+  // Server-side packages that should not be bundled
+  serverExternalPackages: ['@hiveio/wax', '@hiveio/beekeeper'],
+
+  // WebAssembly support for Webpack
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = { fs: false };
+    }
+
+    // Enable WebAssembly support
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+      layers: true,
+    };
+
+    return config;
+  },
+
   async rewrites() {
     return [
       {
@@ -122,40 +102,6 @@ const nextConfig = {
         destination: '/:path*',
       }
     ];
-  },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = { fs: false };
-    }
-
-    config.plugins.push(
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/worker.js'),
-            to: path.join(__dirname, 'public/auth/')
-          },
-          {
-            from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/assets'),
-            to: path.join(__dirname, 'public/auth/assets')
-          },
-          {
-            from: path.join(__dirname, './locales'),
-            to: path.join(__dirname, 'public/locales/')
-          },
-          {
-            from: path.join(__dirname, '../../packages/smart-signer/locales'),
-            to: path.join(__dirname, 'public/locales/')
-          },
-          {
-            from: path.join(__dirname, '../../packages/smart-signer/public/smart-signer'),
-            to: path.join(__dirname, 'public/smart-signer/')
-          }
-        ]
-      })
-    );
-
-    return config;
   }
 };
 
@@ -167,7 +113,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
 const { withSentryConfig } = require('@sentry/nextjs');
 
-module.exports = withSentryConfig(withPWA(withBundleAnalyzer(removeImports(nextConfig))), {
+module.exports = withSentryConfig(withSerwist(withBundleAnalyzer(nextConfig)), {
   // Disable source map upload - env vars not available at build time
   // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
   sourcemaps: {
