@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports -- This is the wrapper component that exports Link for the rest of the app */
 import NextLink, { LinkProps as NextLinkProps } from 'next/link';
 import { AnchorHTMLAttributes, forwardRef } from 'react';
 

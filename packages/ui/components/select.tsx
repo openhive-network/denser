@@ -12,10 +12,14 @@ const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 
-const SelectTrigger = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
+const SelectTrigger = ({
+  className,
+  children,
+  ref,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
+  ref?: React.Ref<React.ElementRef<typeof SelectPrimitive.Trigger>>;
+}) => (
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
@@ -29,16 +33,27 @@ const SelectTrigger = React.forwardRef<
       <ChevronDown className="h-4 w-4 opacity-50" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
-));
-SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
+);
 
-const SelectContent = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
->(({ className, children, position = 'popper', ...props }, ref) => (
+const SelectContent = ({
+  className,
+  children,
+  position = 'popper',
+  ref,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Content> & {
+  ref?: React.Ref<React.ElementRef<typeof SelectPrimitive.Content>>;
+}) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
-      ref={(ref) => ref?.addEventListener('touchend', (e) => e.preventDefault())}
+      ref={(contentRef) => {
+        contentRef?.addEventListener('touchend', (e) => e.preventDefault());
+        if (typeof ref === 'function') {
+          ref(contentRef);
+        } else if (ref) {
+          (ref as React.MutableRefObject<HTMLDivElement | null>).current = contentRef;
+        }
+      }}
       className={cn(
         'relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-background text-popover-foreground shadow-md animate-in fade-in-80',
         position === 'popper' && 'translate-y-1',
@@ -58,25 +73,30 @@ const SelectContent = React.forwardRef<
       </SelectPrimitive.Viewport>
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
-));
-SelectContent.displayName = SelectPrimitive.Content.displayName;
+);
 
-const SelectLabel = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Label>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
->(({ className, ...props }, ref) => (
+const SelectLabel = ({
+  className,
+  ref,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Label> & {
+  ref?: React.Ref<React.ElementRef<typeof SelectPrimitive.Label>>;
+}) => (
   <SelectPrimitive.Label
     ref={ref}
     className={cn('py-1.5 pl-8 pr-2 text-sm font-semibold', className)}
     {...props}
   />
-));
-SelectLabel.displayName = SelectPrimitive.Label.displayName;
+);
 
-const SelectItem = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
->(({ className, children, ...props }, ref) => (
+const SelectItem = ({
+  className,
+  children,
+  ref,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Item> & {
+  ref?: React.Ref<React.ElementRef<typeof SelectPrimitive.Item>>;
+}) => (
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
@@ -93,13 +113,16 @@ const SelectItem = React.forwardRef<
 
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>
-));
-SelectItem.displayName = SelectPrimitive.Item.displayName;
+);
 
-const CustomSelectItem = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
->(({ className, children, ...props }, ref) => (
+const CustomSelectItem = ({
+  className,
+  children,
+  ref,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Item> & {
+  ref?: React.Ref<React.ElementRef<typeof SelectPrimitive.Item>>;
+}) => (
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
@@ -110,16 +133,27 @@ const CustomSelectItem = React.forwardRef<
   >
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>
-));
-CustomSelectItem.displayName = SelectPrimitive.Item.displayName;
+);
 
-const CustomSelectContent = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
->(({ className, children, position = 'popper', ...props }, ref) => (
+const CustomSelectContent = ({
+  className,
+  children,
+  position = 'popper',
+  ref,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Content> & {
+  ref?: React.Ref<React.ElementRef<typeof SelectPrimitive.Content>>;
+}) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
-      ref={(ref) => ref?.addEventListener('touchend', (e) => e.preventDefault())}
+      ref={(contentRef) => {
+        contentRef?.addEventListener('touchend', (e) => e.preventDefault());
+        if (typeof ref === 'function') {
+          ref(contentRef);
+        } else if (ref) {
+          (ref as React.MutableRefObject<HTMLDivElement | null>).current = contentRef;
+        }
+      }}
       className={cn(
         'relative z-50  overflow-hidden rounded-md border bg-background text-popover-foreground shadow-md animate-in fade-in-80',
         position === 'popper' && 'translate-y-1',
@@ -135,16 +169,15 @@ const CustomSelectContent = React.forwardRef<
       </SelectPrimitive.Viewport>
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
-));
-CustomSelectContent.displayName = SelectPrimitive.Content.displayName;
+);
 
-const SelectSeparator = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Separator>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
->(({ className, ...props }, ref) => (
-  <SelectPrimitive.Separator ref={ref} className={cn('-mx-1 my-1 h-px bg-muted', className)} {...props} />
-));
-SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
+const SelectSeparator = ({
+  className,
+  ref,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Separator> & {
+  ref?: React.Ref<React.ElementRef<typeof SelectPrimitive.Separator>>;
+}) => <SelectPrimitive.Separator ref={ref} className={cn('-mx-1 my-1 h-px bg-muted', className)} {...props} />;
 
 export {
   Select,

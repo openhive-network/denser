@@ -41,7 +41,6 @@ const DANGEROUS_PROTOCOLS = [
  * @returns String with null bytes removed
  */
 function stripNullBytes(str: string): string {
-  // eslint-disable-next-line no-control-regex
   return str.replace(/\x00/g, '');
 }
 

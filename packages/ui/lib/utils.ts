@@ -36,9 +36,9 @@ export const parseAsset = (sval: string | NaiAsset): Asset => {
 export const prepareVotes = (entry: Entry, votes: IVote[]) => {
   let totalPayout = 0;
 
-  const { pending_payout_value, author_payout_value, curator_payout_value, payout } = entry;
+  const { pending_payout_value: pendingPayoutValue, author_payout_value: authorPayoutValue, curator_payout_value: curatorPayoutValue, payout } = entry;
 
-  if (pending_payout_value && author_payout_value && curator_payout_value) {
+  if (pendingPayoutValue && authorPayoutValue && curatorPayoutValue) {
     totalPayout =
       parseAsset(entry.pending_payout_value).amount +
       parseAsset(entry.author_payout_value).amount +
@@ -66,12 +66,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 export const blockGap = (
-  head_block: number,
-  last_block: number,
+  headBlock: number,
+  lastBlock: number,
   t: TFunction<'common_wallet', undefined>
 ) => {
-  if (!last_block || last_block < 1) return 'forever';
-  const secs = (head_block - last_block) * 3;
+  if (!lastBlock || lastBlock < 1) return 'forever';
+  const secs = (headBlock - lastBlock) * 3;
   const mins = Math.floor(secs / 60);
   const hrs = Math.floor(mins / 60);
   const days = Math.floor(hrs / 24);
@@ -157,7 +157,7 @@ export function isJSON(value: string) {
   try {
     JSON.parse(value);
     return true;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }

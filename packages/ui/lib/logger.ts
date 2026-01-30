@@ -141,10 +141,11 @@ export class Logger {
         this.setupProps(myProps);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Logger config props are dynamically assigned to class properties
     setupProps(props: { [k: string]: any }) {
         for (const key of Object.keys(props)) {
             if (key !== 'logLevel') {
-                // @ts-ignore
+                // @ts-ignore - Dynamic property assignment for logger configuration, all keys are validated
                 this[key] = props[key];
             }
         }

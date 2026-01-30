@@ -74,7 +74,7 @@ export const hourDiff = (d: string) => {
 
 export const secondDiff = (d: string) => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
-  let diff = (new Date().getTime() - new Date(isTimeZoned).getTime()) / 1000;
+  const diff = (new Date().getTime() - new Date(isTimeZoned).getTime()) / 1000;
   return Math.abs(Math.round(diff));
 };
 
@@ -87,7 +87,7 @@ const parseDate = (d: string): string => {
     return dayjs(new Date(date.getTime() - date.getTimezoneOffset() * 60000)).format(
       'ddd MMM DD YYYY'
     );
-  } catch (e) {
+  } catch (_e) {
     return dayjs(new Date(isTimeZoned)).format('ddd MMM DD YYYY');
   }
 };
@@ -97,7 +97,7 @@ export const parseDate2 = (d: string): Date => {
   try {
     const date = dayjs(d).isValid() ? dayjs(d).toDate() : new Date();
     return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  } catch (e) {
+  } catch (_e) {
     return new Date();
   }
 };
