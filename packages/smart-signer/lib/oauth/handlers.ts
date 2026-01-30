@@ -17,6 +17,8 @@ import { IronSessionData, OAuthState } from '@smart-signer/types/common';
 import { siteConfig } from '@hive/ui/config/site';
 import { getHiveUserProfile } from '@smart-signer/lib/get-hive-user-profile';
 import { getLogger } from '@hive/ui/lib/logging';
+import { proxifyImageSrc } from '@hive/ui/lib/proxify-images';
+import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import {
   findClient,
   validateClientCredentials,
@@ -38,6 +40,9 @@ import {
 } from './validate';
 
 const logger = getLogger('app');
+
+// Default avatar hash from images.hive.blog (used when user has no profile_image)
+const DEFAULT_AVATAR_HASH = 'DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4';
 
 /**
  * GET /api/oauth/authorize
@@ -330,6 +335,16 @@ export const handleUserInfo: NextApiHandler = async (req, res) => {
   // Fetch user profile from Hive blockchain
   const hiveProfile = await getHiveUserProfile(username);
 
+  // Resolve picture URL through images.hive.blog proxy for consistent caching
+  // - External URLs get proxified to /p/{b58hash}
+  // - images.hive.blog URLs pass through unchanged
+  // - No profile_image falls back to default avatar hash
+  const pictureUrl = hiveProfile.picture
+    ? hiveProfile.picture.startsWith(configuredImagesEndpoint)
+      ? hiveProfile.picture // Already on images.hive.blog
+      : proxifyImageSrc(hiveProfile.picture) // External URL - proxify it
+    : `${configuredImagesEndpoint}${DEFAULT_AVATAR_HASH}`; // Default avatar
+
   // Build userinfo response
   // Standard OIDC claims from Hive blockchain profile
   // Note: 'username' is included for Rocket.Chat compatibility (configured as username_field)
@@ -338,7 +353,7 @@ export const handleUserInfo: NextApiHandler = async (req, res) => {
     username: username,
     preferred_username: username,
     name: hiveProfile.name || username,
-    picture: hiveProfile.picture || `https://images.hive.blog/u/${username}/avatar`,
+    picture: pictureUrl,
   };
 
   // Add optional profile fields if available
