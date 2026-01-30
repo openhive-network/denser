@@ -35,7 +35,7 @@ export const siteConfig = {
     clientId: env('GOOGLE_DRIVE_CLIENT_ID') || '',
     walletFileName: env('GOOGLE_DRIVE_WALLET_FILE_NAME') || 'hivebridge_wallet.json',
     scopes: [
-      'https://www.googleapis.com/auth/drive.readonly'
+      'https://www.googleapis.com/auth/drive.appdata'
     ].join(' '),
     redirectUri: 'postmessage', // Using 'postmessage' to prevent reloading the page
   },
