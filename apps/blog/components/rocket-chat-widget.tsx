@@ -77,7 +77,8 @@ const RocketChatWidget = () => {
   const { loginType, chatAuthToken, oauthConsent } = user;
   const [init, setInit] = useState(true);
   const [badgeContent, setBadgeContent] = useState(0);
-  const [disabled, setDisabled] = useState(true);
+  // Enable button when we have chatAuthToken - user can open drawer to trigger iframe load
+  const [disabled, setDisabled] = useState(!chatAuthToken);
   const [loggedIn, setLoggedIn] = useState(false);
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
   const [open, setOpen] = useState(false);
@@ -148,6 +149,14 @@ const RocketChatWidget = () => {
   const removeIframeListener = () => {
     window.removeEventListener('message', onMessageReceivedFromIframe);
   };
+
+  // Enable button when chatAuthToken becomes available
+  useEffect(() => {
+    if (chatAuthToken) {
+      logger.info('RocketChatWidget: chatAuthToken available, enabling button');
+      setDisabled(false);
+    }
+  }, [chatAuthToken]);
 
   useEffect(() => {
     const addIframeListener = () => {
