@@ -61,6 +61,8 @@ export const siteConfig = {
   openhiveChatIframeCreateUsers: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_IFRAME_CREATE_USERS`] || 'no',
   openhiveChatAdminUserId: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_ID`] || 'your-admin-user-id',
   openhiveChatAdminUserToken: process.env[`${SERVER_VAR_PREFIX}OPENHIVE_CHAT_ADMIN_USER_TOKEN`] || 'your-admin-user-token',
+  // Comma-separated list of usernames allowed to see the chat widget (empty = all users)
+  openhiveChatAllowedUsers: (env('OPENHIVE_CHAT_ALLOWED_USERS') || '').split(',').filter(Boolean),
 };
 
 export type SiteConfig = typeof siteConfig;

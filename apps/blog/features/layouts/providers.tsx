@@ -17,6 +17,7 @@ import {
   NavigationProgress,
   NavigationProgressHandler
 } from '@hive/ui';
+import RocketChatWidget from '@/blog/components/rocket-chat-widget';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useMemo(() => getQueryClient(), []);
@@ -33,7 +34,10 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
             <NavigationProgress />
             <NavigationProgressHandler />
             <SignerProvider>
-              <LoggedUserProvider>{children}</LoggedUserProvider>
+              <LoggedUserProvider>
+                {children}
+                <RocketChatWidget />
+              </LoggedUserProvider>
             </SignerProvider>
           </NavigationProgressProvider>
         </ThemeProvider>
