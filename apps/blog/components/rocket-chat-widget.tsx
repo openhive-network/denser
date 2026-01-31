@@ -149,16 +149,25 @@ const RocketChatWidget = () => {
       window.addEventListener('message', onMessageReceivedFromIframe);
     };
 
+    logger.info('RocketChatWidget useEffect: init=%s, chatAuthToken=%s, isIframeLoaded=%s, isLoggedIn=%s',
+      init, !!chatAuthToken, isIframeLoaded, user.isLoggedIn);
+
     // `init` is true when component operates on initial, default
     // values.
     if (!init) {
       if (chatAuthToken) {
+        logger.info('RocketChatWidget: have chatAuthToken, setting loggedIn=true');
         setLoggedIn(true);
         if (isIframeLoaded) {
+          logger.info('RocketChatWidget: iframe loaded, calling chatLogin');
           chatLogin({ chatAuthToken, loginType }, iframeRef);
+        } else {
+          logger.info('RocketChatWidget: waiting for iframe to load');
         }
       } else {
+        logger.info('RocketChatWidget: no chatAuthToken');
         if (isIframeLoaded && user.isLoggedIn) {
+          logger.info('RocketChatWidget: calling getChatAuthToken API');
           getChatAuthToken.mutateAsync().catch(logger.error);
           // chatLogout(iframeRef);
         }
