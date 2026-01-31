@@ -71,6 +71,11 @@ export async function getRCAuthToken(username = '') {
  */
 export async function getChatAuthToken(username = '') {
   logger.info('Running getChatAuthToken for user: %s', username);
+  logger.info('getChatAuthToken config: apiUri=%s, adminUserId=%s, adminTokenPresent=%s',
+    siteConfig.openhiveChatApiUri,
+    siteConfig.openhiveChatAdminUserId,
+    !!siteConfig.openhiveChatAdminUserToken && siteConfig.openhiveChatAdminUserToken !== 'your-admin-user-token'
+  );
 
   let responseData1;
   try {
