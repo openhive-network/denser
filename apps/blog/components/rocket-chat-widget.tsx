@@ -70,7 +70,8 @@ export const chatLogout = (iframeRef: React.RefObject<HTMLIFrameElement>): void 
 };
 
 const RocketChatWidget = () => {
-  const iframeSrc = `${siteConfig.openhiveChatUri}/channel/general`;
+  // Use layout=embedded to prevent OAuth redirect and enable postMessage login
+  const iframeSrc = `${siteConfig.openhiveChatUri}/channel/general?layout=embedded`;
   const iframeTitle = 'Chat';
   const tooltip = 'Chat';
   const { user } = useUserClient();
