@@ -18,9 +18,10 @@ export const rocketChatAdminUserAuthHeaders = {
  * @returns {Promise<ResultToken>}
  */
 export async function getRCAuthToken(username = '') {
-
+  logger.info('getRCAuthToken called for user: %s', username);
   try {
       const url = `${siteConfig.openhiveChatApiUri}/users.createToken`;
+      logger.info('getRCAuthToken calling: %s', url);
       const responseData = await fetchJson(url, {
           method: 'POST',
           headers: {
@@ -29,6 +30,7 @@ export async function getRCAuthToken(username = '') {
           },
           body: JSON.stringify({username}),
       });
+      logger.info('getRCAuthToken response: success=%s', responseData.success);
 
       // Succesful response looks like this:
       //
@@ -81,6 +83,7 @@ export async function getChatAuthToken(username = '') {
   try {
       const url1 = new URL(`${siteConfig.openhiveChatApiUri}/users.info`);
       url1.searchParams.append('username', username);
+      logger.info('getChatAuthToken calling users.info: %s', url1.toString());
       responseData1 = await fetchJson(url1, {
           method: 'GET',
           headers: {
@@ -88,10 +91,12 @@ export async function getChatAuthToken(username = '') {
               ...rocketChatAdminUserAuthHeaders,
           },
       });
+      logger.info('getChatAuthToken users.info response: %o', responseData1);
   } catch (error: any) {
-      if (error.response && error.response.data
-              && error.response.data.error === 'User not found.') {
-          responseData1 = error.response.data;
+      logger.info('getChatAuthToken users.info caught error: %o', error);
+      // FetchError has error.data (parsed JSON), not error.response.data
+      if (error.data && error.data.error === 'User not found.') {
+          responseData1 = error.data;
       } else {
           logger.error('Error code 2 in getChatAuthToken: %o', error);
           return {
@@ -103,6 +108,7 @@ export async function getChatAuthToken(username = '') {
 
   if (responseData1.success) {
       // User exists.
+      logger.info('getChatAuthToken user exists, active=%s', responseData1.user.active);
       if (responseData1.user.active) {
           // User is active, so we'll output token.
           return getRCAuthToken(username);
