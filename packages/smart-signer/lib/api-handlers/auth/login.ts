@@ -69,11 +69,17 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
   let chatAuthToken = '';
   const oauthConsent: { [key: string]: boolean } = {};
+  logger.info('Chat integration check: iframeEnable=%s, strict=%s, allowNonStrict=%s',
+    siteConfig.openhiveChatIframeIntegrationEnable,
+    verifiedUser?.strict,
+    siteConfig.openhiveChatAllowNonStrictLogin
+  );
   if (
     siteConfig.openhiveChatIframeIntegrationEnable &&
     (verifiedUser?.strict || siteConfig.openhiveChatAllowNonStrictLogin)
   ) {
     const result = await getChatAuthToken(username);
+    logger.info('getChatAuthToken result: success=%s, hasToken=%s', result.success, !!result.data?.authToken);
     if (result.success) {
       chatAuthToken = result.data.authToken;
       oauthConsent[siteConfig.openhiveChatClientId] = true;
