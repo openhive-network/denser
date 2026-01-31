@@ -104,8 +104,13 @@ const RocketChatWidget = () => {
     }
 
     if (event.data.eventName === 'ready') {
-      logger.info('Chat application is ready');
+      logger.info('Chat application is ready, chatAuthToken present: %s', !!chatAuthToken);
       setIsIframeLoaded(true);
+      // If we already have the token when iframe becomes ready, login immediately
+      if (chatAuthToken) {
+        logger.info('Chat ready event: calling chatLogin with existing token');
+        chatLogin({ chatAuthToken, loginType }, iframeRef);
+      }
     }
 
     // User has logged in.
