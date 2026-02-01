@@ -10,10 +10,12 @@ export const sessionOptions: SessionOptions = {
   cookieName: `${cookieNamePrefix}session`,
   // secure: true should be used in production (HTTPS) but can't be used
   // in development (HTTP)
+  // sameSite: 'none' is required for cross-origin SSO (RC iframe calling /api/chat/sso)
+  // This is safe because: httpOnly prevents JS access, secure ensures HTTPS only
   cookieOptions: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     path: '/',
   },
 };
