@@ -15,7 +15,16 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 const logger = getLogger('app');
 
 /**
- * Login to Rocket Chat via iframe.
+ * Login to Rocket Chat via iframe using postMessage.
+ *
+ * RC has two different message formats:
+ * 1. { event: 'login-with-token', loginToken } - requires Accounts_Iframe_api_url to be set
+ * 2. { externalCommand: 'login-with-token', token } - requires Iframe_Integration_receive_enable
+ *
+ * We use externalCommand format as it:
+ * - Works with just Iframe_Integration_* settings (no API URL needed)
+ * - Avoids cross-origin cookie issues with API URL approach
+ * - Fixed in RC 8.0.0 (PR #37829)
  *
  * @param {{ chatAuthToken: string, loginType: LoginType }} data
  * @param {React.RefObject<HTMLIFrameElement>} iframeRef
@@ -29,12 +38,13 @@ const chatLogin = (
     logger.info('chatLogin siteConfig.openhiveChatIframeIntegrationEnable is true');
     try {
       if (data && data.chatAuthToken) {
-        // Use 'event' format as per condenser implementation
+        // Use 'externalCommand' format - works with Iframe_Integration_* settings
+        // This is the recommended approach for RC 8.0.0+
         const message = {
-          event: 'login-with-token',
-          loginToken: data.chatAuthToken
+          externalCommand: 'login-with-token',
+          token: data.chatAuthToken
         };
-        logger.info('chatLogin posting message', message);
+        logger.info('chatLogin posting externalCommand message');
         iframeRef.current?.contentWindow?.postMessage(message, `${siteConfig.openhiveChatUri}`);
       } else {
         logger.warn('chatLogin not posting message, data is wrong', data);
@@ -50,16 +60,18 @@ const chatLogin = (
 /**
  * Logout from Rocket Chat via iframe.
  *
+ * Uses externalCommand format to match chatLogin approach.
+ *
  * @export
  * @param {React.RefObject<HTMLIFrameElement>} iframeRef
  */
 export const chatLogout = (iframeRef: React.RefObject<HTMLIFrameElement>): void => {
   if (siteConfig.openhiveChatIframeIntegrationEnable) {
     try {
-      logger.info('chatLogout posting message');
+      logger.info('chatLogout posting externalCommand message');
       iframeRef.current?.contentWindow?.postMessage(
         {
-          event: 'logout'
+          externalCommand: 'logout'
         },
         `${siteConfig.openhiveChatUri}`
       );

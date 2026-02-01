@@ -13,22 +13,34 @@ export const rocketChatAdminUserAuthHeaders = {
  * Get authToken for user (admin action). This will work only if Rocket
  * Chat was started with env variable `CREATE_TOKENS_FOR_USERS=true`.
  *
+ * For RC 8.0.0+, this requires `CREATE_TOKENS_FOR_USERS_SECRET` env var
+ * to be set on the RC server, and we must pass userId + secret.
+ *
  * @export
- * @param {string} [username='']
+ * @param {string} userId - The RC user ID (from users.info response)
+ * @param {string} [username=''] - Username for logging/response only
  * @returns {Promise<ResultToken>}
  */
-export async function getRCAuthToken(username = '') {
-  logger.info('getRCAuthToken called for user: %s', username);
+export async function getRCAuthToken(userId: string, username = '') {
+  logger.info('getRCAuthToken called for userId: %s, username: %s', userId, username);
   try {
       const url = `${siteConfig.openhiveChatApiUri}/users.createToken`;
-      logger.info('getRCAuthToken calling: %s', url);
+      const secret = siteConfig.openhiveChatCreateTokenSecret;
+
+      // RC 8.0.0+ requires userId + secret (not username)
+      // RC 7.x accepts username without secret
+      const bodyPayload = secret
+        ? { userId, secret }  // RC 8.0.0+ format
+        : { username };       // RC 7.x fallback
+
+      logger.info('getRCAuthToken calling: %s (using %s format)', url, secret ? '8.0.0' : '7.x');
       const responseData = await fetchJson(url, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
               ...rocketChatAdminUserAuthHeaders,
           },
-          body: JSON.stringify({username}),
+          body: JSON.stringify(bodyPayload),
       });
       logger.info('getRCAuthToken response: success=%s', responseData.success);
 
@@ -108,10 +120,11 @@ export async function getChatAuthToken(username = '') {
 
   if (responseData1.success) {
       // User exists.
-      logger.info('getChatAuthToken user exists, active=%s', responseData1.user.active);
+      logger.info('getChatAuthToken user exists, active=%s, _id=%s', responseData1.user.active, responseData1.user._id);
       if (responseData1.user.active) {
           // User is active, so we'll output token.
-          return getRCAuthToken(username);
+          // Pass userId (for RC 8.0.0+) and username (for logging/response)
+          return getRCAuthToken(responseData1.user._id, username);
       }
       return {
           success: false,
@@ -143,7 +156,10 @@ export async function getChatAuthToken(username = '') {
                   body: JSON.stringify(data2),
               });
               if (responseData2.success) {
-                  return getRCAuthToken(username);
+                  // users.create returns the created user with _id
+                  const newUserId = responseData2.user?._id;
+                  logger.info('getChatAuthToken user created, _id=%s', newUserId);
+                  return getRCAuthToken(newUserId, username);
               }
               return {
                   success: false,
