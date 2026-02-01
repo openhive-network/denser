@@ -29,13 +29,13 @@ const chatLogin = (
     logger.info('chatLogin siteConfig.openhiveChatIframeIntegrationEnable is true');
     try {
       if (data && data.chatAuthToken) {
+        // Use 'event' format as per condenser implementation
         const message = {
           event: 'login-with-token',
-          loginToken: data.chatAuthToken,
-          loginType: data.loginType || 'login'
+          loginToken: data.chatAuthToken
         };
-        logger.info('chatLogin posting message', message, data);
-        iframeRef.current?.contentWindow?.postMessage({ ...message }, `${siteConfig.openhiveChatUri}`);
+        logger.info('chatLogin posting message', message);
+        iframeRef.current?.contentWindow?.postMessage(message, `${siteConfig.openhiveChatUri}`);
       } else {
         logger.warn('chatLogin not posting message, data is wrong', data);
       }
@@ -59,7 +59,7 @@ export const chatLogout = (iframeRef: React.RefObject<HTMLIFrameElement>): void 
       logger.info('chatLogout posting message');
       iframeRef.current?.contentWindow?.postMessage(
         {
-          externalCommand: 'logout'
+          event: 'logout'
         },
         `${siteConfig.openhiveChatUri}`
       );
