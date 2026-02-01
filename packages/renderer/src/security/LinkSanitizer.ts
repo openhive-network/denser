@@ -2,6 +2,27 @@ import ow from 'ow';
 import {Log} from '../Log';
 import {Phishing} from './Phishing';
 
+// Private IPv4 ranges per RFC 1918 and special addresses
+const PRIVATE_IPV4_PATTERNS = [
+    /^127\./, // Loopback (127.0.0.0/8)
+    /^10\./, // Class A private (10.0.0.0/8)
+    /^192\.168\./, // Class C private (192.168.0.0/16)
+    /^172\.(1[6-9]|2[0-9]|3[0-1])\./, // Class B private (172.16.0.0/12)
+    /^169\.254\./, // Link-local (169.254.0.0/16)
+    /^0\./ // Current network (0.0.0.0/8)
+];
+
+// Private/special hostnames
+const PRIVATE_HOSTNAMES = ['localhost', 'localhost.localdomain'];
+
+// IPv6 loopback and link-local patterns
+const PRIVATE_IPV6_PATTERNS = [
+    /^::1$/, // Loopback
+    /^fe80:/i, // Link-local
+    /^fc00:/i, // Unique local (fc00::/7)
+    /^fd[0-9a-f]{2}:/i // Unique local (fd00::/8)
+];
+
 export class LinkSanitizer {
     private options: LinkSanitizerOptions;
     private baseUrl: URL;
@@ -43,7 +64,63 @@ export class LinkSanitizer {
             });
             return false;
         }
+
+        // Block private network URLs in production (security hardening)
+        if (LinkSanitizer.isPrivateNetworkUrl(url)) {
+            Log.log().debug('LinkSanitizer#sanitizeLink', 'private network URL blocked', url, {
+                url,
+                urlTitle
+            });
+            return false;
+        }
+
         return url;
+    }
+
+    /**
+     * Checks if a URL points to a private/internal network address.
+     * In production mode, these are blocked to prevent potential information leakage.
+     * In development mode (NODE_ENV !== 'production'), private network URLs are allowed.
+     *
+     * @param url - The URL string to check
+     * @returns true if the URL points to a private network address (and should be blocked)
+     */
+    public static isPrivateNetworkUrl(url: string): boolean {
+        // Allow private network URLs in development mode
+        if (process.env.NODE_ENV !== 'production') {
+            return false;
+        }
+
+        try {
+            const parsed = new URL(url);
+            const hostname = parsed.hostname.toLowerCase();
+
+            // Check for private hostnames
+            if (PRIVATE_HOSTNAMES.includes(hostname)) {
+                return true;
+            }
+
+            // Check for IPv4 private ranges
+            for (const pattern of PRIVATE_IPV4_PATTERNS) {
+                if (pattern.test(hostname)) {
+                    return true;
+                }
+            }
+
+            // Check for IPv6 private/special addresses
+            // URL parser wraps IPv6 in brackets, so we need to strip them
+            const ipv6Hostname = hostname.replace(/^\[|\]$/g, '');
+            for (const pattern of PRIVATE_IPV6_PATTERNS) {
+                if (pattern.test(ipv6Hostname)) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch {
+            // If URL parsing fails, don't block (let other checks handle it)
+            return false;
+        }
     }
 
     private static getTopLevelBaseDomainFromBaseUrl(url: URL) {
