@@ -160,7 +160,7 @@ export default function PostForm({
     title: hasDraftChanges ? (storedPost?.title || post_s?.title || '') : (post_s?.title || storedPost?.title || ''),
     postArea: hasDraftChanges ? (storedPost?.postArea || post_s?.body || '') : (post_s?.body || storedPost?.postArea || ''),
     postSummary: hasDraftChanges ? (storedPost?.postSummary || post_s?.json_metadata?.summary || '') : (post_s?.json_metadata?.summary || storedPost?.postSummary || ''),
-    tags: hasDraftChanges ? (storedPost?.tags || post_s?.json_metadata?.tags?.join(' ') || '') : (post_s?.json_metadata?.tags?.join(' ') || storedPost?.tags || ''),
+    tags: hasDraftChanges ? (storedPost?.tags || (Array.isArray(post_s?.json_metadata?.tags) ? post_s.json_metadata.tags.join(' ') : '') || '') : ((Array.isArray(post_s?.json_metadata?.tags) ? post_s.json_metadata.tags.join(' ') : '') || storedPost?.tags || ''),
     author: hasDraftChanges ? (storedPost?.author || post_s?.json_metadata?.author || '') : (post_s?.json_metadata?.author || storedPost?.author || ''),
     category: categoryParam ?? storedPost?.category ?? post_s?.category ?? '',
     beneficiaries: storedPost?.beneficiaries || [],

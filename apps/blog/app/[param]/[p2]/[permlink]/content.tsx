@@ -140,7 +140,7 @@ const PostContent = () => {
   );
   const userFromGDPR = gdprUserList.some((e) => e === postData?.author);
 
-  const crossedPost = postData?.json_metadata.tags?.includes('cross-post');
+  const crossedPost = Array.isArray(postData?.json_metadata?.tags) && postData.json_metadata.tags.includes('cross-post');
   const legalBlockedUser = userIllegalContent.some((e) => e === postData?.author);
   const copyRightCheck = dmcaList.includes(pathname ?? '');
   const { data: crossPostData } = useQuery({
@@ -558,8 +558,8 @@ const PostContent = () => {
                 <div className="clear-both mt-6 border-t border-border pt-5">
                   {!commentSite ? (
                     <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
-                      {postData.json_metadata.tags
-                        ?.filter((e) => e !== postData.category && e !== '' && e !== postData.community)
+                      {Array.isArray(postData.json_metadata?.tags) && postData.json_metadata.tags
+                        .filter((e) => e !== postData.category && e !== '' && e !== postData.community)
                         .map((tag: string) => (
                           <li key={tag}>
                             <Link

@@ -66,7 +66,7 @@ export function find_first_img(post: Entry) {
     if (youtube_id[0]) {
       return proxifyImageSrc(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`, UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
     }
-    if (post.json_metadata?.tags && post.json_metadata?.tags.includes('nsfw')) {
+    if (Array.isArray(post.json_metadata?.tags) && post.json_metadata.tags.includes('nsfw')) {
       return proxifyImageSrc(getUserAvatarUrl(post.author, 'small'), UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
     }
     const pictures_extracted = extractPictureFromPostBody(extractUrlsFromJsonString(post.body));
