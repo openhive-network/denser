@@ -26,15 +26,16 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
   const pathname = usePathname();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const isRolesPage = pathname?.includes('/roles/');
+  const isCommunity = community?.startsWith('hive-');
   const { data: subsData } = useQuery({
     queryKey: ['subscribers', community],
     queryFn: () => getSubscribers(community ?? ''),
-    enabled: community?.startsWith('hive-')
+    enabled: isCommunity
   });
   const { data: notificationData } = useQuery({
     queryKey: ['AccountNotification', community],
     queryFn: () => getAccountNotifications(community ?? ''),
-    enabled: community?.startsWith('hive-')
+    enabled: isCommunity
   });
 
   const { data: mySubsData } = useQuery({
@@ -46,7 +47,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
   const { data: communityData, isLoading: isCommunityLoading } = useQuery({
     queryKey: ['community', community, observer],
     queryFn: () => getCommunity(community, observer),
-    enabled: community?.startsWith('hive-')
+    enabled: isCommunity
   });
 
   return (
@@ -77,7 +78,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
                         className="text-md ml-10 font-medium text-destructive"
                         data-testid="community-name"
                       >
-                        {isCommunityLoading ? (
+                        {isCommunity && isCommunityLoading ? (
                           <Skeleton className="inline-block h-6 w-48" />
                         ) : (
                           communityData?.title || `#${community}`
@@ -87,21 +88,21 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
                   ) : (
                     <>
                       <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                        {isCommunityLoading ? (
+                        {isCommunity && isCommunityLoading ? (
                           <Skeleton className="inline-block h-6 w-48" />
                         ) : (
                           communityData?.title || `#${community}`
                         )}
                       </span>
                       <span className="md:hidden">
-                        <CommunitiesSelect title={isCommunityLoading ? '' : (communityData?.title || community)} />
+                        <CommunitiesSelect title={isCommunity && isCommunityLoading ? '' : (communityData?.title || community)} />
                       </span>
 
                         <span
                           className="hidden text-xs font-light md:block"
                           data-testid="community-name-unmoderated"
                         >
-                          {isCommunityLoading ? (
+                          {isCommunity && isCommunityLoading ? (
                             <Skeleton className="inline-block h-4 w-32" />
                           ) : communityData ? (
                             t('communities.community')
