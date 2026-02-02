@@ -20,6 +20,7 @@ import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { cn } from '@ui/lib/utils';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { Button } from '@ui/components';
+import { CircleSpinner } from 'react-spinners-kit';
 import { useTranslation } from '@/blog/i18n/client';
 import { onImageDrop, onImagePaste, onImageUpload } from './lib/utils';
 
@@ -41,6 +42,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   const editorRef = useRef(null);
   const textApiRef = useRef<TextAreaTextApi>(null) as MutableRefObject<TextAreaTextApi>;
   const [isDrag, setIsDrag] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [insertImg, setInsertImg] = useState('');
 
   useEffect(() => {
@@ -55,7 +57,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     async (event: { target: { files: FileList } }) => {
       if (event.target.files && event.target.files.length === 1) {
         setInsertImg('');
-        await onImageUpload(event.target.files[0], setFormValue, user.username, signer);
+        await onImageUpload(event.target.files[0], setFormValue, user.username, signer, setIsUploading);
       }
     },
     [setFormValue, signer, user.username]
@@ -78,7 +80,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
-      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer);
+      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer, setIsUploading);
     },
     [setFormValue, signer]
   );
@@ -98,7 +100,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       if (hasImage) {
         event.preventDefault();
         event.stopPropagation();
-        await onImagePaste(event.clipboardData, setFormValue, signer.username, signer);
+        await onImagePaste(event.clipboardData, setFormValue, signer.username, signer, setIsUploading);
       }
     },
     [setFormValue, signer]
@@ -234,6 +236,14 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
             style={{ '--color-canvas-default': 'var(--background)' }}
           />
         </div>
+        {isUploading && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
+            <div className="flex items-center gap-2 rounded-md bg-background px-4 py-2 shadow-md">
+              <CircleSpinner loading size={18} color="#dc2626" />
+              <span className="text-sm font-medium">{t('submit_page.uploading_image')}</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   ) : (

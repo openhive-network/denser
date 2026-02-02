@@ -174,8 +174,10 @@ export const onImageUpload = async (
   file: File,
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
-  signer: Signer
+  signer: Signer,
+  setUploading?: Dispatch<SetStateAction<boolean>>
 ) => {
+  setUploading?.(true);
   const url = await uploadImg(file, username, signer);
   const imageMarkdown = ` ![${file.name}](${!url ? 'UPLOAD FAILED' : url}) `;
 
@@ -198,13 +200,16 @@ export const onImageUpload = async (
       textarea.focus();
     }
   }, 0);
+
+  setUploading?.(false);
 };
 
 export const onImageDrop = async (
   dataTransfer: DataTransfer,
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
-  signer: Signer
+  signer: Signer,
+  setUploading?: Dispatch<SetStateAction<boolean>>
 ) => {
   const files = [];
 
@@ -213,14 +218,15 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, setUploading)));
 };
 
 export const onImagePaste = async (
   clipboardData: DataTransfer,
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
-  signer: Signer
+  signer: Signer,
+  setUploading?: Dispatch<SetStateAction<boolean>>
 ) => {
   const files: File[] = [];
   for (let i = 0; i < clipboardData.items.length; i++) {
@@ -231,7 +237,7 @@ export const onImagePaste = async (
     }
   }
   if (!files.length) return false;
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, setUploading)));
   return true;
 };
 
