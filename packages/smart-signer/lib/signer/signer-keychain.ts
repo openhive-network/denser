@@ -35,22 +35,9 @@ export class SignerKeychain extends Signer {
     const { username, keyType } = this;
     logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
     try {
-      // const provider = KeychainProvider.for(this.username, keyType);
+      const provider = KeychainProvider.for(this.username, keyType);
 
-      if (!KeychainProvider.isExtensionInstalled())
-        throw new Error('Hive Keychain extension is not installed');
-
-      // const signature = provider.encryptData(typeof message === "string" ? message : JSON.stringify(message), username);
-
-      const msg = typeof message === "string" ? message : JSON.stringify({type:"Buffer", data: Array.from(new Uint8Array(message as ArrayBuffer))});
-      // Very important: We are using requestSignBuffer instead of requestEncodeWithKeys here as it is bugged - chooses invalid keys on Keychain-side
-      const response = await new Promise<string>((resolve, reject) => window.hive_keychain.requestSignBuffer(this.username, msg, this.keyType, (response: { error?: any; result: string}) => {
-        if (response.error)
-          reject(response);
-        else
-          resolve(response.result);
-      }));
-      const signature = response;
+      const signature = provider.encryptData(message, username);
 
       logger.info('keychain', { signature });
       return signature;

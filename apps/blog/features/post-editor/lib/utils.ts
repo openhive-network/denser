@@ -1,6 +1,7 @@
 import { getRenderer } from '@/blog/features/post-rendering/lib/renderer';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { configuredImagesEndpoint } from '@ui/config/public-vars';
+import { handleError } from '@ui/lib/handle-error';
 import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
 import { TFunction } from 'i18next';
@@ -164,6 +165,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
     return resJSON.url;
   } catch (error) {
     logger.error('Error when uploading file %s: %o', file.name, error);
+    handleError(error);
   }
   return '';
 };

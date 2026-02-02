@@ -341,7 +341,13 @@ export class SignerGoogleDrive extends Signer {
         throw new Error(`No stored Hive ${keyType} key found for user ${username} in Google Drive wallet`);
       }
 
-      const signature = await provider.encryptData(typeof message === "string" ? message : JSON.stringify(message), pk);
+      if (typeof message !== "string")
+        message = await crypto.subtle.digest(
+          "SHA-256",
+          new Uint8Array(message as ArrayBuffer)
+        );
+
+      const signature = await provider.encryptData(message, pk);
 
       logger.info('google', { signature });
       return signature;

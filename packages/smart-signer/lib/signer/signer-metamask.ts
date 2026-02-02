@@ -1,9 +1,10 @@
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { TTransactionPackType, IOnlineSignatureProvider } from '@hiveio/wax';
+import { TTransactionPackType } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import MetaMaskProvider from '@hiveio/wax-signers-metamask';
+import env from '@beam-australia/react-env';
 const logger = getLogger('app');
 
 export const hasCompatibleMetaMask = () => MetaMaskProvider.isExtensionInstalled();
@@ -25,7 +26,7 @@ export class SignerMetaMask extends Signer {
 
   private async ensureMetaMaskSnapInitialized(provider: MetaMaskProvider) {
     if (!provider.isSnapInstalled) {
-      await provider.installSnap();
+      await provider.installSnap(env('METAMASK_SNAP_VERSION'));
     }
   }
 
@@ -35,17 +36,15 @@ export class SignerMetaMask extends Signer {
     try {
       const provider = await MetaMaskProvider.for(
         0, // Explicitly always use first MetaMask account
-        keyType
+        keyType,
+        env('METAMASK_SNAP_LOCATION')
       );
 
       await this.ensureMetaMaskSnapInitialized(provider);
 
-      if (typeof message !== "string")
-        throw new Error('MetaMask signChallenge only supports string messages. In order to sign binary data, use other signers.');
+      const key = await provider.getPublicKey(keyType);
 
-      const key = await provider.getPublicKeys(keyType);
-
-      const signature = await provider.encryptData(message, key[keyType]);
+      const signature = await provider.encryptData(message, key);
 
       logger.info('metamask', { signature });
       return signature;
@@ -60,7 +59,8 @@ export class SignerMetaMask extends Signer {
 
       const provider = await MetaMaskProvider.for(
         0, // Explicitly always use first MetaMask account
-        requiredKeyType ?? this.keyType
+        requiredKeyType ?? this.keyType,
+        env('METAMASK_SNAP_LOCATION')
       );
 
       await this.ensureMetaMaskSnapInitialized(provider);

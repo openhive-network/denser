@@ -33,21 +33,9 @@ export class SignerPeakvault extends Signer {
     const { username, keyType } = this;
     logger.info('in SignerPeakvault.signChallenge %o', { message, username, keyType });
     try {
-      // const provider = PeakVaultProvider.for(this.username, keyType);
+      const provider = PeakVaultProvider.for(this.username, keyType);
 
-      if (!PeakVaultProvider.isExtensionInstalled())
-        throw new Error('Peak Vault extension is not installed');
-
-      // const signature = provider.encryptData(typeof message === "string" ? message : JSON.stringify(message), username);
-
-      // Temporary fix for the signChallenge method
-
-      if (typeof message !== "string")
-        throw new Error('PeakVault signChallenge only supports string messages. In order to sign binary data, use other signers.');
-
-      const msg = message;
-      const response = await window.peakvault.requestSignBuffer(this.username, this.keyType, msg);
-      const signature = response.result as string;
+      const signature = provider.encryptData(message, username);
 
       logger.info('peakvault', { signature });
       return signature;
