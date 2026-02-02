@@ -5,6 +5,7 @@ import { Preferences, Entry } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
+import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
 const logger = getLogger('app');
 
 /**
@@ -17,6 +18,7 @@ const logger = getLogger('app');
 export function useCommentMutation() {
   const queryClient = useQueryClient();
   const { user } = useUserClient();
+  const { loggedUser } = useLoggedUserContext();
 
   const commentMutation = useMutation({
     // Optimistic update BEFORE broadcast
@@ -50,7 +52,7 @@ export function useCommentMutation() {
           active_votes: [],
           author: user.username,
           author_payout_value: '0.000 HBD',
-          author_reputation: 40,
+          author_reputation: loggedUser?.reputation ?? 25,
           beneficiaries: [],
           blacklists: [],
           body: body,

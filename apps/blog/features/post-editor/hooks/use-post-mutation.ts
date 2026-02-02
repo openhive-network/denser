@@ -7,6 +7,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
 import { formatNaiAsset } from '@ui/lib/helpers';
+import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
 
 const logger = getLogger('app');
 
@@ -20,6 +21,7 @@ const logger = getLogger('app');
 export function usePostMutation() {
   const queryClient = useQueryClient();
   const { user } = useUserClient();
+  const { loggedUser } = useLoggedUserContext();
 
   const postMutation = useMutation({
     // Seed cache with optimistic post data before broadcast
@@ -76,7 +78,7 @@ export function usePostMutation() {
           updated: new Date().toISOString(),
           active_votes: [],
           children: 0,
-          author_reputation: 40,
+          author_reputation: loggedUser?.reputation ?? 25,
           pending_payout_value: '0.000 HBD',
           curator_payout_value: '0.000 HBD',
           author_payout_value: '0.000 HBD',
