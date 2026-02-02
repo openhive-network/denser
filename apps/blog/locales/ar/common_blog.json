@@ -199,7 +199,8 @@
       "you_downvoted": "أعطيت تصويتًا سلبيًا بنسبة {{votePercent}}%",
       "you_voted": "صوتت بنسبة {{votePercent}}%",
       "vote_polling_error_message_title": "تحذير",
-      "vote_polling_error_message_description": "فشل في التحقق مما إذا تم تضمين تصويت المستخدم."
+      "vote_polling_error_message_description": "فشل في التحقق مما إذا تم تضمين تصويت المستخدم.",
+      "powered_up_100": "تشغيل بنسبة 100%"
     },
     "comment_card": {
       "reveal_comment": "كشف التعليق",

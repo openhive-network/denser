@@ -168,7 +168,7 @@ const PostListItem = ({
                             </Link>
                           </TooltipTrigger>
                           <TooltipContent data-testid="powered-up-100-tooltip">
-                            Powered Up 100%
+                            {t('cards.post_card.powered_up_100')}
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>

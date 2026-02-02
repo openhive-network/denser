@@ -208,7 +208,8 @@
       "you_downvoted": "You downvoted {{votePercent}}%",
       "you_voted": "You voted {{votePercent}}%",
       "vote_polling_error_message_title": "Warning",
-      "vote_polling_error_message_description": "Failure in checking if user's vote has been included."
+      "vote_polling_error_message_description": "Failure in checking if user's vote has been included.",
+      "powered_up_100": "Powered Up 100%"
     },
     "comment_card": {
       "reveal_comment": "Reveal Comment",

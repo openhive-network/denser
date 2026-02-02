@@ -464,6 +464,23 @@ const PostContent = () => {
                       data-testid="article-title"
                     >
                       {postData.title}
+                      {postData.percent_hbd === 0 && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span
+                                className="ml-2 inline-flex items-center align-middle"
+                                data-testid="powered-up-100-trigger"
+                              >
+                                <Icons.hive className="h-5 w-5 text-red-500" />
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent data-testid="powered-up-100-tooltip">
+                              {t('cards.post_card.powered_up_100')}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
                     </h1>
                   ) : (
                     <ContextLinks
