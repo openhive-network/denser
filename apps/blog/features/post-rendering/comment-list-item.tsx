@@ -43,7 +43,9 @@ interface CommentListProps {
   parent_depth: number;
   mutedList: IFollowList[];
   parentPermlink: string;
+  discussionAuthor: string;
   discussionPermlink: string;
+  observer: string;
   parentAuthor: string;
   flagText: string | undefined;
   onCommnentLinkClick: (hash: string) => void;
@@ -60,7 +62,9 @@ const CommentListItem = memo(function CommentListItem({
   parentPermlink,
   parentAuthor,
   flagText,
+  discussionAuthor,
   discussionPermlink,
+  observer,
   onCommnentLinkClick,
   children
 }: CommentListProps) {
@@ -135,7 +139,7 @@ const CommentListItem = memo(function CommentListItem({
   const deleteCommentMutation = useDeleteCommentMutation();
   const deleteComment = async (permlink: string) => {
     try {
-      await deleteCommentMutation.mutateAsync({ permlink, discussionPermlink });
+      await deleteCommentMutation.mutateAsync({ permlink, discussionAuthor, discussionPermlink, observer });
     } catch (error) {
       handleError(error, { method: 'deleteComment', params: { permlink } });
     }
@@ -365,7 +369,9 @@ const CommentListItem = memo(function CommentListItem({
                           parentPermlink={comment.parent_permlink}
                           storageId={editStorageId}
                           comment={comment}
+                          discussionAuthor={discussionAuthor}
                           discussionPermlink={discussionPermlink}
+                          observer={observer}
                         />
                       ) : (
                         <CardDescription data-testid="comment-card-description">
@@ -506,7 +512,9 @@ const CommentListItem = memo(function CommentListItem({
                           permlink={comment.permlink}
                           storageId={replyStorageId}
                           comment=""
+                          discussionAuthor={discussionAuthor}
                           discussionPermlink={discussionPermlink}
+                          observer={observer}
                         />
                       </div>
                     ) : null}

@@ -189,12 +189,15 @@ export function usePostMutation() {
         variant: 'success'
       });
       // Invalidate after delay to fetch real data from Hivemind
-      // Block time is ~3 seconds, but Hivemind indexing can take up to 8 seconds
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
-        queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-        queryClient.invalidateQueries({ queryKey: ['accountEntriesInfinite'] });
-      }, 8000);
+      // Multiple invalidation attempts to handle slow operations (e.g., first-time Google Drive uploads)
+      const invalidationDelays = [8000, 16000, 30000];
+      invalidationDelays.forEach((delay) => {
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
+          queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+          queryClient.invalidateQueries({ queryKey: ['accountEntriesInfinite'] });
+        }, delay);
+      });
     },
 
     onError: (error: unknown, variables, context) => {
@@ -236,10 +239,14 @@ export function useDeletePostMutation() {
         description: 'Your post has been deleted',
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
-        queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-      }, 8000);
+      // Multiple invalidation attempts to handle slow operations
+      const invalidationDelays = [8000, 16000, 30000];
+      invalidationDelays.forEach((delay) => {
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
+          queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+        }, delay);
+      });
     },
     onError: (error: any, variables) => {
       handleError(error, {

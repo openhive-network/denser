@@ -543,7 +543,9 @@ const PostContent = () => {
                     parentPermlink={postData.parent_permlink}
                     storageId={editStorageId}
                     comment={postData}
+                    discussionAuthor={author}
                     discussionPermlink={permlink}
+                    observer={observer}
                   />
                 ) : edit ? (
                   <PostForm
@@ -858,7 +860,9 @@ const PostContent = () => {
                       permlink={permlink}
                       storageId={replyStorageId}
                       comment={storedComment}
+                      discussionAuthor={author}
                       discussionPermlink={permlink}
+                      observer={observer}
                     />
                   </div>
                 ) : null}
@@ -894,7 +898,9 @@ const PostContent = () => {
               userCanModerate={!!userCanModerate}
               mutedList={mutedList || []}
               flagText={communityData?.flag_text}
+              discussionAuthor={author}
               discussionPermlink={permlink}
+              observer={observer}
               commentsPage={commentsPage}
               setCommentsPage={handleSetCommentsPage}
             />

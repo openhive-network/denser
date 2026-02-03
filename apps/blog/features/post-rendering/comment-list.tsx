@@ -15,7 +15,9 @@ const CommentList = ({
   parent_depth,
   mutedList,
   flagText,
-  discussionPermlink
+  discussionAuthor,
+  discussionPermlink,
+  observer
 }: {
   highestAuthor: string;
   highestPermlink: string;
@@ -25,7 +27,9 @@ const CommentList = ({
   parent_depth: number;
   mutedList: IFollowList[];
   flagText: string | undefined;
+  discussionAuthor: string;
   discussionPermlink: string;
+  observer: string;
 }) => {
   const [markedHash, setMarkedHash] = useState<string>('');
 
@@ -72,7 +76,9 @@ const CommentList = ({
                   parent_depth={parent_depth}
                   mutedList={mutedList}
                   flagText={flagText}
+                  discussionAuthor={discussionAuthor}
                   discussionPermlink={discussionPermlink}
+                  observer={observer}
                   onCommnentLinkClick={(hash) => setMarkedHash(hash)}
                 >
                   <CommentList
@@ -85,7 +91,9 @@ const CommentList = ({
                     parent={comment}
                     key={`${comment.post_id}-list-${comment.depth}-index-${index}`}
                     parent_depth={parent_depth}
+                    discussionAuthor={discussionAuthor}
                     discussionPermlink={discussionPermlink}
+                    observer={observer}
                   />
                 </CommentListItem>
               </div>

@@ -32,7 +32,9 @@ export function ReplyTextbox({
   storageId,
   editMode,
   comment,
-  discussionPermlink
+  discussionAuthor,
+  discussionPermlink,
+  observer
 }: {
   onSetReply: (e: boolean) => void;
   username: string;
@@ -41,7 +43,9 @@ export function ReplyTextbox({
   storageId: string;
   editMode: boolean;
   comment: Entry | string;
+  discussionAuthor: string;
   discussionPermlink: string;
+  observer: string;
 }) {
   const { user } = useUserClient();
   // Use empty string when user is not logged in to disable storage
@@ -200,7 +204,9 @@ export function ReplyTextbox({
           parentPermlink,
           permlink,
           body: text,
-          discussionPermlink
+          discussionAuthor,
+          discussionPermlink,
+          observer
         };
         try {
           await updateCommentMutation.mutateAsync(updateCommentParams);
@@ -215,7 +221,9 @@ export function ReplyTextbox({
           body: text,
           preferences,
           reputation,
-          discussionPermlink
+          discussionAuthor,
+          discussionPermlink,
+          observer
         };
         try {
           await commentMutation.mutateAsync(commentParams);

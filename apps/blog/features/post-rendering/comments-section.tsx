@@ -19,7 +19,9 @@ interface CommentsSectionProps {
   userCanModerate: boolean;
   mutedList: IFollowList[];
   flagText: string | undefined;
+  discussionAuthor: string;
   discussionPermlink: string;
+  observer: string;
   commentsPage: number;
   setCommentsPage: (page: number | ((prev: number) => number)) => void;
 }
@@ -30,7 +32,9 @@ const CommentsSection = memo(function CommentsSection({
   userCanModerate,
   mutedList,
   flagText,
+  discussionAuthor,
   discussionPermlink,
+  observer,
   commentsPage,
   setCommentsPage
 }: CommentsSectionProps) {
@@ -66,7 +70,9 @@ const CommentsSection = memo(function CommentsSection({
         flagText={flagText}
         parent={postData}
         parent_depth={postData.depth}
+        discussionAuthor={discussionAuthor}
         discussionPermlink={discussionPermlink}
+        observer={observer}
       />
       {paginatedDiscussionState.totalPages > 1 && (
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2">

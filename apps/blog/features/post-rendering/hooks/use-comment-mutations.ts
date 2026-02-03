@@ -26,10 +26,12 @@ export function useCommentMutation() {
       body: string;
       reputation: number;
       preferences: Preferences;
+      discussionAuthor: string;
       discussionPermlink: string;
+      observer: string;
     }) => {
-      const { parentAuthor, parentPermlink, body, discussionPermlink } = params;
-      const queryKey = ['discussionData', discussionPermlink];
+      const { parentAuthor, parentPermlink, body, discussionAuthor, discussionPermlink, observer } = params;
+      const queryKey = ['discussionData', discussionAuthor, discussionPermlink, observer];
 
       // Cancel any outgoing refetches to avoid overwriting optimistic update
       await queryClient.cancelQueries({ queryKey });
@@ -37,55 +39,65 @@ export function useCommentMutation() {
       // Snapshot previous data for rollback
       const prevData: Record<string, Entry> | undefined = queryClient.getQueryData(queryKey);
 
-      if (prevData) {
-        // Find parent post for context
-        const parentPost = Object.values(prevData).find(
-          (post) => post.author === parentAuthor && post.permlink === parentPermlink
-        );
+      // Generate temporary permlink for optimistic comment
+      const tempPermlink = `re-${parentAuthor}-${Date.now()}`;
 
-        // Generate temporary permlink for optimistic comment
-        const tempPermlink = `re-${parentAuthor}-${Date.now()}`;
+      // Find parent post for context (could be in discussionData or could be the main post)
+      const parentPost = prevData
+        ? Object.values(prevData).find(
+            (post) => post.author === parentAuthor && post.permlink === parentPermlink
+          )
+        : undefined;
 
-        // Create optimistic comment with _optimistic flag (allows full interactivity)
-        const newComment = {
-          active_votes: [],
+      // For replies to the main post, parent won't be in discussionData
+      // Use discussionAuthor/discussionPermlink to infer if we're replying to the main post
+      const isReplyToMainPost = parentAuthor === discussionAuthor && parentPermlink === discussionPermlink;
+      const parentDepth = parentPost?.depth ?? (isReplyToMainPost ? 0 : 0);
+
+      // Create optimistic comment with _optimistic flag (allows full interactivity)
+      const newComment = {
+        active_votes: [],
+        author: user.username,
+        author_payout_value: '0.000 HBD',
+        author_reputation: params.reputation,
+        beneficiaries: [],
+        blacklists: [],
+        body: body,
+        parent_author: parentAuthor,
+        parent_permlink: parentPermlink,
+        category: parentPost?.category ?? '',
+        children: 0,
+        created: new Date().toISOString(),
+        curator_payout_value: '0.000 HBD',
+        depth: parentDepth + 1,
+        is_paidout: false,
+        json_metadata: {
+          images: [],
           author: user.username,
-          author_payout_value: '0.000 HBD',
-          author_reputation: params.reputation,
-          beneficiaries: [],
-          blacklists: [],
-          body: body,
-          parent_author: parentAuthor,
-          parent_permlink: parentPermlink,
-          category: parentPost?.category ?? '',
-          children: 0,
-          created: new Date().toISOString(),
-          curator_payout_value: '0.000 HBD',
-          depth: (parentPost?.depth ?? 0) + 1,
-          is_paidout: false,
-          json_metadata: {
-            images: [],
-            author: user.username,
-            image: ''
-          },
-          max_accepted_payout: '1000000.000 HBD',
-          net_rshares: 0,
-          payout: 0,
-          payout_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          pending_payout_value: '0.000 HBD',
-          percent_hbd: 10000,
-          permlink: tempPermlink,
-          post_id: (parentPost?.post_id ?? 0) + 1,
-          promoted: '',
-          replies: [],
-          title: `Re: ${parentPost?.title ?? 'No title'}`,
-          updated: new Date().toISOString(),
-          url: `/${parentPost?.category ?? ''}/@${user.username}/${tempPermlink}`,
-          _optimistic: true
-        };
+          image: ''
+        },
+        max_accepted_payout: '1000000.000 HBD',
+        net_rshares: 0,
+        payout: 0,
+        payout_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        pending_payout_value: '0.000 HBD',
+        percent_hbd: 10000,
+        permlink: tempPermlink,
+        post_id: Date.now(), // Use timestamp for unique ID
+        promoted: '',
+        replies: [],
+        stats: { hide: false, gray: false, total_votes: 0, flag_weight: 0 },
+        title: `Re: ${parentPost?.title ?? 'No title'}`,
+        updated: new Date().toISOString(),
+        url: `/${parentPost?.category ?? ''}/@${user.username}/${tempPermlink}`,
+        _optimistic: true
+      };
 
-        // Update parent's children count
-        const updatedData: Record<string, Entry> = {};
+      // Build updated data - start with previous data or empty object
+      const updatedData: Record<string, Entry> = {};
+
+      if (prevData) {
+        // Copy existing data, updating parent's children count if found
         for (const [key, post] of Object.entries(prevData)) {
           if (post.permlink === parentPermlink && post.author === parentAuthor) {
             updatedData[key] = {
@@ -97,13 +109,15 @@ export function useCommentMutation() {
             updatedData[key] = post;
           }
         }
-
-        // Add the new comment
-        updatedData[tempPermlink] = newComment as Entry;
-
-        // Update cache immediately
-        queryClient.setQueryData<Record<string, Entry>>(queryKey, updatedData);
       }
+
+      // Add the new comment
+      updatedData[tempPermlink] = newComment as Entry;
+
+      // Update cache immediately - this triggers React Query subscribers to re-render
+      queryClient.setQueryData<Record<string, Entry>>(queryKey, updatedData);
+
+      logger.info('Optimistic comment added: %o', { tempPermlink, queryKey, hasPrevData: !!prevData });
 
       // Return context for rollback
       return { prevData, queryKey };
@@ -114,7 +128,9 @@ export function useCommentMutation() {
       parentPermlink: string;
       body: string;
       preferences: Preferences;
+      discussionAuthor: string;
       discussionPermlink: string;
+      observer: string;
     }) => {
       const { parentAuthor, parentPermlink, body, preferences, discussionPermlink } = params;
 
@@ -133,8 +149,8 @@ export function useCommentMutation() {
     },
 
     onSuccess: (data) => {
-      const { discussionPermlink } = data;
-      const queryKey = ['discussionData', discussionPermlink];
+      const { discussionAuthor, discussionPermlink, observer } = data;
+      const queryKey = ['discussionData', discussionAuthor, discussionPermlink, observer];
 
       logger.info('useCommentMutation onSuccess data: %o', data);
       toast({
@@ -144,17 +160,26 @@ export function useCommentMutation() {
       });
 
       // Invalidate after delay to fetch real data from Hivemind
-      // Block time is ~3 seconds, but Hivemind indexing can take up to 8 seconds
-      // Use 8 seconds to ensure the comment is indexed before we refetch
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 8000);
+      // Block time is ~3 seconds, but Hivemind indexing can take longer
+      // Use multiple invalidation attempts to handle slow operations (e.g., first-time Google Drive uploads)
+      const invalidationDelays = [8000, 16000, 30000];
+      invalidationDelays.forEach((delay) => {
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey });
+        }, delay);
+      });
     },
 
     onError: (error: unknown, variables, context) => {
       // Rollback to previous data on error
-      if (context?.prevData && context?.queryKey) {
-        queryClient.setQueryData(context.queryKey, context.prevData);
+      if (context?.queryKey) {
+        if (context.prevData) {
+          // Restore previous data
+          queryClient.setQueryData(context.queryKey, context.prevData);
+        } else {
+          // If there was no previous data, remove the optimistic update
+          queryClient.removeQueries({ queryKey: context.queryKey });
+        }
       }
 
       handleError(error, {
@@ -182,9 +207,11 @@ export function useUpdateCommentMutation() {
       parentPermlink: string;
       permlink: string;
       body: string;
+      discussionAuthor: string;
       discussionPermlink: string;
+      observer: string;
     }) => {
-      const { parentAuthor, parentPermlink, permlink, body, discussionPermlink } = params;
+      const { parentAuthor, parentPermlink, permlink, body, discussionAuthor, discussionPermlink, observer } = params;
       const broadcastResult = await transactionService.updateComment(
         parentAuthor,
         parentPermlink,
@@ -196,7 +223,9 @@ export function useUpdateCommentMutation() {
       );
       const prevData: Record<string, Entry> | undefined = queryClient.getQueryData([
         'discussionData',
-        discussionPermlink
+        discussionAuthor,
+        discussionPermlink,
+        observer
       ]);
 
       const response = { ...params, broadcastResult, prevData };
@@ -206,7 +235,7 @@ export function useUpdateCommentMutation() {
     },
     onSettled: (data) => {
       if (!data) return;
-      const { permlink, discussionPermlink, prevData } = data;
+      const { permlink, discussionAuthor, discussionPermlink, observer, prevData } = data;
       if (!!prevData) {
         const list = [...Object.keys(prevData).map((key) => prevData[key])];
         const newList = list.map((post) => {
@@ -218,24 +247,28 @@ export function useUpdateCommentMutation() {
         const newData: Record<string, Entry> = Object.fromEntries(
           newList.map((post) => [post.permlink, post])
         );
-        queryClient.setQueryData<Record<string, Entry>>(['discussionData', discussionPermlink], () => {
+        queryClient.setQueryData<Record<string, Entry>>(['discussionData', discussionAuthor, discussionPermlink, observer], () => {
           return newData;
         });
       }
     },
     onSuccess: (data) => {
       const { username } = user;
-      const { permlink, discussionPermlink } = data;
+      const { permlink, discussionAuthor, discussionPermlink, observer } = data;
       logger.info('useUpdateCommentMutation onSuccess data: %o', data);
       toast({
         title: 'Comment updated successfully',
         description: 'Your comment has been updated successfully.',
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['discussionData', discussionPermlink] });
-        queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
-      }, 8000);
+      // Multiple invalidation attempts to handle slow operations
+      const invalidationDelays = [8000, 16000, 30000];
+      invalidationDelays.forEach((delay) => {
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ['discussionData', discussionAuthor, discussionPermlink, observer] });
+          queryClient.invalidateQueries({ queryKey: ['postData', username, permlink, observer] });
+        }, delay);
+      });
     },
     onError: (error: any, variables) => {
       handleError(error, {
@@ -257,12 +290,19 @@ export function useUpdateCommentMutation() {
 export function useDeleteCommentMutation() {
   const queryClient = useQueryClient();
   const deleteCommentMutation = useMutation({
-    mutationFn: async (params: { permlink: string; discussionPermlink: string }) => {
-      const { permlink, discussionPermlink } = params;
+    mutationFn: async (params: {
+      permlink: string;
+      discussionAuthor: string;
+      discussionPermlink: string;
+      observer: string;
+    }) => {
+      const { permlink, discussionAuthor, discussionPermlink, observer } = params;
       const broadcastResult = await transactionService.deleteComment(permlink, { observe: false });
       const prevData: Record<string, Entry> | undefined = queryClient.getQueryData([
         'discussionData',
-        discussionPermlink
+        discussionAuthor,
+        discussionPermlink,
+        observer
       ]);
       const response = { ...params, broadcastResult, prevData };
       logger.info('Done delete comment transaction: %o', response);
@@ -270,7 +310,7 @@ export function useDeleteCommentMutation() {
     },
     onSettled: (data) => {
       if (!data) return;
-      const { discussionPermlink, prevData } = data;
+      const { discussionAuthor, discussionPermlink, observer, prevData } = data;
       if (!!prevData) {
         const list = [...Object.keys(prevData).map((key) => prevData[key])];
         const newList = list.filter((post) => post.permlink !== data.permlink);
@@ -278,22 +318,26 @@ export function useDeleteCommentMutation() {
           newList.map((post) => [post.permlink, post])
         );
 
-        queryClient.setQueryData<Record<string, Entry>>(['discussionData', discussionPermlink], () => {
+        queryClient.setQueryData<Record<string, Entry>>(['discussionData', discussionAuthor, discussionPermlink, observer], () => {
           return newData;
         });
       }
     },
     onSuccess: (data) => {
-      const { discussionPermlink } = data;
+      const { discussionAuthor, discussionPermlink, observer } = data;
       logger.info('useDeleteCommentMutation onSuccess data: %o', data);
       toast({
         title: 'Comment deleted successfully',
         description: 'Your comment has been deleted successfully.',
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['discussionData', discussionPermlink] });
-      }, 4000);
+      // Multiple invalidation attempts - delete is usually faster but be consistent
+      const invalidationDelays = [4000, 10000, 20000];
+      invalidationDelays.forEach((delay) => {
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ['discussionData', discussionAuthor, discussionPermlink, observer] });
+        }, delay);
+      });
     },
     onError: (error: any, variables) => {
       handleError(error, {
