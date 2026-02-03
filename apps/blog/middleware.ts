@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createMiddleware } from '@hive/middleware/lib/common';
+import { logPageVisit } from '@hive/middleware/lib/auth-proof-cookie';
 
 // NOTE: Nonce-based CSP is disabled because Next.js 14 doesn't fully support it.
 // Next.js internal scripts (__NEXT_DATA__, hydration) don't receive nonces automatically,
@@ -75,6 +76,8 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     if (category) {
       const rewriteUrl = request.nextUrl.clone();
       rewriteUrl.pathname = `${basePath}/${category}/@${username}/${permlink}`;
+      // Log visit before rewrite - baseMiddleware won't run after NextResponse.rewrite()
+      logPageVisit(request, pathname);
       return NextResponse.rewrite(rewriteUrl);
     }
   }
