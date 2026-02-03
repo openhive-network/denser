@@ -237,7 +237,7 @@ const CommentListItem = memo(function CommentListItem({
                                 )}
                                 <Link
                                   href={`#@${comment.author}/${comment.permlink}`}
-                                  className="hover:text-destructive md:text-sm"
+                                  className="hover:text-destructive md:text-sm ml-1"
                                   title={String(parseDate(comment.created))}
                                   data-testid="comment-timestamp-link"
                                   onClick={() => {
