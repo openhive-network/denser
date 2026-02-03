@@ -437,51 +437,54 @@ const PostContent = () => {
                 </span>
               </div>
             ) : null}
-            <div className="absolute right-2 top-2 cursor-pointer rounded-full border border-transparent p-1.5 text-muted-foreground transition-colors hover:border-border hover:bg-background-secondary hover:text-destructive">
-              {postInCommunity && !user.isLoggedIn ? (
-                <DialogLogin>
-                  <FlagIcon onClick={() => {}} />
-                </DialogLogin>
-              ) : communityData && user.isLoggedIn ? (
-                <AlertDialogFlag
-                  community={category}
-                  username={author}
-                  permlink={permlink}
-                  flagText={communityData.flag_text}
-                >
-                  <FlagIcon onClick={() => {}} />
-                </AlertDialogFlag>
-              ) : null}
-            </div>
-
             {postData ? (
               <div>
                 {/* Post Header Section */}
-                <div className="mb-5 border-b-2 border-border pb-5">
+                <div className="mb-5 border-b border-border pb-5">
                   {!commentSite ? (
-                    <h1
-                      className="font-sanspro text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-3xl"
-                      data-testid="article-title"
-                    >
-                      {postData.title}
-                      {postData.percent_hbd === 0 && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span
-                                className="ml-2 inline-flex items-center align-middle"
-                                data-testid="powered-up-100-trigger"
-                              >
-                                <Icons.hive className="h-5 w-5 text-red-500" />
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent data-testid="powered-up-100-tooltip">
-                              {t('cards.post_card.powered_up_100')}
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                    <div className="flex items-start justify-between gap-3">
+                      <h1
+                        className="font-sanspro text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-3xl"
+                        data-testid="article-title"
+                      >
+                        {postData.title}
+                        {postData.percent_hbd === 0 && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span
+                                  className="ml-2 inline-flex items-center align-middle"
+                                  data-testid="powered-up-100-trigger"
+                                >
+                                  <Icons.hive className="h-5 w-5 text-red-500" />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent data-testid="powered-up-100-tooltip">
+                                {t('cards.post_card.powered_up_100')}
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </h1>
+                      {postInCommunity && (
+                        <div className="mt-1 shrink-0 cursor-pointer rounded-full border border-transparent p-1.5 text-muted-foreground transition-colors hover:border-border hover:bg-background-secondary hover:text-destructive">
+                          {!user.isLoggedIn ? (
+                            <DialogLogin>
+                              <FlagIcon onClick={() => {}} />
+                            </DialogLogin>
+                          ) : communityData ? (
+                            <AlertDialogFlag
+                              community={category}
+                              username={author}
+                              permlink={permlink}
+                              flagText={communityData.flag_text}
+                            >
+                              <FlagIcon onClick={() => {}} />
+                            </AlertDialogFlag>
+                          ) : null}
+                        </div>
                       )}
-                    </h1>
+                    </div>
                   ) : (
                     <ContextLinks
                       data={postData}
@@ -514,20 +517,16 @@ const PostContent = () => {
                         firstPost ? firstPost.blacklists : thisPost ? thisPost.blacklists : postData.blacklists
                       }
                     />
-                    {/* Repost Button in Header */}
+                    {/* Reblog Button in Header */}
                     {!commentSite && (
-                      <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-background-secondary/30 px-3 py-1.5 text-muted-foreground transition-colors hover:bg-background-secondary hover:text-foreground">
-                        <ReblogTrigger
-                          author={postData.author}
-                          permlink={postData.permlink}
-                          dataTestidTooltipContent="post-header-reblog-tooltip"
-                          dataTestidTooltipIcon="post-header-reblog-icon"
-                          isReblogged={isReblogged}
-                        />
-                        <span className="text-xs font-medium">
-                          {t('cards.post_card.reblog')}
-                        </span>
-                      </div>
+                      <ReblogTrigger
+                        author={postData.author}
+                        permlink={postData.permlink}
+                        dataTestidTooltipContent="post-header-reblog-tooltip"
+                        dataTestidTooltipIcon="post-header-reblog-icon"
+                        isReblogged={isReblogged}
+                        showLabel
+                      />
                     )}
                   </div>
                 </div>
@@ -597,7 +596,7 @@ const PostContent = () => {
                 >
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     {/* Meta info */}
-                    <div className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
                       <Clock className="mr-1 h-4 w-4" />
                       <span title={String(parseDate(postData.created))} data-testid="post-footer-timestamp">
                         <TimeAgo date={postData.created} />
@@ -660,7 +659,7 @@ const PostContent = () => {
                       </div>
                     </div>
                     {/* Stats */}
-                    <div className="flex items-center gap-2 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs">
+                    <div className="flex items-center gap-2 rounded-md border border-border bg-background px-2.5 py-1.5 text-sm">
                       <VotesComponentWrapper post={postData} type="post" />
                       <span className="h-4 w-px bg-border" />
                       <DetailsCardHover
@@ -694,7 +693,7 @@ const PostContent = () => {
                     </div>
                   </div>
                   {/* Actions Row */}
-                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-xs">
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-sm">
                     <div className="flex flex-wrap items-center gap-2" data-testid="comment-respons-header">
                       <ReblogTrigger
                         author={postData.author}
@@ -843,7 +842,7 @@ const PostContent = () => {
                       <LinkedInShare title={postData.title} url={postData.url} />
                       <RedditShare title={postData.title} url={postData.url} />
                       <SharePost path={postData.url} title={postData.title}>
-                        <Link2 className="h-4 w-4 cursor-pointer text-muted-foreground transition-colors hover:text-destructive" data-testid="share-post" />
+                        <Link2 className="h-[18px] w-[18px] cursor-pointer text-muted-foreground transition-colors hover:text-destructive" data-testid="share-post" />
                       </SharePost>
                     </div>
                   </div>

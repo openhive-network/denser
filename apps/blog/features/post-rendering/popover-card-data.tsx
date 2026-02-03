@@ -52,12 +52,13 @@ const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: str
   const legalBlockedUser = userIllegalContent.some((e) => e === account?.name);
 
   return (
-    <div className="space-y-2">
+    <div>
       {account && !isLoading && follows.data && !follows.isLoading ? (
         <>
-          <div className="flex">
+          {/* Header with avatar and name */}
+          <div className="flex items-start gap-3 border-b border-border p-4">
             <BasePathLink href={`/@${author}`} data-testid="popover-card-user-avatar">
-              <Avatar className="flex h-[75px] w-[75px] items-center justify-center overflow-hidden rounded-full">
+              <Avatar className="h-14 w-14 ring-2 ring-border">
                 <AvatarImage
                   className="h-full w-full object-cover"
                   src={getUserAvatarUrl(author, 'medium')}
@@ -72,76 +73,90 @@ const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: str
                 </AvatarFallback>
               </Avatar>
             </BasePathLink>
-            <div translate="no">
+            <div className="flex-1" translate="no">
               <BasePathLink
                 href={`/@${author}`}
-                className="block font-bold hover:cursor-pointer"
+                className="block text-base font-semibold text-foreground hover:text-destructive"
                 data-testid="popover-card-user-name"
               >
-                {account.profile?.name ?? null}
+                {account.profile?.name || author}
               </BasePathLink>
               <BasePathLink
                 href={`/@${author}`}
-                className="flex px-2 text-sm text-gray-500 hover:cursor-pointer"
+                className="text-sm text-muted-foreground hover:text-destructive"
                 data-testid="popover-card-user-nickname"
               >
-                <span className="block">{`@${author}`}</span>
+                @{author}
               </BasePathLink>
-              <div className="grid grid-cols-2 gap-2 p-2">
-                {legalBlockedUser ? (
-                  <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
-                ) : user.username === author ? null : (
-                  <>
-                    <ButtonsContainer
-                      username={author}
-                      user={user}
-                      variant="default"
-                      follow={following}
-                      mute={mute}
-                    />
-                  </>
-                )}
-              </div>
+              {!legalBlockedUser && user.username !== author && (
+                <div className="mt-2 flex gap-2">
+                  <ButtonsContainer
+                    username={author}
+                    user={user}
+                    variant="default"
+                    follow={following}
+                    mute={mute}
+                  />
+                </div>
+              )}
+              {legalBlockedUser && (
+                <p className="mt-2 text-sm text-muted-foreground">{t('global.unavailable_for_legal_reasons')}</p>
+              )}
             </div>
           </div>
-          {!legalBlockedUser ? (
+
+          {!legalBlockedUser && (
             <>
-              <div className="grid grid-cols-3 gap-2" translate="no">
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-2 border-b border-border p-3" translate="no">
                 <div className="flex flex-col items-center" data-testid="user-followers">
-                  {follows.data.follower_count}
-                  <span className="text-xs">{t('post_content.header.hover_author.followers')}</span>
+                  <span className="text-lg font-semibold text-foreground">{follows.data.follower_count}</span>
+                  <span className="text-xs text-muted-foreground">{t('post_content.header.hover_author.followers')}</span>
                 </div>
                 <div className="flex flex-col items-center" data-testid="user-following">
-                  {follows.data.following_count}
-                  <span className="text-xs">{t('post_content.header.hover_author.following')}</span>
+                  <span className="text-lg font-semibold text-foreground">{follows.data.following_count}</span>
+                  <span className="text-xs text-muted-foreground">{t('post_content.header.hover_author.following')}</span>
                 </div>
                 <div className="flex flex-col items-center" data-testid="user-hp">
-                  {numberWithCommas(hp.toFixed(0))}
-                  <span className="text-xs">HP</span>
+                  <span className="text-lg font-semibold text-foreground">{numberWithCommas(hp.toFixed(0))}</span>
+                  <span className="text-xs text-muted-foreground">HP</span>
                 </div>
               </div>
-              <p data-testid="user-about" className="text-sm text-gray-500" translate="no">
-                {about ? about.slice(0, 157) + (157 < about.length ? '...' : '') : null}
-              </p>
-              <div className="flex justify-center text-xs">
-                {t('post_content.header.hover_author.joined')} {dateToShow(account.created, t)}
-                <span className="mx-1 flex flex-col">
-                  •{t('user_profile.active')}
-                  <TimeAgo
-                    date={compareDates([account.created, account.last_vote_time, account.last_post])}
-                  />
+
+              {/* About */}
+              {about && (
+                <p data-testid="user-about" className="border-b border-border p-3 text-sm text-muted-foreground" translate="no">
+                  {about.slice(0, 140)}{140 < about.length ? '...' : ''}
+                </p>
+              )}
+
+              {/* Footer with dates */}
+              <div className="flex items-center justify-center gap-2 p-3 text-xs text-muted-foreground">
+                <span>{t('post_content.header.hover_author.joined')} {dateToShow(account.created, t)}</span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  {t('user_profile.active')}
+                  <TimeAgo date={compareDates([account.created, account.last_vote_time, account.last_post])} />
                 </span>
               </div>
             </>
-          ) : null}
+          )}
         </>
-      ) : null}
-      {blacklist.length > 0 ? (
-        <div>
-          <div>Blacklists</div>
-          <div className="text-sm">❗️{blacklist[0]}</div>
+      ) : (
+        <div className="flex items-center justify-center p-8">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
         </div>
-      ) : null}
+      )}
+
+      {blacklist.length > 0 && (
+        <div className="border-t border-destructive/20 bg-destructive/5 p-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-destructive">
+            <span>⚠️</span>
+            <span>Blacklisted</span>
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">{blacklist[0]}</p>
+        </div>
+      )}
     </div>
   );
 };

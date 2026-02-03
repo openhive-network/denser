@@ -21,25 +21,25 @@ export function UserPopoverCard({
 
   return (
     <Popover>
-      <PopoverTrigger data-testid="author-name-link">
-        <div className="flex items-center pl-1 font-bold hover:cursor-pointer hover:text-destructive">
+      <PopoverTrigger data-testid="author-name-link" asChild>
+        <button className="flex items-center gap-1 hover:cursor-pointer">
           {withImage && <UserAvatar username={author} size="normal" />}
-          <span className="hover:cursor-pointer hover:text-destructive">{author}</span>
-        </div>
+          <span className="font-semibold text-foreground hover:text-destructive">{author}</span>
+          <span
+            title={t('post_content.reputation_title')}
+            className="text-muted-foreground"
+            data-testid="author-reputation"
+          >
+            ({accountReputation(author_reputation)})
+          </span>
+          {blacklist && blacklist[0] ? (
+            <span className="text-destructive" title={blacklist[0]}>
+              ⚠️
+            </span>
+          ) : null}
+        </button>
       </PopoverTrigger>
-      <span
-        title={t('post_content.reputation_title')}
-        className="mr-1 block font-normal"
-        data-testid="author-reputation"
-      >
-        ({accountReputation(author_reputation)})
-      </span>
-      {blacklist && blacklist[0] ? (
-        <span className="mr-1 text-destructive" title={blacklist[0]}>
-          ({blacklist.length})
-        </span>
-      ) : null}
-      <PopoverContent className="w-72 bg-background" data-testid="user-popover-card-content">
+      <PopoverContent className="w-80 border border-border bg-background p-0 shadow-lg" data-testid="user-popover-card-content">
         <PopoverCardData author={author} blacklist={blacklist} />
       </PopoverContent>
     </Popover>

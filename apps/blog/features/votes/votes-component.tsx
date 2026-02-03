@@ -106,12 +106,12 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
   };
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       {/* Upvote with slider - trigger */}
       {clickedVoteButton === 'up' && voteMutation.isLoading ? (
         <CircleSpinner
           loading={clickedVoteButton === 'up' && voteMutation.isLoading}
-          size={18}
+          size={20}
           color="#dc2626"
         />
       ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
@@ -125,7 +125,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             >
               <Icons.arrowUpCircle
                 className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
+                  'h-5 w-5 rounded-xl text-destructive hover:bg-destructive hover:text-white',
                   { 'bg-destructive text-white': userVote && userVote.vote_percent > 0 }
                 )}
               />
@@ -212,7 +212,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           >
             <Icons.arrowUpCircle
               className={clsx(
-                'h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1',
+                'h-5 w-5 rounded-xl text-destructive hover:bg-destructive hover:text-white',
                 {
                   'bg-destructive text-white': userVote && userVote.vote_percent > 0
                 }
@@ -229,7 +229,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               dataTestId="upvote-button"
               afterPayout={pastPayout && !vote_upvoted}
             >
-              <Icons.arrowUpCircle className="h-[18px] w-[18px] rounded-xl text-destructive hover:bg-destructive hover:text-white sm:mr-1" />
+              <Icons.arrowUpCircle className="h-5 w-5 rounded-xl text-destructive hover:bg-destructive hover:text-white" />
             </TooltipContainer>
           </div>
         </DialogLogin>
@@ -238,7 +238,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
       {clickedVoteButton === 'down' && voteMutation.isLoading ? (
         <CircleSpinner
           loading={clickedVoteButton === 'down' && voteMutation.isLoading}
-          size={18}
+          size={20}
           color="#dc2626"
         />
       ) : user.isLoggedIn && enable_slider && !vote_downvoted ? (
@@ -252,7 +252,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             >
               <Icons.arrowDownCircle
                 className={clsx(
-                  'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                  'h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white',
                   { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 }
                 )}
               />
@@ -348,7 +348,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           >
             <Icons.arrowDownCircle
               className={clsx(
-                'h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1',
+                'h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white',
                 {
                   'bg-destructive text-white opacity-80': userVote && userVote.vote_percent < 0
                 }
@@ -365,7 +365,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
               dataTestId="downvote-button"
               afterPayout={pastPayout && !vote_downvoted}
             >
-              <Icons.arrowDownCircle className="h-[18px] w-[18px] rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1" />
+              <Icons.arrowDownCircle className="h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white" />
             </TooltipContainer>
           </div>
         </DialogLogin>

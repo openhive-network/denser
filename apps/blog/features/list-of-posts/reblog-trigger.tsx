@@ -27,7 +27,8 @@ const ReblogTrigger = ({
   permlink,
   dataTestidTooltipContent,
   dataTestidTooltipIcon,
-  isReblogged: isRebloggedProp
+  isReblogged: isRebloggedProp,
+  showLabel = false
 }: {
   author: string;
   permlink: string;
@@ -35,6 +36,8 @@ const ReblogTrigger = ({
   dataTestidTooltipIcon: string;
   /** Optional: pass from parent to avoid duplicate queries when multiple triggers exist */
   isReblogged?: boolean;
+  /** Show label with styled button wrapper */
+  showLabel?: boolean;
 }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
@@ -63,6 +66,37 @@ const ReblogTrigger = ({
       reblog();
     }
   };
+
+  if (showLabel) {
+    return (
+      <ReblogDialog author={author} permlink={permlink} action={dialogAction}>
+        <button
+          disabled={isReblogged || reblogMutation.isLoading}
+          className={cn(
+            'flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-background-secondary hover:text-foreground',
+            {
+              'cursor-default text-destructive': isReblogged,
+              'cursor-not-allowed opacity-50': reblogMutation.isLoading
+            }
+          )}
+        >
+          {reblogMutation.isLoading ? (
+            <CircleSpinner loading={reblogMutation.isLoading} size={16} color="#dc2626" />
+          ) : (
+            <Icons.forward
+              className={cn('h-4 w-4', {
+                'text-destructive': isReblogged
+              })}
+              data-testid={dataTestidTooltipIcon}
+            />
+          )}
+          <span className="font-medium">
+            {isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')}
+          </span>
+        </button>
+      </ReblogDialog>
+    );
+  }
 
   return (
     <TooltipProvider>

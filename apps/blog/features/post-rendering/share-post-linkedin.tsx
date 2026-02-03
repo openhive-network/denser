@@ -28,7 +28,7 @@ export default function LinkedInShare({ title, url }: { title: string; url: stri
       title={t('post_content.footer.share_on') + `LinkedIn`}
       data-testid="share-on-linkedin"
     >
-      <Linkedin className="h-4 w-4" />
+      <Linkedin className="h-[18px] w-[18px]" />
     </div>
   );
 }

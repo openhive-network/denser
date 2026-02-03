@@ -19,7 +19,7 @@ export default function FacebookShare({ url }: { url: string }) {
       title={t('post_content.footer.share_on') + `Facebook`}
       data-testid="share-on-facebook"
     >
-      <Facebook className="h-4 w-4" />
+      <Facebook className="h-[18px] w-[18px]" />
     </div>
   );
 }

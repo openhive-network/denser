@@ -34,26 +34,16 @@ function UserInfo({
 }: UserInfoProps) {
   const { t } = useTranslation('common_blog');
   return (
-    <div className="flex flex-col py-4 text-slate-500 dark:text-slate-400" data-testid="author-data">
-      <div className="flex flex-wrap items-center">
-        <UserPopoverCard
-          author={author}
-          author_reputation={author_reputation}
-          withImage
-          blacklist={blacklist}
-        />
-        {author_title ? (
-          <Badge variant="outline" className="mr-1 border-destructive text-slate-500" translate="no">
-            <span className="mr-1">{author_title}</span>
-            <ChangeTitleDialog
-              permlink={permlink}
-              community={community}
-              moderateEnabled={moderateEnabled}
-              userOnList={author}
-              title={author_title ?? ''}
-            />
-          </Badge>
-        ) : (
+    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 py-2 text-sm" data-testid="author-data">
+      <UserPopoverCard
+        author={author}
+        author_reputation={author_reputation}
+        withImage
+        blacklist={blacklist}
+      />
+      {author_title && (
+        <Badge variant="outline" className="border-destructive text-slate-500" translate="no">
+          <span className="mr-1">{author_title}</span>
           <ChangeTitleDialog
             permlink={permlink}
             community={community}
@@ -61,42 +51,39 @@ function UserInfo({
             userOnList={author}
             title={author_title ?? ''}
           />
-        )}
-        {t('post_content.in')}
-        <span className="ml-1" translate="no">
-          {community_title ? (
-            <Link
-              href={`/trending/${community}`}
-              className="hover:cursor-pointer hover:text-destructive"
-              data-testid="comment-community-title"
-            >
-              {community_title}
-            </Link>
-          ) : (
-            <Link
-              href={`/trending/${category}`}
-              className="hover:cursor-pointer hover:text-destructive"
-              data-testid="comment-category-title"
-            >
-              #{category}
-            </Link>
-          )}
-        </span>
-        <span className="mx-1" translate="no">
-          •
-        </span>
-        <span title={String(parseDate(created))}>
-          <TimeAgo date={created} />
-        </span>
-      </div>
-      {authored ? (
-        <span className="ml-1 text-xs">
-          Authored by{' '}
+        </Badge>
+      )}
+      {!author_title && (
+        <ChangeTitleDialog
+          permlink={permlink}
+          community={community}
+          moderateEnabled={moderateEnabled}
+          userOnList={author}
+          title=""
+        />
+      )}
+      {authored && (
+        <span className="text-muted-foreground">
+          (authored by{' '}
           <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${authored}`}>
             @{authored}
           </Link>
+          )
         </span>
-      ) : null}
+      )}
+      <span className="text-muted-foreground">{t('post_content.in')}</span>
+      <Link
+        href={`/trending/${community_title ? community : category}`}
+        className="font-medium text-destructive hover:cursor-pointer hover:underline"
+        data-testid={community_title ? 'comment-community-title' : 'comment-category-title'}
+        translate="no"
+      >
+        {community_title || `#${category}`}
+      </Link>
+      <span className="text-muted-foreground">•</span>
+      <span className="text-muted-foreground" title={String(parseDate(created))}>
+        <TimeAgo date={created} />
+      </span>
     </div>
   );
 }
