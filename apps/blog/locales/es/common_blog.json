@@ -491,6 +491,7 @@
     "enter_title": "Ingresa un título para enviar",
     "enter_content": "Ingresa contenido para enviar",
     "enter_title_and_content": "Ingresa un título y contenido para enviar",
+    "enter_tags": "Ingresa al menos una etiqueta para enviar",
     "clean": "Limpiar",
     "cancel": "Cancelar",
     "markdown_styling_guide": "Guía de Estilo Markdown",

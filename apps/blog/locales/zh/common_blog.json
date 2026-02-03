@@ -491,6 +491,7 @@
     "enter_title": "请输入标题以提交",
     "enter_content": "请输入内容以提交",
     "enter_title_and_content": "请输入标题和内容以提交",
+    "enter_tags": "请输入至少一个标签以提交",
     "clean": "清除",
     "cancel": "取消",
     "markdown_styling_guide": "Markdown样式指南",

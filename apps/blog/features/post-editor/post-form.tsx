@@ -263,11 +263,9 @@ export default function PostForm({
 
   // Extract postArea for use in dependency arrays
   const { postArea } = watchedValues;
-  const tagsCheck = validateTagInput(
-    watchedValues.tags,
-    !categoryParam ? watchedValues.category === 'blog' : false,
-    t
-  );
+  const tagsRequired = !categoryParam && watchedValues.category === 'blog';
+  const tagsCheck = validateTagInput(watchedValues.tags, tagsRequired, t);
+  const tagsRequiredAndEmpty = tagsRequired && (!watchedValues.tags || !watchedValues.tags.trim());
   const summaryCheck = validateSummaryInput(watchedValues.postSummary, t);
   const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
   const communityPosting =
@@ -737,13 +735,15 @@ export default function PostForm({
                   {editMode ? t('submit_page.cancel') : t('submit_page.clean')}
                 </Button>
               </div>
-              {!postMutation.isPending && (!storedPost?.title || !storedPost?.postArea) && (
+              {!postMutation.isPending && (!storedPost?.title || !storedPost?.postArea || tagsRequiredAndEmpty) && (
                 <p className="text-xs text-muted-foreground" data-testid="submit-requirements-hint">
                   {!storedPost?.title && !storedPost?.postArea
                     ? t('submit_page.enter_title_and_content')
                     : !storedPost?.title
                       ? t('submit_page.enter_title')
-                      : t('submit_page.enter_content')}
+                      : !storedPost?.postArea
+                        ? t('submit_page.enter_content')
+                        : t('submit_page.enter_tags')}
                 </p>
               )}
             </div>

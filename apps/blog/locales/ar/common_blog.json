@@ -529,6 +529,7 @@
     "enter_title": "أدخل عنوانًا للإرسال",
     "enter_content": "أدخل محتوى للإرسال",
     "enter_title_and_content": "أدخل عنوانًا ومحتوى للإرسال",
+    "enter_tags": "أدخل علامة واحدة على الأقل للإرسال",
     "clean": "تنظيف",
     "cancel": "إلغاء",
     "markdown_styling_guide": "دليل أسلوب Markdown",

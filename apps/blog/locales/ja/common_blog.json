@@ -491,6 +491,7 @@
     "enter_title": "送信するにはタイトルを入力してください",
     "enter_content": "送信するにはコンテンツを入力してください",
     "enter_title_and_content": "送信するにはタイトルとコンテンツを入力してください",
+    "enter_tags": "送信するには少なくとも1つのタグを入力してください",
     "clean": "クリーン",
     "cancel": "キャンセル",
     "markdown_styling_guide": "Markdownスタイルガイド",

@@ -583,6 +583,7 @@
     "enter_title": "Enter a title to submit",
     "enter_content": "Enter content to submit",
     "enter_title_and_content": "Enter a title and content to submit",
+    "enter_tags": "Enter at least one tag to submit",
     "markdown_styling_guide": "Markdown Styling Guide",
     "power_up": " Power up 100%",
     "maximum_characters": "Maximum {{num}} characters",

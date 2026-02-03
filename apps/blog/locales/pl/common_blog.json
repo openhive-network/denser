@@ -496,6 +496,7 @@
     "enter_title": "Wprowadź tytuł, aby wysłać",
     "enter_content": "Wprowadź treść, aby wysłać",
     "enter_title_and_content": "Wprowadź tytuł i treść, aby wysłać",
+    "enter_tags": "Wprowadź przynajmniej jeden tag, aby wysłać",
     "clean": "Wyczyść",
     "cancel": "Anuluj",
     "markdown_styling_guide": "Przewodnik formatowania z użyciem Markdown",
