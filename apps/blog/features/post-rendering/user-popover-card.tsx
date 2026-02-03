@@ -34,10 +34,9 @@ export function UserPopoverCard({
             ({accountReputation(author_reputation)})
           </span>
           {blacklist && blacklist[0] ? (
-            <AlertTriangle
-              className="mr-1 h-4 w-4 text-destructive"
-              title={blacklist[0]}
-            />
+            <span title={blacklist[0]}>
+              <AlertTriangle className="ml-1 h-4 w-4 text-destructive" />
+            </span>
           ) : null}
         </button>
       </PopoverTrigger>
