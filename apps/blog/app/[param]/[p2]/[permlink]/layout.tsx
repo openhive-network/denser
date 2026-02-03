@@ -38,9 +38,17 @@ export async function generateMetadata({
       post?.json_metadata?.images?.[0] ||
       'https://hive.blog/images/hive-blog-share.png';
 
+    // Use post.category from API for canonical URL (not params.param which may differ due to rewrite)
+    const canonicalPath = post?.category
+      ? `/${post.category}/@${author}/${permlink}`
+      : `/${params.param}/@${author}/${permlink}`;
+
     return {
       title,
       description,
+      alternates: {
+        canonical: canonicalPath
+      },
       openGraph: {
         title,
         description,
