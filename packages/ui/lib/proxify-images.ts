@@ -54,16 +54,21 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
   const encodedUrl = encodeURI(realUrl).replace(/ /g, '%20');
   const pHash = extractPHash(encodedUrl);
 
+  // Detect GIF URLs - skip resizing to preserve animation frames
+  // Resizing GIFs strips animation frames to reduce file size
+  const isGif = /\.gif($|\?)/i.test(realUrl);
+
   const options: ProxyOptions = {
     format,
     mode: 'fit'
   };
 
-  if (width > 0) {
+  // Only add width/height for non-GIF images to preserve animation
+  if (!isGif && width > 0) {
     options.width = width;
   }
 
-  if (height > 0) {
+  if (!isGif && height > 0) {
     options.height = height;
   }
 
