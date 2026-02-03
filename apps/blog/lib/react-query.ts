@@ -1,4 +1,4 @@
-import { QueryClient, isServer } from '@tanstack/react-query';
+import { QueryClient, QueryKey, isServer } from '@tanstack/react-query';
 
 function makeQueryClient() {
   return new QueryClient({
@@ -11,6 +11,38 @@ function makeQueryClient() {
 }
 
 let browserQueryClient: QueryClient | undefined = undefined;
+
+/**
+ * Schedule multiple query invalidations with increasing delays.
+ * Useful for handling slow blockchain indexing (Hivemind can take 8-30s).
+ *
+ * Returns a cleanup function to cancel pending invalidations.
+ *
+ * @param queryClient - The React Query client
+ * @param queryKeys - Array of query keys to invalidate
+ * @param delays - Array of delays in ms (default: [8000, 16000, 30000])
+ */
+export function scheduleInvalidations(
+  queryClient: QueryClient,
+  queryKeys: QueryKey[],
+  delays: number[] = [8000, 16000, 30000]
+): () => void {
+  const timeoutIds: ReturnType<typeof setTimeout>[] = [];
+
+  delays.forEach((delay) => {
+    const timeoutId = setTimeout(() => {
+      queryKeys.forEach((queryKey) => {
+        queryClient.invalidateQueries({ queryKey });
+      });
+    }, delay);
+    timeoutIds.push(timeoutId);
+  });
+
+  // Return cleanup function
+  return () => {
+    timeoutIds.forEach((id) => clearTimeout(id));
+  };
+}
 
 export function getQueryClient() {
   if (isServer) {

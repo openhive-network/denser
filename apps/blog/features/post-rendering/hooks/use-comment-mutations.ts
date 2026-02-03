@@ -5,6 +5,8 @@ import { Preferences, Entry } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
+import { scheduleInvalidations } from '@/blog/lib/react-query';
+
 const logger = getLogger('app');
 
 /**
@@ -150,7 +152,6 @@ export function useCommentMutation() {
 
     onSuccess: (data) => {
       const { discussionAuthor, discussionPermlink, observer } = data;
-      const queryKey = ['discussionData', discussionAuthor, discussionPermlink, observer];
 
       logger.info('useCommentMutation onSuccess data: %o', data);
       toast({
@@ -162,12 +163,9 @@ export function useCommentMutation() {
       // Invalidate after delay to fetch real data from Hivemind
       // Block time is ~3 seconds, but Hivemind indexing can take longer
       // Use multiple invalidation attempts to handle slow operations (e.g., first-time Google Drive uploads)
-      const invalidationDelays = [8000, 16000, 30000];
-      invalidationDelays.forEach((delay) => {
-        setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey });
-        }, delay);
-      });
+      scheduleInvalidations(queryClient, [
+        ['discussionData', discussionAuthor, discussionPermlink, observer]
+      ]);
     },
 
     onError: (error: unknown, variables, context) => {
@@ -262,13 +260,10 @@ export function useUpdateCommentMutation() {
         variant: 'success'
       });
       // Multiple invalidation attempts to handle slow operations
-      const invalidationDelays = [8000, 16000, 30000];
-      invalidationDelays.forEach((delay) => {
-        setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey: ['discussionData', discussionAuthor, discussionPermlink, observer] });
-          queryClient.invalidateQueries({ queryKey: ['postData', username, permlink, observer] });
-        }, delay);
-      });
+      scheduleInvalidations(queryClient, [
+        ['discussionData', discussionAuthor, discussionPermlink, observer],
+        ['postData', username, permlink, observer]
+      ]);
     },
     onError: (error: any, variables) => {
       handleError(error, {
@@ -332,12 +327,11 @@ export function useDeleteCommentMutation() {
         variant: 'success'
       });
       // Multiple invalidation attempts - delete is usually faster but be consistent
-      const invalidationDelays = [4000, 10000, 20000];
-      invalidationDelays.forEach((delay) => {
-        setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey: ['discussionData', discussionAuthor, discussionPermlink, observer] });
-        }, delay);
-      });
+      scheduleInvalidations(
+        queryClient,
+        [['discussionData', discussionAuthor, discussionPermlink, observer]],
+        [4000, 10000, 20000]
+      );
     },
     onError: (error: any, variables) => {
       handleError(error, {

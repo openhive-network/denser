@@ -7,6 +7,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
 import { formatNaiAsset } from '@ui/lib/helpers';
+import { scheduleInvalidations } from '@/blog/lib/react-query';
 
 const logger = getLogger('app');
 
@@ -106,7 +107,8 @@ export function usePostMutation() {
         };
 
         // Seed the post data cache
-        queryClient.setQueryData(['postData', username, permlink], optimisticPost);
+        // Observer is username when logged in (required to post)
+        queryClient.setQueryData(['postData', username, permlink, username], optimisticPost);
       }
 
       return { username, permlink, editMode };
@@ -190,20 +192,17 @@ export function usePostMutation() {
       });
       // Invalidate after delay to fetch real data from Hivemind
       // Multiple invalidation attempts to handle slow operations (e.g., first-time Google Drive uploads)
-      const invalidationDelays = [8000, 16000, 30000];
-      invalidationDelays.forEach((delay) => {
-        setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
-          queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-          queryClient.invalidateQueries({ queryKey: ['accountEntriesInfinite'] });
-        }, delay);
-      });
+      scheduleInvalidations(queryClient, [
+        ['postData', username, permlink, username],
+        ['entriesInfinite'],
+        ['accountEntriesInfinite']
+      ]);
     },
 
     onError: (error: unknown, variables, context) => {
       // Remove optimistic post data on error
       if (context && !variables.editMode) {
-        queryClient.removeQueries({ queryKey: ['postData', context.username, context.permlink] });
+        queryClient.removeQueries({ queryKey: ['postData', context.username, context.permlink, context.username] });
       }
       handleError(error, {
         method: 'usePostMutation',
@@ -240,13 +239,10 @@ export function useDeletePostMutation() {
         variant: 'success'
       });
       // Multiple invalidation attempts to handle slow operations
-      const invalidationDelays = [8000, 16000, 30000];
-      invalidationDelays.forEach((delay) => {
-        setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey: ['postData', username, permlink] });
-          queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-        }, delay);
-      });
+      scheduleInvalidations(queryClient, [
+        ['postData', username, permlink, username],
+        ['entriesInfinite']
+      ]);
     },
     onError: (error: any, variables) => {
       handleError(error, {
