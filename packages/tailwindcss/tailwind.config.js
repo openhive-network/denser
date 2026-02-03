@@ -42,7 +42,8 @@ module.exports = {
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))'
+          foreground: 'hsl(var(--destructive-foreground))',
+          icon: 'hsl(var(--destructive-icon))'
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
@@ -61,7 +62,8 @@ module.exports = {
           foreground: 'hsl(var(--card-foreground))',
           noContent: 'hsl(var(--card-no-content))',
           emptyBorder: 'hsl(var(--card-empty-border))'
-        }
+        },
+        link: 'hsl(var(--link))'
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -104,7 +106,7 @@ module.exports = {
               }
             },
             a: {
-              color: 'hsl(var(--destructive))',
+              color: 'hsl(var(--link))',
               textDecoration: 'none',
               whiteSpace: 'pre-wrap',
               wordBreak: 'break-word'

@@ -26,7 +26,7 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
   return (
     <HoverClickTooltip
       triggerChildren={'!'}
-      buttonStyle="absolute bottom-auto left-auto right-9 top-1.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive px-2 py-1 text-center align-baseline text-xs font-bold leading-none text-white"
+      buttonStyle="absolute bottom-auto left-auto right-9 top-1.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive-icon px-2 py-1 text-center align-baseline text-xs font-bold leading-none text-white"
       contentStyle="w-72"
     >
       <>

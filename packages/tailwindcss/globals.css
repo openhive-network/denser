@@ -34,6 +34,9 @@
 
     --destructive: 0, 70%, 51%;
     --destructive-foreground: 210 40% 98%;
+    --destructive-icon: 0, 70%, 51%; /* same as destructive in light mode */
+
+    --link: 0, 70%, 45%;
 
     --ring: 215 20.2% 65.1%;
 
@@ -69,8 +72,11 @@
     --accent: 216 34% 17%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 350, 85%, 48%; /* red */
+    --destructive: 0, 90%, 65%; /* red - higher lightness for dark mode readability */
     --destructive-foreground: 210 40% 98%;
+    --destructive-icon: 350, 85%, 48%; /* darker red for icons/badges */
+
+    --link: 0, 90%, 65%;
 
     --ring: 216 34% 17%;
 
