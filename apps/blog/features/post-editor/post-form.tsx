@@ -52,6 +52,7 @@ import MdEditor from '@/blog/features/post-editor/md-editor';
 import RendererContainer from '@/blog/features/post-rendering/rendererContainer';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { isCommunity } from '@ui/lib/utils';
+import { getAccountReputations } from '@transaction/lib/hive-api';
 
 const logger = getLogger('app');
 
@@ -108,6 +109,19 @@ export default function PostForm({
     // Initialize with existing cover image when editing
     editMode && post_s?.json_metadata?.image?.[0] ? post_s.json_metadata.image[0] : ''
   );
+
+  const { data: reputation = 25 } = useQuery({
+    queryKey: ['accountReputation', username],
+    queryFn: async () => {
+      const data = await getAccountReputations(username, 1);
+      return data[0]?.reputation ?? 25;
+    },
+    enabled: !!username,
+    staleTime: 5 * 60 * 1000,
+    onError: (error) => {
+      logger.error(error, 'Failed to fetch account reputation');
+    }
+  });
 
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const [imagePickerState, setImagePickerState] = useState('');
@@ -298,6 +312,7 @@ export default function PostForm({
         summary: data.postSummary,
         altAuthor: data.author,
         image: selectedImg,
+        reputation,
         editMode,
         percentHbd: data.payoutType ? (data.payoutType === '100%' ? 0 : 10000) : 0,
         maxAcceptedPayout,

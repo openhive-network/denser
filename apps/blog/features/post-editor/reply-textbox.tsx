@@ -19,6 +19,8 @@ import { commentClassName } from '../post-rendering/comment-list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { getAccountReputations } from '@transaction/lib/hive-api';
+import { useQuery } from '@tanstack/react-query';
 
 const logger = getLogger('app');
 
@@ -85,6 +87,19 @@ export function ReplyTextbox({
 
   // Track what value we last synced from storage (for cross-tab detection)
   const lastSyncedDraftRef = useRef<string>('');
+
+  const { data: reputation = 25 } = useQuery({
+    queryKey: ['accountReputation', username],
+    queryFn: async () => {
+      const data = await getAccountReputations(username, 1);
+      return data[0]?.reputation ?? 25;
+    },
+    enabled: !!username,
+    staleTime: 5 * 60 * 1000,
+    onError: (error) => {
+      logger.error(error, 'Failed to fetch account reputation');
+    }
+  });
 
   const commentMutation = useCommentMutation();
   const updateCommentMutation = useUpdateCommentMutation();
@@ -199,6 +214,7 @@ export function ReplyTextbox({
           parentPermlink: permlink,
           body: text,
           preferences,
+          reputation,
           discussionPermlink
         };
         try {

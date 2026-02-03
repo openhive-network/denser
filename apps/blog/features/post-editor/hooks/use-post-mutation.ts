@@ -27,6 +27,7 @@ export function usePostMutation() {
       permlink: string;
       title: string;
       body: string;
+      reputation: number;
       tags: string[];
       category: string;
       summary: string;
@@ -44,6 +45,7 @@ export function usePostMutation() {
         tags,
         category,
         summary,
+        reputation,
         image,
         editMode,
         beneficiaries,
@@ -76,7 +78,7 @@ export function usePostMutation() {
           updated: new Date().toISOString(),
           active_votes: [],
           children: 0,
-          author_reputation: 40,
+          author_reputation: reputation,
           pending_payout_value: '0.000 HBD',
           curator_payout_value: '0.000 HBD',
           author_payout_value: '0.000 HBD',

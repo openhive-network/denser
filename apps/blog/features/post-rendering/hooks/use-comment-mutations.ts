@@ -24,6 +24,7 @@ export function useCommentMutation() {
       parentAuthor: string;
       parentPermlink: string;
       body: string;
+      reputation: number;
       preferences: Preferences;
       discussionPermlink: string;
     }) => {
@@ -50,7 +51,7 @@ export function useCommentMutation() {
           active_votes: [],
           author: user.username,
           author_payout_value: '0.000 HBD',
-          author_reputation: 40,
+          author_reputation: params.reputation,
           beneficiaries: [],
           blacklists: [],
           body: body,
