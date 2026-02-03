@@ -125,7 +125,8 @@ export default function WitnessesPage() {
   const { data: accountData, isLoading: accountLoading } = useQuery(
     ['accountsData'],
     async () => {
-      const res = await getAccounts(witnessesData!.map((wit) => wit.owner));
+      if (!witnessesData) return new Map<string, FullAccount>();
+      const res = await getAccounts(witnessesData.map((wit) => wit.owner));
       return res.reduce((prev, curr) => {
         prev.set(curr.name, curr);
         return prev;
@@ -321,27 +322,29 @@ export default function WitnessesPage() {
           </div>
         </div>
       ) : (
-        <div className="m-4 flex max-w-xl flex-col gap-3">
-          <h2 className="text-4xl">{t('witnesses_page.title')}</h2>
-          <p>{t('witnesses_page.setted_proxy_description')}</p>
-          <p>
-            {t('witnesses_page.current_proxy', {
-              value: observerData?.proxy
-            })}
-          </p>
-          <div className="relative max-w-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
-              <Icons.atSign />
-            </div>
-            <Input value={observerData?.proxy} disabled className="block p-4 pl-10 pr-28 text-sm" />
-            <div className="items absolute bottom-[1px] right-[1px]">
-              <ProxyDialog
-                loading={proxyMutation.isLoading}
-                onSetProxy={() => onSetProxy('')}
-                description={t('witnesses_page.proxy_form.description')}
-                buttonTitle={t('witnesses_page.clear_proxy')}
-                t={t}
-              />
+        <div className="mx-auto flex max-w-5xl flex-col gap-5 p-5">
+          <h2 className="text-xl md:text-4xl">{t('witnesses_page.title')}</h2>
+          <div className="flex flex-col gap-4 bg-white p-4 drop-shadow-xl dark:bg-slate-800 sm:p-6">
+            <p className="text-sm sm:text-base">{t('witnesses_page.setted_proxy_description')}</p>
+            <p className="text-sm font-semibold sm:text-base">
+              {t('witnesses_page.current_proxy', {
+                value: observerData?.proxy
+              })}
+            </p>
+            <div className="relative max-w-sm">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
+                <Icons.atSign />
+              </div>
+              <Input value={observerData?.proxy} disabled className="block p-4 pl-10 pr-28 text-sm" />
+              <div className="items absolute bottom-[1px] right-[1px]">
+                <ProxyDialog
+                  loading={proxyMutation.isLoading}
+                  onSetProxy={() => onSetProxy('')}
+                  description={t('witnesses_page.proxy_form.description')}
+                  buttonTitle={t('witnesses_page.clear_proxy')}
+                  t={t}
+                />
+              </div>
             </div>
           </div>
         </div>
