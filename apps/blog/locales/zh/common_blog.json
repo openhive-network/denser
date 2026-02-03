@@ -192,7 +192,8 @@
       "response": "1个回复。",
       "responses": "{{responses}}个回复。",
       "click_to_respond": "点击回复。",
-      "reblog": "转发"
+      "reblog": "转发",
+      "powered_up_100": "Powered Up 100%"
     },
     "comment_card": {
       "reveal_comment": "Reveal Comment",

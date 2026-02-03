@@ -192,7 +192,8 @@
       "response": "返信は1件です。",
       "responses": " 返信は%{{responses}}件です。",
       "click_to_respond": "返信するにはクリックしてください。",
-      "reblog": "Reblog"
+      "reblog": "Reblog",
+      "powered_up_100": "Powered Up 100%"
     },
     "comment_card": {
       "reveal_comment": "Reveal Comment",

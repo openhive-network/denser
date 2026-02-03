@@ -194,7 +194,8 @@
       "response": "1 odpowiedź. ",
       "responses": "{{responses}} odpowiedzi. ",
       "click_to_respond": "Kliknij by odpowiedzieć",
-      "reblog": "Rebloguj"
+      "reblog": "Rebloguj",
+      "powered_up_100": "Powered Up 100%"
     },
     "comment_card": {
       "reveal_comment": "Pokaż komentarz",

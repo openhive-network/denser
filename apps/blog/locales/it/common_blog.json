@@ -192,7 +192,8 @@
       "response": "1 commento. ",
       "responses": "{{responses}} commenti. ",
       "click_to_respond": "Clicca per commentare.",
-      "reblog": "Reblog"
+      "reblog": "Reblog",
+      "powered_up_100": "Powered Up 100%"
     },
     "comment_card": {
       "reveal_comment": "Reveal Comment",

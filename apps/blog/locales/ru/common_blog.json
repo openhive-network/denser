@@ -192,7 +192,8 @@
       "response": "1 ответ. ",
       "responses": "{{responses}} ответов. ",
       "click_to_respond": "Нажмите чтобы ответить.",
-      "reblog": "Поделиться"
+      "reblog": "Поделиться",
+      "powered_up_100": "Powered Up 100%"
     },
     "comment_card": {
       "reveal_comment": "Reveal Comment",
