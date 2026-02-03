@@ -48,6 +48,7 @@ const ImageGallery = ({ children }: PropsWithChildren) => {
         close={() => setIndex(-1)}
         slides={slides}
         plugins={[Fullscreen, Thumbnails, Zoom]}
+        controller={{ closeOnBackdropClick: true }}
       />
       <div ref={ref}>{children}</div>
     </div>

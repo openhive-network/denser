@@ -703,37 +703,49 @@ export default function PostForm({
               ) : null}
             </div>
 
-            <div className="flex items-center gap-3 pt-2">
-              <Button
-                ref={btnRef}
-                type="submit"
-                variant="redHover"
-                className="w-28"
-                disabled={
-                  !storedPost?.title ||
-                  Boolean(tagsCheck) ||
-                  Boolean(summaryCheck) ||
-                  Boolean(altUsernameCheck) ||
-                  postMutation.isPending
-                }
-                data-testid="submit-post-button"
-              >
-                {postMutation.isPending ? (
-                  <CircleSpinner loading={postMutation.isPending} size={18} color="#dc2626" />
-                ) : (
-                  t('submit_page.submit')
-                )}
-              </Button>
-              <Button
-                disabled={postMutation.isPending}
-                onClick={() => handleCancel()}
-                type="reset"
-                variant="ghost"
-                className="text-foreground/60 hover:text-destructive"
-                data-testid="clean-post-button"
-              >
-                {editMode ? t('submit_page.cancel') : t('submit_page.clean')}
-              </Button>
+            <div className="flex flex-col gap-2 pt-2">
+              <div className="flex items-center gap-3">
+                <Button
+                  ref={btnRef}
+                  type="submit"
+                  variant="redHover"
+                  className="w-28"
+                  disabled={
+                    !storedPost?.title ||
+                    !storedPost?.postArea ||
+                    Boolean(tagsCheck) ||
+                    Boolean(summaryCheck) ||
+                    Boolean(altUsernameCheck) ||
+                    postMutation.isPending
+                  }
+                  data-testid="submit-post-button"
+                >
+                  {postMutation.isPending ? (
+                    <CircleSpinner loading={postMutation.isPending} size={18} color="#dc2626" />
+                  ) : (
+                    t('submit_page.submit')
+                  )}
+                </Button>
+                <Button
+                  disabled={postMutation.isPending}
+                  onClick={() => handleCancel()}
+                  type="reset"
+                  variant="ghost"
+                  className="text-foreground/60 hover:text-destructive"
+                  data-testid="clean-post-button"
+                >
+                  {editMode ? t('submit_page.cancel') : t('submit_page.clean')}
+                </Button>
+              </div>
+              {!postMutation.isPending && (!storedPost?.title || !storedPost?.postArea) && (
+                <p className="text-xs text-muted-foreground" data-testid="submit-requirements-hint">
+                  {!storedPost?.title && !storedPost?.postArea
+                    ? t('submit_page.enter_title_and_content')
+                    : !storedPost?.title
+                      ? t('submit_page.enter_title')
+                      : t('submit_page.enter_content')}
+                </p>
+              )}
             </div>
           </form>
         </Form>
