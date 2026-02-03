@@ -199,6 +199,7 @@
     },
     "comment_card": {
       "reveal_comment": "Pokaż komentarz",
+      "hide_comment": "Ukryj komentarz",
       "one_reply": "1 odpowiedź",
       "replies": "odpowiedzi",
       "reply": "Odpowiedz",
@@ -380,6 +381,7 @@
     "in": "w",
     "reputation_title": "Reputacja",
     "blacklists": "Czarna lista",
+    "blacklisted": "Na czarnej liście",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Przeglądasz wątek pojedynczego komentarza",
       "view_the_full_context": "Zobacz pełen kontekst.",

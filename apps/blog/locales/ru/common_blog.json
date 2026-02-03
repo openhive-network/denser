@@ -196,7 +196,8 @@
       "powered_up_100": "100% Hive Power"
     },
     "comment_card": {
-      "reveal_comment": "Reveal Comment",
+      "reveal_comment": "Показать комментарий",
+      "hide_comment": "Скрыть комментарий",
       "one_reply": "reply",
       "replies": "replies",
       "reply": "Ответить",
@@ -381,6 +382,7 @@
     "in": "в",
     "reputation_title": "Репутация",
     "blacklists": "Черные списки",
+    "blacklisted": "В черном списке",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Вы читаете одну нить комментариев от",
       "view_the_full_context": "Показать полный контекст",

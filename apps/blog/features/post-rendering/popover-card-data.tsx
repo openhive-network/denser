@@ -17,6 +17,7 @@ import ButtonsContainer from '../mute-follow/buttons-container';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { AlertTriangle } from 'lucide-react';
 
 const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: string[] }) => {
   const { t } = useTranslation('common_blog');
@@ -151,8 +152,8 @@ const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: str
       {blacklist.length > 0 && (
         <div className="border-t border-destructive/20 bg-destructive/5 p-3">
           <div className="flex items-center gap-2 text-sm font-medium text-destructive">
-            <span>⚠️</span>
-            <span>Blacklisted</span>
+            <AlertTriangle className="mr-1 h-4 w-4" />
+            <span>{t('post_content.blacklisted')}</span>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">{blacklist[0]}</p>
         </div>

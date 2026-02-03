@@ -196,7 +196,8 @@
       "powered_up_100": "100% Hive Power"
     },
     "comment_card": {
-      "reveal_comment": "Reveal Comment",
+      "reveal_comment": "Mostra commento",
+      "hide_comment": "Nascondi commento",
       "one_reply": "reply",
       "replies": "replies",
       "reply": "Reply",
@@ -375,6 +376,7 @@
     "in": "in",
     "reputation_title": "Reputazione",
     "blacklists": "Liste nere",
+    "blacklisted": "Nella lista nera",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Stai visualizzando il commento singolo di un thread di",
       "vview_the_full_context": "Vedi il contesto completo",

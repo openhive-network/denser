@@ -37,11 +37,11 @@ const PostPage = async ({
     await Promise.all([
       // Use cached version - deduplicated with layout's generateMetadata within the same request
       queryClient.prefetchQuery({
-        queryKey: ['postData', username, permlink],
+        queryKey: ['postData', username, permlink, observer],
         queryFn: () => getPostCached(username, permlink, observer)
       }),
       queryClient.prefetchQuery({
-        queryKey: ['discussionData', permlink],
+        queryKey: ['discussionData', username, permlink, observer],
         queryFn: () => getDiscussion(username, permlink, observer)
       }),
       queryClient.prefetchQuery({

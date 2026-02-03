@@ -196,7 +196,8 @@
       "powered_up_100": "100% Hive Power"
     },
     "comment_card": {
-      "reveal_comment": "Reveal Comment",
+      "reveal_comment": "Revelar comentario",
+      "hide_comment": "Ocultar comentario",
       "one_reply": "reply",
       "replies": "replies",
       "reply": "Reply",
@@ -375,6 +376,7 @@
     "in": "en",
     "reputation_title": "Reputación",
     "blacklists": "Listas negras",
+    "blacklisted": "En lista negra",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "Estás viendo  los comentarios relacionados de",
       "view_the_full_context": "Ver todo el contexto",

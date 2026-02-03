@@ -76,7 +76,7 @@ const PostContent = () => {
   const author = params?.p2.replace('%40', '') ?? '';
   const category = params?.param ?? '';
   const permlink = params?.permlink ?? '';
-  const { user } = useUserClient();
+  const { user, isHydrated } = useUserClient();
   // Use empty key when user is not logged in to disable storage hooks
   const replyStorageId = user.username ? `replybox-/${author}/${permlink}-${user.username}` : '';
   const editStorageId = user.username ? `editbox-/${author}/${permlink}-${user.username}` : '';
@@ -124,9 +124,9 @@ const PostContent = () => {
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const postInCommunity = isCommunity(category);
   const { data: postData, isLoading: postIsLoading } = useQuery({
-    queryKey: ['postData', author, permlink],
+    queryKey: ['postData', author, permlink, observer],
     queryFn: () => getPost(author, permlink, observer),
-    enabled: !!author && !!permlink,
+    enabled: !!author && !!permlink && isHydrated, // Wait for hydration to complete before fetching with correct observer
     onError: (error) => {
       handleError(error, { method: 'getPost', params: { author, permlink, observer } });
     }
@@ -147,15 +147,16 @@ const PostContent = () => {
     queryKey: [
       'postData',
       postData?.json_metadata.original_author,
-      postData?.json_metadata.original_permlink
+      postData?.json_metadata.original_permlink,
+      observer
     ],
     queryFn: () =>
       getPost(postData?.json_metadata.original_author, postData?.json_metadata.original_permlink, observer),
-    enabled: crossedPost
+    enabled: crossedPost && isHydrated // Wait for hydration to complete before fetching with correct observer
   });
 
   const { data: suggestionData } = useQuery({
-    queryKey: ['suggestions', author, permlink],
+    queryKey: ['suggestions', author, permlink, observer],
     queryFn: async () => {
       const results = await getSimilarPostsByPost({
         author,
@@ -184,8 +185,9 @@ const PostContent = () => {
   });
 
   const { data: discussionData } = useQuery({
-    queryKey: ['discussionData', permlink],
+    queryKey: ['discussionData', author, permlink, observer],
     queryFn: () => getDiscussion(author, permlink, observer),
+    enabled: isHydrated, // Wait for hydration to complete before fetching with correct observer
     onError: (error) => {
       handleError(error, { method: 'getDiscussion', params: { author, permlink, observer } });
     }

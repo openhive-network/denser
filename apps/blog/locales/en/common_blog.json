@@ -213,6 +213,7 @@
     },
     "comment_card": {
       "reveal_comment": "Reveal Comment",
+      "hide_comment": "Hide Comment",
       "one_reply": "reply",
       "replies": "replies",
       "reply": "Reply",
@@ -464,6 +465,7 @@
     "in": "in",
     "reputation_title": "Reputation",
     "blacklists": "Blacklists",
+    "blacklisted": "Blacklisted",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "You are viewing a single comment's thread from",
       "view_the_full_context": "View the full context",

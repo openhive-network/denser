@@ -204,6 +204,7 @@
     },
     "comment_card": {
       "reveal_comment": "كشف التعليق",
+      "hide_comment": "إخفاء التعليق",
       "one_reply": "رد واحد",
       "replies": "ردود",
       "reply": "الرد",
@@ -412,6 +413,7 @@
     "in": "في",
     "reputation_title": "السمعة",
     "blacklists": "القوائم السوداء",
+    "blacklisted": "في القائمة السوداء",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "أنت تشاهد سلسلة تعليق واحدة من",
       "view_the_full_context": "عرض السياق الكامل",

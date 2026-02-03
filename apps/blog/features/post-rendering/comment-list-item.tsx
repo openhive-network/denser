@@ -67,9 +67,8 @@ const CommentListItem = memo(function CommentListItem({
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const ref = useRef<HTMLTableRowElement>(null);
-  const [hiddenComment, setHiddenComment] = useState(
-    comment.stats?.gray || mutedList?.some((x) => x.name === comment.author)
-  );
+  const isOriginallyHidden = comment.stats?.gray || mutedList?.some((x) => x.name === comment.author);
+  const [hiddenComment, setHiddenComment] = useState(isOriginallyHidden);
   const [openState, setOpenState] = useState<string>(comment.stats?.gray && hiddenComment ? '' : 'item-1');
   const [tempraryHidden, setTemporaryHidden] = useState(false);
   const commentId = `@${comment.author}/${comment.permlink}`;
@@ -280,11 +279,7 @@ const CommentListItem = memo(function CommentListItem({
                             </div>
                           ) : null}
                         </div>
-                        {!hiddenComment && comment.stats?.gray && openState ? (
-                          <span className="ml-4 text-xs">{t('cards.comment_card.will_be_hidden')}</span>
-                        ) : null}
-
-                        {comment._temporary && !comment._optimistic ? null : hiddenComment ? (
+                        {comment._temporary && !comment._optimistic ? null : isOriginallyHidden ? (
                           <div className="flex w-full justify-between">
                             <AccordionTrigger
                               className="pb-0 pt-1 !no-underline "
@@ -292,9 +287,11 @@ const CommentListItem = memo(function CommentListItem({
                             >
                               <span
                                 className="ml-4 cursor-pointer text-xs sm:text-sm"
-                                onClick={() => setHiddenComment(false)}
+                                onClick={() => setHiddenComment(!hiddenComment)}
                               >
-                                {t('cards.comment_card.reveal_comment')}{' '}
+                                {hiddenComment
+                                  ? t('cards.comment_card.reveal_comment')
+                                  : t('cards.comment_card.hide_comment')}
                               </span>
                             </AccordionTrigger>
                             {flagText && comment.community && !user.isLoggedIn ? (

@@ -196,7 +196,8 @@
       "powered_up_100": "100% Hive Power"
     },
     "comment_card": {
-      "reveal_comment": "Reveal Comment",
+      "reveal_comment": "コメントを表示",
+      "hide_comment": "コメントを非表示",
       "one_reply": "reply",
       "replies": "replies",
       "reply": "返信",
@@ -375,6 +376,7 @@
     "in": "in",
     "reputation_title": "評価",
     "blacklists": "ブラックリスト",
+    "blacklisted": "ブラックリスト登録済み",
     "if_comment": {
       "you_are_viewing_a_single_comments_thread_from": "次のスレッドのコメントの1つを表示しています",
       "view_the_full_context": "スレッドをすべて表示する",

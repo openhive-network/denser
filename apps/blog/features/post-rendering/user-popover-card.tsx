@@ -3,6 +3,7 @@ import { accountReputation } from '@hive/ui';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/components/popover';
 import PopoverCardData from './popover-card-data';
 import { useTranslation } from '@/blog/i18n/client';
+import { AlertTriangle } from 'lucide-react';
 
 export interface UserPopoverCardProps {
   author: string;
@@ -33,9 +34,10 @@ export function UserPopoverCard({
             ({accountReputation(author_reputation)})
           </span>
           {blacklist && blacklist[0] ? (
-            <span className="text-destructive" title={blacklist[0]}>
-              ⚠️
-            </span>
+            <AlertTriangle
+              className="mr-1 h-4 w-4 text-destructive"
+              title={blacklist[0]}
+            />
           ) : null}
         </button>
       </PopoverTrigger>
