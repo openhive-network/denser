@@ -84,8 +84,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         console.error('Failed to parse state:', e);
       }
 
-      // Redirect back to the app
-      window.location.replace(returnUrl);
+      // Redirect back to the app with google_auth=pending flag
+      // This signals to the app that it should continue the OAuth flow automatically
+      var separator = returnUrl.indexOf('?') === -1 ? '?' : '&';
+      window.location.replace(returnUrl + separator + 'google_auth=pending');
     })();
   </script>
 </body>

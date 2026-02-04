@@ -6,6 +6,8 @@ import { FC, PropsWithChildren, useMemo } from 'react';
 import Head from 'next/head';
 import { useTheme } from 'next-themes';
 import { SignerProvider } from '@hive/smart-signer/components/signer-provider';
+import { GoogleOAuthRedirectHandler } from '@smart-signer/components/google-oauth-redirect-handler';
+import { siteConfig } from '@ui/config/site';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { LoggedUserProvider } from '@/blog/features/votes/hooks/use-logged-user';
@@ -34,6 +36,10 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
             <NavigationProgress />
             <NavigationProgressHandler />
             <SignerProvider>
+              <GoogleOAuthRedirectHandler
+                authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
+                strict={!siteConfig.allowNonStrictLogin}
+              />
               <LoggedUserProvider>
                 {children}
                 <RocketChatWidget />
