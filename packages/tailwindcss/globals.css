@@ -21,6 +21,7 @@
     --card-empty-border: 0, 0%, 93%;
 
     --border: 0, 0%, 93%;
+    --thread-line: 0 0% 87%;
     --input: 214.3 31.8% 91.4%;
 
     --primary: 221, 27%, 13%;
@@ -61,6 +62,7 @@
     --card-empty-border: 210, 10%, 19%;
 
     --border: 216 34% 17%;
+    --thread-line: 216 15% 28%;
     --input: 216 34% 17%;
 
     --primary: 210 40% 98%;

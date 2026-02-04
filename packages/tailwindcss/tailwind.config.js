@@ -24,6 +24,7 @@ module.exports = {
       },
       colors: {
         border: 'hsl(var(--border))',
+        'thread-line': 'hsl(var(--thread-line))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         background: {
