@@ -1,6 +1,7 @@
 import { SignChallenge, Signer, SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { THiveRoles, TTransactionPackType } from '@hiveio/wax';
 import { siteConfig } from "@hive/ui/config/site";
+import { hasOAuthPopupIssues } from '@hive/ui/lib/browser-detect';
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
@@ -14,6 +15,12 @@ export const hasCompatibleGoogleDriveProvider = () => !!siteConfig.googleDrive.c
 
 const GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY = 'google_refresh_token';
 const GOOGLE_DRIVE_ENCRYPTION_KEY_WIF_LOCALSTORAGE_KEY = 'gdrive_encryption_key_wif';
+
+// SessionStorage keys for Safari OAuth redirect flow
+const GOOGLE_OAUTH_CODE_KEY = 'google_oauth_code';
+const GOOGLE_OAUTH_ERROR_KEY = 'google_oauth_error';
+const GOOGLE_OAUTH_USERNAME_KEY = 'google_oauth_username';
+const GOOGLE_OAUTH_KEYTYPE_KEY = 'google_oauth_keyType';
 
 /* eslint-disable no-restricted-properties -- WIF key is stored permanently without TTL (safe: WIF alone cannot access wallet without Google token) */
 function getStoredEncryptionKeyWif(): string | null {
@@ -41,8 +48,10 @@ declare global {
             client_id: string;
             scope: string;
             ux_mode: 'popup' | 'redirect';
+            redirect_uri?: string;
+            state?: string;
             include_granted_scopes?: boolean;
-            callback: (response: { code?: string; }) => void;
+            callback: (response: { code?: string; error?: string }) => void;
           }): {
             requestCode: (options: { prompt: 'consent' | 'none' }) => void;
           }
@@ -97,6 +106,7 @@ export class SignerGoogleDrive extends Signer {
       throw new Error('Google Drive Signer is not properly configured.');
     }
 
+    // Check for saved refresh token first
     const savedRefresh = localStorage.getItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
     if (savedRefresh) {
       this._accessToken = this.getAccessTokenForRefreshToken(savedRefresh).catch((err) => {
@@ -112,41 +122,92 @@ export class SignerGoogleDrive extends Signer {
       return this._accessToken!;
     }
 
+    // Check if we have a pending OAuth code from redirect flow (Safari)
+    const pendingCode = sessionStorage.getItem(GOOGLE_OAUTH_CODE_KEY);
+    const pendingError = sessionStorage.getItem(GOOGLE_OAUTH_ERROR_KEY);
+
+    if (pendingError) {
+      sessionStorage.removeItem(GOOGLE_OAUTH_ERROR_KEY);
+      sessionStorage.removeItem(GOOGLE_OAUTH_USERNAME_KEY);
+      sessionStorage.removeItem(GOOGLE_OAUTH_KEYTYPE_KEY);
+      return Promise.reject(new Error(`Google OAuth error: ${pendingError}`));
+    }
+
+    if (pendingCode) {
+      // We have a code from redirect - exchange it
+      sessionStorage.removeItem(GOOGLE_OAUTH_CODE_KEY);
+      sessionStorage.removeItem(GOOGLE_OAUTH_USERNAME_KEY);
+      sessionStorage.removeItem(GOOGLE_OAUTH_KEYTYPE_KEY);
+
+      this._accessToken = this.exchangeCodeForTokens(pendingCode, true);
+      return this._accessToken;
+    }
+
+    // Determine which OAuth flow to use based on browser
+    const useRedirectMode = hasOAuthPopupIssues();
+
+    if (useRedirectMode) {
+      return this.initiateRedirectFlow();
+    } else {
+      return this.initiatePopupFlow();
+    }
+  }
+
+  /**
+   * Initiates OAuth via redirect (for Safari).
+   * Stores login context and redirects to Google OAuth.
+   */
+  private initiateRedirectFlow(): Promise<string> {
+    // Store login context for resumption after redirect
+    sessionStorage.setItem(GOOGLE_OAUTH_USERNAME_KEY, this.username);
+    sessionStorage.setItem(GOOGLE_OAUTH_KEYTYPE_KEY, this.keyType);
+
+    const returnUrl = window.location.href;
+    const state = btoa(JSON.stringify({ returnUrl }));
+    const redirectUri = `${window.location.origin}/api/google-drive/callback`;
+
+    const tokenClient = window.google.accounts.oauth2.initCodeClient({
+      client_id: siteConfig.googleDrive.clientId,
+      scope: siteConfig.googleDrive.scopes,
+      ux_mode: 'redirect',
+      redirect_uri: redirectUri,
+      state,
+      include_granted_scopes: false,
+      callback: () => {
+        // This won't be called in redirect mode
+      }
+    });
+
+    tokenClient.requestCode({ prompt: 'consent' });
+
+    // Return a promise that never resolves (page will redirect)
+    return new Promise(() => {});
+  }
+
+  /**
+   * Initiates OAuth via popup (for Chrome, Firefox, etc.).
+   */
+  private initiatePopupFlow(): Promise<string> {
     this._accessToken = new Promise<string>((resolve, reject) => {
       const tokenClient = window.google.accounts.oauth2.initCodeClient({
         client_id: siteConfig.googleDrive.clientId,
         scope: siteConfig.googleDrive.scopes,
         ux_mode: 'popup',
         include_granted_scopes: false,
-        callback: async (response: any) => {
-          try {
-            const code = response.code as string;
+        callback: async (response: { code?: string; error?: string }) => {
+          if (response.error) {
+            reject(new Error(`Google OAuth error: ${response.error}`));
+            return;
+          }
 
-            if (typeof code !== 'string') {
+          try {
+            if (!response.code) {
               reject(new Error('No code received from Google Drive OAuth2'));
               return;
             }
 
-            if (code) {
-              const res = await fetch(`${window.location.origin}/api/google-drive/auth`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code }),
-              });
-
-              if (!res.ok) {
-                reject(new Error('Failed to exchange code for tokens'));
-                return;
-              }
-
-              const data = await res.json();
-
-              if (data.refreshToken) {
-                localStorage.setItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY, data.refreshToken);
-              }
-
-              resolve(data.accessToken);
-            }
+            const accessToken = await this.exchangeCodeForTokens(response.code, false);
+            resolve(accessToken);
           } catch (error) {
             reject(error);
           }
@@ -156,7 +217,37 @@ export class SignerGoogleDrive extends Signer {
       tokenClient.requestCode({ prompt: 'consent' });
     });
 
-    return this._accessToken!;
+    return this._accessToken;
+  }
+
+  /**
+   * Exchanges authorization code for access/refresh tokens.
+   */
+  private async exchangeCodeForTokens(code: string, isRedirectMode: boolean): Promise<string> {
+    const body: Record<string, string> = { code };
+
+    // For redirect mode, include the redirect_uri that was used during authorization
+    if (isRedirectMode) {
+      body.redirectUri = `${window.location.origin}/api/google-drive/callback`;
+    }
+
+    const res = await fetch(`${window.location.origin}/api/google-drive/auth`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to exchange code for tokens');
+    }
+
+    const data = await res.json();
+
+    if (data.refreshToken) {
+      localStorage.setItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY, data.refreshToken);
+    }
+
+    return data.accessToken;
   }
 
   async destroy(): Promise<void> {
