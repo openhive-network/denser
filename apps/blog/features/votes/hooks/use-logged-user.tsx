@@ -24,7 +24,7 @@ export const useLoggedUserContext = () => {
 export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useUserClient();
   const { data: accountData } = useQuery({
-    queryKey: ['accountData', user.username],
+    queryKey: ['loggedUserAccount', user.username],
     queryFn: () => getAccountFull(user.username),
     enabled: !!user.username
   });
