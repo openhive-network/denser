@@ -447,7 +447,7 @@ export default function PostForm({
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
-        className={clsx('flex flex-col gap-4 bg-background p-4 sm:p-6 lg:p-8', {
+        className={clsx('relative flex flex-col gap-4 bg-background p-4 sm:p-6 lg:p-8', {
           'lg:flex-row': sideBySide
         })}
         data-testid="form-and-preview-container"
@@ -810,35 +810,38 @@ export default function PostForm({
             </div>
           </form>
         </Form>
+
         <div
-          className={clsx('flex flex-col lg:w-1/2', {
+          className={clsx('relative flex flex-col lg:w-1/2', {
             hidden: !preview,
             'lg:w-full': !sideBySide,
             'h-[80vh]': sideBySide
           })}
           data-testid="preview-container"
         >
-          <div className="flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-background-secondary/50 px-4 py-2">
-            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              {t('submit_page.preview')}
-            </span>
-            <div className="flex items-center gap-3">
-              {sideBySide && (
+          {/* Floating sync scroll button - positioned at left edge of preview, vertically centered */}
+          {sideBySide && (
+            <div
+              className="group absolute left-[-7px] top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 lg:block"
+              data-testid="sync-scroll-container"
+            >
+              {/* Larger hover area for easier discovery */}
+              <div className="flex h-[150px] h-12 items-center justify-center">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
                         type="button"
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
-                        className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                        className="h-10 w-10 rounded-full border-border bg-background p-0 opacity-20 shadow-lg transition-opacity duration-200 hover:bg-background-secondary group-hover:opacity-100"
                         onClick={() => setSyncScroll((prev) => !prev)}
                         data-testid="sync-scroll-toggle"
                       >
                         {syncScroll ? (
-                          <Icons.link2 className="h-4 w-4" />
+                          <Icons.link2 className="h-5 w-5 text-foreground" />
                         ) : (
-                          <Icons.link2Off className="h-4 w-4" />
+                          <Icons.link2Off className="h-5 w-5 text-muted-foreground" />
                         )}
                       </Button>
                     </TooltipTrigger>
@@ -849,16 +852,21 @@ export default function PostForm({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-              )}
-              <Link
-                target="_blank"
-                href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
-              >
-                <span className="text-xs text-muted-foreground hover:text-destructive transition-colors">
-                  {t('submit_page.markdown_styling_guide')}
-                </span>
-              </Link>
+              </div>
             </div>
+          )}
+          <div className="flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-background-secondary/50 px-4 py-2">
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              {t('submit_page.preview')}
+            </span>
+            <Link
+              target="_blank"
+              href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+            >
+              <span className="text-xs text-muted-foreground hover:text-destructive transition-colors">
+                {t('submit_page.markdown_styling_guide')}
+              </span>
+            </Link>
           </div>
           <div ref={previewContainerRef} className="flex h-full overflow-y-auto rounded-b-lg border border-border">
             {previewContent ? (
