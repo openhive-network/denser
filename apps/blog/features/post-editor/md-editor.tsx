@@ -106,6 +106,16 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     [setFormValue, signer]
   );
 
+  // Focus the editor textarea when clicking on the editor container
+  const focusEditor = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    // Find the textarea within this specific editor instance
+    const container = event.currentTarget;
+    const textarea = container.querySelector('.w-md-editor-text-input') as HTMLTextAreaElement;
+    if (textarea && document.activeElement !== textarea) {
+      textarea.focus();
+    }
+  }, []);
+
   // Handle Ctrl+Home/End to ensure cursor scrolls into view (Firefox fix)
   const keyDownHandler = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
     const isCtrlOrCmd = event.ctrlKey || event.metaKey;
@@ -214,7 +224,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         //@ts-ignore
         onChange={inputImageHandler}
       />
-      <div className="relative" onPaste={pasteHandler} onKeyDown={keyDownHandler}>
+      <div className="cursor-text relative" onPaste={pasteHandler} onKeyDown={keyDownHandler} onClick={focusEditor}>
         <div>
           <MDEditor
             ref={editorRef}
@@ -247,19 +257,21 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       </div>
     </div>
   ) : (
-    <MDEditor
-      height={windowheight}
-      preview="edit"
-      value={formValue}
-      aria-placeholder={placeholder ?? ''}
-      onChange={(value) => {
-        setFormValue(value || '');
-      }}
-      commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef), spoilerBtn()]}
-      extraCommands={[]}
-      //@ts-ignore
-      style={{ '--color-canvas-default': 'var(--background)' }}
-    />
+    <div className="cursor-text" onClick={focusEditor}>
+      <MDEditor
+        height={windowheight}
+        preview="edit"
+        value={formValue}
+        aria-placeholder={placeholder ?? ''}
+        onChange={(value) => {
+          setFormValue(value || '');
+        }}
+        commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef), spoilerBtn()]}
+        extraCommands={[]}
+        //@ts-ignore
+        style={{ '--color-canvas-default': 'var(--background)' }}
+      />
+    </div>
   );
 };
 
