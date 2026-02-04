@@ -119,6 +119,8 @@ export default function PostForm({
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   // Track if we've hydrated from localStorage to avoid resetting form during typing
   const hasHydratedRef = useRef(false);
+  // Track if post was successfully submitted to prevent auto-save from re-creating draft
+  const hasSubmittedRef = useRef(false);
   const { t } = useTranslation('common_blog');
   const postMutation = usePostMutation();
   const { data: communityData } = useQuery({
@@ -264,6 +266,8 @@ export default function PostForm({
       : undefined;
 
   useEffect(() => {
+    // Skip auto-save after successful submission to prevent re-creating draft
+    if (hasSubmittedRef.current) return;
     debounce(() => {
       storePost(watchedValues);
     }, 50)();
@@ -324,9 +328,11 @@ export default function PostForm({
         throw error;
       }
 
+      // Mark as submitted to prevent auto-save from re-creating draft
+      hasSubmittedRef.current = true;
+      removePost();
       form.reset(defaultValues);
       setPreviewContent(undefined);
-      removePost();
       if (editMode) {
         if (refreshPage && setEditMode) {
           setIsSubmitting(false);

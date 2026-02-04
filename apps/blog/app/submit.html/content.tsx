@@ -4,21 +4,17 @@ import PostForm from '@/blog/features/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useRef, useState } from 'react';
-import { removeStorageItem } from '@ui/lib/storage-with-ttl';
+import { useState } from 'react';
 
 const SubmitContent = () => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const hasClearedDraft = useRef(false);
 
-  // Clear any existing draft when creating a new post.
-  // Runs synchronously before PostForm renders to prevent stale data hydration.
-  if (!hasClearedDraft.current && user?.username) {
-    removeStorageItem(`postData-new-${user.username}`);
-    hasClearedDraft.current = true;
-  }
+  // Draft is saved automatically by PostForm via useStorageWithTTL
+  // and cleared only when:
+  // 1. Post is successfully submitted (removePost() in onSubmit)
+  // 2. User clicks "Clean" button (handleCancel)
 
   return (
     <>
