@@ -145,7 +145,7 @@ export class PostPage {
     this.commentListItem = '[data-testid="comment-list-item"]'
     this.commentListLocator = page.locator('[data-testid="comment-list"]');
     this.commentAuthorLink = page.locator(
-      '[data-testid="comment-card-header"] [data-testid="author-name-link"]'
+      '[data-testid="comment-card-header"] [data-testid="author-name-link"] span:nth-of-type(1)'
     );
     this.commentAuthorReputation = page.locator(
       '[data-testid="comment-card-header"] [data-testid="author-reputation"]'
