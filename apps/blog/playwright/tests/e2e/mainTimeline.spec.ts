@@ -311,7 +311,7 @@ test.describe('Home page tests', () => {
     // Timestamp link color after hovering
     await homePage.getFirstPostCardTimestampLink.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.getFirstPostCardTimestampLink).toHaveCSS('color', 'rgb(246, 85, 85)');
+    await expect(homePage.getFirstPostCardTimestampLink).toHaveCSS('color', 'rgb(218, 43, 43)');
   });
 
   test('validate the first post header styles (for Trending filter) in the dark theme', async ({ page }) => {
