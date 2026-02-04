@@ -119,6 +119,11 @@ export default function PostForm({
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const isScrollSyncingRef = useRef(false);
+  // Refs for scroll sync RAF IDs (stored outside effect to prevent leaks on re-run)
+  const editorRafIdRef = useRef<number | null>(null);
+  const previewRafIdRef = useRef<number | null>(null);
+  // Ref for scroll cleanup function (safer than attaching to DOM element)
+  const scrollCleanupRef = useRef<(() => void) | null>(null);
   const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   // Track if we've hydrated from localStorage to avoid resetting form during typing
@@ -328,15 +333,11 @@ export default function PostForm({
 
       if (!editorScrollArea || !previewEl) return;
 
-      // Use RAF-based throttling for scroll handlers
-      let editorRafId: number | null = null;
-      let previewRafId: number | null = null;
-
       const handleEditorScroll = () => {
-        if (isScrollSyncingRef.current || editorRafId) return;
+        if (isScrollSyncingRef.current || editorRafIdRef.current) return;
 
-        editorRafId = requestAnimationFrame(() => {
-          editorRafId = null;
+        editorRafIdRef.current = requestAnimationFrame(() => {
+          editorRafIdRef.current = null;
           const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
           const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
           if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
@@ -351,10 +352,10 @@ export default function PostForm({
       };
 
       const handlePreviewScroll = () => {
-        if (isScrollSyncingRef.current || previewRafId) return;
+        if (isScrollSyncingRef.current || previewRafIdRef.current) return;
 
-        previewRafId = requestAnimationFrame(() => {
-          previewRafId = null;
+        previewRafIdRef.current = requestAnimationFrame(() => {
+          previewRafIdRef.current = null;
           const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
           const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
           if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
@@ -372,10 +373,12 @@ export default function PostForm({
       editorScrollArea.addEventListener('scroll', handleEditorScroll, { passive: true });
       previewEl.addEventListener('scroll', handlePreviewScroll, { passive: true });
 
-      // Store cleanup references including RAF cancellation
-      (editorContainerRef.current as HTMLDivElement & { _scrollCleanup?: () => void })._scrollCleanup = () => {
-        if (editorRafId) cancelAnimationFrame(editorRafId);
-        if (previewRafId) cancelAnimationFrame(previewRafId);
+      // Store cleanup function in ref (safer than attaching to DOM element)
+      scrollCleanupRef.current = () => {
+        if (editorRafIdRef.current) cancelAnimationFrame(editorRafIdRef.current);
+        if (previewRafIdRef.current) cancelAnimationFrame(previewRafIdRef.current);
+        editorRafIdRef.current = null;
+        previewRafIdRef.current = null;
         editorScrollArea.removeEventListener('scroll', handleEditorScroll);
         previewEl.removeEventListener('scroll', handlePreviewScroll);
       };
@@ -383,9 +386,15 @@ export default function PostForm({
 
     return () => {
       clearTimeout(timeoutId);
-      const cleanup = (editorContainerRef.current as HTMLDivElement & { _scrollCleanup?: () => void })?._scrollCleanup;
-      if (cleanup) {
-        cleanup();
+      // Cancel any pending RAF frames immediately (in case timeout hasn't fired yet)
+      if (editorRafIdRef.current) cancelAnimationFrame(editorRafIdRef.current);
+      if (previewRafIdRef.current) cancelAnimationFrame(previewRafIdRef.current);
+      editorRafIdRef.current = null;
+      previewRafIdRef.current = null;
+      // Run stored cleanup if timeout had set up listeners
+      if (scrollCleanupRef.current) {
+        scrollCleanupRef.current();
+        scrollCleanupRef.current = null;
       }
     };
   }, [syncScroll, sideBySide, preview]);
@@ -866,7 +875,7 @@ export default function PostForm({
               data-testid="sync-scroll-container"
             >
               {/* Larger hover area for easier discovery */}
-              <div className="flex h-[150px] h-12 items-center justify-center">
+              <div className="flex h-[150px] items-center justify-center">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
