@@ -267,7 +267,7 @@ test.describe('Communities page tests', () => {
     );
     // Post author link color after hovering
     await communitiesPage.getFirstPostAuthor.hover();
-    await expect(communitiesPage.getFirstPostAuthor).toHaveCSS('color', 'rgb(218, 43, 43)');
+    await expect(communitiesPage.getFirstPostAuthor).toHaveCSS('color', 'rgb(246, 85, 85)');
 
     // Timestamp link color without hovering
     expect(

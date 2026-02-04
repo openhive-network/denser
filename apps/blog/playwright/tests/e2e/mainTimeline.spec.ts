@@ -123,7 +123,7 @@ test.describe('Home page tests', () => {
     // Wait for tooltip to be visible instead of fixed timeout
     await expect(homePage.getFirstPostPayoutTooltip).toBeVisible({ timeout: 15000 });
     // Color of the first post payouts with hovering
-    await expect(homePage.getFirstPostPayout).toHaveCSS('color', 'rgb(226, 18, 53)');
+    await expect(homePage.getFirstPostPayout).toHaveCSS('color', 'rgb(246, 85, 85)');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostPayoutTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );
@@ -206,7 +206,7 @@ test.describe('Home page tests', () => {
 
     await homePage.getFirstPostChildernCommentNumber.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.getFirstPostChildernCommentNumber).toHaveCSS('color', 'rgb(218, 43, 43)');
+    await expect(homePage.getFirstPostChildernCommentNumber).toHaveCSS('color', 'rgb(246, 85, 85)');
     // Color of the first post comments icon after hovering
     await homePage.getFirstPostChildernIcon.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
@@ -242,7 +242,7 @@ test.describe('Home page tests', () => {
 
     await homePage.getFirstPostChildernCommentNumber.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.getFirstPostChildernCommentNumber).toHaveCSS('color', 'rgb(226, 18, 53)');
+    await expect(homePage.getFirstPostChildernCommentNumber).toHaveCSS('color', 'rgb(246, 85, 85)');
     // Color of the first post comments icon after hovering
     await homePage.getFirstPostChildernIcon.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
@@ -280,7 +280,7 @@ test.describe('Home page tests', () => {
     // Post author link color after hovering
     await homePage.getFirstPostAuthor.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.getFirstPostAuthor).toHaveCSS('color', 'rgb(218, 43, 43)');
+    await expect(homePage.getFirstPostAuthor).toHaveCSS('color', 'rgb(246, 85, 85)');
 
     // Community or category link color without hovering in the post card
     if (await homePage.getFirstPostCardCommunityLink.isVisible()) {
@@ -291,7 +291,7 @@ test.describe('Home page tests', () => {
       // Communitylink color after hovering in the post card
       await homePage.getFirstPostCardCommunityLink.hover();
       // Use toHaveCSS with auto-retry instead of fixed timeout
-      await expect(homePage.getFirstPostCardCommunityLink).toHaveCSS('color', 'rgb(218, 43, 43)');
+      await expect(homePage.getFirstPostCardCommunityLink).toHaveCSS('color', 'rgb(246, 85, 85)');
     }
     if (await homePage.getFirstPostCardCategoryLink.isVisible()) {
       // Communitylink color without hovering in the post card
@@ -301,7 +301,7 @@ test.describe('Home page tests', () => {
       // Communitylink color after hovering in the post card
       await homePage.getFirstPostCardCategoryLink.hover();
       // Use toHaveCSS with auto-retry instead of fixed timeout
-      await expect(homePage.getFirstPostCardCategoryLink).toHaveCSS('color', 'rgb(218, 43, 43)');
+      await expect(homePage.getFirstPostCardCategoryLink).toHaveCSS('color', 'rgb(246, 85, 85)');
     }
 
     // Timestamp link color without hovering
@@ -311,7 +311,7 @@ test.describe('Home page tests', () => {
     // Timestamp link color after hovering
     await homePage.getFirstPostCardTimestampLink.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.getFirstPostCardTimestampLink).toHaveCSS('color', 'rgb(218, 43, 43)');
+    await expect(homePage.getFirstPostCardTimestampLink).toHaveCSS('color', 'rgb(246, 85, 85)');
   });
 
   test('validate the first post header styles (for Trending filter) in the dark theme', async ({ page }) => {
@@ -330,7 +330,7 @@ test.describe('Home page tests', () => {
     // Post author link color after hovering
     await homePage.getFirstPostAuthor.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.getFirstPostAuthor).toHaveCSS('color', 'rgb(226, 18, 53)');
+    await expect(homePage.getFirstPostAuthor).toHaveCSS('color', 'rgb(246, 85, 85)');
 
     // Community or category link color without hovering in the post card
     if (await homePage.getFirstPostCardCommunityLink.isVisible()) {
@@ -341,7 +341,7 @@ test.describe('Home page tests', () => {
       // Communitylink color after hovering in the post card
       await homePage.getFirstPostCardCommunityLink.hover();
       // Use toHaveCSS with auto-retry instead of fixed timeout
-      await expect(homePage.getFirstPostCardCommunityLink).toHaveCSS('color', 'rgb(226, 18, 53)');
+      await expect(homePage.getFirstPostCardCommunityLink).toHaveCSS('color', 'rgb(246, 85, 85)');
     }
     if (await homePage.getFirstPostCardCategoryLink.isVisible()) {
       // Communitylink color without hovering in the post card
@@ -351,7 +351,7 @@ test.describe('Home page tests', () => {
       // Communitylink color after hovering in the post card
       await homePage.getFirstPostCardCategoryLink.hover();
       // Use toHaveCSS with auto-retry instead of fixed timeout
-      await expect(homePage.getFirstPostCardCategoryLink).toHaveCSS('color', 'rgb(226, 18, 53)');
+      await expect(homePage.getFirstPostCardCategoryLink).toHaveCSS('color', 'rgb(246, 85, 85)');
     }
 
     // Timestamp link color without hovering
@@ -361,7 +361,7 @@ test.describe('Home page tests', () => {
     // Timestamp link color after hovering
     await homePage.getFirstPostCardTimestampLink.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.getFirstPostCardTimestampLink).toHaveCSS('color', 'rgb(226, 18, 53)');
+    await expect(homePage.getFirstPostCardTimestampLink).toHaveCSS('color', 'rgb(246, 85, 85)');
   });
 
   test('validate the first post (for New filter)', async ({ page, request, browserName }) => {
@@ -644,7 +644,7 @@ test.describe('Home page tests', () => {
     );
     await homePage.loginBtn.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(218, 43, 43)');
+    await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(246, 85, 85)');
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
       'rgb(241, 245, 249)'
     );
@@ -671,7 +671,7 @@ test.describe('Home page tests', () => {
 
     await homePage.loginBtn.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(226, 18, 53)');
+    await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(246, 85, 85)');
     await expect.poll( async () => {
       return await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color');
     }).toBe(
@@ -1047,7 +1047,7 @@ test.describe('Home page tests', () => {
           await homePage.postCardAffiliationTag.first(),
           'border-color'
         )
-      ).toBe('rgb(218, 43, 43)');
+      ).toBe('rgb(246, 85, 85)');
     } else console.log('No affiliation tags on the 40 post cards');
   });
 
@@ -1084,7 +1084,7 @@ test.describe('Home page tests', () => {
           await homePage.postCardAffiliationTag.first(),
           'border-color'
         )
-      ).toBe('rgb(226, 18, 53)');
+      ).toBe('rgb(246, 85, 85)');
     } else console.log('No affiliation tags on the 40 post cards');
   });
 
@@ -1156,7 +1156,7 @@ test.describe('Home page tests', () => {
 
     if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
       await homePage.postCardPoweredUp100Trigger.first().hover();
-      await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('Powered Up 100%Powered Up 100%');
+      await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('100% Hive Power100% Hive Power');
       console.log('111 ', await homePage.postCardPoweredUp100Trigger.first());
       expect(
         await homePage.getElementCssPropertyValue(await homePage.postCardPoweredUp100Tooltip.first(), 'color')
@@ -1189,7 +1189,7 @@ test.describe('Home page tests', () => {
 
     if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
       await homePage.postCardPoweredUp100Trigger.first().hover();
-      await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('Powered Up 100%Powered Up 100%');
+      await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('100% Hive Power100% Hive Power');
       console.log('111 ', await homePage.postCardPoweredUp100Trigger.first());
       expect(
         await homePage.getElementCssPropertyValue(await homePage.postCardPoweredUp100Tooltip.first(), 'color')

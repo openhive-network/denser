@@ -52,7 +52,7 @@ test.describe('Login and Sign Up tests', () =>{
     await expect(homePage.loginBtn).toHaveText("Login")
     await homePage.loginBtn.hover()
     // Wait for hover state with auto-retry instead of fixed timeout
-    await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(226, 18, 53)');
+    await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(246, 85, 85)');
 
     await expect(homePage.signupBtn).toBeVisible()
     expect(await homePage.getElementCssPropertyValue(homePage.signupBtn, 'color')).toBe("rgb(255, 255, 255)");
@@ -495,10 +495,10 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateDefaultLoginFormIsLoaded();
     // Type username with less then 3 characters into the username login form
     await loginForm.usernameInput.fill('ak');
-    expect(await homePage.getElementCssPropertyValue(await loginForm.usernameErrorMessage, 'color')).toBe("rgb(226, 18, 53)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.usernameErrorMessage, 'color')).toBe("rgb(246, 85, 85)");
     // Type empty string into the username login form
     await loginForm.usernameInput.fill('');
-    expect(await homePage.getElementCssPropertyValue(await loginForm.usernameErrorMessage, 'color')).toBe("rgb(226, 18, 53)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.usernameErrorMessage, 'color')).toBe("rgb(246, 85, 85)");
   });
 
   test('Validate styles in the error message for too short password in the dark mode', async ({page}) =>{
@@ -512,11 +512,11 @@ test.describe('Login and Sign Up tests', () =>{
     // Type Safe storage password with less then 6 characters into the password login form
     await loginForm.passwordInput.fill('ako');
     await loginForm.page.waitForSelector(loginForm.passwordErrorMessage['_selector']);
-    expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(226, 18, 53)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(246, 85, 85)");
     // Type empty string into the safe storage password in the login form
     await loginForm.passwordInput.fill('');
     await loginForm.page.waitForSelector(loginForm.passwordErrorMessage['_selector']);
-    expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(226, 18, 53)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(246, 85, 85)");
   });
 
   test('Validate styles in the error message for wrong WIF format in the dark mode', async ({page}) =>{
@@ -528,13 +528,14 @@ test.describe('Login and Sign Up tests', () =>{
     await homePage.loginBtn.click()
     await loginForm.validateDefaultLoginFormIsLoaded();
     // Type username (more than 3 chars)
+    await loginForm.page.waitForSelector(loginForm.usernameInput['_selector']);
     await loginForm.usernameInput.fill(user.username);
     // Type wrong WIF format to the input
     await loginForm.wifInput.fill('wrongWif');
-    expect(await homePage.getElementCssPropertyValue(await loginForm.wifInputErrorMessage, 'color')).toBe("rgb(226, 18, 53)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.wifInputErrorMessage, 'color')).toBe("rgb(246, 85, 85)");
     // Type empty string to the WIF input
     await loginForm.wifInput.fill('');
-    expect(await homePage.getElementCssPropertyValue(await loginForm.wifInputErrorMessage, 'color')).toBe("rgb(226, 18, 53)");
+    expect(await homePage.getElementCssPropertyValue(await loginForm.wifInputErrorMessage, 'color')).toBe("rgb(246, 85, 85)");
   });
 
   test('Validate styles of the Invalid WIF checksum in the Enter your WIF form in the light mode', async ({page}) =>{
