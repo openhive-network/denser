@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { useParams, usePathname } from 'next/navigation';
+import { notFound, useParams, usePathname } from 'next/navigation';
 import { Link } from '@hive/ui';
 import Loading from '@ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
@@ -52,7 +52,7 @@ export default function ParamLayout({ children }: { children: ReactNode }) {
   });
 
   if (!username) {
-    return <Loading loading />;
+    notFound();
   }
 
   if (profileDataIsLoading || !profileData) {
