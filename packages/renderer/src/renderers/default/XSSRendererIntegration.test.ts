@@ -15,6 +15,7 @@ import {DefaultRenderer, RendererOptions} from './DefaultRenderer';
 
 /**
  * Checks rendered output for dangerous patterns that indicate XSS
+ * Note: SVG is allowed inside YouTube facades (play button)
  */
 function detectXSSInOutput(output: string): string[] {
     const issues: string[] = [];
@@ -45,10 +46,21 @@ function detectXSSInOutput(output: string): string[] {
     }
 
     // Dangerous tags that shouldn't be in user content
-    const dangerousTags = ['svg', 'math', 'object', 'embed', 'applet', 'form', 'meta', 'base', 'link'];
+    // Note: SVG is allowed inside YouTube facades (play button icon)
+    const dangerousTags = ['math', 'object', 'embed', 'applet', 'form', 'meta', 'base', 'link'];
     for (const tag of dangerousTags) {
         if (new RegExp(`<${tag}[\\s>]`, 'i').test(output)) {
             issues.push(`${tag} tag found`);
+        }
+    }
+
+    // SVG is dangerous unless it's inside a YouTube facade (play button)
+    // Check for SVG outside of YouTube facades
+    if (/<svg[\s>]/i.test(output)) {
+        // Allow SVG only if it's inside a YouTube facade
+        const hasYoutubeFacade = /youtube-facade.*<svg.*<\/svg>.*<\/div><\/div>/is.test(output);
+        if (!hasYoutubeFacade) {
+            issues.push('svg tag found');
         }
     }
 
@@ -597,8 +609,9 @@ describe('XSS Integration - Allowlist Verification', function () {
     it('allows legitimate YouTube embeds', function () {
         const input = 'Check this: https://www.youtube.com/watch?v=dQw4w9WgXcQ';
         const output = renderer.render(input);
-        expect(output).to.include('youtube.com/embed/dQw4w9WgXcQ');
-        expect(output).to.include('iframe');
+        // YouTube now uses facade pattern instead of iframe
+        expect(output).to.include('youtube-facade');
+        expect(output).to.include('data-youtube-id="dQw4w9WgXcQ"');
     });
 
     it('allows legitimate Spotify embeds', function () {

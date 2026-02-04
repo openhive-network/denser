@@ -268,10 +268,14 @@ describe('Embed Processing Safety', () => {
     describe('YouTube processEmbed', () => {
         const embedder = new YoutubeEmbedder();
 
-        it('generates iframe with correct src', () => {
+        it('generates facade with correct data attributes', () => {
             const result = embedder.processEmbed('dQw4w9WgXcQ', {width: 640, height: 480});
-            expect(result).to.include('<iframe');
-            expect(result).to.include('src="https://www.youtube.com/embed/dQw4w9WgXcQ"');
+            // YouTube now uses facade pattern instead of iframe
+            expect(result).to.include('youtube-facade');
+            expect(result).to.include('data-youtube-id="dQw4w9WgXcQ"');
+            expect(result).to.include('data-width="640"');
+            expect(result).to.include('data-height="480"');
+            expect(result).to.include('https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg');
         });
 
         it('does not include event handlers in output', () => {

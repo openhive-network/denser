@@ -55,17 +55,19 @@ describe('AbstractEmbedder', () => {
             const input = '~~~ embed:dQw4w9WgXcQ youtube ~~~';
             const result = AbstractEmbedder.insertAllEmbeds(embedders, input, size);
 
-            expect(result).to.include('<iframe');
-            expect(result).to.include('youtube.com/embed/dQw4w9WgXcQ');
+            // YouTube now uses facade pattern instead of iframe
+            expect(result).to.include('youtube-facade');
+            expect(result).to.include('data-youtube-id="dQw4w9WgXcQ"');
         });
 
         it('accepts valid ID with allowed special characters (/?=.-)', () => {
             // These characters are allowed by the pattern [\w/?=.-]+
-            const input = '~~~ embed:abc/def?id=123.test-value youtube ~~~';
+            // Note: YouTube IDs don't contain these chars, but Spotify does
+            const input = '~~~ embed:embed/playlist/37i9dQZF1DXcBWIGoYBM5M spotify ~~~';
             const result = AbstractEmbedder.insertAllEmbeds(embedders, input, size);
 
             expect(result).to.include('<iframe');
-            expect(result).to.include('abc/def?id=123.test-value');
+            expect(result).to.include('embed/playlist/37i9dQZF1DXcBWIGoYBM5M');
         });
 
         it('accepts valid Spotify embed ID', () => {
@@ -86,19 +88,20 @@ describe('AbstractEmbedder', () => {
 
         it('handles multiple embeds with one malicious', () => {
             const input = [
-                '~~~ embed:dQw4w9WgXcQ youtube ~~~',        // valid
+                '~~~ embed:dQw4w9WgXcQ youtube ~~~',        // valid (uses facade, not iframe)
                 '~~~ embed:abc"onclick=alert(1) youtube ~~~', // malicious
-                '~~~ embed:123456789 vimeo ~~~'            // valid
+                '~~~ embed:123456789 vimeo ~~~'            // valid (uses iframe)
             ].join(' text between ');
 
             const result = AbstractEmbedder.insertAllEmbeds(embedders, input, size);
 
-            // Should have exactly 2 iframes (the valid ones)
+            // YouTube now uses facade pattern (no iframe), only Vimeo has iframe
             const iframeCount = (result.match(/<iframe/g) || []).length;
-            expect(iframeCount).to.equal(2);
+            expect(iframeCount).to.equal(1); // Only Vimeo
 
             // Should include the valid embeds
-            expect(result).to.include('youtube.com/embed/dQw4w9WgXcQ');
+            expect(result).to.include('youtube-facade');
+            expect(result).to.include('data-youtube-id="dQw4w9WgXcQ"');
             expect(result).to.include('player.vimeo.com/video/123456789');
         });
 
@@ -108,7 +111,8 @@ describe('AbstractEmbedder', () => {
 
             expect(result).to.include('Before text');
             expect(result).to.include('After text');
-            expect(result).to.include('<iframe');
+            // YouTube now uses facade pattern
+            expect(result).to.include('youtube-facade');
         });
     });
 });
