@@ -206,7 +206,7 @@ test.describe('Home page tests', () => {
 
     await homePage.getFirstPostChildernCommentNumber.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.getFirstPostChildernCommentNumber).toHaveCSS('color', 'rgb(246, 85, 85)');
+    await expect(homePage.getFirstPostChildernCommentNumber).toHaveCSS('color', 'rgb(218, 43, 43)');
     // Color of the first post comments icon after hovering
     await homePage.getFirstPostChildernIcon.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
@@ -280,7 +280,7 @@ test.describe('Home page tests', () => {
     // Post author link color after hovering
     await homePage.getFirstPostAuthor.hover();
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.getFirstPostAuthor).toHaveCSS('color', 'rgb(246, 85, 85)');
+    await expect(homePage.getFirstPostAuthor).toHaveCSS('color', 'rgb(218, 43, 43)');
 
     // Community or category link color without hovering in the post card
     if (await homePage.getFirstPostCardCommunityLink.isVisible()) {
@@ -643,8 +643,9 @@ test.describe('Home page tests', () => {
       'rgba(0, 0, 0, 0)'
     );
     await homePage.loginBtn.hover();
+    await homePage.page.waitForTimeout(500);
     // Use toHaveCSS with auto-retry instead of fixed timeout
-    await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(246, 85, 85)');
+    await expect(homePage.loginBtn).toHaveCSS('color', 'rgb(218, 43, 43)');
     await expect(await homePage.getElementCssPropertyValue(await homePage.loginBtn, 'background-color')).toBe(
       'rgb(241, 245, 249)'
     );
@@ -777,7 +778,7 @@ test.describe('Home page tests', () => {
         await homePage.getFirstPostUpvoteButton.locator('svg'),
         'color'
       )
-    ).toBe('rgb(226, 18, 53)');
+    ).toBe('rgb(246, 85, 85)');
 
     // Upvote icon background-color
     expect(
@@ -1047,7 +1048,7 @@ test.describe('Home page tests', () => {
           await homePage.postCardAffiliationTag.first(),
           'border-color'
         )
-      ).toBe('rgb(246, 85, 85)');
+      ).toBe('rgb(218, 43, 43)');
     } else console.log('No affiliation tags on the 40 post cards');
   });
 

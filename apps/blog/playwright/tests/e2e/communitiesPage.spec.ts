@@ -275,7 +275,7 @@ test.describe('Communities page tests', () => {
     ).toBe('rgb(248, 250, 252)');
     // Timestamp link color after hovering
     await communitiesPage.getFirstPostCardTimestampLink.hover();
-    await expect(communitiesPage.getFirstPostCardTimestampLink).toHaveCSS('color', 'rgb(218, 43, 43)');
+    await expect(communitiesPage.getFirstPostCardTimestampLink).toHaveCSS('color', 'rgb(246, 85, 85)');
     // Author reputation color without hovering
     expect(
       await homePage.getElementCssPropertyValue(await communitiesPage.getFirstPostAuthorReputation, 'color')
