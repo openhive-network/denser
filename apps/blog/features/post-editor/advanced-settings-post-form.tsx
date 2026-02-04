@@ -283,7 +283,10 @@ export function AdvancedSettingsPostForm({
   return (
     <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[425px]">
+      <DialogContent
+        className="max-h-[90vh] overflow-y-auto sm:max-w-[425px]"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="text-2xl">
             {t('submit_page.advanced_settings_dialog.advanced_settings')}
