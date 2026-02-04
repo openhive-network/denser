@@ -5,12 +5,16 @@ import { Link } from '@hive/ui';
 
 const ListItem = ({ href, currentTab, label }: { href: string; currentTab: boolean; label: string }) => {
   return (
-    <li>
+    <li className="flex-shrink-0">
       <Link
         href={href}
-        className={clsx('flex h-12 items-center px-2 hover:bg-background hover:text-primary', {
-          'bg-background text-primary dark:hover:text-slate-200': currentTab
-        })}
+        className={clsx(
+          'relative flex h-12 items-center whitespace-nowrap px-3 text-sm font-medium transition-colors',
+          'hover:text-white/90',
+          currentTab
+            ? 'text-white after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-red-500'
+            : 'text-white/70'
+        )}
       >
         {label}
       </Link>

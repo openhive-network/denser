@@ -2,6 +2,13 @@
 
 import React, { ReactNode } from 'react';
 import { Link } from '@hive/ui';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@hive/ui/components/dropdown-menu';
+import { MoreHorizontal, ExternalLink, Wallet, Settings } from 'lucide-react';
 import clsx from 'clsx';
 import BasePathLink from '@/blog/components/base-path-link';
 import { useQuery } from '@tanstack/react-query';
@@ -396,72 +403,130 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
       </div>
       <div className="flex flex-col pb-8 md:pb-4 ">
         <div className="w-full">
-          <div className="flex bg-gray-700" data-testid="profile-navigation">
-            <div className="container mx-auto flex max-w-screen-xl justify-between p-0 text-white sm:pl-8">
-              <ul className="flex h-full flex-wrap gap-x-2 text-xs sm:text-base lg:flex lg:gap-8">
-                <ListItem
-                  href={`/@${username}`}
-                  currentTab={currentTab === 'blog'}
-                  label={t('navigation.profile_navbar.blog')}
-                />
-                <ListItem
-                  href={`/@${username}/posts`}
-                  currentTab={currentTab === 'posts' || currentTab === 'comments' || currentTab === 'payout'}
-                  label={t('navigation.profile_navbar.posts')}
-                />
-                <ListItem
-                  href={`/@${username}/replies`}
-                  currentTab={currentTab === 'replies'}
-                  label={t('navigation.profile_navbar.replies')}
-                />
-                <ListItem
-                  href={`/@${username}/communities`}
-                  currentTab={currentTab === 'communities'}
-                  label={t('navigation.profile_navbar.social')}
-                />
-                <ListItem
-                  href={`/@${username}/notifications`}
-                  currentTab={currentTab === 'notifications'}
-                  label={t('navigation.profile_navbar.notifications')}
-                />
-              </ul>
-              <ul className="flex h-full flex-nowrap text-xs sm:text-base lg:flex lg:gap-4">
-                <li>
-                  <Link
-                    href={`${explorerHost}/@${username}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mr-4 flex h-12 items-center px-2 hover:bg-background hover:text-primary"
-                  >
-                    Block Explorer
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`${walletHost}/@${username}/transfers`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mr-4 flex h-12 items-center px-2 hover:bg-background hover:text-primary"
-                  >
-                    {t('navigation.profile_navbar.wallet')}
-                  </Link>
-                </li>
-                {user.isLoggedIn && username === user.username ? (
+          <div className="bg-gray-700" data-testid="profile-navigation">
+            <div className="container mx-auto max-w-screen-xl px-0 sm:px-8">
+              <div className="flex items-center justify-between">
+                {/* Primary tabs - scrollable on mobile */}
+                <nav className="flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  <ul className="flex gap-1 text-white sm:gap-2">
+                    <ListItem
+                      href={`/@${username}`}
+                      currentTab={currentTab === 'blog'}
+                      label={t('navigation.profile_navbar.blog')}
+                    />
+                    <ListItem
+                      href={`/@${username}/posts`}
+                      currentTab={currentTab === 'posts' || currentTab === 'comments' || currentTab === 'payout'}
+                      label={t('navigation.profile_navbar.posts')}
+                    />
+                    <ListItem
+                      href={`/@${username}/replies`}
+                      currentTab={currentTab === 'replies'}
+                      label={t('navigation.profile_navbar.replies')}
+                    />
+                    <ListItem
+                      href={`/@${username}/communities`}
+                      currentTab={currentTab === 'communities'}
+                      label={t('navigation.profile_navbar.social')}
+                    />
+                    <ListItem
+                      href={`/@${username}/notifications`}
+                      currentTab={currentTab === 'notifications'}
+                      label={t('navigation.profile_navbar.notifications')}
+                    />
+                  </ul>
+                </nav>
+                {/* Secondary links - hidden on mobile */}
+                <ul className="hidden flex-shrink-0 items-center gap-1 text-white md:flex">
                   <li>
                     <Link
-                      href={`/@${username}/settings`}
+                      href={`${explorerHost}/@${username}`}
+                      target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex h-12 items-center px-2 hover:bg-background hover:text-primary ${
-                        currentTab === `settings`
-                          ? 'bg-background text-primary dark:hover:text-slate-200'
-                          : ''
-                      }`}
+                      className="flex h-12 items-center gap-1.5 whitespace-nowrap px-3 text-sm font-medium text-white/70 transition-colors hover:text-white/90"
                     >
-                      {t('navigation.profile_navbar.settings')}
+                      <ExternalLink className="h-4 w-4" />
+                      Block Explorer
                     </Link>
                   </li>
-                ) : null}
-              </ul>
+                  <li>
+                    <Link
+                      href={`${walletHost}/@${username}/transfers`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-12 items-center gap-1.5 whitespace-nowrap px-3 text-sm font-medium text-white/70 transition-colors hover:text-white/90"
+                    >
+                      <Wallet className="h-4 w-4" />
+                      {t('navigation.profile_navbar.wallet')}
+                    </Link>
+                  </li>
+                  {user.isLoggedIn && username === user.username ? (
+                    <li>
+                      <Link
+                        href={`/@${username}/settings`}
+                        rel="noopener noreferrer"
+                        className={clsx(
+                          'relative flex h-12 items-center gap-1.5 whitespace-nowrap px-3 text-sm font-medium transition-colors hover:text-white/90',
+                          currentTab === 'settings'
+                            ? 'text-white after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-red-500'
+                            : 'text-white/70'
+                        )}
+                      >
+                        <Settings className="h-4 w-4" />
+                        {t('navigation.profile_navbar.settings')}
+                      </Link>
+                    </li>
+                  ) : null}
+                </ul>
+                {/* Mobile dropdown for secondary links */}
+                <div className="flex-shrink-0 md:hidden">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className="flex h-12 items-center px-3 text-white/70 transition-colors hover:text-white/90"
+                        aria-label="More options"
+                      >
+                        <MoreHorizontal className="h-5 w-5" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`${explorerHost}/@${username}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex cursor-pointer items-center gap-2"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          Block Explorer
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`${walletHost}/@${username}/transfers`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex cursor-pointer items-center gap-2"
+                        >
+                          <Wallet className="h-4 w-4" />
+                          {t('navigation.profile_navbar.wallet')}
+                        </Link>
+                      </DropdownMenuItem>
+                      {user.isLoggedIn && username === user.username ? (
+                        <DropdownMenuItem asChild>
+                          <Link
+                            href={`/@${username}/settings`}
+                            className="flex cursor-pointer items-center gap-2"
+                          >
+                            <Settings className="h-4 w-4" />
+                            {t('navigation.profile_navbar.settings')}
+                          </Link>
+                        </DropdownMenuItem>
+                      ) : null}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
             </div>
           </div>
         </div>
