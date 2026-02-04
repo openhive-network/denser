@@ -94,8 +94,11 @@ export function extractImagesSrc(markdownContent: string): string[] {
   const images = doc.getElementsByTagName('img');
   const result = [];
   for (let i = 0; i < images.length; i++) {
-    // logger.info('extractImages found image src: %o', images[i].src);
-    result.push(images[i].src);
+    const img = images[i];
+    // Skip images inside YouTube facade - these are auto-generated thumbnails
+    // User-explicitly added YouTube thumbnail images (standalone) are still included
+    if (img.closest('.youtube-facade')) continue;
+    result.push(img.src);
   }
   return result;
 }

@@ -358,6 +358,7 @@ export function ReplyTextbox({
             <RendererContainer
               body={text}
               author=""
+              previewMode
               className={commentClassName + ' max-w-full p-3'}
             />
           ) : (

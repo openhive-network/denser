@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState, useMemo } from 'react';
+import { useRef, useEffect, useState, useMemo, memo } from 'react';
 import Loading from '@ui/components/loading';
 import { LeavePageDialog } from './leave-page-dialog';
 import { getRenderer } from './lib/renderer';
@@ -15,7 +15,8 @@ const RendererContainer = ({
   dataTestid,
   communityDescription,
   mainPost,
-  className
+  className,
+  previewMode
 }: {
   body: string;
   author: string;
@@ -24,6 +25,7 @@ const RendererContainer = ({
   communityDescription?: boolean;
   className?: string;
   mainPost?: Boolean;
+  previewMode?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -42,6 +44,23 @@ const RendererContainer = ({
     setOpen(true);
   };
 
+  const handleYoutubeFacadeClick = (e: Event) => {
+    const target = e.currentTarget as HTMLElement;
+    const videoId = target.dataset.youtubeId;
+    const width = target.dataset.width || '640';
+    const height = target.dataset.height || '480';
+    if (videoId) {
+      const iframe = document.createElement('iframe');
+      iframe.width = width;
+      iframe.height = height;
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+      iframe.setAttribute('allowfullscreen', 'allowfullscreen');
+      iframe.setAttribute('allow', 'autoplay; encrypted-media');
+      iframe.setAttribute('frameborder', '0');
+      target.replaceWith(iframe);
+    }
+  };
+
   useEffect(() => {
     const nodes = ref.current?.querySelectorAll('a.link-external');
     nodes?.forEach((n) => {
@@ -52,6 +71,28 @@ const RendererContainer = ({
         n.addEventListener('click', handleClick);
       }
     });
+    const youtubeFacades = ref.current?.querySelectorAll('.youtube-facade');
+    if (previewMode) {
+      youtubeFacades?.forEach((facade) => {
+        facade.addEventListener('click', handleYoutubeFacadeClick);
+      });
+    } else {
+      youtubeFacades?.forEach((facade) => {
+        const el = facade as HTMLElement;
+        const videoId = el.dataset.youtubeId;
+        const width = el.dataset.width || '640';
+        const height = el.dataset.height || '480';
+        if (videoId) {
+          const iframe = document.createElement('iframe');
+          iframe.width = width;
+          iframe.height = height;
+          iframe.src = `https://www.youtube.com/embed/${videoId}`;
+          iframe.setAttribute('allowfullscreen', 'allowfullscreen');
+          iframe.setAttribute('frameborder', '0');
+          el.replaceWith(iframe);
+        }
+      });
+    }
     const sub = document.querySelectorAll('sub');
     sub?.forEach((e) => {
       e.classList.add('leading-[150%]');
@@ -77,12 +118,23 @@ const RendererContainer = ({
         const srcText = document.createTextNode(n.src);
         n.replaceWith(srcText);
       });
+      const facades = ref.current?.querySelectorAll('.youtube-facade');
+      facades?.forEach((n) => {
+        const videoId = (n as HTMLElement).dataset.youtubeId;
+        const srcText = document.createTextNode(`https://www.youtube.com/watch?v=${videoId}`);
+        n.replaceWith(srcText);
+      });
     }
 
     return () => {
       nodes?.forEach((n) => n.removeEventListener('click', handleClick));
+      if (previewMode) {
+        youtubeFacades?.forEach((facade) => {
+          facade.removeEventListener('click', handleYoutubeFacadeClick);
+        });
+      }
     };
-  }, [body, hiveRenderer]);
+  }, [body, hiveRenderer, previewMode]);
 
   const htmlBody = useMemo(() => {
     if (body) {
@@ -112,4 +164,4 @@ const RendererContainer = ({
   );
 };
 
-export default RendererContainer;
+export default memo(RendererContainer);

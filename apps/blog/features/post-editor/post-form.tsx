@@ -765,6 +765,7 @@ export default function PostForm({
               <RendererContainer
                 body={previewContent}
                 author=""
+                previewMode
                 className={
                   postClassName +
                   ' w-full min-w-full self-center break-words p-4'

@@ -197,6 +197,50 @@
   max-height: 75vw;
 }
 
+#articleBody .youtube-facade,
+.prose .youtube-facade {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#articleBody .youtube-facade img,
+.prose .youtube-facade img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#articleBody .youtube-facade:hover .youtube-play-btn,
+.prose .youtube-facade:hover .youtube-play-btn {
+  transform: scale(1.1);
+}
+
+#articleBody .youtube-play-btn,
+.prose .youtube-play-btn {
+  position: relative;
+  z-index: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out;
+}
+
+#articleBody .youtube-play-btn svg,
+.prose .youtube-play-btn svg {
+  display: block;
+}
+
 #articleBody .twitterWrapper,
 .prose .twitterWrapper {
   display: flex;
