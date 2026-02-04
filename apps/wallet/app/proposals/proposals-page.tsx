@@ -11,14 +11,10 @@ import moment from 'moment';
 import { ProposalListItem } from '@/wallet/components/proposals-list-item';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { Skeleton } from '@ui/components/skeleton';
-import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { TFunction } from 'i18next';
-import { getServerSidePropsDefault } from '../lib/get-translations';
 import Head from 'next/head';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 function timeStatus(status: string, t: TFunction<'common_wallet', undefined>) {
   switch (status) {

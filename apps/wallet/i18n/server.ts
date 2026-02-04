@@ -18,7 +18,8 @@ const initI18next = async (lng: string, ns: string) => {
 };
 
 export async function useTranslation(ns: string, options: { keyPrefix?: string } = {}) {
-  const lng = cookies().get(cookieName)?.value ?? defaultLocale;
+  const cookieStore = await cookies();
+  const lng = cookieStore.get(cookieName)?.value ?? defaultLocale;
   const i18nextInstance = await initI18next(lng, ns);
   return {
     t: i18nextInstance.getFixedT(lng, Array.isArray(ns) ? ns[0] : ns, options.keyPrefix),

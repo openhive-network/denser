@@ -6,9 +6,7 @@ import { z } from 'zod';
 
 // Authorize endpoint query parameters
 export const authorizeParamsSchema = z.object({
-  response_type: z.literal('code', {
-    errorMap: () => ({ message: 'Only response_type=code is supported' }),
-  }),
+  response_type: z.literal('code', { error: 'Only response_type=code is supported' }),
   client_id: z.string().min(1, 'client_id is required'),
   redirect_uri: z.string().url('redirect_uri must be a valid URL'),
   scope: z.string().optional().default('openid profile'),
@@ -19,9 +17,7 @@ export type AuthorizeParams = z.infer<typeof authorizeParamsSchema>;
 
 // Token endpoint body parameters
 export const tokenBodySchema = z.object({
-  grant_type: z.literal('authorization_code', {
-    errorMap: () => ({ message: 'Only grant_type=authorization_code is supported' }),
-  }),
+  grant_type: z.literal('authorization_code', { error: 'Only grant_type=authorization_code is supported' }),
   code: z.string().min(1, 'code is required'),
   redirect_uri: z.string().url('redirect_uri must be a valid URL'),
   client_id: z.string().optional(), // Can come from Basic auth

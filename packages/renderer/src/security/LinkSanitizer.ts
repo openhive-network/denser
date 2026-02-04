@@ -71,10 +71,11 @@ export class LinkSanitizer {
 
         // Block private network URLs in production (security hardening)
         if (LinkSanitizer.isPrivateNetworkUrl(url)) {
-            Log.log().debug('LinkSanitizer#sanitizeLink', 'private network URL blocked', url, {
+            Log.log().debug({
+                message: 'private network URL blocked',
                 url,
                 urlTitle
-            });
+            }, 'LinkSanitizer#sanitizeLink');
             return false;
         }
 

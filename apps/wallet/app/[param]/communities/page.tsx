@@ -4,11 +4,12 @@ import { getAccountMetadata } from '@transaction/lib/metadata';
 import CommunitiesPage from './communities-page';
 
 interface PageProps {
-  params: { param: string };
+  params: Promise<{ param: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const param = decodeURIComponent(params.param);
+  const { param: rawParam } = await params;
+  const param = decodeURIComponent(rawParam);
   if (!param.startsWith('@')) {
     return {};
   }
@@ -24,8 +25,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function Page({ params }: PageProps) {
-  const param = decodeURIComponent(params.param);
+export default async function Page({ params }: PageProps) {
+  const { param: rawParam } = await params;
+  const param = decodeURIComponent(rawParam);
   if (!param.startsWith('@')) {
     notFound();
   }

@@ -85,7 +85,7 @@ export default function LoginPage({ redirectTo, oauthReturn }: LoginPageProps) {
       <div className="mt-16 w-full max-w-[380px] rounded-md p-4 sm:mt-32 sm:max-w-[450px]">
         <SignInForm
           ref={signInFormRef}
-          preferredKeyTypes={[KeyType.posting]}
+          preferredKeyTypes={[KeyType.Posting]}
           onComplete={onComplete}
           authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
           strict={!siteConfig.allowNonStrictLogin}

@@ -14,10 +14,8 @@ import { Button } from '@hive/ui/components/button';
 import { getWitnessesByVote } from '@/wallet/lib/hive';
 import WitnessListItem from '@/wallet/components/witnesses-list-item';
 import DialogLogin from '@/wallet/components/dialog-login';
-import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { getServerSidePropsDefault } from '../lib/get-translations';
 import { useWitnessVoteMutation } from '@/wallet/components/hooks/use-vote-witness-mutation';
 import WitnessRemoveVote from '@/wallet/components/witness-remove-vote';
 import { CircleSpinner } from 'react-spinners-kit';
@@ -34,8 +32,6 @@ import {
 import { handleError } from '@ui/lib/handle-error';
 import Head from 'next/head';
 import { getAccount, getAccounts } from '@transaction/lib/hive-api';
-
-export const getServerSideProps: GetServerSideProps = getServerSidePropsDefault;
 
 const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 // User can vote only for 30 witnesses

@@ -59,7 +59,7 @@ export function generateMetadata(): Metadata {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   // Server-side locale and language handling
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
   const isRTL = locale === 'ar';
 

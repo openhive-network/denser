@@ -118,6 +118,7 @@ export function usePostMutation() {
       permlink: string;
       title: string;
       body: string;
+      reputation: number;
       tags: string[];
       category: string;
       summary: string;

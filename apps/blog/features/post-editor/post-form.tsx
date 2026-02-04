@@ -117,10 +117,7 @@ export default function PostForm({
       return data[0]?.reputation ?? 25;
     },
     enabled: !!username,
-    staleTime: 5 * 60 * 1000,
-    onError: (error) => {
-      logger.error(error, 'Failed to fetch account reputation');
-    }
+    staleTime: 5 * 60 * 1000
   });
 
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);

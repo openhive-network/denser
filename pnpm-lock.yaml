@@ -13,23 +13,23 @@ catalogs:
       specifier: 1.28.4-rc0-stable.251202134057
       version: 1.28.4-rc0-stable.251202134057
     '@hiveio/wax-signers-external':
-      specifier: 1.28.6-alpha-stable.260121074158
-      version: 1.28.6-alpha-stable.260121074158
+      specifier: 1.28.6-alpha-260202164528
+      version: 1.28.6-alpha-260202164528
     '@hiveio/wax-signers-keychain':
-      specifier: 1.28.6-alpha-stable.260121074158
-      version: 1.28.6-alpha-stable.260121074158
+      specifier: 1.28.6-alpha-260202164528
+      version: 1.28.6-alpha-260202164528
     '@hiveio/wax-signers-metamask':
-      specifier: 1.28.6-alpha-stable.260121074158
-      version: 1.28.6-alpha-stable.260121074158
+      specifier: 1.28.6-alpha-260202164528
+      version: 1.28.6-alpha-260202164528
     '@hiveio/wax-signers-peakvault':
-      specifier: 1.28.6-alpha-stable.260121074158
-      version: 1.28.6-alpha-stable.260121074158
+      specifier: 1.28.6-alpha-260202164528
+      version: 1.28.6-alpha-260202164528
     '@hiveio/workerbee':
       specifier: 1.28.4-rc0-260122112600
       version: 1.28.4-rc0-260122112600
 
 overrides:
-  '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+  '@hiveio/wax': 1.28.6-alpha-260202164528
 
 importers:
 
@@ -86,10 +86,10 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.251202134057(@hiveio/wax@1.28.6-alpha-stable.260121074158)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@25.1.0)(typescript@5.9.3)))
+        version: 1.28.4-rc0-stable.251202134057(@hiveio/wax@1.28.6-alpha-260202164528)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@25.1.0)(typescript@5.9.3)))
       '@hiveio/wax':
-        specifier: 1.28.6-alpha-stable.260121074158
-        version: 1.28.6-alpha-stable.260121074158
+        specifier: 1.28.6-alpha-260202164528
+        version: 1.28.6-alpha-260202164528
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.71.1(react@19.2.4))
@@ -282,10 +282,10 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.251202134057(@hiveio/wax@1.28.6-alpha-stable.260121074158)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@25.1.0)(typescript@5.9.3)))
+        version: 1.28.4-rc0-stable.251202134057(@hiveio/wax@1.28.6-alpha-260202164528)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@25.1.0)(typescript@5.9.3)))
       '@hiveio/wax':
-        specifier: 1.28.6-alpha-stable.260121074158
-        version: 1.28.6-alpha-stable.260121074158
+        specifier: 1.28.6-alpha-260202164528
+        version: 1.28.6-alpha-260202164528
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.71.1(react@19.2.4))
@@ -364,10 +364,10 @@ importers:
         version: link:../ui
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.6-alpha-stable.260121074158)
+        version: 1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.6-alpha-260202164528)
       '@hiveio/wax':
-        specifier: 1.28.6-alpha-stable.260121074158
-        version: 1.28.6-alpha-stable.260121074158
+        specifier: 1.28.6-alpha-260202164528
+        version: 1.28.6-alpha-260202164528
     devDependencies:
       '@types/node':
         specifier: ^25.1.0
@@ -422,8 +422,8 @@ importers:
         specifier: workspace:*
         version: link:../ui
       '@hiveio/wax':
-        specifier: 1.28.6-alpha-stable.260121074158
-        version: 1.28.6-alpha-stable.260121074158
+        specifier: 1.28.6-alpha-260202164528
+        version: 1.28.6-alpha-260202164528
       '@tanstack/react-query':
         specifier: ^5.90.20
         version: 5.90.20(react@19.2.4)
@@ -527,7 +527,7 @@ importers:
         version: 9.39.2(jiti@2.4.2)
       eslint-plugin-import:
         specifier: 2.32.0
-        version: 2.32.0(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))
+        version: 2.32.0(@typescript-eslint/parser@6.7.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -581,22 +581,22 @@ importers:
         version: link:../ui
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.6-alpha-stable.260121074158)
+        version: 1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.6-alpha-260202164528)
       '@hiveio/wax':
-        specifier: 1.28.6-alpha-stable.260121074158
-        version: 1.28.6-alpha-stable.260121074158
+        specifier: 1.28.6-alpha-260202164528
+        version: 1.28.6-alpha-260202164528
       '@hiveio/wax-signers-external':
         specifier: catalog:hiveio-toolset
-        version: 1.28.6-alpha-stable.260121074158
+        version: 1.28.6-alpha-260202164528
       '@hiveio/wax-signers-keychain':
         specifier: catalog:hiveio-toolset
-        version: 1.28.6-alpha-stable.260121074158
+        version: 1.28.6-alpha-260202164528
       '@hiveio/wax-signers-metamask':
         specifier: catalog:hiveio-toolset
-        version: 1.28.6-alpha-stable.260121074158(webextension-polyfill@0.12.0)
+        version: 1.28.6-alpha-260202164528(webextension-polyfill@0.12.0)
       '@hiveio/wax-signers-peakvault':
         specifier: catalog:hiveio-toolset
-        version: 1.28.6-alpha-stable.260121074158
+        version: 1.28.6-alpha-260202164528
       '@tanstack/react-query':
         specifier: ^5.90.20
         version: 5.90.20(react@19.2.4)
@@ -695,11 +695,11 @@ importers:
         specifier: workspace:*
         version: link:../smart-signer
       '@hiveio/wax':
-        specifier: 1.28.6-alpha-stable.260121074158
-        version: 1.28.6-alpha-stable.260121074158
+        specifier: 1.28.6-alpha-260202164528
+        version: 1.28.6-alpha-260202164528
       '@hiveio/workerbee':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-260122112600(@hiveio/wax@1.28.6-alpha-stable.260121074158)
+        version: 1.28.4-rc0-260122112600(@hiveio/wax@1.28.6-alpha-260202164528)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -746,8 +746,8 @@ importers:
         specifier: ^1.3.4
         version: 1.3.4
       '@hiveio/wax':
-        specifier: 1.28.6-alpha-stable.260121074158
-        version: 1.28.6-alpha-stable.260121074158
+        specifier: 1.28.6-alpha-260202164528
+        version: 1.28.6-alpha-260202164528
       '@radix-ui/react-accordion':
         specifier: ^1.2.12
         version: 1.2.12(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1366,20 +1366,20 @@ packages:
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
 
-  '@hiveio/beekeeper@1.28.4-rc0':
-    resolution: {integrity: sha1-qLgaAY/l+gXAdleuIeyaMAo6wxA=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.4-rc0.tgz}
+  '@hiveio/beekeeper@1.28.4':
+    resolution: {integrity: sha1-X+2VqUKItQPk4Dr+t+/sfQ+84YY=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.4.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/hb-auth@1.28.4-rc0-stable.260125121028':
     resolution: {integrity: sha1-2agAt2e3H6Zge7guzthY4XKRwdo=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-stable.260125121028.tgz}
     engines: {node: ^20.11 || >= 21.2}
     peerDependencies:
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+      '@hiveio/wax': 1.28.6-alpha-260202164528
 
   '@hiveio/healthchecker-component@1.28.4-rc0-stable.251202134057':
     resolution: {integrity: sha1-vskKzVbouTzcxkj1a4EplsS7Q2A=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-1.28.4-rc0-stable.251202134057.tgz}
     peerDependencies:
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+      '@hiveio/wax': 1.28.6-alpha-260202164528
       react: ^18.2.0
       react-dom: ^18.2.0
       tailwindcss: ^3.4.12
@@ -1387,30 +1387,30 @@ packages:
   '@hiveio/hivescript@1.3.4':
     resolution: {integrity: sha512-ZKDFerSnzsmbaE4ljSjowxMNJhzD0x/C3Fp9S5SAJg/vZfbOv/64xWRj/9sHQ09B1v2m7FTuA5lobPIzQTI3wQ==, tarball: https://registry.npmjs.org/@hiveio/hivescript/-/hivescript-1.3.4.tgz}
 
-  '@hiveio/wax-signers-beekeeper@1.28.6-alpha-stable.260121074158':
-    resolution: {integrity: sha1-Xj/iLoFUNvvwysMI1Hf8zTn9evw=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-beekeeper/-/@hiveio/wax-signers-beekeeper-1.28.6-alpha-stable.260121074158.tgz}
+  '@hiveio/wax-signers-beekeeper@1.28.6-alpha-260202164528':
+    resolution: {integrity: sha1-be7ep1yMJpu2JeO8TlSViywVNt8=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-beekeeper/-/@hiveio/wax-signers-beekeeper-1.28.6-alpha-260202164528.tgz}
 
-  '@hiveio/wax-signers-external@1.28.6-alpha-stable.260121074158':
-    resolution: {integrity: sha1-Ua0KvyIOyVJNeM17p0MbyScmvpk=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-external/-/@hiveio/wax-signers-external-1.28.6-alpha-stable.260121074158.tgz}
+  '@hiveio/wax-signers-external@1.28.6-alpha-260202164528':
+    resolution: {integrity: sha1-WJDam4Pb8Cj5yJbvr4IjuQhJNdg=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-external/-/@hiveio/wax-signers-external-1.28.6-alpha-260202164528.tgz}
 
-  '@hiveio/wax-signers-keychain@1.28.6-alpha-stable.260121074158':
-    resolution: {integrity: sha1-gynVACzdEdQ90ZIOqEIGr+QmkOc=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-keychain/-/@hiveio/wax-signers-keychain-1.28.6-alpha-stable.260121074158.tgz}
+  '@hiveio/wax-signers-keychain@1.28.6-alpha-260202164528':
+    resolution: {integrity: sha1-kW9GwoADxeeaGiNamb08yjF8Er8=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-keychain/-/@hiveio/wax-signers-keychain-1.28.6-alpha-260202164528.tgz}
 
-  '@hiveio/wax-signers-metamask@1.28.6-alpha-stable.260121074158':
-    resolution: {integrity: sha1-n2genUtZDz2ABzH+vAgPTIMAZfc=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-metamask/-/@hiveio/wax-signers-metamask-1.28.6-alpha-stable.260121074158.tgz}
+  '@hiveio/wax-signers-metamask@1.28.6-alpha-260202164528':
+    resolution: {integrity: sha1-qDLBEK9FbGs8NChpu49Pb5/UgO0=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-metamask/-/@hiveio/wax-signers-metamask-1.28.6-alpha-260202164528.tgz}
 
-  '@hiveio/wax-signers-peakvault@1.28.6-alpha-stable.260121074158':
-    resolution: {integrity: sha1-y0TPbcD9I1QE0XdQphbSX6/Yuc4=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-peakvault/-/@hiveio/wax-signers-peakvault-1.28.6-alpha-stable.260121074158.tgz}
+  '@hiveio/wax-signers-peakvault@1.28.6-alpha-260202164528':
+    resolution: {integrity: sha1-jmxEw/nHO8TrmCMxo4Xhp0zGFsQ=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-peakvault/-/@hiveio/wax-signers-peakvault-1.28.6-alpha-260202164528.tgz}
 
-  '@hiveio/wax@1.28.6-alpha-stable.260121074158':
-    resolution: {integrity: sha1-73K4tH/VY6pXO6w/5Nwx8pj4u6o=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.28.6-alpha-stable.260121074158.tgz}
+  '@hiveio/wax@1.28.6-alpha-260202164528':
+    resolution: {integrity: sha1-ZIDfnFkNolLaw4bp/7mYdf62QRs=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-1.28.6-alpha-260202164528.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/workerbee@1.28.4-rc0-260122112600':
     resolution: {integrity: sha1-dLKQXojJzyZH2f3U5K0fDIxN9Tg=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.28.4-rc0-260122112600.tgz}
     engines: {node: ^20.11 || >= 21.2}
     peerDependencies:
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+      '@hiveio/wax': 1.28.6-alpha-260202164528
 
   '@hookform/resolvers@5.2.2':
     resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
@@ -9624,57 +9624,57 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
-  '@hiveio/beekeeper@1.28.4-rc0': {}
+  '@hiveio/beekeeper@1.28.4': {}
 
-  '@hiveio/hb-auth@1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.6-alpha-stable.260121074158)':
+  '@hiveio/hb-auth@1.28.4-rc0-stable.260125121028(@hiveio/wax@1.28.6-alpha-260202164528)':
     dependencies:
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+      '@hiveio/wax': 1.28.6-alpha-260202164528
       comlink: 4.4.2
 
-  '@hiveio/healthchecker-component@1.28.4-rc0-stable.251202134057(@hiveio/wax@1.28.6-alpha-stable.260121074158)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@25.1.0)(typescript@5.9.3)))':
+  '@hiveio/healthchecker-component@1.28.4-rc0-stable.251202134057(@hiveio/wax@1.28.6-alpha-260202164528)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@25.1.0)(typescript@5.9.3)))':
     dependencies:
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+      '@hiveio/wax': 1.28.6-alpha-260202164528
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
       tailwindcss: 3.4.6(ts-node@10.9.2(@types/node@25.1.0)(typescript@5.9.3))
 
   '@hiveio/hivescript@1.3.4': {}
 
-  '@hiveio/wax-signers-beekeeper@1.28.6-alpha-stable.260121074158':
+  '@hiveio/wax-signers-beekeeper@1.28.6-alpha-260202164528':
     dependencies:
-      '@hiveio/beekeeper': 1.28.4-rc0
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+      '@hiveio/beekeeper': 1.28.4
+      '@hiveio/wax': 1.28.6-alpha-260202164528
 
-  '@hiveio/wax-signers-external@1.28.6-alpha-stable.260121074158':
+  '@hiveio/wax-signers-external@1.28.6-alpha-260202164528':
     dependencies:
-      '@hiveio/beekeeper': 1.28.4-rc0
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
-      '@hiveio/wax-signers-beekeeper': 1.28.6-alpha-stable.260121074158
+      '@hiveio/beekeeper': 1.28.4
+      '@hiveio/wax': 1.28.6-alpha-260202164528
+      '@hiveio/wax-signers-beekeeper': 1.28.6-alpha-260202164528
       zod: 4.3.6
 
-  '@hiveio/wax-signers-keychain@1.28.6-alpha-stable.260121074158':
+  '@hiveio/wax-signers-keychain@1.28.6-alpha-260202164528':
     dependencies:
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+      '@hiveio/wax': 1.28.6-alpha-260202164528
 
-  '@hiveio/wax-signers-metamask@1.28.6-alpha-stable.260121074158(webextension-polyfill@0.12.0)':
+  '@hiveio/wax-signers-metamask@1.28.6-alpha-260202164528(webextension-polyfill@0.12.0)':
     dependencies:
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+      '@hiveio/wax': 1.28.6-alpha-260202164528
       '@metamask/providers': 21.0.0(webextension-polyfill@0.12.0)
     transitivePeerDependencies:
       - supports-color
       - webextension-polyfill
 
-  '@hiveio/wax-signers-peakvault@1.28.6-alpha-stable.260121074158':
+  '@hiveio/wax-signers-peakvault@1.28.6-alpha-260202164528':
     dependencies:
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+      '@hiveio/wax': 1.28.6-alpha-260202164528
 
-  '@hiveio/wax@1.28.6-alpha-stable.260121074158':
+  '@hiveio/wax@1.28.6-alpha-260202164528':
     dependencies:
       events: 3.3.0
 
-  '@hiveio/workerbee@1.28.4-rc0-260122112600(@hiveio/wax@1.28.6-alpha-stable.260121074158)':
+  '@hiveio/workerbee@1.28.4-rc0-260122112600(@hiveio/wax@1.28.6-alpha-260202164528)':
     dependencies:
-      '@hiveio/wax': 1.28.6-alpha-stable.260121074158
+      '@hiveio/wax': 1.28.6-alpha-260202164528
 
   '@hookform/resolvers@5.2.2(react-hook-form@7.71.1(react@19.2.4))':
     dependencies:
@@ -9925,7 +9925,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       lodash: 4.17.23
       pony-cause: 2.1.11
-      semver: 7.6.3
+      semver: 7.7.3
       uuid: 9.0.1
     transitivePeerDependencies:
       - supports-color
@@ -13487,7 +13487,7 @@ snapshots:
       eslint: 9.39.2(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.4.2))
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.49.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint-import-resolver-typescript@3.7.0)(eslint@9.39.2(jiti@2.4.2))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.2(jiti@2.4.2))
       eslint-plugin-react: 7.37.5(eslint@9.39.2(jiti@2.4.2))
       eslint-plugin-react-hooks: 5.2.0(eslint@9.39.2(jiti@2.4.2))
@@ -13526,7 +13526,7 @@ snapshots:
       is-glob: 4.0.3
       stable-hash: 0.0.4
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.49.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint-import-resolver-typescript@3.7.0)(eslint@9.39.2(jiti@2.4.2))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -13540,14 +13540,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.49.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.4.2)))(eslint@9.39.2(jiti@2.4.2)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@6.7.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@9.39.2(jiti@2.4.2)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 8.49.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
+      '@typescript-eslint/parser': 6.7.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
       eslint: 9.39.2(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.4.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -13588,7 +13587,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.49.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint-import-resolver-typescript@3.7.0)(eslint@9.39.2(jiti@2.4.2)):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.7.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -13599,7 +13598,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.39.2(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.49.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.4.2)))(eslint@9.39.2(jiti@2.4.2))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@9.39.2(jiti@2.4.2))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -13611,7 +13610,7 @@ snapshots:
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
     optionalDependencies:
-      '@typescript-eslint/parser': 8.49.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
+      '@typescript-eslint/parser': 6.7.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack

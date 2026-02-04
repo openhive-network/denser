@@ -205,7 +205,7 @@ export class SignerGoogleDrive extends Signer {
       // The WIF will be extracted and cached after wallet loads successfully.
       return { password };
     } catch (error) {
-      logger.error('Error in getEncryptionCredentials: %o', error);
+      logger.error({ error }, 'Error in getEncryptionCredentials');
       throw new Error('No password from user');
     }
   }
@@ -275,7 +275,7 @@ export class SignerGoogleDrive extends Signer {
             setStoredEncryptionKeyWif(wif);
             logger.info('Cached encryption key WIF for Google Drive wallet');
           } catch (wifError) {
-            logger.error('Failed to extract/cache encryption key WIF: %o', wifError);
+            logger.error({ error: wifError }, 'Failed to extract/cache encryption key WIF');
             // Non-fatal: wallet is already loaded, just won't have cached WIF next time
           }
         }
@@ -302,13 +302,13 @@ export class SignerGoogleDrive extends Signer {
             resolve(provider);
             return;
           } catch (retryError) {
-            logger.error('Error in getWallet retry: %o', retryError);
+            logger.error({ error: retryError }, 'Error in getWallet retry');
             reject(retryError);
             return;
           }
         }
 
-        logger.error('Error in getWallet: %o', error);
+        logger.error({ error }, 'Error in getWallet');
         reject(error);
       }
     });

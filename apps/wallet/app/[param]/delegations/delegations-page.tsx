@@ -19,12 +19,14 @@ export default function DelegationsPage({ username }: { username: string }) {
   const { user } = useUserClient();
   const accoutOwner = user.isLoggedIn && user.username === username;
   const hiveChain = hiveChainService.reuseHiveChain();
-  const { data: vestingData, isLoading: vestingLoading } = useQuery(['vestingDelegation', username], () =>
-    getVestingDelegations(username)
-  );
-  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalProperties'], () =>
-    getDynamicGlobalProperties()
-  );
+  const { data: vestingData, isLoading: vestingLoading } = useQuery({
+    queryKey: ['vestingDelegation', username],
+    queryFn: () => getVestingDelegations(username)
+  });
+  const { data: dynamicData, isLoading: dynamicLoading } = useQuery({
+    queryKey: ['dynamicGlobalProperties'],
+    queryFn: () => getDynamicGlobalProperties()
+  });
 
   if (dynamicLoading || vestingLoading) {
     return <Loading loading={dynamicLoading || vestingLoading} />;

@@ -9,8 +9,8 @@ const __dirname = path.dirname(__filename);
 
 function copyRecursive(src: string, dest: string): void {
   const exists = fs.existsSync(src);
-  const stats = exists && fs.statSync(src);
-  const isDirectory = exists && stats.isDirectory();
+  const stats = exists ? fs.statSync(src) : null;
+  const isDirectory = stats?.isDirectory() ?? false;
 
   if (isDirectory) {
     if (!fs.existsSync(dest)) {

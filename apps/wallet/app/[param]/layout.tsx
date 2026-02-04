@@ -44,10 +44,9 @@ export default function ParamLayout({ children }: { children: ReactNode }) {
   const param = decodeURIComponent(params?.param ?? '');
   const username = param.startsWith('@') ? param.slice(1) : '';
 
-  const { isLoading: profileDataIsLoading, data: profileData } = useQuery(
-    ['profileData', username],
-    () => getAccountFull(username),
-    {
+  const { isLoading: profileDataIsLoading, data: profileData } = useQuery({
+    queryKey: ['profileData', username],
+    queryFn: () => getAccountFull(username),
     enabled: !!username
   });
 

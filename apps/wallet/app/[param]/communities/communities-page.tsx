@@ -49,11 +49,11 @@ interface CommunitiesPageProps {
 
 export default function CommunitiesPage({ username, initialCommunityTag }: CommunitiesPageProps) {
   const { user } = useUserClient();
-  const { data, isLoading } = useQuery(
-    ['findAccounts', username],
-    async () => await getFindAccounts(user?.username),
-    { enabled: user.isLoggedIn }
-  );
+  const { data, isLoading } = useQuery({
+    queryKey: ['findAccounts', username],
+    queryFn: async () => await getFindAccounts(user?.username),
+    enabled: user.isLoggedIn
+  });
   const account = data?.accounts[0];
 
   const { t } = useTranslation('common_wallet');
@@ -173,8 +173,8 @@ export default function CommunitiesPage({ username, initialCommunityTag }: Commu
       <div className=" mx-auto my-4 flex max-w-2xl flex-col gap-4 p-4">
         {isLoading ? (
           <Loading loading={isLoading} />
-        ) : createCommunityMutation.isLoading ? (
-          <Loading loading={createCommunityMutation.isLoading} />
+        ) : createCommunityMutation.isPending ? (
+          <Loading loading={createCommunityMutation.isPending} />
         ) : createCommunityMutation.isSuccess ? (
           <div className="flex flex-col gap-6">
             <h4 className="text-2xl font-bold">{t('communities.community_created')}</h4>

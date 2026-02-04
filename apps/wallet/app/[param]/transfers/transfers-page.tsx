@@ -26,35 +26,35 @@ export default function TransfersPage({ username }: { username: string }) {
   const blogURL = env('BLOG_DOMAIN');
   const { user } = useUserClient();
   const hiveChain = hiveChainService.reuseHiveChain();
-  const { data: accountData, isLoading: accountLoading } = useQuery(
-    ['accountData', username],
-    () => getAccount(username),
-    {
-      enabled: Boolean(username)
-    }
-  );
-  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalPropertiesData'], () =>
-    getDynamicGlobalProperties()
-  );
+  const { data: accountData, isLoading: accountLoading } = useQuery({
+    queryKey: ['accountData', username],
+    queryFn: () => getAccount(username),
+    enabled: Boolean(username)
+  });
+  const { data: dynamicData, isLoading: dynamicLoading } = useQuery({
+    queryKey: ['dynamicGlobalPropertiesData'],
+    queryFn: () => getDynamicGlobalProperties()
+  });
 
-  const { data: followingData } = useQuery(['following', username], () =>
-    getFollowing({ account: username })
-  );
+  const { data: followingData } = useQuery({
+    queryKey: ['following', username],
+    queryFn: () => getFollowing({ account: username })
+  });
 
-  const { data: operationHistoryData, isLoading: operationHistoryLoading } = useQuery(
-    ['Operations', username],
-    () => getAccountOperations(username, undefined, 500, user.username),
-    {
-      select: (data) => data.operations_result
-    }
-  );
-  const { data: historyFeedData, isLoading: historyFeedLoading } = useQuery(['feedHistory'], () =>
-    getFeedHistory()
-  );
+  const { data: operationHistoryData, isLoading: operationHistoryLoading } = useQuery({
+    queryKey: ['Operations', username],
+    queryFn: () => getAccountOperations(username, undefined, 500, user.username),
+    select: (data) => data.operations_result
+  });
+  const { data: historyFeedData, isLoading: historyFeedLoading } = useQuery({
+    queryKey: ['feedHistory'],
+    queryFn: () => getFeedHistory()
+  });
 
-  const { data: withdrawals } = useQuery(['savingsWithdrawalsFrom', username], () =>
-    getSavingsWithdrawals(username)
-  );
+  const { data: withdrawals } = useQuery({
+    queryKey: ['savingsWithdrawalsFrom', username],
+    queryFn: () => getSavingsWithdrawals(username)
+  });
 
   const listOfAccounts = createListWithSuggestions(username, t, operationHistoryData, followingData);
 
