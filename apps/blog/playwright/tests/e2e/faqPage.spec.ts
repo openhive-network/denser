@@ -102,7 +102,7 @@ test.describe('Faq page tests', () => {
       faqPage.whatIsHiveBlogLink,
       'color'
     );
-    expect(await faqPageFirstLinkOfFirstSubtopicColor).toBe('rgb(218, 43, 43)');
+    expect(await faqPageFirstLinkOfFirstSubtopicColor).toBe('rgb(195, 34, 34)');
     const faqPageFirstLinkOfFirstSubtopicFontWeight = await faqPage.getElementCssPropertyValue(
       faqPage.whatIsHiveBlogLink,
       'font-weight'
@@ -113,7 +113,7 @@ test.describe('Faq page tests', () => {
       faqPage.isThereGithubPageForHiveBlogLink,
       'color'
     );
-    expect(await faqPageIsThereGithubPageForHiveBlogLinkColor).toBe('rgb(218, 43, 43)');
+    expect(await faqPageIsThereGithubPageForHiveBlogLinkColor).toBe('rgb(195, 34, 34)');
     const faqPageIsThereGithubPageForHiveBlogLinkFontWeight = await faqPage.getElementCssPropertyValue(
       faqPage.isThereGithubPageForHiveBlogLink,
       'font-weight'
@@ -151,7 +151,7 @@ test.describe('Faq page tests', () => {
       faqPage.whatIsHiveBlogLink,
       'color'
     );
-    expect(await faqPageFirstLinkOfFirstSubtopicColor).toBe('rgb(226, 18, 53)');
+    expect(await faqPageFirstLinkOfFirstSubtopicColor).toBe('rgb(246, 85, 85)');
     const faqPageFirstLinkOfFirstSubtopicFontWeight = await faqPage.getElementCssPropertyValue(
       faqPage.whatIsHiveBlogLink,
       'font-weight'
@@ -162,7 +162,7 @@ test.describe('Faq page tests', () => {
       faqPage.isThereGithubPageForHiveBlogLink,
       'color'
     );
-    expect(await faqPageIsThereGithubPageForHiveBlogLinkColor).toBe('rgb(226, 18, 53)');
+    expect(await faqPageIsThereGithubPageForHiveBlogLinkColor).toBe('rgb(246, 85, 85)');
     const faqPageIsThereGithubPageForHiveBlogLinkFontWeight = await faqPage.getElementCssPropertyValue(
       faqPage.isThereGithubPageForHiveBlogLink,
       'font-weight'
@@ -214,7 +214,7 @@ test.describe('Faq page tests', () => {
     expect(await whatIsHiveBlogContentDescriptionFontWeight).toBe('400');
     // Validate styles of the first caret sign
     const firstCaretSignColor = await faqPage.getElementCssPropertyValue(faqPage.firstCaretSign, 'color');
-    expect(await firstCaretSignColor).toBe('rgb(226, 18, 53)');
+    expect(await firstCaretSignColor).toBe('rgb(246, 85, 85)');
   });
 
   test('validate styles of the elements with content in faq page in the light mode', async ({ page, browserName }) => {
@@ -258,6 +258,6 @@ test.describe('Faq page tests', () => {
     expect(await whatIsHiveBlogContentDescriptionFontWeight).toBe('400');
     // Validate styles of the first caret sign
     const firstCaretSignColor = await faqPage.getElementCssPropertyValue(faqPage.firstCaretSign, 'color');
-    expect(await firstCaretSignColor).toBe('rgb(218, 43, 43)');
+    expect(await firstCaretSignColor).toBe('rgb(195, 34, 34)');
   });
 });

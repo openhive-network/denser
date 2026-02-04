@@ -301,7 +301,7 @@ test.describe('Profile page of @gtg', () => {
     // Wait for hover color to change
     await expect.poll(async () => {
       return await profilePage.getElementCssPropertyValue(profilePage.followButton, 'color');
-    }).toBe('rgb(226, 18, 53)');
+    }).toBe('rgb(246, 85, 85)');
     await expect.poll(async () => {
       return await profilePage.getElementCssPropertyValue(profilePage.followButton, 'background-color');
     }).toBe('rgb(248, 250, 252)');

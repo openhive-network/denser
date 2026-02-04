@@ -263,7 +263,7 @@ test.describe('Profile page of @gtg', () => {
         await firstPostNickName,
         'color'
       )
-    ).toBe('rgb(226, 18, 53)');
+    ).toBe('rgb(246, 85, 85)');
 
     // Validate reputation color and tooltip
     const firstPostReputation = await profilePage.postReputation.first();
@@ -298,7 +298,7 @@ test.describe('Profile page of @gtg', () => {
           await postCommunityLink.first(),
           'color'
         )
-      ).toBe('rgb(226, 18, 53)');
+      ).toBe('rgb(246, 85, 85)');
     }
 
     if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()) {
@@ -308,7 +308,7 @@ test.describe('Profile page of @gtg', () => {
           await postCategoryLink.first(),
           'color'
         )
-      ).toBe('rgb(226, 18, 53)');
+      ).toBe('rgb(246, 85, 85)');
 
       // Validate color of category after hovering
       await postCategoryLink.first().hover();
@@ -318,7 +318,7 @@ test.describe('Profile page of @gtg', () => {
           await postCategoryLink.first(),
           'color'
         )
-      ).toBe('rgb(218, 43, 43)');
+      ).toBe('rgb(246, 85, 85)');
     }
 
     // Validate style of the timestamp of the first post
@@ -338,7 +338,7 @@ test.describe('Profile page of @gtg', () => {
         await firstPostTimestamp,
         'color'
       )
-    ).toBe('rgb(226, 18, 53)');
+    ).toBe('rgb(246, 85, 85)');
   });
 
   test('move to the post page after clicking the timestamp', async ({ page }) => {

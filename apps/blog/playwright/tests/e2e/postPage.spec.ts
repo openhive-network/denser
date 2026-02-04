@@ -194,7 +194,7 @@ test.describe('Post page tests', () => {
     // Wait for hover color to change
     await expect.poll(async () => {
       return await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color');
-    }).toBe('rgb(226, 18, 53)');
+    }).toBe('rgb(246, 85, 85)');
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgb(248, 250, 252)');
@@ -291,8 +291,7 @@ test.describe('Post page tests', () => {
     await postPage.moveToTheFirstPostInHomePageByImage();
     await expect(postPage.footerAuthorName).toBeVisible();
 
-    const footerAuthorName = await page.locator('[data-testid="author-name-link"]').nth(1).innerText();
-
+    const footerAuthorName = await page.locator('[data-testid="author-data-post-footer"] [data-testid="author-name-link"] span[class="font-semibold text-foreground hover:text-destructive"]').innerText();
     await expect(firstPostAuthor).toEqual(footerAuthorName);
   });
 
@@ -472,7 +471,7 @@ test.describe('Post page tests', () => {
     // Wait for hover color to change
     await expect.poll(async () => {
       return await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color');
-    }).toBe('rgb(226, 18, 53)');
+    }).toBe('rgb(246, 85, 85)');
     expect(
       await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'background-color')
     ).toBe('rgb(248, 250, 252)');
