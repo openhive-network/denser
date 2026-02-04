@@ -287,6 +287,28 @@ export default function PostForm({
     }
   }, [previewContent, postArea]);
 
+  // Auto-scroll preview to bottom when typing at the end of editor
+  useEffect(() => {
+    if (!syncScroll || !sideBySide || !preview) return;
+
+    const editorScrollArea = editorContainerRef.current?.querySelector(
+      '.w-md-editor-area'
+    ) as HTMLDivElement | null;
+    const previewEl = previewContainerRef.current;
+
+    if (!editorScrollArea || !previewEl) return;
+
+    const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
+    const isNearBottom = maxEditorScroll <= 0 || editorScrollArea.scrollTop >= maxEditorScroll - 50;
+
+    if (isNearBottom) {
+      // Small delay to let the preview content update first
+      requestAnimationFrame(() => {
+        previewEl.scrollTop = previewEl.scrollHeight;
+      });
+    }
+  }, [postArea, syncScroll, sideBySide, preview]);
+
   useEffect(() => {
     setImagePickerState(imagePicker(selectedImg));
   }, [selectedImg, postArea]);
