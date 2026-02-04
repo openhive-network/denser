@@ -2,7 +2,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { AuthUser, AuthorizationError, OnlineClient } from '@hiveio/hb-auth';
+import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
+import { handleAuthError, isKeyUpdateNeeded } from '@smart-signer/lib/auth-error';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { username } from '@smart-signer/lib/auth/utils';
@@ -124,7 +125,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         await finalize(values);
         form.reset();
       } catch (error) {
-        setError((error as AuthorizationError).message);
+        const errorMessage = handleAuthError(error, 'onSave');
+        setError(errorMessage);
         setLoading(false);
       }
     }
@@ -137,14 +139,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         await authClient.current?.authenticate(username, password, keyType);
         await finalize(values);
       } catch (error) {
-        const authError = error as AuthorizationError;
-        if (
-          authError.message.includes('Not authorized') ||
-          authError.message.includes('Authentication failed')
-        ) {
+        if (isKeyUpdateNeeded(error)) {
           onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE);
         }
-        setError(authError.message);
+        const errorMessage = handleAuthError(error, 'onAuthenticate');
+        setError(errorMessage);
         setLoading(false);
       }
     }
@@ -187,7 +186,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         await sign(LoginType.hbauth, username, KeyType[keyType]);
         await submit(username);
       } catch (error) {
-        setError((error as Error).message);
+        const errorMessage = handleAuthError(error, 'finalize');
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -211,7 +211,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
           setAuthUsers(auths);
         } catch (error) {
-          setError((error as AuthorizationError).message);
+          const errorMessage = handleAuthError(error, 'SafeStorage.useEffect');
+          setError(errorMessage);
         } finally {
           setLoading(false);
         }

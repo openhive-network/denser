@@ -6,6 +6,7 @@ import { PasswordDialogModalPromise } from '@smart-signer/components/password-di
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
+import { isIgnorableError, parseAuthError } from '@smart-signer/lib/auth-error';
 
 const logger = getLogger('app');
 
@@ -136,20 +137,14 @@ export class SignerHbauth extends Signer {
       } catch (error) {
         logger.error('Error in signDigest, when trying to authenticate user: %o', error);
 
-        //
-        // TODO AuthorizationError is not exported in hb-auth yet (issue
-        // created). Check this in their newer version and use
-        // `instanceof` if possible.
-        //
-
-        // if (error instanceof AuthorizationError)
-
-        if (error && `${error}` === 'AuthorizationError: User is already logged in') {
-          logger.info('Swallowing error: AuthorizationError: User is already logged in');
-          // Swallow this error, it's OK.
+        // Check if this is an ignorable error (e.g., "User is already logged in")
+        if (isIgnorableError(error)) {
+          logger.info('Ignoring expected error during authentication');
           authStatus.ok = true;
         } else {
-          throw error;
+          // Re-throw with preserved error details
+          const { message } = parseAuthError(error);
+          throw new Error(message);
         }
       }
 
@@ -276,8 +271,10 @@ export class SignerHbauth extends Signer {
         // Import other key to safe storage
         await authClient.register(username, password, keyToUse, keyType);
       } catch (error) {
-        logger.error('Error in getPasswordFromUser: %o', error);
-        throw new Error('Invalid key');
+        logger.error('Error in requireOtherKey: %o', error);
+        // Preserve the actual error message instead of generic "Invalid key"
+        const { message } = parseAuthError(error, 'Invalid key');
+        throw new Error(message);
       }
     }
     // Sign with the required key

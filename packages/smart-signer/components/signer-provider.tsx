@@ -32,8 +32,7 @@ export const SignerProvider = ({ children }: { children: ReactNode }) => {
         transactionService.setSignerOptions(signerOptions);
       }
     })().catch(logger.error);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signerOptions.username]);
+  }, [signerOptions.username, signerOptions.loginType, signerOptions.keyType]);
 
   // TODO: Wait for signer to be initialized
   return <SignerContext.Provider value={{ signer: signer! }}>{children}</SignerContext.Provider>;

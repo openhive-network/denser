@@ -9,12 +9,40 @@ const logger = getLogger('app');
  * message for user safely.
  */
 const wellKnownErrorDescriptions = [
+  // Voting errors
   'Your current vote on this comment is identical to this vote',
   'Account does not have enough mana to downvote',
-  'You may only post once every 5 minutes',
   'Vote weight cannot be 0',
+
+  // Posting rate limits
+  'You may only post once every 5 minutes',
   'You may only comment once every 3 seconds',
-  'Invalid credentials'
+
+  // Authentication/hb-auth errors
+  'Invalid credentials',
+  'Invalid password',
+  'Not authorized',
+  'Authentication failed',
+  'Invalid WIF',
+  'Invalid WIF key',
+  'Invalid WIF checksum',
+  'Invalid WIF format',
+  'User not found',
+  'Key verification failed',
+  'Wallet is locked',
+  'Failed to unlock wallet',
+  'No password provided',
+  'No key provided',
+  'Operation cancelled',
+  'Wallet operation failed',
+  'Operation failed',
+  'Login failed - invalid challenge',
+  'Key already registered - update it instead',
+
+  // Key registration errors
+  'Registration failed',
+  'Failed to import key',
+  'Key is not registered'
 ];
 
 // TODO: Refactor this function to use the new error handling mechanism

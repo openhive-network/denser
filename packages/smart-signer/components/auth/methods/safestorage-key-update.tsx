@@ -1,7 +1,7 @@
 /* Sign-in with safe storage (use beekeeper wallet through hb-auth) */
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { AuthUser, AuthorizationError, OnlineClient } from '@hiveio/hb-auth';
+import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { username } from '@smart-signer/lib/auth/utils';
@@ -32,7 +32,10 @@ import { KeyType, LoginType } from '@smart-signer/types/common';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { KeyAuthorityType } from '@smart-signer/lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
-import { logger } from '@ui/lib/logger';
+import { handleAuthError } from '@smart-signer/lib/auth-error';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 export interface SafeStorageKeyUpdateProps {
   onSetStep: (step: Steps) => void;
@@ -135,7 +138,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
             setError('User not found in safe storage');
           }
         } catch (error) {
-          setError((error as AuthorizationError).message);
+          const errorMessage = handleAuthError(error, 'SafeStorageKeyUpdate.useEffect');
+          setError(errorMessage);
         } finally {
           setLoading(false);
         }
@@ -187,11 +191,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
           onSetStep(Steps.SAFE_STORAGE_LOGIN);
         }, 2000);
       } catch (error) {
-        if (typeof error === 'string') {
-          setError(error);
-        } else {
-          setError('Invalid WIF key');
-        }
+        const errorMessage = handleAuthError(error, 'onUpdateKey');
+        setError(errorMessage);
         setLoading(false);
       }
     }
@@ -278,11 +279,12 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                     <div className="relative">
                       <Input
                         {...field}
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         placeholder="Safe storage password"
                         data-testid="login-form-password"
                       />
                       <Button
+                        type="button"
                         variant="ghost"
                         className="absolute right-2 top-1/2 h-7 w-7 -translate-y-1/2 p-1 hover:bg-transparent"
                         onClick={() => {
