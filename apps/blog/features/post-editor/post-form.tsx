@@ -287,39 +287,12 @@ export default function PostForm({
     }
   }, [previewContent, postArea]);
 
-  // Auto-scroll preview to bottom when typing at the end of editor
+  // Auto-scroll preview to bottom when typing at the end of editor (debounced)
   useEffect(() => {
     if (!syncScroll || !sideBySide || !preview) return;
 
-    const editorScrollArea = editorContainerRef.current?.querySelector(
-      '.w-md-editor-area'
-    ) as HTMLDivElement | null;
-    const previewEl = previewContainerRef.current;
-
-    if (!editorScrollArea || !previewEl) return;
-
-    const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
-    const isNearBottom = maxEditorScroll <= 0 || editorScrollArea.scrollTop >= maxEditorScroll - 50;
-
-    if (isNearBottom) {
-      // Small delay to let the preview content update first
-      requestAnimationFrame(() => {
-        previewEl.scrollTop = previewEl.scrollHeight;
-      });
-    }
-  }, [postArea, syncScroll, sideBySide, preview]);
-
-  useEffect(() => {
-    setImagePickerState(imagePicker(selectedImg));
-  }, [selectedImg, postArea]);
-
-  // Set up scroll sync event listeners
-  useEffect(() => {
-    if (!syncScroll || !sideBySide || !preview) return;
-
-    // Small delay to ensure MDEditor has fully mounted
+    // Debounce to avoid running on every keystroke
     const timeoutId = setTimeout(() => {
-      // The scrollable element in MDEditor is .w-md-editor-area, not the textarea
       const editorScrollArea = editorContainerRef.current?.querySelector(
         '.w-md-editor-area'
       ) as HTMLDivElement | null;
@@ -327,39 +300,82 @@ export default function PostForm({
 
       if (!editorScrollArea || !previewEl) return;
 
-      const handleEditorScroll = () => {
-        if (isScrollSyncingRef.current) return;
-        const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
-        const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
-        if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
+      const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
+      const isNearBottom = maxEditorScroll <= 0 || editorScrollArea.scrollTop >= maxEditorScroll - 50;
 
-        isScrollSyncingRef.current = true;
-        const scrollPercentage = editorScrollArea.scrollTop / maxEditorScroll;
-        previewEl.scrollTop = scrollPercentage * maxPreviewScroll;
-        requestAnimationFrame(() => {
-          isScrollSyncingRef.current = false;
+      if (isNearBottom) {
+        previewEl.scrollTop = previewEl.scrollHeight;
+      }
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [postArea, syncScroll, sideBySide, preview]);
+
+  useEffect(() => {
+    setImagePickerState(imagePicker(selectedImg));
+  }, [selectedImg, postArea]);
+
+  // Set up scroll sync event listeners (optimized for large content)
+  useEffect(() => {
+    if (!syncScroll || !sideBySide || !preview) return;
+
+    // Small delay to ensure MDEditor has fully mounted
+    const timeoutId = setTimeout(() => {
+      const editorScrollArea = editorContainerRef.current?.querySelector(
+        '.w-md-editor-area'
+      ) as HTMLDivElement | null;
+      const previewEl = previewContainerRef.current;
+
+      if (!editorScrollArea || !previewEl) return;
+
+      // Use RAF-based throttling for scroll handlers
+      let editorRafId: number | null = null;
+      let previewRafId: number | null = null;
+
+      const handleEditorScroll = () => {
+        if (isScrollSyncingRef.current || editorRafId) return;
+
+        editorRafId = requestAnimationFrame(() => {
+          editorRafId = null;
+          const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
+          const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
+          if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
+
+          isScrollSyncingRef.current = true;
+          const scrollPercentage = editorScrollArea.scrollTop / maxEditorScroll;
+          previewEl.scrollTop = scrollPercentage * maxPreviewScroll;
+          requestAnimationFrame(() => {
+            isScrollSyncingRef.current = false;
+          });
         });
       };
 
       const handlePreviewScroll = () => {
-        if (isScrollSyncingRef.current) return;
-        const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
-        const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
-        if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
+        if (isScrollSyncingRef.current || previewRafId) return;
 
-        isScrollSyncingRef.current = true;
-        const scrollPercentage = previewEl.scrollTop / maxPreviewScroll;
-        editorScrollArea.scrollTop = scrollPercentage * maxEditorScroll;
-        requestAnimationFrame(() => {
-          isScrollSyncingRef.current = false;
+        previewRafId = requestAnimationFrame(() => {
+          previewRafId = null;
+          const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
+          const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
+          if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
+
+          isScrollSyncingRef.current = true;
+          const scrollPercentage = previewEl.scrollTop / maxPreviewScroll;
+          editorScrollArea.scrollTop = scrollPercentage * maxEditorScroll;
+          requestAnimationFrame(() => {
+            isScrollSyncingRef.current = false;
+          });
         });
       };
 
-      editorScrollArea.addEventListener('scroll', handleEditorScroll);
-      previewEl.addEventListener('scroll', handlePreviewScroll);
+      // Use passive listeners for better scroll performance
+      editorScrollArea.addEventListener('scroll', handleEditorScroll, { passive: true });
+      previewEl.addEventListener('scroll', handlePreviewScroll, { passive: true });
 
-      // Store cleanup references
+      // Store cleanup references including RAF cancellation
       (editorContainerRef.current as HTMLDivElement & { _scrollCleanup?: () => void })._scrollCleanup = () => {
+        if (editorRafId) cancelAnimationFrame(editorRafId);
+        if (previewRafId) cancelAnimationFrame(previewRafId);
         editorScrollArea.removeEventListener('scroll', handleEditorScroll);
         previewEl.removeEventListener('scroll', handlePreviewScroll);
       };
