@@ -538,7 +538,8 @@ const CommentListItem = memo(function CommentListItem({
                     ) : null}
                   </AccordionContent>
                 </Card>
-                {children ? <AccordionContent className="h-fit p-0">{children}</AccordionContent> : null}
+                {/* Children rendered without AccordionContent so replies are always visible even when parent is hidden */}
+                {children ? <div className="h-fit p-0">{children}</div> : null}
               </AccordionItem>
             </Accordion>
           </div>
