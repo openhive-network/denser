@@ -280,6 +280,9 @@
         "one": "1 article",
         "other": "{{value}} articles"
       },
+      "followers_label": "Abonnés",
+      "posts_label": "Articles",
+      "following_label": "Abonnements",
       "blacklisted_users": "Blacklisted Users",
       "muted_users": "Utilisateurs ignorés",
       "followed_blacklists": "Followed Blacklists",

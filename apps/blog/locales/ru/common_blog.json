@@ -286,6 +286,9 @@
         "many": "{{value}} постов",
         "other": "{{value}} постов"
       },
+      "followers_label": "Подписчики",
+      "posts_label": "Посты",
+      "following_label": "Подписки",
       "blacklisted_users": "Blacklisted Users",
       "muted_users": "Заблокированные пользователи",
       "followed_blacklists": "Followed Blacklists",

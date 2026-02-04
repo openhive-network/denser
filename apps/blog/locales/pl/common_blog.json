@@ -285,6 +285,9 @@
         "one": "Liczba wpisów: 1",
         "other": "Liczba wpisów: {{value}}"
       },
+      "followers_label": "Obserwujący",
+      "posts_label": "Wpisy",
+      "following_label": "Obserwowani",
       "blacklisted_users": "Użytkownicy na Czarnej Liście",
       "muted_users": "Wyciszeni użytkownicy",
       "followed_blacklists": "Obserwowane Czarne Listy",

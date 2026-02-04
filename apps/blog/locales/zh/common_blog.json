@@ -280,6 +280,9 @@
         "one": "1个帖子",
         "other": "{{value}}个帖子"
       },
+      "followers_label": "粉丝",
+      "posts_label": "帖子",
+      "following_label": "关注",
       "blacklisted_users": "Blacklisted Users",
       "muted_users": "屏蔽的用户",
       "followed_blacklists": "Followed Blacklists",

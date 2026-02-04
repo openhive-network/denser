@@ -155,12 +155,12 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div>
       <div
-        className={clsx('w-full bg-gray-600 text-sm leading-6 sm:h-fit', {
+        className={clsx('relative w-full bg-slate-800 text-sm leading-6', {
           'animate-pulse': profileData._temporary
         })}
-        style={{ textShadow: 'rgb(0, 0, 0) 1px 1px 2px' }}
         data-testid="profile-info"
       >
+        {/* Cover Image Background */}
         <div
           style={{
             backgroundImage: getCoverImageStyle(profileData),
@@ -168,228 +168,230 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover'
           }}
-          className="flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center text-white"
+          className="relative min-h-[280px] sm:min-h-[320px]"
         >
-          <div className="mt-4 flex items-center">
-            <Avatar className="mr-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full">
-              <AvatarImage
-                className="h-full w-full object-cover"
-                src={getUserAvatarUrl(profileData?.name || '', 'medium')}
-                alt="Profile picture"
-              />
-              <AvatarFallback>
-                <img
-                  className="h-full w-full object-cover"
-                  src={getUserAvatarUrl(profileData?.name || '', 'medium')}
-                  alt="Profile picture"
-                />
-              </AvatarFallback>
-            </Avatar>
-            <h4 className="sm:text-2xl" data-testid="profile-name">
-              <span className="font-semibold">
-                {profileData?.profile?.name ? profileData.profile.name : profileData.name}
-              </span>{' '}
-              <span
-                title={`This is ${username}s's reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
-              >
-                (
-                {accountReputationData && accountReputationData[0]?.reputation
-                  ? accountReputation(accountReputationData[0].reputation)
-                  : 25}
-                )
-              </span>
-            </h4>
-            {profileData.name ? (
-              <Link
-                href={`https://hivebuzz.me/@${profileData.name}`}
-                target="_blank"
-                data-testid="profile-level-link"
-              >
-                  <img
-                  alt={`${getLevelDisplayName(userLevel)} level`}
-                  title={t('user_profile.user_level_title', {
-                    level: getLevelDisplayName(userLevel),
-                    username: profileData.name
-                  })}
-                  className="mx-2 w-6 duration-500 ease-in-out hover:w-12"
-                  src={getLevelIconPath(userLevel)}
-                  data-testid="profile-level-image"
-                />
-              </Link>
-            ) : null}
-            {twitterData && isSafeExternalUrl(twitterData.twitter_profile) ? (
-              <Link
-                href={twitterData.twitter_profile}
-                title={t('user_profile.twitter_badge_title')}
-                target="_blank"
-                data-testid="profile-twitter-badge"
-              >
-                <Icons.twitter fill="#1da1f2" className="text-blue-400" />
-              </Link>
-            ) : null}
-          </div>
-          {!legalBlockedUser ? (
-            <>
-              <p className="my-1 max-w-[420px] text-center sm:my-4" data-testid="profile-about">
-                {profileData?.profile?.about
-                  ? profileData?.profile?.about.slice(0, 157) +
-                    (157 < profileData?.profile?.about.length ? '...' : '')
-                  : null}
-              </p>
-              <ul className="my-1 flex h-5 gap-1 text-xs sm:text-sm" data-testid="profile-stats">
-                <li className="flex items-center gap-1">
-                  <Link
-                    href={`/@${profileData.name}/followers`}
-                    className="hover:cursor-pointer hover:text-destructive hover:underline"
-                  >
-                    {profileData?.follow_stats?.follower_count === 0 || undefined
-                      ? t('user_profile.lists.follower_count.zero')
-                      : profileData?.follow_stats?.follower_count === 1
-                        ? t('user_profile.lists.follower_count.one')
-                        : t('user_profile.lists.follower_count.other', {
-                            value: profileData?.follow_stats?.follower_count
-                          })}
-                  </Link>
-                </li>
+          {/* Gradient Overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
-                <li
-                  className="flex items-center
-              gap-1"
-                >
-                  <Separator orientation="vertical" className="bg-background" />
-                  <Link
-                    className="hover:cursor-pointer hover:text-destructive hover:underline"
-                    href={`/@${profileData.name}`}
-                  >
-                    {profileData?.post_count === 0
-                      ? t('user_profile.lists.post_count.zero')
-                      : profileData?.post_count === 1
-                        ? t('user_profile.lists.post_count.one')
-                        : t('user_profile.lists.post_count.other', { value: profileData?.post_count })}
-                  </Link>
-                </li>
-
-                <li
-                  className="flex items-center
-              gap-1"
-                >
-                  <Separator orientation="vertical" className="bg-background" />{' '}
-                  <Link
-                    href={`/@${profileData.name}/followed`}
-                    className="hover:cursor-pointer hover:text-destructive hover:underline"
-                  >
-                    {profileData?.follow_stats?.following_count === 0 || undefined
-                      ? t('user_profile.lists.followed_count.zero')
-                      : profileData?.follow_stats?.following_count === 1
-                        ? t('user_profile.lists.followed_count.one')
-                        : t('user_profile.lists.followed_count.other', {
-                            value: profileData?.follow_stats?.following_count
-                          })}
-                  </Link>
-                </li>
-
-                <li className="flex items-center gap-1">
-                  <Separator orientation="vertical" className="bg-background" />
-                  {numberWithCommas(hp.toFixed(0)) + ' HP'}
-                </li>
-              </ul>
-
-              <ul className="my-1 flex flex-wrap justify-center gap-2 text-xs sm:text-sm">
-                <li className="flex items-center gap-1">
-                  <BasePathLink
-                    href={`/@${profileData?.name}/lists/blacklisted`}
-                    className="hover:cursor-pointer hover:text-destructive hover:underline"
-                  >
-                    {t('user_profile.lists.blacklisted_users')}
-                  </BasePathLink>
-                </li>
-
-                <li className="flex items-center gap-1">
-                  <Separator orientation="vertical" className="h-4 bg-background" />
-                  <BasePathLink
-                    href={`/@${profileData?.name}/lists/muted`}
-                    className="hover:cursor-pointer hover:text-destructive hover:underline"
-                  >
-                    {t('user_profile.lists.muted_users')}
-                  </BasePathLink>
-                </li>
-
-                <li className="flex items-center gap-1">
-                  <Separator orientation="vertical" className="h-4 bg-background" />
-                  <BasePathLink
-                    href={`/@${profileData?.name}/lists/followed_blacklists`}
-                    className="hover:cursor-pointer hover:text-destructive hover:underline"
-                  >
-                    {t('user_profile.lists.followed_blacklists')}
-                  </BasePathLink>
-                </li>
-
-                <li className="flex items-center gap-1">
-                  <Separator orientation="vertical" className="bg-background" />
-                  <BasePathLink
-                    href={`/@${profileData?.name}/lists/followed_muted_lists`}
-                    className="hover:cursor-pointer hover:text-destructive hover:underline"
-                  >
-                    {t('user_profile.lists.followed_muted_lists')}
-                  </BasePathLink>
-                </li>
-              </ul>
-
-              <ul className="my-4 flex h-auto flex-wrap justify-center gap-1 text-xs sm:gap-4 sm:text-sm">
-                {profileData?.profile?.location ? (
-                  <li className="flex items-center">
-                    <Icons.mapPin className="m-1" />
-                    <span data-testid="user-location">{profileData?.profile?.location}</span>
-                  </li>
-                ) : null}
-                {profileData?.profile?.website ? (
-                  <li className="flex items-center">
-                    <Icons.globe2 className="m-1" />
-                    <Link
-                      target="_external"
-                      className="website-link break-words "
-                      href={`https://${profileData?.profile?.website?.replace(/^(https?|ftp):\/\//, '')}`}
-                    >
-                      <span>{profileData?.profile?.website}</span>
-                    </Link>
-                  </li>
-                ) : null}
-                <li className="flex items-center">
-                  <Icons.calendarHeart className="m-1" />
-                  <span data-testid="user-joined">
-                    {t('user_profile.joined')}{' '}
-                    {profileData?.created ? dateToShow(profileData.created, t) : null}
-                  </span>
-                </li>
-                <li className="flex items-center">
-                  <Icons.calendarActive className="m-1" />
-                  <span data-testid="user-last-time-active">
-                    {t('user_profile.active')}{' '}
-                    <TimeAgo
-                      date={compareDates([
-                        profileData.created,
-                        profileData.last_vote_time,
-                        profileData.last_post
-                      ])}
-                    />
-                  </span>
-                </li>
-              </ul>
-              {user.username !== username ? (
-                <div className="m-2 flex gap-2 hover:text-destructive sm:absolute sm:right-0">
-                  <ButtonsContainer
-                    username={username}
-                    user={user}
-                    variant="default"
-                    follow={following}
-                    mute={mute}
+          {/* Content Container */}
+          <div className="relative flex h-full min-h-[280px] sm:min-h-[320px] flex-col items-center justify-center px-4 py-6 text-white">
+            {/* Glassmorphism Card */}
+            <div className="w-full max-w-2xl rounded-2xl bg-black/30 p-6 backdrop-blur-sm sm:p-8">
+              {/* Avatar and Name Row */}
+              <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+                <Avatar className="h-20 w-20 shrink-0 ring-4 ring-white/30 sm:h-24 sm:w-24">
+                  <AvatarImage
+                    className="h-full w-full object-cover"
+                    src={getUserAvatarUrl(profileData?.name || '', 'large')}
+                    alt="Profile picture"
                   />
+                  <AvatarFallback>
+                    <img
+                      className="h-full w-full object-cover"
+                      src={getUserAvatarUrl(profileData?.name || '', 'large')}
+                      alt="Profile picture"
+                    />
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="flex flex-1 flex-col items-center text-center sm:items-start sm:text-left">
+                  {/* Username Row */}
+                  <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+                    <h1 className="text-2xl font-bold sm:text-3xl" data-testid="profile-name">
+                      {profileData?.profile?.name ? profileData.profile.name : profileData.name}
+                    </h1>
+                    <span
+                      className="rounded-full bg-white/20 px-2 py-0.5 text-sm font-medium"
+                      title={`This is ${username}'s reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
+                    >
+                      {accountReputationData && accountReputationData[0]?.reputation
+                        ? accountReputation(accountReputationData[0].reputation)
+                        : 25}
+                    </span>
+                    {profileData.name ? (
+                      <Link
+                        href={`https://hivebuzz.me/@${profileData.name}`}
+                        target="_blank"
+                        data-testid="profile-level-link"
+                      >
+                        <img
+                          alt={`${getLevelDisplayName(userLevel)} level`}
+                          title={t('user_profile.user_level_title', {
+                            level: getLevelDisplayName(userLevel),
+                            username: profileData.name
+                          })}
+                          className="h-6 w-6 transition-transform duration-300 hover:scale-150"
+                          src={getLevelIconPath(userLevel)}
+                          data-testid="profile-level-image"
+                        />
+                      </Link>
+                    ) : null}
+                    {twitterData && isSafeExternalUrl(twitterData.twitter_profile) ? (
+                      <Link
+                        href={twitterData.twitter_profile}
+                        title={t('user_profile.twitter_badge_title')}
+                        target="_blank"
+                        data-testid="profile-twitter-badge"
+                      >
+                        <Icons.twitter fill="#1da1f2" className="h-5 w-5" />
+                      </Link>
+                    ) : null}
+                  </div>
+
+                  {/* Bio */}
+                  {!legalBlockedUser && profileData?.profile?.about ? (
+                    <p
+                      className="mt-3 max-w-md text-sm leading-relaxed text-white/90 sm:text-base"
+                      data-testid="profile-about"
+                    >
+                      {profileData.profile.about.slice(0, 157) +
+                        (157 < profileData.profile.about.length ? '...' : '')}
+                    </p>
+                  ) : null}
                 </div>
-              ) : null}
-            </>
-          ) : (
-            <div className="p-10">{t('global.unavailable_for_legal_reasons')}</div>
-          )}
+              </div>
+
+              {!legalBlockedUser ? (
+                  <>
+                    {/* Stats Grid */}
+                    <div
+                      className="mt-6 grid grid-cols-4 gap-2 border-t border-white/10 pt-6 sm:gap-4"
+                      data-testid="profile-stats"
+                    >
+                      <Link
+                        href={`/@${profileData.name}/followers`}
+                        className="group flex flex-col items-center transition-colors"
+                      >
+                        <span className="text-lg font-semibold sm:text-xl">
+                          {profileData?.follow_stats?.follower_count ?? 0}
+                        </span>
+                        <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
+                          {t('user_profile.lists.followers_label')}
+                        </span>
+                      </Link>
+                      <Link
+                        href={`/@${profileData.name}`}
+                        className="group flex flex-col items-center transition-colors"
+                      >
+                        <span className="text-lg font-semibold sm:text-xl">
+                          {profileData?.post_count ?? 0}
+                        </span>
+                        <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
+                          {t('user_profile.lists.posts_label')}
+                        </span>
+                      </Link>
+                      <Link
+                        href={`/@${profileData.name}/followed`}
+                        className="group flex flex-col items-center transition-colors"
+                      >
+                        <span className="text-lg font-semibold sm:text-xl">
+                          {profileData?.follow_stats?.following_count ?? 0}
+                        </span>
+                        <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
+                          {t('user_profile.lists.following_label')}
+                        </span>
+                      </Link>
+                      <div className="flex flex-col items-center">
+                        <span className="text-lg font-semibold sm:text-xl">
+                          {numberWithCommas(hp.toFixed(0))}
+                        </span>
+                        <span className="text-xs text-white/70 sm:text-sm">HP</span>
+                      </div>
+                    </div>
+
+                    {/* Secondary Links - Subtle styling */}
+                    <div className="mt-4 flex flex-wrap justify-center gap-x-2 gap-y-1 text-xs text-white/60 sm:text-sm">
+                      <BasePathLink
+                        href={`/@${profileData?.name}/lists/blacklisted`}
+                        className="transition-colors hover:text-white"
+                      >
+                        {t('user_profile.lists.blacklisted_users')}
+                      </BasePathLink>
+                      <span className="text-white/30">•</span>
+                      <BasePathLink
+                        href={`/@${profileData?.name}/lists/muted`}
+                        className="transition-colors hover:text-white"
+                      >
+                        {t('user_profile.lists.muted_users')}
+                      </BasePathLink>
+                      <span className="text-white/30">•</span>
+                      <BasePathLink
+                        href={`/@${profileData?.name}/lists/followed_blacklists`}
+                        className="transition-colors hover:text-white"
+                      >
+                        {t('user_profile.lists.followed_blacklists')}
+                      </BasePathLink>
+                      <span className="text-white/30">•</span>
+                      <BasePathLink
+                        href={`/@${profileData?.name}/lists/followed_muted_lists`}
+                        className="transition-colors hover:text-white"
+                      >
+                        {t('user_profile.lists.followed_muted_lists')}
+                      </BasePathLink>
+                    </div>
+
+                    {/* Metadata Row */}
+                    <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-white/70 sm:text-sm">
+                      {profileData?.profile?.location ? (
+                        <div className="flex items-center gap-1">
+                          <Icons.mapPin className="h-4 w-4" />
+                          <span data-testid="user-location">{profileData.profile.location}</span>
+                        </div>
+                      ) : null}
+                      {profileData?.profile?.website ? (
+                        <div className="flex items-center gap-1">
+                          <Icons.globe2 className="h-4 w-4" />
+                          <Link
+                            target="_external"
+                            className="transition-colors hover:text-white"
+                            href={`https://${profileData.profile.website.replace(/^(https?|ftp):\/\//, '')}`}
+                          >
+                            {profileData.profile.website}
+                          </Link>
+                        </div>
+                      ) : null}
+                      <div className="flex items-center gap-1">
+                        <Icons.calendarHeart className="h-4 w-4" />
+                        <span data-testid="user-joined">
+                          {t('user_profile.joined')}{' '}
+                          {profileData?.created ? dateToShow(profileData.created, t) : null}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Icons.calendarActive className="h-4 w-4" />
+                        <span data-testid="user-last-time-active">
+                          {t('user_profile.active')}{' '}
+                          <TimeAgo
+                            date={compareDates([
+                              profileData.created,
+                              profileData.last_vote_time,
+                              profileData.last_post
+                            ])}
+                          />
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Follow/Mute Buttons */}
+                    {user.username !== username ? (
+                      <div className="mt-6 flex justify-center gap-3">
+                        <ButtonsContainer
+                          username={username}
+                          user={user}
+                          variant="default"
+                          follow={following}
+                          mute={mute}
+                        />
+                      </div>
+                    ) : null}
+                  </>
+                ) : (
+                  <div className="mt-6 text-center text-white/70">
+                    {t('global.unavailable_for_legal_reasons')}
+                  </div>
+                )}
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex flex-col pb-8 md:pb-4 ">

@@ -280,6 +280,9 @@
         "one": "投稿1件",
         "other": "投稿{{value}} 件"
       },
+      "followers_label": "フォロワー",
+      "posts_label": "投稿",
+      "following_label": "フォロー中",
       "blacklisted_users": "Blacklisted Users",
       "muted_users": "ミュートユーザー",
       "followed_blacklists": "Followed Blacklists",

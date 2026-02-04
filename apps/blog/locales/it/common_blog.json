@@ -280,6 +280,9 @@
         "one": "1 post",
         "other": "{{value}} post"
       },
+      "followers_label": "Follower",
+      "posts_label": "Post",
+      "following_label": "Seguiti",
       "blacklisted_users": "Blacklisted Users",
       "muted_users": "Utenti mutati",
       "followed_blacklists": "Followed Blacklists",
