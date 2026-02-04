@@ -53,7 +53,7 @@ export class CommentViewPage {
     this.getViewFullContext = page.locator('[data-testid="view-the-full-context"]');
     this.getViewDirectParent = page.locator('[data-testid="view-the-direct-parent"]');
     this.getMainCommentAuthorData = page.locator('[data-testid="author-data"]');
-    this.getMainCommentAuthorNameLink = page.locator('[data-testid="author-name-link"]').first();
+    this.getMainCommentAuthorNameLink = page.locator('[data-testid="author-name-link"] span[class="font-semibold text-foreground hover:text-destructive"]').first();
     this.getMainCommentCommunityLink = page.locator('[data-testid="comment-community-title"]');
     this.getMainCommentCategoryLink = page.locator('[data-testid="comment-category-title"]');
     this.getMainCommentContent = page.locator('#articleBody').first();
@@ -81,7 +81,7 @@ export class CommentViewPage {
 
     this.getResponseCommentHeader = page.locator('[data-testid="comment-card-header"]');
     this.getResponseCommentAuthorNameLink = this.getResponseCommentHeader.locator(
-      '[data-testid="author-name-link"]'
+      '[data-testid="author-name-link"] span[class="font-semibold text-foreground hover:text-destructive"]'
     );
     this.getResponseCommentAuthorReputation = this.getResponseCommentHeader.locator(
       '[data-testid="author-reputation"]'
