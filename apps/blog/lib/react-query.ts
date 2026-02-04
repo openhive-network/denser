@@ -1,10 +1,26 @@
 import { QueryClient, QueryKey, isServer } from '@tanstack/react-query';
 
+/**
+ * Stale time constants for different query types.
+ * Use these in individual useQuery calls for appropriate freshness.
+ */
+export const StaleTime = {
+  /** For data that rarely changes: communities, static content (5 min) */
+  LONG: 5 * 60 * 1000,
+  /** For post lists, user profiles (2 min) */
+  MEDIUM: 2 * 60 * 1000,
+  /** For vote counts, comment counts (30 sec) */
+  SHORT: 30 * 1000,
+  /** For real-time data: notifications, balances (always refetch) */
+  NONE: 0
+} as const;
+
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000 // *10,
+        // Default to 1 minute - individual queries can override with StaleTime constants
+        staleTime: 60 * 1000
       }
     }
   });

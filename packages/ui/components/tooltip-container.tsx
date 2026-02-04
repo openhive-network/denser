@@ -1,9 +1,15 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { memo, ReactNode } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
-const TooltipContainer = ({ children, title }: { children: ReactNode; title: string }) => {
+const TooltipContainer = memo(function TooltipContainer({
+  children,
+  title
+}: {
+  children: ReactNode;
+  title: string;
+}) {
   return (
     <TooltipProvider>
       <Tooltip>
@@ -12,6 +18,6 @@ const TooltipContainer = ({ children, title }: { children: ReactNode; title: str
       </Tooltip>
     </TooltipProvider>
   );
-};
+});
 
 export default TooltipContainer;

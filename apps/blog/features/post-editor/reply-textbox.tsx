@@ -3,8 +3,19 @@ import { Button } from '@ui/components/button';
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
 import { Icons } from '@ui/components/icons';
-import MdEditor from './md-editor';
+import dynamic from 'next/dynamic';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { CircleSpinner } from 'react-spinners-kit';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@hive/ui/components/alert-dialog';
 import { Progress } from '@ui/components/progress';
 import { Separator } from '@ui/components';
 import useManabars from '../../components/hooks/use-manabars';
@@ -14,12 +25,20 @@ import RendererContainer from '../post-rendering/rendererContainer';
 import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from '../post-rendering/hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
 import { commentClassName } from '../post-rendering/comment-list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
+
+const MdEditor = dynamic(() => import('./md-editor'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[200px] w-full items-center justify-center rounded-md border border-border bg-background-secondary/30">
+      <CircleSpinner loading size={24} color="#dc2626" />
+    </div>
+  )
+});
 
 const logger = getLogger('app');
 
@@ -87,6 +106,7 @@ export function ReplyTextbox({
   const initialText = editMode ? commentBody : '';
 
   const [text, setText] = useState(initialText);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
   // Track what value we last synced from storage (for cross-tab detection)
   const lastSyncedDraftRef = useRef<string>('');
@@ -173,11 +193,13 @@ export function ReplyTextbox({
     }
 
     // Ask user to confirm discarding their draft
-    const confirmed = confirm(t('post_content.footer.comment.exit_editor'));
-    if (confirmed) {
-      removePost();
-      onSetReply(false);
-    }
+    setCancelDialogOpen(true);
+  };
+
+  const handleCancelConfirm = () => {
+    removePost();
+    onSetReply(false);
+    setCancelDialogOpen(false);
   };
 
   const postComment = async () => {
@@ -369,6 +391,26 @@ export function ReplyTextbox({
           )}
         </div>
       </div>
+
+      <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('post_content.footer.comment.exit_editor')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('post_content.footer.comment.exit_editor_description')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('post_content.footer.comment.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleCancelConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {t('post_content.footer.comment.discard')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

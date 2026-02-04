@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useEffect, useRef } from 'react';
+import React, { KeyboardEvent, useCallback, useEffect, useRef } from 'react';
 import { cn } from '@ui/lib/utils';
 import { SearchMode, useSearch } from '@ui/hooks/use-search';
 import SearchSortSelect from './search-select';
@@ -33,6 +33,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
   const { inputValue, setInputValue, secondInputValue, setSecondInputValue, mode, setMode, handleSearch } =
     useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
+  const topicInputRef = useRef<HTMLInputElement>(null);
   const hasUserSelectedMode = useRef(false);
 
   // Auto-switch to AI mode when HiveSense becomes available,
@@ -43,24 +44,30 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
     }
   }, [aiAvailable]);
 
-  const handleModeChange = (newMode: SearchMode) => {
-    hasUserSelectedMode.current = true;
-    setMode(newMode);
-  };
+  const handleModeChange = useCallback(
+    (newMode: SearchMode) => {
+      hasUserSelectedMode.current = true;
+      setMode(newMode);
+    },
+    [setMode]
+  );
 
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      onSearchClick();
-    }
-  };
-
-  const onSearchClick = () => {
+  const onSearchClick = useCallback(() => {
     if (mode === 'userTopic') {
       handleSearch(secondInputValue, mode, inputValue);
     } else {
       handleSearch(inputValue, mode, secondInputValue);
     }
-  };
+  }, [mode, inputValue, secondInputValue, handleSearch]);
+
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        onSearchClick();
+      }
+    },
+    [onSearchClick]
+  );
   const placeholder = getPlaceholder(mode);
   return (
     <div className={cn('w-full', className)}>
@@ -87,7 +94,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
           <>
             <Separator className="mx-1 h-4 w-px bg-primary" />
             <input
-              ref={inputRef}
+              ref={topicInputRef}
               type="text"
               placeholder="Topic..."
               value={inputValue}

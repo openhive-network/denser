@@ -3,7 +3,20 @@ import { FC, useEffect, useState } from 'react';
 
 interface TimeAgoProps {
   date: string | number | Date;
+  /** Optional language code. Falls back to NEXT_LOCALE cookie or 'en' */
+  lang?: string;
 }
+
+// Move intervals outside the function to avoid recreation
+const TIME_INTERVALS: [number, Intl.RelativeTimeFormatUnit][] = [
+  [31536000, 'year'],
+  [2592000, 'month'],
+  [604800, 'week'],
+  [86400, 'day'],
+  [3600, 'hour'],
+  [60, 'minute'],
+  [1, 'second']
+];
 
 const getTimeAgoString = (date: Date, lang: string = 'en'): string => {
   try {
@@ -17,17 +30,7 @@ const getTimeAgoString = (date: Date, lang: string = 'en'): string => {
 
     const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' });
 
-    const intervals: [number, Intl.RelativeTimeFormatUnit][] = [
-      [31536000, 'year'],
-      [2592000, 'month'],
-      [604800, 'week'],
-      [86400, 'day'],
-      [3600, 'hour'],
-      [60, 'minute'],
-      [1, 'second']
-    ];
-
-    for (const [secondsInUnit, unit] of intervals) {
+    for (const [secondsInUnit, unit] of TIME_INTERVALS) {
       const value = Math.floor(diff / secondsInUnit);
       if (value > 0) {
         return rtf.format(-value, unit);
@@ -40,9 +43,10 @@ const getTimeAgoString = (date: Date, lang: string = 'en'): string => {
   }
 };
 
-const TimeAgo: FC<TimeAgoProps> = ({ date }) => {
+const TimeAgo: FC<TimeAgoProps> = ({ date, lang }) => {
   const [timeAgo, setTimeAgo] = useState<string>('');
-  const userLang = getCookie('NEXT_LOCALE') || 'en';
+  // Use provided lang prop, fall back to cookie or 'en'
+  const userLang = lang || getCookie('NEXT_LOCALE') || 'en';
 
   useEffect(() => {
     const updateTimeAgo = () => {

@@ -48,11 +48,30 @@ import { Separator } from '@ui/components';
 import { Progress } from '@ui/components/progress';
 import SelectImageList from '@/blog/features/post-editor/select-image-list';
 import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-settings-post-form';
-import MdEditor from '@/blog/features/post-editor/md-editor';
+import dynamic from 'next/dynamic';
 import RendererContainer from '@/blog/features/post-rendering/rendererContainer';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@hive/ui/components/alert-dialog';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { isCommunity } from '@ui/lib/utils';
 import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
+
+const MdEditor = dynamic(() => import('@/blog/features/post-editor/md-editor'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[500px] w-full items-center justify-center rounded-md border border-border bg-background-secondary/30">
+      <CircleSpinner loading size={24} color="#dc2626" />
+    </div>
+  )
+});
 
 const logger = getLogger('app');
 
@@ -126,6 +145,7 @@ export default function PostForm({
   const scrollCleanupRef = useRef<(() => void) | null>(null);
   const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   // Track if we've hydrated from localStorage to avoid resetting form during typing
   const hasHydratedRef = useRef(false);
   // Track if post was successfully submitted to prevent auto-save from re-creating draft
@@ -469,16 +489,16 @@ export default function PostForm({
   }
 
   const handleCancel = () => {
-    const confirmed = confirm(
-      editMode ? t('post_content.close_post_editor') : t('submit_page.clean_post_editor')
-    );
-    if (confirmed) {
-      form.reset(defaultValues);
-      if (editMode && setEditMode) {
-        setEditMode(false);
-        removePost();
-      }
+    setCancelDialogOpen(true);
+  };
+
+  const handleCancelConfirm = () => {
+    form.reset(defaultValues);
+    if (editMode && setEditMode) {
+      setEditMode(false);
+      removePost();
     }
+    setCancelDialogOpen(false);
   };
   const handleLoadTemplate = (data: AccountFormValues) => {
     form.setValue('author', data.author);
@@ -939,6 +959,25 @@ export default function PostForm({
           </div>
         </div>
       </div>
+
+      <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {editMode ? t('post_content.close_post_editor') : t('submit_page.clean_post_editor')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('submit_page.cancel_confirmation_description')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('submit_page.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleCancelConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              {t('submit_page.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

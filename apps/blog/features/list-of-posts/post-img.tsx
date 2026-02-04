@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Link } from '@hive/ui';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
@@ -95,7 +95,12 @@ export function find_first_img(post: Entry) {
 }
 
 export default function PostImage({ post }: { post: Entry }) {
-  const cardImage = find_first_img(post);
+  // Use stable identifiers as dependencies - the image won't change for the same post
+  const cardImage = useMemo(
+    () => find_first_img(post),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [post.author, post.permlink]
+  );
   const [image, setImage] = useState<string>(cardImage);
 
   return (

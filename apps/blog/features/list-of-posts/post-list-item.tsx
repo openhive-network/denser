@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Link } from '@hive/ui';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { Card, CardFooter, CardHeader } from '@ui/components/card';
@@ -26,17 +26,37 @@ import { Preferences } from '@/blog/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 
-const PostListItem = ({
-  post,
-  isCommunityPage,
-  blacklist,
-  nsfwPreferences
-}: {
+interface PostListItemProps {
   post: Entry;
   isCommunityPage: boolean | undefined;
   blacklist: IFollowList[] | undefined;
   nsfwPreferences: Preferences['nsfw'];
-}) => {
+}
+
+function arePostListItemPropsEqual(prev: PostListItemProps, next: PostListItemProps): boolean {
+  // Check primitive props first (fast)
+  if (prev.isCommunityPage !== next.isCommunityPage) return false;
+  if (prev.nsfwPreferences !== next.nsfwPreferences) return false;
+  if (prev.blacklist !== next.blacklist) return false;
+
+  // Check post identity and changing fields
+  const prevPost = prev.post;
+  const nextPost = next.post;
+
+  return (
+    prevPost.author === nextPost.author &&
+    prevPost.permlink === nextPost.permlink &&
+    prevPost.pending_payout_value === nextPost.pending_payout_value &&
+    prevPost.payout === nextPost.payout &&
+    prevPost.children === nextPost.children &&
+    prevPost.reblogs === nextPost.reblogs &&
+    prevPost.stats?.total_votes === nextPost.stats?.total_votes &&
+    prevPost.stats?.gray === nextPost.stats?.gray
+  );
+}
+
+const PostListItem = memo(
+  function PostListItem({ post, isCommunityPage, blacklist, nsfwPreferences }: PostListItemProps) {
   const { t } = useTranslation('common_blog');
   const tagExists = Array.isArray(post.json_metadata?.tags) && post.json_metadata.tags.includes('nsfw');
   const [nsfw, setNSFW] = useState<Preferences['nsfw']>(tagExists ? 'warn' : 'show');
@@ -247,6 +267,8 @@ const PostListItem = ({
       )}
     </li>
   );
-};
+  },
+  arePostListItemPropsEqual
+);
 
 export default PostListItem;
