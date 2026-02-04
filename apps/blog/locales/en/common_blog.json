@@ -123,7 +123,10 @@
       "mentions": "Mentions",
       "follows": "Follows",
       "upvotes": "Upvotes",
-      "reblogs": "Reblogs"
+      "reblogs": "Reblogs",
+      "end_of_notifications": "End of notifications",
+      "notifications_90_day_limit": "Notifications are only available for the last 90 days.",
+      "reputation_at_time": "Reputation at time of notification"
     },
     "user_menu": {
       "profile": "Profile",

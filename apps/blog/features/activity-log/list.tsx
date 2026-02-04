@@ -11,21 +11,19 @@ const NotificationList = ({
   lastRead: Date;
 }) => {
   return (
-    <table className="w-full py-8">
-      <tbody>
-        {data?.map((notification: IAccountNotification, index: number) => (
-          <NotificationListItem
-            key={`${notification.id}-${notification.type}-${index}`}
-            date={notification.date}
-            msg={notification.msg}
-            score={notification.score}
-            type={notification.type}
-            url={notification.url}
-            lastRead={lastRead}
-          />
-        ))}
-      </tbody>
-    </table>
+    <div className="flex flex-col divide-y divide-border-secondary">
+      {data?.map((notification: IAccountNotification, index: number) => (
+        <NotificationListItem
+          key={`${notification.id}-${notification.type}-${index}`}
+          date={notification.date}
+          msg={notification.msg}
+          score={notification.score}
+          type={notification.type}
+          url={notification.url}
+          lastRead={lastRead}
+        />
+      ))}
+    </div>
   );
 };
 

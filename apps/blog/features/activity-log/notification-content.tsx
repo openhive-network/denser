@@ -1,6 +1,14 @@
 'use client';
 
-import { SyntheticEvent, useEffect, useState } from 'react';
+/**
+ * Notifications feature component.
+ *
+ * Note: The Hive API (bridge_api_account_notifications) limits notifications
+ * to the last 90 days. Older notifications are not available from the API.
+ * See: hivemind/hive/db/sql_scripts/postgrest/bridge_api/bridge_api_account_notifications.sql
+ */
+
+import { SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { IAccountNotification } from '@hive/common-hiveio-packages/wax';
 import NotificationList from './list';
@@ -17,6 +25,22 @@ import { CircleSpinner } from 'react-spinners-kit';
 import { getAccountNotifications, getUnreadNotifications } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { Icons } from '@hive/ui/components/icons';
+
+const NOTIFICATIONS_LIMIT = 50;
+
+/** Notice shown when user has reached the end of available notifications */
+function EndOfNotificationsNotice({ t }: { t: (key: string) => string }) {
+  return (
+    <div className="my-6 flex flex-col items-center justify-center gap-2 text-center text-sm text-gray-500">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+        <Icons.check className="h-4 w-4 text-green-600 dark:text-green-400" />
+      </div>
+      <span>{t('navigation.profile_notifications_tab_navbar.end_of_notifications')}</span>
+      <span className="text-xs">{t('navigation.profile_notifications_tab_navbar.notifications_90_day_limit')}</span>
+    </div>
+  );
+}
 
 const NotificationActivities = ({
   data,
@@ -27,9 +51,10 @@ const NotificationActivities = ({
 }) => {
   const { t } = useTranslation('common_blog');
   const [state, setState] = useState(data);
-  const [lastStateElementId, setLastStateElementId] = useState(
-    state && state.length > 0 ? state[state.length - 1].id : null
-  );
+  // Track the last ID we want to fetch MORE data after (for pagination)
+  const [fetchAfterId, setFetchAfterId] = useState<number | null>(null);
+  // Track if we've reached the end of available notifications
+  const [hasMoreData, setHasMoreData] = useState(true);
   const { user } = useUserClient();
   const markAllNotificationsAsReadMutation = useMarkAllNotificationsAsReadMutation();
   const claimRewardMutation = useClaimRewardsMutation();
@@ -44,14 +69,10 @@ const NotificationActivities = ({
   const newDate = new Date(Date.now());
   const lastRead = unreadNotifications?.lastread ? new Date(unreadNotifications.lastread) : newDate;
 
-  const {
-    isLoading,
-    isFetching,
-    data: moreData
-  } = useQuery({
-    queryKey: ['AccountNotificationMoreData', username, lastStateElementId],
-    queryFn: () => getAccountNotifications(username, lastStateElementId, 50),
-    enabled: !!username && !!lastStateElementId,
+  const { isFetching, data: moreData } = useQuery({
+    queryKey: ['AccountNotificationMoreData', username, fetchAfterId],
+    queryFn: () => getAccountNotifications(username, fetchAfterId, NOTIFICATIONS_LIMIT),
+    enabled: !!username && fetchAfterId !== null && hasMoreData,
     staleTime: 0
   });
 
@@ -70,19 +91,34 @@ const NotificationActivities = ({
     enabled: !!username
   });
 
-  const showButton = isFetching || (moreData && moreData.length > 0);
-  const noNotifications = !state || !state.length || state.length === 0;
+  const noNotifications = !state || state.length === 0;
+  // Show button if loading OR if we have more data available
+  const showButton = isFetching || (hasMoreData && state && state.length > 0);
+
+  // Sync initial data from props
   useEffect(() => {
     if (data && data.length > 0) {
       setState(data);
+      // Check if initial data suggests there might be more
+      setHasMoreData(data.length >= NOTIFICATIONS_LIMIT);
     }
   }, [data]);
 
+  // Process fetched more data
   useEffect(() => {
-    if (state && state.length > 0) {
-      setLastStateElementId(state[state.length - 1].id);
+    if (moreData !== undefined && fetchAfterId !== null) {
+      if (!moreData || moreData.length === 0) {
+        // No more data available
+        setHasMoreData(false);
+      } else {
+        // Append new data and check if there might be more
+        setState((prev) => [...(prev ?? []), ...moreData]);
+        setHasMoreData(moreData.length >= NOTIFICATIONS_LIMIT);
+        // Reset fetchAfterId to prevent re-fetching the same data
+        setFetchAfterId(null);
+      }
     }
-  }, [state, state?.length]);
+  }, [moreData, fetchAfterId]);
 
   async function handleMarkAllAsRead() {
     if (markAllNotificationsAsReadMutation.isPending) return;
@@ -109,11 +145,15 @@ const NotificationActivities = ({
     }
   }
 
-  function handleLoadMore() {
-    if (!isLoading && !isFetching && moreData && moreData.length > 0) {
-      setState([...(state ?? []), ...moreData]);
+  const handleLoadMore = useCallback(() => {
+    if (!isFetching && hasMoreData && state && state.length > 0) {
+      const lastId = state[state.length - 1].id;
+      if (lastId !== undefined) {
+        // Set the ID of the last notification to fetch more after it
+        setFetchAfterId(lastId);
+      }
     }
-  }
+  }, [isFetching, hasMoreData, state]);
 
   return (
     <Tabs defaultValue="all" className="w-full">
@@ -162,17 +202,30 @@ const NotificationActivities = ({
         </div>
       ) : null}
       <TabsList
-        className="flex h-auto flex-wrap bg-background-tertiary "
+        className="flex h-auto flex-wrap bg-background-tertiary"
         data-testid="notifications-local-menu"
       >
         <TabsTrigger value="all">{t('navigation.profile_notifications_tab_navbar.all')}</TabsTrigger>
-        <TabsTrigger value="replies">{t('navigation.profile_notifications_tab_navbar.replies')}</TabsTrigger>
-        <TabsTrigger value="mentions">
+        <TabsTrigger value="replies" className="gap-1.5">
+          <Icons.comment className="h-3 w-3 text-purple-500" />
+          {t('navigation.profile_notifications_tab_navbar.replies')}
+        </TabsTrigger>
+        <TabsTrigger value="mentions" className="gap-1.5">
+          <Icons.atSign className="h-3 w-3 text-amber-500" />
           {t('navigation.profile_notifications_tab_navbar.mentions')}
         </TabsTrigger>
-        <TabsTrigger value="follows">{t('navigation.profile_notifications_tab_navbar.follows')}</TabsTrigger>
-        <TabsTrigger value="upvotes">{t('navigation.profile_notifications_tab_navbar.upvotes')}</TabsTrigger>
-        <TabsTrigger value="reblogs">{t('navigation.profile_notifications_tab_navbar.reblogs')}</TabsTrigger>
+        <TabsTrigger value="follows" className="gap-1.5">
+          <Icons.userPlus className="h-3 w-3 text-cyan-500" />
+          {t('navigation.profile_notifications_tab_navbar.follows')}
+        </TabsTrigger>
+        <TabsTrigger value="upvotes" className="gap-1.5">
+          <Icons.arrowUpCircle className="h-3 w-3 text-green-500" />
+          {t('navigation.profile_notifications_tab_navbar.upvotes')}
+        </TabsTrigger>
+        <TabsTrigger value="reblogs" className="gap-1.5">
+          <Icons.forward className="h-3 w-3 text-blue-500" />
+          {t('navigation.profile_notifications_tab_navbar.reblogs')}
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="all" data-testid="notifications-content-all">
         <NotificationList data={state} lastRead={lastRead} />
@@ -182,7 +235,9 @@ const NotificationActivities = ({
           </div>
         ) : showButton ? (
           <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
-        ) : null}
+        ) : (
+          <EndOfNotificationsNotice t={t} />
+        )}
       </TabsContent>
       <TabsContent value="replies" data-testid="notifications-content-replies">
         <NotificationList
@@ -197,7 +252,9 @@ const NotificationActivities = ({
           </div>
         ) : showButton ? (
           <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
-        ) : null}
+        ) : (
+          <EndOfNotificationsNotice t={t} />
+        )}
       </TabsContent>
       <TabsContent value="mentions" data-testid="notifications-content-mentions">
         <NotificationList
@@ -210,7 +267,9 @@ const NotificationActivities = ({
           </div>
         ) : showButton ? (
           <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
-        ) : null}
+        ) : (
+          <EndOfNotificationsNotice t={t} />
+        )}
       </TabsContent>
       <TabsContent value="follows" data-testid="notifications-content-follows">
         <NotificationList
@@ -223,7 +282,9 @@ const NotificationActivities = ({
           </div>
         ) : showButton ? (
           <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
-        ) : null}
+        ) : (
+          <EndOfNotificationsNotice t={t} />
+        )}
       </TabsContent>
       <TabsContent value="upvotes" data-testid="notifications-content-upvotes">
         <NotificationList
@@ -236,7 +297,9 @@ const NotificationActivities = ({
           </div>
         ) : showButton ? (
           <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
-        ) : null}
+        ) : (
+          <EndOfNotificationsNotice t={t} />
+        )}
       </TabsContent>
       <TabsContent value="reblogs" data-testid="notifications-content-reblogs">
         <NotificationList
@@ -249,7 +312,9 @@ const NotificationActivities = ({
           </div>
         ) : showButton ? (
           <LoadMoreButton isFetching={isFetching} onClick={handleLoadMore} />
-        ) : null}
+        ) : (
+          <EndOfNotificationsNotice t={t} />
+        )}
       </TabsContent>
     </Tabs>
   );
