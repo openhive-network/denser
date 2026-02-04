@@ -255,7 +255,8 @@
     "google_wallet_not_found_help": "Hive Bridge هو تطبيق آمن يساعدك على إنشاء وتخزين محفظة Hive في Google Drive الخاص بك. يتيح لك ذلك توقيع معاملات Hive بدون تثبيت ملحقات المتصفح.",
     "google_key_not_found_title": "المفتاح غير موجود في المحفظة",
     "google_key_not_found_description": "لم يتم العثور على مفتاح {{keyType}} لـ Hive للمستخدم {{username}} في محفظة Google Drive.",
-    "go_to_hive_bridge": "اذهب إلى Hive Bridge"
+    "go_to_hive_bridge": "اذهب إلى Hive Bridge",
+    "completing_google_auth": "Completing Google authorization..."
   },
   "user_profile": {
     "reputation": "السمعة",

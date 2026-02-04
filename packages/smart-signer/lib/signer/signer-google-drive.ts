@@ -8,6 +8,17 @@ import { getChain } from '@transaction/lib/chain';
 import { createExternalWallet, IExternalWallet, IExternalWalletContent } from '@hiveio/wax-signers-external';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
+import {
+  GOOGLE_OAUTH_CODE_KEY,
+  GOOGLE_OAUTH_ERROR_KEY,
+  GOOGLE_OAUTH_USERNAME_KEY,
+  GOOGLE_OAUTH_KEYTYPE_KEY,
+  GOOGLE_OAUTH_NONCE_KEY,
+  encodeUrlSafeBase64,
+  generateOAuthNonce,
+  setOAuthDataWithTimestamp,
+  clearOAuthData
+} from '@smart-signer/lib/google-oauth-constants';
 
 const logger = getLogger('app');
 
@@ -15,12 +26,6 @@ export const hasCompatibleGoogleDriveProvider = () => !!siteConfig.googleDrive.c
 
 const GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY = 'google_refresh_token';
 const GOOGLE_DRIVE_ENCRYPTION_KEY_WIF_LOCALSTORAGE_KEY = 'gdrive_encryption_key_wif';
-
-// SessionStorage keys for Safari OAuth redirect flow
-const GOOGLE_OAUTH_CODE_KEY = 'google_oauth_code';
-const GOOGLE_OAUTH_ERROR_KEY = 'google_oauth_error';
-const GOOGLE_OAUTH_USERNAME_KEY = 'google_oauth_username';
-const GOOGLE_OAUTH_KEYTYPE_KEY = 'google_oauth_keyType';
 
 /* eslint-disable no-restricted-properties -- WIF key is stored permanently without TTL (safe: WIF alone cannot access wallet without Google token) */
 function getStoredEncryptionKeyWif(): string | null {
@@ -127,17 +132,13 @@ export class SignerGoogleDrive extends Signer {
     const pendingError = sessionStorage.getItem(GOOGLE_OAUTH_ERROR_KEY);
 
     if (pendingError) {
-      sessionStorage.removeItem(GOOGLE_OAUTH_ERROR_KEY);
-      sessionStorage.removeItem(GOOGLE_OAUTH_USERNAME_KEY);
-      sessionStorage.removeItem(GOOGLE_OAUTH_KEYTYPE_KEY);
+      clearOAuthData();
       return Promise.reject(new Error(`Google OAuth error: ${pendingError}`));
     }
 
     if (pendingCode) {
       // We have a code from redirect - exchange it
-      sessionStorage.removeItem(GOOGLE_OAUTH_CODE_KEY);
-      sessionStorage.removeItem(GOOGLE_OAUTH_USERNAME_KEY);
-      sessionStorage.removeItem(GOOGLE_OAUTH_KEYTYPE_KEY);
+      clearOAuthData();
 
       this._accessToken = this.exchangeCodeForTokens(pendingCode, true);
       return this._accessToken;
@@ -156,14 +157,27 @@ export class SignerGoogleDrive extends Signer {
   /**
    * Initiates OAuth via redirect (for Safari).
    * Stores login context and redirects to Google OAuth.
+   *
+   * Security measures:
+   * - CSRF protection via nonce in state parameter
+   * - URL-safe base64 encoding for state
+   * - Timestamp for TTL-based cleanup of stale data
    */
   private initiateRedirectFlow(): Promise<string> {
+    // Generate CSRF nonce and store it for validation on callback
+    const nonce = generateOAuthNonce();
+    sessionStorage.setItem(GOOGLE_OAUTH_NONCE_KEY, nonce);
+
     // Store login context for resumption after redirect
     sessionStorage.setItem(GOOGLE_OAUTH_USERNAME_KEY, this.username);
     sessionStorage.setItem(GOOGLE_OAUTH_KEYTYPE_KEY, this.keyType);
 
+    // Set timestamp for TTL-based cleanup
+    setOAuthDataWithTimestamp();
+
     const returnUrl = window.location.href;
-    const state = btoa(JSON.stringify({ returnUrl }));
+    // Use URL-safe base64 encoding and include nonce for CSRF protection
+    const state = encodeUrlSafeBase64(JSON.stringify({ returnUrl, nonce }));
     const redirectUri = `${window.location.origin}/api/google-drive/callback`;
 
     const tokenClient = window.google.accounts.oauth2.initCodeClient({

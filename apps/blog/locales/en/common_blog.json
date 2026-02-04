@@ -265,7 +265,8 @@
     "google_wallet_not_found_help": "Hive Bridge is a secure application that helps you create and store a Hive wallet in your Google Drive. This allows you to sign Hive transactions without installing browser extensions.",
     "google_key_not_found_title": "Key Not Found in Wallet",
     "google_key_not_found_description": "No stored Hive {{keyType}} key found for user {{username}} in Google Drive wallet.",
-    "go_to_hive_bridge": "Go to Hive Bridge"
+    "go_to_hive_bridge": "Go to Hive Bridge",
+    "completing_google_auth": "Completing Google authorization..."
   },
   "user_profile": {
     "reputation": "Reputation",

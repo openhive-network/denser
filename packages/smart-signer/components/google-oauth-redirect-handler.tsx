@@ -2,18 +2,21 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useProcessAuth, LoginFormSchema } from './auth/process';
-import { LoginType, KeyType } from '@smart-signer/types/common';
+import { LoginType } from '@smart-signer/types/common';
 import { siteConfig } from '@ui/config/site';
 import { handleError } from '@ui/lib/handle-error';
 import { getLogger } from '@ui/lib/logging';
+import {
+  GOOGLE_OAUTH_CODE_KEY,
+  GOOGLE_OAUTH_ERROR_KEY,
+  GOOGLE_OAUTH_USERNAME_KEY,
+  GOOGLE_OAUTH_KEYTYPE_KEY,
+  isValidKeyType,
+  cleanupStaleOAuthData,
+  clearOAuthData
+} from '@smart-signer/lib/google-oauth-constants';
 
 const logger = getLogger('app');
-
-// SessionStorage keys (must match signer-google-drive.ts)
-const GOOGLE_OAUTH_CODE_KEY = 'google_oauth_code';
-const GOOGLE_OAUTH_ERROR_KEY = 'google_oauth_error';
-const GOOGLE_OAUTH_USERNAME_KEY = 'google_oauth_username';
-const GOOGLE_OAUTH_KEYTYPE_KEY = 'google_oauth_keyType';
 
 const GOOGLE_GSI_SCRIPT_ID = 'google-gsi-script';
 const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
@@ -22,6 +25,12 @@ interface GoogleOAuthRedirectHandlerProps {
   authenticateOnBackend?: boolean;
   strict?: boolean;
   onComplete?: (username: string) => void;
+  /**
+   * Text to display while completing authorization.
+   * Should be a translated string from the consuming app.
+   * @default 'Completing Google authorization...'
+   */
+  loadingText?: string;
 }
 
 /**
@@ -34,10 +43,16 @@ interface GoogleOAuthRedirectHandlerProps {
 export function GoogleOAuthRedirectHandler({
   authenticateOnBackend = false,
   strict = false,
-  onComplete
+  onComplete,
+  loadingText = 'Completing Google authorization...'
 }: GoogleOAuthRedirectHandlerProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const { signAuth, submitAuth } = useProcessAuth(authenticateOnBackend, strict);
+
+  // Clean up stale OAuth data on mount
+  useEffect(() => {
+    cleanupStaleOAuthData();
+  }, []);
 
   const loadGoogleScript = useCallback((): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -90,7 +105,7 @@ export function GoogleOAuthRedirectHandler({
     // Verify we have pending OAuth data
     const pendingCode = sessionStorage.getItem(GOOGLE_OAUTH_CODE_KEY);
     const storedUsername = sessionStorage.getItem(GOOGLE_OAUTH_USERNAME_KEY);
-    const storedKeyType = sessionStorage.getItem(GOOGLE_OAUTH_KEYTYPE_KEY) as KeyType;
+    const storedKeyTypeRaw = sessionStorage.getItem(GOOGLE_OAUTH_KEYTYPE_KEY);
     const pendingError = sessionStorage.getItem(GOOGLE_OAUTH_ERROR_KEY);
 
     // Clean up URL immediately to prevent re-processing on refresh
@@ -98,13 +113,20 @@ export function GoogleOAuthRedirectHandler({
 
     if (pendingError) {
       logger.error('Google OAuth error from redirect: %s', pendingError);
-      sessionStorage.removeItem(GOOGLE_OAUTH_ERROR_KEY);
-      sessionStorage.removeItem(GOOGLE_OAUTH_USERNAME_KEY);
-      sessionStorage.removeItem(GOOGLE_OAUTH_KEYTYPE_KEY);
+      clearOAuthData();
+      // Show user-friendly error message
+      handleError(new Error(`Google authentication failed: ${pendingError}`));
       return;
     }
 
-    if (!pendingCode || !storedUsername || !storedKeyType) {
+    // Validate KeyType to prevent type confusion attacks
+    if (!isValidKeyType(storedKeyTypeRaw)) {
+      logger.info('No valid pending OAuth data found (invalid keyType), skipping auto-continuation');
+      return;
+    }
+    const storedKeyType = storedKeyTypeRaw;
+
+    if (!pendingCode || !storedUsername) {
       logger.info('No valid pending OAuth data found, skipping auto-continuation');
       return;
     }
@@ -149,7 +171,7 @@ export function GoogleOAuthRedirectHandler({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="rounded-lg bg-background p-6 text-center shadow-lg">
         <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        <p className="text-foreground">Completing Google authorization...</p>
+        <p className="text-foreground">{loadingText}</p>
       </div>
     </div>
   );

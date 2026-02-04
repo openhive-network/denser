@@ -241,7 +241,8 @@
     "google_wallet_not_found_help": "Hive Bridge是一个安全的应用程序，可帮助您在Google Drive中创建和存储Hive钱包。这使您无需安装浏览器扩展即可签署Hive交易。",
     "google_key_not_found_title": "钱包中未找到密钥",
     "google_key_not_found_description": "在Google Drive钱包中未找到用户{{username}}的Hive {{keyType}}密钥。",
-    "go_to_hive_bridge": "前往Hive Bridge"
+    "go_to_hive_bridge": "前往Hive Bridge",
+    "completing_google_auth": "Completing Google authorization..."
   },
   "user_profile": {
     "reputation": "声誉",

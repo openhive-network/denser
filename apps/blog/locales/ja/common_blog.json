@@ -241,7 +241,8 @@
     "google_wallet_not_found_help": "Hive Bridgeは、Google DriveでHiveウォレットを作成・保存するための安全なアプリケーションです。ブラウザ拡張機能をインストールせずにHiveトランザクションに署名できます。",
     "google_key_not_found_title": "ウォレットにキーが見つかりません",
     "google_key_not_found_description": "Google Driveウォレットにユーザー{{username}}のHive {{keyType}}キーが見つかりません。",
-    "go_to_hive_bridge": "Hive Bridgeへ移動"
+    "go_to_hive_bridge": "Hive Bridgeへ移動",
+    "completing_google_auth": "Completing Google authorization..."
   },
   "user_profile": {
     "reputation": "評価",

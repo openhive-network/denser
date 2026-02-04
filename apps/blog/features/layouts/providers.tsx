@@ -20,10 +20,12 @@ import {
   NavigationProgressHandler
 } from '@hive/ui';
 import RocketChatWidget from '@/blog/components/rocket-chat-widget';
+import { useTranslation } from '@/blog/i18n/client';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useMemo(() => getQueryClient(), []);
   const { resolvedTheme } = useTheme();
+  const { t } = useTranslation('common_blog');
 
   return (
     <>
@@ -39,6 +41,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
               <GoogleOAuthRedirectHandler
                 authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
                 strict={!siteConfig.allowNonStrictLogin}
+                loadingText={t('login_form.completing_google_auth')}
               />
               <LoggedUserProvider>
                 {children}

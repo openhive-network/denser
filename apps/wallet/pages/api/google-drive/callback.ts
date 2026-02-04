@@ -8,7 +8,12 @@ const logger = getLogger('google-drive-callback');
  *
  * Google redirects here with ?code=xxx&state=xxx after user authorization.
  * This page extracts the code and stores it in sessionStorage,
- * then redirects the user back to the original page.
+ * validates the CSRF nonce, and redirects the user back to the original page.
+ *
+ * Security measures:
+ * - CSRF protection via nonce in state parameter
+ * - Open redirect protection via same-origin validation
+ * - URL-safe base64 encoding for state
  */
 export default async function handler(
   req: NextApiRequest,
@@ -69,6 +74,31 @@ export default async function handler(
       var state = ${JSON.stringify(stateStr || null)};
       var error = ${JSON.stringify(errorStr || null)};
 
+      // URL-safe base64 decode helper
+      function decodeUrlSafeBase64(str) {
+        var base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+        var padding = base64.length % 4;
+        if (padding) {
+          base64 += '='.repeat(4 - padding);
+        }
+        return atob(base64);
+      }
+
+      // Validate return URL is same-origin (prevent open redirect attacks)
+      function isValidReturnUrl(url) {
+        // Allow relative paths starting with /
+        if (url.startsWith('/') && !url.startsWith('//')) {
+          return true;
+        }
+        // For absolute URLs, check if same origin
+        try {
+          var parsed = new URL(url);
+          return parsed.origin === window.location.origin;
+        } catch (e) {
+          return false;
+        }
+      }
+
       if (error) {
         sessionStorage.setItem('google_oauth_error', error);
         sessionStorage.removeItem('google_oauth_code');
@@ -77,19 +107,37 @@ export default async function handler(
         sessionStorage.removeItem('google_oauth_error');
       }
 
-      // Get the return URL from state or default to origin
+      // Parse state and validate CSRF nonce
       var returnUrl = '/';
+      var stateNonce = null;
       try {
         if (state) {
-          var stateData = JSON.parse(atob(state));
-          returnUrl = stateData.returnUrl || '/';
+          var stateData = JSON.parse(decodeUrlSafeBase64(state));
+          stateNonce = stateData.nonce;
+
+          // Validate return URL is same-origin
+          if (stateData.returnUrl && isValidReturnUrl(stateData.returnUrl)) {
+            returnUrl = stateData.returnUrl;
+          } else if (stateData.returnUrl) {
+            console.warn('Rejected non-same-origin return URL:', stateData.returnUrl);
+          }
         }
       } catch (e) {
         console.error('Failed to parse state:', e);
       }
 
-      // Redirect back to the app
-      window.location.replace(returnUrl);
+      // Validate CSRF nonce
+      var storedNonce = sessionStorage.getItem('google_oauth_nonce');
+      if (stateNonce && storedNonce && stateNonce !== storedNonce) {
+        console.error('CSRF nonce mismatch - possible attack');
+        sessionStorage.setItem('google_oauth_error', 'csrf_validation_failed');
+        sessionStorage.removeItem('google_oauth_code');
+      }
+
+      // Redirect back to the app with google_auth=pending flag
+      // This signals to the app that it should continue the OAuth flow automatically
+      var separator = returnUrl.indexOf('?') === -1 ? '?' : '&';
+      window.location.replace(returnUrl + separator + 'google_auth=pending');
     })();
   </script>
 </body>

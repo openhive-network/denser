@@ -241,7 +241,8 @@
     "google_wallet_not_found_help": "Hive Bridge - это безопасное приложение, которое помогает создать и хранить кошелек Hive на вашем Google Drive. Это позволяет подписывать транзакции Hive без установки расширений браузера.",
     "google_key_not_found_title": "Ключ не найден в кошельке",
     "google_key_not_found_description": "Ключ {{keyType}} Hive для пользователя {{username}} не найден в кошельке Google Drive.",
-    "go_to_hive_bridge": "Перейти в Hive Bridge"
+    "go_to_hive_bridge": "Перейти в Hive Bridge",
+    "completing_google_auth": "Completing Google authorization..."
   },
   "user_profile": {
     "reputation": "Репутация",

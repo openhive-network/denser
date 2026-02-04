@@ -241,7 +241,8 @@
     "google_wallet_not_found_help": "Hive Bridge es una aplicación segura que te ayuda a crear y almacenar una billetera Hive en tu Google Drive. Esto te permite firmar transacciones de Hive sin instalar extensiones del navegador.",
     "google_key_not_found_title": "Clave no encontrada en la billetera",
     "google_key_not_found_description": "No se encontró la clave {{keyType}} de Hive para el usuario {{username}} en la billetera de Google Drive.",
-    "go_to_hive_bridge": "Ir a Hive Bridge"
+    "go_to_hive_bridge": "Ir a Hive Bridge",
+    "completing_google_auth": "Completing Google authorization..."
   },
   "user_profile": {
     "reputation": "Reputación",

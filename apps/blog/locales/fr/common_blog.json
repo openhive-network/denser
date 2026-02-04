@@ -241,7 +241,8 @@
     "google_wallet_not_found_help": "Hive Bridge est une application sécurisée qui vous aide à créer et stocker un portefeuille Hive dans votre Google Drive. Cela vous permet de signer des transactions Hive sans installer d'extensions de navigateur.",
     "google_key_not_found_title": "Clé non trouvée dans le portefeuille",
     "google_key_not_found_description": "Aucune clé {{keyType}} Hive trouvée pour l'utilisateur {{username}} dans le portefeuille Google Drive.",
-    "go_to_hive_bridge": "Aller à Hive Bridge"
+    "go_to_hive_bridge": "Aller à Hive Bridge",
+    "completing_google_auth": "Completing Google authorization..."
   },
   "user_profile": {
     "reputation": "Réputation",
