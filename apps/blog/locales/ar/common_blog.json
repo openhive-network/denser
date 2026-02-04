@@ -508,6 +508,8 @@
     "others_communities": "مجتمعات أخرى",
     "disable_side": "تعطيل المحرر جنبًا إلى جنب",
     "enable_side": "تمكين المحرر جنبًا إلى جنب",
+    "disable_sync_scroll": "تعطيل التمرير المتزامن",
+    "enable_sync_scroll": "تمكين التمرير المتزامن",
     "string_must_contain": "يجب أن يحتوي السلسلة على حرف(ات) {{num}} على الأقل",
     "must_contain_only": "يجب أن يحتوي على أحرف وأرقام فقط",
     "hide_preview": "إخفاء المعاينة",

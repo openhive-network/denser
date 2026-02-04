@@ -475,6 +475,8 @@
     "others_communities": "Inne Społeczności",
     "disable_side": "Przenieś podgląd pod formularz",
     "enable_side": "Przenieś podgląd obok formularza",
+    "disable_sync_scroll": "Wyłącz synchronizację przewijania",
+    "enable_sync_scroll": "Włącz synchronizację przewijania",
     "string_must_contain": "Tekst musi zawierać conajmniej {{num}} znak(i)",
     "must_contain_only": "Może zawierać tylko litery i liczby",
     "hide_preview": "Schowaj podgląd",

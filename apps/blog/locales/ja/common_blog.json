@@ -470,6 +470,8 @@
     "others_communities": "他のコミュニティ",
     "disable_side": "サイドバイサイドエディターを無効にする",
     "enable_side": "サイドバイサイドエディターを有効にする",
+    "disable_sync_scroll": "同期スクロールを無効にする",
+    "enable_sync_scroll": "同期スクロールを有効にする",
     "string_must_contain": "文字列は少なくとも{{num}}文字含まれている必要があります",
     "must_contain_only": "文字と数字のみを含む必要があります",
     "hide_preview": "プレビューを非表示",

@@ -470,6 +470,8 @@
     "others_communities": "Otras Comunidades",
     "disable_side": "Deshabilitar el editor en paralelo",
     "enable_side": "Habilitar el editor en paralelo",
+    "disable_sync_scroll": "Desactivar desplazamiento sincronizado",
+    "enable_sync_scroll": "Activar desplazamiento sincronizado",
     "string_must_contain": "La cadena debe contener al menos {{num}} caracteres",
     "must_contain_only": "debe contener solo letras y números",
     "hide_preview": "Ocultar vista previa",

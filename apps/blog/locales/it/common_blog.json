@@ -470,6 +470,8 @@
     "others_communities": "Altre Comunità",
     "disable_side": "Disabilita l'editor affiancato",
     "enable_side": "Abilita l'editor affiancato",
+    "disable_sync_scroll": "Disabilita scorrimento sincronizzato",
+    "enable_sync_scroll": "Abilita scorrimento sincronizzato",
     "string_must_contain": "La stringa deve contenere almeno {{num}} carattere(i)",
     "must_contain_only": "Deve contenere solo lettere e numeri",
     "hide_preview": "Nascondi anteprima",

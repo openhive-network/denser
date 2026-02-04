@@ -114,7 +114,11 @@ export default function PostForm({
   const { reputation } = useLoggedUserContext();
 
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
+  const [syncScroll, setSyncScroll] = useState(true);
   const [imagePickerState, setImagePickerState] = useState('');
+  const editorContainerRef = useRef<HTMLDivElement>(null);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+  const isScrollSyncingRef = useRef(false);
   const { manabarsData } = useManabars(username);
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   // Track if we've hydrated from localStorage to avoid resetting form during typing
@@ -287,6 +291,67 @@ export default function PostForm({
     setImagePickerState(imagePicker(selectedImg));
   }, [selectedImg, postArea]);
 
+  // Set up scroll sync event listeners
+  useEffect(() => {
+    if (!syncScroll || !sideBySide || !preview) return;
+
+    // Small delay to ensure MDEditor has fully mounted
+    const timeoutId = setTimeout(() => {
+      // The scrollable element in MDEditor is .w-md-editor-area, not the textarea
+      const editorScrollArea = editorContainerRef.current?.querySelector(
+        '.w-md-editor-area'
+      ) as HTMLDivElement | null;
+      const previewEl = previewContainerRef.current;
+
+      if (!editorScrollArea || !previewEl) return;
+
+      const handleEditorScroll = () => {
+        if (isScrollSyncingRef.current) return;
+        const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
+        const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
+        if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
+
+        isScrollSyncingRef.current = true;
+        const scrollPercentage = editorScrollArea.scrollTop / maxEditorScroll;
+        previewEl.scrollTop = scrollPercentage * maxPreviewScroll;
+        requestAnimationFrame(() => {
+          isScrollSyncingRef.current = false;
+        });
+      };
+
+      const handlePreviewScroll = () => {
+        if (isScrollSyncingRef.current) return;
+        const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
+        const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
+        if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
+
+        isScrollSyncingRef.current = true;
+        const scrollPercentage = previewEl.scrollTop / maxPreviewScroll;
+        editorScrollArea.scrollTop = scrollPercentage * maxEditorScroll;
+        requestAnimationFrame(() => {
+          isScrollSyncingRef.current = false;
+        });
+      };
+
+      editorScrollArea.addEventListener('scroll', handleEditorScroll);
+      previewEl.addEventListener('scroll', handlePreviewScroll);
+
+      // Store cleanup references
+      (editorContainerRef.current as HTMLDivElement & { _scrollCleanup?: () => void })._scrollCleanup = () => {
+        editorScrollArea.removeEventListener('scroll', handleEditorScroll);
+        previewEl.removeEventListener('scroll', handlePreviewScroll);
+      };
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      const cleanup = (editorContainerRef.current as HTMLDivElement & { _scrollCleanup?: () => void })?._scrollCleanup;
+      if (cleanup) {
+        cleanup();
+      }
+    };
+  }, [syncScroll, sideBySide, preview]);
+
   async function onSubmit(data: AccountFormValues) {
     const tags = parseTags(data.tags);
     const maxAcceptedPayout = await createAsset((data.maxAcceptedPayout * 1000).toString(), 'HBD');
@@ -438,7 +503,7 @@ export default function PostForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <>
+                    <div ref={editorContainerRef}>
                       <MdEditor
                         windowheight={500}
                         onChange={(value) => {
@@ -446,7 +511,7 @@ export default function PostForm({
                         }}
                         persistedValue={field.value}
                       />
-                    </>
+                    </div>
                   </FormControl>
                   <div className="flex items-center rounded-b-md border-x border-b border-border bg-background-secondary/50 px-3 py-1.5 text-xs text-muted-foreground">
                     {t('submit_page.insert_images_by_dragging')} {t('submit_page.selecting_them')}
@@ -757,16 +822,45 @@ export default function PostForm({
             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               {t('submit_page.preview')}
             </span>
-            <Link
-              target="_blank"
-              href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
-            >
-              <span className="text-xs text-muted-foreground hover:text-destructive transition-colors">
-                {t('submit_page.markdown_styling_guide')}
-              </span>
-            </Link>
+            <div className="flex items-center gap-3">
+              {sideBySide && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                        onClick={() => setSyncScroll((prev) => !prev)}
+                        data-testid="sync-scroll-toggle"
+                      >
+                        {syncScroll ? (
+                          <Icons.link2 className="h-4 w-4" />
+                        ) : (
+                          <Icons.link2Off className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {syncScroll
+                        ? t('submit_page.disable_sync_scroll')
+                        : t('submit_page.enable_sync_scroll')}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              <Link
+                target="_blank"
+                href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+              >
+                <span className="text-xs text-muted-foreground hover:text-destructive transition-colors">
+                  {t('submit_page.markdown_styling_guide')}
+                </span>
+              </Link>
+            </div>
           </div>
-          <div className="flex h-full overflow-y-auto rounded-b-lg border border-border">
+          <div ref={previewContainerRef} className="flex h-full overflow-y-auto rounded-b-lg border border-border">
             {previewContent ? (
               <RendererContainer
                 body={previewContent}

@@ -470,6 +470,8 @@
     "others_communities": "Autres communautés",
     "disable_side": "Désactiver l'éditeur côte à côte",
     "enable_side": "Activer l'éditeur côte à côte",
+    "disable_sync_scroll": "Désactiver le défilement synchronisé",
+    "enable_sync_scroll": "Activer le défilement synchronisé",
     "string_must_contain": "La chaîne doit contenir au moins {{num}} caractère(s)",
     "must_contain_only": "Doit contenir uniquement des lettres et des chiffres",
     "hide_preview": "Masquer l'aperçu",

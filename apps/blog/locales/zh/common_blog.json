@@ -470,6 +470,8 @@
     "others_communities": "其他社群",
     "disable_side": "禁用并排编辑器",
     "enable_side": "启用并排编辑器",
+    "disable_sync_scroll": "禁用同步滚动",
+    "enable_sync_scroll": "启用同步滚动",
     "string_must_contain": "字符串必须包含至少{{num}}个字符",
     "must_contain_only": "只能包含字母和数字",
     "hide_preview": "隐藏预览",

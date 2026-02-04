@@ -563,6 +563,8 @@
     "others_communities": "Others Communities",
     "disable_side": "Disable side-by-side editor",
     "enable_side": "Enable side-by-side editor",
+    "disable_sync_scroll": "Disable synchronized scrolling",
+    "enable_sync_scroll": "Enable synchronized scrolling",
     "string_must_contain": "String must contain at least {{num}} character(s)",
     "must_contain_only": "Must contain only letters and numbers",
     "hide_preview": "Hide preview",
