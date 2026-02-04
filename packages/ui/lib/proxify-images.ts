@@ -44,11 +44,9 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
     return url.replace('https://steemitimages.com', proxyBase);
   }
 
-  if (url.indexOf('https://images.ecency.com/') === 0 && url.indexOf('https://images.ecency.com/D') !== 0) {
-    return url.replace('https://images.ecency.com', proxyBase);
-  }
-
-  // For other external images, use the complex /p/hash system
+  // For other external images (including ecency), use the /p/hash system
+  // Note: ecency's /p/ hash format is incompatible with hive.blog's, so we
+  // must encode the full URL rather than doing a simple domain replacement
   const realUrl = getLatestUrl(url);
   // Encode spaces and special characters in URL
   const encodedUrl = encodeURI(realUrl).replace(/ /g, '%20');
