@@ -204,7 +204,10 @@
       "edit": "編集",
       "delete": "消去",
       "will_be_hidden": "Will be hidden due to low rating ",
-      "load_more": "Load more"
+      "load_more": "Load more",
+      "reason_muted": "あなたがミュート",
+      "reason_downvoted": "マイナス評価",
+      "reason_blacklisted": "ブラックリスト"
     }
   },
   "amount_hover_card": {

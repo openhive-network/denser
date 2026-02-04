@@ -204,7 +204,10 @@
       "edit": "Pедактировать",
       "delete": "Удалить",
       "will_be_hidden": "Will be hidden due to low rating ",
-      "load_more": "Load more"
+      "load_more": "Load more",
+      "reason_muted": "заглушен вами",
+      "reason_downvoted": "минусы",
+      "reason_blacklisted": "чёрный список"
     }
   },
   "amount_hover_card": {

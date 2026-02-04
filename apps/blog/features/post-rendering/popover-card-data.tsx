@@ -18,8 +18,15 @@ import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { AlertTriangle } from 'lucide-react';
+import { accountReputation } from '@hive/ui';
 
-const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: string[] }) => {
+interface PopoverCardDataProps {
+  author: string;
+  blacklist: string[];
+  authorReputation: number;
+}
+
+const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDataProps) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const follows = useFollowsQuery(author);
@@ -82,13 +89,18 @@ const PopoverCardData = ({ author, blacklist }: { author: string; blacklist: str
               >
                 {account.profile?.name || author}
               </BasePathLink>
-              <BasePathLink
-                href={`/@${author}`}
-                className="text-sm text-muted-foreground hover:text-destructive"
-                data-testid="popover-card-user-nickname"
-              >
-                @{author}
-              </BasePathLink>
+              <div className="flex items-center gap-1">
+                <BasePathLink
+                  href={`/@${author}`}
+                  className="text-sm text-muted-foreground hover:text-destructive"
+                  data-testid="popover-card-user-nickname"
+                >
+                  @{author}
+                </BasePathLink>
+                <span className="text-sm text-muted-foreground" data-testid="popover-card-user-reputation">
+                  ({accountReputation(authorReputation)})
+                </span>
+              </div>
               {!legalBlockedUser && user.username !== author && (
                 <div className="mt-2 flex gap-2">
                   <ButtonsContainer

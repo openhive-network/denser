@@ -206,7 +206,10 @@
       "edit": "Edytuj",
       "delete": "Usuń",
       "will_be_hidden": "Komentarz jest ukryte ze względu na niską ocenę",
-      "load_more": "Pokaż więcej"
+      "load_more": "Pokaż więcej",
+      "reason_muted": "wyciszony przez ciebie",
+      "reason_downvoted": "negatywne głosy",
+      "reason_blacklisted": "czarna lista"
     }
   },
   "amount_hover_card": {

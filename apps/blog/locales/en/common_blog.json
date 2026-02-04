@@ -223,7 +223,10 @@
       "edit": "Edit",
       "delete": "Delete",
       "will_be_hidden": "Will be hidden due to low rating ",
-      "load_more": "Load more"
+      "load_more": "Load more",
+      "reason_muted": "muted by you",
+      "reason_downvoted": "downvoted",
+      "reason_blacklisted": "blacklisted"
     }
   },
   "alert_dialog_reblog": {

@@ -211,7 +211,10 @@
       "edit": "تعديل",
       "delete": "حذف",
       "will_be_hidden": "سيتم إخفاؤه بسبب التصنيف المنخفض",
-      "load_more": "تحميل المزيد"
+      "load_more": "تحميل المزيد",
+      "reason_muted": "مكتوم بواسطتك",
+      "reason_downvoted": "تصويت سلبي",
+      "reason_blacklisted": "قائمة سوداء"
     }
   },
   "alert_dialog_reblog": {

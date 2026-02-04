@@ -41,7 +41,7 @@ export function UserPopoverCard({
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 border border-border bg-background p-0 shadow-lg" data-testid="user-popover-card-content">
-        <PopoverCardData author={author} blacklist={blacklist} />
+        <PopoverCardData author={author} blacklist={blacklist} authorReputation={author_reputation} />
       </PopoverContent>
     </Popover>
   );

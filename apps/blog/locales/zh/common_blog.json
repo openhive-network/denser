@@ -204,7 +204,10 @@
       "edit": "编辑",
       "delete": "删除",
       "will_be_hidden": "Will be hidden due to low rating ",
-      "load_more": "Load more"
+      "load_more": "Load more",
+      "reason_muted": "已被你静音",
+      "reason_downvoted": "被踩",
+      "reason_blacklisted": "黑名单"
     }
   },
   "amount_hover_card": {

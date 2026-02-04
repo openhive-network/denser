@@ -204,7 +204,10 @@
       "edit": "Modifier",
       "delete": "Supprimer",
       "will_be_hidden": "Will be hidden due to low rating ",
-      "load_more": "Load more"
+      "load_more": "Load more",
+      "reason_muted": "masqué par vous",
+      "reason_downvoted": "votes négatifs",
+      "reason_blacklisted": "liste noire"
     }
   },
   "amount_hover_card": {

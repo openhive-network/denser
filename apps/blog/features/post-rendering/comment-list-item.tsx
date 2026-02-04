@@ -71,7 +71,10 @@ const CommentListItem = memo(function CommentListItem({
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const ref = useRef<HTMLTableRowElement>(null);
-  const isOriginallyHidden = comment.stats?.gray || mutedList?.some((x) => x.name === comment.author);
+  const isMutedByViewer = mutedList?.some((x) => x.name === comment.author);
+  const isGrayedByStats = comment.stats?.gray;
+  const isBlacklisted = comment.blacklists && comment.blacklists.length > 0;
+  const isOriginallyHidden = isGrayedByStats || isMutedByViewer;
   const [hiddenComment, setHiddenComment] = useState(isOriginallyHidden);
   const [openState, setOpenState] = useState<string>(comment.stats?.gray && hiddenComment ? '' : 'item-1');
   const [tempraryHidden, setTemporaryHidden] = useState(false);
@@ -262,11 +265,12 @@ const CommentListItem = memo(function CommentListItem({
                           </div>
                           {comment._temporary && !comment._optimistic ? null : !hiddenComment ? (
                             <div className="flex items-center">
-                              {flagText && comment.community && !user.isLoggedIn ? (
+                              {/* Only show flag here for non-originally-hidden comments; originally hidden ones show flag in the reveal/hide section */}
+                              {!isOriginallyHidden && flagText && comment.community && !user.isLoggedIn ? (
                                 <DialogLogin>
                                   <FlagTooltip onClick={() => {}} />
                                 </DialogLogin>
-                              ) : flagText && comment.community && user.isLoggedIn ? (
+                              ) : !isOriginallyHidden && flagText && comment.community && user.isLoggedIn ? (
                                 <AlertDialogFlag
                                   community={comment.community}
                                   username={comment.author}
@@ -284,7 +288,7 @@ const CommentListItem = memo(function CommentListItem({
                           ) : null}
                         </div>
                         {comment._temporary && !comment._optimistic ? null : isOriginallyHidden ? (
-                          <div className="flex w-full justify-between">
+                          <div className="flex w-full items-center justify-between">
                             <AccordionTrigger
                               className="pb-0 pt-1 !no-underline "
                               onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
@@ -296,22 +300,36 @@ const CommentListItem = memo(function CommentListItem({
                                 {hiddenComment
                                   ? t('cards.comment_card.reveal_comment')
                                   : t('cards.comment_card.hide_comment')}
+                                {hiddenComment && (
+                                  <span className="ml-1 text-muted-foreground">
+                                    ({isMutedByViewer
+                                      ? t('cards.comment_card.reason_muted')
+                                      : isBlacklisted
+                                        ? t('cards.comment_card.reason_blacklisted')
+                                        : isGrayedByStats
+                                          ? t('cards.comment_card.reason_downvoted')
+                                          : null})
+                                  </span>
+                                )}
                               </span>
                             </AccordionTrigger>
-                            {flagText && comment.community && !user.isLoggedIn ? (
-                              <DialogLogin>
-                                <FlagTooltip onClick={() => {}} />
-                              </DialogLogin>
-                            ) : flagText && comment.community && user.isLoggedIn ? (
-                              <AlertDialogFlag
-                                community={comment.community}
-                                username={comment.author}
-                                permlink={comment.permlink}
-                                flagText={flagText}
-                              >
-                                <FlagTooltip onClick={() => {}} />
-                              </AlertDialogFlag>
-                            ) : null}
+                            {/* Flag icon stays in this section for originally hidden comments */}
+                            <div className="flex items-center">
+                              {flagText && comment.community && !user.isLoggedIn ? (
+                                <DialogLogin>
+                                  <FlagTooltip onClick={() => {}} />
+                                </DialogLogin>
+                              ) : flagText && comment.community && user.isLoggedIn ? (
+                                <AlertDialogFlag
+                                  community={comment.community}
+                                  username={comment.author}
+                                  permlink={comment.permlink}
+                                  flagText={flagText}
+                                >
+                                  <FlagTooltip onClick={() => {}} />
+                                </AlertDialogFlag>
+                              ) : null}
+                            </div>
                           </div>
                         ) : null}
 
