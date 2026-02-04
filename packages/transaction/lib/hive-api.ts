@@ -223,29 +223,49 @@ export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> =
 export const getAccount = (username: string): Promise<FullAccount> =>
   getAccounts([username]).then((resp) => resp[0]);
 
-export const getAccountFull = (username: string): Promise<FullAccount> =>
-  getAccount(username).then(async (account) => {
-    let follow_stats: AccountFollowStats | undefined;
-    try {
-      follow_stats = await getFollowCount(username);
-    } catch (e) {}
-    return { ...account, follow_stats };
-  });
-
-export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
+/**
+ * Fetches follow stats and reputation from bridge.get_profile.
+ * Returns both values from a single API call.
+ */
+export const getProfileInfo = async (
+  username: string
+): Promise<{ follow_stats: AccountFollowStats; reputation: number }> => {
   const profile = await (await getChain()).api.bridge.get_profile({ account: username });
   if (!profile || !profile.stats) {
     return {
-      account: username,
-      follower_count: 0,
-      following_count: 0
+      follow_stats: {
+        account: username,
+        follower_count: 0,
+        following_count: 0
+      },
+      reputation: 25
     };
   }
   return {
-    account: username,
-    follower_count: profile.stats.followers,
-    following_count: profile.stats.following
+    follow_stats: {
+      account: username,
+      follower_count: profile.stats.followers,
+      following_count: profile.stats.following
+    },
+    reputation: profile.reputation ?? 25
   };
+};
+
+export const getAccountFull = (username: string): Promise<FullAccount> =>
+  getAccount(username).then(async (account) => {
+    let follow_stats: AccountFollowStats | undefined;
+    let reputation: number | undefined;
+    try {
+      const profileInfo = await getProfileInfo(username);
+      follow_stats = profileInfo.follow_stats;
+      reputation = profileInfo.reputation;
+    } catch (e) {}
+    return { ...account, follow_stats, reputation };
+  });
+
+export const getFollowCount = async (username: string): Promise<AccountFollowStats> => {
+  const profileInfo = await getProfileInfo(username);
+  return profileInfo.follow_stats;
 };
 
 /**

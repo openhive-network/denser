@@ -61,6 +61,7 @@ export interface FullAccount {
   downvote_manabar: ApiManabar;
   // Fields that need to be fetched from separate APIs (not available in database_api.find_accounts)
   witness_votes?: string[];
+  reputation?: number;
   // App-specific additions
   profile?: AccountProfile;
   follow_stats?: AccountFollowStats;

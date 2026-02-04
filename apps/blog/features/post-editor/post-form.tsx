@@ -52,7 +52,7 @@ import MdEditor from '@/blog/features/post-editor/md-editor';
 import RendererContainer from '@/blog/features/post-rendering/rendererContainer';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { isCommunity } from '@ui/lib/utils';
-import { getAccountReputations } from '@transaction/lib/hive-api';
+import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
 
 const logger = getLogger('app');
 
@@ -110,18 +110,8 @@ export default function PostForm({
     editMode && post_s?.json_metadata?.image?.[0] ? post_s.json_metadata.image[0] : ''
   );
 
-  const { data: reputation = 25 } = useQuery({
-    queryKey: ['accountReputation', username],
-    queryFn: async () => {
-      const data = await getAccountReputations(username, 1);
-      return data[0]?.reputation ?? 25;
-    },
-    enabled: !!username,
-    staleTime: 5 * 60 * 1000,
-    onError: (error) => {
-      logger.error(error, 'Failed to fetch account reputation');
-    }
-  });
+  // Get the logged-in user's reputation from context (fetched once via getAccountFull)
+  const { reputation } = useLoggedUserContext();
 
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const [imagePickerState, setImagePickerState] = useState('');

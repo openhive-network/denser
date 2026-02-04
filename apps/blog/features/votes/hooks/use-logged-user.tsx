@@ -3,11 +3,12 @@ import { createContext, FC, useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { netVests } from '@/blog/lib/utils';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
-import { getAccount } from '@transaction/lib/hive-api';
+import { getAccountFull } from '@transaction/lib/hive-api';
 
 type LoggedUserContextType = {
   loggedUser: FullAccount | undefined;
   net_vests: number;
+  reputation: number;
 };
 
 export const loggedUserContext = createContext<LoggedUserContextType | undefined>(undefined);
@@ -24,13 +25,14 @@ export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children
   const { user } = useUserClient();
   const { data: accountData } = useQuery({
     queryKey: ['accountData', user.username],
-    queryFn: () => getAccount(user.username),
+    queryFn: () => getAccountFull(user.username),
     enabled: !!user.username
   });
   const net_vests = accountData ? netVests(accountData) : 0;
+  const reputation = accountData?.reputation ?? 25;
 
   return (
-    <loggedUserContext.Provider value={{ loggedUser: accountData, net_vests: net_vests }}>
+    <loggedUserContext.Provider value={{ loggedUser: accountData, net_vests, reputation }}>
       <>{children}</>
     </loggedUserContext.Provider>
   );
