@@ -291,7 +291,7 @@ test.describe('Home page tests', () => {
       // Communitylink color after hovering in the post card
       await homePage.getFirstPostCardCommunityLink.hover();
       // Use toHaveCSS with auto-retry instead of fixed timeout
-      await expect(homePage.getFirstPostCardCommunityLink).toHaveCSS('color', 'rgb(246, 85, 85)');
+      await expect(homePage.getFirstPostCardCommunityLink).toHaveCSS('color', 'rgb(218, 43, 43)');
     }
     if (await homePage.getFirstPostCardCategoryLink.isVisible()) {
       // Communitylink color without hovering in the post card
@@ -301,7 +301,7 @@ test.describe('Home page tests', () => {
       // Communitylink color after hovering in the post card
       await homePage.getFirstPostCardCategoryLink.hover();
       // Use toHaveCSS with auto-retry instead of fixed timeout
-      await expect(homePage.getFirstPostCardCategoryLink).toHaveCSS('color', 'rgb(246, 85, 85)');
+      await expect(homePage.getFirstPostCardCategoryLink).toHaveCSS('color', 'rgb(218, 43, 43)');
     }
 
     // Timestamp link color without hovering
