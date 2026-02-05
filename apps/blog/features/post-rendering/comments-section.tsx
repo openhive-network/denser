@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
 import { commentsSectionClasses } from '@/blog/lib/post-layout-classes';
 import CommentList from './comment-list';
@@ -39,6 +39,16 @@ const CommentsSection = memo(function CommentsSection({
   setCommentsPage
 }: CommentsSectionProps) {
   const { t } = useTranslation('common_blog');
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [commentsPage]);
 
   const handlePrevPage = useCallback(() => {
     setCommentsPage((prev: number) => Math.max(1, prev - 1));
@@ -56,7 +66,7 @@ const CommentsSection = memo(function CommentsSection({
   );
 
   return (
-    <div className={commentsSectionClasses}>
+    <div ref={sectionRef} className={commentsSectionClasses}>
       <div className="my-1 flex items-center justify-end" translate="no">
         <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
         <CommentSelectFilter />
