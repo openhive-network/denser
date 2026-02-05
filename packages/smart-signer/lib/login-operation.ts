@@ -56,6 +56,9 @@ export function getLoginChallengeFromTransactionForLogin(tx: ApiTransaction, key
 /**
  * Get `loginChallenge` from fake operation in login flow.
  *
+ * Handles both API format (array: ["custom_json", {...}]) and
+ * internal format (object: {value: {...}}).
+ *
  * @export
  * @param {ApiOperation} operation
  * @param {KeyType} _keyType
@@ -63,7 +66,18 @@ export function getLoginChallengeFromTransactionForLogin(tx: ApiTransaction, key
  */
 export function getLoginChallengeFromOperationForLogin(operation: ApiOperation, _keyType: KeyType): string {
   // The login operation is always a custom_json_operation with the challenge in the json field
-  const jsonString = (operation as any).value?.json;
+  // Handle both API format (array) and internal format (object)
+  let jsonString: string | undefined;
+
+  if (Array.isArray(operation)) {
+    // API format: ["custom_json", {"id": "...", "json": "...", ...}]
+    const [_opType, opData] = operation;
+    jsonString = opData?.json;
+  } else {
+    // Internal/proto format: {value: {json: "..."}}
+    jsonString = (operation as any).value?.json;
+  }
+
   if (!jsonString) {
     throw new Error('Missing json field in custom_json operation');
   }

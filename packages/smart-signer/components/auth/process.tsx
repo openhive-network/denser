@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, MutableRefObject } from 'react';
+import { useState, useRef, MutableRefObject } from 'react';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { getCookie } from '@ui/lib/utils';
 import { KeyType } from '@smart-signer/types/common';
@@ -21,14 +21,9 @@ export interface LoginFormSchema extends SignInFormSchema {
 
 export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) => {
   const authDataRef = useRef<PostLoginSchema | null>(null) as MutableRefObject<PostLoginSchema | null>;
-  const [loginChallenge, setLoginChallenge] = useState('');
   const [isSigned, setIsSigned] = useState(false);
   const { signerOptions } = useSigner();
   const signIn = useSignIn();
-
-  useEffect(() => {
-    setLoginChallenge(getCookie(`${cookieNamePrefix}login_challenge`));
-  }, []);
 
   const signAuth = async (data: LoginFormSchema): Promise<void> => {
     logger.info('onSubmit form data', data);
@@ -36,6 +31,11 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
     const signatures: Signatures = { posting: '', active: '' };
     let hivesignerToken = '';
     let signInData: PostLoginSchema;
+
+    // Read login challenge directly from cookie to avoid race conditions
+    // (e.g., Safari Google OAuth redirect flow where signAuth might be called
+    // before the useEffect that reads the cookie into state has run)
+    const loginChallenge = getCookie(`${cookieNamePrefix}login_challenge`) || '';
 
     const loginSignerOptions: SignerOptions = {
       ...signerOptions,
