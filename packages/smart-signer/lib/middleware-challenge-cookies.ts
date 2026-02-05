@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
+import { generateUUID } from '@hive/ui/lib/uuid-generator';
 
 export const setLoginChallengeCookies = (req: NextRequest, res: NextResponse) => {
   let cookieLoginChallengeServer = req.cookies.has(`${cookieNamePrefix}login_challenge_server`);
 
   if (!cookieLoginChallengeServer) {
-    const loginChallenge = crypto.randomUUID();
+    const loginChallenge = generateUUID();
 
     // Set login challenge cookies
     res.cookies.set({

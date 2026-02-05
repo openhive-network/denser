@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
+const { cryptoPolyfill } = require('../../scripts/crypto-polyfill');
 const withPWA = require('next-pwa')({
   dest: 'public',
   disable: process.env.NODE_ENV !== 'production',
@@ -126,7 +127,11 @@ const nextConfig = {
         patterns: [
           {
             from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/worker.js'),
-            to: path.join(__dirname, 'public/auth/')
+            to: path.join(__dirname, 'public/auth/'),
+            transform(content) {
+              // Prepend crypto.randomUUID polyfill
+              return Buffer.from(cryptoPolyfill + content.toString());
+            }
           },
           {
             from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/assets'),

@@ -68,7 +68,9 @@ import {
   FlagOff,
   Info,
   Eye,
-  EyeOff
+  EyeOff,
+  Fingerprint,
+  RefreshCw
 } from 'lucide-react';
 
 export type Icon = typeof LucideIcon;
@@ -76,6 +78,8 @@ export type Icon = typeof LucideIcon;
 export const Icons = {
   eyeOff: EyeOff,
   eye: Eye,
+  fingerprint: Fingerprint,
+  refresh: RefreshCw,
   info: Info,
   flag: Flag,
   unflag: FlagOff,

@@ -19,6 +19,21 @@ import {
   setOAuthDataWithTimestamp,
   clearOAuthData
 } from '@smart-signer/lib/google-oauth-constants';
+import {
+  checkBiometricCapability,
+  hasCredential,
+  invalidateCredentials,
+  type WebAuthnCapability
+} from '@smart-signer/lib/webauthn';
+import {
+  BiometricAuthDialogPromise,
+  type BiometricAuthDialogResult
+} from '@smart-signer/components/biometric-auth-dialog';
+import {
+  BiometricEnrollmentDialogPromise,
+  isBiometricEnrollmentDismissed,
+  type BiometricEnrollmentResult
+} from '@smart-signer/components/biometric-enrollment-dialog';
 
 const logger = getLogger('app');
 
@@ -84,6 +99,29 @@ export class SignerGoogleDrive extends Signer {
   private _accessToken?: Promise<string>;
   private passwordPromise?: Promise<{ password: string }>;
   private currentKeyType?: keyof THiveRoles;
+
+  /** Cached biometric capability check result */
+  private biometricCapability?: WebAuthnCapability;
+  /** Flag to trigger biometric enrollment after successful wallet load */
+  private pendingBiometricEnrollment = false;
+  /** Flag to prevent WIF caching when user fell back to password from biometrics */
+  private preventWifCaching = false;
+  /**
+   * WIF cached in session memory when user checked "Don't ask again this session".
+   *
+   * SECURITY NOTE: This WIF remains in memory until page refresh or destroy() is called.
+   * Trade-off: Convenience (no repeated biometric prompts) vs. memory exposure risk.
+   * The WIF is cleared when:
+   * - User navigates away or closes the tab (page unload)
+   * - User explicitly logs out (destroy() is called)
+   * - User force-refreshes their credentials (forceLogin=true)
+   *
+   * This is acceptable because:
+   * 1. The session WIF is only the encryption key for the Google Drive wallet
+   * 2. It requires BOTH the WIF AND Google OAuth token to access the wallet
+   * 3. If an attacker has memory access, they likely have full system access anyway
+   */
+  private sessionWif?: string;
 
   private getAccessTokenForRefreshToken = async (refreshToken: string): Promise<string> => {
     const response = await fetch(`${window.location.origin}/api/google-drive/refresh`, {
@@ -268,20 +306,101 @@ export class SignerGoogleDrive extends Signer {
     this._accessToken = undefined;
     this.passwordPromise = undefined;
     this.rawWallet = undefined;
+    this.biometricCapability = undefined;
+    this.pendingBiometricEnrollment = false;
+    this.preventWifCaching = false;
+    this.sessionWif = undefined;
     localStorage.removeItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
     // Note: We do NOT remove the encryption key WIF here.
     // The WIF alone cannot access the wallet without the Google OAuth token.
   }
 
+  /**
+   * Gets wallet credentials - session WIF first, then biometric (if configured), then cached WIF, then password.
+   * When biometrics are configured and no session WIF exists, they act as gatekeeper.
+   * Returns { password } for password auth, or { encryptionKey } for WIF/biometric auth.
+   */
   private async getEncryptionCredentials(): Promise<{ password: string } | { encryptionKey: string }> {
-    // Check for cached WIF key first
+    // 1. FIRST: Check for session-cached WIF (user chose "Don't ask again this session")
+    if (this.sessionWif) {
+      logger.info('Using session-cached WIF for Google Drive wallet');
+      return { encryptionKey: this.sessionWif };
+    }
+
+    // 2. Check if biometric credential exists for this user
+    // When biometrics are configured, they are the GATEKEEPER - always required
+    if (!this.biometricCapability) {
+      this.biometricCapability = await checkBiometricCapability();
+    }
+
+    if (this.biometricCapability.available) {
+      const hasBiometricCredential = await hasCredential(this.username);
+
+      if (hasBiometricCredential) {
+        // Biometric is the GATEKEEPER - always require auth when credential exists
+        logger.info('Biometric credential found, requiring biometric authentication');
+        const result = await this.authenticateWithBiometrics();
+
+        if (result.success) {
+          // Cache WIF in session if user checked "Don't ask again this session"
+          if (result.rememberSession) {
+            this.sessionWif = result.wif;
+            logger.info('Cached WIF in session memory (user chose to skip future biometric prompts)');
+          }
+          return { encryptionKey: result.wif };
+        }
+
+        // Biometric failed - allow password fallback but prevent WIF caching
+        // This ensures biometric remains the gatekeeper for future operations
+        if (result.reason === 'use_password' || result.reason === 'error') {
+          logger.info('Biometric auth failed (reason: %s), falling back to password', result.reason);
+          // Set flag to prevent WIF caching - biometric should remain the gatekeeper
+          this.preventWifCaching = true;
+          return this.getPasswordFromDialog();
+        }
+
+        // User explicitly cancelled - throw to abort operation
+        logger.info('Biometric authentication cancelled by user');
+        throw new Error('Biometric authentication cancelled');
+      }
+
+      // No biometric credential yet - flag for enrollment after successful password auth
+      if (!isBiometricEnrollmentDismissed()) {
+        this.pendingBiometricEnrollment = true;
+      }
+    }
+
+    // 3. No biometric credential exists - check localStorage cache
     const cachedWif = getStoredEncryptionKeyWif();
     if (cachedWif) {
       logger.info('Using cached encryption key WIF for Google Drive wallet');
       return { encryptionKey: cachedWif };
     }
 
-    // No cached WIF - prompt user for password
+    // 4. Fall back to password dialog
+    return this.getPasswordFromDialog();
+  }
+
+  /**
+   * Authenticates using biometric credentials.
+   */
+  private async authenticateWithBiometrics(): Promise<BiometricAuthDialogResult> {
+    try {
+      const result = await BiometricAuthDialogPromise({
+        isOpen: true,
+        username: this.username
+      });
+      return result;
+    } catch (error) {
+      logger.error('Biometric authentication error: %o', error);
+      return { success: false, reason: 'error', error: String(error) };
+    }
+  }
+
+  /**
+   * Shows password dialog and returns password.
+   */
+  private async getPasswordFromDialog(): Promise<{ password: string }> {
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
@@ -299,12 +418,49 @@ export class SignerGoogleDrive extends Signer {
       }
       const { password } = await this.passwordPromise;
 
+      // Clear the promise after successful use to allow fresh dialog on next call
+      this.passwordPromise = undefined;
+
       // Note: We do NOT store the password here.
       // The WIF will be extracted and cached after wallet loads successfully.
       return { password };
     } catch (error) {
-      logger.error('Error in getEncryptionCredentials: %o', error);
+      // Clear the promise on error as well
+      this.passwordPromise = undefined;
+      logger.error('Error in getPasswordFromDialog: %o', error);
       throw new Error('No password from user');
+    }
+  }
+
+  /**
+   * Offers biometric enrollment after successful wallet load.
+   */
+  private async offerBiometricEnrollment(wif: string): Promise<void> {
+    if (!this.pendingBiometricEnrollment) {
+      return;
+    }
+
+    this.pendingBiometricEnrollment = false;
+
+    try {
+      const result: BiometricEnrollmentResult = await BiometricEnrollmentDialogPromise({
+        isOpen: true,
+        username: this.username,
+        wif
+      });
+
+      if (result.enrolled) {
+        logger.info('User enrolled biometric authentication');
+
+        // CRITICAL: Clear localStorage WIF - biometric is now the gatekeeper
+        // WIF should only exist encrypted in IndexedDB, accessible via biometrics
+        clearStoredEncryptionKeyWif();
+        logger.info('Cleared localStorage WIF - biometric is now required for wallet access');
+      } else {
+        logger.info('User declined biometric enrollment: %s', result.reason);
+      }
+    } catch (error) {
+      logger.error('Error offering biometric enrollment: %o', error);
     }
   }
 
@@ -314,9 +470,15 @@ export class SignerGoogleDrive extends Signer {
       this._accessToken = undefined;
       this.passwordPromise = undefined;
       this.rawWallet = undefined;
-      // Only clear WIF on forceLogin (explicit re-auth request)
+      this.preventWifCaching = false;
+
+      // Only clear credentials on forceLogin (explicit re-auth request)
       if (forceLogin) {
+        this.sessionWif = undefined;
         clearStoredEncryptionKeyWif();
+        invalidateCredentials(username).catch((err) => {
+          logger.error('Error invalidating biometric credentials: %o', err);
+        });
       }
     }
 
@@ -344,6 +506,7 @@ export class SignerGoogleDrive extends Signer {
               throw new Error('Google Drive wallet file not found');
             }
 
+            // Get credentials (cached WIF, biometric, or password)
             const credentials = await this.getEncryptionCredentials();
 
             // Track what type of credentials we're using
@@ -366,19 +529,41 @@ export class SignerGoogleDrive extends Signer {
 
         logger.info('Obtained Google Drive wallet for user %s with key type %s', username, keyType);
 
-        // If we used a password (not cached WIF), extract and cache the WIF now
+        // If we used a password (not cached WIF), extract and optionally cache the WIF
         if (usedPassword) {
           try {
             const wif = wallet.getEncryptionKeyWif();
-            setStoredEncryptionKeyWif(wif);
-            logger.info('Cached encryption key WIF for Google Drive wallet');
+            // Only cache to localStorage if:
+            // - Biometric enrollment is NOT pending (user will be offered biometrics)
+            // - User didn't fall back from biometrics to password (biometric should remain gatekeeper)
+            if (!this.pendingBiometricEnrollment && !this.preventWifCaching) {
+              setStoredEncryptionKeyWif(wif);
+              logger.info('Cached encryption key WIF for Google Drive wallet');
+            } else {
+              logger.info('Skipping WIF cache: pendingEnrollment=%s, preventCaching=%s',
+                this.pendingBiometricEnrollment, this.preventWifCaching);
+            }
           } catch (wifError) {
-            logger.error('Failed to extract/cache encryption key WIF: %o', wifError);
+            logger.error('Failed to extract encryption key WIF: %o', wifError);
             // Non-fatal: wallet is already loaded, just won't have cached WIF next time
           }
         }
 
         this.currentKeyType = keyType;
+
+        // Offer biometric enrollment if user used password and enrollment is pending
+        // We await this to prevent conflicts between enrollment dialog and subsequent operations
+        if (usedPassword && this.pendingBiometricEnrollment) {
+          try {
+            const encryptionWif = wallet.getEncryptionKeyWif();
+            if (encryptionWif) {
+              await this.offerBiometricEnrollment(encryptionWif);
+            }
+          } catch (err) {
+            logger.error('Error getting encryption WIF for biometric enrollment: %o', err);
+            this.pendingBiometricEnrollment = false;
+          }
+        }
 
         return provider;
       };
@@ -387,6 +572,9 @@ export class SignerGoogleDrive extends Signer {
         const provider = await attemptWalletLoad();
         resolve(provider);
       } catch (error) {
+        // Clear wallet instance on error to allow retry on next attempt
+        this.walletInstance = undefined;
+
         // If we used cached WIF and it failed, it might be from a different Google account
         // Clear WIF and retry with password prompt
         if (usedCachedWif && !usedPassword) {
@@ -401,6 +589,7 @@ export class SignerGoogleDrive extends Signer {
             return;
           } catch (retryError) {
             logger.error('Error in getWallet retry: %o', retryError);
+            this.walletInstance = undefined;
             reject(retryError);
             return;
           }
@@ -446,13 +635,7 @@ export class SignerGoogleDrive extends Signer {
         throw new Error(`No stored Hive ${keyType} key found for user ${username} in Google Drive wallet`);
       }
 
-      if (typeof message !== "string")
-        message = await crypto.subtle.digest(
-          "SHA-256",
-          new Uint8Array(message as ArrayBuffer)
-        );
-
-      const signature = await provider.encryptData(message, pk);
+      const signature = await provider.encryptData(typeof message === "string" ? message : JSON.stringify(message), pk);
 
       logger.info('google', { signature });
       return signature;

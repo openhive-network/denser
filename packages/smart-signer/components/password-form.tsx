@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -78,7 +79,7 @@ export function PasswordForm({
   onSubmit = (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {},
   i18nKeysForCaptions = {} // captions for inputs, buttons, form title etc.
 }: PasswordFormOptions) {
-  const randomValue = crypto.randomUUID();
+  const uniqueId = useId();
 
   const defaultI18nKeysForCaptions = {
     title: 'Enter your password',
@@ -145,14 +146,14 @@ export function PasswordForm({
           {showInputStorePassword && (
             <div className="mb-5 flex items-center py-1">
               <input
-                id={`store-password-${randomValue}`}
+                id={`store-password-${uniqueId}`}
                 type="checkbox"
                 value=""
                 className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
                 {...register('storePassword')}
               />
               <label
-                htmlFor={`store-password-${randomValue}`}
+                htmlFor={`store-password-${uniqueId}`}
                 className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
               >
                 {captionKey.inputStorePasswordLabel}

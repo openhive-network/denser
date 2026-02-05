@@ -1,6 +1,7 @@
 import { getLogger } from '@hive/ui/lib/logging';
 import { siteConfig } from '@ui/config/site';
 import { fetchJson } from './fetch-json';
+import { generateUUID } from '@hive/ui/lib/uuid-generator';
 
 const logger = getLogger('app');
 
@@ -141,7 +142,7 @@ export async function getChatAuthToken(username = '') {
               name: username,
               username,
               email: '',
-              password: crypto.randomUUID(),
+              password: generateUUID(),
               active: true,
               joinDefaultChannels: true,
               sendWelcomeEmail: false
