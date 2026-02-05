@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@ui/components/dialog';
 import { Button } from '@ui/components';
-import { useState, FC } from 'react';
+import { FC } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { Icons } from '@ui/components/icons';
 
@@ -21,12 +21,9 @@ export const GoogleDriveErrorDialog: FC<GoogleDriveErrorDialogProps & InstancePr
   username,
   keyType
 }) => {
-  const [open, setOpen] = useState(isOpen);
-
   const onOpenChange = (value: boolean) => {
-    setOpen(value);
     if (!value) {
-      onReject('User closed dialog');
+      onReject?.('User closed dialog');
     }
   };
 
@@ -39,8 +36,7 @@ export const GoogleDriveErrorDialog: FC<GoogleDriveErrorDialogProps & InstancePr
   };
 
   const handleClose = () => {
-    setOpen(false);
-    onReject('User closed dialog');
+    onReject?.('User closed dialog');
   };
 
   const title = errorType === 'wallet_not_found'
@@ -52,7 +48,7 @@ export const GoogleDriveErrorDialog: FC<GoogleDriveErrorDialogProps & InstancePr
     : `The ${keyType} key for @${username} was not found in your Google Drive wallet. Please add this key using Hive Bridge.`;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]" onInteractOutside={onInteractOutside}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
