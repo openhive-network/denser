@@ -1,44 +1,31 @@
 import { ReactNode } from 'react';
-import { getQueryClient } from '@/blog/lib/react-query';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
-import { getCommunities, getCommunity } from '@transaction/lib/bridge-api';
+import { getCommunity } from '@transaction/lib/bridge-api';
 import CommunityLayout from './community-layout';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
-
-const sort = 'rank';
-const query = null;
+import { InitialCommunityProvider } from '@/blog/components/observer-provider';
 
 const logger = getLogger('app');
 
 const PrefetchComponent = async ({ children, community }: { children: ReactNode; community: string }) => {
-  const queryClient = getQueryClient();
   // Get observer from cookies - returns user's observer if logged in, DEFAULT_OBSERVER for anonymous
-  const observer = getObserverFromCookies();
+  // communitiesList is already provided by parent ServerSideLayout
+  const observer = await getObserverFromCookies();
+  let communityData = null;
   try {
-    await Promise.all([
-      queryClient.prefetchQuery({
-        queryKey: ['communitiesList', sort, query, observer],
-        queryFn: () => getCommunities(sort, query, observer)
-      }),
-      // Only prefetch community data for actual communities (not tags)
-      ...(isCommunity(community)
-        ? [
-            queryClient.prefetchQuery({
-              queryKey: ['community', community, observer],
-              queryFn: () => getCommunity(community, observer)
-            })
-          ]
-        : [])
-    ]);
+    // Only fetch community data for actual communities (not tags)
+    if (isCommunity(community)) {
+      communityData = (await getCommunity(community, observer)) ?? null;
+    }
   } catch (error) {
     logger.error(error, 'Error in PrefetchComponent:');
   }
+  // Pass community data directly via context instead of Hydrate/dehydrate.
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <InitialCommunityProvider value={communityData}>
       <CommunityLayout community={community}>{children}</CommunityLayout>
-    </Hydrate>
+    </InitialCommunityProvider>
   );
 };
 

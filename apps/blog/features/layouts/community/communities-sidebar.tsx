@@ -9,18 +9,27 @@ import { FC } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { StaleTime } from '@/blog/lib/react-query';
+import { useSSRObserver, useInitialCommunities } from '@/blog/components/observer-provider';
 
 const CommunitiesSidebar: FC = () => {
   const { t } = useTranslation('common_blog');
   const sort = 'rank';
   const query = null;
+  const ssrObserver = useSSRObserver();
+  const initialCommunities = useInitialCommunities();
   const { user, isHydrated } = useUserClient();
-  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  // Use SSR observer before hydration to match prefetched cache keys,
+  // then switch to client observer (which should be the same value for logged-in users)
+  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const observer = isHydrated ? clientObserver : ssrObserver;
 
   const { data } = useQuery({
     queryKey: ['communitiesList', sort, query, observer],
     queryFn: () => getCommunities(sort, query, observer),
-    enabled: isHydrated // Wait for hydration to complete before fetching with correct observer
+    initialData: initialCommunities ?? undefined,
+    initialDataUpdatedAt: initialCommunities ? Date.now() : undefined,
+    staleTime: StaleTime.LONG
   });
 
   // Only show a fallback if data is truly missing (not hydrated)

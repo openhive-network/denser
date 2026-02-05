@@ -3,12 +3,26 @@ import { createContext, FC, useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { netVests } from '@/blog/lib/utils';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
-import { getAccountFull } from '@transaction/lib/hive-api';
+import { getAccountFull, getManabar } from '@transaction/lib/hive-api';
+
+interface SingleManabar {
+  max: string;
+  current: string;
+  percentageValue: number;
+  cooldown: Date;
+}
+
+interface Manabars {
+  upvote: SingleManabar;
+  downvote: SingleManabar;
+  rc: SingleManabar;
+}
 
 type LoggedUserContextType = {
   loggedUser: FullAccount | undefined;
   net_vests: number;
   reputation: number;
+  manabarsData: Manabars | null | undefined;
 };
 
 export const loggedUserContext = createContext<LoggedUserContextType | undefined>(undefined);
@@ -28,11 +42,18 @@ export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children
     queryFn: () => getAccountFull(user.username),
     enabled: !!user.username
   });
+  const { data: manabarsData } = useQuery({
+    queryKey: ['manabars', user.username],
+    queryFn: () => getManabar(user.username),
+    enabled: !!user.username,
+    refetchOnWindowFocus: false,
+    refetchInterval: 60000
+  });
   const net_vests = accountData ? netVests(accountData) : 0;
   const reputation = accountData?.reputation ?? 25;
 
   return (
-    <loggedUserContext.Provider value={{ loggedUser: accountData, net_vests, reputation }}>
+    <loggedUserContext.Provider value={{ loggedUser: accountData, net_vests, reputation, manabarsData }}>
       <>{children}</>
     </loggedUserContext.Provider>
   );

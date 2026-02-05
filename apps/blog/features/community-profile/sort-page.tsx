@@ -1,11 +1,9 @@
-import { getQueryClient } from '@/blog/lib/react-query';
 import { SortTypes } from '@/blog/lib/utils';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
-import { Entry } from '@hive/common-hiveio-packages/wax';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
+import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
 
 const logger = getLogger('app');
 
@@ -18,29 +16,24 @@ const SortPage = async ({
   sort: SortTypes;
   tag?: string;
 }) => {
-  const queryClient = getQueryClient();
   // Get observer from cookies - returns user's observer if logged in, DEFAULT_OBSERVER for anonymous
   // Community data (getCommunity) is already prefetched in the layout's PrefetchComponent
-  const observer = getObserverFromCookies();
+  const observer = await getObserverFromCookies();
+  let initialPosts = null;
   try {
-    await queryClient.prefetchInfiniteQuery({
-      queryKey: ['entriesInfinite', sort, tag, observer],
-      queryFn: async ({ pageParam }) => {
-        const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
-        const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer);
-        return postsData ?? [];
-      },
-      getNextPageParam: (lastPage: Entry[]) => {
-        if (!Array.isArray(lastPage) || lastPage.length === 0) return undefined;
-        const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
-        if (!last?.author || !last?.permlink) return undefined;
-        return { author: last.author, permlink: last.permlink };
-      }
-    });
+    initialPosts = (await getPostsRanked(sort, tag, '', '', observer)) ?? null;
   } catch (error) {
     logger.error(error, 'Error in SortPage:');
   }
-  return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
+  // Pass data directly via context instead of Hydrate/dehydrate.
+  // React Query v4's <Hydrate> has compatibility issues with Next.js App Router
+  // streaming SSR where dehydrated state doesn't reliably reach the browser
+  // query client, causing unnecessary client-side refetches.
+  return (
+    <ObserverProvider value={observer}>
+      <InitialPostsProvider value={initialPosts}>{children}</InitialPostsProvider>
+    </ObserverProvider>
+  );
 };
 
 export default SortPage;

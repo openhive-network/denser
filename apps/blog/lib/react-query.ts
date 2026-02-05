@@ -62,7 +62,9 @@ export function scheduleInvalidations(
 
 export function getQueryClient() {
   if (isServer) {
-    // Server: always make a new query client
+    // Server: always make a new query client.
+    // RSC pages pass data to client components via context + initialData,
+    // so there's no need to share a QueryClient between RSC and client SSR.
     return makeQueryClient();
   } else {
     // Browser: make a new query client if we don't already have one

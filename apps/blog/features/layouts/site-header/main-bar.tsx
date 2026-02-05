@@ -13,12 +13,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getUnreadNotifications } from '@transaction/lib/bridge-api';
 import UserMenu from '@/blog/features/layouts/site-header/user-menu';
 import { ManabarRing } from './manabar-ring';
-import { getAccountFull } from '@transaction/lib/hive-api';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { getUserAvatarUrl } from '@hive/ui';
-import useManabars from '@/blog/components/hooks/use-manabars';
 import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
+import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
 import DialogLogin from '@/blog/components/dialog-login';
 import ModeToggle from '@/blog/features/layouts/mode-toggle';
 import LangToggle from '@/blog/features/layouts/lang-toggle';
@@ -39,16 +38,11 @@ const MainBar: FC = () => {
     setIsClient(true);
   }, []);
 
-  const { manabarsData } = useManabars(user.username);
+  const { manabarsData } = useLoggedUserContext();
   const { data } = useQuery({
     queryKey: ['unreadNotifications', user.username],
     queryFn: () => getUnreadNotifications(user.username),
     enabled: !!user.username
-  });
-  const { data: profile } = useQuery({
-    queryKey: ['profileData', user.username],
-    queryFn: () => getAccountFull(user.username),
-    enabled: user?.isLoggedIn
   });
   const { data: hiveSense } = useQuery({
     queryKey: ['hivesense-api'],

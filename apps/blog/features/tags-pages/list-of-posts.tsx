@@ -8,16 +8,23 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
+import { StaleTime } from '@/blog/lib/react-query';
 import { useTranslation } from '@/blog/i18n/client';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import PostList from '../list-of-posts/posts-loader';
 import NoDataError from '@/blog/components/no-data-error';
 import { isCommunity } from '@ui/lib/utils';
 import { PostListSkeleton } from '@hive/ui';
+import { useSSRObserver, useInitialPosts } from '@/blog/components/observer-provider';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
+  const ssrObserver = useSSRObserver();
+  const initialPosts = useInitialPosts();
   const { user, isHydrated } = useUserClient();
-  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  // Use SSR observer before hydration to match prefetched cache keys,
+  // then switch to client observer (which should be the same value for logged-in users)
+  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const observer = isHydrated ? clientObserver : ssrObserver;
   const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();
   // Create a separate ref for prefetching - triggers earlier than the main ref
@@ -47,7 +54,12 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
       if (!last?.author || !last?.permlink) return undefined;
       return { author: last.author, permlink: last.permlink };
     },
-    enabled: isHydrated // Wait for hydration to complete before fetching with correct observer
+    // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
+    // which has compatibility issues with Next.js App Router streaming SSR in RQ v4.
+    // initialData is only used when the query has no cached data (first load).
+    initialData: initialPosts ? { pages: [initialPosts], pageParams: [undefined] } : undefined,
+    initialDataUpdatedAt: initialPosts ? Date.now() : undefined,
+    staleTime: StaleTime.MEDIUM
   });
 
   // Prefetch when user is getting close to the end

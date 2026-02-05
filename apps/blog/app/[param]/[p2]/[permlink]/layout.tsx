@@ -22,7 +22,7 @@ export async function generateMetadata({
   }
   const author = params.p2.replace('%40', '').replace('@', '');
   const permlink = params?.permlink;
-  const observer = getObserverFromCookies();
+  const observer = await getObserverFromCookies();
 
   try {
     // Use cached version - deduplicated with page's prefetch within the same request

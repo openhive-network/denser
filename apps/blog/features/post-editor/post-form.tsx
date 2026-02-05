@@ -20,7 +20,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@hive/ui/co
 import { useForm, useWatch } from 'react-hook-form';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
-import useManabars from '@/blog/components/hooks/use-manabars';
+
 import { useQuery } from '@tanstack/react-query';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { getCommunity, getSubscriptions } from '@transaction/lib/bridge-api';
@@ -129,8 +129,8 @@ export default function PostForm({
     editMode && post_s?.json_metadata?.image?.[0] ? post_s.json_metadata.image[0] : ''
   );
 
-  // Get the logged-in user's reputation from context (fetched once via getAccountFull)
-  const { reputation } = useLoggedUserContext();
+  // Get the logged-in user's reputation and manabars from context (fetched once via LoggedUserProvider)
+  const { reputation, manabarsData } = useLoggedUserContext();
 
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const [syncScroll, setSyncScroll] = useState(true);
@@ -143,7 +143,7 @@ export default function PostForm({
   const previewRafIdRef = useRef<number | null>(null);
   // Ref for scroll cleanup function (safer than attaching to DOM element)
   const scrollCleanupRef = useRef<(() => void) | null>(null);
-  const { manabarsData } = useManabars(username);
+
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   // Track if we've hydrated from localStorage to avoid resetting form during typing
@@ -158,9 +158,9 @@ export default function PostForm({
     enabled: isCommunity(categoryParam) || isCommunity(storedPost.category)
   });
   const { data: mySubsData } = useQuery({
-    queryKey: ['subscriptions', username],
-    queryFn: () => getSubscriptions(username),
-    enabled: Boolean(username)
+    queryKey: ['subscriptions', observer],
+    queryFn: () => getSubscriptions(observer),
+    enabled: observer !== DEFAULT_OBSERVER
   });
 
   const accountFormSchema = z.object({

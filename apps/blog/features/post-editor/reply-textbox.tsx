@@ -18,7 +18,7 @@ import {
 } from '@hive/ui/components/alert-dialog';
 import { Progress } from '@ui/components/progress';
 import { Separator } from '@ui/components';
-import useManabars from '../../components/hooks/use-manabars';
+
 import { DEFAULT_PREFERENCES, hoursAndMinutes, Preferences } from '@/blog/lib/utils';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import RendererContainer from '../post-rendering/rendererContainer';
@@ -82,7 +82,6 @@ export function ReplyTextbox({
   // Get the original comment body (works for both Entry object and string)
   const commentBody = typeof comment === 'string' ? comment : (comment?.body ?? '');
 
-  const { manabarsData } = useManabars(user.username);
   // User preferences are permanent (no TTL) - use empty key when not logged in
   const [preferences] = useStorageWithTTL<Preferences>(
     user.username ? `user-preferences-${user.username}` : '',
@@ -111,8 +110,8 @@ export function ReplyTextbox({
   // Track what value we last synced from storage (for cross-tab detection)
   const lastSyncedDraftRef = useRef<string>('');
 
-  // Get the logged-in user's reputation from context (fetched once via getAccountFull)
-  const { reputation } = useLoggedUserContext();
+  // Get the logged-in user's reputation and manabars from context (fetched once via LoggedUserProvider)
+  const { reputation, manabarsData } = useLoggedUserContext();
 
   const commentMutation = useCommentMutation();
   const updateCommentMutation = useUpdateCommentMutation();

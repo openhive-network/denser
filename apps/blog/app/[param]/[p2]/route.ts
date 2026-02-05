@@ -17,7 +17,7 @@ export async function GET(request: Request, { params }: { params: { param: strin
     const rawParam = params?.param ?? '';
     const decoded = decodeURIComponent(rawParam);
     const username = decoded.replace(/^@/, '').trim();
-    const observer = getObserverFromCookies();
+    const observer = await getObserverFromCookies();
     const queryClient = getQueryClient();
     const validUser = await isUsernameValid(username);
 

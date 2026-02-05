@@ -24,7 +24,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
 
   const queryClient = getQueryClient();
   try {
-    const observer = getObserverFromCookies();
+    const observer = await getObserverFromCookies();
     const prefetchPromises: Promise<void>[] = [];
 
     if (aiParam) {

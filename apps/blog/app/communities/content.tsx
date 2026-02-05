@@ -14,6 +14,8 @@ import env from '@beam-australia/react-env';
 import { getCommunities } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { StaleTime } from '@/blog/lib/react-query';
+import { useSSRObserver, useInitialCommunities } from '@/blog/components/observer-provider';
 
 function CommunityCardSkeleton() {
   return (
@@ -45,15 +47,22 @@ function CommunitiesListSkeleton() {
 const CommunitiesContent = () => {
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
+  const ssrObserver = useSSRObserver();
+  const initialCommunities = useInitialCommunities();
   const { user, isHydrated } = useUserClient();
   const [sort, setSort] = useState('rank');
   const [inputQuery, setInputQuery] = useState<string>('');
-  const [query, setQuery] = useState<string | null>();
-  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const [query, setQuery] = useState<string | null>(null);
+  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const observer = isHydrated ? clientObserver : ssrObserver;
+  // initialData only applies when sort/query match the SSR-prefetched values ('rank'/null)
+  const isInitialQuery = sort === 'rank' && query === null;
   const { data: communitiesData, isFetching } = useQuery({
     queryKey: ['communitiesList', sort, query, observer],
     queryFn: async () => await getCommunities(sort, query, observer),
-    enabled: isHydrated // Wait for hydration to complete before fetching with correct observer
+    initialData: isInitialQuery && initialCommunities ? initialCommunities : undefined,
+    initialDataUpdatedAt: isInitialQuery && initialCommunities ? Date.now() : undefined,
+    staleTime: StaleTime.LONG
   });
 
   function handleSearchCommunity(e: KeyboardEvent<HTMLInputElement>) {
@@ -100,9 +109,9 @@ const CommunitiesContent = () => {
         <CommunitiesSelectFilter filter={sort} handleChangeFilter={handleChangeFilter} />
       </div>
       <Separator className="my-4" />
-      {isFetching ? (
+      {!communitiesData && isFetching ? (
         <CommunitiesListSkeleton />
-      ) : communitiesData && communitiesData?.length > 0 ? (
+      ) : communitiesData && communitiesData.length > 0 ? (
         <CommunitiesList data={communitiesData} />
       ) : (
         <div className="w-full py-4" data-testid="communities-search-no-results-msg">

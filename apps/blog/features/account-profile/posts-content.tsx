@@ -5,6 +5,8 @@ import PostList from '@/blog/features/list-of-posts/posts-loader';
 import { PER_PAGE } from '@/blog/features/search/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
 import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import { StaleTime } from '@/blog/lib/react-query';
+import { useSSRObserver, useInitialPosts } from '@/blog/components/observer-provider';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getAccountPosts } from '@transaction/lib/bridge-api';
@@ -21,6 +23,8 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   const params = useParams<{ param: string }>();
   const username = params?.param.replace('%40', '') ?? '';
   const legalBlockedUser = userIllegalContent.includes(username);
+  const ssrObserver = useSSRObserver();
+  const initialPosts = useInitialPosts();
   const { ref, inView } = useInView();
   // Create a separate ref for prefetching - triggers earlier than the main ref
   const { ref: prefetchRef, inView: prefetchInView } = useInView({
@@ -30,8 +34,11 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
     triggerOnce: false
   });
   const { t } = useTranslation('common_blog');
-  const { user } = useUserClient();
-  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const { user, isHydrated } = useUserClient();
+  // Use SSR observer before hydration to match prefetched cache keys,
+  // then switch to client observer (which should be the same value for logged-in users)
+  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const observer = isHydrated ? clientObserver : ssrObserver;
   const [preferences] = useStorageWithTTL<Preferences>(
     user.username ? `user-preferences-${user.username}` : '',
     DEFAULT_PREFERENCES,
@@ -51,7 +58,10 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
         };
       }
     },
-    enabled: Boolean(username)
+    // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
+    initialData: initialPosts ? { pages: [initialPosts], pageParams: [undefined] } : undefined,
+    initialDataUpdatedAt: initialPosts ? Date.now() : undefined,
+    staleTime: StaleTime.MEDIUM
   });
 
   // Prefetch when user is getting close to the end

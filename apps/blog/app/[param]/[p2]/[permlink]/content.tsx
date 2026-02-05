@@ -63,6 +63,13 @@ import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 import { isCommunity } from '@ui/lib/utils';
+import {
+  useSSRObserver,
+  useInitialPostData,
+  useInitialDiscussion,
+  useInitialCommunity
+} from '@/blog/components/observer-provider';
+import { StaleTime } from '@/blog/lib/react-query';
 
 // Maximum number of comments per page
 const MAX_COMMENTS_PER_PAGE = 50;
@@ -77,6 +84,14 @@ const PostContent = () => {
   const category = params?.param ?? '';
   const permlink = params?.permlink ?? '';
   const { user, isHydrated } = useUserClient();
+  const ssrObserver = useSSRObserver();
+  const initialPostData = useInitialPostData();
+  const initialDiscussion = useInitialDiscussion();
+  const initialCommunity = useInitialCommunity();
+  // Use SSR observer before hydration to match prefetched cache keys,
+  // then switch to client observer (which should be the same value for logged-in users)
+  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const observer = isHydrated ? clientObserver : ssrObserver;
   // Use empty key when user is not logged in to disable storage hooks
   const replyStorageId = user.username ? `replybox-/${author}/${permlink}-${user.username}` : '';
   const editStorageId = user.username ? `editbox-/${author}/${permlink}-${user.username}` : '';
@@ -121,12 +136,14 @@ const PostContent = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [commentsPage, setCommentsPage] = useState(1);
-  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const postInCommunity = isCommunity(category);
   const { data: postData, isLoading: postIsLoading } = useQuery({
     queryKey: ['postData', author, permlink, observer],
     queryFn: () => getPost(author, permlink, observer),
-    enabled: !!author && !!permlink && isHydrated, // Wait for hydration to complete before fetching with correct observer
+    enabled: !!author && !!permlink,
+    initialData: initialPostData ?? undefined,
+    initialDataUpdatedAt: initialPostData ? Date.now() : undefined,
+    staleTime: StaleTime.MEDIUM,
     onError: (error) => {
       handleError(error, { method: 'getPost', params: { author, permlink, observer } });
     }
@@ -152,7 +169,7 @@ const PostContent = () => {
     ],
     queryFn: () =>
       getPost(postData?.json_metadata.original_author, postData?.json_metadata.original_permlink, observer),
-    enabled: crossedPost && isHydrated // Wait for hydration to complete before fetching with correct observer
+    enabled: crossedPost
   });
 
   const { data: suggestionData } = useQuery({
@@ -179,6 +196,9 @@ const PostContent = () => {
     queryKey: ['community', category, observer],
     queryFn: () => getCommunity(category, observer),
     enabled: postInCommunity,
+    initialData: initialCommunity ?? undefined,
+    initialDataUpdatedAt: initialCommunity ? Date.now() : undefined,
+    staleTime: StaleTime.LONG,
     onError: (error) => {
       handleError(error, { method: 'getCommunity', params: { category, observer } });
     }
@@ -187,7 +207,9 @@ const PostContent = () => {
   const { data: discussionData } = useQuery({
     queryKey: ['discussionData', author, permlink, observer],
     queryFn: () => getDiscussion(author, permlink, observer),
-    enabled: isHydrated, // Wait for hydration to complete before fetching with correct observer
+    initialData: initialDiscussion ?? undefined,
+    initialDataUpdatedAt: initialDiscussion ? Date.now() : undefined,
+    staleTime: StaleTime.MEDIUM,
     onError: (error) => {
       handleError(error, { method: 'getDiscussion', params: { author, permlink, observer } });
     }

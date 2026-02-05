@@ -17,24 +17,35 @@ import { getCommunities, getSubscriptions } from '@transaction/lib/bridge-api';
 import { useRouter } from 'next/navigation';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { StaleTime } from '@/blog/lib/react-query';
+import { useSSRObserver, useInitialCommunities, useInitialSubscriptions } from '@/blog/components/observer-provider';
 
 export function CommunitiesSelect({ title }: { title: string }) {
   const { user, isHydrated } = useUserClient();
   const router = useRouter();
   const { t } = useTranslation('common_blog');
-  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const ssrObserver = useSSRObserver();
+  const initialCommunities = useInitialCommunities();
+  const initialSubscriptions = useInitialSubscriptions();
+  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const observer = isHydrated ? clientObserver : ssrObserver;
   const sort = 'rank';
   const query = null;
 
   const { isLoading, data } = useQuery({
     queryKey: ['communitiesList', sort, query, observer],
     queryFn: () => getCommunities(sort, query, observer),
-    enabled: isHydrated // Wait for hydration to complete before fetching with correct observer
+    initialData: initialCommunities ?? undefined,
+    initialDataUpdatedAt: initialCommunities ? Date.now() : undefined,
+    staleTime: StaleTime.LONG
   });
   const { data: mySubsData } = useQuery({
-    queryKey: ['subscriptions', user.username],
-    queryFn: () => getSubscriptions(user.username),
-    enabled: Boolean(user.isLoggedIn)
+    queryKey: ['subscriptions', observer],
+    queryFn: () => getSubscriptions(observer),
+    enabled: observer !== DEFAULT_OBSERVER,
+    initialData: initialSubscriptions ?? undefined,
+    initialDataUpdatedAt: initialSubscriptions ? Date.now() : undefined,
+    staleTime: StaleTime.LONG
   });
   const filteredCommunity = data
     ?.slice(0, 12)

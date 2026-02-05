@@ -10,7 +10,9 @@ import PostSelectFilter from '@/blog/features/layouts/post-select-filter';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
 import { useQuery } from '@tanstack/react-query';
-import { Skeleton } from '@ui/components';
+import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { StaleTime } from '@/blog/lib/react-query';
+import { useSSRObserver, useInitialSubscriptions } from '@/blog/components/observer-provider';
 
 const MainPageLayout = ({
   children,
@@ -21,25 +23,27 @@ const MainPageLayout = ({
   tag?: string;
   hidePostsHeader?: boolean;
 }) => {
-  const { user } = useUserClient();
+  const ssrObserver = useSSRObserver();
+  const initialSubscriptions = useInitialSubscriptions();
+  const { user, isHydrated } = useUserClient();
   const { t } = useTranslation('common_blog');
-  const { data, isFetching, status} = useQuery({
-    queryKey: ['subscriptions', user.username],
-    queryFn: () => getSubscriptions(user.username),
-    enabled: user.isLoggedIn && !!user?.username
+  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const observer = isHydrated ? clientObserver : ssrObserver;
+  const { data } = useQuery({
+    queryKey: ['subscriptions', observer],
+    queryFn: () => getSubscriptions(observer),
+    enabled: observer !== DEFAULT_OBSERVER,
+    initialData: initialSubscriptions ?? undefined,
+    initialDataUpdatedAt: initialSubscriptions ? Date.now() : undefined,
+    staleTime: StaleTime.LONG
   });
 
-  const renderCommunitiesSidebar = () =>{
-    if (isFetching)
-    return (
-      <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-    );
-    if (!!data)
-    return (
-      <CommunitiesMyBar data={data} />
-    );
-    return <CommunitiesSidebar />
-  }
+  const renderCommunitiesSidebar = () => {
+    // Show user's subscribed communities when loaded, otherwise show
+    // trending communities sidebar (which has SSR data from context)
+    if (data) return <CommunitiesMyBar data={data} />;
+    return <CommunitiesSidebar />;
+  };
 
   const renderListName = () => {
     if (tag === 'feed') return t('navigation.communities_nav.my_friends')

@@ -18,13 +18,19 @@ import { usePathname } from 'next/navigation';
 import BasePathLink from '@/blog/components/base-path-link';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { StaleTime } from '@/blog/lib/react-query';
+import { useSSRObserver, useInitialCommunity, useInitialSubscriptions } from '@/blog/components/observer-provider';
 import { t } from 'i18next';
 import { Skeleton } from '@hive/ui';
 
 const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
-  const { user } = useUserClient();
+  const { user, isHydrated } = useUserClient();
   const pathname = usePathname();
-  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const ssrObserver = useSSRObserver();
+  const initialCommunity = useInitialCommunity();
+  const initialSubscriptions = useInitialSubscriptions();
+  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const observer = isHydrated ? clientObserver : ssrObserver;
   const isRolesPage = pathname?.includes('/roles/');
   const isCommunity = community?.startsWith('hive-');
   const { data: subsData } = useQuery({
@@ -39,15 +45,21 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
   });
 
   const { data: mySubsData } = useQuery({
-    queryKey: ['subscriptions', user?.username],
-    queryFn: () => getSubscriptions(user.username),
-    enabled: Boolean(user?.username)
+    queryKey: ['subscriptions', observer],
+    queryFn: () => getSubscriptions(observer),
+    enabled: observer !== DEFAULT_OBSERVER,
+    initialData: initialSubscriptions ?? undefined,
+    initialDataUpdatedAt: initialSubscriptions ? Date.now() : undefined,
+    staleTime: StaleTime.LONG
   });
 
   const { data: communityData, isLoading: isCommunityLoading } = useQuery({
     queryKey: ['community', community, observer],
     queryFn: () => getCommunity(community, observer),
-    enabled: isCommunity
+    enabled: isCommunity,
+    initialData: initialCommunity ?? undefined,
+    initialDataUpdatedAt: initialCommunity ? Date.now() : undefined,
+    staleTime: StaleTime.LONG
   });
 
   return (
