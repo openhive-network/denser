@@ -42,7 +42,11 @@ const wellKnownErrorDescriptions = [
   // Key registration errors
   'Registration failed',
   'Failed to import key',
-  'Key is not registered'
+  'Key is not registered',
+
+  // Blockchain/authority errors
+  'Account not found on the blockchain',
+  'authority for this account'
 ];
 
 // TODO: Refactor this function to use the new error handling mechanism

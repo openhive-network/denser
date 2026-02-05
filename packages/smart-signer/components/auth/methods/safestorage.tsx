@@ -40,7 +40,7 @@ function getFormSchema() {
   return z
     .object({
       username,
-      password: z.string().min(6, {
+      password: z.string().min(7, {
         message: 'Password length should be more than 6 characters'
       }),
       wif: z.string(),
@@ -444,13 +444,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 )}
               />
             )}
-            {authUsers?.length > 0 && (
+            {userFound && (
               <div className="flex justify-end">
                 <span
                   onClick={() => onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE)}
                   className="max-w-max cursor-pointer text-xs text-destructive hover:opacity-80 active:opacity-60"
                 >
-                  Update existing saved key
+                  Add new key
                 </span>
               </div>
             )}

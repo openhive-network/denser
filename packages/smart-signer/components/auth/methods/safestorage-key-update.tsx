@@ -134,8 +134,6 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
             if (availableTypes.length > 0) {
               form.setValue('keyType', availableTypes[0]);
             }
-          } else {
-            setError('User not found in safe storage');
           }
         } catch (error) {
           const errorMessage = handleAuthError(error, 'SafeStorageKeyUpdate.useEffect');
@@ -155,6 +153,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
 
         if (!registeredUser) {
           setError('User not found in safe storage');
+          setLoading(false);
           return;
         }
 
@@ -176,12 +175,12 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         setUpdateSuccess(true);
 
         toast({
-          title: 'Key Updated',
-          description: 'Your key has been updated successfully',
+          title: 'Key Added',
+          description: 'Your key has been added successfully',
           variant: 'success'
         });
 
-        logger.info('Key updated successfully for user: %s, keyType: %s', username, keyType);
+        logger.info('Key added successfully for user: %s, keyType: %s', username, keyType);
 
         // Reset form after successful update
         form.reset();
@@ -201,18 +200,23 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
 
     return (
       <Step
-        title="Update Key in Safe Storage"
+        title="Add New Key to Safe Storage"
         description={
           <div>
             <div data-testid="login-form-description">
               {registeredUser
-                ? `Update ${form.getValues().keyType} key for user ${username}`
+                ? `Add new ${form.getValues().keyType} key for user ${username}`
                 : 'User not found in safe storage'}
             </div>
+            {registeredUser && (
+              <div className="text-xs text-muted-foreground">
+                First, add the key to the appropriate authority in your wallet.
+              </div>
+            )}
             {error && <div className="text-sm text-destructive">{error}</div>}
             {updateSuccess && (
               <div className="text-sm text-green-500">
-                Key updated successfully! Now you can sign in again.
+                Key added successfully! Now you can sign in again.
               </div>
             )}
           </div>
@@ -281,6 +285,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                         {...field}
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Safe storage password"
+                        disabled={!registeredUser}
                         data-testid="login-form-password"
                       />
                       <Button
@@ -310,6 +315,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                       {...field}
                       type="password"
                       placeholder={`WIF ${form.getValues().keyType} private key`}
+                      disabled={!registeredUser}
                       data-testid="login-form-wif"
                     />
                   </FormControl>
@@ -363,8 +369,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
               >
                 Back
               </Button>
-              <Button type="submit" disabled={loading || updateSuccess} data-testid="login-form-update-key">
-                Update Key
+              <Button type="submit" disabled={loading || updateSuccess || !registeredUser} data-testid="login-form-update-key">
+                Add Key
               </Button>
             </div>
           </form>

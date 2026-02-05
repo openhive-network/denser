@@ -80,7 +80,19 @@
       "button_cancel": "キャンセル",
       "button_sign_auth": "署名されたtxを送信",
       "button_signin_unlocked": "署名されたtxでサインイン",
-      "strict_mode": "制限付きの権限モード"
+      "strict_mode": "制限付きの権限モード",
+      "key_update": "Add new key",
+      "update_key_title": "Add New Key to Safe Storage",
+      "update_key_description": "Add new {{keyType}} key for user {{username}}",
+      "update_key_button": "Add Key",
+      "key_updated_title": "Key Added",
+      "key_updated_description": "Your key has been added successfully",
+      "key_updated_success": "Key added successfully! Now you can sign in again.",
+      "add_key_info": "First, add the key to the appropriate authority in your wallet.",
+      "user_not_found": "User not found in safe storage",
+      "back": "Back",
+      "authenticated_title": "Authentication Successful",
+      "authenticated_description": "You have been authenticated successfully"
     },
     "zod_error": {
       "password_length": "パスワードの長さは6文字以上である必要があります",

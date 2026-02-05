@@ -57,12 +57,21 @@ export class SignerPeakvault extends Signer {
       // This is quicker way to verify authority, isntead of
       // authority-checker.ts
       // we will use only this method to verify authority soon
-      await (
-        await getChain()
-      ).api.database_api.verify_authority({
-        trx: authTx.toApiJson(),
-        pack: TTransactionPackType.LEGACY
-      });
+      try {
+        await (
+          await getChain()
+        ).api.database_api.verify_authority({
+          trx: authTx.toApiJson(),
+          pack: TTransactionPackType.LEGACY
+        });
+      } catch (verifyError) {
+        logger.error('Peakvault key authority verification failed: %o', verifyError);
+        const msg = verifyError instanceof Error ? verifyError.message : String(verifyError);
+        if (/unknown key/i.test(msg)) {
+          throw new Error('Account not found on the blockchain');
+        }
+        throw new Error(`The provided key does not have ${this.keyType} authority for this account`);
+      }
       logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {

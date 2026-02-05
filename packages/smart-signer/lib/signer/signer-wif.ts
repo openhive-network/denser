@@ -1,4 +1,4 @@
-import { SignerOptions } from '@smart-signer/lib/signer/signer';
+import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { TTransactionPackType, THexString, transaction } from '@hiveio/wax';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
@@ -23,6 +23,35 @@ const logger = getLogger('app');
 export class SignerWif extends SignerHbauth {
   constructor(signerOptions: SignerOptions, pack: TTransactionPackType = TTransactionPackType.HF_26) {
     super(signerOptions, pack);
+  }
+
+  override async signTransaction({ digest, transaction, singleSignKeyType, requiredKeyType }: SignTransaction): Promise<string> {
+    const wax = await getChain();
+    const txBuilder = wax.createTransactionFromProto(transaction);
+    if (digest !== txBuilder.sigDigest) {
+      throw new Error('Digests do not match');
+    }
+
+    const signature = await this.signDigest(digest, '', singleSignKeyType, requiredKeyType);
+    txBuilder.addSignature(signature);
+
+    // Verify authority on chain — matches pattern used by keychain,
+    // peakvault, metamask, and google-drive signers.
+    try {
+      await wax.api.database_api.verify_authority({
+        trx: txBuilder.toApiJson(),
+        pack: this.pack
+      });
+    } catch (error) {
+      logger.error('WIF key authority verification failed: %o', error);
+      const msg = error instanceof Error ? error.message : String(error);
+      if (/unknown key/i.test(msg)) {
+        throw new Error('Account not found on the blockchain');
+      }
+      throw new Error(`The provided WIF key does not have ${this.keyType} authority for this account`);
+    }
+
+    return signature;
   }
 
   override async signDigest(

@@ -62,7 +62,9 @@ const ERROR_PATTERNS: { pattern: RegExp; message: string }[] = [
   { pattern: /already registered/i, message: 'Key already registered - update it instead' },
   { pattern: /beekeeper.*error/i, message: 'Wallet operation failed' },
   { pattern: /assert_exception/i, message: 'Operation failed' },
-  { pattern: /missing.*challenge/i, message: 'Login failed - invalid challenge' }
+  { pattern: /missing.*challenge/i, message: 'Login failed - invalid challenge' },
+  { pattern: /account not found on the blockchain/i, message: 'Account not found on the blockchain' },
+  { pattern: /does not have.*authority/i, message: 'Key does not have the required authority for this account' }
 ];
 
 export interface AuthErrorResult {
