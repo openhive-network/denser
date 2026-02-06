@@ -3,6 +3,7 @@ import { TransactionBroadcastResult, transactionService } from '@transaction/ind
 import { getLogger } from '@ui/lib/logging';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
+import { scheduleInvalidations } from '@/blog/lib/react-query';
 
 const logger = getLogger('app');
 
@@ -77,16 +78,25 @@ export function useVoteMutation() {
         variant: 'success'
       });
 
-      // Invalidate after delay to fetch real data from Hivemind
-      // Block time is ~3 seconds, but Hivemind indexing can take up to 8 seconds
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['discussionData'] });
-        queryClient.invalidateQueries({ queryKey: [permlink, voter, 'ActiveVotes'] });
-        queryClient.invalidateQueries({ queryKey: ['postData', author, permlink] });
-        queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-        queryClient.invalidateQueries({ queryKey: ['manabars', voter] });
-        queryClient.invalidateQueries({ queryKey: ['votes', author, permlink, voter] });
-      }, 8000);
+      // Schedule multiple invalidation attempts to handle slow Hivemind indexing.
+      // cancelQueries inside scheduleInvalidations prevents stale in-flight
+      // refetches from overwriting the optimistic vote data.
+      scheduleInvalidations(queryClient, [
+        ['votes', author, permlink, voter],
+        ['entriesInfinite'],
+        ['manabars', voter]
+      ]);
+
+      // Discussion and post data need longer delays since Hivemind takes
+      // longer to reflect vote changes in aggregated data
+      scheduleInvalidations(
+        queryClient,
+        [
+          ['postData', author, permlink],
+          ['discussionData']
+        ],
+        [16000, 30000]
+      );
     },
 
     onError: (error: unknown, variables, context) => {

@@ -200,6 +200,39 @@ export function useUpdateCommentMutation() {
   const queryClient = useQueryClient();
   const { user } = useUserClient();
   const updateCommentMutation = useMutation({
+    // Optimistic update BEFORE broadcast - prevents stale refetches from overwriting
+    onMutate: async (params: {
+      parentAuthor: string;
+      parentPermlink: string;
+      permlink: string;
+      body: string;
+      discussionAuthor: string;
+      discussionPermlink: string;
+      observer: string;
+    }) => {
+      const { permlink, body, discussionAuthor, discussionPermlink, observer } = params;
+      const queryKey = ['discussionData', discussionAuthor, discussionPermlink, observer];
+
+      // Cancel any outgoing refetches to avoid overwriting optimistic update
+      await queryClient.cancelQueries({ queryKey });
+
+      // Snapshot previous data for rollback
+      const prevData: Record<string, Entry> | undefined = queryClient.getQueryData(queryKey);
+
+      // Optimistically update the comment body
+      if (prevData) {
+        const newData: Record<string, Entry> = Object.fromEntries(
+          Object.entries(prevData).map(([key, post]) => [
+            key,
+            post.permlink === permlink ? { ...post, body } : post
+          ])
+        );
+        queryClient.setQueryData<Record<string, Entry>>(queryKey, newData);
+      }
+
+      return { prevData, queryKey };
+    },
+
     mutationFn: async (params: {
       parentAuthor: string;
       parentPermlink: string;
@@ -209,7 +242,7 @@ export function useUpdateCommentMutation() {
       discussionPermlink: string;
       observer: string;
     }) => {
-      const { parentAuthor, parentPermlink, permlink, body, discussionAuthor, discussionPermlink, observer } = params;
+      const { parentAuthor, parentPermlink, permlink, body, discussionPermlink } = params;
       const broadcastResult = await transactionService.updateComment(
         parentAuthor,
         parentPermlink,
@@ -219,37 +252,11 @@ export function useUpdateCommentMutation() {
           observe: false
         }
       );
-      const prevData: Record<string, Entry> | undefined = queryClient.getQueryData([
-        'discussionData',
-        discussionAuthor,
-        discussionPermlink,
-        observer
-      ]);
 
-      const response = { ...params, broadcastResult, prevData };
+      logger.info('Done update comment transaction: %o', { discussionPermlink, broadcastResult });
+      return { ...params, broadcastResult };
+    },
 
-      logger.info('Done update comment transaction: %o', response);
-      return response;
-    },
-    onSettled: (data) => {
-      if (!data) return;
-      const { permlink, discussionAuthor, discussionPermlink, observer, prevData } = data;
-      if (!!prevData) {
-        const list = [...Object.keys(prevData).map((key) => prevData[key])];
-        const newList = list.map((post) => {
-          if (post.permlink === permlink) {
-            return { ...post, body: data.body };
-          }
-          return post;
-        });
-        const newData: Record<string, Entry> = Object.fromEntries(
-          newList.map((post) => [post.permlink, post])
-        );
-        queryClient.setQueryData<Record<string, Entry>>(['discussionData', discussionAuthor, discussionPermlink, observer], () => {
-          return newData;
-        });
-      }
-    },
     onSuccess: (data) => {
       const { username } = user;
       const { permlink, discussionAuthor, discussionPermlink, observer } = data;
@@ -265,7 +272,15 @@ export function useUpdateCommentMutation() {
         ['postData', username, permlink, observer]
       ]);
     },
-    onError: (error: any, variables) => {
+
+    onError: (error: unknown, variables, context) => {
+      // Rollback to previous data on error
+      if (context?.queryKey) {
+        if (context.prevData) {
+          queryClient.setQueryData(context.queryKey, context.prevData);
+        }
+      }
+
       handleError(error, {
         method: 'useUpdateCommentMutation',
         params: variables
@@ -285,39 +300,45 @@ export function useUpdateCommentMutation() {
 export function useDeleteCommentMutation() {
   const queryClient = useQueryClient();
   const deleteCommentMutation = useMutation({
-    mutationFn: async (params: {
+    // Optimistic update BEFORE broadcast - prevents stale refetches from overwriting
+    onMutate: async (params: {
       permlink: string;
       discussionAuthor: string;
       discussionPermlink: string;
       observer: string;
     }) => {
       const { permlink, discussionAuthor, discussionPermlink, observer } = params;
-      const broadcastResult = await transactionService.deleteComment(permlink, { observe: false });
-      const prevData: Record<string, Entry> | undefined = queryClient.getQueryData([
-        'discussionData',
-        discussionAuthor,
-        discussionPermlink,
-        observer
-      ]);
-      const response = { ...params, broadcastResult, prevData };
-      logger.info('Done delete comment transaction: %o', response);
-      return response;
-    },
-    onSettled: (data) => {
-      if (!data) return;
-      const { discussionAuthor, discussionPermlink, observer, prevData } = data;
-      if (!!prevData) {
-        const list = [...Object.keys(prevData).map((key) => prevData[key])];
-        const newList = list.filter((post) => post.permlink !== data.permlink);
-        const newData: Record<string, Entry> = Object.fromEntries(
-          newList.map((post) => [post.permlink, post])
-        );
+      const queryKey = ['discussionData', discussionAuthor, discussionPermlink, observer];
 
-        queryClient.setQueryData<Record<string, Entry>>(['discussionData', discussionAuthor, discussionPermlink, observer], () => {
-          return newData;
-        });
+      // Cancel any outgoing refetches to avoid overwriting optimistic update
+      await queryClient.cancelQueries({ queryKey });
+
+      // Snapshot previous data for rollback
+      const prevData: Record<string, Entry> | undefined = queryClient.getQueryData(queryKey);
+
+      // Optimistically remove the comment
+      if (prevData) {
+        const newData: Record<string, Entry> = Object.fromEntries(
+          Object.entries(prevData).filter(([_, post]) => post.permlink !== permlink)
+        );
+        queryClient.setQueryData<Record<string, Entry>>(queryKey, newData);
       }
+
+      return { prevData, queryKey };
     },
+
+    mutationFn: async (params: {
+      permlink: string;
+      discussionAuthor: string;
+      discussionPermlink: string;
+      observer: string;
+    }) => {
+      const { permlink, discussionPermlink } = params;
+      const broadcastResult = await transactionService.deleteComment(permlink, { observe: false });
+      logger.info('Done delete comment transaction: %o', { discussionPermlink, broadcastResult });
+      return { ...params, broadcastResult };
+    },
+
     onSuccess: (data) => {
       const { discussionAuthor, discussionPermlink, observer } = data;
       logger.info('useDeleteCommentMutation onSuccess data: %o', data);
@@ -333,7 +354,15 @@ export function useDeleteCommentMutation() {
         [4000, 10000, 20000]
       );
     },
-    onError: (error: any, variables) => {
+
+    onError: (error: unknown, variables, context) => {
+      // Rollback to previous data on error
+      if (context?.queryKey) {
+        if (context.prevData) {
+          queryClient.setQueryData(context.queryKey, context.prevData);
+        }
+      }
+
       handleError(error, {
         method: 'useDeleteCommentMutation',
         params: variables
