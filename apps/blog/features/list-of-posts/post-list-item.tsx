@@ -51,7 +51,10 @@ function arePostListItemPropsEqual(prev: PostListItemProps, next: PostListItemPr
     prevPost.children === nextPost.children &&
     prevPost.reblogs === nextPost.reblogs &&
     prevPost.stats?.total_votes === nextPost.stats?.total_votes &&
-    prevPost.stats?.gray === nextPost.stats?.gray
+    prevPost.stats?.gray === nextPost.stats?.gray &&
+    prevPost.stats?.is_pinned === nextPost.stats?.is_pinned &&
+    prevPost.blacklists === nextPost.blacklists &&
+    prevPost.author_reputation === nextPost.author_reputation
   );
 }
 

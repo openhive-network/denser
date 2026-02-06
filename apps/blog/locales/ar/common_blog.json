@@ -94,7 +94,8 @@
       "social": "الاجتماعي",
       "notifications": "الإشعارات",
       "wallet": "المحفظة",
-      "settings": "الإعدادات"
+      "settings": "الإعدادات",
+      "block_explorer": "Block Explorer"
     },
     "profile_posts_tab_navbar": {
       "posts": "المشاركات",
@@ -483,6 +484,8 @@
         "preview": "معاينة",
         "markdown_styling_guide": "دليل أسلوب Markdown",
         "exit_editor": "هل أنت متأكد أنك تريد الخروج من محرر التعليق؟",
+        "exit_editor_description": "Your draft will be discarded and cannot be recovered.",
+        "discard": "Discard",
         "power_up": "زيادة الطاقة بنسبة 100%",
         "decline_payout": "رفض الدفعة",
         "rewards": "المكافآت: ",
@@ -541,6 +544,8 @@
     "enter_tags": "أدخل علامة واحدة على الأقل للإرسال",
     "clean": "تنظيف",
     "cancel": "إلغاء",
+    "confirm": "Confirm",
+    "cancel_confirmation_description": "Your changes will be discarded and cannot be recovered.",
     "markdown_styling_guide": "دليل أسلوب Markdown",
     "power_up": "زيادة الطاقة بنسبة 100%",
     "maximum_characters": "أقصى عدد من الأحرف {{num}}",

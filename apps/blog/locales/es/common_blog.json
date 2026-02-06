@@ -93,7 +93,8 @@
       "replies": "Respuestas",
       "social": "Social",
       "notifications": "Notifications",
-      "wallet": "Monedero"
+      "wallet": "Monedero",
+      "block_explorer": "Block Explorer"
     },
     "profile_posts_tab_navbar": {
       "posts": "Publicaciones",
@@ -445,6 +446,8 @@
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
         "exit_editor": "Are you sure you want to exit the comment editor?",
+        "exit_editor_description": "Your draft will be discarded and cannot be recovered.",
+        "discard": "Discard",
         "power_up": "Activar al 100%",
         "decline_payout": "Rechazar Pago",
         "rewards": "Recompensas: ",
@@ -503,6 +506,8 @@
     "enter_tags": "Ingresa al menos una etiqueta para enviar",
     "clean": "Limpiar",
     "cancel": "Cancelar",
+    "confirm": "Confirm",
+    "cancel_confirmation_description": "Your changes will be discarded and cannot be recovered.",
     "markdown_styling_guide": "Guía de Estilo Markdown",
     "power_up": "Potenciar al 100%",
     "maximum_characters": "Máximo de {{num}} caracteres",

@@ -93,7 +93,8 @@
       "replies": "留言",
       "social": "Social",
       "notifications": "Notifications",
-      "wallet": "钱包"
+      "wallet": "钱包",
+      "block_explorer": "Block Explorer"
     },
     "profile_posts_tab_navbar": {
       "posts": "文章",
@@ -445,6 +446,8 @@
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
         "exit_editor": "Are you sure you want to exit the comment editor?",
+        "exit_editor_description": "Your draft will be discarded and cannot be recovered.",
+        "discard": "Discard",
         "power_up": "电力提升 100%",
         "decline_payout": "拒绝付款",
         "rewards": "奖励: ",
@@ -503,6 +506,8 @@
     "enter_tags": "请输入至少一个标签以提交",
     "clean": "清除",
     "cancel": "取消",
+    "confirm": "Confirm",
+    "cancel_confirmation_description": "Your changes will be discarded and cannot be recovered.",
     "markdown_styling_guide": "Markdown样式指南",
     "power_up": "100% 动力增强",
     "maximum_characters": "最多{{num}}个字符",

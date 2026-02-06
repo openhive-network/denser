@@ -49,8 +49,8 @@ function getFormSchema() {
   return z
     .object({
       username,
-      password: z.string().min(1, {
-        message: 'Password is required'
+      password: z.string().min(6, {
+        message: 'Password length should be at least 6 characters'
       }),
       wif: z.string().min(1, {
         message: 'Invalid WIF key'

@@ -142,9 +142,8 @@ export class SignerHbauth extends Signer {
           logger.info('Ignoring expected error during authentication');
           authStatus.ok = true;
         } else {
-          // Re-throw with preserved error details
           const { message } = parseAuthError(error);
-          throw new Error(message);
+          throw new Error(message, { cause: error });
         }
       }
 
@@ -274,7 +273,7 @@ export class SignerHbauth extends Signer {
         logger.error('Error in requireOtherKey: %o', error);
         // Preserve the actual error message instead of generic "Invalid key"
         const { message } = parseAuthError(error, 'Invalid key');
-        throw new Error(message);
+        throw new Error(message, { cause: error });
       }
     }
     // Sign with the required key

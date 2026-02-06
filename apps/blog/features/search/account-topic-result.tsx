@@ -8,23 +8,26 @@ import Loading from '@ui/components/loading';
 import { getByText } from '@transaction/lib/hive-api';
 import { Link } from '@hive/ui';
 import { Activity } from 'lucide-react';
-import { Preferences } from '@hive/common-hiveio-packages/wax';
+import { Entry, Preferences } from '@hive/common-hiveio-packages/wax';
 import { PostListItemSkeleton } from '@hive/ui';
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';
 import NoDataError from '@/blog/components/no-data-error';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { StaleTime } from '@/blog/lib/react-query';
 
 const AccountTopicResult = ({
   author,
   query,
   sort,
-  nsfwPreferences
+  nsfwPreferences,
+  initialData
 }: {
   query: string;
   sort: SearchSort;
   author?: string;
   nsfwPreferences: Preferences['nsfw'];
+  initialData?: Entry[] | null;
 }) => {
   const { user } = useUserClient();
   const { ref, inView } = useInView();
@@ -62,7 +65,10 @@ const AccountTopicResult = ({
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
-    enabled: !!query
+    enabled: !!query,
+    staleTime: StaleTime.MEDIUM,
+    initialData: initialData ? { pages: [initialData], pageParams: [undefined] } : undefined,
+    initialDataUpdatedAt: initialData ? Date.now() : undefined
   });
   // Prefetch when user is getting close to the end
   useEffect(() => {

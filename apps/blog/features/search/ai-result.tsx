@@ -5,17 +5,26 @@ import Loading from '@ui/components/loading';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState, useMemo } from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { Entry, PostStub } from '@hive/common-hiveio-packages/wax';
+import { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-packages/wax';
 import { PER_PAGE } from './lib/utils';
 import { DEFAULT_OBSERVER, Preferences } from '@/blog/lib/utils';
 import { PostListItemSkeleton } from '@hive/ui';
 import { commonVariables } from '@ui/lib/common-variables';
+import { StaleTime } from '@/blog/lib/react-query';
 
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';
 import { getPostsByIds, isPostStub, searchPosts } from '@transaction/lib/hivesense-api';
 
-const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: Preferences['nsfw'] }) => {
+const AIResult = ({
+  query,
+  nsfwPreferences,
+  initialData
+}: {
+  query: string;
+  nsfwPreferences: Preferences['nsfw'];
+  initialData?: MixedPostsResponse | null;
+}) => {
   const { user } = useUserClient();
   const { ref, inView } = useInView();
   const { t } = useTranslation('common_blog');
@@ -45,7 +54,9 @@ const AIResult = ({ query, nsfwPreferences }: { query: string; nsfwPreferences: 
     refetchOnReconnect: false,
     refetchOnMount: false,
     enabled: !!query,
-    staleTime: 5 * 60 * 1000 // Cache for 5 minutes
+    staleTime: StaleTime.LONG,
+    initialData: initialData ?? undefined,
+    initialDataUpdatedAt: initialData ? Date.now() : undefined
   });
 
   // Separate full posts and stubs from search results

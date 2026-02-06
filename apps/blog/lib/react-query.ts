@@ -3,6 +3,11 @@ import { QueryClient, QueryKey, isServer } from '@tanstack/react-query';
 /**
  * Stale time constants for different query types.
  * Use these in individual useQuery calls for appropriate freshness.
+ *
+ * Note on initialDataUpdatedAt: when using the initialData pattern with SSR,
+ * `initialDataUpdatedAt: Date.now()` is evaluated at client render time, not
+ * when the data was actually fetched during SSR. The difference is typically
+ * under 5 seconds and negligible relative to these stale times.
  */
 export const StaleTime = {
   /** For data that rarely changes: communities, static content (5 min) */

@@ -25,10 +25,10 @@ type LoggedUserContextType = {
   manabarsData: Manabars | null | undefined;
 };
 
-export const loggedUserContext = createContext<LoggedUserContextType | undefined>(undefined);
+const LoggedUserContext = createContext<LoggedUserContextType | undefined>(undefined);
 
 export const useLoggedUserContext = () => {
-  const context = useContext(loggedUserContext);
+  const context = useContext(LoggedUserContext);
   if (!context) {
     throw new Error('useLoggedUserContext must be used within a LoggedUserProvider');
   }
@@ -53,8 +53,8 @@ export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children
   const reputation = accountData?.reputation ?? 25;
 
   return (
-    <loggedUserContext.Provider value={{ loggedUser: accountData, net_vests, reputation, manabarsData }}>
-      <>{children}</>
-    </loggedUserContext.Provider>
+    <LoggedUserContext.Provider value={{ loggedUser: accountData, net_vests, reputation, manabarsData }}>
+      {children}
+    </LoggedUserContext.Provider>
   );
 };

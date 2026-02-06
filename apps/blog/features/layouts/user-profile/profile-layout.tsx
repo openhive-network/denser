@@ -446,7 +446,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                       className="flex h-12 items-center gap-1.5 whitespace-nowrap px-3 text-sm font-medium text-white/70 transition-colors hover:text-white/90"
                     >
                       <ExternalLink className="h-4 w-4" />
-                      Block Explorer
+                      {t('navigation.profile_navbar.block_explorer')}
                     </Link>
                   </li>
                   <li>
@@ -498,7 +498,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                           className="flex cursor-pointer items-center gap-2"
                         >
                           <ExternalLink className="h-4 w-4" />
-                          Block Explorer
+                          {t('navigation.profile_navbar.block_explorer')}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>

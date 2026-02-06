@@ -1,12 +1,12 @@
 import { SearchSort } from '@ui/hooks/use-search';
 import SearchContent from './content';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
-import { getQueryClient } from '@/blog/lib/react-query';
 import { searchPosts } from '@transaction/lib/hivesense-api';
 import { getByText } from '@transaction/lib/hive-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
 import { parseSearchParams } from '@ui/lib/search-params';
+import { ObserverProvider } from '@/blog/components/observer-provider';
+import type { Entry, MixedPostsResponse } from '@hive/common-hiveio-packages/wax';
 
 interface SearchPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -22,92 +22,60 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const topicQuery = validatedParams.p;
   const sortQuery = validatedParams.s as SearchSort | undefined;
 
-  const queryClient = getQueryClient();
+  const observer = await getObserverFromCookies();
+
+  let initialAIResults: MixedPostsResponse | null = null;
+  let initialClassicResults: Entry[] | null = null;
+  let initialTopicResults: Entry[] | null = null;
+
   try {
-    const observer = await getObserverFromCookies();
-    const prefetchPromises: Promise<void>[] = [];
+    const results = await Promise.allSettled([
+      aiParam
+        ? searchPosts({ query: aiParam, observer, result_limit: 1000, full_posts: 20 })
+        : Promise.resolve(null),
+      classicQuery && sortQuery
+        ? getByText({
+            pattern: classicQuery,
+            observer,
+            start_permlink: '',
+            start_author: '',
+            limit: 20,
+            sort: sortQuery
+          })
+        : Promise.resolve(null),
+      userTopicQuery && topicQuery && sortQuery
+        ? getByText({
+            pattern: topicQuery,
+            author: userTopicQuery,
+            observer,
+            start_permlink: '',
+            start_author: '',
+            limit: 20,
+            sort: sortQuery
+          })
+        : Promise.resolve(null)
+    ]);
 
-    if (aiParam) {
-      prefetchPromises.push(
-        queryClient.prefetchQuery({
-          queryKey: ['searchPosts', aiParam],
-          queryFn: async () => {
-            return await searchPosts({
-              query: aiParam,
-              observer,
-              result_limit: 1000,
-              full_posts: 20
-            });
-          }
-        })
-      );
-    }
-    if (classicQuery && sortQuery) {
-      prefetchPromises.push(
-        queryClient.prefetchInfiniteQuery({
-          queryKey: ['similarPosts', classicQuery, undefined, sortQuery],
-          queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
-            return await getByText({
-              pattern: classicQuery,
-              observer,
-              start_permlink: pageParam?.permlink ?? '',
-              start_author: pageParam?.author ?? '',
-              limit: 20,
-              sort: sortQuery
-            });
-          },
-          getNextPageParam: (lastPage) => {
-            if (lastPage && lastPage.length === 20) {
-              return {
-                author: lastPage[lastPage.length - 1].author,
-                permlink: lastPage[lastPage.length - 1].permlink
-              };
-            }
-          }
-        })
-      );
-    }
-    if (userTopicQuery && topicQuery && sortQuery) {
-      prefetchPromises.push(
-        queryClient.prefetchInfiniteQuery({
-          queryKey: ['similarPosts', topicQuery, userTopicQuery, sortQuery],
-          queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
-            return await getByText({
-              pattern: topicQuery,
-              author: userTopicQuery,
-              observer,
-              start_permlink: pageParam?.permlink ?? '',
-              start_author: pageParam?.author ?? '',
-              limit: 20,
-              sort: sortQuery
-            });
-          },
-          getNextPageParam: (lastPage) => {
-            if (lastPage && lastPage.length === 20) {
-              return {
-                author: lastPage[lastPage.length - 1].author,
-                permlink: lastPage[lastPage.length - 1].permlink
-              };
-            }
-          }
-        })
-      );
-    }
-
-    await Promise.all(prefetchPromises);
+    initialAIResults = results[0].status === 'fulfilled' ? (results[0].value ?? null) : null;
+    initialClassicResults = results[1].status === 'fulfilled' ? (results[1].value ?? null) : null;
+    initialTopicResults = results[2].status === 'fulfilled' ? (results[2].value ?? null) : null;
   } catch (error) {
     logger.error(error, 'Error in SearchPage:');
   }
+
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <ObserverProvider value={observer}>
       <SearchContent
         aiParam={aiParam}
         classicQuery={classicQuery}
         userTopicQuery={userTopicQuery}
         topicQuery={topicQuery}
         sortQuery={sortQuery}
+        initialAIResults={initialAIResults}
+        initialClassicResults={initialClassicResults}
+        initialTopicResults={initialTopicResults}
       />
-    </Hydrate>
+    </ObserverProvider>
   );
 };
 

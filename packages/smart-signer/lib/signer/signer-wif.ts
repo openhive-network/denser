@@ -7,6 +7,7 @@ import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/
 import { getLogger } from '@hive/ui/lib/logging';
 import { KeyAuthorityType } from '@hiveio/hb-auth';
 import { getChain } from '@hive/common-hiveio-packages';
+import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 
 const logger = getLogger('app');
 
@@ -35,21 +36,7 @@ export class SignerWif extends SignerHbauth {
     const signature = await this.signDigest(digest, '', singleSignKeyType, requiredKeyType);
     txBuilder.addSignature(signature);
 
-    // Verify authority on chain — matches pattern used by keychain,
-    // peakvault, metamask, and google-drive signers.
-    try {
-      await wax.api.database_api.verify_authority({
-        trx: txBuilder.toApiJson(),
-        pack: this.pack
-      });
-    } catch (error) {
-      logger.error('WIF key authority verification failed: %o', error);
-      const msg = error instanceof Error ? error.message : String(error);
-      if (/unknown key/i.test(msg)) {
-        throw new Error('Account not found on the blockchain');
-      }
-      throw new Error(`The provided WIF key does not have ${this.keyType} authority for this account`);
-    }
+    await verifyAuthorityOrThrow(txBuilder.toApiJson(), this.pack, this.keyType, 'WIF');
 
     return signature;
   }

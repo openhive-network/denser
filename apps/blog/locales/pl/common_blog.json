@@ -94,7 +94,8 @@
       "social": "Społecznościowe",
       "notifications": "Powiadomienia",
       "wallet": "Portfel",
-      "settings": "Ustawienia"
+      "settings": "Ustawienia",
+      "block_explorer": "Block Explorer"
     },
     "profile_posts_tab_navbar": {
       "posts": "Posty",
@@ -450,6 +451,8 @@
         "preview": "Podgląd",
         "markdown_styling_guide": "Przewodnik po stylach posta",
         "exit_editor": "Jesteś pewien że chcesz opuścić tę stronę i anulować pisanie komentarza?",
+        "exit_editor_description": "Your draft will be discarded and cannot be recovered.",
+        "discard": "Discard",
         "power_up": "Wzmocnij 100%",
         "decline_payout": "Odrzuć Wypłatę",
         "rewards": "Wynagrodzenie: ",
@@ -508,6 +511,8 @@
     "enter_tags": "Wprowadź przynajmniej jeden tag, aby wysłać",
     "clean": "Wyczyść",
     "cancel": "Anuluj",
+    "confirm": "Confirm",
+    "cancel_confirmation_description": "Your changes will be discarded and cannot be recovered.",
     "markdown_styling_guide": "Przewodnik formatowania z użyciem Markdown",
     "power_up": "Wzmocnij o 100%",
     "maximum_characters": "Maksymalnie {{num}} znaków",

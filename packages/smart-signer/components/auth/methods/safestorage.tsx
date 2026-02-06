@@ -3,7 +3,7 @@ import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState }
 import { useForm } from 'react-hook-form';
 
 import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
-import { handleAuthError, isKeyUpdateNeeded } from '@smart-signer/lib/auth-error';
+import { handleAuthError, isKeyUpdateNeeded, isAlreadyRegistered } from '@smart-signer/lib/auth-error';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { username } from '@smart-signer/lib/auth/utils';
@@ -40,8 +40,8 @@ function getFormSchema() {
   return z
     .object({
       username,
-      password: z.string().min(7, {
-        message: 'Password length should be more than 6 characters'
+      password: z.string().min(6, {
+        message: 'Password length should be at least 6 characters'
       }),
       wif: z.string(),
       keyType: z.nativeEnum(KeyType, {
@@ -139,8 +139,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         await authClient.current?.authenticate(username, password, keyType);
         await finalize(values);
       } catch (error) {
-        if (isKeyUpdateNeeded(error)) {
+        if (isKeyUpdateNeeded(error) || isAlreadyRegistered(error)) {
           onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE);
+          return;
         }
         const errorMessage = handleAuthError(error, 'onAuthenticate');
         setError(errorMessage);

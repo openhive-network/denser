@@ -3,6 +3,7 @@ import { TTransactionPackType } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
+import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 import MetaMaskProvider from '@hiveio/wax-signers-metamask';
 import env from '@beam-australia/react-env';
 const logger = getLogger('app');
@@ -67,24 +68,7 @@ export class SignerMetaMask extends Signer {
 
       await provider.signTransaction(authTx);
 
-      // This is quicker way to verify authority, isntead of
-      // authority-checker.ts
-      // we will use only this method to verify authority soon
-      try {
-        await (
-          await getChain()
-        ).api.database_api.verify_authority({
-          trx: authTx.toApiJson(),
-          pack: TTransactionPackType.HF_26
-        });
-      } catch (verifyError) {
-        logger.error('MetaMask key authority verification failed: %o', verifyError);
-        const msg = verifyError instanceof Error ? verifyError.message : String(verifyError);
-        if (/unknown key/i.test(msg)) {
-          throw new Error('Account not found on the blockchain');
-        }
-        throw new Error(`The provided key does not have ${this.keyType} authority for this account`);
-      }
+      await verifyAuthorityOrThrow(authTx.toApiJson(), TTransactionPackType.HF_26, this.keyType, 'MetaMask');
       logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {

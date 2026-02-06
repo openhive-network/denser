@@ -4,6 +4,7 @@ import KeychainProvider from '@hiveio/wax-signers-keychain';
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
+import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 const logger = getLogger('app');
 
 // See https://github.com/hive-keychain/hive-keychain-extension/blob/master/documentation/README.md#requestsignbuffer
@@ -65,24 +66,7 @@ export class SignerKeychain extends Signer {
       );
       await provider.signTransaction(authTx);
 
-      // This is quicker way to verify authority, isntead of
-      // authority-checker.ts
-      // we will use only this method to verify authority soon
-      try {
-        await (
-          await getChain()
-        ).api.database_api.verify_authority({
-          trx: authTx.toApiJson(),
-          pack: TTransactionPackType.LEGACY
-        });
-      } catch (verifyError) {
-        logger.error('Keychain key authority verification failed: %o', verifyError);
-        const msg = verifyError instanceof Error ? verifyError.message : String(verifyError);
-        if (/unknown key/i.test(msg)) {
-          throw new Error('Account not found on the blockchain');
-        }
-        throw new Error(`The provided key does not have ${this.keyType} authority for this account`);
-      }
+      await verifyAuthorityOrThrow(authTx.toApiJson(), TTransactionPackType.LEGACY, this.keyType, 'Keychain');
       logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {

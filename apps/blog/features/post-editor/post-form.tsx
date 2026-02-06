@@ -494,9 +494,9 @@ export default function PostForm({
 
   const handleCancelConfirm = () => {
     form.reset(defaultValues);
+    removePost();
     if (editMode && setEditMode) {
       setEditMode(false);
-      removePost();
     }
     setCancelDialogOpen(false);
   };

@@ -10,6 +10,7 @@ import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { SearchSort } from '@ui/hooks/use-search';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
+import type { Entry, MixedPostsResponse } from '@hive/common-hiveio-packages/wax';
 
 interface SearchContentProps {
   aiParam: string | undefined;
@@ -17,6 +18,9 @@ interface SearchContentProps {
   userTopicQuery: string | undefined;
   topicQuery: string | undefined;
   sortQuery: SearchSort | undefined;
+  initialAIResults?: MixedPostsResponse | null;
+  initialClassicResults?: Entry[] | null;
+  initialTopicResults?: Entry[] | null;
 }
 
 const SearchContent = ({
@@ -24,7 +28,10 @@ const SearchContent = ({
   classicQuery,
   userTopicQuery,
   topicQuery,
-  sortQuery
+  sortQuery,
+  initialAIResults,
+  initialClassicResults,
+  initialTopicResults
 }: SearchContentProps) => {
   const { data: hiveSense } = useQuery({
     queryKey: ['hivesense-api'],
@@ -45,9 +52,16 @@ const SearchContent = ({
           <ModeSwitchInput searchPage aiAvailable={!!hiveSense} />
         </div>
       </div>
-      {!!aiParam ? <AIResult query={aiParam} nsfwPreferences={preferences.nsfw} /> : null}
+      {!!aiParam ? (
+        <AIResult query={aiParam} nsfwPreferences={preferences.nsfw} initialData={initialAIResults} />
+      ) : null}
       {!!classicQuery && !!sortQuery ? (
-        <AccountTopicResult nsfwPreferences={preferences.nsfw} query={classicQuery} sort={sortQuery} />
+        <AccountTopicResult
+          nsfwPreferences={preferences.nsfw}
+          query={classicQuery}
+          sort={sortQuery}
+          initialData={initialClassicResults}
+        />
       ) : null}
       {!!userTopicQuery && !!topicQuery && !!sortQuery ? (
         <AccountTopicResult
@@ -55,6 +69,7 @@ const SearchContent = ({
           query={userTopicQuery}
           sort={sortQuery}
           nsfwPreferences={preferences.nsfw}
+          initialData={initialTopicResults}
         />
       ) : null}
     </div>

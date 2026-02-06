@@ -46,7 +46,7 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   );
 
   const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({
-    queryKey: ['accountEntriesInfinite', username, query],
+    queryKey: ['accountEntriesInfinite', username, query, observer],
     queryFn: async ({ pageParam }: { pageParam?: Entry }) => {
       return await getAccountPosts(query, username, observer, pageParam?.author, pageParam?.permlink);
     },
@@ -58,6 +58,7 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
         };
       }
     },
+    enabled: Boolean(username),
     // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
     initialData: initialPosts ? { pages: [initialPosts], pageParams: [undefined] } : undefined,
     initialDataUpdatedAt: initialPosts ? Date.now() : undefined,

@@ -74,8 +74,6 @@ export interface AuthErrorResult {
   originalError: unknown;
   /** Whether this is a well-known/expected error */
   isKnownError: boolean;
-  /** Error code if available */
-  code?: string;
 }
 
 /**
@@ -146,7 +144,6 @@ export function parseAuthError(error: unknown, fallbackMessage?: string): AuthEr
       message: matchedMessage,
       originalError: error,
       isKnownError: true,
-      code: error instanceof Error ? error.name : undefined
     };
   }
 
@@ -157,8 +154,8 @@ export function parseAuthError(error: unknown, fallbackMessage?: string): AuthEr
     // We want to show actual error messages from hb-auth, but hide stack traces
     const looksLikeStackTrace =
       /^\s+at\s+/.test(rawMessage) || // Starts with stack trace line
-      /\n\s+at\s+/.test(rawMessage) || // Contains stack trace lines
-      rawMessage.length > 300; // Very long messages are likely technical
+      /node_modules/.test(rawMessage) || // Contains file paths from node_modules
+      (/\n\s+at\s+/.test(rawMessage) && rawMessage.split('\n').filter((l) => /^\s+at\s+/.test(l)).length > 2); // Multiple stack trace lines
 
     // Clean up error messages that have the error type prefix (e.g., "AuthorizationError: message")
     let cleanMessage = rawMessage;
@@ -171,8 +168,7 @@ export function parseAuthError(error: unknown, fallbackMessage?: string): AuthEr
       return {
         message: cleanMessage,
         originalError: error,
-        isKnownError: false,
-        code: error instanceof Error ? error.name : undefined
+        isKnownError: false
       };
     }
   }
@@ -181,8 +177,7 @@ export function parseAuthError(error: unknown, fallbackMessage?: string): AuthEr
   return {
     message: fallbackMessage || 'An authentication error occurred',
     originalError: error,
-    isKnownError: false,
-    code: error instanceof Error ? error.name : undefined
+    isKnownError: false
   };
 }
 
@@ -230,9 +225,18 @@ export function isKeyUpdateNeeded(error: unknown): boolean {
     /not authorized/i.test(message) ||
     /authentication failed/i.test(message) ||
     /invalid credentials/i.test(message) ||
-    /key verification failed/i.test(message) ||
-    /already registered/i.test(message)
+    /key verification failed/i.test(message)
   );
+}
+
+/**
+ * Check if an error indicates the key is already registered in safe storage.
+ * This is separate from isKeyUpdateNeeded because "already registered" means
+ * the key exists (not that authentication failed).
+ */
+export function isAlreadyRegistered(error: unknown): boolean {
+  const message = extractErrorMessage(error);
+  return /already registered/i.test(message);
 }
 
 /**

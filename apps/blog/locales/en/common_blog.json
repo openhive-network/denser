@@ -99,7 +99,8 @@
       "social": "Social",
       "notifications": "Notifications",
       "wallet": "Wallet",
-      "settings": "Settings"
+      "settings": "Settings",
+      "block_explorer": "Block Explorer"
     },
     "profile_posts_tab_navbar": {
       "posts": "Posts",

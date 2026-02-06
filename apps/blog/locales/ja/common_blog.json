@@ -93,7 +93,8 @@
       "replies": "返信",
       "social": "Social",
       "notifications": "Notifications",
-      "wallet": "ウォレット"
+      "wallet": "ウォレット",
+      "block_explorer": "Block Explorer"
     },
     "profile_posts_tab_navbar": {
       "posts": "投稿数",
@@ -445,6 +446,8 @@
         "preview": "Preview",
         "markdown_styling_guide": "Markdown Styling Guide",
         "exit_editor": "Are you sure you want to exit the comment editor?",
+        "exit_editor_description": "Your draft will be discarded and cannot be recovered.",
+        "discard": "Discard",
         "power_up": "パワーアップ 100%",
         "decline_payout": "支払いを拒否",
         "rewards": "報酬: ",
@@ -503,6 +506,8 @@
     "enter_tags": "送信するには少なくとも1つのタグを入力してください",
     "clean": "クリーン",
     "cancel": "キャンセル",
+    "confirm": "Confirm",
+    "cancel_confirmation_description": "Your changes will be discarded and cannot be recovered.",
     "markdown_styling_guide": "Markdownスタイルガイド",
     "power_up": "100% パワーアップ",
     "maximum_characters": "{{num}} 文字まで",
