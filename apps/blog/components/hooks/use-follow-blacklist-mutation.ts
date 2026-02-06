@@ -4,10 +4,13 @@ import { transactionService } from '@transaction/index';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
+import { handleError } from '@ui/lib/handle-error';
+import { scheduleInvalidations } from '@/blog/lib/react-query';
+
 const logger = getLogger('app');
 
 /**
- * Makes follow blacklistblog transaction.
+ * Makes follow blacklist blog transaction.
  *
  * @export
  * @return {*}
@@ -18,44 +21,64 @@ export function useFollowBlacklistBlogMutation() {
   const queryKey = ['follow_blacklist', user.username];
 
   const followBlacklistBlogMutation = useMutation({
+    onMutate: async (params: { otherBlogs: string; blog?: string }) => {
+      const { otherBlogs } = params;
+
+      await queryClient.cancelQueries({ queryKey });
+
+      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+      const currentData = prevData ?? [];
+
+      const alreadyExists = currentData.some((e) => e.name === otherBlogs);
+      if (!alreadyExists) {
+        queryClient.setQueryData<IFollowList[]>(queryKey, [
+          { name: otherBlogs, blacklist_description: '', muted_list_description: '', _temporary: true },
+          ...currentData
+        ]);
+      }
+
+      return { prevData, queryKey };
+    },
+
     mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
       const { otherBlogs, blog } = params;
       const broadcastResult = await transactionService.followBlacklistBlog(otherBlogs, blog, {
         observe: true
       });
-      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
-      const response = { ...params, broadcastResult, prevData };
-      logger.info('Done follow blacklist blog transaction: %o', response);
-      return response;
+      logger.info('Done follow blacklist blog transaction: %o', { otherBlogs, blog, broadcastResult });
+      return { ...params, broadcastResult };
     },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevData, otherBlogs } = data;
-      if (prevData) {
-        queryClient.setQueryData(queryKey, () => {
-          const newItem = prevData.find((e) => e.name === otherBlogs)
-            ? false
-            : {
-                name: otherBlogs,
-                blacklist_description: '',
-                muted_list_description: '',
-                _temporary: true
-              };
-          return newItem ? [newItem, ...prevData] : prevData;
-        });
-      }
-    },
+
     onSuccess: (data) => {
       const { otherBlogs } = data;
+      // Re-apply optimistic update - a refetch during observe:true broadcast may have overwritten it
+      const currentData: IFollowList[] = queryClient.getQueryData(queryKey) ?? [];
+      if (!currentData.some((e) => e.name === otherBlogs)) {
+        queryClient.setQueryData<IFollowList[]>(queryKey, [
+          { name: otherBlogs, blacklist_description: '', muted_list_description: '', _temporary: true },
+          ...currentData
+        ]);
+      }
       toast({
         title: 'Blog followed successfully',
         description: `The blog ${otherBlogs} has been added to your followed blacklist.`,
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 4000);
+      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
       logger.info('useFollowBlacklistBlogMutation onSuccess data: %o', data);
+    },
+
+    onError: (error: unknown, variables, context) => {
+      if (context?.prevData !== undefined) {
+        queryClient.setQueryData(context.queryKey, context.prevData);
+      } else if (context?.queryKey) {
+        queryClient.removeQueries({ queryKey: context.queryKey });
+      }
+
+      handleError(error, {
+        method: 'useFollowBlacklistBlogMutation',
+        params: variables
+      });
     }
   });
 
@@ -63,7 +86,7 @@ export function useFollowBlacklistBlogMutation() {
 }
 
 /**
- * Makes unfollow blacklistblog transaction.
+ * Makes unfollow blacklist blog transaction.
  *
  * @export
  * @return {*}
@@ -74,35 +97,52 @@ export function useUnfollowBlacklistBlogMutation() {
   const queryClient = useQueryClient();
 
   const unfollowBlacklistBlogMutation = useMutation({
+    onMutate: async (params: { blog: string }) => {
+      const { blog } = params;
+
+      await queryClient.cancelQueries({ queryKey });
+
+      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+
+      if (prevData) {
+        queryClient.setQueryData<IFollowList[]>(queryKey, prevData.filter((e) => e.name !== blog));
+      }
+
+      return { prevData, queryKey };
+    },
+
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
       const broadcastResult = await transactionService.unfollowBlacklistBlog(blog, { observe: true });
-      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
-      const response = { ...params, broadcastResult, prevData };
-      logger.info('Done unfollow blacklist blog transaction: %o', response);
-      return response;
+      logger.info('Done unfollow blacklist blog transaction: %o', { blog, broadcastResult });
+      return { ...params, broadcastResult };
     },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevData, blog } = data;
-      if (prevData) {
-        queryClient.setQueryData(queryKey, () => {
-          const newData = prevData.filter((e) => e.name !== blog);
-          return newData.length ? newData : [];
-        });
-      }
-    },
+
     onSuccess: (data) => {
       const { blog } = data;
+      // Re-apply optimistic update after broadcast completes
+      const currentData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+      if (currentData) {
+        queryClient.setQueryData<IFollowList[]>(queryKey, currentData.filter((e) => e.name !== blog));
+      }
       toast({
         title: 'Blog unfollowed successfully',
         description: `The blog ${blog} has been removed from your followed blacklist.`,
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 4000);
+      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
       logger.info('useUnfollowBlacklistBlogMutation onSuccess data: %o', data);
+    },
+
+    onError: (error: unknown, variables, context) => {
+      if (context?.prevData !== undefined) {
+        queryClient.setQueryData(context.queryKey, context.prevData);
+      }
+
+      handleError(error, {
+        method: 'useUnfollowBlacklistBlogMutation',
+        params: variables
+      });
     }
   });
 
@@ -121,27 +161,42 @@ export function useResetFollowBlacklistBlogMutation() {
   const queryClient = useQueryClient();
 
   const resetFollowBlacklistBlogMutation = useMutation({
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+      queryClient.setQueryData<IFollowList[]>(queryKey, []);
+
+      return { prevData, queryKey };
+    },
+
     mutationFn: async () => {
       const broadcastResult = await transactionService.resetFollowBlacklistBlog({ observe: true });
-
-      const response = { broadcastResult };
-      logger.info('Done reset follow blacklist blog transactio: %o', response);
-      return response;
-    },
-    onSettled: () => {
-      queryClient.setQueryData(queryKey, () => []);
+      logger.info('Done reset follow blacklist blog transaction: %o', { broadcastResult });
+      return { broadcastResult };
     },
 
     onSuccess: (data) => {
+      // Re-apply after broadcast
+      queryClient.setQueryData<IFollowList[]>(queryKey, []);
       toast({
         title: 'Follow blacklist reset successfully',
         description: 'All followed blogs have been removed from your blacklist.',
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 4000);
+      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
       logger.info('useResetFollowBlacklistBlogMutation onSuccess: %o', data);
+    },
+
+    onError: (error: unknown, _variables, context) => {
+      if (context?.prevData !== undefined) {
+        queryClient.setQueryData(context.queryKey, context.prevData);
+      }
+
+      handleError(error, {
+        method: 'useResetFollowBlacklistBlogMutation',
+        params: {}
+      });
     }
   });
 

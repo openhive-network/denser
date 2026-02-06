@@ -4,6 +4,9 @@ import { transactionService } from '@transaction/index';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
+import { handleError } from '@ui/lib/handle-error';
+import { scheduleInvalidations } from '@/blog/lib/react-query';
+
 const logger = getLogger('app');
 
 /**
@@ -18,42 +21,62 @@ export function useFollowMutedBlogMutation() {
   const queryKey = ['follow_muted', user.username];
 
   const followMutedBlogMutation = useMutation({
+    onMutate: async (params: { otherBlogs: string; blog?: string }) => {
+      const { otherBlogs } = params;
+
+      await queryClient.cancelQueries({ queryKey });
+
+      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+      const currentData = prevData ?? [];
+
+      const alreadyExists = currentData.some((e) => e.name === otherBlogs);
+      if (!alreadyExists) {
+        queryClient.setQueryData<IFollowList[]>(queryKey, [
+          { name: otherBlogs, blacklist_description: '', muted_list_description: '', _temporary: true },
+          ...currentData
+        ]);
+      }
+
+      return { prevData, queryKey };
+    },
+
     mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
       const { otherBlogs, blog } = params;
       const broadcastResult = await transactionService.followMutedBlog(otherBlogs, blog, { observe: true });
-      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
-      const response = { ...params, broadcastResult, prevData };
-      logger.info('Done follow muted blog transaction: %o', response);
-      return response;
+      logger.info('Done follow muted blog transaction: %o', { otherBlogs, blog, broadcastResult });
+      return { ...params, broadcastResult };
     },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevData, otherBlogs } = data;
-      if (prevData) {
-        queryClient.setQueryData(queryKey, () => {
-          const newItem = prevData.find((e) => e.name === otherBlogs)
-            ? false
-            : {
-                name: otherBlogs,
-                blacklist_description: '',
-                muted_list_description: '',
-                _temporary: true
-              };
-          return newItem ? [newItem, ...prevData] : prevData;
-        });
-      }
-    },
+
     onSuccess: (data) => {
       const { otherBlogs } = data;
+      // Re-apply optimistic update - a refetch during observe:true broadcast may have overwritten it
+      const currentData: IFollowList[] = queryClient.getQueryData(queryKey) ?? [];
+      if (!currentData.some((e) => e.name === otherBlogs)) {
+        queryClient.setQueryData<IFollowList[]>(queryKey, [
+          { name: otherBlogs, blacklist_description: '', muted_list_description: '', _temporary: true },
+          ...currentData
+        ]);
+      }
       toast({
         title: 'Blog followed successfully',
         description: `The blog ${otherBlogs} has been added to your followed muted list.`,
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 4000);
+      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
       logger.info('useFollowMutedBlogMutation onSuccess data: %o', data);
+    },
+
+    onError: (error: unknown, variables, context) => {
+      if (context?.prevData !== undefined) {
+        queryClient.setQueryData(context.queryKey, context.prevData);
+      } else if (context?.queryKey) {
+        queryClient.removeQueries({ queryKey: context.queryKey });
+      }
+
+      handleError(error, {
+        method: 'useFollowMutedBlogMutation',
+        params: variables
+      });
     }
   });
 
@@ -72,35 +95,52 @@ export function useUnfollowMutedBlogMutation() {
   const queryKey = ['follow_muted', user.username];
 
   const unfollowMutedBlogMutation = useMutation({
+    onMutate: async (params: { blog: string }) => {
+      const { blog } = params;
+
+      await queryClient.cancelQueries({ queryKey });
+
+      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+
+      if (prevData) {
+        queryClient.setQueryData<IFollowList[]>(queryKey, prevData.filter((e) => e.name !== blog));
+      }
+
+      return { prevData, queryKey };
+    },
+
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
       const broadcastResult = await transactionService.unfollowMutedBlog(blog, { observe: true });
-      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
-      const response = { ...params, broadcastResult, prevData };
-      logger.info('Done unfollow muted blog transaction: %o', response);
-      return response;
+      logger.info('Done unfollow muted blog transaction: %o', { blog, broadcastResult });
+      return { ...params, broadcastResult };
     },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevData, blog } = data;
-      if (prevData) {
-        queryClient.setQueryData(queryKey, () => {
-          const newData = prevData.filter((e) => e.name !== blog);
-          return newData.length ? newData : [];
-        });
-      }
-    },
+
     onSuccess: (data) => {
       const { blog } = data;
+      // Re-apply optimistic update after broadcast completes
+      const currentData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+      if (currentData) {
+        queryClient.setQueryData<IFollowList[]>(queryKey, currentData.filter((e) => e.name !== blog));
+      }
       toast({
         title: 'Blog unfollowed successfully',
         description: `The blog ${blog} has been removed from your followed muted list.`,
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 4000);
+      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
       logger.info('useUnfollowMutedBlogMutation onSuccess data: %o', data);
+    },
+
+    onError: (error: unknown, variables, context) => {
+      if (context?.prevData !== undefined) {
+        queryClient.setQueryData(context.queryKey, context.prevData);
+      }
+
+      handleError(error, {
+        method: 'useUnfollowMutedBlogMutation',
+        params: variables
+      });
     }
   });
 
@@ -119,25 +159,42 @@ export function useResetFollowMutedBlogMutation() {
   const queryKey = ['follow_muted', user.username];
 
   const resetFollowMutedBlogMutation = useMutation({
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+      queryClient.setQueryData<IFollowList[]>(queryKey, []);
+
+      return { prevData, queryKey };
+    },
+
     mutationFn: async () => {
       const broadcastResult = await transactionService.resetFollowMutedBlog({ observe: true });
-      const response = { broadcastResult };
-      logger.info('Done reset follow muted blog transaction: %o', response);
-      return response;
+      logger.info('Done reset follow muted blog transaction: %o', { broadcastResult });
+      return { broadcastResult };
     },
-    onSettled: () => {
-      queryClient.setQueryData(queryKey, []);
-    },
+
     onSuccess: (data) => {
+      // Re-apply after broadcast
+      queryClient.setQueryData<IFollowList[]>(queryKey, []);
       toast({
         title: 'Muted blogs reset successfully',
         description: 'Your followed muted blogs have been reset.',
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 4000);
+      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
       logger.info('useResetFollowMutedBlogMutation onSuccess: %o', data);
+    },
+
+    onError: (error: unknown, _variables, context) => {
+      if (context?.prevData !== undefined) {
+        queryClient.setQueryData(context.queryKey, context.prevData);
+      }
+
+      handleError(error, {
+        method: 'useResetFollowMutedBlogMutation',
+        params: {}
+      });
     }
   });
 

@@ -5,7 +5,36 @@ import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
+import { scheduleInvalidations } from '@/blog/lib/react-query';
+
 const logger = getLogger('app');
+
+/** Add item to IFollowList cache if not already present. */
+function addToListCache(
+  queryClient: ReturnType<typeof useQueryClient>,
+  queryKey: string[],
+  name: string
+) {
+  const currentData: IFollowList[] = queryClient.getQueryData(queryKey) ?? [];
+  if (!currentData.some((e) => e.name === name)) {
+    queryClient.setQueryData<IFollowList[]>(queryKey, [
+      { name, blacklist_description: '', muted_list_description: '', _temporary: true },
+      ...currentData
+    ]);
+  }
+}
+
+/** Remove item from IFollowList cache. */
+function removeFromListCache(
+  queryClient: ReturnType<typeof useQueryClient>,
+  queryKey: string[],
+  name: string
+) {
+  const currentData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+  if (currentData) {
+    queryClient.setQueryData<IFollowList[]>(queryKey, currentData.filter((e) => e.name !== name));
+  }
+}
 
 /**
  * Makes blacklist blog transaction.
@@ -19,43 +48,40 @@ export function useBlacklistBlogMutation() {
   const queryClient = useQueryClient();
 
   const blacklistBlogMutation = useMutation({
+    onMutate: async (params: { otherBlogs: string; blog?: string }) => {
+      await queryClient.cancelQueries({ queryKey });
+      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+      addToListCache(queryClient, queryKey, params.otherBlogs);
+      return { prevData, queryKey };
+    },
+
     mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
       const { otherBlogs, blog } = params;
       const broadcastResult = await transactionService.blacklistBlog(otherBlogs, blog, { observe: true });
-      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
-      const response = { ...params, broadcastResult, prevData };
-      logger.info('Done blacklist blog transaction: %o', response);
-      return response;
+      logger.info('Done blacklist blog transaction: %o', { otherBlogs, blog, broadcastResult });
+      return { ...params, broadcastResult };
     },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevData, otherBlogs } = data;
-      if (prevData) {
-        queryClient.setQueryData(queryKey, () => {
-          const newItem = prevData.find((e) => e.name === otherBlogs)
-            ? false
-            : {
-                name: otherBlogs,
-                blacklist_description: '',
-                muted_list_description: '',
-                _temporary: true
-              };
-          return newItem ? [newItem, ...prevData] : prevData;
-        });
-      }
-    },
+
     onSuccess: (data) => {
       const { otherBlogs } = data;
+      // Re-apply optimistic update - a refetch during the observe:true broadcast
+      // (e.g. window focus) may have overwritten it with stale API data
+      addToListCache(queryClient, queryKey, otherBlogs);
       toast({
         title: 'Blog blacklisted successfully',
         description: `The blog ${otherBlogs} has been added to your blacklist.`,
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 4000);
+      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
     },
-    onError: (error: any, variables) => {
+
+    onError: (error: unknown, variables, context) => {
+      if (context?.prevData !== undefined) {
+        queryClient.setQueryData(context.queryKey, context.prevData);
+      } else if (context?.queryKey) {
+        queryClient.removeQueries({ queryKey: context.queryKey });
+      }
+
       handleError(error, {
         method: 'useBlacklistBlogMutation',
         params: variables
@@ -78,36 +104,38 @@ export function useUnblacklistBlogMutation() {
   const queryKey = ['blacklisted', user.username];
 
   const unblacklistBlogMutation = useMutation({
+    onMutate: async (params: { blog: string }) => {
+      await queryClient.cancelQueries({ queryKey });
+      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+      removeFromListCache(queryClient, queryKey, params.blog);
+      return { prevData, queryKey };
+    },
+
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
       const broadcastResult = await transactionService.unblacklistBlog(blog, { observe: true });
-
-      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
-      const response = { ...params, broadcastResult, prevData };
-      logger.info('Done unblacklist blog transaction: %o', response);
-
-      return response;
+      logger.info('Done unblacklist blog transaction: %o', { blog, broadcastResult });
+      return { ...params, broadcastResult };
     },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevData, blog } = data;
-      if (prevData) {
-        queryClient.setQueryData(queryKey, () => prevData.filter((e) => e.name !== blog));
-      }
-    },
+
     onSuccess: (data) => {
       const { blog } = data;
+      // Re-apply optimistic update after broadcast completes
+      removeFromListCache(queryClient, queryKey, blog);
       logger.info('useUnblacklistBlogMutation onSuccess data: %o', data);
       toast({
         title: 'Blog unblacklisted successfully',
         description: `The blog ${blog} has been removed from your blacklist.`,
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 4000);
+      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
     },
-    onError: (error: any, variables) => {
+
+    onError: (error: unknown, variables, context) => {
+      if (context?.prevData !== undefined) {
+        queryClient.setQueryData(context.queryKey, context.prevData);
+      }
+
       handleError(error, {
         method: 'useUnblacklistBlogMutation',
         params: variables
@@ -130,30 +158,39 @@ export function useResetBlacklistBlogMutation() {
   const queryKey = ['blacklisted', user.username];
 
   const resetBlacklistBlogMutation = useMutation({
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey });
+      const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
+      queryClient.setQueryData<IFollowList[]>(queryKey, []);
+      return { prevData, queryKey };
+    },
+
     mutationFn: async () => {
       const broadcastResult = await transactionService.resetBlacklistBlog({ observe: true });
-      const response = { broadcastResult };
-      logger.info('Done reset blacklist blog transaction: %o', response);
-      return response;
+      logger.info('Done reset blacklist blog transaction: %o', { broadcastResult });
+      return { broadcastResult };
     },
-    onSettled: () => {
-      queryClient.setQueryData(queryKey, () => []);
-    },
+
     onSuccess: (data) => {
+      // Re-apply after broadcast
+      queryClient.setQueryData<IFollowList[]>(queryKey, []);
       toast({
         title: 'Blacklist reset successfully',
         description: 'All blacklisted blogs have been removed.',
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 4000);
+      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
       logger.info('useResetBlacklistBlogMutation onSuccess: %o', data);
     },
-    onError: (error: any, variables) => {
+
+    onError: (error: unknown, _variables, context) => {
+      if (context?.prevData !== undefined) {
+        queryClient.setQueryData(context.queryKey, context.prevData);
+      }
+
       handleError(error, {
         method: 'useResetBlacklistBlogMutation',
-        params: variables
+        params: {}
       });
     }
   });
