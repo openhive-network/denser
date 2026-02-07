@@ -60,6 +60,37 @@ let hiveChainPromise: Promise<HiveChain> | undefined = undefined;
 // This should be just a reference retrieved from the hiveChainPromise.
 let hiveChain: HiveChain | undefined = undefined;
 
+/**
+ * Check if an error is a WASM memory corruption error.
+ * These errors indicate the WASM module state is corrupted and needs recreation.
+ *
+ * WORKAROUND: This is a temporary fix until WAX library handles WASM errors internally.
+ * See: https://gitlab.syncad.com/hive/wax/-/issues/161
+ */
+export const isWasmMemoryError = (error: unknown): boolean => {
+  if (error instanceof Error) {
+    const msg = error.message.toLowerCase();
+    return msg.includes('memory access out of bounds') ||
+           msg.includes('unreachable') ||
+           (error.name === 'RuntimeError' && msg.includes('wasm')) ||
+           (error.name === 'WaxError' && msg.includes('wasm'));
+  }
+  return false;
+};
+
+/**
+ * Reset the chain singleton to force recreation with fresh WASM state.
+ * Call this when WASM memory errors are detected.
+ *
+ * WORKAROUND: This is a temporary fix until WAX library handles WASM errors internally.
+ * See: https://gitlab.syncad.com/hive/wax/-/issues/161
+ */
+export const resetChain = (): void => {
+  logger.warn('Resetting WAX chain singleton due to WASM error - see wax#161');
+  hiveChainPromise = undefined;
+  hiveChain = undefined;
+};
+
 export const setRpcEndpoint = (newEndpoint: string): void => {
   logger.info('Changing chain.api.endpointUrl with newEndpoint: %o', newEndpoint);
 
