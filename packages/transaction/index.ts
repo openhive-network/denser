@@ -1163,3 +1163,6 @@ export class TransactionService {
 export const transactionService = new TransactionService();
 
 export { isHiveAccountNameValid } from './lib/validate-hive-account';
+
+// Validation utilities
+export * from './lib/validation';

@@ -179,24 +179,21 @@ export const getCookie = (name: string): string => {
 
 /**
  * Checks if a string is a valid Hive community identifier.
- * A valid community starts with 'hive-' followed by exactly 6 digits.
+ * Matches hivemind's validation: ^hive-[123]\d{4,6}$
+ * Community names have 5-7 digits after 'hive-', first digit must be 1, 2, or 3.
  *
  * @param value - The string to check (can be undefined)
  * @returns true if the string is a valid community identifier, false otherwise
  *
  * @example
- * isCommunity('hive-123456') // true
- * isCommunity('hive-a23456') // false
- * isCommunity('hive-12345')  // false (only 5 digits)
- * isCommunity('hive-1234567') // false (7 digits)
+ * isCommunity('hive-123456')  // true (6 digits, starts with 1)
+ * isCommunity('hive-12345')   // true (5 digits, starts with 1)
+ * isCommunity('hive-1234567') // true (7 digits, starts with 1)
+ * isCommunity('hive-999999')  // false (first digit must be 1/2/3)
+ * isCommunity('hive-1234')    // false (too few digits)
  * isCommunity(undefined)      // false
  */
 export function isCommunity(value: string | undefined | null): boolean {
   if (!value) return false;
-  if (!value.startsWith('hive-')) return false;
-
-  const digits = value.slice(5);
-  if (digits.length !== 6) return false;
-
-  return !Number.isNaN(Number(digits));
+  return /^hive-[123]\d{4,6}$/.test(value);
 }

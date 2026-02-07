@@ -6,7 +6,7 @@ import { getQueryClient } from '@/blog/lib/react-query';
 import { getAccountFullCached } from '@/blog/lib/cached-api';
 import { getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
-import { isUsernameValid } from '@/blog/utils/validate-links';
+import { isValidAccountNameFormat } from '@transaction/lib/validation';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 
@@ -70,17 +70,25 @@ const Layout = async ({ children, params }: { children: ReactNode; params: { par
 
   const username = param.startsWith('%40') ? param.replace('%40', '') : param.replace('@', '');
 
-  const valid = await isUsernameValid(username);
-  if (!valid) {
+  // Layer 1: Format validation (cheap, WASM-based, no API call)
+  const validFormat = await isValidAccountNameFormat(username);
+  if (!validFormat) {
+    notFound();
+  }
+
+  // Layer 2: Existence check (API call) - fixes 500 for nonexistent users
+  // Uses getAccountFullCached for request-level dedup with generateMetadata
+  const account = await getAccountFullCached(username);
+  if (!account || !account.name) {
     notFound();
   }
 
   try {
     const prefetchPromises = [
-      // Use cached version - deduplicated with generateMetadata within the same request
+      // Seed React Query cache with already-fetched account data (no extra API call)
       queryClient.prefetchQuery({
         queryKey: ['profileData', username],
-        queryFn: () => getAccountFullCached(username)
+        queryFn: () => account
       }),
       queryClient.prefetchQuery({
         queryKey: ['accountReputationData', username],
