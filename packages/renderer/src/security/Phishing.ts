@@ -572,8 +572,13 @@ export class Phishing {
      * @returns {boolean}
      */
     public static looksPhishy = (questionableUrl: string) => {
+        // Use toLowerCase() instead of toLocaleLowerCase() for consistent
+        // behavior regardless of server locale. toLocaleLowerCase() with
+        // Turkish locale converts 'I' to 'ı' (dotless i), not 'i', which
+        // could allow phishing domains to bypass detection.
+        const lowercaseUrl = questionableUrl.toLowerCase();
         for (const domain of domains) {
-            if (questionableUrl.toLocaleLowerCase().indexOf(domain) > -1) return true;
+            if (lowercaseUrl.indexOf(domain) > -1) return true;
         }
 
         return false;
