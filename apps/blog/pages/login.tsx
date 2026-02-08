@@ -36,7 +36,10 @@ export default function LoginPage({ redirectTo, oauthReturn }: LoginPageProps) {
   const loadGoogleScript = useCallback(() => {
     if (!siteConfig.googleDrive.clientId) return;
     if (typeof document === 'undefined') return;
-    if (document.getElementById(GOOGLE_GSI_SCRIPT_ID)) return;
+    // Use instanceof to prevent DOM clobbering attacks where user content
+    // like `<a id="google-gsi-script">` could shadow a legitimate script element
+    const existingElement = document.getElementById(GOOGLE_GSI_SCRIPT_ID);
+    if (existingElement instanceof HTMLScriptElement) return;
 
     const script = document.createElement('script');
     script.id = GOOGLE_GSI_SCRIPT_ID;

@@ -82,7 +82,9 @@ const setKey = (key: string) => {
 
 const updateModalMessage = (message: string) => {
   const instructionsContainer = document.getElementById('hiveauth-instructions');
-  if (instructionsContainer) {
+  // Use instanceof to prevent DOM clobbering attacks where user content
+  // like `<a id="hiveauth-instructions">` could shadow the modal element
+  if (instructionsContainer instanceof HTMLElement) {
     instructionsContainer.textContent = message;
   }
 };
@@ -232,7 +234,8 @@ const signChallenge = (
 
 const updateLoginInstructions = (message: string) => {
   const instructionsElement = document.getElementById('hiveauth-instructions');
-  if (instructionsElement) {
+  // Use instanceof to prevent DOM clobbering attacks
+  if (instructionsElement instanceof HTMLElement) {
     instructionsElement.textContent = message;
     instructionsElement.classList.remove('hidden');
   }
@@ -240,16 +243,20 @@ const updateLoginInstructions = (message: string) => {
 
 const clearLoginInstructions = () => {
   updateLoginInstructions('');
-  const qrElement = document.getElementById('hiveauth-qr') as HTMLCanvasElement;
-  if (qrElement) {
+  // Use instanceof to prevent DOM clobbering attacks where user content
+  // like `<a id="hiveauth-qr">` could shadow the canvas element
+  const qrElement = document.getElementById('hiveauth-qr');
+  if (qrElement instanceof HTMLCanvasElement) {
     const context = qrElement.getContext('2d');
     if (context) {
       context.clearRect(0, 0, qrElement.width, qrElement.height);
     }
   }
-  const qrLinkElement = document.getElementById('hiveauth-qr-link') as HTMLAnchorElement;
-  qrLinkElement.href = '#';
-  qrLinkElement.classList.add('hidden');
+  const qrLinkElement = document.getElementById('hiveauth-qr-link');
+  if (qrLinkElement instanceof HTMLAnchorElement) {
+    qrLinkElement.href = '#';
+    qrLinkElement.classList.add('hidden');
+  }
 };
 
 const login = async (
@@ -286,14 +293,15 @@ const login = async (
       setKey(key);
       const authUri = `has://auth_req/${btoa(JSON.stringify(authPayload))}`;
       logger.info('Hive Auth: Generating QR code');
+      // Use instanceof to prevent DOM clobbering attacks
       const qrElement = document.getElementById('hiveauth-qr');
-      if (qrElement) {
+      if (qrElement instanceof HTMLCanvasElement) {
         QRCode.toCanvas(qrElement, authUri, function (error) {
           if (error) logger.error(error);
         });
       }
-      const qrLinkElement = document.getElementById('hiveauth-qr-link') as HTMLAnchorElement;
-      if (qrLinkElement) {
+      const qrLinkElement = document.getElementById('hiveauth-qr-link');
+      if (qrLinkElement instanceof HTMLAnchorElement) {
         qrLinkElement.href = authUri;
         qrLinkElement.classList.remove('hidden');
       }

@@ -33,8 +33,25 @@ export class TwitterPlugin implements RendererPlugin {
      * Loads the Twitter widget script if it hasn't been loaded already.
      * The script is required for rendering embedded tweets.
      */
+    /**
+     * Validates that window.twttr is the genuine Twitter widget API.
+     * Prevents DOM clobbering attacks where user content like `<a id="twttr">`
+     * could shadow the Twitter API object.
+     */
+    private isValidTwitterApi(): boolean {
+        return (
+            typeof window.twttr === 'object' &&
+            window.twttr !== null &&
+            typeof window.twttr.widgets?.createTweet === 'function'
+        );
+    }
+
+    /**
+     * Loads the Twitter widget script if it hasn't been loaded already.
+     * The script is required for rendering embedded tweets.
+     */
     private loadTwitterScript() {
-        if (!this.scriptLoaded && !window?.twttr) {
+        if (!this.scriptLoaded && !this.isValidTwitterApi()) {
             const script = document.createElement('script');
             script.src = 'https://platform.twitter.com/widgets.js';
             script.async = true;
@@ -55,7 +72,7 @@ export class TwitterPlugin implements RendererPlugin {
         if (!this.renderedTweets.has(containerId)) {
             this.renderedTweets.add(containerId);
             const container = document.getElementById(containerId);
-            if (container && window?.twttr?.widgets) {
+            if (container && this.isValidTwitterApi()) {
                 container.innerHTML = '';
                 const isDarkMode = container.closest('.dark') !== null;
                 window.twttr.widgets
@@ -102,7 +119,7 @@ export class TwitterPlugin implements RendererPlugin {
         return text.replace(/<div>twitter-id-(\d+)-author-(\w+)-count-([^<]*)<\/div>/g, (_match, id, author, indexSuffix) => {
             const containerId = `tweet-${id}-${indexSuffix}`;
             const url = `https://x.com/${author}/status/${id}`;
-            if (typeof window !== 'undefined' && window.twttr?.ready) {
+            if (typeof window !== 'undefined' && this.isValidTwitterApi() && window.twttr.ready) {
                 setTimeout(() => this.renderTweet(id, containerId), 1000);
             }
 

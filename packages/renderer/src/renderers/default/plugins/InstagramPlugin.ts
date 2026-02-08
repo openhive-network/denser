@@ -39,11 +39,24 @@ export class InstagramPlugin implements RendererPlugin {
     }
 
     /**
+     * Validates that window.instgrm is the genuine Instagram embed API.
+     * Prevents DOM clobbering attacks where user content like `<a id="instgrm">`
+     * could shadow the Instagram API object.
+     */
+    private isValidInstagramApi(): boolean {
+        return (
+            typeof window.instgrm === 'object' &&
+            window.instgrm !== null &&
+            typeof window.instgrm.Embeds?.process === 'function'
+        );
+    }
+
+    /**
      * Loads the Instagram embed script if it hasn't been loaded already.
      * @private
      */
     private loadInstagramScript() {
-        if (!this.scriptLoaded || !window?.instgrm) {
+        if (!this.scriptLoaded || !this.isValidInstagramApi()) {
             const script = document.createElement('script');
             script.src = 'https://www.instagram.com/embed.js';
             script.async = true;
@@ -56,11 +69,14 @@ export class InstagramPlugin implements RendererPlugin {
     }
 
     /**
-     * Triggers Instagram's embed processing for queued posts
+     * Triggers Instagram's embed processing for queued posts.
+     * Only processes if the Instagram API is valid (not a DOM clobbered element).
      * @private
      */
     private processQueuedPosts() {
-        window.instgrm?.Embeds?.process();
+        if (this.isValidInstagramApi()) {
+            window.instgrm.Embeds.process();
+        }
     }
 
     /**

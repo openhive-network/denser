@@ -62,19 +62,19 @@ export function GoogleOAuthRedirectHandler({
       }
 
       // Check if script is already loaded
-      if (document.getElementById(GOOGLE_GSI_SCRIPT_ID)) {
+      // Use instanceof to prevent DOM clobbering attacks where user content
+      // like `<a id="google-gsi-script">` could shadow a legitimate script element
+      const existingElement = document.getElementById(GOOGLE_GSI_SCRIPT_ID);
+      if (existingElement instanceof HTMLScriptElement) {
         // Script exists, but might still be loading - check if google.accounts is available
         if (window.google?.accounts?.oauth2) {
           resolve();
           return;
         }
         // Script exists but not loaded yet - wait for it
-        const existingScript = document.getElementById(GOOGLE_GSI_SCRIPT_ID);
-        if (existingScript) {
-          existingScript.addEventListener('load', () => resolve());
-          existingScript.addEventListener('error', () => reject(new Error('Failed to load Google script')));
-          return;
-        }
+        existingElement.addEventListener('load', () => resolve());
+        existingElement.addEventListener('error', () => reject(new Error('Failed to load Google script')));
+        return;
       }
 
       const script = document.createElement('script');

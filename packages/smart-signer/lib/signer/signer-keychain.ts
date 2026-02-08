@@ -14,7 +14,16 @@ declare global {
   }
 }
 
-export const hasCompatibleKeychain = () => typeof window === "object" && typeof window.hive_keychain === "object";
+/**
+ * Checks if Hive Keychain extension is available and compatible.
+ * Uses defensive checks to prevent DOM clobbering attacks where user content
+ * like `<a id="hive_keychain">` could shadow the extension object.
+ */
+export const hasCompatibleKeychain = () =>
+  typeof window === 'object' &&
+  typeof window.hive_keychain === 'object' &&
+  window.hive_keychain !== null &&
+  typeof window.hive_keychain.requestSignBuffer === 'function';
 
 /**
  * Signs challenges (any strings) or Hive transactions with Hive private
