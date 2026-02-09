@@ -62,11 +62,16 @@ export function useBlacklistBlogMutation() {
       return { ...params, broadcastResult };
     },
 
+    // Re-apply optimistic cache after mutation settles (success or error).
+    // This is the safety net: if a window-focus refetch during the observe:true
+    // broadcast overwrote onMutate data, this restores it.
+    onSettled: (data) => {
+      if (!data) return;
+      addToListCache(queryClient, queryKey, data.otherBlogs);
+    },
+
     onSuccess: (data) => {
       const { otherBlogs } = data;
-      // Re-apply optimistic update - a refetch during the observe:true broadcast
-      // (e.g. window focus) may have overwritten it with stale API data
-      addToListCache(queryClient, queryKey, otherBlogs);
       toast({
         title: 'Blog blacklisted successfully',
         description: `The blog ${otherBlogs} has been added to your blacklist.`,
@@ -118,10 +123,13 @@ export function useUnblacklistBlogMutation() {
       return { ...params, broadcastResult };
     },
 
+    onSettled: (data) => {
+      if (!data) return;
+      removeFromListCache(queryClient, queryKey, data.blog);
+    },
+
     onSuccess: (data) => {
       const { blog } = data;
-      // Re-apply optimistic update after broadcast completes
-      removeFromListCache(queryClient, queryKey, blog);
       logger.info('useUnblacklistBlogMutation onSuccess data: %o', data);
       toast({
         title: 'Blog unblacklisted successfully',
@@ -171,9 +179,12 @@ export function useResetBlacklistBlogMutation() {
       return { broadcastResult };
     },
 
-    onSuccess: (data) => {
-      // Re-apply after broadcast
+    onSettled: (data) => {
+      if (!data) return;
       queryClient.setQueryData<IFollowList[]>(queryKey, []);
+    },
+
+    onSuccess: (data) => {
       toast({
         title: 'Blacklist reset successfully',
         description: 'All blacklisted blogs have been removed.',

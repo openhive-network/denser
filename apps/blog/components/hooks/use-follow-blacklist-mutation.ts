@@ -49,9 +49,9 @@ export function useFollowBlacklistBlogMutation() {
       return { ...params, broadcastResult };
     },
 
-    onSuccess: (data) => {
+    onSettled: (data) => {
+      if (!data) return;
       const { otherBlogs } = data;
-      // Re-apply optimistic update - a refetch during observe:true broadcast may have overwritten it
       const currentData: IFollowList[] = queryClient.getQueryData(queryKey) ?? [];
       if (!currentData.some((e) => e.name === otherBlogs)) {
         queryClient.setQueryData<IFollowList[]>(queryKey, [
@@ -59,6 +59,10 @@ export function useFollowBlacklistBlogMutation() {
           ...currentData
         ]);
       }
+    },
+
+    onSuccess: (data) => {
+      const { otherBlogs } = data;
       toast({
         title: 'Blog followed successfully',
         description: `The blog ${otherBlogs} has been added to your followed blacklist.`,
@@ -118,13 +122,17 @@ export function useUnfollowBlacklistBlogMutation() {
       return { ...params, broadcastResult };
     },
 
-    onSuccess: (data) => {
+    onSettled: (data) => {
+      if (!data) return;
       const { blog } = data;
-      // Re-apply optimistic update after broadcast completes
       const currentData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
       if (currentData) {
         queryClient.setQueryData<IFollowList[]>(queryKey, currentData.filter((e) => e.name !== blog));
       }
+    },
+
+    onSuccess: (data) => {
+      const { blog } = data;
       toast({
         title: 'Blog unfollowed successfully',
         description: `The blog ${blog} has been removed from your followed blacklist.`,
@@ -176,9 +184,12 @@ export function useResetFollowBlacklistBlogMutation() {
       return { broadcastResult };
     },
 
-    onSuccess: (data) => {
-      // Re-apply after broadcast
+    onSettled: (data) => {
+      if (!data) return;
       queryClient.setQueryData<IFollowList[]>(queryKey, []);
+    },
+
+    onSuccess: (data) => {
       toast({
         title: 'Follow blacklist reset successfully',
         description: 'All followed blogs have been removed from your blacklist.',

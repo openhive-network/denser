@@ -74,9 +74,9 @@ export function useMutePostMutation() {
       return { ...params, broadcastResult };
     },
 
-    onSuccess: (data) => {
+    onSettled: (data) => {
+      if (!data) return;
       const { username, permlink, discussionPermlink } = data;
-      // Re-apply optimistic update after broadcast completes (refetch during observe:true may overwrite)
       const postData: Entry | undefined = queryClient.getQueryData(['postData', username, permlink]);
       if (postData) {
         queryClient.setQueryData<Entry>(['postData', username, permlink], {
@@ -99,6 +99,10 @@ export function useMutePostMutation() {
         );
         queryClient.setQueryData(['discussionData', discussionPermlink], updated);
       }
+    },
+
+    onSuccess: (data) => {
+      const { username, permlink, discussionPermlink } = data;
       toast({
         title: 'Post muted',
         description: 'Post has been muted successfully.',
@@ -191,9 +195,9 @@ export function useUnmutePostMutation() {
       return { ...params, broadcastResult };
     },
 
-    onSuccess: (data) => {
+    onSettled: (data) => {
+      if (!data) return;
       const { username, permlink, discussionPermlink } = data;
-      // Re-apply optimistic update after broadcast completes
       const postData: Entry | undefined = queryClient.getQueryData(['postData', username, permlink]);
       if (postData) {
         queryClient.setQueryData<Entry>(['postData', username, permlink], {
@@ -216,6 +220,10 @@ export function useUnmutePostMutation() {
         );
         queryClient.setQueryData(['discussionData', discussionPermlink], updated);
       }
+    },
+
+    onSuccess: (data) => {
+      const { username, permlink, discussionPermlink } = data;
       toast({
         title: 'Post unmuted',
         description: 'Post has been unmuted successfully.',

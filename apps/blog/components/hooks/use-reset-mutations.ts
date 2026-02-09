@@ -39,13 +39,17 @@ export function useResetAllListsMutation() {
       return { broadcastResult };
     },
 
-    onSuccess: (data) => {
+    onSettled: (data) => {
+      if (!data) return;
       const { username } = user;
-      // Re-apply after broadcast - a refetch during observe:true may have overwritten
       queryClient.setQueryData<IFollowList[]>(['blacklisted', username], []);
       queryClient.setQueryData<IFollowList[]>(['muted', username], []);
       queryClient.setQueryData<IFollowList[]>(['follow_blacklist', username], []);
       queryClient.setQueryData<IFollowList[]>(['follow_muted', username], []);
+    },
+
+    onSuccess: (data) => {
+      const { username } = user;
       toast({
         title: 'All lists reset successfully',
         description: 'Your all lists have been cleared.',

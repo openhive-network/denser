@@ -51,13 +51,10 @@ export function scheduleInvalidations(
   const timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
   delays.forEach((delay) => {
-    const timeoutId = setTimeout(async () => {
-      for (const queryKey of queryKeys) {
-        // Cancel any in-flight refetches before invalidating to prevent
-        // stale data from overwriting optimistic updates
-        await queryClient.cancelQueries({ queryKey });
+    const timeoutId = setTimeout(() => {
+      queryKeys.forEach((queryKey) => {
         queryClient.invalidateQueries({ queryKey });
-      }
+      });
     }, delay);
     timeoutIds.push(timeoutId);
   });

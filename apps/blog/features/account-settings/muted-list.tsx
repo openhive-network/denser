@@ -1,4 +1,5 @@
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
+import { useInitialFollowList } from '@/blog/components/observer-provider';
 import { useUnmuteMutation } from '@/blog/features/mute-follow/hooks/use-mute-mutations';
 import { useTranslation } from '@/blog/i18n/client';
 import { Button } from '@ui/components/button';
@@ -7,7 +8,8 @@ import { CircleSpinner } from 'react-spinners-kit';
 
 const MutedList = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');
-  const mutedQuery = useFollowListQuery(username, 'muted');
+  const initialFollowList = useInitialFollowList();
+  const mutedQuery = useFollowListQuery(username, 'muted', initialFollowList);
   const unmuteMutation = useUnmuteMutation();
 
   return mutedQuery.data ? (

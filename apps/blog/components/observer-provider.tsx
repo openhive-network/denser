@@ -2,7 +2,7 @@
 
 import { createContext, useContext, ReactNode } from 'react';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
-import type { Entry, Community } from '@hive/common-hiveio-packages/wax';
+import type { Entry, Community, IFollowList } from '@hive/common-hiveio-packages/wax';
 
 const ObserverContext = createContext<string>(DEFAULT_OBSERVER);
 
@@ -119,3 +119,20 @@ export const InitialDiscussionProvider = ({
 }) => <InitialDiscussionContext.Provider value={value}>{children}</InitialDiscussionContext.Provider>;
 
 export const useInitialDiscussion = () => useContext(InitialDiscussionContext);
+
+const InitialFollowListContext = createContext<IFollowList[] | null>(null);
+
+/**
+ * Provides server-fetched follow list data to client components.
+ * Used by the lists pages (blacklisted, muted, follow_blacklist, follow_muted)
+ * without relying on Hydrate/dehydrate which overwrites optimistic updates.
+ */
+export const InitialFollowListProvider = ({
+  value,
+  children
+}: {
+  value: IFollowList[] | null;
+  children: ReactNode;
+}) => <InitialFollowListContext.Provider value={value}>{children}</InitialFollowListContext.Provider>;
+
+export const useInitialFollowList = () => useContext(InitialFollowListContext);

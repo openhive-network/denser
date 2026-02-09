@@ -1,9 +1,8 @@
-import { getQueryClient } from '@/blog/lib/react-query';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getFollowList } from '@transaction/lib/bridge-api';
 import { FollowListType } from '@hive/common-hiveio-packages/wax';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
+import { InitialFollowListProvider } from '@/blog/components/observer-provider';
 
 const logger = getLogger('app');
 
@@ -16,16 +15,13 @@ const ListsPage = async ({
   children: ReactNode;
   type: FollowListType;
 }) => {
-  const queryClient = getQueryClient();
   const usernameClean = username.replace('%40', '');
+  let initialData = null;
   try {
-    await queryClient.prefetchQuery({
-      queryKey: [type, usernameClean],
-      queryFn: () => getFollowList(usernameClean, type)
-    });
+    initialData = (await getFollowList(usernameClean, type)) ?? null;
   } catch (error) {
     logger.error(error, 'Error in ListsPage:');
   }
-  return <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>;
+  return <InitialFollowListProvider value={initialData}>{children}</InitialFollowListProvider>;
 };
 export default ListsPage;
