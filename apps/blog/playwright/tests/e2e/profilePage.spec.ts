@@ -23,9 +23,10 @@ test.describe('Profile page of @gtg', () => {
 
   test('profile info of @gtg is loaded', async ({ page, request }) => {
     await profilePage.gotoProfilePage('@gtg');
+    // Note: In the new design, profile name and reputation are separate elements
     await profilePage.profileInfoIsVisible(
       '@gtg',
-      'Gandalf the Grey (75)',
+      'Gandalf the Grey',
       'IT Wizard, Hive Witness',
       'Joined June 2016'
     );

@@ -228,28 +228,28 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // border color of the first comment
     expect(
       await postPage.getElementCssPropertyValue(
-        await postPage.commentListItems.nth(0).locator('..'),
+        await postPage.commentListLocator.nth(0).locator('div').first(),
         'border-color'
       )
     ).toBe('rgb(237, 237, 237)');
     // background-color of the first comment
     expect(
       await postPage.getElementCssPropertyValue(
-        await postPage.commentListItems.nth(0).locator('..'),
+        await postPage.commentListLocator.nth(0).locator('div').first(),
         'background-color'
       )
     ).toBe('rgba(0, 0, 0, 0)');
     // border color of the second comment
     expect(
       await postPage.getElementCssPropertyValue(
-        await postPage.commentListItems.nth(1).locator('..'),
+        await postPage.commentListLocator.nth(1).locator('div').first(),
         'border-color'
       )
     ).toBe('rgb(220, 38, 38)');
     // background-color of the second comment
     expect(
       await postPage.getElementCssPropertyValue(
-        await postPage.commentListItems.nth(1).locator('..'),
+        await postPage.commentListLocator.nth(1).locator('div').first(),
         'background-color'
       )
     ).toBe('rgb(240, 253, 244)');
@@ -268,14 +268,14 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // border color of the first comment
     expect(
       await postPage.getElementCssPropertyValue(
-        await postPage.commentListItems.nth(0).locator('..'),
+        await postPage.commentListLocator.nth(0).locator('div').first(),
         'border-color'
       )
     ).toBe('rgb(220, 38, 38)');
     // background-color of the first comment
     expect(
       await postPage.getElementCssPropertyValue(
-        await postPage.commentListItems.nth(0).locator('..'),
+        await postPage.commentListLocator.nth(0).locator('div').first(),
         'background-color'
       )
     ).toBe('rgb(240, 253, 244)');
@@ -783,14 +783,14 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Validate that the response comment of the first comment in the post is selected by red border
     expect(
       await postPage.getElementCssPropertyValue(
-        await postPage.commentListItems.nth(1).locator('..'),
+        await postPage.commentListLocator.nth(1).locator('div').first(),
         'border-color'
       )
     ).toBe('rgb(220, 38, 38)');
     // Validate that the first comment is not selected by red border
     expect(
       await postPage.getElementCssPropertyValue(
-        await postPage.commentListItems.nth(0).locator('..'),
+        await postPage.commentListLocator.nth(0).locator('div').first(),
         'border-color'
       )
     ).toBe('rgb(237, 237, 237)');

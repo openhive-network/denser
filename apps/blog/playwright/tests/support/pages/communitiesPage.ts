@@ -91,8 +91,8 @@ export class CommunitiesPage {
     this.subscribersNotificationLocalMenu = page.locator('[data-testid="notifications-local-menu"]');
     this.subscriberName = page.locator('[data-testid="subscriber-name"]');
     this.subscriberRow = this.subscribersNotificationContent.locator('tr');
-    this.subscribersRowsEven = this.subscribersNotificationContent.locator('tr:nth-of-type(even)');
-    this.subscribersRowsOdd =  this.subscribersNotificationContent.locator('tr:nth-of-type(odd)');
+    this.subscribersRowsEven = this.subscribersNotificationContent.locator('[data-testid="notification-list-item"]:nth-of-type(even)');
+    this.subscribersRowsOdd =  this.subscribersNotificationContent.locator('[data-testid="notification-list-item"]:nth-of-type(odd)');
     this.subscribersLoadMoreButton = this.subscribersNotificationContent.getByText('Load more');
     this.unmoderatedName = page.getByTestId('community-name-unmoderated');
   }

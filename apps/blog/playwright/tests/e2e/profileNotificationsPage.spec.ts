@@ -311,73 +311,45 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await profilePage.gotoNotificationsProfilePage('@gtg');
     await profilePage.profileNotificationsTabIsSelected();
 
-    const widthProgressBar = 60; // 100%
-    const firstNotificationItem = await profilePage.notificationListItemOddInAll.first();
-    const secondNotificationItem = await profilePage.notificationListItemEvenInAll.first();
+    // Get list of notifications by the api request
+    const notificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
+
+    // Get first notification list item
+    const firstNotificationItem = profilePage.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]').first();
 
     // First Notification
-    // Validate background color of the first notification
+    // Validate background color (transparent by default, no alternating colors)
     expect(
-      await profilePage.getElementCssPropertyValue(await firstNotificationItem, 'background-color')
-    ).toBe('rgb(255, 255, 255)');
+      await profilePage.getElementCssPropertyValue(firstNotificationItem, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
     // Validate the account icon is visible in the first notification
-    expect(await profilePage.notificationAccountIconLink.locator('img').first()).toBeVisible();
-    // Validate the account and message color
+    await expect(profilePage.notificationAccountIconLink.locator('img').first()).toBeVisible();
+    // Validate the account and message is visible
+    await expect(profilePage.notificationAccountAndMessage.first()).toBeVisible();
+    // Validate the timestamp is visible
+    await expect(profilePage.notificationTimestamp.first()).toBeVisible();
+    // Validate reputation badge exists and shows score
+    const firstReputationBadge = firstNotificationItem.locator('[data-testid="notification-reputation-badge"]');
+    await expect(firstReputationBadge).toBeVisible();
+    await expect(firstReputationBadge).toHaveText(String(notificationsAPI.result[0].score));
+    // Validate badge background (bg-background-tertiary = hsl(214, 32%, 91%) ≈ rgb(225, 231, 239))
     expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationAccountAndMessage.first(),
-        'color'
-      )
-    ).toBe('rgb(0, 0, 0)');
-    // Validate the timestamp color of the first notification
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.first(), 'color')
-    ).toBe('rgb(156, 163, 175)');
-    // Validate the progress bar of the first notification
-    // Get list of notifications by the api request
-    let notificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
-    // Values for progress bar of the first subscriber
-    const firstNotificationTransformXwidthPercentage = 100 - notificationsAPI.result[0].score;
-    const firstNotificationTransformXwidthValue =
-      (widthProgressBar * firstNotificationTransformXwidthPercentage) / 100;
-    // console.log('firstNotificationTransformXwidthValue: ', firstNotificationTransformXwidthValue );
-    await expect(
-      await homePage.getElementCssPropertyValue(
-        await profilePage.notificationProgressBar.locator('div').first(),
-        'transform'
-      )
-    ).toBe(`matrix(1, 0, 0, 1, -${firstNotificationTransformXwidthValue}, 0)`);
+      await profilePage.getElementCssPropertyValue(firstReputationBadge, 'background-color')
+    ).toBe('rgb(225, 231, 239)');
 
     // Second Notification
-    // Validate background color of the second notification
+    const secondNotificationItem = profilePage.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]').nth(1);
+
+    // Validate background color (same as first, no odd/even distinction)
     expect(
-      await profilePage.getElementCssPropertyValue(await secondNotificationItem, 'background-color')
-    ).toBe('rgb(225, 231, 239)');
+      await profilePage.getElementCssPropertyValue(secondNotificationItem, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
     // Validate the account icon is visible in the second notification
-    const secondNotificationAccountIcon = await profilePage.notificationAccountIconLink.locator('img').nth(1);
-    await expect(await secondNotificationAccountIcon).toBeVisible();
-    // Validate the account and message color
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationAccountAndMessage.nth(1),
-        'color'
-      )
-    ).toBe('rgb(0, 0, 0)');
-    // Validate the timestamp color of the second notification
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.nth(1), 'color')
-    ).toBe('rgb(156, 163, 175)');
-    // Values for progress bar of the second subscriber
-    const secondNotificationTransformXwidthPercentage = 100 - notificationsAPI.result[1].score;
-    const secondNotificationTransformXwidthValue =
-      (widthProgressBar * secondNotificationTransformXwidthPercentage) / 100;
-    // console.log('secondNotificationTransformXwidthValue: ', secondNotificationTransformXwidthValue );
-    await expect(
-      await homePage.getElementCssPropertyValue(
-        await profilePage.notificationProgressBar.locator('div').nth(1),
-        'transform'
-      )
-    ).toBe(`matrix(1, 0, 0, 1, -${secondNotificationTransformXwidthValue}, 0)`);
+    await expect(profilePage.notificationAccountIconLink.locator('img').nth(1)).toBeVisible();
+    // Validate reputation badge exists and shows score
+    const secondReputationBadge = secondNotificationItem.locator('[data-testid="notification-reputation-badge"]');
+    await expect(secondReputationBadge).toBeVisible();
+    await expect(secondReputationBadge).toHaveText(String(notificationsAPI.result[1].score));
   });
 
   test('Validate the notifications styles in dark mode', async ({ page, browserName }) => {
@@ -390,73 +362,45 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    const widthProgressBar = 60; // 100%
-    const firstNotificationItem = await profilePage.notificationListItemOddInAll.first();
-    const secondNotificationItem = await profilePage.notificationListItemEvenInAll.first();
+    // Get list of notifications by the api request
+    const notificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
+
+    // Get first notification list item
+    const firstNotificationItem = profilePage.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]').first();
 
     // First Notification
-    // Validate background color of the first notification
+    // Validate background color (transparent by default, no alternating colors)
     expect(
-      await profilePage.getElementCssPropertyValue(await firstNotificationItem, 'background-color')
-    ).toBe('rgb(44, 48, 53)');
+      await profilePage.getElementCssPropertyValue(firstNotificationItem, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
     // Validate the account icon is visible in the first notification
-    expect(await profilePage.notificationAccountIconLink.locator('img').first()).toBeVisible();
-    // Validate the account and message color
+    await expect(profilePage.notificationAccountIconLink.locator('img').first()).toBeVisible();
+    // Validate the account and message is visible
+    await expect(profilePage.notificationAccountAndMessage.first()).toBeVisible();
+    // Validate the timestamp is visible
+    await expect(profilePage.notificationTimestamp.first()).toBeVisible();
+    // Validate reputation badge exists and shows score
+    const firstReputationBadge = firstNotificationItem.locator('[data-testid="notification-reputation-badge"]');
+    await expect(firstReputationBadge).toBeVisible();
+    await expect(firstReputationBadge).toHaveText(String(notificationsAPI.result[0].score));
+    // Validate badge background in dark mode (bg-background-tertiary = hsl(217, 19%, 27%) ≈ rgb(56, 66, 82))
     expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationAccountAndMessage.first(),
-        'color'
-      )
-    ).toBe('rgb(255, 255, 255)');
-    // Validate the timestamp color of the first notification
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.first(), 'color')
-    ).toBe('rgb(156, 163, 175)');
-    // Validate the progress bar of the first notification
-    // Get list of notifications by the api request
-    let notificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
-    // Values for progress bar of the first subscriber
-    const firstNotificationTransformXwidthPercentage = 100 - notificationsAPI.result[0].score;
-    const firstNotificationTransformXwidthValue =
-      (widthProgressBar * firstNotificationTransformXwidthPercentage) / 100;
-    // console.log('firstNotificationTransformXwidthValue: ', firstNotificationTransformXwidthValue );
-    await expect(
-      await homePage.getElementCssPropertyValue(
-        await profilePage.notificationProgressBar.locator('div').first(),
-        'transform'
-      )
-    ).toBe(`matrix(1, 0, 0, 1, -${firstNotificationTransformXwidthValue}, 0)`);
+      await profilePage.getElementCssPropertyValue(firstReputationBadge, 'background-color')
+    ).toBe('rgb(56, 66, 82)');
 
     // Second Notification
-    // Validate background color of the second notification
+    const secondNotificationItem = profilePage.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]').nth(1);
+
+    // Validate background color (same as first, no odd/even distinction)
     expect(
-      await profilePage.getElementCssPropertyValue(await secondNotificationItem, 'background-color')
-    ).toBe('rgb(56, 66, 82)');
+      await profilePage.getElementCssPropertyValue(secondNotificationItem, 'background-color')
+    ).toBe('rgba(0, 0, 0, 0)');
     // Validate the account icon is visible in the second notification
-    const secondNotificationAccountIcon = await profilePage.notificationAccountIconLink.locator('img').nth(1);
-    await expect(await secondNotificationAccountIcon).toBeVisible();
-    // Validate the account and message color
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationAccountAndMessage.nth(1),
-        'color'
-      )
-    ).toBe('rgb(255, 255, 255)');
-    // Validate the timestamp color of the second notification
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationTimestamp.nth(1), 'color')
-    ).toBe('rgb(156, 163, 175)');
-    // Values for progress bar of the second subscriber
-    const secondNotificationTransformXwidthPercentage = 100 - notificationsAPI.result[1].score;
-    const secondNotificationTransformXwidthValue =
-      (widthProgressBar * secondNotificationTransformXwidthPercentage) / 100;
-    // console.log('secondNotificationTransformXwidthValue: ', secondNotificationTransformXwidthValue );
-    await expect(
-      await homePage.getElementCssPropertyValue(
-        await profilePage.notificationProgressBar.locator('div').nth(1),
-        'transform'
-      )
-    ).toBe(`matrix(1, 0, 0, 1, -${secondNotificationTransformXwidthValue}, 0)`);
+    await expect(profilePage.notificationAccountIconLink.locator('img').nth(1)).toBeVisible();
+    // Validate reputation badge exists and shows score
+    const secondReputationBadge = secondNotificationItem.locator('[data-testid="notification-reputation-badge"]');
+    await expect(secondReputationBadge).toBeVisible();
+    await expect(secondReputationBadge).toHaveText(String(notificationsAPI.result[1].score));
   });
 
   // Temporary skipped it works localy but there are some problems in CI
