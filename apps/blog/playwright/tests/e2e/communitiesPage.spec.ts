@@ -1,4 +1,4 @@
-import { test, expect, Locator } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
@@ -654,54 +654,42 @@ test.describe('Communities page tests', () => {
     test.skip(browserName === 'webkit' || browserName === 'firefox', 'Automatic test works well on chromium');
 
     const leoFinanceCommunityAccount: string = 'hive-167922';
-    const widthProgressBar = 60; // 100%
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     await communitiesPage.activityLogButton.click();
     await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationContent['_selector']);
 
     // Get list of subscribers by the api request
-    let sub = await apiHelper.getCommunitySubscribersAPI(leoFinanceCommunityAccount);
-    // Values for progress bar of the first subscriber
-    const transformXwidthPercentage = 100 - sub.result[0].score;
-    const transformXwidthValue = (60 * transformXwidthPercentage) / 100;
-    // console.log('transformXwidthValue: ', transformXwidthValue );
+    const sub = await apiHelper.getCommunitySubscribersAPI(leoFinanceCommunityAccount);
 
-    // First row of the notifications content table
-    const firstRowOfSubscribers = (await communitiesPage.subscribersRowsOdd.all()).at(0);
-    await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, 'background-color')).toBe(
-      'rgb(255, 255, 255)'
+    // Get first notification list item
+    const firstListItem = communitiesPage.subscribersNotificationContent.locator('[data-testid="notification-list-item"]').first();
+
+    // Validate base background (transparent by default, no alternating colors)
+    await expect(await homePage.getElementCssPropertyValue(firstListItem, 'background-color')).toBe(
+      'rgba(0, 0, 0, 0)'
     );
-    await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, 'color')).toBe(
-      'rgb(0, 0, 0)'
-    );
-    // console.log('First subscriber progress bar - transform css value: ', await homePage.getElementCssPropertyValue(firstRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"));
-    await expect(
-      await homePage.getElementCssPropertyValue(
-        firstRowOfSubscribers?.locator('div[role="progressbar"] div'),
-        'transform'
-      )
-    ).toBe(`matrix(1, 0, 0, 1, -${transformXwidthValue}, 0)`);
 
-    // Second row of the notifications content table
-    // Values for progress bar of the second subscriber
-    const transformXwidthPercentage2 = 100 - sub.result[1].score;
-    const transformXwidthValue2 = (60 * transformXwidthPercentage2) / 100;
-    // console.log('transformXwidthValue2: ', transformXwidthValue2 );
+    // Validate reputation badge exists and shows score
+    const firstReputationBadge = firstListItem.locator('[data-testid="notification-reputation-badge"]');
+    await expect(firstReputationBadge).toBeVisible();
+    await expect(firstReputationBadge).toHaveText(String(sub.result[0].score));
 
-    const secondRowOfSubscribers = (await communitiesPage.subscribersRowsEven.all()).at(0);
-    await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, 'background-color')).toBe(
+    // Validate badge background (bg-background-tertiary = hsl(214, 32%, 91%) ≈ rgb(225, 231, 239))
+    await expect(await homePage.getElementCssPropertyValue(firstReputationBadge, 'background-color')).toBe(
       'rgb(225, 231, 239)'
     );
-    await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, 'color')).toBe(
-      'rgb(0, 0, 0)'
+
+    // Validate second item has same styling (no odd/even distinction)
+    const secondListItem = communitiesPage.subscribersNotificationContent.locator('[data-testid="notification-list-item"]').nth(1);
+    await expect(await homePage.getElementCssPropertyValue(secondListItem, 'background-color')).toBe(
+      'rgba(0, 0, 0, 0)'
     );
-    await expect(
-      await homePage.getElementCssPropertyValue(
-        secondRowOfSubscribers?.locator('div[role="progressbar"] div'),
-        'transform'
-      )
-    ).toBe(`matrix(1, 0, 0, 1, -${transformXwidthValue2}, 0)`);
+
+    // Validate second reputation badge
+    const secondReputationBadge = secondListItem.locator('[data-testid="notification-reputation-badge"]');
+    await expect(secondReputationBadge).toBeVisible();
+    await expect(secondReputationBadge).toHaveText(String(sub.result[1].score));
   });
 
   test('validate styles of the list of the subscribers in the modal in the dark mode', async ({ page, browserName }) => {
@@ -709,7 +697,6 @@ test.describe('Communities page tests', () => {
     test.skip(browserName === 'firefox', 'Automatic test works well on chromium');
 
     const leoFinanceCommunityAccount: string = 'hive-167922';
-    const widthProgressBar = 60; // 100%
 
     // Move to the dark theme
     await homePage.changeThemeMode('Dark');
@@ -721,47 +708,36 @@ test.describe('Communities page tests', () => {
     await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationContent['_selector']);
 
     // Get list of subscribers by the api request
-    let sub = await apiHelper.getCommunitySubscribersAPI(leoFinanceCommunityAccount);
-    // Values for progress bar of the first subscriber
-    const transformXwidthPercentage = 100 - sub.result[0].score;
-    const transformXwidthValue = (60 * transformXwidthPercentage) / 100;
-    // console.log('transformXwidthValue: ', transformXwidthValue );
+    const sub = await apiHelper.getCommunitySubscribersAPI(leoFinanceCommunityAccount);
 
-    // First row of the notifications content table
-    const firstRowOfSubscribers = (await communitiesPage.subscribersRowsOdd.all()).at(0);
-    await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, 'background-color')).toBe(
-      'rgb(44, 48, 53)'
+    // Get first notification list item
+    const firstListItem = communitiesPage.subscribersNotificationContent.locator('[data-testid="notification-list-item"]').first();
+
+    // Validate base background (transparent by default, no alternating colors)
+    await expect(await homePage.getElementCssPropertyValue(firstListItem, 'background-color')).toBe(
+      'rgba(0, 0, 0, 0)'
     );
-    await expect(await homePage.getElementCssPropertyValue(firstRowOfSubscribers, 'color')).toBe(
-      'rgb(255, 255, 255)'
-    );
-    // console.log('First subscriber progress bar - transform css value: ', await homePage.getElementCssPropertyValue(firstRowOfSubscribers?.locator('div[role="progressbar"] div'),"transform"));
-    await expect(
-      await homePage.getElementCssPropertyValue(
-        firstRowOfSubscribers?.locator('div[role="progressbar"] div'),
-        'transform'
-      )
-    ).toBe(`matrix(1, 0, 0, 1, -${transformXwidthValue}, 0)`);
 
-    // Second row of the notifications content table
-    // Values for progress bar of the second subscriber
-    const transformXwidthPercentage2 = 100 - sub.result[1].score;
-    const transformXwidthValue2 = (60 * transformXwidthPercentage2) / 100;
-    // console.log('transformXwidthValue2: ', transformXwidthValue2 );
+    // Validate reputation badge exists and shows score
+    const firstReputationBadge = firstListItem.locator('[data-testid="notification-reputation-badge"]');
+    await expect(firstReputationBadge).toBeVisible();
+    await expect(firstReputationBadge).toHaveText(String(sub.result[0].score));
 
-    const secondRowOfSubscribers = (await communitiesPage.subscribersRowsEven.all()).at(0);
-    await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, 'background-color')).toBe(
+    // Validate badge background in dark mode (bg-background-tertiary = hsl(217, 19%, 27%) ≈ rgb(56, 66, 82))
+    await expect(await homePage.getElementCssPropertyValue(firstReputationBadge, 'background-color')).toBe(
       'rgb(56, 66, 82)'
     );
-    await expect(await homePage.getElementCssPropertyValue(secondRowOfSubscribers, 'color')).toBe(
-      'rgb(255, 255, 255)'
+
+    // Validate second item has same styling (no odd/even distinction)
+    const secondListItem = communitiesPage.subscribersNotificationContent.locator('[data-testid="notification-list-item"]').nth(1);
+    await expect(await homePage.getElementCssPropertyValue(secondListItem, 'background-color')).toBe(
+      'rgba(0, 0, 0, 0)'
     );
-    await expect(
-      await homePage.getElementCssPropertyValue(
-        secondRowOfSubscribers?.locator('div[role="progressbar"] div'),
-        'transform'
-      )
-    ).toBe(`matrix(1, 0, 0, 1, -${transformXwidthValue2}, 0)`);
+
+    // Validate second reputation badge
+    const secondReputationBadge = secondListItem.locator('[data-testid="notification-reputation-badge"]');
+    await expect(secondReputationBadge).toBeVisible();
+    await expect(secondReputationBadge).toHaveText(String(sub.result[1].score));
   });
 
   test('validate styles of the menu of list of the subscribers in the modal in the light mode', async ({

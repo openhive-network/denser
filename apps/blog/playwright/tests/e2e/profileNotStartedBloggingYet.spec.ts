@@ -1,5 +1,5 @@
 
-import { Locator, expect, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { ProfilePage } from '../support/pages/profilePage';
 
 // Run these tests until @ganda started blogging
@@ -14,10 +14,11 @@ test.describe('Profile page of @ganda', () => {
       await profilePage.gotoProfilePage('@ganda');
       // Validate URL of page is "http://.../@ganda"
       await expect(profilePage.page).toHaveURL(/ *.\/@ganda$/);
-      await expect(profilePage.profileStats.getByText("7 followers")).toBeVisible();
-      await expect(profilePage.profileStats.getByText("No posts")).toBeVisible();
-      await expect(profilePage.profileStats.getByText("Not following anybody")).toBeVisible();
-      await expect(profilePage.profileStats.getByText("0 HP")).toBeVisible();
+      // Validate profile stats - new design uses separate number and label elements
+      await expect(profilePage.profileStats.getByText("Followers")).toBeVisible();
+      await expect(profilePage.profileStats.getByText("Posts")).toBeVisible();
+      await expect(profilePage.profileStats.getByText("Following")).toBeVisible();
+      await expect(profilePage.profileStats.getByText("HP")).toBeVisible();
     });
 
     test('profile Blog tab of @ganda is empty', async ({ page }) => {

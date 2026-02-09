@@ -214,10 +214,11 @@ export class ProfilePage {
     this.profileLocation = page.locator('[data-testid="user-location"]');
     this.profileStats = page.locator('[data-testid="profile-stats"]');
     this.profileStatsString = '[data-testid="profile-stats"]'
-    this.profileNumberOfPosts = this.profileStats.locator('li').nth(1);
-    this.profileHP = this.profileStats.locator('li').nth(3);
-    this.profileFollowing = this.profileStats.locator('li').nth(2);
-    this.profileFollowers = this.profileStats.locator('li').nth(0);
+    // New design uses Link/div elements instead of li, order: Followers, Posts, Following, HP
+    this.profileFollowers = this.profileStats.locator('> a').nth(0);
+    this.profileNumberOfPosts = this.profileStats.locator('> a').nth(1);
+    this.profileFollowing = this.profileStats.locator('> a').nth(2);
+    this.profileHP = this.profileStats.locator('> div').first();
     this.followButton = page.locator('[data-testid="profile-follow-button"]');
     this.userLinks = page.locator('[data-testid="user-links"]');
     this.profileBlogPostsList = page.getByTestId('post-list-profile-blog-list');
