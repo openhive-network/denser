@@ -32,7 +32,9 @@ async function test({ page }) {
   const profileStats = page.locator(SELECTORS.PROFILE_STATS);
   await profileStats.waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });
 
-  const statsItems = profileStats.locator('li');
+  // New design uses Link (a) and div elements instead of li
+  // Order: Followers, Posts, Following, HP
+  const statsItems = profileStats.locator('> a, > div');
   const statsCount = await statsItems.count();
 
   let uiFollowers = 0;
@@ -40,15 +42,19 @@ async function test({ page }) {
   let uiFollowing = 0;
 
   for (let i = 0; i < statsCount; i++) {
-    const itemText = await statsItems.nth(i).textContent();
+    const item = statsItems.nth(i);
+    const itemText = await item.textContent();
     const text = itemText?.toLowerCase() || '';
-    const num = parseInteger(itemText?.match(/[\d,]+/)?.[0]?.replace(/,/g, ''));
+    // In new design, first span contains the number
+    const numberSpan = item.locator('span').first();
+    const numberText = await numberSpan.textContent();
+    const num = parseInteger(numberText?.replace(/,/g, ''));
 
     if (text.includes('follower')) {
       uiFollowers = num;
     } else if (text.includes('post')) {
       uiPosts = num;
-    } else if (text.includes('follow')) {
+    } else if (text.includes('following')) {
       uiFollowing = num;
     }
   }
