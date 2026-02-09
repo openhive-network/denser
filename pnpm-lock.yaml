@@ -7,11 +7,11 @@ settings:
 catalogs:
   hiveio-toolset:
     '@hiveio/hb-auth':
-      specifier: 1.28.4-rc0-stable.260125121028
-      version: 1.28.4-rc0-stable.260125121028
+      specifier: 1.28.4-rc0-stable.260209101337
+      version: 1.28.4-rc0-stable.260209101337
     '@hiveio/healthchecker-component':
-      specifier: 1.28.4-rc0-stable.251202134057
-      version: 1.28.4-rc0-stable.251202134057
+      specifier: 1.28.4-rc0-260209105549
+      version: 1.28.4-rc0-260209105549
     '@hiveio/wax':
       specifier: 2.0.1
       version: 2.0.1
@@ -28,8 +28,8 @@ catalogs:
       specifier: 2.0.1
       version: 2.0.1
     '@hiveio/workerbee':
-      specifier: 1.28.4-rc0-260122112600
-      version: 1.28.4-rc0-260122112600
+      specifier: 1.28.4-rc0-stable.260206182519
+      version: 1.28.4-rc0-stable.260206182519
 
 importers:
 
@@ -80,7 +80,7 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.251202134057(@hiveio/wax@2.0.1)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
+        version: 1.28.4-rc0-260209105549(@hiveio/wax@2.0.1)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 2.0.1
@@ -288,7 +288,7 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.251202134057(@hiveio/wax@2.0.1)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
+        version: 1.28.4-rc0-260209105549(@hiveio/wax@2.0.1)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 2.0.1
@@ -379,7 +379,7 @@ importers:
         version: link:../ui
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.260125121028(@hiveio/wax@2.0.1)
+        version: 1.28.4-rc0-stable.260209101337(@hiveio/wax@2.0.1)
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 2.0.1
@@ -599,7 +599,7 @@ importers:
         version: link:../ui
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.260125121028(@hiveio/wax@2.0.1)
+        version: 1.28.4-rc0-stable.260209101337(@hiveio/wax@2.0.1)
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 2.0.1
@@ -717,7 +717,7 @@ importers:
         version: 2.0.1
       '@hiveio/workerbee':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-260122112600(@hiveio/wax@2.0.1)
+        version: 1.28.4-rc0-stable.260206182519(@hiveio/wax@2.0.1)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -1760,16 +1760,16 @@ packages:
     resolution: {integrity: sha1-X+2VqUKItQPk4Dr+t+/sfQ+84YY=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.4.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/hb-auth@1.28.4-rc0-stable.260125121028':
-    resolution: {integrity: sha1-2agAt2e3H6Zge7guzthY4XKRwdo=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-stable.260125121028.tgz}
+  '@hiveio/hb-auth@1.28.4-rc0-stable.260209101337':
+    resolution: {integrity: sha1-IQUETmlYy3/VMVcVTadGOw5OTIo=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-stable.260209101337.tgz}
     engines: {node: ^20.11 || >= 21.2}
     peerDependencies:
-      '@hiveio/wax': '>=1.28.4-rc0 <1.28.7'
+      '@hiveio/wax': '>= 2.0.0 < 2.1.0'
 
-  '@hiveio/healthchecker-component@1.28.4-rc0-stable.251202134057':
-    resolution: {integrity: sha1-vskKzVbouTzcxkj1a4EplsS7Q2A=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-1.28.4-rc0-stable.251202134057.tgz}
+  '@hiveio/healthchecker-component@1.28.4-rc0-260209105549':
+    resolution: {integrity: sha1-EKjtxHq1eLUAbq2RnnucWRj6zs0=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-1.28.4-rc0-260209105549.tgz}
     peerDependencies:
-      '@hiveio/wax': 1.28.4-rc0
+      '@hiveio/wax': 2.0.1
       react: ^18.2.0
       react-dom: ^18.2.0
       tailwindcss: ^3.4.12
@@ -1796,11 +1796,11 @@ packages:
     resolution: {integrity: sha1-xzNjk9sjmr1JhBanfX/NcIsoYDU=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-2.0.1.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
-  '@hiveio/workerbee@1.28.4-rc0-260122112600':
-    resolution: {integrity: sha1-dLKQXojJzyZH2f3U5K0fDIxN9Tg=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.28.4-rc0-260122112600.tgz}
+  '@hiveio/workerbee@1.28.4-rc0-stable.260206182519':
+    resolution: {integrity: sha1-+QKaDkVvVI1KgrZCnLJ3l8b/dQ8=, tarball: https://gitlab.syncad.com/api/v4/projects/452/packages/npm/@hiveio/workerbee/-/@hiveio/workerbee-1.28.4-rc0-stable.260206182519.tgz}
     engines: {node: ^20.11 || >= 21.2}
     peerDependencies:
-      '@hiveio/wax': '>= 1.28.4-rc0 < 1.28.7'
+      '@hiveio/wax': '>= 2.0.0 < 2.1.0'
 
   '@hookform/resolvers@3.10.0':
     resolution: {integrity: sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==}
@@ -11673,12 +11673,12 @@ snapshots:
 
   '@hiveio/beekeeper@1.28.4': {}
 
-  '@hiveio/hb-auth@1.28.4-rc0-stable.260125121028(@hiveio/wax@2.0.1)':
+  '@hiveio/hb-auth@1.28.4-rc0-stable.260209101337(@hiveio/wax@2.0.1)':
     dependencies:
       '@hiveio/wax': 2.0.1
       comlink: 4.4.2
 
-  '@hiveio/healthchecker-component@1.28.4-rc0-stable.251202134057(@hiveio/wax@2.0.1)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))':
+  '@hiveio/healthchecker-component@1.28.4-rc0-260209105549(@hiveio/wax@2.0.1)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.10.4)(typescript@5.3.3)))':
     dependencies:
       '@hiveio/wax': 2.0.1
       react: 18.3.0
@@ -11719,7 +11719,7 @@ snapshots:
     dependencies:
       events: 3.3.0
 
-  '@hiveio/workerbee@1.28.4-rc0-260122112600(@hiveio/wax@2.0.1)':
+  '@hiveio/workerbee@1.28.4-rc0-stable.260206182519(@hiveio/wax@2.0.1)':
     dependencies:
       '@hiveio/wax': 2.0.1
 
