@@ -508,6 +508,11 @@
     "maximum_characters": "最多{{num}}个字符",
     "markdown_not_supported": "此处不支持Markdown",
     "html_not_supported": "此处不支持HTML",
+    "hive_link_converted": "Blog link converted",
+    "hive_link_converted_count": "{{count}} Hive blog link(s) converted to relative path",
+    "undo": "Undo",
+    "convert_hive_links": "Convert Hive links",
+    "convert_hive_links_tooltip": "Automatically converts pasted links from Hive blog frontends to frontend-agnostic relative paths, so your post works on any Hive app",
     "advanced_tooltip": "在这里，您可以设置帖子选项，如作者奖励分配、最大接受的支付、受益人和帖子模板",
     "advanced_settings_dialog": {
       "load": "加载",

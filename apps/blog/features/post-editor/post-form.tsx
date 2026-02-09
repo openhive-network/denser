@@ -503,6 +503,7 @@ export default function PostForm({
                 className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
                 onClick={() => setSideBySide((prev) => !prev)}
                 data-testid="enable-disable-side-by-side-editor"
+                tabIndex={-1}
               >
                 {sideBySide ? t('submit_page.disable_side') : t('submit_page.enable_side')}
               </Button>
@@ -512,6 +513,7 @@ export default function PostForm({
                 variant="ghost"
                 className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
                 data-testid="hide-show-preview"
+                tabIndex={-1}
               >
                 {preview ? t('submit_page.hide_preview') : t('submit_page.show_preview')}
               </Button>
@@ -555,7 +557,7 @@ export default function PostForm({
                     {t('submit_page.insert_images_by_dragging')} {t('submit_page.selecting_them')}
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger type="button">
+                        <TooltipTrigger type="button" tabIndex={-1}>
                           <Icons.info className="ml-1 w-3" />
                         </TooltipTrigger>
                         <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
@@ -875,6 +877,7 @@ export default function PostForm({
                         className="h-10 w-10 rounded-full border-border bg-background p-0 opacity-20 shadow-lg transition-opacity duration-200 hover:bg-background-secondary group-hover:opacity-100"
                         onClick={() => setSyncScroll((prev) => !prev)}
                         data-testid="sync-scroll-toggle"
+                        tabIndex={-1}
                       >
                         {syncScroll ? (
                           <Icons.link2 className="h-5 w-5 text-foreground" />
@@ -900,6 +903,7 @@ export default function PostForm({
             <Link
               target="_blank"
               href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+              tabIndex={-1}
             >
               <span className="text-xs text-muted-foreground hover:text-destructive transition-colors">
                 {t('submit_page.markdown_styling_guide')}

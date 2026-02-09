@@ -513,6 +513,11 @@
     "maximum_characters": "Maksymalnie {{num}} znaków",
     "markdown_not_supported": "Markdown nie jest obsługiwany tutaj",
     "html_not_supported": "HTML nie jest obsługiwany tutaj",
+    "hive_link_converted": "Blog link converted",
+    "hive_link_converted_count": "{{count}} Hive blog link(s) converted to relative path",
+    "undo": "Undo",
+    "convert_hive_links": "Convert Hive links",
+    "convert_hive_links_tooltip": "Automatically converts pasted links from Hive blog frontends to frontend-agnostic relative paths, so your post works on any Hive app",
     "advanced_tooltip": "Tutaj możesz ustawić opcje posta, takie jak podział nagród dla autora, maksymalna akceptowana wypłata, beneficjenci i szablony postów",
     "advanced_settings_dialog": {
       "load": "Załaduj",

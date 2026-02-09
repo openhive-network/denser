@@ -5,6 +5,7 @@ import {
   FC,
   KeyboardEvent,
   MutableRefObject,
+  createElement,
   useCallback,
   useEffect,
   useRef,
@@ -16,13 +17,18 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import MDEditor, { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 import { getLogger } from '@ui/lib/logging';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { toast } from '@ui/components/hooks/use-toast';
+import { ToastAction } from '@ui/components/toast';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { cn } from '@ui/lib/utils';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { Button } from '@ui/components';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useTranslation } from '@/blog/i18n/client';
+import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
+import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { onImageDrop, onImagePaste, onImageUpload } from './lib/utils';
+import { convertHiveUrlsInText } from './lib/hive-url-converter';
 
 const logger = getLogger('app');
 
@@ -44,6 +50,13 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   const [isDrag, setIsDrag] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [insertImg, setInsertImg] = useState('');
+  const [convertHiveLinks, setConvertHiveLinks] = useStorageWithTTL<boolean>(
+    'convert-hive-links',
+    true,
+    StorageTTL.PERMANENT
+  );
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     onChange(formValue);
@@ -52,6 +65,51 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   useEffect(() => {
     setFormValue(persistedValue);
   }, [persistedValue]);
+
+  // Fix tab navigation: remove toolbar from tab order and override Tab/Shift+Tab
+  // so they navigate between form fields instead of inserting indentation
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const toolbar = containerRef.current.querySelector('.w-md-editor-toolbar');
+    if (toolbar) {
+      toolbar.querySelectorAll<HTMLElement>('button, input, a, [tabindex]').forEach((el) => {
+        el.tabIndex = -1;
+      });
+    }
+
+    let cleanup: (() => void) | undefined;
+    const timeoutId = setTimeout(() => {
+      const textarea = containerRef.current?.querySelector('.w-md-editor-text-input') as HTMLTextAreaElement;
+      if (!textarea) return;
+
+      const handleShiftTab = (e: globalThis.KeyboardEvent) => {
+        if (e.key !== 'Tab' || !e.shiftKey) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        const focusables = Array.from(
+          document.querySelectorAll<HTMLElement>(
+            'input:not([disabled]):not([type="hidden"]):not([tabindex="-1"]), ' +
+            'textarea:not([disabled]):not([tabindex="-1"]), ' +
+            'select:not([disabled]):not([tabindex="-1"]), ' +
+            'button:not([disabled]):not([tabindex="-1"])'
+          )
+        ).filter((el) => el.offsetParent !== null);
+
+        const idx = focusables.indexOf(textarea);
+        if (idx > 0) focusables[idx - 1]?.focus();
+      };
+
+      textarea.addEventListener('keydown', handleShiftTab, true);
+      cleanup = () => textarea.removeEventListener('keydown', handleShiftTab, true);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      cleanup?.();
+    };
+  }, []);
 
   const inputImageHandler = useCallback(
     async (event: { target: { files: FileList } }) => {
@@ -89,6 +147,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     async (event: ClipboardEvent<HTMLDivElement>) => {
       if (!event.clipboardData) return;
 
+      // Check for image paste first (existing behavior)
       let hasImage = false;
       for (let i = 0; i < event.clipboardData.items.length; i++) {
         const it = event.clipboardData.items[i];
@@ -101,9 +160,41 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         event.preventDefault();
         event.stopPropagation();
         await onImagePaste(event.clipboardData, setFormValue, signer.username, signer, setIsUploading);
+        return;
       }
+
+      if (!convertHiveLinks) return;
+
+      // Capture textarea ref before the event object is recycled
+      const textarea = (event.currentTarget as HTMLElement).querySelector(
+        '.w-md-editor-text-input'
+      ) as HTMLTextAreaElement;
+
+      // Let the paste happen normally, then replace Hive URLs in the result
+      requestAnimationFrame(() => {
+        if (!textarea) return;
+        const currentValue = textarea.value;
+        const result = convertHiveUrlsInText(currentValue);
+        if (!result.hadConversions) return;
+
+        const previousValue = currentValue;
+        setFormValue(result.convertedText);
+
+        toast({
+          title: t('submit_page.hive_link_converted'),
+          description: t('submit_page.hive_link_converted_count', { count: result.conversionsCount }),
+          action: createElement(
+            ToastAction,
+            {
+              altText: t('submit_page.undo'),
+              onClick: () => setFormValue(previousValue)
+            },
+            t('submit_page.undo')
+          )
+        });
+      });
     },
-    [setFormValue, signer]
+    [setFormValue, signer, convertHiveLinks, t]
   );
 
   // Focus the editor textarea when clicking on the editor container
@@ -212,8 +303,34 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     }
   });
 
+  const hiveLinksToggle = (): commands.ICommand => ({
+    name: 'Convert Hive Links',
+    keyCommand: 'convertHiveLinks',
+    render: () => {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <label className="flex cursor-pointer select-none items-center gap-1 px-2 text-xs">
+                <input
+                  type="checkbox"
+                  checked={convertHiveLinks}
+                  onChange={(e) => setConvertHiveLinks(e.target.checked)}
+                  className="cursor-pointer"
+                />
+                {t('submit_page.convert_hive_links')}
+              </label>
+            </TooltipTrigger>
+            <TooltipContent>{t('submit_page.convert_hive_links_tooltip')}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    },
+    execute: () => {}
+  });
+
   return !imageUserBlocklist?.includes(user.username) ? (
-    <div>
+    <div ref={containerRef}>
       <input
         ref={inputRef}
         className="hidden"
@@ -235,7 +352,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
               setFormValue(value || '');
             }}
             commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef), spoilerBtn()]}
-            extraCommands={[]}
+            extraCommands={[hiveLinksToggle()]}
             className={cn({ '!bg-red-400 !bg-opacity-20': isDrag })}
             onDrop={dropHandler}
             onDragEnter={dragHandler}
@@ -257,7 +374,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       </div>
     </div>
   ) : (
-    <div className="cursor-text" onClick={focusEditor}>
+    <div ref={containerRef} className="cursor-text" onClick={focusEditor}>
       <MDEditor
         height={windowheight}
         preview="edit"
@@ -267,7 +384,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
           setFormValue(value || '');
         }}
         commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef), spoilerBtn()]}
-        extraCommands={[]}
+        extraCommands={[hiveLinksToggle()]}
         //@ts-ignore
         style={{ '--color-canvas-default': 'var(--background)' }}
       />
