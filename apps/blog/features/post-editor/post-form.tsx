@@ -116,13 +116,6 @@ export default function PostForm({
     StorageTTL.DRAFT
   );
 
-  useEffect(() => {
-    storePost({
-      ...storedPost,
-      payoutType: preferences.blog_rewards,
-      maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000
-    });
-  }, [preferences.blog_rewards]);
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState(
     // Initialize with existing cover image when editing
@@ -201,10 +194,8 @@ export default function PostForm({
     beneficiaries: storedPost?.beneficiaries || [],
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
-      : storedPost?.maxAcceptedPayout === undefined
-        ? 1000000
-        : storedPost.maxAcceptedPayout,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : storedPost?.payoutType
+      : preferences.blog_rewards === '0%' ? 0 : 1000000,
+    payoutType: post_s ? `${post_s.percent_hbd}%` : preferences.blog_rewards
   };
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -233,8 +224,8 @@ export default function PostForm({
         author: storedPost.author || entryValues.author,
         category: storedPost.category || entryValues.category,
         beneficiaries: storedPost.beneficiaries || entryValues.beneficiaries,
-        maxAcceptedPayout: storedPost.maxAcceptedPayout ?? entryValues.maxAcceptedPayout,
-        payoutType: storedPost.payoutType || entryValues.payoutType
+        maxAcceptedPayout: entryValues.maxAcceptedPayout,
+        payoutType: entryValues.payoutType
       });
       setPreviewContent(storedPost.postArea);
     }
