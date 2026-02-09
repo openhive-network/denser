@@ -148,7 +148,7 @@ const ListArea = ({
             <Input
               className="bg-background sm:w-3/4"
               value={addValue}
-              onChange={(e) => setAddValue(e.target.value)}
+              onChange={(e) => setAddValue(e.target.value.trim())}
               disabled={resetListIsLoading || resetAllListsMutation.isPending}
             />
           </div>

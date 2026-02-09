@@ -116,7 +116,7 @@ const PostListItem = memo(
           ) : null}
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
-              {nsfw === 'show' && post.blacklists.length < 1 ? (
+              {nsfw === 'show' && post.blacklists.length < 1 && !blacklistCheck ? (
                 <Link href={`/@${post.author}`} data-testid="post-card-avatar">
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
@@ -215,6 +215,7 @@ const PostListItem = memo(
             <div>
               {nsfw === 'show' &&
               post.blacklists.length < 1 &&
+              !blacklistCheck &&
               !userFromDMCA &&
               !userFromImageBlockList &&
               !legalBlockedUser ? (
