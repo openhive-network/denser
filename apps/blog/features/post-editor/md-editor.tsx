@@ -243,22 +243,27 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   const keyDownHandler = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
     const isCtrlOrCmd = event.ctrlKey || event.metaKey;
     if (isCtrlOrCmd && (event.key === 'Home' || event.key === 'End')) {
-      // Let the default behavior happen first, then scroll
+      const textarea = document.querySelector('.w-md-editor-text-input') as HTMLTextAreaElement;
+      if (!textarea) return;
+
+      // Capture cursor position synchronously before browser handles the keystroke
+      const anchor = textarea.selectionStart;
+      const isSelecting = event.shiftKey;
+      const target = event.key === 'Home' ? 0 : textarea.value.length;
+
       setTimeout(() => {
-        const textarea = document.querySelector('.w-md-editor-text-input') as HTMLTextAreaElement;
-        if (textarea) {
-          // Create a temporary span at cursor position to scroll to
-          const cursorPos = event.key === 'Home' ? 0 : textarea.value.length;
-          textarea.setSelectionRange(cursorPos, cursorPos);
+        if (isSelecting) {
+          const start = Math.min(anchor, target);
+          const end = Math.max(anchor, target);
+          const direction = target < anchor ? 'backward' : 'forward';
+          textarea.setSelectionRange(start, end, direction);
+        } else {
+          textarea.setSelectionRange(target, target);
           textarea.blur();
           textarea.focus();
-          // Ensure the textarea scrolls to show cursor
-          if (event.key === 'Home') {
-            textarea.scrollTop = 0;
-          } else {
-            textarea.scrollTop = textarea.scrollHeight;
-          }
         }
+
+        textarea.scrollTop = event.key === 'Home' ? 0 : textarea.scrollHeight;
       }, 0);
     }
   }, []);
