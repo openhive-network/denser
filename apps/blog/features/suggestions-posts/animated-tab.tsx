@@ -1,9 +1,8 @@
 import SuggestionsList from '@/blog/features/suggestions-posts/list';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Entry } from '@hive/common-hiveio-packages/wax';
-import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
+import { X, Sparkles } from 'lucide-react';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
@@ -14,54 +13,51 @@ const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
     true,
     StorageTTL.PERMANENT
   );
+
   return (
-    <AnimatePresence>
-      <TooltipProvider>
+    <div className="md:sticky md:top-24 md:max-h-[calc(100vh-96px)] md:overflow-y-auto">
+      <AnimatePresence mode="wait" initial={false}>
         {showSuggestions ? (
           <motion.div
-            className="flex flex-col overflow-x-auto overflow-y-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)]"
-            initial={{ x: -300 }}
-            animate={{ x: 0 }}
-            exit={{ x: -300 }}
-            transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+            key="expanded"
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -16 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
           >
-            <div className="flex">
-              <h2 className="mb-4 mt-2 pl-4 font-sanspro text-xl font-bold md:mt-0">You Might Also Like</h2>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button onClick={() => storeShowSuggestions(false)} variant="ghost" className="w-fit p-0">
-                    <ArrowBigLeftDash />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Hide Suggestions</p>
-                </TooltipContent>
-              </Tooltip>
+            <div className="mb-3 flex items-center justify-between px-4 pt-1">
+              <h2 className="font-sanspro text-lg font-semibold">You Might Also Like</h2>
+              <button
+                type="button"
+                onClick={() => storeShowSuggestions(false)}
+                className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
             <SuggestionsList suggestions={suggestions} />
           </motion.div>
         ) : (
           <motion.div
-            className="flex flex-col overflow-x-auto overflow-y-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)]"
-            initial={{ x: -300 }}
-            animate={{ x: 0 }}
-            exit={{ x: -300 }}
-            transition={{ type: 'spring', stiffness: 70, damping: 20 }}
+            key="collapsed"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="px-3 pt-1"
           >
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button onClick={() => storeShowSuggestions(true)} variant="ghost" className="w-fit">
-                  <ArrowBigRightDash />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Show Suggestions</p>
-              </TooltipContent>
-            </Tooltip>
+            <button
+              type="button"
+              onClick={() => storeShowSuggestions(true)}
+              className="flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm text-muted-foreground transition-all hover:border-foreground/20 hover:text-foreground hover:shadow-sm"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              Suggestions
+            </button>
           </motion.div>
         )}
-      </TooltipProvider>
-    </AnimatePresence>
+      </AnimatePresence>
+    </div>
   );
 };
 
