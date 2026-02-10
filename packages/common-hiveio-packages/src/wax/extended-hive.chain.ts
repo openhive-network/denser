@@ -171,7 +171,7 @@ export interface JsonMetadata {
   summary?: string;
 }
 
-export type FollowListType = 'follow_blacklist' | 'followed_muted_lists' | 'blacklisted' | 'muted';
+export type FollowListType = 'follow_blacklist' | 'follow_muted' | 'blacklisted' | 'muted';
 
 export interface IMarketStatistics {
   hbd_volume: NaiAsset;

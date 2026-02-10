@@ -1,7 +1,7 @@
 import ListsPage from '@/blog/features/account-lists/lists-page';
 import FollowedMutedListsContent from './content';
 
-const type = 'followed_muted_lists';
+const type = 'follow_muted';
 
 interface PageProps {
   params: {

@@ -13,7 +13,7 @@ export default function ProfileLists({
   data
 }: {
   username: string;
-  variant: 'blacklisted' | 'muted' | 'follow_blacklist' | 'followed_muted_lists';
+  variant: 'blacklisted' | 'muted' | 'follow_blacklist' | 'follow_muted';
   data: IFollowList[] | undefined;
 }) {
   const { data: profilData } = useQuery({
