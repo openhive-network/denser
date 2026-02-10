@@ -82,7 +82,8 @@ export function convertHiveUrlsInText(text: string): ConversionResult {
   let conversionsCount = 0;
 
   // Pass 1: Handle URLs inside markdown link syntax [text](url)
-  const MARKDOWN_LINK_REGEX = /\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g;
+  // Use [^\s)] instead of [^)] to prevent matching across whitespace/newlines
+  const MARKDOWN_LINK_REGEX = /\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/g;
   let result = text.replace(MARKDOWN_LINK_REGEX, (match, linkText: string, url: string) => {
     const parsed = parseHiveBlogUrl(url);
     if (!parsed) return match;

@@ -28,7 +28,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { onImageDrop, onImagePaste, onImageUpload } from './lib/utils';
-import { convertHiveUrlsInText } from './lib/hive-url-converter';
+import { convertHiveUrlsInText, parseHiveBlogUrl } from './lib/hive-url-converter';
 
 const logger = getLogger('app');
 
@@ -165,33 +165,65 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
 
       if (!convertHiveLinks) return;
 
-      // Capture textarea ref before the event object is recycled
+      const clipboardText = event.clipboardData.getData('text/plain');
+      if (!clipboardText) return;
+
       const textarea = (event.currentTarget as HTMLElement).querySelector(
         '.w-md-editor-text-input'
       ) as HTMLTextAreaElement;
+      if (!textarea) return;
 
-      // Let the paste happen normally, then replace Hive URLs in the result
-      requestAnimationFrame(() => {
-        if (!textarea) return;
-        const currentValue = textarea.value;
-        const result = convertHiveUrlsInText(currentValue);
+      const selStart = textarea.selectionStart;
+      const selEnd = textarea.selectionEnd;
+      const textBeforeCursor = textarea.value.slice(0, selStart);
+
+      // Detect if pasting inside a markdown link URL position: [text](|cursor)
+      const lastLinkOpen = textBeforeCursor.lastIndexOf('](');
+      const isInsideMarkdownLinkUrl =
+        lastLinkOpen !== -1 && !textBeforeCursor.slice(lastLinkOpen).includes(')');
+
+      let convertedText: string;
+      let conversionsCount: number;
+
+      if (isInsideMarkdownLinkUrl) {
+        // Inside markdown link URL - convert just the URL without wrapping
+        const parsed = parseHiveBlogUrl(clipboardText.trim());
+        if (!parsed) return;
+        convertedText = parsed.relativePath;
+        conversionsCount = 1;
+      } else {
+        // Normal paste - convert Hive URLs only in the pasted content
+        const result = convertHiveUrlsInText(clipboardText);
         if (!result.hadConversions) return;
+        convertedText = result.convertedText;
+        conversionsCount = result.conversionsCount;
+      }
 
-        const previousValue = currentValue;
-        setFormValue(result.convertedText);
+      event.preventDefault();
+      event.stopPropagation();
 
-        toast({
-          title: t('submit_page.hive_link_converted'),
-          description: t('submit_page.hive_link_converted_count', { count: result.conversionsCount }),
-          action: createElement(
-            ToastAction,
-            {
-              altText: t('submit_page.undo'),
-              onClick: () => setFormValue(previousValue)
-            },
-            t('submit_page.undo')
-          )
-        });
+      const currentValue = textarea.value;
+      const newValue = currentValue.slice(0, selStart) + convertedText + currentValue.slice(selEnd);
+      const undoValue = currentValue.slice(0, selStart) + clipboardText + currentValue.slice(selEnd);
+
+      setFormValue(newValue);
+
+      requestAnimationFrame(() => {
+        const newCursorPos = selStart + convertedText.length;
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+      });
+
+      toast({
+        title: t('submit_page.hive_link_converted'),
+        description: t('submit_page.hive_link_converted_count', { count: conversionsCount }),
+        action: createElement(
+          ToastAction,
+          {
+            altText: t('submit_page.undo'),
+            onClick: () => setFormValue(undoValue)
+          },
+          t('submit_page.undo')
+        )
       });
     },
     [setFormValue, signer, convertHiveLinks, t]
