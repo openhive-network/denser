@@ -7,6 +7,7 @@ import { Button } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
 import BasePathLink from '@/blog/components/base-path-link';
 import { CircleSpinner } from 'react-spinners-kit';
+import { getUserAvatarUrl } from '@hive/ui';
 
 const ListItem = ({
   item,
@@ -57,37 +58,46 @@ const ListItem = ({
     unfollowBlacklistBlogMutation.isPending ||
     unmuteMutation.isPending ||
     unfollowMutedBlogMutation.isPending;
+
+  const isItemLoading = (deleteIsLoading && currentItem === item.name) || loading;
+
   return (
-    <li className="flex w-72 items-center justify-between bg-background p-1 font-semibold odd:bg-background-tertiary">
-      {!item._temporary ? (
-        <span className="px-2">
-          <BasePathLink className="text-destructive" href={`/@${item.name}`}>
+    <li
+      className={`flex items-center justify-between border-b border-border-primary/30 px-3 py-2 transition-colors last:border-b-0 odd:bg-background-tertiary/50 hover:bg-background-tertiary ${item._temporary ? 'opacity-50' : ''}`}
+    >
+      <span className="flex min-w-0 items-center gap-2">
+        <img
+          src={getUserAvatarUrl(item.name, 'small')}
+          alt=""
+          className="h-6 w-6 shrink-0 rounded-full bg-background-tertiary"
+          loading="lazy"
+        />
+        {!item._temporary ? (
+          <BasePathLink
+            className="truncate text-sm font-semibold text-destructive hover:underline"
+            href={`/@${item.name}`}
+          >
             {item.name}
           </BasePathLink>
-          {' ' + item.blacklist_description}
-        </span>
-      ) : (
-        <span className="px-2">
-          {item.name}
-          {' ' + item.blacklist_description}
-        </span>
-      )}
+        ) : (
+          <span className="truncate text-sm font-semibold text-primary/50">{item.name}</span>
+        )}
+        {item.blacklist_description ? (
+          <span className="hidden truncate text-xs text-primary/50 sm:inline">
+            {item.blacklist_description}
+          </span>
+        ) : null}
+      </span>
       {accountOwner ? (
         <Button
           variant="outlineRed"
-          className="whitespace-nowrap p-1"
+          className="ml-2 min-w-[90px] shrink-0 whitespace-nowrap px-2 py-1 text-xs"
           size="xs"
           onClick={() => handleDelete(item.name)}
-          disabled={(deleteIsLoading && currentItem === item.name) || loading || item._temporary}
+          disabled={isItemLoading || item._temporary}
         >
-          {(deleteIsLoading && currentItem === item.name) || loading ? (
-            <span className="flex h-5 w-20 items-center justify-center">
-              <CircleSpinner
-                loading={(deleteIsLoading && currentItem === item.name) || loading}
-                size={18}
-                color="#dc2626"
-              />
-            </span>
+          {isItemLoading ? (
+            <CircleSpinner loading={isItemLoading} size={16} color="#dc2626" />
           ) : (
             listTitle
           )}

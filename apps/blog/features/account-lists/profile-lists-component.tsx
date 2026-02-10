@@ -1,4 +1,4 @@
-'usle client';
+'use client';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { useMemo, useState } from 'react';
 import { getAccountFull } from '@transaction/lib/hive-api';

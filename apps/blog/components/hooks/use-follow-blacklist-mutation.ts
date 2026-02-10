@@ -68,7 +68,7 @@ export function useFollowBlacklistBlogMutation() {
         description: `The blog ${otherBlogs} has been added to your followed blacklist.`,
         variant: 'success'
       });
-      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
+      scheduleInvalidations(queryClient, [queryKey, ['entriesInfinite']], [4000, 10000, 20000]);
       logger.info('useFollowBlacklistBlogMutation onSuccess data: %o', data);
     },
 
@@ -101,17 +101,9 @@ export function useUnfollowBlacklistBlogMutation() {
   const queryClient = useQueryClient();
 
   const unfollowBlacklistBlogMutation = useMutation({
-    onMutate: async (params: { blog: string }) => {
-      const { blog } = params;
-
+    onMutate: async () => {
       await queryClient.cancelQueries({ queryKey });
-
       const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
-
-      if (prevData) {
-        queryClient.setQueryData<IFollowList[]>(queryKey, prevData.filter((e) => e.name !== blog));
-      }
-
       return { prevData, queryKey };
     },
 
@@ -138,7 +130,7 @@ export function useUnfollowBlacklistBlogMutation() {
         description: `The blog ${blog} has been removed from your followed blacklist.`,
         variant: 'success'
       });
-      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
+      scheduleInvalidations(queryClient, [queryKey, ['entriesInfinite']], [4000, 10000, 20000]);
       logger.info('useUnfollowBlacklistBlogMutation onSuccess data: %o', data);
     },
 
@@ -195,7 +187,7 @@ export function useResetFollowBlacklistBlogMutation() {
         description: 'All followed blogs have been removed from your blacklist.',
         variant: 'success'
       });
-      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
+      scheduleInvalidations(queryClient, [queryKey, ['entriesInfinite']], [4000, 10000, 20000]);
       logger.info('useResetFollowBlacklistBlogMutation onSuccess: %o', data);
     },
 

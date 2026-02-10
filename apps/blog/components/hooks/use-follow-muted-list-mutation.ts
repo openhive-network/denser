@@ -66,7 +66,7 @@ export function useFollowMutedBlogMutation() {
         description: `The blog ${otherBlogs} has been added to your followed muted list.`,
         variant: 'success'
       });
-      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
+      scheduleInvalidations(queryClient, [queryKey, ['entriesInfinite']], [4000, 10000, 20000]);
       logger.info('useFollowMutedBlogMutation onSuccess data: %o', data);
     },
 
@@ -99,17 +99,9 @@ export function useUnfollowMutedBlogMutation() {
   const queryKey = ['follow_muted', user.username];
 
   const unfollowMutedBlogMutation = useMutation({
-    onMutate: async (params: { blog: string }) => {
-      const { blog } = params;
-
+    onMutate: async () => {
       await queryClient.cancelQueries({ queryKey });
-
       const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
-
-      if (prevData) {
-        queryClient.setQueryData<IFollowList[]>(queryKey, prevData.filter((e) => e.name !== blog));
-      }
-
       return { prevData, queryKey };
     },
 
@@ -136,7 +128,7 @@ export function useUnfollowMutedBlogMutation() {
         description: `The blog ${blog} has been removed from your followed muted list.`,
         variant: 'success'
       });
-      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
+      scheduleInvalidations(queryClient, [queryKey, ['entriesInfinite']], [4000, 10000, 20000]);
       logger.info('useUnfollowMutedBlogMutation onSuccess data: %o', data);
     },
 
@@ -193,7 +185,7 @@ export function useResetFollowMutedBlogMutation() {
         description: 'Your followed muted blogs have been reset.',
         variant: 'success'
       });
-      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
+      scheduleInvalidations(queryClient, [queryKey, ['entriesInfinite']], [4000, 10000, 20000]);
       logger.info('useResetFollowMutedBlogMutation onSuccess: %o', data);
     },
 

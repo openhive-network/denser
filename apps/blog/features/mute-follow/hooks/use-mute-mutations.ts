@@ -17,7 +17,20 @@ const logger = getLogger('app');
 export function useMuteMutation() {
   const { user } = useUserClient();
   const queryClient = useQueryClient();
+  const mutedQueryKey = ['muted', user.username];
   return useMutation({
+    onMutate: async (params: { username: string }) => {
+      await queryClient.cancelQueries({ queryKey: mutedQueryKey });
+      const prevMutedList: IFollowList[] | undefined = queryClient.getQueryData(mutedQueryKey);
+      const currentData = prevMutedList ?? [];
+      if (!currentData.some((e) => e.name === params.username)) {
+        queryClient.setQueryData<IFollowList[]>(mutedQueryKey, [
+          { name: params.username, blacklist_description: '', muted_list_description: '', _temporary: true },
+          ...currentData
+        ]);
+      }
+      return { prevMutedList };
+    },
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
       const broadcastResult = await transactionService.mute(username, '', { observe: true });
@@ -78,6 +91,14 @@ export function useMuteMutation() {
         const newData = prevMuteData.filter((e) => e.name !== otherUsername);
         queryClient.setQueryData(['muted', otherUsername], newData);
       }
+      // Safety net: re-apply optimistic add to current user's muted list
+      const currentMuted: IFollowList[] = queryClient.getQueryData(mutedQueryKey) ?? [];
+      if (!currentMuted.some((e) => e.name === otherUsername)) {
+        queryClient.setQueryData<IFollowList[]>(mutedQueryKey, [
+          { name: otherUsername, blacklist_description: '', muted_list_description: '', _temporary: true },
+          ...currentMuted
+        ]);
+      }
     },
     onSuccess: (data) => {
       const { username } = user;
@@ -95,9 +116,13 @@ export function useMuteMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
         queryClient.invalidateQueries({ queryKey: ['discussionData'] });
+        queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
       }, 4000);
     },
-    onError: (error: any, variables) => {
+    onError: (error: unknown, variables, context) => {
+      if (context?.prevMutedList !== undefined) {
+        queryClient.setQueryData(mutedQueryKey, context.prevMutedList);
+      }
       handleError(error, {
         method: 'useMuteMutation',
         params: variables
@@ -157,6 +182,7 @@ export function useUnmuteMutation() {
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', otherUsername] });
         queryClient.invalidateQueries({ queryKey: ['discussionData'] });
+        queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
       }, 4000);
     },
     onError: (error: any, variables) => {
@@ -202,6 +228,7 @@ export function useResetBlogListMutation() {
         queryClient.setQueryData(['muted', username], () => []);
         queryClient.invalidateQueries({ queryKey: ['muted', username] });
         queryClient.invalidateQueries({ queryKey: ['profileData', username] });
+        queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
         logger.info('useResetBlogListMutation onSuccess: %o', data);
       }, 4000);
     },

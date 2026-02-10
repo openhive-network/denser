@@ -77,7 +77,7 @@ export function useBlacklistBlogMutation() {
         description: `The blog ${otherBlogs} has been added to your blacklist.`,
         variant: 'success'
       });
-      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
+      scheduleInvalidations(queryClient, [queryKey, ['entriesInfinite']], [4000, 10000, 20000]);
     },
 
     onError: (error: unknown, variables, context) => {
@@ -109,10 +109,9 @@ export function useUnblacklistBlogMutation() {
   const queryKey = ['blacklisted', user.username];
 
   const unblacklistBlogMutation = useMutation({
-    onMutate: async (params: { blog: string }) => {
+    onMutate: async () => {
       await queryClient.cancelQueries({ queryKey });
       const prevData: IFollowList[] | undefined = queryClient.getQueryData(queryKey);
-      removeFromListCache(queryClient, queryKey, params.blog);
       return { prevData, queryKey };
     },
 
@@ -136,7 +135,7 @@ export function useUnblacklistBlogMutation() {
         description: `The blog ${blog} has been removed from your blacklist.`,
         variant: 'success'
       });
-      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
+      scheduleInvalidations(queryClient, [queryKey, ['entriesInfinite']], [4000, 10000, 20000]);
     },
 
     onError: (error: unknown, variables, context) => {
@@ -190,7 +189,7 @@ export function useResetBlacklistBlogMutation() {
         description: 'All blacklisted blogs have been removed.',
         variant: 'success'
       });
-      scheduleInvalidations(queryClient, [queryKey], [4000, 10000, 20000]);
+      scheduleInvalidations(queryClient, [queryKey, ['entriesInfinite']], [4000, 10000, 20000]);
       logger.info('useResetBlacklistBlogMutation onSuccess: %o', data);
     },
 
