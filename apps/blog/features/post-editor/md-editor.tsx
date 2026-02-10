@@ -8,6 +8,7 @@ import {
   createElement,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   ClipboardEvent
@@ -31,6 +32,8 @@ import { onImageDrop, onImagePaste, onImageUpload } from './lib/utils';
 import { convertHiveUrlsInText, parseHiveBlogUrl } from './lib/hive-url-converter';
 
 const logger = getLogger('app');
+
+const EDITOR_STYLE = { '--color-canvas-default': 'var(--background)' } as const;
 
 interface MdEditorProps {
   onChange: (value: string) => void;
@@ -121,13 +124,20 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     [setFormValue, signer, user.username]
   );
 
-  const dragHandler = (event: { preventDefault: () => void; stopPropagation: () => void; type: string }) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (event.type === 'dragenter' || event.type === 'dragover') {
-      setIsDrag(true);
-    } else if (event.type === 'dragleave') setIsDrag(false);
-  };
+  const handleEditorChange = useCallback((value?: string) => {
+    setFormValue(value || '');
+  }, []);
+
+  const dragHandler = useCallback(
+    (event: { preventDefault: () => void; stopPropagation: () => void; type: string }) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.type === 'dragenter' || event.type === 'dragover') {
+        setIsDrag(true);
+      } else if (event.type === 'dragleave') setIsDrag(false);
+    },
+    []
+  );
 
   const dropHandler = useCallback(
     async (event: {
@@ -366,6 +376,13 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     execute: () => {}
   });
 
+  const editorCommands = useMemo(
+    () => [...(commands.getCommands() as ICommand[]), imgBtn(inputRef), spoilerBtn()],
+    [t]
+  );
+
+  const editorExtraCommands = useMemo(() => [hiveLinksToggle()], [convertHiveLinks, t]);
+
   return !imageUserBlocklist?.includes(user.username) ? (
     <div ref={containerRef}>
       <input
@@ -385,11 +402,9 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
             preview="edit"
             value={formValue}
             aria-placeholder={placeholder ?? ''}
-            onChange={(value) => {
-              setFormValue(value || '');
-            }}
-            commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef), spoilerBtn()]}
-            extraCommands={[hiveLinksToggle()]}
+            onChange={handleEditorChange}
+            commands={editorCommands}
+            extraCommands={editorExtraCommands}
             className={cn({ '!bg-red-400 !bg-opacity-20': isDrag })}
             onDrop={dropHandler}
             onDragEnter={dragHandler}
@@ -397,7 +412,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
             onDragLeave={dragHandler}
             height={windowheight}
             //@ts-ignore
-            style={{ '--color-canvas-default': 'var(--background)' }}
+            style={EDITOR_STYLE}
           />
         </div>
         {isUploading && (
@@ -417,13 +432,11 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         preview="edit"
         value={formValue}
         aria-placeholder={placeholder ?? ''}
-        onChange={(value) => {
-          setFormValue(value || '');
-        }}
-        commands={[...(commands.getCommands() as ICommand[]), imgBtn(inputRef), spoilerBtn()]}
-        extraCommands={[hiveLinksToggle()]}
+        onChange={handleEditorChange}
+        commands={editorCommands}
+        extraCommands={editorExtraCommands}
         //@ts-ignore
-        style={{ '--color-canvas-default': 'var(--background)' }}
+        style={EDITOR_STYLE}
       />
     </div>
   );
