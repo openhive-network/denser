@@ -9,9 +9,8 @@ import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
 const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
   const { user } = useUserClient();
-  // Use empty key when user is not logged in to disable storage
   const [showSuggestions, storeShowSuggestions] = useStorageWithTTL<boolean>(
-    user.username ? `showSuggestions-${user.username}` : '',
+    `showSuggestions${user.username ? `-${user.username}` : ''}`,
     true,
     StorageTTL.PERMANENT
   );
