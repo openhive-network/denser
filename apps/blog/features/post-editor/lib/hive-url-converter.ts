@@ -8,7 +8,7 @@
  * on any frontend.
  */
 
-/** Hive blog frontend domains that use the standard `/@username/permlink` URL pattern */
+/** Hive blog frontend domains */
 const HIVE_BLOG_DOMAINS = new Set([
   'hive.blog',
   'peakd.com',
@@ -21,12 +21,20 @@ const HIVE_BLOG_DOMAINS = new Set([
   'splintertalk.io',
   'proofofbrain.io',
   'inji.com',
+  'blog.openhive.network',
   'blog.dev.openhive.network'
 ]);
 
+/** Blog path prefixes that should be converted to relative paths */
+const KNOWN_BLOG_PATH_PREFIXES = [
+  '/trending', '/hot', '/created', '/payout', '/muted', '/roles',
+  '/communities', '/search', '/welcome',
+  '/faq.html', '/privacy.html', '/tos.html', '/submit.html'
+];
+
 interface HiveUrlMatch {
   originalUrl: string;
-  /** Agnostic relative path, e.g. "/@username/permlink" or "/@username" */
+  /** Agnostic relative path, e.g. "/@username/permlink", "/trending", "/" */
   relativePath: string;
 }
 
@@ -38,7 +46,7 @@ export interface ConversionResult {
 
 /**
  * Parses a URL and returns the agnostic relative path if it's a known Hive blog URL.
- * Supports post URLs (`/@user/permlink`) and profile URLs (`/@user`).
+ * Supports user paths (`/@user/...`), feed pages (`/trending/...`), and static pages.
  */
 export function parseHiveBlogUrl(urlString: string): HiveUrlMatch | null {
   let url: URL;
@@ -49,27 +57,37 @@ export function parseHiveBlogUrl(urlString: string): HiveUrlMatch | null {
   }
 
   const hostname = url.hostname.replace(/^www\./, '');
-
   if (!HIVE_BLOG_DOMAINS.has(hostname)) return null;
 
   const { pathname } = url;
+
+  // User paths: /@username and all subpaths (posts, followed, lists, etc.)
   const atIndex = pathname.indexOf('/@');
-  if (atIndex === -1) return null;
+  if (atIndex !== -1) {
+    const userPath = pathname.slice(atIndex);
+    const segments = userPath.slice(2).split('/');
+    if (segments.length === 0 || !segments[0]) return null;
 
-  const rawPath = pathname.slice(atIndex);
-  // Split into segments: ["", "username", "permlink", ...]
-  const segments = rawPath.slice(2).split('/');
-  if (segments.length === 0 || !segments[0]) return null;
+    const username = segments[0];
+    if (!/^[a-z0-9][a-z0-9.-]{1,15}$/.test(username)) return null;
 
-  const username = segments[0];
-  if (!/^[a-z0-9][a-z0-9.-]{1,15}$/.test(username)) return null;
+    return { originalUrl: urlString, relativePath: userPath };
+  }
 
-  // Build relative path: /@username or /@username/permlink
-  const relativePath = segments.length >= 2 && segments[1]
-    ? `/@${segments[0]}/${segments[1]}`
-    : `/@${segments[0]}`;
+  // Homepage
+  if (pathname === '/' || pathname === '') {
+    return { originalUrl: urlString, relativePath: '/' };
+  }
 
-  return { originalUrl: urlString, relativePath };
+  // Known blog paths (feeds, pages, etc.) - exact match or prefix + /
+  const isKnownPath = KNOWN_BLOG_PATH_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + '/')
+  );
+  if (isKnownPath) {
+    return { originalUrl: urlString, relativePath: pathname };
+  }
+
+  return null;
 }
 
 /**
