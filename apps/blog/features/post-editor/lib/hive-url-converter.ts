@@ -59,7 +59,7 @@ export function parseHiveBlogUrl(urlString: string): HiveUrlMatch | null {
   const hostname = url.hostname.replace(/^www\./, '');
   if (!HIVE_BLOG_DOMAINS.has(hostname)) return null;
 
-  const { pathname } = url;
+  const { pathname, hash } = url;
 
   // User paths: /@username and all subpaths (posts, followed, lists, etc.)
   const atIndex = pathname.indexOf('/@');
@@ -71,12 +71,12 @@ export function parseHiveBlogUrl(urlString: string): HiveUrlMatch | null {
     const username = segments[0];
     if (!/^[a-z0-9][a-z0-9.-]{1,15}$/.test(username)) return null;
 
-    return { originalUrl: urlString, relativePath: userPath };
+    return { originalUrl: urlString, relativePath: userPath + hash };
   }
 
   // Homepage
   if (pathname === '/' || pathname === '') {
-    return { originalUrl: urlString, relativePath: '/' };
+    return { originalUrl: urlString, relativePath: '/' + hash };
   }
 
   // Known blog paths (feeds, pages, etc.) - exact match or prefix + /
@@ -84,7 +84,7 @@ export function parseHiveBlogUrl(urlString: string): HiveUrlMatch | null {
     (prefix) => pathname === prefix || pathname.startsWith(prefix + '/')
   );
   if (isKnownPath) {
-    return { originalUrl: urlString, relativePath: pathname };
+    return { originalUrl: urlString, relativePath: pathname + hash };
   }
 
   return null;
