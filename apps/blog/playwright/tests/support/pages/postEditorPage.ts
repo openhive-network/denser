@@ -10,7 +10,6 @@ export class PostEditorPage {
     readonly getPostTitleInput: Locator;
     readonly getEditorContent: Locator;
     readonly getEditorContentTextarea: Locator;
-    readonly getEditorBar: Locator;
     readonly getEditorToolbar: Locator;
     readonly getBoldButtonInEditorToolbar: Locator;
     readonly getItalicButtonInEditorToolbar: Locator;
@@ -21,13 +20,11 @@ export class PostEditorPage {
     readonly getQuoteButtonInEditorToolbar: Locator;
     readonly getCodeButtonInEditorToolbar: Locator;
     readonly getCodeBlockButtonInEditorToolbar: Locator;
-    readonly getCommentButtonInEditorToolbar: Locator;
     readonly getImageButtonInEditorToolbar: Locator;
     readonly getTableButtonInEditorToolbar: Locator;
     readonly getUnorderedListButtonInEditorToolbar: Locator;
     readonly getOrderedListButtonInEditorToolbar: Locator;
     readonly getCheckedListButtonInEditorToolbar: Locator;
-    readonly getHelpButtonInEditorToolbar: Locator;
     readonly getSelectImageButtonInEditorToolbar: Locator;
     readonly getPostSummaryInput: Locator;
     readonly getEnterYourTagsInput: Locator;
@@ -50,10 +47,9 @@ export class PostEditorPage {
         this.getPreviewContainer = page.getByTestId('preview-container');
         this.getFormContainer = page.getByTestId('form-container');
         this.getPostTitleInput = page.getByTestId('post-title-input');
-        this.getEditorContent = page.locator('div.w-md-editor-content');
-        this.getEditorContentTextarea = this.getEditorContent.locator('textarea');
-        this.getEditorBar = page.locator('div.w-md-editor-bar');
-        this.getEditorToolbar = page.locator('div.w-md-editor-toolbar ');
+        this.getEditorContent = page.locator('div.cm-editor');
+        this.getEditorContentTextarea = this.getEditorContent.locator('.cm-content');
+        this.getEditorToolbar = page.getByTestId('editor-toolbar');
         this.getBoldButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="bold"]');
         this.getItalicButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="italic"]');
         this.getStrikeThroughButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="strikethrough"]');
@@ -63,14 +59,12 @@ export class PostEditorPage {
         this.getQuoteButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="quote"]');
         this.getCodeButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="code"]');
         this.getCodeBlockButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="codeBlock"]');
-        this.getCommentButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="comment"]');
         this.getImageButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="image"]');
         this.getTableButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="table"]');
         this.getUnorderedListButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="unordered-list"]');
         this.getOrderedListButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="ordered-list"]');
         this.getCheckedListButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="checked-list"]');
-        this.getHelpButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="help"]');
-        this.getSelectImageButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="closed"]');
+        this.getSelectImageButtonInEditorToolbar = this.getEditorToolbar.locator('[data-name="text2image"]');
         this.getPostSummaryInput = page.locator('[name="postSummary"]');
         this.getEnterYourTagsInput = page.locator('[name="tags"]');
         this.getAuthorInput = page.locator('[name="author"]');
@@ -130,8 +124,9 @@ export class PostEditorPage {
         await this.validateDefaultPostEditorIsLoaded();
         // Type the title of the post
         await this.getPostTitleInput.fill(postTitle);
-        // Type the conntent of the post
-        await this.getEditorContentTextarea.fill(postContentText);
+        // Type the content of the post (CodeMirror uses contenteditable div)
+        await this.getEditorContentTextarea.click();
+        await this.page.keyboard.type(postContentText);
         // Type the post summary
         await this.getPostSummaryInput.fill(postSummary);
         // Type the tag
@@ -151,8 +146,9 @@ export class PostEditorPage {
         await this.validateDefaultPostEditorIsLoaded();
         // Type the title of the post
         await this.getPostTitleInput.fill(postTitle);
-        // Type the conntent of the post
-        await this.getEditorContentTextarea.fill(postContentText);
+        // Type the content of the post (CodeMirror uses contenteditable div)
+        await this.getEditorContentTextarea.click();
+        await this.page.keyboard.type(postContentText);
         // Type the post summary
         await this.getPostSummaryInput.fill(postSummary);
         // Type the tag
@@ -173,8 +169,9 @@ export class PostEditorPage {
         await this.validateDefaultPostEditorIsLoaded();
         // Type the title of the post
         await this.getPostTitleInput.fill(postTitle);
-        // Type the conntent of the post
-        await this.getEditorContentTextarea.fill(postContentText);
+        // Type the content of the post (CodeMirror uses contenteditable div)
+        await this.getEditorContentTextarea.click();
+        await this.page.keyboard.type(postContentText);
         // Type the post summary
         await this.getPostSummaryInput.fill(postSummary);
         // Type the tag

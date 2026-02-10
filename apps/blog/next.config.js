@@ -1,6 +1,5 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
-const removeImports = require('next-remove-imports')();
 const withPWA = require('next-pwa')({
   dest: 'public',
   disable: process.env.NODE_ENV !== 'production',
@@ -167,7 +166,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
 const { withSentryConfig } = require('@sentry/nextjs');
 
-module.exports = withSentryConfig(withPWA(withBundleAnalyzer(removeImports(nextConfig))), {
+module.exports = withSentryConfig(withPWA(withBundleAnalyzer(nextConfig)), {
   // Disable source map upload - env vars not available at build time
   // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
   sourcemaps: {

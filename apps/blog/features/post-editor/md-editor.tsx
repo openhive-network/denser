@@ -1,21 +1,24 @@
 'use client';
 
-import '@uiw/react-md-editor/markdown-editor.css';
 import {
+  Dispatch,
   FC,
-  KeyboardEvent,
-  MutableRefObject,
+  SetStateAction,
   createElement,
   useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState,
-  ClipboardEvent
+  useState
 } from 'react';
-import * as commands from '@uiw/react-md-editor/commands';
+import { EditorView, keymap, placeholder as cmPlaceholder, ViewUpdate } from '@codemirror/view';
+import { EditorState, Compartment } from '@codemirror/state';
+import { markdown } from '@codemirror/lang-markdown';
+import { languages } from '@codemirror/language-data';
+import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
+import { searchKeymap } from '@codemirror/search';
+import { oneDark } from '@codemirror/theme-one-dark';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import MDEditor, { ICommand, TextAreaTextApi } from '@uiw/react-md-editor';
 import { getLogger } from '@ui/lib/logging';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -23,7 +26,6 @@ import { ToastAction } from '@ui/components/toast';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { cn } from '@ui/lib/utils';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
-import { Button } from '@ui/components';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useTranslation } from '@/blog/i18n/client';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
@@ -33,8 +35,6 @@ import { convertHiveUrlsInText, parseHiveBlogUrl } from './lib/hive-url-converte
 
 const logger = getLogger('app');
 
-const EDITOR_STYLE = { '--color-canvas-default': 'var(--background)' } as const;
-
 interface MdEditorProps {
   onChange: (value: string) => void;
   persistedValue: string;
@@ -42,14 +42,207 @@ interface MdEditorProps {
   windowheight: number;
 }
 
+// --- Toolbar helpers ---
+
+function wrapSelection(view: EditorView, before: string, after: string) {
+  const { from, to } = view.state.selection.main;
+  const selected = view.state.sliceDoc(from, to);
+  const replacement = before + selected + after;
+  view.dispatch({
+    changes: { from, to, insert: replacement },
+    selection: { anchor: from + before.length, head: from + before.length + selected.length }
+  });
+  view.focus();
+}
+
+function prefixLines(view: EditorView, prefix: string) {
+  const { from, to } = view.state.selection.main;
+  const doc = view.state.doc;
+  const startLine = doc.lineAt(from).number;
+  const endLine = doc.lineAt(to).number;
+  const changes: { from: number; to: number; insert: string }[] = [];
+  for (let i = startLine; i <= endLine; i++) {
+    const line = doc.line(i);
+    changes.push({ from: line.from, to: line.from, insert: prefix });
+  }
+  view.dispatch({ changes });
+  view.focus();
+}
+
+function insertAtCursor(view: EditorView, text: string) {
+  const pos = view.state.selection.main.head;
+  view.dispatch({
+    changes: { from: pos, insert: text },
+    selection: { anchor: pos + text.length }
+  });
+  view.focus();
+}
+
+function cycleHeading(view: EditorView) {
+  const { from } = view.state.selection.main;
+  const line = view.state.doc.lineAt(from);
+  const lineText = line.text;
+  const match = lineText.match(/^(#{1,6})\s/);
+  if (match) {
+    const level = match[1].length;
+    if (level < 6) {
+      view.dispatch({ changes: { from: line.from, to: line.from + level, insert: '#'.repeat(level + 1) } });
+    } else {
+      // Remove all heading hashes
+      view.dispatch({ changes: { from: line.from, to: line.from + level + 1, insert: '' } });
+    }
+  } else {
+    view.dispatch({ changes: { from: line.from, to: line.from, insert: '### ' } });
+  }
+  view.focus();
+}
+
+function insertTable(view: EditorView) {
+  const template =
+    '\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text     | Text     |\n';
+  insertAtCursor(view, template);
+}
+
+function numberedList(view: EditorView) {
+  const { from, to } = view.state.selection.main;
+  const doc = view.state.doc;
+  const startLine = doc.lineAt(from).number;
+  const endLine = doc.lineAt(to).number;
+  const changes: { from: number; to: number; insert: string }[] = [];
+  for (let i = startLine; i <= endLine; i++) {
+    const line = doc.line(i);
+    changes.push({ from: line.from, to: line.from, insert: `${i - startLine + 1}. ` });
+  }
+  view.dispatch({ changes });
+  view.focus();
+}
+
+// --- Toolbar button data ---
+
+interface ToolbarButton {
+  name: string;
+  icon: string;
+  title: string;
+  action: (view: EditorView) => void;
+  shortcut?: string;
+}
+
+function getToolbarButtons(t: (key: string) => string): ToolbarButton[] {
+  return [
+    { name: 'bold', icon: 'B', title: 'Bold', action: (v) => wrapSelection(v, '**', '**'), shortcut: 'Ctrl+B' },
+    { name: 'italic', icon: 'I', title: 'Italic', action: (v) => wrapSelection(v, '*', '*'), shortcut: 'Ctrl+I' },
+    {
+      name: 'strikethrough',
+      icon: 'S̶',
+      title: 'Strikethrough',
+      action: (v) => wrapSelection(v, '~~', '~~')
+    },
+    { name: 'hr', icon: '―', title: 'Horizontal Rule', action: (v) => insertAtCursor(v, '\n---\n') },
+    { name: 'title', icon: 'H', title: 'Heading', action: cycleHeading },
+    {
+      name: 'link',
+      icon: '🔗',
+      title: 'Link',
+      action: (v) => {
+        const { from, to } = v.state.selection.main;
+        const selected = v.state.sliceDoc(from, to);
+        const replacement = `[${selected}](url)`;
+        v.dispatch({
+          changes: { from, to, insert: replacement },
+          selection: {
+            anchor: from + selected.length + 3,
+            head: from + selected.length + 6
+          }
+        });
+        v.focus();
+      },
+      shortcut: 'Ctrl+K'
+    },
+    { name: 'quote', icon: '❝', title: 'Quote', action: (v) => prefixLines(v, '> ') },
+    { name: 'code', icon: '‹›', title: 'Inline Code', action: (v) => wrapSelection(v, '`', '`') },
+    {
+      name: 'codeBlock',
+      icon: '{ }',
+      title: 'Code Block',
+      action: (v) => wrapSelection(v, '```\n', '\n```')
+    },
+    {
+      name: 'image',
+      icon: '🖼',
+      title: 'Image',
+      action: (v) => {
+        const { from, to } = v.state.selection.main;
+        const selected = v.state.sliceDoc(from, to);
+        const replacement = `![${selected || 'alt'}](url)`;
+        v.dispatch({
+          changes: { from, to, insert: replacement },
+          selection: {
+            anchor: from + (selected ? selected.length : 3) + 3,
+            head: from + (selected ? selected.length : 3) + 6
+          }
+        });
+        v.focus();
+      }
+    },
+    { name: 'table', icon: '⊞', title: 'Table', action: insertTable },
+    { name: 'unordered-list', icon: '•', title: 'Unordered List', action: (v) => prefixLines(v, '- ') },
+    { name: 'ordered-list', icon: '1.', title: 'Ordered List', action: numberedList },
+    {
+      name: 'checked-list',
+      icon: '☑',
+      title: 'Task List',
+      action: (v) => prefixLines(v, '- [ ] ')
+    }
+  ];
+}
+
+// --- Theme ---
+
+const lightTheme = EditorView.theme({
+  '&': {
+    backgroundColor: 'hsl(var(--background))',
+    color: 'hsl(var(--foreground))'
+  },
+  '.cm-content': {
+    caretColor: 'hsl(var(--foreground))',
+    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+    fontSize: '14px',
+    lineHeight: '1.6'
+  },
+  '.cm-cursor': {
+    borderLeftColor: 'hsl(var(--foreground))'
+  },
+  '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': {
+    backgroundColor: 'hsl(var(--accent))'
+  },
+  '.cm-gutters': {
+    display: 'none'
+  },
+  '.cm-activeLine': {
+    backgroundColor: 'transparent'
+  },
+  '.cm-scroller': {
+    overflow: 'auto'
+  }
+});
+
+const darkCompartment = new Compartment();
+
+function isDarkMode(): boolean {
+  if (typeof document === 'undefined') return false;
+  return document.documentElement.classList.contains('dark');
+}
+
+// --- Component ---
+
 const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, windowheight }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
-  const [formValue, setFormValue] = useState<string>(persistedValue);
   const { signer } = useSignerContext();
-  const inputRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
-  const editorRef = useRef(null);
-  const textApiRef = useRef<TextAreaTextApi>(null) as MutableRefObject<TextAreaTextApi>;
+  const viewRef = useRef<EditorView | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const editorMountRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isDrag, setIsDrag] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [insertImg, setInsertImg] = useState('');
@@ -59,105 +252,74 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     StorageTTL.PERMANENT
   );
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  // Track whether content changes are internal (from editor typing) to avoid sync loops
+  const isInternalChangeRef = useRef(false);
+  const lastInputTimeRef = useRef(0);
 
+  // Ref for convertHiveLinks so paste handler closure always sees latest value
+  const convertHiveLinksRef = useRef(convertHiveLinks);
   useEffect(() => {
-    onChange(formValue);
-  }, [formValue]);
+    convertHiveLinksRef.current = convertHiveLinks;
+  }, [convertHiveLinks]);
 
-  useEffect(() => {
-    setFormValue(persistedValue);
-  }, [persistedValue]);
-
-  // Fix tab navigation: remove toolbar from tab order and override Tab/Shift+Tab
-  // so they navigate between form fields instead of inserting indentation
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const toolbar = containerRef.current.querySelector('.w-md-editor-toolbar');
-    if (toolbar) {
-      toolbar.querySelectorAll<HTMLElement>('button, input, a, [tabindex]').forEach((el) => {
-        el.tabIndex = -1;
-      });
-    }
-
-    let cleanup: (() => void) | undefined;
-    const timeoutId = setTimeout(() => {
-      const textarea = containerRef.current?.querySelector('.w-md-editor-text-input') as HTMLTextAreaElement;
-      if (!textarea) return;
-
-      const handleShiftTab = (e: globalThis.KeyboardEvent) => {
-        if (e.key !== 'Tab' || !e.shiftKey) return;
-        e.preventDefault();
-        e.stopPropagation();
-
-        const focusables = Array.from(
-          document.querySelectorAll<HTMLElement>(
-            'input:not([disabled]):not([type="hidden"]):not([tabindex="-1"]), ' +
-            'textarea:not([disabled]):not([tabindex="-1"]), ' +
-            'select:not([disabled]):not([tabindex="-1"]), ' +
-            'button:not([disabled]):not([tabindex="-1"])'
-          )
-        ).filter((el) => el.offsetParent !== null);
-
-        const idx = focusables.indexOf(textarea);
-        if (idx > 0) focusables[idx - 1]?.focus();
-      };
-
-      textarea.addEventListener('keydown', handleShiftTab, true);
-      cleanup = () => textarea.removeEventListener('keydown', handleShiftTab, true);
-    }, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-      cleanup?.();
-    };
+  // Adapter to bridge CodeMirror dispatch with React setState-style image upload functions
+  const setMarkdownAdapter: Dispatch<SetStateAction<string>> = useCallback((action) => {
+    const view = viewRef.current;
+    if (!view) return;
+    const current = view.state.doc.toString();
+    const newValue = typeof action === 'function' ? action(current) : action;
+    if (newValue === current) return;
+    isInternalChangeRef.current = true;
+    view.dispatch({
+      changes: { from: 0, to: view.state.doc.length, insert: newValue }
+    });
   }, []);
 
+  const isBlockedUser = imageUserBlocklist?.includes(user.username);
+
+  // Image upload handler
   const inputImageHandler = useCallback(
-    async (event: { target: { files: FileList } }) => {
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.files && event.target.files.length === 1) {
         setInsertImg('');
-        await onImageUpload(event.target.files[0], setFormValue, user.username, signer, setIsUploading);
+        const cursorPos = viewRef.current?.state.selection.main.head;
+        await onImageUpload(event.target.files[0], setMarkdownAdapter, user.username, signer, setIsUploading, cursorPos);
       }
     },
-    [setFormValue, signer, user.username]
+    [setMarkdownAdapter, signer, user.username]
   );
 
-  const handleEditorChange = useCallback((value?: string) => {
-    setFormValue(value || '');
-  }, []);
-
+  // Drag handlers
   const dragHandler = useCallback(
-    (event: { preventDefault: () => void; stopPropagation: () => void; type: string }) => {
+    (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       event.stopPropagation();
       if (event.type === 'dragenter' || event.type === 'dragover') {
         setIsDrag(true);
-      } else if (event.type === 'dragleave') setIsDrag(false);
+      } else if (event.type === 'dragleave') {
+        setIsDrag(false);
+      }
     },
     []
   );
 
   const dropHandler = useCallback(
-    async (event: {
-      preventDefault: () => void;
-      stopPropagation: () => void;
-      dataTransfer: DataTransfer;
-    }) => {
+    async (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
-      await onImageDrop(event.dataTransfer, setFormValue, signer.username, signer, setIsUploading);
+      const cursorPos = viewRef.current?.state.selection.main.head;
+      await onImageDrop(event.dataTransfer, setMarkdownAdapter, signer.username, signer, setIsUploading, cursorPos);
     },
-    [setFormValue, signer]
+    [setMarkdownAdapter, signer]
   );
 
-  const pasteHandler = useCallback(
-    async (event: ClipboardEvent<HTMLDivElement>) => {
-      if (!event.clipboardData) return;
+  // Paste handler (images + Hive URL conversion)
+  const handlePaste = useCallback(
+    (event: ClipboardEvent, view: EditorView): boolean => {
+      if (!event.clipboardData) return false;
 
-      // Check for image paste first (existing behavior)
+      // Check for image paste first
       let hasImage = false;
       for (let i = 0; i < event.clipboardData.items.length; i++) {
         const it = event.clipboardData.items[i];
@@ -166,26 +328,20 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
           break;
         }
       }
-      if (hasImage) {
+      if (hasImage && !isBlockedUser) {
         event.preventDefault();
-        event.stopPropagation();
-        await onImagePaste(event.clipboardData, setFormValue, signer.username, signer, setIsUploading);
-        return;
+        const cursorPos = view.state.selection.main.head;
+        onImagePaste(event.clipboardData, setMarkdownAdapter, signer.username, signer, setIsUploading, cursorPos);
+        return true;
       }
 
-      if (!convertHiveLinks) return;
+      if (!convertHiveLinksRef.current) return false;
 
       const clipboardText = event.clipboardData.getData('text/plain');
-      if (!clipboardText) return;
+      if (!clipboardText) return false;
 
-      const textarea = (event.currentTarget as HTMLElement).querySelector(
-        '.w-md-editor-text-input'
-      ) as HTMLTextAreaElement;
-      if (!textarea) return;
-
-      const selStart = textarea.selectionStart;
-      const selEnd = textarea.selectionEnd;
-      const textBeforeCursor = textarea.value.slice(0, selStart);
+      const { from, to } = view.state.selection.main;
+      const textBeforeCursor = view.state.sliceDoc(0, from);
 
       // Detect if pasting inside a markdown link URL position: [text](|cursor)
       const lastLinkOpen = textBeforeCursor.lastIndexOf('](');
@@ -196,31 +352,26 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       let conversionsCount: number;
 
       if (isInsideMarkdownLinkUrl) {
-        // Inside markdown link URL - convert just the URL without wrapping
         const parsed = parseHiveBlogUrl(clipboardText.trim());
-        if (!parsed) return;
+        if (!parsed) return false;
         convertedText = parsed.relativePath;
         conversionsCount = 1;
       } else {
-        // Normal paste - convert Hive URLs only in the pasted content
         const result = convertHiveUrlsInText(clipboardText);
-        if (!result.hadConversions) return;
+        if (!result.hadConversions) return false;
         convertedText = result.convertedText;
         conversionsCount = result.conversionsCount;
       }
 
       event.preventDefault();
-      event.stopPropagation();
 
-      const currentValue = textarea.value;
-      const newValue = currentValue.slice(0, selStart) + convertedText + currentValue.slice(selEnd);
-      const undoValue = currentValue.slice(0, selStart) + clipboardText + currentValue.slice(selEnd);
+      const currentDoc = view.state.doc.toString();
+      const undoValue = currentDoc.slice(0, from) + clipboardText + currentDoc.slice(to);
 
-      setFormValue(newValue);
-
-      requestAnimationFrame(() => {
-        const newCursorPos = selStart + convertedText.length;
-        textarea.setSelectionRange(newCursorPos, newCursorPos);
+      isInternalChangeRef.current = true;
+      view.dispatch({
+        changes: { from, to, insert: convertedText },
+        selection: { anchor: from + convertedText.length }
       });
 
       toast({
@@ -230,214 +381,379 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
           ToastAction,
           {
             altText: t('submit_page.undo'),
-            onClick: () => setFormValue(undoValue)
+            onClick: () => {
+              setMarkdownAdapter(undoValue);
+            }
           },
           t('submit_page.undo')
         )
       });
+
+      return true;
     },
-    [setFormValue, signer, convertHiveLinks, t]
+    [setMarkdownAdapter, signer, isBlockedUser, t]
   );
 
-  // Focus the editor textarea when clicking on the editor container
-  const focusEditor = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    // Find the textarea within this specific editor instance
-    const container = event.currentTarget;
-    const textarea = container.querySelector('.w-md-editor-text-input') as HTMLTextAreaElement;
-    if (textarea && document.activeElement !== textarea) {
-      textarea.focus();
-    }
-  }, []);
+  // Stable ref for paste handler so extension doesn't need to be re-created
+  const pasteHandlerRef = useRef(handlePaste);
+  useEffect(() => {
+    pasteHandlerRef.current = handlePaste;
+  }, [handlePaste]);
 
-  // Handle Ctrl+Home/End to ensure cursor scrolls into view (Firefox fix)
-  const keyDownHandler = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
-    const isCtrlOrCmd = event.ctrlKey || event.metaKey;
-    if (isCtrlOrCmd && (event.key === 'Home' || event.key === 'End')) {
-      const textarea = document.querySelector('.w-md-editor-text-input') as HTMLTextAreaElement;
-      if (!textarea) return;
+  // Stable ref for onChange
+  const onChangeRef = useRef(onChange);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
-      // Capture cursor position synchronously before browser handles the keystroke
-      const anchor = textarea.selectionStart;
-      const isSelecting = event.shiftKey;
-      const target = event.key === 'Home' ? 0 : textarea.value.length;
+  // Initialize CodeMirror
+  useEffect(() => {
+    if (!editorMountRef.current) return;
 
-      setTimeout(() => {
-        if (isSelecting) {
-          const start = Math.min(anchor, target);
-          const end = Math.max(anchor, target);
-          const direction = target < anchor ? 'backward' : 'forward';
-          textarea.setSelectionRange(start, end, direction);
-        } else {
-          textarea.setSelectionRange(target, target);
-          textarea.blur();
-          textarea.focus();
+    const updateListener = EditorView.updateListener.of((update: ViewUpdate) => {
+      if (update.docChanged) {
+        isInternalChangeRef.current = true;
+        lastInputTimeRef.current = Date.now();
+        onChangeRef.current(update.state.doc.toString());
+      }
+    });
+
+    const pasteExtension = EditorView.domEventHandlers({
+      paste(event, view) {
+        return pasteHandlerRef.current(event, view);
+      }
+    });
+
+    const tabKeymap = keymap.of([
+      {
+        key: 'Tab',
+        run: (view) => {
+          // Move focus to next focusable element
+          const focusables = Array.from(
+            document.querySelectorAll<HTMLElement>(
+              'input:not([disabled]):not([type="hidden"]):not([tabindex="-1"]), ' +
+              'textarea:not([disabled]):not([tabindex="-1"]), ' +
+              'select:not([disabled]):not([tabindex="-1"]), ' +
+              'button:not([disabled]):not([tabindex="-1"]), ' +
+              '[contenteditable]:not([tabindex="-1"])'
+            )
+          ).filter((el) => el.offsetParent !== null);
+
+          const cmContent = view.contentDOM;
+          const idx = focusables.indexOf(cmContent);
+          if (idx >= 0 && idx < focusables.length - 1) {
+            focusables[idx + 1]?.focus();
+          }
+          return true;
         }
+      },
+      {
+        key: 'Shift-Tab',
+        run: (view) => {
+          const focusables = Array.from(
+            document.querySelectorAll<HTMLElement>(
+              'input:not([disabled]):not([type="hidden"]):not([tabindex="-1"]), ' +
+              'textarea:not([disabled]):not([tabindex="-1"]), ' +
+              'select:not([disabled]):not([tabindex="-1"]), ' +
+              'button:not([disabled]):not([tabindex="-1"]), ' +
+              '[contenteditable]:not([tabindex="-1"])'
+            )
+          ).filter((el) => el.offsetParent !== null);
 
-        textarea.scrollTop = event.key === 'Home' ? 0 : textarea.scrollHeight;
-      }, 0);
+          const cmContent = view.contentDOM;
+          const idx = focusables.indexOf(cmContent);
+          if (idx > 0) {
+            focusables[idx - 1]?.focus();
+          }
+          return true;
+        }
+      }
+    ]);
+
+    const boldItalicKeymap = keymap.of([
+      {
+        key: 'Mod-b',
+        run: (view) => {
+          wrapSelection(view, '**', '**');
+          return true;
+        }
+      },
+      {
+        key: 'Mod-i',
+        run: (view) => {
+          wrapSelection(view, '*', '*');
+          return true;
+        }
+      },
+      {
+        key: 'Mod-k',
+        run: (view) => {
+          const { from, to } = view.state.selection.main;
+          const selected = view.state.sliceDoc(from, to);
+          const replacement = `[${selected}](url)`;
+          view.dispatch({
+            changes: { from, to, insert: replacement },
+            selection: {
+              anchor: from + selected.length + 3,
+              head: from + selected.length + 6
+            }
+          });
+          view.focus();
+          return true;
+        }
+      }
+    ]);
+
+    const extensions = [
+      tabKeymap,
+      boldItalicKeymap,
+      keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
+      history(),
+      markdown({ codeLanguages: languages }),
+      lightTheme,
+      darkCompartment.of(isDarkMode() ? oneDark : []),
+      updateListener,
+      pasteExtension,
+      EditorView.lineWrapping,
+      EditorView.theme({
+        '&': { height: `${windowheight}px` },
+        '.cm-scroller': { overflow: 'auto' }
+      })
+    ];
+
+    if (placeholder) {
+      extensions.push(cmPlaceholder(placeholder));
     }
+
+    const state = EditorState.create({
+      doc: persistedValue,
+      extensions
+    });
+
+    const view = new EditorView({
+      state,
+      parent: editorMountRef.current
+    });
+
+    viewRef.current = view;
+
+    return () => {
+      view.destroy();
+      viewRef.current = null;
+    };
+    // Only run on mount — all syncing via refs
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const imgBtn = (inputRef: MutableRefObject<HTMLInputElement>): commands.ICommand => ({
-    name: 'Text To Image',
-    keyCommand: 'text2image',
-    render: (
-      command: commands.ICommand,
-      disabled: boolean | undefined,
-      executeCommand: (arg0: commands.ICommand<string>, arg1: string | undefined) => void
-    ) => {
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger
-              type="button"
-              aria-label={t('submit_page.insert_images_text')}
-              disabled={disabled}
-              onClick={() => {
-                executeCommand(command, command.groupName);
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-              </svg>
-            </TooltipTrigger>
-            <TooltipContent>{t('submit_page.insert_images_text')}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
-    },
-    execute: (state: commands.ExecuteState, api: TextAreaTextApi) => {
-      inputRef.current?.click();
-      textApiRef.current = api;
-    }
-  });
+  // Observe dark mode changes
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) return;
 
-  const spoilerBtn = (): commands.ICommand => ({
-    name: 'Add Spoiler',
-    keyCommand: 'spoiler',
-    render: (
-      command: commands.ICommand,
-      disabled: boolean | undefined,
-      executeCommand: (arg0: commands.ICommand<string>, arg1: string | undefined) => void
-    ) => {
-      return (
-        <Button
-          variant="basic"
-          onClick={() => executeCommand(command, command.groupName)}
-          disabled={disabled}
-        >
-          Spoiler
-        </Button>
-      );
-    },
-    execute: (_: commands.ExecuteState, api: TextAreaTextApi) => {
-      const spoilerTemplate = '>! [Click to reveal] Your spoiler content';
-      const newState = api.replaceSelection(spoilerTemplate);
-      api.setSelectionRange({
-        start: newState.selection.start + spoilerTemplate.indexOf('Your spoiler content'),
-        end: newState.selection.end
+    const observer = new MutationObserver(() => {
+      const dark = isDarkMode();
+      view.dispatch({
+        effects: darkCompartment.reconfigure(dark ? oneDark : [])
       });
-    }
-  });
+    });
 
-  const hiveLinksToggle = (): commands.ICommand => ({
-    name: 'Convert Hive Links',
-    keyCommand: 'convertHiveLinks',
-    render: () => {
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <label className="flex cursor-pointer select-none items-center gap-1 px-2 text-xs">
-                <input
-                  type="checkbox"
-                  checked={convertHiveLinks}
-                  onChange={(e) => setConvertHiveLinks(e.target.checked)}
-                  className="cursor-pointer"
-                />
-                {t('submit_page.convert_hive_links')}
-              </label>
-            </TooltipTrigger>
-            <TooltipContent>{t('submit_page.convert_hive_links_tooltip')}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Sync persistedValue from parent (form reset, template load)
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) return;
+
+    // Skip during active typing to prevent the debounced echo from reverting newer local edits
+    if (Date.now() - lastInputTimeRef.current < 600) return;
+
+    const currentDoc = view.state.doc.toString();
+    if (currentDoc === persistedValue) return;
+
+    isInternalChangeRef.current = true;
+    view.dispatch({
+      changes: { from: 0, to: view.state.doc.length, insert: persistedValue }
+    });
+  }, [persistedValue]);
+
+  // Toolbar buttons
+  const toolbarButtons = useMemo(() => getToolbarButtons(t), [t]);
+
+  const handleToolbarClick = useCallback(
+    (action: (view: EditorView) => void) => {
+      const view = viewRef.current;
+      if (!view) return;
+      action(view);
     },
-    execute: () => {}
-  });
-
-  const editorCommands = useMemo(
-    () => [...(commands.getCommands() as ICommand[]), imgBtn(inputRef), spoilerBtn()],
-    [t]
+    []
   );
 
-  const editorExtraCommands = useMemo(() => [hiveLinksToggle()], [convertHiveLinks, t]);
+  // Spoiler button handler
+  const handleSpoiler = useCallback(() => {
+    const view = viewRef.current;
+    if (!view) return;
+    const spoilerTemplate = '>! [Click to reveal] Your spoiler content';
+    const pos = view.state.selection.main.head;
+    view.dispatch({
+      changes: { from: pos, insert: spoilerTemplate },
+      selection: {
+        anchor: pos + spoilerTemplate.indexOf('Your spoiler content'),
+        head: pos + spoilerTemplate.length
+      }
+    });
+    view.focus();
+  }, []);
 
-  return !imageUserBlocklist?.includes(user.username) ? (
-    <div ref={containerRef}>
-      <input
-        ref={inputRef}
-        className="hidden"
-        type="file"
-        accept=".jpg,.png,.jpeg,.jfif,.gif"
-        name="avatar"
-        value={insertImg}
-        //@ts-ignore
-        onChange={inputImageHandler}
-      />
-      <div className="cursor-text relative" onPaste={pasteHandler} onKeyDown={keyDownHandler} onClick={focusEditor}>
-        <div>
-          <MDEditor
-            ref={editorRef}
-            preview="edit"
-            value={formValue}
-            aria-placeholder={placeholder ?? ''}
-            onChange={handleEditorChange}
-            commands={editorCommands}
-            extraCommands={editorExtraCommands}
-            className={cn({ '!bg-red-400 !bg-opacity-20': isDrag })}
-            onDrop={dropHandler}
-            onDragEnter={dragHandler}
-            onDragOver={dragHandler}
-            onDragLeave={dragHandler}
-            height={windowheight}
-            //@ts-ignore
-            style={EDITOR_STYLE}
-          />
-        </div>
-        {isUploading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
-            <div className="flex items-center gap-2 rounded-md bg-background px-4 py-2 shadow-md">
-              <CircleSpinner loading size={18} color="#dc2626" />
-              <span className="text-sm font-medium">{t('submit_page.uploading_image')}</span>
-            </div>
-          </div>
-        )}
-      </div>
+  // Focus editor on container click
+  const focusEditor = useCallback(() => {
+    viewRef.current?.focus();
+  }, []);
+
+  const toolbar = (
+    <div
+      className="flex flex-wrap items-center gap-0.5 border-b border-border bg-background-secondary/50 px-1 py-1"
+      data-testid="editor-toolbar"
+      role="toolbar"
+    >
+      {toolbarButtons.map((btn) => {
+        if (btn.name === 'image' && isBlockedUser) return null;
+        return (
+          <TooltipProvider key={btn.name}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  data-name={btn.name}
+                  tabIndex={-1}
+                  className="flex h-7 w-7 items-center justify-center rounded text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
+                  onClick={() => handleToolbarClick(btn.action)}
+                >
+                  {btn.icon}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {btn.title}
+                {btn.shortcut ? ` (${btn.shortcut})` : ''}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      })}
+
+      {!isBlockedUser && (
+        <>
+          <div className="mx-0.5 h-4 w-px bg-border" />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  data-name="text2image"
+                  tabIndex={-1}
+                  className="flex h-7 w-7 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-foreground"
+                  aria-label={t('submit_page.insert_images_text')}
+                  onClick={() => inputRef.current?.click()}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                  </svg>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{t('submit_page.insert_images_text')}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </>
+      )}
+
+      <div className="mx-0.5 h-4 w-px bg-border" />
+
+      <button
+        type="button"
+        data-name="spoiler"
+        tabIndex={-1}
+        className="flex h-7 items-center justify-center rounded px-1.5 text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
+        onClick={handleSpoiler}
+      >
+        Spoiler
+      </button>
+
+      <div className="ml-auto" />
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <label className="flex cursor-pointer select-none items-center gap-1 px-2 text-xs text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={convertHiveLinks}
+                onChange={(e) => setConvertHiveLinks(e.target.checked)}
+                className="cursor-pointer"
+                tabIndex={-1}
+              />
+              {t('submit_page.convert_hive_links')}
+            </label>
+          </TooltipTrigger>
+          <TooltipContent>{t('submit_page.convert_hive_links_tooltip')}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
-  ) : (
-    <div ref={containerRef} className="cursor-text" onClick={focusEditor}>
-      <MDEditor
-        height={windowheight}
-        preview="edit"
-        value={formValue}
-        aria-placeholder={placeholder ?? ''}
-        onChange={handleEditorChange}
-        commands={editorCommands}
-        extraCommands={editorExtraCommands}
-        //@ts-ignore
-        style={EDITOR_STYLE}
-      />
+  );
+
+  const editorBody = (
+    <div
+      className={cn(
+        'relative cursor-text overflow-hidden rounded-md border border-border',
+        { '!bg-red-400/20': isDrag }
+      )}
+      onClick={focusEditor}
+      onDragEnter={isBlockedUser ? undefined : dragHandler}
+      onDragOver={isBlockedUser ? undefined : dragHandler}
+      onDragLeave={isBlockedUser ? undefined : dragHandler}
+      onDrop={isBlockedUser ? undefined : dropHandler}
+    >
+      {toolbar}
+      <div ref={editorMountRef} />
+      {isUploading && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
+          <div className="flex items-center gap-2 rounded-md bg-background px-4 py-2 shadow-md">
+            <CircleSpinner loading size={18} color="#dc2626" />
+            <span className="text-sm font-medium">{t('submit_page.uploading_image')}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div ref={containerRef}>
+      {!isBlockedUser && (
+        <input
+          ref={inputRef}
+          className="hidden"
+          type="file"
+          accept=".jpg,.png,.jpeg,.jfif,.gif"
+          name="avatar"
+          value={insertImg}
+          onChange={inputImageHandler}
+        />
+      )}
+      {editorBody}
     </div>
   );
 };

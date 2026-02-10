@@ -178,31 +178,18 @@ export const onImageUpload = async (
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
   signer: Signer,
-  setUploading?: Dispatch<SetStateAction<boolean>>
+  setUploading?: Dispatch<SetStateAction<boolean>>,
+  cursorPos?: number
 ) => {
   setUploading?.(true);
   const url = await uploadImg(file, username, signer);
   const imageMarkdown = ` ![${file.name}](${!url ? 'UPLOAD FAILED' : url}) `;
 
-  // Get cursor position from textarea before updating state
-  const textarea = document.querySelector('.w-md-editor-text-input') as HTMLTextAreaElement;
-  const cursorPos = textarea?.selectionStart ?? 0;
-
-  // Use functional update to avoid race conditions with React state
+  // Insert at cursor position captured before upload started, or append at end
   setMarkdown((prevMarkdown) => {
-    const front = prevMarkdown.slice(0, cursorPos);
-    const back = prevMarkdown.slice(cursorPos);
-    return front + imageMarkdown + back;
+    const pos = cursorPos ?? prevMarkdown.length;
+    return prevMarkdown.slice(0, pos) + imageMarkdown + prevMarkdown.slice(pos);
   });
-
-  // Restore cursor position after React re-renders
-  setTimeout(() => {
-    if (textarea) {
-      const newPos = cursorPos + imageMarkdown.length;
-      textarea.setSelectionRange(newPos, newPos);
-      textarea.focus();
-    }
-  }, 0);
 
   setUploading?.(false);
 };
@@ -212,7 +199,8 @@ export const onImageDrop = async (
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
   signer: Signer,
-  setUploading?: Dispatch<SetStateAction<boolean>>
+  setUploading?: Dispatch<SetStateAction<boolean>>,
+  cursorPos?: number
 ) => {
   const files = [];
 
@@ -221,7 +209,7 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, setUploading)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, setUploading, cursorPos)));
 };
 
 export const onImagePaste = async (
@@ -229,7 +217,8 @@ export const onImagePaste = async (
   setMarkdown: Dispatch<SetStateAction<string>>,
   username: string,
   signer: Signer,
-  setUploading?: Dispatch<SetStateAction<boolean>>
+  setUploading?: Dispatch<SetStateAction<boolean>>,
+  cursorPos?: number
 ) => {
   const files: File[] = [];
   for (let i = 0; i < clipboardData.items.length; i++) {
@@ -240,7 +229,7 @@ export const onImagePaste = async (
     }
   }
   if (!files.length) return false;
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, setUploading)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, setUploading, cursorPos)));
   return true;
 };
 

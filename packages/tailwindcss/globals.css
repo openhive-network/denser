@@ -299,10 +299,6 @@
   padding: 8px 12px;
 }
 
-.dark .w-md-editor-text .token.title {
-  color: #fff !important;
-}
-
 details {
   padding: 10px 10px;
   outline-offset: 2px;

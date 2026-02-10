@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@hive/ui';
 import clsx from 'clsx';
 import * as z from 'zod';
@@ -27,7 +27,7 @@ import { getCommunity, getSubscriptions } from '@transaction/lib/bridge-api';
 import { Icons } from '@ui/components/icons';
 import { withBasePath } from '@ui/lib/path-utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { debounce, DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from 'react-spinners-kit';
@@ -136,7 +136,8 @@ export default function PostForm({
   const previewRafIdRef = useRef<number | null>(null);
   // Ref for scroll cleanup function (safer than attaching to DOM element)
   const scrollCleanupRef = useRef<(() => void) | null>(null);
-
+  const storeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const previewTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   // Track if we've hydrated from localStorage to avoid resetting form during typing
@@ -201,6 +202,20 @@ export default function PostForm({
     resolver: zodResolver(accountFormSchema),
     defaultValues: entryValues
   });
+
+  // Ref always holds the latest editor value (updated immediately, even before debounced form sync)
+  const latestPostAreaRef = useRef(entryValues.postArea);
+  const postAreaSyncTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  // Debounce form.setValue for postArea to avoid re-rendering entire PostForm on every keystroke.
+  // MdEditor manages its own local state for responsive typing; this only syncs to react-hook-form.
+  const handlePostAreaChange = useCallback((value: string) => {
+    latestPostAreaRef.current = value;
+    clearTimeout(postAreaSyncTimerRef.current);
+    postAreaSyncTimerRef.current = setTimeout(() => {
+      form.setValue('postArea', value);
+    }, 300);
+  }, [form]);
 
   // Hydrate form from localStorage after initial render
   // This handles the case where SSR returns empty values but localStorage has data
@@ -286,22 +301,23 @@ export default function PostForm({
       : undefined;
 
   useEffect(() => {
-    // Skip auto-save after successful submission to prevent re-creating draft
     if (hasSubmittedRef.current) return;
-    debounce(() => {
+    clearTimeout(storeTimerRef.current);
+    storeTimerRef.current = setTimeout(() => {
       storePost(watchedValues);
-    }, 50)();
+    }, 500);
+    return () => clearTimeout(storeTimerRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...Object.values(watchedValues)]);
 
   // update debounced post preview content
   useEffect(() => {
-    if (typeof previewContent !== 'undefined' && postArea !== previewContent) {
-      debounce(() => {
-        setPreviewContent(postArea);
-      }, 50)();
-    }
-  }, [previewContent, postArea]);
+    clearTimeout(previewTimerRef.current);
+    previewTimerRef.current = setTimeout(() => {
+      setPreviewContent(postArea);
+    }, 300);
+    return () => clearTimeout(previewTimerRef.current);
+  }, [postArea]);
 
   // Auto-scroll preview to bottom when typing at the end of editor (debounced)
   useEffect(() => {
@@ -310,7 +326,7 @@ export default function PostForm({
     // Debounce to avoid running on every keystroke
     const timeoutId = setTimeout(() => {
       const editorScrollArea = editorContainerRef.current?.querySelector(
-        '.w-md-editor-area'
+        '.cm-scroller'
       ) as HTMLDivElement | null;
       const previewEl = previewContainerRef.current;
 
@@ -329,16 +345,16 @@ export default function PostForm({
 
   useEffect(() => {
     setImagePickerState(imagePicker(selectedImg));
-  }, [selectedImg, postArea]);
+  }, [selectedImg]);
 
   // Set up scroll sync event listeners (optimized for large content)
   useEffect(() => {
     if (!syncScroll || !sideBySide || !preview) return;
 
-    // Small delay to ensure MDEditor has fully mounted
+    // Small delay to ensure CodeMirror has fully mounted
     const timeoutId = setTimeout(() => {
       const editorScrollArea = editorContainerRef.current?.querySelector(
-        '.w-md-editor-area'
+        '.cm-scroller'
       ) as HTMLDivElement | null;
       const previewEl = previewContainerRef.current;
 
@@ -411,6 +427,10 @@ export default function PostForm({
   }, [syncScroll, sideBySide, preview]);
 
   async function onSubmit(data: AccountFormValues) {
+    // Flush pending debounce - use the latest editor value which may not have synced to form yet
+    clearTimeout(postAreaSyncTimerRef.current);
+    const postBody = latestPostAreaRef.current || data.postArea;
+
     const tags = parseTags(data.tags);
     const maxAcceptedPayout = await createAsset((data.maxAcceptedPayout * 1000).toString(), 'HBD');
     const postPermlink = await createPermlink(data?.title ?? '', username);
@@ -422,7 +442,7 @@ export default function PostForm({
       const postParams = {
         permlink: editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
         title: data.title,
-        body: data.postArea,
+        body: postBody,
         category: data.category,
         summary: data.postSummary,
         altAuthor: data.author,
@@ -454,6 +474,7 @@ export default function PostForm({
       // Mark as submitted to prevent auto-save from re-creating draft
       hasSubmittedRef.current = true;
       removePost();
+      latestPostAreaRef.current = defaultValues.postArea;
       form.reset(defaultValues);
       setPreviewContent(undefined);
       if (editMode) {
@@ -484,6 +505,8 @@ export default function PostForm({
   };
 
   const handleCancelConfirm = () => {
+    clearTimeout(postAreaSyncTimerRef.current);
+    latestPostAreaRef.current = defaultValues.postArea;
     form.reset(defaultValues);
     removePost();
     if (editMode && setEditMode) {
@@ -492,6 +515,8 @@ export default function PostForm({
     setCancelDialogOpen(false);
   };
   const handleLoadTemplate = (data: AccountFormValues) => {
+    clearTimeout(postAreaSyncTimerRef.current);
+    latestPostAreaRef.current = data.postArea;
     form.setValue('author', data.author);
     form.setValue('beneficiaries', data.beneficiaries);
     form.setValue('category', data.category);
@@ -566,9 +591,7 @@ export default function PostForm({
                     <div ref={editorContainerRef}>
                       <MdEditor
                         windowheight={500}
-                        onChange={(value) => {
-                          form.setValue('postArea', value);
-                        }}
+                        onChange={handlePostAreaChange}
                         persistedValue={field.value}
                       />
                     </div>

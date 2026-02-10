@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { extractImagesSrc } from './lib/utils';
 import SelectImageItem from './select-image-item';
 import { useTranslation } from '@/blog/i18n/client';
@@ -14,8 +14,22 @@ interface SelectImageListTypes {
 
 const SelectImageList: FC<SelectImageListTypes> = ({ content, value, onChange }) => {
   const { t } = useTranslation('common_blog');
-  const ytImages = extractYouTubeVideoIds(extractUrlsFromJsonString(content)).map((img) => `youtu-${img}`);
-  const images = useMemo(() => [...extractImagesSrc(content), ...ytImages], [content, ytImages]);
+  const [debouncedContent, setDebouncedContent] = useState(content);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setDebouncedContent(content);
+    }, 1000);
+    return () => clearTimeout(timerRef.current);
+  }, [content]);
+
+  const images = useMemo(() => {
+    if (!debouncedContent) return [];
+    const ytImages = extractYouTubeVideoIds(extractUrlsFromJsonString(debouncedContent)).map((img) => `youtu-${img}`);
+    return [...extractImagesSrc(debouncedContent), ...ytImages];
+  }, [debouncedContent]);
   const uniqueImages = Array.from(new Set(images));
 
   useEffect(() => {
