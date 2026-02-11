@@ -37,6 +37,42 @@ describe('InstagramEmbedder', () => {
             });
         });
 
+        const validUrlsWithUsername = [
+            {
+                url: 'https://www.instagram.com/_rl9/p/DUdzqv9jIEg/',
+                expectedId: 'p/DUdzqv9jIEg',
+                desc: 'post with username'
+            },
+            {
+                url: 'https://www.instagram.com/user.name/reel/ABC1234defgh/',
+                expectedId: 'reel/ABC1234defgh',
+                desc: 'reel with username'
+            }
+        ];
+
+        validUrlsWithUsername.forEach(({url, expectedId, desc}) => {
+            it(`should strip username for ${desc}: ${url}`, () => {
+                const embedder = new InstagramEmbedder();
+                const result = embedder.getEmbedMetadata({data: url} as HTMLObjectElement);
+                expect(result).to.not.be.undefined;
+                expect(result?.id).to.equal(expectedId);
+            });
+        });
+
+        it('should strip query params from id', () => {
+            const embedder = new InstagramEmbedder();
+            const result = embedder.getEmbedMetadata({data: 'https://www.instagram.com/p/DUdzqv9jIEg/?hl=pl'} as HTMLObjectElement);
+            expect(result).to.not.be.undefined;
+            expect(result?.id).to.equal('p/DUdzqv9jIEg');
+        });
+
+        it('should handle username + query params together', () => {
+            const embedder = new InstagramEmbedder();
+            const result = embedder.getEmbedMetadata({data: 'https://www.instagram.com/_rl9/p/DUdzqv9jIEg/?hl=pl'} as HTMLObjectElement);
+            expect(result).to.not.be.undefined;
+            expect(result?.id).to.equal('p/DUdzqv9jIEg');
+        });
+
         const invalidUrls = [
             'https://www.instagram.com/',
             'https://www.instagram.com/username/',
@@ -61,7 +97,7 @@ describe('InstagramEmbedder', () => {
             const embedder = new InstagramEmbedder();
             const result = embedder.processEmbed('p/ABC123defgh', {width: 640, height: 480});
             expect(result).to.equal(
-                '<div class="instagramWrapper"><iframe width="640" height="480" src="https://www.instagram.com/p/ABC123defgh/embed/" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>'
+                '<div class="instagramWrapper"><iframe width="640" height="480" src="https://www.instagram.com/p/ABC123defgh/embed/" frameborder="0" allowtransparency="true"></iframe></div>'
             );
         });
 
@@ -69,7 +105,7 @@ describe('InstagramEmbedder', () => {
             const embedder = new InstagramEmbedder();
             const result = embedder.processEmbed('reel/XYZ789abcde', {width: 500, height: 600});
             expect(result).to.equal(
-                '<div class="instagramWrapper"><iframe width="500" height="600" src="https://www.instagram.com/reel/XYZ789abcde/embed/" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>'
+                '<div class="instagramWrapper"><iframe width="500" height="600" src="https://www.instagram.com/reel/XYZ789abcde/embed/" frameborder="0" allowtransparency="true"></iframe></div>'
             );
         });
     });
