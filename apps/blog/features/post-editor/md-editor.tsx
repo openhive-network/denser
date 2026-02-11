@@ -11,13 +11,25 @@ import {
   useRef,
   useState
 } from 'react';
-import { EditorView, keymap, placeholder as cmPlaceholder, ViewUpdate } from '@codemirror/view';
+import {
+  EditorView,
+  keymap,
+  placeholder as cmPlaceholder,
+  ViewUpdate,
+  highlightActiveLine,
+  drawSelection,
+  dropCursor,
+  rectangularSelection,
+  crosshairCursor
+} from '@codemirror/view';
 import { EditorState, Compartment } from '@codemirror/state';
-import { markdown } from '@codemirror/lang-markdown';
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
-import { searchKeymap } from '@codemirror/search';
+import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 import { oneDark } from '@codemirror/theme-one-dark';
+import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
+import { bracketMatching, syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getLogger } from '@ui/lib/logging';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
@@ -219,10 +231,17 @@ const lightTheme = EditorView.theme({
     display: 'none'
   },
   '.cm-activeLine': {
-    backgroundColor: 'transparent'
+    backgroundColor: 'hsl(var(--accent) / 0.3)'
   },
   '.cm-scroller': {
     overflow: 'auto'
+  },
+  '.cm-matchingBracket': {
+    backgroundColor: 'hsl(var(--accent))',
+    outline: 'none'
+  },
+  '.cm-selectionMatch': {
+    backgroundColor: 'hsl(var(--accent) / 0.5)'
   }
 });
 
@@ -424,25 +443,23 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       }
     });
 
+    const listItemRe = /^(\s*)([-*+]|\d+[.)]|>\s?)(\s)/;
     const tabKeymap = keymap.of([
       {
         key: 'Tab',
         run: (view) => {
-          // Move focus to next focusable element
-          const focusables = Array.from(
-            document.querySelectorAll<HTMLElement>(
-              'input:not([disabled]):not([type="hidden"]):not([tabindex="-1"]), ' +
-              'textarea:not([disabled]):not([tabindex="-1"]), ' +
-              'select:not([disabled]):not([tabindex="-1"]), ' +
-              'button:not([disabled]):not([tabindex="-1"]), ' +
-              '[contenteditable]:not([tabindex="-1"])'
-            )
-          ).filter((el) => el.offsetParent !== null);
-
-          const cmContent = view.contentDOM;
-          const idx = focusables.indexOf(cmContent);
-          if (idx >= 0 && idx < focusables.length - 1) {
-            focusables[idx + 1]?.focus();
+          const { state } = view;
+          const line = state.doc.lineAt(state.selection.main.head);
+          if (listItemRe.test(line.text)) {
+            // Indent list item: add two spaces at line start
+            view.dispatch({
+              changes: { from: line.from, insert: '  ' },
+              userEvent: 'input'
+            });
+          } else {
+            view.dispatch(
+              state.update(state.replaceSelection('\t'), { scrollIntoView: true, userEvent: 'input' })
+            );
           }
           return true;
         }
@@ -450,21 +467,27 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       {
         key: 'Shift-Tab',
         run: (view) => {
-          const focusables = Array.from(
-            document.querySelectorAll<HTMLElement>(
-              'input:not([disabled]):not([type="hidden"]):not([tabindex="-1"]), ' +
-              'textarea:not([disabled]):not([tabindex="-1"]), ' +
-              'select:not([disabled]):not([tabindex="-1"]), ' +
-              'button:not([disabled]):not([tabindex="-1"]), ' +
-              '[contenteditable]:not([tabindex="-1"])'
-            )
-          ).filter((el) => el.offsetParent !== null);
-
-          const cmContent = view.contentDOM;
-          const idx = focusables.indexOf(cmContent);
-          if (idx > 0) {
-            focusables[idx - 1]?.focus();
+          const { state } = view;
+          const line = state.doc.lineAt(state.selection.main.head);
+          if (line.text.startsWith('  ')) {
+            // Outdent: remove up to two leading spaces
+            view.dispatch({
+              changes: { from: line.from, to: line.from + 2, insert: '' },
+              userEvent: 'delete'
+            });
+          } else if (line.text.startsWith('\t')) {
+            view.dispatch({
+              changes: { from: line.from, to: line.from + 1, insert: '' },
+              userEvent: 'delete'
+            });
           }
+          return true;
+        }
+      },
+      {
+        key: 'Escape',
+        run: (view) => {
+          view.contentDOM.blur();
           return true;
         }
       }
@@ -507,9 +530,21 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     const extensions = [
       tabKeymap,
       boldItalicKeymap,
-      keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
+      keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...searchKeymap]),
       history(),
       markdown({ codeLanguages: languages }),
+      markdownLanguage.data.of({
+        closeBrackets: { brackets: ['(', '[', '{', "'", '"', '`', '```'] }
+      }),
+      closeBrackets(),
+      bracketMatching(),
+      syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+      highlightActiveLine(),
+      highlightSelectionMatches(),
+      drawSelection(),
+      dropCursor(),
+      rectangularSelection(),
+      crosshairCursor(),
       lightTheme,
       darkCompartment.of(isDarkMode() ? oneDark : []),
       updateListener,
