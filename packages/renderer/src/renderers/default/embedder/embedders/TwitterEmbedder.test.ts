@@ -76,6 +76,26 @@ describe('TwitterEmbedder', () => {
             });
         });
 
+        it('should handle URL with fragment (#hash)', () => {
+            const embedder = new TwitterEmbedder();
+            const result = embedder.getEmbedMetadata({
+                data: 'https://x.com/username/status/1234567890123456789#top'
+            } as HTMLObjectElement);
+            expect(result).to.not.be.undefined;
+            expect(result?.id).to.equal('1234567890123456789');
+            expect(result?.url).to.contain('#top');
+        });
+
+        it('should extract URL from surrounding text and stop at whitespace', () => {
+            const embedder = new TwitterEmbedder();
+            const result = embedder.getEmbedMetadata({
+                data: 'Check this https://x.com/username/status/1234567890123456789/photo/1 nice tweet'
+            } as HTMLObjectElement);
+            expect(result).to.not.be.undefined;
+            expect(result?.id).to.equal('1234567890123456789');
+            expect(result?.url).to.not.contain('nice');
+        });
+
         invalidUrls.forEach((url) => {
             it(`should return undefined for invalid URL: ${url}`, () => {
                 const embedder = new TwitterEmbedder();
