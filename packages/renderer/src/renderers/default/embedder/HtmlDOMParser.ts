@@ -670,19 +670,38 @@ function preprocessDetails(html: string): string {
 /**
  * Preprocesses HTML content to properly handle <center> tags.
  *
- * This function performs the following transformations:
- * 1. Removes wrapping <p> tags from <center> elements
- * 2. Moves any content that appears after <pre> tags outside of the <center> element
+ * Remarkable wraps block-level HTML tags in <p> tags in various ways depending
+ * on surrounding blank lines. This function normalizes the output so that
+ * <center> blocks are standalone elements, preventing centering from "leaking"
+ * to content outside the <center> block.
  *
  * @param html - The HTML string to preprocess
  * @returns The preprocessed HTML string with properly formatted <center> elements
- *
- * @example
- * const processed = preprocessCenter('<p><center></p>Content<p></center></p>');
- * // Returns: '<center>Content</center>'
  */
 function preprocessCenter(html: string): string {
-    html = html.replace(/<p>\s*(<center>[\s\S]*?<\/center>)\s*<\/p>/g, '$1');
+    // Step 1: Remove <p> wrapping around standalone </center>
+    // Remarkable places </center> in its own <p> when there's a blank line before it
+    html = html.replace(/<p>\s*<\/center>\s*<\/p>/g, '</center>');
+
+    // Step 2: Remove wrapping <p> from self-contained center blocks
+    // Use negative lookahead to avoid matching across </p> boundaries
+    html = html.replace(/<p>\s*(<center>(?:(?!<\/p>)[\s\S])*?<\/center>)\s*<\/p>/g, '$1');
+
+    // Step 3: When <center> opens inside a paragraph, extract it
+    // <p>text<center>content</p> → <p>text</p>\n<center>content
+    // <p><center>content</p> → <center>content
+    html = html.replace(/<p>((?:(?!<\/p>)[\s\S])*?)(<center>)/g, (_match, before, centerTag) => {
+        if (before.trim()) {
+            return `<p>${before}</p>\n${centerTag}`;
+        }
+        return centerTag;
+    });
+
+    // Step 4: Remove orphaned </p> after <center> content (from paragraph split above)
+    // <center>content</p> → <center>content (only when no <p> opens before the </p>)
+    html = html.replace(/(<center>(?:(?!<p[ >])[\s\S])*?)<\/p>/g, '$1');
+
+    // Step 5: Move content after </pre> outside of center
     html = html.replace(/(<center>[\s\S]*?<\/pre>)([\s\S]*?)(<\/center>)/g, '$1$3$2');
     return html;
 }
