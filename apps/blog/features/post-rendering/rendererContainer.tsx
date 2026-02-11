@@ -126,7 +126,17 @@ const RendererContainer = ({
       });
     }
 
+    const rootEl = ref.current;
+    const pluginCleanups: (() => void)[] = [];
+    if (rootEl) {
+      hiveRenderer.getPlugins().forEach((plugin) => {
+        const cleanup = plugin.onMount?.(rootEl);
+        if (cleanup) pluginCleanups.push(cleanup);
+      });
+    }
+
     return () => {
+      pluginCleanups.forEach((cleanup) => cleanup());
       nodes?.forEach((n) => n.removeEventListener('click', handleClick));
       if (previewMode) {
         youtubeFacades?.forEach((facade) => {

@@ -1,4 +1,4 @@
-import { DefaultRenderer, TablePlugin } from '@hive/renderer';
+import { DefaultRenderer, TablePlugin, InstagramResizePlugin } from '@hive/renderer';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
 
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
@@ -21,7 +21,7 @@ const renderDefaultOptions = {
   assetsWidth: 640,
   assetsHeight: 480,
   // Note: Instagram and Twitter use iframe-only via embedders (no external scripts needed)
-  plugins: [new TablePlugin()],
+  plugins: [new TablePlugin(), new InstagramResizePlugin()],
   imageProxyFn: (url: string) => proxifyImageSrc(url, 1536, 0),
   usertagUrlFn: (account: string) => (basePath ? `${basePath}/@${account}` : `/@${account}`),
   hashtagUrlFn: (hashtag: string) => (basePath ? `${basePath}/trending/${hashtag}` : `/trending/${hashtag}`),

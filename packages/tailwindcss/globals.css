@@ -260,6 +260,24 @@
   max-height: 80vh;
 }
 
+/* Instagram embed wrapper */
+#articleBody .instagramWrapper,
+.prose .instagramWrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+#articleBody .instagramWrapper iframe,
+.prose .instagramWrapper iframe {
+  width: 100% !important;
+  max-width: 540px;
+  height: 800px;
+  border: none;
+}
+
 .markdown-view {
   word-wrap: break-word;
   word-break: break-word;
