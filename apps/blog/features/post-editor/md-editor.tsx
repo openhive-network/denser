@@ -22,7 +22,7 @@ import {
   rectangularSelection,
   crosshairCursor
 } from '@codemirror/view';
-import { EditorState, Compartment } from '@codemirror/state';
+import { EditorState, Compartment, Prec } from '@codemirror/state';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
@@ -443,17 +443,75 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       }
     });
 
-    const listItemRe = /^(\s*)([-*+]|\d+[.)]|>\s?)(\s)/;
+    const unorderedRe = /^(\s*)([-*+])(\s)/;
+    const orderedRe = /^(\s*)(\d+[.)])(\s)/;
+    const emptyListItemRe = /^(\s{4,})([-*+])\s*$/;
+    const INDENT = '    '; // 4 spaces — minimum for sublist under "1. "
+
+    // Enter on an empty nested list item outdents instead of exiting the list.
+    // Detects parent list type (ordered/unordered) and continues accordingly.
+    const enterKeymap = Prec.highest(keymap.of([
+      {
+        key: 'Enter',
+        run: (view) => {
+          const { state } = view;
+          const line = state.doc.lineAt(state.selection.main.head);
+          const m = line.text.match(emptyListItemRe);
+          if (m) {
+            const [, indent] = m;
+            const targetIndent = indent.slice(4);
+
+            // Scan backwards to find the last parent list item at target indent level
+            let marker = '- ';
+            for (let ln = line.number - 1; ln >= 1; ln--) {
+              const prev = state.doc.line(ln).text;
+              // Check for ordered list at target indent
+              const om = prev.match(new RegExp(`^${targetIndent}(\\d+)[.)]\\s`));
+              if (om) {
+                marker = `${Number(om[1]) + 1}. `;
+                break;
+              }
+              // Check for unordered list at target indent
+              if (new RegExp(`^${targetIndent}[-*+]\\s`).test(prev)) {
+                marker = '- ';
+                break;
+              }
+            }
+
+            const insert = `${targetIndent}${marker}`;
+            view.dispatch({
+              changes: { from: line.from, to: line.from + line.text.length, insert },
+              selection: { anchor: line.from + insert.length },
+              userEvent: 'input'
+            });
+            return true;
+          }
+          return false; // Let markdown keymap handle all other cases
+        }
+      }
+    ]));
+
     const tabKeymap = keymap.of([
       {
         key: 'Tab',
         run: (view) => {
           const { state } = view;
           const line = state.doc.lineAt(state.selection.main.head);
-          if (listItemRe.test(line.text)) {
-            // Indent list item: add two spaces at line start
+          const om = line.text.match(orderedRe);
+          if (om) {
+            // Ordered → unordered sub-list: "1. text" → "    - text"
+            const markerStart = line.from + om[1].length;
+            const markerEnd = markerStart + om[2].length;
             view.dispatch({
-              changes: { from: line.from, insert: '  ' },
+              changes: [
+                { from: line.from, insert: INDENT },
+                { from: markerStart, to: markerEnd, insert: '-' }
+              ],
+              userEvent: 'input'
+            });
+          } else if (unorderedRe.test(line.text)) {
+            view.dispatch({
+              changes: { from: line.from, insert: INDENT },
               userEvent: 'input'
             });
           } else {
@@ -469,10 +527,9 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         run: (view) => {
           const { state } = view;
           const line = state.doc.lineAt(state.selection.main.head);
-          if (line.text.startsWith('  ')) {
-            // Outdent: remove up to two leading spaces
+          if (line.text.startsWith(INDENT)) {
             view.dispatch({
-              changes: { from: line.from, to: line.from + 2, insert: '' },
+              changes: { from: line.from, to: line.from + 4, insert: '' },
               userEvent: 'delete'
             });
           } else if (line.text.startsWith('\t')) {
@@ -528,6 +585,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     ]);
 
     const extensions = [
+      enterKeymap,
       tabKeymap,
       boldItalicKeymap,
       keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...searchKeymap]),
