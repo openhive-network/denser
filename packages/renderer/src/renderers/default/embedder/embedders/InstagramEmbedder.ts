@@ -17,7 +17,8 @@ export class InstagramEmbedder extends AbstractEmbedder {
      * Matches Instagram post and reel URLs.
      * Valid shortcode: Base64URL characters, typically 11 chars (allow 10-14 for safety)
      */
-    private static readonly linkRegex = /https?:\/\/(?:www\.)?instagram\.com\/(p|reel)\/([a-zA-Z0-9_-]{10,14})\/?/i;
+    private static readonly linkRegex =
+        /https?:\/\/(?:www\.)?instagram\.com\/(?:[\w.]+\/)?(p|reel)\/([a-zA-Z0-9_-]{10,14})\/?(?:\?[^\s]*)?/i;
 
     public getEmbedMetadata(input: string | HTMLObjectElement): EmbedMetadata | undefined {
         const data = typeof input === 'string' ? input : input.data;
@@ -41,6 +42,6 @@ export class InstagramEmbedder extends AbstractEmbedder {
     public processEmbed(id: string, size: {width: number; height: number}): string {
         // id format is "p/POST_ID" or "reel/REEL_ID"
         const embedUrl = `https://www.instagram.com/${id}/embed/`;
-        return `<div class="instagramWrapper"><iframe width="${size.width}" height="${size.height}" src="${embedUrl}" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>`;
+        return `<div class="instagramWrapper"><iframe width="${size.width}" height="${size.height}" src="${embedUrl}" frameborder="0" allowtransparency="true"></iframe></div>`;
     }
 }

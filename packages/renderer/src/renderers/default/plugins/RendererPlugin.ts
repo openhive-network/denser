@@ -9,6 +9,9 @@ export interface RendererPlugin {
     preProcess?: (text: string) => string;
     /** Optional function to process text after the main rendering */
     postProcess?: (text: string) => string;
+    /** Optional client-side lifecycle hook. Called after rendered HTML is mounted in DOM.
+     *  Returns a cleanup function or undefined. */
+    onMount?: (rootElement: HTMLElement) => (() => void) | undefined;
 }
 
 /**

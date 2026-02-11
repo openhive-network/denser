@@ -18,10 +18,12 @@ export class TwitterEmbedder extends AbstractEmbedder {
     public type = 'twitter';
 
     /**
-     * Matches Twitter/X status URLs.
+     * Matches Twitter/X status URLs including trailing path segments,
+     * query params and fragments (e.g. /photo/1?s=20#top).
      * Tweet IDs are numeric, typically 19 digits (allow 1-20 for safety).
+     * Capture group 1: domain (twitter|x), group 2: tweet ID.
      */
-    private static readonly linkRegex = /https?:\/\/(?:www\.)?(twitter|x)\.com\/(?:\w+)\/status\/(\d{1,20})/i;
+    private static readonly linkRegex = /https?:\/\/(?:www\.)?(twitter|x)\.com\/(?:\w+)\/status\/(\d{1,20})[^\s]*/i;
 
     public getEmbedMetadata(input: string | HTMLObjectElement): EmbedMetadata | undefined {
         const data = typeof input === 'string' ? input : input.data;

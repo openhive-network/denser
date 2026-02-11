@@ -65,6 +65,10 @@ export class DefaultRenderer {
         this.plugins = options.plugins || [];
     }
 
+    public getPlugins(): readonly RendererPlugin[] {
+        return [...this.plugins];
+    }
+
     /**
      * Renders the input text to HTML
      * @param input - Markdown or HTML text to render

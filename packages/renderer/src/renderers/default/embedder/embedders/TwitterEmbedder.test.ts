@@ -47,6 +47,55 @@ describe('TwitterEmbedder', () => {
             'not a url'
         ];
 
+        const urlsWithTrailingSegments = [
+            {
+                input: 'https://x.com/ShouldHaveCat/status/1889804218132832323/asdasd',
+                expectedId: '1889804218132832323'
+            },
+            {
+                input: 'https://x.com/username/status/1234567890123456789?s=20',
+                expectedId: '1234567890123456789'
+            },
+            {
+                input: 'https://x.com/username/status/1234567890123456789/',
+                expectedId: '1234567890123456789'
+            },
+            {
+                input: 'https://x.com/username/status/1234567890123456789/photo/1?ref=src',
+                expectedId: '1234567890123456789'
+            }
+        ];
+
+        urlsWithTrailingSegments.forEach(({input, expectedId}) => {
+            it(`should match full URL and extract correct ID for: ${input}`, () => {
+                const embedder = new TwitterEmbedder();
+                const result = embedder.getEmbedMetadata({data: input} as HTMLObjectElement);
+                expect(result).to.not.be.undefined;
+                expect(result?.id).to.equal(expectedId);
+                expect(result?.url).to.equal(input);
+            });
+        });
+
+        it('should handle URL with fragment (#hash)', () => {
+            const embedder = new TwitterEmbedder();
+            const result = embedder.getEmbedMetadata({
+                data: 'https://x.com/username/status/1234567890123456789#top'
+            } as HTMLObjectElement);
+            expect(result).to.not.be.undefined;
+            expect(result?.id).to.equal('1234567890123456789');
+            expect(result?.url).to.contain('#top');
+        });
+
+        it('should extract URL from surrounding text and stop at whitespace', () => {
+            const embedder = new TwitterEmbedder();
+            const result = embedder.getEmbedMetadata({
+                data: 'Check this https://x.com/username/status/1234567890123456789/photo/1 nice tweet'
+            } as HTMLObjectElement);
+            expect(result).to.not.be.undefined;
+            expect(result?.id).to.equal('1234567890123456789');
+            expect(result?.url).to.not.contain('nice');
+        });
+
         invalidUrls.forEach((url) => {
             it(`should return undefined for invalid URL: ${url}`, () => {
                 const embedder = new TwitterEmbedder();
