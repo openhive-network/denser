@@ -1,38 +1,21 @@
-import { getQueryClient } from '@/blog/lib/react-query';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
 import FollowedContent from './content';
-import { getAccountFull, getFollowing } from '@transaction/lib/hive-api';
+import { getFollowing } from '@transaction/lib/hive-api';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
+const LIMIT = 50;
 
 const FollowedUsersPage = async ({ params }: { params: { param: string } }) => {
-  const queryClient = getQueryClient();
   const username = params.param.replace('%40', '');
 
+  let initialFollowing = null;
   try {
-    await Promise.all([
-      queryClient.prefetchQuery({
-        queryKey: ['profileData', username],
-        queryFn: () => getAccountFull(username)
-      }),
-      queryClient.prefetchInfiniteQuery({
-        queryKey: ['followingData', username],
-        queryFn: ({ pageParam: last_id }) => getFollowing({ account: username, start: last_id, limit: 50 }),
-        getNextPageParam: (lastPage) => {
-          return lastPage.length >= 50 ? lastPage[lastPage.length - 1].following : undefined;
-        }
-      })
-    ]);
+    initialFollowing = (await getFollowing({ account: username, start: '', limit: LIMIT })) ?? null;
   } catch (error) {
-    logger.error(error, 'Error in FollowedUsersPage:');
+    logger.error(error, 'Error fetching following list:');
   }
 
-  return (
-    <Hydrate state={dehydrate(queryClient)}>
-      <FollowedContent username={username} />
-    </Hydrate>
-  );
+  return <FollowedContent username={username} initialFollowing={initialFollowing} />;
 };
 
 export default FollowedUsersPage;

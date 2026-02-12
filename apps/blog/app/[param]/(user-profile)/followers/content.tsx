@@ -7,13 +7,21 @@ import PrevNextButtons from '@/blog/features/account-lists/prev-next-buttons';
 import ButtonsContainer from '@/blog/features/mute-follow/buttons-container';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useQuery } from '@tanstack/react-query';
+import { useIsMutating, useQuery } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive-api';
+import { IFollow } from '@hive/common-hiveio-packages/wax';
 import { useState } from 'react';
+import Loading from '@ui/components/loading';
 
 const LIMIT = 50;
 
-const FollowersContent = ({ username }: { username: string }) => {
+const FollowersContent = ({
+  username,
+  initialFollowers
+}: {
+  username: string;
+  initialFollowers: IFollow[] | null;
+}) => {
   const { t } = useTranslation('common_blog');
   const [page, setPage] = useState(0);
   const { user } = useUserClient();
@@ -23,7 +31,11 @@ const FollowersContent = ({ username }: { username: string }) => {
     queryFn: () => getAccountFull(username)
   });
 
-  const followersData = useFollowersInfiniteQuery(username, LIMIT);
+  const isFollowMutating = useIsMutating({ mutationKey: ['follow'] });
+  const isUnfollowMutating = useIsMutating({ mutationKey: ['unfollow'] });
+  const isMutating = isFollowMutating > 0 || isUnfollowMutating > 0;
+
+  const followersData = useFollowersInfiniteQuery(username, LIMIT, initialFollowers);
   const following = useFollowingInfiniteQuery(user.username, 1000, 'blog', ['blog']);
   const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
 
@@ -56,27 +68,38 @@ const FollowersContent = ({ username }: { username: string }) => {
         hasPrevPage={page > 0}
         isLoading={followersData.isFetchingNextPage}
       />
-      <ul>
-        {followersData.data?.pages[page].map((e) => (
-          <li
-            key={e.follower}
-            className="flex items-center justify-between bg-background-tertiary px-3 font-semibold text-destructive odd:bg-background"
-          >
-            <BasePathLink href={`/@${e.follower}`}>{e.follower}</BasePathLink>
-            {!user.isLoggedIn || user.username === e.follower ? null : (
-              <div>
-                <ButtonsContainer
-                  username={e.follower}
-                  user={user}
-                  variant="basic"
-                  follow={following}
-                  mute={mute}
-                />
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
+      {followersData.isLoading ? (
+        <Loading loading />
+      ) : (
+        <div className="relative">
+          {isMutating && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60">
+              <Loading loading />
+            </div>
+          )}
+          <ul>
+            {followersData.data?.pages[page].map((e) => (
+              <li
+                key={e.follower}
+                className="flex items-center justify-between bg-background-tertiary px-3 font-semibold text-destructive odd:bg-background"
+              >
+                <BasePathLink href={`/@${e.follower}`}>{e.follower}</BasePathLink>
+                {!user.isLoggedIn || user.username === e.follower ? null : (
+                  <div>
+                    <ButtonsContainer
+                      username={e.follower}
+                      user={user}
+                      variant="basic"
+                      follow={following}
+                      mute={mute}
+                    />
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <PrevNextButtons
         onNextPage={handleNextPage}
         onPrevPage={handlePrevPage}

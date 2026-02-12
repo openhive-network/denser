@@ -78,6 +78,14 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
   const following = useFollowingInfiniteQuery(user.username, 1000, 'blog', ['blog']);
 
+  // When viewing own profile, derive the following count from the client-side
+  // `following` query (source of truth with optimistic updates) instead of
+  // `profileData.follow_stats` which can be overwritten by stale server hydration.
+  const isOwnProfile = user.isLoggedIn && username === user.username;
+  const followingCount = isOwnProfile && following.data?.pages
+    ? following.data.pages.reduce((sum, page) => sum + page.length, 0)
+    : profileData?.follow_stats?.following_count ?? 0;
+
   const { data: accountReputationData } = useQuery({
     queryKey: ['accountReputationData', username],
     queryFn: () => getAccountReputations(username, 1),
@@ -292,7 +300,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                         className="group flex flex-col items-center transition-colors"
                       >
                         <span className="text-lg font-semibold sm:text-xl">
-                          {profileData?.follow_stats?.following_count ?? 0}
+                          {followingCount}
                         </span>
                         <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
                           {t('user_profile.lists.following_label')}
