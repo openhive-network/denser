@@ -258,6 +258,7 @@
   max-width: 550px;
   height: 600px;
   max-height: 80vh;
+  overflow: hidden;
 }
 
 /* Instagram embed wrapper */
@@ -276,6 +277,7 @@
   max-width: 540px;
   height: 800px;
   border: none;
+  overflow: hidden;
 }
 
 .markdown-view {
