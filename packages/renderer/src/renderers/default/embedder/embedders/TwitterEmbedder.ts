@@ -44,8 +44,8 @@ export class TwitterEmbedder extends AbstractEmbedder {
 
     public processEmbed(id: string, _size: {width: number; height: number}): string {
         // Use platform.twitter.com which is the stable embed domain (not affected by x.com rebrand)
-        // Note: width/height are handled by CSS for responsiveness
+        // Note: width/height are handled by CSS; no scrolling="no" so content is scrollable as fallback
         const embedUrl = `https://platform.twitter.com/embed/Tweet.html?id=${id}`;
-        return `<div class="twitterWrapper"><iframe src="${embedUrl}" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>`;
+        return `<div class="twitterWrapper"><iframe src="${embedUrl}" frameborder="0" allowtransparency="true"></iframe></div>`;
     }
 }

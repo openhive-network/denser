@@ -106,21 +106,25 @@ describe('TwitterEmbedder', () => {
     });
 
     describe('processEmbed', () => {
-        it('should generate correct iframe HTML', () => {
+        it('should generate correct iframe HTML without width/height attributes', () => {
             const embedder = new TwitterEmbedder();
             const result = embedder.processEmbed('1234567890123456789', {width: 550, height: 400});
-            // Note: width/height are handled by CSS, not as attributes
             expect(result).to.equal(
-                '<div class="twitterWrapper"><iframe src="https://platform.twitter.com/embed/Tweet.html?id=1234567890123456789" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div>'
+                '<div class="twitterWrapper"><iframe src="https://platform.twitter.com/embed/Tweet.html?id=1234567890123456789" frameborder="0" allowtransparency="true"></iframe></div>'
             );
         });
 
         it('should always use platform.twitter.com regardless of input domain', () => {
             const embedder = new TwitterEmbedder();
-            // Even if the original URL was x.com, the embed uses platform.twitter.com
             const result = embedder.processEmbed('9876543210987654321', {width: 640, height: 480});
             expect(result).to.contain('platform.twitter.com');
             expect(result).to.not.contain('x.com');
+        });
+
+        it('should not include scrolling attribute', () => {
+            const embedder = new TwitterEmbedder();
+            const result = embedder.processEmbed('1234567890123456789', {width: 640, height: 480});
+            expect(result).to.not.contain('scrolling');
         });
     });
 
