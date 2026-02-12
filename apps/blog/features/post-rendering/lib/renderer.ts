@@ -20,7 +20,7 @@ const renderDefaultOptions = {
   ipfsPrefix: '',
   assetsWidth: 640,
   assetsHeight: 480,
-  // Note: Instagram and Twitter use iframe-only via embedders (no external scripts needed)
+  // Note: Instagram uses iframe-only resize (postMessage), Twitter loads widgets.js for native rendering
   plugins: [new TablePlugin(), new InstagramResizePlugin(), new TwitterResizePlugin()],
   imageProxyFn: (url: string) => proxifyImageSrc(url, 1536, 0),
   usertagUrlFn: (account: string) => (basePath ? `${basePath}/@${account}` : `/@${account}`),
