@@ -1,10 +1,5 @@
+/// <reference path="./twitter-types.d.ts" />
 import {RendererPlugin} from './RendererPlugin';
-
-declare global {
-    interface Window {
-        twttr: any;
-    }
-}
 
 /**
  * Plugin for handling Twitter/X embedded tweets in the renderer.
@@ -75,11 +70,11 @@ export class TwitterPlugin implements RendererPlugin {
             if (container && this.isValidTwitterApi()) {
                 container.innerHTML = '';
                 const isDarkMode = container.closest('.dark') !== null;
-                window.twttr.widgets
-                    .createTweet(id, container, {
+                window.twttr?.widgets
+                    ?.createTweet?.(id, container, {
                         theme: isDarkMode ? 'dark' : 'light'
                     })
-                    .then((el: any) => {
+                    .then((el) => {
                         if (!el) this.renderedTweets.delete(containerId);
                     });
             }
@@ -119,7 +114,7 @@ export class TwitterPlugin implements RendererPlugin {
         return text.replace(/<div>twitter-id-(\d+)-author-(\w+)-count-([^<]*)<\/div>/g, (_match, id, author, indexSuffix) => {
             const containerId = `tweet-${id}-${indexSuffix}`;
             const url = `https://x.com/${author}/status/${id}`;
-            if (typeof window !== 'undefined' && this.isValidTwitterApi() && window.twttr.ready) {
+            if (typeof window !== 'undefined' && this.isValidTwitterApi() && window.twttr?.ready) {
                 setTimeout(() => this.renderTweet(id, containerId), 1000);
             }
 

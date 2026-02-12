@@ -80,6 +80,9 @@ function buildConnectSrcHosts(): Set<string> {
 function buildScriptSrc(): string {
   let scriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'";
 
+  // Twitter/X widgets.js for native tweet rendering (used by TwitterResizePlugin)
+  scriptSrc += ' https://platform.twitter.com';
+
   if (process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID) {
     scriptSrc += ' https://accounts.google.com/gsi/';
   }
