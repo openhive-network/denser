@@ -282,6 +282,15 @@ test.describe('Accessibility tests', () => {
     await homePage.getFirstPostTitle.click();
     await expect(postPage.articleTitle).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
 
+    // Wait for post body to render (images are inside articleBody)
+    await expect(postPage.articleBody).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+
+    // Wait for at least one content image to load inside the article
+    await page.locator('#articleBody img').first().waitFor({
+      state: 'visible',
+      timeout: TIMEOUTS.HYDRATION
+    });
+
     // Check images for alt text
     const images = page.locator('img');
     const imageCount = await images.count();
