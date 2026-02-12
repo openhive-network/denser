@@ -32,32 +32,36 @@ test.describe('Twitter/X embed completeness', () => {
     for (let i = 0; i < wrapperCount; i++) {
       const wrapper = twitterWrappers.nth(i);
 
-      // TwitterResizePlugin replaces the iframe with a native widget via widgets.js.
-      // Wait for either: native widget to render, or fallback iframe to stay visible.
-      const nativeWidget = wrapper.locator('twitter-widget');
-      const fallbackIframe = wrapper.locator('> iframe');
+      // TwitterResizePlugin (LOAD_TIMEOUT_MS = 10s) replaces the original iframe
+      // with a native widget iframe via twttr.widgets.createTweet().
+      // Wait for the plugin to finish before inspecting the wrapper.
+      await page.waitForTimeout(15000);
 
-      // Wait up to 15s for native widget; if not, fallback iframe should be there
-      const widgetAppeared = await nativeWidget
-        .first()
-        .waitFor({ state: 'attached', timeout: 15000 })
-        .then(() => true)
-        .catch(() => false);
+      // After the plugin settles, the wrapper contains either:
+      // - A new widget iframe (native widget rendered successfully, original removed)
+      // - The original iframe (widgets.js failed to load)
+      const visibleIframe = wrapper.locator('iframe:visible');
+      const iframeCount = await visibleIframe.count();
 
-      if (widgetAppeared) {
-        // Native widget auto-sizes — verify it rendered with reasonable dimensions
-        await expect(nativeWidget.first()).toBeVisible({ timeout: 10000 });
-        const box = await nativeWidget.first().boundingBox();
-        expect(box, `Twitter widget #${i + 1} should be visible`).not.toBeNull();
-        expect(
-          box!.height,
-          `Twitter widget #${i + 1} has suspiciously small height (${box!.height}px)`
-        ).toBeGreaterThan(100);
-      } else {
-        // Fallback: original iframe still visible — check for clipping
-        const iframeLocator = fallbackIframe.first();
-        await expect(iframeLocator).toBeVisible({ timeout: 10000 });
+      if (iframeCount === 0) {
+        // Plugin hid the iframe but widget didn't render — unexpected state
+        expect(iframeCount, `Twitter embed #${i + 1}: no visible iframe found after plugin settled`).toBeGreaterThan(
+          0
+        );
+        continue;
+      }
 
+      const iframeLocator = visibleIframe.first();
+      const box = await iframeLocator.boundingBox();
+      expect(box, `Twitter embed #${i + 1} should have a bounding box`).not.toBeNull();
+
+      // Native widget iframes auto-size and are not constrained by the 600px CSS rule
+      // (CSS targets .twitterWrapper > iframe but widget creates a nested structure).
+      // For fallback iframes, check scrollHeight vs clientHeight for clipping.
+      const src = (await iframeLocator.getAttribute('src')) ?? '';
+      const isFallbackIframe = src.includes('platform.twitter.com/embed/Tweet.html');
+
+      if (isFallbackIframe) {
         const frame = iframeLocator.contentFrame();
         await frame.locator('article').waitFor({ state: 'visible', timeout: 30000 });
 
@@ -69,6 +73,12 @@ test.describe('Twitter/X embed completeness', () => {
           `Twitter embed #${i + 1} is clipped: content height (${contentHeight}px) ` +
             `exceeds iframe visible height (${iframeVisibleHeight}px)`
         ).toBeGreaterThanOrEqual(contentHeight);
+      } else {
+        // Native widget — auto-sized, just verify reasonable height
+        expect(
+          box!.height,
+          `Twitter widget #${i + 1} has suspiciously small height (${box!.height}px)`
+        ).toBeGreaterThan(100);
       }
     }
   });
