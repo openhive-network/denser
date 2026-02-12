@@ -252,8 +252,8 @@
   margin: 0 auto;
 }
 
-#articleBody .twitterWrapper iframe,
-.prose .twitterWrapper iframe {
+#articleBody .twitterWrapper > iframe,
+.prose .twitterWrapper > iframe {
   width: 100% !important;
   max-width: 550px;
   height: 600px;
