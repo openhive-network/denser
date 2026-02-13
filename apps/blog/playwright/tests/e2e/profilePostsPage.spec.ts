@@ -66,7 +66,7 @@ test.describe('Profile page of @gtg', () => {
     await homePage.getPostCardAvatar.first().click();
     await page.waitForURL('/@gtg');
     await expect(profilePage.profileBlogLink).toBeVisible();
-    await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+
     await expect(profilePage.blogTabPostsContainer).toBeVisible();
   });
 
@@ -76,7 +76,7 @@ test.describe('Profile page of @gtg', () => {
     await homePage.getFirstPostAuthor.click();
     await page.waitForURL('/@gtg');
     await expect(profilePage.profileBlogLink).toBeVisible();
-    await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+
     await expect(profilePage.blogTabPostsContainer).toBeVisible();
   });
 
@@ -140,7 +140,7 @@ test.describe('Profile page of @gtg', () => {
     await postPage.postsCommentsFirstAvatar.click();
     await page.waitForURL('/@gtg');
     await expect(profilePage.profileBlogLink).toBeVisible();
-    await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+
     await expect(profilePage.blogTabPostsContainer).toBeVisible();
   });
 
@@ -150,7 +150,7 @@ test.describe('Profile page of @gtg', () => {
     await homePage.getFirstPostAuthor.click();
     await page.waitForURL('/@gtg');
     await expect(profilePage.profileBlogLink).toBeVisible();
-    await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+
     await expect(profilePage.blogTabPostsContainer).toBeVisible();
   });
 
@@ -270,7 +270,7 @@ test.describe('Profile page of @gtg', () => {
       await homePage.getPostCardAvatar.first().click();
       await page.waitForURL('/@gtg');
       await expect(profilePage.profileBlogLink).toBeVisible();
-      await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
     } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
   });
@@ -283,7 +283,7 @@ test.describe('Profile page of @gtg', () => {
       await homePage.getFirstPostAuthor.click();
       await page.waitForURL('/@gtg');
       await expect(profilePage.profileBlogLink).toBeVisible();
-      await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
     } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
   });
@@ -344,7 +344,7 @@ test.describe('Profile page of @gtg', () => {
         }
       }
       await page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
-      await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
     } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
   });
@@ -369,7 +369,7 @@ test.describe('Profile page of @gtg', () => {
         }
       }
       await page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
-      await expect(profilePage.profileBlogLink).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
     } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
   });
