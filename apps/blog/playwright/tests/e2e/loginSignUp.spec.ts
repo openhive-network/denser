@@ -235,7 +235,7 @@ test.describe('Login and Sign Up tests', () =>{
     await expect(loginForm.usernameErrorMessage).toHaveText('Account name should not be empty.');
   });
 
-  // Password length should be more than 6 characters - Wrong password
+  // Password length should be at least 6 characters - Wrong password
   test('Validate the error message for too short password', async ({page}) =>{
     const loginForm = new LoginForm(page);
 
@@ -244,11 +244,11 @@ test.describe('Login and Sign Up tests', () =>{
     // Type Safe storage password with less then 6 characters into the password login form
     await loginForm.passwordInput.fill('ako');
     await loginForm.page.waitForSelector(loginForm.passwordErrorMessage['_selector']);
-    await expect(loginForm.passwordErrorMessage).toHaveText('Password length should be more than 6 characters');
+    await expect(loginForm.passwordErrorMessage).toHaveText('Password length should be at least 6 characters');
     // Type empty string into the safe storage password in the login form
     await loginForm.passwordInput.fill('');
     await loginForm.page.waitForSelector(loginForm.passwordErrorMessage['_selector']);
-    await expect(loginForm.passwordErrorMessage).toHaveText('Password length should be more than 6 characters');
+    await expect(loginForm.passwordErrorMessage).toHaveText('Password length should be at least 6 characters');
   });
 
   // WIF should not be empty. - Wrong WIF (needs username)
