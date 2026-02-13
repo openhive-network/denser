@@ -32,6 +32,9 @@ test.describe('Twitter/X embed completeness', () => {
     for (let i = 0; i < wrapperCount; i++) {
       const wrapper = twitterWrappers.nth(i);
 
+      // Scroll embed into view so the browser loads iframe content
+      await wrapper.scrollIntoViewIfNeeded();
+
       // TwitterResizePlugin (LOAD_TIMEOUT_MS = 10s) replaces the original iframe
       // with a native widget iframe via twttr.widgets.createTweet().
       // Wait for the plugin to finish before inspecting the wrapper.
@@ -110,7 +113,11 @@ test.describe('Instagram embed completeness', () => {
     test.skip(count === 0, 'No Instagram embeds found in this post');
 
     for (let i = 0; i < count; i++) {
+      const wrapperLocator = page.locator('#articleBody .instagramWrapper').nth(i);
       const iframeLocator = instagramIframes.nth(i);
+
+      // Scroll embed into view so the browser loads iframe content
+      await wrapperLocator.scrollIntoViewIfNeeded();
       await expect(iframeLocator).toBeAttached({ timeout: 15000 });
 
       const frame = iframeLocator.contentFrame();
