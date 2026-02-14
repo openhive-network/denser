@@ -15,6 +15,13 @@ const logger = getLogger('google-drive-callback');
  * - Open redirect protection via same-origin validation
  * - URL-safe base64 encoding for state
  */
+/** Escapes a value for safe embedding in an HTML <script> block. */
+function safeJsonForScript(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e');
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -70,9 +77,9 @@ export default async function handler(
   </div>
   <script>
     (function() {
-      var code = ${JSON.stringify(codeStr || null)};
-      var state = ${JSON.stringify(stateStr || null)};
-      var error = ${JSON.stringify(errorStr || null)};
+      var code = ${safeJsonForScript(codeStr || null)};
+      var state = ${safeJsonForScript(stateStr || null)};
+      var error = ${safeJsonForScript(errorStr || null)};
 
       // URL-safe base64 decode helper
       function decodeUrlSafeBase64(str) {
