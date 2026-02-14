@@ -31,7 +31,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       accessToken: credentials.access_token
     }, { status: 200 });
   } catch (error) {
-    console.error('Error refreshing Google Drive access token:', error);
+    logger.error('Error refreshing Google Drive access token: %s', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
