@@ -18,6 +18,12 @@ import { siteConfig } from '@hive/ui/config/site';
 import { getHiveUserProfile } from '@smart-signer/lib/get-hive-user-profile';
 import { getLogger } from '@hive/ui/lib/logging';
 import { proxifyImageSrc } from '@hive/ui/lib/proxify-images';
+
+/** Strip HTML tags and limit length for plain-text profile fields. */
+function sanitizeProfileText(value: string | undefined, maxLen = 160): string | undefined {
+  if (!value) return undefined;
+  return value.replace(/<[^>]*>/g, '').slice(0, maxLen).trim() || undefined;
+}
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import {
   findClient,
@@ -352,19 +358,19 @@ export const handleUserInfo: NextApiHandler = async (req, res) => {
     sub: username,
     username: username,
     preferred_username: username,
-    name: hiveProfile.name || username,
+    name: sanitizeProfileText(hiveProfile.name, 100) || username,
     picture: pictureUrl,
   };
 
   // Add optional profile fields if available
   if (hiveProfile.website) {
-    userinfo.website = hiveProfile.website;
+    userinfo.website = sanitizeProfileText(hiveProfile.website, 200);
   }
   if (hiveProfile.about) {
-    userinfo.about = hiveProfile.about;
+    userinfo.about = sanitizeProfileText(hiveProfile.about);
   }
   if (hiveProfile.location) {
-    userinfo.location = hiveProfile.location;
+    userinfo.location = sanitizeProfileText(hiveProfile.location, 100);
   }
 
   logger.info('OAuth userinfo: returned profile for user %s', username);
