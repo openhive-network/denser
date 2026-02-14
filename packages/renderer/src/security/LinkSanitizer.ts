@@ -116,6 +116,20 @@ export class LinkSanitizer {
                 }
             }
 
+            // Check for IPv4-mapped IPv6 addresses (e.g. ::ffff:7f00:1 → 127.0.0.1)
+            // The URL parser serializes ::ffff:127.0.0.1 as ::ffff:7f00:1
+            const mappedMatch = ipv6Hostname.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/i);
+            if (mappedMatch) {
+                const high = parseInt(mappedMatch[1], 16);
+                const low = parseInt(mappedMatch[2], 16);
+                const ipv4 = `${(high >> 8) & 0xff}.${high & 0xff}.${(low >> 8) & 0xff}.${low & 0xff}`;
+                for (const pattern of PRIVATE_IPV4_PATTERNS) {
+                    if (pattern.test(ipv4)) {
+                        return true;
+                    }
+                }
+            }
+
             return false;
         } catch {
             // If URL parsing fails, don't block (let other checks handle it)

@@ -137,6 +137,28 @@ describe('LinkSanitizer.isPrivateNetworkUrl', () => {
             });
         });
 
+        describe('IPv4-mapped IPv6 addresses', () => {
+            it('should block loopback via IPv4-mapped IPv6', () => {
+                expect(LinkSanitizer.isPrivateNetworkUrl('http://[::ffff:127.0.0.1]/')).to.equal(true);
+                expect(LinkSanitizer.isPrivateNetworkUrl('http://[::ffff:127.0.0.1]:8090/')).to.equal(true);
+            });
+
+            it('should block private ranges via IPv4-mapped IPv6', () => {
+                expect(LinkSanitizer.isPrivateNetworkUrl('http://[::ffff:10.0.0.1]/')).to.equal(true);
+                expect(LinkSanitizer.isPrivateNetworkUrl('http://[::ffff:192.168.1.1]/')).to.equal(true);
+                expect(LinkSanitizer.isPrivateNetworkUrl('http://[::ffff:172.16.0.1]/')).to.equal(true);
+            });
+
+            it('should block link-local via IPv4-mapped IPv6', () => {
+                expect(LinkSanitizer.isPrivateNetworkUrl('http://[::ffff:169.254.169.254]/')).to.equal(true);
+            });
+
+            it('should allow public IPs via IPv4-mapped IPv6', () => {
+                expect(LinkSanitizer.isPrivateNetworkUrl('http://[::ffff:8.8.8.8]/')).to.equal(false);
+                expect(LinkSanitizer.isPrivateNetworkUrl('http://[::ffff:1.1.1.1]/')).to.equal(false);
+            });
+        });
+
         describe('public addresses (should NOT block)', () => {
             it('should allow public domains', () => {
                 expect(LinkSanitizer.isPrivateNetworkUrl('https://hive.blog/')).to.equal(false);
