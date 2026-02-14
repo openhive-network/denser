@@ -133,13 +133,14 @@ export default async function handler(
         console.error('Failed to parse state:', e);
       }
 
-      // Validate CSRF nonce
+      // Validate CSRF nonce (mandatory — reject if missing or mismatched)
       var storedNonce = sessionStorage.getItem('google_oauth_nonce');
-      if (stateNonce && storedNonce && stateNonce !== storedNonce) {
-        console.error('CSRF nonce mismatch - possible attack');
+      if (!storedNonce || !stateNonce || stateNonce !== storedNonce) {
+        console.error('CSRF nonce validation failed');
         sessionStorage.setItem('google_oauth_error', 'csrf_validation_failed');
         sessionStorage.removeItem('google_oauth_code');
       }
+      sessionStorage.removeItem('google_oauth_nonce');
 
       // Redirect back to the app with google_auth=pending flag
       // This signals to the app that it should continue the OAuth flow automatically
