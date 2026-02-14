@@ -531,6 +531,8 @@
     "author_if_different": "المؤلف (إذا كان مختلفًا عن الحساب الحالي)",
     "post_options": "خيارات المشاركة:",
     "author_rewards": "مكافآت المؤلف:",
+    "reward_options_final": "تم رفض الدفع ولا يمكن تغييره",
+    "reward_options_restrictive": "يمكن فقط جعل خيارات المكافآت أكثر تقييداً",
     "advanced_settings": "الإعدادات المتقدمة",
     "account_stats": "إحصائيات الحساب:",
     "resource_credits": "رصيد الموارد (RC) المستوى: {{value}}%",

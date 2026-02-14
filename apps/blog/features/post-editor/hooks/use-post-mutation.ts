@@ -127,6 +127,7 @@ export function usePostMutation() {
       beneficiaries: Beneficiarie[];
       maxAcceptedPayout: NaiAsset;
       percentHbd: number;
+      rewardOptionsChanged?: boolean;
     }) => {
       const {
         permlink,
@@ -176,6 +177,18 @@ export function usePostMutation() {
           { observe: false }
         );
         logger.info('Post update broadcast successful: %o', { permlink, broadcastResult });
+
+        // If reward options were changed (made more restrictive), broadcast comment_options
+        if (maxAcceptedPayout && params.rewardOptionsChanged) {
+          const optionsResult = await transactionService.updatePostOptions(
+            permlink,
+            maxAcceptedPayout,
+            percentHbd,
+            { observe: false }
+          );
+          logger.info('Post options update broadcast successful: %o', { permlink, optionsResult });
+        }
+
         return { ...params, broadcastResult };
       } else {
         throw new Error('maxAcceptedPayout is required for new posts');

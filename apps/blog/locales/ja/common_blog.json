@@ -493,6 +493,8 @@
     "author_if_different": "著者（現在のアカウントと異なる場合）",
     "post_options": "投稿オプション:",
     "author_rewards": "著者の報酬:",
+    "reward_options_final": "支払いは拒否されており、変更できません",
+    "reward_options_restrictive": "報酬オプションはより制限的にのみ変更できます",
     "advanced_settings": "高度な設定",
     "account_stats": "アカウント統計:",
     "resource_credits": "リソースクレジット（RC）レベル: {{value}} %",

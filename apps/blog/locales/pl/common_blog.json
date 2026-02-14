@@ -498,6 +498,8 @@
     "author_if_different": "Autor(jeśli inny niż obecne konto)",
     "post_options": "Opcje posta:",
     "author_rewards": "Wynagrodzenie autora:",
+    "reward_options_final": "Wypłata została odrzucona i nie można jej zmienić",
+    "reward_options_restrictive": "Opcje nagród mogą być tylko bardziej restrykcyjne",
     "advanced_settings": "Ustawienia zaawansowane",
     "account_stats": "Statystyki konta:",
     "resource_credits": "Resource Credits (RC) level: {{value}} %",

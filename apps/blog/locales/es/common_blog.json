@@ -493,6 +493,8 @@
     "author_if_different": "Autor (si es diferente de la cuenta actual)",
     "post_options": "Opciones de publicación:",
     "author_rewards": "Recompensas del autor:",
+    "reward_options_final": "El pago ha sido rechazado y no se puede cambiar",
+    "reward_options_restrictive": "Las opciones de recompensa solo pueden hacerse más restrictivas",
     "advanced_settings": "Configuraciones avanzadas",
     "account_stats": "Estadísticas de la cuenta:",
     "resource_credits": "Nivel de Créditos de Recursos (RC): {{value}} %",

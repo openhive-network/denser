@@ -493,6 +493,8 @@
     "author_if_different": "作者（如果与当前帐户不同）",
     "post_options": "文章选项：",
     "author_rewards": "作者奖励：",
+    "reward_options_final": "付款已被拒绝且无法更改",
+    "reward_options_restrictive": "奖励选项只能变得更加严格",
     "advanced_settings": "高级设置",
     "account_stats": "帐户统计：",
     "resource_credits": "资源积分（RC）水平：{{value}}%",

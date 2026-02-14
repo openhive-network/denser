@@ -586,6 +586,8 @@
     "author_if_different": "Author(if different from current account)",
     "post_options": "Post options:",
     "author_rewards": "Author rewards:",
+    "reward_options_final": "Payout has been declined and cannot be changed",
+    "reward_options_restrictive": "Reward options can only be made more restrictive",
     "advanced_settings": "Advanced settings",
     "account_stats": "Account stats:",
     "resource_credits": "Resource Credits (RC) level: {{value}}%",

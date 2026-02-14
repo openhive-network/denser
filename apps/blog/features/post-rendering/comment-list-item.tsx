@@ -342,7 +342,7 @@ const CommentListItem = memo(function CommentListItem({
 
                             <DetailsCardHover
                               post={comment}
-                              decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+                              decline={parseFloat(comment.max_accepted_payout) === 0}
                             >
                               <div className="flex items-center hover:cursor-pointer hover:text-destructive ">
                                 {'$'}
@@ -412,7 +412,7 @@ const CommentListItem = memo(function CommentListItem({
                           <VotesComponentWrapper post={comment} type="comment" />
                           <DetailsCardHover
                             post={comment}
-                            decline={Number(comment.max_accepted_payout.slice(0, 1)) === 0}
+                            decline={parseFloat(comment.max_accepted_payout) === 0}
                           >
                             <div
                               data-testid="comment-card-footer-payout"
@@ -420,7 +420,7 @@ const CommentListItem = memo(function CommentListItem({
                                 'flex items-center hover:cursor-pointer hover:text-destructive',
                                 {
                                   'line-through opacity-50':
-                                    Number(comment.max_accepted_payout.slice(0, 1)) === 0
+                                    parseFloat(comment.max_accepted_payout) === 0
                                 }
                               )}
                             >

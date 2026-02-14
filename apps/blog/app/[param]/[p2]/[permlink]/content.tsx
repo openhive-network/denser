@@ -690,13 +690,13 @@ const PostContent = () => {
                       <span className="h-4 w-px bg-border" />
                       <DetailsCardHover
                         post={postData}
-                        decline={Number(postData.max_accepted_payout.slice(0, 1)) === 0}
+                        decline={parseFloat(postData.max_accepted_payout) === 0}
                         post_page
                       >
                         <span
                           data-testid="comment-payout"
                           className={`font-bold text-destructive hover:cursor-pointer ${
-                            Number(postData.max_accepted_payout.slice(0, 1)) === 0
+                            parseFloat(postData.max_accepted_payout) === 0
                               ? '!text-gray-600 line-through'
                               : ''
                           }`}

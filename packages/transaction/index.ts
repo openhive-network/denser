@@ -669,6 +669,32 @@ export class TransactionService {
     }, transactionOptions);
   }
 
+  /**
+   * Update comment/post options (payout settings).
+   * Can only make settings MORE restrictive (lower max_accepted_payout, lower percent_hbd).
+   * Must be called before payout.
+   */
+  async updatePostOptions(
+    permlink: string,
+    maxAcceptedPayout: NaiAsset,
+    percentHbd: number,
+    transactionOptions: TransactionOptions = {}
+  ) {
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        comment_options_operation: {
+          author: this.signerOptions.username,
+          permlink,
+          max_accepted_payout: maxAcceptedPayout,
+          percent_hbd: percentHbd,
+          allow_votes: true,
+          allow_curation_rewards: true,
+          extensions: []
+        }
+      });
+    }, transactionOptions);
+  }
+
   async updateWalletProfile(
     username: string,
     memo_key: string,

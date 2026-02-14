@@ -196,7 +196,13 @@ export default function PostForm({
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
       : preferences.blog_rewards === '0%' ? 0 : 1000000,
-    payoutType: post_s ? `${post_s.percent_hbd}%` : preferences.blog_rewards
+    payoutType: post_s
+      ? (parseFloat(post_s.max_accepted_payout) === 0
+          ? '0%'
+          : post_s.percent_hbd === 0
+            ? '100%'
+            : '50%')
+      : preferences.blog_rewards
   };
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -435,6 +441,32 @@ export default function PostForm({
     const maxAcceptedPayout = await createAsset((data.maxAcceptedPayout * 1000).toString(), 'HBD');
     const postPermlink = await createPermlink(data?.title ?? '', username);
     const permlinInEditMode = post_s?.permlink;
+
+    // Calculate if reward options changed (became more restrictive) in edit mode
+    let newPercentHbd = data.payoutType ? (data.payoutType === '100%' ? 0 : 10000) : 10000;
+    const newMaxPayout = data.maxAcceptedPayout;
+    let rewardOptionsChanged = false;
+
+    if (editMode && post_s) {
+      const originalPercentHbd = post_s.percent_hbd;
+      const originalMaxPayout = parseFloat(post_s.max_accepted_payout);
+
+      // When declining payout (max=0), keep original percent_hbd
+      // because blockchain rejects increasing percent_hbd
+      if (newMaxPayout === 0) {
+        newPercentHbd = Math.min(newPercentHbd, originalPercentHbd);
+      }
+
+      // Ensure we never try to increase percent_hbd (blockchain rejects this)
+      newPercentHbd = Math.min(newPercentHbd, originalPercentHbd);
+
+      // Check if options became more restrictive
+      const percentHbdChanged = newPercentHbd < originalPercentHbd;
+      const maxPayoutChanged = newMaxPayout < originalMaxPayout;
+
+      rewardOptionsChanged = percentHbdChanged || maxPayoutChanged;
+    }
+
     try {
       if (btnRef.current) {
         btnRef.current.disabled = true;
@@ -449,7 +481,7 @@ export default function PostForm({
         image: selectedImg,
         reputation,
         editMode,
-        percentHbd: data.payoutType ? (data.payoutType === '100%' ? 0 : 10000) : 0,
+        percentHbd: newPercentHbd,
         maxAcceptedPayout,
         tags,
         beneficiaries: data.beneficiaries
@@ -459,7 +491,8 @@ export default function PostForm({
                 weight: Number(weight) * 100
               }))
               .filter((b) => Number(b.weight) !== 10000)
-          : []
+          : [],
+        rewardOptionsChanged
       };
       try {
         await postMutation.mutateAsync(postParams);
@@ -772,7 +805,60 @@ export default function PostForm({
                     </span>
                   </AdvancedSettingsPostForm>
                 </div>
-              ) : null}
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium">{t('submit_page.author_rewards')}</span>
+                  {/* In edit mode: show read-only if declined, otherwise allow more restrictive options */}
+                  {post_s && parseFloat(post_s.max_accepted_payout) === 0 ? (
+                    <span className="text-xs text-muted-foreground">
+                      {t('submit_page.reward_options_final')}
+                    </span>
+                  ) : (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name="payoutType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                  // Update maxAcceptedPayout when declining
+                                  if (value === '0%') {
+                                    form.setValue('maxAcceptedPayout', 0);
+                                  } else if (watchedValues.maxAcceptedPayout === 0) {
+                                    // Restore original max if changing from decline
+                                    form.setValue('maxAcceptedPayout', post_s ? Number(post_s.max_accepted_payout.split(' ')[0]) : 1000000);
+                                  }
+                                }}
+                              >
+                                <SelectTrigger className="w-[180px]" data-testid="edit-reward-type-select">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {/* Only show options that are MORE restrictive than current */}
+                                  {post_s && post_s.percent_hbd === 10000 && (
+                                    <SelectItem value="50%">50% HBD / 50% HP</SelectItem>
+                                  )}
+                                  {post_s && post_s.percent_hbd > 0 && (
+                                    <SelectItem value="100%">{t('submit_page.power_up')}</SelectItem>
+                                  )}
+                                  <SelectItem value="0%">{t('submit_page.advanced_settings_dialog.decline_payout')}</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      <span className="text-xs text-muted-foreground">
+                        {t('submit_page.reward_options_restrictive')}
+                      </span>
+                    </>
+                  )}
+                </div>
+              )}
 
               <div className="flex flex-col gap-2">
                 <span className="text-sm font-medium">{t('submit_page.account_stats')}</span>
