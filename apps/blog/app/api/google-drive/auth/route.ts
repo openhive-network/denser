@@ -14,15 +14,22 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const body = await req.json().catch(() => {});
 
     const code = body['code'];
-    const redirectUri = body['redirectUri']; // For Safari redirect flow
 
     if (!code || typeof code !== 'string') {
       logger.debug('Received invalid Google Drive code format');
       return new NextResponse(null, { status: 400 });
     }
 
-    // Use the redirect URI that was used during authorization (if provided)
-    const oauth2Client = getGoogleDriveOAuth2Client(redirectUri);
+    // If the client signals redirect mode was used, construct the callback
+    // URI from request headers instead of accepting a client-provided value
+    let callbackUri: string | undefined;
+    if (body['redirectUri']) {
+      const host = req.headers.get('host');
+      const proto = req.headers.get('x-forwarded-proto') || 'https';
+      callbackUri = `${proto}://${host}/api/google-drive/callback`;
+    }
+
+    const oauth2Client = getGoogleDriveOAuth2Client(callbackUri);
 
     // Exchange authorization code for access and refresh tokens
     const { tokens } = await oauth2Client.getToken(code);
