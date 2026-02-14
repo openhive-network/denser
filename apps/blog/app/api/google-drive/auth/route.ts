@@ -35,7 +35,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       refreshToken: tokens.refresh_token, // May be undefined if the user logged in before and did not revoke consent
     }, { status: 200 });
   } catch (error) {
-    console.error('Error exchanging code for tokens:', error);
+    logger.error('Error exchanging code for tokens: %s', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

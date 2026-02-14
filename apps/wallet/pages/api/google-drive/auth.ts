@@ -45,7 +45,7 @@ export default async function handler(
       refreshToken: tokens.refresh_token!, // May be undefined if the user logged in before and did not revoke consent
     });
   } catch (error) {
-    console.error('Error exchanging code for tokens:', error);
+    logger.error('Error exchanging code for tokens: %s', error instanceof Error ? error.message : 'Unknown error');
     return res.status(500).json({ error: 'Internal server error' });
   }
 }

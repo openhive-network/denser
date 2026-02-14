@@ -40,7 +40,7 @@ export default async function handler(
       accessToken: credentials.access_token!
     });
   } catch (error) {
-    console.error('Error refreshing Google Drive access token:', error);
+    logger.error('Error refreshing Google Drive access token: %s', error instanceof Error ? error.message : 'Unknown error');
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
