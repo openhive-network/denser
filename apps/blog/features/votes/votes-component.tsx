@@ -16,6 +16,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover'
 import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
 import { useTranslation } from '@/blog/i18n/client';
 import { useVoteMutation } from './hooks/use-vote-mutation';
+import { VoteRemovalDialog } from './vote-removal-dialog';
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
 
@@ -179,18 +180,35 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             </div>
           </PopoverContent>
         </Popover>
+      ) : user.isLoggedIn && vote_upvoted ? (
+        <VoteRemovalDialog
+          voteType="upvote"
+          onConfirm={() => {
+            setClickedVoteButton('up');
+            submitVote(0);
+          }}
+        >
+          <span>
+            <TooltipContainer
+              loading={voteMutation.isLoading}
+              text={
+                userVote && userVote.vote_percent === 10000 && !enable_slider
+                  ? t('cards.post_card.undo_upvote')
+                  : t('cards.post_card.undo_upvote_percent', {
+                      votePercent: ((userVote?.vote_percent ?? 0) / 100).toFixed(2)
+                    })
+              }
+              dataTestId="upvote-button"
+              afterPayout={pastPayout && !vote_upvoted}
+            >
+              <Icons.arrowUpCircle className="h-5 w-5 cursor-pointer rounded-xl bg-destructive-icon text-white hover:bg-destructive-icon hover:text-white" />
+            </TooltipContainer>
+          </span>
+        </VoteRemovalDialog>
       ) : user.isLoggedIn ? (
         <TooltipContainer
           loading={voteMutation.isLoading}
-          text={
-            userVote && userVote.vote_percent > 0
-              ? userVote.vote_percent === 10000 && !enable_slider
-                ? t('cards.post_card.undo_upvote')
-                : t('cards.post_card.undo_upvote_percent', {
-                    votePercent: (userVote.vote_percent / 100).toFixed(2)
-                  })
-              : t('cards.post_card.upvote')
-          }
+          text={t('cards.post_card.upvote')}
           dataTestId="upvote-button"
           afterPayout={pastPayout && !vote_upvoted}
         >
@@ -200,24 +218,10 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             onClick={() => {
               if (voteMutation.isLoading) return;
               setClickedVoteButton('up');
-              {
-                // We vote either 100% or 0%.
-                if (userVote && userVote.vote_percent > 0) {
-                  submitVote(0);
-                } else {
-                  submitVote(10000);
-                }
-              }
+              submitVote(10000);
             }}
           >
-            <Icons.arrowUpCircle
-              className={clsx(
-                'h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white',
-                {
-                  'bg-destructive-icon text-white': userVote && userVote.vote_percent > 0
-                }
-              )}
-            />
+            <Icons.arrowUpCircle className="h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white" />
           </button>
         </TooltipContainer>
       ) : (
@@ -315,18 +319,35 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             </div>
           </PopoverContent>
         </Popover>
+      ) : user.isLoggedIn && vote_downvoted ? (
+        <VoteRemovalDialog
+          voteType="downvote"
+          onConfirm={() => {
+            setClickedVoteButton('down');
+            submitVote(0);
+          }}
+        >
+          <span>
+            <TooltipContainer
+              loading={voteMutation.isLoading}
+              text={
+                userVote && userVote.vote_percent === -10000 && !enable_slider
+                  ? t('cards.post_card.undo_downvote')
+                  : t('cards.post_card.undo_downvote_percent', {
+                      votePercent: (-(userVote?.vote_percent ?? 0) / 100).toFixed(2)
+                    })
+              }
+              dataTestId="downvote-button"
+              afterPayout={pastPayout && !vote_downvoted}
+            >
+              <Icons.arrowDownCircle className="h-5 w-5 cursor-pointer rounded-xl bg-destructive-icon text-white opacity-80 hover:bg-gray-600 hover:text-white" />
+            </TooltipContainer>
+          </span>
+        </VoteRemovalDialog>
       ) : user.isLoggedIn ? (
         <TooltipContainer
           loading={voteMutation.isLoading}
-          text={
-            userVote && userVote.vote_percent < 0
-              ? userVote.vote_percent === -10000 && !enable_slider
-                ? t('cards.post_card.undo_downvote')
-                : t('cards.post_card.undo_downvote_percent', {
-                    votePercent: (-userVote.vote_percent / 100).toFixed(2)
-                  })
-              : t('cards.post_card.downvote')
-          }
+          text={t('cards.post_card.downvote')}
           dataTestId="downvote-button"
           afterPayout={pastPayout && !vote_downvoted}
         >
@@ -336,24 +357,10 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             onClick={() => {
               if (voteMutation.isLoading) return;
               setClickedVoteButton('down');
-              {
-                // We vote either -100% or 0%.
-                if (userVote && userVote.vote_percent < 0) {
-                  submitVote(0);
-                } else {
-                  submitVote(-10000);
-                }
-              }
+              submitVote(-10000);
             }}
           >
-            <Icons.arrowDownCircle
-              className={clsx(
-                'h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white',
-                {
-                  'bg-destructive-icon text-white opacity-80': userVote && userVote.vote_percent < 0
-                }
-              )}
-            />
+            <Icons.arrowDownCircle className="h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white" />
           </button>
         </TooltipContainer>
       ) : (

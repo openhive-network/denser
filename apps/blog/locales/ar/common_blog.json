@@ -224,6 +224,14 @@
     "description": "سيتم إضافة هذه المشاركة إلى مدونتك ومشاركتها مع متابعيك.",
     "title": "إعادة نشر هذه المشاركة"
   },
+  "vote_removal_dialog": {
+    "remove_upvote_title": "Remove Upvote",
+    "remove_upvote_description": "Removing your vote will reset your curation rewards for this post.",
+    "remove_downvote_title": "Remove Downvote",
+    "remove_downvote_description": "Removing your vote.",
+    "confirm": "OK",
+    "cancel": "إلغاء"
+  },
   "amount_hover_card": {
     "pending_payout_amount": "مبلغ الدفعة المعلقة: ${{value}}",
     "breakdown": "التفصيل:",
