@@ -491,6 +491,7 @@ export default function PostForm({
                 weight: Number(weight) * 100
               }))
               .filter((b) => Number(b.weight) !== 10000)
+              .sort((a, b) => a.account.localeCompare(b.account))
           : [],
         rewardOptionsChanged
       };
