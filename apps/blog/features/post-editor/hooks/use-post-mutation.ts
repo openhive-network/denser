@@ -38,6 +38,7 @@ export function usePostMutation() {
       beneficiaries: Beneficiarie[];
       maxAcceptedPayout: NaiAsset;
       percentHbd: number;
+      rewardOptionsChanged?: boolean;
     }) => {
       const {
         permlink,
