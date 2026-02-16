@@ -37,6 +37,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { ToastAction } from '@ui/components/toast';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { cn } from '@ui/lib/utils';
+import { Icons } from '@ui/components/icons';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useTranslation } from '@/blog/i18n/client';
@@ -133,27 +134,29 @@ function numberedList(view: EditorView) {
 
 interface ToolbarButton {
   name: string;
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   action: (view: EditorView) => void;
   shortcut?: string;
 }
 
+const ICON_CLASS = 'h-4 w-4';
+
 function getToolbarButtons(t: (key: string) => string): ToolbarButton[] {
   return [
-    { name: 'bold', icon: 'B', title: 'Bold', action: (v) => wrapSelection(v, '**', '**'), shortcut: 'Ctrl+B' },
-    { name: 'italic', icon: 'I', title: 'Italic', action: (v) => wrapSelection(v, '*', '*'), shortcut: 'Ctrl+I' },
+    { name: 'bold', icon: <Icons.bold className={ICON_CLASS} />, title: 'Bold', action: (v) => wrapSelection(v, '**', '**'), shortcut: 'Ctrl+B' },
+    { name: 'italic', icon: <Icons.italic className={ICON_CLASS} />, title: 'Italic', action: (v) => wrapSelection(v, '*', '*'), shortcut: 'Ctrl+I' },
     {
       name: 'strikethrough',
-      icon: 'S̶',
+      icon: <Icons.strikethrough className={ICON_CLASS} />,
       title: 'Strikethrough',
       action: (v) => wrapSelection(v, '~~', '~~')
     },
-    { name: 'hr', icon: '―', title: 'Horizontal Rule', action: (v) => insertAtCursor(v, '\n---\n') },
-    { name: 'title', icon: 'H', title: 'Heading', action: cycleHeading },
+    { name: 'hr', icon: <Icons.horizontalRule className={ICON_CLASS} />, title: 'Horizontal Rule', action: (v) => insertAtCursor(v, '\n---\n') },
+    { name: 'title', icon: <Icons.heading className={ICON_CLASS} />, title: 'Heading', action: cycleHeading },
     {
       name: 'link',
-      icon: '🔗',
+      icon: <Icons.link className={ICON_CLASS} />,
       title: 'Link',
       action: (v) => {
         const { from, to } = v.state.selection.main;
@@ -170,17 +173,17 @@ function getToolbarButtons(t: (key: string) => string): ToolbarButton[] {
       },
       shortcut: 'Ctrl+K'
     },
-    { name: 'quote', icon: '❝', title: 'Quote', action: (v) => prefixLines(v, '> ') },
-    { name: 'code', icon: '‹›', title: 'Inline Code', action: (v) => wrapSelection(v, '`', '`') },
+    { name: 'quote', icon: <Icons.quote className={ICON_CLASS} />, title: 'Quote', action: (v) => prefixLines(v, '> ') },
+    { name: 'code', icon: <Icons.code className={ICON_CLASS} />, title: 'Inline Code', action: (v) => wrapSelection(v, '`', '`') },
     {
       name: 'codeBlock',
-      icon: '{ }',
+      icon: <Icons.codeBlock className={ICON_CLASS} />,
       title: 'Code Block',
       action: (v) => wrapSelection(v, '```\n', '\n```')
     },
     {
       name: 'image',
-      icon: '🖼',
+      icon: <Icons.imageIcon className={ICON_CLASS} />,
       title: 'Image',
       action: (v) => {
         const { from, to } = v.state.selection.main;
@@ -196,12 +199,12 @@ function getToolbarButtons(t: (key: string) => string): ToolbarButton[] {
         v.focus();
       }
     },
-    { name: 'table', icon: '⊞', title: 'Table', action: insertTable },
-    { name: 'unordered-list', icon: '•', title: 'Unordered List', action: (v) => prefixLines(v, '- ') },
-    { name: 'ordered-list', icon: '1.', title: 'Ordered List', action: numberedList },
+    { name: 'table', icon: <Icons.table className={ICON_CLASS} />, title: 'Table', action: insertTable },
+    { name: 'unordered-list', icon: <Icons.list className={ICON_CLASS} />, title: 'Unordered List', action: (v) => prefixLines(v, '- ') },
+    { name: 'ordered-list', icon: <Icons.listOrdered className={ICON_CLASS} />, title: 'Ordered List', action: numberedList },
     {
       name: 'checked-list',
-      icon: '☑',
+      icon: <Icons.listChecks className={ICON_CLASS} />,
       title: 'Task List',
       action: (v) => prefixLines(v, '- [ ] ')
     }
@@ -753,19 +756,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
                   aria-label={t('submit_page.insert_images_text')}
                   onClick={() => inputRef.current?.click()}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                  </svg>
+                  <Icons.paperclip className={ICON_CLASS} />
                 </button>
               </TooltipTrigger>
               <TooltipContent>{t('submit_page.insert_images_text')}</TooltipContent>
@@ -776,15 +767,22 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
 
       <div className="mx-0.5 h-4 w-px bg-border" />
 
-      <button
-        type="button"
-        data-name="spoiler"
-        tabIndex={-1}
-        className="flex h-7 items-center justify-center rounded px-1.5 text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
-        onClick={handleSpoiler}
-      >
-        Spoiler
-      </button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              data-name="spoiler"
+              tabIndex={-1}
+              className="flex h-7 w-7 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-foreground"
+              onClick={handleSpoiler}
+            >
+              <Icons.eyeOff className={ICON_CLASS} />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Spoiler</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       <div className="ml-auto" />
 

@@ -137,7 +137,6 @@ export default function PostForm({
   // Ref for scroll cleanup function (safer than attaching to DOM element)
   const scrollCleanupRef = useRef<(() => void) | null>(null);
   const storeTimerRef = useRef<ReturnType<typeof setTimeout>>();
-  const previewTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   // Track if we've hydrated from localStorage to avoid resetting form during typing
@@ -217,6 +216,7 @@ export default function PostForm({
   // MdEditor manages its own local state for responsive typing; this only syncs to react-hook-form.
   const handlePostAreaChange = useCallback((value: string) => {
     latestPostAreaRef.current = value;
+    setPreviewContent(value);
     clearTimeout(postAreaSyncTimerRef.current);
     postAreaSyncTimerRef.current = setTimeout(() => {
       form.setValue('postArea', value);
@@ -316,15 +316,6 @@ export default function PostForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...Object.values(watchedValues)]);
 
-  // update debounced post preview content
-  useEffect(() => {
-    clearTimeout(previewTimerRef.current);
-    previewTimerRef.current = setTimeout(() => {
-      setPreviewContent(postArea);
-    }, 300);
-    return () => clearTimeout(previewTimerRef.current);
-  }, [postArea]);
-
   // Auto-scroll preview to bottom when typing at the end of editor (debounced)
   useEffect(() => {
     if (!syncScroll || !sideBySide || !preview) return;
@@ -347,7 +338,7 @@ export default function PostForm({
     }, 100);
 
     return () => clearTimeout(timeoutId);
-  }, [postArea, syncScroll, sideBySide, preview]);
+  }, [previewContent, syncScroll, sideBySide, preview]);
 
   useEffect(() => {
     setImagePickerState(imagePicker(selectedImg));

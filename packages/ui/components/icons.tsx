@@ -68,7 +68,21 @@ import {
   FlagOff,
   Info,
   Eye,
-  EyeOff
+  EyeOff,
+  Bold,
+  Italic,
+  Strikethrough,
+  Heading3,
+  Code,
+  Braces,
+  Table,
+  List,
+  ListOrdered,
+  ListChecks,
+  Minus,
+  Paperclip,
+  Quote,
+  ImageIcon
 } from 'lucide-react';
 
 export type Icon = typeof LucideIcon;
@@ -76,6 +90,20 @@ export type Icon = typeof LucideIcon;
 export const Icons = {
   eyeOff: EyeOff,
   eye: Eye,
+  bold: Bold,
+  italic: Italic,
+  strikethrough: Strikethrough,
+  heading: Heading3,
+  code: Code,
+  codeBlock: Braces,
+  table: Table,
+  list: List,
+  listOrdered: ListOrdered,
+  listChecks: ListChecks,
+  horizontalRule: Minus,
+  paperclip: Paperclip,
+  quote: Quote,
+  imageIcon: ImageIcon,
   info: Info,
   flag: Flag,
   unflag: FlagOff,
