@@ -836,7 +836,12 @@ export default function PostForm({
                                 }}
                               >
                                 <SelectTrigger className="w-[180px]" data-testid="edit-reward-type-select">
-                                  <SelectValue />
+                                  <SelectValue>
+                                    {field.value === '50%' && '50% HBD / 50% HP'}
+                                    {field.value === '100%' && t('submit_page.power_up')}
+                                    {field.value === '0%' &&
+                                      t('submit_page.advanced_settings_dialog.decline_payout')}
+                                  </SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
                                   {/* Only show options that are MORE restrictive than current */}
