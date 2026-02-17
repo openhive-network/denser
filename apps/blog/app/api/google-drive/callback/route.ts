@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getLogger } from '@ui/lib/logging';
+import { safeJsonForScript } from '@hive/ui';
 
 const logger = getLogger('google-drive-callback');
 
@@ -15,12 +16,6 @@ const logger = getLogger('google-drive-callback');
  * - Open redirect protection via same-origin validation
  * - URL-safe base64 encoding for state
  */
-/** Escapes a value for safe embedding in an HTML <script> block. */
-function safeJsonForScript(value: unknown): string {
-  return JSON.stringify(value)
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e');
-}
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const searchParams = req.nextUrl.searchParams;

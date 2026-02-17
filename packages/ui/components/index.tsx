@@ -44,6 +44,7 @@ export * from "../lib/css-utils";
 export * from "../lib/storage-with-ttl";
 export * from "../lib/asset-constants";
 export * from "../lib/reputation";
+export * from "../lib/html-escape-json";
 
 // hook exports
 export * from "../hooks/useStorageWithTTL";
