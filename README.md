@@ -340,7 +340,7 @@ Quick cURL queries to check if the API is working properly:
 ```bash
 curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"condenser_api.get_block", "params":[1], "id":1}' https://your.domain.name:8443/ # Hive
 curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"block_api.get_block", "params":{"block_num":1}, "id":1}' https://your.domain.name:8443/ # HAfAH
-curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"condenser_api.get_blog", "params":["steem", 0, 1], "id":1}' https://your.domain.name:8443/ # Hivemind
+curl -vk -X POST --data '{"jsonrpc":"2.0", "method":"condenser_api.get_blog", "params":["hiveio", 0, 1], "id":1}' https://your.domain.name:8443/ # Hivemind
 ```
 
 API stack's individual containers are wrapped in the docker container, so they cannot be accessed directly, eg `docker inspect haf-world-haf-1`. If you need to access them, you need to do so from within the dind container, eg.

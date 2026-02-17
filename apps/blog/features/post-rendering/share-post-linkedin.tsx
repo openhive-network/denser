@@ -12,7 +12,7 @@ export default function LinkedInShare({ title, url }: { title: string; url: stri
   const href = `https://${configuredBlogDomain}${url}`;
 
   const q =
-    'title=' + encodeURIComponent(postTitle) + '&url=' + encodeURIComponent(href) + '&source=Steemit&mini=true';
+    'title=' + encodeURIComponent(postTitle) + '&url=' + encodeURIComponent(href) + '&source=Hive&mini=true';
   const openWindow = () => {
     return window.open(
       'https://www.linkedin.com/shareArticle?' + q,

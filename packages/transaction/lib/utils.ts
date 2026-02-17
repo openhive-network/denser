@@ -46,7 +46,7 @@ export async function createPermlink(title: string, author: string) {
       permlink = s;
     }
 
-    // ensure permlink conforms to STEEMIT_MAX_PERMLINK_LENGTH
+    // ensure permlink conforms to HIVE_MAX_PERMLINK_LENGTH
     if (permlink.length > 255) {
       permlink = permlink.substring(0, 255);
     }
