@@ -14,7 +14,6 @@ const HIVE_BLOG_DOMAINS = new Set([
   'peakd.com',
   'ecency.com',
   'leofinance.io',
-  'steemit.com',
   'actifit.io',
   'travelfeed.com',
   'ctptalk.com',
