@@ -15,11 +15,6 @@ const HIVE_BLOG_DOMAINS = new Set([
   'ecency.com',
   'leofinance.io',
   'actifit.io',
-  'travelfeed.com',
-  'ctptalk.com',
-  'splintertalk.io',
-  'proofofbrain.io',
-  'inji.com',
   'blog.openhive.network',
   'blog.dev.openhive.network'
 ]);
