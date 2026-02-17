@@ -842,7 +842,9 @@ export default function PostForm({
                                   {post_s && post_s.percent_hbd >= 0 && (
                                     <SelectItem value="100%">{t('submit_page.power_up')}</SelectItem>
                                   )}
-                                  <SelectItem value="0%">{t('submit_page.advanced_settings_dialog.decline_payout')}</SelectItem>
+                                  {(!post_s || post_s.net_rshares <= 0) && (
+                                    <SelectItem value="0%">{t('submit_page.advanced_settings_dialog.decline_payout')}</SelectItem>
+                                  )}
                                 </SelectContent>
                               </Select>
                             </FormControl>
