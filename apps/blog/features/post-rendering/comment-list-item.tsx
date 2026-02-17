@@ -253,13 +253,15 @@ const CommentListItem = memo(function CommentListItem({
                                 >
                                   <TimeAgo date={comment.created} />
                                 </Link>
-                                <Link
-                                  className="p-1 sm:p-2"
-                                  href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
-                                  data-testid="comment-page-link"
-                                >
-                                  <Icons.link className="h-3 w-3" />
-                                </Link>
+                                {!comment._optimistic && (
+                                  <Link
+                                    className="p-1 sm:p-2"
+                                    href={`/${comment.category}/@${comment.author}/${comment.permlink}`}
+                                    data-testid="comment-page-link"
+                                  >
+                                    <Icons.link className="h-3 w-3" />
+                                  </Link>
+                                )}
                               </>
                             )}
                           </div>
