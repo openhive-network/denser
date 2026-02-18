@@ -216,7 +216,7 @@ export class HomePage {
     this.getFirstPostDownvoteButton = this.getDownvoteButton.first();
     this.getDownvoteButtonTooltip = page.locator('[data-testid="downvote-button-tooltip"]');
     this.getFirstPostDownvoteButtonTooltip = this.getDownvoteButtonTooltip.first();
-    // Reblog count display on list pages (static, non-interactive)
+    // Reblog button on list pages (interactive - opens confirmation dialog)
     this.getReblogCountDisplay = page.locator('[data-testid="post-card-reblog-count"]');
     this.getFirstPostReblogCountDisplay = this.getReblogCountDisplay.first();
     this.getFirstPostReblogCountTooltip = page.locator('[data-testid="post-card-reblog-count-tooltip"]').first();

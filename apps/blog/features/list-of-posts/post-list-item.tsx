@@ -15,9 +15,13 @@ import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
 import { accountReputation } from '@hive/ui';
 import { IFollowList, Entry } from '@hive/common-hiveio-packages/wax';
+import { cn } from '@ui/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DetailsCardHover from './details-card-hover';
 import PostImage from './post-img';
-import { ReblogCountDisplay } from './reblog-count-display';
+import { ReblogDialog } from './reblog-dialog';
+import { useReblogMutation } from './hooks/use-reblog-mutation';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
@@ -61,9 +65,25 @@ function arePostListItemPropsEqual(prev: PostListItemProps, next: PostListItemPr
 const PostListItem = memo(
   function PostListItem({ post, isCommunityPage, blacklist, nsfwPreferences }: PostListItemProps) {
   const { t } = useTranslation('common_blog');
+  const { user } = useUserClient();
+  const reblogMutation = useReblogMutation();
   const tagExists = Array.isArray(post.json_metadata?.tags) && post.json_metadata.tags.includes('nsfw');
   const [nsfw, setNSFW] = useState<Preferences['nsfw']>(tagExists ? 'warn' : 'show');
   const reblogCount = post.reblogs ?? 0;
+
+  const handleReblog = async () => {
+    try {
+      await reblogMutation.mutateAsync({ author: post.author, permlink: post.permlink, username: user.username });
+    } catch (error) {
+      handleError(error, { method: 'reblog', params: { author: post.author, permlink: post.permlink, username: user.username } });
+    }
+  };
+
+  const dialogAction = (dialogResponse: boolean): void => {
+    if (dialogResponse) {
+      handleReblog();
+    }
+  };
 
   useEffect(() => {
     if (tagExists) {
@@ -257,10 +277,30 @@ const PostListItem = memo(
                   <Separator orientation="vertical" />
                   {!post.title.includes('RE: ') ? (
                     <div className="flex items-center" data-testid="post-card-reblog">
-                      <ReblogCountDisplay
-                        reblogCount={reblogCount}
-                        dataTestid="post-card-reblog-count"
-                      />
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="flex items-center">
+                              <ReblogDialog author={post.author} permlink={post.permlink} action={dialogAction}>
+                                <button
+                                  disabled={reblogMutation.isLoading}
+                                  className={cn(
+                                    'flex items-center cursor-pointer hover:text-destructive',
+                                    { 'cursor-not-allowed opacity-50': reblogMutation.isLoading }
+                                  )}
+                                  data-testid="post-card-reblog-count"
+                                >
+                                  <Icons.forward className="h-4 w-4 sm:mr-1" />
+                                  {reblogCount}
+                                </button>
+                              </ReblogDialog>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent data-testid="post-card-reblog-count-tooltip">
+                            <p>{t('cards.post_card.reblog')}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   ) : null}
                 </div>

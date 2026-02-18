@@ -270,7 +270,7 @@ export class ProfilePage {
     this.postVotesTooltip = page.locator('[data-testid="post-card-votes-tooltip"]');
     this.postResponse = page.locator('[data-testid="post-card-response-link"]');
     this.postResponseTooltip = page.locator('[data-testid="post-card-responses"]');
-    // Reblog count display on profile list pages (static, non-interactive)
+    // Reblog button on profile list pages (interactive - opens confirmation dialog)
     this.postReblogCountDisplay = page.locator('[data-testid="post-card-reblog-count"]');
     this.postReblogCountTooltip = page.locator('[data-testid="post-card-reblog-count-tooltip"]');
     this.postAvatar = page.locator('[data-testid="post-card-avatar"]');
