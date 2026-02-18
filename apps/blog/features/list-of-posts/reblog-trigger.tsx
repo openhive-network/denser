@@ -69,7 +69,7 @@ const ReblogTrigger = ({
 
   if (showLabel) {
     return (
-      <ReblogDialog author={author} permlink={permlink} action={dialogAction}>
+      <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged}>
         <button
           disabled={isReblogged || reblogMutation.isLoading}
           className={cn(
@@ -102,7 +102,7 @@ const ReblogTrigger = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger disabled={isReblogged || reblogMutation.isLoading}>
-          <ReblogDialog author={author} permlink={permlink} action={dialogAction}>
+          <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged}>
             {reblogMutation.isLoading ? (
               <CircleSpinner loading={reblogMutation.isLoading} size={18} color="#dc2626" />
             ) : (

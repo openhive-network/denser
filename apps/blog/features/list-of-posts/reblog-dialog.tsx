@@ -16,19 +16,34 @@ import { Button } from '@ui/components/button';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useTranslation } from '@/blog/i18n/client';
+import { useRebloggedByQuery } from './hooks/use-reblogged-by-query';
 
 export function ReblogDialog({
   children,
-  action
+  author,
+  permlink,
+  action,
+  isReblogged: isRebloggedProp
 }: {
   children: ReactNode;
   author: string;
   permlink: string;
   action: (dialogResponse: boolean) => void;
+  /** Optional: skip the query if reblog status is already known */
+  isReblogged?: boolean;
 }) {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const [open, setOpen] = useState(false);
+
+  // Check reblog status only when the dialog is open (lazy query).
+  // Skip if the parent already provides the status via isRebloggedProp.
+  const { data: isRebloggedQuery } = useRebloggedByQuery(
+    open && isRebloggedProp === undefined ? author : '',
+    open && isRebloggedProp === undefined ? permlink : '',
+    open && isRebloggedProp === undefined ? user.username : ''
+  );
+  const isReblogged = isRebloggedProp ?? isRebloggedQuery;
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -44,7 +59,9 @@ export function ReblogDialog({
             </AlertDialogCancel>
           </div>
           <AlertDialogDescription data-testid="reblog-dialog-description">
-            {t('alert_dialog_reblog.description')}
+            {isReblogged
+              ? t('alert_dialog_reblog.already_reblogged')
+              : t('alert_dialog_reblog.description')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
@@ -54,6 +71,7 @@ export function ReblogDialog({
           {user && user.isLoggedIn ? (
             <AlertDialogAction
               autoFocus
+              disabled={isReblogged}
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-destructive hover:bg-destructive hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               onClick={(e) => {
                 e.preventDefault();

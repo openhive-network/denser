@@ -234,6 +234,7 @@
     "action": "OK",
     "cancel": "Cancel",
     "description": "This post will be added to your blog and shared with your followers.",
+    "already_reblogged": "You have already reblogged this post.",
     "title": "Reblog This Post"
   },
   "vote_removal_dialog": {
