@@ -1,4 +1,7 @@
 import { QueryClient, QueryKey, isServer } from '@tanstack/react-query';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 /**
  * Stale time constants for different query types.
@@ -61,6 +64,64 @@ export function scheduleInvalidations(
 
   // Return cleanup function
   return () => {
+    timeoutIds.forEach((id) => clearTimeout(id));
+  };
+}
+
+/**
+ * Schedule validated refetches for queries with optimistic data.
+ *
+ * Unlike scheduleInvalidations (which blindly refetches and may overwrite
+ * optimistic data with stale API responses), this utility:
+ * 1. Fetches data directly via fetchFn (outside React Query cache)
+ * 2. Validates whether the response reflects the expected mutation
+ * 3. Only updates the cache (via setQueryData) if validation passes
+ * 4. Stops scheduling further attempts once validated
+ *
+ * Use this for queries that have optimistic updates set via setQueryData
+ * in onMutate. For queries without optimistic data, use scheduleInvalidations.
+ *
+ * @param queryClient - The React Query client
+ * @param queryKey - The query key to validate and update
+ * @param fetchFn - Function that fetches fresh data from the API directly
+ * @param validator - Returns true if the fresh data reflects the expected mutation
+ * @param delays - Array of delays in ms (default: [8000, 16000, 30000])
+ * @returns Cleanup function to cancel pending timeouts
+ */
+export function scheduleValidatedRefetch<T>(
+  queryClient: QueryClient,
+  queryKey: QueryKey,
+  fetchFn: () => Promise<T>,
+  validator: (data: T) => boolean,
+  delays: number[] = [8000, 16000, 30000]
+): () => void {
+  const timeoutIds: ReturnType<typeof setTimeout>[] = [];
+  let validated = false;
+  let cancelled = false;
+
+  for (const delay of delays) {
+    const timeoutId = setTimeout(async () => {
+      if (validated || cancelled) return;
+
+      try {
+        const freshData = await fetchFn();
+
+        if (cancelled) return;
+
+        if (freshData != null && validator(freshData)) {
+          validated = true;
+          queryClient.setQueryData(queryKey, freshData);
+          logger.info('Validated refetch confirmed for key: %o', queryKey);
+        }
+      } catch (error) {
+        logger.error(error, 'Validated refetch failed for key: %o', queryKey);
+      }
+    }, delay);
+    timeoutIds.push(timeoutId);
+  }
+
+  return () => {
+    cancelled = true;
     timeoutIds.forEach((id) => clearTimeout(id));
   };
 }
