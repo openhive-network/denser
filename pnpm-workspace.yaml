@@ -6,7 +6,7 @@ catalogs:
   # Can be referenced through "catalog:hiveio-toolset"
   hiveio-toolset:
     '@hiveio/wax': 2.0.1
-    '@hiveio/wax-signers-external': 2.0.1
+    '@hiveio/wax-signers-external': 2.0.1-260216082105
     '@hiveio/wax-signers-keychain': 2.0.1
     '@hiveio/wax-signers-metamask': 2.0.1
     '@hiveio/wax-signers-peakvault': 2.0.1

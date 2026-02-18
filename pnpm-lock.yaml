@@ -16,8 +16,8 @@ catalogs:
       specifier: 2.0.1
       version: 2.0.1
     '@hiveio/wax-signers-external':
-      specifier: 2.0.1
-      version: 2.0.1
+      specifier: 2.0.1-260216082105
+      version: 2.0.1-260216082105
     '@hiveio/wax-signers-keychain':
       specifier: 2.0.1
       version: 2.0.1
@@ -623,7 +623,7 @@ importers:
         version: 2.0.1
       '@hiveio/wax-signers-external':
         specifier: catalog:hiveio-toolset
-        version: 2.0.1
+        version: 2.0.1-260216082105
       '@hiveio/wax-signers-keychain':
         specifier: catalog:hiveio-toolset
         version: 2.0.1
@@ -1868,7 +1868,7 @@ packages:
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
 
   '@hiveio/beekeeper@1.28.4':
-    resolution: {integrity: sha1-X+2VqUKItQPk4Dr+t+/sfQ+84YY=, tarball: https://gitlab.syncad.com/api/v4/projects/198/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.4.tgz}
+    resolution: {integrity: sha1-X+2VqUKItQPk4Dr+t+/sfQ+84YY=, tarball: https://gitlab.syncad.com/api/v4/projects/558/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.4.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/hb-auth@1.28.4-rc0-stable.260209101337':
@@ -1888,11 +1888,11 @@ packages:
   '@hiveio/hivescript@1.3.3':
     resolution: {integrity: sha512-nOeGespwSujSaEl4R09u9FXGgMyOywtWWQiJdiWsmJDknCUqXXxTfs3KICssPTjkDlbGp2gkg3WjUyrlxm28Qg==, tarball: https://registry.npmjs.org/@hiveio/hivescript/-/hivescript-1.3.3.tgz}
 
-  '@hiveio/wax-signers-beekeeper@2.0.1':
-    resolution: {integrity: sha1-vfcVmEGnJeIgoPBGpzPDxIS4+Mg=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-beekeeper/-/@hiveio/wax-signers-beekeeper-2.0.1.tgz}
+  '@hiveio/wax-signers-beekeeper@2.0.1-260216082105':
+    resolution: {integrity: sha1-DoiG7RVmGyPDLokyblv37P2qAE4=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-beekeeper/-/@hiveio/wax-signers-beekeeper-2.0.1-260216082105.tgz}
 
-  '@hiveio/wax-signers-external@2.0.1':
-    resolution: {integrity: sha1-Ivex+wauQV5tZDCtMPHsUh5oObs=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-external/-/@hiveio/wax-signers-external-2.0.1.tgz}
+  '@hiveio/wax-signers-external@2.0.1-260216082105':
+    resolution: {integrity: sha1-cV4S2qNQO5FYXPBa2yFKHDd0o9g=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-external/-/@hiveio/wax-signers-external-2.0.1-260216082105.tgz}
 
   '@hiveio/wax-signers-keychain@2.0.1':
     resolution: {integrity: sha1-FZp/n4d1ey8lHv+Y9Jb0FXAawOg=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-keychain/-/@hiveio/wax-signers-keychain-2.0.1.tgz}
@@ -1905,6 +1905,10 @@ packages:
 
   '@hiveio/wax@2.0.1':
     resolution: {integrity: sha1-xzNjk9sjmr1JhBanfX/NcIsoYDU=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-2.0.1.tgz}
+    engines: {node: ^20.11 || >= 21.2}
+
+  '@hiveio/wax@2.0.1-260216082105':
+    resolution: {integrity: sha1-sXiw+c5vGvK0mvIVzwzmZHF/AMA=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax/-/@hiveio/wax-2.0.1-260216082105.tgz}
     engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/workerbee@1.28.4-rc0-stable.260206182519':
@@ -11692,16 +11696,16 @@ snapshots:
 
   '@hiveio/hivescript@1.3.3': {}
 
-  '@hiveio/wax-signers-beekeeper@2.0.1':
+  '@hiveio/wax-signers-beekeeper@2.0.1-260216082105':
     dependencies:
       '@hiveio/beekeeper': 1.28.4
-      '@hiveio/wax': 2.0.1
+      '@hiveio/wax': 2.0.1-260216082105
 
-  '@hiveio/wax-signers-external@2.0.1':
+  '@hiveio/wax-signers-external@2.0.1-260216082105':
     dependencies:
       '@hiveio/beekeeper': 1.28.4
-      '@hiveio/wax': 2.0.1
-      '@hiveio/wax-signers-beekeeper': 2.0.1
+      '@hiveio/wax': 2.0.1-260216082105
+      '@hiveio/wax-signers-beekeeper': 2.0.1-260216082105
       zod: 4.1.13
 
   '@hiveio/wax-signers-keychain@2.0.1':
@@ -11721,6 +11725,10 @@ snapshots:
       '@hiveio/wax': 2.0.1
 
   '@hiveio/wax@2.0.1':
+    dependencies:
+      events: 3.3.0
+
+  '@hiveio/wax@2.0.1-260216082105':
     dependencies:
       events: 3.3.0
 
