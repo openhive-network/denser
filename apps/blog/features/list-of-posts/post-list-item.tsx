@@ -281,26 +281,19 @@ const PostListItem = memo(
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <div className="flex items-center">
-                              {user.isLoggedIn && user.username === post.author ? (
-                                <span className="flex items-center" data-testid="post-card-reblog-count">
+                              <ReblogDialog author={post.author} permlink={post.permlink} action={dialogAction}>
+                                <button
+                                  disabled={reblogMutation.isLoading}
+                                  className={cn(
+                                    'flex items-center cursor-pointer hover:text-destructive',
+                                    { 'cursor-not-allowed opacity-50': reblogMutation.isLoading }
+                                  )}
+                                  data-testid="post-card-reblog-count"
+                                >
                                   <Icons.forward className="h-4 w-4 sm:mr-1" />
                                   {reblogCount}
-                                </span>
-                              ) : (
-                                <ReblogDialog author={post.author} permlink={post.permlink} action={dialogAction}>
-                                  <button
-                                    disabled={reblogMutation.isLoading}
-                                    className={cn(
-                                      'flex items-center cursor-pointer hover:text-destructive',
-                                      { 'cursor-not-allowed opacity-50': reblogMutation.isLoading }
-                                    )}
-                                    data-testid="post-card-reblog-count"
-                                  >
-                                    <Icons.forward className="h-4 w-4 sm:mr-1" />
-                                    {reblogCount}
-                                  </button>
-                                </ReblogDialog>
-                              )}
+                                </button>
+                              </ReblogDialog>
                             </div>
                           </TooltipTrigger>
                           <TooltipContent data-testid="post-card-reblog-count-tooltip">
