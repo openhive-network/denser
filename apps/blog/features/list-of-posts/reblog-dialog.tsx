@@ -38,12 +38,15 @@ export function ReblogDialog({
 
   // Check reblog status only when the dialog is open (lazy query).
   // Skip if the parent already provides the status via isRebloggedProp.
-  const { data: isRebloggedQuery } = useRebloggedByQuery(
-    open && isRebloggedProp === undefined ? author : '',
-    open && isRebloggedProp === undefined ? permlink : '',
-    open && isRebloggedProp === undefined ? user.username : ''
+  const needsQuery = open && isRebloggedProp === undefined;
+  const { data: isRebloggedQuery, isLoading: isCheckingReblog } = useRebloggedByQuery(
+    needsQuery ? author : '',
+    needsQuery ? permlink : '',
+    needsQuery ? user.username : ''
   );
   const isReblogged = isRebloggedProp ?? isRebloggedQuery;
+  // Disable the OK button while checking reblog status (only when dialog does its own query)
+  const shouldDisableAction = isReblogged || (needsQuery && isCheckingReblog);
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -71,7 +74,7 @@ export function ReblogDialog({
           {user && user.isLoggedIn ? (
             <AlertDialogAction
               autoFocus
-              disabled={isReblogged}
+              disabled={shouldDisableAction}
               className="rounded-none bg-gray-800 text-base text-white shadow-lg shadow-destructive hover:bg-destructive hover:shadow-gray-800 disabled:bg-gray-400 disabled:shadow-none"
               onClick={(e) => {
                 e.preventDefault();
