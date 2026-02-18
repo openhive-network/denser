@@ -93,7 +93,7 @@ export function useVoteMutation() {
         ['votes', author, permlink, voter],
         () => getListVotesByCommentVoter([author, permlink, voter], 1),
         (freshData) => {
-          const vote = freshData.votes[0];
+          const vote = freshData.votes?.[0];
           if (weight === 0) {
             return !vote || vote.voter !== voter || vote.vote_percent === 0;
           }

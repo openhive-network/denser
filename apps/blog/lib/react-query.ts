@@ -106,7 +106,7 @@ export function scheduleValidatedRefetch<T>(
       try {
         const freshData = await fetchFn();
 
-        if (cancelled) return;
+        if (validated || cancelled) return;
 
         if (freshData != null && validator(freshData)) {
           validated = true;
@@ -119,6 +119,16 @@ export function scheduleValidatedRefetch<T>(
     }, delay);
     timeoutIds.push(timeoutId);
   }
+
+  // Fallback: if all validation attempts fail, invalidate to force a refetch
+  // so optimistic data doesn't persist indefinitely
+  const fallbackId = setTimeout(() => {
+    if (!validated && !cancelled) {
+      queryClient.invalidateQueries({ queryKey });
+      logger.info('Validated refetch fallback invalidation for key: %o', queryKey);
+    }
+  }, delays[delays.length - 1] + 5000);
+  timeoutIds.push(fallbackId);
 
   return () => {
     cancelled = true;
