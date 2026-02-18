@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useState } from 'react';
+import { CircleSpinner } from 'react-spinners-kit';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -83,7 +84,14 @@ export function ReblogDialog({
               }}
               data-testid="reblog-dialog-ok"
             >
-              {t('alert_dialog_reblog.action')}
+              {needsQuery && isCheckingReblog ? (
+                <span className="flex items-center gap-2">
+                  <CircleSpinner loading size={14} color="#ffffff" />
+                  {t('global.loading')}
+                </span>
+              ) : (
+                t('alert_dialog_reblog.action')
+              )}
             </AlertDialogAction>
           ) : (
             <DialogLogin>

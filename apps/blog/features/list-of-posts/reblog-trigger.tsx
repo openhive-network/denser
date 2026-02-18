@@ -12,9 +12,11 @@ import { ReblogDialog } from './reblog-dialog';
 import { useTranslation } from '@/blog/i18n/client';
 
 /**
- * Interactive reblog trigger for INDIVIDUAL POST PAGES ONLY.
+ * Interactive reblog trigger for individual post pages.
  *
- * DO NOT use on list pages - use ReblogCountDisplay instead.
+ * This component pre-fetches the reblog status and shows the icon
+ * state immediately. For list pages, ReblogDialog is used directly
+ * with a lazy query instead.
  *
  * This component:
  * - Makes API call to check if user has reblogged
