@@ -190,7 +190,9 @@ export default function PostForm({
     postSummary: hasDraftChanges ? (storedPost?.postSummary || post_s?.json_metadata?.summary || '') : (post_s?.json_metadata?.summary || storedPost?.postSummary || ''),
     tags: hasDraftChanges ? (storedPost?.tags || (Array.isArray(post_s?.json_metadata?.tags) ? post_s.json_metadata.tags.join(' ') : '') || '') : ((Array.isArray(post_s?.json_metadata?.tags) ? post_s.json_metadata.tags.join(' ') : '') || storedPost?.tags || ''),
     author: hasDraftChanges ? (storedPost?.author || post_s?.json_metadata?.author || '') : (post_s?.json_metadata?.author || storedPost?.author || ''),
-    category: categoryParam ?? storedPost?.category ?? post_s?.category ?? '',
+    category: editMode
+      ? (post_s?.category ?? categoryParam ?? '')
+      : (categoryParam ?? storedPost?.category ?? post_s?.category ?? ''),
     beneficiaries: storedPost?.beneficiaries || [],
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
@@ -243,7 +245,7 @@ export default function PostForm({
         postSummary: storedPost.postSummary || entryValues.postSummary,
         tags: storedPost.tags || entryValues.tags,
         author: storedPost.author || entryValues.author,
-        category: storedPost.category || entryValues.category,
+        category: editMode ? entryValues.category : (storedPost.category || entryValues.category),
         beneficiaries: storedPost.beneficiaries || entryValues.beneficiaries,
         maxAcceptedPayout: entryValues.maxAcceptedPayout,
         payoutType: entryValues.payoutType
