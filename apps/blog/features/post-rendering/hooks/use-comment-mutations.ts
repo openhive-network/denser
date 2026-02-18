@@ -1,11 +1,13 @@
+import { useRef } from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
+import { getDiscussion } from '@transaction/lib/bridge-api';
 import { Preferences, Entry } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
-import { scheduleInvalidations } from '@/blog/lib/react-query';
+import { scheduleInvalidations, scheduleValidatedRefetch } from '@/blog/lib/react-query';
 
 const logger = getLogger('app');
 
@@ -19,6 +21,7 @@ const logger = getLogger('app');
 export function useCommentMutation() {
   const queryClient = useQueryClient();
   const { user } = useUserClient();
+  const cleanupRef = useRef<(() => void) | null>(null);
 
   const commentMutation = useMutation({
     // Optimistic update BEFORE broadcast
@@ -34,6 +37,10 @@ export function useCommentMutation() {
     }) => {
       const { parentAuthor, parentPermlink, body, discussionAuthor, discussionPermlink, observer } = params;
       const queryKey = ['discussionData', discussionAuthor, discussionPermlink, observer];
+
+      // Cancel previous validated refetch schedule
+      cleanupRef.current?.();
+      cleanupRef.current = null;
 
       // Cancel any outgoing refetches to avoid overwriting optimistic update
       await queryClient.cancelQueries({ queryKey });
@@ -151,7 +158,8 @@ export function useCommentMutation() {
     },
 
     onSuccess: (data) => {
-      const { discussionAuthor, discussionPermlink, observer } = data;
+      const { parentPermlink, discussionAuthor, discussionPermlink, observer } = data;
+      const username = user.username;
 
       logger.info('useCommentMutation onSuccess data: %o', data);
       toast({
@@ -160,12 +168,28 @@ export function useCommentMutation() {
         variant: 'success'
       });
 
-      // Invalidate after delay to fetch real data from Hivemind
-      // Block time is ~3 seconds, but Hivemind indexing can take longer
-      // Use multiple invalidation attempts to handle slow operations (e.g., first-time Google Drive uploads)
-      scheduleInvalidations(queryClient, [
-        ['discussionData', discussionAuthor, discussionPermlink, observer]
-      ]);
+      // Discussion data has optimistic comment - use validated refetch to avoid
+      // overwriting optimistic data with stale API responses from Hivemind
+      const queryKey = ['discussionData', discussionAuthor, discussionPermlink, observer];
+      const prevData: Record<string, Entry> | undefined = queryClient.getQueryData(queryKey);
+      const prevRealCommentCount = prevData
+        ? Object.values(prevData).filter(
+            (e) => e.author === username && e.parent_permlink === parentPermlink && !e._optimistic
+          ).length
+        : 0;
+
+      cleanupRef.current = scheduleValidatedRefetch(
+        queryClient,
+        queryKey,
+        () => getDiscussion(discussionAuthor, discussionPermlink, observer),
+        (freshData) => {
+          if (!freshData) return false;
+          const realComments = Object.values(freshData).filter(
+            (e) => e.author === username && e.parent_permlink === parentPermlink
+          );
+          return realComments.length > prevRealCommentCount;
+        }
+      );
     },
 
     onError: (error: unknown, variables, context) => {
@@ -199,6 +223,8 @@ export function useCommentMutation() {
 export function useUpdateCommentMutation() {
   const queryClient = useQueryClient();
   const { user } = useUserClient();
+  const cleanupRef = useRef<(() => void) | null>(null);
+
   const updateCommentMutation = useMutation({
     // Optimistic update BEFORE broadcast - prevents stale refetches from overwriting
     onMutate: async (params: {
@@ -212,6 +238,10 @@ export function useUpdateCommentMutation() {
     }) => {
       const { permlink, body, discussionAuthor, discussionPermlink, observer } = params;
       const queryKey = ['discussionData', discussionAuthor, discussionPermlink, observer];
+
+      // Cancel previous validated refetch schedule
+      cleanupRef.current?.();
+      cleanupRef.current = null;
 
       // Cancel any outgoing refetches to avoid overwriting optimistic update
       await queryClient.cancelQueries({ queryKey });
@@ -259,18 +289,31 @@ export function useUpdateCommentMutation() {
 
     onSuccess: (data) => {
       const { username } = user;
-      const { permlink, discussionAuthor, discussionPermlink, observer } = data;
+      const { permlink, body, discussionAuthor, discussionPermlink, observer } = data;
       logger.info('useUpdateCommentMutation onSuccess data: %o', data);
       toast({
         title: 'Comment updated successfully',
         description: 'Your comment has been updated successfully.',
         variant: 'success'
       });
-      // Multiple invalidation attempts to handle slow operations
-      scheduleInvalidations(queryClient, [
+
+      // Discussion data has optimistic edit - use validated refetch to avoid
+      // overwriting optimistic data with stale API responses from Hivemind
+      cleanupRef.current = scheduleValidatedRefetch(
+        queryClient,
         ['discussionData', discussionAuthor, discussionPermlink, observer],
-        ['postData', username, permlink, observer]
-      ]);
+        () => getDiscussion(discussionAuthor, discussionPermlink, observer),
+        (freshData) => {
+          if (!freshData) return false;
+          const comment = Object.values(freshData).find(
+            (e) => e.permlink === permlink && e.author === username
+          );
+          return !!comment && comment.body === body;
+        }
+      );
+
+      // postData doesn't have optimistic data from this mutation
+      scheduleInvalidations(queryClient, [['postData', username, permlink, observer]]);
     },
 
     onError: (error: unknown, variables, context) => {
@@ -299,6 +342,8 @@ export function useUpdateCommentMutation() {
  */
 export function useDeleteCommentMutation() {
   const queryClient = useQueryClient();
+  const cleanupRef = useRef<(() => void) | null>(null);
+
   const deleteCommentMutation = useMutation({
     // Optimistic update BEFORE broadcast - prevents stale refetches from overwriting
     onMutate: async (params: {
@@ -309,6 +354,10 @@ export function useDeleteCommentMutation() {
     }) => {
       const { permlink, discussionAuthor, discussionPermlink, observer } = params;
       const queryKey = ['discussionData', discussionAuthor, discussionPermlink, observer];
+
+      // Cancel previous validated refetch schedule
+      cleanupRef.current?.();
+      cleanupRef.current = null;
 
       // Cancel any outgoing refetches to avoid overwriting optimistic update
       await queryClient.cancelQueries({ queryKey });
@@ -340,17 +389,24 @@ export function useDeleteCommentMutation() {
     },
 
     onSuccess: (data) => {
-      const { discussionAuthor, discussionPermlink, observer } = data;
+      const { permlink, discussionAuthor, discussionPermlink, observer } = data;
       logger.info('useDeleteCommentMutation onSuccess data: %o', data);
       toast({
         title: 'Comment deleted successfully',
         description: 'Your comment has been deleted successfully.',
         variant: 'success'
       });
-      // Multiple invalidation attempts - delete is usually faster but be consistent
-      scheduleInvalidations(
+
+      // Discussion data has optimistic deletion - use validated refetch to avoid
+      // overwriting optimistic data with stale API responses from Hivemind
+      cleanupRef.current = scheduleValidatedRefetch(
         queryClient,
-        [['discussionData', discussionAuthor, discussionPermlink, observer]],
+        ['discussionData', discussionAuthor, discussionPermlink, observer],
+        () => getDiscussion(discussionAuthor, discussionPermlink, observer),
+        (freshData) => {
+          if (!freshData) return false;
+          return !Object.values(freshData).some((e) => e.permlink === permlink);
+        },
         [4000, 10000, 20000]
       );
     },

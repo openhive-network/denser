@@ -1,9 +1,11 @@
+import { useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult, transactionService } from '@transaction/index';
+import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
 import { getLogger } from '@ui/lib/logging';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
-import { scheduleInvalidations } from '@/blog/lib/react-query';
+import { scheduleInvalidations, scheduleValidatedRefetch } from '@/blog/lib/react-query';
 
 const logger = getLogger('app');
 
@@ -16,11 +18,17 @@ const logger = getLogger('app');
  */
 export function useVoteMutation() {
   const queryClient = useQueryClient();
+  const cleanupRef = useRef<(() => void) | null>(null);
+
   const voteMutation = useMutation({
     // Optimistic update BEFORE broadcast
     onMutate: async (params: { voter: string; author: string; permlink: string; weight: number }) => {
       const { voter, author, permlink, weight } = params;
       const queryKey = ['votes', author, permlink, voter];
+
+      // Cancel previous validated refetch schedule (handles rapid re-votes)
+      cleanupRef.current?.();
+      cleanupRef.current = null;
 
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey });
@@ -78,23 +86,29 @@ export function useVoteMutation() {
         variant: 'success'
       });
 
-      // Schedule multiple invalidation attempts to handle slow Hivemind indexing.
-      // cancelQueries inside scheduleInvalidations prevents stale in-flight
-      // refetches from overwriting the optimistic vote data.
-      scheduleInvalidations(queryClient, [
+      // Vote data has optimistic update - use validated refetch to avoid
+      // overwriting optimistic data with stale API responses from Hivemind
+      cleanupRef.current = scheduleValidatedRefetch(
+        queryClient,
         ['votes', author, permlink, voter],
-        ['entriesInfinite'],
-        ['manabars', voter]
-      ]);
+        () => getListVotesByCommentVoter([author, permlink, voter], 1),
+        (freshData) => {
+          const vote = freshData.votes[0];
+          if (weight === 0) {
+            return !vote || vote.voter !== voter || vote.vote_percent === 0;
+          }
+          return !!vote && vote.voter === voter && vote.vote_percent === weight;
+        }
+      );
+
+      // These queries don't have optimistic data from this mutation
+      scheduleInvalidations(queryClient, [['entriesInfinite'], ['manabars', voter]]);
 
       // Discussion and post data need longer delays since Hivemind takes
       // longer to reflect vote changes in aggregated data
       scheduleInvalidations(
         queryClient,
-        [
-          ['postData', author, permlink],
-          ['discussionData']
-        ],
+        [['postData', author, permlink], ['discussionData']],
         [16000, 30000]
       );
     },
