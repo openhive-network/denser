@@ -291,6 +291,70 @@ describe('DefaultRender', () => {
         expect(rendered2).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" /></p>');
     });
 
+    it('should wrap adjacent pull-left and pull-right divs in pull-columns container', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        const raw = '<div class="pull-left"><p>Left</p></div>\n<div class="pull-right"><p>Right</p></div>';
+        const rendered = renderer.render(raw).trim();
+        expect(rendered).to.include('pull-columns');
+        expect(rendered).to.include('pull-left');
+        expect(rendered).to.include('pull-right');
+    });
+
+    it('should handle pull-left/pull-right with text-justify wrappers', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        const raw = '<div class="text-justify">\n<div class="pull-left"><p>English</p></div>\n\n<div class="text-justify">\n<div class="pull-right"><p>Spanish</p></div>';
+        const rendered = renderer.render(raw).trim();
+        expect(rendered).to.include('pull-columns');
+        expect(rendered).to.include('English');
+        expect(rendered).to.include('Spanish');
+    });
+
+    it('should fix unquoted div class attributes and handle pull columns', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        const raw = '<div class=text-justify>\n<div class="pull-left"><p>Left</p></div>\n\n<div class=text-justify>\n<div class="pull-right"><p>Right</p></div>';
+        const rendered = renderer.render(raw).trim();
+        expect(rendered).to.include('pull-columns');
+    });
+
+    it('should not wrap a single pull-left div in pull-columns', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        const raw = '<div class="pull-left"><p>Floated content</p></div>\n\nSome other text';
+        const rendered = renderer.render(raw).trim();
+        expect(rendered).to.not.include('pull-columns');
+        expect(rendered).to.include('pull-left');
+    });
+
+    it('should not wrap pull-left and pull-right separated by other content', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        const raw = '<div class="pull-left"><p>Left</p></div>\n\n<p>Separator paragraph</p>\n\n<div class="pull-right"><p>Right</p></div>';
+        const rendered = renderer.render(raw).trim();
+        expect(rendered).to.not.include('pull-columns');
+    });
+
+    it('should handle reverse order pull-right then pull-left', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        const raw = '<div class="pull-right"><p>Right</p></div>\n<div class="pull-left"><p>Left</p></div>';
+        const rendered = renderer.render(raw).trim();
+        expect(rendered).to.include('pull-columns');
+    });
+
+    it('should handle bilingual post with bold center headers in pull columns', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        // Real-world pattern from bilingual Hive posts: unquoted attributes,
+        // text-justify wrappers, **<center>Title</center>** markdown headers
+        const raw = '<div class=text-justify>\n<div class="pull-left">\n\n**<center>INGLÉS</center>**\n\nHello fellow travelers.\n\n</div>\n\n<div class=text-justify>\n<div class="pull-right">\n\n**<center>ESPAÑOL</center>**\n\nHola amigos viajeros.\n</div>';
+        const rendered = renderer.render(raw).trim();
+        expect(rendered).to.include('pull-columns');
+        // pull-right must NOT be nested inside pull-left — they must be siblings
+        const pullLeftIdx = rendered.indexOf('pull-left');
+        const pullRightIdx = rendered.indexOf('pull-right');
+        const closeDivAfterLeft = rendered.indexOf('</div>', rendered.indexOf('>', pullLeftIdx) + 1);
+        // pull-right should appear after pull-left's closing div
+        expect(pullRightIdx).to.be.greaterThan(closeDivAfterLeft);
+        expect(rendered).to.include('INGLÉS');
+        expect(rendered).to.include('ESPAÑOL');
+    });
+
     // TODO: Fix spoiler tag rendering - see #801
     it.skip('Renders spoiler tags correctly', () => {
         const renderer = new DefaultRenderer(defaultOptions);

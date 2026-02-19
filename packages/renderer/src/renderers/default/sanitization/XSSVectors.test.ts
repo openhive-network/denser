@@ -686,6 +686,15 @@ describe('XSS Security Tests', () => {
             expect(output).to.include('pull-right');
         });
 
+        it('should allow pull-columns class on div', () => {
+            const sanitizer = createSanitizer();
+            const input = '<div class="pull-columns"><div class="pull-left">left</div><div class="pull-right">right</div></div>';
+            const output = sanitizer.sanitize(input);
+            expect(output).to.include('pull-columns');
+            expect(output).to.include('pull-left');
+            expect(output).to.include('pull-right');
+        });
+
         it('should strip data-* attributes', () => {
             const sanitizer = createSanitizer();
             const input = '<div data-payload="<script>alert(1)</script>">test</div>';

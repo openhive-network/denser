@@ -130,6 +130,25 @@
   max-width: 50%;
 }
 
+.pull-columns {
+  display: flex;
+  gap: 1rem;
+}
+
+.pull-columns > .pull-left,
+.pull-columns > .pull-right {
+  flex: 1;
+  float: none;
+  max-width: none;
+  padding: 0;
+}
+
+@media (max-width: 640px) {
+  .pull-columns {
+    flex-direction: column;
+  }
+}
+
 .preview-description,
 .preview-rules {
   @apply text-xs;

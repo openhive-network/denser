@@ -628,6 +628,7 @@ function preprocessHtml(child: string) {
             }
             child = preprocessDetails(child);
             child = preprocessCenter(child);
+            child = preprocessPullColumns(child);
         }
     } catch (error) {
         console.log(error);
@@ -687,6 +688,15 @@ function preprocessCenter(html: string): string {
     // Use negative lookahead to avoid matching across </p> boundaries
     html = html.replace(/<p>\s*(<center>(?:(?!<\/p>)[\s\S])*?<\/center>)\s*<\/p>/g, '$1');
 
+    // Step 2b: Handle <p><inline-tags><center>content</center></inline-tags></p>
+    // Remarkable generates this from e.g. **<center>text</center>** producing
+    // <p><strong><center>text</center></strong></p>. Rearrange so the block-level
+    // <center> is on the outside: <center><strong>text</strong></center>
+    html = html.replace(
+        /<p>\s*((?:<(?:strong|em|b|i|u|s|del|strike|span)\b[^>]*>\s*)+)<center>([\s\S]*?)<\/center>\s*((?:<\/(?:strong|em|b|i|u|s|del|strike|span)>\s*)+)<\/p>/gi,
+        '<center>$1$2$3</center>'
+    );
+
     // Step 3: When <center> opens inside a paragraph, extract it
     // <p>text<center>content</p> → <p>text</p>\n<center>content
     // <p><center>content</p> → <center>content
@@ -703,6 +713,39 @@ function preprocessCenter(html: string): string {
 
     // Step 5: Move content after </pre> outside of center
     html = html.replace(/(<center>[\s\S]*?<\/pre>)([\s\S]*?)(<\/center>)/g, '$1$3$2');
+    return html;
+}
+
+/**
+ * Preprocesses HTML to handle pull-left/pull-right column pairs.
+ *
+ * Many Hive posts use adjacent pull-left and pull-right divs for bilingual content,
+ * often with malformed HTML (unquoted attributes, missing closing divs). This function:
+ * 1. Fixes unquoted class attributes on div tags
+ * 2. Detects adjacent pull-left + pull-right pairs and wraps them in a flex container
+ * 3. Handles optional text-justify wrapper divs and orphaned closing tags
+ *
+ * @param html - The HTML string to preprocess
+ * @returns The preprocessed HTML with properly structured column pairs
+ */
+function preprocessPullColumns(html: string): string {
+    // Step 1: Fix unquoted div class attributes: <div class=text-justify> → <div class="text-justify">
+    html = html.replace(/<div\s+class=([^\s>"'][^\s>]*)/gi, '<div class="$1"');
+
+    // Step 2: Detect pull-left + pull-right pairs (with optional text-justify wrappers)
+    // and wrap in a <div class="pull-columns"> flex container.
+    // Handles: text-justify wrappers, orphaned </div>, empty <p> between sections.
+    html = html.replace(
+        /(?:<div\s+class="text-justify"\s*>\s*)?<div\s+class="pull-left"\s*>([\s\S]*?)<\/div>(?:\s*<\/div>)?\s*(?:<p>\s*<\/p>\s*)*(?:<div\s+class="text-justify"\s*>\s*)?<div\s+class="pull-right"\s*>([\s\S]*?)<\/div>(?:\s*<\/div>)?/gi,
+        '<div class="pull-columns"><div class="pull-left">$1</div><div class="pull-right">$2</div></div>'
+    );
+
+    // Also handle reverse order (pull-right first, then pull-left)
+    html = html.replace(
+        /(?:<div\s+class="text-justify"\s*>\s*)?<div\s+class="pull-right"\s*>([\s\S]*?)<\/div>(?:\s*<\/div>)?\s*(?:<p>\s*<\/p>\s*)*(?:<div\s+class="text-justify"\s*>\s*)?<div\s+class="pull-left"\s*>([\s\S]*?)<\/div>(?:\s*<\/div>)?/gi,
+        '<div class="pull-columns"><div class="pull-right">$1</div><div class="pull-left">$2</div></div>'
+    );
+
     return html;
 }
 

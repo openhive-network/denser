@@ -150,7 +150,7 @@ export class TagTransformingSanitizer {
                 },
                 div: (tagName, attribs) => {
                     const attys: sanitize.Attributes = {};
-                    const classWhitelist = ['pull-right', 'pull-left', 'text-justify', 'text-rtl', 'text-center', 'text-right', 'videoWrapper', 'phishy'];
+                    const classWhitelist = ['pull-right', 'pull-left', 'pull-columns', 'text-justify', 'text-rtl', 'text-center', 'text-right', 'videoWrapper', 'phishy'];
                     const validClass = classWhitelist.find((e) => attribs.class === e);
                     if (validClass) {
                         attys.class = validClass;
