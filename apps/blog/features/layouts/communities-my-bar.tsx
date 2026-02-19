@@ -26,7 +26,7 @@ const CommunitiesMyBar = ({ data }: { data: string[][] }) => {
         </Link>
       </CardTitle>
       <CardTitle>
-        <Link href="../trending/my" className="text-base hover:text-destructive">
+        <Link href="/trending/my" className="text-base hover:text-destructive">
           My communities
         </Link>
       </CardTitle>

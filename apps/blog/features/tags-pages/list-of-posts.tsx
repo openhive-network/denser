@@ -84,14 +84,17 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     return <NoDataError />;
   }
 
-  // Handle initial loading state
-  if (isLoading) {
+  // Handle initial loading state (also show skeleton when refetching with no data,
+  // e.g. during observer transition after hydration)
+  if (isLoading || (isFetching && !data?.pages?.[0]?.length)) {
     return <PostListSkeleton count={5} />;
   }
 
   // Handle empty feed for "my" (friends) page
+  // Guard with !isFetching to avoid flash during observer transition
+  // (when hydration briefly changes observer before auth state resolves)
   const isEmpty = !data?.pages?.[0]?.length;
-  if (isEmpty && tag === 'my') {
+  if (isEmpty && tag === 'my' && !isFetching) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <p className="text-lg text-primary/70">{t('user_profile.empty_feed_not_following')}</p>

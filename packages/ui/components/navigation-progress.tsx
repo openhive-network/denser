@@ -122,10 +122,17 @@ export function useNavigationProgressHandler() {
           !href.startsWith('#') &&
           !link.hasAttribute('download')
         ) {
-          // Don't start navigation if clicking on the current URL
-          const currentPath = window.location.pathname + window.location.search;
-          if (href === currentPath || href === window.location.pathname) {
-            return;
+          // Resolve relative href to absolute path before comparing
+          // (e.g. "../trending/my" → "/trending/my")
+          try {
+            const resolved = new URL(href, window.location.href);
+            const currentPath = window.location.pathname + window.location.search;
+            const resolvedPath = resolved.pathname + resolved.search;
+            if (resolvedPath === currentPath || resolved.pathname === window.location.pathname) {
+              return;
+            }
+          } catch {
+            // If URL parsing fails, fall through to start navigation
           }
           startNavigation();
         }

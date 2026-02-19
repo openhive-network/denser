@@ -77,8 +77,8 @@ export function CommunitiesSelect({ title }: { title: string }) {
         </SelectGroup>
         {user.isLoggedIn && (
           <SelectGroup>
-            <SelectItem value={`../@${user.username}/feed`}>My friends</SelectItem>
-            <SelectItem value={`../trending/my`}>My communities</SelectItem>
+            <SelectItem value={`/@${user.username}/feed`}>My friends</SelectItem>
+            <SelectItem value="/trending/my">My communities</SelectItem>
             {mySubsData && mySubsData.length > 0 ? (
               <SelectItem disabled value="my-communities" className="text-slate-400">
                 My communities
