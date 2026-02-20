@@ -60,13 +60,13 @@ include:
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
-  ref: 6c2a49f90ad0007b8bb2e54bb964c9f52eea1601  # develop
+  ref: f53563339565ceed0f2952b2b2283f42ca0dd3b2  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/hive'
-  ref: 7da86bfddbf48b9c93cb0155b6396963baf8bb19
+  ref: f584ea3deeb8bcf990eadb31727ab6eb96fbd1aa
   file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
-  ref: 0b03c3a61864e5ed71ae66702f00837c1e3c773e
+  ref: 8042dc34546ef19c71cb73d26684d23202252b66
   file: 'ci/node-replay.gitlab-ci.yml'
 
 default:
@@ -679,19 +679,19 @@ smoke-tests-blog:
   stage: test
   allow_failure: true
   needs:
-    - docker-build-blog-testenv
+  - docker-build-blog-testenv
   services:
-    - name: $DENSER_BLOG_IMAGE_NAME
-      alias: denser
-      variables:
-        HEALTHCHECK_TCP_PORT: '3000'
-    - name: caddy:${CADDY_TAG}
-      command:
-        - caddy
-        - reverse-proxy
-        - --from=https://caddy
-        - --to=denser:3000
-        - --internal-certs
+  - name: $DENSER_BLOG_IMAGE_NAME
+    alias: denser
+    variables:
+      HEALTHCHECK_TCP_PORT: '3000'
+  - name: caddy:${CADDY_TAG}
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy
+    - --to=denser:3000
+    - --internal-certs
   variables:
     FF_NETWORK_PER_BUILD: 1
     CI_DEBUG_SERVICES: true
@@ -701,27 +701,27 @@ smoke-tests-blog:
     API_URL: 'https://api.hive.blog'
     NODE_TLS_REJECT_UNAUTHORIZED: '0'
   script:
-    - !reference [.node-job, script]
-    - |
-      echo -e "\e[0Ksection_start:$(date +%s):smoke_setup[collapsed=true]\r\e[0KSetting up smoke tests..."
-      cd ./apps/blog
-      mkdir -p ./playwright/smoke-scripts
-      mkdir -p ./playwright/smoke-report
-      cp ../../.claude/skills/blog-smoke-tests/scripts/*.mjs ./playwright/smoke-scripts/
-      echo -e "\e[0Ksection_end:$(date +%s):smoke_setup\r\e[0K"
+  - !reference [.node-job, script]
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):smoke_setup[collapsed=true]\r\e[0KSetting up smoke tests..."
+    cd ./apps/blog
+    mkdir -p ./playwright/smoke-scripts
+    mkdir -p ./playwright/smoke-report
+    cp ../../.claude/skills/blog-smoke-tests/scripts/*.mjs ./playwright/smoke-scripts/
+    echo -e "\e[0Ksection_end:$(date +%s):smoke_setup\r\e[0K"
 
-      echo -e "\e[0Ksection_start:$(date +%s):smoke_run[collapsed=false]\r\e[0KRunning smoke tests..."
-      node playwright/smoke-scripts/smoke-runner.mjs
-      echo -e "\e[0Ksection_end:$(date +%s):smoke_run\r\e[0K"
+    echo -e "\e[0Ksection_start:$(date +%s):smoke_run[collapsed=false]\r\e[0KRunning smoke tests..."
+    node playwright/smoke-scripts/smoke-runner.mjs
+    echo -e "\e[0Ksection_end:$(date +%s):smoke_run\r\e[0K"
   after_script:
-    - rm -rf ./apps/blog/playwright/smoke-scripts
+  - rm -rf ./apps/blog/playwright/smoke-scripts
   artifacts:
     paths:
-      - ./apps/blog/playwright/smoke-report/
+    - ./apps/blog/playwright/smoke-report/
     when: always
     expire_in: 1 week
   tags:
-    - public-runner-docker
+  - public-runner-docker
 
 .e2e_report_aggregate_template:
   extends: .node-job
@@ -779,8 +779,10 @@ e2e-report-aggregate-wallet:
       --output=json,html \
       --output-path="${TURBO_APP_NAME}-lighthouse" \
       --chrome-flags="--headless --no-sandbox --disable-gpu --ignore-certificate-errors"
-  - node scripts/ci-helpers/lighthouse-metrics.js "${TURBO_APP_NAME}-lighthouse.report.json" "$TURBO_APP_NAME"
-  - node scripts/ci-helpers/lighthouse-check-thresholds.js "${TURBO_APP_NAME}-lighthouse.report.json" "$TURBO_APP_NAME"
+  - node scripts/ci-helpers/lighthouse-metrics.js "${TURBO_APP_NAME}-lighthouse.report.json"
+    "$TURBO_APP_NAME"
+  - node scripts/ci-helpers/lighthouse-check-thresholds.js "${TURBO_APP_NAME}-lighthouse.report.json"
+    "$TURBO_APP_NAME"
   artifacts:
     paths:
     - ${TURBO_APP_NAME}-lighthouse.report.html
