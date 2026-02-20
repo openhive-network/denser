@@ -71,6 +71,7 @@ interface CondenserTemplate {
   name: string;
   beneficiaries?: CondenserBeneficiary[];
   payoutType?: string;
+  maxAcceptedPayout?: number | null;
   markdown?: string;
   title?: string;
   summary?: string;
@@ -133,9 +134,11 @@ function convertBeneficiaries(condenserBeneficiaries?: CondenserBeneficiary[]): 
   }));
 }
 
-function convertMaxAcceptedPayout(condenserValue: number | null | undefined): number {
-  if (condenserValue === null || condenserValue === undefined) return 1000000; // no limit
-  return condenserValue;
+function convertMaxAcceptedPayout(condenserValue: number | null | undefined, payoutType?: string): number {
+  if (condenserValue != null) return condenserValue;
+  // Derive from payoutType when maxAcceptedPayout is not stored (e.g. condenser templates)
+  if (payoutType === '0%') return 0; // decline payout
+  return 1000000; // no limit
 }
 
 function isCondenserTemplate(item: unknown): item is CondenserTemplate {
@@ -206,7 +209,7 @@ export function migrateTemplates(username: string): void {
           author: t.altAuthor || '',
           category: t.community || 'blog',
           beneficiaries: convertBeneficiaries(t.beneficiaries),
-          maxAcceptedPayout: t.payoutType === '0%' ? 0 : 1000000,
+          maxAcceptedPayout: convertMaxAcceptedPayout(t.maxAcceptedPayout, t.payoutType),
           payoutType: t.payoutType || '50%'
         };
       }
