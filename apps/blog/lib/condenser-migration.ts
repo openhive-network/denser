@@ -206,7 +206,7 @@ export function migrateTemplates(username: string): void {
           author: t.altAuthor || '',
           category: t.community || 'blog',
           beneficiaries: convertBeneficiaries(t.beneficiaries),
-          maxAcceptedPayout: 1000000,
+          maxAcceptedPayout: t.payoutType === '0%' ? 0 : 1000000,
           payoutType: t.payoutType || '50%'
         };
       }

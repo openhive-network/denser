@@ -250,8 +250,8 @@ export default function PostForm({
         author: storedPost.author || entryValues.author,
         category: editMode ? entryValues.category : (storedPost.category || entryValues.category),
         beneficiaries: storedPost.beneficiaries || entryValues.beneficiaries,
-        maxAcceptedPayout: entryValues.maxAcceptedPayout,
-        payoutType: entryValues.payoutType
+        maxAcceptedPayout: storedPost.maxAcceptedPayout ?? entryValues.maxAcceptedPayout,
+        payoutType: storedPost.payoutType || entryValues.payoutType
       });
       setPreviewContent(storedPost.postArea);
     }
