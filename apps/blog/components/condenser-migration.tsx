@@ -15,7 +15,9 @@ import {
   parseAutopost2,
   cleanupCondenserStorage,
   isAlreadyMigrated,
-  markMigrated
+  markMigrated,
+  migrateLanguage,
+  migrateCondenserData
 } from '../lib/condenser-migration';
 import { FetchError } from '@smart-signer/lib/fetch-json';
 import { getLogger } from '@hive/ui/lib/logging';
@@ -49,10 +51,22 @@ export default function CondenserMigration() {
     async function migrate() {
       if (isAlreadyMigrated()) return;
 
+      // Language migration runs regardless of login data
+      migrateLanguage();
+
       const data = parseAutopost2();
-      if (!data) return;
+      if (!data) {
+        // No autopost2: nothing more to migrate
+        cleanupCondenserStorage();
+        markMigrated();
+        return;
+      }
 
       const { username, postingWif, loginWithKeychain } = data;
+
+      // Migrate user data (templates, drafts, vote weights) before login attempt.
+      // These are synchronous and idempotent, so safe to run even if login retries later.
+      migrateCondenserData(username);
 
       // Determine login type: Keychain takes priority (more secure)
       let loginType: LoginType;
@@ -66,8 +80,8 @@ export default function CondenserMigration() {
           JSON.stringify(postingWif)
         );
       } else {
-        // No usable login method
-        cleanupCondenserStorage();
+        // No usable login method, but data was already migrated above
+        cleanupCondenserStorage(username);
         markMigrated();
         return;
       }
@@ -139,7 +153,7 @@ export default function CondenserMigration() {
         });
 
         logger.info('Condenser migration: user %s logged in via %s', username, loginType);
-        cleanupCondenserStorage();
+        cleanupCondenserStorage(username);
         markMigrated();
       } catch (error) {
         logger.error(error, 'Condenser migration failed for user %s', username);
@@ -152,7 +166,7 @@ export default function CondenserMigration() {
 
         // Signing/validation errors: clean up and give up
         removeStoredWif(username, loginType);
-        cleanupCondenserStorage();
+        cleanupCondenserStorage(username);
         markMigrated();
       }
     }
