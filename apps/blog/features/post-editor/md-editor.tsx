@@ -661,20 +661,26 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     return () => observer.disconnect();
   }, []);
 
-  // Sync persistedValue from parent (form reset, template load)
+  // Sync persistedValue from parent (form reset, template load, cross-tab sync).
+  // Only runs when the editor is NOT focused — user typing goes through the
+  // updateListener and is never overwritten by the debounced echo from PostForm.
+  // Toolbar buttons use tabIndex={-1} so they don't steal focus; they dispatch
+  // directly to CodeMirror, not through persistedValue.
   useEffect(() => {
     const view = viewRef.current;
     if (!view) return;
 
-    // Skip during active typing to prevent the debounced echo from reverting newer local edits
-    if (Date.now() - lastInputTimeRef.current < 600) return;
+    if (view.hasFocus) return;
 
     const currentDoc = view.state.doc.toString();
     if (currentDoc === persistedValue) return;
 
-    isInternalChangeRef.current = true;
+    // Preserve cursor position (clamped to new document length)
+    const { anchor, head } = view.state.selection.main;
+    const newLen = persistedValue.length;
     view.dispatch({
-      changes: { from: 0, to: view.state.doc.length, insert: persistedValue }
+      changes: { from: 0, to: view.state.doc.length, insert: persistedValue },
+      selection: { anchor: Math.min(anchor, newLen), head: Math.min(head, newLen) }
     });
   }, [persistedValue]);
 

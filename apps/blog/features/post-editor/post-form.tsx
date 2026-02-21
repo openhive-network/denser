@@ -136,6 +136,9 @@ export default function PostForm({
   const previewRafIdRef = useRef<number | null>(null);
   // Ref for scroll cleanup function (safer than attaching to DOM element)
   const scrollCleanupRef = useRef<(() => void) | null>(null);
+  // Briefly locks preview→editor scroll sync while RendererContainer re-renders,
+  // preventing its DOM replacement from firing a scroll event that jumps the editor.
+  const scrollLockRef = useRef(false);
   const storeTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
@@ -342,6 +345,21 @@ export default function PostForm({
     return () => clearTimeout(timeoutId);
   }, [previewContent, syncScroll, sideBySide, preview]);
 
+  // Lock preview→editor scroll sync briefly when preview DOM is replaced.
+  // RendererContainer's dangerouslySetInnerHTML causes a scroll event on the
+  // preview container that would otherwise sync back and jump the editor viewport.
+  useEffect(() => {
+    if (!previewContent) return;
+    scrollLockRef.current = true;
+    const id = setTimeout(() => {
+      scrollLockRef.current = false;
+    }, 150);
+    return () => {
+      clearTimeout(id);
+      scrollLockRef.current = false;
+    };
+  }, [previewContent]);
+
   useEffect(() => {
     setImagePickerState(imagePicker(selectedImg));
   }, [selectedImg]);
@@ -378,7 +396,7 @@ export default function PostForm({
       };
 
       const handlePreviewScroll = () => {
-        if (isScrollSyncingRef.current || previewRafIdRef.current) return;
+        if (scrollLockRef.current || isScrollSyncingRef.current || previewRafIdRef.current) return;
 
         previewRafIdRef.current = requestAnimationFrame(() => {
           previewRafIdRef.current = null;
