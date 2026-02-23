@@ -1,8 +1,12 @@
+'use client';
+
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { getLogger } from '@ui/lib/logging';
+import { Icons } from '@hive/ui/components/icons';
 
 const logger = getLogger('app');
 
@@ -79,6 +83,7 @@ export function PasswordForm({
   i18nKeysForCaptions = {} // captions for inputs, buttons, form title etc.
 }: PasswordFormOptions) {
   const randomValue = crypto.randomUUID();
+  const [showValue, setShowValue] = useState(false);
 
   const defaultI18nKeysForCaptions = {
     title: 'Enter your password',
@@ -128,14 +133,29 @@ export function PasswordForm({
         <form method="post" className="mt-6 w-full">
           <div className="relative mb-5">
             <input
-              type={mode === PasswordFormMode.WIF ? "text" : "password"}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
-              style={mode === PasswordFormMode.WIF ? { WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties : undefined}
+              type={mode === PasswordFormMode.WIF ? "text" : showValue ? "text" : "password"}
+              className="block w-full rounded-lg border border-gray-300 py-2.5 pl-3 pr-10 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
+              style={
+                mode === PasswordFormMode.WIF && !showValue
+                  ? ({ WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties)
+                  : undefined
+              }
               placeholder={captionKey.inputPasswordPlaceholder}
               autoComplete={mode === PasswordFormMode.WIF ? "off" : "current-password"}
               {...register('password')}
               data-testid="posting-private-key-input"
             />
+            <button
+              type="button"
+              className="absolute right-2 top-2.5 p-1 text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200"
+              onClick={() => setShowValue((prev) => !prev)}
+            >
+              {showValue ? (
+                <Icons.eyeOff className="h-5 w-5" />
+              ) : (
+                <Icons.eye className="h-5 w-5" />
+              )}
+            </button>
             {errors.password?.message && (
               <p className="text-sm text-red-500" role="alert" data-testid="password-form-error-message">
                 {errors.password.message}
@@ -177,7 +197,10 @@ export function PasswordForm({
             {/* Reset Button */}
             <button
               type="button"
-              onClick={() => reset()}
+              onClick={() => {
+                reset();
+                setShowValue(false);
+              }}
               className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
               data-testid="password-reset-button"
             >

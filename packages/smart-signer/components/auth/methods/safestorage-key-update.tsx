@@ -94,6 +94,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
     const [availableKeyTypes, setAvailableKeyTypes] = useState<KeyType[]>([]);
     const [updateSuccess, setUpdateSuccess] = useState(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showWif, setShowWif] = useState<boolean>(false);
     const form = useForm<SafeStorageKeyUpdateForm>({
       mode: 'onChange',
       resolver: zodResolver(getFormSchema()),
@@ -281,6 +282,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                   <FormControl>
                     <div className="relative">
                       <Input
+                        className="pr-10"
                         {...field}
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Safe storage password"
@@ -311,15 +313,32 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      style={{ WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties}
-                      placeholder={`WIF ${form.getValues().keyType} private key`}
-                      disabled={!registeredUser}
-                      autoComplete="off"
-                      data-testid="login-form-wif"
-                    />
+                    <div className="relative">
+                      <Input
+                        className="pr-10"
+                        {...field}
+                        type="text"
+                        style={
+                          !showWif
+                            ? ({ WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties)
+                            : undefined
+                        }
+                        placeholder={`WIF ${form.getValues().keyType} private key`}
+                        disabled={!registeredUser}
+                        autoComplete="off"
+                        data-testid="login-form-wif"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="absolute right-2 top-1/2 h-7 w-7 -translate-y-1/2 p-1 hover:bg-transparent"
+                        onClick={() => {
+                          setShowWif((prev) => !prev);
+                        }}
+                      >
+                        {showWif ? <Icons.eyeOff /> : <Icons.eye />}
+                      </Button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

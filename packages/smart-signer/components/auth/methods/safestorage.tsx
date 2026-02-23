@@ -265,6 +265,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
                     <div className="relative flex">
                       <Input
+                        className="pr-10"
                         placeholder="Username"
                         type="text"
                         autoComplete="username"
@@ -316,6 +317,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   <FormControl>
                     <div className="relative">
                       <Input
+                        className="pr-10"
                         placeholder="Safe storage password"
                         type={show.password ? 'text' : 'password'}
                         autoComplete="current-password"
@@ -349,6 +351,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     <FormControl>
                       <div className="relative">
                         <Input
+                          className="pr-10"
                           placeholder={`WIF ${form.getValues().keyType} private key`}
                           type="text"
                           style={!show.wif ? { WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties : undefined}
