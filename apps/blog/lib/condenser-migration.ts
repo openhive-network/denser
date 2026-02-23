@@ -289,11 +289,18 @@ export function migrateReplyDrafts(username: string): void {
       const key = localStorage.key(i);
       if (!key || !key.startsWith(prefix) || skipKeys.has(key)) continue;
 
-      // Extract "author/permlink" from "replyEditorData-author/permlink"
-      const suffix = key.slice(prefix.length);
-      if (!suffix || !suffix.includes('/')) continue;
+      // Extract "author/permlink" from Condenser's formId.
+      // Condenser uses: "replyEditorData-postFull-{author}/{permlink}-reply"
+      let authorPermlink = key.slice(prefix.length);
+      if (authorPermlink.startsWith('postFull-')) {
+        authorPermlink = authorPermlink.slice('postFull-'.length);
+      }
+      if (authorPermlink.endsWith('-reply')) {
+        authorPermlink = authorPermlink.slice(0, -'-reply'.length);
+      }
+      if (!authorPermlink || !authorPermlink.includes('/')) continue;
 
-      const denserKey = `replyTo-/${suffix}-${username}`;
+      const denserKey = `replyTo-/${authorPermlink}-${username}`;
 
       // Skip if Denser already has a draft for this reply
       if (getStorageItem<string>(denserKey)) continue;

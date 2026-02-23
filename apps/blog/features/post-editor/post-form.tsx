@@ -199,14 +199,14 @@ export default function PostForm({
     beneficiaries: storedPost?.beneficiaries || [],
     maxAcceptedPayout: post_s
       ? Number(post_s.max_accepted_payout.split(' ')[0])
-      : preferences.blog_rewards === '0%' ? 0 : 1000000,
+      : storedPost?.maxAcceptedPayout ?? (preferences.blog_rewards === '0%' ? 0 : 1000000),
     payoutType: post_s
       ? (parseFloat(post_s.max_accepted_payout) === 0
           ? '0%'
           : post_s.percent_hbd === 0
             ? '100%'
             : '50%')
-      : preferences.blog_rewards
+      : storedPost?.payoutType || preferences.blog_rewards
   };
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -313,6 +313,9 @@ export default function PostForm({
 
   useEffect(() => {
     if (hasSubmittedRef.current) return;
+    // Don't auto-save until hydration from localStorage is complete,
+    // otherwise we'd overwrite stored values with preferences-based defaults
+    if (!hasHydratedRef.current) return;
     clearTimeout(storeTimerRef.current);
     storeTimerRef.current = setTimeout(() => {
       storePost(watchedValues);
