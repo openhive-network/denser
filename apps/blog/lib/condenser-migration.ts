@@ -259,7 +259,7 @@ export function migrateDraft(username: string): void {
       author: draft.altAuthor || '',
       category: 'blog',
       beneficiaries: convertBeneficiaries(draft.beneficiaries),
-      maxAcceptedPayout: convertMaxAcceptedPayout(draft.maxAcceptedPayout),
+      maxAcceptedPayout: convertMaxAcceptedPayout(draft.maxAcceptedPayout, draft.payoutType),
       payoutType: draft.payoutType || '50%'
     };
 
@@ -267,6 +267,60 @@ export function migrateDraft(username: string): void {
     logger.info('Condenser migration: post draft migrated for user %s', username);
   } catch (error) {
     logger.error(error, 'Condenser migration: failed to migrate draft for user %s', username);
+  }
+}
+
+/**
+ * Migrates reply/comment drafts from Condenser's `replyEditorData-{author}/{permlink}`
+ * to Denser's `replyTo-/{author}/{permlink}-{username}`.
+ *
+ * Condenser stores reply drafts as JSON with a `body` field.
+ * Denser stores them as plain strings (just the body text).
+ *
+ * Skips `replyEditorData-submitStory` (handled by `migrateDraft`) and `replyEditorData-rte` (not a draft).
+ */
+export function migrateReplyDrafts(username: string): void {
+  try {
+    const prefix = 'replyEditorData-';
+    const skipKeys = new Set([`${prefix}submitStory`, `${prefix}rte`]);
+    let migratedCount = 0;
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith(prefix) || skipKeys.has(key)) continue;
+
+      // Extract "author/permlink" from "replyEditorData-author/permlink"
+      const suffix = key.slice(prefix.length);
+      if (!suffix || !suffix.includes('/')) continue;
+
+      const denserKey = `replyTo-/${suffix}-${username}`;
+
+      // Skip if Denser already has a draft for this reply
+      if (getStorageItem<string>(denserKey)) continue;
+
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+
+      let body: string | undefined;
+      try {
+        const parsed = JSON.parse(raw);
+        body = typeof parsed === 'object' && parsed !== null ? parsed.body : undefined;
+      } catch {
+        // Not valid JSON — skip
+        continue;
+      }
+
+      if (!body) continue;
+
+      setStorageItem(denserKey, body, StorageTTL.DRAFT);
+      migratedCount++;
+    }
+
+    if (migratedCount > 0) {
+      logger.info('Condenser migration: %d reply drafts migrated for user %s', migratedCount, username);
+    }
+  } catch (error) {
+    logger.error(error, 'Condenser migration: failed to migrate reply drafts for user %s', username);
   }
 }
 
@@ -324,6 +378,7 @@ export function migrateVoteWeights(username: string): void {
 export function migrateCondenserData(username: string): void {
   migrateTemplates(username);
   migrateDraft(username);
+  migrateReplyDrafts(username);
   migrateVoteWeights(username);
 }
 
