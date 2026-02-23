@@ -285,6 +285,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Safe storage password"
                         disabled={!registeredUser}
+                        autoComplete="current-password"
                         data-testid="login-form-password"
                       />
                       <Button
@@ -312,9 +313,11 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                   <FormControl>
                     <Input
                       {...field}
-                      type="password"
+                      type="text"
+                      style={{ WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties}
                       placeholder={`WIF ${form.getValues().keyType} private key`}
                       disabled={!registeredUser}
+                      autoComplete="off"
                       data-testid="login-form-wif"
                     />
                   </FormControl>

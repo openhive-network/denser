@@ -189,8 +189,9 @@ export function DialogHBAuth({
                   <div className="relative mb-5">
                     <input
                       type="text"
-                      id="firstName"
+                      id="username"
                       name="username"
+                      autoComplete="username"
                       className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
                       placeholder="Enter your username"
                       required
@@ -261,8 +262,9 @@ export function DialogHBAuth({
                   <div className="relative mb-5">
                     <input
                       type="text"
-                      id="firstName"
+                      id="hbauth-add-key-username"
                       name="username"
+                      autoComplete="username"
                       className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 pl-11 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"
                       placeholder="Enter your username"
                       required
@@ -318,7 +320,8 @@ export function DialogHBAuth({
                   <div className="mb-5">
                     <input
                       autoComplete="off"
-                      type="password"
+                      type="text"
+                      style={{ WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties}
                       id="key"
                       name="key"
                       className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500"

@@ -177,10 +177,11 @@ export function LoginForm({
 
           <div className="relative mb-5">
             <input
-              type="password"
+              type="text"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
+              style={{ WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties}
               placeholder="Posting private key"
-              autoComplete="current-password"
+              autoComplete="off"
               disabled={disabledPasword}
               {...register('password')}
               data-testid="posting-private-key-input"

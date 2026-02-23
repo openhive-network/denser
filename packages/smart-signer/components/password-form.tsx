@@ -128,10 +128,11 @@ export function PasswordForm({
         <form method="post" className="mt-6 w-full">
           <div className="relative mb-5">
             <input
-              type="password"
+              type={mode === PasswordFormMode.WIF ? "text" : "password"}
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
+              style={mode === PasswordFormMode.WIF ? { WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties : undefined}
               placeholder={captionKey.inputPasswordPlaceholder}
-              autoComplete="current-password"
+              autoComplete={mode === PasswordFormMode.WIF ? "off" : "current-password"}
               {...register('password')}
               data-testid="posting-private-key-input"
             />

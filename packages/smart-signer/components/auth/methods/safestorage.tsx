@@ -350,7 +350,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                       <div className="relative">
                         <Input
                           placeholder={`WIF ${form.getValues().keyType} private key`}
-                          type={show.wif ? 'text' : 'password'}
+                          type="text"
+                          style={!show.wif ? { WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties : undefined}
+                          autoComplete="off"
                           data-testid="wif-input"
                           {...field}
                         />
