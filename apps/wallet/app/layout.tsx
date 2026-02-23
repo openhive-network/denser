@@ -7,6 +7,7 @@ import Script from 'next/script';
 import { Providers } from './providers';
 import ClientEffects from './client-effects';
 import ServiceWorkerUpdate from '../components/service-worker-update';
+import CondenserMigration from '../components/condenser-migration';
 import { getEnvVersion } from '../lib/env-version';
 
 // Get basePath from build-time environment
@@ -83,6 +84,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         />
         <Providers>
           <ServiceWorkerUpdate />
+          <CondenserMigration />
           <>{children}</>
         </Providers>
         <ClientEffects />
