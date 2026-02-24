@@ -83,65 +83,64 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
                 subs={subsData}
                 username={community}
                 notificationData={notificationData}
+                userSubscriptions={mySubsData}
               />
             ) : null}
           </div>
 
-          <div className="col-span-12 md:col-span-9 xl:col-span-8">
-            <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
-              <div className="my-4 flex w-full items-center justify-between" translate="no">
-                <div className="mr-2 flex w-[320px] flex-col">
-                  {isRolesPage ? (
-                    <BasePathLink href={`/trending/${community}`}>
+          <div className="col-span-12 mb-5 flex flex-col md:col-span-10 lg:col-span-8">
+            <div className="my-4 flex w-full items-center justify-between" translate="no">
+              <div className="mr-2 flex w-[320px] flex-col">
+                {isRolesPage ? (
+                  <BasePathLink href={`/trending/${community}`}>
+                    <span
+                      className="text-md ml-10 font-medium text-destructive"
+                      data-testid="community-name"
+                    >
+                      {isCommunity && isCommunityLoading ? (
+                        <Skeleton className="inline-block h-6 w-48" />
+                      ) : (
+                        communityData?.title || `#${community}`
+                      )}
+                    </span>
+                  </BasePathLink>
+                ) : (
+                  <>
+                    <span className="text-md hidden font-medium md:block" data-testid="community-name">
+                      {isCommunity && isCommunityLoading ? (
+                        <Skeleton className="inline-block h-6 w-48" />
+                      ) : (
+                        communityData?.title || `#${community}`
+                      )}
+                    </span>
+                    <span className="md:hidden">
+                      <CommunitiesSelect title={isCommunity && isCommunityLoading ? '' : (communityData?.title || community)} />
+                    </span>
+
                       <span
-                        className="text-md ml-10 font-medium text-destructive"
-                        data-testid="community-name"
+                        className="hidden text-xs font-light md:block"
+                        data-testid="community-name-unmoderated"
                       >
                         {isCommunity && isCommunityLoading ? (
-                          <Skeleton className="inline-block h-6 w-48" />
+                          <Skeleton className="inline-block h-4 w-32" />
+                        ) : communityData ? (
+                          t('communities.community')
                         ) : (
-                          communityData?.title || `#${community}`
+                          t('communities.unmoderated_tag')
                         )}
                       </span>
-                    </BasePathLink>
-                  ) : (
-                    <>
-                      <span className="text-md hidden font-medium md:block" data-testid="community-name">
-                        {isCommunity && isCommunityLoading ? (
-                          <Skeleton className="inline-block h-6 w-48" />
-                        ) : (
-                          communityData?.title || `#${community}`
-                        )}
-                      </span>
-                      <span className="md:hidden">
-                        <CommunitiesSelect title={isCommunity && isCommunityLoading ? '' : (communityData?.title || community)} />
-                      </span>
 
-                        <span
-                          className="hidden text-xs font-light md:block"
-                          data-testid="community-name-unmoderated"
-                        >
-                          {isCommunity && isCommunityLoading ? (
-                            <Skeleton className="inline-block h-4 w-32" />
-                          ) : communityData ? (
-                            t('communities.community')
-                          ) : (
-                            t('communities.unmoderated_tag')
-                          )}
-                        </span>
-
-                    </>
-                  )}
-                </div>
-
-                {isRolesPage ? null : (
-                  <div className="w-[180px]">
-                    <PostSelectFilter param={`/${community}`} />
-                  </div>
+                  </>
                 )}
               </div>
-              {children}
+
+              {isRolesPage ? null : (
+                <div className="w-[180px]">
+                  <PostSelectFilter param={`/${community}`} />
+                </div>
+              )}
             </div>
+            {children}
           </div>
         </div>
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
@@ -153,6 +152,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
               subs={subsData}
               notificationData={notificationData}
               username={community ?? ''}
+              userSubscriptions={mySubsData}
             />
           ) : null}
         </div>
