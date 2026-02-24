@@ -35,14 +35,13 @@ import Step from '../step';
 import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
+import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 
 function getFormSchema() {
   return z
     .object({
       username,
-      password: z.string().min(6, {
-        message: 'Password length should be at least 6 characters'
-      }),
+      password: passwordSchema,
       wif: z.string(),
       keyType: z.nativeEnum(KeyType, {
         invalid_type_error: 'Invalid keyType',

@@ -30,6 +30,7 @@ import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
+import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import { KeyAuthorityType } from '@smart-signer/lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleAuthError } from '@smart-signer/lib/auth-error';
@@ -49,9 +50,7 @@ function getFormSchema() {
   return z
     .object({
       username,
-      password: z.string().min(6, {
-        message: 'Password length should be at least 6 characters'
-      }),
+      password: passwordSchema,
       wif: z.string().min(1, {
         message: 'Invalid WIF key'
       }),
