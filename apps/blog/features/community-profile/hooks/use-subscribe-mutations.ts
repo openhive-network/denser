@@ -20,18 +20,30 @@ export function useSubscribeMutation() {
         'subscriptions',
         params.username
       ]);
-      const prevCommunityData: Community | undefined = queryClient.getQueryData(['community', community]);
-      const response = { ...params, broadcastResult, prevUserSubscriptionData, prevCommunityData };
+      // Find the actual cached community query (key includes observer as 3rd element)
+      const communityQueryEntry = queryClient
+        .getQueriesData<Community>({ queryKey: ['community', community] })
+        .find(([, data]) => !!data);
+      const prevCommunityData = communityQueryEntry?.[1];
+      const communityQueryKey = communityQueryEntry?.[0];
+      const response = {
+        ...params,
+        broadcastResult,
+        prevUserSubscriptionData,
+        prevCommunityData,
+        communityQueryKey
+      };
       return response;
     },
     onSettled: (data) => {
       if (!data) return;
-      const { community, username, communityTitle, prevUserSubscriptionData, prevCommunityData } = data;
-      if (!!prevUserSubscriptionData) {
+      const { community, username, communityTitle, prevUserSubscriptionData, prevCommunityData, communityQueryKey } =
+        data;
+      if (prevUserSubscriptionData) {
         const updatedSubscriptions = [...prevUserSubscriptionData, [community, communityTitle, 'guest', '']];
         queryClient.setQueryData(['subscriptions', username], updatedSubscriptions);
       }
-      if (!!prevCommunityData) {
+      if (prevCommunityData && communityQueryKey) {
         const updatedCommunity = {
           ...prevCommunityData,
           context: {
@@ -41,7 +53,7 @@ export function useSubscribeMutation() {
             _temporary: true
           }
         };
-        queryClient.setQueryData(['community', community], updatedCommunity);
+        queryClient.setQueryData(communityQueryKey, updatedCommunity);
       }
     },
     onSuccess: (data) => {
@@ -86,18 +98,23 @@ export function useUnsubscribeMutation() {
         'subscriptions',
         username
       ]);
-      const prevCommunityData = queryClient.getQueryData(['community', community]);
-      const response = { ...params, broadcastResult, prevUserSubscriptionData, prevCommunityData };
+      // Find the actual cached community query (key includes observer as 3rd element)
+      const communityQueryEntry = queryClient
+        .getQueriesData<Community>({ queryKey: ['community', community] })
+        .find(([, data]) => !!data);
+      const prevCommunityData = communityQueryEntry?.[1];
+      const communityQueryKey = communityQueryEntry?.[0];
+      const response = { ...params, broadcastResult, prevUserSubscriptionData, prevCommunityData, communityQueryKey };
       return response;
     },
     onSettled: (data) => {
       if (!data) return;
-      const { community, username, prevUserSubscriptionData, prevCommunityData } = data;
-      if (!!prevUserSubscriptionData) {
+      const { community, username, prevUserSubscriptionData, prevCommunityData, communityQueryKey } = data;
+      if (prevUserSubscriptionData) {
         const updatedSubscriptions = prevUserSubscriptionData.filter((sub) => sub[0] !== community);
         queryClient.setQueryData(['subscriptions', username], updatedSubscriptions);
       }
-      if (!!prevCommunityData) {
+      if (prevCommunityData && communityQueryKey) {
         const updatedCommunity = {
           ...prevCommunityData,
           context: {
@@ -107,7 +124,7 @@ export function useUnsubscribeMutation() {
             _temporary: true
           }
         };
-        queryClient.setQueryData(['community', community], updatedCommunity);
+        queryClient.setQueryData(communityQueryKey, updatedCommunity);
       }
     },
     onSuccess: (data) => {

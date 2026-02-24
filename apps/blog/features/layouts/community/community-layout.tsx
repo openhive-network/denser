@@ -53,12 +53,19 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
     staleTime: StaleTime.LONG
   });
 
+  // Only use SSR initial data when the observer hasn't changed after hydration.
+  // If SSR used DEFAULT_OBSERVER ('hive.blog') but the client has a logged-in user,
+  // the initial data has context.subscribed=false for the wrong observer — discard it
+  // so React Query refetches with the correct observer.
+  const observerMatchesSSR = observer === ssrObserver;
+  const useInitialData = initialCommunity && observerMatchesSSR;
+
   const { data: communityData, isLoading: isCommunityLoading } = useQuery({
     queryKey: ['community', community, observer],
     queryFn: () => getCommunity(community, observer),
     enabled: isCommunity,
-    initialData: initialCommunity ?? undefined,
-    initialDataUpdatedAt: initialCommunity ? Date.now() : undefined,
+    initialData: useInitialData ? initialCommunity : undefined,
+    initialDataUpdatedAt: useInitialData ? Date.now() : undefined,
     staleTime: StaleTime.LONG
   });
 
