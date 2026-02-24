@@ -119,7 +119,8 @@ test.describe('Muted posts tests', () => {
     await expect(articleAuthor).toBeVisible();
     await expect(articleAuthorText).toContain(postAuthor);
 
-    const contentHidden = await page.getByText('Content were hidden due to low ratings.')
+    // Match any of the possible content hidden messages (depends on muted_reasons from API)
+    const contentHidden = page.getByText(/Content (were hidden due to low ratings|hidden (by community moderators|because parent content is muted|due to low author reputation)|hidden: author (not allowed to post in this community|is muted in this community))\./)
 
     await expect(contentHidden).toBeVisible()
 

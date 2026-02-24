@@ -106,7 +106,7 @@ export class PostPage {
   constructor(page: Page) {
     this.page = page;
     this.showPostBodyBtn = page.locator('div').filter({
-      hasText: /^Content were hidden due to low ratings\.Show$/
+      hasText: /^Content (were hidden due to low ratings|hidden (by community moderators|because parent content is muted|due to low author reputation)|hidden: author (not allowed to post in this community|is muted in this community))\.Show$/
     }).getByRole('button');
     this.postListItemOnHomePage = page.locator('li[data-testid="post-list-item"]');
     this.firstPostImageOnHomePage = page.locator('li[data-testid="post-list-item"]:nth-of-type(1) img');

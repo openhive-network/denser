@@ -69,7 +69,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     // console.log('commentContentWithoutSpaces: ', await commentContentWithoutSpaces);
 
-    if (await page.getByText('Content were hidden due to low ratings.').isVisible()) {
+    if (await page.getByText(/Content (were hidden due to low ratings|hidden (by community moderators|because parent content is muted|due to low author reputation)|hidden: author (not allowed to post in this community|is muted in this community))\./).isVisible()) {
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
       const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
@@ -101,7 +101,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       await profilePage.postDescription.first().click();
       await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
-      if (await page.getByText('Content were hidden due to low ratings.').isVisible()) {
+      if (await page.getByText(/Content (were hidden due to low ratings|hidden (by community moderators|because parent content is muted|due to low author reputation)|hidden: author (not allowed to post in this community|is muted in this community))\./).isVisible()) {
         await page.locator('button').getByText('Show').click();
         const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
         const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
@@ -214,7 +214,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.postTimestamp.first().click();
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
-    if (await page.getByText('Content were hidden due to low ratings.').isVisible()) {
+    if (await page.getByText(/Content (were hidden due to low ratings|hidden (by community moderators|because parent content is muted|due to low author reputation)|hidden: author (not allowed to post in this community|is muted in this community))\./).isVisible()) {
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
       const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
@@ -372,7 +372,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
 
-    if (await page.getByText('Content were hidden due to low ratings.').isVisible()) {
+    if (await page.getByText(/Content (were hidden due to low ratings|hidden (by community moderators|because parent content is muted|due to low author reputation)|hidden: author (not allowed to post in this community|is muted in this community))\./).isVisible()) {
       await page.locator('button').getByText('Show').click();
       const commentContent: any = await commentViewPage.getMainCommentContent.textContent();
       const commentContentWithoutUrl: any = await commentContent.replace(/https?:\/\/\S+/g, '');
