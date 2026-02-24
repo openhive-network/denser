@@ -15,7 +15,8 @@ import { getCommunities } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { StaleTime } from '@/blog/lib/react-query';
-import { useSSRObserver, useInitialCommunities } from '@/blog/components/observer-provider';
+import { useSSRObserver, useInitialCommunities, useInitialSubscriptions } from '@/blog/components/observer-provider';
+import { getSubscriptions } from '@transaction/lib/bridge-api';
 
 function CommunityCardSkeleton() {
   return (
@@ -49,6 +50,7 @@ const CommunitiesContent = () => {
   const { t } = useTranslation('common_blog');
   const ssrObserver = useSSRObserver();
   const initialCommunities = useInitialCommunities();
+  const initialSubscriptions = useInitialSubscriptions();
   const { user, isHydrated } = useUserClient();
   const [sort, setSort] = useState('rank');
   const [inputQuery, setInputQuery] = useState<string>('');
@@ -66,6 +68,15 @@ const CommunitiesContent = () => {
     queryFn: async () => await getCommunities(sort, query, observer),
     initialData: useInitialData ? initialCommunities : undefined,
     initialDataUpdatedAt: useInitialData ? Date.now() : undefined,
+    staleTime: StaleTime.LONG
+  });
+
+  const { data: userSubscriptions } = useQuery({
+    queryKey: ['subscriptions', observer],
+    queryFn: () => getSubscriptions(observer),
+    enabled: observer !== DEFAULT_OBSERVER,
+    initialData: initialSubscriptions ?? undefined,
+    initialDataUpdatedAt: initialSubscriptions ? Date.now() : undefined,
     staleTime: StaleTime.LONG
   });
 
@@ -116,7 +127,7 @@ const CommunitiesContent = () => {
       {!communitiesData && isFetching ? (
         <CommunitiesListSkeleton />
       ) : communitiesData && communitiesData.length > 0 ? (
-        <CommunitiesList data={communitiesData} />
+        <CommunitiesList data={communitiesData} userSubscriptions={userSubscriptions} />
       ) : (
         <div className="w-full py-4" data-testid="communities-search-no-results-msg">
           {t('communities.no_results')}

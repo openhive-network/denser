@@ -10,13 +10,21 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import SubscribeCommunity from '../community-profile/subscribe-community';
 import { useEffect, useState } from 'react';
 
-const CommunitiesListItem = ({ community }: { community: Community }) => {
+const CommunitiesListItem = ({
+  community,
+  subscribedFromList
+}: {
+  community: Community;
+  subscribedFromList?: boolean;
+}) => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
-  const [isSubscribed, setIsSubscribed] = useState(() => community.context.subscribed);
+  const [isSubscribed, setIsSubscribed] = useState(
+    () => Boolean(community.context.subscribed) || Boolean(subscribedFromList)
+  );
   useEffect(() => {
-    setIsSubscribed(community.context.subscribed);
-  }, [community.context.subscribed]);
+    setIsSubscribed(Boolean(community.context.subscribed) || Boolean(subscribedFromList));
+  }, [community.context.subscribed, subscribedFromList]);
   return (
     <Card
       className={cn('hover my-4 flex justify-between bg-background text-primary')}

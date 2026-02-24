@@ -18,20 +18,28 @@ const CommunitySimpleDescription = ({
   data,
   subs,
   notificationData,
-  username
+  username,
+  userSubscriptions
 }: {
   data: Community;
   subs: string[][];
   notificationData: IAccountNotification[] | null | undefined;
   username: string;
+  userSubscriptions?: string[][] | null;
 }) => {
   const { t } = useTranslation('common_blog');
-  const [isSubscribed, setIsSubscribed] = useState(() => data.context.subscribed);
+  // Determine subscription from user's subscriptions list (available immediately
+  // after hydration) as a fallback when community context.subscribed is stale
+  // due to SSR fetching with DEFAULT_OBSERVER instead of the logged-in user.
+  const subscribedFromList = userSubscriptions?.some((sub) => sub[0] === data.name) ?? false;
+  const [isSubscribed, setIsSubscribed] = useState(
+    () => Boolean(data.context.subscribed) || subscribedFromList
+  );
   const { user } = useUserClient();
 
   useEffect(() => {
-    setIsSubscribed(data.context.subscribed);
-  }, [data.context.subscribed]);
+    setIsSubscribed(Boolean(data.context.subscribed) || subscribedFromList);
+  }, [data.context.subscribed, subscribedFromList]);
 
   const userRole = data.team.find((e) => e[0] === user.username);
   const userCanModerate = data.team.find((e) => e[0] === user.username);
