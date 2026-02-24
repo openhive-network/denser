@@ -481,10 +481,18 @@ test.describe('Market Page - Order Table Pagination', () => {
 
     // Only test pagination if there are more than 10 trades
     if (apiTradesCount > 10) {
-      // Get first row date before pagination
+      // Get first row data before pagination (use title attribute for exact timestamp,
+      // as relative dates like "a few seconds ago" can be identical across pages)
       const firstRow = marketPage.getTradeHistoryRow(0);
       const dateCell = firstRow.locator('[data-testid="trade-history-row-0-date"]');
-      const firstDateBefore = await dateCell.textContent();
+      const priceCell = firstRow.locator('[data-testid="trade-history-row-0-price"]');
+      const hiveCell = firstRow.locator('[data-testid="trade-history-row-0-hive"]');
+
+      // Use exact timestamp from title attribute + price + amount for unique identification
+      const firstDateTitleBefore = await dateCell.getAttribute('title');
+      const firstPriceBefore = await priceCell.textContent();
+      const firstHiveBefore = await hiveCell.textContent();
+      const rowDataBefore = `${firstDateTitleBefore}|${firstPriceBefore}|${firstHiveBefore}`;
 
       // Navigate to next page
       await marketPage.goToNextTradeHistoryPage();
@@ -492,9 +500,13 @@ test.describe('Market Page - Order Table Pagination', () => {
       // Prev button should now be enabled
       await expect(marketPage.tradeHistoryPaginationPrev).toBeEnabled();
 
-      // First row date should be different
-      const firstDateAfter = await dateCell.textContent();
-      expect(firstDateAfter).not.toBe(firstDateBefore);
+      // First row data should be different after pagination
+      const firstDateTitleAfter = await dateCell.getAttribute('title');
+      const firstPriceAfter = await priceCell.textContent();
+      const firstHiveAfter = await hiveCell.textContent();
+      const rowDataAfter = `${firstDateTitleAfter}|${firstPriceAfter}|${firstHiveAfter}`;
+
+      expect(rowDataAfter).not.toBe(rowDataBefore);
     }
   });
 });
