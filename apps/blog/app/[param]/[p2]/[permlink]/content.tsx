@@ -192,12 +192,14 @@ const PostContent = () => {
       return fullPosts;
     }
   });
+  const communityObserverMatchesSSR = observer === ssrObserver;
+  const useCommunityInitialData = initialCommunity && communityObserverMatchesSSR;
   const { data: communityData } = useQuery({
     queryKey: ['community', category, observer],
     queryFn: () => getCommunity(category, observer),
     enabled: postInCommunity,
-    initialData: initialCommunity ?? undefined,
-    initialDataUpdatedAt: initialCommunity ? Date.now() : undefined,
+    initialData: useCommunityInitialData ? initialCommunity : undefined,
+    initialDataUpdatedAt: useCommunityInitialData ? Date.now() : undefined,
     staleTime: StaleTime.LONG,
     onError: (error) => {
       handleError(error, { method: 'getCommunity', params: { category, observer } });

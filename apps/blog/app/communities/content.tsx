@@ -56,12 +56,16 @@ const CommunitiesContent = () => {
   const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const observer = isHydrated ? clientObserver : ssrObserver;
   // initialData only applies when sort/query match the SSR-prefetched values ('rank'/null)
+  // and the observer hasn't changed after hydration (SSR data has context.subscribed
+  // for the SSR observer, which may differ from the logged-in user's state)
   const isInitialQuery = sort === 'rank' && query === null;
+  const observerMatchesSSR = observer === ssrObserver;
+  const useInitialData = isInitialQuery && initialCommunities && observerMatchesSSR;
   const { data: communitiesData, isFetching } = useQuery({
     queryKey: ['communitiesList', sort, query, observer],
     queryFn: async () => await getCommunities(sort, query, observer),
-    initialData: isInitialQuery && initialCommunities ? initialCommunities : undefined,
-    initialDataUpdatedAt: isInitialQuery && initialCommunities ? Date.now() : undefined,
+    initialData: useInitialData ? initialCommunities : undefined,
+    initialDataUpdatedAt: useInitialData ? Date.now() : undefined,
     staleTime: StaleTime.LONG
   });
 
