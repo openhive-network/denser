@@ -15,7 +15,7 @@ const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
   );
 
   return (
-    <div className="md:sticky md:top-24 md:max-h-[calc(100vh-96px)] md:overflow-y-auto">
+    <div className="md:sticky md:top-24 md:flex md:max-h-[calc(100vh-96px)] md:flex-col">
       <AnimatePresence mode="wait" initial={false}>
         {showSuggestions ? (
           <motion.div
@@ -24,8 +24,9 @@ const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -16 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="flex min-h-0 flex-col"
           >
-            <div className="mb-3 flex items-center justify-between px-4 pt-1">
+            <div className="flex shrink-0 items-center justify-between px-4 pb-3 pt-1">
               <h2 className="font-sanspro text-lg font-semibold">You Might Also Like</h2>
               <button
                 type="button"
@@ -35,7 +36,9 @@ const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <SuggestionsList suggestions={suggestions} />
+            <div className="min-h-0 overflow-y-auto">
+              <SuggestionsList suggestions={suggestions} />
+            </div>
           </motion.div>
         ) : (
           <motion.div

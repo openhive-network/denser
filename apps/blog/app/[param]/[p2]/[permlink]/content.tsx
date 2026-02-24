@@ -900,13 +900,13 @@ const PostContent = () => {
                     </Link>
                   </div>
                 ) : null}
-                <div className="col-span-2 md:hidden">
+                <div className="md:hidden">
                   {!!suggestionData ? (
-                    <div className="flex flex-col overflow-x-auto md:sticky md:top-24 md:max-h-[calc(100vh-96px)]">
-                      <h2 className="mb-4 mt-2 px-4 font-sanspro text-xl font-bold md:mt-0">
+                    <div className="mt-6 border-t border-border pt-4">
+                      <h2 className="mb-3 px-4 font-sanspro text-lg font-bold">
                         You Might Also Like
                       </h2>
-                      <SuggestionsList suggestions={suggestionData} />
+                      <SuggestionsList suggestions={suggestionData} horizontal />
                     </div>
                   ) : null}
                 </div>

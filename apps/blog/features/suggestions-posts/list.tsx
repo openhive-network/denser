@@ -3,22 +3,33 @@ import { useState } from 'react';
 import SuggestionsCard from './card';
 import { Button } from '@ui/components';
 
-// FIXME: This is a temporary fix to avoid the error when suggestions is not an array
-const SuggestionsList = ({ suggestions }: { suggestions: Entry[] }) => {
+interface SuggestionsListProps {
+  suggestions: Entry[];
+  horizontal?: boolean;
+}
+
+const SuggestionsList = ({ suggestions, horizontal }: SuggestionsListProps) => {
   const filteredPosts = suggestions.filter((e) => e.author_reputation >= 50 && !e.stats?.gray);
   const [filteredSuggestions, setFilteredSuggestions] = useState<Entry[]>(
     Array.isArray(suggestions) ? filteredPosts : []
   );
 
-  // Early return if suggestions is not an array
   if (!Array.isArray(suggestions)) {
     return null;
   }
 
   return (
-    <div className="my-4 flex md:flex-col">
+    <div
+      className={
+        horizontal
+          ? 'flex gap-3 overflow-x-auto px-4 pb-3 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+          : 'my-4 flex flex-col'
+      }
+    >
       {filteredSuggestions.length > 0 ? (
-        filteredSuggestions.map((suggestion, i) => <SuggestionsCard entry={suggestion} key={i} />)
+        filteredSuggestions.map((suggestion, i) => (
+          <SuggestionsCard entry={suggestion} key={i} horizontal={horizontal} />
+        ))
       ) : (
         <div className="flex flex-col items-center gap-2 p-4 text-sm">
           <p>Sorry</p>
