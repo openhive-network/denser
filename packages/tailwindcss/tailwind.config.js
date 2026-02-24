@@ -117,7 +117,7 @@ module.exports = {
               fontWeight: '400',
               margin: '0',
               marginBottom: '1rem',
-              paddingLeft: '1.25rem',
+              paddingInlineStart: '1.25rem',
               paddingTop: '0.5rem',
               textIndent: '-3px'
             },
@@ -165,12 +165,12 @@ module.exports = {
             },
             ol: {
               marginBottom: '1rem',
-              marginLeft: '0.75rem',
+              marginInlineStart: '0.75rem',
               marginTop: '0'
             },
             ul: {
               marginBottom: '1rem',
-              marginLeft: '0.75rem',
+              marginInlineStart: '0.75rem',
               marginTop: '0'
             },
             li: {

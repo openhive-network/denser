@@ -189,8 +189,8 @@
   width: 0.7em;
   height: 0.7em;
   top: 0.05em;
-  left: 0.1em;
-  margin-right: 0.1em;
+  margin-inline-start: 0.1em;
+  margin-inline-end: 0.1em;
   opacity: 0.5;
 }
 
@@ -297,6 +297,30 @@
   height: 800px;
   border: none;
   overflow: hidden;
+}
+
+/* Auto-detect RTL text direction per paragraph/block element.
+   unicode-bidi: plaintext makes the browser determine paragraph direction
+   from the content (Unicode BiDi algorithm) instead of inheriting from
+   the document's dir attribute. This ensures Arabic/Urdu/Hebrew paragraphs
+   are right-aligned regardless of the reader's UI language. */
+.prose p,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6,
+.prose li,
+.prose blockquote,
+.prose td,
+.prose th {
+  unicode-bidi: plaintext;
+}
+
+.prose .text-rtl {
+  direction: rtl;
+  text-align: right;
 }
 
 .markdown-view {
