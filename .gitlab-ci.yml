@@ -66,7 +66,7 @@ include:
   ref: f584ea3deeb8bcf990eadb31727ab6eb96fbd1aa
   file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
-  ref: 8042dc34546ef19c71cb73d26684d23202252b66
+  ref: 73cce209c074b639132366fe12d4a60523d62822
   file: 'ci/node-replay.gitlab-ci.yml'
 
 default:
