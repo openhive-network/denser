@@ -593,6 +593,7 @@ const PostContent = () => {
                     mainPost={postData.depth === 0}
                     crossPostBody={crossPostData?.body}
                     mutedPost={mutedPost}
+                    mutedReasons={postData.stats?.muted_reasons}
                     onShowMutedContent={handleShowMutedContent}
                   />
                 )}

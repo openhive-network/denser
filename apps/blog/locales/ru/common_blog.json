@@ -208,7 +208,12 @@
       "load_more": "Load more",
       "reason_muted": "заглушен вами",
       "reason_downvoted": "минусы",
-      "reason_blacklisted": "чёрный список"
+      "reason_blacklisted": "чёрный список",
+      "reason_community_moderation": "заглушен модератором сообщества",
+      "reason_community_type": "не разрешено в этом сообществе",
+      "reason_parent_muted": "родительский контент заглушен",
+      "reason_low_reputation": "низкая репутация",
+      "reason_community_role": "заглушен в сообществе"
     }
   },
   "amount_hover_card": {
@@ -408,6 +413,11 @@
     "body": {
       "copyright": "Этот пост недоступен из-за запроса на авторское право.",
       "content_were_hidden": "Контент был скрыт из-за низких оценок.",
+      "content_hidden_community_moderation": "Контент скрыт модераторами сообщества.",
+      "content_hidden_community_type": "Контент скрыт: автор не может публиковать в этом сообществе.",
+      "content_hidden_parent_muted": "Контент скрыт, так как родительский контент заглушен.",
+      "content_hidden_low_reputation": "Контент скрыт из-за низкой репутации автора.",
+      "content_hidden_community_role": "Контент скрыт: автор заглушен в этом сообществе.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",

@@ -215,7 +215,12 @@
       "load_more": "تحميل المزيد",
       "reason_muted": "مكتوم بواسطتك",
       "reason_downvoted": "تصويت سلبي",
-      "reason_blacklisted": "قائمة سوداء"
+      "reason_blacklisted": "قائمة سوداء",
+      "reason_community_moderation": "مكتوم بواسطة مشرف المجتمع",
+      "reason_community_type": "غير مسموح في هذا المجتمع",
+      "reason_parent_muted": "المحتوى الأصلي مكتوم",
+      "reason_low_reputation": "سمعة منخفضة",
+      "reason_community_role": "مكتوم في المجتمع"
     }
   },
   "alert_dialog_reblog": {
@@ -448,6 +453,11 @@
     "body": {
       "copyright": "هذه المشاركة غير متوفرة بسبب مطالبة بحقوق النشر.",
       "content_were_hidden": "تم إخفاء المحتوى بسبب التصنيفات المنخفضة.",
+      "content_hidden_community_moderation": "تم إخفاء المحتوى بواسطة مشرفي المجتمع.",
+      "content_hidden_community_type": "تم إخفاء المحتوى: المؤلف غير مسموح له بالنشر في هذا المجتمع.",
+      "content_hidden_parent_muted": "تم إخفاء المحتوى لأن المحتوى الأصلي مكتوم.",
+      "content_hidden_low_reputation": "تم إخفاء المحتوى بسبب سمعة المؤلف المنخفضة.",
+      "content_hidden_community_role": "تم إخفاء المحتوى: المؤلف مكتوم في هذا المجتمع.",
       "show": "عرض",
       "Image_not_shown": "الصورة غير معروضة بسبب التصنيفات المنخفضة",
       "leave_this_app": "أنت على وشك مغادرة هذا التطبيق.",

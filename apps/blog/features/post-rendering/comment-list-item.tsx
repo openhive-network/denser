@@ -36,6 +36,7 @@ import { getUserAvatarUrl } from '@hive/ui';
 import { UserPopoverCard } from './user-popover-card';
 import { useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
+import { getCommentMuteReasonKey } from '@/blog/lib/muted-reasons';
 
 interface CommentListProps {
   permissionToMute: Boolean;
@@ -304,13 +305,7 @@ const CommentListItem = memo(function CommentListItem({
                                   : t('cards.comment_card.hide_comment')}
                                 {hiddenComment && (
                                   <span className="ml-1 text-muted-foreground">
-                                    ({isMutedByViewer
-                                      ? t('cards.comment_card.reason_muted')
-                                      : isBlacklisted
-                                        ? t('cards.comment_card.reason_blacklisted')
-                                        : isGrayedByStats
-                                          ? t('cards.comment_card.reason_downvoted')
-                                          : null})
+                                    ({t(getCommentMuteReasonKey(comment.stats?.muted_reasons, isMutedByViewer, isBlacklisted))})
                                   </span>
                                 )}
                               </span>

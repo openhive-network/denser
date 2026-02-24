@@ -208,7 +208,12 @@
       "load_more": "Load more",
       "reason_muted": "masqué par vous",
       "reason_downvoted": "votes négatifs",
-      "reason_blacklisted": "liste noire"
+      "reason_blacklisted": "liste noire",
+      "reason_community_moderation": "masqué par un modérateur",
+      "reason_community_type": "non autorisé dans cette communauté",
+      "reason_parent_muted": "le contenu parent est masqué",
+      "reason_low_reputation": "réputation faible",
+      "reason_community_role": "masqué dans la communauté"
     }
   },
   "amount_hover_card": {
@@ -402,6 +407,11 @@
     "body": {
       "copyright": "Ce post n'est pas disponible en raison d'une réclamation de droits d'auteur.",
       "content_were_hidden": "Le contenu a été caché en raison de mauvaises notes.",
+      "content_hidden_community_moderation": "Contenu masqué par les modérateurs de la communauté.",
+      "content_hidden_community_type": "Contenu masqué : l'auteur n'est pas autorisé à publier dans cette communauté.",
+      "content_hidden_parent_muted": "Contenu masqué car le contenu parent est masqué.",
+      "content_hidden_low_reputation": "Contenu masqué en raison de la faible réputation de l'auteur.",
+      "content_hidden_community_role": "Contenu masqué : l'auteur est masqué dans cette communauté.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",
@@ -577,7 +587,6 @@
     "no_results": "Nothing was found.",
     "error": "There was an error"
   },
-
   "settings_page": {
     "invalid_url": "URL invalide",
     "name_is_too_long": "Le nom est trop long",

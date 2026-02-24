@@ -7,6 +7,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import ImageGallery from './image-gallery';
 import RendererContainer from './rendererContainer';
 import { postClassName } from '@/blog/features/post-editor/lib/utils';
+import { getPostHiddenMessageKey } from '@/blog/lib/muted-reasons';
 
 interface PostBodySectionProps {
   body: string;
@@ -15,6 +16,7 @@ interface PostBodySectionProps {
   mainPost: boolean;
   crossPostBody?: string;
   mutedPost: boolean;
+  mutedReasons?: number[];
   onShowMutedContent: () => void;
 }
 
@@ -29,6 +31,7 @@ const PostBodySection = memo(function PostBodySection({
   mainPost,
   crossPostBody,
   mutedPost,
+  mutedReasons,
   onShowMutedContent
 }: PostBodySectionProps) {
   const { t } = useTranslation('common_blog');
@@ -38,7 +41,7 @@ const PostBodySection = memo(function PostBodySection({
       <>
         <Separator />
         <div className="my-8 flex items-center justify-between text-destructive">
-          {t('post_content.body.content_were_hidden')}
+          {t(getPostHiddenMessageKey(mutedReasons))}
           <Button variant="outlineRed" onClick={onShowMutedContent}>
             {t('post_content.body.show')}
           </Button>

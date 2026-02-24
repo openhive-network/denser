@@ -210,7 +210,12 @@
       "load_more": "Pokaż więcej",
       "reason_muted": "wyciszony przez ciebie",
       "reason_downvoted": "negatywne głosy",
-      "reason_blacklisted": "czarna lista"
+      "reason_blacklisted": "czarna lista",
+      "reason_community_moderation": "wyciszony przez moderatora społeczności",
+      "reason_community_type": "niedozwolone w tej społeczności",
+      "reason_parent_muted": "treść nadrzędna jest wyciszona",
+      "reason_low_reputation": "niska reputacja",
+      "reason_community_role": "wyciszony w społeczności"
     }
   },
   "amount_hover_card": {
@@ -407,6 +412,11 @@
     "body": {
       "copyright": "Ten post jest niedostępny z powodu żądania dotyczącego praw autorskich.",
       "content_were_hidden": "Treść została ukryta z powodu niskich ocen.",
+      "content_hidden_community_moderation": "Treść ukryta przez moderatorów społeczności.",
+      "content_hidden_community_type": "Treść ukryta: autor nie może publikować w tej społeczności.",
+      "content_hidden_parent_muted": "Treść ukryta, ponieważ treść nadrzędna jest wyciszona.",
+      "content_hidden_low_reputation": "Treść ukryta z powodu niskiej reputacji autora.",
+      "content_hidden_community_role": "Treść ukryta: autor jest wyciszony w tej społeczności.",
       "show": "Pokaż",
       "Image_not_shown": "Obrazek zostały ukryty z powodu niskich ocen.",
       "leave_this_app": "Przechodzenia na stronę zewnętrznych.",

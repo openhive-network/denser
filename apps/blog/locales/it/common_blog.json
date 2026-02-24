@@ -208,7 +208,12 @@
       "load_more": "Load more",
       "reason_muted": "silenziato da te",
       "reason_downvoted": "voti negativi",
-      "reason_blacklisted": "lista nera"
+      "reason_blacklisted": "lista nera",
+      "reason_community_moderation": "silenziato dal moderatore della comunità",
+      "reason_community_type": "non consentito in questa comunità",
+      "reason_parent_muted": "il contenuto genitore è silenziato",
+      "reason_low_reputation": "reputazione bassa",
+      "reason_community_role": "silenziato nella comunità"
     }
   },
   "amount_hover_card": {
@@ -402,6 +407,11 @@
     "body": {
       "copyright": "Questo post non è disponibile a causa di una richiesta di copyright.",
       "content_were_hidden": "Il contenuto è stato nascosto a causa di basse valutazioni",
+      "content_hidden_community_moderation": "Contenuto nascosto dai moderatori della comunità.",
+      "content_hidden_community_type": "Contenuto nascosto: l'autore non può pubblicare in questa comunità.",
+      "content_hidden_parent_muted": "Contenuto nascosto perché il contenuto genitore è silenziato.",
+      "content_hidden_low_reputation": "Contenuto nascosto a causa della bassa reputazione dell'autore.",
+      "content_hidden_community_role": "Contenuto nascosto: l'autore è silenziato in questa comunità.",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",

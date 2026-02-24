@@ -34,6 +34,7 @@ export interface EntryStat {
   hide: boolean;
   total_votes: number;
   is_pinned?: boolean;
+  muted_reasons?: number[];
   // added only when using optimistic update, not backend property
   _temporary?: boolean;
 }

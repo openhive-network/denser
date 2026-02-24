@@ -208,7 +208,12 @@
       "load_more": "Load more",
       "reason_muted": "已被你静音",
       "reason_downvoted": "被踩",
-      "reason_blacklisted": "黑名单"
+      "reason_blacklisted": "黑名单",
+      "reason_community_moderation": "被社区管理员静音",
+      "reason_community_type": "不允许在此社区发帖",
+      "reason_parent_muted": "父级内容已被静音",
+      "reason_low_reputation": "声誉低",
+      "reason_community_role": "在社区中被静音"
     }
   },
   "amount_hover_card": {
@@ -402,6 +407,11 @@
     "body": {
       "copyright": "此帖由于版权请求而不可用。",
       "content_were_hidden": "由于评分较低，内容已被隐藏。",
+      "content_hidden_community_moderation": "内容已被社区管理员隐藏。",
+      "content_hidden_community_type": "内容已隐藏：作者不允许在此社区发帖。",
+      "content_hidden_parent_muted": "内容已隐藏，因为父级内容已被静音。",
+      "content_hidden_low_reputation": "内容因作者声誉低而被隐藏。",
+      "content_hidden_community_role": "内容已隐藏：作者在此社区中被静音。",
       "show": "Show",
       "Image_not_shown": "Image not shown due to low ratings",
       "leave_this_app": "You are about to leave this app.",

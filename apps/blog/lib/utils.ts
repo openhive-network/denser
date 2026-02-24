@@ -299,7 +299,8 @@ export const getMutedComments = (list: string[], discussion: Record<string, Entr
         gray: list.includes(discussion[key].author) ? true : (discussion[key].stats?.gray ?? false),
         hide: discussion[key].stats?.hide ?? false,
         total_votes: discussion[key].stats?.total_votes ?? 0,
-        is_pinned: discussion[key].stats?.is_pinned ?? false
+        is_pinned: discussion[key].stats?.is_pinned ?? false,
+        muted_reasons: discussion[key].stats?.muted_reasons
       }
     };
   });
