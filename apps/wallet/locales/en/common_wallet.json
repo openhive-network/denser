@@ -410,6 +410,20 @@
       "last30days": "Last 30 days",
       "last60days": "Last 60 days"
     },
+    "report_operation_types": {
+      "curation_reward_operation": "Curation Rewards",
+      "author_reward_operation": "Author Rewards",
+      "producer_reward_operation": "Producer Rewards",
+      "comment_reward_operation": "Comment Rewards",
+      "comment_benefactor_reward_operation": "Benefactor Rewards",
+      "interest_operation": "Interest",
+      "proposal_pay_operation": "Proposal Pay",
+      "sps_fund_operation": "DHF Funding",
+      "transfer_operation": "Transfers"
+    },
+    "report_operations_found": "{{count}} operations found",
+    "report_no_operations": "No operations found in the selected period",
+    "report_select_operation_types": "Include in report:",
     "current_rewards": "Your current rewards: ",
     "redeem_rewards": "Redeem Rewards (Transfer To Balance)",
     "error": {

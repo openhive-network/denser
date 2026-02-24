@@ -8,20 +8,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@ui/components';
+import { Checkbox } from '@ui/components/checkbox';
 import { useTranslation } from '@/wallet/i18n/client';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { HiveOperation, OpType } from '@hive/common-hiveio-packages/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import dayjs from 'dayjs';
-
+import { useFinancialReportOperations } from '@/wallet/components/hooks/use-financial-report-operations';
+import Loading from '@ui/components/loading';
 interface FinancialReportProps {
   username: string;
-  operationHistoryData?: HiveOperation[]
 }
 
 type FinancialReportPeriod = 'last7days' | 'last14days' | 'last30days' | 'last60days';
 const allReportPeriods: FinancialReportPeriod[] = ['last7days', 'last14days', 'last30days', 'last60days'];
-const opTypes: OpType[] = [
+const allOpTypes: OpType[] = [
   'curation_reward_operation',
   'author_reward_operation',
   'producer_reward_operation',
@@ -51,20 +52,11 @@ const convertHistoryToCSV = (transactions: HiveOperation[]) => {
     'curators_vesting_payout',
     'hbd_payout',
     'hive_payout'
-    // 'payout_must_be_claimed',
-    // 'permlink',
-    // 'vesting_payout',
-    // 'author_rewards',
-    // 'beneficiary_payout_value',
-    // 'curator_payout_value',
-    // 'payout',
-    // 'total_payout_value'
   ];
 
   csv += columns.join(',') + '\r\n';
 
   transactions.forEach((transaction) => {
-    console.log(transaction);
     const formatted = [
       transaction.timestamp,
       transaction.op.type,
@@ -76,14 +68,6 @@ const convertHistoryToCSV = (transactions: HiveOperation[]) => {
       hiveChain?.formatter.format(transaction.op.value.reward_vests) || 0,
       hiveChain?.formatter.format(transaction.op.value.reward_hbd) || 0,
       hiveChain?.formatter.format(transaction.op.value.reward_hive) || 0
-      // 'payout_must_be_claimed',
-      // 'permlink',
-      // 'vesting_payout',
-      // 'author_rewards',
-      // 'beneficiary_payout_value',
-      // 'curator_payout_value',
-      // 'payout',
-      // 'total_payout_value'
     ];
 
     csv += formatted.join(',') + '\r\n';
@@ -92,7 +76,7 @@ const convertHistoryToCSV = (transactions: HiveOperation[]) => {
   return csv;
 };
 
-const downloadCSV = async (csv: string) => {
+const downloadCSV = (csv: string) => {
   const csvData = new Blob([csv], { type: 'text/csv' });
   const csvURL = URL.createObjectURL(csvData);
   const link = document.createElement('a');
@@ -103,20 +87,48 @@ const downloadCSV = async (csv: string) => {
   document.body.removeChild(link);
 };
 
-const generateReport = async (financialPeriod: FinancialReportPeriod, operationHistoryData : HiveOperation[]) => {
-  const days = parseInt(financialPeriod.match(/\d+/)?.[0] ?? "0", 10);
+const filterOperations = (
+  operationHistoryData: HiveOperation[],
+  selectedOpTypes: Set<OpType>,
+  financialPeriod: FinancialReportPeriod
+) => {
+  const days = parseInt(financialPeriod.match(/\d+/)?.[0] ?? '0', 10);
   const now = new Date();
-  const filtered = operationHistoryData.filter(({ op, timestamp }) =>
-    opTypes.includes(op.type as OpType) &&
-    dateDiffInDays(new Date(timestamp), now) <= days
+  return operationHistoryData.filter(
+    ({ op, timestamp }) =>
+      selectedOpTypes.has(op.type as OpType) && dateDiffInDays(new Date(timestamp), now) <= days
   );
-
-  return convertHistoryToCSV(filtered);
 };
 
-const FinancialReport: React.FC<FinancialReportProps> = ({ username, operationHistoryData }) => {
+const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
   const { t } = useTranslation('common_wallet');
   const [financialReportPeriod, setFinancialReportPeriod] = useState<FinancialReportPeriod>('last7days');
+  const [selectedOpTypes, setSelectedOpTypes] = useState<Set<OpType>>(() => new Set(allOpTypes));
+  const { data: operationHistoryData, isLoading } = useFinancialReportOperations(username);
+
+  const matchCount = useMemo(() => {
+    if (!operationHistoryData) return 0;
+    return filterOperations(operationHistoryData, selectedOpTypes, financialReportPeriod).length;
+  }, [operationHistoryData, selectedOpTypes, financialReportPeriod]);
+
+  const handleToggleOpType = (opType: OpType) => {
+    setSelectedOpTypes((prev) => {
+      const next = new Set(prev);
+      if (next.has(opType)) {
+        next.delete(opType);
+      } else {
+        next.add(opType);
+      }
+      return next;
+    });
+  };
+
+  const handleDownload = () => {
+    if (!operationHistoryData) return;
+    const filtered = filterOperations(operationHistoryData, selectedOpTypes, financialReportPeriod);
+    if (filtered.length === 0) return;
+    downloadCSV(convertHistoryToCSV(filtered));
+  };
 
   return (
     <div className="border-t-2 border-zinc-500 p-2 sm:p-4">
@@ -124,7 +136,24 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username, operationHi
       <p className="text-xs leading-relaxed text-primary/70" data-testid="wallet-financial-report-description">
         {t('transfers_page.financial_report_description')}
       </p>
-      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
+
+      <div className="mt-2">
+        <span className="text-xs font-medium">{t('transfers_page.report_select_operation_types')}</span>
+        <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+          {allOpTypes.map((opType) => (
+            <label key={opType} className="flex items-center gap-1.5 text-xs">
+              <Checkbox
+                className="border-zinc-700"
+                checked={selectedOpTypes.has(opType)}
+                onClick={() => handleToggleOpType(opType)}
+              />
+              <span>{t(`transfers_page.report_operation_types.${opType}`)}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative border border-white">
@@ -148,11 +177,22 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username, operationHi
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        {operationHistoryData &&
-          <Button onClick={async () => await downloadCSV(await generateReport(financialReportPeriod, operationHistoryData))}>
-            {t('transfers_page.download_report')}
-          </Button>
-        }
+        {isLoading ? (
+          <Loading loading={true} />
+        ) : (
+          operationHistoryData && (
+            <Button onClick={handleDownload} disabled={selectedOpTypes.size === 0 || matchCount === 0}>
+              {t('transfers_page.download_report')}
+            </Button>
+          )
+        )}
+        {!isLoading && operationHistoryData && (
+          <span className={`text-xs ${matchCount === 0 ? 'text-destructive' : 'text-primary/70'}`}>
+            {matchCount === 0
+              ? t('transfers_page.report_no_operations')
+              : t('transfers_page.report_operations_found', { count: matchCount })}
+          </span>
+        )}
       </div>
     </div>
   );

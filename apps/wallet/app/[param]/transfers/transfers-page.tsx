@@ -108,7 +108,7 @@ export default function TransfersPage({ username }: { username: string }) {
       <div className="w-full max-w-6xl">
         <PendingSavingsWithdrawals username={username} withdrawals={withdrawals} />
         {user.username === username && (
-          <FinancialReport username={username} operationHistoryData={operationHistoryData} />
+          <FinancialReport username={username} />
         )}
         <AccountHistory
           username={username}

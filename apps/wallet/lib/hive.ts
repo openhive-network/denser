@@ -179,6 +179,36 @@ export type ICurationReward = {
   vesting_payout?: string;
 };
 
+const financialReportOperations = [
+  'curation_reward_operation',
+  'author_reward_operation',
+  'producer_reward_operation',
+  'comment_reward_operation',
+  'comment_benefactor_reward_operation',
+  'interest_operation',
+  'proposal_pay_operation',
+  'dhf_funding_operation',
+  'transfer_operation'
+];
+
+export const getFinancialReportOperations = async (
+  username: string,
+  pageSize: number = 500
+): Promise<HiveOperation[]> => {
+  const chain = await getChain();
+  const opTypes = await getOpTypes();
+  const operationTypesIds = financialReportOperations
+    .map((operationName) => opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id)
+    .filter((id) => id != null)
+    .map((id) => id?.toString());
+  const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
+    'account-name': username,
+    'operation-types': operationTypesIds.toString(),
+    'page-size': pageSize
+  });
+  return accountOperations.operations_result;
+};
+
 export const getRestApiAccountRewardsHistory = async (
   username: string,
   op_type: 'author_reward_operation' | 'curation_reward_operation',
