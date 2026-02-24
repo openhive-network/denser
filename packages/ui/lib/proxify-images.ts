@@ -48,8 +48,9 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
   // Note: ecency's /p/ hash format is incompatible with hive.blog's, so we
   // must encode the full URL rather than doing a simple domain replacement
   const realUrl = getLatestUrl(url);
-  // Encode spaces and special characters in URL
-  const encodedUrl = encodeURI(realUrl).replace(/ /g, '%20');
+  // Handle spaces in malformed URLs (blockchain URLs are already percent-encoded;
+  // encodeURI() was double-encoding %XX sequences, breaking URLs with %2F etc.)
+  const encodedUrl = realUrl.replace(/ /g, '%20');
   const pHash = extractPHash(encodedUrl);
 
   // Detect GIF URLs - skip resizing to preserve animation frames
