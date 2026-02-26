@@ -94,8 +94,14 @@ export const getFilter =
 
       case 'cancel_transfer_from_savings_operation':
         if (!filter.others || filter.exlude) return false;
+        break;
       case 'withdraw_vesting_operation':
         if (!filter.others || filter.exlude) return false;
+        break;
+      case 'author_reward_operation':
+        if (!filter.others) return false;
+        if (filter.search && !opValue.author?.includes(filter.search)) return false;
+        break;
     }
     return true;
   };

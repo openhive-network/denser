@@ -156,6 +156,7 @@
     "transfer_to_user": "Transfer {{value}} to ",
     "received_from_user": "Received {{value}} from ",
     "claim_rewards": "Claim rewards: ",
+    "author_reward": "Author reward: {{hbd}} and {{hive}} and {{hp}}",
     "and": " and ",
     "account_history_description": "Tenga cuidado con los enlaces de spam y phishing en los memos de transferencia. No abra enlaces de usuarios en los que no confíe. No proporcione sus claves privadas a sitios web de terceros. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
     "estimated_author_rewards_last_week": "Estimated author rewards last week:",

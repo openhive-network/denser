@@ -158,6 +158,7 @@
     "transfer_to_user": "Transfer {{value}} to ",
     "received_from_user": "Received {{value}} from ",
     "claim_rewards": "Claim rewards: ",
+    "author_reward": "Author reward: {{hbd}} and {{hive}} and {{hp}}",
     "and": " and ",
     "estimated_author_rewards_last_week": "Estimated author rewards last week:",
     "author_rewards_history": "Author Rewards History",

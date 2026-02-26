@@ -123,6 +123,23 @@ function formatOperationDescription(
         </span>
       );
     }
+    case 'author_reward_operation': {
+      const formattedHp = convertToFormattedHivePower(
+        operation!.op!.value!.vesting_payout,
+        dynamicData.total_vesting_fund_hive,
+        dynamicData.total_vesting_shares,
+        hiveChain
+      );
+      return (
+        <span>
+          {t('profile.author_reward', {
+            hbd: opValue.hbd_payout,
+            hive: opValue.hive_payout,
+            hp: formattedHp
+          })}
+        </span>
+      );
+    }
     default:
       return <div>error</div>;
   }

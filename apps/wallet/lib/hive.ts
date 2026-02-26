@@ -121,7 +121,8 @@ const walletOperations = [
   'escrow_release_operation',
   'fill_convert_request_operation',
   'fill_order_operation',
-  'claim_reward_balance_operation'
+  'claim_reward_balance_operation',
+  'author_reward_operation'
 ];
 
 export const getAccountOperations = async (

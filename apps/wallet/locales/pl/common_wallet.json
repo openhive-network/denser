@@ -185,6 +185,7 @@
     "transfer_to_user": "Przelew {{value}} do ",
     "received_from_user": "Otrzymał {{value}} od ",
     "claim_rewards": "Zdobył nagrody: ",
+    "author_reward": "Nagroda autorska: {{hbd}} i {{hive}} i {{hp}}",
     "and": " i ",
     "estimated_author_rewards_last_week": "Szacowane nagrody autorskie w zeszłym tygodniu:",
     "author_rewards_history": "Historia nagród autora",
