@@ -355,6 +355,69 @@ describe('DefaultRender', () => {
         expect(rendered).to.include('ESPAÑOL');
     });
 
+    it('should handle nested text-justify inside pull-right (real-world bilingual post)', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        // Real-world pattern: text-justify wraps everything, pull-right has nested text-justify
+        // This is the exact structure from @josehany/the-waiting-is-over post
+        const raw = `<div class="text-justify">
+<div class="pull-left">
+
+My day today was strange because it seemed like it was going to start badly.
+
+</div>
+
+<div class="pull-right">
+<div class="text-justify">
+
+Mi día de hoy fue extraño porque fue como que quiso comenzar mal.
+
+
+</div></div>
+
+<hr>`;
+        const rendered = renderer.render(raw).trim();
+
+        // Should have pull-columns wrapper
+        expect(rendered).to.include('pull-columns');
+
+        // Both columns should have their content
+        expect(rendered).to.include('My day today was strange');
+        expect(rendered).to.include('Mi día de hoy fue extraño');
+
+        // The nested text-justify should be preserved inside pull-right
+        expect(rendered).to.include('<div class="text-justify">');
+
+        // Verify proper structure: pull-left and pull-right should be siblings inside pull-columns
+        const pullColumnsStart = rendered.indexOf('pull-columns');
+        const pullLeftStart = rendered.indexOf('pull-left', pullColumnsStart);
+        const pullRightStart = rendered.indexOf('pull-right', pullColumnsStart);
+
+        expect(pullLeftStart).to.be.greaterThan(pullColumnsStart);
+        expect(pullRightStart).to.be.greaterThan(pullLeftStart);
+
+        // Verify HTML is balanced - count div opens and closes
+        const divOpens = (rendered.match(/<div/g) || []).length;
+        const divCloses = (rendered.match(/<\/div>/g) || []).length;
+        expect(divOpens).to.equal(divCloses);
+    });
+
+    it('should preserve nested divs content in pull columns', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        // Test with multiple nested divs
+        const raw = `<div class="pull-left"><div class="inner"><p>Left inner</p></div></div>
+<div class="pull-right"><div class="nested"><div class="deep"><p>Right deep</p></div></div></div>`;
+        const rendered = renderer.render(raw).trim();
+
+        expect(rendered).to.include('pull-columns');
+        expect(rendered).to.include('Left inner');
+        expect(rendered).to.include('Right deep');
+
+        // Verify HTML is balanced
+        const divOpens = (rendered.match(/<div/g) || []).length;
+        const divCloses = (rendered.match(/<\/div>/g) || []).length;
+        expect(divOpens).to.equal(divCloses);
+    });
+
     // TODO: Fix spoiler tag rendering - see #801
     it.skip('Renders spoiler tags correctly', () => {
         const renderer = new DefaultRenderer(defaultOptions);

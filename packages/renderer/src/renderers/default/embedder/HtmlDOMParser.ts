@@ -717,6 +717,61 @@ function preprocessCenter(html: string): string {
 }
 
 /**
+ * Extracts content from a div tag, properly handling nested divs.
+ * Returns the content between the opening tag and its matching closing tag.
+ *
+ * @param html - The HTML string starting with a div tag
+ * @returns Object with content and the full length consumed, or null if no match
+ */
+function extractDivContent(html: string): {content: string; length: number} | null {
+    // Must start with <div
+    if (!html.match(/^<div[\s>]/i)) {
+        return null;
+    }
+
+    // Find end of opening tag
+    const openTagEnd = html.indexOf('>');
+    if (openTagEnd === -1) {
+        return null;
+    }
+
+    let depth = 1;
+    let pos = openTagEnd + 1;
+    const contentStart = pos;
+
+    while (depth > 0 && pos < html.length) {
+        // Look for next div tag (opening or closing)
+        const nextOpen = html.indexOf('<div', pos);
+        const nextClose = html.indexOf('</div>', pos);
+
+        if (nextClose === -1) {
+            // No closing tag found - malformed HTML
+            return null;
+        }
+
+        if (nextOpen !== -1 && nextOpen < nextClose) {
+            // Found opening tag first - check if it's actually a div tag (not divider, etc.)
+            const afterOpen = html.substring(nextOpen + 4, nextOpen + 5);
+            if (afterOpen === '' || afterOpen === '>' || afterOpen === ' ' || afterOpen === '\n' || afterOpen === '\t') {
+                depth++;
+            }
+            pos = nextOpen + 4;
+        } else {
+            // Found closing tag first
+            depth--;
+            if (depth === 0) {
+                const content = html.substring(contentStart, nextClose);
+                const length = nextClose + 6; // includes </div>
+                return {content, length};
+            }
+            pos = nextClose + 6;
+        }
+    }
+
+    return null;
+}
+
+/**
  * Preprocesses HTML to handle pull-left/pull-right column pairs.
  *
  * Many Hive posts use adjacent pull-left and pull-right divs for bilingual content,
@@ -724,6 +779,7 @@ function preprocessCenter(html: string): string {
  * 1. Fixes unquoted class attributes on div tags
  * 2. Detects adjacent pull-left + pull-right pairs and wraps them in a flex container
  * 3. Handles optional text-justify wrapper divs and orphaned closing tags
+ * 4. Properly handles nested divs inside pull-left/pull-right (e.g., text-justify)
  *
  * @param html - The HTML string to preprocess
  * @returns The preprocessed HTML with properly structured column pairs
@@ -732,21 +788,90 @@ function preprocessPullColumns(html: string): string {
     // Step 1: Fix unquoted div class attributes: <div class=text-justify> → <div class="text-justify">
     html = html.replace(/<div\s+class=([^\s>"'][^\s>]*)/gi, '<div class="$1"');
 
-    // Step 2: Detect pull-left + pull-right pairs (with optional text-justify wrappers)
-    // and wrap in a <div class="pull-columns"> flex container.
-    // Handles: text-justify wrappers, orphaned </div>, empty <p> between sections.
-    html = html.replace(
-        /(?:<div\s+class="text-justify"\s*>\s*)?<div\s+class="pull-left"\s*>([\s\S]*?)<\/div>(?:\s*<\/div>)?\s*(?:<p>\s*<\/p>\s*)*(?:<div\s+class="text-justify"\s*>\s*)?<div\s+class="pull-right"\s*>([\s\S]*?)<\/div>(?:\s*<\/div>)?/gi,
-        '<div class="pull-columns"><div class="pull-left">$1</div><div class="pull-right">$2</div></div>'
-    );
+    // Step 2: Process pull-left + pull-right pairs using proper div matching
+    // This handles nested divs correctly (e.g., text-justify inside pull-right)
+    html = processPullColumnPairs(html, 'pull-left', 'pull-right');
 
     // Also handle reverse order (pull-right first, then pull-left)
-    html = html.replace(
-        /(?:<div\s+class="text-justify"\s*>\s*)?<div\s+class="pull-right"\s*>([\s\S]*?)<\/div>(?:\s*<\/div>)?\s*(?:<p>\s*<\/p>\s*)*(?:<div\s+class="text-justify"\s*>\s*)?<div\s+class="pull-left"\s*>([\s\S]*?)<\/div>(?:\s*<\/div>)?/gi,
-        '<div class="pull-columns"><div class="pull-right">$1</div><div class="pull-left">$2</div></div>'
-    );
+    html = processPullColumnPairs(html, 'pull-right', 'pull-left');
 
     return html;
+}
+
+/**
+ * Processes pull column pairs in the HTML, wrapping them in a flex container.
+ * Handles nested divs properly by counting depth.
+ *
+ * @param html - The HTML string to process
+ * @param firstClass - The class of the first column ('pull-left' or 'pull-right')
+ * @param secondClass - The class of the second column
+ * @returns Processed HTML with column pairs wrapped
+ */
+function processPullColumnPairs(html: string, firstClass: string, secondClass: string): string {
+    // Pattern to find the start of a potential column pair
+    // Handles optional text-justify wrapper before pull-left/pull-right
+    const firstPattern = new RegExp(
+        `(?:<div\\s+class="text-justify"\\s*>\\s*)?<div\\s+class="${firstClass}"\\s*>`,
+        'gi'
+    );
+
+    let result = '';
+    let lastIndex = 0;
+    let match;
+
+    while ((match = firstPattern.exec(html)) !== null) {
+        const matchStart = match.index;
+
+        // Find where the pull-left/pull-right div actually starts
+        const pullDivStart = html.indexOf(`<div class="${firstClass}"`, matchStart);
+        if (pullDivStart === -1) continue;
+
+        // Extract the first column content
+        const firstColHtml = html.substring(pullDivStart);
+        const firstCol = extractDivContent(firstColHtml);
+        if (!firstCol) continue;
+
+        // Look for the second column after the first one
+        const afterFirstCol = pullDivStart + firstCol.length;
+        const remainingHtml = html.substring(afterFirstCol);
+
+        // Pattern for second column: optional whitespace, optional empty <p>, optional text-justify wrapper
+        const secondPattern = new RegExp(
+            `^\\s*(?:</div>)?\\s*(?:<p>\\s*</p>\\s*)*(?:<div\\s+class="text-justify"\\s*>\\s*)?<div\\s+class="${secondClass}"\\s*>`,
+            'i'
+        );
+
+        const secondMatch = remainingHtml.match(secondPattern);
+        if (!secondMatch) continue;
+
+        // Find where the second pull div actually starts
+        const secondPullDivOffset = remainingHtml.indexOf(`<div class="${secondClass}"`);
+        if (secondPullDivOffset === -1) continue;
+
+        const secondColHtml = remainingHtml.substring(secondPullDivOffset);
+        const secondCol = extractDivContent(secondColHtml);
+        if (!secondCol) continue;
+
+        // Calculate end position (including any trailing </div> from text-justify wrapper)
+        let endPos = afterFirstCol + secondPullDivOffset + secondCol.length;
+        const afterSecondCol = html.substring(endPos);
+
+        // Check for trailing </div> (from text-justify wrapper)
+        const trailingDivMatch = afterSecondCol.match(/^\s*<\/div>/);
+        if (trailingDivMatch) {
+            endPos += trailingDivMatch[0].length;
+        }
+
+        // Build the replacement
+        result += html.substring(lastIndex, matchStart);
+        result += `<div class="pull-columns"><div class="${firstClass}">${firstCol.content}</div><div class="${secondClass}">${secondCol.content}</div></div>`;
+
+        lastIndex = endPos;
+        firstPattern.lastIndex = endPos;
+    }
+
+    result += html.substring(lastIndex);
+    return result;
 }
 
 /**
