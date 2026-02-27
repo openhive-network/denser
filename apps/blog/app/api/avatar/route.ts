@@ -26,12 +26,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // Build the image hoster URL
     let imageUrl: string;
     if (size && ['small', 'medium', 'large'].includes(size)) {
-      imageUrl = `${configuredImagesEndpoint}u/${username}/avatar/${size}`;
+      imageUrl = `${configuredImagesEndpoint}/u/${username}/avatar/${size}`;
     } else if (width && height) {
-      const baseUrl = `${configuredImagesEndpoint}u/${username}/avatar`;
+      const baseUrl = `${configuredImagesEndpoint}/u/${username}/avatar`;
       imageUrl = baseUrl;
     } else {
-      imageUrl = `${configuredImagesEndpoint}u/${username}/avatar/small`;
+      imageUrl = `${configuredImagesEndpoint}/u/${username}/avatar/small`;
     }
 
     // Fetch the image from the image hoster and stream it to the client

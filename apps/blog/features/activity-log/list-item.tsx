@@ -100,7 +100,7 @@ const NotificationListItem = ({
         <Link href={`/@${avatarUsername}`} data-testid="notification-account-icon-link" className="shrink-0">
           <Avatar className="h-10 w-10">
             <AvatarImage
-              src={`${imageHosterUrl}u/${avatarUsername}/avatar/small`}
+              src={`${imageHosterUrl}/u/${avatarUsername}/avatar/small`}
               alt={`${avatarUsername} profile picture`}
             />
             <AvatarFallback className="bg-transparent">

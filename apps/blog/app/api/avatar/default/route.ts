@@ -7,7 +7,7 @@ import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
  */
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
-    const defaultUrl = `${configuredImagesEndpoint}DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4`;
+    const defaultUrl = `${configuredImagesEndpoint}/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4`;
 
     // Fetch the image from the image hoster and stream it to the client
     const response = await fetch(defaultUrl, {

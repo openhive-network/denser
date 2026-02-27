@@ -349,7 +349,7 @@ export const handleUserInfo: NextApiHandler = async (req, res) => {
     ? hiveProfile.picture.startsWith(configuredImagesEndpoint)
       ? hiveProfile.picture // Already on images.hive.blog
       : proxifyImageSrc(hiveProfile.picture) // External URL - proxify it
-    : `${configuredImagesEndpoint}${DEFAULT_AVATAR_HASH}`; // Default avatar
+    : `${configuredImagesEndpoint}/${DEFAULT_AVATAR_HASH}`; // Default avatar
 
   // Build userinfo response
   // Standard OIDC claims from Hive blockchain profile

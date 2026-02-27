@@ -34,13 +34,13 @@ export default async function handler(
     // Build the image hoster URL
     let imageUrl: string;
     if (size && typeof size === 'string' && ['small', 'medium', 'large'].includes(size)) {
-      imageUrl = `${configuredImagesEndpoint}u/${username}/avatar/${size}`;
+      imageUrl = `${configuredImagesEndpoint}/u/${username}/avatar/${size}`;
     } else if (width && height) {
       // Use base URL for dimensions - image hoster will handle sizing
-      imageUrl = `${configuredImagesEndpoint}u/${username}/avatar`;
+      imageUrl = `${configuredImagesEndpoint}/u/${username}/avatar`;
     } else {
       // Default to small if no size specified
-      imageUrl = `${configuredImagesEndpoint}u/${username}/avatar/small`;
+      imageUrl = `${configuredImagesEndpoint}/u/${username}/avatar/small`;
     }
 
     // Fetch the image from the image hoster and stream it to the client

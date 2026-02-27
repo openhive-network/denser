@@ -161,7 +161,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
 
     const imageOwner = signer.authorityUsername || signer.username;
 
-    const postUrl = `${configuredImagesEndpoint}${imageOwner}/${sig}`;
+    const postUrl = `${configuredImagesEndpoint}/${imageOwner}/${sig}`;
 
     const response = await fetch(postUrl, { method: 'POST', body: formData });
     const resJSON = await response.json();

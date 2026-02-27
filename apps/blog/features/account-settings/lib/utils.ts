@@ -100,7 +100,7 @@ export const uploadImg = async (file: File, username: string, signer: Signer): P
       password: ''
     });
 
-    const postUrl = `${configuredImagesEndpoint}${username}/${sig}`;
+    const postUrl = `${configuredImagesEndpoint}/${username}/${sig}`;
 
     const response = await fetch(postUrl, { method: 'POST', body: formData });
     const resJSON = await response.json();

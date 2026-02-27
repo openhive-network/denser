@@ -8,7 +8,7 @@ import { configuredSiteDomain, configuredImagesEndpoint } from '@hive/ui/config/
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 const renderDefaultOptions = {
-  baseUrl: `${configuredSiteDomain}/`,
+  baseUrl: configuredSiteDomain,
   breaks: false,
   skipSanitization: false,
   allowInsecureScriptTags: false,
