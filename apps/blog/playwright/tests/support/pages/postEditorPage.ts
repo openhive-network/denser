@@ -38,6 +38,9 @@ export class PostEditorPage {
     readonly getCleanPostButton: Locator;
     readonly getTitleErrorMessage: Locator;
     readonly getBeneficiariesOptionsInfo: Locator;
+    readonly getSyncScrollToggle: Locator;
+    readonly getSyncScrollContainer: Locator;
+    readonly getEditorScroller: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -77,6 +80,9 @@ export class PostEditorPage {
         this.getCleanPostButton = page.locator('[data-testid="clean-post-button"]');
         this.getTitleErrorMessage = page.locator('[data-testid="form-container"] p').filter( {hasText: 'String must contain at least'});
         this.getBeneficiariesOptionsInfo = page.locator('span:text("Beneficiaries:")');
+        this.getSyncScrollToggle = page.getByTestId('sync-scroll-toggle');
+        this.getSyncScrollContainer = page.getByTestId('sync-scroll-container');
+        this.getEditorScroller = this.getEditorContent.locator('.cm-scroller');
     }
 
     async validateDefaultPostEditorIsLoaded() {
