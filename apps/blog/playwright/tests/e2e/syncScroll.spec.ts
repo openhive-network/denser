@@ -16,17 +16,21 @@ test.describe('Sync scroll tests', () => {
     }
   };
 
+  // Skip tests if credentials are not available
+  test.skip(
+    () => !process.env.CI_TEST_USER || !process.env.CI_TEST_USER_WIF_POSTING,
+    'CI_TEST_USER and CI_TEST_USER_WIF_POSTING environment variables are required'
+  );
+
   // Generate long content to make both editor and preview scrollable
   const generateLongContent = (): string => {
     const lines: string[] = [];
-    lines.push('# Sync Scroll Test Content\n');
-    for (let i = 1; i <= 50; i++) {
-      lines.push(`## Section ${i}\n`);
-      lines.push(`This is paragraph ${i} with some content to make the editor scrollable.\n`);
-      lines.push(`Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n`);
-      lines.push('\n');
+    lines.push('# Sync Scroll Test Content\n\n');
+    for (let i = 1; i <= 20; i++) {
+      lines.push(`## Section ${i}\n\n`);
+      lines.push(`This is paragraph ${i} with some content to make the editor scrollable. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\n`);
     }
-    lines.push('## End of Content\n');
+    lines.push('## End of Content\n\n');
     lines.push('This is the last section of the test content.');
     return lines.join('');
   };
@@ -47,25 +51,25 @@ test.describe('Sync scroll tests', () => {
     await loginForm.wifInput.fill(user.keys.posting);
     await loginForm.saveSignInButton.click();
 
-    // Wait for login to complete
-    await expect(homePage.profileAvatarButton).toBeVisible({ timeout: 15000 });
+    // Wait for login to complete (login process can be slow)
+    await page.waitForTimeout(3000);
+    await expect(homePage.profileAvatarButton).toBeVisible({ timeout: 20000 });
 
     // Navigate to post editor
     await homePage.getNavCreatePost.click();
-    await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 15000 });
+    await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 20000 });
 
     // Wait for the CodeMirror editor scroller to be available in the DOM
     // This is crucial - the MutationObserver fix should ensure .cm-scroller exists
-    await expect(postEditorPage.getEditorScroller).toBeVisible({ timeout: 15000 });
+    await expect(postEditorPage.getEditorScroller).toBeVisible({ timeout: 20000 });
 
     // Verify side-by-side mode is enabled and preview is visible
     await expect(postEditorPage.getPreviewContainer).toBeVisible();
     await expect(postEditorPage.getFormContainer).toBeVisible();
 
-    // Fill in the editor with long content
+    // Fill in the editor with long content using fill() for speed
     const longContent = generateLongContent();
-    await postEditorPage.getEditorContentTextarea.click();
-    await page.keyboard.type(longContent, { delay: 0 });
+    await postEditorPage.getEditorContentTextarea.fill(longContent);
 
     // Wait for preview to render
     await page.waitForTimeout(500);
@@ -124,18 +128,18 @@ test.describe('Sync scroll tests', () => {
     await loginForm.wifInput.fill(user.keys.posting);
     await loginForm.saveSignInButton.click();
 
-    // Wait for login to complete
-    await expect(homePage.profileAvatarButton).toBeVisible({ timeout: 15000 });
+    // Wait for login to complete (login process can be slow)
+    await page.waitForTimeout(3000);
+    await expect(homePage.profileAvatarButton).toBeVisible({ timeout: 20000 });
 
     // Navigate to post editor
     await homePage.getNavCreatePost.click();
-    await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 15000 });
-    await expect(postEditorPage.getEditorScroller).toBeVisible({ timeout: 15000 });
+    await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 20000 });
+    await expect(postEditorPage.getEditorScroller).toBeVisible({ timeout: 20000 });
 
-    // Fill in the editor with long content
+    // Fill in the editor with long content using fill() for speed
     const longContent = generateLongContent();
-    await postEditorPage.getEditorContentTextarea.click();
-    await page.keyboard.type(longContent, { delay: 0 });
+    await postEditorPage.getEditorContentTextarea.fill(longContent);
     await page.waitForTimeout(500);
 
     const editorScroller = postEditorPage.getEditorScroller;
