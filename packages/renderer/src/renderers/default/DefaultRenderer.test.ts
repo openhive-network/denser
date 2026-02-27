@@ -342,7 +342,8 @@ describe('DefaultRender', () => {
         const renderer = new DefaultRenderer(defaultOptions);
         // Real-world pattern from bilingual Hive posts: unquoted attributes,
         // text-justify wrappers, **<center>Title</center>** markdown headers
-        const raw = '<div class=text-justify>\n<div class="pull-left">\n\n**<center>INGLÉS</center>**\n\nHello fellow travelers.\n\n</div>\n\n<div class=text-justify>\n<div class="pull-right">\n\n**<center>ESPAÑOL</center>**\n\nHola amigos viajeros.\n</div>';
+        const raw =
+            '<div class=text-justify>\n<div class="pull-left">\n\n**<center>INGLÉS</center>**\n\nHello fellow travelers.\n\n</div>\n\n<div class=text-justify>\n<div class="pull-right">\n\n**<center>ESPAÑOL</center>**\n\nHola amigos viajeros.\n</div>';
         const rendered = renderer.render(raw).trim();
         expect(rendered).to.include('pull-columns');
         // pull-right must NOT be nested inside pull-left — they must be siblings

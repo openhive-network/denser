@@ -716,6 +716,28 @@ function preprocessCenter(html: string): string {
     return html;
 }
 
+/** Result of extracting content from a div tag */
+interface DivContentResult {
+    /** The inner content of the div (between opening and closing tags) */
+    content: string;
+    /** Total length consumed including the opening and closing tags */
+    length: number;
+}
+
+// Constants for div tag parsing
+const DIV_OPEN_TAG = '<div';
+const DIV_CLOSE_TAG = '</div>';
+const DIV_OPEN_TAG_LENGTH = DIV_OPEN_TAG.length;
+const DIV_CLOSE_TAG_LENGTH = DIV_CLOSE_TAG.length;
+
+/**
+ * Checks if a character indicates the end of a tag name.
+ * Valid div tags end with '>' or whitespace, not alphanumeric (e.g., <divider> is not <div>).
+ */
+function isTagNameTerminator(char: string): boolean {
+    return char === '' || char === '>' || /\s/.test(char);
+}
+
 /**
  * Extracts content from a div tag, properly handling nested divs.
  * Returns the content between the opening tag and its matching closing tag.
@@ -723,13 +745,11 @@ function preprocessCenter(html: string): string {
  * @param html - The HTML string starting with a div tag
  * @returns Object with content and the full length consumed, or null if no match
  */
-function extractDivContent(html: string): {content: string; length: number} | null {
-    // Must start with <div
+function extractDivContent(html: string): DivContentResult | null {
     if (!html.match(/^<div[\s>]/i)) {
         return null;
     }
 
-    // Find end of opening tag
     const openTagEnd = html.indexOf('>');
     if (openTagEnd === -1) {
         return null;
@@ -740,31 +760,29 @@ function extractDivContent(html: string): {content: string; length: number} | nu
     const contentStart = pos;
 
     while (depth > 0 && pos < html.length) {
-        // Look for next div tag (opening or closing)
-        const nextOpen = html.indexOf('<div', pos);
-        const nextClose = html.indexOf('</div>', pos);
+        const nextOpen = html.indexOf(DIV_OPEN_TAG, pos);
+        const nextClose = html.indexOf(DIV_CLOSE_TAG, pos);
 
         if (nextClose === -1) {
-            // No closing tag found - malformed HTML
-            return null;
+            return null; // Malformed HTML - no closing tag
         }
 
         if (nextOpen !== -1 && nextOpen < nextClose) {
-            // Found opening tag first - check if it's actually a div tag (not divider, etc.)
-            const afterOpen = html.substring(nextOpen + 4, nextOpen + 5);
-            if (afterOpen === '' || afterOpen === '>' || afterOpen === ' ' || afterOpen === '\n' || afterOpen === '\t') {
+            // Check if it's actually a div tag (not <divider>, <division>, etc.)
+            const charAfterTag = html.charAt(nextOpen + DIV_OPEN_TAG_LENGTH);
+            if (isTagNameTerminator(charAfterTag)) {
                 depth++;
             }
-            pos = nextOpen + 4;
+            pos = nextOpen + DIV_OPEN_TAG_LENGTH;
         } else {
-            // Found closing tag first
             depth--;
             if (depth === 0) {
-                const content = html.substring(contentStart, nextClose);
-                const length = nextClose + 6; // includes </div>
-                return {content, length};
+                return {
+                    content: html.substring(contentStart, nextClose),
+                    length: nextClose + DIV_CLOSE_TAG_LENGTH
+                };
             }
-            pos = nextClose + 6;
+            pos = nextClose + DIV_CLOSE_TAG_LENGTH;
         }
     }
 
@@ -798,6 +816,94 @@ function preprocessPullColumns(html: string): string {
     return html;
 }
 
+/** Result of finding a column pair in HTML */
+interface ColumnPairMatch {
+    /** Start position of the match in the original HTML */
+    matchStart: number;
+    /** End position (exclusive) of the match in the original HTML */
+    endPos: number;
+    /** Content of the first column */
+    firstContent: string;
+    /** Content of the second column */
+    secondContent: string;
+}
+
+/**
+ * Creates a regex pattern to find the start of a pull column.
+ * Handles optional text-justify wrapper before the pull div.
+ */
+function createColumnStartPattern(className: string): RegExp {
+    return new RegExp(`(?:<div\\s+class="text-justify"\\s*>\\s*)?<div\\s+class="${className}"\\s*>`, 'gi');
+}
+
+/**
+ * Creates a regex pattern to find the second column after the first.
+ * Handles optional whitespace, empty paragraphs, and text-justify wrappers.
+ */
+function createSecondColumnPattern(className: string): RegExp {
+    return new RegExp(`^\\s*(?:</div>)?\\s*(?:<p>\\s*</p>\\s*)*(?:<div\\s+class="text-justify"\\s*>\\s*)?<div\\s+class="${className}"\\s*>`, 'i');
+}
+
+/**
+ * Attempts to find a column pair starting at the given match position.
+ * @returns The column pair match or null if no valid pair found
+ */
+function findColumnPair(html: string, matchStart: number, firstClass: string, secondClass: string): ColumnPairMatch | null {
+    // Find where the first pull div actually starts
+    const pullDivStart = html.indexOf(`<div class="${firstClass}"`, matchStart);
+    if (pullDivStart === -1) {
+        return null;
+    }
+
+    // Extract the first column content
+    const firstCol = extractDivContent(html.substring(pullDivStart));
+    if (!firstCol) {
+        return null;
+    }
+
+    // Look for the second column after the first one
+    const afterFirstCol = pullDivStart + firstCol.length;
+    const remainingHtml = html.substring(afterFirstCol);
+
+    // Check if second column follows
+    const secondPattern = createSecondColumnPattern(secondClass);
+    if (!secondPattern.test(remainingHtml)) {
+        return null;
+    }
+
+    // Find where the second pull div actually starts
+    const secondPullDivOffset = remainingHtml.indexOf(`<div class="${secondClass}"`);
+    if (secondPullDivOffset === -1) {
+        return null;
+    }
+
+    const secondCol = extractDivContent(remainingHtml.substring(secondPullDivOffset));
+    if (!secondCol) {
+        return null;
+    }
+
+    // Calculate end position (including any trailing </div> from text-justify wrapper)
+    let endPos = afterFirstCol + secondPullDivOffset + secondCol.length;
+    const trailingDivMatch = html.substring(endPos).match(/^\s*<\/div>/);
+    if (trailingDivMatch) {
+        endPos += trailingDivMatch[0].length;
+    }
+
+    return {
+        matchStart,
+        endPos,
+        firstContent: firstCol.content,
+        secondContent: secondCol.content
+    };
+}
+
+/**
+ * Builds the pull-columns wrapper HTML for a column pair.
+ */
+function buildPullColumnsHtml(firstClass: string, secondClass: string, firstContent: string, secondContent: string): string {
+    return `<div class="pull-columns"><div class="${firstClass}">${firstContent}</div><div class="${secondClass}">${secondContent}</div></div>`;
+}
+
 /**
  * Processes pull column pairs in the HTML, wrapping them in a flex container.
  * Handles nested divs properly by counting depth.
@@ -808,70 +914,32 @@ function preprocessPullColumns(html: string): string {
  * @returns Processed HTML with column pairs wrapped
  */
 function processPullColumnPairs(html: string, firstClass: string, secondClass: string): string {
-    // Pattern to find the start of a potential column pair
-    // Handles optional text-justify wrapper before pull-left/pull-right
-    const firstPattern = new RegExp(
-        `(?:<div\\s+class="text-justify"\\s*>\\s*)?<div\\s+class="${firstClass}"\\s*>`,
-        'gi'
-    );
-
-    let result = '';
+    const firstPattern = createColumnStartPattern(firstClass);
+    const parts: string[] = [];
     let lastIndex = 0;
     let match;
 
     while ((match = firstPattern.exec(html)) !== null) {
-        const matchStart = match.index;
+        const columnPair = findColumnPair(html, match.index, firstClass, secondClass);
 
-        // Find where the pull-left/pull-right div actually starts
-        const pullDivStart = html.indexOf(`<div class="${firstClass}"`, matchStart);
-        if (pullDivStart === -1) continue;
-
-        // Extract the first column content
-        const firstColHtml = html.substring(pullDivStart);
-        const firstCol = extractDivContent(firstColHtml);
-        if (!firstCol) continue;
-
-        // Look for the second column after the first one
-        const afterFirstCol = pullDivStart + firstCol.length;
-        const remainingHtml = html.substring(afterFirstCol);
-
-        // Pattern for second column: optional whitespace, optional empty <p>, optional text-justify wrapper
-        const secondPattern = new RegExp(
-            `^\\s*(?:</div>)?\\s*(?:<p>\\s*</p>\\s*)*(?:<div\\s+class="text-justify"\\s*>\\s*)?<div\\s+class="${secondClass}"\\s*>`,
-            'i'
-        );
-
-        const secondMatch = remainingHtml.match(secondPattern);
-        if (!secondMatch) continue;
-
-        // Find where the second pull div actually starts
-        const secondPullDivOffset = remainingHtml.indexOf(`<div class="${secondClass}"`);
-        if (secondPullDivOffset === -1) continue;
-
-        const secondColHtml = remainingHtml.substring(secondPullDivOffset);
-        const secondCol = extractDivContent(secondColHtml);
-        if (!secondCol) continue;
-
-        // Calculate end position (including any trailing </div> from text-justify wrapper)
-        let endPos = afterFirstCol + secondPullDivOffset + secondCol.length;
-        const afterSecondCol = html.substring(endPos);
-
-        // Check for trailing </div> (from text-justify wrapper)
-        const trailingDivMatch = afterSecondCol.match(/^\s*<\/div>/);
-        if (trailingDivMatch) {
-            endPos += trailingDivMatch[0].length;
+        if (!columnPair) {
+            continue;
         }
 
-        // Build the replacement
-        result += html.substring(lastIndex, matchStart);
-        result += `<div class="pull-columns"><div class="${firstClass}">${firstCol.content}</div><div class="${secondClass}">${secondCol.content}</div></div>`;
+        // Add text before this match
+        parts.push(html.substring(lastIndex, columnPair.matchStart));
 
-        lastIndex = endPos;
-        firstPattern.lastIndex = endPos;
+        // Add the wrapped columns
+        parts.push(buildPullColumnsHtml(firstClass, secondClass, columnPair.firstContent, columnPair.secondContent));
+
+        lastIndex = columnPair.endPos;
+        firstPattern.lastIndex = columnPair.endPos;
     }
 
-    result += html.substring(lastIndex);
-    return result;
+    // Add remaining text
+    parts.push(html.substring(lastIndex));
+
+    return parts.join('');
 }
 
 /**
