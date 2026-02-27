@@ -22,17 +22,16 @@ test.describe('Sync scroll tests', () => {
     'CI_TEST_USER and CI_TEST_USER_WIF_POSTING environment variables are required'
   );
 
-  // Generate long content to make both editor and preview scrollable
+  // Generate content to make both editor and preview scrollable
+  // Keep it short enough for keyboard.type() to be fast but tall enough to scroll
   const generateLongContent = (): string => {
-    const lines: string[] = [];
-    lines.push('# Sync Scroll Test Content\n\n');
-    for (let i = 1; i <= 20; i++) {
-      lines.push(`## Section ${i}\n\n`);
-      lines.push(`This is paragraph ${i} with some content to make the editor scrollable. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\n`);
+    let content = '# Test\n\n';
+    // 30 lines should be enough to create scrollable content (~300 chars)
+    for (let i = 1; i <= 30; i++) {
+      content += `Line ${i}\n\n`;
     }
-    lines.push('## End of Content\n\n');
-    lines.push('This is the last section of the test content.');
-    return lines.join('');
+    content += '# End';
+    return content;
   };
 
   test.beforeEach(async ({ page }) => {
@@ -67,12 +66,18 @@ test.describe('Sync scroll tests', () => {
     await expect(postEditorPage.getPreviewContainer).toBeVisible();
     await expect(postEditorPage.getFormContainer).toBeVisible();
 
-    // Fill in the editor with long content using fill() for speed
+    // Fill in the editor with content using keyboard.type()
+    // This triggers CodeMirror's change events properly
     const longContent = generateLongContent();
-    await postEditorPage.getEditorContentTextarea.fill(longContent);
+    await postEditorPage.getEditorContentTextarea.click();
+    await page.keyboard.type(longContent, { delay: 0 });
 
     // Wait for preview to render
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(1000);
+
+    // Verify the preview actually rendered the content
+    const previewText = await postEditorPage.getPreviewContainer.textContent();
+    expect(previewText).toContain('Line 1');
 
     // Get the editor scroller element
     const editorScroller = postEditorPage.getEditorScroller;
@@ -137,10 +142,17 @@ test.describe('Sync scroll tests', () => {
     await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 20000 });
     await expect(postEditorPage.getEditorScroller).toBeVisible({ timeout: 20000 });
 
-    // Fill in the editor with long content using fill() for speed
+    // Fill in the editor with content using keyboard.type()
     const longContent = generateLongContent();
-    await postEditorPage.getEditorContentTextarea.fill(longContent);
-    await page.waitForTimeout(500);
+    await postEditorPage.getEditorContentTextarea.click();
+    await page.keyboard.type(longContent, { delay: 0 });
+
+    // Wait for preview to render
+    await page.waitForTimeout(1000);
+
+    // Verify the preview rendered
+    const previewText = await postEditorPage.getPreviewContainer.textContent();
+    expect(previewText).toContain('Line 1');
 
     const editorScroller = postEditorPage.getEditorScroller;
     const previewContainer = postEditorPage.getPreviewContainer;
