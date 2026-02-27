@@ -371,15 +371,14 @@ export default function PostForm({
   useEffect(() => {
     if (!syncScroll || !sideBySide || !preview) return;
 
-    // Small delay to ensure CodeMirror has fully mounted
-    const timeoutId = setTimeout(() => {
-      const editorScrollArea = editorContainerRef.current?.querySelector(
-        '.cm-scroller'
-      ) as HTMLDivElement | null;
-      const previewEl = previewContainerRef.current;
+    const previewEl = previewContainerRef.current;
+    if (!previewEl) return;
 
-      if (!editorScrollArea || !previewEl) return;
-
+    /**
+     * Sets up scroll sync listeners between editor and preview.
+     * Called once .cm-scroller is available in the DOM.
+     */
+    const setupScrollSync = (editorScrollArea: HTMLDivElement) => {
       const handleEditorScroll = () => {
         if (isScrollSyncingRef.current || editorRafIdRef.current) return;
 
@@ -429,16 +428,53 @@ export default function PostForm({
         editorScrollArea.removeEventListener('scroll', handleEditorScroll);
         previewEl.removeEventListener('scroll', handlePreviewScroll);
       };
-    }, 100);
+    };
+
+    // Check if .cm-scroller already exists (e.g., when toggling syncScroll)
+    const existingScroller = editorContainerRef.current?.querySelector(
+      '.cm-scroller'
+    ) as HTMLDivElement | null;
+
+    if (existingScroller) {
+      setupScrollSync(existingScroller);
+      return () => {
+        if (editorRafIdRef.current) cancelAnimationFrame(editorRafIdRef.current);
+        if (previewRafIdRef.current) cancelAnimationFrame(previewRafIdRef.current);
+        editorRafIdRef.current = null;
+        previewRafIdRef.current = null;
+        if (scrollCleanupRef.current) {
+          scrollCleanupRef.current();
+          scrollCleanupRef.current = null;
+        }
+      };
+    }
+
+    // MdEditor is loaded dynamically, so .cm-scroller may not exist yet.
+    // Use MutationObserver to wait for it to appear in the DOM.
+    const editorContainer = editorContainerRef.current;
+    if (!editorContainer) return;
+
+    const observer = new MutationObserver((_mutations, obs) => {
+      const scroller = editorContainer.querySelector('.cm-scroller') as HTMLDivElement | null;
+      if (scroller) {
+        obs.disconnect(); // Stop observing once found
+        setupScrollSync(scroller);
+      }
+    });
+
+    observer.observe(editorContainer, {
+      childList: true,
+      subtree: true
+    });
 
     return () => {
-      clearTimeout(timeoutId);
-      // Cancel any pending RAF frames immediately (in case timeout hasn't fired yet)
+      observer.disconnect();
+      // Cancel any pending RAF frames
       if (editorRafIdRef.current) cancelAnimationFrame(editorRafIdRef.current);
       if (previewRafIdRef.current) cancelAnimationFrame(previewRafIdRef.current);
       editorRafIdRef.current = null;
       previewRafIdRef.current = null;
-      // Run stored cleanup if timeout had set up listeners
+      // Run stored cleanup if listeners were set up
       if (scrollCleanupRef.current) {
         scrollCleanupRef.current();
         scrollCleanupRef.current = null;
