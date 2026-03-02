@@ -40,7 +40,7 @@ test.describe('Sync scroll tests', () => {
     postEditorPage = new PostEditorPage(page);
   });
 
-  test.only('Sync scroll works immediately after page load without toggling', async ({ page }) => {
+  test('Sync scroll works immediately after page load without toggling', async ({ page }) => {
     // Login
     await homePage.goto();
     await homePage.loginBtn.click();
