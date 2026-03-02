@@ -101,10 +101,12 @@ test.describe('Sync scroll tests', () => {
     expect(previewScrollInfo.scrollHeight).toBeGreaterThan(previewScrollInfo.clientHeight);
 
     // Scroll the editor to approximately 50%
+    // Must dispatch scroll event because setting scrollTop programmatically doesn't trigger it
     const targetEditorScrollTop =
       (editorScrollInfo.scrollHeight - editorScrollInfo.clientHeight) * 0.5;
     await editorScroller.evaluate((el, scrollTop) => {
       el.scrollTop = scrollTop;
+      el.dispatchEvent(new Event('scroll', { bubbles: true }));
     }, targetEditorScrollTop);
 
     // Wait for scroll sync to occur (RAF-based, should be fast)
@@ -157,7 +159,7 @@ test.describe('Sync scroll tests', () => {
     const editorScroller = postEditorPage.getEditorScroller;
     const previewContainer = postEditorPage.getPreviewContainer;
 
-    // Reset scroll positions
+    // Reset scroll positions (no need to dispatch event here, just resetting)
     await editorScroller.evaluate((el) => {
       el.scrollTop = 0;
     });
@@ -172,7 +174,7 @@ test.describe('Sync scroll tests', () => {
     await postEditorPage.getSyncScrollToggle.click();
     await page.waitForTimeout(100);
 
-    // Scroll the editor
+    // Scroll the editor (dispatch event to test that sync is disabled)
     const editorScrollInfo = await editorScroller.evaluate((el) => ({
       scrollHeight: el.scrollHeight,
       clientHeight: el.clientHeight
@@ -180,6 +182,7 @@ test.describe('Sync scroll tests', () => {
     const targetScroll = (editorScrollInfo.scrollHeight - editorScrollInfo.clientHeight) * 0.5;
     await editorScroller.evaluate((el, scrollTop) => {
       el.scrollTop = scrollTop;
+      el.dispatchEvent(new Event('scroll', { bubbles: true }));
     }, targetScroll);
     await page.waitForTimeout(200);
 
@@ -198,11 +201,12 @@ test.describe('Sync scroll tests', () => {
     });
     await page.waitForTimeout(200);
 
-    // Scroll editor again
+    // Scroll editor again - must dispatch event to trigger sync
     await editorScroller.evaluate((el, scrollTop) => {
       el.scrollTop = scrollTop;
+      el.dispatchEvent(new Event('scroll', { bubbles: true }));
     }, targetScroll);
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(300);
 
     // Now preview should have scrolled (sync is re-enabled)
     const previewScrollAfterEnabled = await previewContainer.evaluate((el) => el.scrollTop);
