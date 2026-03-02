@@ -40,7 +40,7 @@ test.describe('Sync scroll tests', () => {
     postEditorPage = new PostEditorPage(page);
   });
 
-  test('Sync scroll works immediately after page load without toggling', async ({ page }) => {
+  test.only('Sync scroll works immediately after page load without toggling', async ({ page }) => {
     // Login
     await homePage.goto();
     await homePage.loginBtn.click();
@@ -79,9 +79,9 @@ test.describe('Sync scroll tests', () => {
     const previewText = await postEditorPage.getPreviewContainer.textContent();
     expect(previewText).toContain('Line 1');
 
-    // Get the editor scroller element
+    // Get the editor scroller element and the actual scrollable preview div
     const editorScroller = postEditorPage.getEditorScroller;
-    const previewContainer = postEditorPage.getPreviewContainer;
+    const previewScroller = postEditorPage.getPreviewScroller;
 
     // Verify both containers are scrollable (have scrollHeight > clientHeight)
     const editorScrollInfo = await editorScroller.evaluate((el) => ({
@@ -90,7 +90,7 @@ test.describe('Sync scroll tests', () => {
       scrollTop: el.scrollTop
     }));
 
-    const previewScrollInfo = await previewContainer.evaluate((el) => ({
+    const previewScrollInfo = await previewScroller.evaluate((el) => ({
       scrollHeight: el.scrollHeight,
       clientHeight: el.clientHeight,
       scrollTop: el.scrollTop
@@ -113,7 +113,7 @@ test.describe('Sync scroll tests', () => {
     await page.waitForTimeout(200);
 
     // Get preview scroll position after editor scroll
-    const previewScrollTopAfter = await previewContainer.evaluate((el) => el.scrollTop);
+    const previewScrollTopAfter = await previewScroller.evaluate((el) => el.scrollTop);
 
     // Verify preview scrolled - it should be roughly at 50% as well
     // Allow some tolerance due to different content heights
@@ -157,13 +157,13 @@ test.describe('Sync scroll tests', () => {
     expect(previewText).toContain('Line 1');
 
     const editorScroller = postEditorPage.getEditorScroller;
-    const previewContainer = postEditorPage.getPreviewContainer;
+    const previewScroller = postEditorPage.getPreviewScroller;
 
     // Reset scroll positions (no need to dispatch event here, just resetting)
     await editorScroller.evaluate((el) => {
       el.scrollTop = 0;
     });
-    await previewContainer.evaluate((el) => {
+    await previewScroller.evaluate((el) => {
       el.scrollTop = 0;
     });
     await page.waitForTimeout(200);
@@ -187,7 +187,7 @@ test.describe('Sync scroll tests', () => {
     await page.waitForTimeout(200);
 
     // Preview should NOT have scrolled (sync is disabled)
-    const previewScrollAfterDisabled = await previewContainer.evaluate((el) => el.scrollTop);
+    const previewScrollAfterDisabled = await previewScroller.evaluate((el) => el.scrollTop);
     expect(previewScrollAfterDisabled).toBeLessThan(50); // Should be near 0
 
     // Re-enable sync scroll
@@ -209,7 +209,7 @@ test.describe('Sync scroll tests', () => {
     await page.waitForTimeout(300);
 
     // Now preview should have scrolled (sync is re-enabled)
-    const previewScrollAfterEnabled = await previewContainer.evaluate((el) => el.scrollTop);
+    const previewScrollAfterEnabled = await previewScroller.evaluate((el) => el.scrollTop);
     expect(previewScrollAfterEnabled).toBeGreaterThan(50);
   });
 });

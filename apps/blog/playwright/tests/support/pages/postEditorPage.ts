@@ -41,6 +41,7 @@ export class PostEditorPage {
     readonly getSyncScrollToggle: Locator;
     readonly getSyncScrollContainer: Locator;
     readonly getEditorScroller: Locator;
+    readonly getPreviewScroller: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -83,6 +84,7 @@ export class PostEditorPage {
         this.getSyncScrollToggle = page.getByTestId('sync-scroll-toggle');
         this.getSyncScrollContainer = page.getByTestId('sync-scroll-container');
         this.getEditorScroller = this.getEditorContent.locator('.cm-scroller');
+        this.getPreviewScroller = page.getByTestId('preview-scroller');
     }
 
     async validateDefaultPostEditorIsLoaded() {

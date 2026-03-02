@@ -1097,7 +1097,7 @@ export default function PostForm({
               </span>
             </Link>
           </div>
-          <div ref={previewContainerRef} className="flex h-full overflow-y-auto rounded-b-lg border border-border">
+          <div ref={previewContainerRef} data-testid="preview-scroller" className="flex h-full overflow-y-auto rounded-b-lg border border-border">
             {previewContent ? (
               <RendererContainer
                 body={previewContent}
