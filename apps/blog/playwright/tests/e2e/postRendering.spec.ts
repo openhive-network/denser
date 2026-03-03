@@ -76,3 +76,31 @@ test.describe('Post rendering visual regression', () => {
     });
   });
 });
+
+test.describe('Post content link styles and navigation', () => {
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+    await postPage.gotoPostPage('hive-151327', 'miprimerconcurso', 'sw043i');
+    await expect(postPage.articleBody).toBeVisible();
+  });
+
+  test('user mention link in post content is red', async ({ page }) => {
+    const userLink = page.locator('#articleBody a[href*="/@sketch.and.jam"]');
+    await expect(userLink).toBeVisible();
+
+    const color = await postPage.getElementCssPropertyValue(userLink, 'color');
+    expect(color).toBe('rgb(195, 34, 34)');
+  });
+
+  test('clicking user mention link navigates to profile page', async ({ page }) => {
+    const userLink = page.locator('#articleBody a[href*="/@sketch.and.jam"]');
+    await expect(userLink).toBeVisible();
+
+    await userLink.click();
+    await page.waitForLoadState('domcontentloaded');
+
+    await expect(page).toHaveURL(/@sketch.and.jam/);
+  });
+});
