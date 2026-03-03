@@ -1,5 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { PostPage } from '../support/pages/postPage';
+import { PostEditorPage } from '../support/pages/postEditorPage';
+import { LoginForm } from '../support/pages/loginForm';
+import { HomePage } from '../support/pages/homePage';
 
 /**
  * Visual regression tests for post content rendering.
@@ -123,5 +126,61 @@ test.describe('Post content link styles and navigation', () => {
     await page.waitForLoadState('domcontentloaded');
 
     await expect(page).toHaveURL(/@sketch.and.jam/);
+  });
+});
+
+test.describe('Editor preview - text before link order', () => {
+  test('text before a markdown link is not moved to the end of preview', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
+    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
+
+    const homePage = new HomePage(page);
+    const loginForm = new LoginForm(page);
+    const postEditorPage = new PostEditorPage(page);
+    const postPage = new PostPage(page);
+
+    // Navigate to homepage
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    // Click pencil icon to open login dialog (visible even before full hydration)
+    await expect(homePage.getNavCreatePost).toBeVisible({ timeout: 30000 });
+    await homePage.getNavCreatePost.click();
+
+    // Fill login form via safe storage
+    await loginForm.validateDefaultLoginFormIsLoaded();
+    await loginForm.usernameInput.fill(process.env.CI_TEST_USER!);
+    await loginForm.passwordInput.fill('testtest');
+    await loginForm.wifInput.fill(process.env.CI_TEST_USER_WIF_POSTING!);
+    await loginForm.saveSignInButton.click();
+
+    // Wait for login to complete and editor to load (pencil redirects to /submit.html)
+    await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 30000 });
+
+    // Type markdown with text before a link
+    const markdownContent =
+      '### A... Collection of Hive Development Contributions\n' +
+      'At the 5-year anniversary of Hive, @thebeedevs published a ' +
+      '[list of their contributions](https://peakd.com/hive-139531/@thebeedevs/hive-is-five) ' +
+      'to important projects for Hive. Among them, hAIve - the new ' +
+      'AI-powered search engine they worked on, which you can test on a development ' +
+      'version of Hive.blog they made public. Sadly, when I looked for ' +
+      '"adrian\'s lenses" or anything related (found in titles, bodies, and tags of ' +
+      'these and other posts), I didn\'t find any post of mine.';
+
+    await postEditorPage.getEditorContentTextarea.fill(markdownContent);
+    await expect(postPage.articleBody).toBeVisible();
+
+    // Verify text order in preview: "At the 5-year" must appear BEFORE "list of their contributions"
+    const previewText = await postPage.articleBody.textContent();
+    const textBeforeLink = previewText!.indexOf('At the 5-year anniversary');
+    const linkText = previewText!.indexOf('list of their contributions');
+
+    expect(textBeforeLink, 'Text before link should exist in preview').toBeGreaterThanOrEqual(0);
+    expect(linkText, 'Link text should exist in preview').toBeGreaterThanOrEqual(0);
+    expect(
+      textBeforeLink,
+      'Text before a link must appear before the link text in preview'
+    ).toBeLessThan(linkText);
   });
 });
