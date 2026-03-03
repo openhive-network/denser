@@ -52,4 +52,27 @@ test.describe('Post rendering visual regression', () => {
       maxDiffPixelRatio: 0.01
     });
   });
+
+  test('two-column post renders correctly: my-tour-of-the-eastern-region', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
+    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
+
+    await postPage.gotoPostPage(
+      'hive-163772',
+      'belkyscabrera',
+      'my-tour-of-the-eastern-region-visiting-its-beautiful-beaches-and-mountain-area-eng-esp-8gd'
+    );
+    await expect(postPage.articleBody).toBeVisible();
+    await page.waitForLoadState('networkidle');
+
+    // Wait for images inside the article body to load
+    await page.waitForFunction(() => {
+      const images = document.querySelectorAll('#articleBody img');
+      return Array.from(images).every((img) => (img as HTMLImageElement).complete);
+    }, { timeout: 15000 });
+
+    await expect(postPage.articleBody).toHaveScreenshot('two-column-my-tour-of-the-eastern-region.png', {
+      maxDiffPixelRatio: 0.01
+    });
+  });
 });
