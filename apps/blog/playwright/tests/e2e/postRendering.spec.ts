@@ -77,6 +77,27 @@ test.describe('Post rendering visual regression', () => {
   });
 });
 
+test.describe('Post content order regression', () => {
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('witness update post content renders in correct order', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
+    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
+
+    await postPage.gotoPostPage('hive-139531', 'mahdiyari', 'witness-update-public-nodes-update');
+    await expect(postPage.articleBody).toBeVisible();
+    await page.waitForLoadState('networkidle');
+
+    await expect(postPage.articleBody).toHaveScreenshot('witness-update-public-nodes.png', {
+      maxDiffPixelRatio: 0.01
+    });
+  });
+});
+
 test.describe('Post content link styles and navigation', () => {
   let postPage: PostPage;
 
