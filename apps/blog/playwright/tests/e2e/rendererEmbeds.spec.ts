@@ -100,17 +100,17 @@ test.describe('Renderer media embeds', () => {
     test.skip(browserName === 'webkit', 'Embed integration tested on chromium');
     test.skip(browserName === 'firefox', 'Embed integration tested on chromium');
 
-    // YouTube — facade is auto-replaced with iframe on mount
-    const youtube = page.locator('#articleBody .videoWrapper iframe[src*="youtube.com/embed"]');
+    // YouTube — facade is auto-replaced with iframe on mount (post may have multiple)
+    const youtube = page.locator('#articleBody .videoWrapper iframe[src*="youtube.com/embed"]').first();
 
     // 3Speak
-    const threeSpeak = page.locator('#articleBody iframe[src*="3speak.tv/embed"]');
+    const threeSpeak = page.locator('#articleBody iframe[src*="3speak.tv/embed"]').first();
 
     // Twitter/X
-    const twitter = page.locator('#articleBody .twitterWrapper');
+    const twitter = page.locator('#articleBody .twitterWrapper').first();
 
     // Instagram
-    const instagram = page.locator('#articleBody .instagramWrapper');
+    const instagram = page.locator('#articleBody .instagramWrapper').first();
 
     await expect(youtube).toBeAttached({ timeout: 10000 });
     await expect(threeSpeak).toBeAttached({ timeout: 10000 });
