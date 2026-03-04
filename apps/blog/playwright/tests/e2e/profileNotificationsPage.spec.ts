@@ -24,12 +24,24 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
   test('Compare UI notifications list amount with API notification list amount in All tab', async ({
     page
   }) => {
+    // Intercept the account_notifications response the UI itself fetches
+    // to eliminate race conditions from separate API calls.
+    const notificationsPromise = page.waitForResponse(
+      (response) => {
+        const postData = response.request().postDataJSON?.();
+        return postData?.method === 'bridge.account_notifications';
+      },
+      { timeout: 30000 }
+    );
+
     await profilePage.gotoNotificationsProfilePage('@gtg');
     await profilePage.profileNotificationsTabIsSelected();
 
-    const resAccountNotificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
+    const notificationsResponse = await notificationsPromise;
+    const notifications: unknown[] = (await notificationsResponse.json()).result;
+
     const notificationListItemInAllArray = await profilePage.notificationListItemInAll.all();
-    expect(await notificationListItemInAllArray.length).toBe(resAccountNotificationsAPI.result.length);
+    expect(notificationListItemInAllArray.length).toBe(notifications.length);
   });
 
   test('Move to the profile page of authors the first notification in All tab', async ({ page }) => {
@@ -112,14 +124,21 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
   });
 
   test('Validate the filter of notifications', async ({ page }) => {
-    let postPage = new PostPage(page);
-    let commentPage = new CommentViewPage(page);
+    // Intercept the account_notifications response the UI itself fetches
+    // to eliminate race conditions from separate API calls.
+    const notificationsPromise = page.waitForResponse(
+      (response) => {
+        const postData = response.request().postDataJSON?.();
+        return postData?.method === 'bridge.account_notifications';
+      },
+      { timeout: 30000 }
+    );
 
     await profilePage.gotoNotificationsProfilePage('@gtg');
     await profilePage.profileNotificationsTabIsSelected();
 
-    const resNotificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
-    const amountNotificationsAPI: number = await resNotificationsAPI.result.length; // expected up to 50 (set request limit)
+    const notificationsResponse = await notificationsPromise;
+    const notifications: { type: string }[] = (await notificationsResponse.json()).result;
 
     // type: reblog - open post page
     // type: reply - open comment view page
@@ -128,66 +147,51 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     // type: reply_comment - open comment view page
     // type: follow - open profile page
 
-    let amountNotificationsReblogType: number = 0;
-    let amountNotificationsReplyType: number = 0;
-    let amountNotificationsMentionType: number = 0;
-    let amountNotificationsVoteType: number = 0;
-    let amountNotificationsReplyCommentType: number = 0;
-    let amountNotificationsFollowType: number = 0;
-    let amountNotificationsDifferentType: number = 0;
-
-    for (let i = 0; i < amountNotificationsAPI; i++) {
-      if ((await resNotificationsAPI.result[i].type) == 'reblog') amountNotificationsReblogType++;
-      else if ((await resNotificationsAPI.result[i].type) == 'reply') amountNotificationsReplyType++;
-      else if ((await resNotificationsAPI.result[i].type) == 'reply_comment')
-        amountNotificationsReplyCommentType++;
-      else if ((await resNotificationsAPI.result[i].type) == 'mention') amountNotificationsMentionType++;
-      else if ((await resNotificationsAPI.result[i].type) == 'vote') amountNotificationsVoteType++;
-      else if ((await resNotificationsAPI.result[i].type) == 'follow') amountNotificationsFollowType++;
-      else amountNotificationsDifferentType++;
-    }
-
-    // console.log('        Reblog number: ', amountNotificationsReblogType);
-    // console.log('         Reply number: ', amountNotificationsReplyType);
-    // console.log(' Reply_comment number: ', amountNotificationsReplyCommentType);
-    // console.log('       Mention number: ', amountNotificationsMentionType);
-    // console.log('          Vote number: ', amountNotificationsVoteType);
-    // console.log('        Follow number: ', amountNotificationsFollowType);
-    // console.log('Different type number: ', amountNotificationsDifferentType);
+    const countByType = (type: string) => notifications.filter((n) => n.type === type).length;
+    const amountNotificationsReblogType = countByType('reblog');
+    const amountNotificationsReplyType = countByType('reply');
+    const amountNotificationsReplyCommentType = countByType('reply_comment');
+    const amountNotificationsMentionType = countByType('mention');
+    const amountNotificationsVoteType = countByType('vote');
+    const amountNotificationsFollowType = countByType('follow');
+    const knownTypes = ['reblog', 'reply', 'reply_comment', 'mention', 'vote', 'follow'];
+    const amountNotificationsDifferentType = notifications.filter(
+      (n) => !knownTypes.includes(n.type)
+    ).length;
 
     // Validate the amount of all notifications
     const allNotificationsUI = await profilePage.notificationListItemInAll.all();
-    const amountAllNotificationsUI = await allNotificationsUI.length;
-    await expect(await amountAllNotificationsUI).toBe(amountNotificationsAPI);
+    const amountAllNotificationsUI = allNotificationsUI.length;
+    expect(amountAllNotificationsUI).toBe(notifications.length);
     // Validate the amount of replies notifications
     await profilePage.notificationsMenuRepliesButton.click();
     const repliesNotificationsUI = await profilePage.notificationListItemInReplies.all();
-    const amountRepliesNotificationsUI = await repliesNotificationsUI.length;
-    await expect(await amountRepliesNotificationsUI).toBe(
+    const amountRepliesNotificationsUI = repliesNotificationsUI.length;
+    expect(amountRepliesNotificationsUI).toBe(
       amountNotificationsReplyType + amountNotificationsReplyCommentType
     );
     // Validate the amount of mentions notifications
     await profilePage.notificationsMenuMentionsButton.click();
     const mentionsNotificationsUI = await profilePage.notificationListItemInMentions.all();
-    const amountMentionsNotificationsUI = await mentionsNotificationsUI.length;
-    await expect(await amountMentionsNotificationsUI).toBe(amountNotificationsMentionType);
+    const amountMentionsNotificationsUI = mentionsNotificationsUI.length;
+    expect(amountMentionsNotificationsUI).toBe(amountNotificationsMentionType);
     // Validate the amount of follows notifications
     await profilePage.notificationsMenuFollowsButton.click();
     const followsNotificationsUI = await profilePage.notificationListItemInFollows.all();
-    const amountFollowsNotificationsUI = await followsNotificationsUI.length;
-    await expect(await amountFollowsNotificationsUI).toBe(amountNotificationsFollowType);
+    const amountFollowsNotificationsUI = followsNotificationsUI.length;
+    expect(amountFollowsNotificationsUI).toBe(amountNotificationsFollowType);
     // Validate the amount of upvotes notifications
     await profilePage.notificationsMenuUpvotesButton.click();
     const upvotesNotificationsUI = await profilePage.notificationListItemInUpvotes.all();
-    const amountUpvotesNotificationsUI = await upvotesNotificationsUI.length;
-    await expect(await amountUpvotesNotificationsUI).toBe(amountNotificationsVoteType);
+    const amountUpvotesNotificationsUI = upvotesNotificationsUI.length;
+    expect(amountUpvotesNotificationsUI).toBe(amountNotificationsVoteType);
     // Validate the amount of reblogs notifications
     await profilePage.notificationsMenuReblogsButton.click();
     const reblogsNotificationsUI = await profilePage.notificationListItemInReblogs.all();
-    const amountReblogsNotificationsUI = await reblogsNotificationsUI.length;
-    await expect(await amountReblogsNotificationsUI).toBe(amountNotificationsReblogType);
+    const amountReblogsNotificationsUI = reblogsNotificationsUI.length;
+    expect(amountReblogsNotificationsUI).toBe(amountNotificationsReblogType);
     // Validate the amount of different notifications is 0
-    await expect(amountNotificationsDifferentType).toBe(0);
+    expect(amountNotificationsDifferentType).toBe(0);
   });
 
   test('Validate the filter of notifications styles', async ({ page }) => {
