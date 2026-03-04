@@ -36,7 +36,9 @@ export const TIMEOUTS = {
   PAGE_LOAD: 10000,
   ELEMENT_VISIBLE: 5000,
   NETWORK_IDLE: 10000,
-  HYDRATION: 30000 // Longer timeout for React hydration on production
+  HYDRATION: 30000, // Longer timeout for React hydration on production
+  IMAGE_LOAD: 15000,
+  TWITTER_PLUGIN_SETTLE: 15000
 } as const;
 
 /**

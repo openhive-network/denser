@@ -3,6 +3,7 @@ import { PostPage } from '../support/pages/postPage';
 import { PostEditorPage } from '../support/pages/postEditorPage';
 import { LoginForm } from '../support/pages/loginForm';
 import { HomePage } from '../support/pages/homePage';
+import { TIMEOUTS } from '../support/constants';
 
 /**
  * Visual regression tests for post content rendering.
@@ -11,6 +12,31 @@ import { HomePage } from '../support/pages/homePage';
  * (e.g. two-column text layout, image placement, etc.).
  */
 
+function chromiumOnly(browserName: string) {
+  test.skip(browserName !== 'chromium', 'Visual test runs on chromium only');
+}
+
+const twoColumnPosts = [
+  {
+    community: 'hive-148441',
+    author: 'josehany',
+    permlink: 'the-waiting-is-over',
+    snapshot: 'two-column-post-body.png'
+  },
+  {
+    community: 'hive-148441',
+    author: 'josehany',
+    permlink: 'at-my-own-pace',
+    snapshot: 'two-column-at-my-own-pace.png'
+  },
+  {
+    community: 'hive-163772',
+    author: 'belkyscabrera',
+    permlink: 'my-tour-of-the-eastern-region-visiting-its-beautiful-beaches-and-mountain-area-eng-esp-8gd',
+    snapshot: 'two-column-my-tour-of-the-eastern-region.png'
+  }
+];
+
 test.describe('Post rendering visual regression', () => {
   let postPage: PostPage;
 
@@ -18,66 +44,21 @@ test.describe('Post rendering visual regression', () => {
     postPage = new PostPage(page);
   });
 
-  test('two-column post renders correctly: the-waiting-is-over', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
-    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
+  for (const post of twoColumnPosts) {
+    test(`two-column post renders correctly: ${post.permlink}`, async ({ page, browserName }) => {
+      chromiumOnly(browserName);
 
-    await postPage.gotoPostPage('hive-148441', 'josehany', 'the-waiting-is-over');
-    await expect(postPage.articleBody).toBeVisible();
-    await page.waitForLoadState('networkidle');
+      await postPage.gotoPostPage(post.community, post.author, post.permlink);
+      await expect(postPage.articleBody).toBeVisible();
+      await page.waitForLoadState('networkidle');
 
-    // Wait for images inside the article body to load
-    await page.waitForFunction(() => {
-      const images = document.querySelectorAll('#articleBody img');
-      return Array.from(images).every((img) => (img as HTMLImageElement).complete);
-    }, { timeout: 15000 });
+      await postPage.waitForArticleImages();
 
-    await expect(postPage.articleBody).toHaveScreenshot('two-column-post-body.png', {
-      maxDiffPixelRatio: 0.01
+      await expect(postPage.articleBody).toHaveScreenshot(post.snapshot, {
+        maxDiffPixelRatio: 0.01
+      });
     });
-  });
-
-  test('two-column post renders correctly: at-my-own-pace', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
-    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
-
-    await postPage.gotoPostPage('hive-148441', 'josehany', 'at-my-own-pace');
-    await expect(postPage.articleBody).toBeVisible();
-    await page.waitForLoadState('networkidle');
-
-    // Wait for images inside the article body to load
-    await page.waitForFunction(() => {
-      const images = document.querySelectorAll('#articleBody img');
-      return Array.from(images).every((img) => (img as HTMLImageElement).complete);
-    }, { timeout: 15000 });
-
-    await expect(postPage.articleBody).toHaveScreenshot('two-column-at-my-own-pace.png', {
-      maxDiffPixelRatio: 0.01
-    });
-  });
-
-  test('two-column post renders correctly: my-tour-of-the-eastern-region', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
-    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
-
-    await postPage.gotoPostPage(
-      'hive-163772',
-      'belkyscabrera',
-      'my-tour-of-the-eastern-region-visiting-its-beautiful-beaches-and-mountain-area-eng-esp-8gd'
-    );
-    await expect(postPage.articleBody).toBeVisible();
-    await page.waitForLoadState('networkidle');
-
-    // Wait for images inside the article body to load
-    await page.waitForFunction(() => {
-      const images = document.querySelectorAll('#articleBody img');
-      return Array.from(images).every((img) => (img as HTMLImageElement).complete);
-    }, { timeout: 15000 });
-
-    await expect(postPage.articleBody).toHaveScreenshot('two-column-my-tour-of-the-eastern-region.png', {
-      maxDiffPixelRatio: 0.01
-    });
-  });
+  }
 });
 
 test.describe('Post content order regression', () => {
@@ -88,8 +69,7 @@ test.describe('Post content order regression', () => {
   });
 
   test('witness update post content renders in correct order', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
-    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
+    chromiumOnly(browserName);
 
     await postPage.gotoPostPage('hive-139531', 'mahdiyari', 'witness-update-public-nodes-update');
     await expect(postPage.articleBody).toBeVisible();
@@ -103,15 +83,16 @@ test.describe('Post content order regression', () => {
 
 test.describe('Post content link styles and navigation', () => {
   let postPage: PostPage;
+  let userLink;
 
   test.beforeEach(async ({ page }) => {
     postPage = new PostPage(page);
     await postPage.gotoPostPage('hive-151327', 'miprimerconcurso', 'sw043i');
     await expect(postPage.articleBody).toBeVisible();
+    userLink = postPage.getUserMentionLink('sketch.and.jam');
   });
 
-  test('user mention link in post content is red', async ({ page }) => {
-    const userLink = page.locator('#articleBody a[href*="/@sketch.and.jam"]');
+  test('user mention link in post content is red', async () => {
     await expect(userLink).toBeVisible();
 
     const color = await postPage.getElementCssPropertyValue(userLink, 'color');
@@ -119,7 +100,6 @@ test.describe('Post content link styles and navigation', () => {
   });
 
   test('clicking user mention link navigates to profile page', async ({ page }) => {
-    const userLink = page.locator('#articleBody a[href*="/@sketch.and.jam"]');
     await expect(userLink).toBeVisible();
 
     await userLink.click();
@@ -143,27 +123,23 @@ test.describe('Embed table layout regression', () => {
   });
 
   test('table with Twitter and Instagram embeds has correct structure', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
-    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
+    chromiumOnly(browserName);
 
     await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
     await expect(postPage.articleBody).toBeVisible();
     await page.waitForLoadState('networkidle');
 
-    // Table exists inside article body
-    const table = page.locator('#articleBody table');
-    await expect(table).toBeAttached();
+    await expect(postPage.articleTable).toBeAttached();
 
     // Total twitter wrappers in article: 4 (1 standalone + 3 in table)
-    const allTwitterWrappers = page.locator('#articleBody .twitterWrapper');
-    await expect(allTwitterWrappers).toHaveCount(4);
+    await expect(postPage.twitterWrappers).toHaveCount(4);
 
     // Table contains exactly 3 Twitter embeds
-    const tableTwitterWrappers = table.locator('.twitterWrapper');
+    const tableTwitterWrappers = postPage.getTwitterWrappersIn(postPage.articleTable);
     await expect(tableTwitterWrappers).toHaveCount(3);
 
     // Table contains exactly 3 Instagram embeds
-    const tableInstagramWrappers = table.locator('.instagramWrapper');
+    const tableInstagramWrappers = postPage.getInstagramWrappersIn(postPage.articleTable);
     await expect(tableInstagramWrappers).toHaveCount(3);
 
     // Each Twitter embed is inside a <td>
@@ -180,18 +156,17 @@ test.describe('Embed table layout regression', () => {
   });
 
   test('table with embeds renders correct layout', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
-    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
+    chromiumOnly(browserName);
 
     await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
     await expect(postPage.articleBody).toBeVisible();
     await page.waitForLoadState('networkidle');
 
     // Wait for TwitterResizePlugin to settle (LOAD_TIMEOUT_MS = 10s + buffer)
-    await page.waitForTimeout(15000);
+    await page.waitForTimeout(TIMEOUTS.TWITTER_PLUGIN_SETTLE);
 
     // Mask all iframes to avoid flakiness from external embed content
-    const iframes = await page.locator('#articleBody iframe').all();
+    const iframes = await postPage.articleIframes.all();
 
     await expect(postPage.articleBody).toHaveScreenshot('embed-table-layout.png', {
       mask: iframes,
@@ -202,8 +177,7 @@ test.describe('Embed table layout regression', () => {
 
 test.describe('Editor preview - text before link order', () => {
   test('text before a markdown link is not moved to the end of preview', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
-    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
+    chromiumOnly(browserName);
 
     const homePage = new HomePage(page);
     const loginForm = new LoginForm(page);
@@ -244,6 +218,7 @@ test.describe('Editor preview - text before link order', () => {
 
     // Verify text order in preview: "At the 5-year" must appear BEFORE "list of their contributions"
     const previewText = await postPage.articleBody.textContent();
+    expect(previewText).not.toBeNull();
     const textBeforeLink = previewText!.indexOf('At the 5-year anniversary');
     const linkText = previewText!.indexOf('list of their contributions');
 

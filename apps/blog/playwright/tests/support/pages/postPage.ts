@@ -1,5 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { HomePage } from './homePage';
+import { TIMEOUTS } from '../constants';
 
 export class PostPage {
   readonly page: Page;
@@ -102,6 +103,10 @@ export class PostPage {
   readonly articleBodyParagraph: string;
   readonly postingToDropdown: Locator;
   readonly postEditButton: Locator;
+  readonly articleTable: Locator;
+  readonly articleIframes: Locator;
+  readonly twitterWrappers: Locator;
+  readonly instagramWrappers: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -222,6 +227,10 @@ export class PostPage {
     this.firstPostAffiliationTag = page.locator('[data-testid="affiliation-tag-badge"]').first();
     this.postingToDropdown = page.locator('[data-testid="posting-to-list-trigger"]');
     this.postEditButton = page.getByTestId('post-edit');
+    this.articleTable = page.locator('#articleBody table');
+    this.articleIframes = page.locator('#articleBody iframe');
+    this.twitterWrappers = page.locator('#articleBody .twitterWrapper');
+    this.instagramWrappers = page.locator('#articleBody .instagramWrapper');
   }
 
   async gotoHomePage() {
@@ -295,5 +304,24 @@ export class PostPage {
 
   async validatePostContantContainText(textContentLocator: string, textContentExpected: string) {
     await expect(this.page.locator(`#articleBody:has-text("${textContentLocator}")`)).toHaveText(textContentExpected);
+  }
+
+  async waitForArticleImages(timeout = TIMEOUTS.IMAGE_LOAD): Promise<void> {
+    await this.page.waitForFunction(() => {
+      const images = document.querySelectorAll('#articleBody img');
+      return Array.from(images).every((img) => (img as HTMLImageElement).complete);
+    }, { timeout });
+  }
+
+  getUserMentionLink(username: string): Locator {
+    return this.page.locator(`#articleBody a[href*="/@${username}"]`);
+  }
+
+  getTwitterWrappersIn(parent: Locator): Locator {
+    return parent.locator('.twitterWrapper');
+  }
+
+  getInstagramWrappersIn(parent: Locator): Locator {
+    return parent.locator('.instagramWrapper');
   }
 }
