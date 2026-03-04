@@ -175,6 +175,83 @@ test.describe('Embed table layout regression', () => {
   });
 });
 
+test.describe('Cross-post rendering regression', () => {
+  const crossPost = {
+    community: 'hive-155530',
+    author: 'littlebee4',
+    permlink:
+      'it-is-still-winter-wonderland-in-april--come-explore-with-me-an-icy-lake-at-kamsjon-vasterbotten--sweden-hive-155530'
+  };
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('cross-post banner with original post link is visible above the content', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(crossPost.community, crossPost.author, crossPost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    // Cross-post info block should be visible with styled background
+    const banner = page.locator('.bg-background-secondary').filter({ hasText: 'cross-posted' });
+    await expect(banner).toBeVisible();
+
+    // "this post" link to the original post should be present
+    const thisPostLink = banner.getByRole('link', { name: 'this post' });
+    await expect(thisPostLink).toBeVisible();
+
+    const href = await thisPostLink.getAttribute('href');
+    expect(href).toMatch(/^\/@.+\/.+/);
+  });
+
+  test('clicking "this post" link in cross-post banner navigates to the original post', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(crossPost.community, crossPost.author, crossPost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const banner = page.locator('.bg-background-secondary').filter({ hasText: 'cross-posted' });
+    const thisPostLink = banner.getByRole('link', { name: 'this post' });
+    const targetHref = await thisPostLink.getAttribute('href');
+
+    await thisPostLink.click();
+    await page.waitForLoadState('domcontentloaded');
+
+    expect(page.url()).toContain(targetHref!);
+  });
+
+  test('"Browse to the original post" link navigates to the original post', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(crossPost.community, crossPost.author, crossPost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+    await page.waitForLoadState('networkidle');
+
+    const browseLink = page.locator('a').filter({ hasText: /Browse to the original post by @/ });
+    await expect(browseLink).toBeVisible();
+
+    const targetHref = await browseLink.getAttribute('href');
+    expect(targetHref).toMatch(/^\/@.+\/.+/);
+
+    await browseLink.click();
+    await page.waitForLoadState('domcontentloaded');
+
+    expect(page.url()).toContain(targetHref!);
+  });
+});
+
 test.describe('Editor preview - text before link order', () => {
   test('text before a markdown link is not moved to the end of preview', async ({ page, browserName }) => {
     chromiumOnly(browserName);
