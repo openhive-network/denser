@@ -199,7 +199,7 @@ test.describe('Cross-post rendering regression', () => {
     await expect(postPage.articleBody).toBeVisible();
 
     // Cross-post info block should be visible with styled background
-    const banner = page.locator('.bg-background-secondary').filter({ hasText: 'cross-posted' });
+    const banner = page.locator('div.bg-background-secondary').filter({ hasText: 'cross-posted' });
     await expect(banner).toBeVisible();
 
     // "this post" link to the original post should be present
@@ -219,7 +219,7 @@ test.describe('Cross-post rendering regression', () => {
     await postPage.gotoPostPage(crossPost.community, crossPost.author, crossPost.permlink);
     await expect(postPage.articleBody).toBeVisible();
 
-    const banner = page.locator('.bg-background-secondary').filter({ hasText: 'cross-posted' });
+    const banner = page.locator('div.bg-background-secondary').filter({ hasText: 'cross-posted' });
     const thisPostLink = banner.getByRole('link', { name: 'this post' });
     const targetHref = await thisPostLink.getAttribute('href');
 
