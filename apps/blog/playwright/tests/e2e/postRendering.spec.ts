@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, Page } from '@playwright/test';
 import { PostPage } from '../support/pages/postPage';
 import { PostEditorPage } from '../support/pages/postEditorPage';
 import { LoginForm } from '../support/pages/loginForm';
@@ -14,6 +14,25 @@ import { TIMEOUTS } from '../support/constants';
 
 function chromiumOnly(browserName: string) {
   test.skip(browserName !== 'chromium', 'Visual test runs on chromium only');
+}
+
+async function loginAndOpenEditor(page: Page) {
+  const homePage = new HomePage(page);
+  const loginForm = new LoginForm(page);
+  const postEditorPage = new PostEditorPage(page);
+
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  await expect(homePage.getNavCreatePost).toBeVisible({ timeout: 30000 });
+  await homePage.getNavCreatePost.click();
+  await loginForm.validateDefaultLoginFormIsLoaded();
+  await loginForm.usernameInput.fill(process.env.CI_TEST_USER!);
+  await loginForm.passwordInput.fill('testtest');
+  await loginForm.wifInput.fill(process.env.CI_TEST_USER_WIF_POSTING!);
+  await loginForm.saveSignInButton.click();
+  await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 30000 });
+
+  return { homePage, loginForm, postEditorPage };
 }
 
 const twoColumnPosts = [
@@ -329,28 +348,8 @@ test.describe('Editor preview - text before link order', () => {
   test('text before a markdown link is not moved to the end of preview', async ({ page, browserName }) => {
     chromiumOnly(browserName);
 
-    const homePage = new HomePage(page);
-    const loginForm = new LoginForm(page);
-    const postEditorPage = new PostEditorPage(page);
+    const { postEditorPage } = await loginAndOpenEditor(page);
     const postPage = new PostPage(page);
-
-    // Navigate to homepage
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
-
-    // Click pencil icon to open login dialog (visible even before full hydration)
-    await expect(homePage.getNavCreatePost).toBeVisible({ timeout: 30000 });
-    await homePage.getNavCreatePost.click();
-
-    // Fill login form via safe storage
-    await loginForm.validateDefaultLoginFormIsLoaded();
-    await loginForm.usernameInput.fill(process.env.CI_TEST_USER!);
-    await loginForm.passwordInput.fill('testtest');
-    await loginForm.wifInput.fill(process.env.CI_TEST_USER_WIF_POSTING!);
-    await loginForm.saveSignInButton.click();
-
-    // Wait for login to complete and editor to load (pencil redirects to /submit.html)
-    await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 30000 });
 
     // Type markdown with text before a link
     const markdownContent =
@@ -378,5 +377,70 @@ test.describe('Editor preview - text before link order', () => {
       textBeforeLink,
       'Text before a link must appear before the link text in preview'
     ).toBeLessThan(linkText);
+  });
+});
+
+test.describe('Editor preview - collapsible sections', () => {
+  test('collapsible details section renders and toggles in preview', async ({ page, browserName }) => {
+    chromiumOnly(browserName);
+
+    const { postEditorPage } = await loginAndOpenEditor(page);
+    const postPage = new PostPage(page);
+
+    const markdownContent = [
+      '<details>',
+      '<summary>Click to expand</summary>',
+      '',
+      'These details remain hidden until expanded.',
+      '',
+      '</details>'
+    ].join('\n');
+
+    await postEditorPage.getEditorContentTextarea.fill(markdownContent);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const details = postPage.articleBody.locator('details');
+    const summary = details.locator('summary');
+    const content = details.getByText('These details remain hidden until expanded.');
+
+    await expect(details).toBeAttached();
+    await expect(summary).toHaveText('Click to expand');
+
+    // Content should be hidden when collapsed (native <details> behavior)
+    await expect(content).not.toBeVisible();
+
+    // Click summary to expand
+    await summary.click();
+    await expect(content).toBeVisible();
+
+    // Click summary again to collapse
+    await summary.click();
+    await expect(content).not.toBeVisible();
+  });
+
+  test('spoiler syntax renders as collapsible with custom title', async ({ page, browserName }) => {
+    chromiumOnly(browserName);
+
+    const { postEditorPage } = await loginAndOpenEditor(page);
+    const postPage = new PostPage(page);
+
+    const markdownContent = '>! [Hidden Spoiler Text] This is the spoiler content.';
+
+    await postEditorPage.getEditorContentTextarea.fill(markdownContent);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const details = postPage.articleBody.locator('details');
+    const summary = details.locator('summary');
+    const content = details.getByText('This is the spoiler content.');
+
+    await expect(details).toBeAttached();
+    await expect(summary).toContainText('Hidden Spoiler Text');
+
+    // Content should be hidden when collapsed
+    await expect(content).not.toBeVisible();
+
+    // Click summary to expand
+    await summary.click();
+    await expect(content).toBeVisible();
   });
 });
