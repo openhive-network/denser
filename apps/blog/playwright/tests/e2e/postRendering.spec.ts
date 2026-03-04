@@ -252,6 +252,64 @@ test.describe('Cross-post rendering regression', () => {
   });
 });
 
+test.describe('Paragraph overlap regression', () => {
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('paragraphs in post body do not overlap each other', async ({ page, browserName }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(
+      'hive-163772',
+      'patsitivity',
+      'let-her-in-or-pusan-point-caraga-davao-oriental'
+    );
+    await expect(postPage.articleBody).toBeVisible();
+    await page.waitForLoadState('networkidle');
+
+    const paragraphs = postPage.articleBody.locator('p');
+    const count = await paragraphs.count();
+    expect(count, 'Post should contain multiple paragraphs').toBeGreaterThan(1);
+
+    // Collect bounding boxes of all visible paragraphs
+    const boxes: { index: number; top: number; bottom: number; height: number }[] = [];
+    for (let i = 0; i < count; i++) {
+      const p = paragraphs.nth(i);
+      if (!(await p.isVisible())) continue;
+
+      const box = await p.boundingBox();
+      if (!box) continue;
+
+      boxes.push({ index: i, top: box.y, bottom: box.y + box.height, height: box.height });
+    }
+
+    expect(boxes.length, 'At least 2 visible paragraphs required').toBeGreaterThan(1);
+
+    // Every paragraph should have non-zero height
+    for (const box of boxes) {
+      expect(box.height, `Paragraph ${box.index} should have non-zero height`).toBeGreaterThan(0);
+    }
+
+    // No two paragraphs should overlap vertically (tolerance 2px for subpixel rendering)
+    const TOLERANCE_PX = 2;
+    for (let i = 0; i < boxes.length; i++) {
+      for (let j = i + 1; j < boxes.length; j++) {
+        const a = boxes[i];
+        const b = boxes[j];
+        const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+
+        expect(
+          overlapY,
+          `Paragraphs ${a.index} and ${b.index} overlap by ${overlapY.toFixed(1)}px`
+        ).toBeLessThanOrEqual(TOLERANCE_PX);
+      }
+    }
+  });
+});
+
 test.describe('Editor preview - text before link order', () => {
   test('text before a markdown link is not moved to the end of preview', async ({ page, browserName }) => {
     chromiumOnly(browserName);
