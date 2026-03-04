@@ -118,3 +118,77 @@ test.describe('Renderer media embeds', () => {
     await expect(instagram).toBeAttached({ timeout: 10000 });
   });
 });
+
+/**
+ * Responsiveness regression tests for media embeds (issue #508).
+ *
+ * Verifies that YouTube, Twitter/X, and Instagram embeds do not overflow
+ * the article body on narrow (mobile) viewports.
+ */
+test.describe('Embed responsiveness on narrow viewport', () => {
+  const MOBILE_WIDTH = 430;
+  const MOBILE_HEIGHT = 971;
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: MOBILE_WIDTH, height: MOBILE_HEIGHT });
+    postPage = new PostPage(page);
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+  });
+
+  test('YouTube embed does not overflow article body on mobile', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Responsiveness test runs on chromium only');
+
+    const youtubeWrapper = page.locator('#articleBody .videoWrapper').first();
+    await expect(youtubeWrapper).toBeAttached({ timeout: 10000 });
+
+    const articleBox = await postPage.articleBody.boundingBox();
+    const wrapperBox = await youtubeWrapper.boundingBox();
+    expect(articleBox).not.toBeNull();
+    expect(wrapperBox).not.toBeNull();
+
+    expect(
+      wrapperBox!.width,
+      `YouTube wrapper (${wrapperBox!.width}px) should not exceed article body (${articleBox!.width}px)`
+    ).toBeLessThanOrEqual(articleBox!.width + 1);
+  });
+
+  test('Twitter embed does not overflow article body on mobile', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Responsiveness test runs on chromium only');
+
+    const twitterWrapper = page.locator('#articleBody .twitterWrapper').first();
+    await expect(twitterWrapper).toBeAttached({ timeout: 10000 });
+
+    // Wait for TwitterResizePlugin to settle
+    await page.waitForTimeout(15000);
+
+    const articleBox = await postPage.articleBody.boundingBox();
+    const wrapperBox = await twitterWrapper.boundingBox();
+    expect(articleBox).not.toBeNull();
+    expect(wrapperBox).not.toBeNull();
+
+    expect(
+      wrapperBox!.width,
+      `Twitter wrapper (${wrapperBox!.width}px) should not exceed article body (${articleBox!.width}px)`
+    ).toBeLessThanOrEqual(articleBox!.width + 1);
+  });
+
+  test('Instagram embed does not overflow article body on mobile', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Responsiveness test runs on chromium only');
+
+    const instagramWrapper = page.locator('#articleBody .instagramWrapper').first();
+    await expect(instagramWrapper).toBeAttached({ timeout: 10000 });
+
+    const articleBox = await postPage.articleBody.boundingBox();
+    const wrapperBox = await instagramWrapper.boundingBox();
+    expect(articleBox).not.toBeNull();
+    expect(wrapperBox).not.toBeNull();
+
+    expect(
+      wrapperBox!.width,
+      `Instagram wrapper (${wrapperBox!.width}px) should not exceed article body (${articleBox!.width}px)`
+    ).toBeLessThanOrEqual(articleBox!.width + 1);
+  });
+});
