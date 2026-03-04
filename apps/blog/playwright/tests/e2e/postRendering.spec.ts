@@ -129,6 +129,77 @@ test.describe('Post content link styles and navigation', () => {
   });
 });
 
+test.describe('Embed table layout regression', () => {
+  const fixturePost = {
+    community: 'test',
+    author: 'guest4test1',
+    permlink: 'test-twitter-and-insta-embeds'
+  };
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('table with Twitter and Instagram embeds has correct structure', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
+    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+    await page.waitForLoadState('networkidle');
+
+    // Table exists inside article body
+    const table = page.locator('#articleBody table');
+    await expect(table).toBeAttached();
+
+    // Total twitter wrappers in article: 4 (1 standalone + 3 in table)
+    const allTwitterWrappers = page.locator('#articleBody .twitterWrapper');
+    await expect(allTwitterWrappers).toHaveCount(4);
+
+    // Table contains exactly 3 Twitter embeds
+    const tableTwitterWrappers = table.locator('.twitterWrapper');
+    await expect(tableTwitterWrappers).toHaveCount(3);
+
+    // Table contains exactly 3 Instagram embeds
+    const tableInstagramWrappers = table.locator('.instagramWrapper');
+    await expect(tableInstagramWrappers).toHaveCount(3);
+
+    // Each Twitter embed is inside a <td>
+    for (let i = 0; i < 3; i++) {
+      const td = tableTwitterWrappers.nth(i).locator('xpath=ancestor::td');
+      await expect(td).toBeAttached();
+    }
+
+    // Each Instagram embed is inside a <td>
+    for (let i = 0; i < 3; i++) {
+      const td = tableInstagramWrappers.nth(i).locator('xpath=ancestor::td');
+      await expect(td).toBeAttached();
+    }
+  });
+
+  test('table with embeds renders correct layout', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
+    test.skip(browserName === 'firefox', 'Visual test runs on chromium only');
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+    await page.waitForLoadState('networkidle');
+
+    // Wait for TwitterResizePlugin to settle (LOAD_TIMEOUT_MS = 10s + buffer)
+    await page.waitForTimeout(15000);
+
+    // Mask all iframes to avoid flakiness from external embed content
+    const iframes = await page.locator('#articleBody iframe').all();
+
+    await expect(postPage.articleBody).toHaveScreenshot('embed-table-layout.png', {
+      mask: iframes,
+      maxDiffPixelRatio: 0.01
+    });
+  });
+});
+
 test.describe('Editor preview - text before link order', () => {
   test('text before a markdown link is not moved to the end of preview', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Visual test runs on chromium only');
