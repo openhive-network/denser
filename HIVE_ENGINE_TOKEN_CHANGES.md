@@ -522,6 +522,37 @@ This document lists all files changed for the additive, env-driven single-token 
   - `corepack pnpm -C apps/wallet exec tsc --noEmit`
     - passed.
 
+## 2026-03-05 Follow-up (Pending Unstake Source + Conditional Unstake Text)
+
+- Root request
+  - Unstake text must use pending-unstake amount (not full staked balance).
+  - If pending unstake is missing or `0`, unstake helper text should not render.
+
+- `packages/ui/lib/sidechain-rewards.ts` (modified)
+  - Added `pendingUnstakeAmount` to `SidechainWalletReward`.
+  - Added `tokens.pendingUnstakes` query helper to aggregate account+symbol pending unstake total.
+  - Included `pendingUnstakeAmount` in wallet reward responses for both `scot` and `comments` source flows.
+
+- `apps/wallet/feature/transfers-page/wallet-balances-table.tsx` (modified)
+  - Unstake payout plan now uses `pendingUnstakeAmount` for:
+    - total unstake amount
+    - per-transaction payout amount.
+  - `Unstake payout plan` line now renders only when `pendingUnstakeAmount > 0` and schedule metadata is valid.
+  - `Unstake period` line now also renders only when `pendingUnstakeAmount > 0`.
+
+- Validation run on 2026-03-05:
+  - `corepack pnpm -C apps/wallet exec tsc --noEmit`
+    - passed.
+
+## 2026-03-05 Documentation Follow-up (Customized Usage Instructions)
+
+- `README.md` (modified)
+  - Added a dedicated section documenting how to use this customized single-token Denser build:
+    - env setup for blog/wallet
+    - local run commands (`run:blog:local`, `run:wallet:local`)
+    - revert-to-default behavior when token config is disabled/invalid
+    - included feature coverage summary for blog and wallet.
+
 ## 2026-03-03 Updates (HE PAYOUT Defaults To Configured Token Community)
 
 - Goal
