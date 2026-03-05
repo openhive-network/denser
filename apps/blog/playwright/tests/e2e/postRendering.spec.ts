@@ -619,6 +619,80 @@ test.describe('GitLab/GitHub link position regression (issue #613)', () => {
   });
 });
 
+test.describe('Instagram link crashes post rendering regression (issue #601)', () => {
+  const fixturePost = {
+    community: 'hive-163772',
+    author: 'intoy.bugoy',
+    permlink: 'scenic-view-of-lantaw-compostela-cebu-philippines-lakwatsaniintoydiary-071-7jh'
+  };
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('post intro text renders at the top, not displaced to the bottom by Instagram link', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const bodyText = await postPage.articleBody.textContent();
+    expect(bodyText).not.toBeNull();
+
+    // The intro text must appear near the top of the post, before the main content
+    const introPos = bodyText!.indexOf('Heyaah Hivers');
+    const restaurantPos = bodyText!.indexOf('Lantaw Restaurant');
+    const instagramPos = bodyText!.indexOf('INSTAGRAM');
+    const inleoPos = bodyText!.indexOf('Posted Using');
+
+    expect(introPos, 'Intro text should exist in content').toBeGreaterThanOrEqual(0);
+    expect(restaurantPos, 'Restaurant description should exist').toBeGreaterThanOrEqual(0);
+    expect(instagramPos, 'Instagram link should exist').toBeGreaterThanOrEqual(0);
+    expect(inleoPos, 'INLEO footer should exist').toBeGreaterThanOrEqual(0);
+
+    // Correct order: intro -> restaurant content -> Instagram social links -> INLEO footer
+    expect(
+      introPos,
+      'Intro must appear before restaurant description (not displaced to bottom)'
+    ).toBeLessThan(restaurantPos);
+
+    expect(
+      restaurantPos,
+      'Restaurant description must appear before Instagram social links'
+    ).toBeLessThan(instagramPos);
+
+    expect(
+      instagramPos,
+      'Instagram link must appear before INLEO footer'
+    ).toBeLessThan(inleoPos);
+  });
+
+  test('intro text is not duplicated after INLEO footer', async ({ page, browserName }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const bodyText = await postPage.articleBody.textContent();
+    expect(bodyText).not.toBeNull();
+
+    // "Posted Using INLEO" is the last real content line
+    const inleoPos = bodyText!.indexOf('Posted Using');
+    expect(inleoPos, 'INLEO footer should exist').toBeGreaterThanOrEqual(0);
+
+    const textAfterFooter = bodyText!.substring(inleoPos);
+    expect(
+      textAfterFooter,
+      'Intro text should not be displaced after the INLEO footer'
+    ).not.toContain('Heyaah Hivers');
+  });
+});
+
 test.describe('Editor preview - collapsible sections', () => {
   test('collapsible details section renders and toggles in preview', async ({ page, browserName }) => {
     chromiumOnly(browserName);
