@@ -11,11 +11,20 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { StaleTime } from '@/blog/lib/react-query';
 import { useSSRObserver, useInitialCommunities } from '@/blog/components/observer-provider';
+import {
+  getSidechainRewardsConfig,
+  getSidechainRewardsFeedTag,
+  isSidechainRewardsConfigured
+} from '@ui/lib/sidechain-rewards';
 
 const CommunitiesSidebar: FC = () => {
   const { t } = useTranslation('common_blog');
   const sort = 'rank';
   const query = null;
+  const sidechainConfig = getSidechainRewardsConfig();
+  const isSidechainConfigured = isSidechainRewardsConfigured(sidechainConfig);
+  const heCommunityTag = getSidechainRewardsFeedTag(sidechainConfig);
+  const defaultPostsPath = isSidechainConfigured ? `/he-payout/${heCommunityTag}` : '/trending';
   const ssrObserver = useSSRObserver();
   const initialCommunities = useInitialCommunities();
   const { user, isHydrated } = useUserClient();
@@ -43,7 +52,7 @@ const CommunitiesSidebar: FC = () => {
     >
       <CardHeader className="px-0 py-4">
         <CardTitle>
-          <Link href="/trending" className="hover:text-destructive">
+          <Link href={defaultPostsPath} className="hover:text-destructive">
             {t('navigation.communities_nav.all_posts')}
           </Link>
         </CardTitle>

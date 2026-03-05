@@ -27,16 +27,28 @@ import { useTranslation } from '@/blog/i18n/client';
 import { usePathname } from 'next/navigation';
 import { MainNav } from './main-nav';
 import SearchButton from './search-button';
+import {
+  getSidechainRewardsConfig,
+  getSidechainRewardsFeedTag,
+  isSidechainRewardsConfigured
+} from '@ui/lib/sidechain-rewards';
 
 const MainBar: FC = () => {
   const { t } = useTranslation('common_blog');
   const pathname = usePathname();
   const { user } = useUserClient();
   const [isClient, setIsClient] = useState(false);
+  const [brandLogoFailed, setBrandLogoFailed] = useState(false);
+  const sidechainConfig = getSidechainRewardsConfig();
+  const isSidechainConfigured = isSidechainRewardsConfigured(sidechainConfig);
+  const heCommunityTag = getSidechainRewardsFeedTag(sidechainConfig);
+  const defaultPostsPath = isSidechainConfigured ? `/he-payout/${heCommunityTag}` : '/trending';
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const displaySiteName = isClient && siteConfig.name ? siteConfig.name : 'Hive Blog';
 
   const { manabarsData } = useLoggedUserContext();
   const { data } = useQuery({
@@ -71,6 +83,8 @@ const MainBar: FC = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const useCustomBrandLogo = isClient && Boolean(siteConfig.brandLogoUrl) && !brandLogoFailed;
   return (
     <header
       className={clsx(
@@ -82,14 +96,33 @@ const MainBar: FC = () => {
       translate="no"
     >
       <div className="container flex h-16 w-full items-center justify-between">
-        <Link href="/trending" className="flex items-center space-x-2">
-          <Icons.hive className="h-6 w-6" />
-          <div className="flex flex-col md:flex-row">
-            <span className="font-bold sm:inline-block">{siteConfig.name}</span>
-            {siteConfig.chainEnv !== 'mainnet' && (
-              <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
-            )}
-          </div>
+        <Link href={defaultPostsPath} className="flex items-center space-x-2">
+          {useCustomBrandLogo ? (
+            <>
+              <img
+                src={siteConfig.brandLogoUrl}
+                alt={siteConfig.brandLogoAlt}
+                className="h-8 w-8 object-contain"
+                onError={() => setBrandLogoFailed(true)}
+              />
+              <div className="flex flex-col md:flex-row">
+                <span className="font-bold sm:inline-block">{displaySiteName}</span>
+                {siteConfig.chainEnv !== 'mainnet' && (
+                  <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <Icons.hive className="h-6 w-6" />
+              <div className="flex flex-col md:flex-row">
+                <span className="font-bold sm:inline-block">{displaySiteName}</span>
+                {siteConfig.chainEnv !== 'mainnet' && (
+                  <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
+                )}
+              </div>
+            </>
+          )}
         </Link>
 
         <MainNav />
@@ -109,7 +142,11 @@ const MainBar: FC = () => {
                   </Button>
                 </DialogLogin>
                 <Link href="https://signup.hive.io/">
-                  <Button variant="redHover" className="whitespace-nowrap" data-testid="signup-btn">
+                  <Button
+                    variant="redHover"
+                    className="whitespace-nowrap he-signup-accent"
+                    data-testid="signup-btn"
+                  >
                     {t('navigation.main_nav_bar.sign_up')}
                   </Button>
                 </Link>

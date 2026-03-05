@@ -25,6 +25,23 @@ export interface CspConfig {
 /**
  * Build connect-src allowed hosts from environment variables
  */
+const BOOLEAN_TRUE_VALUES = new Set(['1', 'true', 'yes', 'on']);
+const INVALID_TOKEN_VALUES = new Set(['NULL', 'UNDEFINED', 'NONE', 'N/A', 'NA', 'FALSE', '0']);
+
+function isHeRewardsConfiguredFromEnv(): boolean {
+  const enabled = BOOLEAN_TRUE_VALUES.has((process.env.REACT_APP_HE_REWARDS_ENABLED ?? '').trim().toLowerCase());
+  if (!enabled) {
+    return false;
+  }
+
+  const token = (process.env.REACT_APP_HE_REWARDS_TOKEN ?? '').trim().toUpperCase();
+  if (token.length === 0 || INVALID_TOKEN_VALUES.has(token)) {
+    return false;
+  }
+
+  return /^[A-Z0-9.-]{1,32}$/.test(token);
+}
+
 function buildConnectSrcHosts(): Set<string> {
   const hosts = new Set([
     'https://api.hive.blog',
@@ -32,6 +49,19 @@ function buildConnectSrcHosts(): Set<string> {
     'https://api.openhive.network',
     'https://images.hive.blog'
   ]);
+
+  const addOriginFromEnv = (envKey: string) => {
+    const raw = process.env[envKey];
+    if (!raw || raw.trim().length === 0) {
+      return;
+    }
+
+    try {
+      hosts.add(new URL(raw).origin);
+    } catch {
+      // Ignore invalid URLs from env
+    }
+  };
 
   // Allow custom API nodes from environment
   const allowedNodes = process.env.REACT_APP_ALLOWED_HIVE_API_NODES;
@@ -69,6 +99,15 @@ function buildConnectSrcHosts(): Set<string> {
       hosts.add('https://*.ingest.sentry.io');
       hosts.add('https://*.ingest.us.sentry.io');
     }
+  }
+
+  // Optional Hive-Engine sidechain endpoints used by blog/wallet reward calls.
+  // Only include when token integration is actually configured.
+  if (isHeRewardsConfiguredFromEnv()) {
+    addOriginFromEnv('REACT_APP_HE_SCOT_API_BASE_URL');
+    addOriginFromEnv('REACT_APP_HE_COMMENTS_RPC_URL');
+    addOriginFromEnv('REACT_APP_HE_HISTORY_API_BASE_URL');
+    hosts.add('https://history.hive-engine.com');
   }
 
   return hosts;

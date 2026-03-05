@@ -178,7 +178,7 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
           <Button variant="redHover" onClick={onDelegate} disabled={!isFormValid}>
             {delegateMutation.isLoading ? (
               <span className="flex h-5 w-12 items-center justify-center">
-                <CircleSpinner loading={delegateMutation.isLoading} size={18} color="#dc2626" />
+                <CircleSpinner loading={delegateMutation.isLoading} size={18} color="hsl(var(--destructive))" />
               </span>
             ) : (
               'Delegate RC'

@@ -17,6 +17,47 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 const SITE_DESC =
   'Communities without borders. A social network owned and operated by its users, powered by Hive.';
 
+const BOOLEAN_TRUE_VALUES = new Set(['1', 'true', 'yes', 'on']);
+const INVALID_TOKEN_VALUES = new Set(['NULL', 'UNDEFINED', 'NONE', 'N/A', 'NA', 'FALSE', '0']);
+
+const parseBoolean = (value: string): boolean =>
+  BOOLEAN_TRUE_VALUES.has(value.trim().toLowerCase());
+
+const normalizeToken = (value: string): string => {
+  const normalized = value.trim().toUpperCase();
+  if (normalized.length === 0 || INVALID_TOKEN_VALUES.has(normalized)) {
+    return '';
+  }
+  return /^[A-Z0-9.-]{1,32}$/.test(normalized) ? normalized : '';
+};
+
+const readEnv = (...keys: string[]): string => {
+  for (const key of keys) {
+    const value = process.env[key];
+    if (typeof value === 'string' && value.trim().length > 0) {
+      return value.trim();
+    }
+  }
+  return '';
+};
+
+const resolveFaviconFromEnv = (): string => {
+  const heRewardsEnabled = parseBoolean(
+    readEnv('HE_REWARDS_ENABLED', 'REACT_APP_HE_REWARDS_ENABLED')
+  );
+  const heRewardsToken = normalizeToken(
+    readEnv('HE_REWARDS_TOKEN', 'REACT_APP_HE_REWARDS_TOKEN')
+  );
+  const heBrandingEnabled = heRewardsEnabled && heRewardsToken.length > 0;
+  const logoFromEnv =
+    readEnv('SITE_LOGO_URL', 'REACT_APP_SITE_LOGO_URL') ||
+    readEnv('HE_REWARDS_LOGO_URL', 'REACT_APP_HE_REWARDS_LOGO_URL');
+
+  return heBrandingEnabled && logoFromEnv ? logoFromEnv : '/favicon.ico';
+};
+
+const faviconIcon = resolveFaviconFromEnv();
+
 const metadata = {
   metadataBase: new URL(process.env.REACT_APP_SITE_DOMAIN || 'https://hive.blog'),
   title: {
@@ -25,7 +66,7 @@ const metadata = {
   },
   description: SITE_DESC,
   icons: {
-    icon: '/favicon.ico'
+    icon: faviconIcon
   },
   openGraph: {
     type: 'website',

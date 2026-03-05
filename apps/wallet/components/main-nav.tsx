@@ -12,8 +12,8 @@ export function MainNav() {
           href="/trending"
           target="_blank"
           className={cn(
-            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600',
-            pathname === '/trending' ? 'text-red-600' : 'text-foreground/60'
+            'flex h-full items-center border-b-2 border-white transition-colors hover:border-destructive hover:text-destructive',
+            pathname === '/trending' ? 'text-destructive' : 'text-foreground/60'
           )}
           data-testid="nav-posts-link"
         >
@@ -23,8 +23,8 @@ export function MainNav() {
           href="/proposals"
           rel="noopener noreferrer"
           className={cn(
-            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600',
-            pathname === '/proposals' ? 'text-red-600' : 'text-foreground/60'
+            'flex h-full items-center border-b-2 border-white transition-colors hover:border-destructive hover:text-destructive',
+            pathname === '/proposals' ? 'text-destructive' : 'text-foreground/60'
           )}
           data-testid="nav-proposals-link"
         >
@@ -34,8 +34,8 @@ export function MainNav() {
           href="/~witnesses"
           rel="noopener noreferrer"
           className={cn(
-            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600',
-            pathname === '/~witnesses' ? 'text-red-600' : 'text-foreground/60'
+            'flex h-full items-center border-b-2 border-white transition-colors hover:border-destructive hover:text-destructive',
+            pathname === '/~witnesses' ? 'text-destructive' : 'text-foreground/60'
           )}
           data-testid="nav-witnesses-link"
         >
@@ -47,8 +47,8 @@ export function MainNav() {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            'flex h-full items-center border-b-2 border-white transition-colors hover:border-red-600 hover:text-red-600',
-            pathname === 'https://hive.io/eco/' ? 'text-red-600' : 'text-foreground/60'
+            'flex h-full items-center border-b-2 border-white transition-colors hover:border-destructive hover:text-destructive',
+            pathname === 'https://hive.io/eco/' ? 'text-destructive' : 'text-foreground/60'
           )}
           data-testid="nav-our-dapps-link"
         >

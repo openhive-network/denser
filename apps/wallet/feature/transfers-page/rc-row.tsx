@@ -50,7 +50,7 @@ const RCRow = ({ username }: { username: string }) => {
       </div>
       {isLoading ? (
         <div className="flex h-full items-center justify-center">
-          <CircleSpinner size={24} color="#dc2626" />
+          <CircleSpinner size={24} color="hsl(var(--destructive))" />
         </div>
       ) : !!data ? (
         <div className="my-2 flex flex-col items-center justify-around gap-2 sm:flex-row">

@@ -459,7 +459,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               {userFound ? (
                 <>
                   <Button
-                    className="w-full flex-1 bg-red-600 text-white hover:bg-red-500"
+                    className="w-full flex-1 bg-red-600 text-white hover:bg-red-500 he-solid-accent"
                     type="submit"
                     disabled={!form.formState.isValid}
                     onClick={form.handleSubmit(onAuthenticate)}
@@ -479,7 +479,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 </>
               ) : (
                 <Button
-                  className="w-full flex-1 bg-red-600 text-white hover:bg-red-500"
+                  className="w-full flex-1 bg-red-600 text-white hover:bg-red-500 he-solid-accent"
                   type="submit"
                   data-testid="save-sign-in-button"
                   disabled={!form.formState.isValid}

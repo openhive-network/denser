@@ -6,6 +6,8 @@ const SERVER_VAR_PREFIX = 'DENSER_SERVER_';
 
 const MAINNET_CHAIN_ID = 'beeab0de00000000000000000000000000000000000000000000000000000000';
 const MIRRORNET_CHAIN_ID = '42';
+const BOOLEAN_TRUE_VALUES = new Set(['1', 'true', 'yes', 'on']);
+const INVALID_TOKEN_VALUES = new Set(['NULL', 'UNDEFINED', 'NONE', 'N/A', 'NA', 'FALSE', '0']);
 
 export type ChainEnv = 'mainnet' | 'mirrornet' | 'testnet';
 
@@ -16,10 +18,28 @@ const chainEnv: Record<string, ChainEnv> = {
 };
 
 const chainId = env('CHAIN_ID') ? env('CHAIN_ID') : MAINNET_CHAIN_ID;
+const parseBoolean = (value: string): boolean => BOOLEAN_TRUE_VALUES.has(value.trim().toLowerCase());
+const normalizeToken = (value: string): string => {
+  const normalized = value.trim().toUpperCase();
+  if (normalized.length === 0 || INVALID_TOKEN_VALUES.has(normalized)) {
+    return '';
+  }
+  return /^[A-Z0-9.-]{1,32}$/.test(normalized) ? normalized : '';
+};
+
+const heRewardsEnabled = parseBoolean(env('HE_REWARDS_ENABLED') ?? '');
+const heRewardsToken = normalizeToken(env('HE_REWARDS_TOKEN') ?? '');
+const heBrandingEnabled = heRewardsEnabled && heRewardsToken.length > 0;
+const brandedSiteName = (env('SITE_NAME') ?? '').trim();
+const brandedSiteLogo = (env('SITE_LOGO_URL') ?? '').trim();
+const brandedSiteLogoAlt = (env('SITE_LOGO_ALT') ?? '').trim();
+
 export const siteConfig = {
-  name: 'Hive Blog',
+  name: heBrandingEnabled && brandedSiteName ? brandedSiteName : 'Hive Blog',
   url: configuredSiteDomain,
   endpoint: configuredApiEndpoint,
+  brandLogoUrl: heBrandingEnabled ? brandedSiteLogo : '',
+  brandLogoAlt: heBrandingEnabled && brandedSiteLogoAlt ? brandedSiteLogoAlt : 'Site logo',
   chainId,
   chainEnv: chainEnv[chainId] || chainEnv['testnet'],
   ogImage: '',

@@ -15,7 +15,7 @@ export default function WalletMenu({ username }: { username: string }) {
         className={clsx(
           pathname === `/@${username}/transfers`
             ? 'font-semibold text-slate-700 dark:text-slate-100'
-            : 'hover:text-red-600 dark:hover:text-red-400'
+            : 'hover:text-destructive'
         )}
         data-testid="wallet-balances-link"
       >
@@ -26,10 +26,10 @@ export default function WalletMenu({ username }: { username: string }) {
         className={clsx(
           pathname === `/@${username}/delegations`
             ? 'font-semibold text-slate-700 dark:text-slate-100'
-            : 'hover:text-red-600 dark:hover:text-red-400'
+            : 'hover:text-destructive'
         )}
       >
-        <div className="hover:text-red-600 dark:hover:text-red-400" data-testid="wallet-delegations-link">
+        <div className="hover:text-destructive" data-testid="wallet-delegations-link">
           {t('navigation.wallet_nav.delegations')}
         </div>
       </Link>
@@ -39,10 +39,10 @@ export default function WalletMenu({ username }: { username: string }) {
           className={clsx(
             pathname === `/@${username}/permissions`
               ? 'font-semibold text-slate-700 dark:text-slate-100'
-              : 'hover:text-red-600 dark:hover:text-red-400'
+              : 'hover:text-destructive'
           )}
         >
-          <div className="hover:text-red-600 dark:hover:text-red-400" data-testid="wallet-delegations-link">
+          <div className="hover:text-destructive" data-testid="wallet-delegations-link">
             {t('navigation.wallet_nav.keys_and_permissions')}
           </div>
         </Link>
@@ -53,10 +53,10 @@ export default function WalletMenu({ username }: { username: string }) {
           className={clsx(
             pathname === `/@${username}/password`
               ? 'font-semibold text-slate-700 dark:text-slate-100'
-              : 'hover:text-red-600 dark:hover:text-red-400'
+              : 'hover:text-destructive'
           )}
         >
-          <div className="hover:text-red-600 dark:hover:text-red-400" data-testid="wallet-delegations-link">
+          <div className="hover:text-destructive" data-testid="wallet-delegations-link">
             {t('navigation.wallet_nav.change_password')}
           </div>
         </Link>
@@ -67,10 +67,10 @@ export default function WalletMenu({ username }: { username: string }) {
           className={clsx(
             pathname === `/@${username}/communities`
               ? 'font-semibold text-slate-700 dark:text-slate-100'
-              : 'hover:text-red-600 dark:hover:text-red-400'
+              : 'hover:text-destructive'
           )}
         >
-          <div className="hover:text-red-600 dark:hover:text-red-400" data-testid="wallet-delegations-link">
+          <div className="hover:text-destructive" data-testid="wallet-delegations-link">
             {t('navigation.wallet_nav.communities')}
           </div>
         </Link>
@@ -81,10 +81,10 @@ export default function WalletMenu({ username }: { username: string }) {
           className={clsx(
             pathname === `/@${username}/authorities`
               ? 'font-semibold text-slate-700 dark:text-slate-100'
-              : 'hover:text-red-600 dark:hover:text-red-400'
+              : 'hover:text-destructive'
           )}
         >
-          <div className="hover:text-red-600 dark:hover:text-red-400" data-testid="wallet-delegations-link">
+          <div className="hover:text-destructive" data-testid="wallet-delegations-link">
             Authorities
           </div>
         </Link>

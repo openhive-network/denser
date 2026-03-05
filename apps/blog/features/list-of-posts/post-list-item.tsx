@@ -21,6 +21,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DetailsCardHover from './details-card-hover';
 import PostImage from './post-img';
 import { ReblogDialog } from './reblog-dialog';
+import SidechainPostReward from './sidechain-post-reward';
 import { useReblogMutation } from './hooks/use-reblog-mutation';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
 import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
@@ -266,6 +267,12 @@ const PostListItem = memo(
                       ${post.payout.toFixed(2)}
                     </div>
                   </DetailsCardHover>
+                  <SidechainPostReward
+                    author={post.author}
+                    permlink={post.permlink}
+                    className="ml-1"
+                    dataTestId="sidechain-post-card-payout"
+                  />
 
                   <Separator orientation="vertical" />
                   {post.stats ? <PostCardUpvotesTooltip votes={post.stats.total_votes} /> : null}

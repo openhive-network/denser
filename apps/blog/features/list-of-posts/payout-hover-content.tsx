@@ -10,6 +10,7 @@ import { convertStringToBig } from '@ui/lib/helpers';
 import { getFeedHistory } from '@transaction/lib/hive-api';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { useTranslation } from '@/blog/i18n/client';
+import SidechainPostReward from './sidechain-post-reward';
 
 interface IBeneficiary {
   account: string;
@@ -63,6 +64,12 @@ export default function PayoutHoverContent({ post }: { post: Entry }) {
               ))
             : null}
         </span>
+        <SidechainPostReward
+          author={post.author}
+          permlink={post.permlink}
+          dataTestId="sidechain-payout-hover"
+          className="mt-1"
+        />
       </>
     );
   }
@@ -93,6 +100,12 @@ export default function PayoutHoverContent({ post }: { post: Entry }) {
           {t('amount_hover_card.max_accepted_payout', { value: fmt(post.max_accepted_payout.split(' ')[0]) })}
         </span>
       ) : null}
+      <SidechainPostReward
+        author={post.author}
+        permlink={post.permlink}
+        dataTestId="sidechain-payout-hover"
+        className="mt-1"
+      />
     </>
   );
 }

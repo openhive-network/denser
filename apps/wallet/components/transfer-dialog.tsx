@@ -499,7 +499,7 @@ export function TransferDialog({
               onClick={type === 'powerDown' ? onConfirm : form.handleSubmit(onSubmit)}
             >
               {powerDownMutation.isLoading ? (
-                <CircleSpinner loading={powerDownMutation.isLoading} size={18} color="#dc2626" />
+                <CircleSpinner loading={powerDownMutation.isLoading} size={18} color="hsl(var(--destructive))" />
               ) : (
                 data.buttonTitle
               )}
@@ -662,7 +662,7 @@ export function TransferDialog({
                     withdrawFromSavingsMutation.isLoading
                   }
                   size={18}
-                  color="#dc2626"
+                  color="hsl(var(--destructive))"
                 />
               ) : (
                 t('transfers_page.ok')

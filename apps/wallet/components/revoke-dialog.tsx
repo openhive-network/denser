@@ -58,7 +58,7 @@ const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: 
         </div>
         <DialogFooter>
           <Button variant="redHover" className="px-6" onClick={onRevoke} disabled={loading}>
-            {loading ? <CircleSpinner loading={loading} size={18} color="#dc2626" /> : 'Ok'}
+            {loading ? <CircleSpinner loading={loading} size={18} color="hsl(var(--destructive))" /> : 'Ok'}
           </Button>
           <div className="flex-grow" />
           <Button variant="link" onClick={() => setOpen(false)} disabled={loading}>

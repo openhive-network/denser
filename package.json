@@ -2,6 +2,10 @@
   "name": "@hive/front-end-monorepo",
   "version": "1.0.0",
   "scripts": {
+    "sync:env:blog": "node ./scripts/sync-env-local.js blog",
+    "sync:env:wallet": "node ./scripts/sync-env-local.js wallet",
+    "run:blog:local": "node ./scripts/write-version.js ./apps/blog/version.json && node ./scripts/sync-env-local.js blog && pnpm -C apps/blog exec react-env -- next dev -H 0.0.0.0 -p 3000",
+    "run:wallet:local": "node ./scripts/write-version.js ./apps/wallet/version.json && node ./scripts/sync-env-local.js wallet && pnpm -C apps/wallet exec react-env -- next dev -p 4000",
     "dev": "turbo dev",
     "build": "turbo build",
     "dev:blog": "./scripts/write-version.sh ./apps/blog/version.json && turbo dev --filter=@hive/blog",

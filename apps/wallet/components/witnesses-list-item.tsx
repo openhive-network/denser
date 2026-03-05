@@ -114,7 +114,7 @@ function WitnessListItem({
               <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
               {voteLoading ? (
                 <span className="relative rounded-full bg-white dark:bg-slate-900">
-                  <CircleSpinner loading={voteLoading} size={20} color="#dc2626" />
+                  <CircleSpinner loading={voteLoading} size={20} color="hsl(var(--destructive))" />
                 </span>
               ) : !isVoted ? (
                 <Icons.arrowUpCircle

@@ -78,7 +78,7 @@ const RewardsBanner = ({ username, isOwner, rewardBalances }: RewardsBannerProps
             disabled={claimRewardsMutation.isLoading}
           >
             {t('transfers_page.redeem_rewards')}
-            {claimRewardsMutation.isLoading ? <CircleSpinner size={18} color="#dc2626" /> : null}
+            {claimRewardsMutation.isLoading ? <CircleSpinner size={18} color="hsl(var(--destructive))" /> : null}
           </Button>
         )}
       </div>

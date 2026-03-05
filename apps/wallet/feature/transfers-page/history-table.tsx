@@ -150,7 +150,7 @@ const HistoryTable = ({ t, isLoading, historyList = [], username, dynamicData }:
   if (historyList.length === 0)
     return (
       <div
-        className="py-12 text-center text-3xl text-red-300"
+        className="py-12 text-center text-3xl text-destructive"
         data-testid="wallet-account-history-no-transacions-found"
       >
         {t('profile.no_transactions_found')}

@@ -143,6 +143,10 @@ export class TransactionService {
     singleSignKeyType?: SignTransaction['singleSignKeyType'],
     requiredKeyType?: SignTransaction['requiredKeyType']
   ): Promise<string> {
+    if (!this.signerOptions || !this.signerOptions.username || !this.signerOptions.loginType) {
+      throw new Error('Signer is not initialized. Please log in and try again.');
+    }
+
     const signer = getSigner(this.signerOptions);
     return signer.signTransaction({
       digest: txBuilder.sigDigest,
@@ -807,6 +811,120 @@ export class TransactionService {
         }
       });
     }, transactionOptions);
+  }
+
+  private getSidechainCustomJsonId(customJsonId?: string): string {
+    const normalized = (customJsonId ?? '').trim();
+    return normalized.length > 0 ? normalized : 'ssc-mainnet-hive';
+  }
+
+  private async runSidechainTokenOperation(
+    account: string,
+    action: 'transfer' | 'stake' | 'unstake' | 'delegate',
+    payload: Record<string, unknown>,
+    transactionOptions: TransactionOptions = {},
+    customJsonId?: string
+  ) {
+    const jsonId = this.getSidechainCustomJsonId(customJsonId);
+
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        custom_json_operation: {
+          id: jsonId,
+          json: JSON.stringify({
+            contractName: 'tokens',
+            contractAction: action,
+            contractPayload: payload
+          }),
+          required_auths: [account],
+          required_posting_auths: []
+        }
+      });
+    }, transactionOptions);
+  }
+
+  async transferSidechainToken(
+    account: string,
+    toAccount: string,
+    symbol: string,
+    quantity: string,
+    memo = '',
+    transactionOptions: TransactionOptions = {},
+    customJsonId?: string
+  ) {
+    return await this.runSidechainTokenOperation(
+      account,
+      'transfer',
+      {
+        to: toAccount,
+        symbol,
+        quantity,
+        memo
+      },
+      transactionOptions,
+      customJsonId
+    );
+  }
+
+  async stakeSidechainToken(
+    account: string,
+    symbol: string,
+    quantity: string,
+    toAccount?: string,
+    transactionOptions: TransactionOptions = {},
+    customJsonId?: string
+  ) {
+    return await this.runSidechainTokenOperation(
+      account,
+      'stake',
+      {
+        to: toAccount || account,
+        symbol,
+        quantity
+      },
+      transactionOptions,
+      customJsonId
+    );
+  }
+
+  async unstakeSidechainToken(
+    account: string,
+    symbol: string,
+    quantity: string,
+    transactionOptions: TransactionOptions = {},
+    customJsonId?: string
+  ) {
+    return await this.runSidechainTokenOperation(
+      account,
+      'unstake',
+      {
+        symbol,
+        quantity
+      },
+      transactionOptions,
+      customJsonId
+    );
+  }
+
+  async delegateSidechainToken(
+    account: string,
+    toAccount: string,
+    symbol: string,
+    quantity: string,
+    transactionOptions: TransactionOptions = {},
+    customJsonId?: string
+  ) {
+    return await this.runSidechainTokenOperation(
+      account,
+      'delegate',
+      {
+        to: toAccount,
+        symbol,
+        quantity
+      },
+      transactionOptions,
+      customJsonId
+    );
   }
 
   async claimRewards(account: ApiAccount, transactionOptions: TransactionOptions = {}) {

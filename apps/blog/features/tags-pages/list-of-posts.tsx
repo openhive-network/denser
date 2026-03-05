@@ -17,7 +17,15 @@ import { isCommunity } from '@ui/lib/utils';
 import { PostListSkeleton } from '@hive/ui';
 import { useSSRObserver, useInitialPosts } from '@/blog/components/observer-provider';
 
-const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
+const SortedPagesPosts = ({
+  sort,
+  tag = '',
+  hePayoutOnly = false
+}: {
+  sort: SortTypes;
+  tag?: string;
+  hePayoutOnly?: boolean;
+}) => {
   const ssrObserver = useSSRObserver();
   const initialPosts = useInitialPosts();
   const { user, isHydrated } = useUserClient();
@@ -114,7 +122,8 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
                   data={page}
                   key={`f-${pageIndex}`}
                   isCommunityPage={isCommunity(tag)}
-                  testFilter={sort}
+                  testFilter={hePayoutOnly ? 'he-payout' : sort}
+                  hePayoutOnly={hePayoutOnly}
                 />
                 {/* Add prefetch trigger before the last page, when we have more than one page */}
                 {pageIndex === data.pages.length - 1 && totalPosts > 10 && (

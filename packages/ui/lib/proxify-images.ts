@@ -2,7 +2,29 @@ import querystring from 'querystring';
 import multihash from 'multihashes';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 
-const proxyBase = configuredImagesEndpoint;
+const configuredProxyBase = configuredImagesEndpoint.replace(/\/+$/, '');
+// images.hive.blog currently returns 521 for many /p/* images; route proxied image payloads
+// through ecency when hive endpoint is configured.
+const proxyBase = configuredProxyBase.includes('images.hive.blog')
+  ? 'https://images.ecency.com'
+  : configuredProxyBase;
+
+const rewriteExistingProxifiedUrl = (value: string): string | null => {
+  if (value.startsWith('/p/')) {
+    return `${proxyBase}${value}`;
+  }
+
+  try {
+    const parsed = new URL(value);
+    if (parsed.pathname.startsWith('/p/')) {
+      return `${proxyBase}${parsed.pathname}${parsed.search}`;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+};
 
 interface ProxyOptions {
   [key: string]: string | number | undefined;
@@ -35,9 +57,10 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
     return '';
   }
 
-  // Skip already-proxified URLs (ones that already have /p/ hash format)
-  if (url.includes('/p/') && url.includes('images.hive.blog')) {
-    return url; // Return as-is, already proxified
+  // If URL is already in /p/hash format, rewrite host to configured image endpoint.
+  const rewrittenProxifiedUrl = rewriteExistingProxifiedUrl(url);
+  if (rewrittenProxifiedUrl) {
+    return rewrittenProxifiedUrl;
   }
 
   if (url.indexOf('https://steemitimages.com/') === 0 && url.indexOf('https://steemitimages.com/D') !== 0) {

@@ -6,7 +6,8 @@ export const initialFilters: TransferFilters = {
   others: false,
   incoming: false,
   outcoming: false,
-  exlude: false
+  exlude: false,
+  historyView: 'hive'
 };
 type Transfer = {
   type: 'transfer';

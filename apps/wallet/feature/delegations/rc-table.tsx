@@ -26,7 +26,7 @@ const RCTable = ({ account }: { account: string }) => {
           <tbody>
             {isLoading ? (
               <div className="flex h-48 items-center justify-center">
-                <CircleSpinner size={48} color="#dc2626" />
+                <CircleSpinner size={48} color="hsl(var(--destructive))" />
               </div>
             ) : data ? (
               data.list.length === 0 ? (

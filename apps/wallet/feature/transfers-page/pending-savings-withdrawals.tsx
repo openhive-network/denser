@@ -80,7 +80,7 @@ const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWith
                             <CircleSpinner
                               loading={cancelTransferFromSavingsMutation.isLoading}
                               size={18}
-                              color="#dc2626"
+                              color="hsl(var(--destructive))"
                             />
                           ) : (
                             t('transfers_page.cancel_withdraw_from_savings')

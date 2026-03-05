@@ -42,6 +42,86 @@ pnpm run start:blog
 pnpm run start:wallet
 ```
 
+## Customized Hive-Engine Token Mode (This Denser Version)
+
+This repository currently includes additive Hive-Engine single-token customization for both blog and wallet.
+If token env settings are missing, empty, `null`, or invalid, the UI reverts to default Hive behavior.
+
+### 1. Local setup (Windows-friendly)
+
+```bash
+corepack enable
+corepack pnpm install
+```
+
+Create local env files from examples:
+
+```bash
+copy .env.blog.example .env.blog
+copy .env.wallet.example .env.wallet
+```
+
+### 2. Configure token mode (single token)
+
+Set these in both `.env.blog` and `.env.wallet`:
+
+```bash
+REACT_APP_HE_REWARDS_ENABLED=true
+REACT_APP_HE_REWARDS_TOKEN=PIMP
+REACT_APP_HE_REWARDS_SOURCE=scot
+REACT_APP_HE_SCOT_API_BASE_URL=https://scot-api.hive-engine.com
+REACT_APP_HE_COMMENTS_RPC_URL=https://api.hive-engine.com/rpc
+REACT_APP_HE_CUSTOM_JSON_ID=ssc-mainnet-hive
+REACT_APP_HE_CHAIN_MODE=hive
+REACT_APP_HE_REWARDS_TEXT_COLOR=#2563eb
+REACT_APP_HE_REWARDS_LOGO_URL=https://your-logo-url
+REACT_APP_HE_REWARDS_LOGO_ALT=PIMP
+```
+
+Optional brand override for blog header:
+
+```bash
+REACT_APP_SITE_NAME=PIMP CENTRAL
+REACT_APP_SITE_LOGO_URL=https://your-logo-url
+REACT_APP_SITE_LOGO_ALT=PIMP
+```
+
+### 3. Run blog and wallet in local dev
+
+Use these scripts (they auto-sync root env files into app-local env files):
+
+```bash
+corepack pnpm run run:blog:local
+corepack pnpm run run:wallet:local
+```
+
+App URLs:
+
+- Blog: `http://localhost:3000`
+- Wallet: `http://localhost:4000`
+
+### 4. Revert to default Hive behavior
+
+In both env files, either:
+
+- set `REACT_APP_HE_REWARDS_ENABLED=false`, or
+- clear `REACT_APP_HE_REWARDS_TOKEN=`
+
+Then restart blog and wallet dev servers.
+
+### 5. Included behavior in this customized mode
+
+- Blog:
+  - Token payout shown beside HIVE payout on posts/comments.
+  - Header/logo/text color can follow env configuration.
+  - Community-first HE payout feed/filter behavior.
+  - Curator breakdown includes HIVE and token columns.
+- Wallet:
+  - Liquid + staked token balances loaded per viewed account.
+  - Token transfer/stake/unstake/delegate flows via Keychain signing.
+  - Token-specific account history filter.
+  - Delegation total and unstake details under staked token row.
+
 ## Testing
 
 To run tests use the following commands:

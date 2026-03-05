@@ -9,7 +9,6 @@ import { Link } from '@hive/ui';
 import DialogLogin from './dialog-login';
 import LangToggle from '@/wallet/components/lang-toggle';
 import { useTranslation } from '@/wallet/i18n/client';
-import { getLogger } from '@ui/lib/logging';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import UserMenu from './user-menu';
 import { PieChart, Pie } from 'recharts';
@@ -22,8 +21,10 @@ import { siteConfig } from '@ui/config/site';
 import WitnessVoteExpiryWarning from './witness-vote-expiry-warning';
 import { getAccount } from '@transaction/lib/hive-api';
 import { getUserAvatarUrl } from '@hive/ui';
-
-const logger = getLogger('app');
+import {
+  getSidechainRewardsConfig,
+  isSidechainRewardsConfigured
+} from '@ui/lib/sidechain-rewards';
 
 const calculateRcStats = (userRc: RcAccount[]) => {
   const manaRegenerationTime = 432000;
@@ -50,6 +51,9 @@ const SiteHeader: FC = () => {
   const { t } = useTranslation('common_wallet');
   const { user } = useUserClient();
   const [isClient, setIsClient] = useState(false);
+  const [brandLogoFailed, setBrandLogoFailed] = useState(false);
+  const sidechainConfig = getSidechainRewardsConfig();
+  const isSidechainConfigured = isSidechainRewardsConfigured(sidechainConfig);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -72,17 +76,47 @@ const SiteHeader: FC = () => {
     : {
         resourceCreditsPercent: 0,
         resourceCreditsWaitTime: 0
-      };
+  };
   const chartAngle = (360 * stats.resourceCreditsPercent) / 100;
   const chart = [{ name: '', value: 1 }];
+  const showTokenBranding = isClient && isSidechainConfigured;
+  const walletBrandName = showTokenBranding ? `${sidechainConfig.token} WALLET` : 'HIVE WALLET';
+  const headerLogoUrl = siteConfig.brandLogoUrl || sidechainConfig.logoUrl;
+  const headerLogoAlt = siteConfig.brandLogoUrl ? siteConfig.brandLogoAlt : sidechainConfig.logoAlt;
+  const useCustomBrandLogo = showTokenBranding && Boolean(headerLogoUrl) && !brandLogoFailed;
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background shadow-sm">
       <div className="container flex h-14 w-full items-center justify-between px-0 pl-1 md:px-8">
         <Link href="/" className="keychainify-checked flex items-center space-x-2 md:mr-6">
-          <Icons.walletlogo className="w-24 md:w-32" />
-          {siteConfig.chainEnv !== 'mainnet' && (
-            <span className="hidden text-xs uppercase text-background md:block">{siteConfig.chainEnv}</span>
+          {showTokenBranding ? (
+            <>
+              {useCustomBrandLogo ? (
+                <img
+                  src={headerLogoUrl}
+                  alt={headerLogoAlt}
+                  className="h-8 w-8 object-contain"
+                  onError={() => setBrandLogoFailed(true)}
+                />
+              ) : (
+                <Icons.hive className="h-7 w-7" />
+              )}
+              <div className="flex flex-col leading-none">
+                <span className="font-bold tracking-wide md:text-lg">{walletBrandName}</span>
+                {siteConfig.chainEnv !== 'mainnet' ? (
+                  <span className="text-xs uppercase text-destructive">{siteConfig.chainEnv}</span>
+                ) : null}
+              </div>
+            </>
+          ) : (
+            <>
+              <Icons.walletlogo className="w-24 md:w-32" />
+              {siteConfig.chainEnv !== 'mainnet' && (
+                <span className="hidden text-xs uppercase text-background md:block">
+                  {siteConfig.chainEnv}
+                </span>
+              )}
+            </>
           )}
         </Link>
         <div className="flex items-center space-x-2 sm:space-x-4">
@@ -95,7 +129,7 @@ const SiteHeader: FC = () => {
                   </Button>
                 </DialogLogin>
                 <Link href="https://signup.hive.io/">
-                  <Button variant="redHover" className="whitespace-nowrap">
+                  <Button variant="redHover" className="whitespace-nowrap he-signup-accent">
                     {t('navigation.main_nav_bar.sign_up')}
                   </Button>
                 </Link>

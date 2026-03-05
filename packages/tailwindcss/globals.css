@@ -358,3 +358,93 @@ summary {
   text-align: right;
   cursor: pointer;
 }
+
+/* Additive sidechain reward styles */
+.he-sidechain-reward {
+  line-height: 1;
+}
+
+.he-sidechain-logo {
+  flex-shrink: 0;
+}
+
+.he-sidechain-token {
+  letter-spacing: 0.02em;
+}
+
+.he-sidechain-amount {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Additive env-driven accent override (used only when HE rewards config is valid). */
+.he-accent-theme {
+  --destructive: var(--he-accent-hsl);
+  --destructive-icon: var(--he-accent-hsl);
+  --link: var(--he-accent-hsl);
+}
+
+/* Additive override for sign-up button's legacy redHover variant. */
+.he-signup-accent {
+  --tw-shadow-color: hsl(var(--destructive-icon)) !important;
+}
+
+.he-signup-accent:hover {
+  background-color: hsl(var(--destructive)) !important;
+}
+
+/* Additive override for legacy solid red auth buttons. */
+.he-accent-theme .he-solid-accent {
+  background-color: hsl(var(--destructive)) !important;
+  color: hsl(var(--destructive-foreground)) !important;
+}
+
+.he-accent-theme .he-solid-accent:hover {
+  filter: brightness(1.06);
+}
+
+/* Additive override for comment sort trigger hardcoded red text. */
+.he-accent-theme .he-comment-sort-accent {
+  color: hsl(var(--destructive)) !important;
+}
+
+/* Additive override for wallet readonly balance values. */
+.he-accent-theme .he-wallet-accent-value {
+  color: hsl(var(--destructive)) !important;
+}
+
+/* Additive override for shared page loader spinner. */
+.he-accent-theme .he-loading-accent {
+  color: hsl(var(--destructive)) !important;
+}
+
+/* Additive modal-only red overrides for env accent compatibility. */
+.he-accent-theme [role='dialog'] .bg-red-600,
+.he-accent-theme [role='alertdialog'] .bg-red-600 {
+  background-color: hsl(var(--destructive)) !important;
+}
+
+.he-accent-theme [role='dialog'] .text-red-500,
+.he-accent-theme [role='dialog'] .text-red-600,
+.he-accent-theme [role='alertdialog'] .text-red-500,
+.he-accent-theme [role='alertdialog'] .text-red-600 {
+  color: hsl(var(--destructive)) !important;
+}
+
+.he-accent-theme [role='dialog'] .hover\:bg-red-600:hover,
+.he-accent-theme [role='dialog'] .hover\:bg-red-700:hover,
+.he-accent-theme [role='alertdialog'] .hover\:bg-red-600:hover,
+.he-accent-theme [role='alertdialog'] .hover\:bg-red-700:hover {
+  background-color: hsl(var(--destructive)) !important;
+}
+
+.he-accent-theme [role='dialog'] .hover\:text-red-600:hover,
+.he-accent-theme [role='dialog'] .hover\:text-red-800:hover,
+.he-accent-theme [role='alertdialog'] .hover\:text-red-600:hover,
+.he-accent-theme [role='alertdialog'] .hover\:text-red-800:hover {
+  color: hsl(var(--destructive)) !important;
+}
+
+.he-accent-theme [role='dialog'] .shadow-red-600,
+.he-accent-theme [role='alertdialog'] .shadow-red-600 {
+  --tw-shadow-color: hsl(var(--destructive)) !important;
+}

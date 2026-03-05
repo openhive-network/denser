@@ -11,6 +11,7 @@ import { memo, useEffect, useRef, useState, useCallback, type ReactNode } from '
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import { ReplyTextbox } from '../post-editor/reply-textbox';
 import DetailsCardHover from '../list-of-posts/details-card-hover';
+import SidechainPostReward from '../list-of-posts/sidechain-post-reward';
 import { IFollowList, Entry } from '@hive/common-hiveio-packages/wax';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
@@ -346,6 +347,11 @@ const CommentListItem = memo(function CommentListItem({
                                 {comment.payout.toFixed(2)}
                               </div>
                             </DetailsCardHover>
+                            <SidechainPostReward
+                              author={comment.author}
+                              permlink={comment.permlink}
+                              dataTestId="sidechain-comment-payout-collapsed"
+                            />
                             {comment.children ? (
                               <>
                                 <Separator orientation="vertical" />
@@ -425,6 +431,11 @@ const CommentListItem = memo(function CommentListItem({
                               {comment.payout.toFixed(2)}
                             </div>
                           </DetailsCardHover>
+                          <SidechainPostReward
+                            author={comment.author}
+                            permlink={comment.permlink}
+                            dataTestId="sidechain-comment-payout"
+                          />
                           <Separator orientation="vertical" className="h-5" />
                           {!!comment.stats && comment.stats.total_votes > 0 ? (
                             <>

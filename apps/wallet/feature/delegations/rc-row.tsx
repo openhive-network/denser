@@ -30,7 +30,7 @@ const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string
           >
             {undelegateMutation.isLoading ? (
               <span className="flex h-5 w-12 items-center justify-center">
-                <CircleSpinner loading={undelegateMutation.isLoading} size={18} color="#dc2626" />
+                <CircleSpinner loading={undelegateMutation.isLoading} size={18} color="hsl(var(--destructive))" />
               </span>
             ) : (
               'Revoke'

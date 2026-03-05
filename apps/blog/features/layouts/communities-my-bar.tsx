@@ -5,10 +5,19 @@ import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import {
+  getSidechainRewardsConfig,
+  getSidechainRewardsFeedTag,
+  isSidechainRewardsConfigured
+} from '@ui/lib/sidechain-rewards';
 
 const CommunitiesMyBar = ({ data }: { data: string[][] }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
+  const sidechainConfig = getSidechainRewardsConfig();
+  const isSidechainConfigured = isSidechainRewardsConfigured(sidechainConfig);
+  const heCommunityTag = getSidechainRewardsFeedTag(sidechainConfig);
+  const defaultPostsPath = isSidechainConfigured ? `/he-payout/${heCommunityTag}` : '/trending';
 
   return (
     <Card
@@ -16,7 +25,7 @@ const CommunitiesMyBar = ({ data }: { data: string[][] }) => {
       data-testid="card-trending-comunities"
     >
       <CardTitle>
-        <Link href="/trending" className="text-base hover:text-destructive">
+        <Link href={defaultPostsPath} className="text-base hover:text-destructive">
           {t('navigation.communities_nav.all_posts')}
         </Link>
       </CardTitle>

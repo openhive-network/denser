@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Big from 'big.js';
 import dayjs from 'dayjs';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
@@ -33,7 +33,14 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { powerdownHive, convertToHP, numberWithCommas } from '@ui/lib/utils';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { getCurrentHpApr } from '@/wallet/lib/utils';
+import {
+  getSidechainRewardsConfig,
+  isSidechainRewardsConfigured
+} from '@ui/lib/sidechain-rewards';
+import { useSidechainWalletReward } from './hooks/use-sidechain-wallet-reward';
 import RCRow from './rc-row';
+import SidechainWalletReward from './sidechain-wallet-reward';
+import SidechainTokenActionDialog from './sidechain-token-action-dialog';
 
 interface SuggestedUser {
   username: string;
@@ -65,7 +72,24 @@ const WalletBalancesTable = ({
 }: WalletBalancesTableProps) => {
   const { t } = useTranslation('common_wallet');
   const [open, setOpen] = useState(false);
+  const [sidechainReady, setSidechainReady] = useState(false);
   const cancelPowerDownMutation = useCancelPowerDownMutation();
+  const sidechainConfig = getSidechainRewardsConfig();
+  const isSidechainConfigured = isSidechainRewardsConfigured(sidechainConfig);
+  const sidechainToken = sidechainConfig.token || 'TOKEN';
+  const showSidechainRows = sidechainReady && isSidechainConfigured;
+  const { data: sidechainWalletData } = useSidechainWalletReward(username);
+  const sidechainPrecision = sidechainWalletData?.precision ?? 3;
+  const sidechainLiquidAmount = sidechainWalletData?.liquidAmount ?? 0;
+  const sidechainStakedAmount = sidechainWalletData?.stakedAmount ?? 0;
+  const sidechainDelegationAmount = sidechainWalletData?.delegationAmount ?? 0;
+  const sidechainPendingUnstakeAmount = sidechainWalletData?.pendingUnstakeAmount ?? 0;
+  const sidechainUnstakeCooldownDays = sidechainWalletData?.unstakeCooldownDays ?? 0;
+  const sidechainUnstakeTransactions = sidechainWalletData?.unstakeTransactions ?? 0;
+
+  useEffect(() => {
+    setSidechainReady(true);
+  }, []);
 
   // Calculate balances
   const price_per_hive = Big(
@@ -174,6 +198,42 @@ const WalletBalancesTable = ({
     }
   };
 
+  const formatSidechainTokenAmount = (value: number): string =>
+    value.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: Math.min(Math.max(sidechainPrecision, 0), 8)
+    });
+
+  const unstakePeriodLabel =
+    sidechainUnstakeCooldownDays > 0 && sidechainUnstakeTransactions > 0
+      ? `${sidechainUnstakeCooldownDays} days in ${sidechainUnstakeTransactions} transactions`
+      : sidechainUnstakeCooldownDays > 0
+        ? `${sidechainUnstakeCooldownDays} days`
+        : sidechainUnstakeTransactions > 0
+          ? `${sidechainUnstakeTransactions} transactions`
+          : 'N/A';
+
+  const unstakeIntervalDays =
+    sidechainUnstakeCooldownDays > 0 && sidechainUnstakeTransactions > 0
+      ? sidechainUnstakeCooldownDays / sidechainUnstakeTransactions
+      : 0;
+
+  const unstakePayoutPerTx =
+    sidechainUnstakeTransactions > 0
+      ? sidechainPendingUnstakeAmount / sidechainUnstakeTransactions
+      : 0;
+
+  const unstakeIntervalLabel =
+    unstakeIntervalDays > 0
+      ? Number.isInteger(unstakeIntervalDays)
+        ? `${unstakeIntervalDays} days`
+        : `${unstakeIntervalDays.toFixed(2)} days`
+      : 'N/A';
+
+  const hasUnstakeSchedule =
+    sidechainPendingUnstakeAmount > 0 && sidechainUnstakeTransactions > 0 && unstakeIntervalDays > 0;
+  const hasPendingUnstake = sidechainPendingUnstakeAmount > 0;
+
   return (
     <>
       <div className="flex max-w-6xl flex-col text-sm">
@@ -238,10 +298,63 @@ const WalletBalancesTable = ({
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
-                  <div className="px-4 py-2">{amount.hive}</div>
+                  <div className="he-wallet-accent-value px-4 py-2">{amount.hive}</div>
                 )}
               </td>
             </tr>
+            {showSidechainRows ? (
+              <tr className="flex flex-col bg-background-secondary py-2 sm:table-row">
+                <td className="px-2 sm:px-4 sm:py-4">
+                  <div className="font-semibold">{sidechainToken}</div>
+                  <p className="text-xs leading-relaxed text-primary/70">
+                    Liquid {sidechainToken} balance for this account from Hive-Engine.
+                  </p>
+                </td>
+                <td
+                  className="whitespace-nowrap bg-background-secondary font-semibold"
+                  data-testid="wallet-sidechain-liquid-balance"
+                >
+                  {isOwner ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost">
+                          <div className="inline-flex items-center">
+                            <SidechainWalletReward account={username} balanceType="liquid" showLogo={false} />
+                            <span className="m-1 text-xl">▾</span>
+                          </div>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuGroup>
+                          <SidechainTokenActionDialog
+                            action="transfer"
+                            triggerLabel="Transfer"
+                            account={username}
+                            token={sidechainToken}
+                            maxAmount={sidechainLiquidAmount}
+                            precision={sidechainPrecision}
+                            customJsonId={sidechainConfig.customJsonId}
+                          />
+                          <SidechainTokenActionDialog
+                            action="stake"
+                            triggerLabel="Stake"
+                            account={username}
+                            token={sidechainToken}
+                            maxAmount={sidechainLiquidAmount}
+                            precision={sidechainPrecision}
+                            customJsonId={sidechainConfig.customJsonId}
+                          />
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <div className="px-4 py-2">
+                      <SidechainWalletReward account={username} balanceType="liquid" showLogo={false} />
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ) : null}
             <tr className="flex flex-col bg-background-secondary py-2 sm:table-row">
               <td className="px-2 sm:px-4 sm:py-4">
                 <div className="font-semibold">HIVE POWER</div>
@@ -315,7 +428,7 @@ const WalletBalancesTable = ({
                                     <CircleSpinner
                                       loading={cancelPowerDownMutation.isLoading}
                                       size={18}
-                                      color="#dc2626"
+                                      color="hsl(var(--destructive))"
                                     />
                                   ) : (
                                     t('profile.cancel_power_down')
@@ -329,7 +442,7 @@ const WalletBalancesTable = ({
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
-                  <div className="px-4 py-2">{hp}</div>
+                  <div className="he-wallet-accent-value px-4 py-2">{hp}</div>
                 )}
                 <TooltipProvider>
                   <Tooltip>
@@ -345,6 +458,69 @@ const WalletBalancesTable = ({
                 </TooltipProvider>
               </td>
             </tr>
+            {showSidechainRows ? (
+              <tr className="flex flex-col py-2 sm:table-row">
+                <td className="px-2 sm:px-4 sm:py-4">
+                  <div className="font-semibold">Staked {sidechainToken}</div>
+                  <p className="text-xs leading-relaxed text-primary/70">
+                    Staked {sidechainToken} balance for this account from Hive-Engine.
+                  </p>
+                </td>
+                <td className="whitespace-nowrap font-semibold" data-testid="wallet-sidechain-staked-balance">
+                  {isOwner ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost">
+                          <div className="inline-flex items-center">
+                            <SidechainWalletReward account={username} balanceType="staked" showLogo={false} />
+                            <span className="m-1 text-xl">▾</span>
+                          </div>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuGroup>
+                          <SidechainTokenActionDialog
+                            action="unstake"
+                            triggerLabel="Unstake"
+                            account={username}
+                            token={sidechainToken}
+                            maxAmount={sidechainStakedAmount}
+                            precision={sidechainPrecision}
+                            customJsonId={sidechainConfig.customJsonId}
+                          />
+                          <SidechainTokenActionDialog
+                            action="delegate"
+                            triggerLabel="Delegate"
+                            account={username}
+                            token={sidechainToken}
+                            maxAmount={sidechainStakedAmount}
+                            precision={sidechainPrecision}
+                            customJsonId={sidechainConfig.customJsonId}
+                          />
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <div className="px-4 py-2">
+                      <SidechainWalletReward account={username} balanceType="staked" showLogo={false} />
+                    </div>
+                  )}
+                  <div className="px-4 pb-1 text-xs leading-relaxed text-primary/70">
+                    Delegation total: {formatSidechainTokenAmount(sidechainDelegationAmount)} {sidechainToken}
+                  </div>
+                  {hasPendingUnstake ? (
+                    <div className="px-4 pb-2 text-xs leading-relaxed text-primary/70">
+                      Unstake period: {unstakePeriodLabel}
+                    </div>
+                  ) : null}
+                  {hasUnstakeSchedule ? (
+                    <div className="px-4 pb-2 text-xs leading-relaxed text-primary/70">
+                      {`Unstake payout plan: ${formatSidechainTokenAmount(sidechainPendingUnstakeAmount)} ${sidechainToken} total, ${formatSidechainTokenAmount(unstakePayoutPerTx)} ${sidechainToken} every ${unstakeIntervalLabel} (${sidechainUnstakeTransactions} payments)`}
+                    </div>
+                  ) : null}
+                </td>
+              </tr>
+            ) : null}
             <tr className="flex flex-col py-2 sm:table-row">
               <td className="px-2 sm:px-4 sm:py-4">
                 <div className="font-semibold">HIVE DOLLARS</div>
@@ -396,7 +572,7 @@ const WalletBalancesTable = ({
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
-                  <div className="px-4 py-2">{amount.hbd}</div>
+                  <div className="he-wallet-accent-value px-4 py-2">{amount.hbd}</div>
                 )}
               </td>
             </tr>
@@ -474,8 +650,12 @@ const WalletBalancesTable = ({
                   </div>
                 ) : (
                   <div className="px-4 py-2">
-                    <div data-testid="wallet-saving-hive-value">{amount.savingsHive}</div>
-                    <div data-testid="walled-hbd-saving-value">{amount.savingsHbd}</div>
+                    <div className="he-wallet-accent-value" data-testid="wallet-saving-hive-value">
+                      {amount.savingsHive}
+                    </div>
+                    <div className="he-wallet-accent-value" data-testid="walled-hbd-saving-value">
+                      {amount.savingsHbd}
+                    </div>
                   </div>
                 )}
               </td>

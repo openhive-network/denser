@@ -8,6 +8,7 @@ import NoDataError from '@/blog/components/no-data-error';
 import ChangeTitleDialog from '@/blog/features/community-profile/change-title-dialog';
 import DetailsCardHover from '@/blog/features/list-of-posts/details-card-hover';
 import ReblogTrigger from '@/blog/features/list-of-posts/reblog-trigger';
+import SidechainPostReward from '@/blog/features/list-of-posts/sidechain-post-reward';
 import { useRebloggedByQuery } from '@/blog/features/list-of-posts/hooks/use-reblogged-by-query';
 import { useDeletePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
 import PostForm from '@/blog/features/post-editor/post-form';
@@ -707,6 +708,12 @@ const PostContent = () => {
                           ${postData.payout?.toFixed(2)}
                         </span>
                       </DetailsCardHover>
+                      <SidechainPostReward
+                        author={postData.author}
+                        permlink={postData.permlink}
+                        className="ml-1 text-sm"
+                        dataTestId="sidechain-post-page-payout"
+                      />
                       {activeVotesData && !!postData.stats?.total_votes && postData.stats?.total_votes !== 0 ? (
                         <>
                           <span className="h-4 w-px bg-border" />
