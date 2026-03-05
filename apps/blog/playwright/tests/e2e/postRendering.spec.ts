@@ -380,6 +380,86 @@ test.describe('Editor preview - text before link order', () => {
   });
 });
 
+test.describe('Image caption rendering regression (issue #620)', () => {
+  const captionPost = {
+    community: 'test',
+    author: 'guest4test1',
+    permlink: 'test-ufo'
+  };
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('sup caption after image renders below the image, not overlapping it', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(captionPost.community, captionPost.author, captionPost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+    await postPage.waitForArticleImages();
+
+    const images = postPage.articleBody.locator('img');
+    const captions = postPage.articleBody.locator('sup');
+
+    const imageCount = await images.count();
+    const captionCount = await captions.count();
+
+    expect(imageCount, 'Post should contain images').toBeGreaterThanOrEqual(2);
+    expect(captionCount, 'Post should contain sup captions').toBeGreaterThanOrEqual(2);
+
+    // Each caption must start below its preceding image (no vertical overlap)
+    for (let i = 0; i < Math.min(imageCount, captionCount); i++) {
+      const imgBox = await images.nth(i).boundingBox();
+      const capBox = await captions.nth(i).boundingBox();
+
+      expect(imgBox, `Image ${i} should have a bounding box`).not.toBeNull();
+      expect(capBox, `Caption ${i} should have a bounding box`).not.toBeNull();
+
+      // Caption top should be at or below the image bottom (with small tolerance)
+      const TOLERANCE_PX = 5;
+      expect(
+        capBox!.y,
+        `Caption ${i} (top: ${capBox!.y.toFixed(1)}px) should start at or below image ${i} bottom (${(imgBox!.y + imgBox!.height).toFixed(1)}px)`
+      ).toBeGreaterThanOrEqual(imgBox!.y + imgBox!.height - TOLERANCE_PX);
+    }
+  });
+
+  test('sup caption text content matches expected captions', async ({ page, browserName }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(captionPost.community, captionPost.author, captionPost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const captions = postPage.articleBody.locator('sup');
+    const captionCount = await captions.count();
+    expect(captionCount, 'Post should have at least 2 captions').toBeGreaterThanOrEqual(2);
+
+    // Both captions should contain recognizable caption text
+    for (let i = 0; i < captionCount; i++) {
+      const text = await captions.nth(i).textContent();
+      expect(text, `Caption ${i} should not be empty`).toBeTruthy();
+      expect(text!.length, `Caption ${i} should have meaningful text`).toBeGreaterThan(5);
+    }
+  });
+
+  test('image caption layout visual regression', async ({ page, browserName }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(captionPost.community, captionPost.author, captionPost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+    await postPage.waitForArticleImages();
+
+    await expect(postPage.articleBody).toHaveScreenshot('image-caption-layout.png', {
+      maxDiffPixelRatio: 0.01
+    });
+  });
+});
+
 test.describe('Editor preview - collapsible sections', () => {
   test('collapsible details section renders and toggles in preview', async ({ page, browserName }) => {
     chromiumOnly(browserName);
