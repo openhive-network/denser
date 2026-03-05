@@ -461,13 +461,13 @@ test.describe('Image caption rendering regression (issue #620)', () => {
 });
 
 test.describe('Comment rendering with float layout regression (issue #616)', () => {
-  const fixturePost = {
+  // Navigate directly to the single-comment view to avoid ambiguity
+  // with multiple keys-defender comments in the discussion thread.
+  const floatComment = {
     community: 'keychain',
-    author: 'keychain',
-    permlink: 'hive-keychain-v38--mobile-v25--domains-blacklist-hive-uri-support-and-widgets-revamp'
+    author: 'keys-defender',
+    permlink: 'info-link-report-reply-1743402627936'
   };
-
-  const floatCommentAuthor = 'keys-defender';
 
   let postPage: PostPage;
 
@@ -481,19 +481,13 @@ test.describe('Comment rendering with float layout regression (issue #616)', () 
   }) => {
     chromiumOnly(browserName);
 
-    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
-    await expect(postPage.commentListItems.first()).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+    await postPage.gotoPostPage(floatComment.community, floatComment.author, floatComment.permlink);
+    await expect(postPage.articleBody).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
 
-    // Find the comment list item containing the keys-defender comment
-    const commentItem = postPage.commentListItems.filter({
-      has: page.locator(`[data-testid="author-name-link"] :text("${floatCommentAuthor}")`)
-    });
-    await expect(commentItem, 'keys-defender comment should exist').toHaveCount(1);
+    // In single-comment view, #articleBody is the main comment content
+    const commentContent = postPage.articleBody;
+    const commentFooter = page.locator('[data-testid="author-data-post-footer"]');
 
-    const commentContent = commentItem.locator('[data-testid="comment-card-description"]');
-    const commentFooter = commentItem.locator('[data-testid="comment-card-footer"]');
-
-    await expect(commentContent).toBeVisible();
     await expect(commentFooter).toBeVisible();
 
     const contentBox = await commentContent.boundingBox();
@@ -516,25 +510,19 @@ test.describe('Comment rendering with float layout regression (issue #616)', () 
   }) => {
     chromiumOnly(browserName);
 
-    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
-    await expect(postPage.commentListItems.first()).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
-
-    const commentItem = postPage.commentListItems.filter({
-      has: page.locator(`[data-testid="author-name-link"] :text("${floatCommentAuthor}")`)
-    });
-
-    const commentContent = commentItem.locator('[data-testid="comment-card-description"]');
+    await postPage.gotoPostPage(floatComment.community, floatComment.author, floatComment.permlink);
+    await expect(postPage.articleBody).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
 
     // The pull-left section contains the commands list
-    const commandsText = commentContent.getByText('All commands for @keys-defender');
+    const commandsText = postPage.articleBody.getByText('All commands for @keys-defender');
     await expect(commandsText, 'Pull-left commands section should be visible').toBeVisible();
 
     // The pull-right section contains the articles/links
-    const articlesText = commentContent.getByText('Articles:');
+    const articlesText = postPage.articleBody.getByText('Articles:');
     await expect(articlesText, 'Pull-right articles section should be visible').toBeVisible();
 
     // &nbsp; should render as whitespace, not as literal text
-    const literalNbsp = commentContent.getByText('&nbsp;');
+    const literalNbsp = postPage.articleBody.getByText('&nbsp;');
     await expect(
       literalNbsp,
       '&nbsp; should not render as literal text'
