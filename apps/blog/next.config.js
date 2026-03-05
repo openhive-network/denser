@@ -6,6 +6,16 @@ const withPWA = require('next-pwa')({
   skipWaiting: true,
   clientsClaim: true,
   cleanupOutdatedCaches: true,
+  // Exclude Next.js internal manifests and server-only files from SW precache.
+  // next-pwa@5.6.0 only excludes build-manifest.json and react-loadable-manifest.json;
+  // newer Next.js (App Router) generates additional files not served in standalone mode.
+  buildExcludes: [
+    /middleware-manifest\.json$/,
+    /app-build-manifest\.json$/,
+    /_middleware\.js$/,
+    /_app-pages-manifest\.json$/,
+    /_client-reference-manifest\.js$/,
+  ],
   runtimeCaching: [
     // Auth worker - never cache (no content hash in filename; stale copies
     // reference old WASM hashes that no longer exist after deployments)
