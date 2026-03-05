@@ -106,21 +106,34 @@ const nextConfig = {
   ],
 
   async rewrites() {
-    return [
-      {
-        source: '/.well-known/openid-configuration',
-        destination: '/api/oidc/.well-known/openid-configuration'
-      },
-      {
-        source: '/oidc/:path*',
-        destination: '/api/oidc/:path*'
-      },
-      // Strip /public from paths to handle auth worker and other assets
-      {
-        source: '/public/:path*',
-        destination: '/:path*',
-      }
-    ];
+    return {
+      beforeFiles: [],
+      afterFiles: [
+        {
+          source: '/.well-known/openid-configuration',
+          destination: '/api/oidc/.well-known/openid-configuration'
+        },
+        {
+          source: '/oidc/:path*',
+          destination: '/api/oidc/:path*'
+        },
+        // Strip /public from paths to handle auth worker and other assets
+        {
+          source: '/public/:path*',
+          destination: '/:path*',
+        }
+      ],
+      // Fallback rewrites run after all pages and dynamic routes.
+      // This routes /@user/permlink to the resolve-post API (which redirects
+      // to the canonical /category/@author/permlink URL) without a catch-all
+      // [param]/[p2]/route.ts that would intercept _next/* internal paths.
+      fallback: [
+        {
+          source: '/:user((?:@|%40)[^/]+)/:permlink([^/]+)',
+          destination: '/api/resolve-post/:user/:permlink',
+        }
+      ],
+    };
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {

@@ -7,14 +7,13 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-export async function GET(request: Request, { params }: { params: { param: string; p2: string } }) {
+export async function GET(request: Request, { params }: { params: { user: string; permlink: string } }) {
   try {
-    // For /@username/permlink routes, param must start with @
-    if (!isValidUserParam(params?.param)) {
+    if (!isValidUserParam(params?.user)) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
-    const rawParam = params?.param ?? '';
+    const rawParam = params?.user ?? '';
     const decoded = decodeURIComponent(rawParam);
     const username = decoded.replace(/^@/, '').trim();
     const observer = await getObserverFromCookies();
@@ -22,19 +21,19 @@ export async function GET(request: Request, { params }: { params: { param: strin
     const validUser = await isUsernameValid(username);
 
     if (!validUser) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    if (!isPermlinkValid(params?.p2)) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    if (!isPermlinkValid(params?.permlink)) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
     let post;
     try {
       post = await queryClient.fetchQuery({
-        queryKey: ['post', username, String(params?.p2)],
-        queryFn: () => getPost(username, String(params?.p2), observer)
+        queryKey: ['post', username, String(params?.permlink)],
+        queryFn: () => getPost(username, String(params?.permlink), observer)
       });
     } catch (fetchErr) {
       logger.error(fetchErr, 'Failed to fetch post');
 
       // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet
-      if (params?.p2 === 'transfers') {
+      if (params?.permlink === 'transfers') {
         const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
         if (walletEndpoint) {
           const walletUrl = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;
@@ -47,7 +46,7 @@ export async function GET(request: Request, { params }: { params: { param: strin
 
     if (!post) {
       // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet
-      if (params?.p2 === 'transfers') {
+      if (params?.permlink === 'transfers') {
         const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
         if (walletEndpoint) {
           const walletUrl = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;
@@ -62,18 +61,14 @@ export async function GET(request: Request, { params }: { params: { param: strin
     let origin: string;
 
     if (configuredBase) {
-      // ensure it's a full origin (scheme + host)
       try {
         const tmp = new URL(configuredBase);
         origin = tmp.origin;
       } catch (e) {
-        // if someone provided e.g. "example.com", normalize to https by default
         origin = `https://${configuredBase.replace(/\/+$/, '')}`;
       }
     } else {
-      // fallback: derive from request headers in a safer way
       const host = request.headers.get('host') ?? 'localhost:3000';
-      // prefer forwarded proto from proxies (use http for local/test by default)
       const forwardedProto = request.headers.get('x-forwarded-proto');
       const scheme = forwardedProto ?? (process.env.NODE_ENV === 'production' ? 'https' : 'http');
       origin = `${scheme}://${host}`;
