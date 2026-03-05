@@ -26,8 +26,14 @@ async function test({ page }) {
   console.log(`   Current theme: ${initialTheme}`);
 
   console.log('\n3. Finding theme toggle button...');
-  // Theme toggle is a dropdown with data-testid="theme-mode"
+  // Theme toggle is rendered after React hydration replaces Skeleton placeholders.
+  // Wait for it to appear in the DOM before checking visibility.
   const themeButton = page.locator('[data-testid="theme-mode"]').first();
+  try {
+    await themeButton.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
+  } catch {
+    // Will be handled by the buttonFound check below
+  }
   const buttonFound = await themeButton.isVisible().catch(() => false);
 
   if (buttonFound) {
