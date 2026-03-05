@@ -460,6 +460,88 @@ test.describe('Image caption rendering regression (issue #620)', () => {
   });
 });
 
+test.describe('Comment rendering with float layout regression (issue #616)', () => {
+  const fixturePost = {
+    community: 'keychain',
+    author: 'keychain',
+    permlink: 'hive-keychain-v38--mobile-v25--domains-blacklist-hive-uri-support-and-widgets-revamp'
+  };
+
+  const floatCommentAuthor = 'keys-defender';
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('comment footer renders below float content, not overlapping it', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.commentListItems.first()).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+
+    // Find the comment list item containing the keys-defender comment
+    const commentItem = postPage.commentListItems.filter({
+      has: page.locator(`[data-testid="author-name-link"] :text("${floatCommentAuthor}")`)
+    });
+    await expect(commentItem, 'keys-defender comment should exist').toHaveCount(1);
+
+    const commentContent = commentItem.locator('[data-testid="comment-card-description"]');
+    const commentFooter = commentItem.locator('[data-testid="comment-card-footer"]');
+
+    await expect(commentContent).toBeVisible();
+    await expect(commentFooter).toBeVisible();
+
+    const contentBox = await commentContent.boundingBox();
+    const footerBox = await commentFooter.boundingBox();
+
+    expect(contentBox, 'Comment content should have a bounding box').not.toBeNull();
+    expect(footerBox, 'Comment footer should have a bounding box').not.toBeNull();
+
+    // Footer must start at or below the content bottom (floats must be cleared)
+    const TOLERANCE_PX = 5;
+    expect(
+      footerBox!.y,
+      `Comment footer (top: ${footerBox!.y.toFixed(1)}px) should be below content bottom (${(contentBox!.y + contentBox!.height).toFixed(1)}px) — float layout must be cleared`
+    ).toBeGreaterThanOrEqual(contentBox!.y + contentBox!.height - TOLERANCE_PX);
+  });
+
+  test('comment with pull-left/pull-right renders both content sections', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.commentListItems.first()).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+
+    const commentItem = postPage.commentListItems.filter({
+      has: page.locator(`[data-testid="author-name-link"] :text("${floatCommentAuthor}")`)
+    });
+
+    const commentContent = commentItem.locator('[data-testid="comment-card-description"]');
+
+    // The pull-left section contains the commands list
+    const commandsText = commentContent.getByText('All commands for @keys-defender');
+    await expect(commandsText, 'Pull-left commands section should be visible').toBeVisible();
+
+    // The pull-right section contains the articles/links
+    const articlesText = commentContent.getByText('Articles:');
+    await expect(articlesText, 'Pull-right articles section should be visible').toBeVisible();
+
+    // &nbsp; should render as whitespace, not as literal text
+    const literalNbsp = commentContent.getByText('&nbsp;');
+    await expect(
+      literalNbsp,
+      '&nbsp; should not render as literal text'
+    ).toHaveCount(0);
+  });
+});
+
 test.describe('Editor preview - collapsible sections', () => {
   test('collapsible details section renders and toggles in preview', async ({ page, browserName }) => {
     chromiumOnly(browserName);
