@@ -530,6 +530,95 @@ test.describe('Comment rendering with float layout regression (issue #616)', () 
   });
 });
 
+test.describe('GitLab/GitHub link position regression (issue #613)', () => {
+  const fixturePost = {
+    community: 'hive-160391',
+    author: 'gtg',
+    permlink: 'hive-hardfork-25-jump-starter-kit'
+  };
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('GitLab and GitHub links render inline, not moved to the end of the post', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const bodyText = await postPage.articleBody.textContent();
+    expect(bodyText).not.toBeNull();
+
+    // GitLab link and its following text must appear before the GitHub section
+    const gitlabLinkPos = bodyText!.indexOf('gitlab.syncad.com/hive/hive');
+    const gitlabDescPos = bodyText!.indexOf('Our core development efforts');
+    const githubHeadingPos = bodyText!.indexOf('GitHub');
+
+    expect(gitlabLinkPos, 'GitLab link should exist in content').toBeGreaterThanOrEqual(0);
+    expect(gitlabDescPos, 'GitLab description should exist').toBeGreaterThanOrEqual(0);
+
+    expect(
+      gitlabLinkPos,
+      'GitLab link must appear before its description text'
+    ).toBeLessThan(gitlabDescPos);
+
+    expect(
+      gitlabDescPos,
+      'GitLab description must appear before the GitHub section'
+    ).toBeLessThan(githubHeadingPos);
+
+    // GitHub link and its following text must appear before the Services section
+    const githubLinkPos = bodyText!.indexOf('github.com/openhive-network/hive');
+    const githubDescPos = bodyText!.indexOf('We use it as a push mirror');
+    const servicesPos = bodyText!.indexOf('Services');
+
+    expect(githubLinkPos, 'GitHub link should exist in content').toBeGreaterThanOrEqual(0);
+    expect(githubDescPos, 'GitHub description should exist').toBeGreaterThanOrEqual(0);
+
+    expect(
+      githubLinkPos,
+      'GitHub link must appear before its description text'
+    ).toBeLessThan(githubDescPos);
+
+    expect(
+      githubDescPos,
+      'GitHub description must appear before the Services section'
+    ).toBeLessThan(servicesPos);
+  });
+
+  test('links are not duplicated at the bottom of the post', async ({ page, browserName }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const bodyText = await postPage.articleBody.textContent();
+    expect(bodyText).not.toBeNull();
+
+    // The "All resources are offered AS IS" text is near the end of the post.
+    // GitLab/GitHub links should NOT appear after it.
+    const asIsPos = bodyText!.indexOf('All resources are offered AS IS');
+    expect(asIsPos, '"All resources are offered AS IS" should exist').toBeGreaterThanOrEqual(0);
+
+    const textAfterAsIs = bodyText!.substring(asIsPos);
+    expect(
+      textAfterAsIs,
+      'GitLab link should not be moved to the end of the post'
+    ).not.toContain('gitlab.syncad.com/hive/hive');
+
+    expect(
+      textAfterAsIs,
+      'GitHub link should not be moved to the end of the post'
+    ).not.toContain('github.com/openhive-network/hive');
+  });
+});
+
 test.describe('Editor preview - collapsible sections', () => {
   test('collapsible details section renders and toggles in preview', async ({ page, browserName }) => {
     chromiumOnly(browserName);
