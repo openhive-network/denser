@@ -693,6 +693,74 @@ test.describe('Instagram link crashes post rendering regression (issue #601)', (
   });
 });
 
+test.describe('Non-breaking space rendering inside HTML tags regression (issue #628)', () => {
+  const fixturePost = {
+    community: 'hive-151327',
+    author: 'miprimerconcurso',
+    permlink: 'beautiful-and-colorful-dung-mushrooms'
+  };
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('&nbsp; inside HTML tags renders as whitespace, not as literal text', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    // The post uses &nbsp; inside <strong> tags, e.g.:
+    // <strong>¨FungiFridayCommunity¨:&nbsp;</strong>
+    // It must NOT render as the literal string "&nbsp;"
+    const literalNbsp = postPage.articleBody.getByText('&nbsp;');
+    await expect(
+      literalNbsp,
+      '&nbsp; should render as whitespace, not as literal text'
+    ).toHaveCount(0);
+
+    // Verify the post content itself rendered correctly
+    const communityText = postPage.articleBody.getByText('FungiFridayCommunity', { exact: false });
+    await expect(communityText.first(), 'Community name should be visible').toBeVisible();
+  });
+
+  test('content order is preserved — intro text appears before mushroom descriptions', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const bodyText = await postPage.articleBody.textContent();
+    expect(bodyText).not.toBeNull();
+
+    const communityPos = bodyText!.indexOf('FungiFridayCommunity');
+    const reservePos = bodyText!.indexOf('reserve is a large area');
+    const deconicaPos = bodyText!.indexOf('Deconica');
+
+    expect(communityPos, 'Community reference should exist').toBeGreaterThanOrEqual(0);
+    expect(reservePos, 'Reserve description should exist').toBeGreaterThanOrEqual(0);
+    expect(deconicaPos, 'Deconica mushroom reference should exist').toBeGreaterThanOrEqual(0);
+
+    expect(
+      communityPos,
+      'Community intro must appear before reserve description'
+    ).toBeLessThan(reservePos);
+
+    expect(
+      reservePos,
+      'Reserve description must appear before Deconica section'
+    ).toBeLessThan(deconicaPos);
+  });
+});
+
 test.describe('Editor preview - collapsible sections', () => {
   test('collapsible details section renders and toggles in preview', async ({ page, browserName }) => {
     chromiumOnly(browserName);
