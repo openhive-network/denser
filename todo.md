@@ -8,5 +8,5 @@ For tomorrow:
 - [x] d) unstaked period needs to be shown under the staked pimp
 - [x] e) Transactions need to show delegations
 - [x] f) Transactions need to be complete, x pimp received from y where y is bold.
-- [ ] g) Commit to a custom named denser branch.
-- [ ] h) Update README with detailed instructions on how to use this customized Denser version.
+- [x] g) Commit to a custom named denser branch.
+- [x] h) Update README with detailed instructions on how to use this customized Denser version.
