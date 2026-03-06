@@ -761,6 +761,82 @@ test.describe('Non-breaking space rendering inside HTML tags regression (issue #
   });
 });
 
+test.describe('Clicking image inside external link in comment regression (issue #562)', () => {
+  // Worldmappin comment with an image wrapped in an external link:
+  // <a href="https://engage.hivechain.app">![](https://i.imgur.com/XsrNmcl.png)</a>
+  // Bug: clicking the image crashed the page because e.target was <img> (no href),
+  // not the parent <a>. The fix traverses to the parent element to get the href.
+  const worldmappinComment = {
+    community: 'hive-163772',
+    author: 'worldmappin',
+    permlink: 're-1736330799406'
+  };
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('clicking image inside external link opens leave-page dialog instead of crashing', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(
+      worldmappinComment.community,
+      worldmappinComment.author,
+      worldmappinComment.permlink
+    );
+    await expect(postPage.articleBody).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+
+    // Find the image inside the external link in the comment body
+    const externalLink = postPage.articleBody.locator('a.link-external');
+    await expect(externalLink, 'External link should exist in the comment').toHaveCount(1);
+
+    const imageInLink = externalLink.locator('img');
+    await expect(imageInLink, 'Image inside external link should be visible').toBeVisible();
+
+    // Click the image (not the link itself) — this was the original crash trigger
+    await imageInLink.click();
+
+    // The leave-page dialog should appear instead of a page error
+    const leaveDialog = page.getByText('You are about to leave this app.');
+    await expect(leaveDialog, 'Leave-page dialog should open after clicking image link').toBeVisible();
+
+    // Dialog should display the target URL
+    const targetUrl = page.getByText('engage.hivechain.app');
+    await expect(targetUrl, 'Dialog should show the external URL').toBeVisible();
+  });
+
+  test('page does not show error after clicking image in external link', async ({
+    page,
+    browserName
+  }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(
+      worldmappinComment.community,
+      worldmappinComment.author,
+      worldmappinComment.permlink
+    );
+    await expect(postPage.articleBody).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+
+    const imageInLink = postPage.articleBody.locator('a.link-external img');
+    await expect(imageInLink).toBeVisible();
+
+    await imageInLink.click();
+
+    // The page should NOT show an error — verify no error boundary is rendered
+    const errorText = page.getByText('Application error');
+    await expect(errorText).toHaveCount(0);
+
+    // The article body should still be visible behind the dialog
+    await expect(postPage.articleBody).toBeVisible();
+  });
+});
+
 test.describe('Editor preview - collapsible sections', () => {
   test('collapsible details section renders and toggles in preview', async ({ page, browserName }) => {
     chromiumOnly(browserName);
