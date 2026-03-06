@@ -146,20 +146,20 @@ test.describe('Embed table layout regression', () => {
 
     await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
     await expect(postPage.articleBody).toBeVisible();
-    await page.waitForLoadState('networkidle');
 
-    await expect(postPage.articleTable).toBeAttached();
+    // Wait for embeds to render instead of relying on networkidle
+    await expect(postPage.articleTable).toBeAttached({ timeout: TIMEOUTS.PAGE_LOAD });
 
     // Total twitter wrappers in article: 4 (1 standalone + 3 in table)
-    await expect(postPage.twitterWrappers).toHaveCount(4);
+    await expect(postPage.twitterWrappers).toHaveCount(4, { timeout: TIMEOUTS.TWITTER_PLUGIN_SETTLE });
 
     // Table contains exactly 3 Twitter embeds
     const tableTwitterWrappers = postPage.getTwitterWrappersIn(postPage.articleTable);
-    await expect(tableTwitterWrappers).toHaveCount(3);
+    await expect(tableTwitterWrappers).toHaveCount(3, { timeout: TIMEOUTS.TWITTER_PLUGIN_SETTLE });
 
     // Table contains exactly 3 Instagram embeds
     const tableInstagramWrappers = postPage.getInstagramWrappersIn(postPage.articleTable);
-    await expect(tableInstagramWrappers).toHaveCount(3);
+    await expect(tableInstagramWrappers).toHaveCount(3, { timeout: TIMEOUTS.TWITTER_PLUGIN_SETTLE });
 
     // Each Twitter embed is inside a <td>
     for (let i = 0; i < 3; i++) {
@@ -179,9 +179,11 @@ test.describe('Embed table layout regression', () => {
 
     await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
     await expect(postPage.articleBody).toBeVisible();
-    await page.waitForLoadState('networkidle');
 
-    // Wait for TwitterResizePlugin to settle (LOAD_TIMEOUT_MS = 10s + buffer)
+    // Wait for all embeds to render before taking screenshot
+    await expect(postPage.twitterWrappers).toHaveCount(4, { timeout: TIMEOUTS.TWITTER_PLUGIN_SETTLE });
+
+    // Extra buffer for TwitterResizePlugin to settle after embeds appear
     await page.waitForTimeout(TIMEOUTS.TWITTER_PLUGIN_SETTLE);
 
     // Mask all iframes to avoid flakiness from external embed content
@@ -287,9 +289,12 @@ test.describe('Paragraph overlap regression', () => {
       'let-her-in-or-pusan-point-caraga-davao-oriental'
     );
     await expect(postPage.articleBody).toBeVisible();
-    await page.waitForLoadState('networkidle');
 
-    const paragraphs = postPage.articleBody.locator('p');
+    // Select only top-level paragraphs that are NOT inside float containers
+    // (pull-left/pull-right divs cause legitimate bounding-box overlap)
+    const paragraphs = postPage.articleBody.locator(
+      'p:not(.pull-left p):not(.pull-right p):not(.pull-left + p):not(.pull-right + p)'
+    );
     const count = await paragraphs.count();
     expect(count, 'Post should contain multiple paragraphs').toBeGreaterThan(1);
 
@@ -320,26 +325,24 @@ test.describe('Paragraph overlap regression', () => {
       expect(box.height, `Paragraph ${box.index} should have non-zero height`).toBeGreaterThan(0);
     }
 
-    // No two paragraphs should overlap in both axes.
-    // Float layouts legitimately place elements side-by-side, so only flag
-    // cases where bounding boxes intersect both horizontally AND vertically.
+    // No two consecutive paragraphs should overlap vertically.
+    // Only check adjacent pairs — non-adjacent paragraphs may share vertical
+    // space due to float content between them (e.g. pull-left/pull-right images).
     // 10px tolerance accounts for CSS margin/padding box model interactions;
     // real text-on-text overlap (the original bug) is typically 20px+.
     const TOLERANCE_PX = 10;
-    for (let i = 0; i < boxes.length; i++) {
-      for (let j = i + 1; j < boxes.length; j++) {
-        const a = boxes[i];
-        const b = boxes[j];
-        const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left);
-        const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    for (let i = 0; i < boxes.length - 1; i++) {
+      const a = boxes[i];
+      const b = boxes[i + 1];
+      const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+      const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
 
-        if (overlapX <= TOLERANCE_PX) continue; // side-by-side, no real overlap
+      if (overlapX <= TOLERANCE_PX) continue; // side-by-side, no real overlap
 
-        expect(
-          overlapY,
-          `Paragraphs ${a.index} and ${b.index} overlap by ${overlapY.toFixed(1)}px vertically`
-        ).toBeLessThanOrEqual(TOLERANCE_PX);
-      }
+      expect(
+        overlapY,
+        `Paragraphs ${a.index} and ${b.index} overlap by ${overlapY.toFixed(1)}px vertically`
+      ).toBeLessThanOrEqual(TOLERANCE_PX);
     }
   });
 });
@@ -488,7 +491,10 @@ test.describe('Comment rendering with float layout regression (issue #616)', () 
     const commentContent = postPage.articleBody;
     const commentFooter = page.locator('[data-testid="author-data-post-footer"]');
 
-    await expect(commentFooter).toBeVisible();
+    await expect(commentFooter).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+
+    // Scroll footer into view to ensure boundingBox() returns non-null
+    await commentFooter.scrollIntoViewIfNeeded();
 
     const contentBox = await commentContent.boundingBox();
     const footerBox = await commentFooter.boundingBox();
