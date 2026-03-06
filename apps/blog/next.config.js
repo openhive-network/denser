@@ -1,57 +1,5 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.NODE_ENV !== 'production',
-  skipWaiting: true,
-  clientsClaim: true,
-  cleanupOutdatedCaches: true,
-  // Exclude Next.js internal manifests and server-only files from SW precache.
-  // next-pwa@5.6.0 only excludes build-manifest.json and react-loadable-manifest.json;
-  // newer Next.js (App Router) generates additional files not served in standalone mode.
-  buildExcludes: [
-    /middleware-manifest\.json$/,
-    /app-build-manifest\.json$/,
-    /_middleware\.js$/,
-    /_app-pages-manifest\.json$/,
-    /_client-reference-manifest\.js$/,
-  ],
-  runtimeCaching: [
-    // Auth worker - never cache (no content hash in filename; stale copies
-    // reference old WASM hashes that no longer exist after deployments)
-    // Must come first as Workbox uses first-match-wins
-    {
-      urlPattern: /\/auth\/worker\.js$/i,
-      handler: 'NetworkOnly',
-    },
-    // Auth WASM - cache aggressively (content hash in filename makes this safe;
-    // worker.js always fetches fresh so it references the correct hash)
-    {
-      urlPattern: /\/auth\/assets\/.+\.wasm$/i,
-      handler: 'CacheFirst',
-      options: {
-        cacheName: 'auth-wasm',
-        expiration: {
-          maxEntries: 3,
-          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-        },
-      },
-    },
-    // User-specific pages - never cache (notifications, settings, feed)
-    // These rules must come BEFORE the defaults to take precedence
-    {
-      urlPattern: /\/@[^/]+\/(notifications|settings|feed)/i,
-      handler: 'NetworkOnly',
-    },
-    // Next.js data (RSC) for these pages - never cache
-    {
-      urlPattern: /\/_next\/data\/.+\/%40[^/]+\/(notifications|settings|feed)\.json$/i,
-      handler: 'NetworkOnly',
-    },
-    // Include all default caching rules for static assets (JS, CSS, images, fonts, etc.)
-    ...require('next-pwa/cache'),
-  ],
-});
 
 // Support serving from subdirectory like /blog
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -78,19 +26,6 @@ const nextConfig = {
   // Worker files need specific headers (security headers are applied via middleware)
   async headers() {
     return [
-      {
-        source: '/sw.js',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/javascript; charset=utf-8'
-          },
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate, max-age=0'
-          }
-        ]
-      },
       {
         source: '/auth/worker.js',
         headers: [
@@ -189,7 +124,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
 const { withSentryConfig } = require('@sentry/nextjs');
 
-module.exports = withSentryConfig(withPWA(withBundleAnalyzer(nextConfig)), {
+module.exports = withSentryConfig(withBundleAnalyzer(nextConfig), {
   // Disable source map upload - env vars not available at build time
   // Sentry is enabled/disabled at runtime based on REACT_APP_SENTRY_DSN in instrumentation.ts
   sourcemaps: {
