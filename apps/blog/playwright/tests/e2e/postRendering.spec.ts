@@ -699,6 +699,101 @@ test.describe('Instagram link crashes post rendering regression (issue #601)', (
   });
 });
 
+test.describe('Post content position regression — algorytmiczny-2024', () => {
+  const fixturePost = {
+    community: 'engrave',
+    author: 'bowess',
+    permlink: 'algorytmiczny-2024-jak-google-widzi-bloga'
+  };
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    postPage = new PostPage(page);
+  });
+
+  test('content sections render in the correct order', async ({ page, browserName }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const bodyText = await postPage.articleBody.textContent();
+    expect(bodyText).not.toBeNull();
+
+    // Key content landmarks in expected order:
+    // 1. Intro paragraph
+    // 2. HCU / E-E-A-T discussion
+    // 3. Concrete stats ("Do konkretów")
+    // 4. Search trends (Ebrechtella tricuspitata)
+    // 5. Analytics section
+    // 6. Footer (Lectorium / dBlog)
+    const landmarks = [
+      { label: 'intro', text: 'Co tam słychać w bańce Google' },
+      { label: 'HCU discussion', text: 'E-E-A-T' },
+      { label: 'stats section', text: 'Do konkretów' },
+      { label: 'search trends', text: 'Ebrechtella tricuspitata' },
+      { label: 'analytics section', text: 'Analytics za rok 2024' },
+      { label: 'footer', text: 'Lectorium' }
+    ];
+
+    let previousPos = -1;
+    let previousLabel = '';
+
+    for (const { label, text } of landmarks) {
+      const pos = bodyText!.indexOf(text);
+      expect(pos, `"${label}" text should exist in content`).toBeGreaterThanOrEqual(0);
+
+      if (previousPos >= 0) {
+        expect(
+          pos,
+          `"${label}" must appear after "${previousLabel}" (not displaced)`
+        ).toBeGreaterThan(previousPos);
+      }
+
+      previousPos = pos;
+      previousLabel = label;
+    }
+  });
+
+  test('tables with comparison data are rendered', async ({ page, browserName }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    // Post contains 3 tables: seasonal search trends, analytics, and lectorium/czekolada
+    const tables = postPage.articleBody.locator('table');
+    await expect(tables).toHaveCount(3);
+
+    // First table has seasonal comparison headers
+    const firstTableHeaders = tables.nth(0).locator('th');
+    await expect(firstTableHeaders.nth(0)).toContainText('Kwiecień 2024');
+    await expect(firstTableHeaders.nth(1)).toContainText('Kwiecień 2025');
+  });
+
+  test('external links are not displaced to the end of the post', async ({ page, browserName }) => {
+    chromiumOnly(browserName);
+
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+
+    const bodyText = await postPage.articleBody.textContent();
+    expect(bodyText).not.toBeNull();
+
+    // The dBlog footer is the last content section
+    const footerPos = bodyText!.indexOf('napędzany przez');
+    expect(footerPos, 'dBlog footer should exist').toBeGreaterThanOrEqual(0);
+
+    const textAfterFooter = bodyText!.substring(footerPos);
+
+    // Key content fragments should NOT appear after the footer
+    expect(textAfterFooter).not.toContain('Do konkretów');
+    expect(textAfterFooter).not.toContain('Ebrechtella tricuspitata');
+    expect(textAfterFooter).not.toContain('E-E-A-T');
+  });
+});
+
 test.describe('Non-breaking space rendering inside HTML tags regression (issue #628)', () => {
   const fixturePost = {
     community: 'hive-151327',
