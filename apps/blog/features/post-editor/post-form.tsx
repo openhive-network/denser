@@ -61,6 +61,8 @@ import {
   AlertDialogTitle
 } from '@hive/ui/components/alert-dialog';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useSignerContext } from '@smart-signer/components/signer-provider';
+import { configuredImagesEndpoint } from '@ui/config/public-vars';
 import { isCommunity } from '@ui/lib/utils';
 import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
 
@@ -74,6 +76,27 @@ const MdEditor = dynamic(() => import('@/blog/features/post-editor/md-editor'), 
 });
 
 const logger = getLogger('app');
+
+/** Check if markdown content contains external image URLs that would need proxying. */
+function contentHasExternalImage(content: string, proxyBase: string): boolean {
+  // Markdown images: ![alt](url)
+  const mdImageRegex = /!\[[^\]]*\]\((https?:\/\/[^)\s]+)\)/g;
+  let match;
+  while ((match = mdImageRegex.exec(content)) !== null) {
+    if (!match[1].startsWith(proxyBase)) return true;
+  }
+  // Bare image URLs on their own line
+  const bareImageRegex = /(?:^|\n)\s*(https?:\/\/[^\s]+\.(?:jpe?g|png|gif|webp|svg|bmp)(?:\?[^\s]*)?)\s*(?:\n|$)/gi;
+  while ((match = bareImageRegex.exec(content)) !== null) {
+    if (!match[1].startsWith(proxyBase)) return true;
+  }
+  // HTML img tags
+  const htmlImgRegex = /<img\s[^>]*src=["'](https?:\/\/[^"']+)["']/gi;
+  while ((match = htmlImgRegex.exec(content)) !== null) {
+    if (!match[1].startsWith(proxyBase)) return true;
+  }
+  return false;
+}
 
 export default function PostForm({
   username,
@@ -95,6 +118,7 @@ export default function PostForm({
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const { user } = useUserClient();
+  const { signer } = useSignerContext();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const searchParams = useSearchParams();
   const categoryParam = searchParams?.get('category') ?? undefined;
@@ -140,7 +164,50 @@ export default function PostForm({
   // preventing its DOM replacement from firing a scroll event that jumps the editor.
   const scrollLockRef = useRef(false);
   const storeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const [proxyAuthToken, setProxyAuthToken] = useState<string | undefined>();
+  const proxyAuthRequested = useRef(false);
+
+  // Obtain a proxy auth token so editor preview can bypass the whitelist
+  const fetchProxyAuthToken = useCallback(async () => {
+    if (!user.isLoggedIn || !signer) return;
+    try {
+      const timestamp = Date.now();
+      const imageOwner = signer.authorityUsername || signer.username;
+      const message = `Authorize image proxy preview for ${imageOwner} at ${new Date(timestamp).toISOString()}`;
+      const sig = await signer.signChallenge({ message, password: '' });
+      const resp = await fetch(`${configuredImagesEndpoint}/proxy-auth/${imageOwner}/${sig}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ timestamp })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        setProxyAuthToken(data.token);
+      } else {
+        logger.error('Failed to obtain proxy auth token: %s', resp.status);
+      }
+    } catch (error) {
+      logger.error('Error obtaining proxy auth token: %o', error);
+    }
+  }, [user.isLoggedIn, signer]);
+
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
+
+  // Lazily acquire proxy auth token when external images are first detected
+  useEffect(() => {
+    if (proxyAuthRequested.current || !previewContent) return;
+    if (contentHasExternalImage(previewContent, configuredImagesEndpoint)) {
+      proxyAuthRequested.current = true;
+      fetchProxyAuthToken();
+    }
+  }, [previewContent, fetchProxyAuthToken]);
+
+  // Refresh token every 25 minutes once acquired (TTL is 30 minutes)
+  useEffect(() => {
+    if (!proxyAuthToken) return;
+    const interval = setInterval(fetchProxyAuthToken, 25 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [proxyAuthToken, fetchProxyAuthToken]);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   // Track if we've hydrated from localStorage to avoid resetting form during typing
   const hasHydratedRef = useRef(false);
@@ -807,7 +874,7 @@ export default function PostForm({
                 )}
               />
 
-              <SelectImageList content={postArea} value={selectedImg} onChange={setSelectedImg} />
+              <SelectImageList content={postArea} value={selectedImg} onChange={setSelectedImg} proxyAuthToken={proxyAuthToken} />
             </div>
 
             <div className="flex flex-col gap-4 rounded-lg border border-border bg-background-secondary/30 p-4">
@@ -1103,6 +1170,7 @@ export default function PostForm({
                 body={previewContent}
                 author=""
                 previewMode
+                proxyAuthToken={proxyAuthToken}
                 className={
                   postClassName +
                   ' w-full min-w-full self-center break-words p-4'

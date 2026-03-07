@@ -30,7 +30,7 @@ export function getLatestUrl(str: string): string {
   return last;
 }
 
-export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'match') {
+export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'match', token?: string) {
   if (!url || typeof url !== 'string') {
     return '';
   }
@@ -41,7 +41,11 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
   }
 
   if (url.indexOf('https://steemitimages.com/') === 0 && url.indexOf('https://steemitimages.com/D') !== 0) {
-    return url.replace('https://steemitimages.com', proxyBase);
+    let result = url.replace('https://steemitimages.com', proxyBase);
+    if (token) {
+      result += (result.includes('?') ? '&' : '?') + 'token=' + encodeURIComponent(token);
+    }
+    return result;
   }
 
   // For other external images (including ecency), use the /p/hash system
@@ -72,10 +76,11 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
   }
 
   const qs = querystring.stringify(options);
+  const tokenSuffix = token ? '&token=' + encodeURIComponent(token) : '';
 
   if (pHash) {
     // Don't add .png extension for Hive images, let the image hoster decide
-    return `${proxyBase}/p/${pHash}?${qs}`;
+    return `${proxyBase}/p/${pHash}?${qs}${tokenSuffix}`;
   }
 
   // Use TextEncoder for browser compatibility instead of Buffer
@@ -83,5 +88,5 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
   const bytes = encoder.encode(encodedUrl);
   const b58url = multihash.toB58String(bytes);
 
-  return `${proxyBase}/p/${b58url}?${qs}`;
+  return `${proxyBase}/p/${b58url}?${qs}${tokenSuffix}`;
 }

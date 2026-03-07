@@ -3,7 +3,7 @@
 import { useRef, useEffect, useState, useMemo, memo } from 'react';
 import Loading from '@ui/components/loading';
 import { LeavePageDialog } from './leave-page-dialog';
-import { getRenderer } from './lib/renderer';
+import { getRenderer, getPreviewRenderer } from './lib/renderer';
 import ScrollToElement from './scroll-to-element';
 import { cn } from '@ui/lib/utils';
 import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
@@ -16,7 +16,8 @@ const RendererContainer = ({
   communityDescription,
   mainPost,
   className,
-  previewMode
+  previewMode,
+  proxyAuthToken
 }: {
   body: string;
   author: string;
@@ -26,11 +27,17 @@ const RendererContainer = ({
   className?: string;
   mainPost?: Boolean;
   previewMode?: boolean;
+  proxyAuthToken?: string;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [link, setLink] = useState('');
-  const hiveRenderer = getRenderer(author);
+  const hiveRenderer = useMemo(
+    () => proxyAuthToken
+      ? getPreviewRenderer(proxyAuthToken, author)
+      : getRenderer(author),
+    [proxyAuthToken, author]
+  );
 
   const handleClick = (e: Event) => {
     e.preventDefault();

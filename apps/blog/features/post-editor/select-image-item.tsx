@@ -8,9 +8,10 @@ interface SelectImageItemTypes {
   data: string;
   onChange: (data: string) => void;
   value: string;
+  proxyAuthToken?: string;
 }
 
-const SelectImageItem: React.FC<SelectImageItemTypes> = ({ data, onChange, value }) => {
+const SelectImageItem: React.FC<SelectImageItemTypes> = ({ data, onChange, value, proxyAuthToken }) => {
   const [invalidImages, setInvalidImages] = useState(false);
 
   return (
@@ -25,7 +26,7 @@ const SelectImageItem: React.FC<SelectImageItemTypes> = ({ data, onChange, value
         onClick={() => onChange(data)}
       >
         <img
-          src={proxifyImageSrc(imagePicker(data))}
+          src={proxifyImageSrc(imagePicker(data), 0, 0, 'match', proxyAuthToken)}
           alt="cover img"
           onError={() => setInvalidImages(true)}
           loading="lazy"

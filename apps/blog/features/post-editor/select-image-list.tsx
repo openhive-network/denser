@@ -10,9 +10,10 @@ interface SelectImageListTypes {
   content: string;
   value: string;
   onChange: (e: string) => void;
+  proxyAuthToken?: string;
 }
 
-const SelectImageList: FC<SelectImageListTypes> = ({ content, value, onChange }) => {
+const SelectImageList: FC<SelectImageListTypes> = ({ content, value, onChange, proxyAuthToken }) => {
   const { t } = useTranslation('common_blog');
   const [debouncedContent, setDebouncedContent] = useState(content);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
@@ -45,7 +46,7 @@ const SelectImageList: FC<SelectImageListTypes> = ({ content, value, onChange })
       <span>{t('submit_page.cover_image')}</span>
       <div className="flex flex-wrap">
         {uniqueImages.map((e) => (
-          <SelectImageItem data={e} onChange={onChange} value={value} key={e} />
+          <SelectImageItem data={e} onChange={onChange} value={value} key={e} proxyAuthToken={proxyAuthToken} />
         ))}
       </div>
     </div>

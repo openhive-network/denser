@@ -50,3 +50,18 @@ export function getRenderer(author: string = ''): DefaultRenderer {
     return rendererRegular;
   }
 }
+
+/**
+ * Returns a renderer with a proxy auth token baked into imageProxyFn,
+ * so editor preview images bypass the whitelist check.
+ */
+export function getPreviewRenderer(token: string, author: string = ''): DefaultRenderer {
+  const options = {
+    ...renderDefaultOptions,
+    imageProxyFn: (url: string) => proxifyImageSrc(url, 1536, 0, 'match', token),
+  };
+  if (!!author && imageUserBlocklist.includes(author)) {
+    return new DefaultRenderer({ ...options, doNotShowImages: true });
+  }
+  return new DefaultRenderer(options);
+}
