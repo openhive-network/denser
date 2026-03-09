@@ -1,4 +1,4 @@
-import { SortTypes } from '@/blog/lib/utils';
+import { SortTypes, DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { ReactNode } from 'react';
@@ -20,10 +20,16 @@ const SortPage = async ({
   // Community data (getCommunity) is already prefetched in the layout's PrefetchComponent
   const observer = await getObserverFromCookies();
   let initialPosts = null;
-  try {
-    initialPosts = (await getPostsRanked(sort, tag, '', '', observer)) ?? null;
-  } catch (error) {
-    logger.error(error, 'Error in SortPage:');
+  // Skip SSR prefetch for "my communities" when observer is the default anonymous one.
+  // The API would return hive.blog's subscriptions (meaningless to the actual user),
+  // and the client would trust this stale data without refetching.
+  const shouldSkipPrefetch = tag === 'my' && observer === DEFAULT_OBSERVER;
+  if (!shouldSkipPrefetch) {
+    try {
+      initialPosts = (await getPostsRanked(sort, tag, '', '', observer)) ?? null;
+    } catch (error) {
+      logger.error(error, 'Error in SortPage:');
+    }
   }
   // Pass data directly via context instead of Hydrate/dehydrate.
   // React Query v4's <Hydrate> has compatibility issues with Next.js App Router

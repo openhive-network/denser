@@ -54,6 +54,9 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
       if (!last?.author || !last?.permlink) return undefined;
       return { author: last.author, permlink: last.permlink };
     },
+    // Don't fetch "my communities" for anonymous users — the API would return
+    // hive.blog's subscriptions which are meaningless to the actual user.
+    enabled: !(tag === 'my' && !user.isLoggedIn),
     // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
     // which has compatibility issues with Next.js App Router streaming SSR in RQ v4.
     // initialData is only used when the query has no cached data (first load).
