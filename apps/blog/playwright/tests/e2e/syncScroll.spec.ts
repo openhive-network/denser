@@ -1,24 +1,10 @@
 import { expect, test } from '@playwright/test';
-import { HomePage } from '../support/pages/homePage';
-import { LoginForm } from '../support/pages/loginForm';
-import { PostEditorPage } from '../support/pages/postEditorPage';
+import { loginAndOpenEditor, hasEditorCredentials } from '../support/testHelpers';
 
 test.describe('Sync scroll tests', () => {
-  let homePage: HomePage;
-  let loginForm: LoginForm;
-  let postEditorPage: PostEditorPage;
-
-  const user = {
-    username: process.env.CI_TEST_USER as string,
-    password: 'testtest',
-    keys: {
-      posting: process.env.CI_TEST_USER_WIF_POSTING as string
-    }
-  };
-
   // Skip tests if credentials are not available
   test.skip(
-    () => !process.env.CI_TEST_USER || !process.env.CI_TEST_USER_WIF_POSTING,
+    () => !hasEditorCredentials(),
     'CI_TEST_USER and CI_TEST_USER_WIF_POSTING environment variables are required'
   );
 
@@ -34,32 +20,14 @@ test.describe('Sync scroll tests', () => {
     return content;
   };
 
-  test.beforeEach(async ({ page }) => {
-    homePage = new HomePage(page);
-    loginForm = new LoginForm(page);
-    postEditorPage = new PostEditorPage(page);
-  });
-
-  test('Sync scroll works immediately after page load without toggling', async ({ page }) => {
-    // Login
-    await homePage.goto();
-    await homePage.loginBtn.click();
-    await loginForm.validateDefaultLoginFormIsLoaded();
-    await loginForm.usernameInput.fill(user.username);
-    await loginForm.passwordInput.fill(user.password);
-    await loginForm.wifInput.fill(user.keys.posting);
-    await loginForm.saveSignInButton.click();
-
-    // Wait for login to complete (login process can be slow)
-    await page.waitForTimeout(3000);
-    await expect(homePage.profileAvatarButton).toBeVisible({ timeout: 20000 });
-
-    // Navigate to post editor
-    await homePage.getNavCreatePost.click();
-    await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 20000 });
+  /**
+   * Login and fill the editor with scrollable content.
+   * Returns the postEditorPage and scroller locators.
+   */
+  async function setupEditorWithContent(page: import('@playwright/test').Page) {
+    const { postEditorPage } = await loginAndOpenEditor(page);
 
     // Wait for the CodeMirror editor scroller to be available in the DOM
-    // This is crucial - the MutationObserver fix should ensure .cm-scroller exists
     await expect(postEditorPage.getEditorScroller).toBeVisible({ timeout: 20000 });
 
     // Verify side-by-side mode is enabled and preview is visible
@@ -72,16 +40,18 @@ test.describe('Sync scroll tests', () => {
     await postEditorPage.getEditorContentTextarea.click();
     await page.keyboard.type(longContent, { delay: 0 });
 
-    // Wait for preview to render
-    await page.waitForTimeout(1000);
+    // Wait for preview to render the content
+    await expect(postEditorPage.getPreviewContainer).toContainText('Line 1', { timeout: 5000 });
 
-    // Verify the preview actually rendered the content
-    const previewText = await postEditorPage.getPreviewContainer.textContent();
-    expect(previewText).toContain('Line 1');
+    return {
+      postEditorPage,
+      editorScroller: postEditorPage.getEditorScroller,
+      previewScroller: postEditorPage.getPreviewScroller
+    };
+  }
 
-    // Get the editor scroller element and the actual scrollable preview div
-    const editorScroller = postEditorPage.getEditorScroller;
-    const previewScroller = postEditorPage.getPreviewScroller;
+  test('Sync scroll works immediately after page load without toggling', async ({ page }) => {
+    const { editorScroller, previewScroller } = await setupEditorWithContent(page);
 
     // Verify both containers are scrollable (have scrollHeight > clientHeight)
     const editorScrollInfo = await editorScroller.evaluate((el) => ({
@@ -109,8 +79,11 @@ test.describe('Sync scroll tests', () => {
       el.dispatchEvent(new Event('scroll', { bubbles: true }));
     }, targetEditorScrollTop);
 
-    // Wait for scroll sync to occur (RAF-based, should be fast)
-    await page.waitForTimeout(200);
+    // Wait for scroll sync to propagate (RAF-based)
+    await expect.poll(
+      () => previewScroller.evaluate((el) => el.scrollTop),
+      { message: 'Preview should scroll in response to editor scroll', timeout: 2000 }
+    ).toBeGreaterThan(0);
 
     // Get preview scroll position after editor scroll
     const previewScrollTopAfter = await previewScroller.evaluate((el) => el.scrollTop);
@@ -126,53 +99,22 @@ test.describe('Sync scroll tests', () => {
   });
 
   test('Sync scroll toggle disables and enables scroll synchronization', async ({ page }) => {
-    // Login
-    await homePage.goto();
-    await homePage.loginBtn.click();
-    await loginForm.validateDefaultLoginFormIsLoaded();
-    await loginForm.usernameInput.fill(user.username);
-    await loginForm.passwordInput.fill(user.password);
-    await loginForm.wifInput.fill(user.keys.posting);
-    await loginForm.saveSignInButton.click();
+    const { postEditorPage, editorScroller, previewScroller } = await setupEditorWithContent(page);
 
-    // Wait for login to complete (login process can be slow)
-    await page.waitForTimeout(3000);
-    await expect(homePage.profileAvatarButton).toBeVisible({ timeout: 20000 });
+    // Reset scroll positions
+    await editorScroller.evaluate((el) => { el.scrollTop = 0; });
+    await previewScroller.evaluate((el) => { el.scrollTop = 0; });
 
-    // Navigate to post editor
-    await homePage.getNavCreatePost.click();
-    await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 20000 });
-    await expect(postEditorPage.getEditorScroller).toBeVisible({ timeout: 20000 });
-
-    // Fill in the editor with content using keyboard.type()
-    const longContent = generateLongContent();
-    await postEditorPage.getEditorContentTextarea.click();
-    await page.keyboard.type(longContent, { delay: 0 });
-
-    // Wait for preview to render
-    await page.waitForTimeout(1000);
-
-    // Verify the preview rendered
-    const previewText = await postEditorPage.getPreviewContainer.textContent();
-    expect(previewText).toContain('Line 1');
-
-    const editorScroller = postEditorPage.getEditorScroller;
-    const previewScroller = postEditorPage.getPreviewScroller;
-
-    // Reset scroll positions (no need to dispatch event here, just resetting)
-    await editorScroller.evaluate((el) => {
-      el.scrollTop = 0;
-    });
-    await previewScroller.evaluate((el) => {
-      el.scrollTop = 0;
-    });
-    await page.waitForTimeout(200);
+    // Wait for scroll positions to settle
+    await expect.poll(
+      () => editorScroller.evaluate((el) => el.scrollTop),
+      { timeout: 1000 }
+    ).toBe(0);
 
     // Click the sync scroll toggle to disable sync
     // The button is initially hidden, so hover over the container to reveal it
     await postEditorPage.getSyncScrollContainer.hover();
     await postEditorPage.getSyncScrollToggle.click();
-    await page.waitForTimeout(100);
 
     // Scroll the editor (dispatch event to test that sync is disabled)
     const editorScrollInfo = await editorScroller.evaluate((el) => ({
@@ -184,7 +126,12 @@ test.describe('Sync scroll tests', () => {
       el.scrollTop = scrollTop;
       el.dispatchEvent(new Event('scroll', { bubbles: true }));
     }, targetScroll);
-    await page.waitForTimeout(200);
+
+    // Give the sync mechanism a chance to fire (it shouldn't, since it's disabled)
+    await expect.poll(
+      () => editorScroller.evaluate((el) => el.scrollTop),
+      { timeout: 1000 }
+    ).toBeGreaterThan(0);
 
     // Preview should NOT have scrolled (sync is disabled)
     const previewScrollAfterDisabled = await previewScroller.evaluate((el) => el.scrollTop);
@@ -193,23 +140,26 @@ test.describe('Sync scroll tests', () => {
     // Re-enable sync scroll
     await postEditorPage.getSyncScrollContainer.hover();
     await postEditorPage.getSyncScrollToggle.click();
-    await page.waitForTimeout(100);
 
     // Reset editor to top
-    await editorScroller.evaluate((el) => {
-      el.scrollTop = 0;
-    });
-    await page.waitForTimeout(200);
+    await editorScroller.evaluate((el) => { el.scrollTop = 0; });
+
+    // Wait for reset to settle
+    await expect.poll(
+      () => editorScroller.evaluate((el) => el.scrollTop),
+      { timeout: 1000 }
+    ).toBe(0);
 
     // Scroll editor again - must dispatch event to trigger sync
     await editorScroller.evaluate((el, scrollTop) => {
       el.scrollTop = scrollTop;
       el.dispatchEvent(new Event('scroll', { bubbles: true }));
     }, targetScroll);
-    await page.waitForTimeout(300);
 
     // Now preview should have scrolled (sync is re-enabled)
-    const previewScrollAfterEnabled = await previewScroller.evaluate((el) => el.scrollTop);
-    expect(previewScrollAfterEnabled).toBeGreaterThan(50);
+    await expect.poll(
+      () => previewScroller.evaluate((el) => el.scrollTop),
+      { message: 'Preview should sync after re-enabling toggle', timeout: 2000 }
+    ).toBeGreaterThan(50);
   });
 });
