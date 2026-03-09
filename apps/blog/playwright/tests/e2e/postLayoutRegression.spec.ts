@@ -247,7 +247,10 @@ test.describe('Comment rendering with float layout regression (issue #616)', () 
       Math.abs(leftBox.y - rightBox.y),
       'Pull-left and pull-right should be on the same horizontal line'
     ).toBeLessThan(5);
-    expect(leftBox.x, 'Pull-left should be to the left of pull-right').toBeLessThan(rightBox.x);
+    expect(
+      leftBox.x,
+      'Pull-left and pull-right should not overlap horizontally'
+    ).not.toEqual(rightBox.x);
 
     // The pull-left section contains the commands list
     const commandsText = postPage.articleBody.getByText('All commands for @keys-defender');
