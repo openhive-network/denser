@@ -99,6 +99,9 @@ test.describe('Embed table layout regression', () => {
       const td = tableInstagramWrappers.nth(i).locator('xpath=ancestor::td');
       await expect(td).toBeAttached();
     }
+
+    // Verify table CSS properties for proper rendering
+    await expect(postPage.articleTable).toHaveCSS('border-collapse', 'collapse');
   });
 
   test('table with embeds renders correct layout', async ({ page, browserName }) => {

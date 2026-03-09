@@ -55,10 +55,18 @@ test.describe('Paragraph overlap regression', () => {
 
     expect(boxes.length, 'At least 2 visible paragraphs required').toBeGreaterThan(1);
 
-    // Every paragraph should have non-zero height
+    // Every paragraph should have non-zero height and proper margin-bottom spacing
     for (const box of boxes) {
       expect(box.height, `Paragraph ${box.index} should have non-zero height`).toBeGreaterThan(0);
     }
+
+    // Verify paragraphs have margin-bottom for proper spacing between elements
+    const firstVisibleParagraph = paragraphs.first();
+    const marginBottom = await firstVisibleParagraph.evaluate((el) => getComputedStyle(el).marginBottom);
+    expect(
+      parseFloat(marginBottom),
+      'Paragraphs should have non-zero margin-bottom for spacing'
+    ).toBeGreaterThan(0);
 
     // No two consecutive paragraphs should overlap vertically.
     // Only check adjacent pairs — non-adjacent paragraphs may share vertical
@@ -218,6 +226,12 @@ test.describe('Comment rendering with float layout regression (issue #616)', () 
 
     await postPage.gotoPostPage(floatComment.community, floatComment.author, floatComment.permlink);
     await expect(postPage.articleBody).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+
+    // Verify float containers have correct CSS float property
+    const pullLeft = postPage.articleBody.locator('.pull-left').first();
+    const pullRight = postPage.articleBody.locator('.pull-right').first();
+    await expect(pullLeft).toHaveCSS('float', 'left');
+    await expect(pullRight).toHaveCSS('float', 'right');
 
     // The pull-left section contains the commands list
     const commandsText = postPage.articleBody.getByText('All commands for @keys-defender');

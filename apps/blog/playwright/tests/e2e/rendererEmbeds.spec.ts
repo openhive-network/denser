@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { PostPage } from '../support/pages/postPage';
+import { TIMEOUTS } from '../support/constants';
+import { assertDefined } from '../support/testHelpers';
 
 /**
  * Regression tests for media embed rendering in the blog post renderer.
@@ -50,9 +52,9 @@ test.describe('Renderer media embeds', () => {
     await expect(youtubeIframe).toHaveAttribute('allowfullscreen', 'allowfullscreen');
 
     const box = await youtubeIframe.boundingBox();
-    expect(box, 'YouTube iframe should have a bounding box').not.toBeNull();
-    expect(box!.width).toBeGreaterThan(100);
-    expect(box!.height).toBeGreaterThan(50);
+    assertDefined(box, 'YouTube iframe should have a bounding box');
+    expect(box.width).toBeGreaterThan(100);
+    expect(box.height).toBeGreaterThan(50);
   });
 
   test('3Speak embed renders with correct video reference', async ({ page }) => {
@@ -72,14 +74,9 @@ test.describe('Renderer media embeds', () => {
     await expect(twitterWrapper).toBeAttached({ timeout: 10000 });
 
     // TwitterResizePlugin may replace the initial iframe with a native widget.
-    // Wait for the plugin to settle (LOAD_TIMEOUT_MS = 10s + buffer).
-    await page.waitForTimeout(15000);
-
-    // After settling, there should be at least one visible iframe
-    // (either fallback platform.twitter.com or native widget iframe).
+    // Poll until at least one visible iframe appears (replaces hardcoded timeout).
     const visibleIframe = twitterWrapper.locator('iframe:visible');
-    const iframeCount = await visibleIframe.count();
-    expect(iframeCount, 'Twitter wrapper should contain at least one visible iframe').toBeGreaterThan(0);
+    await expect(visibleIframe).toHaveCount(1, { timeout: TIMEOUTS.TWITTER_PLUGIN_SETTLE });
   });
 
   test('Instagram embed renders inside instagramWrapper', async ({ page, browserName }) => {
@@ -146,13 +143,13 @@ test.describe('Embed responsiveness on narrow viewport', () => {
 
     const articleBox = await postPage.articleBody.boundingBox();
     const wrapperBox = await youtubeWrapper.boundingBox();
-    expect(articleBox).not.toBeNull();
-    expect(wrapperBox).not.toBeNull();
+    assertDefined(articleBox, 'Article body should have a bounding box');
+    assertDefined(wrapperBox, 'YouTube wrapper should have a bounding box');
 
     expect(
-      wrapperBox!.width,
-      `YouTube wrapper (${wrapperBox!.width}px) should not exceed article body (${articleBox!.width}px)`
-    ).toBeLessThanOrEqual(articleBox!.width + 1);
+      wrapperBox.width,
+      `YouTube wrapper (${wrapperBox.width}px) should not exceed article body (${articleBox.width}px)`
+    ).toBeLessThanOrEqual(articleBox.width + 1);
   });
 
   test('Twitter embed does not overflow article body on mobile', async ({ page, browserName }) => {
@@ -161,18 +158,21 @@ test.describe('Embed responsiveness on narrow viewport', () => {
     const twitterWrapper = page.locator('#articleBody .twitterWrapper').first();
     await expect(twitterWrapper).toBeAttached({ timeout: 10000 });
 
-    // Wait for TwitterResizePlugin to settle
-    await page.waitForTimeout(15000);
-
-    const articleBox = await postPage.articleBody.boundingBox();
-    const wrapperBox = await twitterWrapper.boundingBox();
-    expect(articleBox).not.toBeNull();
-    expect(wrapperBox).not.toBeNull();
-
-    expect(
-      wrapperBox!.width,
-      `Twitter wrapper (${wrapperBox!.width}px) should not exceed article body (${articleBox!.width}px)`
-    ).toBeLessThanOrEqual(articleBox!.width + 1);
+    // Poll until TwitterResizePlugin has settled and wrapper fits within article body
+    await expect
+      .poll(
+        async () => {
+          const articleBox = await postPage.articleBody.boundingBox();
+          const wrapperBox = await twitterWrapper.boundingBox();
+          if (!articleBox || !wrapperBox) return false;
+          return wrapperBox.width <= articleBox.width + 1;
+        },
+        {
+          message: 'Twitter wrapper should not exceed article body width on mobile',
+          timeout: TIMEOUTS.TWITTER_PLUGIN_SETTLE
+        }
+      )
+      .toBeTruthy();
   });
 
   test('Instagram embed does not overflow article body on mobile', async ({ page, browserName }) => {
@@ -183,12 +183,89 @@ test.describe('Embed responsiveness on narrow viewport', () => {
 
     const articleBox = await postPage.articleBody.boundingBox();
     const wrapperBox = await instagramWrapper.boundingBox();
-    expect(articleBox).not.toBeNull();
-    expect(wrapperBox).not.toBeNull();
+    assertDefined(articleBox, 'Article body should have a bounding box');
+    assertDefined(wrapperBox, 'Instagram wrapper should have a bounding box');
 
     expect(
-      wrapperBox!.width,
-      `Instagram wrapper (${wrapperBox!.width}px) should not exceed article body (${articleBox!.width}px)`
-    ).toBeLessThanOrEqual(articleBox!.width + 1);
+      wrapperBox.width,
+      `Instagram wrapper (${wrapperBox.width}px) should not exceed article body (${articleBox.width}px)`
+    ).toBeLessThanOrEqual(articleBox.width + 1);
+  });
+});
+
+/**
+ * Tablet viewport responsiveness tests for media embeds.
+ *
+ * Verifies that embeds do not overflow on a 768px tablet breakpoint,
+ * complementing the 430px mobile tests above.
+ */
+test.describe('Embed responsiveness on tablet viewport', () => {
+  const TABLET_WIDTH = 768;
+  const TABLET_HEIGHT = 1024;
+
+  let postPage: PostPage;
+
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: TABLET_WIDTH, height: TABLET_HEIGHT });
+    postPage = new PostPage(page);
+    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
+    await expect(postPage.articleBody).toBeVisible();
+  });
+
+  test('YouTube embed does not overflow article body on tablet', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Responsiveness test runs on chromium only');
+
+    const youtubeWrapper = page.locator('#articleBody .videoWrapper').first();
+    await expect(youtubeWrapper).toBeAttached({ timeout: 10000 });
+
+    const articleBox = await postPage.articleBody.boundingBox();
+    const wrapperBox = await youtubeWrapper.boundingBox();
+    assertDefined(articleBox, 'Article body should have a bounding box');
+    assertDefined(wrapperBox, 'YouTube wrapper should have a bounding box');
+
+    expect(
+      wrapperBox.width,
+      `YouTube wrapper (${wrapperBox.width}px) should not exceed article body (${articleBox.width}px) on tablet`
+    ).toBeLessThanOrEqual(articleBox.width + 1);
+  });
+
+  test('Twitter embed does not overflow article body on tablet', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Responsiveness test runs on chromium only');
+
+    const twitterWrapper = page.locator('#articleBody .twitterWrapper').first();
+    await expect(twitterWrapper).toBeAttached({ timeout: 10000 });
+
+    // Poll until TwitterResizePlugin has settled and wrapper fits within article body
+    await expect
+      .poll(
+        async () => {
+          const articleBox = await postPage.articleBody.boundingBox();
+          const wrapperBox = await twitterWrapper.boundingBox();
+          if (!articleBox || !wrapperBox) return false;
+          return wrapperBox.width <= articleBox.width + 1;
+        },
+        {
+          message: 'Twitter wrapper should not exceed article body width on tablet',
+          timeout: TIMEOUTS.TWITTER_PLUGIN_SETTLE
+        }
+      )
+      .toBeTruthy();
+  });
+
+  test('Instagram embed does not overflow article body on tablet', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Responsiveness test runs on chromium only');
+
+    const instagramWrapper = page.locator('#articleBody .instagramWrapper').first();
+    await expect(instagramWrapper).toBeAttached({ timeout: 10000 });
+
+    const articleBox = await postPage.articleBody.boundingBox();
+    const wrapperBox = await instagramWrapper.boundingBox();
+    assertDefined(articleBox, 'Article body should have a bounding box');
+    assertDefined(wrapperBox, 'Instagram wrapper should have a bounding box');
+
+    expect(
+      wrapperBox.width,
+      `Instagram wrapper (${wrapperBox.width}px) should not exceed article body (${articleBox.width}px) on tablet`
+    ).toBeLessThanOrEqual(articleBox.width + 1);
   });
 });
