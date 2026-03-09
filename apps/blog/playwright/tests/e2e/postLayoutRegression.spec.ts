@@ -227,11 +227,27 @@ test.describe('Comment rendering with float layout regression (issue #616)', () 
     await postPage.gotoPostPage(floatComment.community, floatComment.author, floatComment.permlink);
     await expect(postPage.articleBody).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
 
-    // Verify float containers have correct CSS float property
-    const pullLeft = postPage.articleBody.locator('.pull-left').first();
-    const pullRight = postPage.articleBody.locator('.pull-right').first();
-    await expect(pullLeft).toHaveCSS('float', 'left');
-    await expect(pullRight).toHaveCSS('float', 'right');
+    // The renderer wraps adjacent pull-left + pull-right in a .pull-columns flex container,
+    // which overrides float to 'none' and uses flexbox instead. Verify the actual layout:
+    const pullColumns = postPage.articleBody.locator('.pull-columns').first();
+    const pullLeft = pullColumns.locator('.pull-left').first();
+    const pullRight = pullColumns.locator('.pull-right').first();
+
+    // Verify flex container layout
+    await expect(pullColumns).toHaveCSS('display', 'flex');
+    await expect(pullLeft).toHaveCSS('flex', '1 1 0%');
+    await expect(pullRight).toHaveCSS('flex', '1 1 0%');
+
+    // Verify both sections are side-by-side (same Y position, different X)
+    const leftBox = await pullLeft.boundingBox();
+    const rightBox = await pullRight.boundingBox();
+    assertDefined(leftBox, 'pull-left should have a bounding box');
+    assertDefined(rightBox, 'pull-right should have a bounding box');
+    expect(
+      Math.abs(leftBox.y - rightBox.y),
+      'Pull-left and pull-right should be on the same horizontal line'
+    ).toBeLessThan(5);
+    expect(leftBox.x, 'Pull-left should be to the left of pull-right').toBeLessThan(rightBox.x);
 
     // The pull-left section contains the commands list
     const commandsText = postPage.articleBody.getByText('All commands for @keys-defender');
