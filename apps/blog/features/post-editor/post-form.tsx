@@ -169,13 +169,17 @@ export default function PostForm({
 
   // Obtain a proxy auth token so editor preview can bypass the whitelist
   const fetchProxyAuthToken = useCallback(async () => {
-    if (!user.isLoggedIn || !signer) return;
+    if (!user.isLoggedIn || !signer) {
+      proxyAuthRequested.current = false; // retry once login/signer is ready
+      return;
+    }
     try {
       const timestamp = Date.now();
       const imageOwner = signer.authorityUsername || signer.username;
       const message = `Authorize image proxy preview for ${imageOwner} at ${new Date(timestamp).toISOString()}`;
       const sig = await signer.signChallenge({ message, password: '' });
-      const resp = await fetch(`${configuredImagesEndpoint}/proxy-auth/${imageOwner}/${sig}`, {
+      const baseUrl = configuredImagesEndpoint.replace(/\/+$/, '');
+      const resp = await fetch(`${baseUrl}/proxy-auth/${imageOwner}/${sig}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ timestamp })

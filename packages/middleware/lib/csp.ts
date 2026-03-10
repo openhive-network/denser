@@ -43,6 +43,14 @@ function buildConnectSrcHosts(): Set<string> {
     }
   }
 
+  // Ensure the configured images endpoint is in connect-src for proxy-auth token fetch
+  const imagesEndpoint = process.env.REACT_APP_IMAGES_ENDPOINT;
+  if (imagesEndpoint) {
+    try {
+      hosts.add(new URL(imagesEndpoint).origin);
+    } catch { /* invalid URL, skip */ }
+  }
+
   // Google APIs for Drive wallet backup and Sign-In
   if (process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID) {
     hosts.add('https://www.googleapis.com');
@@ -140,6 +148,7 @@ export function buildCsp(config: CspConfig = {}): string {
 export const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'SAMEORIGIN',
+  'X-XSS-Protection': '1; mode=block',
   'X-DNS-Prefetch-Control': 'off',
   'X-Download-Options': 'noopen',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
