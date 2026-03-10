@@ -177,7 +177,7 @@
     "the_next_power_down": "Następne zmniejszanie mocy odbędzie się za",
     "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
-    "receive_interest": "'Receive interest of {{number}}",
+    "receive_interest": "Received interest of {{number}}",
     "transfer_to": "Przelew {{value}} do ",
     "transfer_to_savings_to": "Przelew do oszczędności {{value}} do ",
     "transfer_from_savings_to": "Przelew z oszczędności {{value}} do ",

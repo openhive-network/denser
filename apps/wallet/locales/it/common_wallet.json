@@ -149,7 +149,7 @@
     "the_next_power_down": "The next power down is scheduled to happen in ",
     "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
-    "receive_interest": "'Receive interest of {{number}}",
+    "receive_interest": "Received interest of {{number}}",
     "transfer_to": "Transfer {{value}} to ",
     "transfer_to_savings_to": "Transfer to savings {{value}} to ",
     "transfer_from_savings_to": "Transfer from savings {{value}} to ",
