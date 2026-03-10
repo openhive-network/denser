@@ -11,19 +11,27 @@ type SortType = 'posts' | 'comments' | 'payout';
 const AccountPostsTabs = ({ username, children }: { username: string; children: ReactNode }) => {
   const { t } = useTranslation('blog');
   const pathname = usePathname();
-  const sort: SortType = (pathname?.slice(pathname.lastIndexOf('/') + 1) as SortType) || 'posts';
+  const SORT_TYPES: readonly SortType[] = ['posts', 'comments', 'payout'];
+  const segment = pathname?.slice(pathname.lastIndexOf('/') + 1);
+  const sort: SortType = SORT_TYPES.includes(segment as SortType) ? (segment as SortType) : 'posts';
 
   return (
-    <Tabs defaultValue={sort} className="w-full">
+    <Tabs value={sort} className="w-full">
       <TabsList className="flex justify-start bg-background-tertiary" data-testid="user-post-menu">
-        <TabsTrigger value="posts">
-          <Link href={`/@${username}/posts`}>{t('navigation.profile_posts_tab_navbar.posts')}</Link>
+        <TabsTrigger value="posts" className="p-0">
+          <Link className="rounded-sm px-3 py-1.5" href={`/@${username}/posts`}>
+            {t('navigation.profile_posts_tab_navbar.posts')}
+          </Link>
         </TabsTrigger>
-        <TabsTrigger value="comments">
-          <Link href={`/@${username}/comments`}>{t('navigation.profile_posts_tab_navbar.comments')}</Link>
+        <TabsTrigger value="comments" className="p-0">
+          <Link className="rounded-sm px-3 py-1.5" href={`/@${username}/comments`}>
+            {t('navigation.profile_posts_tab_navbar.comments')}
+          </Link>
         </TabsTrigger>
-        <TabsTrigger value="payout">
-          <Link href={`/@${username}/payout`}>{t('navigation.profile_posts_tab_navbar.payouts')}</Link>
+        <TabsTrigger value="payout" className="p-0">
+          <Link className="rounded-sm px-3 py-1.5" href={`/@${username}/payout`}>
+            {t('navigation.profile_posts_tab_navbar.payouts')}
+          </Link>
         </TabsTrigger>
       </TabsList>
       <TabsContent value={sort}>{children}</TabsContent>
