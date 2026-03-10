@@ -3,6 +3,7 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { scrubEvent } from "@ui/lib/sentry-scrub";
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -18,4 +19,7 @@ Sentry.init({
   // This prevents Sentry from capturing IP addresses, cookies, and headers.
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
   sendDefaultPii: process.env.REACT_APP_SENTRY_SEND_PII === 'true',
+
+  // SECURITY: Scrub WIF private keys from error events before sending to Sentry
+  beforeSend: scrubEvent as any,
 });

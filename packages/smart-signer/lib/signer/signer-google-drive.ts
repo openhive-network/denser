@@ -374,7 +374,7 @@ export class SignerGoogleDrive extends Signer {
             setStoredEncryptionKeyWif(wif);
             logger.info('Cached encryption key WIF for Google Drive wallet');
           } catch (wifError) {
-            logger.error('Failed to extract/cache encryption key WIF: %o', wifError);
+            logger.error('Failed to extract/cache encryption key WIF: %s', wifError instanceof Error ? wifError.message : String(wifError));
             // Non-fatal: wallet is already loaded, just won't have cached WIF next time
           }
         }

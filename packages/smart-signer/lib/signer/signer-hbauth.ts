@@ -74,7 +74,7 @@ export class SignerHbauth extends Signer {
       const { password } = await this.passwordPromise;
       return password;
     } catch (error) {
-      logger.error('Error in getPasswordFromUser: %o', error);
+      logger.error('Error in getPasswordFromUser: %s', error instanceof Error ? error.message : String(error));
       throw new Error('No password from user');
     }
   }
@@ -115,7 +115,7 @@ export class SignerHbauth extends Signer {
     requiredKeyType?: KeyAuthorityType
   ) {
     const { username, keyType } = this;
-    logger.info('signDigest args: %o', { password, digest, username, keyType });
+    logger.info('signDigest args: %o', { digest, username, keyType });
 
     const validKeyTypes = ['posting', 'active', 'owner'];
     if (!validKeyTypes.includes(keyType)) {
@@ -135,7 +135,7 @@ export class SignerHbauth extends Signer {
       try {
         authStatus = await authClient.authenticate(username, password, keyType);
       } catch (error) {
-        logger.error('Error in signDigest, when trying to authenticate user: %o', error);
+        logger.error('Error in signDigest, when trying to authenticate user: %s', error instanceof Error ? error.message : String(error));
 
         // Check if this is an ignorable error (e.g., "User is already logged in")
         if (isIgnorableError(error)) {
@@ -185,7 +185,7 @@ export class SignerHbauth extends Signer {
         );
         return signature;
       } catch (error) {
-        logger.error('Error in single sign: %o', error);
+        logger.error('Error in single sign: %s', error instanceof Error ? error.message : String(error));
         throw error;
       }
     }
@@ -270,7 +270,7 @@ export class SignerHbauth extends Signer {
         // Import other key to safe storage
         await authClient.register(username, password, keyToUse, keyType);
       } catch (error) {
-        logger.error('Error in requireOtherKey: %o', error);
+        logger.error('Error in requireOtherKey: %s', error instanceof Error ? error.message : String(error));
         // Preserve the actual error message instead of generic "Invalid key"
         const { message } = parseAuthError(error, 'Invalid key');
         throw new Error(message, { cause: error });

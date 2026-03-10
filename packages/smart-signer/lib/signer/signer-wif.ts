@@ -82,7 +82,7 @@ export class SignerWif extends SignerHbauth {
 
       return signature;
     } catch (error) {
-      logger.error('Error in single sign: %o', error);
+      logger.error('Error in single sign: %s', error instanceof Error ? error.message : String(error));
       throw error;
     }
   }
@@ -123,7 +123,7 @@ export class SignerWif extends SignerHbauth {
       const wif: string = await this.passwordPromise;
       return wif;
     } catch (error) {
-      logger.error('Error in getPasswordFromUser: %o', error);
+      logger.error('Error in getPasswordFromUser: %s', error instanceof Error ? error.message : String(error));
       throw new Error('No WIF key from user');
     }
   }
@@ -178,7 +178,7 @@ export class SignerWif extends SignerHbauth {
 
       valid = result.valid;
     } catch (error) {
-      logger.error('Cannot verify private key: %o', error);
+      logger.error('Cannot verify private key: %s', error instanceof Error ? error.message : String(error));
       throw error;
     }
 
