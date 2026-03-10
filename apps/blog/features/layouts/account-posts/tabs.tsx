@@ -18,14 +18,20 @@ const AccountPostsTabs = ({ username, children }: { username: string; children: 
   return (
     <Tabs value={sort} className="w-full">
       <TabsList className="flex justify-start bg-background-tertiary" data-testid="user-post-menu">
-        <TabsTrigger value="posts">
-          <Link href={`/@${username}/posts`}>{t('navigation.profile_posts_tab_navbar.posts')}</Link>
+        <TabsTrigger value="posts" className="p-0">
+          <Link className="rounded-sm px-3 py-1.5" href={`/@${username}/posts`}>
+            {t('navigation.profile_posts_tab_navbar.posts')}
+          </Link>
         </TabsTrigger>
-        <TabsTrigger value="comments">
-          <Link href={`/@${username}/comments`}>{t('navigation.profile_posts_tab_navbar.comments')}</Link>
+        <TabsTrigger value="comments" className="p-0">
+          <Link className="rounded-sm px-3 py-1.5" href={`/@${username}/comments`}>
+            {t('navigation.profile_posts_tab_navbar.comments')}
+          </Link>
         </TabsTrigger>
-        <TabsTrigger value="payout">
-          <Link href={`/@${username}/payout`}>{t('navigation.profile_posts_tab_navbar.payouts')}</Link>
+        <TabsTrigger value="payout" className="p-0">
+          <Link className="rounded-sm px-3 py-1.5" href={`/@${username}/payout`}>
+            {t('navigation.profile_posts_tab_navbar.payouts')}
+          </Link>
         </TabsTrigger>
       </TabsList>
       <TabsContent value={sort}>{children}</TabsContent>
