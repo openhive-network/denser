@@ -72,7 +72,7 @@ export class SignerMetaMask extends Signer {
       logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
-      logger.error('SignerMetaMask.signTransaction error: %o', error);
+      logger.error('SignerMetaMask.signTransaction error: %s', error instanceof Error ? error.message : String(error));
       throw error;
     }
   }

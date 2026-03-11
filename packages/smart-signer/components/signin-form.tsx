@@ -106,7 +106,7 @@ export default function LoginForm({
     hasCompatibleMetaMask().then((supported) => {
       setIsMetaMaskSupported(supported);
     }).catch((error) => {
-      logger.error('Error checking MetaMask compatibility: %o', error);
+      logger.error('Error checking MetaMask compatibility: %s', error instanceof Error ? error.message : String(error));
     });
   }, []);
 

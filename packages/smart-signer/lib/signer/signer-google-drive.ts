@@ -116,7 +116,7 @@ export class SignerGoogleDrive extends Signer {
     const savedRefresh = localStorage.getItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
     if (savedRefresh) {
       this._accessToken = this.getAccessTokenForRefreshToken(savedRefresh).catch((err) => {
-        logger.error('Error refreshing Google Drive access token: %o', err);
+        logger.error('Error refreshing Google Drive access token: %s', err instanceof Error ? err.message : String(err));
 
         localStorage.removeItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
 
@@ -304,7 +304,7 @@ export class SignerGoogleDrive extends Signer {
       // The WIF will be extracted and cached after wallet loads successfully.
       return { password };
     } catch (error) {
-      logger.error('Error in getEncryptionCredentials: %o', error);
+      logger.error('Error in getEncryptionCredentials: %s', error instanceof Error ? error.message : String(error));
       throw new Error('No password from user');
     }
   }
@@ -401,13 +401,13 @@ export class SignerGoogleDrive extends Signer {
             resolve(provider);
             return;
           } catch (retryError) {
-            logger.error('Error in getWallet retry: %o', retryError);
+            logger.error('Error in getWallet retry: %s', retryError instanceof Error ? retryError.message : String(retryError));
             reject(retryError);
             return;
           }
         }
 
-        logger.error('Error in getWallet: %o', error);
+        logger.error('Error in getWallet: %s', error instanceof Error ? error.message : String(error));
         reject(error);
       }
     });
@@ -424,7 +424,7 @@ export class SignerGoogleDrive extends Signer {
       try {
         provider = await this.getWallet(username, keyType);
       } catch (error) {
-        logger.error('Error obtaining Google Drive wallet: %o Retrying with forceLogin=true', error);
+        logger.error('Error obtaining Google Drive wallet: %s Retrying with forceLogin=true', error instanceof Error ? error.message : String(error));
 
         provider = await this.getWallet(username, keyType, true);
       }
@@ -471,7 +471,7 @@ export class SignerGoogleDrive extends Signer {
       try {
         provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType);
       } catch (error) {
-        logger.error('Error obtaining Google Drive wallet: %o Retrying with forceLogin=true', error);
+        logger.error('Error obtaining Google Drive wallet: %s Retrying with forceLogin=true', error instanceof Error ? error.message : String(error));
 
         provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType, true);
       }
@@ -482,7 +482,7 @@ export class SignerGoogleDrive extends Signer {
       logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
-      logger.error('SignerGoogleDrive.signTransaction error: %o', error);
+      logger.error('SignerGoogleDrive.signTransaction error: %s', error instanceof Error ? error.message : String(error));
       throw error;
     }
   }

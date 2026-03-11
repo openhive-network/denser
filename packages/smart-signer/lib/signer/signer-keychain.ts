@@ -70,7 +70,7 @@ export class SignerKeychain extends Signer {
       logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
-      logger.error('SignerKeychain.signTransaction error: %o', error);
+      logger.error('SignerKeychain.signTransaction error: %s', error instanceof Error ? error.message : String(error));
       throw error;
     }
   }

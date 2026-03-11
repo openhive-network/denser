@@ -152,7 +152,7 @@ export function GoogleOAuthRedirectHandler({
       logger.info('Google OAuth redirect login completed successfully for %s', storedUsername);
       onComplete?.(storedUsername);
     } catch (error) {
-      logger.error('Google OAuth redirect continuation failed: %o', error);
+      logger.error('Google OAuth redirect continuation failed: %s', error instanceof Error ? error.message : String(error));
       handleError(error);
     } finally {
       setIsProcessing(false);

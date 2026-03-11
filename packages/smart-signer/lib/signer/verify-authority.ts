@@ -43,7 +43,7 @@ export async function verifyAuthorityOrThrow(
       pack
     });
   } catch (error) {
-    logger.error('%s key authority verification failed: %o', signerName, error);
+    logger.error('%s key authority verification failed: %s', signerName, error instanceof Error ? error.message : String(error));
     const msg = error instanceof Error ? error.message : String(error);
 
     // Re-throw network errors as-is — don't misattribute them as authority failures

@@ -24,7 +24,7 @@ export const logoutUser: NextApiHandler<User> = async (req, res) => {
         await oidcSession.destroy();
       }
     } catch (error) {
-      logger.error('Logout: error when destroying oidc session: %o', error);
+      logger.error('Logout: error when destroying oidc session: %s', error instanceof Error ? error.message : String(error));
     }
   }
 
@@ -39,7 +39,7 @@ export const logoutUser: NextApiHandler<User> = async (req, res) => {
       session.destroy();
     }
   } catch (error) {
-    logger.error('Logout: error when destroying app session: %o', error);
+    logger.error('Logout: error when destroying app session: %s', error instanceof Error ? error.message : String(error));
   }
 
   res.json(defaultUser);

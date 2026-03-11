@@ -202,7 +202,7 @@ export function handleAuthError(error: unknown, context: string, fallbackMessage
   const result = parseAuthError(error, fallbackMessage);
 
   // Always log the original error for debugging
-  logger.error('Auth error in %s: %o', context, result.originalError);
+  logger.error('Auth error in %s: %s', context, result.originalError instanceof Error ? result.originalError.message : String(result.originalError));
 
   if (!result.isKnownError) {
     // Log additional details for unknown errors to help with debugging

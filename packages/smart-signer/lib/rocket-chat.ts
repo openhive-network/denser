@@ -67,7 +67,7 @@ export async function getRCAuthToken(userId: string, username = '') {
                   || 'getRCAuthToken unspecified in responseData3'
       };
   } catch (error) {
-      logger.error('getRCAuthToken error: %o', error);
+      logger.error('getRCAuthToken error: %s', error instanceof Error ? error.message : String(error));
       return {
           success: false,
           error: 'getRCAuthToken unknown'
@@ -103,14 +103,14 @@ export async function getChatAuthToken(username = '') {
               ...rocketChatAdminUserAuthHeaders,
           },
       });
-      logger.info('getChatAuthToken users.info response: %o', responseData1);
+      logger.info('getChatAuthToken users.info response: success=%s', responseData1?.success);
   } catch (error: any) {
-      logger.info('getChatAuthToken users.info caught error: %o', error);
+      logger.info('getChatAuthToken users.info caught error: %s', error instanceof Error ? error.message : String(error));
       // FetchError has error.data (parsed JSON), not error.response.data
       if (error.data && error.data.error === 'User not found.') {
           responseData1 = error.data;
       } else {
-          logger.error('Error code 2 in getChatAuthToken: %o', error);
+          logger.error('Error code 2 in getChatAuthToken: %s', error instanceof Error ? error.message : String(error));
           return {
               success: false,
               error: 'Error code 2'
@@ -166,7 +166,7 @@ export async function getChatAuthToken(username = '') {
                   error: 'Error code 4. ' + responseData2.error
               };
           } catch (error) {
-              logger.error('Error code 3 in getChatAuthToken: %o', error);
+              logger.error('Error code 3 in getChatAuthToken: %s', error instanceof Error ? error.message : String(error));
               return {
                   success: false,
                   error: 'Error code 3'
