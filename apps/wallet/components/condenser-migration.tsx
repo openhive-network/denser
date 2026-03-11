@@ -90,6 +90,7 @@ export default function CondenserMigration() {
           // Middleware should set this on every request. If missing,
           // don't mark migrated so we retry on next page load.
           logger.warn('Condenser wallet migration: no login_challenge cookie');
+          removeStoredWif(username, loginType);
           return;
         }
 
