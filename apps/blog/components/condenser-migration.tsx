@@ -76,7 +76,7 @@ export default function CondenserMigration() {
       let loginType: LoginType;
       if (loginWithKeychain && hasCompatibleKeychain()) {
         loginType = LoginType.keychain;
-      } else if (postingWif) {
+      } else if (postingWif && postingWif !== 'none') {
         loginType = LoginType.wif;
         // Store WIF in Denser format so SignerWif can read it
         window.localStorage.setItem(
