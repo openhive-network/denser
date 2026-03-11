@@ -15,16 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import env from '@beam-australia/react-env';
 
 import { useTranslation } from '@/blog/i18n/client';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  proxifyImageSrc,
-  getUserAvatarUrl,
-  escapeCssUrl,
-  isSafeImageUrl,
-  isSafeExternalUrl
-} from '@ui/components';
+import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, getUserAvatarUrl, getDefaultImageUrl, escapeCssUrl, isSafeImageUrl, isSafeExternalUrl } from '@ui/components';
 import { Separator } from '@hive/ui/components/separator';
 import TimeAgo from '@ui/components/time-ago';
 import { Icons } from '@hive/ui/components/icons';
@@ -214,7 +205,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                   <AvatarFallback>
                     <img
                       className="h-full w-full object-cover"
-                      src={getUserAvatarUrl(profileData?.name || '', 'large')}
+                      src={getDefaultImageUrl()}
                       alt="Profile picture"
                     />
                   </AvatarFallback>

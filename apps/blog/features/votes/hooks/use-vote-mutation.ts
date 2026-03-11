@@ -1,6 +1,7 @@
 import { useRef } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, QueryClient, useQueryClient } from '@tanstack/react-query';
 import { TransactionBroadcastResult, transactionService } from '@transaction/index';
+import { Entry } from '@hive/common-hiveio-packages/wax';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
 import { getLogger } from '@ui/lib/logging';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -8,6 +9,56 @@ import { handleError } from '@ui/lib/handle-error';
 import { scheduleInvalidations, scheduleValidatedRefetch } from '@/blog/lib/react-query';
 
 const logger = getLogger('app');
+
+type CacheSnapshot = { queryKey: readonly unknown[]; data: unknown };
+
+/**
+ * Optimistically update total_votes in postData, discussionData, and entriesInfinite caches.
+ * Returns snapshots for rollback.
+ */
+function optimisticUpdateTotalVotes(
+  queryClient: QueryClient,
+  author: string,
+  permlink: string,
+  delta: number
+): CacheSnapshot[] {
+  if (delta === 0) return [];
+
+  const snapshots: CacheSnapshot[] = [];
+
+  // Update postData queries (single Entry objects)
+  const postQueries = queryClient.getQueriesData<Entry>({ queryKey: ['postData', author, permlink] });
+  for (const [key, data] of postQueries) {
+    if (!data?.stats) continue;
+    snapshots.push({ queryKey: key, data: structuredClone(data) });
+    queryClient.setQueryData(key, {
+      ...data,
+      stats: { ...data.stats, total_votes: Math.max(0, data.stats.total_votes + delta) }
+    });
+  }
+
+  // Update discussionData queries (record of entries keyed by path)
+  const discussionQueries = queryClient.getQueriesData<Record<string, Entry>>({ queryKey: ['discussionData'] });
+  for (const [key, data] of discussionQueries) {
+    if (!data) continue;
+    const entryKey = Object.keys(data).find((k) => {
+      const entry = data[k];
+      return entry?.author === author && entry?.permlink === permlink;
+    });
+    if (!entryKey || !data[entryKey]?.stats) continue;
+    snapshots.push({ queryKey: key, data: structuredClone(data) });
+    const entry = data[entryKey];
+    queryClient.setQueryData(key, {
+      ...data,
+      [entryKey]: {
+        ...entry,
+        stats: { ...entry.stats, total_votes: Math.max(0, (entry.stats?.total_votes ?? 0) + delta) }
+      }
+    });
+  }
+
+  return snapshots;
+}
 
 /**
  * Makes vote transaction.
@@ -54,8 +105,20 @@ export function useVoteMutation() {
       };
       queryClient.setQueryData(queryKey, newVoteData);
 
+      // Determine vote count delta
+      const hadPreviousVote = prevVoteData
+        && Array.isArray((prevVoteData as { votes: unknown[] }).votes)
+        && (prevVoteData as { votes: { vote_percent: number }[] }).votes.length > 0
+        && (prevVoteData as { votes: { vote_percent: number }[] }).votes[0].vote_percent !== 0;
+      const isNewVote = weight !== 0 && !hadPreviousVote;
+      const isRemovingVote = weight === 0 && hadPreviousVote;
+      const voteDelta = isNewVote ? 1 : isRemovingVote ? -1 : 0;
+
+      // Optimistically update total_votes in postData and discussionData caches
+      const prevCacheSnapshots = optimisticUpdateTotalVotes(queryClient, author, permlink, voteDelta);
+
       // Return context for rollback
-      return { prevVoteData, queryKey };
+      return { prevVoteData, queryKey, prevCacheSnapshots };
     },
 
     mutationFn: async (params: { voter: string; author: string; permlink: string; weight: number }) => {
@@ -117,6 +180,12 @@ export function useVoteMutation() {
       // Rollback to previous data on error
       if (context?.prevVoteData && context?.queryKey) {
         queryClient.setQueryData(context.queryKey, context.prevVoteData);
+      }
+      // Rollback total_votes optimistic updates
+      if (context?.prevCacheSnapshots) {
+        for (const { queryKey: key, data } of context.prevCacheSnapshots) {
+          queryClient.setQueryData(key, data);
+        }
       }
 
       handleError(error, {

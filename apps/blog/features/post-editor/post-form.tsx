@@ -447,21 +447,117 @@ export default function PostForm({
 
     /**
      * Sets up scroll sync listeners between editor and preview.
+     * Uses block-level anchor mapping for proportional scroll: editor blocks
+     * (separated by blank lines) are matched to preview blocks (top-level
+     * HTML elements), then scroll positions are interpolated between anchors.
+     * This handles large images correctly — the preview scrolls proportionally
+     * within each block rather than linearly across the whole document.
+     *
      * Called once .cm-scroller is available in the DOM.
      */
     const setupScrollSync = (editorScrollArea: HTMLDivElement) => {
+      // Cached anchor map — rebuilt when content/layout changes
+      let editorAnchors: number[] | null = null;
+      let previewAnchors: number[] | null = null;
+      let mapDirty = true;
+
+      /** Get element's absolute offset within a scroll container */
+      const getOffsetIn = (el: HTMLElement, container: HTMLElement): number => {
+        let offset = 0;
+        let current: HTMLElement | null = el;
+        while (current && current !== container) {
+          offset += current.offsetTop;
+          current = current.offsetParent as HTMLElement | null;
+        }
+        return offset;
+      };
+
+      /** Build anchor-point arrays from editor blocks ↔ preview blocks */
+      const buildMap = () => {
+        const cmContent = editorScrollArea.querySelector('.cm-content') as HTMLElement | null;
+        const proseContainer = previewEl.querySelector('.prose') as HTMLElement | null;
+        if (!cmContent || !proseContainer) { editorAnchors = null; return; }
+
+        const cmLines = Array.from(cmContent.querySelectorAll(':scope > .cm-line')) as HTMLElement[];
+        if (!cmLines.length) { editorAnchors = null; return; }
+
+        // Find block start positions in the editor (blocks separated by empty lines)
+        const editorBlockStarts: number[] = [];
+        let prevEmpty = true;
+        for (const line of cmLines) {
+          const isEmpty = !line.textContent || line.textContent.trim() === '';
+          if (!isEmpty && prevEmpty) {
+            editorBlockStarts.push(getOffsetIn(line, editorScrollArea));
+          }
+          prevEmpty = isEmpty;
+        }
+
+        // Find block start positions in the preview
+        const blockTags = new Set([
+          'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'PRE', 'UL', 'OL',
+          'BLOCKQUOTE', 'CENTER', 'DIV', 'TABLE', 'HR', 'FIGURE'
+        ]);
+        const previewBlockStarts: number[] = [];
+        for (const child of Array.from(proseContainer.children) as HTMLElement[]) {
+          if (blockTags.has(child.tagName)) {
+            previewBlockStarts.push(getOffsetIn(child, previewEl));
+          }
+        }
+
+        // Build paired anchor arrays (start + matched blocks + end)
+        const count = Math.min(editorBlockStarts.length, previewBlockStarts.length);
+        const eAnchors = [0];
+        const pAnchors = [0];
+        for (let i = 0; i < count; i++) {
+          eAnchors.push(editorBlockStarts[i]);
+          pAnchors.push(previewBlockStarts[i]);
+        }
+        const maxE = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
+        const maxP = previewEl.scrollHeight - previewEl.clientHeight;
+        if (maxE > 0) eAnchors.push(maxE);
+        if (maxP > 0) pAnchors.push(maxP);
+
+        editorAnchors = eAnchors;
+        previewAnchors = pAnchors;
+        mapDirty = false;
+      };
+
+      /** Linearly interpolate scrollTop through the anchor arrays */
+      const interpolate = (scrollTop: number, src: number[], tgt: number[]): number => {
+        let i = 0;
+        while (i < src.length - 1 && src[i + 1] <= scrollTop) i++;
+        if (i >= src.length - 1) return tgt[tgt.length - 1];
+        const s0 = src[i], s1 = src[i + 1];
+        const t0 = tgt[i], t1 = tgt[i + 1];
+        if (s1 === s0) return t0;
+        const t = (scrollTop - s0) / (s1 - s0);
+        return t0 + t * (t1 - t0);
+      };
+
+      // Rebuild map when preview DOM changes (images load, content updates)
+      const markDirty = () => { mapDirty = true; };
+      const previewMutObs = new MutationObserver(markDirty);
+      previewMutObs.observe(previewEl, { childList: true, subtree: true });
+      previewEl.addEventListener('load', markDirty, { capture: true });
+
       const handleEditorScroll = () => {
         if (isScrollSyncingRef.current || editorRafIdRef.current) return;
 
         editorRafIdRef.current = requestAnimationFrame(() => {
           editorRafIdRef.current = null;
+          if (mapDirty) buildMap();
+
           const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
           const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
           if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
 
           isScrollSyncingRef.current = true;
-          const scrollPercentage = editorScrollArea.scrollTop / maxEditorScroll;
-          previewEl.scrollTop = scrollPercentage * maxPreviewScroll;
+          if (editorAnchors && previewAnchors && editorAnchors.length > 2) {
+            previewEl.scrollTop = interpolate(editorScrollArea.scrollTop, editorAnchors, previewAnchors);
+          } else {
+            // Fallback: linear percentage
+            previewEl.scrollTop = (editorScrollArea.scrollTop / maxEditorScroll) * maxPreviewScroll;
+          }
           requestAnimationFrame(() => {
             isScrollSyncingRef.current = false;
           });
@@ -473,13 +569,19 @@ export default function PostForm({
 
         previewRafIdRef.current = requestAnimationFrame(() => {
           previewRafIdRef.current = null;
+          if (mapDirty) buildMap();
+
           const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
           const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
           if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
 
           isScrollSyncingRef.current = true;
-          const scrollPercentage = previewEl.scrollTop / maxPreviewScroll;
-          editorScrollArea.scrollTop = scrollPercentage * maxEditorScroll;
+          if (previewAnchors && editorAnchors && previewAnchors.length > 2) {
+            editorScrollArea.scrollTop = interpolate(previewEl.scrollTop, previewAnchors, editorAnchors);
+          } else {
+            // Fallback: linear percentage
+            editorScrollArea.scrollTop = (previewEl.scrollTop / maxPreviewScroll) * maxEditorScroll;
+          }
           requestAnimationFrame(() => {
             isScrollSyncingRef.current = false;
           });
@@ -496,6 +598,8 @@ export default function PostForm({
         if (previewRafIdRef.current) cancelAnimationFrame(previewRafIdRef.current);
         editorRafIdRef.current = null;
         previewRafIdRef.current = null;
+        previewMutObs.disconnect();
+        previewEl.removeEventListener('load', markDirty, { capture: true });
         editorScrollArea.removeEventListener('scroll', handleEditorScroll);
         previewEl.removeEventListener('scroll', handlePreviewScroll);
       };

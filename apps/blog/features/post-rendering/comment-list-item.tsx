@@ -135,9 +135,11 @@ const CommentListItem = memo(function CommentListItem({
   const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
 
   useEffect(() => {
-    setOpenState(comment.stats?.gray && hiddenComment ? '' : 'item-1');
-    setTemporaryHidden(comment.stats?.gray ? true : false);
-  }, [comment.stats?.gray]);
+    const shouldBeHidden = !!(comment.stats?.gray || isMutedByViewer);
+    setHiddenComment(shouldBeHidden);
+    setOpenState(comment.stats?.gray && shouldBeHidden ? '' : 'item-1');
+    setTemporaryHidden(!!comment.stats?.gray);
+  }, [comment.stats?.gray, isMutedByViewer]);
   const currentDepth = comment.depth - parent_depth;
 
   const deleteCommentMutation = useDeleteCommentMutation();

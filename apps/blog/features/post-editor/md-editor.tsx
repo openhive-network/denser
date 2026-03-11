@@ -284,7 +284,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     convertHiveLinksRef.current = convertHiveLinks;
   }, [convertHiveLinks]);
 
-  // Adapter to bridge CodeMirror dispatch with React setState-style image upload functions
+  // Adapter to bridge CodeMirror dispatch with React setState-style callbacks (used for undo)
   const setMarkdownAdapter: Dispatch<SetStateAction<string>> = useCallback((action) => {
     const view = viewRef.current;
     if (!view) return;
@@ -297,6 +297,19 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     });
   }, []);
 
+  // Direct CodeMirror insertion that preserves cursor position after the inserted text
+  const insertTextAtPosition = useCallback((text: string, pos?: number) => {
+    const view = viewRef.current;
+    if (!view) return;
+    const insertPos = Math.min(pos ?? view.state.doc.length, view.state.doc.length);
+    isInternalChangeRef.current = true;
+    view.dispatch({
+      changes: { from: insertPos, insert: text },
+      selection: { anchor: insertPos + text.length }
+    });
+    view.focus();
+  }, []);
+
   const isBlockedUser = imageUserBlocklist?.includes(user.username);
 
   // Image upload handler
@@ -305,10 +318,10 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       if (event.target.files && event.target.files.length === 1) {
         setInsertImg('');
         const cursorPos = viewRef.current?.state.selection.main.head;
-        await onImageUpload(event.target.files[0], setMarkdownAdapter, user.username, signer, setIsUploading, cursorPos);
+        await onImageUpload(event.target.files[0], insertTextAtPosition, user.username, signer, setIsUploading, cursorPos);
       }
     },
-    [setMarkdownAdapter, signer, user.username]
+    [insertTextAtPosition, signer, user.username]
   );
 
   // Drag handlers
@@ -331,9 +344,9 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       event.stopPropagation();
       setIsDrag(false);
       const cursorPos = viewRef.current?.state.selection.main.head;
-      await onImageDrop(event.dataTransfer, setMarkdownAdapter, signer.username, signer, setIsUploading, cursorPos);
+      await onImageDrop(event.dataTransfer, insertTextAtPosition, signer.username, signer, setIsUploading, cursorPos);
     },
-    [setMarkdownAdapter, signer]
+    [insertTextAtPosition, signer]
   );
 
   // Paste handler (images + Hive URL conversion)
@@ -353,7 +366,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       if (hasImage && !isBlockedUser) {
         event.preventDefault();
         const cursorPos = view.state.selection.main.head;
-        onImagePaste(event.clipboardData, setMarkdownAdapter, signer.username, signer, setIsUploading, cursorPos);
+        onImagePaste(event.clipboardData, insertTextAtPosition, signer.username, signer, setIsUploading, cursorPos);
         return true;
       }
 

@@ -684,6 +684,11 @@ function preprocessCenter(html: string): string {
     // Remarkable places </center> in its own <p> when there's a blank line before it
     html = html.replace(/<p>\s*<\/center>\s*<\/p>/g, '</center>');
 
+    // Step 1b: Extract </center> from paragraphs that also contain other content
+    // Remarkable produces <p><img ...></center></p> when </center> follows content
+    // without a blank line separating them → <p><img ...></p>\n</center>
+    html = html.replace(/(<p>(?:(?!<\/p>)[\s\S])+?)\s*<\/center>\s*<\/p>/g, '$1</p>\n</center>');
+
     // Step 2: Remove wrapping <p> from self-contained center blocks
     // Use negative lookahead to avoid matching across </p> boundaries
     html = html.replace(/<p>\s*(<center>(?:(?!<\/p>)[\s\S])*?<\/center>)\s*<\/p>/g, '$1');

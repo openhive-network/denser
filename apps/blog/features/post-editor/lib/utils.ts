@@ -175,7 +175,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
 
 export const onImageUpload = async (
   file: File,
-  setMarkdown: Dispatch<SetStateAction<string>>,
+  insertText: (text: string, pos?: number) => void,
   username: string,
   signer: Signer,
   setUploading?: Dispatch<SetStateAction<boolean>>,
@@ -185,18 +185,14 @@ export const onImageUpload = async (
   const url = await uploadImg(file, username, signer);
   const imageMarkdown = ` ![${file.name}](${!url ? 'UPLOAD FAILED' : url}) `;
 
-  // Insert at cursor position captured before upload started, or append at end
-  setMarkdown((prevMarkdown) => {
-    const pos = cursorPos ?? prevMarkdown.length;
-    return prevMarkdown.slice(0, pos) + imageMarkdown + prevMarkdown.slice(pos);
-  });
+  insertText(imageMarkdown, cursorPos);
 
   setUploading?.(false);
 };
 
 export const onImageDrop = async (
   dataTransfer: DataTransfer,
-  setMarkdown: Dispatch<SetStateAction<string>>,
+  insertText: (text: string, pos?: number) => void,
   username: string,
   signer: Signer,
   setUploading?: Dispatch<SetStateAction<boolean>>,
@@ -209,12 +205,12 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, setUploading, cursorPos)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, insertText, username, signer, setUploading, cursorPos)));
 };
 
 export const onImagePaste = async (
   clipboardData: DataTransfer,
-  setMarkdown: Dispatch<SetStateAction<string>>,
+  insertText: (text: string, pos?: number) => void,
   username: string,
   signer: Signer,
   setUploading?: Dispatch<SetStateAction<boolean>>,
@@ -229,7 +225,7 @@ export const onImagePaste = async (
     }
   }
   if (!files.length) return false;
-  await Promise.all(files.map(async (file) => onImageUpload(file, setMarkdown, username, signer, setUploading, cursorPos)));
+  await Promise.all(files.map(async (file) => onImageUpload(file, insertText, username, signer, setUploading, cursorPos)));
   return true;
 };
 
