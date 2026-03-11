@@ -149,6 +149,20 @@ function isCondenserTemplate(item: unknown): item is CondenserTemplate {
   return typeof item === 'object' && item !== null && 'name' in item && !('templateTitle' in item);
 }
 
+/**
+ * Converts Condenser payout type strings to Denser format.
+ * Condenser: '50/50', '100%-power', '0%'
+ * Denser:    '50%',   '100%',        '0%'
+ */
+function convertPayoutType(condenserType: string | undefined): string {
+  const map: Record<string, string> = {
+    '50/50': '50%',
+    '100%-power': '100%',
+    '0%': '0%'
+  };
+  return (condenserType && map[condenserType]) ?? '50%';
+}
+
 // --- Migration functions ---
 
 /**
@@ -214,7 +228,7 @@ export function migrateTemplates(username: string): void {
           category: t.community || 'blog',
           beneficiaries: convertBeneficiaries(t.beneficiaries),
           maxAcceptedPayout: convertMaxAcceptedPayout(t.maxAcceptedPayout, t.payoutType),
-          payoutType: t.payoutType || '50%'
+          payoutType: convertPayoutType(t.payoutType)
         };
       }
       // Already in denser format, keep as-is
@@ -264,7 +278,7 @@ export function migrateDraft(username: string): void {
       category: 'blog',
       beneficiaries: convertBeneficiaries(draft.beneficiaries),
       maxAcceptedPayout: convertMaxAcceptedPayout(draft.maxAcceptedPayout, draft.payoutType),
-      payoutType: draft.payoutType || '50%'
+      payoutType: convertPayoutType(draft.payoutType)
     };
 
     setStorageItem(denserKey, converted, StorageTTL.DRAFT);
