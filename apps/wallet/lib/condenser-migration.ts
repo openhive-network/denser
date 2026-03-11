@@ -10,6 +10,9 @@ const logger = getLogger('app');
 
 const MIGRATION_FLAG_KEY = 'condenser-wallet-migrated';
 
+// Hive account names: 3-16 chars, start with letter, only lowercase + digits + dots + hyphens.
+const ACCOUNT_NAME_REGEX = /^[a-z][a-z0-9.-]{2,15}$/;
+
 export interface CondenserLoginData {
   username: string;
   postingWif: string;
@@ -47,7 +50,7 @@ export function parseAutopost2(): CondenserLoginData | null {
     const fields = decoded.split('\t');
 
     const username = fields[0]?.trim();
-    if (!username) return null;
+    if (!username || !ACCOUNT_NAME_REGEX.test(username)) return null;
 
     return {
       username,

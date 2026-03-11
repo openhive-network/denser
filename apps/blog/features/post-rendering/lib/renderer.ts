@@ -7,6 +7,32 @@ import { configuredSiteDomain, configuredImagesEndpoint } from '@hive/ui/config/
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
+// Build a set of trusted origins for link safety checks.
+// Uses URL.origin comparison instead of string prefix matching to prevent
+// subdomain spoofing (e.g. "images.hive.blog.evil.com" matching "images.hive.blog").
+const safeOrigins = new Set(
+  [configuredImagesEndpoint, configuredSiteDomain]
+    .filter(Boolean)
+    .map((domain) => {
+      try {
+        return new URL(domain).origin;
+      } catch {
+        return null;
+      }
+    })
+    .filter((o): o is string => o !== null)
+);
+
+function isLinkSafe(url: string): boolean {
+  if (url.startsWith('#')) return true;
+  if (url.startsWith('/') && !url.startsWith('//')) return true;
+  try {
+    return safeOrigins.has(new URL(url).origin);
+  } catch {
+    return false;
+  }
+}
+
 const renderDefaultOptions = {
   baseUrl: configuredSiteDomain,
   breaks: false,
@@ -25,15 +51,8 @@ const renderDefaultOptions = {
   imageProxyFn: (url: string) => proxifyImageSrc(url, 1536, 0),
   usertagUrlFn: (account: string) => (basePath ? `${basePath}/@${account}` : `/@${account}`),
   hashtagUrlFn: (hashtag: string) => (basePath ? `${basePath}/trending/${hashtag}` : `/trending/${hashtag}`),
-  isLinkSafeFn: (url: string) =>
-    !!url.match(`^(/(?!/)|${configuredImagesEndpoint})`) ||
-    !!url.match(`^(/(?!/)|${configuredSiteDomain})`) ||
-    !!url.match(`^(/(?!/)|#)`),
-
-  addExternalCssClassToMatchingLinksFn: (url: string) =>
-    !url.match(`^(/(?!/)|${configuredImagesEndpoint})`) &&
-    !url.match(`^(/(?!/)|${configuredSiteDomain})`) &&
-    !url.match(`^(/(?!/)|#)`)
+  isLinkSafeFn: (url: string) => isLinkSafe(url),
+  addExternalCssClassToMatchingLinksFn: (url: string) => !isLinkSafe(url)
 };
 
 const rendererRegular = new DefaultRenderer(renderDefaultOptions);

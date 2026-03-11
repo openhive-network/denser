@@ -40,7 +40,14 @@ const dateDiffInDays = (a: Date, b: Date) => {
 
 const escapeCSV = (value: string | number | undefined | null): string => {
   if (value === undefined || value === null) return '';
-  const str = String(value);
+  let str = String(value);
+  // Prevent CSV formula injection: prefix formula-triggering characters with
+  // a single quote so spreadsheet applications treat the cell as plain text
+  // instead of evaluating it as a formula. Attacker-controlled fields like
+  // transfer memos can contain arbitrary content from the blockchain.
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = "'" + str;
+  }
   if (str.includes(',') || str.includes('"') || str.includes('\n')) {
     return `"${str.replace(/"/g, '""')}"`;
   }

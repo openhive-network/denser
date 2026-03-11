@@ -1,5 +1,6 @@
 import { getLogger } from '@hive/ui/lib/logging';
 import { setStorageItem, getStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
+import { languages } from '@/blog/i18n/settings';
 import { setLanguage } from '@/blog/utils/language';
 
 // Direct localStorage access is intentional: we read/write Condenser's legacy
@@ -9,6 +10,9 @@ import { setLanguage } from '@/blog/utils/language';
 const logger = getLogger('app');
 
 const MIGRATION_FLAG_KEY = 'condenser-migrated';
+
+// Hive account names: 3-16 chars, start with letter, only lowercase + digits + dots + hyphens.
+const ACCOUNT_NAME_REGEX = /^[a-z][a-z0-9.-]{2,15}$/;
 
 export interface CondenserLoginData {
   username: string;
@@ -47,7 +51,7 @@ export function parseAutopost2(): CondenserLoginData | null {
     const fields = decoded.split('\t');
 
     const username = fields[0]?.trim();
-    if (!username) return null;
+    if (!username || !ACCOUNT_NAME_REGEX.test(username)) return null;
 
     return {
       username,
@@ -169,7 +173,7 @@ export function migrateLanguage(): void {
       locale = raw;
     }
 
-    if (typeof locale === 'string' && locale.length >= 2 && locale.length <= 10) {
+    if (typeof locale === 'string' && languages.includes(locale)) {
       setLanguage(locale);
       logger.info('Condenser migration: language "%s" migrated to NEXT_LOCALE', locale);
     }

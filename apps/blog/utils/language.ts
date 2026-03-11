@@ -1,6 +1,7 @@
 import { getCookie } from '@ui/lib/utils';
 
 import { getStorageItem, setStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
+import { languages } from '@/blog/i18n/settings';
 
 export const LOCALE_KEY = 'NEXT_LOCALE';
 
@@ -11,6 +12,7 @@ export const getLanguage = () => {
 };
 
 export const setLanguage = (locale: string) => {
+  if (!languages.includes(locale)) return;
   document.cookie = `${LOCALE_KEY}=${locale}; SameSite=Lax; path=/`;
   // Language preference is permanent (no TTL)
   setStorageItem(LOCALE_KEY, locale, StorageTTL.PERMANENT);
