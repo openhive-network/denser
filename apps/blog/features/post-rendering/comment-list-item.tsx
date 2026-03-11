@@ -77,7 +77,7 @@ const CommentListItem = memo(function CommentListItem({
   const isBlacklisted = comment.blacklists && comment.blacklists.length > 0;
   const isOriginallyHidden = isGrayedByStats || isMutedByViewer;
   const [hiddenComment, setHiddenComment] = useState(isOriginallyHidden);
-  const [openState, setOpenState] = useState<string>(comment.stats?.gray && hiddenComment ? '' : 'item-1');
+  const [openState, setOpenState] = useState<string>(isOriginallyHidden ? '' : 'item-1');
   const [tempraryHidden, setTemporaryHidden] = useState(false);
   const commentId = `@${comment.author}/${comment.permlink}`;
 
@@ -137,7 +137,7 @@ const CommentListItem = memo(function CommentListItem({
   useEffect(() => {
     const shouldBeHidden = !!(comment.stats?.gray || isMutedByViewer);
     setHiddenComment(shouldBeHidden);
-    setOpenState(comment.stats?.gray && shouldBeHidden ? '' : 'item-1');
+    setOpenState(shouldBeHidden ? '' : 'item-1');
     setTemporaryHidden(!!comment.stats?.gray);
   }, [comment.stats?.gray, isMutedByViewer]);
   const currentDepth = comment.depth - parent_depth;
