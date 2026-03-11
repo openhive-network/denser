@@ -56,8 +56,12 @@ export default function CondenserMigration() {
 
       const data = parseAutopost2();
       if (!data) {
-        // No autopost2: nothing more to migrate
-        cleanupCondenserStorage();
+        // No autopost2 means no condenser login — only remove migration markers,
+        // not user data (replyEditorData-*, voteWeight-* etc.) which may belong to
+        // users who have drafts/templates but never logged in via condenser.
+        localStorage.removeItem('autopost2');
+        localStorage.removeItem('autopost');
+        localStorage.removeItem('saveLogin');
         markMigrated();
         return;
       }
