@@ -74,7 +74,12 @@ export async function GET(request: Request, { params }: { params: { user: string
       origin = `${scheme}://${host}`;
     }
 
-    const path = `${post.category ?? post.community}/@${post.author}/${post.permlink}`;
+    const cat = post.category ?? post.community ?? '';
+    if (!/^[a-z0-9][a-z0-9-]*$/.test(cat)) {
+      return NextResponse.json({ error: 'Invalid post category' }, { status: 400 });
+    }
+
+    const path = `${cat}/@${post.author}/${post.permlink}`;
     const finalUrl = new URL(path, origin);
 
     return NextResponse.redirect(finalUrl.toString(), { status: 302 });
