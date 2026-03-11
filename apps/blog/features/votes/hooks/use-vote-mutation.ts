@@ -57,6 +57,30 @@ function optimisticUpdateTotalVotes(
     });
   }
 
+  // Update entriesInfinite queries (paginated arrays of Entry objects)
+  const infiniteQueries = queryClient.getQueriesData<{ pages: Entry[][]; pageParams: unknown[] }>({
+    queryKey: ['entriesInfinite']
+  });
+  for (const [key, data] of infiniteQueries) {
+    if (!data?.pages) continue;
+    let found = false;
+    const updatedPages = data.pages.map((page) =>
+      page.map((entry) => {
+        if (entry.author === author && entry.permlink === permlink && entry.stats) {
+          found = true;
+          return {
+            ...entry,
+            stats: { ...entry.stats, total_votes: Math.max(0, (entry.stats.total_votes ?? 0) + delta) }
+          };
+        }
+        return entry;
+      })
+    );
+    if (!found) continue;
+    snapshots.push({ queryKey: key, data: structuredClone(data) });
+    queryClient.setQueryData(key, { ...data, pages: updatedPages });
+  }
+
   return snapshots;
 }
 
@@ -164,8 +188,11 @@ export function useVoteMutation() {
         }
       );
 
-      // These queries don't have optimistic data from this mutation
-      scheduleInvalidations(queryClient, [['entriesInfinite'], ['manabars', voter]]);
+      // Manabars don't have optimistic data from this mutation
+      scheduleInvalidations(queryClient, [['manabars', voter]]);
+
+      // entriesInfinite has optimistic total_votes — delayed invalidation for full data refresh
+      scheduleInvalidations(queryClient, [['entriesInfinite']], [16000, 30000]);
 
       // Discussion and post data need longer delays since Hivemind takes
       // longer to reflect vote changes in aggregated data
