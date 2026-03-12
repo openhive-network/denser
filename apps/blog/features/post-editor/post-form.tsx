@@ -472,7 +472,14 @@ export default function PostForm({
         return offset;
       };
 
-      /** Build anchor-point arrays from editor blocks ↔ preview blocks */
+      /**
+       * Build anchor-point arrays from editor lines ↔ preview elements.
+       *
+       * Uses line-level semantic grouping with top+bottom edge pairs so that
+       * elements with very different heights (e.g. a single image markdown
+       * line vs a tall rendered image) scroll proportionally rather than
+       * jumping.  This is the same approach used by HackMD.
+       */
       const buildMap = () => {
         const cmContent = editorScrollArea.querySelector('.cm-content') as HTMLElement | null;
         const proseContainer = previewEl.querySelector('.prose') as HTMLElement | null;
@@ -481,37 +488,189 @@ export default function PostForm({
         const cmLines = Array.from(cmContent.querySelectorAll(':scope > .cm-line')) as HTMLElement[];
         if (!cmLines.length) { editorAnchors = null; return; }
 
-        // Find block start positions in the editor (blocks separated by empty lines)
-        const editorBlockStarts: number[] = [];
-        let prevEmpty = true;
-        for (const line of cmLines) {
-          const isEmpty = !line.textContent || line.textContent.trim() === '';
-          if (!isEmpty && prevEmpty) {
-            editorBlockStarts.push(getOffsetIn(line, editorScrollArea));
+        // --- Phase 1: Group editor lines into semantic units ---
+        interface LineGroup { editorTop: number; editorBottom: number }
+        const groups: LineGroup[] = [];
+
+        const isPlainText = (t: string) =>
+          !t.startsWith('#') &&
+          !/^!\[/.test(t) &&
+          !/^(---|\*\*\*|___)$/.test(t) &&
+          !/^[-*+]\s|^\d+[.)]\s/.test(t) &&
+          !t.startsWith('>') &&
+          !(t.startsWith('|') && t.includes('|', 1)) &&
+          !t.startsWith('<') &&
+          !t.startsWith('```');
+
+        let idx = 0;
+        while (idx < cmLines.length) {
+          const line = cmLines[idx];
+          const text = line.textContent || '';
+          const trimmed = text.trim();
+
+          // Skip blank lines
+          if (!trimmed) { idx++; continue; }
+
+          // Code fence: ``` ... ```
+          if (trimmed.startsWith('```')) {
+            const startLine = cmLines[idx];
+            let endLine = cmLines[idx];
+            idx++; // skip opening fence
+            while (idx < cmLines.length) {
+              endLine = cmLines[idx];
+              const closingCheck = (cmLines[idx].textContent || '').trim();
+              idx++;
+              if (closingCheck.startsWith('```')) break; // found closing fence
+            }
+            groups.push({
+              editorTop: getOffsetIn(startLine, editorScrollArea),
+              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
+            });
+            continue;
           }
-          prevEmpty = isEmpty;
+
+          // List items: consecutive lines starting with - , * , + , or N. / N)
+          if (/^[-*+]\s|^\d+[.)]\s/.test(trimmed)) {
+            const startLine = cmLines[idx];
+            let endLine = cmLines[idx];
+            idx++;
+            while (idx < cmLines.length) {
+              const t = (cmLines[idx].textContent || '').trim();
+              if (/^[-*+]\s|^\d+[.)]\s/.test(t)) {
+                endLine = cmLines[idx]; idx++;
+              } else if (!t) {
+                // Blank line between list items — peek ahead
+                if (idx + 1 < cmLines.length && /^[-*+]\s|^\d+[.)]\s/.test((cmLines[idx + 1].textContent || '').trim())) {
+                  idx++;
+                } else { break; }
+              } else if (t && /^\s/.test(cmLines[idx].textContent || '')) {
+                // Continuation / indented line
+                endLine = cmLines[idx]; idx++;
+              } else { break; }
+            }
+            groups.push({
+              editorTop: getOffsetIn(startLine, editorScrollArea),
+              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
+            });
+            continue;
+          }
+
+          // Blockquote: consecutive lines starting with >
+          if (trimmed.startsWith('>')) {
+            const startLine = cmLines[idx];
+            let endLine = cmLines[idx];
+            idx++;
+            while (idx < cmLines.length) {
+              const t = (cmLines[idx].textContent || '').trim();
+              if (t.startsWith('>')) { endLine = cmLines[idx]; idx++; } else break;
+            }
+            groups.push({
+              editorTop: getOffsetIn(startLine, editorScrollArea),
+              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
+            });
+            continue;
+          }
+
+          // Table: consecutive lines starting with |
+          if (trimmed.startsWith('|') && trimmed.includes('|', 1)) {
+            const startLine = cmLines[idx];
+            let endLine = cmLines[idx];
+            idx++;
+            while (idx < cmLines.length) {
+              const t = (cmLines[idx].textContent || '').trim();
+              if (t.startsWith('|') && t.includes('|', 1)) { endLine = cmLines[idx]; idx++; } else break;
+            }
+            groups.push({
+              editorTop: getOffsetIn(startLine, editorScrollArea),
+              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
+            });
+            continue;
+          }
+
+          // HTML block: <center>, <div> spanning multiple lines
+          const htmlBlockMatch = trimmed.match(/^<(center|div)[\s>]/i);
+          if (htmlBlockMatch) {
+            const tag = htmlBlockMatch[1].toLowerCase();
+            const closingTag = `</${tag}>`;
+            const startLine = cmLines[idx];
+            let endLine = cmLines[idx];
+            if (!trimmed.toLowerCase().includes(closingTag)) {
+              idx++;
+              while (idx < cmLines.length) {
+                endLine = cmLines[idx];
+                const t = (cmLines[idx].textContent || '').toLowerCase();
+                idx++;
+                if (t.includes(closingTag)) break;
+              }
+            } else { idx++; }
+            groups.push({
+              editorTop: getOffsetIn(startLine, editorScrollArea),
+              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
+            });
+            continue;
+          }
+
+          // Paragraph continuation: consecutive plain-text lines → single <p>
+          if (isPlainText(trimmed)) {
+            const startLine = cmLines[idx];
+            let endLine = cmLines[idx];
+            idx++;
+            while (idx < cmLines.length) {
+              const nextTrimmed = (cmLines[idx].textContent || '').trim();
+              if (!nextTrimmed) break; // blank line ends paragraph
+              if (!isPlainText(nextTrimmed)) break;
+              endLine = cmLines[idx]; idx++;
+            }
+            groups.push({
+              editorTop: getOffsetIn(startLine, editorScrollArea),
+              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
+            });
+            continue;
+          }
+
+          // Single line: heading, image, HR, etc.
+          groups.push({
+            editorTop: getOffsetIn(line, editorScrollArea),
+            editorBottom: getOffsetIn(line, editorScrollArea) + line.offsetHeight,
+          });
+          idx++;
         }
 
-        // Find block start positions in the preview
+        // --- Phase 2: Match groups to preview block elements ---
         const blockTags = new Set([
           'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'PRE', 'UL', 'OL',
           'BLOCKQUOTE', 'CENTER', 'DIV', 'TABLE', 'HR', 'FIGURE'
         ]);
-        const previewBlockStarts: number[] = [];
+        const previewBlocks: HTMLElement[] = [];
         for (const child of Array.from(proseContainer.children) as HTMLElement[]) {
           if (blockTags.has(child.tagName)) {
-            previewBlockStarts.push(getOffsetIn(child, previewEl));
+            previewBlocks.push(child);
           }
         }
 
-        // Build paired anchor arrays (start + matched blocks + end)
-        const count = Math.min(editorBlockStarts.length, previewBlockStarts.length);
+        // --- Phase 3: Build anchor arrays with top+bottom edge pairs ---
+        const count = Math.min(groups.length, previewBlocks.length);
         const eAnchors = [0];
         const pAnchors = [0];
-        for (let i = 0; i < count; i++) {
-          eAnchors.push(editorBlockStarts[i]);
-          pAnchors.push(previewBlockStarts[i]);
+
+        for (let j = 0; j < count; j++) {
+          const g = groups[j];
+          const pBlock = previewBlocks[j];
+          const pTop = getOffsetIn(pBlock, previewEl);
+          const pBottom = pTop + pBlock.offsetHeight;
+
+          // Top edge of this group ↔ top edge of preview element
+          eAnchors.push(g.editorTop);
+          pAnchors.push(pTop);
+
+          // Bottom edge — creates proportional scrolling through tall elements
+          if (g.editorBottom > g.editorTop && pBottom > pTop) {
+            eAnchors.push(g.editorBottom);
+            pAnchors.push(pBottom);
+          }
         }
+
+        // Bookend: end of scrollable area
         const maxE = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
         const maxP = previewEl.scrollHeight - previewEl.clientHeight;
         if (maxE > 0) eAnchors.push(maxE);
