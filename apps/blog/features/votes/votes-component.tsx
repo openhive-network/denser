@@ -14,6 +14,7 @@ import { Entry } from '@hive/common-hiveio-packages/wax';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
 import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
 import { useTranslation } from '@/blog/i18n/client';
+import { handleError } from '@ui/lib/handle-error';
 import { useVoteMutation } from './hooks/use-vote-mutation';
 import { VoteRemovalDialog } from './vote-removal-dialog';
 
@@ -98,9 +99,12 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
 
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
-    // Errors are handled by the mutation's onError callback (including optimistic rollback).
-    // Using mutate() instead of mutateAsync() to avoid unhandled rejection warnings.
-    voteMutation.mutate({ voter, author, permlink, weight });
+    try {
+      await voteMutation.mutateAsync({ voter, author, permlink, weight });
+    } catch (error) {
+      setClickedVoteButton('');
+      handleError(error, { method: 'vote', params: { voter, author, permlink, weight } });
+    }
   };
 
   return (

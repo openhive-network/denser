@@ -204,9 +204,14 @@ export function useVoteMutation() {
     },
 
     onError: (error: unknown, variables, context) => {
-      // Rollback to previous data on error
-      if (context?.prevVoteData && context?.queryKey) {
-        queryClient.setQueryData(context.queryKey, context.prevVoteData);
+      // Rollback to previous data on error.
+      // When prevVoteData is undefined (first vote attempt), set explicit empty
+      // structure so the query data is cleared instead of left as optimistic.
+      if (context?.queryKey) {
+        queryClient.setQueryData(
+          context.queryKey,
+          context.prevVoteData ?? { votes: [] }
+        );
       }
       // Rollback total_votes optimistic updates
       if (context?.prevCacheSnapshots) {
