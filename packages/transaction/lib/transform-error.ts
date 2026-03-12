@@ -1,4 +1,5 @@
 import { getLogger } from '@hive/ui/lib/logging';
+import { scrubSensitiveData } from '@hive/ui/lib/sentry-scrub';
 import { isJSON } from '@ui/lib/utils';
 
 const logger = getLogger('app');
@@ -92,7 +93,7 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
 
   return {
     errorTitle: defaultDescription ?? description,
-    fullError: e.toString(),
+    fullError: scrubSensitiveData(e.toString()),
     isWellKnownError
   };
 }
