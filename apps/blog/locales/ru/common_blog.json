@@ -158,7 +158,9 @@
       "sort": "Sort:",
       "trending": "популярное",
       "votes": "голосов",
-      "age": "возраст"
+      "age": "возраст",
+      "filter_label": "Comment filtering",
+      "filtered_count": "{{count}} filtered"
     },
     "search_sorter": {
       "newest": "Newest",

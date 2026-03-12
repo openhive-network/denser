@@ -55,7 +55,8 @@ const CommentList = ({
   flagText,
   discussionAuthor,
   discussionPermlink,
-  observer
+  observer,
+  filteringEnabled = true
 }: {
   highestAuthor: string;
   highestPermlink: string;
@@ -68,6 +69,7 @@ const CommentList = ({
   discussionAuthor: string;
   discussionPermlink: string;
   observer: string;
+  filteringEnabled?: boolean;
 }) => {
   const [markedHash, setMarkedHash] = useState<string>('');
 
@@ -122,6 +124,7 @@ const CommentList = ({
                   discussionAuthor={discussionAuthor}
                   discussionPermlink={discussionPermlink}
                   observer={observer}
+                  filteringEnabled={filteringEnabled}
                   onCommnentLinkClick={(hash) => setMarkedHash(hash)}
                 >
                   <CommentList
@@ -137,6 +140,7 @@ const CommentList = ({
                     discussionAuthor={discussionAuthor}
                     discussionPermlink={discussionPermlink}
                     observer={observer}
+                    filteringEnabled={filteringEnabled}
                   />
                 </CommentListItem>
                 </div>

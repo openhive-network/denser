@@ -9,6 +9,7 @@ import { Providers } from '../features/layouts/providers';
 import { StorageCleanup } from '@hive/ui';
 import ServiceWorkerUpdate from '../components/service-worker-update';
 import CondenserMigration from '../components/condenser-migration';
+import AuthCookieRecovery from '../components/auth-cookie-recovery';
 import { getEnvVersion } from '../lib/env-version';
 
 // Get basePath from build-time environment
@@ -82,6 +83,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <>
               <StorageCleanup />
               <CondenserMigration />
+              <AuthCookieRecovery />
               <ServiceWorkerUpdate />
               <MainBar />
               <main className="mx-auto">{children}</main>

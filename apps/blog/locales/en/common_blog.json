@@ -168,7 +168,9 @@
       "sort": "Sort:",
       "trending": "Trending",
       "votes": "Votes",
-      "age": "Age"
+      "age": "Age",
+      "filter_label": "Comment filtering",
+      "filtered_count": "{{count}} filtered"
     },
     "search_sorter": {
       "newest": "Newest",

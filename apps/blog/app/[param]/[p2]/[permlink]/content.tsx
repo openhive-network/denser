@@ -67,7 +67,8 @@ import {
   useSSRObserver,
   useInitialPostData,
   useInitialDiscussion,
-  useInitialCommunity
+  useInitialCommunity,
+  useInitialFollowList
 } from '@/blog/components/observer-provider';
 import { StaleTime } from '@/blog/lib/react-query';
 
@@ -88,6 +89,7 @@ const PostContent = () => {
   const initialPostData = useInitialPostData();
   const initialDiscussion = useInitialDiscussion();
   const initialCommunity = useInitialCommunity();
+  const initialMutedList = useInitialFollowList();
   // Use SSR observer before hydration to match prefetched cache keys,
   // then switch to client observer (which should be the same value for logged-in users)
   const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
@@ -364,7 +366,7 @@ const PostContent = () => {
     }
   });
 
-  const { data: mutedList } = useFollowListQuery(user.username, 'muted');
+  const { data: mutedList } = useFollowListQuery(user.username, 'muted', initialMutedList);
 
   const pinMutations = usePinMutation();
   const unpinMutation = useUnpinMutation();
@@ -921,7 +923,7 @@ const PostContent = () => {
               postData={postData}
               paginatedDiscussionState={paginatedDiscussionState}
               userCanModerate={!!userCanModerate}
-              mutedList={mutedList || []}
+              mutedList={mutedList || initialMutedList || []}
               flagText={communityData?.flag_text}
               discussionAuthor={author}
               discussionPermlink={permlink}

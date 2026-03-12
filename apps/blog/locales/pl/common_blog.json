@@ -160,7 +160,9 @@
       "sort": "Sortuj po:",
       "trending": "Popularność",
       "votes": "Liczba głosów",
-      "age": "Wiek"
+      "age": "Wiek",
+      "filter_label": "Comment filtering",
+      "filtered_count": "{{count}} filtered"
     },
     "search_sorter": {
       "newest": "Najnowsze",

@@ -158,7 +158,9 @@
       "sort": "Sort:",
       "trending": "流行",
       "votes": "点赞数",
-      "age": "时间"
+      "age": "时间",
+      "filter_label": "Comment filtering",
+      "filtered_count": "{{count}} filtered"
     },
     "search_sorter": {
       "newest": "Newest",

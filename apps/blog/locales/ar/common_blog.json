@@ -159,7 +159,9 @@
       "sort": "الفرز:",
       "trending": "الرائجة",
       "votes": "الأصوات",
-      "age": "العمر"
+      "age": "العمر",
+      "filter_label": "Comment filtering",
+      "filtered_count": "{{count}} filtered"
     },
     "search_sorter": {
       "newest": "الأحدث",

@@ -158,7 +158,9 @@
       "sort": "Sort:",
       "trending": "トレンド",
       "votes": "投票数",
-      "age": "日時"
+      "age": "日時",
+      "filter_label": "Comment filtering",
+      "filtered_count": "{{count}} filtered"
     },
     "search_sorter": {
       "newest": "Newest",

@@ -106,13 +106,17 @@ export function parseAuthProofCookie(cookieValue: string): AuthProofCookieData |
 /**
  * Set the auth proof cookie in the response
  */
+// 400 days — the maximum cookie lifetime allowed by browsers (Chrome caps at 400 days).
+// This keeps the cookie alive across browser restarts so SSR can identify the user.
+const AUTH_PROOF_MAX_AGE_SECONDS = 400 * 24 * 60 * 60;
+
 export function setAuthProofCookie(res: NextApiResponse, data: AuthProofCookieData): void {
   const cookieValue = btoa(JSON.stringify(data));
 
   res.setHeader('Set-Cookie', [
-    `${AUTH_PROOF_COOKIE_NAME}=${cookieValue}; Path=/; SameSite=Lax; HttpOnly; ${
+    `${AUTH_PROOF_COOKIE_NAME}=${cookieValue}; Path=/; SameSite=Lax; HttpOnly; Max-Age=${AUTH_PROOF_MAX_AGE_SECONDS}; ${
       process.env.NODE_ENV === 'production' ? 'Secure;' : ''
-    }` // No Max-Age = endless time
+    }`
   ]);
 }
 

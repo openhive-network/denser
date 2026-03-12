@@ -158,7 +158,9 @@
       "sort": "Sort:",
       "trending": "En vogue",
       "votes": "Votes",
-      "age": "Ancienneté"
+      "age": "Ancienneté",
+      "filter_label": "Comment filtering",
+      "filtered_count": "{{count}} filtered"
     },
     "search_sorter": {
       "newest": "Newest",

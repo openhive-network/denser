@@ -158,7 +158,9 @@
       "sort": "Sort:",
       "trending": "tendencia",
       "votes": "Votos",
-      "age": "edad"
+      "age": "edad",
+      "filter_label": "Comment filtering",
+      "filtered_count": "{{count}} filtered"
     },
     "search_sorter": {
       "newest": "Newest",

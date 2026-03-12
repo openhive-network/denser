@@ -1,11 +1,13 @@
 'use client';
 
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
 import { commentsSectionClasses } from '@/blog/lib/post-layout-classes';
 import CommentList from './comment-list';
 import CommentSelectFilter from './comment-select-filter';
 import { Button } from '@ui/components/button';
+import { Switch } from '@ui/components/switch';
+import { Label } from '@ui/components/label';
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 
 interface CommentsSectionProps {
@@ -41,6 +43,16 @@ const CommentsSection = memo(function CommentsSection({
   const { t } = useTranslation('common_blog');
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
+  const [filteringEnabled, setFilteringEnabled] = useState(true);
+
+  const hiddenCount = useMemo(() => {
+    return paginatedDiscussionState.comments.filter((comment) => {
+      // Skip the post itself (only count its replies)
+      if (comment.author === postData.author && comment.permlink === postData.permlink) return false;
+      const isMutedByViewer = mutedList?.some((x) => x.name === comment.author);
+      return comment.stats?.gray || isMutedByViewer;
+    }).length;
+  }, [paginatedDiscussionState.comments, mutedList, postData.author, postData.permlink]);
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -67,9 +79,27 @@ const CommentsSection = memo(function CommentsSection({
 
   return (
     <div ref={sectionRef} className={commentsSectionClasses}>
-      <div className="my-1 flex items-center justify-end" translate="no">
-        <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
-        <CommentSelectFilter />
+      <div className="my-1 flex items-center justify-between" translate="no">
+        {hiddenCount > 0 ? (
+          <div className="flex items-center gap-2">
+            <Switch
+              id="comment-filter"
+              checked={filteringEnabled}
+              onCheckedChange={setFilteringEnabled}
+              className="h-[20px] w-[36px] data-[state=checked]:bg-destructive data-[state=unchecked]:bg-muted [&>span]:h-4 [&>span]:w-4 [&>span]:data-[state=checked]:translate-x-4"
+              aria-label={t('select_sort.sort_comments.filter_label')}
+            />
+            <Label htmlFor="comment-filter" className="cursor-pointer text-xs text-muted-foreground">
+              {t('select_sort.sort_comments.filtered_count', { count: hiddenCount })}
+            </Label>
+          </div>
+        ) : (
+          <div />
+        )}
+        <div className="flex items-center">
+          <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
+          <CommentSelectFilter />
+        </div>
       </div>
       <CommentList
         highestAuthor={postData.author}
@@ -78,6 +108,7 @@ const CommentsSection = memo(function CommentsSection({
         mutedList={mutedList}
         data={paginatedDiscussionState.comments}
         flagText={flagText}
+        filteringEnabled={filteringEnabled}
         parent={postData}
         parent_depth={postData.depth}
         discussionAuthor={discussionAuthor}
