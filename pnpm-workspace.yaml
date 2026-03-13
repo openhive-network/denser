@@ -5,11 +5,11 @@ packages:
 catalogs:
   # Can be referenced through "catalog:hiveio-toolset"
   hiveio-toolset:
-    '@hiveio/wax': 2.0.1
-    '@hiveio/wax-signers-external': 2.0.1-260216082105
-    '@hiveio/wax-signers-keychain': 2.0.1
-    '@hiveio/wax-signers-metamask': 2.0.1
-    '@hiveio/wax-signers-peakvault': 2.0.1
-    '@hiveio/workerbee': 1.28.4-rc0-stable.260206182519
-    '@hiveio/hb-auth': 1.28.4-rc0-stable.260209101337
-    '@hiveio/healthchecker-component': 1.28.4-rc0-260209105549
+    '@hiveio/wax': 1.28.6-rc10-stable.260313112809
+    '@hiveio/wax-signers-external': 1.28.6-rc10-stable.260313112809
+    '@hiveio/wax-signers-keychain': 1.28.6-rc10-stable.260313112809
+    '@hiveio/wax-signers-metamask': 1.28.6-rc10-stable.260313112809
+    '@hiveio/wax-signers-peakvault': 1.28.6-rc10-stable.260313112809
+    '@hiveio/workerbee': 1.28.4-rc1-260313114459
+    '@hiveio/hb-auth': 1.28.4-rc0-260313114454
+    '@hiveio/healthchecker-component': 2.0.0-stable.260313120516
