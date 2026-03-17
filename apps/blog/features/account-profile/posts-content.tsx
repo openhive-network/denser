@@ -11,6 +11,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getAccountPosts } from '@transaction/lib/bridge-api';
 import { Entry } from '@hive/common-hiveio-packages/wax';
+import { PostListSkeleton } from '@hive/ui';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
@@ -45,7 +46,7 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
     StorageTTL.PERMANENT
   );
 
-  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({
+  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isLoading } = useInfiniteQuery({
     queryKey: ['accountEntriesInfinite', username, query, observer],
     queryFn: async ({ pageParam }: { pageParam?: Entry }) => {
       return await getAccountPosts(query, username, observer, pageParam?.author, pageParam?.permlink);
@@ -92,6 +93,10 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   };
 
   if (isError) return <NoDataError />;
+
+  if (isLoading || (isFetching && !data?.pages?.[0]?.length)) {
+    return <PostListSkeleton count={4} />;
+  }
 
   return !legalBlockedUser ? (
     <>
