@@ -648,25 +648,58 @@ export default function PostForm({
           }
         }
 
+        // --- Phase 2b: Match groups to preview blocks by position fraction ---
+        // CodeMirror uses viewport virtualization for large content: only
+        // visible lines are rendered, with .cm-gap elements filling the
+        // scroll space of off-screen lines.  The gap heights keep total
+        // scrollHeight correct, so each group's editorTop is a stable pixel
+        // position in the full document.  We find the best-matching preview
+        // block by proportional position rather than array index, which
+        // naturally handles gaps without any offset estimation.
+        const totalEditorHeight = editorScrollArea.scrollHeight;
+        const totalPreviewHeight = previewEl.scrollHeight;
+
+        // Pre-compute all preview block positions (single layout read pass)
+        const blockPos = previewBlocks.map(block => {
+          const top = getOffsetIn(block, previewEl);
+          return { top, bottom: top + block.offsetHeight };
+        });
+
         // --- Phase 3: Build anchor arrays with top+bottom edge pairs ---
-        const count = Math.min(groups.length, previewBlocks.length);
-        const eAnchors = [0];
-        const pAnchors = [0];
+        const eAnchors: number[] = [0];
+        const pAnchors: number[] = [0];
 
-        for (let j = 0; j < count; j++) {
+        let searchStart = 0;
+        for (let j = 0; j < groups.length; j++) {
           const g = groups[j];
-          const pBlock = previewBlocks[j];
-          const pTop = getOffsetIn(pBlock, previewEl);
-          const pBottom = pTop + pBlock.offsetHeight;
+          const editorMid = (g.editorTop + g.editorBottom) / 2;
+          const targetPreviewMid =
+            totalEditorHeight > 0
+              ? (editorMid / totalEditorHeight) * totalPreviewHeight
+              : 0;
 
-          // Top edge of this group ↔ top edge of preview element
+          // Find closest preview block (linear scan forward from last match)
+          let bestIdx = searchStart;
+          let bestDist = Infinity;
+          for (let k = searchStart; k < blockPos.length; k++) {
+            const blockMid = (blockPos[k].top + blockPos[k].bottom) / 2;
+            const dist = Math.abs(blockMid - targetPreviewMid);
+            if (dist <= bestDist) {
+              bestDist = dist;
+              bestIdx = k;
+            } else {
+              break; // distances increasing, stop
+            }
+          }
+          searchStart = bestIdx;
+
+          const bp = blockPos[bestIdx];
           eAnchors.push(g.editorTop);
-          pAnchors.push(pTop);
+          pAnchors.push(bp.top);
 
-          // Bottom edge — creates proportional scrolling through tall elements
-          if (g.editorBottom > g.editorTop && pBottom > pTop) {
+          if (g.editorBottom > g.editorTop && bp.bottom > bp.top) {
             eAnchors.push(g.editorBottom);
-            pAnchors.push(pBottom);
+            pAnchors.push(bp.bottom);
           }
         }
 
@@ -693,7 +726,11 @@ export default function PostForm({
         return t0 + t * (t1 - t0);
       };
 
-      // Rebuild map when preview DOM changes (images load, content updates)
+      // Rebuild map when preview DOM changes (images load, content updates).
+      // Note: we do NOT observe editor DOM changes — CodeMirror's viewport
+      // virtualization swaps .cm-line/.cm-gap elements during scroll, but
+      // the .cm-gap heights keep scrollHeight stable, so anchor positions
+      // remain valid even when different lines are rendered.
       const markDirty = () => { mapDirty = true; };
       const previewMutObs = new MutationObserver(markDirty);
       previewMutObs.observe(previewEl, { childList: true, subtree: true });

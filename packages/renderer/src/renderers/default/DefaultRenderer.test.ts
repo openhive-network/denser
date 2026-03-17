@@ -278,7 +278,7 @@ describe('DefaultRender', () => {
         it(`Should prefix ifps link (${ipfsLink}) with ipfsPrefix`, () => {
             const renderer = new DefaultRenderer({...defaultOptions, ipfsPrefix: 'https://gateway.io/ipfs'});
             const rendered = renderer.render(`![img.jpg](${ipfsLink})`).trim();
-            expect(rendered).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" /></p>');
+            expect(rendered).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" loading="lazy" decoding="async" /></p>');
         });
     });
 
@@ -287,8 +287,8 @@ describe('DefaultRender', () => {
         const renderer2 = new DefaultRenderer({...defaultOptions, ipfsPrefix: 'https://gateway.io/ipfs/'});
         const rendered1 = renderer1.render(`![img.jpg](ipfs://QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE)`).trim();
         const rendered2 = renderer2.render(`![img.jpg](ipfs://QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE)`).trim();
-        expect(rendered1).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" /></p>');
-        expect(rendered2).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" /></p>');
+        expect(rendered1).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" loading="lazy" decoding="async" /></p>');
+        expect(rendered2).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" loading="lazy" decoding="async" /></p>');
     });
 
     it('should wrap adjacent pull-left and pull-right divs in pull-columns container', () => {

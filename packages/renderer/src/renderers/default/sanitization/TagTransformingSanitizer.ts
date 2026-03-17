@@ -78,7 +78,7 @@ export class TagTransformingSanitizer {
                 // style is subject to attack, filtering more below
                 td: ['style'],
                 th: ['style'],
-                img: ['src', 'alt'],
+                img: ['src', 'alt', 'loading', 'decoding'],
 
                 // title is only set in the case of an external link warning
                 a: ['href', 'rel', 'title', 'class', 'target', 'id'],
@@ -145,6 +145,10 @@ export class TagTransformingSanitizer {
                     if (alt && alt !== '') {
                         atts.alt = alt;
                     }
+                    // Lazy-load off-screen images to reduce layout shifts during scroll sync
+                    // and avoid blocking the main thread with eager decoding of large images
+                    atts.loading = 'lazy';
+                    atts.decoding = 'async';
                     const retTag: sanitize.Tag = {tagName, attribs: atts};
                     return retTag;
                 },

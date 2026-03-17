@@ -735,12 +735,14 @@ describe('XSS Security Tests', () => {
             expect(output).to.not.include('http://');
         });
 
-        it('should only allow src and alt attributes on img', () => {
+        it('should only allow src, alt, loading, and decoding attributes on img', () => {
             const sanitizer = createSanitizer();
             const input = '<img src="https://example.com/img.jpg" alt="test" title="dangerous" data-x="y">';
             const output = sanitizer.sanitize(input);
             expect(output).to.include('src=');
             expect(output).to.include('alt=');
+            expect(output).to.include('loading="lazy"');
+            expect(output).to.include('decoding="async"');
             expect(output).to.not.include('title=');
             expect(output).to.not.include('data-x');
         });
