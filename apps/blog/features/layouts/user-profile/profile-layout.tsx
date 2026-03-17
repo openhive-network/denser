@@ -15,7 +15,16 @@ import { useQuery } from '@tanstack/react-query';
 import env from '@beam-australia/react-env';
 
 import { useTranslation } from '@/blog/i18n/client';
-import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, getUserAvatarUrl, escapeCssUrl, isSafeImageUrl, isSafeExternalUrl } from '@ui/components';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  proxifyImageSrc,
+  getUserAvatarUrl,
+  escapeCssUrl,
+  isSafeImageUrl,
+  isSafeExternalUrl
+} from '@ui/components';
 import { Separator } from '@hive/ui/components/separator';
 import TimeAgo from '@ui/components/time-ago';
 import { Icons } from '@hive/ui/components/icons';
@@ -37,6 +46,7 @@ import { notFound, usePathname } from 'next/navigation';
 import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
 import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
 import ListItem from './list-item';
+import ProfileLayoutSkeleton from './profile-layout-skeleton';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const getCoverImageStyle = (profileData: { posting_json_metadata?: string } | null): string => {
@@ -82,9 +92,10 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   // `following` query (source of truth with optimistic updates) instead of
   // `profileData.follow_stats` which can be overwritten by stale server hydration.
   const isOwnProfile = user.isLoggedIn && username === user.username;
-  const followingCount = isOwnProfile && following.data?.pages
-    ? following.data.pages.reduce((sum, page) => sum + page.length, 0)
-    : profileData?.follow_stats?.following_count ?? 0;
+  const followingCount =
+    isOwnProfile && following.data?.pages
+      ? following.data.pages.reduce((sum, page) => sum + page.length, 0)
+      : (profileData?.follow_stats?.following_count ?? 0);
 
   const { data: accountReputationData } = useQuery({
     queryKey: ['accountReputationData', username],
@@ -125,7 +136,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
 
   // Handle loading state - wait for data (including hiveChain initialization)
   if (isProfilePending || isDynamicGlobalPending || isChainPending || !hiveChain) {
-    return null;
+    return <ProfileLayoutSkeleton />;
   }
 
   // Handle user not found - API succeeded but user doesn't exist
@@ -189,7 +200,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
           {/* Content Container */}
-          <div className="relative flex h-full min-h-[280px] sm:min-h-[320px] flex-col items-center justify-center px-4 py-6 text-white">
+          <div className="relative flex h-full min-h-[280px] flex-col items-center justify-center px-4 py-6 text-white sm:min-h-[320px]">
             {/* Glassmorphism Card */}
             <div className="w-full max-w-2xl rounded-2xl bg-black/30 p-6 backdrop-blur-sm sm:p-8">
               {/* Avatar and Name Row */}
@@ -267,144 +278,140 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
               </div>
 
               {!legalBlockedUser ? (
-                  <>
-                    {/* Stats Grid */}
-                    <div
-                      className="mt-6 grid grid-cols-4 gap-2 border-t border-white/10 pt-6 sm:gap-4"
-                      data-testid="profile-stats"
+                <>
+                  {/* Stats Grid */}
+                  <div
+                    className="mt-6 grid grid-cols-4 gap-2 border-t border-white/10 pt-6 sm:gap-4"
+                    data-testid="profile-stats"
+                  >
+                    <Link
+                      href={`/@${profileData.name}/followers`}
+                      className="group flex flex-col items-center transition-colors"
                     >
-                      <Link
-                        href={`/@${profileData.name}/followers`}
-                        className="group flex flex-col items-center transition-colors"
-                      >
-                        <span className="text-lg font-semibold sm:text-xl">
-                          {profileData?.follow_stats?.follower_count ?? 0}
-                        </span>
-                        <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
-                          {t('user_profile.lists.followers_label')}
-                        </span>
-                      </Link>
-                      <Link
-                        href={`/@${profileData.name}`}
-                        className="group flex flex-col items-center transition-colors"
-                      >
-                        <span className="text-lg font-semibold sm:text-xl">
-                          {profileData?.post_count ?? 0}
-                        </span>
-                        <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
-                          {t('user_profile.lists.posts_label')}
-                        </span>
-                      </Link>
-                      <Link
-                        href={`/@${profileData.name}/followed`}
-                        className="group flex flex-col items-center transition-colors"
-                      >
-                        <span className="text-lg font-semibold sm:text-xl">
-                          {followingCount}
-                        </span>
-                        <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
-                          {t('user_profile.lists.following_label')}
-                        </span>
-                      </Link>
-                      <div className="flex flex-col items-center">
-                        <span className="text-lg font-semibold sm:text-xl">
-                          {numberWithCommas(hp.toFixed(0))}
-                        </span>
-                        <span className="text-xs text-white/70 sm:text-sm">HP</span>
-                      </div>
+                      <span className="text-lg font-semibold sm:text-xl">
+                        {profileData?.follow_stats?.follower_count ?? 0}
+                      </span>
+                      <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
+                        {t('user_profile.lists.followers_label')}
+                      </span>
+                    </Link>
+                    <Link
+                      href={`/@${profileData.name}`}
+                      className="group flex flex-col items-center transition-colors"
+                    >
+                      <span className="text-lg font-semibold sm:text-xl">{profileData?.post_count ?? 0}</span>
+                      <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
+                        {t('user_profile.lists.posts_label')}
+                      </span>
+                    </Link>
+                    <Link
+                      href={`/@${profileData.name}/followed`}
+                      className="group flex flex-col items-center transition-colors"
+                    >
+                      <span className="text-lg font-semibold sm:text-xl">{followingCount}</span>
+                      <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
+                        {t('user_profile.lists.following_label')}
+                      </span>
+                    </Link>
+                    <div className="flex flex-col items-center">
+                      <span className="text-lg font-semibold sm:text-xl">
+                        {numberWithCommas(hp.toFixed(0))}
+                      </span>
+                      <span className="text-xs text-white/70 sm:text-sm">HP</span>
                     </div>
+                  </div>
 
-                    {/* Secondary Links - Subtle styling */}
-                    <div className="mt-4 flex flex-wrap justify-center gap-x-2 gap-y-1 text-xs text-white/60 sm:text-sm">
-                      <BasePathLink
-                        href={`/@${profileData?.name}/lists/blacklisted`}
-                        className="transition-colors hover:text-white"
-                      >
-                        {t('user_profile.lists.blacklisted_users')}
-                      </BasePathLink>
-                      <span className="text-white/30">•</span>
-                      <BasePathLink
-                        href={`/@${profileData?.name}/lists/muted`}
-                        className="transition-colors hover:text-white"
-                      >
-                        {t('user_profile.lists.muted_users')}
-                      </BasePathLink>
-                      <span className="text-white/30">•</span>
-                      <BasePathLink
-                        href={`/@${profileData?.name}/lists/followed_blacklists`}
-                        className="transition-colors hover:text-white"
-                      >
-                        {t('user_profile.lists.followed_blacklists')}
-                      </BasePathLink>
-                      <span className="text-white/30">•</span>
-                      <BasePathLink
-                        href={`/@${profileData?.name}/lists/followed_muted_lists`}
-                        className="transition-colors hover:text-white"
-                      >
-                        {t('user_profile.lists.followed_muted_lists')}
-                      </BasePathLink>
-                    </div>
+                  {/* Secondary Links - Subtle styling */}
+                  <div className="mt-4 flex flex-wrap justify-center gap-x-2 gap-y-1 text-xs text-white/60 sm:text-sm">
+                    <BasePathLink
+                      href={`/@${profileData?.name}/lists/blacklisted`}
+                      className="transition-colors hover:text-white"
+                    >
+                      {t('user_profile.lists.blacklisted_users')}
+                    </BasePathLink>
+                    <span className="text-white/30">•</span>
+                    <BasePathLink
+                      href={`/@${profileData?.name}/lists/muted`}
+                      className="transition-colors hover:text-white"
+                    >
+                      {t('user_profile.lists.muted_users')}
+                    </BasePathLink>
+                    <span className="text-white/30">•</span>
+                    <BasePathLink
+                      href={`/@${profileData?.name}/lists/followed_blacklists`}
+                      className="transition-colors hover:text-white"
+                    >
+                      {t('user_profile.lists.followed_blacklists')}
+                    </BasePathLink>
+                    <span className="text-white/30">•</span>
+                    <BasePathLink
+                      href={`/@${profileData?.name}/lists/followed_muted_lists`}
+                      className="transition-colors hover:text-white"
+                    >
+                      {t('user_profile.lists.followed_muted_lists')}
+                    </BasePathLink>
+                  </div>
 
-                    {/* Metadata Row */}
-                    <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-white/70 sm:text-sm">
-                      {profileData?.profile?.location ? (
-                        <div className="flex items-center gap-1">
-                          <Icons.mapPin className="h-4 w-4" />
-                          <span data-testid="user-location">{profileData.profile.location}</span>
-                        </div>
-                      ) : null}
-                      {profileData?.profile?.website ? (
-                        <div className="flex items-center gap-1">
-                          <Icons.globe2 className="h-4 w-4" />
-                          <Link
-                            target="_external"
-                            className="transition-colors hover:text-white"
-                            href={`https://${profileData.profile.website.replace(/^(https?|ftp):\/\//, '')}`}
-                          >
-                            {profileData.profile.website}
-                          </Link>
-                        </div>
-                      ) : null}
+                  {/* Metadata Row */}
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-white/70 sm:text-sm">
+                    {profileData?.profile?.location ? (
                       <div className="flex items-center gap-1">
-                        <Icons.calendarHeart className="h-4 w-4" />
-                        <span data-testid="user-joined">
-                          {t('user_profile.joined')}{' '}
-                          {profileData?.created ? dateToShow(profileData.created, t) : null}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Icons.calendarActive className="h-4 w-4" />
-                        <span data-testid="user-last-time-active">
-                          {t('user_profile.active')}{' '}
-                          <TimeAgo
-                            date={compareDates([
-                              profileData.created,
-                              profileData.last_vote_time,
-                              profileData.last_post
-                            ])}
-                          />
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Follow/Mute Buttons */}
-                    {user.username !== username ? (
-                      <div className="mt-6 flex justify-center gap-3">
-                        <ButtonsContainer
-                          username={username}
-                          user={user}
-                          variant="default"
-                          follow={following}
-                          mute={mute}
-                        />
+                        <Icons.mapPin className="h-4 w-4" />
+                        <span data-testid="user-location">{profileData.profile.location}</span>
                       </div>
                     ) : null}
-                  </>
-                ) : (
-                  <div className="mt-6 text-center text-white/70">
-                    {t('global.unavailable_for_legal_reasons')}
+                    {profileData?.profile?.website ? (
+                      <div className="flex items-center gap-1">
+                        <Icons.globe2 className="h-4 w-4" />
+                        <Link
+                          target="_external"
+                          className="transition-colors hover:text-white"
+                          href={`https://${profileData.profile.website.replace(/^(https?|ftp):\/\//, '')}`}
+                        >
+                          {profileData.profile.website}
+                        </Link>
+                      </div>
+                    ) : null}
+                    <div className="flex items-center gap-1">
+                      <Icons.calendarHeart className="h-4 w-4" />
+                      <span data-testid="user-joined">
+                        {t('user_profile.joined')}{' '}
+                        {profileData?.created ? dateToShow(profileData.created, t) : null}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Icons.calendarActive className="h-4 w-4" />
+                      <span data-testid="user-last-time-active">
+                        {t('user_profile.active')}{' '}
+                        <TimeAgo
+                          date={compareDates([
+                            profileData.created,
+                            profileData.last_vote_time,
+                            profileData.last_post
+                          ])}
+                        />
+                      </span>
+                    </div>
                   </div>
-                )}
+
+                  {/* Follow/Mute Buttons */}
+                  {user.username !== username ? (
+                    <div className="mt-6 flex justify-center gap-3">
+                      <ButtonsContainer
+                        username={username}
+                        user={user}
+                        variant="default"
+                        follow={following}
+                        mute={mute}
+                      />
+                    </div>
+                  ) : null}
+                </>
+              ) : (
+                <div className="mt-6 text-center text-white/70">
+                  {t('global.unavailable_for_legal_reasons')}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -424,7 +431,9 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                     />
                     <ListItem
                       href={`/@${username}/posts`}
-                      currentTab={currentTab === 'posts' || currentTab === 'comments' || currentTab === 'payout'}
+                      currentTab={
+                        currentTab === 'posts' || currentTab === 'comments' || currentTab === 'payout'
+                      }
                       label={t('navigation.profile_navbar.posts')}
                     />
                     <ListItem
