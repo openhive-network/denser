@@ -7,7 +7,6 @@ import MainBar from '../features/layouts/site-header/main-bar';
 import ClientEffects from '../features/layouts/site-header/client-effects';
 import { Providers } from '../features/layouts/providers';
 import { StorageCleanup } from '@hive/ui';
-import ServiceWorkerUpdate from '../components/service-worker-update';
 import CondenserMigration from '../components/condenser-migration';
 import { getEnvVersion } from '../lib/env-version';
 
@@ -82,7 +81,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <>
               <StorageCleanup />
               <CondenserMigration />
-              <ServiceWorkerUpdate />
               <MainBar />
               <main className="mx-auto">{children}</main>
             </>

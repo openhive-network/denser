@@ -80,11 +80,6 @@ export default defineConfig({
       args: ['--disable-web-security', '--ignore-certificate-errors'], // add this to disable cors
     },
 
-    // /* Additional context options */
-    // contextOptions: {
-    //   /* Disable service workers. */
-    //   serviceWorkers: 'block'
-    // }
   },
 
   /* Configure projects for major browsers */

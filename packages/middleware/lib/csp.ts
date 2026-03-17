@@ -132,7 +132,7 @@ export function buildCsp(config: CspConfig = {}): string {
     `connect-src 'self' ${[...connectSrcHosts].join(' ')}`,
     // Embedded content: app-specific whitelist
     frameSrcValue,
-    // Web Workers: self + blob (for HBAuth and service worker)
+    // Web Workers: self + blob (for HBAuth worker)
     "worker-src 'self' blob:",
     // Prevent site from being embedded in iframes (clickjacking protection)
     "frame-ancestors 'self'",

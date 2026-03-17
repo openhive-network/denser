@@ -6,7 +6,6 @@ import { cookies } from 'next/headers';
 import Script from 'next/script';
 import { Providers } from './providers';
 import ClientEffects from './client-effects';
-import ServiceWorkerUpdate from '../components/service-worker-update';
 import CondenserMigration from '../components/condenser-migration';
 import { getEnvVersion } from '../lib/env-version';
 
@@ -83,7 +82,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           strategy="lazyOnload"
         />
         <Providers>
-          <ServiceWorkerUpdate />
           <CondenserMigration />
           <>{children}</>
         </Providers>
