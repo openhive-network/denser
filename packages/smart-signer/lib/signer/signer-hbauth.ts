@@ -6,7 +6,7 @@ import { PasswordDialogModalPromise } from '@smart-signer/components/password-di
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
-import { isIgnorableError, parseAuthError } from '@smart-signer/lib/auth-error';
+import { AuthStorageMissingError, isIgnorableError, parseAuthError } from '@smart-signer/lib/auth-error';
 
 const logger = getLogger('app');
 
@@ -232,10 +232,8 @@ export class SignerHbauth extends Signer {
         return false;
       }
     } else {
-      const message = `Auth for user ${username} not found. Hint: add ${keyType} key to safe storage.`;
-      logger.error(message);
-      // We should offer adding key to wallet.
-      throw new Error(message);
+      logger.error('Auth for user %s not found — IndexedDB key storage may have been cleared', username);
+      throw new AuthStorageMissingError(username, keyType);
     }
   }
   // This method is used to sign with a different key than the one that is currently unlocked

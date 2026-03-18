@@ -47,7 +47,13 @@ const wellKnownErrorDescriptions = [
 
   // Blockchain/authority errors
   'Account not found on the blockchain',
-  'authority for this account'
+  'authority for this account',
+
+  // Auth storage desync (IndexedDB cleared while session valid)
+  'Auth for user',
+
+  // User-cancelled operations (password dialog dismissed)
+  'No password from user'
 ];
 
 // TODO: Refactor this function to use the new error handling mechanism

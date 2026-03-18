@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
 import { useLocalStorage } from 'usehooks-ts';
@@ -38,6 +38,7 @@ export function useUserCore(
   onRedirect: (path: string) => void,
   isMounted?: () => boolean
 ): IUseUser {
+  const queryClient = useQueryClient();
   const [storedUser, storeUser] = useLocalStorage<User>('user', defaultUser);
   const { data: user } = useQuery<User>({
     queryKey: [QUERY_KEY.user],
@@ -54,6 +55,18 @@ export function useUserCore(
   useEffect(() => {
     userLocalStorage.saveUser(user || defaultUser);
   }, [user]);
+
+  // Listen for auth storage desync events (IndexedDB cleared while session valid).
+  // When detected, immediately transition to logged-out state in React Query cache.
+  useEffect(() => {
+    const handleDesync = () => {
+      logger.warn('Auth storage desync event received — resetting user to logged-out state');
+      queryClient.setQueryData([QUERY_KEY.user], defaultUser);
+      storeUser(defaultUser);
+    };
+    window.addEventListener('auth-storage-desync', handleDesync);
+    return () => window.removeEventListener('auth-storage-desync', handleDesync);
+  }, [queryClient, storeUser]);
 
   useEffect(() => {
     // If no redirect needed, just return (example: already on

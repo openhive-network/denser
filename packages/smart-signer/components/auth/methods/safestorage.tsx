@@ -185,6 +185,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         setLoading(true);
         await sign(LoginType.hbauth, username, KeyType[keyType]);
         await submit(username);
+        // Request persistent storage to reduce risk of browser evicting IndexedDB keys.
+        // This is a best-effort hint — browsers may ignore it.
+        if (navigator.storage?.persist) {
+          navigator.storage.persist().catch(() => {});
+        }
       } catch (error) {
         const errorMessage = handleAuthError(error, 'finalize');
         setError(errorMessage);

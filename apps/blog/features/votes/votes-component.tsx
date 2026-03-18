@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import { CircleSpinner } from 'react-spinners-kit';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { Slider } from '@ui/components/slider';
-import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@ui/components/icons';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '@/blog/components/dialog-login';
@@ -99,11 +98,9 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
 
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
-    try {
-      await voteMutation.mutateAsync({ voter, author, permlink, weight });
-    } catch (error) {
-      handleError(error, { method: 'vote', params: { voter, author, permlink, weight } });
-    }
+    // Errors are handled by the mutation's onError callback (including optimistic rollback).
+    // Using mutate() instead of mutateAsync() to avoid unhandled rejection warnings.
+    voteMutation.mutate({ voter, author, permlink, weight });
   };
 
   return (

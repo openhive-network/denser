@@ -3,6 +3,33 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**
+ * Error thrown when the user's session exists but their IndexedDB key storage
+ * has been cleared by the browser (storage eviction, cleared data, corruption).
+ * This creates a desync between the server session and client key storage.
+ */
+export class AuthStorageMissingError extends Error {
+  readonly username: string;
+  readonly keyType: string;
+
+  constructor(username: string, keyType: string) {
+    super(`Auth for user ${username} not found. Hint: add ${keyType} key to safe storage.`);
+    this.name = 'AuthStorageMissingError';
+    this.username = username;
+    this.keyType = keyType;
+  }
+}
+
+/**
+ * Check if an error represents an auth storage desync
+ * (session exists but IndexedDB keys are gone).
+ */
+export function isAuthStorageMissing(error: unknown): boolean {
+  if (error instanceof AuthStorageMissingError) return true;
+  const message = extractErrorMessage(error);
+  return /Auth for user .+ not found/i.test(message);
+}
+
+/**
  * Well-known hb-auth error messages that can be shown to users safely
  * These are specific error conditions from hb-auth that have clear meanings
  */
