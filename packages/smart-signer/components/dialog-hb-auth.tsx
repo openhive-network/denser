@@ -82,7 +82,14 @@ export function DialogHBAuth({
     logger.info('handleSubmit input data: %o', { username, keyType, keyTypeSwitch });
 
     if (isBrowser) {
-      const authClient = await hbauthService.getOnlineClient();
+      let authClient;
+      try {
+        authClient = await hbauthService.getOnlineClient();
+      } catch (err) {
+        updateStatus(null, 'Failed to initialize authentication. Please try again.');
+        logger.error('Failed to get online client: %o', err);
+        return;
+      }
 
       if (target.name === 'login') {
         const auth = await authClient.getRegisteredUserByUsername(username);

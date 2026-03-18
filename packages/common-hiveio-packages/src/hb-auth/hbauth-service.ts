@@ -85,12 +85,20 @@ export const getOnlineClient = (): Promise<OnlineClient> => {
   if (onlineClientPromise)
     return onlineClientPromise;
 
-  return onlineClientPromise = setOnlineClient();
+  onlineClientPromise = setOnlineClient().catch((error) => {
+    onlineClientPromise = undefined; // Clear cache so next call retries
+    throw error;
+  });
+  return onlineClientPromise;
 };
 
 export const getOfflineClient = (): Promise<OfflineClient> => {
   if (offlineClientPromise)
     return offlineClientPromise;
 
-  return offlineClientPromise = setOfflineClient();
+  offlineClientPromise = setOfflineClient().catch((error) => {
+    offlineClientPromise = undefined; // Clear cache so next call retries
+    throw error;
+  });
+  return offlineClientPromise;
 };

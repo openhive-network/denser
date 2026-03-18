@@ -1,4 +1,4 @@
-import { getChain } from './chain';
+import { getChain, resetTransactionChain } from './chain';
 import { isWasmMemoryError, resetChain } from '@hive/common-hiveio-packages';
 import { getLogger } from '@hive/ui/lib/logging';
 
@@ -57,6 +57,7 @@ export async function isHiveAccountNameValid(accountName: string): Promise<boole
       // See: https://gitlab.syncad.com/hive/wax/-/issues/161
       logger.error(error, 'WASM memory error in isValidAccountName - resetting chain, using regex fallback');
       resetChain();
+      resetTransactionChain();
       return validateAccountNameFormat(accountName);
     }
 

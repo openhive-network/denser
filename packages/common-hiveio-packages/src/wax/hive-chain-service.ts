@@ -202,6 +202,10 @@ const setChainClient = (options: Partial<IWaxOptionsChain> = {}): Promise<HiveCh
     }
 
     return hiveChain;
+  }).catch((error) => {
+    hiveChainPromise = undefined; // Clear cache so next call retries
+    hiveChain = undefined;
+    throw error;
   });
 
   return hiveChainPromise;
