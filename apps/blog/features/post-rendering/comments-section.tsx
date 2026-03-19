@@ -42,7 +42,7 @@ const CommentsSection = memo(function CommentsSection({
 }: CommentsSectionProps) {
   const { t } = useTranslation('common_blog');
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInitialMount = useRef(true);
+  const prevCommentsPageRef = useRef(commentsPage);
   const [filteringEnabled, setFilteringEnabled] = useState(true);
 
   const hiddenCount = useMemo(() => {
@@ -55,11 +55,10 @@ const CommentsSection = memo(function CommentsSection({
   }, [paginatedDiscussionState.comments, mutedList, postData.author, postData.permlink]);
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
+    if (prevCommentsPageRef.current !== commentsPage) {
+      prevCommentsPageRef.current = commentsPage;
+      sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [commentsPage]);
 
   const handlePrevPage = useCallback(() => {
