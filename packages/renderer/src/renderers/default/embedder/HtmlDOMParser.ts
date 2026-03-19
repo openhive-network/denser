@@ -850,6 +850,13 @@ function createSecondColumnPattern(className: string): RegExp {
 }
 
 /**
+ * Inline tags that commonly wrap pull-column content in bilingual posts.
+ * When these are opened inside a column but closed outside (straddling the div boundary),
+ * xmldom drops the column's closing </div> tags, breaking the entire document structure.
+ */
+const INLINE_TAGS = ['i', 'b', 'em', 'strong', 'u', 's', 'del', 'strike', 'span', 'sup', 'sub'];
+
+/**
  * Attempts to find a column pair starting at the given match position.
  * @returns The column pair match or null if no valid pair found
  */
@@ -887,11 +894,19 @@ function findColumnPair(html: string, matchStart: number, firstClass: string, se
         return null;
     }
 
-    // Calculate end position (including any trailing </div> from text-justify wrapper)
+    // Calculate end position (including any trailing orphaned closing tags)
     let endPos = afterFirstCol + secondPullDivOffset + secondCol.length;
-    const trailingDivMatch = html.substring(endPos).match(/^\s*<\/div>/);
-    if (trailingDivMatch) {
-        endPos += trailingDivMatch[0].length;
+
+    // Consume trailing orphaned inline closing tags and optional </div> from text-justify wrapper.
+    // Pattern: optional whitespace, then any sequence of orphaned inline closing tags (e.g. </i>)
+    // and optionally a </div> that closed a text-justify wrapper.
+    const trailingPattern = new RegExp(
+        `^(\\s*(?:<\\/(?:${INLINE_TAGS.join('|')})>\\s*)*)(?:<\\/div>)?`,
+        'i'
+    );
+    const trailingMatch = html.substring(endPos).match(trailingPattern);
+    if (trailingMatch && trailingMatch[0].length > 0) {
+        endPos += trailingMatch[0].length;
     }
 
     return {
@@ -903,10 +918,47 @@ function findColumnPair(html: string, matchStart: number, firstClass: string, se
 }
 
 /**
+ * Finds unclosed inline tags in column content and closes them.
+ *
+ * Bilingual posts often use patterns like:
+ *   <div class="pull-right"><i><div class="text-justify">...</div></div></i></div>
+ *
+ * After extractDivContent captures the pull-right content, the <i> is included
+ * but </i> falls outside (it comes after the pull-right closing tag in the source).
+ * When buildPullColumnsHtml wraps this content, the unclosed <i> prevents xmldom
+ * from matching the </div> closing tags (block close inside open inline = invalid XML),
+ * causing them to be silently dropped.
+ *
+ * This function detects such unclosed tags and appends closing tags to fix the nesting.
+ *
+ * @returns Object with the fixed content and any orphaned closing tags that were consumed
+ */
+function closeUnclosedInlineTags(content: string): { fixedContent: string; closingTags: string } {
+    let closingTags = '';
+
+    for (const tag of INLINE_TAGS) {
+        const openPattern = new RegExp(`<${tag}(?:\\s[^>]*)?>`, 'gi');
+        const closePattern = new RegExp(`</${tag}>`, 'gi');
+        const opens = (content.match(openPattern) || []).length;
+        const closes = (content.match(closePattern) || []).length;
+
+        for (let j = 0; j < opens - closes; j++) {
+            closingTags += `</${tag}>`;
+        }
+    }
+
+    return { fixedContent: content + closingTags, closingTags };
+}
+
+/**
  * Builds the pull-columns wrapper HTML for a column pair.
+ * Closes any unclosed inline tags in column content to prevent xmldom
+ * from dropping the wrapper's closing </div> tags.
  */
 function buildPullColumnsHtml(firstClass: string, secondClass: string, firstContent: string, secondContent: string): string {
-    return `<div class="pull-columns"><div class="${firstClass}">${firstContent}</div><div class="${secondClass}">${secondContent}</div></div>`;
+    const first = closeUnclosedInlineTags(firstContent);
+    const second = closeUnclosedInlineTags(secondContent);
+    return `<div class="pull-columns"><div class="${firstClass}">${first.fixedContent}</div><div class="${secondClass}">${second.fixedContent}</div></div>`;
 }
 
 /**

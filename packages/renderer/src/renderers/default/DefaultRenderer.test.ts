@@ -419,6 +419,130 @@ Mi día de hoy fue extraño porque fue como que quiso comenzar mal.
         expect(divOpens).to.equal(divCloses);
     });
 
+    it('should close unclosed inline tags in pull columns so table is not nested inside parent divs', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        // Pattern from bilingual posts: <i> wraps pull-right content but </i> is outside the div.
+        // Without the fix, xmldom drops the pull-columns closing tags because <i> straddles the boundary,
+        // causing the table to be nested inside the parent text-justify div.
+        const raw = `<div class="text-justify">
+
+<div class="pull-left">
+<div class="text-justify">
+
+Left content.
+
+</div>
+
+</div><div class="pull-right"><i>
+<div class="text-justify">
+
+Right content.
+
+</div>
+</div>
+</i>
+</div>
+
+</div>
+
+|**Resources**|
+|-|
+|[Link1](https://example.com)|`;
+        const rendered = renderer.render(raw).trim();
+
+        // Table should be outside all divs (depth 0)
+        const beforeTable = rendered.substring(0, rendered.indexOf('<table'));
+        let depth = 0;
+        const divRegex = /<div[\s>]|<\/div>/g;
+        let m;
+        while ((m = divRegex.exec(beforeTable)) !== null) {
+            depth += m[0].startsWith('</') ? -1 : 1;
+        }
+        expect(depth).to.equal(0, 'table should be at div depth 0, not nested inside parent divs');
+
+        // HTML should be balanced overall
+        const divOpens = (rendered.match(/<div[\s>]/g) || []).length;
+        const divCloses = (rendered.match(/<\/div>/g) || []).length;
+        expect(divOpens).to.equal(divCloses, 'HTML divs should be balanced');
+
+        // Content should be preserved
+        expect(rendered).to.include('pull-columns');
+        expect(rendered).to.include('Left content');
+        expect(rendered).to.include('Right content');
+        expect(rendered).to.include('<table>');
+    });
+
+    it('should handle multiple pull-column pairs inside text-center wrappers with italic', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        // Multiple sections with text-center > pull-left/pull-right pairs, as in bilingual review posts
+        const raw = `<div class="text-justify">
+
+<div class="text-center">
+
+<div class="pull-left">
+<div class="text-justify">
+
+Section 1 left.
+
+</div>
+</div><div class="pull-right"><i>
+<div class="text-justify">
+
+Section 1 right.
+
+</div>
+</div>
+</i>
+</div>
+
+<div class="text-center">
+
+<div class="pull-left">
+<div class="text-justify">
+
+Section 2 left.
+
+</div>
+</div><div class="pull-right"><i>
+<div class="text-justify">
+
+Section 2 right.
+
+</div>
+</div>
+</i>
+</div>
+
+</div>
+</div>
+</div>
+
+|**Table**|
+|-|
+|Row 1|`;
+        const rendered = renderer.render(raw).trim();
+
+        // Table should be outside all divs
+        const beforeTable = rendered.substring(0, rendered.indexOf('<table'));
+        let depth = 0;
+        const divRegex = /<div[\s>]|<\/div>/g;
+        let m;
+        while ((m = divRegex.exec(beforeTable)) !== null) {
+            depth += m[0].startsWith('</') ? -1 : 1;
+        }
+        expect(depth).to.equal(0, 'table should be at div depth 0');
+
+        // Both sections should have pull-columns
+        const pullColumnsCount = (rendered.match(/pull-columns/g) || []).length;
+        expect(pullColumnsCount).to.be.greaterThanOrEqual(2, 'should have at least 2 pull-columns wrappers');
+
+        // Content preserved
+        expect(rendered).to.include('Section 1 left');
+        expect(rendered).to.include('Section 1 right');
+        expect(rendered).to.include('Section 2 left');
+        expect(rendered).to.include('Section 2 right');
+    });
+
     // TODO: Fix spoiler tag rendering - see #801
     it.skip('Renders spoiler tags correctly', () => {
         const renderer = new DefaultRenderer(defaultOptions);
