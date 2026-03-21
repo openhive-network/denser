@@ -55,9 +55,13 @@ export function CommunitiesSelect({ title }: { title: string }) {
   return (
     <Select
       onValueChange={(e) => {
-        e === 'communities'
-          ? router.push(withBasePath('communities'))
-          : router.push(withBasePath(`/trending/${e}`));
+        if (e === 'communities') {
+          router.push(withBasePath('/communities'));
+        } else if (e.startsWith('/') || e.startsWith('@')) {
+          router.push(withBasePath(e));
+        } else {
+          router.push(withBasePath(`/trending/${e}`));
+        }
       }}
     >
       <SelectTrigger className="bg-white dark:bg-background/95 dark:text-white">
@@ -73,7 +77,7 @@ export function CommunitiesSelect({ title }: { title: string }) {
         }}
       >
         <SelectGroup>
-          <SelectItem value="/">{t('navigation.communities_nav.all_posts')}</SelectItem>
+          <SelectItem value="/trending">{t('navigation.communities_nav.all_posts')}</SelectItem>
         </SelectGroup>
         {user.isLoggedIn && (
           <SelectGroup>
