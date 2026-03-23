@@ -77,6 +77,8 @@ const PostPage = async ({
     logger.error(error, 'Error in PostPage:');
   }
 
+  if (!postData) notFound();
+
   // Pass data directly via context instead of Hydrate/dehydrate.
   // React Query v4's <Hydrate> has compatibility issues with Next.js App Router
   // streaming SSR where dehydrated state doesn't reliably reach the browser

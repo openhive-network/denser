@@ -7,10 +7,33 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
+function getOrigin(request: Request): string {
+  const configuredBase = process.env.NEXT_PUBLIC_BASE_PATH;
+
+  if (configuredBase) {
+    try {
+      const tmp = new URL(configuredBase);
+      return tmp.origin;
+    } catch {
+      return `https://${configuredBase.replace(/\/+$/, '')}`;
+    }
+  }
+
+  const host = request.headers.get('host') ?? 'localhost:3000';
+  const forwardedProto = request.headers.get('x-forwarded-proto');
+  const scheme = forwardedProto ?? (process.env.NODE_ENV === 'production' ? 'https' : 'http');
+  return `${scheme}://${host}`;
+}
+
+function notFoundRedirect(request: Request): NextResponse {
+  const origin = getOrigin(request);
+  return NextResponse.redirect(new URL('/404', origin), { status: 302 });
+}
+
 export async function GET(request: Request, { params }: { params: { user: string; permlink: string } }) {
   try {
     if (!isValidUserParam(params?.user)) {
-      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      return notFoundRedirect(request);
     }
 
     const rawParam = params?.user ?? '';
@@ -20,8 +43,8 @@ export async function GET(request: Request, { params }: { params: { user: string
     const queryClient = getQueryClient();
     const validUser = await isUsernameValid(username);
 
-    if (!validUser) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    if (!isPermlinkValid(params?.permlink)) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    if (!validUser) return notFoundRedirect(request);
+    if (!isPermlinkValid(params?.permlink)) return notFoundRedirect(request);
 
     let post;
     try {
@@ -41,7 +64,7 @@ export async function GET(request: Request, { params }: { params: { user: string
         }
       }
 
-      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      return notFoundRedirect(request);
     }
 
     if (!post) {
@@ -54,29 +77,13 @@ export async function GET(request: Request, { params }: { params: { user: string
         }
       }
 
-      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      return notFoundRedirect(request);
     }
 
-    const configuredBase = process.env.NEXT_PUBLIC_BASE_PATH;
-    let origin: string;
-
-    if (configuredBase) {
-      try {
-        const tmp = new URL(configuredBase);
-        origin = tmp.origin;
-      } catch (e) {
-        origin = `https://${configuredBase.replace(/\/+$/, '')}`;
-      }
-    } else {
-      const host = request.headers.get('host') ?? 'localhost:3000';
-      const forwardedProto = request.headers.get('x-forwarded-proto');
-      const scheme = forwardedProto ?? (process.env.NODE_ENV === 'production' ? 'https' : 'http');
-      origin = `${scheme}://${host}`;
-    }
-
+    const origin = getOrigin(request);
     const cat = post.category ?? post.community ?? '';
     if (!/^[a-z0-9][a-z0-9-]*$/.test(cat)) {
-      return NextResponse.json({ error: 'Invalid post category' }, { status: 400 });
+      return notFoundRedirect(request);
     }
 
     const path = `${cat}/@${post.author}/${post.permlink}`;
