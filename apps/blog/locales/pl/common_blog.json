@@ -657,5 +657,10 @@
     "hot_posts": "gorące posty",
     "trending_posts": "trendingowe posty",
     "muted_posts": "wyciszone posty"
+  },
+  "muted_list_warning": {
+    "description": "Nie obserwujesz zadnej listy wyciszonych. Rozważ obserwowanie listy wyciszonych uzytkownika {{account}} — aktywnie moderuje i pilnuje niefajnych ludzi na blogu.",
+    "follow_button": "Obserwuj liste wyciszonych {{account}}",
+    "dismiss_button": "Nie interesuje mnie to"
   }
 }

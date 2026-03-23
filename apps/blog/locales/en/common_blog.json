@@ -754,5 +754,10 @@
     "hot_posts": "hot posts",
     "trending_posts": "trending posts",
     "muted_posts": "muted posts"
+  },
+  "muted_list_warning": {
+    "description": "You are not following any muted list. Consider following {{account}}'s muted list — they actively moderate and keep track of bad actors on the blog.",
+    "follow_button": "Follow {{account}} muted list",
+    "dismiss_button": "Not interested"
   }
 }
