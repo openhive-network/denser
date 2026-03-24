@@ -6,6 +6,8 @@ import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
 import { TFunction } from 'i18next';
 import { Dispatch, SetStateAction } from 'react';
+import { processImageForUpload } from './image-processing';
+import type { BatchFileItem, FileProcessingStatus, ProcessingOptions } from './image-processing-types';
 
 const logger = getLogger('app');
 
@@ -179,14 +181,21 @@ export const onImageUpload = async (
   username: string,
   signer: Signer,
   setUploading?: Dispatch<SetStateAction<boolean>>,
-  cursorPos?: number
+  cursorPos?: number,
+  processingOptions?: ProcessingOptions
 ) => {
   setUploading?.(true);
-  const url = await uploadImg(file, username, signer);
-  const imageMarkdown = ` ![${file.name}](${!url ? 'UPLOAD FAILED' : url}) `;
-
-  insertText(imageMarkdown, cursorPos);
-
+  try {
+    const result = await processImageForUpload(file, processingOptions);
+    const url = await uploadImg(result.file, username, signer);
+    const name = result.file.name;
+    const imageMarkdown = ` ![${name}](${!url ? 'UPLOAD FAILED' : url}) `;
+    insertText(imageMarkdown, cursorPos);
+  } catch (error) {
+    logger.error('Image processing/upload failed for %s: %o', file.name, error);
+    handleError(error);
+    insertText(` ![${file.name}](UPLOAD FAILED) `, cursorPos);
+  }
   setUploading?.(false);
 };
 
@@ -196,16 +205,21 @@ export const onImageDrop = async (
   username: string,
   signer: Signer,
   setUploading?: Dispatch<SetStateAction<boolean>>,
-  cursorPos?: number
+  cursorPos?: number,
+  processingOptions?: ProcessingOptions
 ) => {
-  const files = [];
-
+  const files: File[] = [];
   for (let index = 0; index < dataTransfer.items.length; index++) {
     const file = dataTransfer.files.item(index);
     if (file) files.push(file);
   }
 
-  await Promise.all(files.map(async (file) => onImageUpload(file, insertText, username, signer, setUploading, cursorPos)));
+  // Sequential processing to manage memory on mobile
+  setUploading?.(true);
+  for (const file of files) {
+    await onImageUpload(file, insertText, username, signer, undefined, cursorPos, processingOptions);
+  }
+  setUploading?.(false);
 };
 
 export const onImagePaste = async (
@@ -214,7 +228,8 @@ export const onImagePaste = async (
   username: string,
   signer: Signer,
   setUploading?: Dispatch<SetStateAction<boolean>>,
-  cursorPos?: number
+  cursorPos?: number,
+  processingOptions?: ProcessingOptions
 ) => {
   const files: File[] = [];
   for (let i = 0; i < clipboardData.items.length; i++) {
@@ -225,11 +240,62 @@ export const onImagePaste = async (
     }
   }
   if (!files.length) return false;
-  await Promise.all(files.map(async (file) => onImageUpload(file, insertText, username, signer, setUploading, cursorPos)));
+
+  // Sequential processing to manage memory on mobile
+  setUploading?.(true);
+  for (const file of files) {
+    await onImageUpload(file, insertText, username, signer, undefined, cursorPos, processingOptions);
+  }
+  setUploading?.(false);
   return true;
 };
 
 // insertToTextArea removed - caused #672 by DOM manipulation instead of React state
+
+export interface BatchUploadCallbacks {
+  onFileStart: (index: number, file: File) => void;
+  onFileProgress: (index: number, status: FileProcessingStatus) => void;
+  onFileComplete: (index: number, url: string, name: string) => void;
+  onFileError: (index: number, error: string) => void;
+  onAllComplete: () => void;
+}
+
+export const onBatchImageUpload = async (
+  files: File[],
+  insertText: (text: string, pos?: number) => void,
+  username: string,
+  signer: Signer,
+  callbacks: BatchUploadCallbacks,
+  cursorPos?: number,
+  processingOptions?: ProcessingOptions
+) => {
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    callbacks.onFileStart(i, file);
+    try {
+      callbacks.onFileProgress(i, 'processing');
+      const result = await processImageForUpload(file, processingOptions);
+
+      callbacks.onFileProgress(i, 'uploading');
+      const url = await uploadImg(result.file, username, signer);
+      const name = result.file.name;
+
+      if (url) {
+        insertText(`![${name}](${url})\n`, cursorPos);
+        callbacks.onFileComplete(i, url, name);
+      } else {
+        callbacks.onFileError(i, 'Upload returned empty URL');
+      }
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      callbacks.onFileError(i, msg);
+      logger.error('Batch upload file %d (%s) failed: %o', i, file.name, error);
+    }
+  }
+  callbacks.onAllComplete();
+};
+
+export type { BatchFileItem, FileProcessingStatus, ProcessingOptions };
 
 export const postClassName =
   'font-source text-[16.5px] prose-h1:text-[26.4px] prose-h2:text-[23.1px] prose-h3:text-[19.8px] prose-h4:text-[18.1px] sm:text-[17.6px] sm:prose-h1:text-[28px] sm:prose-h2:text-[24.7px] sm:prose-h3:text-[22.1px] sm:prose-h4:text-[19.4px] lg:text-[19.2px] lg:prose-h1:text-[30.7px] lg:prose-h2:text-[28.9px] lg:prose-h3:text-[23px] lg:prose-h4:text-[21.1px] prose-p:mb-6 prose-p:mt-0 prose-img:cursor-pointer prose-img:max-w-full prose-img:h-auto';

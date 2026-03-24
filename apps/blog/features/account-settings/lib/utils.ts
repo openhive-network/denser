@@ -2,6 +2,7 @@ import { Signer } from '@smart-signer/lib/signer/signer';
 import { TFunction } from 'i18next';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { getLogger } from '@ui/lib/logging';
+import { processImageForUpload } from '@/blog/features/post-editor/lib/image-processing';
 
 const logger = getLogger('account-settings/utils');
 
@@ -109,4 +110,10 @@ export const uploadImg = async (file: File, username: string, signer: Signer): P
     logger.error('Error when uploading file %s: %o', file.name, error);
   }
   return '';
+};
+
+/** Process image (convert HEIC, resize, compress) then upload. Always optimizes for avatars/covers. */
+export const processAndUploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
+  const result = await processImageForUpload(file, { optimize: true });
+  return uploadImg(result.file, username, signer);
 };

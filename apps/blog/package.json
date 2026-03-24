@@ -69,6 +69,7 @@
     "dotenv": "^16.3.1",
     "framer-motion": "^12.23.12",
     "googleapis": "^170.0.0",
+    "heic2any": "^0.0.4",
     "hive-auth-client": "^0.1.5",
     "http-errors": "^2.0.0",
     "i": "^0.3.7",

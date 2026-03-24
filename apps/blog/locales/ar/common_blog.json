@@ -579,6 +579,11 @@
     "undo": "Undo",
     "convert_hive_links": "Convert Hive links",
     "convert_hive_links_tooltip": "Automatically converts pasted links from Hive blog frontends to frontend-agnostic relative paths, so your post works on any Hive app",
+    "optimize_images": "Optimize images",
+    "optimize_images_tooltip": "Resize and compress images before upload for faster uploads and smaller file sizes. Converts unsupported formats (HEIC/HEIF) automatically.",
+    "uploading_images": "Uploading {{count}} images...",
+    "image_processing_failed": "failed",
+    "image_too_large_gif": "GIF is too large. Maximum size is 15MB.",
     "advanced_tooltip": "هنا يمكنك تعيين خيارات المشاركة مثل تقسيم مكافآت المؤلف، الحد الأقصى للمبلغ المقبول للدفع، المستفيدين وقوالب المشاركة",
     "advanced_settings_dialog": {
       "load": "تحميل",

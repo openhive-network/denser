@@ -6,7 +6,7 @@ import { getAccountFull } from '@transaction/lib/hive-api';
 import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { DEFAULT_SETTINGS, Settings, uploadImg, validation } from './lib/utils';
+import { DEFAULT_SETTINGS, Settings, processAndUploadImg, validation } from './lib/utils';
 import { Button } from '@ui/components/button';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
@@ -108,7 +108,7 @@ const SettingsForm = ({ username }: { username: string }) => {
   };
 
   const onImageUpload = async (file: File, username: string, signer: Signer) => {
-    const url = await uploadImg(file, username, signer);
+    const url = await processAndUploadImg(file, username, signer);
     return url;
   };
   const inputCoverHandler = async (event: { target: { files: FileList } }) => {
@@ -150,7 +150,7 @@ const SettingsForm = ({ username }: { username: string }) => {
                 type="file"
                 className="hidden"
                 ref={inputProfileRef}
-                accept=".jpg,.png,.jpeg,.jfif,.gif,.webp"
+                accept=".jpg,.png,.jpeg,.jfif,.gif,.webp,.heic,.heif"
                 name="avatar"
                 value={insertImg}
                 //@ts-expect-error
@@ -181,7 +181,7 @@ const SettingsForm = ({ username }: { username: string }) => {
                 type="file"
                 className="hidden"
                 ref={inputCoverRef}
-                accept=".jpg,.png,.jpeg,.jfif,.gif,.webp"
+                accept=".jpg,.png,.jpeg,.jfif,.gif,.webp,.heic,.heif"
                 name="avatar"
                 value={insertImg}
                 //@ts-expect-error
