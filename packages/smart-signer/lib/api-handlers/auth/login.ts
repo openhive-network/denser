@@ -3,6 +3,7 @@ import { NextApiHandler } from 'next';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
 import { getAccount } from '@transaction/lib/hive-api';
+import { getChain } from '@transaction/lib/chain';
 import { postLoginSchema, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
@@ -46,18 +47,41 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   let verifiedUser: User | undefined;
 
   if (JSON.parse(data.txJSON)) {
+    const parsedTx = JSON.parse(data.txJSON);
+
     // Check whether loginChallenge is correct.
-    const reguestLoginChallenge = getLoginChallengeFromTransactionForLogin(JSON.parse(data.txJSON), keyType);
+    const reguestLoginChallenge = getLoginChallengeFromTransactionForLogin(parsedTx, keyType);
     if (reguestLoginChallenge !== loginChallenge) {
       throw new createHttpError[401]('Invalid login challenge');
     }
 
-    // Verify signature in passed transaction.
+    // Verify that the claimed username matches the account in the transaction.
+    const txOp = parsedTx.operations[0];
+    const txAuthAccount = keyType === 'posting'
+      ? txOp?.value?.required_posting_auths?.[0]
+      : txOp?.value?.required_auths?.[0];
+    if (txAuthAccount !== username) {
+      throw new createHttpError.Unauthorized('Username does not match transaction authority');
+    }
+
+    // Verify signature — proves the client possesses the private key.
+    try {
+      const chain = await getChain();
+      await chain.api.database_api.verify_authority({
+        trx: parsedTx,
+        pack: data.pack
+      });
+    } catch (verifyError) {
+      logger.error(verifyError, 'Signature verification failed for user %s', username);
+      throw new createHttpError.Unauthorized('Signature verification failed');
+    }
+
+    // Create User object from verified login data.
     try {
       verifiedUser = await verifyLogin(data);
       result = verifiedUser.isLoggedIn;
     } catch (error) {
-      // swallow error
+      logger.error(error, 'Failed to create user object for %s', username);
     }
   } else {
     result = await verifyLoginChallenge(chainAccount, signatures, JSON.stringify({ loginChallenge }));

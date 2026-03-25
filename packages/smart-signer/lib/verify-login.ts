@@ -5,7 +5,9 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Authenticate user by checking signature in fake transaction.
+ * Create a User object from validated login data.
+ * Note: Cryptographic signature verification is performed in the login
+ * handler (login.ts) before this function is called.
  *
  * @param {PostLoginSchema} data
  * @returns {Promise<User>}
@@ -15,7 +17,7 @@ export async function verifyLogin(data: PostLoginSchema): Promise<User> {
   logger.info('verifyLogin argument data: %o', data);
 
   try {
-    // this basically saves the user to the local storage
+    // Create User object from login data
     const user: User = {
       isLoggedIn: true,
       username,
