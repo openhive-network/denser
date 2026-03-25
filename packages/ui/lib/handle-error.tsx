@@ -40,8 +40,8 @@ function isAuthStorageDesync(error: unknown): boolean {
  * and dispatches event for React Query to pick up.
  */
 function performDesyncLogout(): void {
-  // Clear auth_proof cookie immediately
-  document.cookie = 'auth_proof=; path=/; max-age=0';
+  // Clear observer cookie immediately — SSR stops personalizing
+  document.cookie = 'observer=; path=/; max-age=0';
 
   // Clear user from localStorage so next page load starts logged out
   try {

@@ -47,6 +47,13 @@ export function useSignIn() {
     onSuccess: (data) => {
       const { user } = data;
       queryClient.setQueryData([QUERY_KEY.user], user);
+
+      // Set observer cookie for SSR personalization
+      if (user.username) {
+        const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+        document.cookie = `observer=${user.username}; path=/; SameSite=Lax${secure}`;
+      }
+
       // Invalidate observer-dependent queries to refetch with new user context
       queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
       queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });

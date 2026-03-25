@@ -25,8 +25,5 @@ export const setLoginChallengeCookies = (req: NextRequest, res: NextResponse) =>
       secure: process.env.NODE_ENV === 'production',
       httpOnly: false
     });
-
-    // Note: auth_proof cookie is only created when users actually log in
-    // First-time visitors don't get auth_proof cookies
   }
 };

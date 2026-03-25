@@ -10,8 +10,7 @@ import { useSigner } from '@smart-signer/lib/use-signer';
 import { LoginFormSchema as SignInFormSchema } from '../signin-form';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { getChain } from '@transaction/lib/chain';
-import { IOnlineTransaction, operation } from '@hiveio/wax';
-import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
+import { operation } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -85,24 +84,6 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
         signatures,
         authenticateOnBackend
       };
-
-      const authProof = getAuthProof(txBuilder);
-
-      const logResponse = await fetch('/api/auth/log_account', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          [csrfHeaderName]: '1'
-        },
-        body: JSON.stringify({
-          type: 'login',
-          username,
-          authProof
-        })
-      });
-      if (!logResponse.ok) {
-        logger.warn('log_account failed: %d %s', logResponse.status, logResponse.statusText);
-      }
     } catch (error) {
       logger.error(error, 'onSubmit error in signLoginChallenge');
       return Promise.reject(error);
@@ -112,12 +93,6 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
 
     setIsSigned(true);
     return Promise.resolve();
-  };
-
-  const getAuthProof = (tx: IOnlineTransaction) => {
-    const binaryData = tx.toBinaryForm();
-    const base64Data = Buffer.from(binaryData).toString('base64');
-    return base64Data;
   };
 
   const submitAuth = async () => {

@@ -1,6 +1,5 @@
 import { cache } from 'react';
 import { cookies } from 'next/headers';
-import { parseAuthProofCookie, AUTH_PROOF_COOKIE_NAME } from '@hive/middleware/lib/auth-proof-cookie';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
 import type { IronSessionData } from '@smart-signer/types/common';
@@ -10,40 +9,40 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 /**
- * Server-side function to extract observer from authentication cookies.
- * Used for SSR prefetching to render content with the correct observer.
+ * Returns the observer username for SSR personalization.
+ * This is an untrusted display hint — not an authentication check.
  *
- * Tries two sources:
- * 1. auth_proof cookie (lightweight, set by log_account endpoint)
- * 2. iron-session cookie (encrypted session, set by login endpoint)
+ * Check order:
+ * 1. observer cookie (lightweight, client-set on login)
+ * 2. iron-session fallback (edge case: observer cookie missing but authenticated)
+ * 3. DEFAULT_OBSERVER ('hive.blog')
  *
- * Wrapped with React.cache() to deduplicate iron-session decryption
- * across multiple RSC calls within the same request (e.g. layout + page).
- * Safe because all callers are RSC/route handlers (never 'use client').
- *
- * @returns {string} The username if logged in, or DEFAULT_OBSERVER for anonymous users
+ * Wrapped with React.cache() to deduplicate across RSC calls within a request.
  */
-export const getObserverFromCookies = cache(async (): Promise<string> => {
+export const getObserver = cache(async (): Promise<string> => {
   const cookieStore = cookies();
 
-  // Try auth_proof cookie first (fast, no decryption needed)
-  const authCookie = cookieStore.get(AUTH_PROOF_COOKIE_NAME);
-  if (authCookie) {
-    const cookieData = parseAuthProofCookie(authCookie.value);
-    if (cookieData?.username) {
-      return cookieData.username;
+  // Primary: observer cookie (lightweight, client-set)
+  const observerCookie = cookieStore.get('observer');
+  if (observerCookie?.value) {
+    const observer = observerCookie.value;
+    if (/^[a-z0-9.-]{1,16}$/.test(observer)) {
+      return observer;
     }
   }
 
-  // Fallback: read iron-session (encrypted session cookie)
+  // Fallback: iron-session (edge case — observer cookie missing but user authenticated)
   try {
     const session = await getIronSession<IronSessionData>(cookieStore, sessionOptions);
     if (session.user?.username) {
       return session.user.username;
     }
   } catch (error) {
-    logger.error(error, 'Error reading iron-session in getObserverFromCookies:');
+    logger.error(error, 'Error reading iron-session in getObserver:');
   }
 
   return DEFAULT_OBSERVER;
 });
+
+// Backward-compatible alias — will be removed after all call sites update
+export const getObserverFromCookies = getObserver;
