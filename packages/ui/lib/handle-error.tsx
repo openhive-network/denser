@@ -59,11 +59,12 @@ function performDesyncLogout(): void {
   }
 
   // POST to logout API to destroy server session (fire and forget)
+  // Header value must match csrfHeaderName in @smart-signer/lib/csrf-protection.ts
   fetch('/api/auth/logout', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      'x-csrf-protection': '1'
+      'x-csrf-token': '1'
     }
   }).catch(err => logger.error('Desync logout API call failed: %o', err));
 
