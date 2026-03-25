@@ -1,4 +1,5 @@
-FROM node:20.17-alpine AS base
+FROM node:22.22.1-alpine3.23 AS pure_node
+FROM pure_node AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
@@ -54,7 +55,7 @@ RUN pnpm dlx turbo run build --filter=${TURBO_APP_SCOPE}
 # ============================================================================
 # RUNNER: Minimal production image
 # ============================================================================
-FROM node:20.17-alpine AS runner
+FROM pure_node AS runner
 ARG TURBO_APP_PATH
 ARG TURBO_APP_NAME
 ENV TURBO_APP_PATH=${TURBO_APP_PATH}
