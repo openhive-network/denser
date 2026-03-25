@@ -3,7 +3,6 @@ import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useSigner } from '@smart-signer/lib/use-signer';
-import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import { getLogger } from '@hive/ui/lib/logging';
 import { useRouter } from 'next/navigation';
@@ -18,8 +17,8 @@ export function useLogout(redirect?: string) {
   const queryClient = useQueryClient();
 
   const onLogout = async () => {
-    // Delete auth_proof cookie immediately
-    document.cookie = 'auth_proof=; path=/; max-age=0';
+    // Clear observer cookie immediately — SSR stops personalizing
+    document.cookie = 'observer=; path=/; max-age=0';
 
     // Trigger sign out mutation and wait for server response to ensure
     // the Set-Cookie header (which clears iron-session) is processed
@@ -56,21 +55,6 @@ export function useLogout(redirect?: string) {
         } catch (error) {
           logger.error(error, 'Failed to destroy signer during logout');
         }
-      });
-
-      // Log logout event to the backend
-      fetch('/api/auth/log_account', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          [csrfHeaderName]: '1'
-        },
-        body: JSON.stringify({
-          type: 'logout'
-          // username and loginType will be read from the existing cookie
-        })
-      }).catch((logError) => {
-        logger.error(logError, 'Failed to log logout event');
       });
     }
   };

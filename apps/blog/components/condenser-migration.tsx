@@ -8,7 +8,6 @@ import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { getChain } from '@transaction/lib/chain';
-import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { Signatures } from '@smart-signer/lib/auth/utils';
 import {
@@ -128,22 +127,6 @@ export default function CondenserMigration() {
 
         txBuilder.addSignature(signature);
         const signatures: Signatures = { posting: signature, active: '' };
-
-        // Set auth_proof cookie
-        const binaryData = txBuilder.toBinaryForm();
-        const authProof = Buffer.from(binaryData).toString('base64');
-
-        const logResponse = await fetch('/api/auth/log_account', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            [csrfHeaderName]: '1'
-          },
-          body: JSON.stringify({ type: 'login', username, authProof })
-        });
-        if (!logResponse.ok) {
-          logger.warn('Condenser migration log_account failed: %d %s', logResponse.status, logResponse.statusText);
-        }
 
         // Complete login: sets iron-session cookie, updates React Query
         await signIn.mutateAsync({

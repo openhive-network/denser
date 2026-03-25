@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@hive/smart-signer/lib/middleware-challenge-cookies';
-import { logPageVisit } from './auth-proof-cookie';
+import { logPageVisit } from './page-visit-logger';
 import { buildCsp, SECURITY_HEADERS, type CspConfig } from './csp';
 
 /**
@@ -63,6 +63,35 @@ export function createMiddleware(config: MiddlewareConfig = {}) {
 
     setLoginChallengeCookies(request, res);
 
+    // Generate session_uid for browser tracking (persists across login/logout)
+    if (!request.cookies.has('session_uid')) {
+      try {
+        res.cookies.set({
+          name: 'session_uid',
+          value: crypto.randomUUID(),
+          path: '/',
+          sameSite: 'lax',
+          secure: process.env.NODE_ENV === 'production',
+          httpOnly: true,
+          maxAge: 400 * 24 * 60 * 60 // 400 days (browser maximum)
+        });
+      } catch (error) {
+        // Don't break middleware if UUID generation fails
+      }
+    }
+
+    // Transition cleanup: clear stale auth_proof cookies from old sessions
+    // Remove this block after ~4 weeks of deployment
+    if (request.cookies.has('auth_proof')) {
+      res.cookies.set({
+        name: 'auth_proof',
+        value: '',
+        path: '/',
+        maxAge: 0,
+        httpOnly: true
+      });
+    }
+
     if (pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {
       const isPrefetch =
         request.headers.get('x-middleware-prefetch') === '1' ||
@@ -70,7 +99,6 @@ export function createMiddleware(config: MiddlewareConfig = {}) {
         request.headers.get('sec-purpose')?.includes('prefetch');
 
       if (!isPrefetch) {
-        // Log page visits for authenticated users (if they have auth proof cookie)
         logPageVisit(request, pathname);
       }
     }

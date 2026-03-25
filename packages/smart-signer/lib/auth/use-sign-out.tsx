@@ -36,6 +36,9 @@ export function useSignOut() {
       return signOut(user);
     },
     onMutate: () => {
+      // Clear observer cookie immediately — SSR stops personalizing
+      document.cookie = 'observer=; path=/; max-age=0';
+
       // Optimistically update user to logged-out state immediately for instant UI feedback
       const previousUser = queryClient.getQueryData<User>([QUERY_KEY.user]);
       queryClient.setQueryData([QUERY_KEY.user], defaultUser);
