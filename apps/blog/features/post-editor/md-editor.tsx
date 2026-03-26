@@ -243,8 +243,7 @@ const lightTheme = EditorView.theme({
     backgroundColor: 'hsl(var(--accent) / 0.3)'
   },
   '.cm-scroller': {
-    overflow: 'auto',
-    overscrollBehavior: 'contain'
+    overflow: 'auto'
   },
   '.cm-matchingBracket': {
     backgroundColor: 'hsl(var(--accent))',

@@ -1,6 +1,15 @@
 'use client';
 
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore
+} from 'react';
 import { Link } from '@hive/ui';
 import clsx from 'clsx';
 import * as z from 'zod';
@@ -154,14 +163,15 @@ export default function PostForm({
   // Track whether the viewport is wide enough for actual side-by-side layout.
   // CSS uses `lg:flex-row` (1024px), so scroll sync + fixed preview height
   // should only activate at that breakpoint — not on mobile stacked layout.
-  const [isLgScreen, setIsLgScreen] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia('(min-width: 1024px)');
-    setIsLgScreen(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setIsLgScreen(e.matches);
-    mql.addEventListener('change', handler);
-    return () => mql.removeEventListener('change', handler);
-  }, []);
+  const isLgScreen = useSyncExternalStore(
+    (callback) => {
+      const mql = window.matchMedia('(min-width: 1024px)');
+      mql.addEventListener('change', callback);
+      return () => mql.removeEventListener('change', callback);
+    },
+    () => window.matchMedia('(min-width: 1024px)').matches,
+    () => false
+  );
   // True only when sideBySide is toggled on AND the screen is actually wide
   // enough for the CSS side-by-side layout (lg: breakpoint). Used for scroll
   // sync and fixed-height preview — these must not run on mobile stacked layout.
