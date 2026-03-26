@@ -243,7 +243,8 @@ const lightTheme = EditorView.theme({
     backgroundColor: 'hsl(var(--accent) / 0.3)'
   },
   '.cm-scroller': {
-    overflow: 'auto'
+    overflow: 'auto',
+    overscrollBehavior: 'contain'
   },
   '.cm-matchingBracket': {
     backgroundColor: 'hsl(var(--accent))',
@@ -696,7 +697,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       EditorView.lineWrapping,
       EditorView.theme({
         '&': { height: `${windowheight}px` },
-        '.cm-scroller': { overflow: 'auto' }
+        '.cm-scroller': { overflow: 'auto', overscrollBehavior: 'contain' }
       })
     ];
 

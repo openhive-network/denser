@@ -151,6 +151,21 @@ export default function PostForm({
 
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const [syncScroll, setSyncScroll] = useState(true);
+  // Track whether the viewport is wide enough for actual side-by-side layout.
+  // CSS uses `lg:flex-row` (1024px), so scroll sync + fixed preview height
+  // should only activate at that breakpoint — not on mobile stacked layout.
+  const [isLgScreen, setIsLgScreen] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia('(min-width: 1024px)');
+    setIsLgScreen(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsLgScreen(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
+  // True only when sideBySide is toggled on AND the screen is actually wide
+  // enough for the CSS side-by-side layout (lg: breakpoint). Used for scroll
+  // sync and fixed-height preview — these must not run on mobile stacked layout.
+  const effectiveSideBySide = sideBySide && isLgScreen;
   const [imagePickerState, setImagePickerState] = useState('');
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
@@ -397,7 +412,7 @@ export default function PostForm({
 
   // Auto-scroll preview to bottom when typing at the end of editor (debounced)
   useEffect(() => {
-    if (!syncScroll || !sideBySide || !preview) return;
+    if (!syncScroll || !effectiveSideBySide || !preview) return;
 
     // Debounce to avoid running on every keystroke
     const timeoutId = setTimeout(() => {
@@ -417,7 +432,7 @@ export default function PostForm({
     }, 100);
 
     return () => clearTimeout(timeoutId);
-  }, [previewContent, syncScroll, sideBySide, preview]);
+  }, [previewContent, syncScroll, effectiveSideBySide, preview]);
 
   // Lock preview→editor scroll sync briefly when preview DOM is replaced.
   // RendererContainer's dangerouslySetInnerHTML causes a scroll event on the
@@ -440,7 +455,7 @@ export default function PostForm({
 
   // Set up scroll sync event listeners (optimized for large content)
   useEffect(() => {
-    if (!syncScroll || !sideBySide || !preview) return;
+    if (!syncScroll || !effectiveSideBySide || !preview) return;
 
     const previewEl = previewContainerRef.current;
     if (!previewEl) return;
@@ -851,7 +866,7 @@ export default function PostForm({
         scrollCleanupRef.current = null;
       }
     };
-  }, [syncScroll, sideBySide, preview]);
+  }, [syncScroll, effectiveSideBySide, preview]);
 
   async function onSubmit(data: AccountFormValues) {
     // Flush pending debounce - use the latest editor value which may not have synced to form yet
@@ -1468,7 +1483,7 @@ export default function PostForm({
               </span>
             </Link>
           </div>
-          <div ref={previewContainerRef} data-testid="preview-scroller" className="flex h-full overflow-y-auto rounded-b-lg border border-border">
+          <div ref={previewContainerRef} data-testid="preview-scroller" className="flex h-full overflow-y-auto overscroll-contain rounded-b-lg border border-border">
             {previewContent ? (
               <RendererContainer
                 body={previewContent}
