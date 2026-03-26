@@ -1,0 +1,61 @@
+# Dockerfile.memtest — Memory leak test build
+# Uses emsdk image for build (as requested), production-like runner for testing
+#
+# Build: docker build -f memtest/Dockerfile.memtest -t denser-memtest:latest .
+# Run:   docker run -d -p 3000:3000 -e NODE_OPTIONS="--expose-gc" denser-memtest:latest
+
+FROM registry.gitlab.syncad.com/hive/common-ci-configuration/emsdk:5.0.2-1 AS builder
+
+USER root
+
+# Setup pnpm via corepack (emsdk image has nvm-based Node)
+ENV PNPM_HOME="/home/emscripten/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:/home/emscripten/.nvm/versions/node/v22.21.1/bin:$PATH"
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+
+WORKDIR /app
+COPY . .
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Build the blog app
+RUN pnpm dlx turbo run build --filter=@hive/blog
+
+# ============================================================================
+# RUNNER: Minimal image for testing
+# ============================================================================
+FROM node:22-alpine AS runner
+
+RUN apk add --no-cache tini && \
+    npm install -g @beam-australia/react-env@3.1.1 && \
+    addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+WORKDIR /app
+
+ENV TURBO_APP_PATH="/apps/blog"
+ENV TURBO_APP_NAME="blog"
+
+# Copy entrypoint
+COPY docker/docker-entrypoint.sh .
+
+# Copy config
+COPY --from=builder /app/apps/blog/next.config.js .
+COPY --from=builder /app/apps/blog/package.json .
+
+USER nextjs
+
+# Copy standalone output
+COPY --from=builder --chown=nextjs:nodejs /app/apps/blog/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/blog/.next/static ./apps/blog/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/blog/public ./apps/blog/public
+
+ENV BLOG_PORT=3000
+EXPOSE 3000
+
+# Diagnostics: --expose-gc for forced GC, configurable heap limit
+ENV NODE_OPTIONS="--expose-gc --max-old-space-size=4096"
+
+ENTRYPOINT ["/sbin/tini", "--", "/app/docker-entrypoint.sh"]
+CMD ["sh", "-c", "node ./apps/blog/server.js"]

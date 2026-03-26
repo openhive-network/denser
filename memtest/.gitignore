@@ -1,0 +1,3 @@
+# CSV results are regenerable — don't commit large data files
+results/*.csv
+results/snapshots-*/
