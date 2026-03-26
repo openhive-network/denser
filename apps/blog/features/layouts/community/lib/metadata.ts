@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import { getQueryClient } from '@/blog/lib/react-query';
 import { getCommunity } from '@transaction/lib/bridge-api';
 import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
@@ -14,12 +13,8 @@ export async function buildCommunityTagMetadata(
 
   if (!isCommunity(tag)) return { title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive` };
 
-  const queryClient = getQueryClient();
   try {
-    const data = await queryClient.fetchQuery({
-      queryKey: ['community', tag],
-      queryFn: () => getCommunity(tag)
-    });
+    const data = await getCommunity(tag);
 
     const communityName = data?.title ?? data?.name ?? tag;
     const titleSection = sectionLabel ? ` / ${sectionLabel}` : '';
