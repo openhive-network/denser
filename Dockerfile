@@ -118,5 +118,9 @@ EXPOSE $BLOG_PORT
 EXPOSE $WALLET_PORT
 EXPOSE $AUTH_PORT
 
+# Limit V8 heap to fail-fast instead of slow OOM degradation (denser#886).
+# Default: 1536 MB — override via NODE_OPTIONS env var if needed.
+ENV NODE_OPTIONS="--max-old-space-size=1536"
+
 ENTRYPOINT ["/sbin/tini", "--", "/app/docker-entrypoint.sh"]
 CMD ["sh", "-c", "node .${TURBO_APP_PATH}/server.js"]
