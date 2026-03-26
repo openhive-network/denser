@@ -1,64 +1,26 @@
-'use client';
+"use client";
 
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useSyncExternalStore
-} from 'react';
-import { Link } from '@hive/ui';
-import clsx from 'clsx';
-import * as z from 'zod';
-import { Badge } from '@hive/ui/components/badge';
-import { Button } from '@hive/ui/components/button';
-import { Input } from '@hive/ui/components/input';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@hive/ui/components/select';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@hive/ui/components/form';
-import { useForm, useWatch } from 'react-hook-form';
-import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
-import { StorageTTL } from '@ui/lib/storage-with-ttl';
-
-import { useQuery } from '@tanstack/react-query';
-import { Entry } from '@hive/common-hiveio-packages/wax';
-import { getCommunity, getSubscriptions } from '@transaction/lib/bridge-api';
-import { Icons } from '@ui/components/icons';
-import { withBasePath } from '@ui/lib/path-utils';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
-import { getLogger } from '@ui/lib/logging';
-import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
-import { useTranslation } from '@/blog/i18n/client';
-import { usePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { createAsset, createPermlink } from '@transaction/lib/utils';
-import {
-  postClassName,
-  validateTagInput,
-  validateSummaryInput,
-  validateAltUsernameInput,
-  imagePicker,
-  parseTags,
-  MAX_TAGS
-} from '@/blog/features/post-editor/lib/utils';
-import { Separator } from '@ui/components';
-import { Progress } from '@ui/components/progress';
-import SelectImageList from '@/blog/features/post-editor/select-image-list';
-import { AdvancedSettingsPostForm } from '@/blog/features/post-editor/advanced-settings-post-form';
-import dynamic from 'next/dynamic';
-import RendererContainer from '@/blog/features/post-rendering/rendererContainer';
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import clsx from "clsx";
+import { Input } from "@hive/ui/components/input";
+import { Button } from "@hive/ui/components/button";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@hive/ui/components/form";
+import { Icons } from "@ui/components/icons";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@ui/components/tooltip";
+import { Separator } from "@ui/components";
+import { CircleSpinner } from "react-spinners-kit";
+import { Entry } from "@hive/common-hiveio-packages/wax";
+import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
+import { getCommunity } from "@transaction/lib/bridge-api";
+import { DEFAULT_OBSERVER } from "@/blog/lib/utils";
+import { getLogger } from "@ui/lib/logging";
+import { configuredImagesEndpoint } from "@ui/config/public-vars";
+import { isCommunity } from "@ui/lib/utils";
+import { useTranslation } from "@/blog/i18n/client";
+import { useUserClient } from "@smart-signer/lib/auth/use-user-client";
+import { useSignerContext } from "@smart-signer/components/signer-provider";
+import { useLoggedUserContext } from "@/blog/features/votes/hooks/use-logged-user";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -67,39 +29,41 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
-} from '@hive/ui/components/alert-dialog';
-import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useSignerContext } from '@smart-signer/components/signer-provider';
-import { configuredImagesEndpoint } from '@ui/config/public-vars';
-import { isCommunity } from '@ui/lib/utils';
-import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
+  AlertDialogTitle,
+} from "@hive/ui/components/alert-dialog";
+import dynamic from "next/dynamic";
+import { imagePicker, validateTagInput, validateSummaryInput, validateAltUsernameInput } from "@/blog/features/post-editor/lib/utils";
+import { usePostFormState } from "@/blog/features/post-editor/hooks/use-post-form-state";
+import { usePostFormActions } from "@/blog/features/post-editor/hooks/use-post-form-actions";
+import { useScrollSync } from "@/blog/features/post-editor/hooks/use-scroll-sync";
+import { PostFormHeader } from "@/blog/features/post-editor/PostFormHeader";
+import { PostMetadataSection } from "@/blog/features/post-editor/PostMetadataSection";
+import { PostPublishingSection } from "@/blog/features/post-editor/PostPublishingSection";
+import { PostPreviewPanel } from "@/blog/features/post-editor/PostPreviewPanel";
 
-const MdEditor = dynamic(() => import('@/blog/features/post-editor/md-editor'), {
+const MdEditor = dynamic(() => import("@/blog/features/post-editor/md-editor"), {
   ssr: false,
   loading: () => (
     <div className="flex h-[500px] w-full items-center justify-center rounded-md border border-border bg-background-secondary/30">
       <CircleSpinner loading size={24} color="#dc2626" />
     </div>
-  )
+  ),
 });
 
-const logger = getLogger('app');
+const logger = getLogger("app");
 
 /** Check if markdown content contains external image URLs that would need proxying. */
 function contentHasExternalImage(content: string, proxyBase: string): boolean {
-  // Markdown images: ![alt](url)
   const mdImageRegex = /!\[[^\]]*\]\((https?:\/\/[^)\s]+)\)/g;
   let match;
   while ((match = mdImageRegex.exec(content)) !== null) {
     if (!match[1].startsWith(proxyBase)) return true;
   }
-  // Bare image URLs on their own line
-  const bareImageRegex = /(?:^|\n)\s*(https?:\/\/[^\s]+\.(?:jpe?g|png|gif|webp|svg|bmp)(?:\?[^\s]*)?)\s*(?:\n|$)/gi;
+  const bareImageRegex =
+    /(?:^|\n)\s*(https?:\/\/[^\s]+\.(?:jpe?g|png|gif|webp|svg|bmp)(?:\?[^\s]*)?)\s*(?:\n|$)/gi;
   while ((match = bareImageRegex.exec(content)) !== null) {
     if (!match[1].startsWith(proxyBase)) return true;
   }
-  // HTML img tags
   const htmlImgRegex = /<img\s[^>]*src=["'](https?:\/\/[^"']+)["']/gi;
   while ((match = htmlImgRegex.exec(content)) !== null) {
     if (!match[1].startsWith(proxyBase)) return true;
@@ -114,7 +78,7 @@ export default function PostForm({
   post_s,
   setEditMode,
   refreshPage,
-  setIsSubmitting
+  setIsSubmitting,
 }: {
   username: string;
   editMode: boolean;
@@ -125,104 +89,122 @@ export default function PostForm({
   setIsSubmitting: (submitting: boolean) => void;
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
-  const router = useRouter();
   const { user } = useUserClient();
   const { signer } = useSignerContext();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const searchParams = useSearchParams();
-  const categoryParam = searchParams?.get('category') ?? undefined;
-  const [preferences] = useStorageWithTTL<Preferences>(`user-preferences-${username}`, DEFAULT_PREFERENCES, StorageTTL.PERMANENT);
-  const defaultValues = {
-    title: '',
-    postArea: '',
-    postSummary: '',
-    tags: '',
-    author: '',
-    category: 'blog',
-    beneficiaries: [],
-    maxAcceptedPayout: preferences.blog_rewards === '0%' ? 0 : 1000000,
-    payoutType: preferences.blog_rewards
-  };
-  const [storedPost, storePost, removePost] = useStorageWithTTL<AccountFormValues>(
-    editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
-    defaultValues,
-    StorageTTL.DRAFT
-  );
+  const categoryParam = searchParams?.get("category") ?? undefined;
+  const { t } = useTranslation("common_blog");
+  const { reputation } = useLoggedUserContext();
 
   const [preview, setPreview] = useState(true);
   const [selectedImg, setSelectedImg] = useState(
-    // Initialize with existing cover image when editing
-    editMode && post_s?.json_metadata?.image?.[0] ? post_s.json_metadata.image[0] : ''
+    editMode && post_s?.json_metadata?.image?.[0] ? post_s.json_metadata.image[0] : ""
   );
-
-  // Get the logged-in user's reputation and manabars from context (fetched once via LoggedUserProvider)
-  const { reputation, manabarsData } = useLoggedUserContext();
-
   const [sideBySide, setSideBySide] = useState(sideBySidePreview);
   const [syncScroll, setSyncScroll] = useState(true);
-  // Track whether the viewport is wide enough for actual side-by-side layout.
-  // CSS uses `lg:flex-row` (1024px), so scroll sync + fixed preview height
-  // should only activate at that breakpoint — not on mobile stacked layout.
   const isLgScreen = useSyncExternalStore(
     (callback) => {
-      const mql = window.matchMedia('(min-width: 1024px)');
-      mql.addEventListener('change', callback);
-      return () => mql.removeEventListener('change', callback);
+      const mql = window.matchMedia("(min-width: 1024px)");
+      mql.addEventListener("change", callback);
+      return () => mql.removeEventListener("change", callback);
     },
-    () => window.matchMedia('(min-width: 1024px)').matches,
+    () => window.matchMedia("(min-width: 1024px)").matches,
     () => false
   );
-  // True only when sideBySide is toggled on AND the screen is actually wide
-  // enough for the CSS side-by-side layout (lg: breakpoint). Used for scroll
-  // sync and fixed-height preview — these must not run on mobile stacked layout.
   const effectiveSideBySide = sideBySide && isLgScreen;
-  const [imagePickerState, setImagePickerState] = useState('');
+  const [imagePickerState, setImagePickerState] = useState("");
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
-  const isScrollSyncingRef = useRef(false);
-  // Refs for scroll sync RAF IDs (stored outside effect to prevent leaks on re-run)
-  const editorRafIdRef = useRef<number | null>(null);
-  const previewRafIdRef = useRef<number | null>(null);
-  // Ref for scroll cleanup function (safer than attaching to DOM element)
-  const scrollCleanupRef = useRef<(() => void) | null>(null);
-  // Briefly locks preview→editor scroll sync while RendererContainer re-renders,
-  // preventing its DOM replacement from firing a scroll event that jumps the editor.
-  const scrollLockRef = useRef(false);
-  const storeTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const [proxyAuthToken, setProxyAuthToken] = useState<string | undefined>();
   const proxyAuthRequested = useRef(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
-  // Obtain a proxy auth token so editor preview can bypass the whitelist
+  // --- State hook ---
+  const {
+    form,
+    defaultValues,
+    storedPost,
+    storePost,
+    removePost,
+    entryValues,
+    hasDraftChanges,
+    hasHydratedRef,
+    hasSubmittedRef,
+    watchedValues,
+    previewContent,
+    setPreviewContent,
+  } = usePostFormState({ username, editMode, post_s, categoryParam });
+
+  // --- Actions hook ---
+  const {
+    postMutation,
+    handlePostAreaChange,
+    onSubmit,
+    handleCancel,
+    handleCancelConfirm,
+    handleLoadTemplate,
+  } = usePostFormActions({
+    form,
+    username,
+    editMode,
+    post_s,
+    selectedImg,
+    reputation,
+    defaultValues,
+    watchedValues,
+    storedPost,
+    storePost,
+    removePost,
+    hasHydratedRef,
+    hasSubmittedRef,
+    previewContent,
+    setPreviewContent,
+    setEditMode,
+    refreshPage,
+    setIsSubmitting,
+    setCancelDialogOpen,
+    btnRef,
+  });
+
+  // --- Scroll sync hook ---
+  useScrollSync({
+    editorContainerRef,
+    previewContainerRef,
+    syncScroll,
+    effectiveSideBySide,
+    preview,
+    previewContent,
+  });
+
+  // --- Proxy auth token ---
   const fetchProxyAuthToken = useCallback(async () => {
     if (!user.isLoggedIn || !signer) {
-      proxyAuthRequested.current = false; // retry once login/signer is ready
+      proxyAuthRequested.current = false;
       return;
     }
     try {
       const timestamp = Date.now();
       const imageOwner = signer.authorityUsername || signer.username;
       const message = `Authorize image proxy preview for ${imageOwner} at ${new Date(timestamp).toISOString()}`;
-      const sig = await signer.signChallenge({ message, password: '' });
-      const baseUrl = configuredImagesEndpoint.replace(/\/+$/, '');
+      const sig = await signer.signChallenge({ message, password: "" });
+      const baseUrl = configuredImagesEndpoint.replace(/\/+$/, "");
       const resp = await fetch(`${baseUrl}/proxy-auth/${imageOwner}/${sig}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ timestamp })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ timestamp }),
       });
       if (resp.ok) {
         const data = await resp.json();
         setProxyAuthToken(data.token);
       } else {
-        logger.error('Failed to obtain proxy auth token: %s', resp.status);
+        logger.error("Failed to obtain proxy auth token: %s", resp.status);
       }
     } catch (error) {
-      logger.error('Error obtaining proxy auth token: %o', error);
+      logger.error("Error obtaining proxy auth token: %o", error);
     }
   }, [user.isLoggedIn, signer]);
 
-  const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
-
-  // Lazily acquire proxy auth token when external images are first detected
   useEffect(() => {
     if (proxyAuthRequested.current || !previewContent) return;
     if (contentHasExternalImage(previewContent, configuredImagesEndpoint)) {
@@ -231,818 +213,58 @@ export default function PostForm({
     }
   }, [previewContent, fetchProxyAuthToken]);
 
-  // Refresh token every 25 minutes once acquired (TTL is 30 minutes)
   useEffect(() => {
     if (!proxyAuthToken) return;
     const interval = setInterval(fetchProxyAuthToken, 25 * 60 * 1000);
     return () => clearInterval(interval);
   }, [proxyAuthToken, fetchProxyAuthToken]);
-  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
-  // Track if we've hydrated from localStorage to avoid resetting form during typing
-  const hasHydratedRef = useRef(false);
-  // Track if post was successfully submitted to prevent auto-save from re-creating draft
-  const hasSubmittedRef = useRef(false);
-  const { t } = useTranslation('common_blog');
-  const postMutation = usePostMutation();
+
+  // --- NSFW tag injection ---
   const { data: communityData } = useQuery({
-    queryKey: ['community', categoryParam, observer],
+    queryKey: ["community", categoryParam, observer],
     queryFn: () => getCommunity(categoryParam ?? storedPost.category, observer),
-    enabled: isCommunity(categoryParam) || isCommunity(storedPost.category)
+    enabled: isCommunity(categoryParam) || isCommunity(storedPost.category),
   });
-  const { data: mySubsData } = useQuery({
-    queryKey: ['subscriptions', observer],
-    queryFn: () => getSubscriptions(observer),
-    enabled: observer !== DEFAULT_OBSERVER
-  });
-
-  const accountFormSchema = z.object({
-    title: z
-      .string()
-      .min(2, t('submit_page.string_must_contain', { num: 2 }))
-      .max(255, t('submit_page.maximum_characters', { num: 255 })),
-    postArea: z.string().min(1, t('submit_page.string_must_contain', { num: 1 })),
-    postSummary: z.string().max(140, t('submit_page.maximum_characters', { num: 140 })),
-    tags: z.string(),
-    author: z.string().max(50, t('submit_page.maximum_characters', { num: 50 })),
-    category: z.string(),
-    beneficiaries: z.array(
-      z.object({
-        account: z.string(),
-        weight: z.string()
-      })
-    ),
-    maxAcceptedPayout: z.number(),
-    payoutType: z.string()
-  });
-
-  type AccountFormValues = z.infer<typeof accountFormSchema>;
-  // Check if we have a draft with actual changes (different from original post)
-  const hasDraftChanges = editMode && storedPost && (
-    (storedPost.postArea && storedPost.postArea !== post_s?.body) ||
-    (storedPost.title && storedPost.title !== post_s?.title)
-  );
-  // In edit mode: use draft if it has changes, otherwise use original post
-  // In new mode: use draft if available
-  const entryValues = {
-    title: hasDraftChanges ? (storedPost?.title || post_s?.title || '') : (post_s?.title || storedPost?.title || ''),
-    postArea: hasDraftChanges ? (storedPost?.postArea || post_s?.body || '') : (post_s?.body || storedPost?.postArea || ''),
-    postSummary: hasDraftChanges ? (storedPost?.postSummary || post_s?.json_metadata?.summary || '') : (post_s?.json_metadata?.summary || storedPost?.postSummary || ''),
-    tags: hasDraftChanges ? (storedPost?.tags || (Array.isArray(post_s?.json_metadata?.tags) ? post_s.json_metadata.tags.join(' ') : '') || '') : ((Array.isArray(post_s?.json_metadata?.tags) ? post_s.json_metadata.tags.join(' ') : '') || storedPost?.tags || ''),
-    author: hasDraftChanges ? (storedPost?.author || post_s?.json_metadata?.author || '') : (post_s?.json_metadata?.author || storedPost?.author || ''),
-    category: editMode
-      ? (post_s?.category ?? categoryParam ?? '')
-      : (categoryParam ?? storedPost?.category ?? post_s?.category ?? ''),
-    beneficiaries: storedPost?.beneficiaries || [],
-    maxAcceptedPayout: post_s
-      ? Number(post_s.max_accepted_payout.split(' ')[0])
-      : storedPost?.maxAcceptedPayout ?? (preferences.blog_rewards === '0%' ? 0 : 1000000),
-    payoutType: post_s
-      ? (parseFloat(post_s.max_accepted_payout) === 0
-          ? '0%'
-          : post_s.percent_hbd === 0
-            ? '100%'
-            : '50%')
-      : storedPost?.payoutType || preferences.blog_rewards
-  };
-  const form = useForm<AccountFormValues>({
-    resolver: zodResolver(accountFormSchema),
-    defaultValues: entryValues
-  });
-
-  // Ref always holds the latest editor value (updated immediately, even before debounced form sync)
-  const latestPostAreaRef = useRef(entryValues.postArea);
-  const postAreaSyncTimerRef = useRef<ReturnType<typeof setTimeout>>();
-
-  // Debounce form.setValue for postArea to avoid re-rendering entire PostForm on every keystroke.
-  // MdEditor manages its own local state for responsive typing; this only syncs to react-hook-form.
-  const handlePostAreaChange = useCallback((value: string) => {
-    latestPostAreaRef.current = value;
-    setPreviewContent(value);
-    clearTimeout(postAreaSyncTimerRef.current);
-    postAreaSyncTimerRef.current = setTimeout(() => {
-      form.setValue('postArea', value);
-    }, 300);
-  }, [form]);
-
-  // Hydrate form from localStorage after initial render
-  // This handles the case where SSR returns empty values but localStorage has data
+  const nsfwTagCheck = communityData?.is_nsfw && !storedPost.tags?.includes("nsfw");
   useEffect(() => {
-    if (hasHydratedRef.current) return;
-
-    // Check if storedPost has actual data (not just defaults)
-    const hasStoredData = storedPost.postArea || storedPost.title || storedPost.tags;
-
-    // In edit mode, only hydrate if draft has changes different from original
-    // In new mode, hydrate if there's any stored data
-    const shouldHydrate = editMode ? hasDraftChanges : hasStoredData;
-
-    if (shouldHydrate) {
-      form.reset({
-        ...entryValues,
-        title: storedPost.title || entryValues.title,
-        postArea: storedPost.postArea || entryValues.postArea,
-        postSummary: storedPost.postSummary || entryValues.postSummary,
-        tags: storedPost.tags || entryValues.tags,
-        author: storedPost.author || entryValues.author,
-        category: editMode ? entryValues.category : (storedPost.category || entryValues.category),
-        beneficiaries: storedPost.beneficiaries || entryValues.beneficiaries,
-        maxAcceptedPayout: storedPost.maxAcceptedPayout ?? entryValues.maxAcceptedPayout,
-        payoutType: storedPost.payoutType || entryValues.payoutType
-      });
-      setPreviewContent(storedPost.postArea);
-    }
-    hasHydratedRef.current = true;
-  }, [storedPost, editMode, hasDraftChanges]);
-
-  const nsfwTagCheck = communityData?.is_nsfw && !storedPost.tags?.includes('nsfw');
-  useEffect(() => {
-    form.setValue('tags', nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);
+    form.setValue("tags", nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);
   }, [!!communityData?.is_nsfw]);
-  // useWatch provides reactive values that update on every form change
-  const formValues = useWatch({
-    control: form.control
-  });
-
-  // Memoize beneficiaries separately - only recalculate when beneficiaries change
-  const beneficiaries = useMemo(() =>
-    (formValues.beneficiaries ?? []).map(b => ({
-      account: b.account ?? '',
-      weight: b.weight ?? ''
-    })),
-    [formValues.beneficiaries]
-  );
-
-  // Memoize other form values with granular dependencies
-  const watchedValues = useMemo(() => ({
-    title: formValues.title ?? '',
-    postArea: formValues.postArea ?? '',
-    postSummary: formValues.postSummary ?? '',
-    tags: formValues.tags ?? '',
-    author: formValues.author ?? '',
-    category: formValues.category ?? 'blog',
-    beneficiaries,
-    maxAcceptedPayout: formValues.maxAcceptedPayout ?? 1000000,
-    payoutType: formValues.payoutType ?? '50%'
-  }), [
-    formValues.title,
-    formValues.postArea,
-    formValues.postSummary,
-    formValues.tags,
-    formValues.author,
-    formValues.category,
-    beneficiaries,
-    formValues.maxAcceptedPayout,
-    formValues.payoutType
-  ]);
-
-  // Extract postArea for use in dependency arrays
-  const { postArea } = watchedValues;
-  const tagsRequired = !categoryParam && watchedValues.category === 'blog';
-  const tagsCheck = validateTagInput(watchedValues.tags, tagsRequired, t);
-  const tagsRequiredAndEmpty = tagsRequired && (!watchedValues.tags || !watchedValues.tags.trim());
-  const summaryCheck = validateSummaryInput(watchedValues.postSummary, t);
-  const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
-  const communityPosting =
-    mySubsData && mySubsData?.filter((e) => e[0] === categoryParam).length > 0
-      ? mySubsData?.filter((e) => e[0] === categoryParam)[0][0]
-      : undefined;
-
-  useEffect(() => {
-    if (hasSubmittedRef.current) return;
-    // Don't auto-save until hydration from localStorage is complete,
-    // otherwise we'd overwrite stored values with preferences-based defaults
-    if (!hasHydratedRef.current) return;
-    clearTimeout(storeTimerRef.current);
-    storeTimerRef.current = setTimeout(() => {
-      storePost(watchedValues);
-    }, 500);
-    return () => clearTimeout(storeTimerRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...Object.values(watchedValues)]);
-
-  // Auto-scroll preview to bottom when typing at the end of editor (debounced)
-  useEffect(() => {
-    if (!syncScroll || !effectiveSideBySide || !preview) return;
-
-    // Debounce to avoid running on every keystroke
-    const timeoutId = setTimeout(() => {
-      const editorScrollArea = editorContainerRef.current?.querySelector(
-        '.cm-scroller'
-      ) as HTMLDivElement | null;
-      const previewEl = previewContainerRef.current;
-
-      if (!editorScrollArea || !previewEl) return;
-
-      const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
-      const isNearBottom = maxEditorScroll <= 0 || editorScrollArea.scrollTop >= maxEditorScroll - 50;
-
-      if (isNearBottom) {
-        previewEl.scrollTop = previewEl.scrollHeight;
-      }
-    }, 100);
-
-    return () => clearTimeout(timeoutId);
-  }, [previewContent, syncScroll, effectiveSideBySide, preview]);
-
-  // Lock preview→editor scroll sync briefly when preview DOM is replaced.
-  // RendererContainer's dangerouslySetInnerHTML causes a scroll event on the
-  // preview container that would otherwise sync back and jump the editor viewport.
-  useEffect(() => {
-    if (!previewContent) return;
-    scrollLockRef.current = true;
-    const id = setTimeout(() => {
-      scrollLockRef.current = false;
-    }, 150);
-    return () => {
-      clearTimeout(id);
-      scrollLockRef.current = false;
-    };
-  }, [previewContent]);
 
   useEffect(() => {
     setImagePickerState(imagePicker(selectedImg));
   }, [selectedImg]);
 
-  // Set up scroll sync event listeners (optimized for large content)
-  useEffect(() => {
-    if (!syncScroll || !effectiveSideBySide || !preview) return;
+  // --- Validation checks for submit button ---
+  const tagsRequired = !categoryParam && watchedValues.category === "blog";
+  const tagsCheck = validateTagInput(watchedValues.tags, tagsRequired, t);
+  const summaryCheck = validateSummaryInput(watchedValues.postSummary, t);
+  const altUsernameCheck = validateAltUsernameInput(watchedValues.author, t);
+  const tagsRequiredAndEmpty = tagsRequired && (!watchedValues.tags || !watchedValues.tags.trim());
 
-    const previewEl = previewContainerRef.current;
-    if (!previewEl) return;
+  const { postArea } = watchedValues;
 
-    /**
-     * Sets up scroll sync listeners between editor and preview.
-     * Uses block-level anchor mapping for proportional scroll: editor blocks
-     * (separated by blank lines) are matched to preview blocks (top-level
-     * HTML elements), then scroll positions are interpolated between anchors.
-     * This handles large images correctly — the preview scrolls proportionally
-     * within each block rather than linearly across the whole document.
-     *
-     * Called once .cm-scroller is available in the DOM.
-     */
-    const setupScrollSync = (editorScrollArea: HTMLDivElement) => {
-      // Cached anchor map — rebuilt when content/layout changes
-      let editorAnchors: number[] | null = null;
-      let previewAnchors: number[] | null = null;
-      let mapDirty = true;
-
-      /** Get element's absolute offset within a scroll container */
-      const getOffsetIn = (el: HTMLElement, container: HTMLElement): number => {
-        let offset = 0;
-        let current: HTMLElement | null = el;
-        while (current && current !== container) {
-          offset += current.offsetTop;
-          current = current.offsetParent as HTMLElement | null;
-        }
-        return offset;
-      };
-
-      /**
-       * Build anchor-point arrays from editor lines ↔ preview elements.
-       *
-       * Uses line-level semantic grouping with top+bottom edge pairs so that
-       * elements with very different heights (e.g. a single image markdown
-       * line vs a tall rendered image) scroll proportionally rather than
-       * jumping.  This is the same approach used by HackMD.
-       */
-      const buildMap = () => {
-        const cmContent = editorScrollArea.querySelector('.cm-content') as HTMLElement | null;
-        const proseContainer = previewEl.querySelector('.prose') as HTMLElement | null;
-        if (!cmContent || !proseContainer) { editorAnchors = null; return; }
-
-        const cmLines = Array.from(cmContent.querySelectorAll(':scope > .cm-line')) as HTMLElement[];
-        if (!cmLines.length) { editorAnchors = null; return; }
-
-        // --- Phase 1: Group editor lines into semantic units ---
-        interface LineGroup { editorTop: number; editorBottom: number }
-        const groups: LineGroup[] = [];
-
-        const isPlainText = (t: string) =>
-          !t.startsWith('#') &&
-          !/^!\[/.test(t) &&
-          !/^(---|\*\*\*|___)$/.test(t) &&
-          !/^[-*+]\s|^\d+[.)]\s/.test(t) &&
-          !t.startsWith('>') &&
-          !(t.startsWith('|') && t.includes('|', 1)) &&
-          !t.startsWith('<') &&
-          !t.startsWith('```');
-
-        let idx = 0;
-        while (idx < cmLines.length) {
-          const line = cmLines[idx];
-          const text = line.textContent || '';
-          const trimmed = text.trim();
-
-          // Skip blank lines
-          if (!trimmed) { idx++; continue; }
-
-          // Code fence: ``` ... ```
-          if (trimmed.startsWith('```')) {
-            const startLine = cmLines[idx];
-            let endLine = cmLines[idx];
-            idx++; // skip opening fence
-            while (idx < cmLines.length) {
-              endLine = cmLines[idx];
-              const closingCheck = (cmLines[idx].textContent || '').trim();
-              idx++;
-              if (closingCheck.startsWith('```')) break; // found closing fence
-            }
-            groups.push({
-              editorTop: getOffsetIn(startLine, editorScrollArea),
-              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
-            });
-            continue;
-          }
-
-          // List items: consecutive lines starting with - , * , + , or N. / N)
-          if (/^[-*+]\s|^\d+[.)]\s/.test(trimmed)) {
-            const startLine = cmLines[idx];
-            let endLine = cmLines[idx];
-            idx++;
-            while (idx < cmLines.length) {
-              const t = (cmLines[idx].textContent || '').trim();
-              if (/^[-*+]\s|^\d+[.)]\s/.test(t)) {
-                endLine = cmLines[idx]; idx++;
-              } else if (!t) {
-                // Blank line between list items — peek ahead
-                if (idx + 1 < cmLines.length && /^[-*+]\s|^\d+[.)]\s/.test((cmLines[idx + 1].textContent || '').trim())) {
-                  idx++;
-                } else { break; }
-              } else if (t && /^\s/.test(cmLines[idx].textContent || '')) {
-                // Continuation / indented line
-                endLine = cmLines[idx]; idx++;
-              } else { break; }
-            }
-            groups.push({
-              editorTop: getOffsetIn(startLine, editorScrollArea),
-              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
-            });
-            continue;
-          }
-
-          // Blockquote: consecutive lines starting with >
-          if (trimmed.startsWith('>')) {
-            const startLine = cmLines[idx];
-            let endLine = cmLines[idx];
-            idx++;
-            while (idx < cmLines.length) {
-              const t = (cmLines[idx].textContent || '').trim();
-              if (t.startsWith('>')) { endLine = cmLines[idx]; idx++; } else break;
-            }
-            groups.push({
-              editorTop: getOffsetIn(startLine, editorScrollArea),
-              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
-            });
-            continue;
-          }
-
-          // Table: consecutive lines starting with |
-          if (trimmed.startsWith('|') && trimmed.includes('|', 1)) {
-            const startLine = cmLines[idx];
-            let endLine = cmLines[idx];
-            idx++;
-            while (idx < cmLines.length) {
-              const t = (cmLines[idx].textContent || '').trim();
-              if (t.startsWith('|') && t.includes('|', 1)) { endLine = cmLines[idx]; idx++; } else break;
-            }
-            groups.push({
-              editorTop: getOffsetIn(startLine, editorScrollArea),
-              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
-            });
-            continue;
-          }
-
-          // HTML block: <center>, <div> spanning multiple lines
-          const htmlBlockMatch = trimmed.match(/^<(center|div)[\s>]/i);
-          if (htmlBlockMatch) {
-            const tag = htmlBlockMatch[1].toLowerCase();
-            const closingTag = `</${tag}>`;
-            const startLine = cmLines[idx];
-            let endLine = cmLines[idx];
-            if (!trimmed.toLowerCase().includes(closingTag)) {
-              idx++;
-              while (idx < cmLines.length) {
-                endLine = cmLines[idx];
-                const t = (cmLines[idx].textContent || '').toLowerCase();
-                idx++;
-                if (t.includes(closingTag)) break;
-              }
-            } else { idx++; }
-            groups.push({
-              editorTop: getOffsetIn(startLine, editorScrollArea),
-              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
-            });
-            continue;
-          }
-
-          // Paragraph continuation: consecutive plain-text lines → single <p>
-          if (isPlainText(trimmed)) {
-            const startLine = cmLines[idx];
-            let endLine = cmLines[idx];
-            idx++;
-            while (idx < cmLines.length) {
-              const nextTrimmed = (cmLines[idx].textContent || '').trim();
-              if (!nextTrimmed) break; // blank line ends paragraph
-              if (!isPlainText(nextTrimmed)) break;
-              endLine = cmLines[idx]; idx++;
-            }
-            groups.push({
-              editorTop: getOffsetIn(startLine, editorScrollArea),
-              editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
-            });
-            continue;
-          }
-
-          // Single line: heading, image, HR, etc.
-          groups.push({
-            editorTop: getOffsetIn(line, editorScrollArea),
-            editorBottom: getOffsetIn(line, editorScrollArea) + line.offsetHeight,
-          });
-          idx++;
-        }
-
-        // --- Phase 2: Match groups to preview block elements ---
-        const blockTags = new Set([
-          'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'PRE', 'UL', 'OL',
-          'BLOCKQUOTE', 'CENTER', 'DIV', 'TABLE', 'HR', 'FIGURE'
-        ]);
-        const previewBlocks: HTMLElement[] = [];
-        for (const child of Array.from(proseContainer.children) as HTMLElement[]) {
-          if (blockTags.has(child.tagName)) {
-            previewBlocks.push(child);
-          }
-        }
-
-        // --- Phase 2b: Match groups to preview blocks by position fraction ---
-        // CodeMirror uses viewport virtualization for large content: only
-        // visible lines are rendered, with .cm-gap elements filling the
-        // scroll space of off-screen lines.  The gap heights keep total
-        // scrollHeight correct, so each group's editorTop is a stable pixel
-        // position in the full document.  We find the best-matching preview
-        // block by proportional position rather than array index, which
-        // naturally handles gaps without any offset estimation.
-        const totalEditorHeight = editorScrollArea.scrollHeight;
-        const totalPreviewHeight = previewEl.scrollHeight;
-
-        // Pre-compute all preview block positions (single layout read pass)
-        const blockPos = previewBlocks.map(block => {
-          const top = getOffsetIn(block, previewEl);
-          return { top, bottom: top + block.offsetHeight };
-        });
-
-        // --- Phase 3: Build anchor arrays with top+bottom edge pairs ---
-        const eAnchors: number[] = [0];
-        const pAnchors: number[] = [0];
-
-        let searchStart = 0;
-        for (let j = 0; j < groups.length; j++) {
-          const g = groups[j];
-          const editorMid = (g.editorTop + g.editorBottom) / 2;
-          const targetPreviewMid =
-            totalEditorHeight > 0
-              ? (editorMid / totalEditorHeight) * totalPreviewHeight
-              : 0;
-
-          // Find closest preview block (linear scan forward from last match)
-          let bestIdx = searchStart;
-          let bestDist = Infinity;
-          for (let k = searchStart; k < blockPos.length; k++) {
-            const blockMid = (blockPos[k].top + blockPos[k].bottom) / 2;
-            const dist = Math.abs(blockMid - targetPreviewMid);
-            if (dist <= bestDist) {
-              bestDist = dist;
-              bestIdx = k;
-            } else {
-              break; // distances increasing, stop
-            }
-          }
-          searchStart = bestIdx;
-
-          const bp = blockPos[bestIdx];
-          eAnchors.push(g.editorTop);
-          pAnchors.push(bp.top);
-
-          if (g.editorBottom > g.editorTop && bp.bottom > bp.top) {
-            eAnchors.push(g.editorBottom);
-            pAnchors.push(bp.bottom);
-          }
-        }
-
-        // Bookend: end of scrollable area
-        const maxE = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
-        const maxP = previewEl.scrollHeight - previewEl.clientHeight;
-        if (maxE > 0) eAnchors.push(maxE);
-        if (maxP > 0) pAnchors.push(maxP);
-
-        editorAnchors = eAnchors;
-        previewAnchors = pAnchors;
-        mapDirty = false;
-      };
-
-      /** Linearly interpolate scrollTop through the anchor arrays */
-      const interpolate = (scrollTop: number, src: number[], tgt: number[]): number => {
-        let i = 0;
-        while (i < src.length - 1 && src[i + 1] <= scrollTop) i++;
-        if (i >= src.length - 1) return tgt[tgt.length - 1];
-        const s0 = src[i], s1 = src[i + 1];
-        const t0 = tgt[i], t1 = tgt[i + 1];
-        if (s1 === s0) return t0;
-        const t = (scrollTop - s0) / (s1 - s0);
-        return t0 + t * (t1 - t0);
-      };
-
-      // Rebuild map when preview DOM changes (images load, content updates).
-      // Note: we do NOT observe editor DOM changes — CodeMirror's viewport
-      // virtualization swaps .cm-line/.cm-gap elements during scroll, but
-      // the .cm-gap heights keep scrollHeight stable, so anchor positions
-      // remain valid even when different lines are rendered.
-      const markDirty = () => { mapDirty = true; };
-      const previewMutObs = new MutationObserver(markDirty);
-      previewMutObs.observe(previewEl, { childList: true, subtree: true });
-      previewEl.addEventListener('load', markDirty, { capture: true });
-
-      const handleEditorScroll = () => {
-        if (isScrollSyncingRef.current || editorRafIdRef.current) return;
-
-        editorRafIdRef.current = requestAnimationFrame(() => {
-          editorRafIdRef.current = null;
-          if (mapDirty) buildMap();
-
-          const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
-          const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
-          if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
-
-          isScrollSyncingRef.current = true;
-          if (editorAnchors && previewAnchors && editorAnchors.length > 2) {
-            previewEl.scrollTop = interpolate(editorScrollArea.scrollTop, editorAnchors, previewAnchors);
-          } else {
-            // Fallback: linear percentage
-            previewEl.scrollTop = (editorScrollArea.scrollTop / maxEditorScroll) * maxPreviewScroll;
-          }
-          requestAnimationFrame(() => {
-            isScrollSyncingRef.current = false;
-          });
-        });
-      };
-
-      const handlePreviewScroll = () => {
-        if (scrollLockRef.current || isScrollSyncingRef.current || previewRafIdRef.current) return;
-
-        previewRafIdRef.current = requestAnimationFrame(() => {
-          previewRafIdRef.current = null;
-          if (mapDirty) buildMap();
-
-          const maxEditorScroll = editorScrollArea.scrollHeight - editorScrollArea.clientHeight;
-          const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
-          if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
-
-          isScrollSyncingRef.current = true;
-          if (previewAnchors && editorAnchors && previewAnchors.length > 2) {
-            editorScrollArea.scrollTop = interpolate(previewEl.scrollTop, previewAnchors, editorAnchors);
-          } else {
-            // Fallback: linear percentage
-            editorScrollArea.scrollTop = (previewEl.scrollTop / maxPreviewScroll) * maxEditorScroll;
-          }
-          requestAnimationFrame(() => {
-            isScrollSyncingRef.current = false;
-          });
-        });
-      };
-
-      // Use passive listeners for better scroll performance
-      editorScrollArea.addEventListener('scroll', handleEditorScroll, { passive: true });
-      previewEl.addEventListener('scroll', handlePreviewScroll, { passive: true });
-
-      // Store cleanup function in ref (safer than attaching to DOM element)
-      scrollCleanupRef.current = () => {
-        if (editorRafIdRef.current) cancelAnimationFrame(editorRafIdRef.current);
-        if (previewRafIdRef.current) cancelAnimationFrame(previewRafIdRef.current);
-        editorRafIdRef.current = null;
-        previewRafIdRef.current = null;
-        previewMutObs.disconnect();
-        previewEl.removeEventListener('load', markDirty, { capture: true });
-        editorScrollArea.removeEventListener('scroll', handleEditorScroll);
-        previewEl.removeEventListener('scroll', handlePreviewScroll);
-      };
-    };
-
-    // Check if .cm-scroller already exists (e.g., when toggling syncScroll)
-    const existingScroller = editorContainerRef.current?.querySelector(
-      '.cm-scroller'
-    ) as HTMLDivElement | null;
-
-    if (existingScroller) {
-      setupScrollSync(existingScroller);
-      return () => {
-        if (editorRafIdRef.current) cancelAnimationFrame(editorRafIdRef.current);
-        if (previewRafIdRef.current) cancelAnimationFrame(previewRafIdRef.current);
-        editorRafIdRef.current = null;
-        previewRafIdRef.current = null;
-        if (scrollCleanupRef.current) {
-          scrollCleanupRef.current();
-          scrollCleanupRef.current = null;
-        }
-      };
-    }
-
-    // MdEditor is loaded dynamically, so .cm-scroller may not exist yet.
-    // Use MutationObserver to wait for it to appear in the DOM.
-    const editorContainer = editorContainerRef.current;
-    if (!editorContainer) return;
-
-    const observer = new MutationObserver((_mutations, obs) => {
-      const scroller = editorContainer.querySelector('.cm-scroller') as HTMLDivElement | null;
-      if (scroller) {
-        obs.disconnect(); // Stop observing once found
-        setupScrollSync(scroller);
-      }
-    });
-
-    observer.observe(editorContainer, {
-      childList: true,
-      subtree: true
-    });
-
-    return () => {
-      observer.disconnect();
-      // Cancel any pending RAF frames
-      if (editorRafIdRef.current) cancelAnimationFrame(editorRafIdRef.current);
-      if (previewRafIdRef.current) cancelAnimationFrame(previewRafIdRef.current);
-      editorRafIdRef.current = null;
-      previewRafIdRef.current = null;
-      // Run stored cleanup if listeners were set up
-      if (scrollCleanupRef.current) {
-        scrollCleanupRef.current();
-        scrollCleanupRef.current = null;
-      }
-    };
-  }, [syncScroll, effectiveSideBySide, preview]);
-
-  async function onSubmit(data: AccountFormValues) {
-    // Flush pending debounce - use the latest editor value which may not have synced to form yet
-    clearTimeout(postAreaSyncTimerRef.current);
-    const postBody = latestPostAreaRef.current || data.postArea;
-
-    const tags = parseTags(data.tags);
-    const maxAcceptedPayout = await createAsset((data.maxAcceptedPayout * 1000).toString(), 'HBD');
-    const postPermlink = await createPermlink(data?.title ?? '', username);
-    const permlinInEditMode = post_s?.permlink;
-
-    // Calculate if reward options changed (became more restrictive) in edit mode
-    let newPercentHbd = data.payoutType ? (data.payoutType === '100%' ? 0 : 10000) : 10000;
-    const newMaxPayout = data.maxAcceptedPayout;
-    let rewardOptionsChanged = false;
-
-    if (editMode && post_s) {
-      const originalPercentHbd = post_s.percent_hbd;
-      const originalMaxPayout = parseFloat(post_s.max_accepted_payout);
-
-      // When declining payout (max=0), keep original percent_hbd
-      // because blockchain rejects increasing percent_hbd
-      if (newMaxPayout === 0) {
-        newPercentHbd = Math.min(newPercentHbd, originalPercentHbd);
-      }
-
-      // Ensure we never try to increase percent_hbd (blockchain rejects this)
-      newPercentHbd = Math.min(newPercentHbd, originalPercentHbd);
-
-      // Check if options became more restrictive
-      const percentHbdChanged = newPercentHbd < originalPercentHbd;
-      const maxPayoutChanged = newMaxPayout < originalMaxPayout;
-
-      rewardOptionsChanged = percentHbdChanged || maxPayoutChanged;
-    }
-
-    try {
-      if (btnRef.current) {
-        btnRef.current.disabled = true;
-      }
-      const postParams = {
-        permlink: editMode && permlinInEditMode ? permlinInEditMode : postPermlink,
-        title: data.title,
-        body: postBody,
-        category: data.category,
-        summary: data.postSummary,
-        altAuthor: data.author,
-        image: selectedImg,
-        reputation,
-        editMode,
-        percentHbd: newPercentHbd,
-        maxAcceptedPayout,
-        tags,
-        beneficiaries: data.beneficiaries
-          ? data.beneficiaries
-              .map(({ account, weight }) => ({
-                account,
-                weight: Number(weight) * 100
-              }))
-              .filter((b) => Number(b.weight) !== 10000)
-              .sort((a, b) => a.account.localeCompare(b.account))
-          : [],
-        rewardOptionsChanged
-      };
-      try {
-        await postMutation.mutateAsync(postParams);
-        // Broadcast succeeded - post is guaranteed to be in blockchain
-        // No need to wait, redirect immediately to the post page
-      } catch (error) {
-        setIsSubmitting(false);
-        handleError(error, { method: 'post', params: postParams });
-        throw error;
-      }
-
-      // Mark as submitted to prevent auto-save from re-creating draft
-      hasSubmittedRef.current = true;
-      removePost();
-      latestPostAreaRef.current = defaultValues.postArea;
-      form.reset(defaultValues);
-      setPreviewContent(undefined);
-      if (editMode) {
-        if (refreshPage && setEditMode) {
-          setIsSubmitting(false);
-          setEditMode(!editMode);
-          refreshPage();
-        }
-      } else {
-        // Redirect to the actual post page for instant viewing
-        // The post data is already seeded in React Query cache via onMutate
-        const postUrl = `/${postParams.category}/@${username}/${postParams.permlink}`;
-        await router.push(withBasePath(postUrl), undefined);
-      }
-      if (btnRef.current) {
-        btnRef.current.disabled = false;
-      }
-    } catch (error) {
-      if (btnRef.current) {
-        btnRef.current.disabled = false;
-      }
-      logger.error(error);
-    }
-  }
-
-  const handleCancel = () => {
-    setCancelDialogOpen(true);
-  };
-
-  const handleCancelConfirm = () => {
-    clearTimeout(postAreaSyncTimerRef.current);
-    latestPostAreaRef.current = defaultValues.postArea;
-    form.reset(defaultValues);
-    removePost();
-    if (editMode && setEditMode) {
-      setEditMode(false);
-    }
-    setCancelDialogOpen(false);
-  };
-  const handleLoadTemplate = (data: AccountFormValues) => {
-    clearTimeout(postAreaSyncTimerRef.current);
-    latestPostAreaRef.current = data.postArea;
-    form.setValue('author', data.author);
-    form.setValue('beneficiaries', data.beneficiaries);
-    form.setValue('category', data.category);
-    form.setValue('maxAcceptedPayout', data.maxAcceptedPayout);
-    form.setValue('payoutType', data.payoutType);
-    form.setValue('postArea', data.postArea);
-    form.setValue('postSummary', data.postSummary);
-    form.setValue('tags', data.tags);
-    form.setValue('title', data.title);
-  };
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
       <div
-        className={clsx('relative flex flex-col gap-4 bg-background p-4 sm:p-6 lg:p-8', {
-          'lg:flex-row': sideBySide
+        className={clsx("relative flex flex-col gap-4 bg-background p-4 sm:p-6 lg:p-8", {
+          "lg:flex-row": sideBySide,
         })}
         data-testid="form-and-preview-container"
       >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className={clsx('flex flex-col gap-6 lg:w-1/2', { 'lg:w-full': !preview || !sideBySide })}
+            className={clsx("flex flex-col gap-6 lg:w-1/2", {
+              "lg:w-full": !preview || !sideBySide,
+            })}
             data-testid="form-container"
           >
-            <div className="flex items-center justify-between rounded-md bg-background-secondary px-3 py-2">
-              <Button
-                type="button"
-                variant="ghost"
-                className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
-                onClick={() => setSideBySide((prev) => !prev)}
-                data-testid="enable-disable-side-by-side-editor"
-                tabIndex={-1}
-              >
-                {sideBySide ? t('submit_page.disable_side') : t('submit_page.enable_side')}
-              </Button>
-              <Button
-                type="button"
-                onClick={() => setPreview((prev) => !prev)}
-                variant="ghost"
-                className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
-                data-testid="hide-show-preview"
-                tabIndex={-1}
-              >
-                {preview ? t('submit_page.hide_preview') : t('submit_page.show_preview')}
-              </Button>
-            </div>
+            <PostFormHeader
+              sideBySide={sideBySide}
+              setSideBySide={setSideBySide}
+              preview={preview}
+              setPreview={setPreview}
+            />
 
             <FormField
               control={form.control}
@@ -1051,7 +273,7 @@ export default function PostForm({
                 <FormItem>
                   <FormControl>
                     <Input
-                      placeholder={t('submit_page.title')}
+                      placeholder={t("submit_page.title")}
                       className="h-12 border-0 border-b border-border bg-transparent px-1 text-lg font-semibold placeholder:font-normal placeholder:text-muted-foreground/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-destructive rounded-none"
                       {...field}
                       data-testid="post-title-input"
@@ -1077,13 +299,13 @@ export default function PostForm({
                     </div>
                   </FormControl>
                   <div className="flex items-center rounded-b-md border-x border-b border-border bg-background-secondary/50 px-3 py-1.5 text-xs text-muted-foreground">
-                    {t('submit_page.insert_images_by_dragging')} {t('submit_page.selecting_them')}
+                    {t("submit_page.insert_images_by_dragging")} {t("submit_page.selecting_them")}
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger type="button" tabIndex={-1}>
                           <Icons.info className="ml-1 w-3" />
                         </TooltipTrigger>
-                        <TooltipContent>{t('submit_page.insert_images_info')}</TooltipContent>
+                        <TooltipContent>{t("submit_page.insert_images_info")}</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </div>
@@ -1093,297 +315,28 @@ export default function PostForm({
             />
             <Separator />
 
-            <div className="flex flex-col gap-4 rounded-lg border border-border bg-background-secondary/30 p-4">
-              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                {t('submit_page.metadata_section')}
-              </span>
+            <PostMetadataSection
+              form={form}
+              watchedValues={watchedValues}
+              postArea={postArea}
+              selectedImg={selectedImg}
+              setSelectedImg={setSelectedImg}
+              proxyAuthToken={proxyAuthToken}
+              categoryParam={categoryParam}
+            />
 
-              <FormField
-                control={form.control}
-                name="postSummary"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          placeholder={t('submit_page.post_summary')}
-                          className={clsx(
-                            'pr-16 bg-background',
-                            { 'border-red-500 focus-visible:ring-red-500': summaryCheck }
-                          )}
-                          {...field}
-                        />
-                        <span
-                          className={clsx(
-                            'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs tabular-nums',
-                            field.value.length > 140 ? 'text-red-500' : 'text-muted-foreground'
-                          )}
-                        >
-                          {field.value.length}/140
-                        </span>
-                      </div>
-                    </FormControl>
-                    <div className="text-xs text-destructive">{summaryCheck}</div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="tags"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          placeholder={t('submit_page.enter_your_tags')}
-                          className={clsx(
-                            'pr-12 bg-background',
-                            { 'border-red-500 focus-visible:ring-red-500': tagsCheck }
-                          )}
-                          {...field}
-                          onChange={(e) => {
-                            const normalized = e.target.value.replace(/,/g, ' ');
-                            field.onChange(normalized);
-                          }}
-                        />
-                        {parseTags(field.value).length > 0 && (
-                          <span
-                            className={clsx(
-                              'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs tabular-nums',
-                              parseTags(field.value).length > MAX_TAGS ? 'text-red-500' : 'text-muted-foreground'
-                            )}
-                          >
-                            {parseTags(field.value).length}/{MAX_TAGS}
-                          </span>
-                        )}
-                      </div>
-                    </FormControl>
-                    {parseTags(field.value).length > 0 && (
-                      <div className="flex flex-wrap gap-1.5" data-testid="tag-chips">
-                        {parseTags(field.value).map((tag, index) => (
-                          <Badge
-                            key={`${tag}-${index}`}
-                            variant="secondary"
-                            className="cursor-pointer gap-1 pr-1 text-xs font-normal transition-colors hover:bg-destructive/10 hover:text-destructive"
-                            onClick={() => {
-                              const tags = parseTags(field.value);
-                              tags.splice(index, 1);
-                              form.setValue('tags', tags.join(' '));
-                            }}
-                          >
-                            {tag}
-                            <Icons.x className="h-3 w-3 opacity-60 hover:opacity-100" />
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                    <div className="text-xs text-destructive">{tagsCheck}</div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="author"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder={t('submit_page.author_if_different')}
-                        className={clsx('bg-background', { 'border-red-500 focus-visible:ring-red-500': altUsernameCheck })}
-                        {...field}
-                      />
-                    </FormControl>
-                    <div className="text-xs text-red-500">{altUsernameCheck}</div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <SelectImageList content={postArea} value={selectedImg} onChange={setSelectedImg} proxyAuthToken={proxyAuthToken} />
-            </div>
-
-            <div className="flex flex-col gap-4 rounded-lg border border-border bg-background-secondary/30 p-4">
-              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                {t('submit_page.publishing_section')}
-              </span>
-
-              {!editMode ? (
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm font-medium">{t('submit_page.post_options')}</span>
-
-                  {watchedValues.maxAcceptedPayout < 1000000 && watchedValues.maxAcceptedPayout > 0 ? (
-                    <span className="text-xs text-muted-foreground">
-                      {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}:{' '}
-                      {watchedValues.maxAcceptedPayout} HBD
-                    </span>
-                  ) : null}
-
-                  {watchedValues.beneficiaries.length > 0 ? (
-                    <span className="text-xs text-muted-foreground">
-                      {t('submit_page.advanced_settings_dialog.beneficiaries', {
-                        num: watchedValues.beneficiaries.length
-                      })}
-                    </span>
-                  ) : null}
-
-                  <span className="text-xs text-muted-foreground" data-testid="author-rewards-description">
-                    {t('submit_page.author_rewards')}
-                    {watchedValues.maxAcceptedPayout === 0
-                      ? ` ${t('submit_page.advanced_settings_dialog.decline_payout')}`
-                      : watchedValues.payoutType === '100%'
-                        ? t('submit_page.power_up')
-                        : ' 50% HBD / 50% HP'}
-                  </span>
-                  <AdvancedSettingsPostForm
-                    username={username}
-                    updateForm={(e) => handleLoadTemplate(e)}
-                    data={watchedValues}
-                  >
-                    <span
-                      className="w-fit cursor-pointer text-xs text-destructive hover:underline"
-                      title={t('submit_page.advanced_tooltip')}
-                      data-testid="advanced-settings-button"
-                    >
-                      {t('submit_page.advanced_settings')}
-                    </span>
-                  </AdvancedSettingsPostForm>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm font-medium">{t('submit_page.author_rewards')}</span>
-                  {/* In edit mode: show read-only if declined, otherwise allow more restrictive options */}
-                  {post_s && parseFloat(post_s.max_accepted_payout) === 0 ? (
-                    <span className="text-xs text-muted-foreground">
-                      {t('submit_page.reward_options_final')}
-                    </span>
-                  ) : (
-                    <>
-                      <FormField
-                        control={form.control}
-                        name="payoutType"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Select
-                                value={field.value}
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                  // Update maxAcceptedPayout when declining
-                                  if (value === '0%') {
-                                    form.setValue('maxAcceptedPayout', 0);
-                                  } else if (watchedValues.maxAcceptedPayout === 0) {
-                                    // Restore original max if changing from decline
-                                    form.setValue('maxAcceptedPayout', post_s ? Number(post_s.max_accepted_payout.split(' ')[0]) : 1000000);
-                                  }
-                                }}
-                              >
-                                <SelectTrigger className="w-[180px]" data-testid="edit-reward-type-select">
-                                  <SelectValue>
-                                    {field.value === '50%' && '50% HBD / 50% HP'}
-                                    {field.value === '100%' && t('submit_page.power_up')}
-                                    {field.value === '0%' &&
-                                      t('submit_page.advanced_settings_dialog.decline_payout')}
-                                  </SelectValue>
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {/* Only show options that are MORE restrictive than current */}
-                                  {post_s && post_s.percent_hbd === 10000 && (
-                                    <SelectItem value="50%">50% HBD / 50% HP</SelectItem>
-                                  )}
-                                  {post_s && post_s.percent_hbd >= 0 && (
-                                    <SelectItem value="100%">{t('submit_page.power_up')}</SelectItem>
-                                  )}
-                                  {(!post_s || post_s.net_rshares <= 0) && (
-                                    <SelectItem value="0%">{t('submit_page.advanced_settings_dialog.decline_payout')}</SelectItem>
-                                  )}
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <span className="text-xs text-muted-foreground">
-                        {t('submit_page.reward_options_restrictive')}
-                      </span>
-                    </>
-                  )}
-                </div>
-              )}
-
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-medium">{t('submit_page.account_stats')}</span>
-                <div className="flex items-center gap-3">
-                  <Progress
-                    value={manabarsData?.rc.percentageValue ?? 0}
-                    className="h-2 flex-1"
-                    indicatorClassName="bg-[#0088FE]"
-                  />
-                  <span className="text-xs tabular-nums text-muted-foreground" data-testid="resource-credits-description">
-                    {manabarsData?.rc.percentageValue ?? 0}% RC
-                  </span>
-                </div>
-              </div>
-
-              {!editMode ? (
-                <FormField
-                  control={form.control}
-                  name="category"
-                  render={() => (
-                    <FormItem>
-                      <div className="flex flex-wrap items-center gap-3 text-sm">
-                        <span className="text-muted-foreground">{t('submit_page.posting_to')}</span>
-                        <FormControl>
-                          <Select
-                            value={
-                              communityPosting
-                                ? communityPosting
-                                : storedPost?.category
-                                  ? storedPost.category
-                                  : 'blog'
-                            }
-                            onValueChange={(e) => {
-                              form.setValue('category', e);
-                              storePost({ ...storedPost, category: e });
-                              if (categoryParam) {
-                                router.replace(withBasePath(`/submit.html`));
-                              }
-                            }}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-auto min-w-[140px]" data-testid="posting-to-list-trigger">
-                                <SelectValue placeholder="Select category" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="blog">{t('submit_page.my_blog')}</SelectItem>
-                              <SelectGroup className="py-2 ml-2">{t('submit_page.my_communities')}</SelectGroup>
-                              {mySubsData?.map((e) => (
-                                <SelectItem key={e[0]} value={e[0]}>
-                                  {e[1]}
-                                </SelectItem>
-                              ))}
-                              {!mySubsData?.some((e) => e[0] === storedPost.category) &&
-                              storedPost.category !== 'blog' ? (
-                                <>
-                                  <SelectGroup>{t('submit_page.others_communities')}</SelectGroup>
-                                  <SelectItem value={communityData?.name ?? storedPost.category}>
-                                    {communityData?.title}
-                                  </SelectItem>
-                                </>
-                              ) : null}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              ) : null}
-            </div>
+            <PostPublishingSection
+              form={form}
+              username={username}
+              observer={observer}
+              editMode={editMode}
+              post_s={post_s}
+              watchedValues={watchedValues}
+              storedPost={storedPost}
+              storePost={storePost}
+              categoryParam={categoryParam}
+              handleLoadTemplate={handleLoadTemplate}
+            />
 
             <div className="flex flex-col gap-2 pt-2">
               <div className="flex items-center gap-3">
@@ -1405,7 +358,7 @@ export default function PostForm({
                   {postMutation.isPending ? (
                     <CircleSpinner loading={postMutation.isPending} size={18} color="#dc2626" />
                   ) : (
-                    t('submit_page.submit')
+                    t("submit_page.submit")
                   )}
                 </Button>
                 <Button
@@ -1416,119 +369,56 @@ export default function PostForm({
                   className="text-foreground/60 hover:text-destructive"
                   data-testid="clean-post-button"
                 >
-                  {editMode ? t('submit_page.cancel') : t('submit_page.clean')}
+                  {editMode ? t("submit_page.cancel") : t("submit_page.clean")}
                 </Button>
               </div>
-              {!postMutation.isPending && (!storedPost?.title || !storedPost?.postArea || tagsRequiredAndEmpty) && (
-                <p className="text-xs text-muted-foreground" data-testid="submit-requirements-hint">
-                  {!storedPost?.title && !storedPost?.postArea
-                    ? t('submit_page.enter_title_and_content')
-                    : !storedPost?.title
-                      ? t('submit_page.enter_title')
-                      : !storedPost?.postArea
-                        ? t('submit_page.enter_content')
-                        : t('submit_page.enter_tags')}
-                </p>
-              )}
+              {!postMutation.isPending &&
+                (!storedPost?.title || !storedPost?.postArea || tagsRequiredAndEmpty) && (
+                  <p
+                    className="text-xs text-muted-foreground"
+                    data-testid="submit-requirements-hint"
+                  >
+                    {!storedPost?.title && !storedPost?.postArea
+                      ? t("submit_page.enter_title_and_content")
+                      : !storedPost?.title
+                        ? t("submit_page.enter_title")
+                        : !storedPost?.postArea
+                          ? t("submit_page.enter_content")
+                          : t("submit_page.enter_tags")}
+                  </p>
+                )}
             </div>
           </form>
         </Form>
 
-        <div
-          className={clsx('relative flex flex-col lg:w-1/2', {
-            hidden: !preview,
-            'lg:w-full': !sideBySide,
-            'h-[80vh]': sideBySide
-          })}
-          data-testid="preview-container"
-        >
-          {/* Floating sync scroll button - positioned at left edge of preview, vertically centered */}
-          {sideBySide && (
-            <div
-              className="group absolute left-[-7px] top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 lg:block"
-              data-testid="sync-scroll-container"
-            >
-              {/* Larger hover area for easier discovery */}
-              <div className="flex h-[150px] items-center justify-center">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="h-10 w-10 rounded-full border-border bg-background p-0 opacity-20 shadow-lg transition-opacity duration-200 hover:bg-background-secondary group-hover:opacity-100"
-                        onClick={() => setSyncScroll((prev) => !prev)}
-                        data-testid="sync-scroll-toggle"
-                        tabIndex={-1}
-                      >
-                        {syncScroll ? (
-                          <Icons.link2 className="h-5 w-5 text-foreground" />
-                        ) : (
-                          <Icons.link2Off className="h-5 w-5 text-muted-foreground" />
-                        )}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {syncScroll
-                        ? t('submit_page.disable_sync_scroll')
-                        : t('submit_page.enable_sync_scroll')}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </div>
-          )}
-          <div className="flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-background-secondary/50 px-4 py-2">
-            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              {t('submit_page.preview')}
-            </span>
-            <Link
-              target="_blank"
-              href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
-              tabIndex={-1}
-            >
-              <span className="text-xs text-muted-foreground hover:text-destructive transition-colors">
-                {t('submit_page.markdown_styling_guide')}
-              </span>
-            </Link>
-          </div>
-          <div ref={previewContainerRef} data-testid="preview-scroller" className="flex h-full overflow-y-auto overscroll-contain rounded-b-lg border border-border">
-            {previewContent ? (
-              <RendererContainer
-                body={previewContent}
-                author=""
-                previewMode
-                proxyAuthToken={proxyAuthToken}
-                className={
-                  postClassName +
-                  ' w-full min-w-full self-center break-words p-4'
-                }
-              />
-            ) : (
-              <div className="flex w-full flex-col items-center justify-center gap-2 p-8 text-muted-foreground">
-                <Icons.eye className="h-8 w-8 opacity-20" />
-                <span className="text-sm">{t('submit_page.preview_placeholder')}</span>
-              </div>
-            )}
-          </div>
-        </div>
+        <PostPreviewPanel
+          preview={preview}
+          sideBySide={sideBySide}
+          syncScroll={syncScroll}
+          setSyncScroll={setSyncScroll}
+          previewContainerRef={previewContainerRef}
+          previewContent={previewContent}
+          proxyAuthToken={proxyAuthToken}
+        />
       </div>
 
       <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {editMode ? t('post_content.close_post_editor') : t('submit_page.clean_post_editor')}
+              {editMode ? t("post_content.close_post_editor") : t("submit_page.clean_post_editor")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {t('submit_page.cancel_confirmation_description')}
+              {t("submit_page.cancel_confirmation_description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t('submit_page.cancel')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleCancelConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              {t('submit_page.confirm')}
+            <AlertDialogCancel>{t("submit_page.cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleCancelConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {t("submit_page.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
