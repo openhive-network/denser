@@ -23,8 +23,10 @@ const NotificationsPage = async ({ params }: { params: { param: string } }) => {
     logger.error(error, 'Error in NotificationsPage:');
   }
 
+  const dehydratedState = dehydrate(queryClient);
+  queryClient.clear();
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <Hydrate state={dehydratedState}>
       <NotificationContent username={username} />
     </Hydrate>
   );

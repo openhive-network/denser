@@ -41,8 +41,10 @@ const CommunitiesPage = async ({ params }: { params: { param: string } }) => {
   } catch (error) {
     logger.error(error, 'Error in CommunitiesPage:');
   }
+  const dehydratedState = dehydrate(queryClient);
+  queryClient.clear();
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <Hydrate state={dehydratedState}>
       <CommunityContent username={username} />
     </Hydrate>
   );

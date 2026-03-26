@@ -114,8 +114,10 @@ const Layout = async ({ children, params }: { children: ReactNode; params: { par
   } catch (error) {
     logger.error(error, 'Error in Layout:');
   }
+  const dehydratedState = dehydrate(queryClient);
+  queryClient.clear();
   return (
-    <Hydrate state={dehydrate(queryClient)}>
+    <Hydrate state={dehydratedState}>
       <ProfileLayout>{children}</ProfileLayout>
     </Hydrate>
   );
