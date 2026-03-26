@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getPost } from '@transaction/lib/bridge-api';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
-import { getQueryClient } from '@/blog/lib/react-query';
 import { isPermlinkValid, isUsernameValid, isValidUserParam } from '@/blog/utils/validate-links';
 import { getLogger } from '@ui/lib/logging';
 
@@ -40,7 +39,6 @@ export async function GET(request: Request, { params }: { params: { user: string
     const decoded = decodeURIComponent(rawParam);
     const username = decoded.replace(/^@/, '').trim();
     const observer = await getObserverFromCookies();
-    const queryClient = getQueryClient();
     const validUser = await isUsernameValid(username);
 
     if (!validUser) return notFoundRedirect(request);
@@ -48,10 +46,7 @@ export async function GET(request: Request, { params }: { params: { user: string
 
     let post;
     try {
-      post = await queryClient.fetchQuery({
-        queryKey: ['post', username, String(params?.permlink)],
-        queryFn: () => getPost(username, String(params?.permlink), observer)
-      });
+      post = await getPost(username, String(params?.permlink), observer);
     } catch (fetchErr) {
       logger.error(fetchErr, 'Failed to fetch post');
 
