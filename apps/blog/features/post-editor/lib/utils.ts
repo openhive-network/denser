@@ -1,4 +1,4 @@
-import { getRenderer } from '@/blog/features/post-rendering/lib/renderer';
+import { getRenderer, getPreviewRenderer } from '@/blog/features/post-rendering/lib/renderer';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { configuredImagesEndpoint } from '@ui/config/public-vars';
 import { handleError } from '@ui/lib/handle-error';
@@ -89,10 +89,11 @@ export function imagePicker(img: string) {
  * @param {string} markdownContent
  * @return {*}  {string[]}
  */
-export function extractImagesSrc(markdownContent: string): string[] {
+export function extractImagesSrc(markdownContent: string, proxyAuthToken?: string): string[] {
   if (markdownContent === '') return [];
   const parser = new DOMParser();
-  const doc = parser.parseFromString(getRenderer('').render(markdownContent), 'text/html');
+  const renderer = proxyAuthToken ? getPreviewRenderer(proxyAuthToken) : getRenderer('');
+  const doc = parser.parseFromString(renderer.render(markdownContent), 'text/html');
   const images = doc.getElementsByTagName('img');
   const result = [];
   for (let i = 0; i < images.length; i++) {

@@ -36,7 +36,7 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
   }
 
   // Skip already-proxified URLs (ones that already have /p/ hash format)
-  if (url.includes('/p/') && url.includes('images.hive.blog')) {
+  if (url.startsWith(`${proxyBase}/p/`)) {
     return url; // Return as-is, already proxified
   }
 

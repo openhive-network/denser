@@ -29,8 +29,8 @@ const SelectImageList: FC<SelectImageListTypes> = ({ content, value, onChange, p
   const images = useMemo(() => {
     if (!debouncedContent) return [];
     const ytImages = extractYouTubeVideoIds(extractUrlsFromJsonString(debouncedContent)).map((img) => `youtu-${img}`);
-    return [...extractImagesSrc(debouncedContent), ...ytImages];
-  }, [debouncedContent]);
+    return [...extractImagesSrc(debouncedContent, proxyAuthToken), ...ytImages];
+  }, [debouncedContent, proxyAuthToken]);
   const uniqueImages = Array.from(new Set(images));
 
   useEffect(() => {
