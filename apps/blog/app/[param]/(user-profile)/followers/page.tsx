@@ -1,12 +1,15 @@
 import FollowersContent from './content';
 import { getFollowers } from '@transaction/lib/hive-api';
+import { extractUsernameFromParam } from '@/blog/utils/validate-links';
+import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 const LIMIT = 50;
 
 const FollowersPage = async ({ params }: { params: { param: string } }) => {
-  const username = params.param.replace('%40', '');
+  const username = extractUsernameFromParam(params.param);
+  if (!username) notFound();
 
   let initialFollowers = null;
   try {

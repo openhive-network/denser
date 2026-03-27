@@ -4,6 +4,7 @@ import { QueryTypes } from './lib/utils';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
 import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
+import { extractUsernameFromParam } from '@/blog/utils/validate-links';
 
 const logger = getLogger('app');
 
@@ -16,7 +17,7 @@ const PostsPage = async ({
   param: string;
   query: QueryTypes;
 }) => {
-  const username = param.replace('%40', '');
+  const username = extractUsernameFromParam(param) ?? param;
   const observer = await getObserverFromCookies();
   let initialPosts = null;
   try {

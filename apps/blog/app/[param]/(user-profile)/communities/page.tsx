@@ -3,13 +3,17 @@ import CommunityContent from './content';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getHivebuzzBadges, getPeakdBadges, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
+import { extractUsernameFromParam } from '@/blog/utils/validate-links';
+import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
 const CommunitiesPage = async ({ params }: { params: { param: string } }) => {
+  const username = extractUsernameFromParam(params.param);
+  if (!username) notFound();
+
   const queryClient = getQueryClient();
-  const username = params.param.replace('%40', '');
 
   try {
     const prefetchPromises = [

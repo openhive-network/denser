@@ -1,18 +1,15 @@
 import { getFollowList } from '@transaction/lib/bridge-api';
+import { extractUsernameFromParam } from '@/blog/utils/validate-links';
+import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 import BlacklistedUsersContent from './content';
 
 const logger = getLogger('app');
 const type = 'blacklisted';
 
-interface PageProps {
-  params: {
-    param: string;
-  };
-}
-const BlacklistedUsersPage = async ({ params }: PageProps) => {
-  const { param } = params;
-  const username = param.replace('%40', '');
+const BlacklistedUsersPage = async ({ params }: { params: { param: string } }) => {
+  const username = extractUsernameFromParam(params.param);
+  if (!username) notFound();
 
   let initialData = null;
   try {
@@ -21,6 +18,6 @@ const BlacklistedUsersPage = async ({ params }: PageProps) => {
     logger.error(error, 'Error fetching blacklisted list:');
   }
 
-  return <BlacklistedUsersContent param={param} initialData={initialData} />;
+  return <BlacklistedUsersContent param={params.param} initialData={initialData} />;
 };
 export default BlacklistedUsersPage;
