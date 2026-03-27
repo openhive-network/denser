@@ -94,6 +94,9 @@
     margin: 0;
     -moz-appearance: textfield !important;
   }
+  html {
+    scroll-padding-top: 5rem; /* 80px = sticky navbar (h-16/64px) + visual buffer */
+  }
   * {
     @apply border-border;
   }
