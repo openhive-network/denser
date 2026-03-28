@@ -21,8 +21,16 @@ export function useLogout(redirect?: string) {
     // Delete auth_proof cookie immediately
     document.cookie = 'auth_proof=; path=/; max-age=0';
 
-    // Trigger sign out mutation - this updates UI immediately via optimistic update
-    signOut.mutate({ user });
+    // Trigger sign out mutation and wait for server response to ensure
+    // the Set-Cookie header (which clears iron-session) is processed
+    // before any navigation occurs.
+    try {
+      await signOut.mutateAsync({ user });
+    } catch {
+      // Server logout may have failed, but proceed with local cleanup.
+      // onMutate already applied optimistic update; onError may have rolled
+      // it back, but navigation below will load fresh state from the server.
+    }
 
     // Redirect immediately if specified
     if (redirect) {

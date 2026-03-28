@@ -88,7 +88,7 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
 
       const authProof = getAuthProof(txBuilder);
 
-      await fetch('/api/auth/log_account', {
+      const logResponse = await fetch('/api/auth/log_account', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,6 +100,9 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
           authProof
         })
       });
+      if (!logResponse.ok) {
+        logger.warn('log_account failed: %d %s', logResponse.status, logResponse.statusText);
+      }
     } catch (error) {
       logger.error(error, 'onSubmit error in signLoginChallenge');
       return Promise.reject(error);

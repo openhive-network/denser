@@ -127,7 +127,7 @@ export default function CondenserMigration() {
         const binaryData = txBuilder.toBinaryForm();
         const authProof = Buffer.from(binaryData).toString('base64');
 
-        await fetch('/api/auth/log_account', {
+        const logResponse = await fetch('/api/auth/log_account', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -135,6 +135,9 @@ export default function CondenserMigration() {
           },
           body: JSON.stringify({ type: 'login', username, authProof })
         });
+        if (!logResponse.ok) {
+          logger.warn('Condenser wallet migration log_account failed: %d %s', logResponse.status, logResponse.statusText);
+        }
 
         // Complete login: sets iron-session cookie, updates React Query
         await signIn.mutateAsync({
