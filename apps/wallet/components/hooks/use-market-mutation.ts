@@ -21,7 +21,8 @@ export function useCreateMarketOrder() {
         minToReceive,
         orderId,
         fillOrKill,
-        expiration
+        expiration,
+        { observe: true }
       );
       const response = { ...params, broadcastResult };
       logger.info('Done create market order: %o', response);
