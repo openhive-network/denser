@@ -105,6 +105,15 @@ export function buildCsp(config: CspConfig = {}): string {
   const connectSrcHosts = buildConnectSrcHosts();
   const scriptSrc = buildScriptSrc();
 
+  // Image proxy host — all external images are proxied through this
+  let imagesHost = 'https://images.hive.blog';
+  const imagesEndpoint = process.env.REACT_APP_IMAGES_ENDPOINT;
+  if (imagesEndpoint) {
+    try {
+      imagesHost = new URL(imagesEndpoint).origin;
+    } catch { /* invalid URL, use default */ }
+  }
+
   const frameSrcValue =
     config.frameSrc && config.frameSrc.length > 0 ? `frame-src ${config.frameSrc.join(' ')}` : "frame-src 'self'";
 
@@ -115,8 +124,8 @@ export function buildCsp(config: CspConfig = {}): string {
     scriptSrc,
     // Styles: self + inline (required for React/Next.js styling)
     "style-src 'self' 'unsafe-inline'",
-    // Images: self + any HTTPS + data URIs + blob (for image processing)
-    "img-src 'self' https: data: blob:",
+    // Images: self + image proxy + data URIs + blob (for image processing/previews)
+    `img-src 'self' ${imagesHost} data: blob:`,
     // Fonts: self + data URIs (for inline fonts)
     "font-src 'self' data:",
     // API connections: whitelist of trusted Hive API nodes and services
