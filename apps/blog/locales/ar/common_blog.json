@@ -3,6 +3,9 @@
     "no_rewards": "لا توجد مكافآت معلقة للاسترداد.",
     "loading": "جار التحميل",
     "publishing": "جاري النشر...",
+    "confirmed_indexing": "Confirmed on blockchain. Waiting for indexing...",
+    "indexing_slow": "Indexing is taking longer than usual. This is normal during high traffic.",
+    "reload_page": "Reload page",
     "something_went_wrong": "حدث خطأ ما",
     "unavailable_for_legal_reasons": "غير متوفر لأسباب قانونية",
     "time_ago": {

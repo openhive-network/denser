@@ -5,6 +5,8 @@ import DialogLogin from '@/blog/components/dialog-login';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { usePinMutation, useUnpinMutation } from '@/blog/components/hooks/use-pin-mutations';
 import NoDataError from '@/blog/components/no-data-error';
+import OptimisticStatusBanner from '@/blog/components/optimistic-status-banner';
+import PendingIndexingMessage from '@/blog/components/pending-indexing-message';
 import ChangeTitleDialog from '@/blog/features/community-profile/change-title-dialog';
 import DetailsCardHover from '@/blog/features/list-of-posts/details-card-hover';
 import ReblogTrigger from '@/blog/features/list-of-posts/reblog-trigger';
@@ -434,7 +436,12 @@ const PostContent = () => {
     setMutedPost(false);
   }, []);
 
-  if (userFromGDPR || (!postData && !postIsLoading)) return <NoDataError />;
+  const isPending = searchParams?.get('pending') === '1';
+  if (userFromGDPR) return <NoDataError />;
+  if (!postData && !postIsLoading) {
+    if (isPending) return <PendingIndexingMessage author={author} permlink={permlink} observer={observer} />;
+    return <NoDataError />;
+  }
 
   return (
     <>
@@ -520,10 +527,7 @@ const PostContent = () => {
                     />
                   )}
                   {postData._optimistic && (
-                    <div className="my-2 flex items-center gap-2 rounded-md border border-blue-400/50 bg-blue-50 px-3 py-2 text-sm text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">
-                      <CircleSpinner size={14} color="#3b82f6" loading />
-                      <span>{t('global.publishing')}</span>
-                    </div>
+                    <OptimisticStatusBanner createdAt={postData.created} />
                   )}
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <UserInfo

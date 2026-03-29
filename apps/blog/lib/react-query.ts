@@ -77,6 +77,8 @@ export function scheduleInvalidations(
  * 2. Validates whether the response reflects the expected mutation
  * 3. Only updates the cache (via setQueryData) if validation passes
  * 4. Stops scheduling further attempts once validated
+ * 5. Never destroys optimistic data — if all retries fail, the optimistic
+ *    data persists until natural React Query GC or user navigation
  *
  * Use this for queries that have optimistic updates set via setQueryData
  * in onMutate. For queries without optimistic data, use scheduleInvalidations.
@@ -86,6 +88,7 @@ export function scheduleInvalidations(
  * @param fetchFn - Function that fetches fresh data from the API directly
  * @param validator - Returns true if the fresh data reflects the expected mutation
  * @param delays - Array of delays in ms (default: [8000, 16000, 30000])
+ * @param options - Optional callbacks for validation lifecycle
  * @returns Cleanup function to cancel pending timeouts
  */
 export function scheduleValidatedRefetch<T>(
@@ -93,13 +96,22 @@ export function scheduleValidatedRefetch<T>(
   queryKey: QueryKey,
   fetchFn: () => Promise<T>,
   validator: (data: T) => boolean,
-  delays: number[] = [8000, 16000, 30000]
+  delays: number[] = [8000, 16000, 30000],
+  options?: {
+    /** Called when validator passes and cache is updated with real data */
+    onValidated?: () => void;
+    /** Called when all retry attempts fail without destroying optimistic data */
+    onExhausted?: () => void;
+    /** Extra delays after primary delays for slow indexing (default: [60000, 120000, 240000]) */
+    extendedDelays?: number[];
+  }
 ): () => void {
   const timeoutIds: ReturnType<typeof setTimeout>[] = [];
   let validated = false;
   let cancelled = false;
+  const allDelays = [...delays, ...(options?.extendedDelays ?? [60000, 120000, 240000])];
 
-  for (const delay of delays) {
+  for (const delay of allDelays) {
     const timeoutId = setTimeout(async () => {
       if (validated || cancelled) return;
 
@@ -112,6 +124,7 @@ export function scheduleValidatedRefetch<T>(
           validated = true;
           queryClient.setQueryData(queryKey, freshData);
           logger.info('Validated refetch confirmed for key: %o', queryKey);
+          options?.onValidated?.();
         }
       } catch (error) {
         logger.error(error, 'Validated refetch failed for key: %o', queryKey);
@@ -120,15 +133,17 @@ export function scheduleValidatedRefetch<T>(
     timeoutIds.push(timeoutId);
   }
 
-  // Fallback: if all validation attempts fail, invalidate to force a refetch
-  // so optimistic data doesn't persist indefinitely
-  const fallbackId = setTimeout(() => {
+  // After all retries exhaust, log warning but do NOT invalidate.
+  // Optimistic data persists until natural GC or user navigation —
+  // this is always preferable to showing "No Data Available" for a
+  // confirmed on-chain transaction.
+  const exhaustedId = setTimeout(() => {
     if (!validated && !cancelled) {
-      queryClient.invalidateQueries({ queryKey });
-      logger.info('Validated refetch fallback invalidation for key: %o', queryKey);
+      logger.warn('Validated refetch exhausted all retries for key: %o', queryKey);
+      options?.onExhausted?.();
     }
-  }, delays[delays.length - 1] + 5000);
-  timeoutIds.push(fallbackId);
+  }, allDelays[allDelays.length - 1] + 5000);
+  timeoutIds.push(exhaustedId);
 
   return () => {
     cancelled = true;

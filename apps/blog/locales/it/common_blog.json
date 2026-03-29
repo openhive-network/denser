@@ -3,6 +3,9 @@
     "no_rewards": "Nessun premio in attesa di riscatto.",
     "loading": "Loading",
     "publishing": "Pubblicazione...",
+    "confirmed_indexing": "Confirmed on blockchain. Waiting for indexing...",
+    "indexing_slow": "Indexing is taking longer than usual. This is normal during high traffic.",
+    "reload_page": "Reload page",
     "something_went_wrong": "Something went wrong",
     "unavailable_for_legal_reasons": "Non disponibile per motivi legali",
     "time_ago": {

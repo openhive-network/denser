@@ -3,6 +3,9 @@
     "no_rewards": "引き換えが保留中の特典はありません。",
     "loading": "Loading",
     "publishing": "投稿中...",
+    "confirmed_indexing": "Confirmed on blockchain. Waiting for indexing...",
+    "indexing_slow": "Indexing is taking longer than usual. This is normal during high traffic.",
+    "reload_page": "Reload page",
     "something_went_wrong": "Something went wrong",
     "unavailable_for_legal_reasons": "法的な理由により利用できません",
     "time_ago": {
