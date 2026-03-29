@@ -7,7 +7,8 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
 import { formatNaiAsset } from '@ui/lib/helpers';
-import { scheduleInvalidations } from '@/blog/lib/react-query';
+import { scheduleInvalidations, scheduleValidatedRefetch } from '@/blog/lib/react-query';
+import { getPost } from '@transaction/lib/bridge-api';
 
 const logger = getLogger('app');
 
@@ -145,8 +146,8 @@ export function usePostMutation() {
         editMode
       } = params;
 
-      // Use observe: false - don't wait for blockchain confirmation
-      // A successful broadcast guarantees inclusion in the blockchain
+      // Use observe: true - wait for block inclusion (~1.5s avg) before resolving.
+      // This ensures the draft is not deleted until the transaction is confirmed on-chain.
       if (!editMode && !!maxAcceptedPayout) {
         const broadcastResult = await transactionService.post(
           permlink,
@@ -160,7 +161,7 @@ export function usePostMutation() {
           altAuthor,
           percentHbd,
           image,
-          { observe: false }
+          { observe: true }
         );
         logger.info('Post broadcast successful: %o', { permlink, broadcastResult });
         return { ...params, broadcastResult };
@@ -175,7 +176,7 @@ export function usePostMutation() {
           summary,
           altAuthor,
           image,
-          { observe: false }
+          { observe: true }
         );
         logger.info('Post update broadcast successful: %o', { permlink, broadcastResult });
 
@@ -185,7 +186,7 @@ export function usePostMutation() {
             permlink,
             maxAcceptedPayout,
             percentHbd,
-            { observe: false }
+            { observe: true }
           );
           logger.info('Post options update broadcast successful: %o', { permlink, optionsResult });
         }
@@ -204,13 +205,16 @@ export function usePostMutation() {
         description: 'Your post has been submitted',
         variant: 'success'
       });
-      // Invalidate after delay to fetch real data from Hivemind
-      // Multiple invalidation attempts to handle slow operations (e.g., first-time Google Drive uploads)
-      scheduleInvalidations(queryClient, [
+      // Use validated refetch for post data to avoid overwriting optimistic cache
+      // with stale Hivemind responses (Hivemind may not have indexed the post yet)
+      scheduleValidatedRefetch(
+        queryClient,
         ['postData', username, permlink, username],
-        ['entriesInfinite'],
-        ['accountEntriesInfinite']
-      ]);
+        () => getPost(username, permlink, username),
+        (freshData) => freshData != null && !freshData._optimistic
+      );
+      // Invalidate feed caches separately (no optimistic data to protect)
+      scheduleInvalidations(queryClient, [['entriesInfinite'], ['accountEntriesInfinite']]);
     },
 
     onError: (error: unknown, variables, context) => {

@@ -169,7 +169,7 @@ export function usePostFormActions({
           refreshPage();
         }
       } else {
-        const postUrl = `/${postParams.category}/@${username}/${postParams.permlink}`;
+        const postUrl = `/${postParams.category}/@${username}/${postParams.permlink}?pending=1`;
         await router.push(withBasePath(postUrl), undefined);
       }
       if (btnRef.current) {

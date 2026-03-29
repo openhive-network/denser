@@ -18,9 +18,11 @@ import {
 const logger = getLogger('app');
 
 const PostPage = async ({
-  params: { param, p2, permlink }
+  params: { param, p2, permlink },
+  searchParams
 }: {
   params: { param: string; p2: string; permlink: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) => {
   if (!isValidUserParam(p2)) notFound();
 
@@ -77,7 +79,9 @@ const PostPage = async ({
     logger.error(error, 'Error in PostPage:');
   }
 
-  if (!postData) notFound();
+  // Skip 404 when navigating from post creation — the client has optimistic data
+  // in React Query cache that will render while Hivemind indexes the post.
+  if (!postData && !searchParams?.pending) notFound();
 
   // Pass data directly via context instead of Hydrate/dehydrate.
   // React Query v4's <Hydrate> has compatibility issues with Next.js App Router
