@@ -611,10 +611,9 @@ export class HtmlDOMParserError extends ChainedError {
  * Preprocesses HTML content before parsing to handle special cases.
  *
  * This function performs the following transformations:
- * 1. Replaces GitHub gist embed code with a shortcode format
- * 2. Removes wrapping <p> tags from <details> elements
- * 3. Removes wrapping <p> tags from <center> elements
- * 4. Moves content after details/center tags outside of them
+ * 1. Removes wrapping <p> tags from <details> elements
+ * 2. Removes wrapping <p> tags from <center> elements
+ * 3. Moves content after details/center tags outside of them
  *
  * @param child - The HTML string to preprocess
  * @returns The preprocessed HTML string
@@ -622,10 +621,6 @@ export class HtmlDOMParserError extends ChainedError {
 function preprocessHtml(child: string) {
     try {
         if (typeof child === 'string') {
-            const gist = extractMetadataFromEmbedCode(child);
-            if (gist) {
-                child = child.replace(regex.htmlReplacement, `~~~ embed:${gist.id} gist metadata:${Buffer.from(gist.fullId).toString('base64')} ~~~`);
-            }
             child = preprocessDetails(child);
             child = preprocessCenter(child);
             child = preprocessPullColumns(child);
@@ -635,15 +630,6 @@ function preprocessHtml(child: string) {
     }
 
     return child;
-}
-
-interface GistMetadata {
-    id: string;
-    fullId: string;
-    url: string;
-    canonical: string;
-    thumbnail: string | null;
-    username: string;
 }
 
 /**
@@ -999,64 +985,3 @@ function processPullColumnPairs(html: string, firstClass: string, secondClass: s
     return parts.join('');
 }
 
-/**
- * Extracts metadata from a GitHub Gist embed code.
- *
- * @param data - The HTML string containing the Gist embed code
- * @returns A GistMetadata object containing the extracted information, or null if no valid Gist embed code is found
- *
- * @example
- * const embedCode = '<script src="https://gist.github.com/username/123456.js"></script>';
- * const metadata = extractMetadataFromEmbedCode(embedCode);
- * // Returns:
- * // {
- * //   id: '123456',
- * //   fullId: 'username/123456',
- * //   url: 'https://gist.github.com/username/123456.js',
- * //   canonical: 'https://gist.github.com/username/123456.js',
- * //   thumbnail: null,
- * //   username: 'username'
- *  }
- */
-function extractMetadataFromEmbedCode(data: string): GistMetadata | null {
-    if (!data) return null;
-
-    const match: RegExpMatchArray | null = data.match(regex.htmlReplacement);
-    if (match) {
-        const url: string = match[1];
-        const fullId: string = match[2];
-        const username: string = match[3];
-        const id: string = match[4];
-
-        return {
-            id,
-            fullId,
-            url,
-            canonical: url,
-            thumbnail: null,
-            username
-        };
-    }
-    return null;
-}
-
-/**
- * Regular expressions used for GitHub Gist processing.
- *
- * @property {RegExp} main - Matches GitHub Gist URLs in the format:
- *                          https://gist.github.com/username/gistId
- *                          Groups: [full URL, username/gistId, username, gistId]
- *
- * @property {RegExp} sanitize - Matches GitHub Gist JavaScript URLs in the format:
- *                              https://gist.github.com/username/gistId.js
- *                              Groups: [full URL with .js, username/gistId, username, gistId]
- *
- * @property {RegExp} htmlReplacement - Matches GitHub Gist script embed tags in the format:
- *                                     <script src="https://gist.github.com/username/gistId.js"></script>
- *                                     Groups: [script URL, username/gistId, username, gistId]
- */
-const regex = {
-    main: /(https?:\/\/gist\.github\.com\/((.*?)\/(.*)))/i,
-    sanitize: /(https:\/\/gist\.github\.com\/((.*?)\/(.*?))\.js)/i,
-    htmlReplacement: /<script src="(https:\/\/gist\.github\.com\/((.*?)\/(.*?))\.js)"><\/script>/i
-};
