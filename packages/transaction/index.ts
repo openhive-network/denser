@@ -211,11 +211,8 @@ export class TransactionService {
       const transactionId = txBuilder.id;
       logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
 
-      // First broadcast and wait for it to complete
+      // Broadcast and wait for block inclusion (irreversible with OBI)
       await this.bot.broadcast(txBuilder, { verifySignatures: true, expireInMs: 10_000 });
-
-      // Small delay to ensure that UI is ready to trigger update
-      await new Promise((resolve) => setTimeout(resolve, 500));
 
       return { transactionId };
     } catch (error) {
