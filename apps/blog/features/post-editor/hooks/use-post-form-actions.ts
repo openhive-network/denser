@@ -144,7 +144,7 @@ export function usePostFormActions({
                 account,
                 weight: Number(weight) * 100,
               }))
-              .filter((b) => Number(b.weight) !== 10000)
+              .filter((b) => b.weight > 0)
               .sort((a, b) => a.account.localeCompare(b.account))
           : [],
         rewardOptionsChanged,
