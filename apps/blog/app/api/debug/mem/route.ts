@@ -5,6 +5,10 @@ import path from 'path';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+  if (process.env.DENSER_DEBUG_MEM !== 'true') {
+    return new NextResponse(null, { status: 404 });
+  }
+
   const url = new URL(request.url);
   const action = url.searchParams.get('action');
 
