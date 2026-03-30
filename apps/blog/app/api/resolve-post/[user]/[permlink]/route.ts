@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getPost } from '@transaction/lib/bridge-api';
-import { getObserverFromCookies } from '@/blog/lib/auth-utils';
+import { getObserver } from '@/blog/lib/auth-utils';
 import { isPermlinkValid, isUsernameValid, isValidUserParam } from '@/blog/utils/validate-links';
 import { getLogger } from '@ui/lib/logging';
 
@@ -38,7 +38,7 @@ export async function GET(request: Request, { params }: { params: { user: string
     const rawParam = params?.user ?? '';
     const decoded = decodeURIComponent(rawParam);
     const username = decoded.replace(/^@/, '').trim();
-    const observer = await getObserverFromCookies();
+    const observer = await getObserver();
     const validUser = await isUsernameValid(username);
 
     if (!validUser) return notFoundRedirect(request);
