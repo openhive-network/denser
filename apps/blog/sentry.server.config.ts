@@ -15,11 +15,14 @@ Sentry.init({
   // RSS under such traffic (see denser#886).
   tracesSampler: (samplingContext) => {
     const cookie = samplingContext.request?.headers?.cookie ?? '';
-    if (cookie.includes('account_info=')) {
+    if (cookie.split(';').some(c => c.trim().startsWith('account_info='))) {
       return 1.0;
     }
     return 0;
   },
+
+  // Enable structured logging API (Sentry.logger.*)
+  enableLogs: true,
 
   // SECURITY: Disable PII collection by default for staging/production.
   // Set REACT_APP_SENTRY_SEND_PII=true for local development debugging only.

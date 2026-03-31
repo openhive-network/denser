@@ -5,6 +5,7 @@
     "publishing": "Publikowanie...",
     "confirmed_indexing": "Confirmed on blockchain. Waiting for indexing...",
     "indexing_slow": "Indexing is taking longer than usual. This is normal during high traffic.",
+    "indexing_timeout": "Post indexing timed out. Your post may still appear shortly — try reloading the page.",
     "reload_page": "Reload page",
     "something_went_wrong": "Coś poszło nie tak",
     "unavailable_for_legal_reasons": "Niedostępne z przyczyn prawnych",

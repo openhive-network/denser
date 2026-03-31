@@ -10,6 +10,8 @@ export function Beneficiary({ onChangeBeneficiary, beneficiary }: ItemProps) {
     <li className="flex items-center gap-5">
       <Input
         type="number"
+        min={0}
+        max={100}
         value={beneficiary.weight}
         className="w-16"
         onChange={(e) => onChangeBeneficiary(e.target.value, beneficiary.account)}

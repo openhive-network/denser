@@ -36,11 +36,13 @@ export default function PendingIndexingMessage({
     return () => clearInterval(interval);
   }, []);
 
+  const hasTimedOut = elapsedSeconds >= 180;
+
   const { data: postData } = useQuery({
     queryKey: ['pendingPostPoll', author, permlink, observer],
     queryFn: () => getPost(author, permlink, observer),
-    refetchInterval: 10000,
-    enabled: true
+    refetchInterval: hasTimedOut ? false : 10000,
+    enabled: !hasTimedOut
   });
 
   // Post appeared in Hivemind — strip ?pending and reload with real data
@@ -51,7 +53,9 @@ export default function PendingIndexingMessage({
   }, [postData, router, pathname]);
 
   let message: string;
-  if (elapsedSeconds < 30) {
+  if (hasTimedOut) {
+    message = t('global.indexing_timeout');
+  } else if (elapsedSeconds < 30) {
     message = t('global.confirmed_indexing');
   } else {
     message = t('global.indexing_slow');
@@ -61,7 +65,7 @@ export default function PendingIndexingMessage({
     <div className="mx-auto flex flex-col items-center py-8">
       <Icons.hive className="h-16 w-16" />
       <div className="my-4 flex items-center gap-2">
-        <CircleSpinner size={18} color="#3b82f6" loading />
+        {!hasTimedOut && <CircleSpinner size={18} color="#3b82f6" loading />}
         <h3 className="text-lg">{message}</h3>
       </div>
       {elapsedSeconds >= 120 && (
