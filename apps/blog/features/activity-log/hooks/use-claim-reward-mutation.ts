@@ -6,6 +6,8 @@ import { getLogger } from '@ui/lib/logging';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
+import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
+import { getAccountFull } from '@transaction/lib/hive-api';
 const logger = getLogger('app');
 
 /**
@@ -48,9 +50,18 @@ export function useClaimRewardsMutation() {
         description: 'Your rewards have been claimed successfully.',
         variant: 'success'
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 6000);
+      // Use validated refetch instead of blind invalidateQueries.
+      // Only updates cache when the API confirms rewards are actually zero,
+      // preventing stale API responses from overwriting optimistic zeros.
+      scheduleValidatedRefetch(
+        queryClient,
+        queryKey,
+        () => getAccountFull(user.username),
+        (freshData) =>
+          freshData.reward_hive_balance.amount === '0' &&
+          freshData.reward_hbd_balance.amount === '0' &&
+          freshData.reward_vesting_hive.amount === '0'
+      );
     },
     onError: (error: any, variables) => {
       handleError(error, {

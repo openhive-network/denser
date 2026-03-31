@@ -80,8 +80,7 @@ const NotificationActivities = ({
     queryKey: ['profileData', user.username],
     queryFn: () => getAccountFull(user.username),
     enabled: !!user.username,
-    refetchOnMount: true,
-    refetchInterval: 20000
+    refetchOnMount: true
   });
 
   const accountOwner = user.username === username;
