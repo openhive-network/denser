@@ -8,7 +8,7 @@
  * See: hivemind/hive/db/sql_scripts/postgrest/bridge_api/bridge_api_account_notifications.sql
  */
 
-import { SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import { SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { IAccountNotification } from '@hive/common-hiveio-packages/wax';
 import NotificationList from './list';
@@ -59,6 +59,13 @@ const NotificationActivities = ({
   const markAllNotificationsAsReadMutation = useMarkAllNotificationsAsReadMutation();
   const claimRewardMutation = useClaimRewardsMutation();
 
+  // After claiming, remember the exact balances that were claimed. If the API
+  // returns the same values again (stale cache), we know they're phantom and
+  // suppress the rewards display. Resets after 60s when the API has caught up.
+  const claimedBalancesRef = useRef<{
+    hive: string; hbd: string; vests: string; expiresAt: number;
+  } | null>(null);
+
   const { data: unreadNotifications } = useQuery({
     queryKey: ['unreadNotifications', user?.username],
     queryFn: () => getUnreadNotifications(user?.username || ''),
@@ -79,8 +86,7 @@ const NotificationActivities = ({
   const { data: profileData } = useQuery({
     queryKey: ['profileData', user.username],
     queryFn: () => getAccountFull(user.username),
-    enabled: !!user.username,
-    refetchOnMount: true
+    enabled: !!user.username
   });
 
   const accountOwner = user.username === username;
@@ -135,10 +141,18 @@ const NotificationActivities = ({
 
   async function handleClaimRewards(e: SyntheticEvent) {
     e.preventDefault();
-    if (apiAccounts) {
+    if (apiAccounts && profileData) {
+      // Snapshot the balances being claimed so we can detect stale API responses
+      claimedBalancesRef.current = {
+        hive: profileData.reward_hive_balance.amount,
+        hbd: profileData.reward_hbd_balance.amount,
+        vests: profileData.reward_vesting_hive.amount,
+        expiresAt: Date.now() + 60000
+      };
       try {
         await claimRewardMutation.mutateAsync({ account: apiAccounts.accounts[0] });
       } catch (error) {
+        claimedBalancesRef.current = null;
         handleError(error, { method: 'claimReward', params: { account: apiAccounts.accounts[0] } });
       }
     }
@@ -160,7 +174,16 @@ const NotificationActivities = ({
       accountOwner &&
       (convertStringToBig(profileData.reward_hive_balance).gt(0) ||
         convertStringToBig(profileData.reward_hbd_balance).gt(0) ||
-        convertStringToBig(profileData.reward_vesting_hive).gt(0)) ? (
+        convertStringToBig(profileData.reward_vesting_hive).gt(0)) &&
+      // Suppress stale rewards that match what was just claimed. The API may
+      // return cached pre-claim balances for up to a minute after the on-chain
+      // claim succeeds. If the API returns different values (new rewards arrived),
+      // those are genuine and will be shown.
+      !(claimedBalancesRef.current &&
+        Date.now() < claimedBalancesRef.current.expiresAt &&
+        profileData.reward_hive_balance.amount === claimedBalancesRef.current.hive &&
+        profileData.reward_hbd_balance.amount === claimedBalancesRef.current.hbd &&
+        profileData.reward_vesting_hive.amount === claimedBalancesRef.current.vests) ? (
         <div className="flex flex-col items-center justify-center px-2 py-4 md:flex-row md:justify-between">
           <span>
             {t('navigation.profile_notifications_tab_navbar.unclaimed_rewards')}
