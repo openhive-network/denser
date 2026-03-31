@@ -86,7 +86,7 @@ function buildConnectSrcHosts(): Set<string> {
  * Build script-src directive
  */
 function buildScriptSrc(): string {
-  let scriptSrc = "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'";
+  let scriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'";
 
   // Twitter/X widgets.js for native tweet rendering (used by TwitterResizePlugin)
   scriptSrc += ' https://platform.twitter.com';
@@ -120,7 +120,7 @@ export function buildCsp(config: CspConfig = {}): string {
   const directives = [
     // Default fallback for unspecified resource types
     "default-src 'self'",
-    // Scripts: self + inline (required for Next.js) + wasm-unsafe-eval (required for HBAuth/Beekeeper WASM) + Google Sign-In
+    // Scripts: self + inline (required for Next.js) + eval (required for HBAuth/Beekeeper WASM) + Google Sign-In
     scriptSrc,
     // Styles: self + inline (required for React/Next.js styling)
     "style-src 'self' 'unsafe-inline'",
