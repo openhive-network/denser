@@ -15,7 +15,7 @@ Sentry.init({
   // RSS under such traffic (see denser#886).
   tracesSampler: (samplingContext) => {
     const cookie = samplingContext.request?.headers?.cookie ?? '';
-    if (cookie.split(';').some(c => c.trim().startsWith('account_info='))) {
+    if (cookie.split(';').some((c: string) => c.trim().startsWith('account_info='))) {
       return 1.0;
     }
     return 0;
