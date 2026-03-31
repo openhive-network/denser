@@ -517,7 +517,10 @@
         "account_stats": "إحصائيات الحساب:",
         "resource_credits": "رصيد الموارد (RC) المستوى: {{value}}%",
         "update_settings": "تحديث الإعدادات",
-        "full_in": "ملء: "
+        "full_in": "ملء: ",
+        "shadow_draft_found": "An unsaved reply was found for this thread.",
+        "shadow_draft_recover": "Recover",
+        "shadow_draft_discard": "Discard"
       }
     },
     "flag": {
@@ -638,7 +641,11 @@
       "must_end_with_a_letter_or_number": "يجب أن ينتهي بحرف أو رقم",
       "must_not_include_hivemind_community_owner": "المشاركة تحتوي بالفعل على علامة hive بشكل افتراضي، يرجى عدم تضمين علامة 'hive-' أخرى.",
       "tags_cannot_be_repeated": "لا يمكن تكرار العلامات"
-    }
+    },
+    "shadow_draft_found": "Unsaved post found",
+    "shadow_draft_description": "A post was broadcast but may not have been indexed yet. Would you like to recover the content?",
+    "shadow_draft_recover": "Recover",
+    "shadow_draft_discard": "Discard"
   },
   "search_page": {
     "placeholder": "البحث",

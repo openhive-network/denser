@@ -8,6 +8,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 import { handleError } from '@ui/lib/handle-error';
 import { scheduleInvalidations, scheduleValidatedRefetch } from '@/blog/lib/react-query';
+import { setStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 
 const logger = getLogger('app');
 
@@ -128,8 +129,12 @@ export function useCommentMutation() {
 
       logger.info('Optimistic comment added: %o', { tempPermlink, queryKey, hasPrevData: !!prevData });
 
+      // Save shadow draft — insurance against tab crash before Hivemind indexes
+      const shadowKey = `shadow-reply-${user.username}-${parentAuthor}-${parentPermlink}`;
+      setStorageItem(shadowKey, { body, parentAuthor, parentPermlink }, StorageTTL.SHADOW_DRAFT);
+
       // Return context for rollback
-      return { prevData, queryKey };
+      return { prevData, queryKey, shadowKey };
     },
 
     mutationFn: async (params: {
@@ -188,20 +193,27 @@ export function useCommentMutation() {
             (e) => e.author === username && e.parent_permlink === parentPermlink
           );
           return realComments.length > prevRealCommentCount;
+        },
+        undefined,
+        {
+          onValidated: () => {
+            removeStorageItem(`shadow-reply-${username}-${data.parentAuthor}-${parentPermlink}`);
+          }
         }
       );
     },
 
     onError: (error: unknown, variables, context) => {
-      // Rollback to previous data on error
+      // Rollback to previous data and remove shadow draft on error
       if (context?.queryKey) {
         if (context.prevData) {
-          // Restore previous data
           queryClient.setQueryData(context.queryKey, context.prevData);
         } else {
-          // If there was no previous data, remove the optimistic update
           queryClient.removeQueries({ queryKey: context.queryKey });
         }
+      }
+      if (context?.shadowKey) {
+        removeStorageItem(context.shadowKey);
       }
 
       handleError(error, {

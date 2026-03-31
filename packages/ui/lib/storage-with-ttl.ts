@@ -28,6 +28,8 @@ export const StorageTTL = {
   SESSION: 7 * 24 * 60 * 60 * 1000,
   /** Sensitive data (WIF keys) - 24 hours */
   SENSITIVE: 24 * 60 * 60 * 1000,
+  /** Shadow draft backup (deleted when Hivemind indexes) - 48 hours */
+  SHADOW_DRAFT: 48 * 60 * 60 * 1000,
   /** No expiration (user preferences, settings) */
   PERMANENT: null
 } as const;
@@ -45,7 +47,9 @@ export const StoragePrefix = {
   USER_PREF: 'user-preferences-',
   VOTES: 'votesValues',
   TEMPLATES: 'hivePostTemplates-',
-  SUGGESTIONS: 'showSuggestions-'
+  SUGGESTIONS: 'showSuggestions-',
+  SHADOW_POST: 'shadow-post-',
+  SHADOW_REPLY: 'shadow-reply-'
 } as const;
 
 interface StorageItem<T> {
@@ -120,6 +124,9 @@ function getTTLForKey(key: string): number | null {
   }
   if (key.startsWith(StoragePrefix.UI_STATE_REPLY) || key.startsWith(StoragePrefix.UI_STATE_EDIT)) {
     return StorageTTL.UI_STATE;
+  }
+  if (key.startsWith(StoragePrefix.SHADOW_POST) || key.startsWith(StoragePrefix.SHADOW_REPLY)) {
+    return StorageTTL.SHADOW_DRAFT;
   }
   // User preferences, votes, templates, suggestions are permanent
   return StorageTTL.PERMANENT;
@@ -327,6 +334,31 @@ export function removeByPrefix(prefix: string): number {
 
   keysToRemove.forEach((key) => window.localStorage.removeItem(key));
   return keysToRemove.length;
+}
+
+/**
+ * Retrieves all non-expired items matching a specific prefix.
+ * Used for scanning orphaned shadow drafts on recovery.
+ *
+ * @param prefix - Key prefix to match
+ * @returns Array of { key, value } pairs for matching, non-expired items
+ */
+export function getItemsByPrefix<T>(prefix: string): Array<{ key: string; value: T }> {
+  if (!isLocalStorageAvailable()) return [];
+
+  const results: Array<{ key: string; value: T }> = [];
+
+  for (let i = 0; i < window.localStorage.length; i++) {
+    const key = window.localStorage.key(i);
+    if (key && key.startsWith(prefix)) {
+      const value = getStorageItem<T>(key);
+      if (value !== null) {
+        results.push({ key, value });
+      }
+    }
+  }
+
+  return results;
 }
 
 /**

@@ -470,7 +470,10 @@
         "account_stats": "アカウント統計:",
         "resource_credits": "リソースクレジット（RC）レベル: {{value}} %",
         "update_settings": "設定を更新する",
-        "full_in": "満了まで: "
+        "full_in": "満了まで: ",
+        "shadow_draft_found": "An unsaved reply was found for this thread.",
+        "shadow_draft_recover": "Recover",
+        "shadow_draft_discard": "Discard"
       }
     },
     "flag": {
@@ -591,7 +594,11 @@
       "must_end_with_a_letter_or_number": "文字または数字で終わる必要があります。",
       "must_not_include_hivemind_community_owner": "投稿には既にデフォルトでハイブタグが含まれていますので、他の 'hive-' タグを含めないでください。",
       "tags_cannot_be_repeated": "タグを繰り返すことはできません"
-    }
+    },
+    "shadow_draft_found": "Unsaved post found",
+    "shadow_draft_description": "A post was broadcast but may not have been indexed yet. Would you like to recover the content?",
+    "shadow_draft_recover": "Recover",
+    "shadow_draft_discard": "Discard"
   },
   "search_page": {
     "placeholder": "検索",

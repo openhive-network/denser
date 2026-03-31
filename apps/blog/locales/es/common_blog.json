@@ -470,7 +470,10 @@
         "update_settings": "Actualizar configuración",
         "resource_credits": "Nivel de Créditos de Recursos (RC): {{value}} %",
         "account_stats": "Estadísticas de la cuenta:",
-        "full_in": "Completo en: "
+        "full_in": "Completo en: ",
+        "shadow_draft_found": "An unsaved reply was found for this thread.",
+        "shadow_draft_recover": "Recover",
+        "shadow_draft_discard": "Discard"
       }
     },
     "flag": {
@@ -591,7 +594,11 @@
       "must_end_with_a_letter_or_number": "Debe terminar con una letra o número",
       "must_not_include_hivemind_community_owner": "La publicación ya tiene la etiqueta 'hive' por defecto, por favor no incluya otra etiqueta 'hive-'",
       "tags_cannot_be_repeated": "Las etiquetas no pueden repetirse"
-    }
+    },
+    "shadow_draft_found": "Unsaved post found",
+    "shadow_draft_description": "A post was broadcast but may not have been indexed yet. Would you like to recover the content?",
+    "shadow_draft_recover": "Recover",
+    "shadow_draft_discard": "Discard"
   },
   "search_page": {
     "placeholder": "Buscar",

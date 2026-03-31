@@ -134,6 +134,8 @@ export default function PostForm({
     watchedValues,
     previewContent,
     setPreviewContent,
+    shadowDraftRecovery,
+    removeShadowDraft,
   } = usePostFormState({ username, editMode, post_s, categoryParam });
 
   // --- Actions hook ---
@@ -419,6 +421,45 @@ export default function PostForm({
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {t("submit_page.confirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={!!shadowDraftRecovery} onOpenChange={(open) => {
+        if (!open && shadowDraftRecovery) {
+          removeShadowDraft(shadowDraftRecovery.key);
+        }
+      }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("submit_page.shadow_draft_found")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("submit_page.shadow_draft_description")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => {
+              if (shadowDraftRecovery) removeShadowDraft(shadowDraftRecovery.key);
+            }}>
+              {t("submit_page.shadow_draft_discard")}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => {
+              if (shadowDraftRecovery) {
+                const { value, key } = shadowDraftRecovery;
+                form.reset({
+                  ...defaultValues,
+                  title: value.title,
+                  postArea: value.body,
+                  tags: value.tags.join(" "),
+                  category: value.category,
+                  postSummary: value.summary,
+                });
+                setPreviewContent(value.body);
+                removeShadowDraft(key);
+              }
+            }}>
+              {t("submit_page.shadow_draft_recover")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

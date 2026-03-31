@@ -27,7 +27,7 @@ import { useCommentMutation, useUpdateCommentMutation } from '../post-rendering/
 import { handleError } from '@ui/lib/handle-error';
 import { commentClassName } from '../post-rendering/comment-list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
+import { getStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
 
@@ -132,6 +132,21 @@ export function ReplyTextbox({
       lastSyncedDraftRef.current = storedDraft;
     }
   }, [storedDraft, editMode, commentBody]);
+
+  // Shadow reply recovery — check for orphaned shadow draft from crashed session
+  const [shadowReplyRecovery, setShadowReplyRecovery] = useState<{
+    key: string;
+    body: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (editMode || !user.username) return;
+    const shadowKey = `shadow-reply-${user.username}-${username}-${permlink}`;
+    const item = getStorageItem<{ body: string; parentAuthor: string; parentPermlink: string }>(shadowKey);
+    if (item) {
+      setShadowReplyRecovery({ key: shadowKey, body: item.body });
+    }
+  }, [user.username, username, permlink, editMode]);
 
   // Debounced save to localStorage (works for both reply and edit modes)
   const saveToStorage = useCallback(
@@ -277,6 +292,40 @@ export function ReplyTextbox({
             {t('post_content.footer.comment.disable_editor')}
           </Button>
         </div>
+
+        {shadowReplyRecovery && (
+          <div className="flex items-center justify-between rounded-md bg-amber-50 px-3 py-2 text-sm dark:bg-amber-900/20">
+            <span className="text-foreground/80">{t('post_content.footer.comment.shadow_draft_found')}</span>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-auto px-2 py-1 text-xs"
+                onClick={() => {
+                  setText(shadowReplyRecovery.body);
+                  saveToStorage(shadowReplyRecovery.body);
+                  removeStorageItem(shadowReplyRecovery.key);
+                  setShadowReplyRecovery(null);
+                }}
+              >
+                {t('post_content.footer.comment.shadow_draft_recover')}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-auto px-2 py-1 text-xs"
+                onClick={() => {
+                  removeStorageItem(shadowReplyRecovery.key);
+                  setShadowReplyRecovery(null);
+                }}
+              >
+                {t('post_content.footer.comment.shadow_draft_discard')}
+              </Button>
+            </div>
+          </div>
+        )}
 
         <div>
           <MdEditor

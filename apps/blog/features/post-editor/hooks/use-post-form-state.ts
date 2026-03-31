@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useStorageWithTTL } from "@ui/hooks/useStorageWithTTL";
-import { StorageTTL } from "@ui/lib/storage-with-ttl";
+import { StorageTTL, getItemsByPrefix, removeStorageItem } from "@ui/lib/storage-with-ttl";
 import { Entry } from "@hive/common-hiveio-packages/wax";
 import { DEFAULT_PREFERENCES, Preferences } from "@/blog/lib/utils";
 import { useTranslation } from "@/blog/i18n/client";
@@ -102,6 +102,28 @@ export function usePostFormState({ username, editMode, post_s, categoryParam }: 
 
   const [previewContent, setPreviewContent] = useState<string | undefined>(storedPost.postArea);
 
+  // Shadow draft recovery — scan for orphaned shadow drafts from crashed sessions
+  const [shadowDraftRecovery, setShadowDraftRecovery] = useState<{
+    key: string;
+    value: { title: string; body: string; tags: string[]; category: string; summary: string };
+  } | null>(null);
+
+  useEffect(() => {
+    if (editMode || !username) return;
+
+    const shadowDrafts = getItemsByPrefix<{
+      title: string;
+      body: string;
+      tags: string[];
+      category: string;
+      summary: string;
+    }>(`shadow-post-${username}-`);
+
+    if (shadowDrafts.length > 0) {
+      setShadowDraftRecovery(shadowDrafts[0]);
+    }
+  }, [username, editMode]);
+
   // Hydrate form from localStorage after initial render
   useEffect(() => {
     if (hasHydratedRef.current) return;
@@ -181,5 +203,11 @@ export function usePostFormState({ username, editMode, post_s, categoryParam }: 
     watchedValues,
     previewContent,
     setPreviewContent,
+    shadowDraftRecovery,
+    setShadowDraftRecovery,
+    removeShadowDraft: (key: string) => {
+      removeStorageItem(key);
+      setShadowDraftRecovery(null);
+    },
   };
 }

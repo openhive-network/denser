@@ -9,6 +9,7 @@ import { handleError } from '@ui/lib/handle-error';
 import { formatNaiAsset } from '@ui/lib/helpers';
 import { scheduleInvalidations, scheduleValidatedRefetch } from '@/blog/lib/react-query';
 import { getPost } from '@transaction/lib/bridge-api';
+import { setStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 
 const logger = getLogger('app');
 
@@ -111,6 +112,13 @@ export function usePostMutation() {
         // Seed the post data cache
         // Observer is username when logged in (required to post)
         queryClient.setQueryData(['postData', username, permlink, username], optimisticPost);
+
+        // Save shadow draft — insurance against tab crash before Hivemind indexes
+        setStorageItem(
+          `shadow-post-${username}-${permlink}`,
+          { title, body, tags, category, summary },
+          StorageTTL.SHADOW_DRAFT
+        );
       }
 
       return { username, permlink, editMode };
@@ -211,16 +219,23 @@ export function usePostMutation() {
         queryClient,
         ['postData', username, permlink, username],
         () => getPost(username, permlink, username),
-        (freshData) => freshData != null && !freshData._optimistic
+        (freshData) => freshData != null && !freshData._optimistic,
+        undefined,
+        {
+          onValidated: () => {
+            removeStorageItem(`shadow-post-${username}-${permlink}`);
+          }
+        }
       );
       // Invalidate feed caches separately (no optimistic data to protect)
       scheduleInvalidations(queryClient, [['entriesInfinite'], ['accountEntriesInfinite']]);
     },
 
     onError: (error: unknown, variables, context) => {
-      // Remove optimistic post data on error
+      // Remove optimistic post data and shadow draft on error
       if (context && !variables.editMode) {
         queryClient.removeQueries({ queryKey: ['postData', context.username, context.permlink, context.username] });
+        removeStorageItem(`shadow-post-${context.username}-${context.permlink}`);
       }
       handleError(error, {
         method: 'usePostMutation',
