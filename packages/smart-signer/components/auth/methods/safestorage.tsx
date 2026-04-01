@@ -97,6 +97,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
+    const [showPasskeyPrompt, setShowPasskeyPrompt] = useState(false);
+    const [lastAuthPassword, setLastAuthPassword] = useState<string>('');
     const [show, setShow] = useState<{ password: boolean; wif: boolean }>({
       password: false,
       wif: false
@@ -137,6 +139,22 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         setError(null);
         await authClient.current?.authenticate(username, password, keyType);
         await finalize(values);
+
+        // After successful auth, offer passkey enrollment if supported
+        try {
+          const client = authClient.current;
+          if (client) {
+            const supported = await client.isPasskeySupported();
+            const hasPasskey = await client.hasPasskey(username);
+            const dismissed = localStorage.getItem(`passkey-dismissed-${username}`);
+            if (supported && !hasPasskey && !dismissed) {
+              setLastAuthPassword(password);
+              setShowPasskeyPrompt(true);
+            }
+          }
+        } catch {
+          // Non-critical — silently skip passkey prompt on any error
+        }
       } catch (error) {
         if (isKeyUpdateNeeded(error) || isAlreadyRegistered(error)) {
           onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE);
@@ -213,8 +231,27 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           authClient.current = await hbauthService.getOnlineClient();
 
           const auths = await authClient.current.getRegisteredUsers();
-
           setAuthUsers(auths);
+
+          // Auto-trigger biometric unlock if a passkey is registered
+          if (auths.length > 0 && username) {
+            const targetUser = auths.find((a) => a.username === username) ?? auths[0];
+            if (targetUser && !targetUser.unlocked) {
+              try {
+                const hasPasskey = await authClient.current.hasPasskey(targetUser.username);
+                if (hasPasskey) {
+                  form.setValue('username', targetUser.username);
+                  const keyType = form.getValues().keyType;
+                  setLoading(true);
+                  await authClient.current.biometricUnlock(targetUser.username, keyType);
+                  await finalize(form.getValues());
+                  return; // Skip setLoading(false) in finally — finalize handles it
+                }
+              } catch {
+                // Biometric failed — show normal password form
+              }
+            }
+          }
         } catch (error) {
           const errorMessage = handleAuthError(error, 'SafeStorage.useEffect');
           setError(errorMessage);
@@ -535,6 +572,53 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                         </form>
                     ) */}
         </Form>
+
+        {/* Passkey enrollment prompt — shown after successful password login */}
+        {showPasskeyPrompt && (
+          <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
+            <p className="mb-2 text-sm font-medium">Enable biometric unlock?</p>
+            <p className="mb-3 text-xs text-muted-foreground">
+              Use fingerprint, Face ID, or device PIN to unlock instead of typing your password.
+            </p>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                className="bg-blue-600 text-white hover:bg-blue-500"
+                onClick={async () => {
+                  try {
+                    await authClient.current?.registerPasskey(
+                      form.getValues().username,
+                      lastAuthPassword
+                    );
+                    setShowPasskeyPrompt(false);
+                    setLastAuthPassword('');
+                  } catch (err) {
+                    const msg = err instanceof Error ? err.message : String(err);
+                    setError(msg);
+                    setShowPasskeyPrompt(false);
+                    setLastAuthPassword('');
+                  }
+                }}
+              >
+                Enable
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  localStorage.setItem(
+                    `passkey-dismissed-${form.getValues().username}`,
+                    'true'
+                  );
+                  setShowPasskeyPrompt(false);
+                  setLastAuthPassword('');
+                }}
+              >
+                Not now
+              </Button>
+            </div>
+          </div>
+        )}
       </Step>
     );
   }

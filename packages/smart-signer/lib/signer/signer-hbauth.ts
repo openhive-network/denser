@@ -126,24 +126,43 @@ export class SignerHbauth extends Signer {
     const checkAuthResult = await this.checkAuth(username, keyType);
 
     if (!checkAuthResult) {
-      if (!password) {
-        password = await this.getPasswordFromUser();
-      }
-      if (!password) throw new Error('No password to unlock key');
-
       let authStatus: AuthStatus = { ok: false };
-      try {
-        authStatus = await authClient.authenticate(username, password, keyType);
-      } catch (error) {
-        logger.error('Error in signDigest, when trying to authenticate user: %s', error instanceof Error ? error.message : String(error));
 
-        // Check if this is an ignorable error (e.g., "User is already logged in")
-        if (isIgnorableError(error)) {
-          logger.info('Ignoring expected error during authentication');
-          authStatus.ok = true;
-        } else {
-          const { message } = parseAuthError(error);
-          throw new Error(message, { cause: error });
+      // Try biometric unlock first (if passkey registered and no password provided)
+      if (!password) {
+        try {
+          const hasPasskey = await authClient.hasPasskey(username);
+          if (hasPasskey) {
+            logger.info('Attempting biometric unlock for %s', username);
+            authStatus = await (authClient as OnlineClient).biometricUnlock(username, keyType);
+          }
+        } catch (error) {
+          // Biometric failed (cancelled, passkey deleted, unsupported) — fall through to password
+          logger.info('Biometric unlock failed, falling back to password: %s',
+            error instanceof Error ? error.message : String(error));
+        }
+      }
+
+      // Fall back to password if biometric didn't succeed
+      if (!authStatus.ok) {
+        if (!password) {
+          password = await this.getPasswordFromUser();
+        }
+        if (!password) throw new Error('No password to unlock key');
+
+        try {
+          authStatus = await authClient.authenticate(username, password, keyType);
+        } catch (error) {
+          logger.error('Error in signDigest, when trying to authenticate user: %s', error instanceof Error ? error.message : String(error));
+
+          // Check if this is an ignorable error (e.g., "User is already logged in")
+          if (isIgnorableError(error)) {
+            logger.info('Ignoring expected error during authentication');
+            authStatus.ok = true;
+          } else {
+            const { message } = parseAuthError(error);
+            throw new Error(message, { cause: error });
+          }
         }
       }
 
