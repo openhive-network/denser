@@ -1,4 +1,5 @@
 import { logApiCall, isApiLoggingEnabled } from './api-logger';
+import { perfCollector } from './perf-collector';
 
 /**
  * Creates a proxy that intercepts API calls and logs them.
@@ -24,21 +25,25 @@ function createLoggingProxy<T extends object>(target: T, pathPrefix: string): T 
 
           try {
             const result = await value.apply(obj, args);
+            const duration = Date.now() - start;
             logApiCall({
               api: currentPath,
               params: args.length === 1 ? args[0] : args,
               status: 'success',
-              duration_ms: Date.now() - start
+              duration_ms: duration
             });
+            perfCollector.record(currentPath, duration, false);
             return result;
           } catch (error) {
+            const duration = Date.now() - start;
             logApiCall({
               api: currentPath,
               params: args.length === 1 ? args[0] : args,
               status: 'error',
-              duration_ms: Date.now() - start,
+              duration_ms: duration,
               error: error instanceof Error ? error.message : String(error)
             });
+            perfCollector.record(currentPath, duration, true);
             throw error;
           }
         };
@@ -56,10 +61,10 @@ function createLoggingProxy<T extends object>(target: T, pathPrefix: string): T 
 
 /**
  * Wraps a HiveChain instance with logging proxies on api and restApi properties.
- * Only wraps if DEBUG_API_CALLS is enabled.
+ * Active when DEBUG_API_CALLS or DENSER_DEBUG_MEM is enabled.
  */
 export function wrapChainWithLogging<T extends { api: object; restApi: object }>(chain: T): T {
-  if (!isApiLoggingEnabled()) {
+  if (!isApiLoggingEnabled() && !perfCollector.enabled) {
     return chain;
   }
 

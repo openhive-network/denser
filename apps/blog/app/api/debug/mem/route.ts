@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import v8 from 'v8';
 import path from 'path';
+import { perfCollector } from '@transaction/lib/perf-collector';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,15 +23,21 @@ export async function GET(request: Request) {
   }
 
   const mem = process.memoryUsage();
+  const memFormatted = formatMem(mem);
 
   if (action === 'snapshot') {
     const filename = v8.writeHeapSnapshot(
       path.join('/tmp', `heap-${Date.now()}.heapsnapshot`)
     );
-    return NextResponse.json({ ...formatMem(mem), snapshot: filename });
+    return NextResponse.json({ ...memFormatted, snapshot: filename });
   }
 
-  return NextResponse.json(formatMem(mem));
+  // Include perf stats if collector is active (resets on each read)
+  if (perfCollector.enabled) {
+    return NextResponse.json({ ...memFormatted, perf: perfCollector.snapshot() });
+  }
+
+  return NextResponse.json(memFormatted);
 }
 
 function formatMem(mem: NodeJS.MemoryUsage) {

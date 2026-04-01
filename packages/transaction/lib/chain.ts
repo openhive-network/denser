@@ -2,8 +2,15 @@ import type { ExtendedNodeApi, ExtendedRestApi } from '@hive/common-hiveio-packa
 import { getHiveChainService } from './hive-chain-service';
 import { TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { wrapChainWithLogging } from './chain-proxy';
+import { perfCollector } from './perf-collector';
 
 export type Chain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
+
+// Enable perf collection when debug mem is active
+const isServer = typeof window === 'undefined';
+if (isServer && process.env.DENSER_DEBUG_MEM === 'true') {
+  perfCollector.enable();
+}
 
 let chain: Promise<Chain> | undefined = undefined;
 
