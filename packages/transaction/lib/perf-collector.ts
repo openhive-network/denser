@@ -103,5 +103,22 @@ class PerfCollector {
   }
 }
 
-/** Singleton — shared across the process */
-export const perfCollector = new PerfCollector();
+// Use globalThis to survive webpack chunk splitting — Next.js may bundle
+// chain-proxy.ts and the debug endpoint into separate chunks, creating
+// separate module instances. globalThis ensures a single collector.
+const GLOBAL_KEY = '__denser_perf_collector__';
+
+function getOrCreateCollector(): PerfCollector {
+  const g = globalThis as Record<string, unknown>;
+  if (!g[GLOBAL_KEY]) {
+    const collector = new PerfCollector();
+    const isServer = typeof window === 'undefined';
+    if (isServer && process.env.DENSER_DEBUG_MEM === 'true') {
+      collector.enable();
+    }
+    g[GLOBAL_KEY] = collector;
+  }
+  return g[GLOBAL_KEY] as PerfCollector;
+}
+
+export const perfCollector = getOrCreateCollector();
