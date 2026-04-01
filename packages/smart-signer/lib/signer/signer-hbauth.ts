@@ -133,8 +133,12 @@ export class SignerHbauth extends Signer {
         try {
           const hasPasskey = await authClient.hasPasskey(username);
           if (hasPasskey) {
-            logger.info('Attempting biometric unlock for %s', username);
-            authStatus = await (authClient as OnlineClient).biometricUnlock(username, keyType);
+            // Use minimal verification for posting (blog), full verification for active/owner (wallet)
+            const uv = keyType === 'posting' ? 'discouraged' : 'required';
+            logger.info('Attempting biometric unlock for %s (uv=%s)', username, uv);
+            authStatus = await (authClient as OnlineClient).biometricUnlock(
+              username, keyType, uv as UserVerificationRequirement
+            );
           }
         } catch (error) {
           // Biometric failed (cancelled, passkey deleted, unsupported) — fall through to password

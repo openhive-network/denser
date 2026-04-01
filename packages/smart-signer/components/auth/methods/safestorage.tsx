@@ -99,6 +99,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const [error, setError] = useState<string | null>(null);
     const [showPasskeyPrompt, setShowPasskeyPrompt] = useState(false);
     const [lastAuthPassword, setLastAuthPassword] = useState<string>('');
+    const pendingFinalizeRef = useRef<SafeStorageForm | null>(null);
     const [show, setShow] = useState<{ password: boolean; wif: boolean }>({
       password: false,
       wif: false
@@ -138,22 +139,36 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         setLoading(true);
         setError(null);
         await authClient.current?.authenticate(username, password, keyType);
-        await finalize(values);
 
-        // After successful auth, offer passkey enrollment if supported
+        // Check passkey support BEFORE finalize — finalize closes the dialog
+        // and may unmount this component, so state updates after it are lost.
+        let shouldPromptPasskey = false;
         try {
           const client = authClient.current;
           if (client) {
             const supported = await client.isPasskeySupported();
             const hasPasskey = await client.hasPasskey(username);
-            const dismissed = localStorage.getItem(`passkey-dismissed-${username}`);
-            if (supported && !hasPasskey && !dismissed) {
-              setLastAuthPassword(password);
-              setShowPasskeyPrompt(true);
+            const dismissedRaw = localStorage.getItem(`passkey-dismissed-${username}`);
+            let dismissed = false;
+            if (dismissedRaw === 'never') {
+              dismissed = true;
+            } else if (dismissedRaw) {
+              // Timestamp-based dismiss — re-ask after 8 hours
+              dismissed = Date.now() - Number(dismissedRaw) < 8 * 60 * 60 * 1000;
             }
+            shouldPromptPasskey = supported && !hasPasskey && !dismissed;
           }
         } catch {
           // Non-critical — silently skip passkey prompt on any error
+        }
+
+        if (shouldPromptPasskey) {
+          setLastAuthPassword(password);
+          pendingFinalizeRef.current = values;
+          setShowPasskeyPrompt(true);
+          setLoading(false);
+        } else {
+          await finalize(values);
         }
       } catch (error) {
         if (isKeyUpdateNeeded(error) || isAlreadyRegistered(error)) {
@@ -233,7 +248,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           const auths = await authClient.current.getRegisteredUsers();
           setAuthUsers(auths);
 
-          // Auto-trigger biometric unlock if a passkey is registered
+          // Auto-trigger biometric unlock if a passkey is registered.
+          // Uses "discouraged" verification for posting key — minimal friction,
+          // like the old WIF-in-session experience.
           if (auths.length > 0 && username) {
             const targetUser = auths.find((a) => a.username === username) ?? auths[0];
             if (targetUser && !targetUser.unlocked) {
@@ -242,10 +259,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 if (hasPasskey) {
                   form.setValue('username', targetUser.username);
                   const keyType = form.getValues().keyType;
+                  const uv = keyType === 'posting' ? 'discouraged' : 'required';
                   setLoading(true);
-                  await authClient.current.biometricUnlock(targetUser.username, keyType);
+                  await authClient.current.biometricUnlock(targetUser.username, keyType, uv);
                   await finalize(form.getValues());
-                  return; // Skip setLoading(false) in finally — finalize handles it
+                  return;
                 }
               } catch {
                 // Biometric failed — show normal password form
@@ -590,13 +608,16 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                       form.getValues().username,
                       lastAuthPassword
                     );
-                    setShowPasskeyPrompt(false);
-                    setLastAuthPassword('');
                   } catch (err) {
                     const msg = err instanceof Error ? err.message : String(err);
                     setError(msg);
+                  } finally {
                     setShowPasskeyPrompt(false);
                     setLastAuthPassword('');
+                    if (pendingFinalizeRef.current) {
+                      await finalize(pendingFinalizeRef.current);
+                      pendingFinalizeRef.current = null;
+                    }
                   }
                 }}
               >
@@ -605,16 +626,39 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => {
+                onClick={async () => {
                   localStorage.setItem(
                     `passkey-dismissed-${form.getValues().username}`,
-                    'true'
+                    String(Date.now())
                   );
                   setShowPasskeyPrompt(false);
                   setLastAuthPassword('');
+                  if (pendingFinalizeRef.current) {
+                    await finalize(pendingFinalizeRef.current);
+                    pendingFinalizeRef.current = null;
+                  }
                 }}
               >
                 Not now
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-muted-foreground"
+                onClick={async () => {
+                  localStorage.setItem(
+                    `passkey-dismissed-${form.getValues().username}`,
+                    'never'
+                  );
+                  setShowPasskeyPrompt(false);
+                  setLastAuthPassword('');
+                  if (pendingFinalizeRef.current) {
+                    await finalize(pendingFinalizeRef.current);
+                    pendingFinalizeRef.current = null;
+                  }
+                }}
+              >
+                Never ask again
               </Button>
             </div>
           </div>
