@@ -12,6 +12,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Don't expose X-Powered-By: Next.js
+  compress: false, // Nginx handles compression; disabling avoids zlib memory retention (denser#886)
   output: 'standalone',
   swcMinify: false,
   basePath: basePath,
