@@ -47,7 +47,10 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
 
     try {
       const hiveChain = await getChain();
-      const operation: operation = await getOperationForLogin(username, keyType, loginChallenge, loginType);
+      // Read challenge directly from cookie — React state may not have updated yet
+      // if signAuth is called early (e.g., biometric auto-unlock on page load).
+      const challenge = loginChallenge || getCookie(`${cookieNamePrefix}login_challenge`) || '';
+      const operation: operation = await getOperationForLogin(username, keyType, challenge, loginType);
 
       const expr = new Date();
       expr.setHours(expr.getHours() + 1);
