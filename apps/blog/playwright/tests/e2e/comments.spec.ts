@@ -744,7 +744,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // validate the response comment's author
     await expect(commentViewPage.getResponseCommentAuthorNameLink).toHaveText('gtg');
     // validate the response comment's author reputation
-    expect(await commentViewPage.getResponseCommentAuthorReputation.textContent()).toBe('(75)');
+    expect(await commentViewPage.getResponseCommentAuthorReputation.textContent()).toBe('(76)');
     // validate the response comment's author affiliation tag
     expect(await commentViewPage.getResponseCommentAffiliationTag).toHaveText('Wizard');
     // validate the response comment's author content
