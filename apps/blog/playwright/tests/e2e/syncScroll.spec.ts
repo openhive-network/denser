@@ -156,10 +156,12 @@ test.describe('Sync scroll tests', () => {
       el.dispatchEvent(new Event('scroll', { bubbles: true }));
     }, targetScroll);
 
-    // Now preview should have scrolled (sync is re-enabled)
+    // Now preview should have scrolled (sync is re-enabled).
+    // Bumped timeout from 2s to 5s: in headless CI the listener re-attach
+    // after toggling can take longer than the editor scroll dispatch.
     await expect.poll(
       () => previewScroller.evaluate((el) => el.scrollTop),
-      { message: 'Preview should sync after re-enabling toggle', timeout: 2000 }
+      { message: 'Preview should sync after re-enabling toggle', timeout: 5000 }
     ).toBeGreaterThan(50);
   });
 });

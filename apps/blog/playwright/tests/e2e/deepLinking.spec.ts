@@ -93,7 +93,10 @@ test.describe('Deep Linking tests', () => {
   });
 
   test('direct link to specific community loads correctly', async ({ page }) => {
-    await page.goto('/trending/hive-167922');
+    // Use 'domcontentloaded' instead of the default 'load' — community pages
+    // contain many external images that may never finish loading and would
+    // otherwise time out the navigation.
+    await page.goto('/trending/hive-167922', { waitUntil: 'domcontentloaded' });
 
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
 
