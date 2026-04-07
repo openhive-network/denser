@@ -355,8 +355,11 @@ test.describe('Healthchecker page - Accessibility', () => {
         // Press ArrowRight key to move to next tab (standard ARIA tab navigation)
         await page.keyboard.press('ArrowRight');
 
-        // Verify focus moved to the second tab
-        await expect(healthcheckerPage.hiveSenseApiTab).toBeFocused();
+        // Verify the next tab became active. We intentionally don't assert
+        // toBeFocused() here: HealthCheckerComponent mounted in the HiveSense
+        // tab content moves focus into itself on mount, which is unrelated
+        // to whether keyboard tab navigation worked.
+        await healthcheckerPage.validateHiveSenseTabIsActive();
     });
 
     test('Validate tab activation with Enter key', async ({ page }) => {
