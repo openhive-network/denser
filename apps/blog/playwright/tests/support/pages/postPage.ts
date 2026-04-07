@@ -241,7 +241,12 @@ export class PostPage {
 
   async gotoPostPage(communityCategoryName: string, author: string, permlink: string) {
     await this.page.goto(`/${communityCategoryName}/@${author}/${permlink}/`);
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for the full window load event rather than just domcontentloaded.
+    // On webkit testenv React hydration completes noticeably later than on
+    // chromium; without this, locators resolved immediately after navigation
+    // can point to SSR-rendered nodes that get detached during hydration,
+    // causing scrollIntoViewIfNeeded / getComputedStyle races.
+    await this.page.waitForLoadState('load');
     await this.page.waitForSelector(this.articleFooter['_selector']);
   }
 
@@ -282,6 +287,10 @@ export class PostPage {
   }
 
   async getElementCssPropertyValue(element: Locator, cssProperty: string) {
+    // Defensive wait: on webkit a locator captured before React hydration
+    // can resolve to a detached SSR node, in which case getComputedStyle
+    // returns an empty string. waitFor re-resolves to the live element.
+    await element.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
     const property = await element.evaluate((ele, css) => {
       return window.getComputedStyle(ele).getPropertyValue(css);
     }, cssProperty);
