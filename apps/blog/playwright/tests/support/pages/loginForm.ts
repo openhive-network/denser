@@ -44,6 +44,8 @@ export class LoginForm {
   readonly errorToastContentTrigger: Locator;
   readonly errorToastContentMessage: Locator;
 
+  readonly biometricPromptNotNowButton: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.loginDialog = page.getByTestId('login-dialog');
@@ -88,6 +90,20 @@ export class LoginForm {
     this.errorToastContent = page.getByTestId('error-toast-content');
     this.errorToastContentTrigger = page.getByTestId('error-toast-content-trigger');
     this.errorToastContentMessage = page.getByTestId('error-toast-content-message');
+
+    this.biometricPromptNotNowButton = this.loginDialog.getByRole('button', { name: 'Not now' });
+  }
+
+  // After a successful Safe storage sign-in, the app may show an
+  // "Enable biometric unlock?" prompt that blocks finalize() until dismissed.
+  // Click "Not now" if it appears so the login flow can complete.
+  async dismissBiometricPromptIfPresent() {
+    try {
+      await this.biometricPromptNotNowButton.waitFor({ state: 'visible', timeout: 3000 });
+      await this.biometricPromptNotNowButton.click();
+    } catch {
+      // Prompt not shown — nothing to dismiss.
+    }
   }
 
   async validateDefaultLoginFormIsLoaded() {

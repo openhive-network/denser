@@ -21,12 +21,21 @@ async function test({ page }) {
   await gotoAndWaitForPosts(page, '/trending');
 
   console.log('\n2. Finding Login button...');
+  // The Login button is rendered after client-side hydration of the header,
+  // which can lag behind post list rendering. Actively wait instead of using
+  // isVisible() (which returns immediately and races hydration).
   let loginButton = page.locator(SELECTORS.LOGIN_BTN);
-  let buttonFound = await loginButton.isVisible().catch(() => false);
+  let buttonFound = await loginButton
+    .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE })
+    .then(() => true)
+    .catch(() => false);
 
   if (!buttonFound) {
     loginButton = page.locator('button:has-text("Login"), a:has-text("Login")').first();
-    buttonFound = await loginButton.isVisible().catch(() => false);
+    buttonFound = await loginButton
+      .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE })
+      .then(() => true)
+      .catch(() => false);
   }
 
   if (buttonFound) {

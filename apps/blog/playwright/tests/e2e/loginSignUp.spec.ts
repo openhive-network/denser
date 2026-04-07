@@ -145,6 +145,8 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateUnlockUserWithPasswordLoginFormIsLoaded(user.username);
     await loginForm.passwordInput.fill(user.password);
     await loginForm.signInButton.click();
+    // App may show "Enable biometric unlock?" prompt that blocks login finalize.
+    await loginForm.dismissBiometricPromptIfPresent();
     await homePage.profileAvatarButton.click();
     // Validate User is logged in
     await page.waitForSelector(profileMenu.profileMenuContent['_selector']);

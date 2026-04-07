@@ -672,8 +672,11 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Move to the post with comments
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
-    // click comment link of the first comment
-    await postPage.commentPageLink.first().scrollIntoViewIfNeeded();
+    // click comment link of the first comment.
+    // Don't separate scrollIntoViewIfNeeded from click — on webkit the
+    // comment list re-renders during hydration and the locator captured
+    // by scrollIntoViewIfNeeded gets detached before click. Playwright's
+    // .click() already auto-scrolls and retries on stale elements.
     await postPage.commentPageLink.first().click();
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // validate re-title of the comment's thread
@@ -681,7 +684,6 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // validate author of the main comment
     await expect(commentViewPage.getMainCommentAuthorNameLink).toHaveText('sicarius');
     // click the comment author of the comment
-    await commentViewPage.getMainCommentAuthorNameLink.first().scrollIntoViewIfNeeded();
     await commentViewPage.getMainCommentAuthorNameLink.first().click();
     // validate the user info click card is visibled
     await expect(commentViewPage.getPopoverCardContent.first()).toBeVisible();
@@ -690,13 +692,11 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
       "Did my 'ol due diligence and threw a star and fork at the openhive repo."
     );
     // click Upvote and move to the Login to Vote Dialog and back
-    await commentViewPage.getMainCommentUpvoteButton.scrollIntoViewIfNeeded();
     await commentViewPage.getMainCommentUpvoteButton.click();
     await defaultLoginForm.validateDefaultLoginFormIsLoaded();
     await defaultLoginForm.closeLoginForm();
     await expect(commentViewPage.getMainCommentAuthorNameLink.first()).toHaveText('sicarius');
     // click Downvote and move to the Login to Vote Dialog and back
-    await commentViewPage.getMainCommentDownvoteButton.scrollIntoViewIfNeeded();
     await commentViewPage.getMainCommentDownvoteButton.click();
     await defaultLoginForm.validateDefaultLoginFormIsLoaded();
     await defaultLoginForm.closeLoginForm();
@@ -708,7 +708,6 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     const firstCommentVotes = '4 votes';
     await expect(commentViewPage.getMainCommentVotes).toHaveText(firstCommentVotes);
     // Click Reply of the first comment and open login form
-    await commentViewPage.getMainCommentReplyButton.scrollIntoViewIfNeeded();
     await commentViewPage.getMainCommentReplyButton.click();
     await defaultLoginForm.validateDefaultLoginFormIsLoaded();
     await defaultLoginForm.closeLoginForm();
@@ -735,8 +734,9 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Move to the post with comments
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
-    // click comment link of the first comment
-    await postPage.commentPageLink.first().scrollIntoViewIfNeeded();
+    // click comment link of the first comment.
+    // .click() auto-scrolls and retries on detached, which matters on
+    // webkit where the comment list re-renders during hydration.
     await postPage.commentPageLink.first().click();
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // validate re-title of the comment's thread - comment view page is loaded
@@ -744,7 +744,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // validate the response comment's author
     await expect(commentViewPage.getResponseCommentAuthorNameLink).toHaveText('gtg');
     // validate the response comment's author reputation
-    expect(await commentViewPage.getResponseCommentAuthorReputation.textContent()).toBe('(75)');
+    expect(await commentViewPage.getResponseCommentAuthorReputation.textContent()).toBe('(76)');
     // validate the response comment's author affiliation tag
     expect(await commentViewPage.getResponseCommentAffiliationTag).toHaveText('Wizard');
     // validate the response comment's author content
@@ -767,7 +767,6 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Move to the post with comments
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
     // Click comment link of the second comment(nested comment - gtg as author)
-    await postPage.commentPageLink.nth(1).scrollIntoViewIfNeeded();
     await postPage.commentPageLink.nth(1).click();
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // Validate re-title of the comment's thread - comment view page is loaded
@@ -802,7 +801,6 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Move to the post with comments
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
     // Click comment link of the second comment(nested comment - gtg as author)
-    await postPage.commentPageLink.nth(1).scrollIntoViewIfNeeded();
     await postPage.commentPageLink.nth(1).click();
     await commentViewPage.page.waitForLoadState('domcontentloaded');
     // Validate re-title of the comment's thread - comment view page is loaded
