@@ -63,9 +63,13 @@ async function test({ page }) {
     allPassed = false;
   }
 
-  // Verify page rendered
-  const bodyVisible = await page.locator('body').isVisible().catch(() => false);
-  if (bodyVisible) {
+  // Wait for hydration like step 6 does, then verify the body element is
+  // present in the DOM (rather than visible — Next.js 404 pages can have a
+  // body without a bounding box, which makes isVisible() return false even
+  // though the page is fine).
+  await page.waitForLoadState('networkidle', { timeout: TIMEOUTS.NETWORK_IDLE }).catch(() => {});
+  const bodyAttached = await page.locator('body').count().catch(() => 0);
+  if (bodyAttached > 0) {
     console.log('   ✓ PASS: Page rendered without crash');
   } else {
     console.log('   ✗ FAIL: Page crashed');
