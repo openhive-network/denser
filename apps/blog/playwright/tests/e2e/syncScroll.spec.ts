@@ -101,6 +101,25 @@ test.describe('Sync scroll tests', () => {
   test('Sync scroll toggle disables and enables scroll synchronization', async ({ page }) => {
     const { postEditorPage, editorScroller, previewScroller } = await setupEditorWithContent(page);
 
+    // Helper: hover container, reliably reveal the toggle, then click it.
+    const clickSyncToggle = async () => {
+      await postEditorPage.getSyncScrollContainer.hover();
+      await postEditorPage.getSyncScrollToggle.waitFor({ state: 'visible', timeout: 2000 });
+      await postEditorPage.getSyncScrollToggle.click();
+    };
+
+    // Helper: trigger a real scroll on the editor via mouse wheel.
+    // Setting scrollTop + dispatchEvent('scroll') is racy on Firefox because
+    // the sync hook RAF-debounces and the synthetic event can be coalesced
+    // away. mouse.wheel produces native scroll events with the timing the
+    // listener actually expects.
+    const wheelEditorBy = async (deltaY: number) => {
+      const box = await editorScroller.boundingBox();
+      if (!box) throw new Error('editor scroller has no bounding box');
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await page.mouse.wheel(0, deltaY);
+    };
+
     // Reset scroll positions
     await editorScroller.evaluate((el) => { el.scrollTop = 0; });
     await previewScroller.evaluate((el) => { el.scrollTop = 0; });
@@ -112,25 +131,20 @@ test.describe('Sync scroll tests', () => {
     ).toBe(0);
 
     // Click the sync scroll toggle to disable sync
-    // The button is initially hidden, so hover over the container to reveal it
-    await postEditorPage.getSyncScrollContainer.hover();
-    await postEditorPage.getSyncScrollToggle.click();
+    await clickSyncToggle();
 
-    // Scroll the editor (dispatch event to test that sync is disabled)
+    // Scroll the editor — sync should NOT propagate to preview
     const editorScrollInfo = await editorScroller.evaluate((el) => ({
       scrollHeight: el.scrollHeight,
       clientHeight: el.clientHeight
     }));
     const targetScroll = (editorScrollInfo.scrollHeight - editorScrollInfo.clientHeight) * 0.5;
-    await editorScroller.evaluate((el, scrollTop) => {
-      el.scrollTop = scrollTop;
-      el.dispatchEvent(new Event('scroll', { bubbles: true }));
-    }, targetScroll);
+    await wheelEditorBy(targetScroll);
 
-    // Give the sync mechanism a chance to fire (it shouldn't, since it's disabled)
+    // Wait for editor scroll to actually take effect
     await expect.poll(
       () => editorScroller.evaluate((el) => el.scrollTop),
-      { timeout: 1000 }
+      { timeout: 2000 }
     ).toBeGreaterThan(0);
 
     // Preview should NOT have scrolled (sync is disabled)
@@ -138,27 +152,18 @@ test.describe('Sync scroll tests', () => {
     expect(previewScrollAfterDisabled).toBeLessThan(50); // Should be near 0
 
     // Re-enable sync scroll
-    await postEditorPage.getSyncScrollContainer.hover();
-    await postEditorPage.getSyncScrollToggle.click();
+    await clickSyncToggle();
 
     // Reset editor to top
     await editorScroller.evaluate((el) => { el.scrollTop = 0; });
-
-    // Wait for reset to settle
     await expect.poll(
       () => editorScroller.evaluate((el) => el.scrollTop),
       { timeout: 1000 }
     ).toBe(0);
 
-    // Scroll editor again - must dispatch event to trigger sync
-    await editorScroller.evaluate((el, scrollTop) => {
-      el.scrollTop = scrollTop;
-      el.dispatchEvent(new Event('scroll', { bubbles: true }));
-    }, targetScroll);
+    // Scroll editor with real wheel input — preview should now sync.
+    await wheelEditorBy(targetScroll);
 
-    // Now preview should have scrolled (sync is re-enabled).
-    // Bumped timeout from 2s to 5s: in headless CI the listener re-attach
-    // after toggling can take longer than the editor scroll dispatch.
     await expect.poll(
       () => previewScroller.evaluate((el) => el.scrollTop),
       { message: 'Preview should sync after re-enabling toggle', timeout: 5000 }
