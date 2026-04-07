@@ -125,9 +125,17 @@ test.describe('Wallet page of @gtg tests', () => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
     await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    // Wait until the account history actually finished loading. On webkit
+    // testenv the fetch is slow enough that fill+assert can race the loader,
+    // and HistoryTable only renders the no-transactions element once
+    // isLoading becomes false.
+    await expect(walletPage.walletAccountHistoryRow.first()).toBeVisible({ timeout: 30000 });
     await walletPage.walletSearchInput.fill('unknownuser');
     await expect(walletPage.walletSearchInput).toHaveAttribute('value', 'unknownuser');
-    await expect(walletPage.walletAccountHistoryNoTransactionMsg).toHaveText('No transactions found'); // a typo to correct
+    await expect(walletPage.walletAccountHistoryNoTransactionMsg).toHaveText(
+      'No transactions found',
+      { timeout: 15000 }
+    ); // a typo to correct
     await expect(
       await walletPage.getElementCssPropertyValue(
         await walletPage.walletAccountHistoryNoTransactionMsg,
