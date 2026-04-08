@@ -31,6 +31,9 @@ variable "REACT_APP_ALLOWED_HIVE_API_NODES" {
 variable "REACT_APP_GOOGLE_DRIVE_CLIENT_ID" {
   default = ""
 }
+variable "NPM_CONFIG_REGISTRY" {
+  default = ""
+}
 
 function "notempty" {
   params = [variable]
@@ -61,6 +64,7 @@ target "local-build" {
     REACT_APP_SENTRY_DSN = "${REACT_APP_SENTRY_DSN}",
     REACT_APP_ALLOWED_HIVE_API_NODES = "${REACT_APP_ALLOWED_HIVE_API_NODES}",
     REACT_APP_GOOGLE_DRIVE_CLIENT_ID = "${REACT_APP_GOOGLE_DRIVE_CLIENT_ID}",
+    NPM_CONFIG_REGISTRY = "${NPM_CONFIG_REGISTRY}",
   }
   output = [
     "type=docker"
