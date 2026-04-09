@@ -1,0 +1,2514 @@
+{
+  "method": "bridge.get_post",
+  "params": {
+    "author": "worldmappin",
+    "permlink": "worldmappin-proposal-bringing-the-project-to-the-next-level",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active_votes": [
+        {
+          "rshares": -6139548562891,
+          "voter": "smooth"
+        },
+        {
+          "rshares": 60560349276988,
+          "voter": "blocktrades"
+        },
+        {
+          "rshares": 19321143665506,
+          "voter": "acidyo"
+        },
+        {
+          "rshares": 10911511247,
+          "voter": "leprechaun"
+        },
+        {
+          "rshares": 11813512410,
+          "voter": "good-karma"
+        },
+        {
+          "rshares": 4090265272,
+          "voter": "roelandp"
+        },
+        {
+          "rshares": 3853072350,
+          "voter": "stranger27"
+        },
+        {
+          "rshares": 595157284485,
+          "voter": "arcange"
+        },
+        {
+          "rshares": 40386326590,
+          "voter": "sharker"
+        },
+        {
+          "rshares": 549576282745,
+          "voter": "ace108"
+        },
+        {
+          "rshares": 5915022035,
+          "voter": "kibela"
+        },
+        {
+          "rshares": 1085488544,
+          "voter": "kaykunoichi"
+        },
+        {
+          "rshares": 1910385397,
+          "voter": "dolov"
+        },
+        {
+          "rshares": 1098560463373,
+          "voter": "borran"
+        },
+        {
+          "rshares": 3031366056,
+          "voter": "elamental"
+        },
+        {
+          "rshares": 2424743780127,
+          "voter": "steevc"
+        },
+        {
+          "rshares": 142259024844,
+          "voter": "penguinpablo"
+        },
+        {
+          "rshares": 10243812690926,
+          "voter": "canadian-coconut"
+        },
+        {
+          "rshares": 23116049611,
+          "voter": "titusfrost"
+        },
+        {
+          "rshares": 986522227089,
+          "voter": "jacobtothe"
+        },
+        {
+          "rshares": 686761442,
+          "voter": "wise-elf"
+        },
+        {
+          "rshares": 80483071442,
+          "voter": "seckorama"
+        },
+        {
+          "rshares": 1408308798,
+          "voter": "funnyman"
+        },
+        {
+          "rshares": 182346438268,
+          "voter": "ura-soul"
+        },
+        {
+          "rshares": 973270774,
+          "voter": "discovereurovelo"
+        },
+        {
+          "rshares": 2936583177,
+          "voter": "esteemapp"
+        },
+        {
+          "rshares": 1759742052,
+          "voter": "bigtakosensei"
+        },
+        {
+          "rshares": 13953981136,
+          "voter": "walterjay"
+        },
+        {
+          "rshares": 1953981543,
+          "voter": "strecoza"
+        },
+        {
+          "rshares": 7974276707,
+          "voter": "yiyi.maiola"
+        },
+        {
+          "rshares": 8445317293,
+          "voter": "evildeathcore"
+        },
+        {
+          "rshares": 52458362644047,
+          "voter": "ranchorelaxo"
+        },
+        {
+          "rshares": 482109860234,
+          "voter": "danielsaori"
+        },
+        {
+          "rshares": 54076999830729,
+          "voter": "trafalgar"
+        },
+        {
+          "rshares": 2898710570,
+          "voter": "ganjafarmer"
+        },
+        {
+          "rshares": 18419157546,
+          "voter": "fernwehninja"
+        },
+        {
+          "rshares": 531927060,
+          "voter": "itinerantph"
+        },
+        {
+          "rshares": 1752040723676,
+          "voter": "elevator09"
+        },
+        {
+          "rshares": 2327658826449,
+          "voter": "detlev"
+        },
+        {
+          "rshares": 2708181719,
+          "voter": "lizanomadsoul"
+        },
+        {
+          "rshares": 836832989349,
+          "voter": "raindrop"
+        },
+        {
+          "rshares": 10032749288,
+          "voter": "passion-fruit"
+        },
+        {
+          "rshares": 9582103509,
+          "voter": "fortune-master"
+        },
+        {
+          "rshares": 67570933138,
+          "voter": "dune69"
+        },
+        {
+          "rshares": 110526786028,
+          "voter": "nenio"
+        },
+        {
+          "rshares": 547059323069,
+          "voter": "forykw"
+        },
+        {
+          "rshares": 288145327439,
+          "voter": "jerrybanfield"
+        },
+        {
+          "rshares": 1028946679,
+          "voter": "rt395"
+        },
+        {
+          "rshares": 19174576502,
+          "voter": "simms50"
+        },
+        {
+          "rshares": 303030750746,
+          "voter": "xels"
+        },
+        {
+          "rshares": 7310884116,
+          "voter": "sustainablyyours"
+        },
+        {
+          "rshares": 19061962246,
+          "voter": "galberto"
+        },
+        {
+          "rshares": 297344330364,
+          "voter": "arrliinn"
+        },
+        {
+          "rshares": 3634411094210,
+          "voter": "bitcoinflood"
+        },
+        {
+          "rshares": 76306761092,
+          "voter": "alphacore"
+        },
+        {
+          "rshares": 0,
+          "voter": "sarapm"
+        },
+        {
+          "rshares": 1957508374,
+          "voter": "princessmewmew"
+        },
+        {
+          "rshares": 33384620703,
+          "voter": "wesphilbin"
+        },
+        {
+          "rshares": 451547417,
+          "voter": "joeyarnoldvn"
+        },
+        {
+          "rshares": 2608301698,
+          "voter": "thegreens"
+        },
+        {
+          "rshares": 574380513,
+          "voter": "thegrandestine"
+        },
+        {
+          "rshares": 73246424645,
+          "voter": "derekrichardson"
+        },
+        {
+          "rshares": 509052056077,
+          "voter": "godfish"
+        },
+        {
+          "rshares": 0,
+          "voter": "captainquack22"
+        },
+        {
+          "rshares": 207876263662,
+          "voter": "grecki-bazar-ewy"
+        },
+        {
+          "rshares": 3759738161,
+          "voter": "felt.buzz"
+        },
+        {
+          "rshares": 10913202964098,
+          "voter": "haejin"
+        },
+        {
+          "rshares": 577796322466,
+          "voter": "ksteem"
+        },
+        {
+          "rshares": 11868260095,
+          "voter": "hairyfairy"
+        },
+        {
+          "rshares": 11819021014,
+          "voter": "nikdo"
+        },
+        {
+          "rshares": 92753829820,
+          "voter": "josie2214"
+        },
+        {
+          "rshares": 27477030513,
+          "voter": "bambukah"
+        },
+        {
+          "rshares": 0,
+          "voter": "jjprac"
+        },
+        {
+          "rshares": 268940661199,
+          "voter": "leaky20"
+        },
+        {
+          "rshares": 4680102115,
+          "voter": "vict0r"
+        },
+        {
+          "rshares": 562409728,
+          "voter": "jeanlucsr"
+        },
+        {
+          "rshares": 3839727801556,
+          "voter": "gengua"
+        },
+        {
+          "rshares": 10320569229,
+          "voter": "svitlanka"
+        },
+        {
+          "rshares": 355403735488,
+          "voter": "santigs"
+        },
+        {
+          "rshares": 6077455434,
+          "voter": "floatinglin"
+        },
+        {
+          "rshares": 9119045809779,
+          "voter": "stoodkev"
+        },
+        {
+          "rshares": 8637642688786,
+          "voter": "tipu"
+        },
+        {
+          "rshares": 17094557885,
+          "voter": "kimzwarch"
+        },
+        {
+          "rshares": 638599989,
+          "voter": "holbein81"
+        },
+        {
+          "rshares": 80848933593,
+          "voter": "tomiscurious"
+        },
+        {
+          "rshares": 2933763842,
+          "voter": "sorin.cristescu"
+        },
+        {
+          "rshares": 9249391540,
+          "voter": "fatman"
+        },
+        {
+          "rshares": 81378970756,
+          "voter": "votehero"
+        },
+        {
+          "rshares": 1540974619532,
+          "voter": "deathwing"
+        },
+        {
+          "rshares": 15810811130,
+          "voter": "espoem"
+        },
+        {
+          "rshares": 8048453133,
+          "voter": "msp-makeaminnow"
+        },
+        {
+          "rshares": 644433811234,
+          "voter": "honeydue"
+        },
+        {
+          "rshares": 227435838357,
+          "voter": "ecotrain"
+        },
+        {
+          "rshares": 638662761,
+          "voter": "sayee"
+        },
+        {
+          "rshares": 32321048516,
+          "voter": "divinekids"
+        },
+        {
+          "rshares": 19484234940,
+          "voter": "kobusu"
+        },
+        {
+          "rshares": 354581254,
+          "voter": "esteem.app"
+        },
+        {
+          "rshares": 8002645920,
+          "voter": "investegg"
+        },
+        {
+          "rshares": 5478614418148,
+          "voter": "fedesox"
+        },
+        {
+          "rshares": 1138453486,
+          "voter": "petrolinivideo"
+        },
+        {
+          "rshares": 1523894533,
+          "voter": "polyideic"
+        },
+        {
+          "rshares": 18391231201,
+          "voter": "dejan.vuckovic"
+        },
+        {
+          "rshares": 18467705940,
+          "voter": "denissemata"
+        },
+        {
+          "rshares": 927341120482,
+          "voter": "teamukraine"
+        },
+        {
+          "rshares": 60949258451,
+          "voter": "ybanezkim26"
+        },
+        {
+          "rshares": 591356529738,
+          "voter": "thekittygirl"
+        },
+        {
+          "rshares": 1421124587091,
+          "voter": "familyprotection"
+        },
+        {
+          "rshares": 1798007091,
+          "voter": "g10a"
+        },
+        {
+          "rshares": 452288324,
+          "voter": "stmeme"
+        },
+        {
+          "rshares": 18449692592,
+          "voter": "eonwarped"
+        },
+        {
+          "rshares": 3348249394,
+          "voter": "steinhammer"
+        },
+        {
+          "rshares": 2743263024091,
+          "voter": "emrebeyler"
+        },
+        {
+          "rshares": 0,
+          "voter": "maxinpower"
+        },
+        {
+          "rshares": 315507946998,
+          "voter": "katerinaramm"
+        },
+        {
+          "rshares": 2073096573,
+          "voter": "xsasj"
+        },
+        {
+          "rshares": 19935104511,
+          "voter": "mytechtrail"
+        },
+        {
+          "rshares": 1621850883,
+          "voter": "pnodgaming"
+        },
+        {
+          "rshares": 4594897274123,
+          "voter": "traf"
+        },
+        {
+          "rshares": 5990950703,
+          "voter": "itchyfeetdonica"
+        },
+        {
+          "rshares": 951098200042,
+          "voter": "nathen007"
+        },
+        {
+          "rshares": 6413942146,
+          "voter": "advocatus"
+        },
+        {
+          "rshares": 117543841414,
+          "voter": "thedolphincocoon"
+        },
+        {
+          "rshares": 288415805642,
+          "voter": "wiseagent"
+        },
+        {
+          "rshares": 235474600,
+          "voter": "cryptonized"
+        },
+        {
+          "rshares": 3076751593,
+          "voter": "tomatom"
+        },
+        {
+          "rshares": 190604991338,
+          "voter": "apnigrich"
+        },
+        {
+          "rshares": 21529218499,
+          "voter": "phortun"
+        },
+        {
+          "rshares": 663878032463,
+          "voter": "aussieninja"
+        },
+        {
+          "rshares": 931985174,
+          "voter": "sagescrub"
+        },
+        {
+          "rshares": 200531189636,
+          "voter": "gabrielatravels"
+        },
+        {
+          "rshares": 51239386530,
+          "voter": "alexanderfluke"
+        },
+        {
+          "rshares": 198615097465,
+          "voter": "bossel"
+        },
+        {
+          "rshares": 28231301300,
+          "voter": "nahupuku"
+        },
+        {
+          "rshares": 19038728075,
+          "voter": "lilianajimenez"
+        },
+        {
+          "rshares": 85068623902,
+          "voter": "bengy"
+        },
+        {
+          "rshares": 5466721534,
+          "voter": "tryskele"
+        },
+        {
+          "rshares": 32709533510,
+          "voter": "baycan"
+        },
+        {
+          "rshares": 7181430981,
+          "voter": "leslierevales"
+        },
+        {
+          "rshares": 72914905379,
+          "voter": "amjadsharif"
+        },
+        {
+          "rshares": 2922935336,
+          "voter": "manncpt"
+        },
+        {
+          "rshares": 32068329554,
+          "voter": "m1alsan"
+        },
+        {
+          "rshares": 5598364685,
+          "voter": "portugalcoin"
+        },
+        {
+          "rshares": 575305732,
+          "voter": "jnmarteau"
+        },
+        {
+          "rshares": 143363196157,
+          "voter": "a-quarius"
+        },
+        {
+          "rshares": 502919903,
+          "voter": "the-reaper"
+        },
+        {
+          "rshares": 112060438946,
+          "voter": "trincowski"
+        },
+        {
+          "rshares": 29426182358,
+          "voter": "atongis"
+        },
+        {
+          "rshares": 184225567625,
+          "voter": "tatdt"
+        },
+        {
+          "rshares": 110675493540,
+          "voter": "himalayanwomb"
+        },
+        {
+          "rshares": 662107347,
+          "voter": "minerspost"
+        },
+        {
+          "rshares": 45661323597,
+          "voter": "sudefteri"
+        },
+        {
+          "rshares": 28812848097,
+          "voter": "tomhall"
+        },
+        {
+          "rshares": 6054336093821,
+          "voter": "eddiespino"
+        },
+        {
+          "rshares": 5518995621,
+          "voter": "danyslav"
+        },
+        {
+          "rshares": 29806764963,
+          "voter": "madefrance"
+        },
+        {
+          "rshares": 466149342259,
+          "voter": "condeas"
+        },
+        {
+          "rshares": 246924368502,
+          "voter": "marlyncabrera"
+        },
+        {
+          "rshares": 45387450963,
+          "voter": "rubelynmacion"
+        },
+        {
+          "rshares": 5890324005,
+          "voter": "bhattg"
+        },
+        {
+          "rshares": 4711565988,
+          "voter": "onlavu"
+        },
+        {
+          "rshares": 1630611485,
+          "voter": "akifane"
+        },
+        {
+          "rshares": 3513179380,
+          "voter": "lisfabian"
+        },
+        {
+          "rshares": 61921993924,
+          "voter": "omarmontes"
+        },
+        {
+          "rshares": 3105958085,
+          "voter": "putu300"
+        },
+        {
+          "rshares": 17649599670,
+          "voter": "amigoponc"
+        },
+        {
+          "rshares": 892770198,
+          "voter": "supreme-verdict"
+        },
+        {
+          "rshares": 264642427049,
+          "voter": "almi"
+        },
+        {
+          "rshares": 3498221740,
+          "voter": "arrozymangophoto"
+        },
+        {
+          "rshares": 29703818045,
+          "voter": "josemalavem"
+        },
+        {
+          "rshares": 30526805328,
+          "voter": "sammy00"
+        },
+        {
+          "rshares": 680937497445,
+          "voter": "miosha"
+        },
+        {
+          "rshares": 257338869256,
+          "voter": "bil.prag"
+        },
+        {
+          "rshares": 185265728912,
+          "voter": "vcclothing"
+        },
+        {
+          "rshares": 123538813345,
+          "voter": "rivalzzz"
+        },
+        {
+          "rshares": 391996556429,
+          "voter": "schlafhacking"
+        },
+        {
+          "rshares": 3345552702493,
+          "voter": "louis88"
+        },
+        {
+          "rshares": 102236374069,
+          "voter": "tibfox"
+        },
+        {
+          "rshares": 32329134062,
+          "voter": "gadrian"
+        },
+        {
+          "rshares": 1164263424,
+          "voter": "memepress"
+        },
+        {
+          "rshares": 31345590348,
+          "voter": "masterswatch"
+        },
+        {
+          "rshares": 9228723133,
+          "voter": "voitaksoutache"
+        },
+        {
+          "rshares": 24414033058,
+          "voter": "springlining"
+        },
+        {
+          "rshares": 8901782467,
+          "voter": "achimmertens"
+        },
+        {
+          "rshares": 612655301460,
+          "voter": "quochuy"
+        },
+        {
+          "rshares": 14487122529,
+          "voter": "cristiancaicedo"
+        },
+        {
+          "rshares": 297033319398,
+          "voter": "cedricguillas"
+        },
+        {
+          "rshares": 435019053278,
+          "voter": "softa"
+        },
+        {
+          "rshares": 3843942153,
+          "voter": "el-dee-are-es"
+        },
+        {
+          "rshares": 6214082115,
+          "voter": "meanbees"
+        },
+        {
+          "rshares": 8942548081227,
+          "voter": "fw206"
+        },
+        {
+          "rshares": 8870740241086,
+          "voter": "slobberchops"
+        },
+        {
+          "rshares": 5377343797,
+          "voter": "hmayak"
+        },
+        {
+          "rshares": 15656476880,
+          "voter": "kstop1"
+        },
+        {
+          "rshares": 806360600,
+          "voter": "thegreatdayne"
+        },
+        {
+          "rshares": 801420605,
+          "voter": "voitakjewelry"
+        },
+        {
+          "rshares": 36270270970,
+          "voter": "marblely"
+        },
+        {
+          "rshares": 9969363225,
+          "voter": "purrix"
+        },
+        {
+          "rshares": 2540762031048,
+          "voter": "apshamilton"
+        },
+        {
+          "rshares": 327524189846,
+          "voter": "marjanko"
+        },
+        {
+          "rshares": 229934159103,
+          "voter": "achim03"
+        },
+        {
+          "rshares": 73212996360,
+          "voter": "bitandi"
+        },
+        {
+          "rshares": 6393725973,
+          "voter": "longer"
+        },
+        {
+          "rshares": 233442792548,
+          "voter": "blewitt"
+        },
+        {
+          "rshares": 20797553578,
+          "voter": "xves"
+        },
+        {
+          "rshares": 5600576545,
+          "voter": "mrnightmare89"
+        },
+        {
+          "rshares": 513388786,
+          "voter": "rufruf"
+        },
+        {
+          "rshares": 735275016203,
+          "voter": "hamismsf"
+        },
+        {
+          "rshares": 4256979702,
+          "voter": "josueelinfame"
+        },
+        {
+          "rshares": 72354614649,
+          "voter": "yaelg"
+        },
+        {
+          "rshares": 110036930360,
+          "voter": "szr-network"
+        },
+        {
+          "rshares": 1300357486,
+          "voter": "pixiepost"
+        },
+        {
+          "rshares": 23985673401,
+          "voter": "a-bot"
+        },
+        {
+          "rshares": 7987497486,
+          "voter": "voter002"
+        },
+        {
+          "rshares": 81277147158,
+          "voter": "voter003"
+        },
+        {
+          "rshares": 7946048433,
+          "voter": "voter000"
+        },
+        {
+          "rshares": 92359720,
+          "voter": "pocketjs"
+        },
+        {
+          "rshares": 0,
+          "voter": "friends.group"
+        },
+        {
+          "rshares": 0,
+          "voter": "stefano.massari"
+        },
+        {
+          "rshares": 786831218404,
+          "voter": "unbiasedwriter"
+        },
+        {
+          "rshares": 132428032152,
+          "voter": "thevil"
+        },
+        {
+          "rshares": 28008850828,
+          "voter": "merlin7"
+        },
+        {
+          "rshares": 2482986180,
+          "voter": "thrasher666"
+        },
+        {
+          "rshares": 110700620071,
+          "voter": "priyanarc"
+        },
+        {
+          "rshares": 6496244996,
+          "voter": "linuxbot"
+        },
+        {
+          "rshares": 16639093887,
+          "voter": "followjohngalt"
+        },
+        {
+          "rshares": 1497255057,
+          "voter": "ladyangelwolf"
+        },
+        {
+          "rshares": 5226775957,
+          "voter": "bia.birch"
+        },
+        {
+          "rshares": 0,
+          "voter": "pablo1601"
+        },
+        {
+          "rshares": 0,
+          "voter": "thepatriotblog"
+        },
+        {
+          "rshares": 591965930,
+          "voter": "jpbliberty"
+        },
+        {
+          "rshares": 2497069884,
+          "voter": "khan.dayyanz"
+        },
+        {
+          "rshares": 641336111,
+          "voter": "jacuzzi"
+        },
+        {
+          "rshares": 1670898900,
+          "voter": "kerlymera"
+        },
+        {
+          "rshares": 4657121388,
+          "voter": "photoparadise"
+        },
+        {
+          "rshares": 120683243419,
+          "voter": "sofathana"
+        },
+        {
+          "rshares": 623597271,
+          "voter": "hungrybear"
+        },
+        {
+          "rshares": 2748241614,
+          "voter": "hashkings"
+        },
+        {
+          "rshares": 724785795,
+          "voter": "denizcakmak"
+        },
+        {
+          "rshares": 142557874221,
+          "voter": "vikvitnik"
+        },
+        {
+          "rshares": 114976108501,
+          "voter": "uakulinar"
+        },
+        {
+          "rshares": 1856674729,
+          "voter": "androshchuk"
+        },
+        {
+          "rshares": 209729715931,
+          "voter": "dawnoner"
+        },
+        {
+          "rshares": 1105562893,
+          "voter": "photographercr"
+        },
+        {
+          "rshares": 2845310974,
+          "voter": "steelborne"
+        },
+        {
+          "rshares": 487595720,
+          "voter": "danyakey"
+        },
+        {
+          "rshares": 903470232,
+          "voter": "bigmoneyman"
+        },
+        {
+          "rshares": 3826258694,
+          "voter": "coolsurfer"
+        },
+        {
+          "rshares": 174848515,
+          "voter": "loudutim"
+        },
+        {
+          "rshares": 4072190520,
+          "voter": "helgalubevi"
+        },
+        {
+          "rshares": 136303319672,
+          "voter": "beerlover"
+        },
+        {
+          "rshares": 1016199193,
+          "voter": "aboutheraklion"
+        },
+        {
+          "rshares": 2214457091,
+          "voter": "blumela"
+        },
+        {
+          "rshares": 988921104,
+          "voter": "tsypabeer"
+        },
+        {
+          "rshares": 11159364718,
+          "voter": "warrentrx"
+        },
+        {
+          "rshares": 4970204209,
+          "voter": "leighscotford"
+        },
+        {
+          "rshares": 453915487,
+          "voter": "iktisat"
+        },
+        {
+          "rshares": 32192077934,
+          "voter": "thisisawesome"
+        },
+        {
+          "rshares": 7551703334,
+          "voter": "teamashen"
+        },
+        {
+          "rshares": 1440197358,
+          "voter": "cryptogambit"
+        },
+        {
+          "rshares": 6832926783,
+          "voter": "lrekt01"
+        },
+        {
+          "rshares": 71263506828,
+          "voter": "tiffin"
+        },
+        {
+          "rshares": 0,
+          "voter": "ffoorryykkww"
+        },
+        {
+          "rshares": 595480814,
+          "voter": "no-advice"
+        },
+        {
+          "rshares": 118844307155,
+          "voter": "farm1"
+        },
+        {
+          "rshares": 15194206746,
+          "voter": "votebetting"
+        },
+        {
+          "rshares": 9730623025,
+          "voter": "chinadailyboast"
+        },
+        {
+          "rshares": 177111378445,
+          "voter": "innerblocks"
+        },
+        {
+          "rshares": 1894566034,
+          "voter": "elianaicgomes"
+        },
+        {
+          "rshares": 7468372109,
+          "voter": "urun"
+        },
+        {
+          "rshares": 3390271497,
+          "voter": "replicantua"
+        },
+        {
+          "rshares": 567625491258,
+          "voter": "samgiset"
+        },
+        {
+          "rshares": 4743807364,
+          "voter": "electronico"
+        },
+        {
+          "rshares": 564386579,
+          "voter": "bilpcoinrecords"
+        },
+        {
+          "rshares": 4652731929,
+          "voter": "dappstats"
+        },
+        {
+          "rshares": 8406753664,
+          "voter": "chris-uk"
+        },
+        {
+          "rshares": 546304800,
+          "voter": "bilpcoin.pay"
+        },
+        {
+          "rshares": 1913071032,
+          "voter": "fenngen"
+        },
+        {
+          "rshares": 1181141279,
+          "voter": "rus-lifestyle"
+        },
+        {
+          "rshares": 34047355360,
+          "voter": "stoodmonsters"
+        },
+        {
+          "rshares": 21057714962,
+          "voter": "appics.tutorial"
+        },
+        {
+          "rshares": 7527443562,
+          "voter": "juanvegetarian"
+        },
+        {
+          "rshares": 2567830496,
+          "voter": "pivninoviny"
+        },
+        {
+          "rshares": 2114271352,
+          "voter": "marblesz"
+        },
+        {
+          "rshares": 24099185331,
+          "voter": "hirohurl"
+        },
+        {
+          "rshares": 11408883432,
+          "voter": "cvnuitter"
+        },
+        {
+          "rshares": 54792505238,
+          "voter": "ugochill"
+        },
+        {
+          "rshares": 629150094135,
+          "voter": "grindle"
+        },
+        {
+          "rshares": 2561882958,
+          "voter": "jordanjosue"
+        },
+        {
+          "rshares": 2547580394143,
+          "voter": "ukulima"
+        },
+        {
+          "rshares": 1709700682720,
+          "voter": "fengchao"
+        },
+        {
+          "rshares": 9401104534,
+          "voter": "hivebuzz"
+        },
+        {
+          "rshares": 704998818,
+          "voter": "pinmapple"
+        },
+        {
+          "rshares": 28220568206,
+          "voter": "tht"
+        },
+        {
+          "rshares": 332730627942,
+          "voter": "theterminal"
+        },
+        {
+          "rshares": 1968634438,
+          "voter": "laruche"
+        },
+        {
+          "rshares": 1354663891,
+          "voter": "ykretz"
+        },
+        {
+          "rshares": 670311140511,
+          "voter": "ubasi"
+        },
+        {
+          "rshares": 499709622471,
+          "voter": "softworld"
+        },
+        {
+          "rshares": 3010525250,
+          "voter": "muzykasasha"
+        },
+        {
+          "rshares": 1894380336,
+          "voter": "nazavzhdy"
+        },
+        {
+          "rshares": 3782829336,
+          "voter": "hivelist"
+        },
+        {
+          "rshares": 622511406,
+          "voter": "ninnu"
+        },
+        {
+          "rshares": 443716553433,
+          "voter": "ecency"
+        },
+        {
+          "rshares": 0,
+          "voter": "taniagonzalez"
+        },
+        {
+          "rshares": 435818988612,
+          "voter": "woelfchen"
+        },
+        {
+          "rshares": 54595252718,
+          "voter": "arpolkin"
+        },
+        {
+          "rshares": 0,
+          "voter": "forkyw"
+        },
+        {
+          "rshares": 6645414299,
+          "voter": "ghaazi"
+        },
+        {
+          "rshares": 781220423,
+          "voter": "mituabida"
+        },
+        {
+          "rshares": 13535135116,
+          "voter": "ok-top"
+        },
+        {
+          "rshares": 574233257,
+          "voter": "devpress"
+        },
+        {
+          "rshares": 1108166109,
+          "voter": "minecrafter"
+        },
+        {
+          "rshares": 985126552,
+          "voter": "chornogorsky"
+        },
+        {
+          "rshares": 8882730378,
+          "voter": "forkyishere"
+        },
+        {
+          "rshares": 46519120159,
+          "voter": "millycf1976"
+        },
+        {
+          "rshares": 0,
+          "voter": "schmidi"
+        },
+        {
+          "rshares": 19536337269,
+          "voter": "archon-gov"
+        },
+        {
+          "rshares": 4669535197,
+          "voter": "hivebuilder"
+        },
+        {
+          "rshares": 309555007946,
+          "voter": "lauramica"
+        },
+        {
+          "rshares": 614699446,
+          "voter": "olaunlimited"
+        },
+        {
+          "rshares": 369073983,
+          "voter": "ecency.stats"
+        },
+        {
+          "rshares": 4371508455,
+          "voter": "alex.rad"
+        },
+        {
+          "rshares": 2043395787828,
+          "voter": "vanje"
+        },
+        {
+          "rshares": 5091956006,
+          "voter": "mr-bredly"
+        },
+        {
+          "rshares": 1060059566,
+          "voter": "liz.writes"
+        },
+        {
+          "rshares": 4858812975,
+          "voter": "sylmarill"
+        },
+        {
+          "rshares": 66053828089,
+          "voter": "manuvert"
+        },
+        {
+          "rshares": 2310409947,
+          "voter": "myupvote2u"
+        },
+        {
+          "rshares": 124439605860,
+          "voter": "hivetrader"
+        },
+        {
+          "rshares": 115827276803,
+          "voter": "ctpsb"
+        },
+        {
+          "rshares": 49998392017,
+          "voter": "communityunity"
+        },
+        {
+          "rshares": 0,
+          "voter": "trcommunity"
+        },
+        {
+          "rshares": 2254334331,
+          "voter": "bluepluto"
+        },
+        {
+          "rshares": 59364468111,
+          "voter": "kattycrochet"
+        },
+        {
+          "rshares": 1950548139,
+          "voter": "hyper.speed"
+        },
+        {
+          "rshares": 814724209,
+          "voter": "fiona77"
+        },
+        {
+          "rshares": 41611937987,
+          "voter": "gabrielazamora10"
+        },
+        {
+          "rshares": 17634665711,
+          "voter": "cocaaladioxine"
+        },
+        {
+          "rshares": 26120354507,
+          "voter": "lbi-token"
+        },
+        {
+          "rshares": 3752509619,
+          "voter": "mariumsehri"
+        },
+        {
+          "rshares": 3240467488,
+          "voter": "godfather.ftw"
+        },
+        {
+          "rshares": 486694572,
+          "voter": "rondonshneezy"
+        },
+        {
+          "rshares": 0,
+          "voter": "atexoras"
+        },
+        {
+          "rshares": 0,
+          "voter": "cielitorojo"
+        },
+        {
+          "rshares": 104816455095,
+          "voter": "hykss.leo"
+        },
+        {
+          "rshares": 48046056868,
+          "voter": "guitarmcy"
+        },
+        {
+          "rshares": 7989006036,
+          "voter": "eturnerx-dbuzz"
+        },
+        {
+          "rshares": 1690188438,
+          "voter": "repayme4568"
+        },
+        {
+          "rshares": 56029124819,
+          "voter": "xrayman"
+        },
+        {
+          "rshares": 12989284015,
+          "voter": "ausbit.dev"
+        },
+        {
+          "rshares": 284799810,
+          "voter": "atexoras.witness"
+        },
+        {
+          "rshares": 0,
+          "voter": "tabs1250"
+        },
+        {
+          "rshares": 4762036584,
+          "voter": "abisag"
+        },
+        {
+          "rshares": 733143312,
+          "voter": "liotes"
+        },
+        {
+          "rshares": 875763051,
+          "voter": "freed99"
+        },
+        {
+          "rshares": 10310908207,
+          "voter": "wend1go"
+        },
+        {
+          "rshares": 728585780,
+          "voter": "creodas"
+        },
+        {
+          "rshares": 1103578491,
+          "voter": "failingforward"
+        },
+        {
+          "rshares": 2368984254,
+          "voter": "rendrianarma"
+        },
+        {
+          "rshares": 490300112590,
+          "voter": "liotes.voter"
+        },
+        {
+          "rshares": 1562853649,
+          "voter": "nachomolina2"
+        },
+        {
+          "rshares": 30196724958,
+          "voter": "corvidae"
+        },
+        {
+          "rshares": 162804240261,
+          "voter": "jane1289"
+        },
+        {
+          "rshares": 5444138736,
+          "voter": "alesya-h9"
+        },
+        {
+          "rshares": 0,
+          "voter": "tinaagustina"
+        },
+        {
+          "rshares": 7708585022,
+          "voter": "reidenling90"
+        },
+        {
+          "rshares": 76423135842,
+          "voter": "dreamsct"
+        },
+        {
+          "rshares": 34778793490,
+          "voter": "atexoras.pub"
+        },
+        {
+          "rshares": 1736782439,
+          "voter": "louis.pay"
+        },
+        {
+          "rshares": 549648665,
+          "voter": "noliksuperhouse"
+        },
+        {
+          "rshares": 611104274,
+          "voter": "egistar"
+        },
+        {
+          "rshares": 25340210232,
+          "voter": "quiubi"
+        },
+        {
+          "rshares": 1304331252,
+          "voter": "krrizjos18"
+        },
+        {
+          "rshares": 34030564590,
+          "voter": "ifarmgirl"
+        },
+        {
+          "rshares": 22838654615,
+          "voter": "virgilio07"
+        },
+        {
+          "rshares": 1864108214,
+          "voter": "meesterbrain"
+        },
+        {
+          "rshares": 536377843,
+          "voter": "musicandreview"
+        },
+        {
+          "rshares": 1398256382,
+          "voter": "godslove123"
+        },
+        {
+          "rshares": 4222712408,
+          "voter": "annafenix"
+        },
+        {
+          "rshares": 14576440964,
+          "voter": "wilfredocav"
+        },
+        {
+          "rshares": 23004098040,
+          "voter": "dkkfrodo"
+        },
+        {
+          "rshares": 3904631340,
+          "voter": "menzo"
+        },
+        {
+          "rshares": 6078339294,
+          "voter": "dashak"
+        },
+        {
+          "rshares": 536880414,
+          "voter": "cursephantom"
+        },
+        {
+          "rshares": 174185402202,
+          "voter": "coquicoin"
+        },
+        {
+          "rshares": 940678122,
+          "voter": "rosmiapure"
+        },
+        {
+          "rshares": 30240061203,
+          "voter": "bilgin70"
+        },
+        {
+          "rshares": 4085932994,
+          "voter": "o1eh"
+        },
+        {
+          "rshares": 129246701534,
+          "voter": "aequi"
+        },
+        {
+          "rshares": 27080841764,
+          "voter": "danideuder"
+        },
+        {
+          "rshares": 41733469449,
+          "voter": "elderdark"
+        },
+        {
+          "rshares": 521735333,
+          "voter": "tub3r0"
+        },
+        {
+          "rshares": 7888180599,
+          "voter": "davot"
+        },
+        {
+          "rshares": 892718966,
+          "voter": "marsupia"
+        },
+        {
+          "rshares": 153483603429,
+          "voter": "mimi.ruby"
+        },
+        {
+          "rshares": 484288216,
+          "voter": "kesonaichi"
+        },
+        {
+          "rshares": 18130846975,
+          "voter": "mcsherriff"
+        },
+        {
+          "rshares": 82899604756,
+          "voter": "hylene74"
+        },
+        {
+          "rshares": 139914235777,
+          "voter": "michupa"
+        },
+        {
+          "rshares": 8178267877,
+          "voter": "beffeater"
+        },
+        {
+          "rshares": 51212798748,
+          "voter": "marilour"
+        },
+        {
+          "rshares": 4642179802,
+          "voter": "ericpso"
+        },
+        {
+          "rshares": 633226117,
+          "voter": "tillmea"
+        },
+        {
+          "rshares": 162058777801,
+          "voter": "relf87"
+        },
+        {
+          "rshares": 10458783378,
+          "voter": "gaposchkin"
+        },
+        {
+          "rshares": 44738699211,
+          "voter": "lorddiablo"
+        },
+        {
+          "rshares": 1307917629,
+          "voter": "meltysquid"
+        },
+        {
+          "rshares": 489753475,
+          "voter": "johnripper"
+        },
+        {
+          "rshares": 2044871108,
+          "voter": "lolztoken"
+        },
+        {
+          "rshares": 22292634822,
+          "voter": "rc-assist"
+        },
+        {
+          "rshares": 1087139841,
+          "voter": "heutorybr"
+        },
+        {
+          "rshares": 316867326461,
+          "voter": "kriang3teejoe"
+        },
+        {
+          "rshares": 747946961,
+          "voter": "willkomo"
+        },
+        {
+          "rshares": 764833927,
+          "voter": "kaibagt"
+        },
+        {
+          "rshares": 42622723421,
+          "voter": "lanasvet"
+        },
+        {
+          "rshares": 0,
+          "voter": "michaelreischer"
+        },
+        {
+          "rshares": 10670068141,
+          "voter": "hoffmeister84"
+        },
+        {
+          "rshares": 151228292585,
+          "voter": "themyscira"
+        },
+        {
+          "rshares": 1997994571,
+          "voter": "detroyt31"
+        },
+        {
+          "rshares": 130482899287,
+          "voter": "passenger777"
+        },
+        {
+          "rshares": 0,
+          "voter": "defibenji"
+        },
+        {
+          "rshares": 3731168773,
+          "voter": "winly"
+        },
+        {
+          "rshares": 322557903336,
+          "voter": "hindavi"
+        },
+        {
+          "rshares": 829069205,
+          "voter": "zihadlo"
+        },
+        {
+          "rshares": 457484794,
+          "voter": "marynn"
+        },
+        {
+          "rshares": 112242781943,
+          "voter": "littlebee4"
+        },
+        {
+          "rshares": 96033344968,
+          "voter": "neruel"
+        },
+        {
+          "rshares": 132652255166,
+          "voter": "nicklewis"
+        },
+        {
+          "rshares": 5725086726,
+          "voter": "gledys19"
+        },
+        {
+          "rshares": 6365880364,
+          "voter": "amakauz"
+        },
+        {
+          "rshares": 23665528233,
+          "voter": "dusunenkalpp"
+        },
+        {
+          "rshares": 0,
+          "voter": "dtam"
+        },
+        {
+          "rshares": 27108199335,
+          "voter": "greensandpinks"
+        },
+        {
+          "rshares": 214800965367,
+          "voter": "ninaeatshere"
+        },
+        {
+          "rshares": 841254038,
+          "voter": "ipexito"
+        },
+        {
+          "rshares": 2638408774,
+          "voter": "azamsohrabi"
+        },
+        {
+          "rshares": 8382642692,
+          "voter": "cajiro"
+        },
+        {
+          "rshares": 0,
+          "voter": "oneplanet"
+        },
+        {
+          "rshares": 45849829450,
+          "voter": "bjangles"
+        },
+        {
+          "rshares": 0,
+          "voter": "barika"
+        },
+        {
+          "rshares": 847982407,
+          "voter": "nazom"
+        },
+        {
+          "rshares": 2242228322,
+          "voter": "caelum1infernum"
+        },
+        {
+          "rshares": 57271991416,
+          "voter": "baboz"
+        },
+        {
+          "rshares": 48481304220,
+          "voter": "franzpaulie"
+        },
+        {
+          "rshares": 821417248,
+          "voter": "lightbruce17"
+        },
+        {
+          "rshares": 103864403612,
+          "voter": "alessandrawhite"
+        },
+        {
+          "rshares": 293752826680,
+          "voter": "hive-186141"
+        },
+        {
+          "rshares": 39360806420,
+          "voter": "bitterirony"
+        },
+        {
+          "rshares": 6939380750,
+          "voter": "hk-curation"
+        },
+        {
+          "rshares": 100950458551,
+          "voter": "mukadder"
+        },
+        {
+          "rshares": 4349624965002,
+          "voter": "coldbeetrootsoup"
+        },
+        {
+          "rshares": 67279724417,
+          "voter": "yagelybr"
+        },
+        {
+          "rshares": 715009751,
+          "voter": "tzae"
+        },
+        {
+          "rshares": 2898869378,
+          "voter": "abreusplinter"
+        },
+        {
+          "rshares": 1853630628,
+          "voter": "hive-117638"
+        },
+        {
+          "rshares": 8759900390,
+          "voter": "rsanchez0308"
+        },
+        {
+          "rshares": 28400006366,
+          "voter": "elamaria"
+        },
+        {
+          "rshares": 2932182155,
+          "voter": "nairimcabmer"
+        },
+        {
+          "rshares": 221423712629,
+          "voter": "incublus"
+        },
+        {
+          "rshares": 601809008,
+          "voter": "expelliarmus30"
+        },
+        {
+          "rshares": 13026662984,
+          "voter": "oasiskp2"
+        },
+        {
+          "rshares": 7484418271,
+          "voter": "hive-116692"
+        },
+        {
+          "rshares": 845947256,
+          "voter": "pinkchic"
+        },
+        {
+          "rshares": 2088758708,
+          "voter": "ifarmgirl-leo"
+        },
+        {
+          "rshares": 7867249941,
+          "voter": "salicj"
+        },
+        {
+          "rshares": 92369931397,
+          "voter": "queercoin"
+        },
+        {
+          "rshares": 52789158249,
+          "voter": "cthings"
+        },
+        {
+          "rshares": 2006773482,
+          "voter": "hive-132595"
+        },
+        {
+          "rshares": 7807846792,
+          "voter": "mv-curacion"
+        },
+        {
+          "rshares": 2158085816,
+          "voter": "artefactoestudio"
+        },
+        {
+          "rshares": 6340848969,
+          "voter": "rzity.nomad"
+        },
+        {
+          "rshares": 1085681486,
+          "voter": "mypathtofire2"
+        },
+        {
+          "rshares": 0,
+          "voter": "millsinn"
+        },
+        {
+          "rshares": 0,
+          "voter": "lolz.fun"
+        },
+        {
+          "rshares": 0,
+          "voter": "lolz.lolz"
+        },
+        {
+          "rshares": 15380756912,
+          "voter": "mariolisrnaranjo"
+        },
+        {
+          "rshares": 224367783923,
+          "voter": "duskobgd"
+        },
+        {
+          "rshares": 21418789,
+          "voter": "magic.fun"
+        },
+        {
+          "rshares": 14661374215,
+          "voter": "jordy0827"
+        },
+        {
+          "rshares": 0,
+          "voter": "ekimhive31"
+        },
+        {
+          "rshares": 63208404496,
+          "voter": "avdesing"
+        },
+        {
+          "rshares": 38433652,
+          "voter": "saboin.ctp"
+        },
+        {
+          "rshares": 72432610569,
+          "voter": "elbuhito"
+        },
+        {
+          "rshares": 106375567420,
+          "voter": "aquagelas"
+        },
+        {
+          "rshares": 23922833715,
+          "voter": "dovycola"
+        },
+        {
+          "rshares": 15487572868,
+          "voter": "mayt"
+        },
+        {
+          "rshares": 35153498528,
+          "voter": "yaroschain"
+        },
+        {
+          "rshares": 847924904,
+          "voter": "pof.lolz"
+        },
+        {
+          "rshares": 9241809354,
+          "voter": "opticus"
+        },
+        {
+          "rshares": 1627646956758,
+          "voter": "txerritxoa"
+        },
+        {
+          "rshares": 1313107399,
+          "voter": "successfullady"
+        },
+        {
+          "rshares": 3292588945,
+          "voter": "kerfa"
+        },
+        {
+          "rshares": 6332584147,
+          "voter": "javedkhan1989"
+        },
+        {
+          "rshares": 540865177,
+          "voter": "argo8"
+        },
+        {
+          "rshares": 762928714,
+          "voter": "vaner168"
+        },
+        {
+          "rshares": 1451075650,
+          "voter": "danielgye"
+        },
+        {
+          "rshares": 5160597062,
+          "voter": "biologistbrito"
+        },
+        {
+          "rshares": 0,
+          "voter": "dandegrischdine"
+        },
+        {
+          "rshares": 20259444639,
+          "voter": "home.solutions"
+        },
+        {
+          "rshares": 19377931020,
+          "voter": "marilui91"
+        },
+        {
+          "rshares": 0,
+          "voter": "ecency.waves"
+        },
+        {
+          "rshares": 1351613225322,
+          "voter": "otsoak"
+        },
+        {
+          "rshares": 2377052873675,
+          "voter": "silingsi"
+        },
+        {
+          "rshares": 26688054944,
+          "voter": "riki1"
+        },
+        {
+          "rshares": 58677403993,
+          "voter": "mdakash62"
+        },
+        {
+          "rshares": 6948729635,
+          "voter": "eleanagutierrez"
+        },
+        {
+          "rshares": 9323028963,
+          "voter": "yummycruz1"
+        },
+        {
+          "rshares": 825998490,
+          "voter": "spice-c"
+        },
+        {
+          "rshares": 0,
+          "voter": "danahnatalie"
+        },
+        {
+          "rshares": 677187418,
+          "voter": "alliebee"
+        },
+        {
+          "rshares": 91940413958,
+          "voter": "enraizar"
+        },
+        {
+          "rshares": 3431662316,
+          "voter": "chisomdamian"
+        },
+        {
+          "rshares": 2495363156,
+          "voter": "like2cbrs"
+        },
+        {
+          "rshares": 0,
+          "voter": "mayramalu"
+        },
+        {
+          "rshares": 1324221869,
+          "voter": "cautiva-30"
+        },
+        {
+          "rshares": 1516279544643,
+          "voter": "empo.voter"
+        },
+        {
+          "rshares": 3353776724,
+          "voter": "chris-chris92"
+        },
+        {
+          "rshares": 2765361083,
+          "voter": "omor11"
+        },
+        {
+          "rshares": 2473012522609,
+          "voter": "soumaren"
+        },
+        {
+          "rshares": 44397475091,
+          "voter": "mdrguez"
+        },
+        {
+          "rshares": 37195996732,
+          "voter": "madilyn02"
+        },
+        {
+          "rshares": 0,
+          "voter": "town-hall"
+        },
+        {
+          "rshares": 0,
+          "voter": "lapgarcia"
+        },
+        {
+          "rshares": 22984561634,
+          "voter": "bulliontools"
+        },
+        {
+          "rshares": 78597762017,
+          "voter": "cbrsphilanthropy"
+        },
+        {
+          "rshares": 9638168659,
+          "voter": "midnight-studio"
+        },
+        {
+          "rshares": 1923000806622,
+          "voter": "shayaiykram"
+        },
+        {
+          "rshares": 426263315,
+          "voter": "blackalas"
+        },
+        {
+          "rshares": 1502908772,
+          "voter": "elmundodemiri"
+        },
+        {
+          "rshares": 16710161926,
+          "voter": "bibana"
+        },
+        {
+          "rshares": 743500585,
+          "voter": "milana2017"
+        },
+        {
+          "rshares": 177473820020,
+          "voter": "ibarra95"
+        },
+        {
+          "rshares": 32128120669,
+          "voter": "yuli05"
+        },
+        {
+          "rshares": 28295828193,
+          "voter": "hive-193566"
+        },
+        {
+          "rshares": 1431132522,
+          "voter": "ifhy"
+        },
+        {
+          "rshares": 6987422351,
+          "voter": "actifit-godfish"
+        },
+        {
+          "rshares": 58941412278,
+          "voter": "altheana"
+        },
+        {
+          "rshares": 14975833059,
+          "voter": "chyxille"
+        },
+        {
+          "rshares": 953999772,
+          "voter": "setpiece"
+        },
+        {
+          "rshares": 76462676606,
+          "voter": "blkchn"
+        },
+        {
+          "rshares": 592026618,
+          "voter": "kaveira"
+        },
+        {
+          "rshares": 2187327458510,
+          "voter": "zhaoyiseng"
+        },
+        {
+          "rshares": 1968640559549,
+          "voter": "haikurator"
+        },
+        {
+          "rshares": 0,
+          "voter": "suarlex"
+        },
+        {
+          "rshares": 11182551490,
+          "voter": "nattosenpai"
+        },
+        {
+          "rshares": 1595826038,
+          "voter": "dandelion24"
+        },
+        {
+          "rshares": 1803715097,
+          "voter": "georgeenting"
+        },
+        {
+          "rshares": 86598719574,
+          "voter": "cryptoreforma"
+        },
+        {
+          "rshares": 14330021092,
+          "voter": "thelivingworld"
+        },
+        {
+          "rshares": 1226052079,
+          "voter": "hive-188753"
+        },
+        {
+          "rshares": 13332914931,
+          "voter": "glideglobe"
+        },
+        {
+          "rshares": 8425630444,
+          "voter": "tecnotronics"
+        },
+        {
+          "rshares": 549916363,
+          "voter": "winandavlogs"
+        },
+        {
+          "rshares": 7645032222,
+          "voter": "cristianm"
+        },
+        {
+          "rshares": 0,
+          "voter": "abinsaji4"
+        },
+        {
+          "rshares": 2147727494,
+          "voter": "picazzy005"
+        },
+        {
+          "rshares": 7766168094117,
+          "voter": "worldmappin"
+        },
+        {
+          "rshares": 991942698,
+          "voter": "leopull"
+        },
+        {
+          "rshares": 3007700371,
+          "voter": "cocinator"
+        },
+        {
+          "rshares": 7539868574,
+          "voter": "hive.marathon"
+        },
+        {
+          "rshares": 2532681190,
+          "voter": "soundminds"
+        },
+        {
+          "rshares": 1039371820,
+          "voter": "ct100"
+        },
+        {
+          "rshares": 14446801809,
+          "voter": "applejane"
+        },
+        {
+          "rshares": 5422356291,
+          "voter": "folk-ua"
+        },
+        {
+          "rshares": 1215046615306,
+          "voter": "nevio104"
+        },
+        {
+          "rshares": 0,
+          "voter": "joel17"
+        },
+        {
+          "rshares": 45326887142,
+          "voter": "bhr-curation"
+        },
+        {
+          "rshares": 0,
+          "voter": "darknightlive"
+        },
+        {
+          "rshares": 3811868845,
+          "voter": "qurat-ul-ain"
+        },
+        {
+          "rshares": 0,
+          "voter": "drahmed"
+        },
+        {
+          "rshares": 4209802285,
+          "voter": "kachy2022"
+        },
+        {
+          "rshares": 1108710259160,
+          "voter": "sopel"
+        },
+        {
+          "rshares": 2848204584,
+          "voter": "iambril"
+        },
+        {
+          "rshares": 0,
+          "voter": "bilginsemra"
+        },
+        {
+          "rshares": 2686270074,
+          "voter": "arshadkhan4421"
+        },
+        {
+          "rshares": 1933823362,
+          "voter": "ranajoy15"
+        },
+        {
+          "rshares": 918629465,
+          "voter": "honeyjean24"
+        },
+        {
+          "rshares": 4056788579,
+          "voter": "mrnatty"
+        },
+        {
+          "rshares": 30427656045,
+          "voter": "michelleeeeys"
+        },
+        {
+          "rshares": 4117305280,
+          "voter": "berlinrebels"
+        },
+        {
+          "rshares": 0,
+          "voter": "mugilms"
+        },
+        {
+          "rshares": 0,
+          "voter": "arikamillan"
+        },
+        {
+          "rshares": 370040938,
+          "voter": "proferobert5"
+        },
+        {
+          "rshares": 245348322,
+          "voter": "aftabirshad"
+        },
+        {
+          "rshares": 1129168532,
+          "voter": "arka1"
+        },
+        {
+          "rshares": 251059326,
+          "voter": "alexcas"
+        },
+        {
+          "rshares": 0,
+          "voter": "tanveer11"
+        },
+        {
+          "rshares": 0,
+          "voter": "godblessyou7771"
+        },
+        {
+          "rshares": 35778971,
+          "voter": "oswaldo01"
+        },
+        {
+          "rshares": 825023704,
+          "voter": "quenyme"
+        },
+        {
+          "rshares": 0,
+          "voter": "mdmostofa02"
+        },
+        {
+          "rshares": 0,
+          "voter": "raqiiteraaa"
+        },
+        {
+          "rshares": 0,
+          "voter": "mantashaafrin"
+        },
+        {
+          "rshares": 0,
+          "voter": "sammy082996"
+        },
+        {
+          "rshares": 0,
+          "voter": "lolitaanana001"
+        },
+        {
+          "rshares": 0,
+          "voter": "claudiabook"
+        },
+        {
+          "rshares": 0,
+          "voter": "segundolhou29"
+        },
+        {
+          "rshares": 0,
+          "voter": "vanny.vvvlog"
+        },
+        {
+          "rshares": 0,
+          "voter": "crizzy96"
+        },
+        {
+          "rshares": 0,
+          "voter": "loren89"
+        },
+        {
+          "rshares": 0,
+          "voter": "smart01"
+        },
+        {
+          "rshares": 0,
+          "voter": "joymay2000"
+        },
+        {
+          "rshares": 0,
+          "voter": "cintilla"
+        },
+        {
+          "rshares": 0,
+          "voter": "mihy86"
+        },
+        {
+          "rshares": 0,
+          "voter": "ridoyraaz"
+        },
+        {
+          "rshares": 0,
+          "voter": "hectoredvardson"
+        }
+      ],
+      "author": "worldmappin",
+      "author_payout_value": "53.252 HBD",
+      "author_reputation": 80,
+      "beneficiaries": [],
+      "blacklists": [],
+      "body": "\n![Worldmappin Proposal V2 Cover.png](https://files.peakd.com/file/peakd-hive/detlev/242hctyEdRJJGbD6wHBG3ScG1wda7TfxUfe3t8sCcPW8Tt68KvLcFL3Kt2jeNTJc5gxUJ.png)\n\n<div class=text-right> \n \n[Léelo en **español** aquí](#spanish) \n \n</div> \n\n##### Vote for this proposal (#348) [Peakd.com](https://peakd.com/proposals/348) / [Ecency](https://ecency.com/proposals/348) / [Hive.blog](https://wallet.hive.blog/proposals/348) / [HiveSigner](https://hivesigner.com/sign/update_proposal_votes?proposal_ids=%5B%22348%22%5D&approve=true)\n\n<br>\nWe can´t believe it has already been one year since @detlev and @lizanomadsoul saved the map and started the @worldmappin project. And what a journey it has been! So many great people, great ideas, get-togethers, developments, and cooperations!\n\n# Thanks to all of you for that great time!\n\nWe had a lot of work with the old code and needed to renew this project from scratch.  We achieved even more than we thought to create this stable base we are standing on now. It was totally worth it. And now we want to keep building on it! \n\nIt´s time to bring this project to the next level! \n\n\n# ✨ What is the Worldmappin project?\n\n**Worldmappin** is more than just a map. It’s a visual layer on top of Hive, where people from all over the world pin their memories, stories, and local insights — and where the Hive community comes together through curated travel content, community events, and gamification.\n\nAt its core, Worldmappin brings together three powerful elements:\n\n---\n\n## 🗺 The Map - Your Hive-Powered Travel Guide\n\n\n![https://worldmappin.com/](https://files.peakd.com/file/peakd-hive/worldmappin/23wX1Mo776wpySHJLybYZ3tBqs8WRMeQUQqryK66YmSTmECzHRUHH5X2aRk7LfdGTWPW7.png)\n\n- A **fully interactive world map** where any Hivian can **pin their post** to a location  \n- Currently features over **138,000 posts** from all 7 continents \n- Over **39,000 posts** are marked as very high quality from our curation team \n- **Every user has their own personal world map** – a living memory book of their journey on Hive  \n- Readers can **click on any location** to discover Hive blogs about that place  \n- Serves as a **travel planning tool**, a diary, and a visual showcase  \n- A way to **explore Hive content by place, not just by tags**\n\nSince the **worldmappin.com map** exists, we have planned to extend it for all Hive users, which means everyone can pin their post on the map and link it to the content-related community, bringing all the users and communities of Hive together in one place again on the worldmappin.com map.\n\nCurrently, it is mostly used by travelers, as well as foodies, artists, beer lovers, and many more.\n\n#### Integrations\nUsed daily by almost all travel bloggers on Hive, the Worldmappin Map is **already integrated into PeakD and Distriator, and work is in progress to add it to Ecency and InLeo.**:\n\n\n![Worldmappin Proposal V2 Integrations.png](https://files.peakd.com/file/peakd-hive/detlev/244orJDsM7hjoeZ2bch4bYJbmu59tPyiQbCzDoQNNATGb6crjsHpAuHKXFbLkvz9Ag7TE.png)\n\n\n---\n\n## 🌐 The Community – Where Travel Lives on Hive\n\n![Bildschirmfoto 2025-06-07 um 19.29.08.png](https://files.peakd.com/file/peakd-hive/worldmappin/23wqZqHMPwyu8GhkZNFMbHe4KqM2fbJmrU1LPgRpiPVz89MBkbZf1fM52zB4nn7ybohVX.png)\n\n- Nearly **17,000 subscribers**, with **464 active users** monthly  \n- Every single post is **reviewed and moderated** by a dedicated multilingual team  \n- The best content is curated and featured in our daily **Travel Digest**  \n- We enforce **quality content guidelines**, offering orientation for creators  \n- Users are ranked on a **leader board** within the map based on their consistency and quality of their content \n- Regular **community challenges** drive participation and creativity  \n- Serving as a **valuable resource** for travelers, planners, and dreamers alike\n\n**The Worldmappin Community** is one example of showing how using the map works. It always has been and will be travel-related, because our vision in this community has always been two things:\n\n**A:** Provide each traveler with their unique world map, where they can explore the world, pin their trips and memories, and dive back into the memories whenever they want with just a click.\n\n**B:** Provide travelers with a platform to share their adventures and experiences with others, so that the entire community benefits from using the map as a travel guide to find more information and inspiration for their next trips.\n\n### 🤝 The Delegation Reward Program – Shared Growth for Everyone\n\n\n![](https://files.peakd.com/file/peakd-hive/worldmappin/23zRw9kf7rrV4fkrJ7t9vanaoP6fhmiq1HNBWdNosCcBbA9TtWXHvPczuCbcCTuEvxiG6.png)\n\n\nWe believe in a **community-powered economy**. That’s why we launched the **Delegation Reward Program** to make Worldmappin sustainable — not just for us, but for everyone.\n\n- Delegators receive a **daily share of curation rewards** from the community account in HP form.  \n- This incentivizes staking and strengthens Hive’s Proof-of-Stake principle  \n- We currently curate the best out of **100–150 posts daily**, distributing value across the community  \n- The more Hive Power we manage, the more creators we can support  \n\n---\n\n## Our Team\n\nOur team is the perfect mix of experience and innovation, of development and community management, and most importantly, of cultures and mindsets from Hivers based all over the world.\n\n\n![Worldmappin Proposal Team](https://files.peakd.com/file/peakd-hive/worldmappin/245wYcvtY61DEE8CVhF4bsth3s5CU7LmVV8T74FDnEHfcQXXfinYyCkc8zLdfq93PnMyz.png)\n\n\n**It is led and managed by the founders** @detlev and @lizanomadsoul, two users who have been active parts of this lovely platform for over 7 years. They have consistently engaged with several Hive projects in the past. \n\n@detlev is mostly known for his beer community and as moderator at Hivefest, while @lizanomadsoul is one of the founders of the former travel Community Pinmapple, being a passionate traveler herself. Together, they are leading the project. @detlev, as project owner, focuses on finance & development, and @lizanomadsoul, as founder, focuses on the project management, community management & communication.\n\n**The development team** is working on the front and backend to make sure everything is user-friendly, safe, and fast. They are creating and implementing new ideas, developing them further every day. \n\nThe team members responsible for that part are @masterswatch, @arcange, @uniforced, and @louis88. We are happy to announce that we will onboard as well @abinsaji4 for the next steps in the new development.\n\n**Our curation team** brings in the user's perspective for our developers. But most importantly, they moderate the community with almost 17,000 subscribers (464 active users), guiding them, making sure everyone feels welcome and can grow on the chain. They motivate the users, make sure they follow the rules, and curate the best travel posts out of 100-150 posts daily. \n\nThe team members responsible for that part are @ybanezkim26, @lauramica, @ninaeatshere, @glecerioberto, and @lizanomadsoul.\n\nTo complete everything, we have @rivalzzz, @sunsea, and @godfish on board to help us out with community management (Discord), end-user testing, and ideas for business models.\n\n**The main key to our great success so far is that we have regularly virtual Meetups with our Team to discuss the further steps and bring in all perspectives from our team members all over the world.**\n\n# 🛠 What we have achieved so far\n\n![Bildschirmfoto 2025-06-06 um 09.02.09.png](https://files.peakd.com/file/peakd-hive/worldmappin/23vshix2uG3NFRq1j67CWo3iHVmVCSxzwupBDNZmz61vUfCTU6UDpaTMwVCxvR7UZ7n7v.png)\n\nAs we already showcased in our [project update post](https://peakd.com/hive-163772/@worldmappin/project-status-update-proof-of-proposal-promises-engesp) in detail a while ago, we achieved everything planned in our last proposal and even more, staying within the calculated costs.\n\n### To name a few of our most important goals on both sides - Development and Community:\n\n\nWith your support voting for the Proposal #313, we:\n\n- **Rebuilt the entire platform from scratch** to make it more efficient and better looking \n- Made the map **open-source**  \n- Developed a **curation tool** and content guidelines to take curation and moderation to the next level\n- Expanded the team and went **multilingual (English + Spanish)** in the communit \n- Started to bring in more communities with the **integration of the Worldmappin map into @peakd and @distriator**  \n- Started the **Delegation Reward Program** for more sustainability and growth of the members at the Hive Ecosystem \n- Participated in **HiveFest, Graz Meetup, and local events** to collect and discuss ideas with the users \n- Made the first step towards gamification with the creation of the first **gamified leaderboard**  \n- Launched **successful community challenges and campaigns** to bring fun, engagement, and knowledge to the users \n- **Ensured complete transparency** during the whole year with regulary infos and a full overview in our [Project Update & Transparency Report](https://peakd.com/hive-163772/@worldmappin/project-status-update-proof-of-proposal-promises-engesp)\n\n\n\n# 🚀 The vision for the future of Worldmappin\n\n\n![Worldmappin Proposal V2 Future.png](https://files.peakd.com/file/peakd-hive/detlev/244UmZDMaTYubvQRgNBrvqwvN5CgS3jCi5tuFa6MUKQRZGDqGtdPRbZU24Pc9sW3WnrgX.png)\n\n\nOf course, our team never stands still, and we already have new ideas for the upcoming year. As this project is not only for us but mostly for all of you, we are happy that we were able to collect your ideas as well since the last update and could discuss them with you in Graz and online over the past month!\n\n# The big goal is to take this project to the next level:\n- By attracting people to Hive by coming over the map\n- Make it even more community-friendly to retain the existing users and make the Hivers grow together\n- Make the project more sustainable over time.\n- Keeping it [open source](https://github.com/WorldMapPin)\n\n\n![Worldmappin Proposal V2 Roadmap.png](https://files.peakd.com/file/peakd-hive/detlev/23uFkgRdt4uHTPfBqM4i87xX8PfLfT17vEKkgHp9N9LxigVR67VWEK1BK1bXPFZ8zSC8w.png)\n\n\n---\n\n### 💻 1. Modernize the Website\n\n- Improve **UI/UX** with a fresh look for better onboarding, and mobile responsiveness  \n- Faster performance and accessibility improvements  \n- New **filters** (by country, tag, language, community)  \n- Improved pinning process for authors  \n- SEO optimization for greater reach outside Hive\n\n\n### 📱 2. Launch the Worldmappin Mobile App (PWA + Native)  \n- Create and pin posts directly from your phone  \n- View and interact with your personal map  \n- Access TravelDigest, leaderboard, and your stats  \n- Gamification: badges, achievements, visited countries  \n- Plan trips, bookmark places, and connect with other users  \n- Push notifications for challenges and updates\n\n### 🎯 3. Boost Hive Visibility through Events & Outreach\n\n- Represent Hive and Worldmappin at **blockchain, tech, and travel events**  \n- Launch **“Pin & Win” Hive onboarding campaigns**  \n- Create **Hive-branded travel guides** powered by community content  \n- Partner with influencers and local Hive communities  \n- Organize and support online and in-person **Worldmappin Meetups**\n\n### 🧩 4. Help Users and other Hive Communities Grow\n\n- Keep the daily moderation and curation of the community content to onboard, guide, support, and motivate all Hivers using the map\n- Add support for more communities (e.g., Food, Beer, Art, History)  \n- Give each community a **custom map view**  \n- Offer our **curation tool** to moderators across Hive  \n- Help other Hive leaders onboard new users using our framework  \n- Expand **filtering and sorting tools** for content discovery\n\n\n### 🤝 5. Delegation Reward System\n- Keep the Delegation Reward System going with high APR and growing on the current high level, to make the community grow all together, by staking HP from the daily curation to each delegators´ account\n\n### 🛍 6. Launch the Worldmappin Merch Store\n\n- Hoodies, stickers, gear – proudly Hive-branded  \n- Enable community challenges with **physical prizes**  \n- Let Hive creators showcase the project IRL  \n- Offer limited-edition items during events & HiveFest\n\n### 💡 7. Develop Sustainable Business Models\n\n- Offer premium features on the personal login (eg. saved searches, private maps, trip planning)  \n- Partner with travel brands or platforms  \n- Monetize through merch, donations, or digital collectibles (NFTs)  \n- Create B2B tools for event organizers or tour providers\n\n\n# 💰 Request for Funding\n\n**We like to spend as little as possible and ask only for the amount to be able to cover costs: 195 HBD per day.**\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/worldmappin/23zm7YdWZ5ruJJbJGPunKnLHsXcRV8M7tQT1J5jTmjeBaBqvVdLBgJ9G2RMLyD5AoJm1D.png)\n\n\n\n\nThis proposal request covers current and future infrastructure and human resources costs so that @Worldmappin can continue to run and grow with high quality as a helper and role model for other projects and communities.\n\nThe operational budget is created by the needs we see today and the estimated costs for all the upcoming developments with several developers. We will use a bit of the budget as well to market the project and #Hive at many other places to gain more users for Hive.\n\n\nAll this is based on the following elements:\n\n### Community work (16,35%)\n- Multilingual moderation & curation (120–150 posts daily)  \n- Challenge organization & community support  \n- Expansion of the Delegation Reward Program  \n- Community onboarding & support tools\n- Scouting and onboarding new users to the chain and community \n- Keep giving users guidance and motivation to stay on Hive and invest in their accounts\n\n### Development (42,49%) \n- Mobile app buildout (PWA + Native App)  \n- UI overhaul & frontend modernization (worldmappin.com Website) \n- Feature development (filtering, gamification, trip planner and more)\n- Overhaul the curation tool for Hive communities (create daily / weekly community posts)\n-> **of course, everything will be open source as usual**\n\n### Marketing (15,36%) \n- Event attendance, presentations, promotional material  \n- Influencer outreach and giveaways  \n- Merch production and shipping\n- Hive visibility campaigns\n\n### Technical Service, Hosting and Operation (20,38%)\n- Server, database, and backups to safely run the project with all needed resources\n- Domains and security\n- Monitoring and maintenance \n\n### Other costs (5,43%)\nA spare part for all the things who show up during the next timeframe\n\n## 📌 Support this Proposal  \n\nWe’re building something that helps **Hive grow**, **new users onboard**, and **communities thrive**.\n\n![Worldmappin Proposal V2 Please Vote.gif](https://files.peakd.com/file/peakd-hive/detlev/242DV4eWvCAXcGGHLLxYXG9Q7t5crNLDBb2igstK796ofPPzYqxmASoUjXMjLYgvJEVuv.gif)\n\nIf you believe in Hive as a visual, global, people-powered blockchain, please support us:\n\n✅ Vote on [Peakd](https://peakd.com/proposals/348)  \n✅ Vote on [Ecency](https://ecency.com/proposals/348)  \n✅ Vote on [Hive.blog](https://hive.blog/proposals/348)  \n✅ Use [HiveSigner](https://hivesigner.com/sign/update-proposal-vote?proposal_ids=%5B%22348%22%5D&approve=true)\n\n\n# Thanks for your attention and support! 😎💪🏄‍♀️\n# Let’s keep putting Hive on the map – literally.\n\n---\n---\n---\n\n<br>\n\n**Español** <a id=\"spanish\"></a> \n\n##### Propuesta de Worldmappin - Llevando el proyecto al siguiente nivel\n\n\n![Worldmappin Proposal V2 Cover.png](https://files.peakd.com/file/peakd-hive/detlev/242hctyEdRJJGbD6wHBG3ScG1wda7TfxUfe3t8sCcPW8Tt68KvLcFL3Kt2jeNTJc5gxUJ.png)\n\nNo podemos creer que ya haya pasado un año desde que @detlev y @lizanomadsoul salvaron el mapa y comenzaron el proyecto @worldmappin. ¡Y ha sido todo un viaje! Mucha gente genial, ideas geniales, reuniones, desarrollos y cooperaciones.\n\n# ¡Gracias a todos por este tiempo grandioso!\n\nTeníamos mucho que hacer con el código antiguo y necesitábamos renovar este proyecto desde cero.  Conseguimos mucho más de lo que esperábamos para crear esta base estable sobre la que estamos ahora. Valió totalmente la pena. ¡Y ahora queremos seguir construyendo sobre ella! \n\n¡Es hora de llevar este proyecto al siguiente nivel! \n\n\n# ✨ ¿Qué es el proyecto Worldmappin?\n\n**Worldmappin** es más que un mapa. Es una capa visual sobre Hive, donde personas de todo el mundo fijan sus recuerdos, historias y perspectivas locales, y donde la comunidad Hive se reúne a través de contenidos de viajes curados, eventos de la comunidad y gamificación.\n\nEn su núcleo, Worldmappin reúne tres poderosos elementos:\n---\n\n## 🗺 El Mapa: tu Guía de Viaje con el Poder de Hive\n\n\n![https://worldmappin.com/](https://files.peakd.com/file/peakd-hive/worldmappin/23wX1Mo776wpySHJLybYZ3tBqs8WRMeQUQqryK66YmSTmECzHRUHH5X2aRk7LfdGTWPW7.png)\n\n- Un **mapa mundial totalmente interactivo** donde cualquier Hiver puede **fijar su publicación** a una ubicación  \n- Actualmente cuenta con más de 138.000 publicaciones de los 7 continentes\n- Más de **39.000 publicaciones** están marcadas como de muy alta calidad por nuestro equipo de curación \n- Cada usuario tiene su propio **mapa del mundo** - un libro de recuerdos de sus viajes en Hive\n- Los lectores pueden **hacer clic en cualquier ubicación** para descubrir los blogs de Hive sobre ese lugar  \n- Funciona como **herramienta de planificación de viajes**, un diario y una exposición visual  \n- Representa una forma de **explorar el contenido de Hive por lugares, no sólo por etiquetas**\n\nDesde que existe el **mapa de worldmappin.com**, hemos planeado ampliarlo a todos los usuarios de Hive, lo que significa que todos pueden fijar sus publicaciones en el mapa y enlazarlas a la comunidad relacionada con el contenido, reuniendo de nuevo a todos los usuarios y comunidades de Hive en un mismo lugar en el mapa de worldmappin.com.\n\nActualmente, el mapa es utilizado sobre todo por viajeros, así como también aficionados a la gastronomía, artistas, amantes de la cerveza y muchos más.\n\n#### Integraciones\nUtilizado a diario por casi todos los blogueros de viajes de Hive, el mapa de Worldmappin **ya está integrado en PeakD y Distriator, mientras que se está trabajando en añadirlo a Ecency e InLeo**.\n\n\n![Worldmappin Proposal V2 Integrations.png](https://files.peakd.com/file/peakd-hive/detlev/244orJDsM7hjoeZ2bch4bYJbmu59tPyiQbCzDoQNNATGb6crjsHpAuHKXFbLkvz9Ag7TE.png)\n\n\n---\n\n## 🌐 La Comunidad - Donde Viven los Viajes en Hive\n\n![Bildschirmfoto 2025-06-07 um 19.29.08.png](https://files.peakd.com/file/peakd-hive/worldmappin/23wqZqHMPwyu8GhkZNFMbHe4KqM2fbJmrU1LPgRpiPVz89MBkbZf1fM52zB4nn7ybohVX.png)\n\n- Casi **17.000 suscriptores**, con **464 usuarios activos** mensuales  \n- Todas y cada una de las publicaciones son revisadas y moderadas por un equipo multilingüe especializado  \n- Los mejores contenidos se seleccionan y se publican en nuestro **Travel Digest** diario\n- Aplicamos **pautas para el contenido de calidad**, ofreciendo orientación a los creadores  \n- Los usuarios se muestran en una **tabla de clasificación** dentro del mapa en función de su consistencia y calidad de su contenido\n- Los **retos comunitarios** regulares fomentan la participación y la creatividad de los creadores \n- Servimos de **valioso recurso** para viajeros, planificadores y soñadores por igual\n\n**La Comunidad Worldmappin** es un ejemplo de cómo funciona el uso del mapa. Siempre ha estado y estará relacionada con los viajes, porque nuestra visión en esta comunidad siempre ha estado compuesta por dos cosas:\n\n**A:** Proporcionar a cada viajero su propio mapa, donde pueda explorar el mundo, anclar sus viajes y recuerdos, y volver a sumergirse en ellos siempre que quiera con un solo clic.\n\n**B:** Proporcionar a los viajeros una plataforma para compartir sus aventuras y experiencias con los demás, de modo que toda la comunidad se beneficie del uso del mapa como guía de viajes para encontrar más información e inspiración para sus próximos paseos.\n\n### 🤝 El Programa de Recompensas por Delegación - Crecimiento Compartido para Todos\n\n\n![](https://files.peakd.com/file/peakd-hive/worldmappin/23zRw9kf7rrV4fkrJ7t9vanaoP6fhmiq1HNBWdNosCcBbA9TtWXHvPczuCbcCTuEvxiG6.png)\n\n\nCreemos en una **economía impulsada por la comunidad**. Es por eso que lanzamos el **Programa de Recompensas por Delegación** para que Worldmappin sea sostenible, no solo para nosotros, sino para todos.\n\n- Los delegadores reciben una **parte de las recompensas diarias de curación** de la cuenta de la comunidad en forma de Hive Power. \n- Esto incentiva el staking y refuerza el principio Proof-of-Stake de Hive  \n- Actualmente curamos lo mejor de **120-150 publicaciones diarias**, distribuyendo el valor entre toda la comunidad  \n- Cuanto más poder de Hive gestionemos, más creadores podremos apoyar\n\n---\n\n## Nuestro Equipo\n\nNuestro equipo es la mezcla perfecta de experiencia e innovación, de desarrollo y gestión de comunidades y, lo que es más importante, de culturas y mentalidades de Hivers de todo el mundo.\n\n\n![Worldmappin Proposal Team](https://files.peakd.com/file/peakd-hive/worldmappin/245wYcvtY61DEE8CVhF4bsth3s5CU7LmVV8T74FDnEHfcQXXfinYyCkc8zLdfq93PnMyz.png)\n\n\n**Está dirigido y gestionado por los fundadores** @detlev y @lizanomadsoul, dos usuarios que han sido parte activa de esta encantadora plataforma durante más de 7 años. Han participado de forma constante en varios proyectos de Hive en el pasado. \n\n@detlev es conocido sobre todo por su comunidad cervecera y como moderador en Hivefest, mientras que @lizanomadsoul es una de los fundadoras de la antigua comunidad de viajes Pinmapple, siendo ella misma una viajera apasionada. Juntos, dirigen el proyecto. @detlev, como propietario del proyecto, se centra en las finanzas y el desarrollo, y @lizanomadsoul, como fundadora, en la gestión del proyecto, la gestión de la comunidad y la comunicación.\n\n**El equipo de desarrollo** trabaja en el frontend y el backend para asegurarse de que todo sea fácil de usar, seguro y rápido. Están creando y aplicando nuevas ideas, desarrollándolas cada día más. \n\nLos miembros del equipo responsables de esta parte son @masterswatch, @arcange, @uniforced y @louis88. Nos complace anunciar que también se incorporará @abinsaji4 para los siguientes pasos del nuevo desarrollo.\n\n**Nuestro equipo de curación** aporta la perspectiva del usuario a nuestros desarrolladores. Pero lo más importante es que moderan la comunidad con casi 17.000 suscriptores (464 usuarios activos), guiándolos, asegurándose de que todos se sientan bienvenidos y puedan crecer en la cadena. Motivan a los usuarios, se aseguran de que sigan las normas y seleccionan las mejores entradas sobre viajes de entre 100-150 entradas diarias. \n\nLos miembros del equipo responsables de esa parte son @ybanezkim26, @lauramica, @ninaeatshere, @glecerioberto y @lizanomadsoul.\n\nPara completarlo todo, tenemos a @rivalzzz, @sunsea y @godfish a bordo para que nos ayuden con la gestión de la comunidad (Discord), los testeos para usuarios finales y las ideas para modelos de negocio.\n\n**La clave de nuestro gran éxito hasta la fecha es que periódicamente realizamos reuniones virtuales con nuestro equipo para debatir los próximos pasos y aportar las perspectivas de todos los miembros en todo el mundo.**\n\n# 🛠 Lo que hemos logrado hasta ahora\n\n![Bildschirmfoto 2025-06-06 um 09.02.09.png](https://files.peakd.com/file/peakd-hive/worldmappin/23vshix2uG3NFRq1j67CWo3iHVmVCSxzwupBDNZmz61vUfCTU6UDpaTMwVCxvR7UZ7n7v.png)\n\nComo ya expusimos detalladamente en nuestro [post de actualización del proyecto](https://peakd.com/hive-163772/@worldmappin/project-status-update-proof-of-proposal-promises-engesp) hace un tiempo, hemos logrado todo lo previsto en nuestra última propuesta e incluso más, manteniéndonos dentro de los costos calculados.\n\n### Nombramos algunos de nuestros objetivos más importantes en ambos aspectos - Desarrollo y Comunidad:\n\n\nCon tu apoyo votando por la Propuesta #313, nosotros:\n\n- **Reconstruimos toda la plataforma desde cero** para hacerla más eficiente y más atractiva \n- Hemos hecho el mapa **de código abierto** \n- Desarrollamos una **herramienta de curación** y pautas de contenido para llevar la curación y la moderación al siguiente nivel\n- Ampliamos el equipo y pasamos a ser **multilingües (inglés + español)** en la comunidad\n- Comenzamos a incorporar más comunidades con la **integración del mapa de Worldmappin en @peakd y @distriator** \n- Comenzamos el **Programa de Recompensas por Delegación** para una mayor sostenibilidad y crecimiento de los miembros del Ecosistema Hive\n- Participamos en **HiveFest, Graz Meetup y eventos locales** para recopilar y debatir ideas con los usuarios \n- Hemos dado el primer paso hacia la gamificación con la creación de la primera tabla de clasificación gamificada  \n- Lanzamos **exitosos retos comunitarios y campañas** para aportar diversión, compromiso y reconocimientos a los usuarios \n- **Garantizamos una transparencia total** durante todo el año con información periódica y un resumen completo en nuestro [Informe de actualización y transparencia del proyecto](https://peakd.com/hive-163772/@worldmappin/project-status-update-proof-of-proposal-promises-engesp)\n\n\n\n# 🚀 La visión de futuro de Worldmappin\n\n\n![Worldmappin Proposal V2 Future.png](https://files.peakd.com/file/peakd-hive/detlev/244UmZDMaTYubvQRgNBrvqwvN5CgS3jCi5tuFa6MUKQRZGDqGtdPRbZU24Pc9sW3WnrgX.png)\n\nPor supuesto, nuestro equipo nunca está quieto, y ya tenemos nuevas ideas para el año que viene. Como este proyecto no es sólo para nosotros, sino sobre todo para todos ustedes, nos alegramos de haber podido recoger también sus ideas desde la última actualización y de haber podido debatirlas juntos en Graz y en línea durante el mes pasado.\n\n# El gran objetivo es llevar este proyecto al siguiente nivel:\n- Atrayendo a la gente a Hive a través del mapa\n- Hacerlo aún más amigable para la comunidad para retener a los usuarios existentes y hacer que los Hivers crezcan juntos\n- Hacer el proyecto más sostenible en el tiempo\n- Manteniéndolo [de código abierto](https://github.com/WorldMapPin)\n\n\n\n![Worldmappin Proposal V2 Roadmap.png](https://files.peakd.com/file/peakd-hive/detlev/23uFkgRdt4uHTPfBqM4i87xX8PfLfT17vEKkgHp9N9LxigVR67VWEK1BK1bXPFZ8zSC8w.png)\n\n\n---\n\n### 💻 1. Modernizar el Sitio Web\n\n- Mejora de la IU/UX con un aspecto renovado para un mejor onboarding y capacidad de respuesta en dispositivos móviles  \n- Mejoras en el rendimiento y la accesibilidad  \n- Nuevos **filtros** (por país, etiqueta, idioma, comunidad)  \n- Mejora del proceso de añadir el pin para los autores  \n- Optimización SEO para un mayor alcance fuera de Hive\n\n\n### 📱 2. Lanzar la aplicación móvil Worldmappin (PWA + Native)  \n- Crea y ancla publicaciones directamente desde tu teléfono  \n- Revisa e interactúa con tu mapa personal  \n- Accede a Travel Digest, la tabla de clasificación y tus estadísticas  \n- Gamificación: insignias, logros, países visitados  \n- Planifica viajes, marca lugares y conéctate con otros usuarios  \n- Notificaciones push para retos y actualizaciones\n\n### 🎯 3. Aumentar la Visibilidad de Hive a través de Eventos y Actividades de Divulgación\n\n- Representar a Hive y Worldmappin en **eventos sobre blockchain, tecnología y viajes**\n- Lanzar **campañas de incorporación a Hive «Pin & Win »** \n- Crear **guías de viaje con la marca Hive** basadas en contenidos de la comunidad  \n- Colaborar con personas influyentes y comunidades locales de Hive  \n- Organizar y apoyar **Meetups de Worldmappin** en línea y presenciales\n\n### 🧩 4. Ayudar a crecer a los Usuarios y a Otras Comunidades de Hive\n\n- Mantener la moderación diaria y la curación del contenido de la comunidad para incorporar, guiar, apoyar y motivar a todos los Hivers que utilicen el mapa\n- Añadir soporte para más comunidades (por ejemplo, Comida, Cerveza, Arte, Historia)  \n- Dar a cada comunidad una **vista personalizada del mapa**  \n- Ofrecer nuestra **herramienta de curación** a otros moderadores de Hive  \n- Ayudar a otros líderes de Hive a incorporar nuevos usuarios utilizando nuestro sistema.\n- Ampliar las **herramientas de filtrado y clasificación** para el descubrimiento de contenidos\n\n\n### 🤝 5. Sistema de Recompensas por Delegación\n- Mantener el Sistema de Recompensas por Delegación con un APR alto y creciendo al nivel actual, para hacer crecer la comunidad en su conjunto, apostando HP de la curación diaria a la cuenta de cada delegado\n\n\n### 🛍 6. Lanzar la tienda de Merchandising de Worldmappin\n\n- Sudaderas, pegatinas y ropa con la marca Hive\n- Habilitar retos comunitarios con **premios físicos**\n- Permitir que los creadores de Hive muestren el proyecto en vivo  \n- Ofrecer artículos de edición limitada durante eventos y HiveFest\n\n\n### 💡 7. Desarrollar Modelos de Negocio Sostenibles\n\n- Ofrecer funciones premium en el inicio de sesión personal (por ejemplo, búsquedas guardadas, mapas privados, planificación de viajes) \n- Asociarse con marcas o plataformas de viajes  \n- Monetizar a través de merchandising, donaciones o coleccionables digitales (NFT)  \n- Crear herramientas B2B para organizadores de eventos o proveedores de viajes\n\n\n\n# 💰 Solicitud de Financiación\n\n\n**Nos gusta gastar lo menos posible y pedimos sólo la cantidad para poder cubrir gastos: 195 HBD por día.**\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/worldmappin/23zm7YdWZ5ruJJbJGPunKnLHsXcRV8M7tQT1J5jTmjeBaBqvVdLBgJ9G2RMLyD5AoJm1D.png)\n\nEsta solicitud de propuesta cubre los costos actuales y futuros de infraestructura y recursos humanos para que @Worldmappin pueda seguir funcionando y creciendo con gran calidad como ayudante y modelo para otros proyectos y comunidades.\n\nEl presupuesto operativo está creado por las necesidades que vemos hoy y los costos estimados para todos los próximos desarrollos con varios desarrolladores. Utilizaremos una parte del presupuesto también para comercializar el proyecto y #Hive en muchos otros lugares para ganar más usuarios para Hive.\n\n\nTodo esto se basa en los siguientes elementos:\n\n### Trabajo de la Comunidad (16,35%)\n- Moderación multilingüe (120-150 publicaciones diarias)  \n- Organización de retos y apoyo a la comunidad  \n- Ampliación del programa de Recompensas por Delegación  \n- Herramientas de integración y apoyo a la comunidad\n- Captación e incorporación de nuevos usuarios a la cadena y a la comunidad \n- Seguir orientando y motivando a los usuarios para que permanezcan en Hive e inviertan en sus cuentas\n\n### Desarrollo (42,49%) \n- Desarrollo de aplicaciones móviles (PWA + Native App)  \n- Revisión de la interfaz de usuario y modernización del frontend (sitio web worldmappin.com) \n- Desarrollo de funciones (filtrado, gamificación, planificador de viajes y más)\n- Revisión de la herramienta de curación para las comunidades Hive (crear publicaciones diarias / semanales de la comunidad)\n-> **Por supuesto, todo será de código abierto, como de costumbre**.\n\n### Marketing (15,36%) \n- Asistencia a eventos, presentaciones, material promocional  \n- Contactos con personas influyentes y regalos  \n- Producción y envío de merchandising\n- Campañas de visibilidad de Hive\n\n### Servicio Técnico, Hosting y Funcionamiento (20,38%)\n- Servidor, base de datos y copias de seguridad para ejecutar el proyecto de forma segura con todos los recursos necesarios\n- Dominios y seguridad\n- Supervisión y mantenimiento \n\n### Otros costos (5,43%)\nUna parte como reserva para todo lo que aparezca en el próximo plazo\n\n## 📌 Apoya esta Propuesta  \n\nEstamos construyendo algo que ayuda a que **Hive crezca**, **se incorporen nuevos usuarios** y **las comunidades prosperen**.\n\n![Worldmappin Proposal V2 Please Vote.gif](https://files.peakd.com/file/peakd-hive/detlev/242DV4eWvCAXcGGHLLxYXG9Q7t5crNLDBb2igstK796ofPPzYqxmASoUjXMjLYgvJEVuv.gif)\n\nSi crees en Hive como blockchain visual, global y potenciada por las personas, apóyanos:\n\n✅ Vota en [Peakd](https://peakd.com/proposals/348)  \n✅ Vota en [Ecency](https://ecency.com/proposals/348)  \n✅ Vota en [Hive.blog](https://hive.blog/proposals/348)  \n✅ Usa [HiveSigner](https://hivesigner.com/sign/update-proposal-vote?proposal_ids=%5B%22348%22%5D&approve=true)\n\n\n# ¡Gracias por su atención y apoyo! 😎💪🏄‍♀️\n# Sigamos poniendo a Hive en el mapa - literalmente.\n",
+      "category": "worldmappin",
+      "children": 107,
+      "created": "2025-06-08T20:30:21",
+      "curator_payout_value": "53.195 HBD",
+      "depth": 0,
+      "is_paidout": true,
+      "json_metadata": {
+        "app": "peakd/2025.6.1",
+        "description": "A proposal to take worldmappin the next level in functions and design to grow the amount of users and Hivians",
+        "format": "markdown",
+        "image": [
+          "https://files.peakd.com/file/peakd-hive/detlev/242hctyEdRJJGbD6wHBG3ScG1wda7TfxUfe3t8sCcPW8Tt68KvLcFL3Kt2jeNTJc5gxUJ.png",
+          "https://files.peakd.com/file/peakd-hive/worldmappin/23wX1Mo776wpySHJLybYZ3tBqs8WRMeQUQqryK66YmSTmECzHRUHH5X2aRk7LfdGTWPW7.png",
+          "https://files.peakd.com/file/peakd-hive/detlev/244orJDsM7hjoeZ2bch4bYJbmu59tPyiQbCzDoQNNATGb6crjsHpAuHKXFbLkvz9Ag7TE.png",
+          "https://files.peakd.com/file/peakd-hive/worldmappin/23wqZqHMPwyu8GhkZNFMbHe4KqM2fbJmrU1LPgRpiPVz89MBkbZf1fM52zB4nn7ybohVX.png",
+          "https://files.peakd.com/file/peakd-hive/worldmappin/23zRw9kf7rrV4fkrJ7t9vanaoP6fhmiq1HNBWdNosCcBbA9TtWXHvPczuCbcCTuEvxiG6.png",
+          "https://files.peakd.com/file/peakd-hive/worldmappin/245wYcvtY61DEE8CVhF4bsth3s5CU7LmVV8T74FDnEHfcQXXfinYyCkc8zLdfq93PnMyz.png",
+          "https://files.peakd.com/file/peakd-hive/worldmappin/23vshix2uG3NFRq1j67CWo3iHVmVCSxzwupBDNZmz61vUfCTU6UDpaTMwVCxvR7UZ7n7v.png",
+          "https://files.peakd.com/file/peakd-hive/detlev/244UmZDMaTYubvQRgNBrvqwvN5CgS3jCi5tuFa6MUKQRZGDqGtdPRbZU24Pc9sW3WnrgX.png",
+          "https://files.peakd.com/file/peakd-hive/detlev/23uFkgRdt4uHTPfBqM4i87xX8PfLfT17vEKkgHp9N9LxigVR67VWEK1BK1bXPFZ8zSC8w.png",
+          "https://files.peakd.com/file/peakd-hive/worldmappin/23zm7YdWZ5ruJJbJGPunKnLHsXcRV8M7tQT1J5jTmjeBaBqvVdLBgJ9G2RMLyD5AoJm1D.png",
+          "https://files.peakd.com/file/peakd-hive/detlev/242DV4eWvCAXcGGHLLxYXG9Q7t5crNLDBb2igstK796ofPPzYqxmASoUjXMjLYgvJEVuv.gif"
+        ],
+        "tags": [
+          "worldmappin",
+          "travel",
+          "community",
+          "proposal",
+          "update",
+          "hive",
+          "spanish",
+          "opensource",
+          "funding",
+          "dhf"
+        ],
+        "users": [
+          "detlev",
+          "lizanomadsoul",
+          "worldmappin",
+          "masterswatch",
+          "arcange",
+          "uniforced",
+          "louis88.",
+          "abinsaji4",
+          "ybanezkim26",
+          "lauramica"
+        ]
+      },
+      "max_accepted_payout": "1000000.000 HBD",
+      "net_rshares": 351247556612545,
+      "payout": 106.447,
+      "payout_at": "2025-06-15T20:30:21",
+      "pending_payout_value": "0.000 HBD",
+      "percent_hbd": 10000,
+      "permlink": "worldmappin-proposal-bringing-the-project-to-the-next-level",
+      "post_id": 143246419,
+      "reblogs": 40,
+      "replies": [],
+      "stats": {
+        "flag_weight": 3,
+        "gray": false,
+        "hide": false,
+        "total_votes": 564
+      },
+      "title": "Worldmappin Proposal - Bringing the project to the next level",
+      "updated": "2025-06-08T21:52:30",
+      "url": "/worldmappin/@worldmappin/worldmappin-proposal-bringing-the-project-to-the-next-level"
+    }
+  },
+  "paramsHash": "c7f2f01815cf12d5"
+}

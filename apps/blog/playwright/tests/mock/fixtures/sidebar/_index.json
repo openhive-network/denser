@@ -1,0 +1,14 @@
+{
+  "testName": "sidebar",
+  "recordedAt": "2026-04-09T09:51:37.575Z",
+  "totalRequests": 26,
+  "savedFixtures": 11,
+  "duplicatesSkipped": 15,
+  "methods": {
+    "bridge.list_communities": 10,
+    "bridge.get_post": 3,
+    "bridge.get_ranked_posts": 9,
+    "bridge.get_community": 3,
+    "bridge.get_discussion": 1
+  }
+}
