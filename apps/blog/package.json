@@ -28,7 +28,12 @@
     "pw:blog:test:mir:chromium:container:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000.config.ts --headed --update-snapshots",
     "pw:blog:test:mir:chromium:ui:container:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000.config.ts --update-snapshots --ui",
     "pw:blog:test:mir:chromium:container13:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000-13.config.ts --headed --update-snapshots",
-    "pw:blog:test:mir:chromium:ui:container13:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000-13.config.ts --update-snapshots --ui"
+    "pw:blog:test:mir:chromium:ui:container13:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000-13.config.ts --update-snapshots --ui",
+    "test:mock": "playwright test --config=playwright.mock.config.ts",
+    "test:mock:headed": "playwright test --config=playwright.mock.config.ts --headed",
+    "test:fixture": "playwright test --config=playwright.fixture.config.ts",
+    "test:fixture:headed": "playwright test --config=playwright.fixture.config.ts --headed",
+    "test:fixture:record": "FIXTURE_MODE=record playwright test --config=playwright.fixture.config.ts"
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
@@ -103,10 +108,14 @@
     "@playwright/test": "^1.41.1",
     "@tanstack/react-query-devtools": "^4.36.1",
     "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.6",
+    "@types/express-http-proxy": "^1.6.7",
     "@types/http-errors": "^2.0.4",
     "@types/qrcode": "^1.5.5",
     "@types/yazl": "^2.4.5",
     "copy-webpack-plugin": "^11.0.0",
+    "express": "^5.2.1",
+    "express-http-proxy": "^2.1.2",
     "null-loader": "^4.0.1",
     "typescript": "5.3.3"
   }
