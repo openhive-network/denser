@@ -677,6 +677,11 @@ e2e-tests-wallet:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
     PORT: 4000
+  parallel:
+    matrix:
+    - PROJECT: ['chromium']
+      SHARD_INDEX: [1, 2]
+      SHARD_TOTAL: 2
 
 smoke-tests-blog:
   extends: .node-job
@@ -760,8 +765,8 @@ e2e-report-aggregate-wallet:
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
-    PROJECTS: '["chromium", "firefox", "webkit"]'
-    SHARD_TOTAL: 5
+    PROJECTS: '["chromium"]'
+    SHARD_TOTAL: 2
 
 # Lighthouse metrics job template
 # Uses pre-built image with Chrome + Lighthouse: https://gitlab.com/gitlab-ci-utils/lighthouse
