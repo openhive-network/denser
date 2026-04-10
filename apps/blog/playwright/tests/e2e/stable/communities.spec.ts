@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../../support/pages/homePage';
 import { CommunitiesExplorePage } from '../../support/pages/communitiesExplorerPage';
+import { CommunitiesPage } from '../../support/pages/communitiesPage';
 import { TIMEOUTS } from '../../support/constants';
 
 test.describe('Communities tests', () => {
@@ -70,5 +71,25 @@ test.describe('Communities tests', () => {
     const loginDialog = page.getByTestId('login-dialog');
     const loginFormDesc = page.getByTestId('login-form-description');
     await expect(loginDialog.or(loginFormDesc)).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+  });
+
+  test('CM-05: Community page shows name, info and posts', async ({ page }) => {
+    const communityPage = new CommunitiesPage(page);
+
+    // Navigate to a community from explore page
+    await page.goto('/communities', { waitUntil: 'domcontentloaded' });
+
+    await expect(communitiesPage.communityListItemTitle.first()).toBeVisible({
+      timeout: TIMEOUTS.SEARCH_RESULTS
+    });
+
+    await communitiesPage.communityListItemTitle.first().click();
+
+    // Community page should show name and posts
+    await expect(communityPage.communityNameTitle).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+    await expect(communityPage.communityNameTitle).not.toBeEmpty();
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({
+      timeout: TIMEOUTS.SEARCH_RESULTS
+    });
   });
 });

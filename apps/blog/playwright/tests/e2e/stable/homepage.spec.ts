@@ -78,4 +78,44 @@ test.describe('Homepage tests', () => {
 
     await expect(page).toHaveURL(/@/);
   });
+
+  test('HP-06: Trending communities sidebar is visible', async ({ page }) => {
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
+
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({
+      timeout: TIMEOUTS.SEARCH_RESULTS
+    });
+
+    await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
+
+    const communityLinks = homePage.getTrendingCommunitiesSideBarLinks;
+    const count = await communityLinks.count();
+    expect(count).toBeGreaterThan(0);
+  });
+
+  test('HP-07: Explore communities link navigates to communities page', async ({ page }) => {
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
+
+    await expect(homePage.getExploreCommunities).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+
+    await homePage.getExploreCommunities.click();
+
+    await expect(page).toHaveURL('/communities');
+  });
+
+  test('HP-08: Theme toggle switches between light and dark', async ({ page }) => {
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
+
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({
+      timeout: TIMEOUTS.SEARCH_RESULTS
+    });
+
+    // Switch to dark mode
+    await homePage.changeThemeMode('Dark');
+    await expect(page.locator('html')).toHaveClass(/dark/);
+
+    // Switch back to light mode
+    await homePage.changeThemeMode('Light');
+    await expect(page.locator('html')).not.toHaveClass(/dark/);
+  });
 });

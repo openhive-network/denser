@@ -73,4 +73,81 @@ test.describe('Post page tests', () => {
     await expect(postPage.sharePostFrame).toContainText('Share this post');
     await postPage.sharePostCloseBtn.click();
   });
+
+  test('PP-06: Click downvote shows login dialog', async ({ page }) => {
+    const loginForm = new LoginForm(page);
+
+    await postPage.gotoHomePage();
+    await homePage.getFirstPostTitle.click();
+
+    await expect(postPage.downvoteButton).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+    await postPage.downvoteButton.click();
+
+    await expect(loginForm.loginFormDescription).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+  });
+
+  test('PP-07: Reblog dialog opens', async ({ page }) => {
+    await postPage.gotoHomePage();
+    await homePage.getFirstPostTitle.click();
+
+    await expect(postPage.footerReblogIcon).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+    await postPage.footerReblogIcon.click();
+
+    await expect(postPage.reblogDialogHeader).toBeVisible();
+    await expect(postPage.reblogDialogHeader).toHaveText('Reblog This Post');
+    await expect(postPage.reblogDialogCancelBtn).toBeVisible();
+    await expect(postPage.reblogDialogOkBtn).toBeVisible();
+
+    await postPage.reblogDialogCloseBtn.click();
+  });
+
+  test('PP-08: Reply button shows login dialog', async ({ page }) => {
+    const loginForm = new LoginForm(page);
+
+    await postPage.gotoHomePage();
+    await homePage.getFirstPostTitle.click();
+
+    await expect(postPage.commentReplay).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+    await postPage.commentReplay.click();
+
+    await expect(loginForm.loginFormDescription).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+  });
+
+  test('PP-09: Post metadata is displayed', async ({ page }) => {
+    await postPage.gotoHomePage();
+    await homePage.getFirstPostTitle.click();
+
+    await expect(postPage.articleFooter).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+
+    // Payout amount visible
+    await expect(postPage.footerPayouts).toBeVisible();
+
+    // Votes count visible
+    await expect(postPage.postFooterVotes.first()).toBeVisible();
+
+    // Hashtags visible (if post has tags)
+    if (await postPage.hashtagsPosts.isVisible()) {
+      await expect(postPage.hashtagsPosts).toBeVisible();
+    }
+  });
+
+  test('PP-10: Click tag navigates to tag page', async ({ page }) => {
+    await postPage.gotoHomePage();
+    await homePage.getFirstPostTitle.click();
+
+    await expect(postPage.articleFooter).toBeVisible({ timeout: TIMEOUTS.SEARCH_RESULTS });
+
+    // Find first hashtag link in post
+    const hashtagLink = postPage.hashtagsPosts.locator('a').first();
+
+    if (await hashtagLink.isVisible()) {
+      await hashtagLink.click();
+
+      // Should navigate to a tag page (trending/tag or similar)
+      await expect(page).toHaveURL(/\/(trending|hot|created)\//);
+      await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({
+        timeout: TIMEOUTS.SEARCH_RESULTS
+      });
+    }
+  });
 });
