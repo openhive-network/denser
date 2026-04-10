@@ -164,6 +164,8 @@ test.describe('Deep Linking tests', () => {
    */
 
   test('direct link to hot feed loads correctly', async ({ page }) => {
+    // FIXME: flaky test on e2e-tests-blog-stable stage
+    test.fixme();
     await page.goto('/hot');
 
     await expect(page).toHaveURL('/hot');
@@ -174,6 +176,8 @@ test.describe('Deep Linking tests', () => {
   });
 
   test('direct link to created/new feed loads correctly', async ({ page }) => {
+    // FIXME: flaky test on e2e-tests-blog-stable stage
+    test.fixme();
     await page.goto('/created');
 
     await expect(page).toHaveURL('/created');

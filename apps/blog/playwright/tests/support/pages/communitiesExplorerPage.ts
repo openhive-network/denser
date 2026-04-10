@@ -65,6 +65,16 @@ export class CommunitiesExplorePage{
         await expect(this.firstCommunityDefault).toHaveText(firstCommunityTitle);
     }
 
+    async validateFirstCommunityCardElements() {
+        await expect(this.communityListItem.first()).toBeVisible();
+        await expect(this.communityListItemTitle.first()).toBeVisible();
+        await expect(this.communityListItemAbout.first()).toBeVisible();
+        await expect(this.communityListItemFooter.first()).toBeVisible();
+        await expect(this.communityListItemFooterAdminLink.first()).toBeVisible();
+        await expect(this.communityListItemSubscribeButton.first()).toBeVisible();
+        await expect(this.communityListItemSubscribeButton.first()).toBeEnabled();
+    }
+
     async getElementCssPropertyValue(element: Locator, cssProperty: string) {
         const bcg = await element.evaluate((ele, css) => {
           return window.getComputedStyle(ele).getPropertyValue(css);

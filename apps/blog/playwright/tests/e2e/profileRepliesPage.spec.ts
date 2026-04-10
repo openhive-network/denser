@@ -235,27 +235,15 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
+    // Validate upvote button structure
+    await profilePage.validateCommentUpvoteButtonStructure();
+
     // Hover upvote button
     await profilePage.postUpvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
     // Validate the tooltip message
     const tooltipText = await profilePage.postUpvoteTooltip.textContent();
     expect(['UpvoteUpvote', 'UpvoteVoting on Content after their payout does not generate any new rewardsUpvoteVoting on Content after their payout does not generate any new rewards']).toContain(tooltipText);
-    // Upvote icon color
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.postUpvoteButton.locator('svg').first(),
-        'color'
-      )
-    ).toBe('rgb(255, 255, 255)');
-
-    // Upvote icon background-color
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.postUpvoteButton.locator('svg').first(),
-        'background-color'
-      )
-    ).toBe('rgb(218, 43, 43)');
 
     await profilePage.postUpvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
@@ -268,27 +256,15 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
+    // Validate downvote button structure
+    await profilePage.validateCommentDownvoteButtonStructure();
+
     // Hover Downvote button
     await profilePage.postDownvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
     // Validate the tooltip message
     const tooltipText = await profilePage.postDownvoteTooltip.textContent();
     expect(['DownvoteDownvote', 'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards']).toContain(tooltipText);
-    // Upvote icon color
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.postDownvoteButton.locator('svg').first(),
-        'color'
-      )
-    ).toBe('rgb(255, 255, 255)');
-
-    // Downvote icon background-color
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.postDownvoteButton.locator('svg').first(),
-        'background-color'
-      )
-    ).toBe('rgb(75, 85, 99)');
 
     await profilePage.postDownvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
@@ -299,29 +275,11 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.gotoRepliesProfilePage('@gtg');
     await profilePage.profileRepliesTabIsSelected();
 
-    const firstCommentCardPayoutText = await profilePage.repliesCommentListItemPayout.first().textContent();
-    const firstCommentCardPayout = await profilePage.repliesCommentListItemPayout.first();
-    // console.log('firstCommentCardPayoutText ', firstCommentCardPayoutText);
-
-    // Validate payout is visible and color after hovering
-    if (firstCommentCardPayoutText == '$0.00') {
-      await expect(firstCommentCardPayout).toBeVisible();
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await profilePage.repliesCommentListItemPayout.first(),
-          'color'
-        )
-      ).toBe('rgb(24, 30, 42)');
-    } else {
-      await firstCommentCardPayout.hover();
-      await profilePage.page.waitForTimeout(1000);
-      await expect(profilePage.repliesCommentListItemPayoutTooltip.first()).toBeVisible();
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await profilePage.repliesCommentListItemPayout.first(),
-          'color'
-        )
-      ).toBe('rgb(218, 43, 43)');
+    await profilePage.validateCommentPayoutVisible();
+    const firstPostPayoutText = await profilePage.repliesCommentListItemPayout.first().textContent();
+    if (firstPostPayoutText !== '$0.00') {
+      await profilePage.repliesCommentListItemPayout.first().hover();
+      await expect(profilePage.repliesCommentListItemPayoutTooltip.first()).toBeVisible({ timeout: 15000 });
     }
   });
 

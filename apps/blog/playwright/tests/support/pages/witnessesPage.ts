@@ -75,6 +75,19 @@ export class WitnessPage {
     return bcg;
   }
 
+  async validateWitnessHighlightToggle() {
+    // Click the highlight link - row should get highlight class
+    await this.firstWitnessHighLightLink.click();
+    await expect(this.firstWitnessListMemberRow).toHaveClass(/bg-rose-200|bg-red-200/);
+    // Validate witness name is typed into vote input
+    const witnessName = await this.firstWitnessNameLink.textContent();
+    await expect(this.witnessesVoteBoxInput).toHaveValue(witnessName || '');
+    // Click again to unhighlight
+    await this.firstWitnessHighLightLink.click();
+    await expect(this.firstWitnessListMemberRow).not.toHaveClass(/bg-rose-200|bg-red-200/);
+    await expect(this.witnessesVoteBoxInput).toHaveValue('');
+  }
+
   async waitForWitnessListItemsLoaded() {
     await this.page.waitForSelector(this.witnessesListItemInfo['_selector']);
   }

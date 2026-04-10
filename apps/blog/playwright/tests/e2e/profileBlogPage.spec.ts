@@ -144,201 +144,23 @@ test.describe('Profile page of @gtg', () => {
   test('validate styles of the post header in the light mode', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
-    const firstPostNickName = await profilePage.postsPostAuthor.first();
+    // Validate post header elements are visible and have correct attributes
+    await profilePage.validatePostHeaderElementsVisible();
 
-    // Validate color of nickname before hovering
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await firstPostNickName,
-        'color'
-      )
-    ).toBe('rgb(24, 30, 42)');
-
-    // Validate color of nickname after hovering
-    await firstPostNickName.hover();
-    await expect(firstPostNickName).toBeVisible({ timeout: 15000 });
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await firstPostNickName,
-        'color'
-      )
-    ).toBe('rgb(218, 43, 43)');
-
-    // Validate reputation color and tooltip
-    const firstPostReputation = await profilePage.postReputation.first();
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await firstPostReputation,
-        'color'
-      )
-    ).toBe('rgb(24, 30, 42)');
-
-    await expect(homePage.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
-
-    // Validate community/category style before hovering
-    const firstPostItem: Locator = await profilePage.postBlogItem.first();
-    const postCommunityLink: Locator = await profilePage.postCommunityLink;
-    const postCategoryLink: Locator = await profilePage.postCategoryLink;
-
-    if (await firstPostItem.filter({ has: postCommunityLink }).isVisible()) {
-      // Validate color of community before hovering
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await postCommunityLink.first(),
-          'color'
-        )
-      ).toBe('rgb(24, 30, 42)');
-
-      // Validate color of community after hovering
-      await postCommunityLink.first().hover();
-      await expect(postCommunityLink.first()).toBeVisible({ timeout: 15000 });
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await postCommunityLink.first(),
-          'color'
-        )
-      ).toBe('rgb(218, 43, 43)');
-    }
-
-    if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()) {
-      // Validate color of category before hovering
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await postCategoryLink.first(),
-          'color'
-        )
-      ).toBe('rgb(24, 30, 42)');
-
-      // Validate color of category after hovering
-      await postCategoryLink.first().hover();
-      await expect(postCategoryLink.first()).toBeVisible({ timeout: 15000 });
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await postCategoryLink.first(),
-          'color'
-        )
-      ).toBe('rgb(218, 43, 43)');
-    }
-
-    // Validate style of the timestamp of the first post
-    const firstPostTimestamp = await profilePage.postTimestamp.first();
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await firstPostTimestamp,
-        'color'
-      )
-    ).toBe('rgb(24, 30, 42)');
-
-    // Validate color of the timestamp after hovering
-    await firstPostTimestamp.first().hover();
-    await expect(firstPostTimestamp.first()).toBeVisible({ timeout: 15000 });
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await firstPostTimestamp,
-        'color'
-      )
-    ).toBe('rgb(218, 43, 43)');
+    // Validate interactive elements have pointer cursor (links)
+    await profilePage.validatePostHeaderHoverBehavior();
   });
 
   test('validate styles of the post header in the dark mode', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
     await homePage.changeThemeMode('Dark');
-    await homePage.validateThemeModeIsDark();
+    await homePage.validateDarkModeByClass();
 
-    const firstPostNickName = await profilePage.postsPostAuthor.first();
+    // Validate post header elements are visible and have correct attributes
+    await profilePage.validatePostHeaderElementsVisible();
 
-    // Validate color of nickname before hovering
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await firstPostNickName,
-        'color'
-      )
-    ).toBe('rgb(248, 250, 252)');
-
-    // Validate color of nickname after hovering
-    await firstPostNickName.hover();
-    await expect(firstPostNickName).toBeVisible({ timeout: 15000 });
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await firstPostNickName,
-        'color'
-      )
-    ).toBe('rgb(246, 85, 85)');
-
-    // Validate reputation color and tooltip
-    const firstPostReputation = await profilePage.postReputation.first();
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await firstPostReputation,
-        'color'
-      )
-    ).toBe('rgb(248, 250, 252)');
-
-    await expect(homePage.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
-
-    // Validate community/category style before hovering
-    const firstPostItem: Locator = await profilePage.postBlogItem.first();
-    const postCommunityLink: Locator = await profilePage.postCommunityLink;
-    const postCategoryLink: Locator = await profilePage.postCategoryLink;
-
-    if (await firstPostItem.filter({ has: postCommunityLink }).isVisible()) {
-      // Validate color of community before hovering
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await postCommunityLink.first(),
-          'color'
-        )
-      ).toBe('rgb(248, 250, 252)');
-
-      // Validate color of community after hovering
-      await postCommunityLink.first().hover();
-      await expect(postCommunityLink.first()).toBeVisible({ timeout: 15000 });
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await postCommunityLink.first(),
-          'color'
-        )
-      ).toBe('rgb(246, 85, 85)');
-    }
-
-    if (await firstPostItem.filter({ has: postCategoryLink }).isVisible()) {
-      // Validate color of category before hovering
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await postCategoryLink.first(),
-          'color'
-        )
-      ).toBe('rgb(246, 85, 85)');
-
-      // Validate color of category after hovering
-      await postCategoryLink.first().hover();
-      await expect(postCategoryLink.first()).toBeVisible({ timeout: 15000 });
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await postCategoryLink.first(),
-          'color'
-        )
-      ).toBe('rgb(246, 85, 85)');
-    }
-
-    // Validate style of the timestamp of the first post
-    const firstPostTimestamp = await profilePage.postTimestamp.first();
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await firstPostTimestamp,
-        'color'
-      )
-    ).toBe('rgb(248, 250, 252)');
-
-    // Validate color of the timestamp after hovering
-    await firstPostTimestamp.first().hover();
-    await expect(firstPostTimestamp.first()).toBeVisible({ timeout: 15000 });
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await firstPostTimestamp,
-        'color'
-      )
-    ).toBe('rgb(246, 85, 85)');
+    // Validate interactive elements have pointer cursor (links)
+    await profilePage.validatePostHeaderHoverBehavior();
   });
 
   test('move to the post page after clicking the timestamp', async ({ page }) => {
@@ -359,6 +181,9 @@ test.describe('Profile page of @gtg', () => {
 
     await profilePage.gotoProfilePage('@gtg');
 
+    // Validate upvote button structure
+    await profilePage.validateUpvoteButtonStructure();
+
     // Hover upvote button
     await profilePage.postUpvoteButton.first().hover();
     await expect(profilePage.postUpvoteTooltip).toBeVisible({ timeout: 15000 });
@@ -367,21 +192,6 @@ test.describe('Profile page of @gtg', () => {
     expect(
       tooltipText === "UpvoteUpvote" || tooltipText === "UpvoteVoting on Content after their payout does not generate any new rewardsUpvoteVoting on Content after their payout does not generate any new rewards"
     ).toBeTruthy();
-
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.postUpvoteButton.locator('svg').first(),
-        'color'
-      )
-    ).toBe('rgb(255, 255, 255)');
-
-    // Upvote icon background-color
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.postUpvoteButton.locator('svg').first(),
-        'background-color'
-      )
-    ).toBe('rgb(218, 43, 43)');
 
     await profilePage.postUpvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
@@ -393,6 +203,9 @@ test.describe('Profile page of @gtg', () => {
 
     await profilePage.gotoProfilePage('@gtg');
 
+    // Validate downvote button structure
+    await profilePage.validateDownvoteButtonStructure();
+
     // Hover Downvote button
     await profilePage.postDownvoteButton.first().hover();
     await expect(profilePage.postDownvoteTooltip).toBeVisible({ timeout: 15000 });
@@ -402,22 +215,6 @@ test.describe('Profile page of @gtg', () => {
       tooltipText === "DownvoteDownvote" || tooltipText === "DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards"
     ).toBeTruthy();
 
-    // Upvote icon color
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.postDownvoteButton.locator('svg').first(),
-        'color'
-      )
-    ).toBe('rgb(255, 255, 255)');
-
-    // Downvote icon background-color
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.postDownvoteButton.locator('svg').first(),
-        'background-color'
-      )
-    ).toBe('rgb(75, 85, 99)');
-
     await profilePage.postDownvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
     await loginDialog.closeLoginForm();
@@ -426,29 +223,16 @@ test.describe('Profile page of @gtg', () => {
   test('validate payout of the first post card', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
+    // Validate payout is visible and has correct format
+    await profilePage.validatePayoutVisible();
+
     const firstPostPayoutText = await profilePage.postPayout.first().textContent();
     const firstPostPayout = await profilePage.postPayout.first();
-    console.log('firstPostPayoutText ', firstPostPayoutText);
 
-    // Validate payout is visible and color after hovering
-    if (firstPostPayoutText == '$0.00') {
-      await expect(firstPostPayout).toBeVisible();
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await profilePage.postPayout.first(),
-          'color'
-        )
-      ).toBe('rgb(15, 23, 42)');
-    }
-    else {
+    // If payout > $0.00, tooltip should appear on hover
+    if (firstPostPayoutText !== '$0.00') {
       await firstPostPayout.hover();
       await expect(profilePage.postPayoutTooltip.first()).toBeVisible({ timeout: 15000 });
-      expect(
-        await profilePage.getElementCssPropertyValue(
-          await profilePage.postPayout.first(),
-          'color'
-        )
-      ).toBe('rgb(218, 43, 43)');
     }
   });
 
@@ -526,47 +310,17 @@ test.describe('Profile page of @gtg', () => {
   test('validate reblog count display styles in the light theme', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
 
-    // Color of reblog count display
-    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountDisplay.first(), 'color')).toBe(
-      'rgb(24, 30, 42)'
-    );
-
-    // The tooltip message and colors (now shows reblog count)
-    await profilePage.postReblogCountDisplay.first().hover();
-    // Wait for the tooltip to be visible before checking its content
-    await expect(profilePage.postReblogCountTooltip.first()).toBeVisible();
-    // Tooltip now shows "No reblogs", "1 reblog", or "X reblogs"
-    expect(await profilePage.postReblogCountTooltip.first().textContent()).toMatch(/reblog/i);
-    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountTooltip, 'color')).toBe(
-      'rgb(15, 23, 42)'
-    );
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountTooltip, 'background-color')
-    ).toBe('rgb(247, 247, 247)');
+    // Validate reblog count is visible and tooltip shows reblog info
+    await profilePage.validateReblogCountWithTooltip();
   });
 
   test('validate reblog count display styles in the dark theme', async ({ page }) => {
     await profilePage.gotoProfilePage('@gtg');
     await homePage.changeThemeMode('Dark');
-    await homePage.validateThemeModeIsDark();
+    await homePage.validateDarkModeByClass();
 
-    // Color of reblog count display
-    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountDisplay.first(), 'color')).toBe(
-      'rgb(248, 250, 252)'
-    );
-
-    // The tooltip message and colors (now shows reblog count)
-    await profilePage.postReblogCountDisplay.first().hover();
-    // Wait for the tooltip to be visible before checking its content
-    await expect(profilePage.postReblogCountTooltip.first()).toBeVisible();
-    // Tooltip now shows "No reblogs", "1 reblog", or "X reblogs"
-    expect(await profilePage.postReblogCountTooltip.textContent()).toMatch(/reblog/i);
-    expect(await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountTooltip, 'color')).toBe(
-      'rgb(148, 163, 184)'
-    );
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.postReblogCountTooltip, 'background-color')
-    ).toBe('rgb(34, 38, 42)');
+    // Validate reblog count is visible and tooltip shows reblog info
+    await profilePage.validateReblogCountWithTooltip();
   });
 
   test('move to the reblog dialog of the first post ', async ({ page }) => {

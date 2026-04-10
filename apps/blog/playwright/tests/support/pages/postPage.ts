@@ -343,6 +343,12 @@ export class PostPage {
     return this.page.locator(`#articleBody a[href*="/@${username}"]`);
   }
 
+  async validateUserMentionLink(username: string) {
+    const link = this.getUserMentionLink(username);
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute('href', new RegExp(`/@${username}`));
+  }
+
   getTwitterWrappersIn(parent: Locator): Locator {
     return parent.locator('.twitterWrapper');
   }

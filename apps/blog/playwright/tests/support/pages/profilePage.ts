@@ -547,6 +547,85 @@ export class ProfilePage {
     return property;
   }
 
+  async validatePostHeaderElementsVisible() {
+    await expect(this.postsPostAuthor.first()).toBeVisible();
+    await expect(this.postReputation.first()).toBeVisible();
+    await expect(this.postReputation.first()).toHaveAttribute('title', 'Reputation');
+    await expect(this.postTimestamp.first()).toBeVisible();
+  }
+
+  async validatePostHeaderHoverBehavior() {
+    const firstPostItem = this.postBlogItem.first();
+
+    // Author name should be a link (cursor pointer)
+    const authorCursor = await this.getElementCssPropertyValue(this.postsPostAuthor.first(), 'cursor');
+    expect(authorCursor).toBe('pointer');
+
+    // Timestamp should be a link
+    const timestampCursor = await this.getElementCssPropertyValue(this.postTimestamp.first(), 'cursor');
+    expect(timestampCursor).toBe('pointer');
+
+    // Community link if present
+    if (await firstPostItem.filter({ has: this.postCommunityLink }).isVisible()) {
+      const communityCursor = await this.getElementCssPropertyValue(this.postCommunityLink.first(), 'cursor');
+      expect(communityCursor).toBe('pointer');
+    }
+
+    // Category link if present
+    if (await firstPostItem.filter({ has: this.postCategoryLink }).isVisible()) {
+      const categoryCursor = await this.getElementCssPropertyValue(this.postCategoryLink.first(), 'cursor');
+      expect(categoryCursor).toBe('pointer');
+    }
+  }
+
+  async validateUpvoteButtonStructure() {
+    await expect(this.postUpvoteButton.first()).toBeVisible();
+    await expect(this.postUpvoteButton.first().locator('svg').first()).toBeVisible();
+  }
+
+  async validateDownvoteButtonStructure() {
+    await expect(this.postDownvoteButton.first()).toBeVisible();
+    await expect(this.postDownvoteButton.first().locator('svg').first()).toBeVisible();
+  }
+
+  async validatePayoutVisible() {
+    const payout = this.postPayout.first();
+    await expect(payout).toBeVisible();
+    await expect(payout).toHaveText(/\$\d+\.\d{2,3}/);
+  }
+
+  async validateReblogCountWithTooltip() {
+    const reblogCount = this.postReblogCountDisplay.first();
+    await expect(reblogCount).toBeVisible();
+    await reblogCount.hover();
+    await expect(this.postReblogCountTooltip.first()).toBeVisible();
+    expect(await this.postReblogCountTooltip.first().textContent()).toMatch(/reblog/i);
+  }
+
+  async validateCommentUpvoteButtonStructure() {
+    await expect(this.postBlogItem.first()).toBeVisible({ timeout: 15000 });
+    await expect(this.postUpvoteButton.first()).toBeVisible({ timeout: 10000 });
+    await expect(this.postUpvoteButton.first().locator('svg').first()).toBeVisible();
+  }
+
+  async validateCommentDownvoteButtonStructure() {
+    await expect(this.postBlogItem.first()).toBeVisible({ timeout: 15000 });
+    await expect(this.postDownvoteButton.first()).toBeVisible({ timeout: 10000 });
+    await expect(this.postDownvoteButton.first().locator('svg').first()).toBeVisible();
+  }
+
+  async validateCommentPayoutVisible() {
+    const payout = this.repliesCommentListItemPayout.first();
+    await expect(payout).toBeVisible();
+    await expect(payout).toHaveText(/\$\d+\.\d{2,3}/);
+  }
+
+  async validateNotificationFilterTabSwitch(button: Locator, contentPanel: Locator) {
+    await expect(button).toBeVisible();
+    await button.click();
+    await expect(contentPanel).toBeVisible();
+  }
+
   async profileBlogTabIsSelected() {
     await this.page.waitForSelector(this.page.locator('main')['_selector']);
     await expect(this.profileBlogLink).toBeVisible();
@@ -566,7 +645,6 @@ export class ProfilePage {
   }
 
   async profileRepliesTabIsSelected() {
-    // const repliesPageListLocator = this.userHasNotHadAnyRepliesYetMsg.or(this.postsCommentsListLocator);
     const repliesPageListLocator = this.userHasNotHadAnyRepliesYetMsg.or(this.profileBlogPostsList);
     await repliesPageListLocator.waitFor({state: 'visible'});
     await expect(this.page).toHaveURL(/.*replies/);

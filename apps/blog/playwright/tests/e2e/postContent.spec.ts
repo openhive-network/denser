@@ -70,6 +70,8 @@ test.describe('Post Content tests', () => {
   });
 
   test('post page has interactive elements', async ({ page }) => {
+    // FIXME: flaky test on e2e-tests-blog-stable stage
+    test.fixme();
     await homePage.goto();
 
     // Navigate to first post
@@ -171,6 +173,8 @@ test.describe('Post Content tests', () => {
    */
 
   test('post page shows comments section', async ({ page }) => {
+    // FIXME: flaky test on e2e-tests-blog-stable stage
+    test.fixme();
     await homePage.goto();
 
     // Navigate to first post

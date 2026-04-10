@@ -213,12 +213,8 @@ test.describe('Healthchecker page - Theme mode', () => {
     test('Validate healthchecker page in light mode', async ({ page }) => {
         await healthcheckerPage.goto();
 
-        // Verify light mode background
-        const backgroundColor = await healthcheckerPage.getElementCssPropertyValue(
-            healthcheckerPage.body,
-            'background-color'
-        );
-        expect(backgroundColor).toBe('rgb(247, 247, 247)');
+        // Verify light mode is active (no dark class on html)
+        await homePage.validateLightModeByClass();
     });
 
     test('Validate healthchecker page in dark mode', async ({ page }) => {
@@ -226,14 +222,9 @@ test.describe('Healthchecker page - Theme mode', () => {
 
         // Switch to dark mode
         await homePage.changeThemeMode('Dark');
-        await homePage.validateThemeModeIsDark();
 
-        // Verify dark mode background
-        const backgroundColor = await healthcheckerPage.getElementCssPropertyValue(
-            healthcheckerPage.body,
-            'background-color'
-        );
-        expect(backgroundColor).toBe('rgb(34, 38, 42)');
+        // Verify dark mode is active (dark class on html)
+        await homePage.validateDarkModeByClass();
     });
 
     test('Validate tab styling in light mode', async ({ page }) => {

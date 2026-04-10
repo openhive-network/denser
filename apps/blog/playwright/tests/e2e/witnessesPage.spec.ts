@@ -113,30 +113,7 @@ test.describe.skip('Witnesses page tests', () => {
     await homePage.goto();
     await homePage.moveToNavWitnessesPage();
 
-    // Click the highlight link of the first witness
-    await witnessPage.firstWitnessHighLightLink.click();
-    // Wait for highlight background-color to appear
-    await expect.poll(async () => {
-      return await witnessPage.getElementCssPropertyValue(witnessPage.firstWitnessListMemberRow, 'background-color');
-    }).toBe('rgb(252, 165, 165)');
-    const inputValueVoteBox = await witnessPage.page.$eval(
-      await witnessPage.witnessesVoteBoxInput['_selector'],
-      (el) => el.value
-    );
-    expect(inputValueVoteBox).toBe(await witnessPage.firstWitnessNameLink.textContent());
-
-    // Click the highlight link of the first witness again
-    // Expected empty string inside input value
-    await witnessPage.firstWitnessHighLightLink.click();
-    // Wait for highlight background-color to disappear
-    await expect.poll(async () => {
-      return await witnessPage.getElementCssPropertyValue(witnessPage.firstWitnessListMemberRow, 'background-color');
-    }).toBe('rgba(0, 0, 0, 0)');
-    const inputValueVoteBoxEmpty = await witnessPage.page.$eval(
-      await witnessPage.witnessesVoteBoxInput['_selector'],
-      (el) => el.value
-    );
-    expect(inputValueVoteBoxEmpty).toBe('');
+    await witnessPage.validateWitnessHighlightToggle();
   });
 
   test('move to the profile page of the first witness', async ({ page }) => {

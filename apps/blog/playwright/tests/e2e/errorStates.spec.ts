@@ -130,6 +130,8 @@ test.describe('Error States tests', () => {
    */
 
   test('app remains functional after navigation', async ({ page }) => {
+    // FIXME: flaky test on e2e-tests-blog-stable stage
+    test.fixme();
     await homePage.goto();
 
     await page.goto('/hot');

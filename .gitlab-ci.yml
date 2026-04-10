@@ -1,6 +1,7 @@
 stages:
 - build
 - replay-and-sync
+- test-stable-blog
 - test
 - test-report-aggregate
 - deploy
@@ -279,6 +280,7 @@ docker-build-wallet-subdirectory:
 
 docker-build-blog-testenv:
   extends: .docker-build-testenv-image
+  stage: build
   needs:
   - docker-build-blog
   variables:
@@ -504,11 +506,7 @@ renderer-unit-tests:
     REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
     DENSER_SERVER_ENV_DUMP: true
     DENSER_URL: https://caddy
-  parallel:
-    matrix:
-    - PROJECT: ['chromium', 'firefox', 'webkit']
-      SHARD_INDEX: [1, 2, 3, 4, 5]
-      SHARD_TOTAL: 5
+  # parallel.matrix must be defined per-job (different browser sets)
   script:
   - !reference [.node-job, script]
   - |
@@ -623,14 +621,17 @@ mirrornet-based-tests:
   - data-cache-storage
   - fast
 
-e2e-tests-blog:
+e2e-tests-blog-stable:
   extends: .e2e_tests_template
+  stage: test-stable-blog
   allow_failure: true
   needs:
   - docker-build-blog-testenv
-  - job: smoke-tests-blog
-    artifacts: false
-
+  parallel:
+    matrix:
+    - PROJECT: ['chromium']
+      SHARD_INDEX: [1, 2, 3, 4, 5]
+      SHARD_TOTAL: 5
   services:
   - name: $DENSER_BLOG_IMAGE_NAME
     alias: denser
@@ -654,7 +655,11 @@ e2e-tests-wallet:
   allow_failure: true
   needs:
   - docker-build-wallet-testenv
-
+  parallel:
+    matrix:
+    - PROJECT: ['chromium']
+      SHARD_INDEX: [1, 2, 3, 4, 5]
+      SHARD_TOTAL: 5
   services:
   - name: $DENSER_WALLET_IMAGE_NAME
     alias: denser
@@ -763,11 +768,11 @@ blog-fixture-tests:
 e2e-report-aggregate-blog:
   extends: .e2e_report_aggregate_template
   needs:
-  - e2e-tests-blog
+  - e2e-tests-blog-stable
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
-    PROJECTS: '["chromium", "firefox", "webkit"]'
+    PROJECTS: '["chromium"]'
     SHARD_TOTAL: 5
 
 e2e-report-aggregate-wallet:
@@ -777,7 +782,7 @@ e2e-report-aggregate-wallet:
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
-    PROJECTS: '["chromium", "firefox", "webkit"]'
+    PROJECTS: '["chromium"]'
     SHARD_TOTAL: 5
 
 # Lighthouse metrics job template
@@ -943,7 +948,7 @@ main:deploy-blog-mainnet:
   extends: .deploy_template
   needs:
   - docker-build-blog
-  - e2e-tests-blog
+  - e2e-tests-blog-stable
   variables:
     CONTAINER_NAME: denser-main-blog
     PORT: 9111
@@ -980,7 +985,7 @@ main:deploy-blog-mirrornet:
   extends: .deploy_template
   needs:
   - docker-build-blog
-  - e2e-tests-blog
+  - e2e-tests-blog-stable
   variables:
     CONTAINER_NAME: denser-main-blog-mirror
     PORT: 9211

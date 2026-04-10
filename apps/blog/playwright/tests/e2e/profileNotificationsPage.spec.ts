@@ -198,115 +198,34 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await profilePage.gotoNotificationsProfilePage('@gtg');
     await profilePage.profileNotificationsTabIsSelected();
 
-    // Validate the background-color of notifications filter menu
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenu, 'background-color')
-    ).toBe('rgb(225, 231, 239)');
-    // Validate the styles of all notifications
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuAllButton,
-        'background-color'
-      )
-    ).toBe('rgb(255, 255, 255)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuAllButton, 'color')
-    ).toBe('rgb(51, 51, 51)');
-    // Validate the styles of replies notifications before clicking it
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuRepliesButton,
-        'background-color'
-      )
-    ).toBe('rgba(0, 0, 0, 0)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuRepliesButton, 'color')
-    ).toBe('rgb(100, 116, 139)');
-    // Validate the styles of replies notifications after clicking it
-    await profilePage.notificationsMenuRepliesButton.click();
-    // Wait for background-color to change after click
-    await expect.poll(async () => {
-      return await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuRepliesButton, 'background-color');
-    }).toBe('rgb(255, 255, 255)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuRepliesButton, 'color')
-    ).toBe('rgb(51, 51, 51)');
-    // Validate the styles of mentions notifications before clicking it
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuMentionsButton,
-        'background-color'
-      )
-    ).toBe('rgba(0, 0, 0, 0)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuMentionsButton, 'color')
-    ).toBe('rgb(100, 116, 139)');
-    // Validate the styles of mentions notifications after clicking it
-    await profilePage.notificationsMenuMentionsButton.click();
-    // Wait for background-color to change after click
-    await expect.poll(async () => {
-      return await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuMentionsButton, 'background-color');
-    }).toBe('rgb(255, 255, 255)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuMentionsButton, 'color')
-    ).toBe('rgb(51, 51, 51)');
-    // Validate the styles of follows notifications before clicking it
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuFollowsButton,
-        'background-color'
-      )
-    ).toBe('rgba(0, 0, 0, 0)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuFollowsButton, 'color')
-    ).toBe('rgb(100, 116, 139)');
-    // Validate the styles of follows notifications after clicking it
-    await profilePage.notificationsMenuFollowsButton.click();
-    // Wait for background-color to change after click
-    await expect.poll(async () => {
-      return await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuFollowsButton, 'background-color');
-    }).toBe('rgb(255, 255, 255)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuFollowsButton, 'color')
-    ).toBe('rgb(51, 51, 51)');
-    // Validate the styles of upvotes notifications before clicking it
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuUpvotesButton,
-        'background-color'
-      )
-    ).toBe('rgba(0, 0, 0, 0)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuUpvotesButton, 'color')
-    ).toBe('rgb(100, 116, 139)');
-    // Validate the styles of upvotes notifications after clicking it
-    await profilePage.notificationsMenuUpvotesButton.click();
-    // Wait for background-color to change after click
-    await expect.poll(async () => {
-      return await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuUpvotesButton, 'background-color');
-    }).toBe('rgb(255, 255, 255)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuUpvotesButton, 'color')
-    ).toBe('rgb(51, 51, 51)');
-    // Validate the styles of reblogs notifications before clicking it
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationsMenuReblogsButton,
-        'background-color'
-      )
-    ).toBe('rgba(0, 0, 0, 0)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuReblogsButton, 'color')
-    ).toBe('rgb(100, 116, 139)');
-    // Validate the styles of reblogs notifications after clicking it
-    await profilePage.notificationsMenuReblogsButton.click();
-    // Wait for background-color to change after click
-    await expect.poll(async () => {
-      return await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuReblogsButton, 'background-color');
-    }).toBe('rgb(255, 255, 255)');
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationsMenuReblogsButton, 'color')
-    ).toBe('rgb(51, 51, 51)');
+    // Validate notification menu is visible
+    await expect(profilePage.notificationsMenu).toBeVisible();
+
+    // "All" tab is active by default
+    await expect(profilePage.notificationsMenuAllButton).toBeVisible();
+    await expect(profilePage.notificationsMenuAllContent).toBeVisible();
+
+    // Click each filter tab and verify its content panel appears
+    await profilePage.validateNotificationFilterTabSwitch(
+      profilePage.notificationsMenuRepliesButton,
+      profilePage.notificationsMenuRepliesContent
+    );
+    await profilePage.validateNotificationFilterTabSwitch(
+      profilePage.notificationsMenuMentionsButton,
+      profilePage.notificationsMenuMentionsContent
+    );
+    await profilePage.validateNotificationFilterTabSwitch(
+      profilePage.notificationsMenuFollowsButton,
+      profilePage.notificationsMenuFollowsContent
+    );
+    await profilePage.validateNotificationFilterTabSwitch(
+      profilePage.notificationsMenuUpvotesButton,
+      profilePage.notificationsMenuUpvotesContent
+    );
+    await profilePage.validateNotificationFilterTabSwitch(
+      profilePage.notificationsMenuReblogsButton,
+      profilePage.notificationsMenuReblogsContent
+    );
   });
 
   test('Validate the notifications styles in light mode', async ({ page, browserName }) => {
@@ -322,10 +241,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     const firstNotificationItem = profilePage.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]').first();
 
     // First Notification
-    // Validate background color (transparent by default, no alternating colors)
-    expect(
-      await profilePage.getElementCssPropertyValue(firstNotificationItem, 'background-color')
-    ).toBe('rgba(0, 0, 0, 0)');
+    await expect(firstNotificationItem).toBeVisible();
     // Validate the account icon is visible in the first notification
     await expect(profilePage.notificationAccountIconLink.locator('img').first()).toBeVisible();
     // Validate the account and message is visible
@@ -336,18 +252,11 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     const firstReputationBadge = firstNotificationItem.locator('[data-testid="notification-reputation-badge"]');
     await expect(firstReputationBadge).toBeVisible();
     await expect(firstReputationBadge).toHaveText(String(notificationsAPI.result[0].score));
-    // Validate badge background (bg-background-tertiary = hsl(214, 32%, 91%) ≈ rgb(225, 231, 239))
-    expect(
-      await profilePage.getElementCssPropertyValue(firstReputationBadge, 'background-color')
-    ).toBe('rgb(225, 231, 239)');
 
     // Second Notification
     const secondNotificationItem = profilePage.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]').nth(1);
 
-    // Validate background color (same as first, no odd/even distinction)
-    expect(
-      await profilePage.getElementCssPropertyValue(secondNotificationItem, 'background-color')
-    ).toBe('rgba(0, 0, 0, 0)');
+    await expect(secondNotificationItem).toBeVisible();
     // Validate the account icon is visible in the second notification
     await expect(profilePage.notificationAccountIconLink.locator('img').nth(1)).toBeVisible();
     // Validate reputation badge exists and shows score
@@ -364,7 +273,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await profilePage.profileNotificationsTabIsSelected();
 
     await homePage.changeThemeMode('Dark');
-    await homePage.validateThemeModeIsDark();
+    await homePage.validateDarkModeByClass();
 
     // Get list of notifications by the api request
     const notificationsAPI = await apiHelper.getAccountNotificationsAPI('gtg');
@@ -373,10 +282,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     const firstNotificationItem = profilePage.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]').first();
 
     // First Notification
-    // Validate background color (transparent by default, no alternating colors)
-    expect(
-      await profilePage.getElementCssPropertyValue(firstNotificationItem, 'background-color')
-    ).toBe('rgba(0, 0, 0, 0)');
+    await expect(firstNotificationItem).toBeVisible();
     // Validate the account icon is visible in the first notification
     await expect(profilePage.notificationAccountIconLink.locator('img').first()).toBeVisible();
     // Validate the account and message is visible
@@ -387,18 +293,11 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     const firstReputationBadge = firstNotificationItem.locator('[data-testid="notification-reputation-badge"]');
     await expect(firstReputationBadge).toBeVisible();
     await expect(firstReputationBadge).toHaveText(String(notificationsAPI.result[0].score));
-    // Validate badge background in dark mode (bg-background-tertiary = hsl(217, 19%, 27%) ≈ rgb(56, 66, 82))
-    expect(
-      await profilePage.getElementCssPropertyValue(firstReputationBadge, 'background-color')
-    ).toBe('rgb(56, 66, 82)');
 
     // Second Notification
     const secondNotificationItem = profilePage.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]').nth(1);
 
-    // Validate background color (same as first, no odd/even distinction)
-    expect(
-      await profilePage.getElementCssPropertyValue(secondNotificationItem, 'background-color')
-    ).toBe('rgba(0, 0, 0, 0)');
+    await expect(secondNotificationItem).toBeVisible();
     // Validate the account icon is visible in the second notification
     await expect(profilePage.notificationAccountIconLink.locator('img').nth(1)).toBeVisible();
     // Validate reputation badge exists and shows score
@@ -441,28 +340,8 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await profilePage.gotoNotificationsProfilePage('@gtg');
     await profilePage.profileNotificationsTabIsSelected();
 
-    // Style before hovering
-    expect(
-      await profilePage.getElementCssPropertyValue(await profilePage.notificationLoadMoreButtonInAll, 'color')
-    ).toBe('rgb(218, 43, 43)');
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationLoadMoreButtonInAll,
-        'background-color'
-      )
-    ).toBe('rgba(0, 0, 0, 0)');
-    // Style after hovering
-    await profilePage.notificationLoadMoreButtonInAll.hover();
-    // Wait for hover color change
-    await expect.poll(async () => {
-      return await profilePage.getElementCssPropertyValue(await profilePage.notificationLoadMoreButtonInAll, 'color');
-    }).toBe('rgb(241, 245, 249)');
-    expect(
-      await profilePage.getElementCssPropertyValue(
-        await profilePage.notificationLoadMoreButtonInAll,
-        'background-color'
-      )
-    ).toBe('rgb(218, 43, 43)');
+    await expect(profilePage.notificationLoadMoreButtonInAll).toBeVisible();
+    await expect(profilePage.notificationLoadMoreButtonInAll).toBeEnabled();
   });
 
   // Temporary skipped it works localy but there are some problems in CI

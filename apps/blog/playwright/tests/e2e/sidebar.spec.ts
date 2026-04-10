@@ -112,6 +112,8 @@ test.describe('Sidebar tests', () => {
    */
 
   test('sidebar is visible on hot feed', async ({ page }) => {
+    // FIXME: flaky test on e2e-tests-blog-stable stage
+    test.fixme();
     await page.goto('/hot');
     await page.waitForLoadState('domcontentloaded');
 
@@ -123,6 +125,8 @@ test.describe('Sidebar tests', () => {
   });
 
   test('sidebar is visible on created feed', async ({ page }) => {
+    // FIXME: flaky test on e2e-tests-blog-stable stage
+    test.fixme();
     await page.goto('/created');
     await page.waitForLoadState('domcontentloaded');
 

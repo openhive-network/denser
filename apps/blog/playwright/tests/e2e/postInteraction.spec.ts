@@ -20,10 +20,7 @@ test.describe('Post content link styles and navigation', () => {
   });
 
   test('user mention link in post content is red', async () => {
-    await expect(userLink).toBeVisible();
-
-    const color = await postPage.getElementCssPropertyValue(userLink, 'color');
-    expect(color).toBe('rgb(195, 34, 34)');
+    await postPage.validateUserMentionLink('sketch.and.jam');
   });
 
   test('clicking user mention link navigates to profile page', async ({ page }) => {

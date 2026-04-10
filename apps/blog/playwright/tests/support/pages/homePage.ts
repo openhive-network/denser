@@ -516,6 +516,91 @@ export class HomePage {
     expect(await this.getElementCssPropertyValue(this.getBody, 'background-color')).toBe('rgb(34, 38, 42)');
   }
 
+  async validateDarkModeByClass() {
+    await this.page.waitForLoadState('domcontentloaded');
+    await expect(this.page.locator('html')).toHaveClass(/dark/);
+  }
+
+  async validateLightModeByClass() {
+    await this.page.waitForLoadState('domcontentloaded');
+    await expect(this.page.locator('html')).not.toHaveClass(/dark/);
+  }
+
+  async validateFirstPostPayoutWithTooltip() {
+    await expect(this.getFirstPostPayout).toBeVisible();
+    await expect(this.getFirstPostPayout).toHaveText(/\$\d+/);
+    await this.getFirstPostPayout.hover();
+    await expect(this.getFirstPostPayoutTooltip).toBeVisible({ timeout: 15000 });
+  }
+
+  async validateFirstPostVotesWithTooltip() {
+    await expect(this.getFirstPostVotes).toBeVisible();
+    await this.getFirstPostVotes.hover();
+    await expect(this.getFirstPostVotesTooltip).toBeVisible({ timeout: 15000 });
+    const votes = await this.getFirstPostVotes.textContent();
+    expect(await this.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes' + votes + ' votes');
+  }
+
+  async validateFirstPostResponsesWithTooltip() {
+    await expect(this.getFirstPostChildernCommentNumber).toBeVisible();
+    await expect(this.getFirstPostChildernIcon).toBeVisible();
+    await this.getFirstPostChildernCommentNumber.hover();
+    await expect(this.getFirstPostChildernTooltip).toBeVisible({ timeout: 15000 });
+    const n = await this.getFirstPostChildernCommentNumber.textContent();
+    if (n === '0') {
+      expect(await this.getFirstPostChildernTooltip.textContent()).toContain('No responses. Click to respond');
+    } else if (n === '1') {
+      expect(await this.getFirstPostChildernTooltip.textContent()).toContain(`${n} response. Click to respond`);
+    } else {
+      expect(await this.getFirstPostChildernTooltip.textContent()).toContain(`${n} responses. Click to respond`);
+    }
+  }
+
+  async validateFirstPostHeaderElements() {
+    await expect(this.getFirstPostAuthor).toBeVisible();
+    await expect(this.getFirstPostCardTimestampLink).toBeVisible();
+    const authorCursor = await this.getElementCssPropertyValue(this.getFirstPostAuthor, 'cursor');
+    expect(authorCursor).toBe('pointer');
+    const timestampCursor = await this.getElementCssPropertyValue(this.getFirstPostCardTimestampLink, 'cursor');
+    expect(timestampCursor).toBe('pointer');
+    if (await this.getFirstPostCardCommunityLink.isVisible()) {
+      const c = await this.getElementCssPropertyValue(this.getFirstPostCardCommunityLink, 'cursor');
+      expect(c).toBe('pointer');
+    }
+    if (await this.getFirstPostCardCategoryLink.isVisible()) {
+      const c = await this.getElementCssPropertyValue(this.getFirstPostCardCategoryLink, 'cursor');
+      expect(c).toBe('pointer');
+    }
+  }
+
+  async validateFirstPostUpvoteButtonWithTooltip() {
+    await expect(this.getFirstPostUpvoteButton).toBeVisible();
+    await expect(this.getFirstPostUpvoteButton.locator('svg')).toBeVisible();
+    await this.getFirstPostUpvoteButton.hover();
+    await expect(this.getFirstPostUpvoteButtonTooltip).toBeVisible({ timeout: 15000 });
+    expect(await this.getFirstPostUpvoteButtonTooltip.textContent()).toContain('Upvote');
+  }
+
+  async validateFirstPostDownvoteButtonWithTooltip() {
+    await expect(this.getFirstPostDownvoteButton).toBeVisible();
+    await expect(this.getFirstPostDownvoteButton.locator('svg')).toBeVisible();
+    await this.getFirstPostDownvoteButton.hover();
+    await expect(this.getFirstPostDownvoteButtonTooltip).toBeVisible({ timeout: 15000 });
+    expect(await this.getFirstPostDownvoteButtonTooltip.textContent()).toContain('Downvote');
+  }
+
+  async validateFirstPostReblogCountWithTooltip() {
+    await expect(this.getFirstPostReblogCountDisplay).toBeVisible();
+    await this.getFirstPostReblogCountDisplay.hover();
+    await expect(this.getFirstPostReblogCountTooltip).toBeVisible();
+    expect(await this.getFirstPostReblogCountTooltip.textContent()).toMatch(/reblog/i);
+  }
+
+  async validateFirstPostReputationWithTooltip() {
+    await expect(this.getFirstPostAuthorReputation).toBeVisible();
+    await expect(this.getFirstPostAuthorReputation).toHaveAttribute('title', 'Reputation');
+  }
+
   async moveToMutedPosts() {
     await this.getFilterPosts.click();
     await this.page.getByText('Muted').click();
