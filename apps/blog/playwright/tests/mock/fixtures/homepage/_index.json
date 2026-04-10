@@ -1,12 +1,11 @@
 {
   "testName": "homepage",
-  "recordedAt": "2026-04-09T09:50:55.371Z",
-  "totalRequests": 11,
-  "savedFixtures": 3,
-  "duplicatesSkipped": 8,
+  "recordedAt": "2026-04-10T09:26:32.283Z",
+  "totalRequests": 2,
+  "savedFixtures": 2,
+  "duplicatesSkipped": 0,
   "methods": {
-    "bridge.list_communities": 5,
-    "bridge.get_ranked_posts": 5,
-    "bridge.get_post": 1
+    "bridge.list_communities": 1,
+    "bridge.get_ranked_posts": 1
   }
 }

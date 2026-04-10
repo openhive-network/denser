@@ -1,10 +1,4 @@
-import { test, expect } from '@playwright/test';
-import {
-  createFixtureProxy,
-  createReplayProxy,
-  hasFixtures,
-  type IFixtureProxyHandle
-} from '../support/mock-server';
+import { test, expect } from '../support/fixture-proxy-test';
 
 /**
  * Homepage fixture test.
@@ -19,31 +13,9 @@ import {
  *   pnpm --filter @hive/blog test:fixture
  */
 
-const TEST_NAME = 'homepage';
-const FIXTURE_PORT = 8200;
-const isRecordMode = process.env.FIXTURE_MODE === 'record';
-
-let fixtureProxy: IFixtureProxyHandle;
+test.use({ fixtureTestName: 'homepage' });
 
 test.describe('Homepage — post list loads', () => {
-  test.beforeAll(async () => {
-    if (isRecordMode) {
-      fixtureProxy = await createFixtureProxy(TEST_NAME, { port: FIXTURE_PORT });
-    } else {
-      if (!hasFixtures(TEST_NAME)) {
-        throw new Error(
-          `No fixtures for "${TEST_NAME}". Run with FIXTURE_MODE=record first:\n` +
-            `  pnpm --filter @hive/blog test:fixture:record`
-        );
-      }
-      fixtureProxy = await createReplayProxy(TEST_NAME, { port: FIXTURE_PORT });
-    }
-  });
-
-  test.afterAll(async () => {
-    await fixtureProxy.close();
-  });
-
   test('should display trending posts on homepage', async ({ page }) => {
     // Navigate to homepage — use 'commit' to avoid waiting for all network
     // activity (React Query keeps polling in the background).
@@ -56,14 +28,5 @@ test.describe('Homepage — post list loads', () => {
     // Verify multiple posts loaded
     const postCount = await postListItems.count();
     expect(postCount).toBeGreaterThanOrEqual(1);
-
-    console.log(
-      `[homepage test] ${fixtureProxy.mode} mode — ${postCount} posts displayed`
-    );
-
-    if (isRecordMode) {
-      // In record mode, give extra time for all background requests to be captured
-      await page.waitForTimeout(3000);
-    }
   });
 });

@@ -1,12 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { test, expect } from '../support/fixture-proxy-test';
 import { HomePage } from '../support/pages/homePage';
 import { TIMEOUTS } from '../support/constants';
-import {
-  createFixtureProxy,
-  createReplayProxy,
-  hasFixtures,
-  type IFixtureProxyHandle
-} from '../support/mock-server';
 
 /**
  * Sidebar fixture tests — adapted from e2e/sidebar.spec.ts.
@@ -17,31 +11,10 @@ import {
  * Replay:  pnpm --filter @hive/blog test:fixture
  */
 
-const TEST_NAME = 'sidebar';
-const FIXTURE_PORT = 8200;
-const isRecordMode = process.env.FIXTURE_MODE === 'record';
-
-let fixtureProxy: IFixtureProxyHandle;
+test.use({ fixtureTestName: 'sidebar' });
 
 test.describe('Sidebar tests (fixture-based)', () => {
   let homePage: HomePage;
-
-  test.beforeAll(async () => {
-    if (isRecordMode) {
-      fixtureProxy = await createFixtureProxy(TEST_NAME, { port: FIXTURE_PORT });
-    } else {
-      if (!hasFixtures(TEST_NAME)) {
-        throw new Error(
-          `No fixtures for "${TEST_NAME}". Run with FIXTURE_MODE=record first.`
-        );
-      }
-      fixtureProxy = await createReplayProxy(TEST_NAME, { port: FIXTURE_PORT });
-    }
-  });
-
-  test.afterAll(async () => {
-    await fixtureProxy.close();
-  });
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
@@ -81,16 +54,16 @@ test.describe('Sidebar tests (fixture-based)', () => {
     await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
 
     const firstCommunityLink = homePage.getTrendingCommunitiesSideBarLinks.first();
-    await firstCommunityLink.click();
+    const href = await firstCommunityLink.getAttribute('href');
+    expect(href).toMatch(/^\/trending\/.+/);
 
-    // Should navigate to a community feed page
-    await expect(page).toHaveURL(/\/(trending|hot|created)\//, { timeout: TIMEOUTS.HYDRATION });
-    await expect(page.locator('body')).toBeVisible();
+    await Promise.all([
+      page.waitForURL(/\/trending\/.+/, { timeout: TIMEOUTS.HYDRATION }),
+      firstCommunityLink.click()
+    ]);
 
-    if (isRecordMode) {
-      // Wait for community page API calls to be captured
-      await page.waitForTimeout(3000);
-    }
+    // Wait for the destination feed to render its post list
+    await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
   });
 
   test('explore communities link navigates to communities page', async ({ page }) => {
@@ -98,14 +71,15 @@ test.describe('Sidebar tests (fixture-based)', () => {
 
     await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
 
-    await homePage.getExploreCommunities.click();
+    await Promise.all([
+      page.waitForURL('**/communities', { timeout: TIMEOUTS.HYDRATION }),
+      homePage.getExploreCommunities.click()
+    ]);
 
-    await expect(page).toHaveURL('/communities', { timeout: TIMEOUTS.HYDRATION });
-
-    if (isRecordMode) {
-      // Wait for communities page API calls to be captured
-      await page.waitForTimeout(3000);
-    }
+    // Wait for a stable element on the communities page
+    await expect(page.locator('[data-testid="communities-header"]')).toBeVisible({
+      timeout: TIMEOUTS.HYDRATION
+    });
   });
 
   // ── Explore Hive sidebar ─────────────────────────────────────────────
