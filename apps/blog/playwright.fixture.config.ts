@@ -36,10 +36,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 0,
   workers: 1,
-  reporter: 'html',
+  reporter: [['list']],
   use: {
     actionTimeout: 0,
-    baseURL: process.env.CI ? process.env.DENSER_URL : 'http://localhost:3000',
+    baseURL: 'http://localhost:3000',
     trace: {
       mode: 'retain-on-failure',
       screenshots: true,
@@ -54,5 +54,23 @@ export default defineConfig({
       name: 'chromium-fixture',
       use: { ...devices['Desktop Chrome'] }
     }
-  ]
+  ],
+  webServer: {
+    command: 'pnpm start:standalone',
+    url: 'http://127.0.0.1:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+    stdout: 'pipe',
+    stderr: 'pipe',
+    env: {
+      REACT_APP_API_ENDPOINT: `http://localhost:${FIXTURE_PORT}`,
+      HOSTNAME: '0.0.0.0',
+      PORT: '3000',
+      // iron-session requires a password >= 32 chars. Fixture tests never
+      // exercise real auth, so a fixed dummy value is fine and lets SSR
+      // pages render without throwing.
+      DENSER_SERVER_SECRET_COOKIE_PASSWORD:
+        'fixture-tests-dummy-cookie-password-not-a-secret'
+    }
+  }
 });

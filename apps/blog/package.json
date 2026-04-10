@@ -14,6 +14,7 @@
     "build": "react-env -- next build",
     "postbuild": "pnpm run copy:worker && pnpm run copy:assets",
     "start": "react-env -- next start -p 3000",
+    "start:standalone": "rm -rf .next/standalone/apps/blog/.next/static .next/standalone/apps/blog/public && cp -r .next/static .next/standalone/apps/blog/.next/static && cp -r public .next/standalone/apps/blog/public && react-env -- node .next/standalone/apps/blog/server.js",
     "lint": "eslint .",
     "lint:translations": "node ../../scripts/check-blog-translations.js",
     "lint:translations:usage": "node ../../scripts/check-blog-translation-usage.js",
@@ -31,9 +32,10 @@
     "pw:blog:test:mir:chromium:ui:container13:local": "playwright test --project=chromium --config=playwright.stack-mirrornet-local-3000-13.config.ts --update-snapshots --ui",
     "test:mock": "playwright test --config=playwright.mock.config.ts",
     "test:mock:headed": "playwright test --config=playwright.mock.config.ts --headed",
-    "test:fixture": "playwright test --config=playwright.fixture.config.ts",
-    "test:fixture:headed": "playwright test --config=playwright.fixture.config.ts --headed",
-    "test:fixture:record": "FIXTURE_MODE=record playwright test --config=playwright.fixture.config.ts"
+    "test:fixture:prepare": "../../scripts/write-version.sh ./version.json && pnpm build",
+    "test:fixture": "pnpm run test:fixture:prepare && playwright test --config=playwright.fixture.config.ts",
+    "test:fixture:headed": "pnpm run test:fixture:prepare && playwright test --config=playwright.fixture.config.ts --headed",
+    "test:fixture:record": "pnpm run test:fixture:prepare && FIXTURE_MODE=record playwright test --config=playwright.fixture.config.ts"
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",
