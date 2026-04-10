@@ -215,10 +215,31 @@ export const onImageDrop = async (
     if (file) files.push(file);
   }
 
-  // Sequential processing to manage memory on mobile
+  if (files.length === 1) {
+    await onImageUpload(files[0], insertText, username, signer, setUploading, cursorPos, processingOptions);
+    return;
+  }
+
+  // Multiple files: block format with empty lines, sequential for mobile memory
   setUploading?.(true);
+  let insertOffset = 0;
   for (const file of files) {
-    await onImageUpload(file, insertText, username, signer, undefined, cursorPos, processingOptions);
+    try {
+      const result = await processImageForUpload(file, processingOptions);
+      const url = await uploadImg(result.file, username, signer);
+      const name = result.file.name;
+      const markdown = `![${name}](${!url ? 'UPLOAD FAILED' : url})\n\n`;
+      const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
+      insertText(markdown, adjustedPos);
+      insertOffset += markdown.length;
+    } catch (error) {
+      logger.error('Image processing/upload failed for %s: %o', file.name, error);
+      handleError(error);
+      const markdown = `![${file.name}](UPLOAD FAILED)\n\n`;
+      const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
+      insertText(markdown, adjustedPos);
+      insertOffset += markdown.length;
+    }
   }
   setUploading?.(false);
 };
@@ -242,10 +263,31 @@ export const onImagePaste = async (
   }
   if (!files.length) return false;
 
-  // Sequential processing to manage memory on mobile
+  if (files.length === 1) {
+    await onImageUpload(files[0], insertText, username, signer, setUploading, cursorPos, processingOptions);
+    return true;
+  }
+
+  // Multiple files: block format with empty lines, sequential for mobile memory
   setUploading?.(true);
+  let insertOffset = 0;
   for (const file of files) {
-    await onImageUpload(file, insertText, username, signer, undefined, cursorPos, processingOptions);
+    try {
+      const result = await processImageForUpload(file, processingOptions);
+      const url = await uploadImg(result.file, username, signer);
+      const name = result.file.name;
+      const markdown = `![${name}](${!url ? 'UPLOAD FAILED' : url})\n\n`;
+      const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
+      insertText(markdown, adjustedPos);
+      insertOffset += markdown.length;
+    } catch (error) {
+      logger.error('Image processing/upload failed for %s: %o', file.name, error);
+      handleError(error);
+      const markdown = `![${file.name}](UPLOAD FAILED)\n\n`;
+      const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
+      insertText(markdown, adjustedPos);
+      insertOffset += markdown.length;
+    }
   }
   setUploading?.(false);
   return true;
@@ -270,6 +312,7 @@ export const onBatchImageUpload = async (
   cursorPos?: number,
   processingOptions?: ProcessingOptions
 ) => {
+  let insertOffset = 0;
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     callbacks.onFileStart(i, file);
@@ -282,7 +325,10 @@ export const onBatchImageUpload = async (
       const name = result.file.name;
 
       if (url) {
-        insertText(`![${name}](${url})\n`, cursorPos);
+        const markdown = `![${name}](${url})\n\n`;
+        const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
+        insertText(markdown, adjustedPos);
+        insertOffset += markdown.length;
         callbacks.onFileComplete(i, url, name);
       } else {
         callbacks.onFileError(i, 'Upload returned empty URL');
