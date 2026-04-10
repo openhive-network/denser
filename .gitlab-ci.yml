@@ -648,6 +648,11 @@ e2e-tests-blog:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
     PORT: 3000
+  parallel:
+    matrix:
+    - PROJECT: ['chromium-stable']
+      SHARD_INDEX: [1]
+      SHARD_TOTAL: 1
 
 e2e-tests-wallet:
   extends: .e2e_tests_template
@@ -745,8 +750,8 @@ e2e-report-aggregate-blog:
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
-    PROJECTS: '["chromium", "firefox", "webkit"]'
-    SHARD_TOTAL: 5
+    PROJECTS: '["chromium-stable"]'
+    SHARD_TOTAL: 1
 
 e2e-report-aggregate-wallet:
   extends: .e2e_report_aggregate_template

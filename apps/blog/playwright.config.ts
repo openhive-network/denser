@@ -76,6 +76,9 @@ export default defineConfig({
     ignoreHTTPSErrors: true
   },
 
+  /* Skip stable tests in legacy suite — they run via their own config or chromium-stable project */
+  testIgnore: ['**/stable/**'],
+
   /* Configure projects for major browsers */
   projects: [
     {
@@ -91,6 +94,13 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] }
+    },
+
+    {
+      name: 'chromium-stable',
+      testDir: './playwright/tests/e2e/stable',
+      testIgnore: [],
+      use: { ...devices['Desktop Chrome'] }
     }
 
     /* Test against mobile viewports. */
