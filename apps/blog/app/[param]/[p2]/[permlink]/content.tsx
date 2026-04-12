@@ -533,16 +533,16 @@ const PostContent = () => {
                     <UserInfo
                       permlink={permlink}
                       moderateEnabled={!!userCanModerate}
-                      author={postData.author}
+                      author={crossPostData?.author ?? postData.author}
                       author_reputation={
-                        crossPostData ? crossPostData.author_reputation : postData.author_reputation
+                        crossPostData?.author_reputation ?? postData.author_reputation
                       }
                       author_title={postData.author_title}
                       authored={postData.json_metadata?.author}
                       community_title={
-                        crossPostData?.community ? crossPostData.community : communityData?.title || ''
+                        crossPostData?.community_title ?? communityData?.title ?? ''
                       }
-                      community={crossPostData?.community ? crossPostData.community : category}
+                      community={crossPostData?.community ?? category}
                       category={postData.category}
                       created={postData.created}
                       blacklist={
@@ -645,7 +645,7 @@ const PostContent = () => {
                             className="hover:underline"
                             data-testid="footer-comment-community-category-link"
                           >
-                            {crossPostData?.community ?? postData.community_title}
+                            {crossPostData?.community_title ?? postData.community_title}
                           </Link>
                         ) : (
                           <Link

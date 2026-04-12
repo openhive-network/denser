@@ -98,6 +98,18 @@ const PostListItem = memo(
 
   if (gdprUserList.includes(post.author)) return null;
 
+  // For cross-posts, source identity fields (author name, avatar, reputation,
+  // origin community) from the original post. Engagement fields (payout, vote
+  // count, comment count, timestamp, clicked URL) remain from this cross-post
+  // entry since they describe this specific on-chain object, not the original.
+  // Matches the convention used by hive.blog and aligns with peakd / ecency
+  // crediting the original content creator.
+  const displayAuthor = post.original_entry?.author ?? post.author;
+  const displayReputation = post.original_entry?.author_reputation ?? post.author_reputation;
+  const displayCommunity = post.original_entry?.community ?? post.community;
+  const displayCommunityTitle = post.original_entry?.community_title ?? post.community_title;
+  const displayCategory = post.original_entry?.category ?? post.category;
+
   return (
     <li data-testid="post-list-item" className={post.stats?.gray ? 'opacity-50 hover:opacity-100' : ''}>
       {nsfw === 'hide' ? null : (
@@ -137,29 +149,29 @@ const PostListItem = memo(
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
               {nsfw === 'show' && post.blacklists.length < 1 && !blacklistCheck ? (
-                <Link href={`/@${post.author}`} data-testid="post-card-avatar">
+                <Link href={`/@${displayAuthor}`} data-testid="post-card-avatar">
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                     style={{
-                      backgroundImage: `url(${getUserAvatarUrl(post.author, 'small')})`
+                      backgroundImage: `url(${getUserAvatarUrl(displayAuthor, 'small')})`
                     }}
                   />
                 </Link>
               ) : null}
               <div className="flex flex-wrap items-center gap-0.5 md:flex-nowrap">
                 <Link
-                  href={`/@${post.author}`}
+                  href={`/@${displayAuthor}`}
                   className="font-medium text-primary hover:cursor-pointer hover:text-destructive"
                   data-testid="post-author"
                 >
-                  {post.author}
+                  {displayAuthor}
                 </Link>{' '}
                 <span
                   title={t('post_content.reputation_title')}
                   className="mr-1 block font-normal"
                   data-testid="post-author-reputation"
                 >
-                  ({accountReputation(post.author_reputation)})
+                  ({accountReputation(displayReputation)})
                 </span>
                 <PostCardBlacklistMark blacklistCheck={blacklistCheck} blacklists={post.blacklists} />
                 {post.author_role && post.author_role !== 'guest' && isCommunityPage ? (
@@ -174,21 +186,21 @@ const PostListItem = memo(
                   {!isCommunityPage ? (
                     <>
                       &nbsp;{t('cards.post_card.in')}&nbsp;
-                      {post.community ? (
+                      {displayCommunity ? (
                         <Link
-                          href={`/trending/${post.community}`}
+                          href={`/trending/${displayCommunity}`}
                           className="hover:cursor-pointer hover:text-destructive"
                           data-testid="post-card-community"
                         >
-                          {post.community_title}
+                          {displayCommunityTitle}
                         </Link>
                       ) : (
                         <Link
-                          href={`/trending/${post.category}`}
+                          href={`/trending/${displayCategory}`}
                           className="hover:cursor-pointer hover:text-destructive"
                           data-testid="post-card-category"
                         >
-                          #{post.category}
+                          #{displayCategory}
                         </Link>
                       )}
                       <span className="mx-1">•</span>
