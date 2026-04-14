@@ -342,3 +342,28 @@ test.describe('Profile page of @gtg', () => {
     await reblogDialog.closeReblogDialog();
   });
 });
+
+test.describe('Profile page of @polish.hive - cross-post author', () => {
+  let profilePage: ProfilePage;
+
+  test.beforeEach(async ({ page }) => {
+    profilePage = new ProfilePage(page);
+  });
+
+  test('cross-post original link author matches the displayed post author', async () => {
+    await profilePage.gotoProfilePage('@polish.hive');
+    await expect(profilePage.postBlogItem.first()).toBeVisible();
+
+    const crossPostedItems = profilePage.postBlogItem
+      .filter({ has: profilePage.crossPostBanner });
+    const crossPostCount = await crossPostedItems.count();
+    test.skip(crossPostCount === 0, 'No cross-posted items found on this profile');
+
+    const firstCrossPostedItem = crossPostedItems.first();
+    const postAuthorText = await firstCrossPostedItem.locator(profilePage.postsPostAuthor).textContent();
+    const originalLinkText = await firstCrossPostedItem.locator(profilePage.crossPostOriginalLink).textContent();
+    const originalAuthor = originalLinkText?.replace(/^@/, '').split('/')[0];
+
+    expect(postAuthorText).toBe(originalAuthor);
+  });
+});

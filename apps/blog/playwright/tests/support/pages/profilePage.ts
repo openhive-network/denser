@@ -52,6 +52,9 @@ export class ProfilePage {
   readonly postAvatar: Locator;
   readonly postReputation: Locator;
   readonly postReputationTooltip: Locator;
+  readonly crossPostBanner: Locator;
+  readonly crossPostAuthorLink: Locator;
+  readonly crossPostOriginalLink: Locator;
   readonly postsPostListLocator: Locator;
   readonly postsCommentsListLocator: Locator;
   readonly postsPayoutsListLocator: Locator;
@@ -276,6 +279,9 @@ export class ProfilePage {
     this.postAvatar = page.locator('[data-testid="post-card-avatar"]');
     this.postReputation = page.locator('[data-testid="post-author-reputation"]');
     this.postReputationTooltip = page.locator('[data-testid="post-reputation-tooltip"]');
+    this.crossPostBanner = page.getByTestId('cross-post-banner');
+    this.crossPostAuthorLink = page.getByTestId('cross-post-author-link');
+    this.crossPostOriginalLink = page.getByTestId('cross-post-original-link');
     this.postsPostListLocator = page.getByTestId('post-list-user-posts');
     this.postsCommentsListLocator = page.getByTestId('comment-list-replies');
     this.postsPayoutsListLocator = page.getByTestId('post-list-user-payouts');

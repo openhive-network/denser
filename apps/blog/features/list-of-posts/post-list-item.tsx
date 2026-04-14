@@ -115,16 +115,17 @@ const PostListItem = memo(
       {nsfw === 'hide' ? null : (
         <Card className="mb-4 bg-background px-2 text-primary">
           {post.original_entry ? (
-            <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm">
+            <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm" data-testid="cross-post-banner">
               <p className="flex items-center gap-1 text-xs md:text-sm">
                 <Icons.crossPost className="h-4 w-4 text-slate-500 dark:text-slate-400" />{' '}
-                <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${post.author}`}>
+                <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${post.author}`} data-testid="cross-post-author-link">
                   {post.author}
                 </Link>{' '}
                 cross-posted{' '}
                 <Link
                   href={`/${post.original_entry.community}/@${post.original_entry.author}/${post.original_entry.permlink}`}
                   className="text-destructive hover:cursor-pointer"
+                  data-testid="cross-post-original-link"
                 >
                   @{post.original_entry.author}/{post.original_entry.permlink}
                 </Link>
