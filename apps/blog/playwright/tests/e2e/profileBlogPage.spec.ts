@@ -351,7 +351,7 @@ test.describe('Profile page of @polish.hive - cross-post author', () => {
   });
 
   test('cross-post original link author matches the displayed post author', async () => {
-    await profilePage.gotoProfilePage('@polish.hive');
+    await profilePage.gotoPostsProfilePage('@polish.hive');
     await expect(profilePage.postBlogItem.first()).toBeVisible();
 
     const crossPostedItems = profilePage.postBlogItem
