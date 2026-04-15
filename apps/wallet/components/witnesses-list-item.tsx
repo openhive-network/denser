@@ -58,9 +58,18 @@ function WitnessListItem({
         </span>
       );
 
-    if (!data.url.startsWith('http')) return <>({t('witnesses_page.no_url_provided')})</>;
-
+    // Witness URLs come from the blockchain — attacker-controlled. Validate
+    // with an allowlist: parseable, scheme === https, no embedded credentials.
+    // A single witness publishing `url = "http://"` crashed this entire page.
+    // TODO: adopt a shared safe-external-url helper / audited library when the
+    //       broader sanitization audit lands (meta issue pending).
+    if (typeof data.url !== 'string' || !URL.canParse(data.url)) {
+      return <>({t('witnesses_page.no_url_provided')})</>;
+    }
     const urlToWitnessPage = new URL(data.url);
+    if (urlToWitnessPage.protocol !== 'https:' || urlToWitnessPage.username || urlToWitnessPage.password) {
+      return <>({t('witnesses_page.no_url_provided')})</>;
+    }
     if (['hive.blog', 'localhost'].includes(urlToWitnessPage.hostname))
       return (
         <Link
