@@ -1,0 +1,32 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_follow_list",
+    "params": {
+      "observer": "guest4test2",
+      "follow_type": "blacklisted"
+    },
+    "id": 1
+  },
+  "requestHash": "41a69b7ee75749c8",
+  "method": "bridge.get_follow_list",
+  "params": {
+    "observer": "guest4test2",
+    "follow_type": "blacklisted"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "mantequilla-soft"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

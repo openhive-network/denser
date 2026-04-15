@@ -1,4 +1,16 @@
 {
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_community",
+    "params": {
+      "name": "hive-163772",
+      "observer": ""
+    },
+    "id": 1
+  },
+  "requestHash": "3a992268ba24847c",
   "method": "bridge.get_community",
   "params": {
     "name": "hive-163772",
@@ -17,11 +29,11 @@
       "is_nsfw": false,
       "lang": "en",
       "name": "hive-163772",
-      "num_authors": 242,
-      "num_pending": 1433,
+      "num_authors": 245,
+      "num_pending": 1627,
       "settings": {},
-      "subscribers": 18207,
-      "sum_pending": 1250,
+      "subscribers": 18211,
+      "sum_pending": 1256,
       "team": [
         [
           "hive-163772",
@@ -73,5 +85,6 @@
       "type_id": 1
     }
   },
-  "paramsHash": "17a1a00aac8fd4a3"
+  "responseStatus": 200,
+  "responseContentType": "application/json"
 }

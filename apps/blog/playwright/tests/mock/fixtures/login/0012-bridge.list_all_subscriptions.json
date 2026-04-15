@@ -1,0 +1,73 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_all_subscriptions",
+    "params": {
+      "account": "guest4test2"
+    },
+    "id": 1
+  },
+  "requestHash": "d167647086312e59",
+  "method": "bridge.list_all_subscriptions",
+  "params": {
+    "account": "guest4test2"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "hive-105017",
+        "HIVE CN 中文社区",
+        "guest",
+        ""
+      ],
+      [
+        "hive-13323",
+        "Splinterlands",
+        "guest",
+        ""
+      ],
+      [
+        "hive-167922",
+        "LeoFinance",
+        "guest",
+        ""
+      ],
+      [
+        "hive-131131",
+        "Holozing Community",
+        "guest",
+        ""
+      ],
+      [
+        "hive-147010",
+        "Liketu",
+        "guest",
+        ""
+      ],
+      [
+        "hive-140169",
+        "Vibes",
+        "guest",
+        ""
+      ],
+      [
+        "hive-137823",
+        "Testing Zone",
+        "guest",
+        ""
+      ],
+      [
+        "hive-166414",
+        "Test",
+        "guest",
+        ""
+      ]
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

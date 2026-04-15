@@ -1,0 +1,49 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_profile",
+    "params": {
+      "account": "guest4test2"
+    },
+    "id": 1
+  },
+  "requestHash": "5596c88f52254f91",
+  "method": "bridge.get_profile",
+  "params": {
+    "account": "guest4test2"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active": "2026-03-19T11:40:45",
+      "blacklists": [],
+      "created": "2020-07-13T11:26:24",
+      "id": 1398405,
+      "metadata": {
+        "profile": {
+          "about": "I ma dev and",
+          "blacklist_description": "",
+          "cover_image": "https://images.hive.blog/DQme6j2oXHpCAAQNnb8GL9hLTXfTEEexBqNWNkK5D3qMkJH/brown-264289_1280.jpg",
+          "location": "Test 12345",
+          "muted_list_description": "",
+          "name": "",
+          "profile_image": "https://images.hive.blog/DQmUuFMLuTaUn5X3Xg2UEYxnLgi4g9ayynFdTRwM9n9pG21/_13e5e237-68bb-4da7-a909-b4f8e1af669d.jpeg",
+          "website": "https://testing-testing-testing.com"
+        }
+      },
+      "name": "guest4test2",
+      "post_count": 191,
+      "reputation": 39.18,
+      "stats": {
+        "followers": 1,
+        "following": 3,
+        "rank": 0
+      }
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

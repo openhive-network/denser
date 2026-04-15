@@ -1,0 +1,46 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "rc_api.find_rc_accounts",
+    "params": {
+      "accounts": [
+        "guest4test2"
+      ]
+    },
+    "id": 1
+  },
+  "requestHash": "2f07229291761413",
+  "method": "rc_api.find_rc_accounts",
+  "params": {
+    "accounts": [
+      "guest4test2"
+    ]
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "rc_accounts": [
+        {
+          "account": "guest4test2",
+          "delegated_rc": 0,
+          "max_rc": 12608705130,
+          "max_rc_creation_adjustment": {
+            "amount": "5819763250",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "rc_manabar": {
+            "current_mana": 3030714009,
+            "last_update_time": 1773920445
+          },
+          "received_delegated_rc": 5000000000
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

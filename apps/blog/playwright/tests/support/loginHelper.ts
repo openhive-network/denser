@@ -3,6 +3,68 @@ import { HomePage } from './pages/homePage';
 import { LoginForm } from './pages/loginForm';
 import { ProfileUserMenu } from './pages/profileUserMenu';
 
+export interface HBAuthCredentials {
+  username: string;
+  safeStoragePassword: string;
+  wifPosting: string;
+}
+
+/**
+ * Perform the full HBAuth (safe-storage) login flow from the home page.
+ *
+ * Assumes the page is already navigated to the app root. Waits for the
+ * login button, fills credentials, submits, dismisses the biometric
+ * prompt if it appears, and resolves once the profile avatar is visible
+ * (i.e. login succeeded).
+ *
+ * Usage:
+ * ```ts
+ * await page.goto('/', { waitUntil: 'commit' });
+ * await loginViaHBAuth(page, { username, safeStoragePassword, wifPosting });
+ * ```
+ */
+export async function loginViaHBAuth(
+  page: Page,
+  credentials: HBAuthCredentials
+): Promise<void> {
+  const homePage = new HomePage(page);
+  const loginForm = new LoginForm(page);
+
+  await expect(homePage.loginBtn).toBeVisible({ timeout: 30000 });
+  await homePage.loginBtn.click();
+
+  await loginForm.validateDefaultLoginFormIsLoaded();
+  await loginForm.usernameInput.fill(credentials.username);
+  await loginForm.passwordInput.fill(credentials.safeStoragePassword);
+  await loginForm.wifInput.fill(credentials.wifPosting);
+  await loginForm.saveSignInButton.click();
+
+  await loginForm.dismissBiometricPromptIfPresent();
+
+  await expect(homePage.profileAvatarButton).toBeVisible({ timeout: 30000 });
+}
+
+/**
+ * Read credentials for a fixture test user from `apps/blog/.env.local`.
+ * Env var names follow the pattern `<USER>_WIF_POSTING` and
+ * `<USER>_SAFE_STORAGE_PASSWORD` where `<USER>` is the uppercased username
+ * (e.g. `GUEST4TEST2_WIF_POSTING`).
+ */
+export function getHBAuthCredentialsFromEnv(username: string): HBAuthCredentials {
+  const envPrefix = username.toUpperCase().replace(/-/g, '_');
+  const wifPosting = process.env[`${envPrefix}_WIF_POSTING`];
+  const safeStoragePassword = process.env[`${envPrefix}_SAFE_STORAGE_PASSWORD`];
+
+  if (!wifPosting || !safeStoragePassword) {
+    throw new Error(
+      `Missing ${envPrefix}_WIF_POSTING or ${envPrefix}_SAFE_STORAGE_PASSWORD env vars ` +
+        `for user "${username}". Add them to apps/blog/.env.local.`
+    );
+  }
+
+  return { username, safeStoragePassword, wifPosting };
+}
+
 
 export const users = {
   denserautotest0: {
@@ -87,7 +149,7 @@ export class LoginHelper {
     await this.loginFormDefaut.page.waitForTimeout(5000);
     await this.homePage.profileAvatarButton.click();
     // Validate User is logged in
-    await this.page.waitForSelector(this.profileMenu.profileMenuContent['_selector']);
+    await this.profileMenu.profileMenuContent.waitFor({ state: 'visible' });
     await this.profileMenu.validateUserProfileManuIsOpen();
     await this.profileMenu.validateUserNameInProfileMenu(username);
     await this.profileMenu.clickCloseProfileMenu();
@@ -97,7 +159,7 @@ export class LoginHelper {
     // Click avatar of the user
     await this.homePage.profileAvatarButton.click();
     // Validate User is logged in
-    await this.page.waitForSelector(this.profileMenu.profileMenuContent['_selector']);
+    await this.profileMenu.profileMenuContent.waitFor({ state: 'visible' });
     await this.profileMenu.validateUserProfileManuIsOpen();
     await this.profileMenu.validateUserNameInProfileMenu(username);
   }

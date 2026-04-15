@@ -64,6 +64,9 @@ export default defineConfig({
     stderr: 'pipe',
     env: {
       REACT_APP_API_ENDPOINT: `http://localhost:${FIXTURE_PORT}`,
+      // Whitelist the fixture proxy in the CSP connect-src directive;
+      // without this the browser blocks every fetch to localhost:8200.
+      REACT_APP_ALLOWED_HIVE_API_NODES: `http://localhost:${FIXTURE_PORT}`,
       HOSTNAME: '0.0.0.0',
       PORT: '3000',
       // iron-session requires a password >= 32 chars. Fixture tests never

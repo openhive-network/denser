@@ -1,0 +1,186 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.find_accounts",
+    "params": {
+      "accounts": [
+        "guest4test2"
+      ],
+      "delayed_votes_active": false
+    },
+    "id": 1
+  },
+  "requestHash": "a8d20b44a6ae1262",
+  "method": "database_api.find_accounts",
+  "params": {
+    "accounts": [
+      "guest4test2"
+    ],
+    "delayed_votes_active": false
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "accounts": [
+        {
+          "active": {
+            "account_auths": [],
+            "key_auths": [
+              [
+                "STM8T6WLuLH9T91LMrGRcoNsAnhhyahBJi2x7Zky1FXFHHi5vJNPM",
+                1
+              ]
+            ],
+            "weight_threshold": 1
+          },
+          "balance": {
+            "amount": "387",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "can_vote": true,
+          "comment_count": 0,
+          "created": "2020-07-13T11:26:27",
+          "curation_rewards": 0,
+          "delegated_vesting_shares": {
+            "amount": "0",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "downvote_manabar": {
+            "current_mana": 447235470,
+            "last_update_time": 1773755391
+          },
+          "governance_vote_expiration_ts": "1969-12-31T23:59:59",
+          "hbd_balance": {
+            "amount": "200",
+            "nai": "@@000000013",
+            "precision": 3
+          },
+          "hbd_last_interest_payment": "1970-01-01T00:00:00",
+          "hbd_seconds": "0",
+          "hbd_seconds_last_update": "1970-01-01T00:00:00",
+          "id": 1398404,
+          "is_smt": false,
+          "json_metadata": "",
+          "last_account_recovery": "1970-01-01T00:00:00",
+          "last_account_update": "2026-02-12T11:28:18",
+          "last_owner_update": "1970-01-01T00:00:00",
+          "last_post": "2026-03-19T11:40:45",
+          "last_post_edit": "2026-03-19T11:40:45",
+          "last_root_post": "2026-03-19T11:40:45",
+          "last_vote_time": "2026-03-17T13:49:51",
+          "lifetime_vote_count": 0,
+          "memo_key": "STM8615dtwwXgKoWqMd7C9aCeqQXEUv9P7T2L28mXgXxhuMbWYyYn",
+          "mined": false,
+          "name": "guest4test2",
+          "next_vesting_withdrawal": "1969-12-31T23:59:59",
+          "open_recurrent_transfers": 0,
+          "owner": {
+            "account_auths": [],
+            "key_auths": [
+              [
+                "STM5D3E2g6EpBcvQSjwHaf8gpV9KjQJV8NExboMJyJP5VCQmqYuk9",
+                1
+              ]
+            ],
+            "weight_threshold": 1
+          },
+          "pending_claimed_accounts": 0,
+          "pending_transfers": 0,
+          "post_bandwidth": 0,
+          "post_count": 217,
+          "post_voting_power": {
+            "amount": "1788941880",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "posting": {
+            "account_auths": [],
+            "key_auths": [
+              [
+                "STM8KcLiYcQxPkwmFWV44kkJdLHAfHKDMgGpecMg1UBmYKTF9jhQg",
+                1
+              ]
+            ],
+            "weight_threshold": 1
+          },
+          "posting_json_metadata": "{\"profile\":{\"profile_image\":\"https://images.hive.blog/DQmUuFMLuTaUn5X3Xg2UEYxnLgi4g9ayynFdTRwM9n9pG21/_13e5e237-68bb-4da7-a909-b4f8e1af669d.jpeg\",\"cover_image\":\"https://images.hive.blog/DQme6j2oXHpCAAQNnb8GL9hLTXfTEEexBqNWNkK5D3qMkJH/brown-264289_1280.jpg\",\"about\":\"I ma dev and\",\"location\":\"Test 12345\",\"website\":\"https://testing-testing-testing.com\",\"witness_owner\":\"Tak yes\",\"witness_description\":\"no no no\",\"version\":2}}",
+          "posting_rewards": 1491,
+          "previous_owner_update": "1970-01-01T00:00:00",
+          "proxied_vsf_votes": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "proxy": "",
+          "received_vesting_shares": {
+            "amount": "0",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "recovery_account": "gtg",
+          "reset_account": "null",
+          "reward_hbd_balance": {
+            "amount": "0",
+            "nai": "@@000000013",
+            "precision": 3
+          },
+          "reward_hive_balance": {
+            "amount": "0",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "reward_vesting_balance": {
+            "amount": "0",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "reward_vesting_hive": {
+            "amount": "0",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "savings_balance": {
+            "amount": "0",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "savings_hbd_balance": {
+            "amount": "0",
+            "nai": "@@000000013",
+            "precision": 3
+          },
+          "savings_hbd_last_interest_payment": "1970-01-01T00:00:00",
+          "savings_hbd_seconds": "0",
+          "savings_hbd_seconds_last_update": "1970-01-01T00:00:00",
+          "savings_withdraw_requests": 0,
+          "to_withdraw": 0,
+          "vesting_shares": {
+            "amount": "1788941880",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "vesting_withdraw_rate": {
+            "amount": "0",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "voting_manabar": {
+            "current_mana": 1717968093,
+            "last_update_time": 1773755391
+          },
+          "withdraw_routes": 0,
+          "withdrawn": 0,
+          "witnesses_voted_for": 0
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
