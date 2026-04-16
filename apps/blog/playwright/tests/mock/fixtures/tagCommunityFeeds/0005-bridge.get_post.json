@@ -1,0 +1,95 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post",
+    "params": {
+      "author": "jef-001",
+      "permlink": "back-in-sync-and-testing-again-in-mining-sim",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "175107bdcf79db73",
+  "method": "bridge.get_post",
+  "params": {
+    "author": "jef-001",
+    "permlink": "back-in-sync-and-testing-again-in-mining-sim",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active_votes": [
+        {
+          "rshares": 947035228,
+          "voter": "lolz.byte"
+        },
+        {
+          "rshares": 1581175188,
+          "voter": "sw4p"
+        },
+        {
+          "rshares": 0,
+          "voter": "magic.byte"
+        }
+      ],
+      "author": "jef-001",
+      "author_payout_value": "0.000 HBD",
+      "author_reputation": 57.8,
+      "beneficiaries": [],
+      "blacklists": [],
+      "body": "\n![mining sim.jpg](https://files.peakd.com/file/peakd-hive/jef-001/23u63EiHLvKRxbdtUPxLDcHATgstNTabqJB1T2EywM6LrptGNfp7q8kBAFnKSxnAjoUvv.jpg)\n\n## Back in sync\nIn my last post I wrote about getting my nodes back in sync from a checkpoint.\n\nThey have stayed in sync since then, so even though the chain did fork and a clean replay is not possible anymore because of the mistake I made, it does seem stable again for now.\n\nSo for now testing can continue again, which is the main thing I wanted to get back to.\n\n## What changed since then\nSince then I added another hosted node, and also added a way on the player page to switch between which node you want to see data from.\n\nI also did the update again where it all went wrong before. This time it worked as intended, so difficulty is now **1** and energy consumption depends on that from the update onward.\n\n## Next update\nThe next planned update should go live later today. That one adds anomaly reporting for the Discord bot, so we can get more info there about who joined and what profile they picked.\n\n\n\n\n## Screenshots\n\nCurrent dashboard after the update:\n![image.png](https://files.peakd.com/file/peakd-hive/jef-001/23sxozvPeSh32xAyoCCYa32BcVL6ypcBkJFYBcYm573exe3stBYe6hGKrcEVi1W8ZnLPP.png)\n\nUpcoming activations:\n![consensus activations.jpg](https://files.peakd.com/file/peakd-hive/jef-001/23tHb6kpgd52a82mn9yBEynUZDP498KW5BGZo6bT3qaxKNPhxLNQbHSJbXe2S3SdYy7Dx.jpg)\n\nDiscord bot reporting:\n![image.png](https://files.peakd.com/file/peakd-hive/jef-001/EnypWPnqv9e9RJQaUZBAHH1R1b6FbXp8USEUN1rKL7AxiLCcrK9YheEbwzbvqbBczVs.png)\n\nFor anyone curious, the current test build is here:\n\nGame link:  \nhttps://mining-sim-player.netlify.app/\n\nDiscord:  \nhttps://discord.gg/kfvFamvNQe\n",
+      "category": "gamedev",
+      "children": 0,
+      "created": "2026-04-09T16:27:03",
+      "curator_payout_value": "0.000 HBD",
+      "depth": 0,
+      "is_paidout": false,
+      "json_metadata": {
+        "app": "peakd/2026.4.3",
+        "description": "Mining Sim is back in sync, testing can continue, and the next update goes live today.",
+        "format": "markdown",
+        "image": [
+          "https://files.peakd.com/file/peakd-hive/jef-001/23u63EiHLvKRxbdtUPxLDcHATgstNTabqJB1T2EywM6LrptGNfp7q8kBAFnKSxnAjoUvv.jpg",
+          "https://files.peakd.com/file/peakd-hive/jef-001/23sxozvPeSh32xAyoCCYa32BcVL6ypcBkJFYBcYm573exe3stBYe6hGKrcEVi1W8ZnLPP.png",
+          "https://files.peakd.com/file/peakd-hive/jef-001/23tHb6kpgd52a82mn9yBEynUZDP498KW5BGZo6bT3qaxKNPhxLNQbHSJbXe2S3SdYy7Dx.jpg",
+          "https://files.peakd.com/file/peakd-hive/jef-001/EnypWPnqv9e9RJQaUZBAHH1R1b6FbXp8USEUN1rKL7AxiLCcrK9YheEbwzbvqbBczVs.png"
+        ],
+        "tags": [
+          "gamedev",
+          "development",
+          "blockchain",
+          "hive",
+          "miningsim",
+          "hivegaming",
+          "blockchaingames"
+        ],
+        "users": []
+      },
+      "max_accepted_payout": "1000000.000 HBD",
+      "net_rshares": 2528210416,
+      "payout": 0,
+      "payout_at": "2026-04-16T16:27:03",
+      "pending_payout_value": "0.000 HBD",
+      "percent_hbd": 10000,
+      "permlink": "back-in-sync-and-testing-again-in-mining-sim",
+      "post_id": 149747007,
+      "reblogs": 0,
+      "replies": [],
+      "stats": {
+        "flag_weight": 0,
+        "gray": false,
+        "hide": false,
+        "total_votes": 3
+      },
+      "title": "Back in sync and testing again in Mining Sim",
+      "updated": "2026-04-09T19:36:39",
+      "url": "/gamedev/@jef-001/back-in-sync-and-testing-again-in-mining-sim"
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

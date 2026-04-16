@@ -1,0 +1,14 @@
+{
+  "testName": "tagCommunityFeeds",
+  "recordedAt": "2026-04-16T10:55:20.098Z",
+  "totalRequests": 38,
+  "savedFixtures": 12,
+  "duplicatesSkipped": 26,
+  "methods": {
+    "bridge.get_community": 14,
+    "bridge.list_communities": 8,
+    "bridge.get_ranked_posts": 7,
+    "bridge.get_post": 8,
+    "bridge.list_community_roles": 1
+  }
+}
