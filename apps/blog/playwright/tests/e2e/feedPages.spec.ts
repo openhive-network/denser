@@ -13,8 +13,7 @@ import { testFeedPagination, FEED_CONFIG, type FeedType } from '../support/feedT
 const PRODUCTION_FILTER_BUG = 'Production bug: filter dropdown not functional';
 const PRODUCTION_PAGINATION_BUG = 'Production bug: infinite scroll pagination not working';
 
-// FIXME: flaky test on e2e-tests-blog-stable stage
-test.describe.fixme('Feed pages tests', () => {
+test.describe('@flaky Feed pages tests', () => {
   let homePage: HomePage;
 
   test.beforeEach(async ({ page }) => {
@@ -260,8 +259,7 @@ test.describe.fixme('Feed pages tests', () => {
  * Split from mega-test for better isolation and failure identification
  * NOTE: These tests fail on production due to filter dropdown not working (SSR hydration bug)
  */
-// FIXME: flaky test on e2e-tests-blog-stable stage
-test.describe.fixme('Feed navigation tests', () => {
+test.describe('@flaky Feed navigation tests', () => {
   let homePage: HomePage;
 
   test.beforeEach(async ({ page }) => {
@@ -344,8 +342,7 @@ test.describe.fixme('Feed navigation tests', () => {
  * These tests use shared helper to reduce code duplication
  * NOTE: These tests fail on production due to infinite scroll not working
  */
-// FIXME: flaky test on e2e-tests-blog-stable stage
-test.describe.fixme('Feed pagination tests (parametrized)', () => {
+test.describe('@flaky Feed pagination tests (parametrized)', () => {
   const paginationFeedTypes: FeedType[] = ['hot', 'created', 'payout'];
 
   for (const feedType of paginationFeedTypes) {

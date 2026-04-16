@@ -163,9 +163,7 @@ test.describe('Deep Linking tests', () => {
    * FEED DEEP LINKS
    */
 
-  test('direct link to hot feed loads correctly', async ({ page }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky direct link to hot feed loads correctly', async ({ page }) => {
     await page.goto('/hot');
 
     await expect(page).toHaveURL('/hot');
@@ -175,9 +173,7 @@ test.describe('Deep Linking tests', () => {
     expect(postsCount).toBeGreaterThan(0);
   });
 
-  test('direct link to created/new feed loads correctly', async ({ page }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky direct link to created/new feed loads correctly', async ({ page }) => {
     await page.goto('/created');
 
     await expect(page).toHaveURL('/created');

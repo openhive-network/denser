@@ -1,7 +1,7 @@
 stages:
 - build
 - replay-and-sync
-- test-stable-blog
+- test-e2e-stable
 - test
 - test-report-aggregate
 - deploy
@@ -289,6 +289,7 @@ docker-build-blog-testenv:
 
 docker-build-wallet-testenv:
   extends: .docker-build-testenv-image
+  stage: build
   needs:
   - docker-build-wallet
   variables:
@@ -623,8 +624,7 @@ mirrornet-based-tests:
 
 e2e-tests-blog-stable:
   extends: .e2e_tests_template
-  stage: test-stable-blog
-  allow_failure: true
+  stage: test-e2e-stable
   needs:
   - docker-build-blog-testenv
   parallel:
@@ -645,14 +645,21 @@ e2e-tests-blog-stable:
     - --from=https://caddy
     - --to=denser:3000
     - --internal-certs
+  script:
+  - !reference [.node-job, script]
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning stable tests..."
+    cd .$TURBO_APP_PATH
+    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --grep-invert @flaky --update-snapshots
+    echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
     PORT: 3000
 
-e2e-tests-wallet:
+e2e-tests-wallet-stable:
   extends: .e2e_tests_template
-  allow_failure: true
+  stage: test-e2e-stable
   needs:
   - docker-build-wallet-testenv
   parallel:
@@ -673,6 +680,87 @@ e2e-tests-wallet:
     - --from=https://caddy
     - --to=denser:4000
     - --internal-certs
+  script:
+  - !reference [.node-job, script]
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning stable tests..."
+    cd .$TURBO_APP_PATH
+    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --grep-invert @flaky --update-snapshots
+    echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
+  variables:
+    TURBO_APP_SCOPE: '@hive/wallet'
+    TURBO_APP_PATH: '/apps/wallet'
+    PORT: 4000
+
+e2e-tests-blog-flaky:
+  extends: .e2e_tests_template
+  stage: test
+  allow_failure: true
+  needs:
+  - docker-build-blog-testenv
+  parallel:
+    matrix:
+    - PROJECT: ['chromium']
+      SHARD_INDEX: [1]
+      SHARD_TOTAL: 1
+  services:
+  - name: $DENSER_BLOG_IMAGE_NAME
+    alias: denser
+    variables:
+      HEALTHCHECK_TCP_PORT: '3000'
+
+  - name: caddy:${CADDY_TAG}
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy
+    - --to=denser:3000
+    - --internal-certs
+  script:
+  - !reference [.node-job, script]
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning flaky tests..."
+    cd .$TURBO_APP_PATH
+    npx playwright test --project=$PROJECT --grep @flaky --update-snapshots
+    echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
+  variables:
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    PORT: 3000
+
+e2e-tests-wallet-flaky:
+  rules:
+  - when: never  # No @flaky tests in wallet yet
+  extends: .e2e_tests_template
+  stage: test
+  allow_failure: true
+  needs:
+  - docker-build-wallet-testenv
+  parallel:
+    matrix:
+    - PROJECT: ['chromium']
+      SHARD_INDEX: [1]
+      SHARD_TOTAL: 1
+  services:
+  - name: $DENSER_WALLET_IMAGE_NAME
+    alias: denser
+    variables:
+      HEALTHCHECK_TCP_PORT: '4000'
+
+  - name: caddy:${CADDY_TAG}
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy
+    - --to=denser:4000
+    - --internal-certs
+  script:
+  - !reference [.node-job, script]
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning flaky tests..."
+    cd .$TURBO_APP_PATH
+    npx playwright test --project=$PROJECT --grep @flaky --update-snapshots
+    echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
@@ -778,7 +866,7 @@ e2e-report-aggregate-blog:
 e2e-report-aggregate-wallet:
   extends: .e2e_report_aggregate_template
   needs:
-  - e2e-tests-wallet
+  - e2e-tests-wallet-stable
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
@@ -967,7 +1055,7 @@ main:deploy-wallet-mainnet:
   extends: .deploy_template
   needs:
   - docker-build-wallet
-  - e2e-tests-wallet
+  - e2e-tests-wallet-stable
   variables:
     CONTAINER_NAME: denser-main-wallet
     PORT: 9122
@@ -1008,7 +1096,7 @@ main:deploy-wallet-mirrornet:
   extends: .deploy_template
   needs:
   - docker-build-wallet
-  - e2e-tests-wallet
+  - e2e-tests-wallet-stable
   variables:
     CONTAINER_NAME: denser-main-wallet-mirror
     PORT: 9222
@@ -1123,7 +1211,7 @@ develop:deploy-wallet-mainnet:
   extends: .deploy_template
   needs:
   - docker-build-wallet
-  - e2e-tests-wallet
+  - e2e-tests-wallet-stable
   variables:
     CONTAINER_NAME: denser-dev-wallet
     PORT: 8122
@@ -1156,7 +1244,7 @@ develop:deploy-wallet-mirrornet:
   extends: .deploy_template
   needs:
   - docker-build-wallet
-  - e2e-tests-wallet
+  - e2e-tests-wallet-stable
   variables:
     CONTAINER_NAME: denser-dev-wallet-mirror
     PORT: 8222

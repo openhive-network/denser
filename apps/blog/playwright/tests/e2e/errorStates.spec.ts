@@ -129,9 +129,7 @@ test.describe('Error States tests', () => {
    * APP FUNCTIONALITY TESTS
    */
 
-  test('app remains functional after navigation', async ({ page }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky app remains functional after navigation', async ({ page }) => {
     await homePage.goto();
 
     await page.goto('/hot');

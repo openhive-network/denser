@@ -50,9 +50,7 @@ test.describe('Sync scroll tests', () => {
     };
   }
 
-  test('Sync scroll works immediately after page load without toggling', async ({ page }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky Sync scroll works immediately after page load without toggling', async ({ page }) => {
     const { editorScroller, previewScroller } = await setupEditorWithContent(page);
 
     // Verify both containers are scrollable (have scrollHeight > clientHeight)
@@ -100,9 +98,7 @@ test.describe('Sync scroll tests', () => {
     expect(previewScrollPercentage).toBeLessThan(0.7);
   });
 
-  test('Sync scroll toggle disables and enables scroll synchronization', async ({ page }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky Sync scroll toggle disables and enables scroll synchronization', async ({ page }) => {
     const { postEditorPage, editorScroller, previewScroller } = await setupEditorWithContent(page);
 
     // Helper: hover container, reliably reveal the toggle, then click it.

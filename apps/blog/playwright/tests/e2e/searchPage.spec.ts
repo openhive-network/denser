@@ -84,9 +84,7 @@ test.describe('Search page tests', () => {
     expect(resultsCount).toBeGreaterThan(0);
   });
 
-  test('search sorting by newest (created) works', async ({ page, browserName }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky search sorting by newest (created) works', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Search results timing issues on WebKit');
     test.skip(isProductionEnvironment(), 'Production: search by created sort intermittently fails');
     await searchPage.gotoWithClassicQuery('hive', 'created');

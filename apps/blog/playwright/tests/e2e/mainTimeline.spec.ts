@@ -147,9 +147,7 @@ test.describe('Home page tests', () => {
     await homePage.validateFirstPostHeaderElements();
   });
 
-  test('validate the first post (for New filter)', async ({ page, request, browserName }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky validate the first post (for New filter)', async ({ page, request, browserName }) => {
     await homePage.goto();
 
     // Wait for posts to load before interacting with filter
@@ -241,9 +239,7 @@ test.describe('Home page tests', () => {
     await homePage.moveToTheFirstPostCommentContantPageByClickingResponses();
   });
 
-  test('move to the dark mode and back to the light mode', async ({ page }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky move to the dark mode and back to the light mode', async ({ page }) => {
     await homePage.goto();
 
     await homePage.validateThemeModeIsLight();
