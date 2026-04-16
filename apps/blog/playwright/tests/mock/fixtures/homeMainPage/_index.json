@@ -1,0 +1,12 @@
+{
+  "testName": "homeMainPage",
+  "recordedAt": "2026-04-16T08:22:22.777Z",
+  "totalRequests": 27,
+  "savedFixtures": 7,
+  "duplicatesSkipped": 20,
+  "methods": {
+    "bridge.list_communities": 9,
+    "GET /hivesense-api": 9,
+    "bridge.get_ranked_posts": 9
+  }
+}

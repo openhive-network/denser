@@ -1,0 +1,2301 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "muted",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "91a5c9054b53c445",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "muted",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "active_votes": [
+          {
+            "rshares": 2200446259,
+            "voter": "honusurf"
+          },
+          {
+            "rshares": 33476643017,
+            "voter": "asgharali"
+          },
+          {
+            "rshares": 0,
+            "voter": "playagame"
+          },
+          {
+            "rshares": 477549391,
+            "voter": "spt-shturm"
+          },
+          {
+            "rshares": 470261898,
+            "voter": "helios.publisher"
+          },
+          {
+            "rshares": 0,
+            "voter": "javivisanph"
+          },
+          {
+            "rshares": 947991695,
+            "voter": "lolz.leo"
+          },
+          {
+            "rshares": 0,
+            "voter": "javivisanph01"
+          },
+          {
+            "rshares": 2436712950351,
+            "voter": "helios.voter"
+          },
+          {
+            "rshares": 681608035,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 0,
+            "voter": "loomsense"
+          },
+          {
+            "rshares": 28045590101,
+            "voter": "we-are-ai"
+          }
+        ],
+        "author": "aqsagu",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 0.94,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "\n![20260412_111229.jpg](https://files.peakd.com/file/peakd-hive/aqsagu/23uQrdovfxHzFm1bur4yL8UW9aNEYeBnLx1b3oWSEWY3vsyNjaor1vrQW4THFVqgRZ9Fx.jpg)\nIntroduction\n\nRecent geopolitical developments have raised new issues for global markets as a result of Donald Trump's allegations of cooperation between China and Iran in terms of military weaponry. The development of this situation along with other uncertainties in the market means we now have a vulnerable global economy.\n\nWhat’s Happening?\n\nThere is speculation that China is considering providing military equipment to Iran in response to the increasing tensions in the Middle East; however, Donald Trump's warning indicates this is a serious situation despite China's outright denial of the same. This situation has major global political implications, but it also has equally significant economic and financial implications.\n\nOil Market\n\nThe primary impact of this situation to this point relates to the oil market and the price of oil. The Middle East is a large component of the world's oil supply and all shipping routes, with one of the most critical shipping routes being the Strait of Hormuz. \n\n📈 Market Behavior\nA common event when a global disruption occurs is for stocks to decline; as an example:\n- Investors will liquidate riskier positions,\n- Stocks related to defence and energy may increase in price,\n- Broader indices will experience increased volatility.\n\nMarkets typically do not favour unpredictability as a component of their pricing structure; therefore, the global markets have been viewed as unpredictable.\n\n- Generally gold prices increase,\n- A significant number of investors want predictable assets,\n- A decreased ability to invest with risk has created additional demand for certain types of assets,\n- This has been evidenced many times throughout history during wars.\n\n₿ Cryptocurrencies and Store of Value\n\n- Many will start investing in decentralised fashion,\n- Crypto will still experience a tremendous amount of volatility,\n- However, in general, the price of cryptocurrencies will be variable depending upon how the conflict develops. \n\n🔮 Potential Scenarios for the Future\nHere are some possible scenarios to occur:\nDe-escalation → Market Calm\nLimited Conflict → Volatility in the Short-run\n\nThe warning surrounding potential arms cooperation between China and Iran contains more than mere political rhetoric; it holds true implications for worldwide markets.\n\nOil Price to Crypto Trends, each major asset class will feel some sort of influence as investor/analysts continue during these types of times to keep their ear to the ground and act accordingly based upon current conditions.\n\n✍️ Final Thought:\nSouls/Entities/Continue Globally and Because of This Thing Called Globalisation; Therefore Geopolitical Tensions Have Gone From Regional Geopolitical Tensions (North Korea versus South Korea) To Complete Financial Events. \n",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-04-12T13:00:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "description": " Trump warns China over Iran arms; markets face uncertainty.",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/aqsagu/23uQrdovfxHzFm1bur4yL8UW9aNEYeBnLx1b3oWSEWY3vsyNjaor1vrQW4THFVqgRZ9Fx.jpg"
+          ],
+          "tags": [
+            "leofinance",
+            "inleo",
+            "sbt",
+            "spt",
+            "pob",
+            "alive",
+            "cent",
+            "neoxian",
+            "bbh",
+            "ai"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 2503013040747,
+        "payout": 0.215,
+        "payout_at": "2026-04-19T13:00:09",
+        "pending_payout_value": "0.215 HBD",
+        "percent_hbd": 10000,
+        "permlink": "how-the-tensions-between-iran-and-china-could-affect-global-markets",
+        "post_id": 149780906,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 12
+        },
+        "title": "How The Tensions Between Iran & China Could Affect Global Markets",
+        "updated": "2026-04-12T13:00:09",
+        "url": "/hive-167922/@aqsagu/how-the-tensions-between-iran-and-china-could-affect-global-markets"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 2199852615,
+            "voter": "honusurf"
+          },
+          {
+            "rshares": 33344835760,
+            "voter": "asgharali"
+          },
+          {
+            "rshares": 33665086813,
+            "voter": "devann"
+          },
+          {
+            "rshares": 452126910,
+            "voter": "data.plus"
+          },
+          {
+            "rshares": 3221924255,
+            "voter": "fit.zone"
+          },
+          {
+            "rshares": 620850869,
+            "voter": "voice.direct"
+          },
+          {
+            "rshares": 2141676521,
+            "voter": "fun.sports"
+          },
+          {
+            "rshares": 2350273764,
+            "voter": "devann.sports"
+          },
+          {
+            "rshares": 485476417,
+            "voter": "gatorfan"
+          },
+          {
+            "rshares": 0,
+            "voter": "playagame"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.weed"
+          },
+          {
+            "rshares": 6171441832,
+            "voter": "pob.curator"
+          },
+          {
+            "rshares": 2090377366,
+            "voter": "coin.curator"
+          },
+          {
+            "rshares": 468326024,
+            "voter": "helios.publisher"
+          },
+          {
+            "rshares": 947497855,
+            "voter": "lolz.weed"
+          },
+          {
+            "rshares": 2435787320620,
+            "voter": "helios.voter"
+          },
+          {
+            "rshares": 146564323,
+            "voter": "nectarcollector"
+          },
+          {
+            "rshares": 0,
+            "voter": "petcurry"
+          },
+          {
+            "rshares": 0,
+            "voter": "abilitysend"
+          },
+          {
+            "rshares": 4273680099,
+            "voter": "darknightlive"
+          }
+        ],
+        "author": "nectarcollector",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.83,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "null",
+            "weight": 10000
+          }
+        ],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "![image.png](https://images.hive.blog/DQmdbsrDEgsdMj3hwRAt1pCU6YAACQu2NhedZBB3AcstcJg/image.png)\nAuthor rewards are automatically burned.\n",
+        "category": "hive-167922",
+        "children": 3,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-04-10T22:24:27",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "image": [
+            "https://images.hive.blog/DQmdbsrDEgsdMj3hwRAt1pCU6YAACQu2NhedZBB3AcstcJg/image.png"
+          ],
+          "tags": [
+            "hive-167922",
+            "leofinance",
+            "hive-engine",
+            "neoxian",
+            "pob",
+            "vyb",
+            "archon",
+            "palnet",
+            "cent",
+            "spt",
+            "ctp",
+            "oneup",
+            "sportstalk",
+            "stem",
+            "weed"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 2528367312043,
+        "payout": 0.207,
+        "payout_at": "2026-04-17T22:24:27",
+        "pending_payout_value": "0.207 HBD",
+        "percent_hbd": 10000,
+        "permlink": "4gmdim7aas7lpo3r7hzf",
+        "post_id": 149762244,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 20
+        },
+        "title": "Burn Post",
+        "updated": "2026-04-10T22:24:27",
+        "url": "/hive-167922/@nectarcollector/4gmdim7aas7lpo3r7hzf"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1080221349603,
+            "voter": "shortsegments"
+          }
+        ],
+        "author": "aqsagu",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 0.94,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "If a normal piggy bank keeps your money the same, then what smart ways can we use to make our savings grow over time? ",
+        "category": "hive-167922",
+        "children": 1,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-04-10T08:02:36",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 1,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "image": [],
+          "tags": [
+            "hive-167922"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 1080221349603,
+        "parent_author": "shortsegments",
+        "parent_permlink": "hive-for-the-young-people-part-five-the-15-savings-vault-lns",
+        "payout": 0.087,
+        "payout_at": "2026-04-17T08:02:36",
+        "pending_payout_value": "0.087 HBD",
+        "percent_hbd": 10000,
+        "permlink": "re-shortsegments-td9qc8",
+        "post_id": 149753208,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 1
+        },
+        "title": "RE: Hive for the Young People Part Five The 15% Savings Vault",
+        "updated": "2026-04-10T08:02:36",
+        "url": "/hive-167922/@shortsegments/hive-for-the-young-people-part-five-the-15-savings-vault-lns#@aqsagu/re-shortsegments-td9qc8"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 871628081408,
+            "voter": "bala41288"
+          },
+          {
+            "rshares": 36860615057,
+            "voter": "kanibot"
+          }
+        ],
+        "author": "marcosalomao95",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.18,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "Excellent post! Hive is the best social network in the world! Unfortunately I could not vote at 100% because my voting power is low.",
+        "category": "hive-197685",
+        "children": 0,
+        "community": "hive-197685",
+        "community_title": "Indiaunited",
+        "created": "2026-04-11T21:45:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 1,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "social_hive/1.0",
+          "format": "markdown",
+          "source": "curadoria"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 908488696465,
+        "parent_author": "bala41288",
+        "parent_permlink": "replaced-my-laptop-keyboard-by",
+        "payout": 0.075,
+        "payout_at": "2026-04-18T21:45:21",
+        "pending_payout_value": "0.075 HBD",
+        "percent_hbd": 10000,
+        "permlink": "re-bala41288-replaced-my-laptop-keyboard-by-20260411t214521-4702a7f9",
+        "post_id": 149772704,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            1,
+            3
+          ],
+          "total_votes": 2
+        },
+        "title": "RE: Replaced my laptop keyboard by myself ",
+        "updated": "2026-04-11T21:45:21",
+        "url": "/hive-197685/@bala41288/replaced-my-laptop-keyboard-by#@marcosalomao95/re-bala41288-replaced-my-laptop-keyboard-by-20260411t214521-4702a7f9"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 244769705402,
+            "voter": "pocketechange"
+          },
+          {
+            "rshares": 10563277621,
+            "voter": "joshuaslane"
+          },
+          {
+            "rshares": 7039182792,
+            "voter": "hivehustlers"
+          },
+          {
+            "rshares": 8900218324,
+            "voter": "thecryptopimp"
+          },
+          {
+            "rshares": 377600496314,
+            "voter": "tokenpimp"
+          }
+        ],
+        "author": "marcosalomao95",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.18,
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "Excellent post! Hive is the best social network in the world! Unfortunately I could not vote at 100% because my voting power is low.",
+        "category": "silvergoldstackers",
+        "children": 6,
+        "created": "2026-04-11T21:45:54",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 1,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "social_hive/1.0",
+          "format": "markdown",
+          "source": "curadoria"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 648872880453,
+        "parent_author": "joshuaslane",
+        "parent_permlink": "crew-of-the-mighty-frigate-silverton-11ap26-ship-s-crew-update",
+        "payout": 0.053,
+        "payout_at": "2026-04-18T21:45:54",
+        "pending_payout_value": "0.053 HBD",
+        "percent_hbd": 10000,
+        "permlink": "re-joshuaslane-crew-of-the-mighty-frigate-silverton-11ap26-ship-s-crew-update-20260411t214554-2c3f9344",
+        "post_id": 149772715,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 5
+        },
+        "title": "RE: \"Crew of the mighty Frigate Silverton\" – 11AP26 - 'Ship's Crew Update!'",
+        "updated": "2026-04-11T21:45:54",
+        "url": "/silvergoldstackers/@joshuaslane/crew-of-the-mighty-frigate-silverton-11ap26-ship-s-crew-update#@marcosalomao95/re-joshuaslane-crew-of-the-mighty-frigate-silverton-11ap26-ship-s-crew-update-20260411t214554-2c3f9344"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 139958387859,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": 14310214413,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 12234718945,
+            "voter": "racibo"
+          },
+          {
+            "rshares": 9176023851,
+            "voter": "informator"
+          },
+          {
+            "rshares": 3104563197,
+            "voter": "khrom"
+          },
+          {
+            "rshares": 162011243527,
+            "voter": "ilnegro"
+          },
+          {
+            "rshares": 0,
+            "voter": "poetforall"
+          },
+          {
+            "rshares": 47056634584,
+            "voter": "bluesniper"
+          },
+          {
+            "rshares": 94374891196,
+            "voter": "ctime"
+          },
+          {
+            "rshares": 1234830071,
+            "voter": "lordjulius"
+          },
+          {
+            "rshares": 2502655224,
+            "voter": "andy.zaphod"
+          },
+          {
+            "rshares": 620670168,
+            "voter": "splines"
+          },
+          {
+            "rshares": 0,
+            "voter": "mk-sports-token"
+          },
+          {
+            "rshares": 11603473410,
+            "voter": "sports.alfa"
+          },
+          {
+            "rshares": 652569534,
+            "voter": "bilpcoin.pay"
+          },
+          {
+            "rshares": 3548681915,
+            "voter": "politicalhive"
+          },
+          {
+            "rshares": 36850676787,
+            "voter": "memehive"
+          },
+          {
+            "rshares": 6810560975,
+            "voter": "balvinder294"
+          },
+          {
+            "rshares": 1052945752,
+            "voter": "hive-108278"
+          },
+          {
+            "rshares": 1606808052,
+            "voter": "zarwelius"
+          },
+          {
+            "rshares": 4524521357,
+            "voter": "bulgaria-sports"
+          },
+          {
+            "rshares": 3061283214,
+            "voter": "csport"
+          },
+          {
+            "rshares": 15754466852,
+            "voter": "bokica80"
+          },
+          {
+            "rshares": 1359642766,
+            "voter": "proton80"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.list"
+          },
+          {
+            "rshares": 3362252036,
+            "voter": "krazeworgen"
+          },
+          {
+            "rshares": 1618728265,
+            "voter": "metronet"
+          },
+          {
+            "rshares": 2044368609,
+            "voter": "skgcrypto"
+          },
+          {
+            "rshares": 948242259,
+            "voter": "lolz.list"
+          },
+          {
+            "rshares": 2737829061,
+            "voter": "hive-117638"
+          },
+          {
+            "rshares": 8924308845,
+            "voter": "gaskets"
+          },
+          {
+            "rshares": 2954496321,
+            "voter": "tenpik"
+          },
+          {
+            "rshares": 3318142847,
+            "voter": "zeltra"
+          },
+          {
+            "rshares": 6662726530,
+            "voter": "skyseven"
+          },
+          {
+            "rshares": 2070547337,
+            "voter": "tekraze"
+          },
+          {
+            "rshares": 726351224,
+            "voter": "cryptovagabundo"
+          },
+          {
+            "rshares": 168272877,
+            "voter": "paranormalhive"
+          },
+          {
+            "rshares": 1419380401,
+            "voter": "graphene-faucet"
+          }
+        ],
+        "author": "graphene-faucet",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.45,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "<center>\n\n</center>\n\n<div>\n<center>\nhttps://images.hive.blog/640x360/https://r2.thesportsdb.com/images/media/event/thumb/k2kobg1755934964.jpg\n</center>\n</div>\n\n<center><h2>GRAPHENE-FAUCET - COMMUNITY-FUNDED GIVEAWAY</h2></center>\n\n<h3>@Graphene-Faucet - Soccer: Inter Milan vs Cagliari\n<p></p>\nCategory: Soccer League: Italian Serie A\n<p></p>\nMatch Time: 2026-04-17 18:45:00 UTC*</h3>\n\n_(*) Times may be subject to change without prior notice._\n\n<h2>How to participate in this giveaway</h2>\n\n1. If you don't already have a Hive account get a free account at https://peakd.com/register using On Board Hive\n\n2. Simply vote for your favourite team or vote for a draw (if applicable) in the comments below. Vote only comments generated by the @graphene-faucet account.\n\n3. For maximum share of the giveaway pool, vote with 100% voting power. \n\n4. The payouts are stake-weighted so the more Hive Power you have when you vote, the greater the share of the giveaway payout you will receive. Hive can be purchased at any of the exchanges listed at https://peakd.com/@graphene-faucet/wallet/exchanges. \n\n5. In order to Power Up your new HIVE, simply withdraw HIVE from the exchange to your native Blockchain account and visit https://peakd.com/wallet to Power Up.\n\n<h2>General Information</h2>\n\n+ The giveaway pool will be comprised of **(Post Author Rewards + Winning Team comment Author Rewards + Losing Team(s) Comment(s) Author reward(s) - 15% Graphene-Faucet commission.\n\n+ It is not mandatory to vote the main post, however it adds to visibility on Hive's trending page and the rewards will be added to the giveaway pool.\n\n+ Votes made after the time the game starts will not be counted, the additional author rewards from late votes will be added to the giveaway pool.\n\n+ The giveaway will be distributed when these conditions are met: 8 days have passed since the post was published and the match has ended. To who predicted correctly will be sent a transfer with their share of the giveaway pool and a comment will be added to the original post with the distribution list of the giveaway pool.\n\n+ You will always earn curation rewards from voting on the post or comment, everyone earn something!\n\n+ Voting multiple teams with the same account will result in disqualification, our bot checks for that so don't be clever and try to hedge your predictions.\n\n+ Please invite your friends to play, feel free to be social and discuss the match in the comments section below. \n\n+ E&OE\n\n<h2>0.000 HIVE and 835373.471 SPORTS token and 8.521 BEE token* MultiStrike!</h2>\n5% of the giveaway pool of each game will be sent to the @multistrike account to accumulate over time until someone emerges who consecutively predict 5 (five) games in a row. The giveaway of the MultiStrike bounty will be automatically paid out the entirety of the funds held in the @multistrike account. Should there be multiple simultaneous strikers, the giveaway will be shared between them equally. Once the giveaway has been paid, it will start accumulating again with each game.\n_(*) This MultiStrike value is a snapshot taken at the time of the creation of this post; for the real-time value check https://peakd.com/@multistrike/wallet_   \n\n\n\n<h2><center>⚡️Preview of the Match \"Inter Milan\" vs \"Cagliari\"⚡️</center></h2>\n**Derby della Madonnina: A Clash for Supremacy in Cagliari**\n\nThe Sardinian capital of Cagliari is set to host a spectacle of Italian football as Inter Milan lock horns with AC Milan in the highly anticipated Derby della Madonnina. While the iconic San Siro usually serves as the battleground for this historic rivalry, the picturesque Stadio Sant'Elia will provide a unique and captivating backdrop for a match that promises passion, tactical intrigue, and a relentless pursuit of victory.\n\nThis particular Derby finds both Milanese giants in compelling form, each with their own narrative shaping their season. Inter, under the astute guidance of their manager, have demonstrated a potent blend of attacking flair and defensive solidity. Their recent performances have been characterized by fluid passing, dangerous wide play, and the clinical finishing of their star striker. The Nerazzurri will be looking to their midfield orchestrators to control the tempo and unleash their prolific forwards against their city rivals.\n\nAC Milan, on the other hand, arrive in Cagliari brimming with confidence, having showcased resilience and tactical adaptability in their recent outings. Their youthful exuberance, coupled with the experience of their veteran leaders, has forged a formidable unit. The Rossoneri’s rapid transitions, driven by their dynamic wingers and powerful central midfielders, will pose a significant threat to Inter’s backline. Their ability to absorb pressure and then strike with devastating counter-attacks could prove decisive.\n\nThe tactical battleground for this Derby will undoubtedly be the midfield. Whichever team gains supremacy in the central third will likely dictate the flow of the game. Inter’s emphasis on possession and creative passing will clash with Milan’s directness and combative pressing. The individual duels in this area will be enthralling to watch, as top-tier talent competes for every inch of grass.\n\nDefensively, both teams face intriguing challenges. Inter will need to nullify Milan’s pace on the flanks and prevent their creative midfielders from finding pockets of space. Milan, in turn, must contain Inter’s potent attack, particularly their striker who has been in scintillating form, and ensure their defensive shape remains disciplined against sustained pressure. Set pieces could also play a crucial role, given the aerial prowess present in both squads.\n\nThe atmosphere in Cagliari is expected to be electric, even if the traditional San Siro roar will be absent. The passionate Sardinian crowd, combined with the traveling support of both clubs, will create a vibrant and intense environment. The significance of this match extends beyond mere bragging rights; it holds crucial implications for their respective league ambitions. A victory for either side would provide a massive psychological boost and solidify their position in the standings.\n\nUltimately, the Derby della Madonnina in Cagliari is more than just a football match; it's a spectacle of skill, strategy, and unyielding determination. Expect a fiercely contested encounter, filled with drama, moments of individual brilliance, and a relentless pursuit of the three points that will mark one team as the temporary king of Milan, albeit on Sardinian soil. Football enthusiasts worldwide will be glued to their screens as these two titans clash in what promises to be an unforgettable chapter in their storied rivalry.\n <center><h2>This preview of the match has been generated with AI and may contain errors.</center>\n \n Vote for all matches from one place: [Graphene Faucet Aggregator](https://ilnegro.github.io/graphene-faucet.html) \n Download Steem Keychain App to vote from Smartphone: [Steem Keychain App](https://drive.google.com/file/d/1rJTZYEtCa8NC3zhXtHEg-rv4XYwbtZSC/view?usp=sharing)",
+        "category": "hive-101690",
+        "children": 3,
+        "community": "hive-101690",
+        "community_title": "Sports Talk Social",
+        "created": "2026-04-10T03:17:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "@Graphene-Faucet by ilnegro",
+          "community": "hive-101690",
+          "tags": [
+            "faucet",
+            "sportstalk",
+            "tribes",
+            "graphene",
+            "hivecontests",
+            "soccer",
+            "hive",
+            "sports",
+            "hivesport",
+            "101690"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 610366110261,
+        "payout": 0.051,
+        "payout_at": "2026-04-17T03:17:09",
+        "pending_payout_value": "0.051 HBD",
+        "percent_hbd": 10000,
+        "permlink": "soccerintermilanvscagliari20260417",
+        "post_id": 149751528,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 38
+        },
+        "title": "@Graphene-Faucet - Soccer: Inter Milan vs Cagliari",
+        "updated": "2026-04-10T03:17:09",
+        "url": "/hive-101690/@graphene-faucet/soccerintermilanvscagliari20260417"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 9068735748,
+            "voter": "harvestmoon299"
+          },
+          {
+            "rshares": 366642291,
+            "voter": "murizalpangeran"
+          },
+          {
+            "rshares": 9678513751,
+            "voter": "joshuaslane"
+          },
+          {
+            "rshares": 1130172716,
+            "voter": "magic.cent"
+          },
+          {
+            "rshares": 2627789899,
+            "voter": "lolztoken"
+          },
+          {
+            "rshares": 465522219,
+            "voter": "lolz.pool"
+          },
+          {
+            "rshares": 52703154,
+            "voter": "gestion.alive"
+          },
+          {
+            "rshares": 15497955325,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 0,
+            "voter": "vaultingagent"
+          },
+          {
+            "rshares": 3143366274,
+            "voter": "benef.alive"
+          },
+          {
+            "rshares": 558552327962,
+            "voter": "we-are-ai"
+          }
+        ],
+        "author": "we-are-ai",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -2.72,
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23wqbcVnfkVmc8GtGHSkDvjGQCSgyDwZPE2nMBHSoWydmBufsTnkKpXkvfwMGtcr3TnDS.png)\n\n\nThanks to @sprstoner for his HIVE POWER delegation, the leases were barely submitted and already validated, I didn't expect someone to take them so quickly without advertising, thanks again.\n\n\nhttps://hive-engine.com/lease\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23tRsveX5ywxdAnYXfmRFgbKRkjXkGtEVuCCYZq1wySjb9887UacwroadCxyReN1WxZGg.png)\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23tRvWvniQDr41it5Qk829onRVFys2gyGi8EdfcfiRkwJYbHRSZX7vxJKMYuCWCEBG9b6.png)![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23tRvaJNiz4fWhsYdCQSyawfGDrzALEX5TedW3PS8Dfk2DCanKdPUKKzJk8ignZYMsieY.png)\n\n@sprstoner, could you briefly explain what your investment will be used for?\n\nI increase the HIVE POWER of a small, intelligent curation bot every day as much as I can. This bot votes 5% of the time on all posts under certain conditions:\n\nThe bot's voting mana must be above 80%.\nThe voted post must be over 300 words.\nThe voted account must have a positive reputation.\nThe voted account must not be blacklisted. Within 24 hours of voting, the account receives 0.01 GLYPH on hive-engine. This token is purely for fun.\nOther small bots buy more from time to time; the token is also used for testing automation.\n\nThis year's goal is for this account to accumulate as much HIVE POWER as possible without delegation.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23t732dijZg9cr6c7hKHaz16NjgjL1zZ7y1c4FuiLKVs81H83yDmzpvQ4bVjoo7UEgt8n.png)\n\n\n---- \n\nAlongside this, I'm always looking for ways to improve the rebots with the help of available AI.\n\nWhy am I doing all this?\n\nJust for fun, and to see how far I can intelligently automate my token and curation. The goal isn't to get huge votes, but to reward as many posts as possible. Sometimes, by rereading the list of what the rebot voted on, I make great discoveries I wouldn't have otherwise made. I don't necessarily have the time to read hundreds of posts a day.\n\n---\n\n\nVoilà pour les explications , encore une fois je remercie @sprstoner , je vais après ce post allé lire votre post de NODE\nhttps://peakd.com/splinterlands/@sprstoner/validator-is-live-with-api-active-sprstoner\n\nhttps://monstermarket.io/validators?validator=stoner.validator\n\n--------\n\nHave a good day to the few readers who follow me, even if my reputation is negative, I will try to improve it as soon as I have a little more time.",
+        "category": "tribes",
+        "children": 3,
+        "created": "2026-04-11T09:51:00",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23wqbcVnfkVmc8GtGHSkDvjGQCSgyDwZPE2nMBHSoWydmBufsTnkKpXkvfwMGtcr3TnDS.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23tRsveX5ywxdAnYXfmRFgbKRkjXkGtEVuCCYZq1wySjb9887UacwroadCxyReN1WxZGg.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23tRvWvniQDr41it5Qk829onRVFys2gyGi8EdfcfiRkwJYbHRSZX7vxJKMYuCWCEBG9b6.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23tRvaJNiz4fWhsYdCQSyawfGDrzALEX5TedW3PS8Dfk2DCanKdPUKKzJk8ignZYMsieY.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23t732dijZg9cr6c7hKHaz16NjgjL1zZ7y1c4FuiLKVs81H83yDmzpvQ4bVjoo7UEgt8n.png"
+          ],
+          "tags": [
+            "tribes",
+            "alive",
+            "heartbeat",
+            "pimp",
+            "neoxian",
+            "archon",
+            "bbho",
+            "fun",
+            "cent",
+            "pepe"
+          ],
+          "users": [
+            "sprstoner"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 600583729339,
+        "payout": 0.049,
+        "payout_at": "2026-04-18T09:51:00",
+        "pending_payout_value": "0.049 HBD",
+        "percent_hbd": 10000,
+        "permlink": "thanks-to-sprstoner",
+        "post_id": 149766331,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 11
+        },
+        "title": "Thanks to @sprstoner",
+        "updated": "2026-04-11T09:51:00",
+        "url": "/tribes/@we-are-ai/thanks-to-sprstoner"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 589920726295,
+            "voter": "oblivioncubed"
+          }
+        ],
+        "author": "marcosalomao95",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.18,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "Excelente postagem! A Hive é a melhor rede social do mundo! Infelizmente não pude votar 100% porque meu poder de voto está baixo.",
+        "category": "hive-189497",
+        "children": 1,
+        "community": "hive-189497",
+        "community_title": "Tabletop / DND",
+        "created": "2026-04-11T00:13:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 1,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "social_hive/1.0",
+          "format": "markdown",
+          "source": "curadoria"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 589920726295,
+        "parent_author": "oblivioncubed",
+        "parent_permlink": "trothguard-session-14-recap",
+        "payout": 0.049,
+        "payout_at": "2026-04-18T00:13:09",
+        "pending_payout_value": "0.049 HBD",
+        "percent_hbd": 10000,
+        "permlink": "re-oblivioncubed-trothguard-session-14-recap-20260411t001309-f0217aae",
+        "post_id": 149762991,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 1
+        },
+        "title": "RE: Trothguard Session 14 Recap",
+        "updated": "2026-04-11T00:13:09",
+        "url": "/hive-189497/@oblivioncubed/trothguard-session-14-recap#@marcosalomao95/re-oblivioncubed-trothguard-session-14-recap-20260411t001309-f0217aae"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 574874178326,
+            "voter": "abbak7"
+          }
+        ],
+        "author": "marcosalomao95",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.18,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "Excelente postagem! A Hive é a melhor rede social do mundo! Infelizmente não pude votar 100% porque meu poder de voto está baixo.",
+        "category": "hive-193552",
+        "children": 0,
+        "community": "hive-193552",
+        "community_title": "Actifit",
+        "created": "2026-04-11T00:07:33",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 1,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "social_hive/1.0",
+          "format": "markdown",
+          "source": "curadoria"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 574874178326,
+        "parent_author": "abbak7",
+        "parent_permlink": "actifit-abbak7-20260410t225435372z",
+        "payout": 0.047,
+        "payout_at": "2026-04-18T00:07:33",
+        "pending_payout_value": "0.047 HBD",
+        "percent_hbd": 10000,
+        "permlink": "re-abbak7-actifit-abbak7-20260410t225435372z-20260411t000733-fe5ffab2",
+        "post_id": 149762865,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 1
+        },
+        "title": "RE: My Actifit Report Card: April 11 2026",
+        "updated": "2026-04-11T00:07:33",
+        "url": "/hive-193552/@abbak7/actifit-abbak7-20260410t225435372z#@marcosalomao95/re-abbak7-actifit-abbak7-20260410t225435372z-20260411t000733-fe5ffab2"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 681989638,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 1330199304,
+            "voter": "lolz.bee"
+          },
+          {
+            "rshares": 916820033,
+            "voter": "megahive"
+          },
+          {
+            "rshares": 1847088869,
+            "voter": "pof.bee"
+          },
+          {
+            "rshares": 2970799471,
+            "voter": "lovlygirl"
+          },
+          {
+            "rshares": 562286492177,
+            "voter": "we-are-ai"
+          }
+        ],
+        "author": "we-are-ai",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -2.72,
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/Eo1vNTqA7kNRSU4wQEU6dkudnVRoX93Ut11ibVaG3WYd3MoDYzExH7avsfYZTrziNYZ.png)![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23t75BV1ZubgiXcipUWa6ndniyFqb59N861hYFQJm3LwvQspqVCZVtFRNa6H7LLSQXrna.png)\n\n\nToday I was able to increase the HP by 34,211.\n\nAlthough I let it increase naturally, for even more curation, all while remaining automated,\n\nThe little rebot got almost 200 votes at 5% today on posts over 300 words, across all topics.\n\nUnfortunately, the curation results aren't consistent from day to day, but no big deal, I'm leaving the curation rebot running. You can follow its progress if you wish.\n\nIt votes at random times depending on its voting mana.\n\nThe GLYPH token remains relatively stable for the moment, even if its price is no longer increasing, but bots manage to buy some every day, even if a little, but it's something.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23t76bthaiPbDjZZ7jwGYagkbnrd5m5hm4Qcdjmtx8p5UkXFZMpatstZfrUHisqM559y1.png)![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23t732dPaoNUNnu4KzRc7SDvtkiFTQ3VLvoPCi1vmsC2cyFaLuSQ7UKNvrWsKVP2MYD2J.png)\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23swiNzBmjiJoJmcj5xgsGowLB86asRDkU3vAGpboxbAoJ1P1fcj4FkLyUrBYQc9vVLGx.png)\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23t7575TVbFKprRdrRw8psefRFQUTx5KDzX9A3Kibe6sJT2n6QG8sKZxmt3HPc73UNiwi.png)\n",
+        "category": "tribes",
+        "children": 2,
+        "created": "2026-04-13T17:36:24",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/Eo1vNTqA7kNRSU4wQEU6dkudnVRoX93Ut11ibVaG3WYd3MoDYzExH7avsfYZTrziNYZ.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23t75BV1ZubgiXcipUWa6ndniyFqb59N861hYFQJm3LwvQspqVCZVtFRNa6H7LLSQXrna.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23t76bthaiPbDjZZ7jwGYagkbnrd5m5hm4Qcdjmtx8p5UkXFZMpatstZfrUHisqM559y1.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23t732dPaoNUNnu4KzRc7SDvtkiFTQ3VLvoPCi1vmsC2cyFaLuSQ7UKNvrWsKVP2MYD2J.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23swiNzBmjiJoJmcj5xgsGowLB86asRDkU3vAGpboxbAoJ1P1fcj4FkLyUrBYQc9vVLGx.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23t7575TVbFKprRdrRw8psefRFQUTx5KDzX9A3Kibe6sJT2n6QG8sKZxmt3HPc73UNiwi.png"
+          ],
+          "tags": [
+            "tribes",
+            "alive",
+            "heartbeat",
+            "pimp",
+            "neoxian",
+            "archon",
+            "bbho",
+            "cent"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 570033389492,
+        "payout": 0.046,
+        "payout_at": "2026-04-20T17:36:24",
+        "pending_payout_value": "0.046 HBD",
+        "percent_hbd": 10000,
+        "permlink": "update-tdg0wl",
+        "post_id": 149796786,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 6
+        },
+        "title": "Update",
+        "updated": "2026-04-13T17:36:24",
+        "url": "/tribes/@we-are-ai/update-tdg0wl"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 139964879453,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": 292473780356,
+            "voter": "siphon"
+          },
+          {
+            "rshares": 14310899454,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 47058983302,
+            "voter": "bluesniper"
+          },
+          {
+            "rshares": 2736777,
+            "voter": "anital"
+          },
+          {
+            "rshares": 3061283214,
+            "voter": "csport"
+          },
+          {
+            "rshares": 8924308845,
+            "voter": "gaskets"
+          },
+          {
+            "rshares": 2954496321,
+            "voter": "tenpik"
+          },
+          {
+            "rshares": 3318142847,
+            "voter": "zeltra"
+          },
+          {
+            "rshares": 6662726530,
+            "voter": "skyseven"
+          },
+          {
+            "rshares": 316249392,
+            "voter": "horlacoded"
+          },
+          {
+            "rshares": 1425056465,
+            "voter": "graphene-faucet"
+          }
+        ],
+        "author": "graphene-faucet",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.45,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "<center>\n<h2>West Ham United WILL WIN</h2>\n![](https://images.hive.blog/150x150/https://r2.thesportsdb.com/images/media/team/badge/yutyxs1467459956.png)\n</center>\n",
+        "category": "hive-101690",
+        "children": 0,
+        "community": "hive-101690",
+        "community_title": "Sports Talk Social",
+        "created": "2026-04-14T03:16:54",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 1,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "@Graphene-Faucet by ilnegro",
+          "community": "hive-101690",
+          "tags": [
+            "101690",
+            "graphene",
+            "soccer",
+            "sports",
+            "tribes",
+            "hive",
+            "hivesport",
+            "hivecontests",
+            "sportstalk",
+            "faucet"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 520473542956,
+        "parent_author": "graphene-faucet",
+        "parent_permlink": "soccercrystalpalacevswesthamunited20260420",
+        "payout": 0.045,
+        "payout_at": "2026-04-21T03:16:54",
+        "pending_payout_value": "0.045 HBD",
+        "percent_hbd": 10000,
+        "permlink": "soccercrystalpalacevswesthamunited20260420away",
+        "post_id": 149801859,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 12
+        },
+        "title": "RE: @Graphene-Faucet - Soccer: Crystal Palace vs West Ham United",
+        "updated": "2026-04-14T03:16:54",
+        "url": "/hive-101690/@graphene-faucet/soccercrystalpalacevswesthamunited20260420#@graphene-faucet/soccercrystalpalacevswesthamunited20260420away"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 139964879453,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": 14310899454,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 12260535198,
+            "voter": "racibo"
+          },
+          {
+            "rshares": 9176023851,
+            "voter": "informator"
+          },
+          {
+            "rshares": 3104563197,
+            "voter": "khrom"
+          },
+          {
+            "rshares": 162045038153,
+            "voter": "ilnegro"
+          },
+          {
+            "rshares": 0,
+            "voter": "poetforall"
+          },
+          {
+            "rshares": 47058983302,
+            "voter": "bluesniper"
+          },
+          {
+            "rshares": 94374891196,
+            "voter": "ctime"
+          },
+          {
+            "rshares": 11603473410,
+            "voter": "sports.alfa"
+          },
+          {
+            "rshares": 652582582,
+            "voter": "bilpcoin.pay"
+          },
+          {
+            "rshares": 3548681915,
+            "voter": "politicalhive"
+          },
+          {
+            "rshares": 3061283214,
+            "voter": "csport"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.list"
+          },
+          {
+            "rshares": 948242259,
+            "voter": "lolz.list"
+          },
+          {
+            "rshares": 1330166690,
+            "voter": "lolz.bee"
+          },
+          {
+            "rshares": 916792311,
+            "voter": "megahive"
+          },
+          {
+            "rshares": 8924308845,
+            "voter": "gaskets"
+          },
+          {
+            "rshares": 2954496321,
+            "voter": "tenpik"
+          },
+          {
+            "rshares": 3318142847,
+            "voter": "zeltra"
+          },
+          {
+            "rshares": 6662726530,
+            "voter": "skyseven"
+          },
+          {
+            "rshares": 681870692,
+            "voter": "stdd.bee"
+          },
+          {
+            "rshares": 1847088869,
+            "voter": "pof.bee"
+          },
+          {
+            "rshares": 726351224,
+            "voter": "cryptovagabundo"
+          },
+          {
+            "rshares": 168272877,
+            "voter": "paranormalhive"
+          },
+          {
+            "rshares": 1419380401,
+            "voter": "graphene-faucet"
+          }
+        ],
+        "author": "graphene-faucet",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.45,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "<center>\n\n</center>\n\n<div>\n<center>\nhttps://images.hive.blog/640x360/https://www.thesportsdb.com/images/media/event/thumb/b5qwsq1775293334.jpg\n</center>\n</div>\n\n<center><h2>GRAPHENE-FAUCET - COMMUNITY-FUNDED GIVEAWAY</h2></center>\n\n<h3>@Graphene-Faucet - Soccer: Union Saint-Gilloise vs Club Brugge\n<p></p>\nCategory: Soccer League: Belgian Pro League\n<p></p>\nMatch Time: 2026-04-19 16:30:00 UTC*</h3>\n\n_(*) Times may be subject to change without prior notice._\n\n<h2>How to participate in this giveaway</h2>\n\n1. If you don't already have a Hive account get a free account at https://peakd.com/register using On Board Hive\n\n2. Simply vote for your favourite team or vote for a draw (if applicable) in the comments below. Vote only comments generated by the @graphene-faucet account.\n\n3. For maximum share of the giveaway pool, vote with 100% voting power. \n\n4. The payouts are stake-weighted so the more Hive Power you have when you vote, the greater the share of the giveaway payout you will receive. Hive can be purchased at any of the exchanges listed at https://peakd.com/@graphene-faucet/wallet/exchanges. \n\n5. In order to Power Up your new HIVE, simply withdraw HIVE from the exchange to your native Blockchain account and visit https://peakd.com/wallet to Power Up.\n\n<h2>General Information</h2>\n\n+ The giveaway pool will be comprised of **(Post Author Rewards + Winning Team comment Author Rewards + Losing Team(s) Comment(s) Author reward(s) - 15% Graphene-Faucet commission.\n\n+ It is not mandatory to vote the main post, however it adds to visibility on Hive's trending page and the rewards will be added to the giveaway pool.\n\n+ Votes made after the time the game starts will not be counted, the additional author rewards from late votes will be added to the giveaway pool.\n\n+ The giveaway will be distributed when these conditions are met: 8 days have passed since the post was published and the match has ended. To who predicted correctly will be sent a transfer with their share of the giveaway pool and a comment will be added to the original post with the distribution list of the giveaway pool.\n\n+ You will always earn curation rewards from voting on the post or comment, everyone earn something!\n\n+ Voting multiple teams with the same account will result in disqualification, our bot checks for that so don't be clever and try to hedge your predictions.\n\n+ Please invite your friends to play, feel free to be social and discuss the match in the comments section below. \n\n+ E&OE\n\n<h2>0.000 HIVE and 861918.844 SPORTS token and 8.841 BEE token* MultiStrike!</h2>\n5% of the giveaway pool of each game will be sent to the @multistrike account to accumulate over time until someone emerges who consecutively predict 5 (five) games in a row. The giveaway of the MultiStrike bounty will be automatically paid out the entirety of the funds held in the @multistrike account. Should there be multiple simultaneous strikers, the giveaway will be shared between them equally. Once the giveaway has been paid, it will start accumulating again with each game.\n_(*) This MultiStrike value is a snapshot taken at the time of the creation of this post; for the real-time value check https://peakd.com/@multistrike/wallet_   \n\n\n\n<h2><center>⚡️Preview of the Match \"Union Saint-Gilloise\" vs \"Club Brugge\"⚡️</center></h2>\n## Union Berlin vs. Royale Union Saint-Gilloise: A Europa League Clash with History and High Stakes\n\nThis Thursday, the Stadion An der Alten Försterei will bear witness to a fascinating Europa League encounter as **Union Berlin** hosts **Royale Union Saint-Gilloise**. While seemingly a standard European group stage fixture, this match carries a distinct undercurrent, not just of tactical intrigue but of a shared past and a burgeoning rivalry between two of Europe's most compelling underdog stories.\n\nFor Union Berlin, the narrative continues its improbable ascent. From perennial second-division dwellers to Bundesliga challengers and now a force to be reckoned with in Europe, Urs Fischer's side embodies resilience and collective spirit. Their success is built on a rock-solid defensive structure, relentless pressing, and clinical counter-attacking. This season, they've demonstrated their capacity to punch above their weight, both domestically and on the continent. The home crowd, renowned for its fervent support, will undoubtedly be their twelfth man, turning the Alte Försterei into a cauldron of noise and intimidation for the Belgian visitors.\n\nRoyale Union Saint-Gilloise, however, are no strangers to defying expectations themselves. Their meteoric rise from the Belgian second division to the upper echelons of the Pro League, and their impressive European debut last season, has captured the imagination of football fans across the continent. Karel Geraerts' side plays an attractive, high-energy brand of football, characterized by quick transitions, intelligent movement, and a fearless approach. They've shown a remarkable ability to adapt and perform on the big stage, proving their success is no fluke.\n\nThis fixture, of course, is a repeat of last season's Europa League group stage, where both teams emerged from the group, with Union Saint-Gilloise ultimately topping it. Those encounters were tightly contested, providing valuable lessons for both sides. Union Berlin will be eager for a measure of revenge, while USG will aim to reaffirm their superiority.\n\n**Key Battlegrounds:**\n\n*   **Union's Defensive Wall vs. USG's Fluid Attack:** Union Berlin's backline, marshaled by the likes of Robin Knoche and the relentless midfield work rate of Rani Khedira, is notoriously difficult to break down. USG's attacking quartet, often featuring the creativity of Cameron Puertas and the goal-scoring instincts of Victor Boniface (if fit and selected), will test this resolve. The ability of USG to find pockets of space and exploit any rare defensive lapses will be crucial.\n*   **Midfield Dogfight:** Both teams prioritize intensity and work rate in the middle of the park. The battle for possession and the ability to dictate tempo will be pivotal. Union's relentless press will aim to stifle USG's build-up, while the Belgian side's midfielders will need to exhibit composure and incisive passing under pressure.\n*   **Set Pieces:** Given Union Berlin's physical prowess and discipline, set pieces will be a significant weapon. Their ability to score from corners and free-kicks is well-documented. USG will need to be impeccably organized defensively in these situations, while also looking to create their own opportunities from dead balls.\n*   **Home Advantage:** The atmosphere at the Alte Försterei is legendary. Union Berlin thrives on this energy, often overwhelming opponents with sheer intensity. Can USG withstand this pressure and stick to their game plan?\n\n**Tactical Outlook:**\n\nExpect Urs Fischer to deploy his familiar 3-5-2 or 3-4-3 formation, prioritizing defensive solidity and rapid transitions. They will likely cede possession at times, inviting USG forward before launching devastating counter-attacks. Geraerts, on the other hand, will probably stick to his preferred 3-4-1-2 or 3-5-2, aiming for controlled possession and intricate passing movements to unlock Union's defense. The tactical battle between these two astute managers will be fascinating to observe.\n\n**Prediction:**\n\nThis promises to be a tight, hard-fought encounter. Both teams are well-drilled, disciplined, and possess quality. While Union Berlin's home advantage and desire for revenge from last season's group stage could give them a slight edge, USG's proven European pedigree and fearless approach mean they are perfectly capable of securing a result. A draw seems a distinct possibility, but if there's a winner, it will likely be decided by a moment of individual brilliance or a crucial set-piece.\n\nRegardless of the outcome, fans can expect a captivating clash between two of Europe's most exciting and inspiring clubs, showcasing the very best of underdog spirit and tactical ingenuity in the Europa League.\n <center><h2>This preview of the match has been generated with AI and may contain errors.</center>\n \n Vote for all matches from one place: [Graphene Faucet Aggregator](https://ilnegro.github.io/graphene-faucet.html) \n Download Steem Keychain App to vote from Smartphone: [Steem Keychain App](https://drive.google.com/file/d/1rJTZYEtCa8NC3zhXtHEg-rv4XYwbtZSC/view?usp=sharing)",
+        "category": "hive-101690",
+        "children": 3,
+        "community": "hive-101690",
+        "community_title": "Sports Talk Social",
+        "created": "2026-04-13T03:16:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "@Graphene-Faucet by ilnegro",
+          "community": "hive-101690",
+          "tags": [
+            "graphene",
+            "101690",
+            "sports",
+            "hivecontests",
+            "sportstalk",
+            "soccer",
+            "faucet",
+            "tribes",
+            "hivesport",
+            "hive"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 531059674791,
+        "payout": 0.044,
+        "payout_at": "2026-04-20T03:16:03",
+        "pending_payout_value": "0.044 HBD",
+        "percent_hbd": 10000,
+        "permlink": "soccerunionsaintgilloisevsclubbrugge20260419",
+        "post_id": 149789453,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 26
+        },
+        "title": "@Graphene-Faucet - Soccer: Union Saint-Gilloise vs Club Brugge",
+        "updated": "2026-04-13T03:16:03",
+        "url": "/hive-101690/@graphene-faucet/soccerunionsaintgilloisevsclubbrugge20260419"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 928290423,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 139961617598,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": 14310540650,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 9176023851,
+            "voter": "informator"
+          },
+          {
+            "rshares": 3104563197,
+            "voter": "khrom"
+          },
+          {
+            "rshares": 162045038153,
+            "voter": "ilnegro"
+          },
+          {
+            "rshares": 0,
+            "voter": "poetforall"
+          },
+          {
+            "rshares": 47057809034,
+            "voter": "bluesniper"
+          },
+          {
+            "rshares": 94374891196,
+            "voter": "ctime"
+          },
+          {
+            "rshares": 620670168,
+            "voter": "splines"
+          },
+          {
+            "rshares": 0,
+            "voter": "mk-sports-token"
+          },
+          {
+            "rshares": 11603473410,
+            "voter": "sports.alfa"
+          },
+          {
+            "rshares": 3548681915,
+            "voter": "politicalhive"
+          },
+          {
+            "rshares": 6812557310,
+            "voter": "balvinder294"
+          },
+          {
+            "rshares": 1607427832,
+            "voter": "zarwelius"
+          },
+          {
+            "rshares": 4524521357,
+            "voter": "bulgaria-sports"
+          },
+          {
+            "rshares": 3061283214,
+            "voter": "csport"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.list"
+          },
+          {
+            "rshares": 859692839,
+            "voter": "dondononardem"
+          },
+          {
+            "rshares": 948242259,
+            "voter": "lolz.list"
+          },
+          {
+            "rshares": 8924308845,
+            "voter": "gaskets"
+          },
+          {
+            "rshares": 2954496321,
+            "voter": "tenpik"
+          },
+          {
+            "rshares": 3318142847,
+            "voter": "zeltra"
+          },
+          {
+            "rshares": 6662726530,
+            "voter": "skyseven"
+          },
+          {
+            "rshares": 2070743059,
+            "voter": "tekraze"
+          },
+          {
+            "rshares": 726351224,
+            "voter": "cryptovagabundo"
+          },
+          {
+            "rshares": 168272877,
+            "voter": "paranormalhive"
+          },
+          {
+            "rshares": 1419380401,
+            "voter": "graphene-faucet"
+          }
+        ],
+        "author": "graphene-faucet",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.45,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "<center>\n\n</center>\n\n<div>\n<center>\nhttps://images.hive.blog/640x360/https://r2.thesportsdb.com/images/media/event/thumb/w7u77k1758957091.jpg\n</center>\n</div>\n\n<center><h2>GRAPHENE-FAUCET - COMMUNITY-FUNDED GIVEAWAY</h2></center>\n\n<h3>@Graphene-Faucet - Soccer: OFI vs Levadiakos\n<p></p>\nCategory: Soccer League: Greek Superleague Greece\n<p></p>\nMatch Time: 2026-04-18 15:00:00 UTC*</h3>\n\n_(*) Times may be subject to change without prior notice._\n\n<h2>How to participate in this giveaway</h2>\n\n1. If you don't already have a Hive account get a free account at https://peakd.com/register using On Board Hive\n\n2. Simply vote for your favourite team or vote for a draw (if applicable) in the comments below. Vote only comments generated by the @graphene-faucet account.\n\n3. For maximum share of the giveaway pool, vote with 100% voting power. \n\n4. The payouts are stake-weighted so the more Hive Power you have when you vote, the greater the share of the giveaway payout you will receive. Hive can be purchased at any of the exchanges listed at https://peakd.com/@graphene-faucet/wallet/exchanges. \n\n5. In order to Power Up your new HIVE, simply withdraw HIVE from the exchange to your native Blockchain account and visit https://peakd.com/wallet to Power Up.\n\n<h2>General Information</h2>\n\n+ The giveaway pool will be comprised of **(Post Author Rewards + Winning Team comment Author Rewards + Losing Team(s) Comment(s) Author reward(s) - 15% Graphene-Faucet commission.\n\n+ It is not mandatory to vote the main post, however it adds to visibility on Hive's trending page and the rewards will be added to the giveaway pool.\n\n+ Votes made after the time the game starts will not be counted, the additional author rewards from late votes will be added to the giveaway pool.\n\n+ The giveaway will be distributed when these conditions are met: 8 days have passed since the post was published and the match has ended. To who predicted correctly will be sent a transfer with their share of the giveaway pool and a comment will be added to the original post with the distribution list of the giveaway pool.\n\n+ You will always earn curation rewards from voting on the post or comment, everyone earn something!\n\n+ Voting multiple teams with the same account will result in disqualification, our bot checks for that so don't be clever and try to hedge your predictions.\n\n+ Please invite your friends to play, feel free to be social and discuss the match in the comments section below. \n\n+ E&OE\n\n<h2>0.000 HIVE and 854002.021 SPORTS token and 8.736 BEE token* MultiStrike!</h2>\n5% of the giveaway pool of each game will be sent to the @multistrike account to accumulate over time until someone emerges who consecutively predict 5 (five) games in a row. The giveaway of the MultiStrike bounty will be automatically paid out the entirety of the funds held in the @multistrike account. Should there be multiple simultaneous strikers, the giveaway will be shared between them equally. Once the giveaway has been paid, it will start accumulating again with each game.\n_(*) This MultiStrike value is a snapshot taken at the time of the creation of this post; for the real-time value check https://peakd.com/@multistrike/wallet_   \n\n\n\n<h2><center>⚡️Preview of the Match \"OFI\" vs \"Levadiakos\"⚡️</center></h2>\n## OFI vs. Levadiakos: A Battle for Survival and Supremacy (April 18, 2026)\n\nAs the Greek football season approaches its thrilling climax, the encounter between OFI Crete and Levadiakos on April 18, 2026, promises to be a pivotal fixture with significant implications for both clubs. Scheduled for an evening kick-off at the Theodoros Vardinogiannis Stadium, this match-up pits two teams with contrasting recent fortunes and urgent ambitions against each other in what is sure to be a captivating spectacle.\n\n### OFI: The Quest for European Dreams\n\nOFI, under the shrewd guidance of their manager, enters this contest with a clear objective: to solidify their position in the upper echelons of the Super League and potentially secure a coveted European qualification spot. Currently occupying a respectable mid-table position, their form in recent weeks has been a testament to their resilience and attacking prowess. A string of crucial victories, particularly at home, has propelled them into contention, and the Cretan faithful will be expecting nothing less than another dominant display.\n\nThe home side's strength lies in their well-drilled midfield, capable of dictating the tempo of the game and supplying their dynamic forwards with quality service. Key players to watch include their talismanic captain, a veteran midfielder whose vision and experience are invaluable, and their prolific striker, who has consistently found the back of the net throughout the season. Their defensive unit, while generally solid, has shown occasional vulnerabilities against rapid counter-attacks, an area Levadiakos might look to exploit. The fervent atmosphere generated by the OFI supporters at \"Yedi Kule\" will undoubtedly play a crucial role, providing an extra boost for the home team.\n\n### Levadiakos: Fighting for Super League Status\n\nFor Levadiakos, the stakes are considerably higher. Mired in the relegation battle, every point is a precious commodity in their desperate fight to retain their Super League status. Their season has been a struggle, marked by inconsistency and a lack of cutting edge in front of goal. However, recent performances have hinted at a renewed determination, with the team demonstrating a willingness to battle for every ball and frustrate their opponents.\n\nLevadiakos's manager will likely opt for a pragmatic approach, prioritizing defensive solidity and hoping to capitalize on set-pieces or quick transitions. Their primary threat often comes from their pacy wingers, capable of creating chances with their dribbling and crosses. The central defensive partnership will need to be at their absolute best to contain OFI's attacking threats. Their ability to hold their nerve under pressure, especially away from home against a vocal crowd, will be a defining factor in this encounter. A positive result in Crete could provide a much-needed psychological boost and inject momentum into their survival bid.\n\n### Tactical Battleground: Key Match-ups and Predictions\n\nThe tactical battle promises to be fascinating. OFI will aim to dominate possession, utilizing their creative midfielders to unlock Levadiakos's compact defense. The duel between OFI's central midfielders and Levadiakos's defensive screen will be crucial in determining who controls the tempo of the match. Levadiakos, on the other hand, will likely employ a low block, aiming to absorb pressure and hit OFI on the counter. The speed of Levadiakos's wide players against OFI's fullbacks could be a significant determinant of goal-scoring opportunities.\n\n**Prediction:** While Levadiakos will undoubtedly fight tooth and nail, OFI's superior form, home advantage, and the quality of their attacking players suggest they will ultimately prevail. Expect a hard-fought contest, but OFI's desire for European football, coupled with their consistent performances at home, should see them secure a vital three points.\n\n**Expected Scoreline:** OFI 2 - 0 Levadiakos\n\nThis fixture is more than just a league game; it's a testament to the passion and drama inherent in Greek football. With both teams having so much to play for, the Theodoros Vardinogiannis Stadium is set to witness a compelling encounter that could have significant ramifications for the remainder of the 2025-2026 season.\n <center><h2>This preview of the match has been generated with AI and may contain errors.</center>\n \n Vote for all matches from one place: [Graphene Faucet Aggregator](https://ilnegro.github.io/graphene-faucet.html) \n Download Steem Keychain App to vote from Smartphone: [Steem Keychain App](https://drive.google.com/file/d/1rJTZYEtCa8NC3zhXtHEg-rv4XYwbtZSC/view?usp=sharing)",
+        "category": "hive-101690",
+        "children": 3,
+        "community": "hive-101690",
+        "community_title": "Sports Talk Social",
+        "created": "2026-04-12T03:16:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "@Graphene-Faucet by ilnegro",
+          "community": "hive-101690",
+          "tags": [
+            "hivecontests",
+            "hive",
+            "101690",
+            "sportstalk",
+            "hivesport",
+            "soccer",
+            "sports",
+            "tribes",
+            "faucet",
+            "graphene"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 530789746510,
+        "payout": 0.044,
+        "payout_at": "2026-04-19T03:16:03",
+        "pending_payout_value": "0.044 HBD",
+        "percent_hbd": 10000,
+        "permlink": "soccerofivslevadiakos20260418",
+        "post_id": 149777547,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 28
+        },
+        "title": "@Graphene-Faucet - Soccer: OFI vs Levadiakos",
+        "updated": "2026-04-12T03:16:03",
+        "url": "/hive-101690/@graphene-faucet/soccerofivslevadiakos20260418"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 139964879453,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": 14310899454,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 9176023851,
+            "voter": "informator"
+          },
+          {
+            "rshares": 3104563197,
+            "voter": "khrom"
+          },
+          {
+            "rshares": 162045038153,
+            "voter": "ilnegro"
+          },
+          {
+            "rshares": 0,
+            "voter": "poetforall"
+          },
+          {
+            "rshares": 47058983302,
+            "voter": "bluesniper"
+          },
+          {
+            "rshares": 94374891196,
+            "voter": "ctime"
+          },
+          {
+            "rshares": 202025109,
+            "voter": "holovision.play"
+          },
+          {
+            "rshares": 3061283214,
+            "voter": "csport"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.list"
+          },
+          {
+            "rshares": 948242259,
+            "voter": "lolz.list"
+          },
+          {
+            "rshares": 8924308845,
+            "voter": "gaskets"
+          },
+          {
+            "rshares": 2954496321,
+            "voter": "tenpik"
+          },
+          {
+            "rshares": 3318142847,
+            "voter": "zeltra"
+          },
+          {
+            "rshares": 6662726530,
+            "voter": "skyseven"
+          },
+          {
+            "rshares": 726351224,
+            "voter": "cryptovagabundo"
+          },
+          {
+            "rshares": 168272877,
+            "voter": "paranormalhive"
+          },
+          {
+            "rshares": 1425056465,
+            "voter": "graphene-faucet"
+          }
+        ],
+        "author": "graphene-faucet",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.45,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "<center>\n\n</center>\n\n<div>\n<center>\nhttps://images.hive.blog/640x360/https://r2.thesportsdb.com/images/media/event/banner/u7msp51750330017.jpg\n</center>\n</div>\n\n<center><h2>GRAPHENE-FAUCET - COMMUNITY-FUNDED GIVEAWAY</h2></center>\n\n<h3>@Graphene-Faucet - Soccer: Crystal Palace vs West Ham United\n<p></p>\nCategory: Soccer League: English Premier League\n<p></p>\nMatch Time: 2026-04-20 19:00:00 UTC*</h3>\n\n_(*) Times may be subject to change without prior notice._\n\n<h2>How to participate in this giveaway</h2>\n\n1. If you don't already have a Hive account get a free account at https://peakd.com/register using On Board Hive\n\n2. Simply vote for your favourite team or vote for a draw (if applicable) in the comments below. Vote only comments generated by the @graphene-faucet account.\n\n3. For maximum share of the giveaway pool, vote with 100% voting power. \n\n4. The payouts are stake-weighted so the more Hive Power you have when you vote, the greater the share of the giveaway payout you will receive. Hive can be purchased at any of the exchanges listed at https://peakd.com/@graphene-faucet/wallet/exchanges. \n\n5. In order to Power Up your new HIVE, simply withdraw HIVE from the exchange to your native Blockchain account and visit https://peakd.com/wallet to Power Up.\n\n<h2>General Information</h2>\n\n+ The giveaway pool will be comprised of **(Post Author Rewards + Winning Team comment Author Rewards + Losing Team(s) Comment(s) Author reward(s) - 15% Graphene-Faucet commission.\n\n+ It is not mandatory to vote the main post, however it adds to visibility on Hive's trending page and the rewards will be added to the giveaway pool.\n\n+ Votes made after the time the game starts will not be counted, the additional author rewards from late votes will be added to the giveaway pool.\n\n+ The giveaway will be distributed when these conditions are met: 8 days have passed since the post was published and the match has ended. To who predicted correctly will be sent a transfer with their share of the giveaway pool and a comment will be added to the original post with the distribution list of the giveaway pool.\n\n+ You will always earn curation rewards from voting on the post or comment, everyone earn something!\n\n+ Voting multiple teams with the same account will result in disqualification, our bot checks for that so don't be clever and try to hedge your predictions.\n\n+ Please invite your friends to play, feel free to be social and discuss the match in the comments section below. \n\n+ E&OE\n\n<h2>0.000 HIVE and 869348.971 SPORTS token and 8.956 BEE token* MultiStrike!</h2>\n5% of the giveaway pool of each game will be sent to the @multistrike account to accumulate over time until someone emerges who consecutively predict 5 (five) games in a row. The giveaway of the MultiStrike bounty will be automatically paid out the entirety of the funds held in the @multistrike account. Should there be multiple simultaneous strikers, the giveaway will be shared between them equally. Once the giveaway has been paid, it will start accumulating again with each game.\n_(*) This MultiStrike value is a snapshot taken at the time of the creation of this post; for the real-time value check https://peakd.com/@multistrike/wallet_   \n\n\n\n<h2><center>⚡️Preview of the Match \"Crystal Palace\" vs \"West Ham United\"⚡️</center></h2>\n**Crystal vs Palace: A West London Derby Steeped in Intrigue**\n\nThe Selhurst Park faithful are bracing themselves for a captivating spectacle this Saturday as Crystal Palace host West Ham United in a clash that promises to deliver both fire and finesse. While not the traditional \"Crystal vs Palace\" derby, this encounter between two clubs separated by a mere 14 miles across the capital carries its own unique brand of rivalry, fueled by recent history and a shared ambition for European football.\n\nFor Crystal Palace, this fixture represents a significant test of their credentials under Patrick Vieira. The Eagles have been a revelation this season, playing an attractive, high-pressing brand of football that has earned them plaudits and a comfortable mid-table position. Their youthful exuberance, personified by the dazzling Wilfried Zaha and the tenacious Conor Gallagher, has brought a new energy to Selhurst Park. The tactical masterclass Vieira has overseen, transforming a team often accused of being one-dimensional, is truly remarkable.\n\nHowever, consistency has been a fleeting companion for Palace. Brilliant victories have been interspersed with frustrating draws and narrow defeats, highlighting the inherent challenges of integrating so many young talents. Against West Ham, they will need to be at their absolute best to contain a side that possesses both individual brilliance and a robust collective spirit. The key battleground will undoubtedly be the midfield, where the dynamism of Gallagher and Joel Ward will clash with the experienced duo of Declan Rice and Tomas Soucek. Controlling this area will be paramount to dictating the tempo and flow of the game.\n\nWest Ham United, meanwhile, arrive in South London flying high. David Moyes has masterminded a remarkable ascent for the Hammers, who are firmly entrenched in the European qualification spots and continue to defy expectations. Their pragmatic yet effective style, built on a solid defensive foundation and incisive counter-attacks, has proven incredibly difficult to break down. The leadership and boundless energy of Declan Rice, a true force of nature in midfield, will once again be crucial.\n\nThe Hammers' attacking prowess, often underestimated, is a significant threat. Michail Antonio, a tireless runner and relentless finisher, will be looking to exploit any defensive vulnerabilities in the Palace backline. The creativity of Jarrod Bowen and Said Benrahma on the flanks provides ample ammunition, capable of unlocking even the most stubborn defenses. West Ham's set-piece proficiency is also a major weapon in their arsenal, and Palace will need to be meticulously organized to avoid conceding from dead-ball situations.\n\nThe tactical battle promises to be fascinating. Vieira's Palace will likely seek to dominate possession, utilizing their intricate passing patterns and fluid movement to create openings. They will look to press high, forcing West Ham into errors and winning the ball back in dangerous areas. Conversely, Moyes' West Ham will be content to absorb pressure, relying on their defensive solidity and the lightning quick transitions that have become their trademark. The ability of either side to execute their game plan under pressure will ultimately decide the outcome.\n\nBeyond the tactical intricacies, the atmosphere at Selhurst Park will undoubtedly play a significant role. The Palace faithful are renowned for their passionate support, and they will be roaring their team on from the first whistle. This fervent backing can often provide an extra surge of energy, particularly in a derby match. West Ham, however, are a battle-hardened side accustomed to playing in hostile environments, and their mental fortitude will be tested.\n\nThis encounter is more than just three points; it's a statement of intent for both clubs. For Crystal Palace, it's an opportunity to solidify their position as a genuine force under Vieira and to demonstrate their capability against a top-four contender. For West Ham, it's a chance to consolidate their European ambitions and further cement their status as one of the Premier League's most resilient outfits. Expect a fiercely contested affair, packed with drama, skill, and perhaps, a touch of South London magic.\n <center><h2>This preview of the match has been generated with AI and may contain errors.</center>\n \n Vote for all matches from one place: [Graphene Faucet Aggregator](https://ilnegro.github.io/graphene-faucet.html) \n Download Steem Keychain App to vote from Smartphone: [Steem Keychain App](https://drive.google.com/file/d/1rJTZYEtCa8NC3zhXtHEg-rv4XYwbtZSC/view?usp=sharing)",
+        "category": "hive-101690",
+        "children": 3,
+        "community": "hive-101690",
+        "community_title": "Sports Talk Social",
+        "created": "2026-04-14T03:16:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "@Graphene-Faucet by ilnegro",
+          "community": "hive-101690",
+          "tags": [
+            "101690",
+            "graphene",
+            "soccer",
+            "sports",
+            "tribes",
+            "hive",
+            "hivesport",
+            "hivecontests",
+            "faucet",
+            "sportstalk"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 498426184297,
+        "payout": 0.043,
+        "payout_at": "2026-04-21T03:16:03",
+        "pending_payout_value": "0.043 HBD",
+        "percent_hbd": 10000,
+        "permlink": "soccercrystalpalacevswesthamunited20260420",
+        "post_id": 149801854,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 19
+        },
+        "title": "@Graphene-Faucet - Soccer: Crystal Palace vs West Ham United",
+        "updated": "2026-04-14T03:16:03",
+        "url": "/hive-101690/@graphene-faucet/soccercrystalpalacevswesthamunited20260420"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 139958387859,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": 14310214413,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 162011243527,
+            "voter": "ilnegro"
+          },
+          {
+            "rshares": 47056634584,
+            "voter": "bluesniper"
+          },
+          {
+            "rshares": 94374891196,
+            "voter": "ctime"
+          },
+          {
+            "rshares": 32874116087,
+            "voter": "cohlson"
+          },
+          {
+            "rshares": 0,
+            "voter": "mk-sports-token"
+          },
+          {
+            "rshares": 3061283214,
+            "voter": "csport"
+          },
+          {
+            "rshares": 8924308845,
+            "voter": "gaskets"
+          },
+          {
+            "rshares": 2954496321,
+            "voter": "tenpik"
+          },
+          {
+            "rshares": 3318142847,
+            "voter": "zeltra"
+          },
+          {
+            "rshares": 6662726530,
+            "voter": "skyseven"
+          },
+          {
+            "rshares": 2902914390,
+            "voter": "samye2"
+          },
+          {
+            "rshares": 1419380401,
+            "voter": "graphene-faucet"
+          }
+        ],
+        "author": "graphene-faucet",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.45,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "<center>\n<h2>Inter Milan WILL WIN</h2>\n![](https://images.hive.blog/150x150/https://r2.thesportsdb.com/images/media/team/badge/ryhu6d1617113103.png)\n</center>\n",
+        "category": "hive-101690",
+        "children": 0,
+        "community": "hive-101690",
+        "community_title": "Sports Talk Social",
+        "created": "2026-04-10T03:17:33",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 1,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "@Graphene-Faucet by ilnegro",
+          "community": "hive-101690",
+          "tags": [
+            "faucet",
+            "sportstalk",
+            "tribes",
+            "graphene",
+            "hivecontests",
+            "soccer",
+            "hive",
+            "sports",
+            "hivesport",
+            "101690"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 519828740214,
+        "parent_author": "graphene-faucet",
+        "parent_permlink": "soccerintermilanvscagliari20260417",
+        "payout": 0.043,
+        "payout_at": "2026-04-17T03:17:33",
+        "pending_payout_value": "0.043 HBD",
+        "percent_hbd": 10000,
+        "permlink": "soccerintermilanvscagliari20260417home",
+        "post_id": 149751530,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 14
+        },
+        "title": "RE: @Graphene-Faucet - Soccer: Inter Milan vs Cagliari",
+        "updated": "2026-04-10T03:17:33",
+        "url": "/hive-101690/@graphene-faucet/soccerintermilanvscagliari20260417#@graphene-faucet/soccerintermilanvscagliari20260417home"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 139961617598,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": 14310540650,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 9176023851,
+            "voter": "informator"
+          },
+          {
+            "rshares": 3104563197,
+            "voter": "khrom"
+          },
+          {
+            "rshares": 162045038153,
+            "voter": "ilnegro"
+          },
+          {
+            "rshares": 757063437,
+            "voter": "jini-zzang"
+          },
+          {
+            "rshares": 0,
+            "voter": "poetforall"
+          },
+          {
+            "rshares": 47057809034,
+            "voter": "bluesniper"
+          },
+          {
+            "rshares": 94374891196,
+            "voter": "ctime"
+          },
+          {
+            "rshares": 652576059,
+            "voter": "bilpcoin.pay"
+          },
+          {
+            "rshares": 3548681915,
+            "voter": "politicalhive"
+          },
+          {
+            "rshares": 3061283214,
+            "voter": "csport"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.list"
+          },
+          {
+            "rshares": 948242259,
+            "voter": "lolz.list"
+          },
+          {
+            "rshares": 8924308845,
+            "voter": "gaskets"
+          },
+          {
+            "rshares": 2954496321,
+            "voter": "tenpik"
+          },
+          {
+            "rshares": 3318142847,
+            "voter": "zeltra"
+          },
+          {
+            "rshares": 6662726530,
+            "voter": "skyseven"
+          },
+          {
+            "rshares": 726351224,
+            "voter": "cryptovagabundo"
+          },
+          {
+            "rshares": 168272877,
+            "voter": "paranormalhive"
+          },
+          {
+            "rshares": 1419380401,
+            "voter": "graphene-faucet"
+          }
+        ],
+        "author": "graphene-faucet",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.45,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "<center>\n\n</center>\n\n<div>\n<center>\nhttps://images.hive.blog/640x360/https://r2.thesportsdb.com/images/media/event/thumb/0crarp1755934986.jpg\n</center>\n</div>\n\n<center><h2>GRAPHENE-FAUCET - COMMUNITY-FUNDED GIVEAWAY</h2></center>\n\n<h3>@Graphene-Faucet - Soccer: Sassuolo vs Como\n<p></p>\nCategory: Soccer League: Italian Serie A\n<p></p>\nMatch Time: 2026-04-17 16:30:00 UTC*</h3>\n\n_(*) Times may be subject to change without prior notice._\n\n<h2>How to participate in this giveaway</h2>\n\n1. If you don't already have a Hive account get a free account at https://peakd.com/register using On Board Hive\n\n2. Simply vote for your favourite team or vote for a draw (if applicable) in the comments below. Vote only comments generated by the @graphene-faucet account.\n\n3. For maximum share of the giveaway pool, vote with 100% voting power. \n\n4. The payouts are stake-weighted so the more Hive Power you have when you vote, the greater the share of the giveaway payout you will receive. Hive can be purchased at any of the exchanges listed at https://peakd.com/@graphene-faucet/wallet/exchanges. \n\n5. In order to Power Up your new HIVE, simply withdraw HIVE from the exchange to your native Blockchain account and visit https://peakd.com/wallet to Power Up.\n\n<h2>General Information</h2>\n\n+ The giveaway pool will be comprised of **(Post Author Rewards + Winning Team comment Author Rewards + Losing Team(s) Comment(s) Author reward(s) - 15% Graphene-Faucet commission.\n\n+ It is not mandatory to vote the main post, however it adds to visibility on Hive's trending page and the rewards will be added to the giveaway pool.\n\n+ Votes made after the time the game starts will not be counted, the additional author rewards from late votes will be added to the giveaway pool.\n\n+ The giveaway will be distributed when these conditions are met: 8 days have passed since the post was published and the match has ended. To who predicted correctly will be sent a transfer with their share of the giveaway pool and a comment will be added to the original post with the distribution list of the giveaway pool.\n\n+ You will always earn curation rewards from voting on the post or comment, everyone earn something!\n\n+ Voting multiple teams with the same account will result in disqualification, our bot checks for that so don't be clever and try to hedge your predictions.\n\n+ Please invite your friends to play, feel free to be social and discuss the match in the comments section below. \n\n+ E&OE\n\n<h2>0.000 HIVE and 842579.587 SPORTS token and 8.623 BEE token* MultiStrike!</h2>\n5% of the giveaway pool of each game will be sent to the @multistrike account to accumulate over time until someone emerges who consecutively predict 5 (five) games in a row. The giveaway of the MultiStrike bounty will be automatically paid out the entirety of the funds held in the @multistrike account. Should there be multiple simultaneous strikers, the giveaway will be shared between them equally. Once the giveaway has been paid, it will start accumulating again with each game.\n_(*) This MultiStrike value is a snapshot taken at the time of the creation of this post; for the real-time value check https://peakd.com/@multistrike/wallet_   \n\n\n\n<h2><center>⚡️Preview of the Match \"Sassuolo\" vs \"Como\"⚡️</center></h2>\n# Serie A Clash: Sassuolo Host Como in a Battle for Crucial Points\n\n**Date:** April 17, 2026\n**Venue:** Mapei Stadium, Reggio Emilia\n\nAs the Serie A season barrels towards its thrilling conclusion, the Mapei Stadium is set to host a captivating encounter on April 17, 2026, as Sassuolo welcome newly-promoted Como. Both sides enter this fixture with distinct motivations but an equally urgent need for points, promising a tactical battle under the floodlights.\n\n## Sassuolo: The Quest for Consistency\n\nAlessio Dionisi's Sassuolo have, as is often the case, demonstrated flashes of brilliance interspersed with periods of inconsistency this campaign. Known for their attacking philosophy and reliance on young, technically gifted players, the Neroverdi will be eager to solidify their position in the mid-table, perhaps even dreaming of a late push for European qualification – a tall order, but not entirely out of reach given the unpredictable nature of Serie A.\n\n**Key Players to Watch for Sassuolo:**\n\n*   **Andrea Pinamonti (Striker):** The burly forward remains Sassuolo's primary goal threat. His ability to hold up play, link with midfielders, and convert chances will be crucial against a potentially stubborn Como defense.\n*   **Davide Frattesi (Midfielder):** A dynamic box-to-box midfielder, Frattesi's energy, tackling, and late runs into the box are vital to Sassuolo's engine room. His performance will dictate much of Sassuolo's tempo.\n*   **Giorgos Kyriakopoulos (Left-Back):** Providing width and a dangerous delivery from the left flank, Kyriakopoulos's attacking prowess will be key to unlocking Como's defensive shape.\n\nSassuolo's home form has been a mixed bag, making this a pivotal match to stamp their authority at the Mapei. Expect them to dominate possession and try to exploit the flanks, leveraging their quick wingers and overlapping fullbacks.\n\n## Como: Fighting for Survival\n\nFor Como, returning to Serie A after a long hiatus has been a challenging but ultimately character-building experience. Under the astute guidance of Cesc Fàbregas, the *Lariani* have shown immense resilience, often punching above their weight. Their primary objective remains clear: avoid immediate relegation. Every point from now until the end of the season is golden, and a result against a well-established Serie A side like Sassuolo would be a massive confidence boost.\n\n**Key Players to Watch for Como:**\n\n*   **Patrick Cutrone (Striker):** The former AC Milan forward brings top-flight experience and a poacher's instinct. His ability to capitalize on half-chances could be the difference for Como.\n*   **Alessandro Bellemo (Midfielder):** Como's captain and midfield lynchpin, Bellemo's leadership, defensive screening, and ability to break up play will be essential in disrupting Sassuolo's creative flow.\n*   **Luca Vignali (Right-Back):** A diligent and often adventurous full-back, Vignali will have his work cut out for him against Sassuolo's wide players but also offers an outlet on the counter.\n\nComo are likely to approach this game with a disciplined defensive setup, looking to frustrate Sassuolo and hit them on the break. Their counter-attacking speed and set-piece prowess could be their most potent weapons.\n\n## Tactical Battleground\n\nThe match promises a fascinating tactical duel. Sassuolo will aim to control the midfield, dictate the tempo, and break down Como's deep block with intricate passing and wide play. Como, on the other hand, will likely absorb pressure, remain compact, and look to exploit any defensive vulnerabilities Sassuolo might present during their offensive surges. The battle in midfield, particularly between Frattesi and Bellemo, will be crucial in determining who wins the possession and territorial advantage.\n\n## Prediction\n\nWhile Como's fighting spirit is commendable, Sassuolo's superior individual quality and home advantage might just tip the scales. However, the *Lariani* have shown they are capable of springing a surprise. Expect a tightly contested affair, with Sassuolo likely to emerge victorious, but not without a stern test from a determined Como side fighting for their Serie A lives.\n\n**Predicted Score:** Sassuolo 2 - 1 Como\n\nThis fixture is more than just three points; it's a battle for momentum, confidence, and crucial positioning in the challenging landscape of Serie A. Fans can anticipate an engaging and hard-fought contest at the Mapei Stadium.\n <center><h2>This preview of the match has been generated with AI and may contain errors.</center>\n \n Vote for all matches from one place: [Graphene Faucet Aggregator](https://ilnegro.github.io/graphene-faucet.html) \n Download Steem Keychain App to vote from Smartphone: [Steem Keychain App](https://drive.google.com/file/d/1rJTZYEtCa8NC3zhXtHEg-rv4XYwbtZSC/view?usp=sharing)",
+        "category": "hive-101690",
+        "children": 3,
+        "community": "hive-101690",
+        "community_title": "Sports Talk Social",
+        "created": "2026-04-11T03:16:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "@Graphene-Faucet by ilnegro",
+          "community": "hive-101690",
+          "tags": [
+            "sports",
+            "sportstalk",
+            "hivesport",
+            "hivecontests",
+            "soccer",
+            "hive",
+            "101690",
+            "tribes",
+            "graphene",
+            "faucet"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 503172009608,
+        "payout": 0.042,
+        "payout_at": "2026-04-18T03:16:03",
+        "pending_payout_value": "0.042 HBD",
+        "percent_hbd": 10000,
+        "permlink": "soccersassuolovscomo20260417",
+        "post_id": 149764118,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 21
+        },
+        "title": "@Graphene-Faucet - Soccer: Sassuolo vs Como",
+        "updated": "2026-04-11T03:16:03",
+        "url": "/hive-101690/@graphene-faucet/soccersassuolovscomo20260417"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 139982751519,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": 14310899454,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 12109450144,
+            "voter": "racibo"
+          },
+          {
+            "rshares": 9176023851,
+            "voter": "informator"
+          },
+          {
+            "rshares": 3104563197,
+            "voter": "khrom"
+          },
+          {
+            "rshares": 162045038153,
+            "voter": "ilnegro"
+          },
+          {
+            "rshares": 0,
+            "voter": "poetforall"
+          },
+          {
+            "rshares": 47058983302,
+            "voter": "bluesniper"
+          },
+          {
+            "rshares": 11616260501,
+            "voter": "sports.alfa"
+          },
+          {
+            "rshares": 3061283214,
+            "voter": "csport"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.list"
+          },
+          {
+            "rshares": 948242259,
+            "voter": "lolz.list"
+          },
+          {
+            "rshares": 8924308845,
+            "voter": "gaskets"
+          },
+          {
+            "rshares": 2954496321,
+            "voter": "tenpik"
+          },
+          {
+            "rshares": 3318142847,
+            "voter": "zeltra"
+          },
+          {
+            "rshares": 6662726530,
+            "voter": "skyseven"
+          },
+          {
+            "rshares": 168272877,
+            "voter": "paranormalhive"
+          },
+          {
+            "rshares": 1425056465,
+            "voter": "graphene-faucet"
+          }
+        ],
+        "author": "graphene-faucet",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.45,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "<center>\n\n</center>\n\n<div>\n<center>\nhttps://images.hive.blog/640x360/https://r2.thesportsdb.com/images/media/event/banner/bv2d8c1750330081.jpg\n</center>\n</div>\n\n<center><h2>GRAPHENE-FAUCET - COMMUNITY-FUNDED GIVEAWAY</h2></center>\n\n<h3>@Graphene-Faucet - Soccer: Brighton and Hove Albion vs Chelsea\n<p></p>\nCategory: Soccer League: English Premier League\n<p></p>\nMatch Time: 2026-04-21 19:00:00 UTC*</h3>\n\n_(*) Times may be subject to change without prior notice._\n\n<h2>How to participate in this giveaway</h2>\n\n1. If you don't already have a Hive account get a free account at https://peakd.com/register using On Board Hive\n\n2. Simply vote for your favourite team or vote for a draw (if applicable) in the comments below. Vote only comments generated by the @graphene-faucet account.\n\n3. For maximum share of the giveaway pool, vote with 100% voting power. \n\n4. The payouts are stake-weighted so the more Hive Power you have when you vote, the greater the share of the giveaway payout you will receive. Hive can be purchased at any of the exchanges listed at https://peakd.com/@graphene-faucet/wallet/exchanges. \n\n5. In order to Power Up your new HIVE, simply withdraw HIVE from the exchange to your native Blockchain account and visit https://peakd.com/wallet to Power Up.\n\n<h2>General Information</h2>\n\n+ The giveaway pool will be comprised of **(Post Author Rewards + Winning Team comment Author Rewards + Losing Team(s) Comment(s) Author reward(s) - 15% Graphene-Faucet commission.\n\n+ It is not mandatory to vote the main post, however it adds to visibility on Hive's trending page and the rewards will be added to the giveaway pool.\n\n+ Votes made after the time the game starts will not be counted, the additional author rewards from late votes will be added to the giveaway pool.\n\n+ The giveaway will be distributed when these conditions are met: 8 days have passed since the post was published and the match has ended. To who predicted correctly will be sent a transfer with their share of the giveaway pool and a comment will be added to the original post with the distribution list of the giveaway pool.\n\n+ You will always earn curation rewards from voting on the post or comment, everyone earn something!\n\n+ Voting multiple teams with the same account will result in disqualification, our bot checks for that so don't be clever and try to hedge your predictions.\n\n+ Please invite your friends to play, feel free to be social and discuss the match in the comments section below. \n\n+ E&OE\n\n<h2>0.000 HIVE and 876899.601 SPORTS token and 9.073 BEE token* MultiStrike!</h2>\n5% of the giveaway pool of each game will be sent to the @multistrike account to accumulate over time until someone emerges who consecutively predict 5 (five) games in a row. The giveaway of the MultiStrike bounty will be automatically paid out the entirety of the funds held in the @multistrike account. Should there be multiple simultaneous strikers, the giveaway will be shared between them equally. Once the giveaway has been paid, it will start accumulating again with each game.\n_(*) This MultiStrike value is a snapshot taken at the time of the creation of this post; for the real-time value check https://peakd.com/@multistrike/wallet_   \n\n\n",
+        "category": "hive-101690",
+        "children": 3,
+        "community": "hive-101690",
+        "community_title": "Sports Talk Social",
+        "created": "2026-04-15T03:16:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "@Graphene-Faucet by ilnegro",
+          "community": "hive-101690",
+          "tags": [
+            "sports",
+            "101690",
+            "hive",
+            "soccer",
+            "sportstalk",
+            "faucet",
+            "hivesport",
+            "hivecontests",
+            "tribes",
+            "graphene"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 426866499479,
+        "payout": 0.036,
+        "payout_at": "2026-04-22T03:16:03",
+        "pending_payout_value": "0.036 HBD",
+        "percent_hbd": 10000,
+        "permlink": "soccerbrightonandhovealbionvschelsea20260421",
+        "post_id": 149812610,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 18
+        },
+        "title": "@Graphene-Faucet - Soccer: Brighton and Hove Albion vs Chelsea",
+        "updated": "2026-04-15T03:16:03",
+        "url": "/hive-101690/@graphene-faucet/soccerbrightonandhovealbionvschelsea20260421"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 139964879453,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": 14310899454,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 162045038153,
+            "voter": "ilnegro"
+          },
+          {
+            "rshares": 47058983302,
+            "voter": "bluesniper"
+          },
+          {
+            "rshares": 32874116087,
+            "voter": "cohlson"
+          },
+          {
+            "rshares": 3061283214,
+            "voter": "csport"
+          },
+          {
+            "rshares": 8924308845,
+            "voter": "gaskets"
+          },
+          {
+            "rshares": 2954496321,
+            "voter": "tenpik"
+          },
+          {
+            "rshares": 3318142847,
+            "voter": "zeltra"
+          },
+          {
+            "rshares": 6662726530,
+            "voter": "skyseven"
+          },
+          {
+            "rshares": 2951345903,
+            "voter": "samye2"
+          },
+          {
+            "rshares": 1425056465,
+            "voter": "graphene-faucet"
+          }
+        ],
+        "author": "graphene-faucet",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.45,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "<center>\n<h2>Crystal Palace WILL WIN</h2>\n![](https://images.hive.blog/150x150/https://r2.thesportsdb.com/images/media/team/badge/ia6i3m1656014992.png)\n</center>\n",
+        "category": "hive-101690",
+        "children": 0,
+        "community": "hive-101690",
+        "community_title": "Sports Talk Social",
+        "created": "2026-04-14T03:16:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 1,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "@Graphene-Faucet by ilnegro",
+          "community": "hive-101690",
+          "tags": [
+            "101690",
+            "graphene",
+            "soccer",
+            "sports",
+            "tribes",
+            "hive",
+            "hivesport",
+            "hivecontests",
+            "sportstalk",
+            "faucet"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 425551276574,
+        "parent_author": "graphene-faucet",
+        "parent_permlink": "soccercrystalpalacevswesthamunited20260420",
+        "payout": 0.036,
+        "payout_at": "2026-04-21T03:16:30",
+        "pending_payout_value": "0.036 HBD",
+        "percent_hbd": 10000,
+        "permlink": "soccercrystalpalacevswesthamunited20260420home",
+        "post_id": 149801857,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 12
+        },
+        "title": "RE: @Graphene-Faucet - Soccer: Crystal Palace vs West Ham United",
+        "updated": "2026-04-14T03:16:30",
+        "url": "/hive-101690/@graphene-faucet/soccercrystalpalacevswesthamunited20260420#@graphene-faucet/soccercrystalpalacevswesthamunited20260420home"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 929099240,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 139985751728,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": 14311225563,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 9176023851,
+            "voter": "informator"
+          },
+          {
+            "rshares": 3104563197,
+            "voter": "khrom"
+          },
+          {
+            "rshares": 162082084947,
+            "voter": "ilnegro"
+          },
+          {
+            "rshares": 47060059464,
+            "voter": "bluesniper"
+          },
+          {
+            "rshares": 652631499,
+            "voter": "bilpcoin.pay"
+          },
+          {
+            "rshares": 3061283214,
+            "voter": "csport"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.list"
+          },
+          {
+            "rshares": 948242259,
+            "voter": "lolz.list"
+          },
+          {
+            "rshares": 8924308845,
+            "voter": "gaskets"
+          },
+          {
+            "rshares": 2954496321,
+            "voter": "tenpik"
+          },
+          {
+            "rshares": 3318142847,
+            "voter": "zeltra"
+          },
+          {
+            "rshares": 6662726530,
+            "voter": "skyseven"
+          },
+          {
+            "rshares": 168272877,
+            "voter": "paranormalhive"
+          },
+          {
+            "rshares": 1427958841,
+            "voter": "graphene-faucet"
+          }
+        ],
+        "author": "graphene-faucet",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -0.45,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "<center>\n\n</center>\n\n<div>\n<center>\nhttps://images.hive.blog/640x360/https://r2.thesportsdb.com/images/media/event/thumb/hs2yuz1751450349.jpg\n</center>\n</div>\n\n<center><h2>GRAPHENE-FAUCET - COMMUNITY-FUNDED GIVEAWAY</h2></center>\n\n<h3>@Graphene-Faucet - Soccer: Elche vs Atlético Madrid\n<p></p>\nCategory: Soccer League: Spanish La Liga\n<p></p>\nMatch Time: 2026-04-22 17:00:00 UTC*</h3>\n\n_(*) Times may be subject to change without prior notice._\n\n<h2>How to participate in this giveaway</h2>\n\n1. If you don't already have a Hive account get a free account at https://peakd.com/register using On Board Hive\n\n2. Simply vote for your favourite team or vote for a draw (if applicable) in the comments below. Vote only comments generated by the @graphene-faucet account.\n\n3. For maximum share of the giveaway pool, vote with 100% voting power. \n\n4. The payouts are stake-weighted so the more Hive Power you have when you vote, the greater the share of the giveaway payout you will receive. Hive can be purchased at any of the exchanges listed at https://peakd.com/@graphene-faucet/wallet/exchanges. \n\n5. In order to Power Up your new HIVE, simply withdraw HIVE from the exchange to your native Blockchain account and visit https://peakd.com/wallet to Power Up.\n\n<h2>General Information</h2>\n\n+ The giveaway pool will be comprised of **(Post Author Rewards + Winning Team comment Author Rewards + Losing Team(s) Comment(s) Author reward(s) - 15% Graphene-Faucet commission.\n\n+ It is not mandatory to vote the main post, however it adds to visibility on Hive's trending page and the rewards will be added to the giveaway pool.\n\n+ Votes made after the time the game starts will not be counted, the additional author rewards from late votes will be added to the giveaway pool.\n\n+ The giveaway will be distributed when these conditions are met: 8 days have passed since the post was published and the match has ended. To who predicted correctly will be sent a transfer with their share of the giveaway pool and a comment will be added to the original post with the distribution list of the giveaway pool.\n\n+ You will always earn curation rewards from voting on the post or comment, everyone earn something!\n\n+ Voting multiple teams with the same account will result in disqualification, our bot checks for that so don't be clever and try to hedge your predictions.\n\n+ Please invite your friends to play, feel free to be social and discuss the match in the comments section below. \n\n+ E&OE\n\n<h2>0.000 HIVE and 899252.922 SPORTS token and 9.411 BEE token* MultiStrike!</h2>\n5% of the giveaway pool of each game will be sent to the @multistrike account to accumulate over time until someone emerges who consecutively predict 5 (five) games in a row. The giveaway of the MultiStrike bounty will be automatically paid out the entirety of the funds held in the @multistrike account. Should there be multiple simultaneous strikers, the giveaway will be shared between them equally. Once the giveaway has been paid, it will start accumulating again with each game.\n_(*) This MultiStrike value is a snapshot taken at the time of the creation of this post; for the real-time value check https://peakd.com/@multistrike/wallet_   \n\n\n\n<h2><center>⚡️Preview of the Match \"Elche\" vs \"Atlético Madrid\"⚡️</center></h2>\nAs the Spanish football season nears its conclusion, every match takes on heightened significance, and this weekend's clash between Elche and Atlético Madrid is no exception. While the circumstances for both teams are starkly different, the desire for victory remains paramount.\n\nFor Atlético Madrid, this fixture represents another crucial step in their relentless pursuit of a Champions League spot. Under the astute guidance of Diego Simeone, Los Colchoneros have engineered a remarkable resurgence in recent months, transforming what appeared to be a faltering campaign into a genuine push for Europe's elite competition. Currently sitting comfortably in the top four, their objective is clear: maintain momentum, secure wins, and solidify their position. Every point is precious, and dropping them against a team like Elche, despite their struggles, is simply not an option.\n\nSimeone's men arrive at the Estadio Manuel Martínez Valero on the back of a largely positive run of form. Their defensive solidity, a trademark of Simeone's philosophy, has been rediscovered, while the attacking prowess of Antoine Griezmann, in particular, has been instrumental in their recent successes. The Frenchman has been in sublime form, orchestrating attacks, scoring crucial goals, and showcasing a renewed zest for the game. Alongside the likes of Álvaro Morata and the dynamic midfield presence, Atlético possess the quality to dismantle even the most stubborn defenses. However, they will need to guard against complacency and ensure they bring their A-game from the first whistle.\n\nOn the other side of the coin are Elche, a team battling against the inevitable. Their relegation from La Liga has been a foregone conclusion for some time, making these final games a matter of pride and professionalism. While the pressure of survival has long since lifted, the desire to perform for their home fans and to end the season on a respectable note will undoubtedly motivate them.\n\nDespite their league position, Elche have shown glimpses of defiance, particularly at home. They will be looking to frustrate Atlético, to make life difficult for them, and perhaps even to snatch a shock result that would serve as a morale booster for next season. Their challenge lies in containing Atlético's formidable attack and exploiting any potential lapses in concentration from their opponents. Players like Lucas Boyé will be tasked with leading the line and trying to find a way through Atlético's well-drilled defense.\n\nTactically, we can expect a classic encounter of contrasting styles. Atlético will likely dominate possession, patiently probing for openings, while Elche will set up to be defensively compact, looking to hit on the counter-attack. The battle in midfield will be crucial, with Atlético's Koke and Rodrigo De Paul attempting to dictate the tempo and Elche's central players trying to disrupt their rhythm.\n\nThe atmosphere at the Manuel Martínez Valero, even with Elche's precarious position, is often passionate, and the home crowd will undoubtedly try to inspire their team to one last heroic effort. However, Atlético Madrid's experience and quality should ultimately prevail. While Elche will fight tooth and nail, Simeone's side has too much at stake and too much talent to let this opportunity slip.\n\n**Key Players to Watch:**\n\n*   **Antoine Griezmann (Atlético Madrid):** The creative heartbeat and primary goal threat for Los Rojiblancos. His form will be pivotal.\n*   **Lucas Boyé (Elche):** A strong, direct forward who will be crucial for Elche's attacking output.\n*   **Jan Oblak (Atlético Madrid):** The rock at the back. His leadership and shot-stopping ability are invaluable.\n\n**Prediction:**\n\nWhile Elche will undoubtedly put up a valiant fight, Atlético Madrid's superior quality, motivation, and recent form should see them secure a comfortable victory. Expect a professional performance from Simeone's men as they continue their march towards a Champions League berth.\n\n**Elche 0 - 2 Atlético Madrid**\n <center><h2>This preview of the match has been generated with AI and may contain errors.</center>\n \n Vote for all matches from one place: [Graphene Faucet Aggregator](https://ilnegro.github.io/graphene-faucet.html) \n Download Steem Keychain App to vote from Smartphone: [Steem Keychain App](https://drive.google.com/file/d/1rJTZYEtCa8NC3zhXtHEg-rv4XYwbtZSC/view?usp=sharing)",
+        "category": "hive-101690",
+        "children": 3,
+        "community": "hive-101690",
+        "community_title": "Sports Talk Social",
+        "created": "2026-04-16T03:16:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "@Graphene-Faucet by ilnegro",
+          "community": "hive-101690",
+          "tags": [
+            "sports",
+            "faucet",
+            "101690",
+            "tribes",
+            "sportstalk",
+            "hive",
+            "hivecontests",
+            "graphene",
+            "soccer",
+            "hivesport"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 405901052987,
+        "payout": 0.035,
+        "payout_at": "2026-04-23T03:16:03",
+        "pending_payout_value": "0.035 HBD",
+        "percent_hbd": 10000,
+        "permlink": "soccerelchevsatlticomadrid20260422",
+        "post_id": 149823680,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 18
+        },
+        "title": "@Graphene-Faucet - Soccer: Elche vs Atlético Madrid",
+        "updated": "2026-04-16T03:16:03",
+        "url": "/hive-101690/@graphene-faucet/soccerelchevsatlticomadrid20260422"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 60451744587,
+            "voter": "wagnertamanaha"
+          },
+          {
+            "rshares": 0,
+            "voter": "toastfox"
+          },
+          {
+            "rshares": 351429010736,
+            "voter": "fjworld"
+          }
+        ],
+        "author": "we-are-ai",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": -2.72,
+        "beneficiaries": [],
+        "blacklists": [
+          "reputation-0"
+        ],
+        "body": "\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/AJkQBM8qEnrpaDaJ66ouENjZJNc6cvgmJj2CrGihX3bCdrEXUm8VV3YB8Wx4xXK.png)\n\nTest new hive game  @mydempire \nhttps://www.mydempire.com/player-dashboard.html?user=we-are-ai\n\nThe goal of the game is to create your own business empire\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23tw8FNNByAq1cPfkWkbjdK43JapTwXc3eLiMp45CZsazRrNuv5yuvZ653pE5NP4AJCWk.png)\n\n\n\nI bought a 3-HIVE pack. The pack included an L2 plot, which provides space for two factories.\nI received a textile factory and 60 EMP.\nEMP is used to build factories on your plots. It required 80 EMP to build, so I had to spend another 1 HIVE to start construction. Now I have 80 EMP too many, lol.\n\nConstruction takes 24 hours, so I'll see how it's progressing tomorrow.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23tSz3RpTBtLTAxpMQYCb7ErG5e18Zh3vPhp3HPWHf1HzhbTrpXZDsoG7oXQQq4oQUidb.png)\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23tHb6kpkbZvjPXSFQWCi7QZR4R6WZQMd7yEv8mYLse7UN3jQoHQEXNr9Hz3M8esUUfNs.png)\n\nTo launch the game test, I had to sell some GLYPH tokens.\nI'll tell you more about it later; the token is still under development, so follow the next message where I'll share more on its progress.\n\nFor now, the automated curation rebots are paused while waiting for mana.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23tRt5M53vDQRArjeWjhGVJs3j5GPWRvb5CERGmDHGanT5XudrsZatvdVhMCcXTFaGNom.png)\n\n\n Today I don't have much else to tell you. I literally did nothing except watch the four episodes of the new Malcolm in the Middle series, a show from my childhood. The actors have aged 20 years, lol.\n\nI'd say I only moderately enjoyed this series, which is still watchable, but unfortunately hasn't managed to grow with its audience.\n\nI'll talk to you later to share my results on this new game that will soon be released in Alpha.\n\nOtherwise, I've continued to improve on Demoniccore.\nhttps://demonicore.com/battles\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23tRtNZu6gQQHBs21DVJQSMdku4ZcEgMvXPyJiNuZjXYtn72Qa5n4r344LxBtnGv1SntE.png)\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23tbHACvSU9NUnkt9R7itokBen1bmWxEkkDA4iBkTGWEHZ2ZXjaAWo9zgkFq14p4dY6i3.png)\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/Eo6BJwFfBDHeWPkbGqZYuvKYky9JfjLV6rYfWLRA8MGxVFagZmjzCAihXswHUGPbs2X.png)\n\nI continue mining on LIMITLESS\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23swgEFt1cDGRnpxYn1LPQyE3VNNQk2QMWgq1xo97mTQ1RPzakwRRwBdokUiDvX3CSngt.png)\n\nRisingStar\n\n![image.png](https://files.peakd.com/file/peakd-hive/we-are-ai/23u5tWSR6w9hg78X8dRE7YSbnLd41udsLzVxhY3pUzAprw37nsu3LGkqJqdi1etV8jhTW.png)\n\n",
+        "category": "tribes",
+        "children": 0,
+        "created": "2026-04-15T20:49:51",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/AJkQBM8qEnrpaDaJ66ouENjZJNc6cvgmJj2CrGihX3bCdrEXUm8VV3YB8Wx4xXK.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23tw8FNNByAq1cPfkWkbjdK43JapTwXc3eLiMp45CZsazRrNuv5yuvZ653pE5NP4AJCWk.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23tSz3RpTBtLTAxpMQYCb7ErG5e18Zh3vPhp3HPWHf1HzhbTrpXZDsoG7oXQQq4oQUidb.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23tHb6kpkbZvjPXSFQWCi7QZR4R6WZQMd7yEv8mYLse7UN3jQoHQEXNr9Hz3M8esUUfNs.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23tRt5M53vDQRArjeWjhGVJs3j5GPWRvb5CERGmDHGanT5XudrsZatvdVhMCcXTFaGNom.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23tRtNZu6gQQHBs21DVJQSMdku4ZcEgMvXPyJiNuZjXYtn72Qa5n4r344LxBtnGv1SntE.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23tbHACvSU9NUnkt9R7itokBen1bmWxEkkDA4iBkTGWEHZ2ZXjaAWo9zgkFq14p4dY6i3.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/Eo6BJwFfBDHeWPkbGqZYuvKYky9JfjLV6rYfWLRA8MGxVFagZmjzCAihXswHUGPbs2X.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23swgEFt1cDGRnpxYn1LPQyE3VNNQk2QMWgq1xo97mTQ1RPzakwRRwBdokUiDvX3CSngt.png",
+            "https://files.peakd.com/file/peakd-hive/we-are-ai/23u5tWSR6w9hg78X8dRE7YSbnLd41udsLzVxhY3pUzAprw37nsu3LGkqJqdi1etV8jhTW.png"
+          ],
+          "tags": [
+            "tribes",
+            "alive",
+            "heartbeat",
+            "bbho",
+            "cent",
+            "pimp",
+            "thgaming",
+            "fun",
+            "oneup",
+            "pepe"
+          ],
+          "users": [
+            "mydempire"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 411880755323,
+        "payout": 0.035,
+        "payout_at": "2026-04-22T20:49:51",
+        "pending_payout_value": "0.035 HBD",
+        "percent_hbd": 10000,
+        "permlink": "my-d-empire-test",
+        "post_id": 149821417,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": true,
+          "hide": false,
+          "muted_reasons": [
+            3
+          ],
+          "total_votes": 3
+        },
+        "title": "My D Empire test ",
+        "updated": "2026-04-15T20:49:51",
+        "url": "/tribes/@we-are-ai/my-d-empire-test"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

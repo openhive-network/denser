@@ -1,0 +1,3924 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "created",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "75dbcd8f7d340e48",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "created",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "active_votes": [],
+        "author": "babyking",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 53.97,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "<div class=\"text-justify\">\n\n https://img.leopedia.io/DQmbhj8RDJBg4FYWcY7paU9WAvFS4upCPtdQfDoi8Ykjo7p/image.png \n\nINLEO is an environment that can sometimes be a bit complex to understand. We take this into account for many reasons that are entirely valid. Now, if we know how to achieve these goals effectively, I am completely confident that we can accomplish great things in these processes, which are often enjoyable.\n\n## INLEO for Investors\n\nINLEO investors have a strong tendency to achieve major long-term goals, and that is actually the most interesting aspect—to be precise with you—as there are multiple areas where we can work highly effectively.\n\nWe maintain respect in our portfolio, and that is a great truth that is highly certain. That is a great reality; now that we know for a fact, we can simply move forward with all of this in multiple ways.\n\nWhat I want to tell you is that there are enormous possibilities when it comes to making decisions based on investments and all these things; I believe this is the best approach right now, and I am completely certain of that for many reasons.\n\nI see that right now, money and wealth are flowing in a totally positive way, and to be exact, that pleases me a lot.\n\n\n</div>\n\nPosted Using [INLEO](https://inleo.io/@babyking/accountability-on-inleo-for-begginers-gzz)",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-04-16T08:21:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@babyking/accountability-on-inleo-for-begginers-gzz",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmbhj8RDJBg4FYWcY7paU9WAvFS4upCPtdQfDoi8Ykjo7p/image.png"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://inleo.io/@babyking/accountability-on-inleo-for-begginers-gzz)"
+          ],
+          "tags": [
+            "hive-167922",
+            "inleo",
+            "hive",
+            "waivio",
+            "tribes",
+            "hive-engine",
+            "alive",
+            "pob",
+            "neoxian",
+            "creativecoin"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "payout": 0,
+        "payout_at": "2026-04-23T08:21:09",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "accountability-on-inleo-for-begginers-gzz",
+        "post_id": 149825537,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "Accountability on INLEO for begginers",
+        "updated": "2026-04-16T08:21:09",
+        "url": "/hive-167922/@babyking/accountability-on-inleo-for-begginers-gzz"
+      },
+      {
+        "active_votes": [],
+        "author": "labaz",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 3.15,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n\n\n<center>![image](https://pixabay.com/get/ga3da62ad3a328fb9431838fdfff8fdeeed179c830d16e930a913aec21564d44d1b8ff016771d36ee5451159300051e6c2186849d301dfe4ce326de203dc8ee62_640.jpg)</center>\n\n***\n\n🌍✈️ 여행의 설렘! 🌅✨\n\n새로운 도시의 거리에서 느끼는 그 설렘, 현지 음식의 맛, 사람들과의 소통! 여행은 삶을 풍요롭게 해주는 최고의 경험이에요. 여러분은 어떤 여행지를 가장 기억에 남나요? 🗺️💖 #여행 #여행스타그램 #모험\n\n***\n\n",
+        "category": "hive-193084",
+        "children": 0,
+        "community": "hive-193084",
+        "community_title": "DBuzz",
+        "created": "2026-04-16T08:21:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "dBuzz/v3.0.0",
+          "shortForm": "true",
+          "tags": [
+            "trip",
+            "life",
+            "nature",
+            "kr",
+            "waivio",
+            "neoxian",
+            "leo",
+            "inleo",
+            "cent",
+            "oneup",
+            "pob",
+            "proofofbrain",
+            "hustler",
+            "pal",
+            "pimp"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "payout": 0,
+        "payout_at": "2026-04-23T08:21:06",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "xrmbwk3w4gj2a5ob67jc8t",
+        "post_id": 149825536,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "물론입니다! 어떤 주제나 테마에 대해 제목을 원하시는지 말씀해",
+        "updated": "2026-04-16T08:21:06",
+        "url": "/hive-193084/@labaz/xrmbwk3w4gj2a5ob67jc8t"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 381959113635,
+            "voter": "joetunex"
+          }
+        ],
+        "author": "treasuree",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 73.86,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<div class=\"text-justify\">\n\n\n\nThe first time Somto said she needed a quiet place, Didi didn’t even take her serious.\n\n“Quiet place?” Didi laughed, almost spilling her drink. “In this Nigeria? Where exactly you wan see am?”\n\n![](https://images.ecency.com/DQmXCLKmmKGnurKRAnURNQmpPjcoLSyjVVtfjM7Fr2gUReu/1776327580517.jpg)\n\nSomto just shook her head resting her chin on her palm. \"I’m serious Didi. Everywhere is too noisy. My head isn’t resting.”\n\nThey were sitting outside a food joint. A generator was humming loudly behind them ,Plates were clanking. People were arguing over change.\n\n“Madam your balance isn’t complete!”\n\n“Check it well!”\n\nDidi leaned closer. \"So what’s happening? You have never been like this before.”\n\nSomto sighed. \"Nothing really…. Everything at the same time, School, people, noise, my own thoughts… it is like my brain won’t calm down.”\n\nDidi looked at her for a second then smirked. \"You have started overthinking right? You just need small rest.”\n\n“I need more than rest  my dear \" Somto said quietly. \"I need silence.”\n\nTwo days later Somto was packing a small bag.\n\nDidi sat on the bed watching her like she was about to do something illegal \n\n“So you are actually doing this thing?\" she asked.\n\n“Yes \" Somto replied, folding her clothes neatly. \"I just want to go somewhere quiet for a bit.”\n\n“Alone?”\n\n“Yes.”\n\nDidi frowned. \"This isn’t a heartbreak thing is it?”\n\nSomto laughed. \"Not everything is a man problem okay.”\n\n“Okay \" Didi said, raising her hands. \"Just make sure you are safe and call me.”\n\n“I will.”\n\nThe journey was longer than Somto expected, When she finally got there she noticed the difference immediately.\n\nNo horns.\n\nNo shouting.\n\nNo generator noise.\n\nJust… calm.\n\nShe stepped down slowly looking around like she wasn’t sure it was real.\n\n“Wow…\" she whispered. \"So places like this still exist?”\n\nShe checked into a lodge, It wasn’t fancy, It was neat and quiet , The woman at the desk smiled warmly, \"You are welcome, you came alone?”\n\n“Yes.”\n\n“You will enjoy it here , it is very peaceful.”\n\nSomto smiled, \"That’s what I came for.”\n\nThat evening she went for a walk, the road was almost empty, a few people were passing by quietly, trees lined the sides, the breeze felt soft against her skin, she found a bench nearby and sat down.\n\nFor once she did not reach for her phone, she just sat there breathing and listening to nothing.\n\nSomehow that nothing felt like everything she needed.\n\n“You like it here?”\n\nSomto turned quickly.\n\nA girl stood beside the bench holding a nylon bag, \"Sorry \" the girl said with a smile, \"I didn’t mean to scare you.”\n\n“It’s okay \" Somto replied, \"I just wasn’t expecting anyone.”\n\nThe girl nodded, \"This place is always like this, quiet, calm, some people don’t like it, but love it.”\n\nSomto smiled. \"Same here, that is why I came.”\n\nThe girl sat down beside her, \"I’m Didi.”\n\nSomto blinked, then laughed,  \"Didi?”\n\n“Why are you laughing?\" she asked, raising an eyebrow.\n\n“My friend’s name is Didi too.”\n\n“Ah, what a coincidence \" she grinned. \"So what’s your name?”\n\n“Somto.”\n\nThey sat quietly for a while, It didn’t feel awkward at all.\n\nAfter a minutes Didi spoke again.\n\n“You know that sometimes it is not the noise that is the problem?”\n\nSomto looked at her, \"What do you mean?”\n\n“Even if everywhere is quiet , if your mind isn’t calm you won’t feel at peace.”\n\nSomto nodded slowly, \"Hmmm that is true.”\n\n“So what are you running from?\" Didi asked gently.\n\nSomto exhaled,\n\n \"Honestly I don’t even know, i just feel overwhelmed, It is like everything is just too much.”\n\nDidi smiled softly, \n\n\" It will be like that sometimes, you don’t always need to run, sometimes you just need to sit with yourself.”\n\nSomto leaned back thinking about it.\n\n“Hmm… I have never really tried that.”\n\n“Well \" Didi said, pointing her hand around. \"This is a good place to start.”\n\nThat night Somto lay on her bed staring at the ceiling.\n\nNo noise.\n\nNo distractions.\n\nJust quiet.\n\nFor the first time in a long while her mind wasn’t racing, It wasn’t completely silent, It felt lighter.\n\n“Maybe I needed this \" she whispered.\n\nThe morning her phone rang, It was her friend Didi.\n\n“Madam traveler \" her friend’s voice came through. \"How are you? did you find your quiet place?”\n\nSomto smiled.\n\n“I think I have or at least I’m getting there.”\n\n“So you won’t come back again?\" her friend teased.\n\nSomto laughed. \"I will come back,  I have learned something.”\n\n“Something how?”\n\n“That quiet place I was looking for… it’s not just a location. It’s something you create inside yourself too.”\n\nThere was a silence.\n\n“Wow \" her friend said finally. \"You have changed o”\n\nSomto laughed softly.\n\n“Maybe a little.”\n\nThat day she returned to the same bench.\n\nSame breeze.\n\nSame silence.\n\nThis time she closed her eyes.\n\nInstead of running from her thoughts… she let them settle.\n\nFor the first time, in a long while…\n\nEverything felt calm.\n\n\n<sub>[Image source](https://unsplash.com/photos/seashore-during-golden-hour-KMn4VEeEPR8)</sub>\n\n![1000573341.png](https://files.peakd.com/file/peakd-hive/treasuree/23s9c1MqSx1HhT1yGGJrzoEBDBcyBewncBKsKPuN1kVPXLcoQ7uNM77SbgWqKK6ErUSTg.png)\n</div>",
+        "category": "hive-170798",
+        "children": 0,
+        "community": "hive-170798",
+        "community_title": "The Ink Well",
+        "created": "2026-04-16T08:20:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.3-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmXCLKmmKGnurKRAnURNQmpPjcoLSyjVVtfjM7Fr2gUReu/1776327580517.jpg",
+            "https://files.peakd.com/file/peakd-hive/treasuree/23s9c1MqSx1HhT1yGGJrzoEBDBcyBewncBKsKPuN1kVPXLcoQ7uNM77SbgWqKK6ErUSTg.png"
+          ],
+          "image_ratios": [
+            1.5037593984962403,
+            1.7777777777777777
+          ],
+          "links": [
+            "https://unsplash.com/photos/seashore-during-golden-hour-KMn4VEeEPR8"
+          ],
+          "tags": [
+            "hive-170798",
+            "fiction",
+            "theinkwell",
+            "inkwellprompt",
+            "neoxian",
+            "tribes",
+            "pimp",
+            "indiaunited",
+            "ecency",
+            "hive-engine"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 381959113635,
+        "payout": 0.033,
+        "payout_at": "2026-04-23T08:20:09",
+        "pending_payout_value": "0.033 HBD",
+        "percent_hbd": 10000,
+        "permlink": "a-place-called-peace",
+        "post_id": 149825530,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1
+        },
+        "title": "A Place Called Peace.",
+        "updated": "2026-04-16T08:20:09",
+        "url": "/hive-170798/@treasuree/a-place-called-peace"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 232407374292,
+            "voter": "jagged"
+          },
+          {
+            "rshares": 271840978124,
+            "voter": "firstamendment"
+          },
+          {
+            "rshares": 929525372,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 75522176641,
+            "voter": "dexpartacus"
+          },
+          {
+            "rshares": 969062073032,
+            "voter": "bluemoon"
+          },
+          {
+            "rshares": 4565616954638,
+            "voter": "sanjeevm"
+          },
+          {
+            "rshares": 2444362332,
+            "voter": "buggedout"
+          },
+          {
+            "rshares": 2040420445658,
+            "voter": "tobetada"
+          },
+          {
+            "rshares": 557820897,
+            "voter": "pab.ink"
+          },
+          {
+            "rshares": 2117027863619,
+            "voter": "moeenali"
+          },
+          {
+            "rshares": 2471262997929,
+            "voter": "dwayne16"
+          },
+          {
+            "rshares": 1056718755,
+            "voter": "sshappydayz"
+          },
+          {
+            "rshares": 1206027994,
+            "voter": "hardrockcrypto"
+          },
+          {
+            "rshares": 954007652,
+            "voter": "decepticons"
+          },
+          {
+            "rshares": 363510895648,
+            "voter": "smartvote"
+          },
+          {
+            "rshares": 244440047374,
+            "voter": "stever82"
+          },
+          {
+            "rshares": 740891858,
+            "voter": "sepone"
+          },
+          {
+            "rshares": 3162897963,
+            "voter": "robinsonr810"
+          },
+          {
+            "rshares": 672264095245,
+            "voter": "russia-btc"
+          },
+          {
+            "rshares": 3228867631462,
+            "voter": "claudio83"
+          },
+          {
+            "rshares": 7813086619,
+            "voter": "jahm.alfa"
+          },
+          {
+            "rshares": 1138406123,
+            "voter": "helpmate"
+          },
+          {
+            "rshares": 3888964786,
+            "voter": "zaddyboy"
+          },
+          {
+            "rshares": 0,
+            "voter": "playagame"
+          },
+          {
+            "rshares": 5646687326,
+            "voter": "sephiwolf"
+          },
+          {
+            "rshares": 15952200485,
+            "voter": "crypt0gnome"
+          },
+          {
+            "rshares": 11568911302,
+            "voter": "the-pockets"
+          },
+          {
+            "rshares": 1909442647,
+            "voter": "goldsteve"
+          },
+          {
+            "rshares": 6130959759,
+            "voter": "lightbruce17"
+          },
+          {
+            "rshares": 1363347094078,
+            "voter": "splinterboost"
+          },
+          {
+            "rshares": 765113727,
+            "voter": "quan45"
+          },
+          {
+            "rshares": 809157615,
+            "voter": "aistoryteller"
+          },
+          {
+            "rshares": 0,
+            "voter": "endhivewatchers"
+          }
+        ],
+        "author": "claudio83",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 81.59,
+        "author_role": "mod",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "balaenoptera",
+            "weight": 300
+          }
+        ],
+        "blacklists": [],
+        "body": "Season finales have become my favorite moments because I can finally spend the GLINT rewards I've earned in the dedicated store! This season, I've accumulated just over 360,000 tokens, and I'm using them all to purchase Soulbound cards! Common cards are now almost completely maxed out, while rare cards still require an additional purchase of 100 or more BCX to get most of them at max level!\n\n![1000063151.jpg](https://files.peakd.com/file/peakd-hive/claudio83/23wMPgc2RydGwq8jHFXKT3GVgetHVEgGejpeWCP5AZUPthWxqZMLR9rcp1Urjg8Qaq5H2.jpg)\n___\n\nI used the rest of my tokens entirely to purchase epic cards; I bought 12 of them, and the average card is boosted to level 3. Unfortunately, I concentrated most of my rewards on completing common and rare cards, and I've only started purchasing epics in the last few seasons. The good news is that starting next season, you should be able to purchase an average of 20 cards per season. Considering that each epic card requires 46 BCX for a maxed version, it will take at least two seasons to complete an epic card... Go ahead and take heart! I'm hoping for some epic or legendary cards in the rewards for beating the Diamond II and Diamond I league. Fingers crossed!\n\n<center>\nThank you for taking the time to read this post. If you haven't signed up to Splinterlands yet, I invite you to give it a try. You can use my [referral link](https://steemmonsters.com?ref=claudio83) </center>\n\n# ITA\n\nI finali di stagione oramai sono i miei momenti preferiti perché dalle rewards GLINT ottenuti ora posso finalmente spenderli nel negozio dedicato! Questa stagione ho accumulato poco più di 360k tokens ed io li utilizzo interamente per l'acquisto delle carte Soulbound! Ormai, le carte comuni sono quasi completamente maxate, mentre per le carte rare è ancora necessario un ulteriore acquisto di 100 o più BCX per ottenere gran parte delle stesse al livello max!\n\n![1000063151.jpg](https://files.peakd.com/file/peakd-hive/claudio83/23wMPgc2RydGwq8jHFXKT3GVgetHVEgGejpeWCP5AZUPthWxqZMLR9rcp1Urjg8Qaq5H2.jpg)\n___\n\nIl resto dei tokens li ho interamente consumati per l'acquisto delle carte epiche, ne ho comprate 12 e la media delle carte è potenzianta a livello 3. Purtroppo ho concentrato gran parte delle rewards per il completamento delle carte comuni e rare e solo da poche stagioni ho iniziato ad acquistare anche le epiche. Ma la buona notizia è che dalla prossima stagione doveri riuscire ad acquistare mediamente 20 carte a stagione. Considerato che ogni carta epica richiede 46 BCX per una versione maxata, allora ci vorranno almeno 2 stagioni per completare una carta epica... Forza e coraggio! Spero in qualche carta epica o leggendaria nelle rewards per il superamento della lega Diamond II e Diamond I. Dita incrociate!\n\n<center>\nThank you for taking the time to read this post. If you haven't signed up to Splinterlands yet, I invite you to give it a try. You can use my [referral link](https://steemmonsters.com?ref=claudio83) </center>",
+        "category": "hive-146620",
+        "children": 1,
+        "community": "hive-146620",
+        "community_title": "Olio di Balena",
+        "created": "2026-04-16T08:20:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/claudio83/23wMPgc2RydGwq8jHFXKT3GVgetHVEgGejpeWCP5AZUPthWxqZMLR9rcp1Urjg8Qaq5H2.jpg"
+          ],
+          "tags": [
+            "splinterlands",
+            "arcadecolony",
+            "nfts",
+            "playtoearn",
+            "blockchaingaming"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 18682265810952,
+        "payout": 1.628,
+        "payout_at": "2026-04-23T08:20:09",
+        "pending_payout_value": "1.628 HBD",
+        "percent_hbd": 0,
+        "permlink": "end-of-season-purchases",
+        "post_id": 149825529,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 33
+        },
+        "title": "End of season purchases",
+        "updated": "2026-04-16T08:20:09",
+        "url": "/hive-146620/@claudio83/end-of-season-purchases"
+      },
+      {
+        "active_votes": [],
+        "author": "billygeanss",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 2.32,
+        "beneficiaries": [
+          {
+            "account": "dbuzz",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "Waterproofing in Toronto is an essential service for homeowners dealing with the region’s challenging climate. With frequent rainfall, snowmelt, and fluctuating temperatures, properties in Toronto are especially vulnerable to water intrusion. Basements, in particular, are at high risk due to hydrostatic pressure building up around foundations. Without proper waterproofing, moisture can seep through cracks, leading to structural damage, mold growth, and costly repairs over time.\n\nThere are two primary approaches to waterproofing: interior and exterior systems. Interior waterproofing focuses on managing water that has already entered the basement, typically using drainage systems, sump pumps, and sealants. Exterior waterproofing, on the other hand, prevents water from penetrating the foundation in the first place. This method often involves excavating around the home, applying waterproof membranes, and installing proper drainage solutions. In a city like Toronto, where weather conditions can be unpredictable, many homeowners choose a combination of both methods for maximum protection.\n\nProfessional waterproofing services also include foundation crack repair, weeping tile installation, and moisture control systems. Addressing small issues early can prevent larger structural problems and protect indoor air quality. Mold and mildew thrive in damp environments, making waterproofing not just a structural concern but also a health priority. Experienced contractors assess each property individually, taking into account soil conditions, grading, and the age of the building.\n\nInvesting in waterproofing is a long-term solution that enhances property value and peace of mind. For homeowners in Toronto, it’s not just about fixing current leaks—it’s about preventing future damage and ensuring a dry, safe living space year-round. Whether building a new home or maintaining an older property, proper waterproofing is a crucial step in protecting your investment.",
+        "category": "waterproofing",
+        "children": 0,
+        "created": "2026-04-16T08:19:48",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "description": "waterproofing",
+          "format": "markdown",
+          "tags": [
+            "waterproofing"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "payout": 0,
+        "payout_at": "2026-04-23T08:19:48",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "waterproofing-in-toronto",
+        "post_id": 149825526,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "Waterproofing in Toronto",
+        "updated": "2026-04-16T08:19:48",
+        "url": "/waterproofing/@billygeanss/waterproofing-in-toronto"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 31891366690,
+            "voter": "funnel"
+          },
+          {
+            "rshares": 929525372,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 15318013769,
+            "voter": "grocko"
+          },
+          {
+            "rshares": 1010341324,
+            "voter": "aagabriel"
+          },
+          {
+            "rshares": 9668306081,
+            "voter": "tobias-g"
+          },
+          {
+            "rshares": 9621161721,
+            "voter": "jazzhero"
+          },
+          {
+            "rshares": 667353061,
+            "voter": "fireguardian"
+          },
+          {
+            "rshares": 27349068565,
+            "voter": "ravenmus1c"
+          },
+          {
+            "rshares": 14229380903,
+            "voter": "adamada"
+          },
+          {
+            "rshares": 13739678014,
+            "voter": "sgbonus"
+          },
+          {
+            "rshares": 1255180137,
+            "voter": "bestofph"
+          },
+          {
+            "rshares": 69539734296,
+            "voter": "truthbot"
+          },
+          {
+            "rshares": 944690629,
+            "voter": "nooblogger"
+          },
+          {
+            "rshares": 1405336809115,
+            "voter": "sm-silva"
+          },
+          {
+            "rshares": 6024990564,
+            "voter": "monica-ene"
+          },
+          {
+            "rshares": 326179466691,
+            "voter": "hivetrending"
+          },
+          {
+            "rshares": 1080416158,
+            "voter": "kyleana"
+          },
+          {
+            "rshares": 1742466379,
+            "voter": "vokus"
+          },
+          {
+            "rshares": 1106107160,
+            "voter": "goliathus"
+          },
+          {
+            "rshares": 4079539729,
+            "voter": "rondonshneezy"
+          },
+          {
+            "rshares": 32081595791,
+            "voter": "dadspardan"
+          },
+          {
+            "rshares": 9683275407,
+            "voter": "huzzah"
+          },
+          {
+            "rshares": 4394585881,
+            "voter": "cooperclub"
+          },
+          {
+            "rshares": 1066372089,
+            "voter": "creodas"
+          },
+          {
+            "rshares": 1450403560,
+            "voter": "wizzitywillican"
+          },
+          {
+            "rshares": 1222652199926,
+            "voter": "hive.pizza"
+          },
+          {
+            "rshares": 773088727,
+            "voter": "thecbp-hiver"
+          },
+          {
+            "rshares": 829724674,
+            "voter": "szmobacsi"
+          },
+          {
+            "rshares": 3153499517,
+            "voter": "banzafahra"
+          },
+          {
+            "rshares": 9437300692,
+            "voter": "epicur0"
+          },
+          {
+            "rshares": 13370703877,
+            "voter": "h3m4n7"
+          },
+          {
+            "rshares": 5903517686,
+            "voter": "spiritverve"
+          },
+          {
+            "rshares": 1834284542,
+            "voter": "thedoc07"
+          },
+          {
+            "rshares": 868737156,
+            "voter": "cherute"
+          },
+          {
+            "rshares": 3673214147,
+            "voter": "lothbrox"
+          },
+          {
+            "rshares": 68291675446,
+            "voter": "alohaed"
+          },
+          {
+            "rshares": 1622570940,
+            "voter": "zeclipse"
+          },
+          {
+            "rshares": 1223726934,
+            "voter": "highfist"
+          },
+          {
+            "rshares": 1948452744,
+            "voter": "the-pockets"
+          },
+          {
+            "rshares": 510003764,
+            "voter": "studio3141"
+          },
+          {
+            "rshares": 622914041,
+            "voter": "dalekma"
+          },
+          {
+            "rshares": 1592378236,
+            "voter": "incantia"
+          },
+          {
+            "rshares": 96470758016,
+            "voter": "prosocialise"
+          },
+          {
+            "rshares": 5552167808,
+            "voter": "thoth442"
+          },
+          {
+            "rshares": 2222295501,
+            "voter": "mita3"
+          },
+          {
+            "rshares": 3352455246,
+            "voter": "bhetea01"
+          },
+          {
+            "rshares": 97563596779,
+            "voter": "blkchn"
+          },
+          {
+            "rshares": 3371347359,
+            "voter": "astrothia"
+          },
+          {
+            "rshares": 2324153566,
+            "voter": "exain"
+          }
+        ],
+        "author": "davideownzall",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 73.27,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "actifit.pay",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "An other cloudy day, office time and then time to grab some meat from a local butcher with stuff not full of antibiotics and other crap\n\n![](https://usermedia.actifit.io/c1ebe49b-00ef-4ba9-bfb3-1dcf5bfea514.jpg) <br/> _This report was published via Actifit app ([Android](https://bit.ly/actifit-app) | [iOS](https://bit.ly/actifit-ios)). Check out the original version [here on actifit.io](https://actifit.io/@davideownzall/actifit-davideownzall-20260416t081941009z)_ <br/> <br><img src=\"https://cdn.steemitimages.com/DQmXv9QWiAYiLCSr3sKxVzUJVrgin3ZZWM2CExEo3fd5GUS/sep3.png\"><br><table>\t<tr>\t\t<img src=\"https://actifit.s3.us-east-1.amazonaws.com/ACTIVITYDATE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>15/04/2026</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmRgAoqi4vUVymaro8hXdRraNX6LHkXhMRBZxEo5vVWXDN/ACTIVITYCOUNT.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>660</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmZ6ZT8VaEpaDzB16qZzK8omffbWUpEpe4BkJkMXmN3xrF/ACTIVITYTYPE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><pre><b>Daily Activity</b></div></pre></div>\t</tr></table><div class=\"text-center\"><img src=\"https://cdn.steemitimages.com/DQmW1VsUNbEjTUKawau4KJQ6agf41p69teEvdGAj1TMXmuc/A-5.png\"><a href=\"https://bit.ly/actifit-app\"><img src=\"https://cdn.steemitimages.com/DQmQqfpSmcQtfrHAtzfBtVccXwUL9vKNgZJ2j93m8WNjizw/l5.png\"></a><a href=\"https://bit.ly/actifit-ios\"><img src=\"https://cdn.steemitimages.com/DQmbWy8KzKT1UvCvznUTaFPw6wBUcyLtBT5XL9wdbB7Hfmn/l6.png\"></a></div>",
+        "category": "hive-193552",
+        "children": 0,
+        "community": "hive-193552",
+        "community_title": "Actifit",
+        "created": "2026-04-16T08:19:42",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "actiCrVal": "866a4c6a3de8c5d562239928c19d7b6314c41b623c65d4df88e7475a84936284b1b7293a14c4730641d07a8bcd7c53fec92d7d981d16f219a6a3d59fd40f4c91",
+          "actifitUserID": [
+            "1039cad6-2cf0-400e-abf7-11694bc24a5bv0.12.3"
+          ],
+          "activityDate": [
+            "20260415"
+          ],
+          "activity_type": [
+            "Daily Activity"
+          ],
+          "app": "actifit/0.12.4",
+          "appType": "Android",
+          "chestUnit": [
+            "cm"
+          ],
+          "community": [
+            "hive-193552"
+          ],
+          "dataTrackingSource": [
+            "Device Tracking"
+          ],
+          "detailedActivity": [
+            "070050|071541|073057|074539|08003|08155|083088|084541|090037|091557|093073|094540|1000100|103029|"
+          ],
+          "heightUnit": [
+            "cm"
+          ],
+          "image": [
+            "https://usermedia.actifit.io/c1ebe49b-00ef-4ba9-bfb3-1dcf5bfea514.jpg",
+            "https://cdn.steemitimages.com/DQmW1VsUNbEjTUKawau4KJQ6agf41p69teEvdGAj1TMXmuc/A-5.png"
+          ],
+          "step_count": [
+            "660"
+          ],
+          "tags": [
+            "hive-193552",
+            "Actifit",
+            "spring",
+            "flower",
+            "nature",
+            "pob",
+            "bee",
+            "bbh",
+            "",
+            "sportstalk",
+            "movetoearn",
+            "move2earn"
+          ],
+          "thighsUnit": [
+            "cm"
+          ],
+          "timezone": [
+            "GMT+02:00"
+          ],
+          "users": [
+            "actifit"
+          ],
+          "waistUnit": [
+            "cm"
+          ],
+          "weightUnit": [
+            "kg"
+          ],
+          "yesterdayReport": [
+            "1"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 3539554596410,
+        "payout": 0.308,
+        "payout_at": "2026-04-23T08:19:42",
+        "pending_payout_value": "0.308 HBD",
+        "percent_hbd": 10000,
+        "permlink": "actifit-davideownzall-20260416t081941009z",
+        "post_id": 149825524,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 49
+        },
+        "title": "My Actifit Report Card: April 15 2026",
+        "updated": "2026-04-16T08:19:42",
+        "url": "/hive-193552/@davideownzall/actifit-davideownzall-20260416t081941009z"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 722087429,
+            "voter": "iyanpol12"
+          },
+          {
+            "rshares": 5695874297,
+            "voter": "afterglow"
+          },
+          {
+            "rshares": 8083294520,
+            "voter": "shula14"
+          },
+          {
+            "rshares": 3991469670,
+            "voter": "maki07"
+          },
+          {
+            "rshares": 680379649,
+            "voter": "franbel"
+          }
+        ],
+        "author": "iyanpol12",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 73.37,
+        "author_role": "member",
+        "author_title": "CCH☑️3",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![IMG_20260415_200547.jpg](https://images.hive.blog/DQmbgT5S6Mo5Jj34wBTLNAqggYoc3Gi9F7fX8pSyPgUJzE9/IMG_20260415_200547.jpg)\n\n### One More Light \nI had currently listened to Linkin Park's album \"One More Light\". It was the last album by Linkin Park with Chester Bennington as the lead vocalist. They recently released a new one with new vocalist, a female one, Emily Armstrong. \nGoing back to \"One More Light\" album, it received massive backlash then particularly from fans, and of course, merely bashers. It's due to its softer tones like pop, mild rock, etc. I admit when I heard the album for the first time, it doesn't sound Linkin Park. I actually hoped the \"Hybrid Theory\" kind of at least quite close to that. Still, I loved the songs. They're not the bad for me. Hence, I don't agree with the backlash the band received. \nThe backlash obviously affected the band especially Chester Bennington, who eventually unalived himself not too long from the release of \"One More Light\". Those who initially hated the album eventually expressed their appreciation on the album especially the lyrics on the songs. \n\n### Thursday \nWe're early again to support our deaf field service. Hopefully, we're able to support the whole week of CO Visit. It's an encouraging week that hopefully all of us can join in. \n\n### San Carlos to Dagupan City\nMy wife and I went to San Carlos City to support our deaf field service. Too bad, we had the wrong way going back home. As we're enjoying chatting with each other on the car, I just noticed that the driver took the opposite road which is going to Dagupan City. It's fine though, my wife and I had got to date in the mall, particularly in Takoyadon for some ramen. \n\n![IMG_20260415_200529.jpg](https://images.hive.blog/DQmcCyBkusHD8jBKCXxDjcNVB6yTnkiQef5XRkCizxbqM7b/IMG_20260415_200529.jpg)\n\n![IMG_20260415_200516.jpg](https://images.hive.blog/DQmR5Xv9qwu4zEhQejRzcAmb3XjLuyFmWVVbQBZAjU2EVGK/IMG_20260415_200516.jpg)\n\n![IMG_20260415_200503.jpg](https://images.hive.blog/DQmeS4bhziEkeDXyMMEmbDGKtb6mGTe9Uc3eQagpzznU51k/IMG_20260415_200503.jpg)\n\n![IMG_20260415_200449.jpg](https://images.hive.blog/DQmRVr765CpHvXnJr5FufZ3qf1FMwKx9bmypTvw2EndUJFF/IMG_20260415_200449.jpg)\n",
+        "category": "hive-117778",
+        "children": 0,
+        "community": "hive-117778",
+        "community_title": "CCH",
+        "created": "2026-04-16T08:19:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.8-vision",
+          "description": "One More Light I had currently listened to Linkin Park's album \"One More Light\". It was the last album by Linkin Park with Chester Bennington as the lead vocalist. They recently released a new",
+          "format": "markdown+html",
+          "image": [
+            "https://images.hive.blog/DQmbgT5S6Mo5Jj34wBTLNAqggYoc3Gi9F7fX8pSyPgUJzE9/IMG_20260415_200547.jpg",
+            "https://images.hive.blog/DQmcCyBkusHD8jBKCXxDjcNVB6yTnkiQef5XRkCizxbqM7b/IMG_20260415_200529.jpg",
+            "https://images.hive.blog/DQmR5Xv9qwu4zEhQejRzcAmb3XjLuyFmWVVbQBZAjU2EVGK/IMG_20260415_200516.jpg",
+            "https://images.hive.blog/DQmeS4bhziEkeDXyMMEmbDGKtb6mGTe9Uc3eQagpzznU51k/IMG_20260415_200503.jpg",
+            "https://images.hive.blog/DQmRVr765CpHvXnJr5FufZ3qf1FMwKx9bmypTvw2EndUJFF/IMG_20260415_200449.jpg"
+          ],
+          "image_ratios": [
+            "1.0000",
+            "1.3278",
+            "1.3278",
+            "1.3278",
+            "1.3278"
+          ],
+          "tags": [
+            "hive-117778",
+            "cch",
+            "ecency",
+            "palnet",
+            "neoxian",
+            "waivio",
+            "cent",
+            "meme",
+            "pob",
+            "r2cornell"
+          ],
+          "thumbnails": [
+            "https://images.hive.blog/DQmbgT5S6Mo5Jj34wBTLNAqggYoc3Gi9F7fX8pSyPgUJzE9/IMG_20260415_200547.jpg"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 19173105565,
+        "payout": 0.001,
+        "payout_at": "2026-04-23T08:19:30",
+        "pending_payout_value": "0.001 HBD",
+        "percent_hbd": 10000,
+        "permlink": "one-more-light-thursday-san",
+        "post_id": 149825523,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 5
+        },
+        "title": "One More Light / Thursday / San Carlos to Dagupan City ",
+        "updated": "2026-04-16T08:19:30",
+        "url": "/hive-117778/@iyanpol12/one-more-light-thursday-san"
+      },
+      {
+        "active_votes": [],
+        "author": "wickedfizz",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 49.97,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "https://shorturl.at/d1vmw\n![](https://images.ecency.com/DQma6bKyePicvAEdSZh8VMaEPX7JRob5LbWLZngzxSWd9rm/1776326023296.jpg)\n\n\n\nSometimes in life, the biggest efforts are the ones no one talks about. They happen quietly, inside homes, inside daily routines, inside ordinary moments. For a long time, I never really thought about it. Life was just moving normally, and I assumed everything worked that way naturally.\nBut one day something small happened that changed the way I see everyday life.\nI remember when I was younger, I would wake up in the morning and everything was already ready. Breakfast was on the table, my clothes were washed, the house looked clean, and everything felt normal. As a child I never stopped to think how all of this actually happened. It just felt like part of life.\nOne day I woke up very early, earlier than usual. The house was quiet. Outside the sun was just starting to rise. I walked into the kitchen and saw someone already working there, preparing things for the day. It was not something special, just normal daily work. But for the first time I realized that this “normal” routine actually takes effort.\nReal effort.\nFrom that day, I slowly started noticing many small things that I had ignored before.\nFor example, when guests come to the house, people only see the clean rooms, the prepared food, and the smiling faces. But they don’t see the hours of preparation before that moment. They don’t see the planning, the cleaning, the cooking, and the small worries that everything should go well.\nAnother example I noticed in daily life is when someone in the family gets sick. Suddenly the house changes rhythm. Someone starts paying extra attention, making sure medicines are taken, food is prepared properly, and everyone else in the house continues their normal routine. Most of the time, people only remember the person who was sick, but rarely the person who quietly managed everything around them.\nI also remember a time when our family was going through a stressful period. Everyone was worried about different things. At that time I noticed how someone in the house kept trying to maintain peace. Even when feeling tired, they still spoke calmly, still helped others, still tried to keep the home environment stable.\nThose efforts were never announced.\nNo one said, “Look how much work this takes.”\nBut those efforts held the family together.\nAnother thing I realized is that appreciation often comes very late. Sometimes years later we suddenly remember small things from our childhood. We remember who woke up early for us, who waited late at night, who kept things organized even when life was difficult.\nAnd then we think… we never really said thank you.\nNow when I look at everyday life, I try to notice these quiet efforts more carefully. They may not appear on social media, they may not become big achievements, and people rarely celebrate them.\nBut honestly, many homes, many families, and many peaceful lives exist because of these unnoticed efforts.\nSometimes the strongest contributions in life are not loud, not visible, and not rewarded.\nThey are simply done out of care.\nAnd maybe the least we can do is learn to notice them. 🌿",
+        "category": "hive-124452",
+        "children": 0,
+        "community": "hive-124452",
+        "community_title": "Ladies of Hive",
+        "created": "2026-04-16T08:18:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.3-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQma6bKyePicvAEdSZh8VMaEPX7JRob5LbWLZngzxSWd9rm/1776326023296.jpg"
+          ],
+          "image_ratios": [
+            1.5
+          ],
+          "links": [
+            "https://shorturl.at/d1vmw"
+          ],
+          "tags": [
+            "hive-124452",
+            "hive",
+            "inspiration",
+            "ecencial",
+            "ecency",
+            "ladiesofhive"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "payout": 0,
+        "payout_at": "2026-04-23T08:18:30",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "the-day-i-realized-how",
+        "post_id": 149825518,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "The Day I Realized How Much Effort Goes Unnoticed",
+        "updated": "2026-04-16T08:18:30",
+        "url": "/hive-124452/@wickedfizz/the-day-i-realized-how"
+      },
+      {
+        "active_votes": [],
+        "author": "hiveheist.app",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 47.93,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Vault #6 is in its final hour. The pot is sitting at 27.200 HIVE and the window to get your guess in is almost closed.\n\n## Live Vault Snapshot\n- Current pot: 27.200 HIVE\n- Seeded at: 25.400 HIVE\n- Entry fee: 0.500 HIVE\n- Total entries so far: 4\n- Resolution block: `105566951`\n- Estimated close: 2026-04-16 09:17:46 UTC\n- Live vault: https://hiveheist.com/vault\n\nAll guesses remain hidden until the resolution block lands. Once the vault closes, HiveHeist publishes the full outcomes post with the combination, every revealed guess, every payout, and the carryover into the next vault.\n\nIf you want in, this is the window.",
+        "category": "hive",
+        "children": 0,
+        "created": "2026-04-16T08:17:45",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveheist/1.0",
+          "format": "markdown",
+          "hiveheist": {
+            "milestone": "1h",
+            "resolutionBlock": 105566951,
+            "vaultNumber": 6
+          },
+          "links": [
+            "https://hiveheist.com/vault"
+          ],
+          "tags": [
+            "hive",
+            "hiveheist",
+            "gaming",
+            "crypto",
+            "jackpot"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "payout": 0,
+        "payout_at": "2026-04-23T08:17:45",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "vault-6-1h-remaining",
+        "post_id": 149825514,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "Vault #6 Final Hour",
+        "updated": "2026-04-16T08:17:45",
+        "url": "/hive/@hiveheist.app/vault-6-1h-remaining"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 6093051991256,
+            "voter": "ripperone"
+          },
+          {
+            "rshares": 149989390424,
+            "voter": "xyzashu"
+          },
+          {
+            "rshares": 73921348318,
+            "voter": "paasz"
+          },
+          {
+            "rshares": 33096903025,
+            "voter": "fionasfavourites"
+          },
+          {
+            "rshares": 5855646323,
+            "voter": "hafiz34"
+          },
+          {
+            "rshares": 23728666082,
+            "voter": "mytechtrail"
+          },
+          {
+            "rshares": 1107017220,
+            "voter": "flaxz"
+          },
+          {
+            "rshares": 6335153927,
+            "voter": "mrsbozz"
+          },
+          {
+            "rshares": 1854980808,
+            "voter": "db-dave"
+          },
+          {
+            "rshares": 32018239248,
+            "voter": "thisisawesome"
+          },
+          {
+            "rshares": 74339338758,
+            "voter": "lisamgentile1961"
+          },
+          {
+            "rshares": 1863174676,
+            "voter": "khalctp"
+          },
+          {
+            "rshares": 109427458763,
+            "voter": "unpopular"
+          },
+          {
+            "rshares": 0,
+            "voter": "pjansen.ctp"
+          },
+          {
+            "rshares": 1641419408,
+            "voter": "iceledy"
+          },
+          {
+            "rshares": 21884661475,
+            "voter": "chmoen"
+          },
+          {
+            "rshares": 884445649,
+            "voter": "optional"
+          },
+          {
+            "rshares": 9882373271,
+            "voter": "day1001"
+          },
+          {
+            "rshares": 290068493473,
+            "voter": "alonicus"
+          },
+          {
+            "rshares": 9109734960,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 1011494374,
+            "voter": "pof.leo"
+          },
+          {
+            "rshares": 2831723985,
+            "voter": "dewabrat"
+          },
+          {
+            "rshares": 354978478219,
+            "voter": "duo-curator"
+          },
+          {
+            "rshares": 989532186,
+            "voter": "indeedly"
+          },
+          {
+            "rshares": 7308413527,
+            "voter": "vote.army"
+          },
+          {
+            "rshares": 277407123,
+            "voter": "project1hp"
+          }
+        ],
+        "author": "bradleyarrow",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.9,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "https://images.hive.blog/0x0/https://files.peakd.com/file/peakd-hive/thebbhfoundation/23zbQ3S7JhFRDQRDEa2vrpYwGMTLLie44rUgMGZhsj6M91c3dKGSXdamNUWAvB9N4dmFN.png\n\nPlease check out @valderalazaro  blog post [Carta a mi futuro yo](https://peakd.com/pizza/@valderalazaro/carta-a-mi-futuro-yo)\n\nAnd also @valderalazaro wife @diazktty [Cuando las historias me devolvieron la vida](https://peakd.com/leo/@diazktty/cuando-las-historias-me-devolvieron-la-vida)\n\nAnd please check out @cathyarrow blog post [Hump day hooray !](https://peakd.com/aliveandthriving/@cathyarrow/hump-day-hooray-)\n\n## DEDICATION\n \nLet me start with the fact that I have been on this blockchain now for 2446 days. And I am extreamly proud to say my posting streak continues. I have now done at last one post a day for 2446 days.\n\nOn the road to 3000.\n\nIf you are trying to build something on Hive, if you are trying get noticed on Hive. This is the type of dedication it takes.\n\nI tell you this now every day now to try and motivate you. As your noticed I already have the dedication.\n\n https://img.leopedia.io/DQmc5vAtLnUJ9pDinFk6kyBhydS4s2mfaJp3PLKTNH4AKQ6/image.png \n https://img.leopedia.io/DQmcKXNZos8g9zKBTCQRq1Q75XtrGPX2ZGZpNH5MGzrGob2/image.png \n\n[The BBH Project Tribe](https://www.thebbhproject.com/)\n\n https://img.leopedia.io/DQmPZC61gD9LN6ZnssvLJykVr9vzWUW2xguCwaG4dXiPaeW/image.png \n\n[VOTE FOR THE BBH PROJECT WITNESS](https://witness.the-hive-mobile.app/#/witnesses/@thebbhproject) \n\n## MISSION STATEMENT\n\nTo make The BBH Project the most profitable passive income token project on Hive.\n\nBBH INCEPTION - 25TH NOV 2020\nBBH RELEASE PRICE TODAY: 0.01242 HIVE\n\nRemember 1 BBH equals 1 Satoshi. So as Hive out performs Bitcoin the cost in Hive to buy BBH goes down. BBH is softpegged to BTC.\n\n## ENCOURAGEMENT IS GREAT MEDICINE\n\nI am learning a lot from helping others. About myself and about people.\n\nIt is so awesome to see Cathy posting almost every day, to see Laz posting everyday, and for Katy his wife getting into posting, she has now done her second. Links to all three at the top of this post.\n\nI have been encouraging all three of them to post. Even though the full understandng of Hive is  not there. Newbies do not need to understand all the ins and out of HIve to get started. As time goes by they will learn some on their own, and through coaching and encouragement they will learn more.\n\nI am getting inspired. No matter how tired I am when I get up at 5:10am, when I open my laptop the first thing I do is check to see if they all have posted. And when I see that they have it brings a smile tomy face. This encouragement I give comes back ten fold to me. When I see them posting I get encouraged.\n\nAll I can say is I would love to get enough funds into @thebbhfoundation so Cathy and I can find another family to help and hopefully get them onboard to Hive and they do as well as Laz and his wife are doing at the moment. \n\nAWESOME FRACKING SAUCE\n\n## THE BBH FOUNDATION \n \nI have added @thebbhfoundation  as a benifshery on my posts now, that should kick in in a few days. That will help. You could do the same ;) Also help spread the word. Talk it up in a blog post, etc.\n\nI know it is early days and if I stay persistant anc consistent like you all know I can be this will become something wonderful.\n\nPlease don't forget to donate what you can to @thebbhfoundation so Cathy and I can support others in Cuba and around the world.\n\nLets keep this going. Lets keep helping people in need.\n\n\nIf you know anyone in Cuba you can nominate them for future help. Just write a great story for me and @cathyarrow to review.\n\n\n\nHave an awesome fracking sauce day.\n\nLoves you @cathyarrow \n\n\n\n## DELEGATION TO THE BBH PROJECT\n\n We are now at Received:  130,104 HP up FROM 130,093 HP in delegation from yesterday. Whoop Whoop. Keep it coming people. Lets aim for 200K :)\n\nIt would be awesome to get this growing.\n\nA giant thank you to @borniet, he is an awesome coder.\n\nPlease help spread the word.\n\nUsing the @bradleyarrow account for the incoming delegation.\n\nHere is what it is offering.\n\nDaily payouts at 23:57 UTC.\n\nYou get 80 percent payout of curation in Hive.\nYou get 20 percent payout of curation in BBH.\n\nFor 100 percent payout of curation.\n\n\nBut being an open blockchain anyone that wants to check this accout for the incoming delegation, you can :)\n\nNext goal is to get to 250K in delegation.\n\nHow awesome fracking sauce is that.\n\nTo the future ;)\n\n\n## WITNESS UPDATE AND SUPPORT PUSH\n\n\n558 awesome fracking sauce days as a witness we managed to get into 62nd place. What a battle this is. What a battle this is. Up to 459 suporters. 459 supporters, did you read that. That is Awesome Fracking Sauce. Nothing wrong with that But I want more, I want to keep growing fast, moving up the charts fast. Business mindset people.. Now the hard part begins. Getting the word out to more people.\n\n https://img.leopedia.io/DQmbuApefcuizpsf8uVs3FSEtFGwfcCmomaQaYP2JNecQ1h/image.png \n\n\nI know we will keep moving up the charts. ***The higher we are, the more Hive income there is, and the higher Drip Day payouts will get. Remember that. That is what is important. ***\n\nThis morning we are in 62nd at 8,923,735 in support. Yesterday we where at 8,919,741 HP in support. To get into 61st place we need another  259,757 in support . Yesterday we needed 256,291 in support. We need alot of little or some big support to come in. Tell the world.\n\n\n## WHITE PAPER FOR THE BBH PROJECT\n\nHere it is, the updated [THE BBH PROJECT WHITE PAPER.](https://peakd.com/bbh/@bbhstrategy/bbhstrategy-the-bbh-project-updated-white-paper)\n\n## CURATION TRAIL\n\nNo new members to the [Curation Trail](https://peakd.com/hive-155221/@bradleyarrow/joining-a-curation-trail-updated) over in the last 24 hours. But I did spend time last evening updating things as I been slack with the trail.\n\nThe new goal of 800 members by the end of 2026.\n\nWhat is the point of a curation trail and why should I join?\n\nAny post that I up vote, everyone that is upto 442 possible upvotes.\n\nWhen you join the trail you can set your trail vote to what ever you want. Even if you set the up vote to 0.01. Imagine if we had 1,000 people in the trail that would be 10.00 to the post. Fantastic stuff. A little difference can end up making a giant difference to a Hiver.\n\nThat being said, we do have 442 members, I know not all are active, some have passed, but the majority of use are still here.\n\nImagine if we could get 100 people doing just 1 blog post about the curation trail. Do you think the membership would go up quickly?\n\nGive it a shot, the more, the better for everyone.\n\nAnd if you are following the trail please support our witness. @thebbhproject. \n\n## DRIP DAY \n\nSaturdays are Drip Day. That means it is/was drip day. Now if you are not a regular reader of mine you are wondering what is drip day.\n\nI run a income token and tipping bot all in one. The token is BBH. Every Saturday I payout the people holding BBH tokens. Passive income if you like. I like to call it a 'drip' of a token(s) to the people that own BBH tokens. And unlike some all you have to do is own it. No staking, no nothing.\n\nIf you own 10 or more BBH tokens you got a drip of swap.hive.\nIf you own 1,000 or more BBH tokens you get a drip of swap.hive and TOOFUCKEH.\nIf you own 5,000 or more BBH tokens you got a drip of swap.hive and the PIMP token, TOOFUCKEH, GLITTER and CTP Tokens.\nIf you own 10,000 or more BBH tokens you got a drip of swap.hive, PIMP, TOOFUCKEH, GLITTER, CTP, and LEO tokens.\n\nIf you stake 20,000 or more BBHO tokens you get a drip of swap.btc, and ALIVE tokens\nIf you stake 5,000 or more BBHO tokens you got a drip of ALIVE tokens.\n\nAll just for owning BBH. There are two ways you can get BBH. First you can buy them from the open market. I use TribalDex myself.\n\nOr they can be tipped to you. The great part about BBH tipping is that when you tip a token to someone else you do not loose any of your own. There is a central pool that supplies them.\n\nAnd a third way to get BBH would be people gift them to you. There was an update to the tipping bot. If you now tip 1 BBH you get 1 BBH also. How facking awesome is that.\n\nAnd now a forth way to get BBH with the BBH Miner.\n \n\n## BBH RELEASE PRICE\n\nI now set the release price of BBH to the markets daily. It is an open market so sometimes you can pick up deals when others are selling cheaper than my set price. The goal is to have 1 BBH = 1 Satoshi. I do a bit of math and get the price. If Bitcoin is stronger than Hive then the price of one BBH goes up and if Hive is strong than Bitcoin then the price goes down.\n\nHere is the last week worth of price settings.  \n\n | 10 Apr 2026 | 71554 | 0.05951 | 100000000 | 0.01202 | \n| --- | --- | --- | --- | --- |\n| 11 Apr 2026 | 72830 | 0.05948 | 100000000 | 0.01224 |\n| 12 Apr 2026 | 70916 | 0.05843 | 100000000 | 0.01214 |\n| 13 Apr 2026 | 70810 | 0.05791 | 100000000 | 0.01223 |\n| 14 Apr 2026 | 74556 | 0.05859 | 100000000 | 0.01273 |\n| 15 Apr 2026 | 73713 | 0.05839 | 100000000 | 0.01262 |\n| 16 Apr 2026 | 74761 | 0.06018 | 100000000 | 0.01242 |\n \n \n## BBH AND BBHO TOKEN DIFFERENCE\nIt seems some people are still confused. So I am putting this section into my daily post.\n\nBBH token was my first token. It is a tipping bot and a passive income token. You only need to hold it, hold 10 or more to get a drip on dripday(below).\n\nBBHO token is the native token of The BBH Project Tribe. The same as LEO is the native token of InLeo.\n\nIt is that simple. I did add drips to stakers of BBHO also as I work on building out use cases for the token.\n\nHope this helps.\n\n## TIPPING\nIn a 24 hour period, reset at new day UTC. There are currently five levels of tipping.\n\nLevel 1 = 1000 BBH holdings = 1 tip per day you can send\nLevel 2 = 5000 BBH holdings = 5 tips per day you can send\nLevel 3 = 10000 BBH holdings = 10 tips per day you can send\nLevel 4 = 20000 BBH holdings = 20 tips per day you can send\nLevel 5 = 50000 BBH holdings = 50 tips per day you can send\nLevel 6 = 100,000 BBH holdings = 100 tips per day you can send\n\nThe tipping command is ! BBH\n\n## GOALS FOR 2026\n\n1. @thebbhproject Witness - get into the top 20\n2. Hive-Engine Witness - get and stay into the top 20\n3. VSC Witness - This is wait and see on how/when it is live and the earnings\n4. Delegation to the project through the bradleyarrow account upto 1 Million\n5. Curation Trail double from 400 to 800 people.\n6. Get The BBH Project Tribe/Outpost to our own server\n\nPosted Using [INLEO](https://inleo.io/@bradleyarrow/chase-the-escape-artist-4ae)",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-04-16T08:16:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@bradleyarrow/encouragement-is-great-medicine-ayw",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://images.hive.blog/0x0/https://files.peakd.com/file/peakd-hive/thebbhfoundation/23zbQ3S7JhFRDQRDEa2vrpYwGMTLLie44rUgMGZhsj6M91c3dKGSXdamNUWAvB9N4dmFN.png",
+            "https://img.leopedia.io/DQmc5vAtLnUJ9pDinFk6kyBhydS4s2mfaJp3PLKTNH4AKQ6/image.png",
+            "https://img.leopedia.io/DQmcKXNZos8g9zKBTCQRq1Q75XtrGPX2ZGZpNH5MGzrGob2/image.png",
+            "https://img.leopedia.io/DQmPZC61gD9LN6ZnssvLJykVr9vzWUW2xguCwaG4dXiPaeW/image.png",
+            "https://img.leopedia.io/DQmbuApefcuizpsf8uVs3FSEtFGwfcCmomaQaYP2JNecQ1h/image.png"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://peakd.com/pizza/@valderalazaro/carta-a-mi-futuro-yo)",
+            "https://peakd.com/leo/@diazktty/cuando-las-historias-me-devolvieron-la-vida)",
+            "https://peakd.com/aliveandthriving/@cathyarrow/hump-day-hooray-)",
+            "https://www.thebbhproject.com/)",
+            "https://witness.the-hive-mobile.app/#/witnesses/@thebbhproject)",
+            "https://peakd.com/bbh/@bbhstrategy/bbhstrategy-the-bbh-project-updated-white-paper)",
+            "https://peakd.com/hive-155221/@bradleyarrow/joining-a-curation-trail-updated)",
+            "https://inleo.io/@bradleyarrow/chase-the-escape-artist-4ae)"
+          ],
+          "tags": [
+            "hive-167922",
+            "bbh",
+            "aliveandthriving",
+            "cent",
+            "neoxian",
+            "ctp",
+            "bitcoin",
+            "tip",
+            "drip",
+            "positivity"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 7307457486478,
+        "payout": 0.636,
+        "payout_at": "2026-04-23T08:16:21",
+        "pending_payout_value": "0.636 HBD",
+        "percent_hbd": 10000,
+        "permlink": "encouragement-is-great-medicine-ayw",
+        "post_id": 149825501,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 26
+        },
+        "title": "ENCOURAGEMENT IS GREAT MEDICINE",
+        "updated": "2026-04-16T08:16:21",
+        "url": "/hive-167922/@bradleyarrow/encouragement-is-great-medicine-ayw"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 4524178889392,
+            "voter": "redes"
+          },
+          {
+            "rshares": 5786397718,
+            "voter": "smasssh"
+          },
+          {
+            "rshares": 919767456,
+            "voter": "josequintana"
+          },
+          {
+            "rshares": 384105929181,
+            "voter": "andyjaypowell"
+          },
+          {
+            "rshares": 7632016790,
+            "voter": "xyzashu"
+          },
+          {
+            "rshares": 3889309754572,
+            "voter": "geekgirl"
+          },
+          {
+            "rshares": 51539757550,
+            "voter": "eturnerx"
+          },
+          {
+            "rshares": 387594829213,
+            "voter": "bluemoon"
+          },
+          {
+            "rshares": 71228089038,
+            "voter": "dine77"
+          },
+          {
+            "rshares": 64355307679,
+            "voter": "pixelfan"
+          },
+          {
+            "rshares": 89739987263,
+            "voter": "chetanpadliya"
+          },
+          {
+            "rshares": 51891371992,
+            "voter": "horpey"
+          },
+          {
+            "rshares": 103266786177,
+            "voter": "syedumair"
+          },
+          {
+            "rshares": 1937567289447,
+            "voter": "nainaztengra"
+          },
+          {
+            "rshares": 1285523010,
+            "voter": "munawar1235"
+          },
+          {
+            "rshares": 454616739551,
+            "voter": "karja"
+          },
+          {
+            "rshares": 733703093817,
+            "voter": "drax"
+          },
+          {
+            "rshares": 9383654436,
+            "voter": "fatman"
+          },
+          {
+            "rshares": 53500306199,
+            "voter": "votehero"
+          },
+          {
+            "rshares": 54545198743,
+            "voter": "msp-makeaminnow"
+          },
+          {
+            "rshares": 15452787159,
+            "voter": "isnochys"
+          },
+          {
+            "rshares": 636631856057,
+            "voter": "joetunex"
+          },
+          {
+            "rshares": 1319901122259,
+            "voter": "rtonline"
+          },
+          {
+            "rshares": 2304744969823,
+            "voter": "abbak7"
+          },
+          {
+            "rshares": 988585033,
+            "voter": "kaniz"
+          },
+          {
+            "rshares": 636146369,
+            "voter": "kamchore"
+          },
+          {
+            "rshares": 454266018704,
+            "voter": "adelepazani"
+          },
+          {
+            "rshares": 2397265351692,
+            "voter": "chorock"
+          },
+          {
+            "rshares": 635073359086,
+            "voter": "moeenali"
+          },
+          {
+            "rshares": 3209650673,
+            "voter": "nanobot"
+          },
+          {
+            "rshares": 743323603,
+            "voter": "zemiatin"
+          },
+          {
+            "rshares": 3005466549,
+            "voter": "thales7"
+          },
+          {
+            "rshares": 229847915713,
+            "voter": "harkar"
+          },
+          {
+            "rshares": 53830637051,
+            "voter": "voter001"
+          },
+          {
+            "rshares": 1657836060,
+            "voter": "piensocrates"
+          },
+          {
+            "rshares": 2581205797,
+            "voter": "projectdignity"
+          },
+          {
+            "rshares": 3524376720,
+            "voter": "chunkysoupsvc"
+          },
+          {
+            "rshares": 1565667896458,
+            "voter": "libertycrypto27"
+          },
+          {
+            "rshares": 24587337513,
+            "voter": "h-hamilton"
+          },
+          {
+            "rshares": 7425605802,
+            "voter": "natural.alfa"
+          },
+          {
+            "rshares": 39323472012,
+            "voter": "unpopular"
+          },
+          {
+            "rshares": 0,
+            "voter": "pjansen.leo"
+          },
+          {
+            "rshares": 0,
+            "voter": "pjansen.ctp"
+          },
+          {
+            "rshares": 1047767409,
+            "voter": "daily-airdrop"
+          },
+          {
+            "rshares": 519758994374,
+            "voter": "curamax"
+          },
+          {
+            "rshares": 4193925726,
+            "voter": "borbolet"
+          },
+          {
+            "rshares": 930410703317,
+            "voter": "digital-fortress"
+          },
+          {
+            "rshares": 36784065974,
+            "voter": "occidae"
+          },
+          {
+            "rshares": 4189201682,
+            "voter": "marsupia"
+          },
+          {
+            "rshares": 1936474655,
+            "voter": "day1001"
+          },
+          {
+            "rshares": 9109734960,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 474868826,
+            "voter": "bgmoha"
+          },
+          {
+            "rshares": 2495185182,
+            "voter": "tekraze"
+          },
+          {
+            "rshares": 1256118510996,
+            "voter": "thisisbaris"
+          },
+          {
+            "rshares": 108726011637,
+            "voter": "nexo0702"
+          }
+        ],
+        "author": "chorock",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 77.98,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "Bitcoin Price is trying to enter mini bullish trend Even it is in an ascending channel. There was great downtrend line on Bitcoin price chart and It is broken up. Even it is broken up we have not seen price pump on Bitcoin price chart. Because there are lots of resistance on Bitcoin price chart.\n\nHere you can see daily chart of Bitcoin price. The middle line of this channel is another great resistance for Bitcoin price chart. There is also a horizontal resistance on this chart. Bitcoin price should up these resistances to enter bullish trend. \n\nToday Bitcoin price is resisted by 100-day moving average. We may see reversing down after touching this resistance. \n\n![e1.PNG](https://files.peakd.com/file/peakd-hive/chorock/48FiE5w3akSHCGDZ5cjMSJRe9j3CeyJN4t7fWbtVrujQLapuWoWjNztfHhWKQGFwAP.PNG)\n\nHere you can see the indicators on daily chart of Bitcoin price. With today situation, It is so hard to break up these resistance. Fisher Indicator is on the top. RSI Indicator touched great resistance. MACD Indicator may break down mini uptrend line. These are signal of possible next price drop on Bitcoin price. \n\nIt is so possible to reverse down from this level. If we see reverse down on Bitcoin price, These indicators will break up uptrend lines and Bitcoin price will enter another bearish trend.\n\n![e2.PNG](https://files.peakd.com/file/peakd-hive/chorock/23t78tv3n54zty6iWsNBmmjVJBxUKakyLnwWqoRcudFSYYSP17DkSNVDDtHLwvVt53UGF.PNG)\n\nWe may see the new updates on WW3 and It may effect Bitcoin and stock market prices.\n\nWe should be careful for this possibility.\n\nWe will see..\n\nPosted Using [INLEO](https://inleo.io/@chorock/bitcoin-price-touched-100day-moving-average-for-2nd-time-f9q)",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-04-16T08:14:45",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@chorock/bitcoin-price-touched-100day-moving-average-for-2nd-time-f9q",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "links": [
+            "https://files.peakd.com/file/peakd-hive/chorock/48FiE5w3akSHCGDZ5cjMSJRe9j3CeyJN4t7fWbtVrujQLapuWoWjNztfHhWKQGFwAP.PNG)",
+            "https://files.peakd.com/file/peakd-hive/chorock/23t78tv3n54zty6iWsNBmmjVJBxUKakyLnwWqoRcudFSYYSP17DkSNVDDtHLwvVt53UGF.PNG)",
+            "https://inleo.io/@chorock/bitcoin-price-touched-100day-moving-average-for-2nd-time-f9q)"
+          ],
+          "tags": [
+            "hive-167922",
+            "proofofbrain",
+            "neoxian",
+            "palnet",
+            "cent",
+            "ctp",
+            "bitcoin",
+            "analysis",
+            "vyb",
+            "posh"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 25451761054095,
+        "payout": 2.218,
+        "payout_at": "2026-04-23T08:14:45",
+        "pending_payout_value": "2.218 HBD",
+        "percent_hbd": 0,
+        "permlink": "bitcoin-price-touched-100day-moving-average-for-2nd-time-f9q",
+        "post_id": 149825496,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 55
+        },
+        "title": "Bitcoin Price Touched 100-Day Moving Average for 2nd Time",
+        "updated": "2026-04-16T08:14:45",
+        "url": "/hive-167922/@chorock/bitcoin-price-touched-100day-moving-average-for-2nd-time-f9q"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 867983196785,
+            "voter": "arcange"
+          },
+          {
+            "rshares": 4634525935475,
+            "voter": "redes"
+          },
+          {
+            "rshares": 23854700190,
+            "voter": "steemitboard"
+          },
+          {
+            "rshares": 11479706310,
+            "voter": "dickturpin"
+          },
+          {
+            "rshares": 4738511275,
+            "voter": "lizanomadsoul"
+          },
+          {
+            "rshares": 1379578067186,
+            "voter": "pastzam"
+          },
+          {
+            "rshares": 7827067998,
+            "voter": "xyzashu"
+          },
+          {
+            "rshares": 929525372,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 42046067956,
+            "voter": "zammie"
+          },
+          {
+            "rshares": 294752116129,
+            "voter": "lalupita"
+          },
+          {
+            "rshares": 9805158599,
+            "voter": "coolguy123"
+          },
+          {
+            "rshares": 9901172424,
+            "voter": "achimmertens"
+          },
+          {
+            "rshares": 37121598439,
+            "voter": "sarunya"
+          },
+          {
+            "rshares": 34849364501,
+            "voter": "surachai"
+          },
+          {
+            "rshares": 6857984184,
+            "voter": "teerawith"
+          },
+          {
+            "rshares": 35617293275,
+            "voter": "nataya"
+          },
+          {
+            "rshares": 1369953159401,
+            "voter": "libertycrypto27"
+          },
+          {
+            "rshares": 36704833450,
+            "voter": "pandaparker"
+          },
+          {
+            "rshares": 3963658092,
+            "voter": "votebetting"
+          },
+          {
+            "rshares": 557947600402,
+            "voter": "atyh"
+          },
+          {
+            "rshares": 7813086619,
+            "voter": "jahm.alfa"
+          },
+          {
+            "rshares": 50671894945,
+            "voter": "axel-blaze"
+          },
+          {
+            "rshares": 40283800597,
+            "voter": "unpopular"
+          },
+          {
+            "rshares": 13255309465,
+            "voter": "hivebuzz"
+          },
+          {
+            "rshares": 2289683838,
+            "voter": "laruche"
+          },
+          {
+            "rshares": 820675321419,
+            "voter": "name0"
+          },
+          {
+            "rshares": 2472265447,
+            "voter": "jilt"
+          },
+          {
+            "rshares": 19981337067,
+            "voter": "zangano"
+          },
+          {
+            "rshares": 5106174439,
+            "voter": "moinmansuri"
+          },
+          {
+            "rshares": 8893026868,
+            "voter": "arc-echo"
+          },
+          {
+            "rshares": 987436681428,
+            "voter": "yeouido.park"
+          },
+          {
+            "rshares": 14021100574,
+            "voter": "ifarmgirl"
+          },
+          {
+            "rshares": 65492319032,
+            "voter": "pi-trader"
+          },
+          {
+            "rshares": 27371315926,
+            "voter": "menzo"
+          },
+          {
+            "rshares": 92662663777,
+            "voter": "eolianpariah2"
+          },
+          {
+            "rshares": 1688165323,
+            "voter": "day1001"
+          },
+          {
+            "rshares": 575926519055,
+            "voter": "kriang3teejoe"
+          },
+          {
+            "rshares": 38253678210,
+            "voter": "newhope1988"
+          },
+          {
+            "rshares": 28211205893,
+            "voter": "hoosie"
+          },
+          {
+            "rshares": 704350881,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 9109734960,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 471209878,
+            "voter": "ifarmgirl-leo"
+          },
+          {
+            "rshares": 8475852046,
+            "voter": "theycallmedre"
+          },
+          {
+            "rshares": 1356146530699,
+            "voter": "eds-vote"
+          },
+          {
+            "rshares": 2573492230717,
+            "voter": "silingsi"
+          },
+          {
+            "rshares": 3821519914352,
+            "voter": "cur8"
+          },
+          {
+            "rshares": 73897769718,
+            "voter": "dab-vote"
+          },
+          {
+            "rshares": 2326531245,
+            "voter": "menny.trx"
+          },
+          {
+            "rshares": 28080598025,
+            "voter": "we-are-ai"
+          }
+        ],
+        "author": "kriang3teejoe",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 77.24,
+        "author_role": "member",
+        "author_title": "ASEAN Hive VIP 💿 PLATINUM",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "![](https://images.ecency.com/DQmdnzicLfnLpGYNQSeh2gvCZuAjhy5oYAVy7SaeP6nCSng/1776326175054.jpg)\n\nHello everyone. How are you today? I hope all is well with you and your family. During Songkran Festival and Thai New Year, various traditions have been handed down through generations. However, my family and I don't follow all the traditions, we just pick the ones we like. Such as tradition to show respect to the elderly by pouring scented water or other water on their hands and offer things to elderly, make merit and pay respects to the buddha image with monks at the temple, sprinkle water onto the buddha images at various places and house, And other. Additionally in some villages in Northern Thailand, there are also traditions of worshipping spirits house within the house and worshipping the spirits hall of village. My family and village too, We have the tradition of worshipping spirits house within the house and worshipping the spirits hall of village on today.\nSome villagers in the village worship the spirits house in own house this morning, Then later in the morning, some villagers helped prepare offerings to worship at the spirits hall of village. Then in the afternoon, there will be the religious ceremony to worship the village's spirits hall. But unfortunately my wife and I did not participate in the religious ceremony to worship the village's spirits hall the afternoon. We have to take close care of our autistic son this afternoon. But I take photos the atmosphere of the villagers working together to prepare things for the religious ceremony to worship the village's spirits hall later in this morning.\n\nThe villagers and my family prepared offerings (offerings in the Northern Thai style).\n![](https://images.ecency.com/DQmV5B8eG2ud4YGBbLi5j1MKQudDPq8rZiugEBZWt8ciBBU/1776326175102.jpg)\n\n![](https://images.ecency.com/DQmXNJqiCSTJYcWCndgdSojSxcVubAqsxPzfAxpaLTYSFNb/1776326175329.jpg)\n\n![](https://images.ecency.com/DQmYqX8rRuq79pr1gynUjTRp6foANu41Wfk3cpYYDH29W3q/1776326175420.jpg)\n\n![](https://images.ecency.com/DQmR9LzPdtBXwMEXW2f8tDxXiFw3Bzt63oSEir7YuokcBVi/1776326175207.jpg)\n\n![](https://images.ecency.com/DQmdyg2Q3dzTx1KVL4ArzCFJnAXfcFCGikxLJTBD5bDqEab/1776326201197.jpg)\n\n![](https://images.ecency.com/DQmRXmNezQC9UcDBLNGiRYN3eQ2RoGuF5YH6avvxu3sVCev/1776326201095.jpg)\n\nThese are the stories and photos I want to share for this post. Invite everyone to see and enjoy my stories and photos. Please forgive any errors/mistakes. Have a great day. See you next time. Thank you for your support and visiting my post. Bye 🤗\n\n🌏 Location : A village in Chiang Mai Province, Thailand.\n\n📷 Take photo By Smartphone Vivo V30.",
+        "category": "hive-141359",
+        "children": 0,
+        "community": "hive-141359",
+        "community_title": "ASEAN HIVE COMMUNITY",
+        "created": "2026-04-16T08:12:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.3-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmdnzicLfnLpGYNQSeh2gvCZuAjhy5oYAVy7SaeP6nCSng/1776326175054.jpg",
+            "https://images.ecency.com/DQmV5B8eG2ud4YGBbLi5j1MKQudDPq8rZiugEBZWt8ciBBU/1776326175102.jpg",
+            "https://images.ecency.com/DQmXNJqiCSTJYcWCndgdSojSxcVubAqsxPzfAxpaLTYSFNb/1776326175329.jpg",
+            "https://images.ecency.com/DQmYqX8rRuq79pr1gynUjTRp6foANu41Wfk3cpYYDH29W3q/1776326175420.jpg",
+            "https://images.ecency.com/DQmR9LzPdtBXwMEXW2f8tDxXiFw3Bzt63oSEir7YuokcBVi/1776326175207.jpg",
+            "https://images.ecency.com/DQmdyg2Q3dzTx1KVL4ArzCFJnAXfcFCGikxLJTBD5bDqEab/1776326201197.jpg",
+            "https://images.ecency.com/DQmRXmNezQC9UcDBLNGiRYN3eQ2RoGuF5YH6avvxu3sVCev/1776326201095.jpg"
+          ],
+          "image_ratios": [
+            1,
+            1.328719723183391,
+            1.328719723183391,
+            0.7526041666666666,
+            1.328719723183391
+          ],
+          "links": [],
+          "tags": [
+            "hive-141359",
+            "qurator",
+            "appreciator",
+            "curangel",
+            "ecency",
+            "hive",
+            "life",
+            "ocd",
+            "neoxian",
+            "lifestyle"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 20047166989886,
+        "payout": 1.747,
+        "payout_at": "2026-04-23T08:12:03",
+        "pending_payout_value": "1.747 HBD",
+        "percent_hbd": 10000,
+        "permlink": "the-tradition-of-worshipping-the",
+        "post_id": 149825478,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 49
+        },
+        "title": "The tradition of worshipping the spirits hall of my village on Thai New Year.",
+        "updated": "2026-04-16T08:12:03",
+        "url": "/hive-141359/@kriang3teejoe/the-tradition-of-worshipping-the"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 153762571092,
+            "voter": "penguinpablo"
+          },
+          {
+            "rshares": 1563817529,
+            "voter": "funnyman"
+          },
+          {
+            "rshares": 16804294103,
+            "voter": "gamer00"
+          },
+          {
+            "rshares": 21367860077,
+            "voter": "cryptoknight12"
+          },
+          {
+            "rshares": 929525372,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 921867987930,
+            "voter": "abbak7"
+          },
+          {
+            "rshares": 529032175,
+            "voter": "sneakyninja"
+          },
+          {
+            "rshares": 10494482158800,
+            "voter": "steembasicincome"
+          },
+          {
+            "rshares": 236944677,
+            "voter": "cryptonized"
+          },
+          {
+            "rshares": 90659075484,
+            "voter": "mastergerund"
+          },
+          {
+            "rshares": 3683413583,
+            "voter": "anikys3reasure"
+          },
+          {
+            "rshares": 102301538972,
+            "voter": "chrislybear"
+          },
+          {
+            "rshares": 7641181793274,
+            "voter": "sbi2"
+          },
+          {
+            "rshares": 1262374661,
+            "voter": "awesomegames007"
+          },
+          {
+            "rshares": 4420878795020,
+            "voter": "sbi3"
+          },
+          {
+            "rshares": 3159499010640,
+            "voter": "sbi4"
+          },
+          {
+            "rshares": 12836606282,
+            "voter": "meins0815"
+          },
+          {
+            "rshares": 4978931698,
+            "voter": "netzisde"
+          },
+          {
+            "rshares": 1042404816,
+            "voter": "crimo"
+          },
+          {
+            "rshares": 7938080050,
+            "voter": "bububoomt"
+          },
+          {
+            "rshares": 2318141897780,
+            "voter": "sbi5"
+          },
+          {
+            "rshares": 1676169723420,
+            "voter": "sbi6"
+          },
+          {
+            "rshares": 1661052131,
+            "voter": "thedailysneak"
+          },
+          {
+            "rshares": 1191190872096,
+            "voter": "sbi7"
+          },
+          {
+            "rshares": 2619063296,
+            "voter": "tdas0"
+          },
+          {
+            "rshares": 2570310296,
+            "voter": "babysavage"
+          },
+          {
+            "rshares": 502717985,
+            "voter": "ravensavage"
+          },
+          {
+            "rshares": 1561473273,
+            "voter": "mk992039"
+          },
+          {
+            "rshares": 32002766388,
+            "voter": "guurry123"
+          },
+          {
+            "rshares": 838718293982,
+            "voter": "sbi8"
+          },
+          {
+            "rshares": 761479622,
+            "voter": "piestrikesback"
+          },
+          {
+            "rshares": 606607611428,
+            "voter": "sbi9"
+          },
+          {
+            "rshares": 60847244772,
+            "voter": "buildingpies"
+          },
+          {
+            "rshares": 437721041746,
+            "voter": "sbi10"
+          },
+          {
+            "rshares": 7488560010,
+            "voter": "loch"
+          },
+          {
+            "rshares": 890971599,
+            "voter": "jacuzzi"
+          },
+          {
+            "rshares": 17105445423,
+            "voter": "sifondeseltz"
+          },
+          {
+            "rshares": 625094524,
+            "voter": "hungrybear"
+          },
+          {
+            "rshares": 661475430,
+            "voter": "shauner"
+          },
+          {
+            "rshares": 82371401841,
+            "voter": "sbi-tokens"
+          },
+          {
+            "rshares": 652634760,
+            "voter": "bilpcoin.pay"
+          },
+          {
+            "rshares": 5718188006,
+            "voter": "qwertm"
+          },
+          {
+            "rshares": 1444342731,
+            "voter": "dpend.active"
+          },
+          {
+            "rshares": 7422762445,
+            "voter": "holoferncro"
+          },
+          {
+            "rshares": 2751417864,
+            "voter": "sketching"
+          },
+          {
+            "rshares": 1781240167,
+            "voter": "georgia11"
+          },
+          {
+            "rshares": 767340468,
+            "voter": "tub3r0"
+          },
+          {
+            "rshares": 638544342,
+            "voter": "mxm0unite"
+          },
+          {
+            "rshares": 247376144,
+            "voter": "chrisly.social"
+          },
+          {
+            "rshares": 10753660956,
+            "voter": "actifit-chris"
+          },
+          {
+            "rshares": 704350881,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 9109734960,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 66682908463,
+            "voter": "briefmarken"
+          },
+          {
+            "rshares": 0,
+            "voter": "loomsense"
+          },
+          {
+            "rshares": 3175690800,
+            "voter": "sports.power.bot"
+          },
+          {
+            "rshares": 28080598025,
+            "voter": "we-are-ai"
+          }
+        ],
+        "author": "forever-crypto",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 68.11,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "actifit.pay",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "![](https://usermedia.actifit.io/2b1eeb52-3a6f-4392-af99-977659bec0b2.jpg)\n<sub>(The coconut palm stood in the garden of the first accommodation near Udon Thani (Thailand). It was impressive how many coconuts it bore, considering it hadn't yet grown that large.)</sub>\n\nHi Actifitters,\n\nafter having higher than expected values ​​while pedaling the day before yesterday, I completed a comparable session on the bike yesterday to have a comparison. This time the values ​​were normal again. I managed to ride for about 55 minutes at a speed of at least 30 km/h and keep my heart rate below 130.\n\nThus, my body was out of balance and the chest strap worked.\n\n***\n\nUnless I have an important appointment, I haven't set an alarm for a long time. My internal clock or the pressure on my bladder usually wakes me up earlier than I'd like.\n\nBut that wasn't the case last night. I slept a full nine hours. That's a good two hours longer than usual. But I don't want to complain, on the contrary... I'm extremely happy about it, especially when I look at my values.\n\nSleep score - 86 (pretty high but still not perfect)\nBody battery - 92 (dont know when it was that high before)\nTraining readiness - 77 (I am really happy about this value)\n\nSo I'm ready to finally start training a bit harder again. And I'll try to do that today, work schedule permitting. It should work out this afternoon, though.\n\n***\n\n**Daily HSBI raffle [(The rules)](https://peakd.com/hive-193552/@forever-crypto/re-forever-crypto-tb3vu6)**\n\nCongratulations @onemanonewrite, you won today's share... it has already been sent.\n\nIf you also want to win a HSBI share simply leave a comment. The winner will be announced in the next report.\n\nThat's all for today.\nBe kind to each other and keep moving!\n\n![untitled.gif](https://media.tenor.com/ThXU2y0E5bUAAAAC/nap-time-sleep.gif)\n\n\n<br/> _This report was published via Actifit app ([Android](https://bit.ly/actifit-app) | [iOS](https://bit.ly/actifit-ios)). Check out the original version [here on actifit.io](https://actifit.io/@forever-crypto/actifit-forever-crypto-20260416t081138317z)_ <br/> <br><img src=\"https://cdn.steemitimages.com/DQmXv9QWiAYiLCSr3sKxVzUJVrgin3ZZWM2CExEo3fd5GUS/sep3.png\"><br><table>\t<tr>\t\t<img src=\"https://actifit.s3.us-east-1.amazonaws.com/ACTIVITYDATE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>15/04/2026</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmRgAoqi4vUVymaro8hXdRraNX6LHkXhMRBZxEo5vVWXDN/ACTIVITYCOUNT.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>16011</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmZ6ZT8VaEpaDzB16qZzK8omffbWUpEpe4BkJkMXmN3xrF/ACTIVITYTYPE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><pre><b>Cycling, Daily Activity, Walking</b></div></pre></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmdnh1nApZieHZ3s1fEhCALDjnzytFwo78zbAY5CLUMpoG/TRACKM.png\">\t\t<td><div class=\"text-center\"><div class=\"phishy\"><h6>Height</h6></div>\t\t\t<h6>181 cm</h6></div></td>\t\t<td><img src=\"https://cdn.steemitimages.com/DQmfSsFiXem7AxWG1NCiYYPAjtT4Y7LR8FsXpfsZQe7XqPC/h1.png\"></td>\t\t<td><div class=\"text-center\"><div class=\"phishy\"><h6>Weight</h6></div>\t\t\t<h6>89 kg</h6></div></td>\t\t<td><img src=\"https://cdn.steemitimages.com/DQmVqJVEWUwicFRtkEz2WYq2mDH61mQLDsrzN1yBrKLrpyZ/w1a.png\"></td>\t\t<td><div class=\"text-center\"><div class=\"phishy\"><h6>Body Fat</h6></div>\t\t\t<h6> %</h6></div></td>\t\t<td><img src=\"https://cdn.steemitimages.com/DQmPJ2Vvi3mBQXKHoy5CTG7fyLFWMG8JaAZ8y1XZFeDkRUC/bd1.png\"></td>\t</tr> \t<tr>\t\t<td><div class=\"text-center\"><div class=\"phishy\"><h6>Waist</h6></div></div>\t\t\t<div class=\"text-center\"><h6> cm</h6></div></td>\t\t<td><img src=\"https://cdn.steemitimages.com/DQmZ2Lfwg77FLaf3YpU1VPLsJvnBt1F8DG8y6t6xUAKnsYq/w1.png\"></td>\t\t<td><div class=\"text-center\"><div class=\"phishy\"><h6>Thighs</h6></div></div>\t\t\t<div class=\"text-center\"><h6> cm</h6></div></td>\t\t<td><img src=\"https://cdn.steemitimages.com/DQmbbAAFy6hwwBWqtSmcSwosTyNZi9rcd6GNeugQRY9MF1h/t1.png\"></td>\t\t<td><div class=\"text-center\"><div class=\"phishy\"><h6>Chest</h6></div></div>\t\t\t<div class=\"text-center\"><h6> cm</h6></div></td>\t\t<td><img src=\"https://cdn.steemitimages.com/DQmbaoNBT5Unnjqh8JgP6TPj4mFKFnyKkLgP6eDYnnkiLkB/c1.png\"></td>\t</tr></table><div class=\"text-center\"><img src=\"https://cdn.steemitimages.com/DQmNp6YwAm2qwquALZw8PdcovDorwaBSFuxQ38TrYziGT6b/A-20.png\"><a href=\"https://bit.ly/actifit-app\"><img src=\"https://cdn.steemitimages.com/DQmQqfpSmcQtfrHAtzfBtVccXwUL9vKNgZJ2j93m8WNjizw/l5.png\"></a><a href=\"https://bit.ly/actifit-ios\"><img src=\"https://cdn.steemitimages.com/DQmbWy8KzKT1UvCvznUTaFPw6wBUcyLtBT5XL9wdbB7Hfmn/l6.png\"></a></div>",
+        "category": "hive-193552",
+        "children": 0,
+        "community": "hive-193552",
+        "community_title": "Actifit",
+        "created": "2026-04-16T08:11:39",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "actiCrVal": "26f649d3f1876ad59f341527f913a12d081fe1ac5dda9fb87de2efa38f6ec16f1604148ee616505a871c2ae96b2ac621faa92e552077201ffd4afacaf6b878bb",
+          "actifitUserID": [
+            "d642f9f3-e273-4458-aba5-1b8abdc2bfa1v0.12.4"
+          ],
+          "activityDate": [
+            "20260415"
+          ],
+          "activity_type": [
+            "Cycling, Daily Activity, Walking"
+          ],
+          "app": "actifit/0.13.4",
+          "appType": "Android",
+          "chestUnit": [
+            "cm"
+          ],
+          "community": [
+            "hive-193552"
+          ],
+          "dataTrackingSource": [
+            "Device Tracking"
+          ],
+          "detailedActivity": [
+            "0745122|0800382|081518|083018|08455|091511|093070|094591|1000141|1015419|1030845|1045836|1100874|1115421|113035|11457|1200258|1215389|1230509|124538|1300183|13151514|13301537|13451464|154589|163069|1645413|1700853|171544|17303|174514|1800731|18151848|18301280|1845219|19009|1915119|193017|200048|20306|204524|21003|214532|22003|"
+          ],
+          "format": "markdown",
+          "height": [
+            "181"
+          ],
+          "heightUnit": [
+            "cm"
+          ],
+          "image": [
+            "https://usermedia.actifit.io/2b1eeb52-3a6f-4392-af99-977659bec0b2.jpg",
+            "https://media.tenor.com/ThXU2y0E5bUAAAAC/nap-time-sleep.gif",
+            "https://cdn.steemitimages.com/DQmXv9QWiAYiLCSr3sKxVzUJVrgin3ZZWM2CExEo3fd5GUS/sep3.png",
+            "https://actifit.s3.us-east-1.amazonaws.com/ACTIVITYDATE.png",
+            "https://cdn.steemitimages.com/DQmRgAoqi4vUVymaro8hXdRraNX6LHkXhMRBZxEo5vVWXDN/ACTIVITYCOUNT.png",
+            "https://cdn.steemitimages.com/DQmZ6ZT8VaEpaDzB16qZzK8omffbWUpEpe4BkJkMXmN3xrF/ACTIVITYTYPE.png",
+            "https://cdn.steemitimages.com/DQmdnh1nApZieHZ3s1fEhCALDjnzytFwo78zbAY5CLUMpoG/TRACKM.png",
+            "https://cdn.steemitimages.com/DQmfSsFiXem7AxWG1NCiYYPAjtT4Y7LR8FsXpfsZQe7XqPC/h1.png",
+            "https://cdn.steemitimages.com/DQmVqJVEWUwicFRtkEz2WYq2mDH61mQLDsrzN1yBrKLrpyZ/w1a.png",
+            "https://cdn.steemitimages.com/DQmPJ2Vvi3mBQXKHoy5CTG7fyLFWMG8JaAZ8y1XZFeDkRUC/bd1.png",
+            "https://cdn.steemitimages.com/DQmZ2Lfwg77FLaf3YpU1VPLsJvnBt1F8DG8y6t6xUAKnsYq/w1.png",
+            "https://cdn.steemitimages.com/DQmbbAAFy6hwwBWqtSmcSwosTyNZi9rcd6GNeugQRY9MF1h/t1.png",
+            "https://cdn.steemitimages.com/DQmbaoNBT5Unnjqh8JgP6TPj4mFKFnyKkLgP6eDYnnkiLkB/c1.png",
+            "https://cdn.steemitimages.com/DQmNp6YwAm2qwquALZw8PdcovDorwaBSFuxQ38TrYziGT6b/A-20.png",
+            "https://cdn.steemitimages.com/DQmQqfpSmcQtfrHAtzfBtVccXwUL9vKNgZJ2j93m8WNjizw/l5.png"
+          ],
+          "step_count": [
+            "16011"
+          ],
+          "tags": [
+            "actifit",
+            "sportstalk",
+            "move2earn",
+            "movetoearn",
+            "photography",
+            "nature",
+            "naturephotography",
+            "cycling",
+            "giveaway",
+            "hive-193552"
+          ],
+          "thighsUnit": [
+            "cm"
+          ],
+          "timezone": [
+            "GMT+02:00"
+          ],
+          "users": [
+            "forever-crypto",
+            "onemanonewrite"
+          ],
+          "waistUnit": [
+            "cm"
+          ],
+          "weight": [
+            "89"
+          ],
+          "weightUnit": [
+            "kg"
+          ],
+          "yesterdayReport": [
+            "1"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 34477955504289,
+        "payout": 3.005,
+        "payout_at": "2026-04-23T08:11:39",
+        "pending_payout_value": "3.005 HBD",
+        "percent_hbd": 0,
+        "permlink": "actifit-forever-crypto-20260416t081138317z",
+        "post_id": 149825474,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 56
+        },
+        "title": "Back on Track in terms of values... my training diary entry from April 15 2026",
+        "updated": "2026-04-16T08:12:39",
+        "url": "/hive-193552/@forever-crypto/actifit-forever-crypto-20260416t081138317z"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 96557961518,
+            "voter": "pixelfan"
+          },
+          {
+            "rshares": 41481229248,
+            "voter": "pixresteemer"
+          },
+          {
+            "rshares": 12797915396,
+            "voter": "steem-holder"
+          },
+          {
+            "rshares": 704350881,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 9109734960,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 1447768844,
+            "voter": "katiekate86"
+          },
+          {
+            "rshares": 28080598025,
+            "voter": "we-are-ai"
+          }
+        ],
+        "author": "neuropoeta",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 71.46,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![](https://images.ecency.com/DQmPs3Nbsmf4iHXCFPQaKepsTWXKN6P7yjKsweyoSjff7Fz/1776326450666.jpg)\n\n\n***\n***\nToday I went for a walk with no set direction, just wanting to get lost for a while among the wild vegetation of my Cuba, and let me tell you, the tropics can give you shows that even the best theater in the world cannot match.\n***\n\n![](https://images.ecency.com/DQmaox483ZC2Jc36XcWvCWzfwEHrvFikyjdrsikrse6VmHo/1776326451656.jpg)\n***\n\n\n![](https://images.ecency.com/DQmZo65uNkPbQSiiDjAaSyVcTPwy8Q8QjrrQBAuno354Ex4/1776326597649.jpg)\n\n\n***\nThe path I chose was one of those that smell of wet earth and sun. On both sides, the undergrowth spilled over with that messy joy that only plants growing freely, with no one to set limits for them, possess. There were weeds brushing against my knees, bushes that seemed to want to whisper secrets in my ear, while the air smelled of brand new greenery.\n***\n\n\n![](https://images.ecency.com/DQmaBoPi7gJu9rnpkTNKMH12EBqhgkfQG8wZzwSG52THh5Q/1776326561173.jpg)\n***\n\n\n![](https://images.ecency.com/DQmYjvhyUkspB1skFsppj7L44LJVyb8kfKYHtAS3hKXTrCa/1776326597244.jpg)\n\n***\nThen, without warning, I saw them. At first they were just tiny pink flashes among all that green, but as I advanced, those flashes became patches, and the patches became whole blankets falling from tree branches, as if someone had poured living paint from above. They were vines, I discovered as I got closer. They were delicate but bold, climbing up trunks, hanging down like curtains, carpeting the grass, and tangling themselves around the stems of other plants with a familiarity that made me envious.\n***\n\n\n![](https://images.ecency.com/DQmdeHKCPg5ZfkgfArvJsYizzyh5vjHzbLPromHw93VE5Ee/1776326560515.jpg)\n***\n\n\n![](https://images.ecency.com/DQmYRcVwiLHWeR3mEig22aWiXineALH5xXYVQYC8D1WAw8B/1776326452404.jpg)\n\n***\nThe flowers were very tiny, but so abundant that they seemed like thousands of pink eyes looking at me from everywhere. A vibrant pink, the kind that cheers your retina just by resting your eyes on it. I have no idea what they are called, but that did not stop me from staying there, hypnotized, as if I had found a buried treasure.\n***\n\n\n![](https://images.ecency.com/DQme6bfVqH1ZhYx6VRUcGhd6orG2ZszRu461GZ5t9jqvtSy/1776326560786.jpg)\n***\n\n\n![](https://images.ecency.com/DQmTjeTkvqdJ2mYC8PsQQ4ejDcVWFhXZFeBQ4kYjNrwBWSm/1776326452081.jpg)\n\n***\nThe most beautiful thing, however, was not just the color, but the buzz. Where there were flowers, there were bees buzzing back and forth with that happy hurry they have when the nectar is good and the sun is shining. It looked like a small airport of winged creatures, all obsessed with those pink petals, and there I was in the middle, feeling privileged to witness something so simple and so perfect: life that happens without asking permission, and beauty that needs no sign or ticket.\n***\n\n\n![](https://images.ecency.com/DQmThLzHqRpepKrUXpSB96KydfbYZ1g1kMhHD5UF3AfkttL/1776326561671.jpg)\n\n***\nI sat on the grass for a good while, just looking, and I thought that sometimes the tropics remind you why they are unique. You do not need to go far, you do not need to look for postcard landscapes. It is enough to walk slowly along any path, with a clear gaze, and let the wild vegetation give you a lesson in humility and beauty.\n***\n\n\n![](https://images.ecency.com/DQmZvYb7GiwLdDUJxyqCXE1jmiz1rkJ7SFrMtBm3mhJTacY/1776326561483.jpg)\n\n***\nSo today I fell in love with some pink flowers that grow tangled around everything they can grab, without knowing their name, but indeed knowing how they made me feel: light, grateful, and alive.\n\n<center>🌸</center>\n<center>🌸</center>\n\n![](https://images.ecency.com/DQmYweGm8mMxKLmFZYSPAHak3F6Zz1vgqfa4B6ixGv588XE/1775880207371.jpg)\n\n\n<sub>🍃 **𝑻𝒉𝒂𝒏𝒌𝒔 𝒇𝒐𝒓 𝒓𝒆𝒂𝒅𝒊𝒏𝒈!** 🍃\n𝑰𝒇 𝒚𝒐𝒖 𝒅𝒐𝒏’𝒕 𝒌𝒏𝒐𝒘 𝒎𝒆 𝒚𝒆𝒕, 𝑰’𝒎 𝒂 **𝑪𝒖𝒃𝒂𝒏 𝒏𝒆𝒖𝒓𝒐𝒍𝒐𝒈𝒊𝒔𝒕 𝒂𝒏𝒅 𝒘𝒓𝒊𝒕𝒆𝒓**, 𝒂 𝒎𝒐𝒕𝒉𝒆𝒓, 𝒂 𝒘𝒐𝒎𝒂𝒏, 𝒂𝒏𝒅 𝒂 𝒅𝒓𝒆𝒂𝒎𝒆𝒓 𝒘𝒉𝒐’𝒔 𝒇𝒐𝒖𝒏𝒅 𝒊𝒏 𝑯𝒊𝒗𝒆 𝒂 𝒃𝒆𝒂𝒖𝒕𝒊𝒇𝒖𝒍 𝒔𝒑𝒂𝒄𝒆 𝒕𝒐 𝒔𝒐𝒂𝒓.  \n𝑨𝒍𝒍 **𝒕𝒆𝒙𝒕 𝒂𝒏𝒅 𝒊𝒎𝒂𝒈𝒆𝒔 𝒂𝒓𝒆 𝒎𝒚 𝒐𝒓𝒊𝒈𝒊𝒏𝒂𝒍 𝒄𝒓𝒆𝒂𝒕𝒊𝒐𝒏𝒔**, 100% 𝒉𝒖𝒎𝒂𝒏-𝒎𝒂𝒅𝒆 (𝒏𝒐 𝑨𝑰).  \n𝑩𝒂𝒏𝒏𝒆𝒓 𝒅𝒆𝒔𝒊𝒈𝒏𝒆𝒅 𝒃𝒚 𝑳𝒖𝒎𝒊𝒊.\n𝑳𝒐𝒗𝒆𝒅 𝒕𝒉𝒊𝒔 𝒑𝒐𝒔𝒕? **𝑼𝒑𝒗𝒐𝒕𝒆, 𝒄𝒐𝒎𝒎𝒆𝒏𝒕, 𝒐𝒓 𝒓𝒆𝒃𝒍𝒐𝒈** 𝒕𝒐 𝒔𝒑𝒓𝒆𝒂𝒅 𝒕𝒉𝒆 𝒘𝒊𝒏𝒈𝒔 𝒐𝒇 𝒄𝒓𝒆𝒂𝒕𝒊𝒗𝒊𝒕𝒚! 💗</sub>\n\n![cinti 800x20 - copia.jpg](https://images.hive.blog/DQmWKGeMBmj14VqKn8xBrmpFM3RYVcgmAXX6bGnGwuNWEnc/cinti%20800x20%20-%20copia.jpg) \n### <center>VERSIÓN EN ESPAÑOL</center>\n\n![cinti 800x20 - copia.jpg](https://images.hive.blog/DQmWKGeMBmj14VqKn8xBrmpFM3RYVcgmAXX6bGnGwuNWEnc/cinti%20800x20%20-%20copia.jpg) \n\n## <center> Cuando unas enredaderas rosadas me robaron el alma</center>\n\n\n\n![](https://images.ecency.com/DQmcMr17XTvCzFLPZhLUhA7v5BSj8sSHPexGbnWhAb4LuQF/1776326451045.jpg)\n\n\n\n***\n***\nHoy salí a caminar sin rumbo fijo, solo con las ganas de perderme un rato entre la vegetación salvaje de mi Cuba y déjenme decirles que el trópico les puede regalar espectáculos que ni el mejor teatro del mundo puede igualar.\n***\n\n![](https://images.ecency.com/DQmaox483ZC2Jc36XcWvCWzfwEHrvFikyjdrsikrse6VmHo/1776326451656.jpg)\n***\n\n![](https://images.ecency.com/DQmZo65uNkPbQSiiDjAaSyVcTPwy8Q8QjrrQBAuno354Ex4/1776326597649.jpg)\n\n\n***\nEl camino que elegí era de esos que huelen a tierra mojada y a sol. A ambos lados, la maleza se desbordaba con esa alegría desordenada que solo tienen las plantas que crecen libres, sin nadie que les ponga límites. Se podían ver hierbas que me rozaban las rodillas, arbustos que parecían querer contarme secretos al oído, mientras que el aire olía a verde recién estrenado.\n***\n\n\n![](https://images.ecency.com/DQmaBoPi7gJu9rnpkTNKMH12EBqhgkfQG8wZzwSG52THh5Q/1776326561173.jpg)\n***\n\n![](https://images.ecency.com/DQmYjvhyUkspB1skFsppj7L44LJVyb8kfKYHtAS3hKXTrCa/1776326597244.jpg)\n\n\n***\nEntonces, sin avisar, las vi. Al principio fueron solo pequeños destellos rosados entre tanto verde, pero conforme avanzaba, esos destellos se fueron haciendo manchas, y las manchas, mantos enteros que caían desde las ramas de los árboles como si alguien hubiera derramado pintura viva desde lo alto. Eran enredaderas, descubrí al acercarme. Eran delicadas pero atrevidas, que trepaban por los troncos, se descolgaban como cortinas, alfombraban el pasto y se enredaban en los tallos de otras plantas con una familiaridad que daba envidia.\n***\n\n\n\n![](https://images.ecency.com/DQmdeHKCPg5ZfkgfArvJsYizzyh5vjHzbLPromHw93VE5Ee/1776326560515.jpg)\n***\n\n\n![](https://images.ecency.com/DQmYRcVwiLHWeR3mEig22aWiXineALH5xXYVQYC8D1WAw8B/1776326452404.jpg)\n\n***\nLas flores eran pequeñísimas, pero tan abundantes que parecían miles de ojos rosados mirándome desde todas partes. Un rosa vibrante, de esos que te alegran la retina solo con posar la vista encima. No tengo ni idea de cómo se llaman, pero eso no me impidió quedarme allí, hipnotizada, como si hubiera encontrado un tesoro enterrado.\n***\n\n\n![](https://images.ecency.com/DQme6bfVqH1ZhYx6VRUcGhd6orG2ZszRu461GZ5t9jqvtSy/1776326560786.jpg)\n***\n\n\n![](https://images.ecency.com/DQmTjeTkvqdJ2mYC8PsQQ4ejDcVWFhXZFeBQ4kYjNrwBWSm/1776326452081.jpg)\n\n***\nLo más bonito, sin embargo, no era solo el color, era el bullicio, porque donde había flores, había abejas zumbando de un lado a otro con esa prisa feliz que tienen cuando el néctar es bueno y el sol acompaña. Parecía un pequeño aeropuerto de criaturas aladas, todas obsesionadas con esos pétalos rosados, y yo allí, en medio, sintiéndome privilegiada por ser testigo de algo tan sencillo y tan perfecto: la vida que se da sin pedir permiso y la belleza que no necesita cartel ni entrada.\n***\n\n\n![](https://images.ecency.com/DQmThLzHqRpepKrUXpSB96KydfbYZ1g1kMhHD5UF3AfkttL/1776326561671.jpg)\n\n\n***\nMe quedé un buen rato sentada en el pasto, solo mirando, y pensé que a veces el trópico te recuerda por qué es único. No hace falta irse lejos, no hace falta buscar paisajes postales. Basta con caminar despacio por un camino cualquiera, con la mirada limpia, y dejar que la vegetación silvestre te regale una lección de humildad y de belleza.\n***\n\n\n\n![](https://images.ecency.com/DQmZvYb7GiwLdDUJxyqCXE1jmiz1rkJ7SFrMtBm3mhJTacY/1776326561483.jpg)\n\n***\nAsí que hoy me enamoré de unas flores rosas que crecen enredadas en todo lo que pillan, sin saber su nombre, pero sí sabiendo cómo me hicieron sentir: liviana, agradecida y viva.\n\n<center>🌸</center>\n<center>🌸</center>\n\n![](https://images.ecency.com/DQmRSmczRZ7mh457ozsGyfJF93vxnsidtnD9LmCYpF1XK9K/1775880207279.jpg)\n\n<sub>🍃 **¡𝑮𝒓𝒂𝒄𝒊𝒂𝒔 𝒑𝒐𝒓 𝒍𝒆𝒆𝒓!** 🍃\n𝑺𝒊 𝒂ú𝒏 𝒏𝒐 𝒎𝒆 𝒄𝒐𝒏𝒐𝒄𝒆𝒔: 𝒔𝒐𝒚 **𝒏𝒆𝒖𝒓ó𝒍𝒐𝒈𝒂 𝒚 𝒆𝒔𝒄𝒓𝒊𝒕𝒐𝒓𝒂 𝒄𝒖𝒃𝒂𝒏𝒂**, 𝒎𝒂𝒅𝒓𝒆, 𝒎𝒖𝒋𝒆𝒓 𝒚 𝒔𝒐ñ𝒂𝒅𝒐𝒓𝒂 𝒒𝒖𝒆 𝒆𝒏𝒄𝒐𝒏𝒕𝒓ó 𝒆𝒏 𝑯𝒊𝒗𝒆 𝒖𝒏 𝒉𝒆𝒓𝒎𝒐𝒔𝒐 𝒆𝒔𝒑𝒂𝒄𝒊𝒐 𝒑𝒂𝒓𝒂 𝒗𝒐𝒍𝒂𝒓.  \n**𝑬𝒍 𝒕𝒆𝒙𝒕𝒐 𝒚 𝒍𝒂𝒔 𝒊𝒎á𝒈𝒆𝒏𝒆𝒔 𝒔𝒐𝒏 𝒅𝒆 𝒎𝒊 𝒂𝒖𝒕𝒐𝒓í𝒂**, 100% 𝒉𝒖𝒎𝒂𝒏𝒐𝒔 (𝒔𝒊𝒏 𝑰𝑨).  \n𝑩𝒂𝒏𝒏𝒆𝒓 𝒅𝒊𝒔𝒆ñ𝒂𝒅𝒐 𝒑𝒐𝒓 𝑳𝒖𝒎𝒊𝒊.\n¿𝑻𝒆 𝒈𝒖𝒔𝒕ó 𝒆𝒔𝒕𝒂 𝒑𝒖𝒃𝒍𝒊𝒄𝒂𝒄𝒊ó𝒏? **𝑽𝒐𝒕𝒂, 𝒄𝒐𝒎𝒆𝒏𝒕𝒂 𝒐 𝒓𝒆𝒃𝒍𝒐𝒈𝒖𝒆𝒂** 𝒑𝒂𝒓𝒂 𝒂𝒚𝒖𝒅𝒂𝒓 𝒂 𝒅𝒆𝒔𝒑𝒍𝒆𝒈𝒂𝒓 𝒆𝒔𝒕𝒂𝒔 𝒂𝒍𝒂𝒔. 💗</sub>",
+        "category": "hive-148441",
+        "children": 0,
+        "community": "hive-148441",
+        "community_title": "GEMS",
+        "created": "2026-04-16T08:08:33",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.2-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmPs3Nbsmf4iHXCFPQaKepsTWXKN6P7yjKsweyoSjff7Fz/1776326450666.jpg",
+            "https://images.ecency.com/DQmaBoPi7gJu9rnpkTNKMH12EBqhgkfQG8wZzwSG52THh5Q/1776326561173.jpg",
+            "https://images.ecency.com/DQmdeHKCPg5ZfkgfArvJsYizzyh5vjHzbLPromHw93VE5Ee/1776326560515.jpg",
+            "https://images.ecency.com/DQmYjvhyUkspB1skFsppj7L44LJVyb8kfKYHtAS3hKXTrCa/1776326597244.jpg",
+            "https://images.ecency.com/DQmZo65uNkPbQSiiDjAaSyVcTPwy8Q8QjrrQBAuno354Ex4/1776326597649.jpg",
+            "https://images.ecency.com/DQmYRcVwiLHWeR3mEig22aWiXineALH5xXYVQYC8D1WAw8B/1776326452404.jpg",
+            "https://images.ecency.com/DQmaox483ZC2Jc36XcWvCWzfwEHrvFikyjdrsikrse6VmHo/1776326451656.jpg",
+            "https://images.ecency.com/DQme6bfVqH1ZhYx6VRUcGhd6orG2ZszRu461GZ5t9jqvtSy/1776326560786.jpg",
+            "https://images.ecency.com/DQmcMr17XTvCzFLPZhLUhA7v5BSj8sSHPexGbnWhAb4LuQF/1776326451045.jpg",
+            "https://images.ecency.com/DQmTjeTkvqdJ2mYC8PsQQ4ejDcVWFhXZFeBQ4kYjNrwBWSm/1776326452081.jpg"
+          ],
+          "image_ratios": [
+            1.702127659574468,
+            1.8461538461538465,
+            1.6368286445012787,
+            1.7761332099907492,
+            1.7777777777777777
+          ],
+          "links": [],
+          "tags": [
+            "hive-148441",
+            "nature",
+            "lifestyle",
+            "ecency",
+            "hivecuba",
+            "bbh",
+            "waivio",
+            "ccc",
+            "pob",
+            "archon"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 190179558872,
+        "payout": 0.016,
+        "payout_at": "2026-04-23T08:08:33",
+        "pending_payout_value": "0.016 HBD",
+        "percent_hbd": 10000,
+        "permlink": "when-some-pink-vines-stole",
+        "post_id": 149825457,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 7
+        },
+        "title": "When Some Pink Vines Stole My Soul [Eng/Esp]",
+        "updated": "2026-04-16T08:08:33",
+        "url": "/hive-148441/@neuropoeta/when-some-pink-vines-stole"
+      },
+      {
+        "active_votes": [],
+        "author": "sportsbites",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 52.21,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "## Sportsbites Daily Thread - Thursday, April 16, 2026\n\nShare your quick sports takes! 280 characters of pure sports passion.\n\n---\n*Auto-generated by [Sportsblock](https://sportsblock.app) on 2026-04-16*",
+        "category": "hive-115814",
+        "children": 1,
+        "community": "hive-115814",
+        "community_title": "Sportsblock",
+        "created": "2026-04-16T08:07:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "sportsblock/1.0.0",
+          "community": "hive-115814",
+          "content_type": "sportsbites-container",
+          "format": "markdown",
+          "tags": [
+            "sportsblock",
+            "sportsbites",
+            "hive-115814"
+          ]
+        },
+        "max_accepted_payout": "0.000 HBD",
+        "net_rshares": 0,
+        "payout": 0,
+        "payout_at": "2026-04-23T08:07:09",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "sportsbites-daily-2026-04-16",
+        "post_id": 149825438,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "Sportsbites Daily Thread - Thursday, April 16, 2026",
+        "updated": "2026-04-16T08:07:09",
+        "url": "/hive-115814/@sportsbites/sportsbites-daily-2026-04-16"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 22911173564,
+            "voter": "aleister"
+          },
+          {
+            "rshares": 75089525625,
+            "voter": "pixelfan"
+          },
+          {
+            "rshares": 58465992691,
+            "voter": "pastrane"
+          },
+          {
+            "rshares": 15452739877,
+            "voter": "isnochys"
+          },
+          {
+            "rshares": 3208858072,
+            "voter": "millibot"
+          },
+          {
+            "rshares": 1121342260,
+            "voter": "decepticons"
+          },
+          {
+            "rshares": 3209525053,
+            "voter": "gtw"
+          },
+          {
+            "rshares": 28792856293,
+            "voter": "kakakk"
+          },
+          {
+            "rshares": 3021866609,
+            "voter": "a1004"
+          },
+          {
+            "rshares": 3076907377,
+            "voter": "dblogvoter"
+          },
+          {
+            "rshares": 3076953354,
+            "voter": "creavoter"
+          },
+          {
+            "rshares": 9109734960,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 0,
+            "voter": "petcurry"
+          },
+          {
+            "rshares": 1114931323,
+            "voter": "katiekate86"
+          }
+        ],
+        "author": "danideuder",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 72.62,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "actifit.pay",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "Vamos vamos que ya tenemos cerquita el fin de semana.\n\nAyer buena sesion de espalda en el gimnasio y una buena caminata para quedarme a un paso, nunca mejor dicho, de la cifra de los 12.000.\n\nUn buen dia ayer que espero igualar hoy.\n\nSeguimos. <br/> _This report was published via Actifit app ([Android](https://bit.ly/actifit-app) | [iOS](https://bit.ly/actifit-ios)). Check out the original version [here on actifit.io](https://actifit.io/@danideuder/actifit-danideuder-20260416t080601533z)_ <br/> <br><img src=\"https://cdn.steemitimages.com/DQmXv9QWiAYiLCSr3sKxVzUJVrgin3ZZWM2CExEo3fd5GUS/sep3.png\"><br><table>\t<tr>\t\t<img src=\"https://actifit.s3.us-east-1.amazonaws.com/ACTIVITYDATE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>15/04/2026</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmRgAoqi4vUVymaro8hXdRraNX6LHkXhMRBZxEo5vVWXDN/ACTIVITYCOUNT.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>11944</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmZ6ZT8VaEpaDzB16qZzK8omffbWUpEpe4BkJkMXmN3xrF/ACTIVITYTYPE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><pre><b>Daily Activity, Gym, Walking</b></div></pre></div>\t</tr></table><div class=\"text-center\"><img src=\"https://cdn.steemitimages.com/DQmNp6YwAm2qwquALZw8PdcovDorwaBSFuxQ38TrYziGT6b/A-20.png\"><a href=\"https://bit.ly/actifit-app\"><img src=\"https://cdn.steemitimages.com/DQmQqfpSmcQtfrHAtzfBtVccXwUL9vKNgZJ2j93m8WNjizw/l5.png\"></a><a href=\"https://bit.ly/actifit-ios\"><img src=\"https://cdn.steemitimages.com/DQmbWy8KzKT1UvCvznUTaFPw6wBUcyLtBT5XL9wdbB7Hfmn/l6.png\"></a></div>",
+        "category": "hive-193552",
+        "children": 0,
+        "community": "hive-193552",
+        "community_title": "Actifit",
+        "created": "2026-04-16T08:06:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "actiCrVal": "fba315b32c2447611cb168c530b2a5c4b3fb9ec41314355b37f28f7a3a2c51bb81ab38be06d18b3eb90dc95840787886efcc76c5a5ed89ed6de6d2e3ac237691",
+          "actifitUserID": [
+            "09eda721-fe47-4dad-81af-9f5f479a2009v0.13.4"
+          ],
+          "activityDate": [
+            "20260415"
+          ],
+          "activity_type": [
+            "Daily Activity, Gym, Walking"
+          ],
+          "app": "actifit/0.13.4",
+          "appType": "Android",
+          "chestUnit": [
+            "cm"
+          ],
+          "community": [
+            "hive-193552"
+          ],
+          "dataTrackingSource": [
+            "Health Connect Tracking"
+          ],
+          "heightUnit": [
+            "cm"
+          ],
+          "image": [
+            "https://cdn.steemitimages.com/DQmNp6YwAm2qwquALZw8PdcovDorwaBSFuxQ38TrYziGT6b/A-20.png"
+          ],
+          "step_count": [
+            "11944"
+          ],
+          "tags": [
+            "hive-193552",
+            "actifit",
+            "movetoearn",
+            "move2earn",
+            "sportstalk",
+            "neoxian",
+            "hive-engine",
+            "posh",
+            "pimp",
+            "sportstalk",
+            "movetoearn",
+            "move2earn"
+          ],
+          "thighsUnit": [
+            "cm"
+          ],
+          "timezone": [
+            "GMT+02:00"
+          ],
+          "users": [
+            "actifit"
+          ],
+          "waistUnit": [
+            "cm"
+          ],
+          "weightUnit": [
+            "kg"
+          ],
+          "yesterdayReport": [
+            "1"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 227652407058,
+        "payout": 0.019,
+        "payout_at": "2026-04-23T08:06:03",
+        "pending_payout_value": "0.019 HBD",
+        "percent_hbd": 10000,
+        "permlink": "actifit-danideuder-20260416t080601533z",
+        "post_id": 149825430,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 14
+        },
+        "title": "My Actifit Report Card: April 15 2026",
+        "updated": "2026-04-16T08:06:03",
+        "url": "/hive-193552/@danideuder/actifit-danideuder-20260416t080601533z"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 704350881,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 9109734960,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 28080598025,
+            "voter": "we-are-ai"
+          },
+          {
+            "rshares": 0,
+            "voter": "sdatoken"
+          }
+        ],
+        "author": "nahid43",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 67.21,
+        "author_role": "member",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "\n\n\n\n \n<div class=\"text-justify\">\n  \n    \n   https://img.leopedia.io/DQmU6b7bvvAtaREHGoggAQEsmppDNdgGWDvQDrgnEJSQCJW/1000066362.png \n\n\n\n\nHello friends, I hope you are doing well. Welcome to my new post. Hive is a community that works a lot like social media. Through it, we share our various posts. Through which we get some rewards even on a small scale. Although it is different as an individual. Because some people have been on this platform for a long time and they are full of experience here. Hive has kept me for various reasons, but I will definitely tell you two of them.\n\nThe most important and first reason is its rewards. It is natural that we all come here to earn income. However, most people post in various communities to earn income here. I don't think anyone would have come here without it. Hive is a token through which we can achieve some financial prosperity. There are many people here who mainly invest in Hive. When I first came to the platform, I came here to get rewards and because of its greed. Currently, I am still here for this. I hope I can achieve something good from here.\n\nMy second reason is that I can learn a lot from here. When I first came to hive, I could not understand anything from here. In fact, I have learned a lot through decentralized means. I have gained a lot of ideas about cryptocurrency. One of which is hive token. There are many communities here from which I can learn a lot. I have gained a lot of knowledge about how to write a post and how to share your experiences with people. Especially there are many cooking communities and diy communities here. I can learn a lot through these.\n\nAbove all, there are many people here who are basically culturally different from our country. I can learn about them from my country by reading their posts and understanding what their culture is like, what their country is like, what their community is like. This thing fascinates me a lot. At the end of the day, the hive community has become a different kind of connection with my soul. I love and respect it. I love and respect the people of this community. I hope you like my post. Thank you all.\n\n\n\n\n\n\n\n![1000019308.png](https://images.hive.blog/DQmRW9rHroSFBSAKdERxzaNWNAnWKCXRUdrHF4LbDABXrT6/1000019308.png)\n\n---\nDivce | realmi c67 \n-|-|\nsource this picture link : Gemini edited picture \nmain link: https://share.google/ecMQ4LW2uoOonLVy4\n\n\n### Kind Regards \n@nahid43\n\n\n![1000019308.png](https://images.hive.blog/DQmRW9rHroSFBSAKdERxzaNWNAnWKCXRUdrHF4LbDABXrT6/1000019308.png)\n\n\n\n</div> \n  \n\n\n\n\nPosted Using [INLEO](https://inleo.io/@nahid43/the-rewards-and-experience-i-gained-brought-me-here-jq1)",
+        "category": "hive-197685",
+        "children": 0,
+        "community": "hive-197685",
+        "community_title": "Indiaunited",
+        "created": "2026-04-16T08:04:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@nahid43/the-rewards-and-experience-i-gained-brought-me-here-jq1",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmU6b7bvvAtaREHGoggAQEsmppDNdgGWDvQDrgnEJSQCJW/1000066362.png"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://images.hive.blog/DQmRW9rHroSFBSAKdERxzaNWNAnWKCXRUdrHF4LbDABXrT6/1000019308.png)",
+            "https://share.google/ecMQ4LW2uoOonLVy4",
+            "https://images.hive.blog/DQmRW9rHroSFBSAKdERxzaNWNAnWKCXRUdrHF4LbDABXrT6/1000019308.png)",
+            "https://inleo.io/@nahid43/the-rewards-and-experience-i-gained-brought-me-here-jq1)"
+          ],
+          "tags": [
+            "hive-197685",
+            "iucontest",
+            "indiaunited",
+            "ocd",
+            "hive",
+            "neoxian",
+            "Leofinance"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 37894683866,
+        "payout": 0.003,
+        "payout_at": "2026-04-23T08:04:21",
+        "pending_payout_value": "0.003 HBD",
+        "percent_hbd": 10000,
+        "permlink": "the-rewards-and-experience-i-gained-brought-me-here-jq1",
+        "post_id": 149825420,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 4
+        },
+        "title": "The rewards and experience I gained brought me here.",
+        "updated": "2026-04-16T08:04:21",
+        "url": "/hive-197685/@nahid43/the-rewards-and-experience-i-gained-brought-me-here-jq1"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 0,
+            "voter": "godblessyou7771"
+          }
+        ],
+        "author": "godblessyou7771",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 3.42,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "https://www.youtube.com/watch?v=A3KzHl0W2zg\n\n\nhttps://meet2.kr/CWYcdj3\n\n\n‘OST만 부르면 대박’ 아일릿, 한국·일본 넘어 글로벌 차트 점령\n사진제공 | 빌리프랩 [스포츠동아 장은지 기자] 그룹 아일릿(ILLIT)이 독보적인 음색과 트렌디한 감성을 바탕으로 글로벌 OST 시장의 대세로 우뚝 섰다. 아일릿은 최근 디지털\n\nmeet2.kr\n\n​",
+        "category": "korea",
+        "children": 0,
+        "created": "2026-04-16T08:02:00",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "format": "markdown",
+          "image": [
+            "https://img.youtube.com/vi/A3KzHl0W2zg/0.jpg"
+          ],
+          "links": [
+            "https://www.youtube.com/watch?v=A3KzHl0W2zg"
+          ],
+          "tags": [
+            "korea"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "payout": 0,
+        "payout_at": "2026-04-23T08:02:00",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "or-free-rider-vlog-or-mamihlapinatapai-or-illit",
+        "post_id": 149825410,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1
+        },
+        "title": "⚠️멋짐 주의⚠️ 다크 모카의 하루 | FREE RIDER vlog | 'MAMIHLAPINATAPAI' 콘셉트 포토 비하인드 | ILLIT (아일릿)",
+        "updated": "2026-04-16T08:02:00",
+        "url": "/korea/@godblessyou7771/or-free-rider-vlog-or-mamihlapinatapai-or-illit"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 3300774985883,
+            "voter": "mangos"
+          },
+          {
+            "rshares": 929525372,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 3848649082,
+            "voter": "argentium"
+          },
+          {
+            "rshares": 244440047374,
+            "voter": "stever82"
+          },
+          {
+            "rshares": 884110011,
+            "voter": "merek"
+          },
+          {
+            "rshares": 740891858,
+            "voter": "sepone"
+          },
+          {
+            "rshares": 1797523987,
+            "voter": "drazeus"
+          },
+          {
+            "rshares": 3162897963,
+            "voter": "robinsonr810"
+          },
+          {
+            "rshares": 1151474185,
+            "voter": "steemincome"
+          },
+          {
+            "rshares": 7666353054,
+            "voter": "sonic.alfa"
+          },
+          {
+            "rshares": 1138406123,
+            "voter": "helpmate"
+          },
+          {
+            "rshares": 21583861878,
+            "voter": "stevespeaks"
+          },
+          {
+            "rshares": 3888964786,
+            "voter": "zaddyboy"
+          },
+          {
+            "rshares": 8893026868,
+            "voter": "arc-echo"
+          },
+          {
+            "rshares": 1451835325,
+            "voter": "grumbold"
+          },
+          {
+            "rshares": 0,
+            "voter": "playagame"
+          },
+          {
+            "rshares": 5646687326,
+            "voter": "sephiwolf"
+          },
+          {
+            "rshares": 15952200485,
+            "voter": "crypt0gnome"
+          },
+          {
+            "rshares": 12336395131,
+            "voter": "kid.miniatures"
+          },
+          {
+            "rshares": 11568911302,
+            "voter": "the-pockets"
+          },
+          {
+            "rshares": 1909442647,
+            "voter": "goldsteve"
+          },
+          {
+            "rshares": 704350881,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 3338940943,
+            "voter": "kryptofire"
+          },
+          {
+            "rshares": 6130959759,
+            "voter": "lightbruce17"
+          },
+          {
+            "rshares": 9109734960,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 1659198978,
+            "voter": "unity-bank"
+          },
+          {
+            "rshares": 678837257,
+            "voter": "stdd.stp"
+          },
+          {
+            "rshares": 1363347094078,
+            "voter": "splinterboost"
+          },
+          {
+            "rshares": 5794522072,
+            "voter": "terracore"
+          },
+          {
+            "rshares": 171797354525,
+            "voter": "splintertrends"
+          },
+          {
+            "rshares": 765113727,
+            "voter": "quan45"
+          },
+          {
+            "rshares": 1279962708,
+            "voter": "danwhodoesart"
+          },
+          {
+            "rshares": 28080598025,
+            "voter": "we-are-ai"
+          }
+        ],
+        "author": "mdakash62",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 73.97,
+        "author_role": "member",
+        "author_title": "ASEAN Hive VIP 👑 GOLD",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "‎<div class=\"text-justify\"> Animals are rich in immense love. Especially in this unique diversity of rural Bengal full of greenery. And in this green space, goats are living a free life and spending time happily with the green grass. They have happily jumped and eaten leaves. I will tell you about the beautiful view of such green nature and the free roaming of animals.\n\n![](https://images.ecency.com/DQmRfmbtC451Kj7oxuhxVftrruKo3RQjsUZ4HWSMDXh7FvW/1774236020492.jpg)\n\n![](https://images.ecency.com/DQmXCDRU2uLhaxDtj2jqS3F7hwZ1x4vGVBdyYzAU4MbL9fm/1774236020660.jpg)\n\n![](https://images.ecency.com/DQmbtbERCMZ79JDcTNt32vjeQk7cbDVbvycS4vhBS9CwkcS/1774236020815.jpg)\n\nThe beautiful view of the green grass below gives a sense of tranquility to the mind. The sweet smell of the earth along with the green grass creates a captivating attraction. The people of rural Bengal do not raise goats with joy. Even though there are no paddy fields or crops here, they are openly enjoying eating the leaves here. They are living a free and beautiful life in such an environment. I am really happy and pleased to see such a free life of animals. Do you also like this beautiful free life? Then come to this green vine. Where your breathing is normal and you can also join yourself in this beautiful life.\n\n\n![](https://images.ecency.com/DQmfZAKRhYRRN7nAJQ9v5kbiALz5UD2hPKMXhsyi4r7VUfH/1774236020960.jpg)\n\nBut there was a severe storm at night. So this unique green grass of nature seems to be smiling. It seems to be deeper than green or green like an island. The animals are feeling a slight chill in the dry environment. And are enjoying the joy of eating grass openly. Such a beautiful environment always gives me the opportunity to enjoy this green forest. Cycas is a tree where animals wait to rest. The leaves and branches of this tree are very interesting to see.\n\n![](https://images.ecency.com/DQmPsKXuR3KS6pDqvJp8QPan8so9oMF7bLRhaTCqWvd1CbN/1774236021118.jpg)\n\n\n![](https://images.ecency.com/DQmXhWz25knVU4BfTpxTkz3WzHSESaRczMBCT6LqJRn25qw/1774236117875.jpg)\n\nThey are trying to walk on long legs in this beautiful green wilderness. And they are enjoying the pleasure of choosing big grass from small grasses. Ah, how keenly they are trying to see. I welcome you all to this free lifestyle of animals. Along with this, there is also an opportunity to earn a living by raising goats in a rural environment. So, we can make ourselves self-reliant by raising animals. Let us value time and include ourselves in livelihood.\n\n\n\n\n![18.png](https://files.peakd.com/file/peakd-hive/mdakash62/EoAUXZjGAPyY3oMMK4f3oHgNhH1gR25mTMmu7pBuiWx6a2eAfCbUiUbmkLz3qgzSuJv.png)\n\n![](https://images.ecency.com/DQmYH7g5td7TFYfVNmCcnCQArAAiER1da6iZk4LRfG46Tiu/1762630356965.gif)\n\n<center>[Twitter](https://twitter.com/Mdmrakash262?t=RQKbgDAGm72Ta-N2_rPaeA&s=09) [Discord](https://discord.gg/t6CY6qs8)</center>\n‎\n\n![18.png](https://files.peakd.com/file/peakd-hive/mdakash62/EoAUXZjGAPyY3oMMK4f3oHgNhH1gR25mTMmu7pBuiWx6a2eAfCbUiUbmkLz3qgzSuJv.png)\n‎\n‎",
+        "category": "hive-141359",
+        "children": 1,
+        "community": "hive-141359",
+        "community_title": "ASEAN HIVE COMMUNITY",
+        "created": "2026-04-16T08:00:51",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.3-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmRfmbtC451Kj7oxuhxVftrruKo3RQjsUZ4HWSMDXh7FvW/1774236020492.jpg",
+            "https://images.ecency.com/DQmXhWz25knVU4BfTpxTkz3WzHSESaRczMBCT6LqJRn25qw/1774236117875.jpg",
+            "https://files.peakd.com/file/peakd-hive/mdakash62/EoAUXZjGAPyY3oMMK4f3oHgNhH1gR25mTMmu7pBuiWx6a2eAfCbUiUbmkLz3qgzSuJv.png",
+            "https://images.ecency.com/DQmYH7g5td7TFYfVNmCcnCQArAAiER1da6iZk4LRfG46Tiu/1762630356965.gif",
+            "https://files.peakd.com/file/peakd-hive/mdakash62/EoAUXZjGAPyY3oMMK4f3oHgNhH1gR25mTMmu7pBuiWx6a2eAfCbUiUbmkLz3qgzSuJv.png",
+            "https://images.ecency.com/DQmPsKXuR3KS6pDqvJp8QPan8so9oMF7bLRhaTCqWvd1CbN/1774236021118.jpg",
+            "https://images.ecency.com/DQmXCDRU2uLhaxDtj2jqS3F7hwZ1x4vGVBdyYzAU4MbL9fm/1774236020660.jpg",
+            "https://images.ecency.com/DQmfZAKRhYRRN7nAJQ9v5kbiALz5UD2hPKMXhsyi4r7VUfH/1774236020960.jpg",
+            "https://images.ecency.com/DQmbtbERCMZ79JDcTNt32vjeQk7cbDVbvycS4vhBS9CwkcS/1774236020815.jpg"
+          ],
+          "image_ratios": [
+            1,
+            1,
+            9,
+            1.7777777777777777,
+            9
+          ],
+          "links": [
+            "https://twitter.com/Mdmrakash262?t=RQKbgDAGm72Ta-N2_rPaeA&s=09",
+            "https://discord.gg/t6CY6qs8"
+          ],
+          "tags": [
+            "hive-141359",
+            "aseanhive",
+            "nature",
+            "neoxian",
+            "archon",
+            "photography",
+            "splinterlands",
+            "curangel",
+            "lifestyle",
+            "animals"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 5242452858553,
+        "payout": 0.456,
+        "payout_at": "2026-04-23T08:00:51",
+        "pending_payout_value": "0.456 HBD",
+        "percent_hbd": 10000,
+        "permlink": "the-animals-live-freely-in",
+        "post_id": 149825400,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 33
+        },
+        "title": "The animals live freely in this beautiful part of nature.",
+        "updated": "2026-04-16T08:00:51",
+        "url": "/hive-141359/@mdakash62/the-animals-live-freely-in"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 26360474386,
+            "voter": "rafalski"
+          },
+          {
+            "rshares": 28512041412,
+            "voter": "skate"
+          },
+          {
+            "rshares": 4575085090,
+            "voter": "adriuff"
+          },
+          {
+            "rshares": 3630145021572,
+            "voter": "tipu"
+          },
+          {
+            "rshares": 21002266040,
+            "voter": "fragmentarion"
+          },
+          {
+            "rshares": 9668306081,
+            "voter": "tobias-g"
+          },
+          {
+            "rshares": 445811038800,
+            "voter": "strenue"
+          },
+          {
+            "rshares": 195389860618,
+            "voter": "onepercentbetter"
+          },
+          {
+            "rshares": 8966526478,
+            "voter": "koenau"
+          },
+          {
+            "rshares": 8337246700,
+            "voter": "merlion"
+          },
+          {
+            "rshares": 1963034166,
+            "voter": "longer"
+          },
+          {
+            "rshares": 9055483681,
+            "voter": "alexjay"
+          },
+          {
+            "rshares": 9906516629254,
+            "voter": "engrave"
+          },
+          {
+            "rshares": 18968568132,
+            "voter": "merlin7"
+          },
+          {
+            "rshares": 10510747224,
+            "voter": "kryptogames"
+          },
+          {
+            "rshares": 1444869138,
+            "voter": "cryptogambit"
+          },
+          {
+            "rshares": 2023818595,
+            "voter": "bcm"
+          },
+          {
+            "rshares": 5744825873,
+            "voter": "dappstats"
+          },
+          {
+            "rshares": 8135021835,
+            "voter": "cornavirus"
+          },
+          {
+            "rshares": 707813624811,
+            "voter": "hive.one"
+          },
+          {
+            "rshares": 1654322447,
+            "voter": "billymeyer"
+          },
+          {
+            "rshares": 525483329,
+            "voter": "coronadino"
+          },
+          {
+            "rshares": 6126578588,
+            "voter": "hive.curation"
+          },
+          {
+            "rshares": 27801444128,
+            "voter": "danishcrypto"
+          },
+          {
+            "rshares": 722263930,
+            "voter": "ebon123"
+          },
+          {
+            "rshares": 3338534058,
+            "voter": "jucabala"
+          },
+          {
+            "rshares": 909432015,
+            "voter": "tomig"
+          },
+          {
+            "rshares": 738623522,
+            "voter": "unhurried"
+          },
+          {
+            "rshares": 10226099164,
+            "voter": "roninvsa"
+          },
+          {
+            "rshares": 1722989754,
+            "voter": "giannisk8"
+          },
+          {
+            "rshares": 1925768184,
+            "voter": "theinfiltred"
+          },
+          {
+            "rshares": 284269309091,
+            "voter": "skatehype.com"
+          },
+          {
+            "rshares": 8017557771,
+            "voter": "transtorn0"
+          },
+          {
+            "rshares": 2193368454,
+            "voter": "mukadder"
+          },
+          {
+            "rshares": 47867906323,
+            "voter": "hypeuser"
+          },
+          {
+            "rshares": 149853489763,
+            "voter": "miguelurbina"
+          },
+          {
+            "rshares": 10115632388,
+            "voter": "elmaschino"
+          },
+          {
+            "rshares": 2622524181,
+            "voter": "lolosfx"
+          },
+          {
+            "rshares": 3152485397,
+            "voter": "mikijaume"
+          },
+          {
+            "rshares": 2144526713,
+            "voter": "victorleplug"
+          },
+          {
+            "rshares": 5812312083,
+            "voter": "arrovf"
+          },
+          {
+            "rshares": 5836798472,
+            "voter": "ouhyes"
+          },
+          {
+            "rshares": 10318864536,
+            "voter": "aitorlopez"
+          },
+          {
+            "rshares": 21909239817,
+            "voter": "fromoza"
+          },
+          {
+            "rshares": 5407798764,
+            "voter": "javicadavieco"
+          },
+          {
+            "rshares": 6206284807055,
+            "voter": "twocandles84"
+          },
+          {
+            "rshares": 3775189710,
+            "voter": "andressalom"
+          },
+          {
+            "rshares": 901180992,
+            "voter": "joseparenas"
+          },
+          {
+            "rshares": 1087270622,
+            "voter": "charliesb"
+          },
+          {
+            "rshares": 401778096,
+            "voter": "glbrtjnr"
+          },
+          {
+            "rshares": 381266347,
+            "voter": "chazmerryweather"
+          },
+          {
+            "rshares": 928538506,
+            "voter": "mariobrill"
+          },
+          {
+            "rshares": 1019166416,
+            "voter": "gusttavotx"
+          },
+          {
+            "rshares": 4580582741,
+            "voter": "doblershiva"
+          },
+          {
+            "rshares": 905372925,
+            "voter": "ygorpicolinoskt"
+          },
+          {
+            "rshares": 549351760,
+            "voter": "brunopiu"
+          },
+          {
+            "rshares": 388881217,
+            "voter": "samueljimmy"
+          },
+          {
+            "rshares": 856308869,
+            "voter": "gianluccazn"
+          },
+          {
+            "rshares": 356804497,
+            "voter": "fourtwenty1"
+          },
+          {
+            "rshares": 451330103,
+            "voter": "tioverde"
+          },
+          {
+            "rshares": 946037021,
+            "voter": "philnick"
+          },
+          {
+            "rshares": 4931344945,
+            "voter": "rob2c"
+          },
+          {
+            "rshares": 2333976956,
+            "voter": "jonisk8"
+          },
+          {
+            "rshares": 1106049565,
+            "voter": "sandraolmedo"
+          },
+          {
+            "rshares": 469800769,
+            "voter": "biasodre"
+          },
+          {
+            "rshares": 856677990,
+            "voter": "zoro-vazmor"
+          },
+          {
+            "rshares": 638497265,
+            "voter": "wilbor"
+          },
+          {
+            "rshares": 4160827172,
+            "voter": "manocanada"
+          },
+          {
+            "rshares": 1008119937,
+            "voter": "babaskt"
+          },
+          {
+            "rshares": 558478359,
+            "voter": "vitim022"
+          },
+          {
+            "rshares": 2842763883,
+            "voter": "emanuelsol"
+          },
+          {
+            "rshares": 420897561,
+            "voter": "guedzzz"
+          },
+          {
+            "rshares": 1218456440,
+            "voter": "pepalonso"
+          },
+          {
+            "rshares": 731173836,
+            "voter": "lalosb"
+          },
+          {
+            "rshares": 605088248,
+            "voter": "zoggygivaerts"
+          },
+          {
+            "rshares": 3504859962,
+            "voter": "bautimasnik"
+          },
+          {
+            "rshares": 1432606822,
+            "voter": "whaka"
+          },
+          {
+            "rshares": 3042654727,
+            "voter": "oscartorres"
+          },
+          {
+            "rshares": 2793421712,
+            "voter": "sebasld11"
+          },
+          {
+            "rshares": 1678061513,
+            "voter": "garalatherow"
+          },
+          {
+            "rshares": 941435829,
+            "voter": "dopak"
+          },
+          {
+            "rshares": 1143962146,
+            "voter": "marcosdietrich"
+          },
+          {
+            "rshares": 9371240532,
+            "voter": "palomograbatures"
+          },
+          {
+            "rshares": 912872171,
+            "voter": "brajan10"
+          },
+          {
+            "rshares": 613059879,
+            "voter": "javitopatineta"
+          },
+          {
+            "rshares": 6351257437,
+            "voter": "jmrtza"
+          },
+          {
+            "rshares": 799087991,
+            "voter": "topospunk"
+          },
+          {
+            "rshares": 2668417765,
+            "voter": "perejsuau"
+          },
+          {
+            "rshares": 696442188,
+            "voter": "stoodskate"
+          },
+          {
+            "rshares": 1903966478,
+            "voter": "slappyerfilms"
+          },
+          {
+            "rshares": 706979864,
+            "voter": "yungbolss"
+          },
+          {
+            "rshares": 480616442,
+            "voter": "danielmoragues"
+          },
+          {
+            "rshares": 352851758,
+            "voter": "sirkatt"
+          },
+          {
+            "rshares": 436753249,
+            "voter": "fercho5318"
+          },
+          {
+            "rshares": 901848077,
+            "voter": "lordlaundry"
+          },
+          {
+            "rshares": 1073685127,
+            "voter": "skateonmyramp"
+          },
+          {
+            "rshares": 826312418,
+            "voter": "shineskateshop"
+          },
+          {
+            "rshares": 603340017,
+            "voter": "levinn"
+          },
+          {
+            "rshares": 9400515525,
+            "voter": "yungbresciani"
+          },
+          {
+            "rshares": 739297557,
+            "voter": "diegosk8"
+          },
+          {
+            "rshares": 315784737,
+            "voter": "ifawk.games"
+          },
+          {
+            "rshares": 3596848122,
+            "voter": "cruzsalas"
+          },
+          {
+            "rshares": 514335074,
+            "voter": "elieser24k"
+          },
+          {
+            "rshares": 2802986370,
+            "voter": "sosask8"
+          },
+          {
+            "rshares": 894826698,
+            "voter": "cazzzhh"
+          },
+          {
+            "rshares": 736248603,
+            "voter": "tomaseenrique"
+          },
+          {
+            "rshares": 816053305,
+            "voter": "joaquinvillani"
+          },
+          {
+            "rshares": 515337675,
+            "voter": "javiersk888"
+          },
+          {
+            "rshares": 2908050419,
+            "voter": "titogarciask"
+          },
+          {
+            "rshares": 448679402,
+            "voter": "elhijodelajuani"
+          },
+          {
+            "rshares": 428944508,
+            "voter": "rafael1312"
+          },
+          {
+            "rshares": 3025474474,
+            "voter": "justclickinskate"
+          },
+          {
+            "rshares": 484129011,
+            "voter": "darlinescombro"
+          },
+          {
+            "rshares": 346925647,
+            "voter": "victork8"
+          },
+          {
+            "rshares": 809777711,
+            "voter": "fvz912"
+          },
+          {
+            "rshares": 1025846670,
+            "voter": "andresgore"
+          },
+          {
+            "rshares": 548719832,
+            "voter": "callmekallah0"
+          },
+          {
+            "rshares": 927816442,
+            "voter": "lettuceda"
+          },
+          {
+            "rshares": 369820454,
+            "voter": "jxrgius"
+          },
+          {
+            "rshares": 3338230702,
+            "voter": "deoliveirask8"
+          },
+          {
+            "rshares": 16801615713,
+            "voter": "savantsb"
+          },
+          {
+            "rshares": 1324664682,
+            "voter": "furtivo"
+          },
+          {
+            "rshares": 2378414738,
+            "voter": "kevinsuelo"
+          },
+          {
+            "rshares": 10440213487,
+            "voter": "sk8bryan"
+          },
+          {
+            "rshares": 448355776,
+            "voter": "lrafa372"
+          },
+          {
+            "rshares": 378479390,
+            "voter": "kvnd3"
+          },
+          {
+            "rshares": 898915297,
+            "voter": "guccisk8"
+          },
+          {
+            "rshares": 6142814607,
+            "voter": "deeanndmskate"
+          },
+          {
+            "rshares": 9733508633,
+            "voter": "darioremisb"
+          },
+          {
+            "rshares": 1433264689,
+            "voter": "frankspaceyhelde"
+          },
+          {
+            "rshares": 25716561982,
+            "voter": "kushdoggg"
+          },
+          {
+            "rshares": 2878688265,
+            "voter": "torrezsb18"
+          },
+          {
+            "rshares": 605919926,
+            "voter": "sergiochlvs"
+          },
+          {
+            "rshares": 637124824,
+            "voter": "niggasanskt"
+          },
+          {
+            "rshares": 701192106,
+            "voter": "frijolitosk8"
+          },
+          {
+            "rshares": 327891207,
+            "voter": "mingueza"
+          },
+          {
+            "rshares": 708347829,
+            "voter": "briann1999"
+          },
+          {
+            "rshares": 567600046,
+            "voter": "alexmonterov"
+          },
+          {
+            "rshares": 3159584084,
+            "voter": "alexishsb"
+          },
+          {
+            "rshares": 1611161103,
+            "voter": "tomydgk"
+          },
+          {
+            "rshares": 594030106,
+            "voter": "antonioogsb"
+          },
+          {
+            "rshares": 853581597,
+            "voter": "bourassk8"
+          },
+          {
+            "rshares": 1007718580,
+            "voter": "roggesk8"
+          },
+          {
+            "rshares": 3486352676,
+            "voter": "marksegura"
+          },
+          {
+            "rshares": 1199330553,
+            "voter": "carlossb19"
+          },
+          {
+            "rshares": 2873198996,
+            "voter": "chitasb"
+          },
+          {
+            "rshares": 414368915,
+            "voter": "eliask8"
+          },
+          {
+            "rshares": 936368208,
+            "voter": "conde8torni"
+          },
+          {
+            "rshares": 1091150915,
+            "voter": "janskyallen"
+          },
+          {
+            "rshares": 1788100376,
+            "voter": "vviernesrasto"
+          },
+          {
+            "rshares": 503589895,
+            "voter": "marvebhood777"
+          },
+          {
+            "rshares": 555825676,
+            "voter": "luchitoskt"
+          },
+          {
+            "rshares": 862571554,
+            "voter": "enzoign"
+          },
+          {
+            "rshares": 420436630,
+            "voter": "darkside23sb"
+          },
+          {
+            "rshares": 22752902499,
+            "voter": "carlosflip"
+          },
+          {
+            "rshares": 25833637822,
+            "voter": "kinderflaco"
+          },
+          {
+            "rshares": 319833017,
+            "voter": "mendisk8"
+          },
+          {
+            "rshares": 10891022376,
+            "voter": "willrsb96"
+          },
+          {
+            "rshares": 386843842,
+            "voter": "mateoop"
+          },
+          {
+            "rshares": 5833988346,
+            "voter": "carlosguevarask8"
+          },
+          {
+            "rshares": 851122212,
+            "voter": "eddyorange"
+          },
+          {
+            "rshares": 330650504,
+            "voter": "spliffsito"
+          },
+          {
+            "rshares": 553613648,
+            "voter": "ciscogomez"
+          },
+          {
+            "rshares": 2046017562,
+            "voter": "vivabetanzos"
+          },
+          {
+            "rshares": 526991879,
+            "voter": "soulskt"
+          },
+          {
+            "rshares": 4134396475,
+            "voter": "roquesk8ordie"
+          },
+          {
+            "rshares": 926466708,
+            "voter": "juradog"
+          },
+          {
+            "rshares": 420199554,
+            "voter": "nahuelrojaskt"
+          },
+          {
+            "rshares": 3984225722,
+            "voter": "dinococe"
+          },
+          {
+            "rshares": 4602640681,
+            "voter": "josesanchezskt"
+          },
+          {
+            "rshares": 2326056666,
+            "voter": "chrisbelt"
+          },
+          {
+            "rshares": 549040204,
+            "voter": "odlskateklothing"
+          },
+          {
+            "rshares": 434632035,
+            "voter": "david4tuna"
+          },
+          {
+            "rshares": 24218066930,
+            "voter": "dannyweeysk8"
+          },
+          {
+            "rshares": 9151906642,
+            "voter": "juliclubdesolos"
+          },
+          {
+            "rshares": 6331140606,
+            "voter": "crodvzla"
+          },
+          {
+            "rshares": 671452086,
+            "voter": "fermango"
+          },
+          {
+            "rshares": 1129931463,
+            "voter": "iarahaddad"
+          },
+          {
+            "rshares": 1178540034,
+            "voter": "leoskt"
+          },
+          {
+            "rshares": 731823256,
+            "voter": "elmolesto"
+          },
+          {
+            "rshares": 4815618180,
+            "voter": "piarsito"
+          },
+          {
+            "rshares": 327246785,
+            "voter": "bronze97"
+          },
+          {
+            "rshares": 4451504505,
+            "voter": "vrgenisu"
+          },
+          {
+            "rshares": 3390561450,
+            "voter": "blasvelasquezsb"
+          },
+          {
+            "rshares": 356785764,
+            "voter": "vxstreets"
+          },
+          {
+            "rshares": 3429541788,
+            "voter": "lacteo88"
+          },
+          {
+            "rshares": 677256639,
+            "voter": "naansilva"
+          },
+          {
+            "rshares": 1746965251,
+            "voter": "soyernesto"
+          },
+          {
+            "rshares": 379603719,
+            "voter": "vamoandar"
+          },
+          {
+            "rshares": 816578143,
+            "voter": "nazasb"
+          },
+          {
+            "rshares": 430088033,
+            "voter": "azvd0"
+          },
+          {
+            "rshares": 1195280904,
+            "voter": "andresk8"
+          },
+          {
+            "rshares": 1714894398,
+            "voter": "bebis4"
+          },
+          {
+            "rshares": 314020058,
+            "voter": "irinastfu1"
+          },
+          {
+            "rshares": 1698959984,
+            "voter": "samoesk8badajoz"
+          },
+          {
+            "rshares": 3624805938,
+            "voter": "asierzbll"
+          },
+          {
+            "rshares": 929710209,
+            "voter": "thepowersk88"
+          },
+          {
+            "rshares": 398724243,
+            "voter": "brancer"
+          },
+          {
+            "rshares": 433459254,
+            "voter": "soplo149"
+          },
+          {
+            "rshares": 14482660780,
+            "voter": "blasvelasquez"
+          },
+          {
+            "rshares": 828654629,
+            "voter": "daavdz"
+          },
+          {
+            "rshares": 1962436197,
+            "voter": "sanchesito"
+          },
+          {
+            "rshares": 1974746779,
+            "voter": "filippojuan"
+          },
+          {
+            "rshares": 370303027,
+            "voter": "nicorocha"
+          },
+          {
+            "rshares": 1198054988,
+            "voter": "yaze"
+          },
+          {
+            "rshares": 1838125216,
+            "voter": "enan0000000"
+          },
+          {
+            "rshares": 3566505010,
+            "voter": "denielcramer"
+          },
+          {
+            "rshares": 9280535010,
+            "voter": "stoja"
+          },
+          {
+            "rshares": 810678718,
+            "voter": "danielalaniz"
+          },
+          {
+            "rshares": 562696008,
+            "voter": "skeiiii44"
+          },
+          {
+            "rshares": 324574254,
+            "voter": "brunonapele"
+          },
+          {
+            "rshares": 781710331,
+            "voter": "timbo2buck"
+          },
+          {
+            "rshares": 1274762316,
+            "voter": "gastopo"
+          },
+          {
+            "rshares": 3941470867,
+            "voter": "benditapatineta"
+          },
+          {
+            "rshares": 2662870503,
+            "voter": "alejodavila23sb"
+          },
+          {
+            "rshares": 4252862832,
+            "voter": "ntorrant"
+          },
+          {
+            "rshares": 575121886,
+            "voter": "axeli0o0o"
+          },
+          {
+            "rshares": 1625279719,
+            "voter": "aa002"
+          },
+          {
+            "rshares": 815034407,
+            "voter": "arshadkhan4421"
+          },
+          {
+            "rshares": 1008388672,
+            "voter": "al87co20anarki"
+          },
+          {
+            "rshares": 2532783878,
+            "voter": "owgy"
+          },
+          {
+            "rshares": 353040405,
+            "voter": "venezuelask8"
+          },
+          {
+            "rshares": 601882964,
+            "voter": "monrayskt"
+          },
+          {
+            "rshares": 1552251139,
+            "voter": "eclipse.sk8"
+          },
+          {
+            "rshares": 688202657,
+            "voter": "tokallsk8"
+          },
+          {
+            "rshares": 716196616,
+            "voter": "ritaskt"
+          },
+          {
+            "rshares": 1197680489,
+            "voter": "rudydsk8"
+          },
+          {
+            "rshares": 1669915193,
+            "voter": "angiesk8"
+          },
+          {
+            "rshares": 571517054,
+            "voter": "madvillain9"
+          },
+          {
+            "rshares": 1770751257,
+            "voter": "jhonnalex2895"
+          },
+          {
+            "rshares": 1339764522,
+            "voter": "linkievichgabrie"
+          },
+          {
+            "rshares": 454823911,
+            "voter": "sixtooo"
+          },
+          {
+            "rshares": 826970795,
+            "voter": "agustorres"
+          },
+          {
+            "rshares": 1395509709,
+            "voter": "javiersk8"
+          },
+          {
+            "rshares": 360735232,
+            "voter": "ericferretto"
+          },
+          {
+            "rshares": 483972156,
+            "voter": "frankistyle69"
+          },
+          {
+            "rshares": 1271988556,
+            "voter": "manocanadaa2"
+          },
+          {
+            "rshares": 920712250,
+            "voter": "sararomero"
+          },
+          {
+            "rshares": 2217469517,
+            "voter": "stifler95"
+          },
+          {
+            "rshares": 1281862469,
+            "voter": "xamu"
+          },
+          {
+            "rshares": 960029390,
+            "voter": "yisussb"
+          },
+          {
+            "rshares": 6082313901,
+            "voter": "emilypino"
+          },
+          {
+            "rshares": 2182997018,
+            "voter": "jskate"
+          },
+          {
+            "rshares": 3770342577,
+            "voter": "vitorlopessk8"
+          },
+          {
+            "rshares": 575979018,
+            "voter": "kamdsk8"
+          },
+          {
+            "rshares": 968523389,
+            "voter": "aalanizzdaniel"
+          },
+          {
+            "rshares": 461173523,
+            "voter": "gusttavotx0"
+          },
+          {
+            "rshares": 403974275,
+            "voter": "nanusktt"
+          },
+          {
+            "rshares": 7187786813,
+            "voter": "elchamooficial"
+          },
+          {
+            "rshares": 1835387018,
+            "voter": "tutiskate"
+          },
+          {
+            "rshares": 6623697859,
+            "voter": "tedp1989"
+          },
+          {
+            "rshares": 389128150,
+            "voter": "hasashi"
+          },
+          {
+            "rshares": 2839885183,
+            "voter": "hectorsk89"
+          },
+          {
+            "rshares": 473869162,
+            "voter": "erickornelas7"
+          },
+          {
+            "rshares": 980336437,
+            "voter": "jeanmoscardelli"
+          },
+          {
+            "rshares": 417751352,
+            "voter": "ktamo"
+          },
+          {
+            "rshares": 4347729550,
+            "voter": "amilkarvtattoo"
+          },
+          {
+            "rshares": 1100528135,
+            "voter": "jairosb"
+          },
+          {
+            "rshares": 6190028012,
+            "voter": "imoiksk8"
+          },
+          {
+            "rshares": 1718655449,
+            "voter": "sk8keyht"
+          },
+          {
+            "rshares": 5045860658,
+            "voter": "sk8bryan2"
+          },
+          {
+            "rshares": 4982312639,
+            "voter": "patinetalibre"
+          },
+          {
+            "rshares": 2346475756,
+            "voter": "joeldecastroskt9"
+          },
+          {
+            "rshares": 7559106490,
+            "voter": "franyersk8"
+          },
+          {
+            "rshares": 1839672982,
+            "voter": "frankagresot"
+          },
+          {
+            "rshares": 618731133,
+            "voter": "isaacrivsk8"
+          },
+          {
+            "rshares": 5289796516,
+            "voter": "imberksb"
+          },
+          {
+            "rshares": 4602923649,
+            "voter": "mikeavila"
+          },
+          {
+            "rshares": 1721011776,
+            "voter": "kicked"
+          },
+          {
+            "rshares": 1418720623,
+            "voter": "cristian56"
+          },
+          {
+            "rshares": 5399028315,
+            "voter": "deadsebas5"
+          },
+          {
+            "rshares": 3161117609,
+            "voter": "ledesmass"
+          },
+          {
+            "rshares": 515547021,
+            "voter": "decay444"
+          },
+          {
+            "rshares": 481741199,
+            "voter": "javicardozo8"
+          },
+          {
+            "rshares": 2267823311,
+            "voter": "wishrrrr"
+          },
+          {
+            "rshares": 1399728127,
+            "voter": "endersonsk8"
+          },
+          {
+            "rshares": 681022705,
+            "voter": "lihum9"
+          },
+          {
+            "rshares": 590511788,
+            "voter": "franklinagresot"
+          },
+          {
+            "rshares": 1764888147,
+            "voter": "ianpaulsb"
+          }
+        ],
+        "author": "negrosk8",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 47.9,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "hypeuser",
+            "weight": 100
+          },
+          {
+            "account": "skatehype.com",
+            "weight": 400
+          }
+        ],
+        "blacklists": [],
+        "body": "<center>[<img src='https://www.skatehype.com/tempimg/negrosk8-32901-hive.jpg?1776326404'>](https://www.skatehype.com/v/32901/flip-bs-50-50-skatepark-luis-carriyo-elias-mindiola)</center>\n\nTrick: flip bs 50-50, skatepark luis carriyo.\nSkater: Elias Mindiola [Venezuela]\nFilmer: Yo\n\n<div style='position:relative;padding-bottom:56.25%;height:0;overflow:hidden'><iframe style='position:absolute;top:0;left:0;width:100%;height:100%' allowfullscreen src='https://www.skatehype.com/ifplay.php?v=32901' name='hype32901'></iframe><br>\n</div>",
+        "category": "hive-106687",
+        "children": 1,
+        "community": "hive-106687",
+        "community_title": "Skate Hype",
+        "created": "2026-04-16T08:00:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "beempy/0.24.27",
+          "canonical_url": "https://peakd.com/hive-106687/@negrosk8/flip-bs-50-50-skatepark-luis-carriyo-elias-mindiola",
+          "community": "hive-106687",
+          "tags": [
+            "skateboarding",
+            "skatehype",
+            "skate",
+            "negrosk8",
+            "sports",
+            "spanish",
+            "video"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 22433355576251,
+        "payout": 1.954,
+        "payout_at": "2026-04-23T08:00:06",
+        "pending_payout_value": "1.954 HBD",
+        "percent_hbd": 10000,
+        "permlink": "flip-bs-50-50-skatepark-luis-carriyo-elias-mindiola",
+        "post_id": 149825391,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 279
+        },
+        "title": "Flip bs 50-50, skatepark luis carriyo, Elias Mindiola",
+        "updated": "2026-04-16T08:00:06",
+        "url": "/hive-106687/@negrosk8/flip-bs-50-50-skatepark-luis-carriyo-elias-mindiola"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
