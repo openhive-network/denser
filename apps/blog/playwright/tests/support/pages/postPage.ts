@@ -107,6 +107,12 @@ export class PostPage {
   readonly articleIframes: Locator;
   readonly twitterWrappers: Locator;
   readonly instagramWrappers: Locator;
+  readonly pendingIndexingMessage: Locator;
+  readonly notFoundPage: Locator;
+  readonly notFoundHeading: Locator;
+  readonly postFooterTimestamp: Locator;
+  readonly authorHeaderReputation: Locator;
+  readonly authorHeaderAvatar: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -231,6 +237,12 @@ export class PostPage {
     this.articleIframes = page.locator('#articleBody iframe');
     this.twitterWrappers = page.locator('#articleBody .twitterWrapper');
     this.instagramWrappers = page.locator('#articleBody .instagramWrapper');
+    this.pendingIndexingMessage = page.locator('[data-testid="pending-indexing-message"]');
+    this.notFoundPage = page.locator('[data-testid="not-found-page"]');
+    this.notFoundHeading = this.notFoundPage.locator('h1');
+    this.postFooterTimestamp = page.locator('[data-testid="post-footer-timestamp"]');
+    this.authorHeaderReputation = this.articleAuthorData.locator('[data-testid="author-reputation"]');
+    this.authorHeaderAvatar = this.articleAuthorData.locator('[data-testid="user-avatar"]');
   }
 
   async gotoHomePage() {

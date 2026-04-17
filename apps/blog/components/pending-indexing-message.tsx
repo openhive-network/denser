@@ -62,7 +62,7 @@ export default function PendingIndexingMessage({
   }
 
   return (
-    <div className="mx-auto flex flex-col items-center py-8">
+    <div className="mx-auto flex flex-col items-center py-8" data-testid="pending-indexing-message">
       <Icons.hive className="h-16 w-16" />
       <div className="my-4 flex items-center gap-2">
         {!hasTimedOut && <CircleSpinner size={18} color="#3b82f6" loading />}

@@ -1,0 +1,32 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_discussion",
+    "params": {
+      "author": "gtg",
+      "permlink": "does-not-exist-pending-test",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "05ce0694f6f7e099",
+  "method": "bridge.get_discussion",
+  "params": {
+    "author": "gtg",
+    "permlink": "does-not-exist-pending-test",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post gtg/does-not-exist-pending-test does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

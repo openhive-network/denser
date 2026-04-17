@@ -1,0 +1,12 @@
+{
+  "testName": "postDetail",
+  "recordedAt": "2026-04-17T08:20:35.482Z",
+  "totalRequests": 21,
+  "savedFixtures": 7,
+  "duplicatesSkipped": 14,
+  "methods": {
+    "bridge.get_community": 7,
+    "bridge.get_post": 7,
+    "bridge.get_discussion": 7
+  }
+}
