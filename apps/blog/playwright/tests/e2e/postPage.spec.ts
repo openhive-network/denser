@@ -440,11 +440,9 @@ test.describe('Post page tests', () => {
     );
   });
 
-  test('validate Follow button style in the popover card in dark theme by clicking the footer post author link', async ({
+  test('@flaky validate Follow button style in the popover card in dark theme by clicking the footer post author link', async ({
     page
   }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 

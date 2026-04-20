@@ -844,11 +844,9 @@ test.describe('Load more... comments in the post', () => {
     expect((await postPage.commentListItems.all()).length).toBe(3);
   });
 
-  test('Validate sorting the comments in the post "leofinance/@leo-curation/organic-curation-report-week-25"', async ({
+  test('@flaky Validate sorting the comments in the post "leofinance/@leo-curation/organic-curation-report-week-25"', async ({
     page
   }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
     const commentViewPage = new CommentViewPage(page);
 
     // Move to the post "leofinance/@leo-curation/organic-curation-report-week-25"

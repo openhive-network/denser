@@ -111,9 +111,7 @@ test.describe('Sidebar tests', () => {
    * SIDEBAR ON DIFFERENT FEEDS
    */
 
-  test('sidebar is visible on hot feed', async ({ page }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky sidebar is visible on hot feed', async ({ page }) => {
     await page.goto('/hot');
     await page.waitForLoadState('domcontentloaded');
 
@@ -124,9 +122,7 @@ test.describe('Sidebar tests', () => {
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
   });
 
-  test('sidebar is visible on created feed', async ({ page }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky sidebar is visible on created feed', async ({ page }) => {
     await page.goto('/created');
     await page.waitForLoadState('domcontentloaded');
 

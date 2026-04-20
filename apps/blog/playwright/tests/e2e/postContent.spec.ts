@@ -69,9 +69,7 @@ test.describe('Post Content tests', () => {
     await expect(postPage.articleFooter).toBeVisible();
   });
 
-  test('post page has interactive elements', async ({ page }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky post page has interactive elements', async ({ page }) => {
     await homePage.goto();
 
     // Navigate to first post
@@ -172,9 +170,7 @@ test.describe('Post Content tests', () => {
    * POST COMMENTS
    */
 
-  test('post page shows comments section', async ({ page }) => {
-    // FIXME: flaky test on e2e-tests-blog-stable stage
-    test.fixme();
+  test('@flaky post page shows comments section', async ({ page }) => {
     await homePage.goto();
 
     // Navigate to first post
