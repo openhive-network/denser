@@ -1,5 +1,5 @@
-import { test, expect } from '../support/fixture-proxy-test';
-import { TIMEOUTS } from '../support/constants';
+import { test } from '../support/fixture-proxy-test';
+import { UserListPage } from '../support/pages/userListPage';
 
 /**
  * User Lists fixture tests — Test Plan §1.5 (ANON-LIST-01..04).
@@ -12,6 +12,7 @@ test.use({ fixtureTestName: 'userLists' });
 
 const STABLE_USER = 'hiveio';
 const USER_WITH_ENTRIES = 'hive.blog';
+const USER_WITH_ENTRIES_BLACKLIST_COUNT = 8;
 
 const listPages = [
   { id: 'ANON-LIST-01', slug: 'muted', title: /muted/i },
@@ -25,42 +26,23 @@ test.describe('User Lists — anonymous view (§1.5)', () => {
     test(`${id}: @${STABLE_USER}/lists/${slug} renders container or empty state`, async ({
       page
     }) => {
-      await page.goto(`/@${STABLE_USER}/lists/${slug}`, { waitUntil: 'commit' });
+      const userList = new UserListPage(page);
 
-      const area = page.locator('[data-testid="user-list-area"]');
-      await expect(area).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
-
-      const titleEl = area.locator('[data-testid="user-list-title"]');
-      await expect(titleEl).toBeVisible();
-      await expect(titleEl).toHaveText(title);
-
-      const list = area.locator('[data-testid="user-list-container"]');
-      await expect(list).toBeVisible();
-
-      const items = list.locator('[data-testid="user-list-item"]');
-      const emptyState = list.locator('[data-testid="user-list-empty"]');
-      const itemCount = await items.count();
-      if (itemCount === 0) {
-        await expect(emptyState).toBeVisible();
-      } else {
-        expect(itemCount).toBeGreaterThan(0);
-      }
-
-      await expect(page.getByText(/add account to list/i)).toHaveCount(0);
-      await expect(page.getByText(/reset all lists/i)).toHaveCount(0);
+      await userList.gotoListPage(STABLE_USER, slug);
+      await userList.expectAreaVisible();
+      await userList.expectTitleMatches(title);
+      await userList.expectContainerOrEmpty();
+      await userList.expectOwnerOnlySectionsHidden();
     });
   }
 
   test(`ANON-LIST-02 variant: @${USER_WITH_ENTRIES}/lists/blacklisted shows items`, async ({
     page
   }) => {
-    await page.goto(`/@${USER_WITH_ENTRIES}/lists/blacklisted`, { waitUntil: 'commit' });
+    const userList = new UserListPage(page);
 
-    const items = page.locator('[data-testid="user-list-item"]');
-    await expect(items.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
-
-    const firstName = items.first().locator('[data-testid="user-list-item-name"]');
-    await expect(firstName).toBeVisible();
-    await expect(firstName).not.toHaveText('');
+    await userList.gotoListPage(USER_WITH_ENTRIES, 'blacklisted');
+    await userList.expectAreaVisible();
+    await userList.expectItemCount(USER_WITH_ENTRIES_BLACKLIST_COUNT);
   });
 });
