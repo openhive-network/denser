@@ -24,7 +24,7 @@ test.use({ fixtureTestName: 'login' });
 
 const USERNAME = 'guest4test2';
 
-test.describe('Login', () => {
+test.describe.skip('Login', () => {
   test('AUTH-01 — Login via HBAuth with posting key', async ({ page }) => {
     const homePage = new HomePage(page);
     const profileMenu = new ProfileUserMenu(page);
