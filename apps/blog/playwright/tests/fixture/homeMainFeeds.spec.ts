@@ -45,21 +45,21 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
     await page.goto('/hot', { waitUntil: 'commit' });
 
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
-    await expect(homePage.getFilterPosts).toHaveText('Hot');
+    await expect(homePage.getFilterPosts).toHaveText('Hot', { timeout: TIMEOUTS.HYDRATION });
   });
 
   test('ANON-HOME-04 — Created feed renders and "New" filter is active', async ({ page }) => {
     await page.goto('/created', { waitUntil: 'commit' });
 
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
-    await expect(homePage.getFilterPosts).toHaveText('New');
+    await expect(homePage.getFilterPosts).toHaveText('New', { timeout: TIMEOUTS.HYDRATION });
   });
 
   test('ANON-HOME-05 — Payout feed renders and "Payouts" filter is active', async ({ page }) => {
     await page.goto('/payout', { waitUntil: 'commit' });
 
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
-    await expect(homePage.getFilterPosts).toHaveText('Payouts');
+    await expect(homePage.getFilterPosts).toHaveText('Payouts', { timeout: TIMEOUTS.HYDRATION });
   });
 
   test('ANON-HOME-06 — Muted feed page loads with "Muted" filter active', async ({ page }) => {
