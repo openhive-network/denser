@@ -124,12 +124,17 @@ export WALLET_ENV_FILE
 
 cd "$COMPOSE_DIR"
 
-# Write .env for subsequent docker compose commands (ps, logs, etc.)
-cat > .env <<ENVEOF
-VERSION=$VERSION
-BLOG_ENV_FILE=$BLOG_ENV_FILE
-WALLET_ENV_FILE=$WALLET_ENV_FILE
-ENVEOF
+# Update .env for subsequent docker compose commands (ps, logs, etc.)
+# Preserves existing vars (BLOG_HOST_PORTS, BLOG_REPLICAS, etc.) — only updates deployment vars.
+touch .env
+for var_line in "VERSION=$VERSION" "BLOG_ENV_FILE=$BLOG_ENV_FILE" "WALLET_ENV_FILE=$WALLET_ENV_FILE"; do
+    var_name="${var_line%%=*}"
+    if grep -q "^${var_name}=" .env; then
+        sed -i "s|^${var_name}=.*|${var_line}|" .env
+    else
+        echo "$var_line" >> .env
+    fi
+done
 
 docker compose up -d --wait --wait-timeout 120
 
