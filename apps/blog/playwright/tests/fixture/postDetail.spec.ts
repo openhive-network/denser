@@ -38,9 +38,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
     page
   }) => {
     await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'commit' });
-    await page.waitForSelector('[data-testid="author-data-post-footer"]', {
-      timeout: TIMEOUTS.HYDRATION
-    });
+    await postPage.waitForPostHydration();
 
     await expect(postPage.articleTitle).toBeVisible();
     await expect(postPage.articleAuthorData).toBeVisible();
@@ -55,9 +53,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
     page
   }) => {
     await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'commit' });
-    await page.waitForSelector('[data-testid="author-data-post-footer"]', {
-      timeout: TIMEOUTS.HYDRATION
-    });
+    await postPage.waitForPostHydration();
 
     // Author avatar in the header area
     await expect(postPage.authorHeaderAvatar).toBeVisible();
@@ -76,9 +72,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
 
   test('ANON-POST-03: upvote and downvote buttons are visible', async ({ page }) => {
     await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'commit' });
-    await page.waitForSelector('[data-testid="author-data-post-footer"]', {
-      timeout: TIMEOUTS.HYDRATION
-    });
+    await postPage.waitForPostHydration();
 
     await expect(postPage.upvoteButton).toBeVisible();
     await expect(postPage.downvoteButton).toBeVisible();
@@ -88,9 +82,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
 
   test('ANON-POST-04: comments section renders with at least one comment', async ({ page }) => {
     await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'commit' });
-    await page.waitForSelector('[data-testid="author-data-post-footer"]', {
-      timeout: TIMEOUTS.HYDRATION
-    });
+    await postPage.waitForPostHydration();
 
     await expect(postPage.commentListLocator.first()).toBeVisible();
 
@@ -102,9 +94,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
 
   test('ANON-POST-05: share and reblog icons are visible', async ({ page }) => {
     await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'commit' });
-    await page.waitForSelector('[data-testid="author-data-post-footer"]', {
-      timeout: TIMEOUTS.HYDRATION
-    });
+    await postPage.waitForPostHydration();
 
     // Share button (link icon in footer)
     await expect(postPage.sharePostBtn).toBeVisible();

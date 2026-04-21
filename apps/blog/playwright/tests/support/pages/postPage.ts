@@ -245,6 +245,10 @@ export class PostPage {
     this.authorHeaderAvatar = this.articleAuthorData.locator('[data-testid="user-avatar"]');
   }
 
+  async waitForPostHydration(timeout = TIMEOUTS.HYDRATION) {
+    await this.page.waitForSelector('[data-testid="author-data-post-footer"]', { timeout });
+  }
+
   async gotoHomePage() {
     await this.page.goto('/');
     await this.page.waitForLoadState('domcontentloaded');

@@ -1,0 +1,31 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_all_subscriptions",
+    "params": {
+      "account": "hiveio"
+    },
+    "id": 1
+  },
+  "requestHash": "7044c9db8e8a2e19",
+  "method": "bridge.list_all_subscriptions",
+  "params": {
+    "account": "hiveio"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "hive-114929",
+        "Hive.IO Community",
+        "admin",
+        ""
+      ]
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -1,0 +1,16 @@
+{
+  "testName": "userProfileTabs",
+  "recordedAt": "2026-04-20T09:11:08.157Z",
+  "totalRequests": 52,
+  "savedFixtures": 12,
+  "duplicatesSkipped": 40,
+  "methods": {
+    "database_api.find_accounts": 12,
+    "bridge.get_profile": 20,
+    "database_api.get_dynamic_global_properties": 10,
+    "bridge.get_account_posts": 7,
+    "condenser_api.get_following": 1,
+    "condenser_api.get_followers": 1,
+    "bridge.list_all_subscriptions": 1
+  }
+}
