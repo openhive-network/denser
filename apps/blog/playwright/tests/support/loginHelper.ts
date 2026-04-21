@@ -41,7 +41,15 @@ export async function loginViaHBAuth(
 
   await loginForm.dismissBiometricPromptIfPresent();
 
-  await expect(homePage.profileAvatarButton).toBeVisible({ timeout: 30000 });
+  await page.waitForFunction(
+    () => !document.querySelector('[data-testid="login-btn"]'),
+    null,
+    { timeout: 30000 }
+  );
+
+  await expect(async () => {
+    await homePage.profileAvatarButton.waitFor({ state: 'visible', timeout: 5000 });
+  }).toPass({ timeout: 30000, intervals: [1000, 2000, 3000] });
 }
 
 /**
@@ -146,7 +154,17 @@ export class LoginHelper {
     await this.loginFormDefaut.passwordInput.fill(safeStoragePassword);
     await this.loginFormDefaut.wifInput.fill(privatePostingKey);
     await this.loginFormDefaut.saveSignInButton.click();
-    await this.loginFormDefaut.page.waitForTimeout(5000);
+
+    await this.page.waitForFunction(
+      () => !document.querySelector('[data-testid="login-btn"]'),
+      null,
+      { timeout: 30000 }
+    );
+
+    await expect(async () => {
+      await this.homePage.profileAvatarButton.waitFor({ state: 'visible', timeout: 5000 });
+    }).toPass({ timeout: 30000, intervals: [1000, 2000, 3000] });
+
     await this.homePage.profileAvatarButton.click();
     // Validate User is logged in
     await this.profileMenu.profileMenuContent.waitFor({ state: 'visible' });

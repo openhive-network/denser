@@ -44,7 +44,7 @@ test.describe('Login', () => {
     const profileMenu = new ProfileUserMenu(page);
     const credentials = getCredentials();
 
-    await page.goto('/', { waitUntil: 'commit' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
     await loginViaHBAuth(page, credentials);
 
     await homePage.profileAvatarButton.click();
@@ -59,7 +59,7 @@ test.describe('Login', () => {
     const profileMenu = new ProfileUserMenu(page);
     const credentials = getCredentials();
 
-    await page.goto('/', { waitUntil: 'commit' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
     await loginViaHBAuth(page, credentials);
 
     await homePage.profileAvatarButton.click();
