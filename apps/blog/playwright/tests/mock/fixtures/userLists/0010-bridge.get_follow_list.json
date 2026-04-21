@@ -1,0 +1,54 @@
+{
+  "method": "bridge.get_follow_list",
+  "params": {
+    "observer": "hive.blog",
+    "follow_type": "blacklisted"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "aljif7"
+      },
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "don-thomas"
+      },
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "freehiveblog"
+      },
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "gangstalking"
+      },
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "heimindanger"
+      },
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "hivefastdeposit"
+      },
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "iwill"
+      },
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "steem-supporter"
+      }
+    ]
+  },
+  "paramsHash": "cdcb8c4199d3249f"
+}

@@ -65,7 +65,10 @@ const ListArea = ({
   const totalItems = data?.filter((e) => e.name !== 'null').length ?? 0;
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col items-center gap-4 p-4">
+    <div
+      data-testid="user-list-area"
+      className="mx-auto flex w-full max-w-lg flex-col items-center gap-4 p-4"
+    >
       <Accordion type="single" collapsible className="w-full text-center">
         <AccordionItem value="item-1">
           <AccordionTrigger className="justify-center text-center text-sm text-primary/60">
@@ -81,7 +84,9 @@ const ListArea = ({
         </AccordionItem>
       </Accordion>
 
-      <h1 className="text-xl font-bold">{titleBy}</h1>
+      <h1 data-testid="user-list-title" className="text-xl font-bold">
+        {titleBy}
+      </h1>
       <p
         className={clsx('text-center text-xs text-primary/60', {
           hidden: !listDescription
@@ -92,9 +97,15 @@ const ListArea = ({
       </p>
 
       {/* List */}
-      <ul className="w-full rounded-md border border-border-primary/30">
+      <ul
+        data-testid="user-list-container"
+        className="w-full rounded-md border border-border-primary/30"
+      >
         {data && data.length === 0 && !isLoading ? (
-          <li className="px-4 py-8 text-center text-sm text-primary/50">
+          <li
+            data-testid="user-list-empty"
+            className="px-4 py-8 text-center text-sm text-primary/50"
+          >
             {t('user_profile.lists.list.empty_list')}
           </li>
         ) : splitArrays.length > 0 ? (
