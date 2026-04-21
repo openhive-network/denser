@@ -5,28 +5,22 @@
     "jsonrpc": "2.0",
     "method": "bridge.list_all_subscriptions",
     "params": {
-      "account": "guest4test2"
+      "account": "guest4test"
     },
     "id": 1
   },
-  "requestHash": "d167647086312e59",
+  "requestHash": "df9f4e1006b25bd5",
   "method": "bridge.list_all_subscriptions",
   "params": {
-    "account": "guest4test2"
+    "account": "guest4test"
   },
   "response": {
     "id": 1,
     "jsonrpc": "2.0",
     "result": [
       [
-        "hive-105017",
-        "HIVE CN 中文社区",
-        "guest",
-        ""
-      ],
-      [
-        "hive-13323",
-        "Splinterlands",
+        "hive-163772",
+        "Worldmappin",
         "guest",
         ""
       ],
@@ -37,32 +31,8 @@
         ""
       ],
       [
-        "hive-131131",
-        "Holozing Community",
-        "guest",
-        ""
-      ],
-      [
-        "hive-147010",
-        "Liketu",
-        "guest",
-        ""
-      ],
-      [
-        "hive-140169",
-        "Vibes",
-        "guest",
-        ""
-      ],
-      [
         "hive-137823",
         "Testing Zone",
-        "guest",
-        ""
-      ],
-      [
-        "hive-166414",
-        "Test",
         "guest",
         ""
       ]

@@ -5,41 +5,41 @@
     "jsonrpc": "2.0",
     "method": "bridge.get_profile",
     "params": {
-      "account": "guest4test2"
+      "account": "guest4test"
     },
     "id": 1
   },
-  "requestHash": "5596c88f52254f91",
+  "requestHash": "27c21eb5844992c1",
   "method": "bridge.get_profile",
   "params": {
-    "account": "guest4test2"
+    "account": "guest4test"
   },
   "response": {
     "id": 1,
     "jsonrpc": "2.0",
     "result": {
-      "active": "2026-03-19T11:40:45",
+      "active": "2026-04-08T12:01:00",
       "blacklists": [],
-      "created": "2020-07-13T11:26:24",
-      "id": 1398405,
+      "created": "2020-07-13T11:25:51",
+      "id": 1398402,
       "metadata": {
         "profile": {
-          "about": "I ma dev and",
+          "about": "TestOps",
           "blacklist_description": "",
-          "cover_image": "https://images.hive.blog/DQme6j2oXHpCAAQNnb8GL9hLTXfTEEexBqNWNkK5D3qMkJH/brown-264289_1280.jpg",
-          "location": "Test 12345",
+          "cover_image": "https://images.hive.blog/DQmeG1ftxpBkMeVT5qFsCtbzZXU2AXe2gggCdPd2RZouHmJ/ChatGPT%20Image%20Feb%2010,%202026,%2001_07_21%20PM.png",
+          "location": "KTW",
           "muted_list_description": "",
-          "name": "",
-          "profile_image": "https://images.hive.blog/DQmUuFMLuTaUn5X3Xg2UEYxnLgi4g9ayynFdTRwM9n9pG21/_13e5e237-68bb-4da7-a909-b4f8e1af669d.jpeg",
-          "website": "https://testing-testing-testing.com"
+          "name": "guest4test",
+          "profile_image": "https://images.hive.blog/DQmet7qXQ71GGcFMi9yw9tHtjv1VTWFXGAGju15zNtiLG2B/g0-green.png",
+          "website": ""
         }
       },
-      "name": "guest4test2",
-      "post_count": 191,
-      "reputation": 39.18,
+      "name": "guest4test",
+      "post_count": 57,
+      "reputation": 34.15,
       "stats": {
         "followers": 1,
-        "following": 3,
+        "following": 4,
         "rank": 0
       }
     }

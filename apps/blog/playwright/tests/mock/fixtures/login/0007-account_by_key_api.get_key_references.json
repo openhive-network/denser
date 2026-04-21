@@ -6,16 +6,16 @@
     "method": "account_by_key_api.get_key_references",
     "params": {
       "keys": [
-        "STM8KcLiYcQxPkwmFWV44kkJdLHAfHKDMgGpecMg1UBmYKTF9jhQg"
+        "STM8XQJiRBND7q6Cu1kxyRgLVLU3y1B5iGFU5VAqSpaAK38YFGZP8"
       ]
     },
     "id": 1
   },
-  "requestHash": "a93be5693b697cd4",
+  "requestHash": "327e6ed772080229",
   "method": "account_by_key_api.get_key_references",
   "params": {
     "keys": [
-      "STM8KcLiYcQxPkwmFWV44kkJdLHAfHKDMgGpecMg1UBmYKTF9jhQg"
+      "STM8XQJiRBND7q6Cu1kxyRgLVLU3y1B5iGFU5VAqSpaAK38YFGZP8"
     ]
   },
   "response": {
@@ -24,8 +24,7 @@
     "result": {
       "accounts": [
         [
-          "guest4test",
-          "guest4test2"
+          "guest4test"
         ]
       ]
     }

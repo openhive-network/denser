@@ -5,20 +5,20 @@
     "jsonrpc": "2.0",
     "method": "bridge.unread_notifications",
     "params": {
-      "account": "guest4test2"
+      "account": "guest4test"
     },
     "id": 1
   },
-  "requestHash": "4b8fa9cd2f219bdd",
+  "requestHash": "95a7b2910818b567",
   "method": "bridge.unread_notifications",
   "params": {
-    "account": "guest4test2"
+    "account": "guest4test"
   },
   "response": {
     "id": 1,
     "jsonrpc": "2.0",
     "result": {
-      "lastread": "2026-03-17 11:17:45",
+      "lastread": "2026-02-09 13:44:03",
       "unread": 2
     }
   },
