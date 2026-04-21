@@ -5,7 +5,7 @@
     "jsonrpc": "2.0",
     "method": "bridge.get_account_posts",
     "params": {
-      "sort": "posts",
+      "sort": "blog",
       "account": "hiveio",
       "start_author": "",
       "start_permlink": "",
@@ -14,10 +14,10 @@
     },
     "id": 1
   },
-  "requestHash": "aba2a58eaac06f0f",
+  "requestHash": "006b6ed1b0e51fba",
   "method": "bridge.get_account_posts",
   "params": {
-    "sort": "posts",
+    "sort": "blog",
     "account": "hiveio",
     "start_author": "",
     "start_permlink": "",
@@ -1578,7 +1578,7 @@
         "pending_payout_value": "0.000 HBD",
         "percent_hbd": 10000,
         "permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
-        "post_id": 148057864,
+        "post_id": 148057847,
         "reblogs": 54,
         "replies": [],
         "stats": {

@@ -1,13 +1,16 @@
 {
   "testName": "sidebar",
-  "recordedAt": "2026-04-15T08:39:59.654Z",
-  "totalRequests": 21,
-  "savedFixtures": 8,
-  "duplicatesSkipped": 13,
+  "recordedAt": "2026-04-21T11:20:33.378Z",
+  "totalRequests": 37,
+  "savedFixtures": 11,
+  "duplicatesSkipped": 26,
   "methods": {
     "bridge.list_communities": 9,
+    "GET /hivesense-api": 14,
     "bridge.get_ranked_posts": 9,
     "bridge.get_community": 2,
-    "bridge.get_post": 1
+    "bridge.get_post": 1,
+    "bridge.account_notifications": 1,
+    "bridge.list_subscribers": 1
   }
 }

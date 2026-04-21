@@ -19,7 +19,7 @@ test.describe('Homepage — post list loads', () => {
   test('should display trending posts on homepage', async ({ page }) => {
     // Navigate to homepage — use 'commit' to avoid waiting for all network
     // activity (React Query keeps polling in the background).
-    await page.goto('/', { waitUntil: 'commit' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // Wait for at least one post to appear
     const postListItems = page.locator('[data-testid="post-list-item"]');

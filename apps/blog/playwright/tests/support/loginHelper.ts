@@ -1,4 +1,4 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { HomePage } from './pages/homePage';
 import { LoginForm } from './pages/loginForm';
 import { ProfileUserMenu } from './pages/profileUserMenu';
@@ -41,11 +41,7 @@ export async function loginViaHBAuth(
 
   await loginForm.dismissBiometricPromptIfPresent();
 
-  await page.waitForFunction(
-    () => !document.querySelector('[data-testid="login-btn"]'),
-    null,
-    { timeout: 30000 }
-  );
+  await expect(homePage.loginBtn.first()).toBeHidden({ timeout: 30000 });
 
   await expect(async () => {
     await homePage.profileAvatarButton.waitFor({ state: 'visible', timeout: 5000 });
@@ -155,11 +151,7 @@ export class LoginHelper {
     await this.loginFormDefaut.wifInput.fill(privatePostingKey);
     await this.loginFormDefaut.saveSignInButton.click();
 
-    await this.page.waitForFunction(
-      () => !document.querySelector('[data-testid="login-btn"]'),
-      null,
-      { timeout: 30000 }
-    );
+    await expect(this.homePage.loginBtn.first()).toBeHidden({ timeout: 30000 });
 
     await expect(async () => {
       await this.homePage.profileAvatarButton.waitFor({ state: 'visible', timeout: 5000 });

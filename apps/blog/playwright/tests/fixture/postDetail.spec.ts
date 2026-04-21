@@ -37,7 +37,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
   test('ANON-POST-01: post detail page loads with title, author, body, payout and comments', async ({
     page
   }) => {
-    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'commit' });
+    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'domcontentloaded' });
     await postPage.waitForPostHydration();
 
     await expect(postPage.articleTitle).toBeVisible();
@@ -52,7 +52,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
   test('ANON-POST-02: post metadata shows avatar, reputation, timestamp and tags', async ({
     page
   }) => {
-    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'commit' });
+    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'domcontentloaded' });
     await postPage.waitForPostHydration();
 
     // Author avatar in the header area
@@ -71,7 +71,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
   // ── ANON-POST-03: Vote panel ─────────────────────────────────────────
 
   test('ANON-POST-03: upvote and downvote buttons are visible', async ({ page }) => {
-    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'commit' });
+    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'domcontentloaded' });
     await postPage.waitForPostHydration();
 
     await expect(postPage.upvoteButton).toBeVisible();
@@ -81,7 +81,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
   // ── ANON-POST-04: Comments section ───────────────────────────────────
 
   test('ANON-POST-04: comments section renders with at least one comment', async ({ page }) => {
-    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'commit' });
+    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'domcontentloaded' });
     await postPage.waitForPostHydration();
 
     await expect(postPage.commentListLocator.first()).toBeVisible();
@@ -93,7 +93,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
   // ── ANON-POST-05: Share / reblog icons ───────────────────────────────
 
   test('ANON-POST-05: share and reblog icons are visible', async ({ page }) => {
-    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'commit' });
+    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'domcontentloaded' });
     await postPage.waitForPostHydration();
 
     // Share button (link icon in footer)
@@ -111,7 +111,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
     // Navigate to a non-existent permlink with ?pending=1 — the server
     // skips the 404 and renders the PendingIndexingMessage component instead.
     await page.goto(`/${community}/@${author}/does-not-exist-pending-test?pending=1`, {
-      waitUntil: 'commit'
+      waitUntil: 'domcontentloaded'
     });
 
     await expect(postPage.pendingIndexingMessage).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
@@ -121,7 +121,7 @@ test.describe('Post Detail tests (fixture-based)', () => {
 
   test('ANON-POST-07: non-existent post renders 404 page', async ({ page }) => {
     await page.goto(`/${community}/@${author}/this-post-does-not-exist-xyz/`, {
-      waitUntil: 'commit'
+      waitUntil: 'domcontentloaded'
     });
 
     await expect(postPage.notFoundPage).toBeVisible({ timeout: TIMEOUTS.HYDRATION });

@@ -87,6 +87,10 @@
             "voter": "samminator"
           },
           {
+            "rshares": 677028098,
+            "voter": "drwom"
+          },
+          {
             "rshares": 2786243720,
             "voter": "princessmewmew"
           },
@@ -115,6 +119,10 @@
             "voter": "pixelfan"
           },
           {
+            "rshares": 1914090121,
+            "voter": "sunisa"
+          },
+          {
             "rshares": 440150250860,
             "voter": "santigs"
           },
@@ -137,6 +145,10 @@
           {
             "rshares": 14344696790863,
             "voter": "yabapmatt"
+          },
+          {
+            "rshares": 3260065757,
+            "voter": "sayee"
           },
           {
             "rshares": 28634093611,
@@ -163,6 +175,10 @@
             "voter": "itchyfeetdonica"
           },
           {
+            "rshares": 536534376680,
+            "voter": "nathen007"
+          },
+          {
             "rshares": 23511529385,
             "voter": "funtraveller"
           },
@@ -173,6 +189,14 @@
           {
             "rshares": 473317248,
             "voter": "robotics101"
+          },
+          {
+            "rshares": 2134911774,
+            "voter": "auleo"
+          },
+          {
+            "rshares": 6198166311,
+            "voter": "ahmadmangazap"
           },
           {
             "rshares": 2486670632,
@@ -211,8 +235,16 @@
             "voter": "mistakili"
           },
           {
+            "rshares": 462095349,
+            "voter": "cherryng"
+          },
+          {
             "rshares": 995355804,
             "voter": "anikys3reasure"
+          },
+          {
+            "rshares": 37903366561,
+            "voter": "bhattg"
           },
           {
             "rshares": 3401020805038,
@@ -319,6 +351,10 @@
             "voter": "munkiioh"
           },
           {
+            "rshares": 6558984709,
+            "voter": "digi-me"
+          },
+          {
             "rshares": 271144918011,
             "voter": "hamismsf"
           },
@@ -365,6 +401,10 @@
           {
             "rshares": 9697126386425,
             "voter": "theycallmedan"
+          },
+          {
+            "rshares": 15872297760,
+            "voter": "ketcom"
           },
           {
             "rshares": 6551661980,
@@ -439,6 +479,10 @@
             "voter": "hive-naija"
           },
           {
+            "rshares": 32078810651,
+            "voter": "tht"
+          },
+          {
             "rshares": 2289683838,
             "voter": "laruche"
           },
@@ -453,6 +497,14 @@
           {
             "rshares": 3159552855,
             "voter": "louis00334"
+          },
+          {
+            "rshares": 12699330853,
+            "voter": "tht1"
+          },
+          {
+            "rshares": 2055184880149,
+            "voter": "ecency"
           },
           {
             "rshares": 2130884901,
@@ -473,6 +525,10 @@
           {
             "rshares": 38151915331,
             "voter": "sunitahive"
+          },
+          {
+            "rshares": 2487195973,
+            "voter": "cryptosimplify"
           },
           {
             "rshares": 35164903512,
@@ -511,6 +567,10 @@
             "voter": "hexagono6"
           },
           {
+            "rshares": 5975493638,
+            "voter": "imno"
+          },
+          {
             "rshares": 12903559468,
             "voter": "princessbusayo"
           },
@@ -545,6 +605,10 @@
           {
             "rshares": 605650123,
             "voter": "hivehydra"
+          },
+          {
+            "rshares": 1003397017,
+            "voter": "photolovers1"
           },
           {
             "rshares": 807158387539,
@@ -911,8 +975,16 @@
             "voter": "alwaysonyi"
           },
           {
+            "rshares": 46683228552,
+            "voter": "cur01"
+          },
+          {
             "rshares": 11760053036,
             "voter": "iquo"
+          },
+          {
+            "rshares": 934373163,
+            "voter": "okarun"
           },
           {
             "rshares": 5358655151,
@@ -945,6 +1017,14 @@
           {
             "rshares": 629350013,
             "voter": "nwanna"
+          },
+          {
+            "rshares": 744880199,
+            "voter": "antonydossantos"
+          },
+          {
+            "rshares": 1251562355,
+            "voter": "kristabel123"
           },
           {
             "rshares": 7799954254,
@@ -1007,6 +1087,10 @@
             "voter": "cguitars"
           },
           {
+            "rshares": 12082892434,
+            "voter": "soma18"
+          },
+          {
             "rshares": 5601607769,
             "voter": "pascalukandy"
           },
@@ -1017,6 +1101,10 @@
           {
             "rshares": 0,
             "voter": "spend.hbd"
+          },
+          {
+            "rshares": 636984426,
+            "voter": "way-big"
           }
         ],
         "author": "sam.hangout",
@@ -1085,10 +1173,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 254666352038339,
-        "payout": 24.72,
+        "net_rshares": 257449630450869,
+        "payout": 25.063,
         "payout_at": "2026-04-27T22:58:33",
-        "pending_payout_value": "24.720 HBD",
+        "pending_payout_value": "25.063 HBD",
         "percent_hbd": 10000,
         "permlink": "sams-hangout-week-108-summaryhighlights",
         "post_id": 149878251,
@@ -1098,7 +1186,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 250
+          "total_votes": 272
         },
         "title": "Sam’s Hangout Week #108 - Summary/Highlights",
         "updated": "2026-04-21T03:16:24",
@@ -3682,6 +3770,10 @@
             "voter": "bebeomega"
           },
           {
+            "rshares": 536534376680,
+            "voter": "nathen007"
+          },
+          {
             "rshares": 23511529385,
             "voter": "funtraveller"
           },
@@ -6261,10 +6353,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 267294942850507,
-        "payout": 25.9,
+        "net_rshares": 267831477227187,
+        "payout": 26.067,
         "payout_at": "2026-04-27T18:00:36",
-        "pending_payout_value": "25.900 HBD",
+        "pending_payout_value": "26.067 HBD",
         "percent_hbd": 10000,
         "permlink": "green-calm-and-comfortable-come",
         "post_id": 149875582,
@@ -6274,7 +6366,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 852
+          "total_votes": 853
         },
         "title": "\"Green, Calm, and Comfortable, Come Follow Me to Explore the Natural Tourism of Seulawah RG\" (part 2) ",
         "updated": "2026-04-20T18:00:36",
@@ -6619,6 +6711,10 @@
             "voter": "kristyglas"
           },
           {
+            "rshares": 788724082098,
+            "voter": "tattoodjay"
+          },
+          {
             "rshares": 6550506160,
             "voter": "gooze"
           },
@@ -6921,6 +7017,10 @@
           {
             "rshares": 2517170775,
             "voter": "berkaytekinsen"
+          },
+          {
+            "rshares": 1574676199729,
+            "voter": "suzn.poudel"
           },
           {
             "rshares": 1157108001,
@@ -7269,6 +7369,10 @@
           {
             "rshares": 20335587614,
             "voter": "wolfhart"
+          },
+          {
+            "rshares": 6266013722,
+            "voter": "obsesija"
           },
           {
             "rshares": 718181419,
@@ -7659,6 +7763,10 @@
             "voter": "carbodexkim"
           },
           {
+            "rshares": 6038800231,
+            "voter": "banat"
+          },
+          {
             "rshares": 494696653,
             "voter": "miha-sweet"
           },
@@ -7705,6 +7813,10 @@
           {
             "rshares": 1674772675,
             "voter": "j-p-bs"
+          },
+          {
+            "rshares": 1602123001,
+            "voter": "suzana72"
           },
           {
             "rshares": 826878776,
@@ -7967,6 +8079,10 @@
             "voter": "whangster79"
           },
           {
+            "rshares": 0,
+            "voter": "mk-sports-token"
+          },
+          {
             "rshares": 5280349484,
             "voter": "bilpcoinbot"
           },
@@ -8061,6 +8177,14 @@
           {
             "rshares": 13798119357,
             "voter": "dec.entralized"
+          },
+          {
+            "rshares": 2558936685,
+            "voter": "sportal"
+          },
+          {
+            "rshares": 2418787334,
+            "voter": "grad.best"
           },
           {
             "rshares": 1063061208611,
@@ -8327,6 +8451,10 @@
             "voter": "tikki00taffi"
           },
           {
+            "rshares": 899112764,
+            "voter": "vid.observer"
+          },
+          {
             "rshares": 988811733,
             "voter": "repayme4568"
           },
@@ -8435,6 +8563,10 @@
             "voter": "csport"
           },
           {
+            "rshares": 27755457101,
+            "voter": "virgilio07"
+          },
+          {
             "rshares": 248519608106,
             "voter": "shiftrox"
           },
@@ -8493,6 +8625,10 @@
           {
             "rshares": 95321533977,
             "voter": "aequi"
+          },
+          {
+            "rshares": 103547631570,
+            "voter": "adulruna"
           },
           {
             "rshares": 1580022576,
@@ -8747,6 +8883,10 @@
             "voter": "supperbotsps.com"
           },
           {
+            "rshares": 2228861717,
+            "voter": "lov.plus"
+          },
+          {
             "rshares": 57971436397,
             "voter": "fotonorway8"
           },
@@ -8813,6 +8953,10 @@
           {
             "rshares": 3261221144738,
             "voter": "coldbeetrootsoup"
+          },
+          {
+            "rshares": 1317856564,
+            "voter": "vragolana"
           },
           {
             "rshares": 5960601609,
@@ -9051,6 +9195,10 @@
             "voter": "ibarra95"
           },
           {
+            "rshares": 90232117752,
+            "voter": "dantrin"
+          },
+          {
             "rshares": 971052772,
             "voter": "setpiece"
           },
@@ -9079,12 +9227,20 @@
             "voter": "picazzy005"
           },
           {
+            "rshares": 705052809,
+            "voter": "labanlangboss"
+          },
+          {
             "rshares": 29754952844,
             "voter": "pamtech"
           },
           {
             "rshares": 1684302784,
             "voter": "stormgrouper"
+          },
+          {
+            "rshares": 509427720,
+            "voter": "diannever"
           },
           {
             "rshares": 70762699063,
@@ -9234,7 +9390,7 @@
         "blacklists": [],
         "body": "Random idea out there, let me know what you think, lol\n\nHaven't spent a lot of tokens/time/work on this, very early iteration, just throwing it out there to see what people think :D\n\nhttps://youtu.be/chiRdzbUmIo",
         "category": "social",
-        "children": 28,
+        "children": 30,
         "created": "2026-04-20T22:58:06",
         "curator_payout_value": "0.000 HBD",
         "depth": 0,
@@ -9249,10 +9405,10 @@
           "users": []
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 216240883008965,
-        "payout": 20.97,
+        "net_rshares": 218850363469762,
+        "payout": 21.309,
         "payout_at": "2026-04-27T22:58:06",
-        "pending_payout_value": "20.970 HBD",
+        "pending_payout_value": "21.309 HBD",
         "percent_hbd": 10000,
         "permlink": "i-dont-even-know-really",
         "post_id": 149878248,
@@ -9262,7 +9418,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 741
+          "total_votes": 757
         },
         "title": "I don't even know really",
         "updated": "2026-04-20T22:58:06",
@@ -13280,7 +13436,7 @@
         "blacklists": [],
         "body": "\nHello hivers, an happy Monday to you all.\nI hope you spent a nice weekend and a good start of a new working week.\nYesterday I went with my hubby @paolobeneforti to an art exhibition in a museum here in my city (Pistoia, Italy) where we could watch some interesting paintings by the artist Marino Marini (1901-1980). You can read more about the artist [here](https://en.wikipedia.org/wiki/Marino_Marini_(sculptor)).\n\nMarini was born in Pistoia and, even if when he was an adult he lived in different cities, he was always connected with my city and, whe he died, an entire museum opened to show their artwork here and in Florence too.\nSince a couple of years the Marini Museum is closed to work on the building, but the most part of his work was placed in different museums like the one I visited yesterday, called Museum Palazzo Fabroni.\n\n\n![Inside the San Giovanni in Corte Baptistery (2).png](https://files.peakd.com/file/peakd-hive/silviabeneforti/23ydEUDx9BkPRwfQtD5k9r8PXfMJoy6vZFGpjr8aRLsVRgRu7aiHMSsGPKxqw2w942PWu.png)\n\n\nEven if Marini never abandoned painting, his main works are sculptures. Beautiful, large and small, metal scupltures (especially bronze ones). The most famous ones are about an horse and a rider and you can see a couple of them (small ones) in the following pics:\n\n\n![DSCN9904bis2.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EpA3XiRpkXY9SJ2BG5MyNJMjFB9U71xjrBTmkeenCoAUeauXjANAovUTRh85TH2VayW.JPG)\n\n![DSCN9904.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EokbdZufvYvHWC4s9U7EsrCxDeXoWWypjYRiFBYAeato2BpNJ9DiauHxXvzFDoPvDKA.JPG)\n\nIn the past I could watch the larger ones (very large!) in another museum and they were really fantastic, believe me.\n\n\nSince some months, the Palazzo Fabroni (a beautiful Museum of 20th-century and contemporary art in my city) host a beautiful selection of Marini’s paintings and yesterday there was a guided tour with a friend of us and so we decided to spend our Sunday in the museum.\n\nWe watched the most part of these painting before, but it was very interesting to watch them again in a different place and while our friend was talking about them. Of course, I took some pics to share with you, so you can enjoy a sort of \"virtual tour\" between the artworks by Marino Marini!\n\nThere were a lot of different artworks in different rooms of the museum. Every room is about a theme and so I decided to wrote 2 contents about this visit, so I can show you everything better.\n\nAt the start there is a room about \"the horse and the rider\" where there are the 2 small bronze sculptures in the first pics and some paintings about the same theme:\n\n![DSCN9900.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoyRPfLFSyGwwmTnULfKqjPfhkyVaNx6aN58CdnqAjaEYdhxrhD8KanX3ZyCycXSYSt.JPG)\n\n![DSCN9907.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoGzKNetpL4QWukPHswm2go2hN5iF9ukVLR9n2JNXDMqvFGneSmH3rWh84DtJNo2XPW.JPG)\n\n\n![DSCN9906.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EonkXUF1Stx7WpYFvTBchDGxqkscW8UqfnBeTLVj1QPfGHLFXgTz4rQ35PTkXrzWhuS.JPG)\n\n\n![DSCN9907.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoGzKNetpL4QWukPHswm2go2hN5iF9ukVLR9n2JNXDMqvFGneSmH3rWh84DtJNo2XPW.JPG)\n\nMarino Marini loved to experiment with different techniques and, in the next room, we can see some artwork in a cubism style (the most part of them are oil on canvas and mixed media on canvas and paper):\n\n![DSCN9908.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EqDn5aqsQPdiAiEMPtzJKY3rHmFgGBaJfhgj1Uk6HkTHLJ6xVPp1PXC32hKgM1gVUvM.JPG)\n\n![DSCN9911.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoK7HQvTRAZYtrf2ViUceSK2qdH9BMyurLMV5AshE715DjE72qQKuurCuKE33VtkgzP.JPG)\n\n![DSCN9910.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EonnRTBbFxU9SC1U44zp8P7R5JmiJwtx3pjQ1vvvAGrfpbyRiaVph3vg4rGHkePgrXh.JPG)\n\n![DSCN9913.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoGxzoNXm8XbMF6VKUoqgvgsXiYErb2JaT3EsK2GqYWMnDRtWruyGf22UrS7XTCS7Y3.JPG)\n\nAnothe theme of the artworks by Marini was the \"jugglers\" and we can see some of those ones in another, dedicated room:\n\n\n![DSCN9923.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EpLhxP5N35ksdGdrPhvNuhA1THkg7ebt1xWFMnx4esqnMaRtVrx28NiMQ8TfDEaZSiv.JPG)\n\n![DSCN9924.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoK7kdX3X2sPzmuXepYEnDBjUUdpw1EKNJ8C4MshXCXozxxUAHieNoQnC1585aju6jZ.JPG)\n\n![DSCN9925.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoCiaa74A1jBmQNVUApKwmfoVjNaLmZAmkcdXZW6XqoEmSmeuQvhzT1bd3PrX3zmqHa.JPG)\n\nI know the pictures can't represent the beauty of the paintings and it's difficult to take pics where you can see the way to put colors on the canvas, but it was very interesting for me to watch all of theme so close, believe me.\n\nSoon I'll share with you the second part of the exhibition, with other interesting paintings and small sculptures, stay tuned. ❤️\n\nSee ya soon and stay safe,\nSilvia\n\n\n<p></p>\n<p><br/><br/>***If you like my artworks, you can find them on my online shops on<br/>Artfinder ( <a href=\"https://www.artfinder.com/silviabeneforti#/\">https://www.artfinder.com/silviabeneforti#/</a>), on Etsy (<a href=\"https://www.etsy.com/shop/vumap\">https://www.etsy.com/shop/vumap</a>) and on my Saatchi page too (https://www.saatchiart.com/en-it/account/profile/421497). If you are interested about my artworks, you can buy my catalogue here:\n\nUS (https://www.amazon.com/dp/B0C9S4VLQK)\nItaly (https://www.amazon.it/dp/B0C9S4VLQK)\nUk (https://www.amazon.co.uk/dp/B0C9S4VLQK) \nYou can find it in different countries, you have just to search \"silvia beneforti portfolio\" on Amazon. ^_^\n ^_^ ****<br/></p>\n<p><img src=\"https://i.imgur.com/VX5g1gb.png\"/></p>\n</html>",
         "category": "hive-148441",
-        "children": 2,
+        "children": 3,
         "community": "hive-148441",
         "community_title": "GEMS",
         "created": "2026-04-20T13:19:51",
@@ -17395,10 +17551,10 @@
           "type": "post"
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 297187567153010,
-        "payout": 28.792,
+        "net_rshares": 297409217329709,
+        "payout": 28.894,
         "payout_at": "2026-04-27T12:28:00",
-        "pending_payout_value": "28.792 HBD",
+        "pending_payout_value": "28.894 HBD",
         "percent_hbd": 0,
         "permlink": "figs-walnuts-olives-to-cure",
         "post_id": 149871113,
@@ -17408,7 +17564,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 1210
+          "total_votes": 1211
         },
         "title": "Figs, walnuts, olives to cure an energy hangover",
         "updated": "2026-04-20T12:38:03",
@@ -17755,6 +17911,10 @@
           {
             "rshares": 5587304659401,
             "voter": "traf"
+          },
+          {
+            "rshares": 536534376680,
+            "voter": "nathen007"
           },
           {
             "rshares": 62251722248,
@@ -19037,6 +19197,10 @@
             "voter": "allentaylor"
           },
           {
+            "rshares": 221650176699,
+            "voter": "littlebee4"
+          },
+          {
             "rshares": 20106522272,
             "voter": "killerwot"
           },
@@ -19600,10 +19764,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 225001623018801,
-        "payout": 21.819,
+        "net_rshares": 225759807572180,
+        "payout": 21.972,
         "payout_at": "2026-04-27T19:31:48",
-        "pending_payout_value": "21.819 HBD",
+        "pending_payout_value": "21.972 HBD",
         "percent_hbd": 10000,
         "permlink": "free-coffee-workerbee-ph-pool",
         "post_id": 149876289,
@@ -19613,7 +19777,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 535
+          "total_votes": 537
         },
         "title": "Free Coffee! .:. WorkerBee PH-Pool Week 271",
         "updated": "2026-04-20T19:31:48",
@@ -19696,6 +19860,10 @@
           {
             "rshares": 737822977097,
             "voter": "diggndeeper.com"
+          },
+          {
+            "rshares": 9409247395,
+            "voter": "steven-patrick"
           },
           {
             "rshares": 180332723153,
@@ -19962,6 +20130,10 @@
             "voter": "coinmeria"
           },
           {
+            "rshares": 32641594174,
+            "voter": "febrirmd"
+          },
+          {
             "rshares": 4057825038,
             "voter": "auracraft"
           },
@@ -19976,6 +20148,10 @@
           {
             "rshares": 30197842992,
             "voter": "atongis"
+          },
+          {
+            "rshares": 5317116250,
+            "voter": "fat.music"
           },
           {
             "rshares": 9678595353,
@@ -20742,6 +20918,10 @@
             "voter": "keithtaylor"
           },
           {
+            "rshares": 27755457101,
+            "voter": "virgilio07"
+          },
+          {
             "rshares": 3077718994,
             "voter": "vault.burn"
           },
@@ -21299,10 +21479,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 336999185181788,
-        "payout": 32.702,
+        "net_rshares": 337074308596708,
+        "payout": 32.803,
         "payout_at": "2026-04-27T07:24:06",
-        "pending_payout_value": "32.702 HBD",
+        "pending_payout_value": "32.803 HBD",
         "percent_hbd": 10000,
         "permlink": "your-crypto-wallet-in-your",
         "post_id": 149869244,
@@ -21312,7 +21492,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 411
+          "total_votes": 415
         },
         "title": "Your Crypto Wallet in Your Pocket - Managing HIVE, HBD & More with Ecency",
         "updated": "2026-04-20T07:24:06",
@@ -21563,6 +21743,10 @@
           {
             "rshares": 1358837121,
             "voter": "elderson"
+          },
+          {
+            "rshares": 536534376680,
+            "voter": "nathen007"
           },
           {
             "rshares": 85816612066,
@@ -22728,7 +22912,7 @@
         "blacklists": [],
         "body": "A Look at the Number One DEX Uniswap | Data on TVL, Volume, Users, Top Pairs and More | Apr 2026\n\nFrom all the defi apps we have seen in the crypto market, Uniswap has kept its dominance and continued to develop and grow. It was the first defi app to bring in users thanks to its simplicity and incentives. Following the FTX collapse and the multiple other collapses centralized entities in 2022, its importance grew even more. In the last period Uniswap seems to be growing and spreading on other ETH L2 chains like Arbitrum, Base etc. It also facing a strong competition from other projects on Solana.\n\nLet’s take a look how is the protocol performing under the current market conditions. \n\n \n\n\n\n\n![01.png](https://files.peakd.com/file/peakd-hive/dalz/23vsBZe8G6fFR8TZMm7D4ZKwQu23FeymsQJaajeEt7EMKeNVmCEMU1PoC9NxPvQzYof1D.png)\n\n\n\n\n\n\nHere we will be looking at:\n-\tTotal value locked\n-\tTrading volume\n-\tTop exchanges\n-\tNumber of users\n-\tTop Pairs\n-\tPrice\n\n**The period that we will be looking at is 2020 - 2026.**\n\n\n## Total Value Locked\nHere is the chart for the TVL on Uniswap starting from September 2020 according to DeFiLama.\n\n \n\n\n\n\n\n\n\n![image001.png](https://files.peakd.com/file/peakd-hive/dalz/23tRv7N1VCyzZA3xspHR2jsjb1JWkpo7Sffov3zvKVHgZWi1bU8DaMvDBsDzBX1zR1ajX.png)\n\n\n\n\n\n\n\n\nUniswap launched its token back in September 2020, and the liquidity grew fast then. A record high of 10B was reached in April 2021, and again in November 2021. Since then, it has been a downtrend and dropped to 3.5B at the end of 2023. \nIn 2024 the TVL grew at first reaching 6B in April, and since then it has been sideways in the range of 4B to 6B, up to recently when it dropped to around **3B** where we are now. \n\n## Trading Volume\n\nTrading volume is extremely important. That is where the fees come from and the APR for liquidity providers. No trading volume means no fees and no capital in the protocol. \nThe chart for the trading volume looks like this.\n\n\n \n\n\n\n\n![image003.png](https://files.peakd.com/file/peakd-hive/dalz/23uEyz1tc7L8Emhea1DGryyZP8LK4kBvAYLGzK15YaB2NA7LA2xTPctNtc1dVv8b77gJD.png)\n\n\n\n\n\n\nThis is a chart for the daily trading volume. It’s quite volatile. \n\nThe daily trading volume has been more constant in the last year, similar to the TVL, with occasional spikes whenever there is some volatility in the market. At times there was more than 5B in daily volume, all legit and recorded on chain with fees paid. \n\nWe can notice the drop in the last months with the training volume hovering around 2B. Still it’s a big number. \n\nNote that the data for the volume above is a summary of all the different chains where Uniswap operates. Uniswap is now multichain with BSC, Base, Arbitrum, Unichain etc. integrated. \n\n### The monthly trading volume looks like this:\n\n\n \n\n\n\n\n![image005.png](https://files.peakd.com/file/peakd-hive/dalz/23tvVgyEeAAMKcuiL6ukxxStu1ynErWdwFHtS42pWB4Fu26gMa6hFmo6yMVixTB3j685e.png)\n\n\n\n\n\n\n\nA clearer picture here than the daily volume. \nAn increase in the trading volume in 2021, a drop in 2022, and a growth since then up to recently in October 2025 when it reached more than 100B in trading volume in one month. \nA drop since then and in the last few months the trading volume is around **60B** per month. \n\nWhen we break down the trading volume per chain we get this:\n\n \n\n\n\n\n\n\n![image007.png](https://files.peakd.com/file/peakd-hive/dalz/23tRvSesZrci4mV8QGmdX4rdJg9dRPCi8JvLdEsq2MYL8gwcLAWJ3UwR4WgdYREqzm7HC.png)\n\n\n\n\n\n\n\nWe can notice the fragmentation since 2024. More and more chains came online ad they sort of took over a share from Ethereum. In the last period, chains with high volume except Ethereum have been BSC, Arbitrum and Base. \n\n\n\n## DEX VS CEX Volume\nIf we take a look at the data for the trading volume on the other exchanges provided by some of the aggregators like Coingecko the numbers looks like this. \n\n\n \n\n\n\n![image009.png](https://files.peakd.com/file/peakd-hive/dalz/Eo6CgyVcygjpxd5dZVQE2sLs6j6U37o7EKu6XHKJELix7FK1oPHHxwttgUgqCEQWewS.png)\n\n\n\n\n\n\n\n\nUniswap ranks in the top 10, or on the fourth spot now, that is quite good ranking. At times it has been even on the second spot just after Binance. \n\n\n## Monthly Active Users\nHow many users does Uniswap have? Here is the chart.\n\n\n\n \n\n\n\n![image011.png](https://files.peakd.com/file/peakd-hive/dalz/23tRv7NLrboHXSZtE4Ryjcw2KGXwXz2weDWkaF15hBNtJbEQxHLHQdXbAG5TDvPW11To2.png)\n\n\n\n\n\n\n\n\nThis is a chart on a monthly basis.\nWe can see a massive growth in 2024 monthly due to the expansion on other chains. The record high numbers of MAUs was reached in June 2025 with 22M users. Quite the number. Since then a sharp drop in the MAUs to around **3M** in the last months. \n\n\n\n## Top Trading Pairs on Uniswap\n\nHere is the chart for the top trading pairs **ranked by liquidity.**\n\n \n\n\n\n\n\n![image013.png](https://files.peakd.com/file/peakd-hive/dalz/23uFGsSyZaRG122dhh1TUnmWGPa9LhUnNhn18VbUBppChFSbSYHCTMrRri1BmgqpbtkrS.png)\n\n\n\n\n\n\n\n\nThe WISE/ETH pool is on the top spot with 130M on the V2 on Ethereum. \n\nThe ETH-USDC pair is on the second spot with close to 130M. In the past the stablecoin to stablecoin pairs were on the top in liquidity like USDC-USDT but obviously these have now moved elsewhere.  WBTC in the top as well with two pairs against USDT and ETH. Note that the liquidity of the pairs is combined from different chain and pools. \n\n\n## Price\nThe chart for the UNI price looks like this.\n\n\n\n \n\n\n\n\n![image015.png](https://files.peakd.com/file/peakd-hive/dalz/23t79QDAQtSVTYLFuK35Cx75oCiHVZeKFc4DuhdVLvCxKGsLmCTPXk2F9F3hmBAva8KKN.png)\n\n\n\n\n\n\n\nThe UNI token has been on a wild ride, reaching $40 at some point in 2021. Since then, it has dropped and has been hovering around the $5 mark for a long time. \nIn the last few months it has even dropped lower than that and it is now around \n\n\nfirst half of 2024 it has increased again to 15 USD at one point and dropped to back to 5$. In the last months it has increased again and now it is close to **10 USD**.\n\n\n\n\nAll the best\n@dalz\n",
         "category": "uniswap",
-        "children": 2,
+        "children": 3,
         "created": "2026-04-20T13:52:30",
         "curator_payout_value": "0.000 HBD",
         "depth": 0,
@@ -22761,10 +22945,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 240779170086981,
-        "payout": 23.35,
+        "net_rshares": 241315704463661,
+        "payout": 23.487,
         "payout_at": "2026-04-27T13:52:30",
-        "pending_payout_value": "23.350 HBD",
+        "pending_payout_value": "23.487 HBD",
         "percent_hbd": 10000,
         "permlink": "a-look-at-the-number-one-dex-uniswap-or-data-on-tvl-volume-users-top-pairs-and-more-or-apr-2026",
         "post_id": 149872520,
@@ -22774,7 +22958,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 353
+          "total_votes": 354
         },
         "title": "A Look at the Number One DEX Uniswap | Data on TVL, Volume, Users, Top Pairs and More | Apr 2026",
         "updated": "2026-04-20T13:52:30",
@@ -22845,6 +23029,10 @@
           {
             "rshares": 31746708975,
             "voter": "bluemist"
+          },
+          {
+            "rshares": 788724082098,
+            "voter": "tattoodjay"
           },
           {
             "rshares": 18955297630,
@@ -22955,6 +23143,10 @@
             "voter": "adamada"
           },
           {
+            "rshares": 6266013722,
+            "voter": "obsesija"
+          },
+          {
             "rshares": 25729790415,
             "voter": "springlining"
           },
@@ -23003,12 +23195,20 @@
             "voter": "budapestguide"
           },
           {
+            "rshares": 6038800231,
+            "voter": "banat"
+          },
+          {
             "rshares": 4083302185,
             "voter": "david.dicotomia"
           },
           {
             "rshares": 5850250695,
             "voter": "masoom"
+          },
+          {
+            "rshares": 1602123001,
+            "voter": "suzana72"
           },
           {
             "rshares": 605147483,
@@ -23045,6 +23245,14 @@
           {
             "rshares": 36502435896,
             "voter": "unpopular"
+          },
+          {
+            "rshares": 2558936685,
+            "voter": "sportal"
+          },
+          {
+            "rshares": 2418787334,
+            "voter": "grad.best"
           },
           {
             "rshares": 613163810,
@@ -23109,6 +23317,10 @@
           {
             "rshares": 459425422,
             "voter": "dadspardan"
+          },
+          {
+            "rshares": 899112764,
+            "voter": "vid.observer"
           },
           {
             "rshares": 968598590,
@@ -23259,6 +23471,10 @@
             "voter": "mighty-thor"
           },
           {
+            "rshares": 2228861717,
+            "voter": "lov.plus"
+          },
+          {
             "rshares": 15696959164,
             "voter": "sabajfa"
           },
@@ -23273,6 +23489,10 @@
           {
             "rshares": 9901459805,
             "voter": "drstealth"
+          },
+          {
+            "rshares": 1317856564,
+            "voter": "vragolana"
           },
           {
             "rshares": 634139425,
@@ -23376,7 +23596,7 @@
         "blacklists": [],
         "body": "<center><figure><img alt=\"Blue lake in Mount Gambier has been a popular tourist stop for a long time. I remember stopping here 30 odd years ago when I was driving around Australia in my little Toyota Corolla station wagon with a couple of friends. I don’t remember much from the trip, that far back, other than I was surprised that the water in this crater lake was indeed very blue. I am always very skeptical as usually most or at least some of these types of tourist attractions are only worthwhile when there are ideal weather or environmental conditions. I am happy to report that the blue lake has been worth the visit, the three times I have been there and one was even in the rain. They reckon this extinct volcano lake stays blue because of a limestone layer and the remains of marine organisms over millions of years. After reading that I was then wondering if it was a good idea to be actually drinking from the local water supply as it is pumped from this very lake. I am also happy to report that the water tasted fine and left will no side effects, that we know off.\" src=\"https://img.travelfeed.io/new.things%2F2026-04-10-03-04-813-20260301_150813-jpg\" width=\"4032\" height=\"3024\" /><center><figcaption>Blue lake in Mount Gambier has been a popular tourist stop for a long time. I remember stopping here 30 odd years ago when I was driving around Australia in my little Toyota Corolla station wagon with a couple of friends. I don't remember much from the trip, that far back, other than I was surprised that the water in this crater lake was indeed very blue. I am always very skeptical as usually most or at least some of these types of tourist attractions are only worthwhile when there are ideal weather or environmental conditions. I am happy to report that the blue lake has been worth the visit, the three times I have been there and one was even in the rain. They reckon this extinct volcano lake stays blue because of a limestone layer and the remains of marine organisms over millions of years. After reading that I was then wondering if it was a good idea to be actually drinking from the local water supply as it is pumped from this very lake. I am also happy to report that the water tasted fine and left will no side effects, that we know off.&nbsp;</figcaption></center></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-592-20260301_150317-jpg\" width=\"3024\" height=\"4032\" /></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-177-20260301_150414-jpg\" width=\"4032\" height=\"3024\" /></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-057-20260301_150515-jpg\" width=\"4032\" height=\"3024\" /></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-452-20260301_150602-jpg\" width=\"3024\" height=\"4032\" /></figure></center>\n\n<center><figure><img alt=\"The pumping station for the town water supply\" src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-228-20260301_163459-jpg\" width=\"4032\" height=\"3024\" /><center><figcaption>The pumping station for the town water supply</figcaption></center></figure></center>\n\n<center><figure><img alt=\"The old train line is now a trail trail.\" src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-008-20260301_171400-jpg\" width=\"4032\" height=\"3024\" /><center><figcaption>The old train line is now a trail trail.</figcaption></center></figure></center>\n\n\n\n<div json=\"{&quot;id&quot;:&quot;KazE6xCdWV&quot;,&quot;type&quot;:&quot;imageGallery&quot;,&quot;data&quot;:{&quot;images&quot;:[{&quot;url&quot;:&quot;https://img.travelfeed.io/new.things%2F2026-04-12-00-04-313-20260301_171349-jpg&quot;,&quot;width&quot;:&quot;4032&quot;,&quot;height&quot;:&quot;3024&quot;},{&quot;url&quot;:&quot;https://img.travelfeed.io/new.things%2F2026-04-12-00-04-584-20260301_171402-jpg&quot;,&quot;width&quot;:&quot;4032&quot;,&quot;height&quot;:&quot;3024&quot;}],&quot;style&quot;:&quot;masonry&quot;}}\"><center><img src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-313-20260301_171349-jpg\" /></center><center><img src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-584-20260301_171402-jpg\" /></center></div>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-078-20260301_171442-jpg\" width=\"3024\" height=\"4032\" /></figure></center>\n\n<center><figure><img alt=\"The Green Lake is nearby but not as spectacular\" src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-764-20260301_152917-jpg\" width=\"4032\" height=\"3024\" /><center><figcaption>The Green Lake is nearby but not as spectacular</figcaption></center></figure></center>\n\n<center><figure><img alt=\"They even have their own parkrun, we will have to try and make it back again on a Saturday morning.\" src=\"https://img.travelfeed.io/new.things%2F2026-04-10-03-04-658-20260301_163623-jpg\" width=\"4032\" height=\"3024\" /><center><figcaption>They even have their own parkrun, we will have to try and make it back again on a Saturday morning.</figcaption></center></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-247-20260301_164529-jpg\" width=\"3024\" height=\"4032\" /></figure></center>\n\n<center><figure><img alt=\"I ran most of the course any way.\" src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-978-20260301_164744-jpg\" width=\"2944\" height=\"2208\" /><center><figcaption>I ran most of the course any way.</figcaption></center></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-193-screenshot-2026-04-10-135815-png\" width=\"1194\" height=\"721\" /></figure></center>\n\n\n\n<hr /><center><em>View this post <a href=\"https://travelfeed.com/@new.things/blue-lake-mount-gambier-south-australia\">on TravelFeed</a> for the best experience.</em></center>\n\n[//]:# (!pinmapple -37.828423 lat 140.78069 long  d3scr)",
         "category": "hive-184437",
-        "children": 3,
+        "children": 6,
         "community": "hive-184437",
         "community_title": "TravelFeed",
         "created": "2026-04-20T22:53:00",
@@ -23417,10 +23637,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 166374039636040,
-        "payout": 16.12,
+        "net_rshares": 167186094210156,
+        "payout": 16.273,
         "payout_at": "2026-04-27T22:53:00",
-        "pending_payout_value": "16.120 HBD",
+        "pending_payout_value": "16.273 HBD",
         "percent_hbd": 10000,
         "permlink": "blue-lake-mount-gambier-south-australia",
         "post_id": 149878234,
@@ -23430,7 +23650,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 146
+          "total_votes": 155
         },
         "title": "Blue Lake, Mount Gambier, South Australia.",
         "updated": "2026-04-20T22:53:00",
@@ -25087,6 +25307,10 @@
             "voter": "alexis555"
           },
           {
+            "rshares": 9409247395,
+            "voter": "steven-patrick"
+          },
+          {
             "rshares": 180332723153,
             "voter": "fronttowardenemy"
           },
@@ -25125,6 +25349,10 @@
           {
             "rshares": 1030922791669,
             "voter": "raindrop"
+          },
+          {
+            "rshares": 750038693,
+            "voter": "thatsweeneyguy"
           },
           {
             "rshares": 28285741101,
@@ -25479,6 +25707,10 @@
             "voter": "xsasj"
           },
           {
+            "rshares": 22959897334,
+            "voter": "mytechtrail"
+          },
+          {
             "rshares": 5587304659401,
             "voter": "traf"
           },
@@ -25663,6 +25895,10 @@
             "voter": "bertrayo"
           },
           {
+            "rshares": 50327639643,
+            "voter": "russellstockley"
+          },
+          {
             "rshares": 25831161022,
             "voter": "irvet"
           },
@@ -25675,12 +25911,20 @@
             "voter": "jjerryhan"
           },
           {
+            "rshares": 6838704311,
+            "voter": "jglake"
+          },
+          {
             "rshares": 440015133873,
             "voter": "almi"
           },
           {
             "rshares": 4991532821,
             "voter": "jklio123"
+          },
+          {
+            "rshares": 23218365697,
+            "voter": "blockchainyouth"
           },
           {
             "rshares": 715713896993,
@@ -25925,6 +26169,10 @@
           {
             "rshares": 34544653735,
             "voter": "freyamber"
+          },
+          {
+            "rshares": 7254567718,
+            "voter": "athunderstruck"
           },
           {
             "rshares": 1606352749,
@@ -26219,6 +26467,10 @@
             "voter": "xgerard"
           },
           {
+            "rshares": 25133334319,
+            "voter": "maddogmike"
+          },
+          {
             "rshares": 64713632875,
             "voter": "soyunasantacruz"
           },
@@ -26229,6 +26481,10 @@
           {
             "rshares": 30983930693,
             "voter": "sbi-tokens"
+          },
+          {
+            "rshares": 4915369502,
+            "voter": "successchar"
           },
           {
             "rshares": 2592566306,
@@ -26367,6 +26623,10 @@
             "voter": "ykretz"
           },
           {
+            "rshares": 844080104,
+            "voter": "thepeakstudio"
+          },
+          {
             "rshares": 52904065082,
             "voter": "ppics"
           },
@@ -26377,6 +26637,10 @@
           {
             "rshares": 299022663921,
             "voter": "softworld"
+          },
+          {
+            "rshares": 4936461275,
+            "voter": "holoferncro"
           },
           {
             "rshares": 837495027,
@@ -26403,6 +26667,10 @@
             "voter": "woelfchen"
           },
           {
+            "rshares": 8187531685,
+            "voter": "hivehustlers"
+          },
+          {
             "rshares": 23812565584,
             "voter": "discoveringarni"
           },
@@ -26421,6 +26689,10 @@
           {
             "rshares": 2958489559,
             "voter": "lucianav"
+          },
+          {
+            "rshares": 895916480,
+            "voter": "improbableliason"
           },
           {
             "rshares": 540774088949,
@@ -26515,12 +26787,36 @@
             "voter": "huzzah"
           },
           {
+            "rshares": 598192143,
+            "voter": "hive-111011"
+          },
+          {
             "rshares": 9523507989,
             "voter": "bobthebuilder2"
           },
           {
+            "rshares": 10350171960,
+            "voter": "thecryptopimp"
+          },
+          {
+            "rshares": 439294169920,
+            "voter": "tokenpimp"
+          },
+          {
+            "rshares": 15053189730,
+            "voter": "pimptoken"
+          },
+          {
             "rshares": 2751875257,
             "voter": "elgatoshawua"
+          },
+          {
+            "rshares": 4428956319,
+            "voter": "pimp.token"
+          },
+          {
+            "rshares": 451803470,
+            "voter": "biglove"
           },
           {
             "rshares": 49439261365,
@@ -26565,6 +26861,10 @@
           {
             "rshares": 4377329435,
             "voter": "jemima1996"
+          },
+          {
+            "rshares": 2115644382,
+            "voter": "egistar"
           },
           {
             "rshares": 1321237071809,
@@ -26649,6 +26949,10 @@
           {
             "rshares": 138785241652,
             "voter": "aequi"
+          },
+          {
+            "rshares": 103547631570,
+            "voter": "adulruna"
           },
           {
             "rshares": 9445721265,
@@ -26815,6 +27119,18 @@
             "voter": "haveyaheard"
           },
           {
+            "rshares": 1529156507,
+            "voter": "pimpdistrict"
+          },
+          {
+            "rshares": 2954032700,
+            "voter": "thepimpdistrict"
+          },
+          {
+            "rshares": 2452046587,
+            "voter": "ydaiznfts"
+          },
+          {
             "rshares": 48843517444,
             "voter": "mondroid"
           },
@@ -26969,6 +27285,10 @@
           {
             "rshares": 2419435930,
             "voter": "gollumkp"
+          },
+          {
+            "rshares": 299589411071,
+            "voter": "txerritxoa"
           },
           {
             "rshares": 1703453245,
@@ -27209,10 +27529,10 @@
           "users": []
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 249051433873707,
-        "payout": 24.169,
+        "net_rshares": 250099469434222,
+        "payout": 24.353,
         "payout_at": "2026-04-27T10:37:24",
-        "pending_payout_value": "24.169 HBD",
+        "pending_payout_value": "24.353 HBD",
         "percent_hbd": 10000,
         "permlink": "monochrome-monday-a-few-shots-from-recent-walks",
         "post_id": 149870399,
@@ -27222,7 +27542,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 567
+          "total_votes": 592
         },
         "title": "Monochrome Monday a few shots from recent walks  ",
         "updated": "2026-04-20T10:37:24",
@@ -28903,6 +29223,10 @@
             "voter": "nolasco"
           },
           {
+            "rshares": 788724082098,
+            "voter": "tattoodjay"
+          },
+          {
             "rshares": 1125190625,
             "voter": "lenasveganliving"
           },
@@ -29435,6 +29759,10 @@
             "voter": "racibo"
           },
           {
+            "rshares": 6266013722,
+            "voter": "obsesija"
+          },
+          {
             "rshares": 18661103331,
             "voter": "terrybogan"
           },
@@ -29667,6 +29995,10 @@
             "voter": "alphaccino.art"
           },
           {
+            "rshares": 6038800231,
+            "voter": "banat"
+          },
+          {
             "rshares": 1044638712,
             "voter": "xcountytravelers"
           },
@@ -29685,6 +30017,10 @@
           {
             "rshares": 13470125704,
             "voter": "thehealthylife"
+          },
+          {
+            "rshares": 1602123001,
+            "voter": "suzana72"
           },
           {
             "rshares": 13177851518,
@@ -29887,6 +30223,14 @@
             "voter": "usualsidekick"
           },
           {
+            "rshares": 2558936685,
+            "voter": "sportal"
+          },
+          {
+            "rshares": 2418787334,
+            "voter": "grad.best"
+          },
+          {
             "rshares": 857433583,
             "voter": "libertypal27"
           },
@@ -30063,6 +30407,10 @@
             "voter": "traderhive"
           },
           {
+            "rshares": 899112764,
+            "voter": "vid.observer"
+          },
+          {
             "rshares": 3143381791,
             "voter": "cookaiss"
           },
@@ -30213,6 +30561,10 @@
           {
             "rshares": 560520753,
             "voter": "onewolfe"
+          },
+          {
+            "rshares": 103547631570,
+            "voter": "adulruna"
           },
           {
             "rshares": 8465390807,
@@ -30407,6 +30759,10 @@
             "voter": "magic.vyb"
           },
           {
+            "rshares": 2228861717,
+            "voter": "lov.plus"
+          },
+          {
             "rshares": 58014123785,
             "voter": "anna-newkey"
           },
@@ -30449,6 +30805,10 @@
           {
             "rshares": 423626705567,
             "voter": "justbekindtoday"
+          },
+          {
+            "rshares": 1317856564,
+            "voter": "vragolana"
           },
           {
             "rshares": 1352294773,
@@ -30765,10 +31125,10 @@
           "users": []
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 239416196217536,
-        "payout": 23.219,
+        "net_rshares": 240331798423222,
+        "payout": 23.401,
         "payout_at": "2026-04-27T11:11:57",
-        "pending_payout_value": "23.219 HBD",
+        "pending_payout_value": "23.401 HBD",
         "percent_hbd": 0,
         "permlink": "bees-butterflies-and-dragonflies-in-this-garden",
         "post_id": 149870627,
@@ -30778,7 +31138,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 524
+          "total_votes": 534
         },
         "title": "Bees, butterflies and dragonflies in this garden.",
         "updated": "2026-04-20T11:11:57",
@@ -32945,7 +33305,7 @@
         "blacklists": [],
         "body": "https://img.leopedia.io/DQmUsHRcGqY6tUvNRi8RhgowHDQifTKdggCVpD8YWRyg1PQ/IMG_2870.jpeg \n\n\nIt’s been a while since I can remember feeling BAD. It’s probably a lot shorter than I realize but this may be the longest i’ve ever gone without some kind of emotional crash, either due to external circumstances or internal dissatisfaction. \n\nI’m not saying I haven’t been sad or mad but these feelings don’t get in the way of anything and they don’t distract from anything.  Bad news comes and I do what I can to mitigate it.  Good news comes and it becomes fuel. There is no negative ruminating. There is no fixation. There is hardly any worry. I just don’t do it anymore.\n\nI’m finally free. I’ve finally trained myself to keep my eye on the prize.  I can’t ever be sure I’ll even get there, but if I don’t I will be as sure as I can that it nothing to do with a lack of efforts. And I know deep down that I am on the path I’m meant to be on. \n\nIt may not be the path I’d choose if I could go back in time, but it’s always the path I’ll feel best about choosing tomorrow. \n\nWhen I think about how I got here, it all feels a bit abstract because I tried for years and years with varying results but then suddenly one day it just clicked. \n\nI started enjoying the whole process. \n\nBut telling someone to enjoy the process is like telling them to just be happy. If they don’t know how, it feels like telling someone to be 15 cm taller. It feels like something out of your hands. \n\nI think the biggest change that made this possible was a full commitment towards giving myself everything I wanted, starting with the things I had immediate influrnce over. \n\nFirst I let go of all guilt around being happy. That means even if others are suffering, even if people call it selfish, I have to prioritize my own mental state. \n\n(And interestingly enough you can actually feel sympathy and even deep sadness and full happiness at the same time if you don’t judge yourself for how you feel.  The emotions come up and if you just let them be, they can co-exist.)\n\nThen I started to face my fears and battled them one by one. I started dressing in ways I was scared to dress before. I said things I was scared to say. I got rid of all the pleasantries that drained me (obligatory participation in events, meeting friends when I felt tired) and kept the ones that feel good (like making someone feel welcome or showing appreciation). \n\nI stopped hiding myself from my students even though it meant risking my salary, but even if I lost a student or two, the rest became even more appreciative and I’ve built a much better reputation as an artist as a result.  I was invited to play a show by one of my top 10 favorite Japanese bands, twice, and became acquantinces with another. Friends started paying attention to my work again after years of a lukewarm response. \n\nWe seem to associate prioritizing our happiness with being selfish and it’s not. Selfishness is when we disregard others out of spite or laziness. It’s when we beleive that we have to sacrifice our own happiness to make other people happy and then try to recoup our losses. \n\nI can see through most “bad” people. They are almost all people who weren’t good enough to themselves and put someone elses happiness before thenselves until they couldn’t bear to anymore and decided to say “Fuck it!”, OR they are people who believe too religiously in zero sum games.  \n\nNot everything is a zero sum game. Some trees bear enough fruit, and some cups runneth over. \n\nA nice person is someone who puts others first and betrays themselves. \nA good person is someone who never gives up on practical alternatives to zero sum. \n\nI do not aim for nice. \nI always aim for good. \n\nThat being said, I will never go out of my way to hurt someone and if I am put in a situation where one of us has to lose, I look for a different kind of framing that all parties might agree to, or at least have fewer problems with. \n\nOne trap I find people falling into is giving too much authority to others over their own life. You are allowed to be who you want to be and do what you want to do.  It’s hard sometimes because self sacrifice is the norm in almost every culture (otherwise how do you get people to pay taxes abd join the army) and sacrfice is not always a bad thing if you truly believe in what you are doing, but in those situations, it no longer feels like sacrifice, it feels like honest devotion and it will make you excited.  \n\nSometimes it’s easier to lie to ourselves than to face the fact that the people around us overstepped in a way that forced us to betray ourselves. If you found yourself in a job you hated becayse of your parents you know what I am talking about. \n\nIt can be very hard to live true to yourself.  \n\nWe may also find ourselves full of spite and without a moral compass when we detach from social support networks and belief systems that have allowed us to betray ourselves.  In my experience this is a case of fatigue and disconnection from passion, too many years of silently allowing ourselves to be a victim to the whims of the world. \n\nWhen you rediscover your passion and pursue it head on, it’s impossible to remain spiteful and feeling like a victim. \n\nSo if you sense a darkness in you as you pursue your own happiness over others, remember that that isn’t you, it’s your neglected inner child that needs acknowledgement and love and support, and once you give it that you’ll see it become more compassionate again, so believe in goodness and aim for it, even if it feels like a lie at first. \n\nBeing able to afford true deep appreciation and unconditional love requires us to give that to ourselves first so we may need a fair bit of rewiring. \n\nI try to follow my joy wherever it leads, even into unfamiliar territory, with the exception of when it would impose upon the freedom of others.  Everyone should be allowed to follow their own path and everyone should be able to say no if they don’t want to follow you down yours. \n\nI don’t completey disregard consequences, but I don’t exaggerate them, and I always look for where I might be letting my fear cause me to overfixate them. Then it just turns into a simple question “Am I willing to pay that price? Or “Am I willing to take that risk?” And I trust and devote myself to my first instinct answer.  \n\nYou may have to build more trust within yourself and start to understand your fears and motovations more before it becomes this simple, but you can get there. \n\nThe rest is just a game of faith and devotion to yourself. You either believe that you are going to be able to live the live you are aiming towards if you devote yourself to it, or you stop caring about getting there and instead just focus on showing up for yourself no matter what, even if you were to end up losing, because losing on your own terms is better than winning on someone elses\n\n—-\n# new music here!\n# https://linktr.ee/ipluseverything\n\nPosted Using [INLEO](https://inleo.io/@selfhelp4trolls/giving-myself-everything-i-want--8cd)",
         "category": "hive-126152",
-        "children": 1,
+        "children": 2,
         "community": "hive-126152",
         "community_title": "Reflections",
         "created": "2026-04-20T05:34:42",
@@ -33268,6 +33628,10 @@
             "voter": "nolasco"
           },
           {
+            "rshares": 788724082098,
+            "voter": "tattoodjay"
+          },
+          {
             "rshares": 300112728849,
             "voter": "felt.buzz"
           },
@@ -33524,6 +33888,10 @@
             "voter": "b00m"
           },
           {
+            "rshares": 536534376680,
+            "voter": "nathen007"
+          },
+          {
             "rshares": 1366375803301,
             "voter": "fermentedphil"
           },
@@ -33760,6 +34128,10 @@
             "voter": "dixiesilverminer"
           },
           {
+            "rshares": 6266013722,
+            "voter": "obsesija"
+          },
+          {
             "rshares": 26593744928,
             "voter": "melbourneswest"
           },
@@ -33952,6 +34324,10 @@
             "voter": "chain.games"
           },
           {
+            "rshares": 6038800231,
+            "voter": "banat"
+          },
+          {
             "rshares": 1593220365,
             "voter": "ladyangelwolf"
           },
@@ -33998,6 +34374,10 @@
           {
             "rshares": 3378295359,
             "voter": "r-e-d"
+          },
+          {
+            "rshares": 1602123001,
+            "voter": "suzana72"
           },
           {
             "rshares": 3863965079,
@@ -34292,6 +34672,14 @@
             "voter": "wittysangels"
           },
           {
+            "rshares": 2558936685,
+            "voter": "sportal"
+          },
+          {
+            "rshares": 2418787334,
+            "voter": "grad.best"
+          },
+          {
             "rshares": 6624198733,
             "voter": "hirohurl"
           },
@@ -34536,6 +34924,10 @@
             "voter": "whywhy"
           },
           {
+            "rshares": 899112764,
+            "voter": "vid.observer"
+          },
+          {
             "rshares": 4739640920,
             "voter": "cryptosneeze"
           },
@@ -34728,6 +35120,10 @@
             "voter": "titisnariyah"
           },
           {
+            "rshares": 103547631570,
+            "voter": "adulruna"
+          },
+          {
             "rshares": 886193972,
             "voter": "acantoni"
           },
@@ -34880,6 +35276,10 @@
             "voter": "tokencav"
           },
           {
+            "rshares": 2228861717,
+            "voter": "lov.plus"
+          },
+          {
             "rshares": 726589496,
             "voter": "hive-103505"
           },
@@ -34910,6 +35310,10 @@
           {
             "rshares": 3534973326,
             "voter": "iwannabeme"
+          },
+          {
+            "rshares": 1317856564,
+            "voter": "vragolana"
           },
           {
             "rshares": 727086458,
@@ -35341,7 +35745,7 @@
         "blacklists": [],
         "body": "<center>![image.png](https://files.peakd.com/file/peakd-hive/bozz/23yJGFWVqvKumP1RCmMojGU9LVgqvDBCvkydQ6sN5cE2jF6oA4GokvtvuJM6ctU8ZLkMx.png)</center>\n\n-----------------------\n\nI had some big plans for the past couple of weekends.  Okay, maybe not big plans, but I had some stuff I wanted to get done now that the weather is starting to be a bit more cooperative.  In fact, a week ago this past Saturday was just about one of the most perfect days we have had in 2026 so far.  Unfortunately life, or more specifically @mrsbozz had other plans for me.\n\nHer parents recently bought a new house, and so the past couple of weekends have been spent helping them get packed up and moved over to then new address.  I'm a bit sad to say they still have a long way to go, but we are making progress.  It's actually kind of funny, despite the fact that I did not grow up in their old house like my wife did, I still feel a bit of sadness about them leaving it behind.\n\nJust the other day I mentioned to her that I didn't get to spend my last Christmas there.  You might recall I was sick this past year for Christmas, so I spent the majority of my time at my own house staring at the ceiling or the toilet bowl.  I didn't get to participate in any of the fun traditions we have built over the past several decades.\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/bozz/242NfAmRhzcF9RRuPLSasoZAEz22rF4jgCvDKtLMs2AAirZFroJwY7819tthy4yVn9rdW.png)</center>\n\n--------------------------\n\nDespite that, this is still a good move for them and I am excited for them. The old house was great when they were younger and had three kids running around, but now that is just the two of them, they really don't need all that space.  Likewise, as they get older, it's good to be part of a community where the yardwork and all of that is taken care of by someone else.  \n\nIt will be a shift for them, but I think they will settle in just fine.  They just might need to find some new hobbies.  Especially my father in law.  He used to love to putter around the yard, so it will be hard for him to let that go I think.  \n\nSpeaking of puttering, I have some rocks I have been meaning to move from one flower bed to another for several years now.  That was on my list to get started last weekend.  The lawn is ready to have its first cut of the year, so I need to get to that sometime too. \n\nThe problem is, the next two or three weekends in a row my wife and I have plans that I made for us a long time ago.  Meanwhile, I need to get our travel trailer home from storage at my parents house.  Get it cleaned, washed, de-winterized, repack the wheel bearings, check the gas lines for leaks, and get it all packed up for our first camping trip of the season at the end of May.\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/bozz/23wWy7DVjnpNWj7e3ffaHUZrT4M6vK4LRejXu31qsRE5LrRx4JXAKo2eNZSJUjbEiAP7i.png)</center>\n\n----------------------------\n\nNo big deal right?  Meanwhile, we also need to get the power washer from my brother in law so we can get the deck ready to go for the summer.  Put away all the winter stuff and pull out all the summer stuff from the shed.  @mrsbozz wants the windows on the house professionally washed, and I need to get the garage cleaned up at some point.\n\nNo rush...\n\nI don't want to say I am annoyed that my last two weekends have been blown up.  I don't think that is quite the right word.  It's been for the greater good, and I fully acknowledge that.  I just hope the weather cooperates so I can get the rest of this stuff done.  The good news is, it looks like the rain is going to hold off for a bit, but we really need the temps to stay above freezing for a while now.  \n\n\n----------\n\n<center>\n### [My Sports Account - @bozz.sports](https://www.peakd.com/@bozz.sports)\n</center>\n\n----------\n\n#### <center>Come hang out in [The Pub](https://peakd.com/c/hive-178138/created)</center>\n<center>[Find us on Discord](https://discord.gg/cCEMJXAEXk)</center>\n\n<center>Or Check out my [Grilling and Smoking Community on HIVE](https://peakd.com/c/hive-138631/created)</center>\n\n-------------\n\n<center>![TEAMUSAhive_footer_bozz.jpg](https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg)</center>\n\n----------------\n\n<center>*All pictures/screenshots taken by myself or @mrsbozz unless otherwise sourced*</center>\n\n",
         "category": "hive-178138",
-        "children": 9,
+        "children": 11,
         "community": "hive-178138",
         "community_title": "The Pub",
         "created": "2026-04-20T11:13:42",
@@ -35376,10 +35780,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 233637400064249,
-        "payout": 22.635,
+        "net_rshares": 235089536646615,
+        "payout": 22.891,
         "payout_at": "2026-04-27T11:13:42",
-        "pending_payout_value": "22.635 HBD",
+        "pending_payout_value": "22.891 HBD",
         "percent_hbd": 10000,
         "permlink": "weekends-derailed",
         "post_id": 149870634,
@@ -35389,7 +35793,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 584
+          "total_votes": 595
         },
         "title": "Weekends Derailed",
         "updated": "2026-04-20T11:13:42",
@@ -39765,7 +40169,7 @@
         "blacklists": [],
         "body": "The success of the VOUCHER shop is an example of the team's excellent management of the major issue of Splinterlands cryptocurrency management. In the early stages of the game, tokens such as DEC, SPS, SPT, and VOUCHER itself were launched, effectively creating a resource dispersion problem and a progressive loss of value for the coins themselves, due to the post-2017 bear market.\n\n![1000063463.jpg](https://files.peakd.com/file/peakd-hive/claudio83/23tbkWe3MpAYzmAMAGLujEtkyYFUwbq47iZDDRaPw1KadkJa5JDhX4e7dfSFxE6z8WgLH.jpg)\n___\n\nThe VOUCHER token was created as a tool for obtaining discounts on the purchase of packs. The discounts were indeed significant, up to 50% off the initial price. I myself took advantage of them, for example, during the Chaos Legion pack sale, with pack prices dropping from 4,000 to 2,000 DEC, allowing me to obtain a large number of packs during the presale.\n\nVOUCHER was then retained in the Splinterlands game as a reward for staking SPS, and any movement from player accounts to the market was blocked. However, it is possible to continue purchasing tokens still circulating in the market and transfer them to player accounts. This way, the circulating supply should gradually decrease over time.\n\n<center>\nThank you for taking the time to read this post. If you haven't signed up to Splinterlands yet, I invite you to give it a try. You can use my [referral link](https://steemmonsters.com?ref=claudio83) </center>\n\n# ITA\n\nIl successo dello shop VOUCHER è un esempio di ottima gestione da parte del team in merito al grande problema della gestione delle cruptovalute del mondo Splinterlands. In una prima fase del gioco, infatti, sono stati lanciati tokens come DEC, SPS, SPT e lo stesso VOUCHER, creando in effetti un problema di dispersione delle risorse ed una progressiva perdita di valore delle stesse monete, a causa del bear market post 2017.\n\n![1000063463.jpg](https://files.peakd.com/file/peakd-hive/claudio83/23tbkWe3MpAYzmAMAGLujEtkyYFUwbq47iZDDRaPw1KadkJa5JDhX4e7dfSFxE6z8WgLH.jpg)\n___\n\nIl token VOUCHER è nato come uno strumento per ottenere sconti sull'acquisto dei pacchi. Gli sconti in effetti sono stati importanti, fino al 50% del prezzo iniziale. Io stesso ne ho usufruito ad esempio durante la vendita dei pacchi Chaos Legion, con i prezzi dei pacchi scrsi da 4000 a 2000 DEC, e ciò ha consentito di ottenere un gran numero di pacchi durante il Presale.\n\nVOUCHER è stato poi mantenuto nel gioco di Splinterlands come rewards dello staking di SPS e qualsiasi movimento dall'account dei giocatori verso il market è stato inibito. È possibile invece continuare ad acquistare il token ancora circolante nel market e trasferirli nell'account dei giocatori. In questo modo nel corso del tempo la supply circolante dovrebbe pian piano ridursi\n\n<center>\nThank you for taking the time to read this post. If you haven't signed up to Splinterlands yet, I invite you to give it a try. You can use my [referral link](https://steemmonsters.com?ref=claudio83) </center>",
         "category": "hive-146620",
-        "children": 1,
+        "children": 2,
         "community": "hive-146620",
         "community_title": "Olio di Balena",
         "created": "2026-04-20T10:53:45",
@@ -39806,6 +40210,489 @@
         "title": "VOUCHER is increasingly the protagonist with the purchases of the new cards",
         "updated": "2026-04-20T10:53:45",
         "url": "/hive-146620/@claudio83/voucher-is-increasingly-the-protagonist-with-the-purchases-of-the-new-cards"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 202071281393,
+            "voter": "team"
+          },
+          {
+            "rshares": 12520602868,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 871712091314,
+            "voter": "arcange"
+          },
+          {
+            "rshares": 153762571092,
+            "voter": "penguinpablo"
+          },
+          {
+            "rshares": 1563817529,
+            "voter": "funnyman"
+          },
+          {
+            "rshares": 518128067,
+            "voter": "noborders"
+          },
+          {
+            "rshares": 5258765250,
+            "voter": "discovereurovelo"
+          },
+          {
+            "rshares": 2993721498824,
+            "voter": "mangos"
+          },
+          {
+            "rshares": 10457455995,
+            "voter": "walterjay"
+          },
+          {
+            "rshares": 108030993719,
+            "voter": "da-dawn"
+          },
+          {
+            "rshares": 24075200556,
+            "voter": "steemitboard"
+          },
+          {
+            "rshares": 67438427716445,
+            "voter": "ranchorelaxo"
+          },
+          {
+            "rshares": 4746341232,
+            "voter": "lizanomadsoul"
+          },
+          {
+            "rshares": 1382151744934,
+            "voter": "pastzam"
+          },
+          {
+            "rshares": 23043405022,
+            "voter": "aleister"
+          },
+          {
+            "rshares": 10945015990,
+            "voter": "alphacore"
+          },
+          {
+            "rshares": 2786243720,
+            "voter": "princessmewmew"
+          },
+          {
+            "rshares": 42123669895,
+            "voter": "zammie"
+          },
+          {
+            "rshares": 7394035676,
+            "voter": "felt.buzz"
+          },
+          {
+            "rshares": 12953954853770,
+            "voter": "haejin"
+          },
+          {
+            "rshares": 11877465110,
+            "voter": "helgapn"
+          },
+          {
+            "rshares": 295301655060,
+            "voter": "lalupita"
+          },
+          {
+            "rshares": 166343244565,
+            "voter": "aafeng"
+          },
+          {
+            "rshares": 455086710323,
+            "voter": "karja"
+          },
+          {
+            "rshares": 15028541696,
+            "voter": "floatinglin"
+          },
+          {
+            "rshares": 33385856778122,
+            "voter": "stoodkev"
+          },
+          {
+            "rshares": 20182047331,
+            "voter": "kimzwarch"
+          },
+          {
+            "rshares": 270321419551,
+            "voter": "psychkrhoz"
+          },
+          {
+            "rshares": 108038203306,
+            "voter": "pataty69"
+          },
+          {
+            "rshares": 524587430,
+            "voter": "afterglow"
+          },
+          {
+            "rshares": 3963120663,
+            "voter": "g10a"
+          },
+          {
+            "rshares": 100980189388,
+            "voter": "new-world-steem"
+          },
+          {
+            "rshares": 34141696149,
+            "voter": "onyfest"
+          },
+          {
+            "rshares": 2674801611,
+            "voter": "xsasj"
+          },
+          {
+            "rshares": 727827251,
+            "voter": "sniki003"
+          },
+          {
+            "rshares": 58859872865,
+            "voter": "b00m"
+          },
+          {
+            "rshares": 7396919264,
+            "voter": "itchyfeetdonica"
+          },
+          {
+            "rshares": 23511529385,
+            "voter": "funtraveller"
+          },
+          {
+            "rshares": 236944677,
+            "voter": "cryptonized"
+          },
+          {
+            "rshares": 1268653274005,
+            "voter": "jim888"
+          },
+          {
+            "rshares": 1325373308887,
+            "voter": "alexanderfluke"
+          },
+          {
+            "rshares": 4147692141,
+            "voter": "manncpt"
+          },
+          {
+            "rshares": 7485089483,
+            "voter": "portugalcoin"
+          },
+          {
+            "rshares": 812072679,
+            "voter": "jnmarteau"
+          },
+          {
+            "rshares": 7715266840,
+            "voter": "philnewton"
+          },
+          {
+            "rshares": 2698204652719,
+            "voter": "bozz"
+          },
+          {
+            "rshares": 2004703090,
+            "voter": "tatylayla"
+          },
+          {
+            "rshares": 3770765347978,
+            "voter": "erikah"
+          },
+          {
+            "rshares": 3573780547,
+            "voter": "greddyforce"
+          },
+          {
+            "rshares": 9943214812,
+            "voter": "achimmertens"
+          },
+          {
+            "rshares": 372873187142,
+            "voter": "cedricguillas"
+          },
+          {
+            "rshares": 16984896184,
+            "voter": "spamfarmer"
+          },
+          {
+            "rshares": 6580645293111,
+            "voter": "cryptoandcoffee"
+          },
+          {
+            "rshares": 1557796829,
+            "voter": "joaoprobst"
+          },
+          {
+            "rshares": 363307732096,
+            "voter": "smartvote"
+          },
+          {
+            "rshares": 2613681328,
+            "voter": "coinmarketcal"
+          },
+          {
+            "rshares": 18094948423,
+            "voter": "munhenhos"
+          },
+          {
+            "rshares": 39419237030596,
+            "voter": "bdvoter"
+          },
+          {
+            "rshares": 930952206442,
+            "voter": "unbiasedwriter"
+          },
+          {
+            "rshares": 5031295765,
+            "voter": "steem-ua"
+          },
+          {
+            "rshares": 826749171,
+            "voter": "jacuzzi"
+          },
+          {
+            "rshares": 5269665525,
+            "voter": "bolachasmonster"
+          },
+          {
+            "rshares": 913790672,
+            "voter": "laurasoares"
+          },
+          {
+            "rshares": 625094524,
+            "voter": "hungrybear"
+          },
+          {
+            "rshares": 36786246293,
+            "voter": "pandaparker"
+          },
+          {
+            "rshares": 98430406699,
+            "voter": "bozz.sports"
+          },
+          {
+            "rshares": 41666270686,
+            "voter": "stoodmonsters"
+          },
+          {
+            "rshares": 2749692179157,
+            "voter": "ukulima"
+          },
+          {
+            "rshares": 1863852964141,
+            "voter": "fengchao"
+          },
+          {
+            "rshares": 13260308328,
+            "voter": "hivebuzz"
+          },
+          {
+            "rshares": 622879833,
+            "voter": "pinmapple"
+          },
+          {
+            "rshares": 2289683838,
+            "voter": "laruche"
+          },
+          {
+            "rshares": 725416912876,
+            "voter": "ubasi"
+          },
+          {
+            "rshares": 779600482975,
+            "voter": "woelfchen"
+          },
+          {
+            "rshares": 20017725178,
+            "voter": "zangano"
+          },
+          {
+            "rshares": 976146076,
+            "voter": "iamfarhad"
+          },
+          {
+            "rshares": 27780638337,
+            "voter": "rebet"
+          },
+          {
+            "rshares": 1502995939857,
+            "voter": "selfhelp4trolls"
+          },
+          {
+            "rshares": 0,
+            "voter": "hive.friends"
+          },
+          {
+            "rshares": 65523960286,
+            "voter": "pi-trader"
+          },
+          {
+            "rshares": 1681904448,
+            "voter": "iamgem005"
+          },
+          {
+            "rshares": 121580460586,
+            "voter": "aequi"
+          },
+          {
+            "rshares": 16784929246,
+            "voter": "dimascastillo90"
+          },
+          {
+            "rshares": 189531606506,
+            "voter": "mimi.ruby"
+          },
+          {
+            "rshares": 13973163615,
+            "voter": "uno.alfa"
+          },
+          {
+            "rshares": 39345405137,
+            "voter": "newhope1988"
+          },
+          {
+            "rshares": 15331097043,
+            "voter": "hoffmeister84"
+          },
+          {
+            "rshares": 3193448117448,
+            "voter": "anhdaden146"
+          },
+          {
+            "rshares": 454029983,
+            "voter": "baboz"
+          },
+          {
+            "rshares": 4236442714763,
+            "voter": "justbekindtoday"
+          },
+          {
+            "rshares": 2493372313796,
+            "voter": "myegoandmyself"
+          },
+          {
+            "rshares": 9143664753,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 641967506,
+            "voter": "itsmikyhere"
+          },
+          {
+            "rshares": 23211190927,
+            "voter": "ecencypoints"
+          },
+          {
+            "rshares": 2575782482973,
+            "voter": "silingsi"
+          },
+          {
+            "rshares": 891887772,
+            "voter": "alliebee"
+          },
+          {
+            "rshares": 32482417822,
+            "voter": "saavedraa"
+          },
+          {
+            "rshares": 2684885335605,
+            "voter": "soumaren"
+          },
+          {
+            "rshares": 2368407833416,
+            "voter": "zhaoyiseng"
+          },
+          {
+            "rshares": 2137714405791,
+            "voter": "haikurator"
+          },
+          {
+            "rshares": 10000210519,
+            "voter": "sprunk"
+          },
+          {
+            "rshares": 673730316,
+            "voter": "picazzy005"
+          },
+          {
+            "rshares": 2059916293,
+            "voter": "agungprasetyo"
+          },
+          {
+            "rshares": 7107771050,
+            "voter": "ecp.voter"
+          },
+          {
+            "rshares": 7108650968,
+            "voter": "ecp.curator"
+          },
+          {
+            "rshares": 7102700116,
+            "voter": "spoondawg"
+          },
+          {
+            "rshares": 91016117,
+            "voter": "thoms2"
+          }
+        ],
+        "author": "jack.russelle",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 77.52,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "So many people come and visit this country and want to scoot around on a motorbike to get to some of the out of city things that are around Chiang Mai.   This can be a good idea if you actually are capable of driving a motorbike and honestly, there really isn't that much to it.   I've been to and lived in a number of other places in this country and it is just more of the same.  In one way, Chiang Mai is easier because the roads are in pretty great shape here and there has been a lot of forward planning to ensure that there actually are enough roads for most of the demand that traffic dictates.   \n\nObviously there are exceptions but if you are just traveling here on holiday, you are pretty unlikely to end up in rush hour gridlocked traffic unless you are very unlucky.\n\n<center>  https://www.triptipedia.com/tip/img/Vl02JddFg.jpg\n[src](https://www.triptipedia.com/tip/img/Vl02JddFg.jpg)</center>\nOne thing though, that you can get away with in most of the rest of the country that you can't really get away with here, is dodging the police if you are operating a motorbike without a license.\n\nThe thing is, the police proabably aren't truly interested in keeping the roads safer, they are interested in collecting money from people that don't have the correct certification and in most situations, unless you have a legitimate international license the likes of which I don't even know how someone acquires, you aren't going to have what they are looking for because they aren't actually looking for a license, they are looking to fine you right there on the spot.  \n\nThis is something you just kind of have to come to terms with if you are visiting here, or like me, living here.   \n\nI have some tips to save yourself a bunch of headache though and maybe even get you out of it altogether.\n\n<h3> comply, show ID </h3> \n\nIf you end up in a checkpoint where they ask for your ID or license, provide them with any sort of photo ID.   If you have a driving license in your home country, show them that.  Then, answer in the affirmative if they ask things like \"is this international?\" or \"is this for motorcycle\".  Remember, if you tell a little white lie here this isn't any different than them purposely fleecing visitors.  Safety is not their concern hence the fact that Thailand regularly ranks in the top 3 for most road deaths of any country in the world.  \n\n<h3> Be friendly </h3>\n\nActing like a \"Karen\" might get you out of situations in USA but it is only going to make things a lot worse for you over here.  Thai police are definitely on a power trip, but they will treat you with respect if you do so as well.   Throwing a fit will only make the fine larger, so keep it cool.\n\n<h3> If you are fined, pay on the spot </h3> \n\nSome people are upset and refuse to pay on the spot for some receipt that is probably not official anyway.   IF you play this game you are going to lose.   They will in fact allow you to go to the station and take care of your \"ticket\" there but now you have just turned a 5-minute transaction into an all day affair and trust me when I say that they are going to make this take as long as possible.   In order to save $20 or so you have just wasted your entire day.  Also the system is not going to change just because you think you are going to go over the heads of a corrupt street officer.   The **entire organization is in on it** so it's not like if you ask to speak to a manager that internal affairs are going to get involved and thank you for exposing their system.  \n\n<h3> do NOT record them </h3> \n\nThis is a fantastic way to super-escalate the situation\n\n<h3> Keep your ticket if you get one </h3>\n\nThis is one of the rather amusing things about routine traffic violations in Thailand.  If you are issued a ticket, there is an unofficial rule that you cannot be charged for that same made up crime for 7 days.   So if you got a ticket for driving without a license, you can carry on doing so for another week.  In a country with actual road rules, driving without a license would mean you are removed from the streets and your vehicle is towed at your own expense.  In Thailand the infraction was never about a law to begin with so they don't really care.   This 7-day grace period is likely in place so that the population don't riot and burn down police stations and yes, this is something that actually does happen and when it does, the police just get out of the way and let the people burn it.\n\n<h3> Keep that ticket forever </h3>\n\nUsing my own system, I have had the same \"no license\" ticket in my motorbike compartment for several years and if I see a checkpoint, I slow down, pull out the ticket and then show it to the guy who is flagging down vehicles.   Chances are, this person seeing a ticket AT ALL is going to convince him to flag you on through because it is such a common thing for there to be multiple checkpoints all over the city and surrounding areas on the same day.\n\nIF they guy happens to look at it closely (and with dozens of this exact situation happening to me they NEVER have) and they say \"hey this is from last year!\" you can just claim ignorance.   Just say \"oh, I didn't know\" then be polite and comply.   This is a bullshit situation anyway, so you may as well play along.\n\n<h3> Carry small bills </h3>  \n\nThe fine is often simply made up on the spot and if you open your wallet and you have a bunch of 1000 Baht notes and several 500's, you can be assured your fine will be at least 500.  However, if you have a few 100's in there and then just chump change, you can probably get away with just paying a couple hundred.   They are not going to ask anyone to do a QR bank transfer because that is a little thing that some people in the legal system refer to as \"evidence.\" \n\n<hr> \n<center> https://static.bangkokpost.com/media/content/20210331/c1_2092559.jpg\n[src](https://static.bangkokpost.com/media/content/20210331/c1_2092559.jpg)</center> \nYou many not like it, but this is simply the way it is in Thailand.   You almost certainly do not qualify to have a Thai driving license unless you have a work permit.  They always fiddle with these rules and often it feels as though it is specifically designed so that a certain percentage of people are always going to be in violation and therefore, can generate pocket money for the officers to kick up to the boss man.   \n\nI tend to look at it from the standpoint of which would you rather have?  A mildly corrupt police force looking for kickbacks, or a situation like we have in the United States where you would never be allowed to drive anyway?\n\nFollow these above steps though and there is a good chance you might just avoid getting fined at all.  If you do get fined, treat it as a vacation experience.   Fighting it is a waste of time and the system is not going to change.   \n\n",
+        "category": "thailand",
+        "children": 3,
+        "created": "2026-04-20T12:24:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "description": "Are the police corrupt?  yes.... can you minimize the damage?  Also Yes.   ",
+          "format": "markdown",
+          "image": [
+            "https://www.triptipedia.com/tip/img/Vl02JddFg.jpg",
+            "https://static.bangkokpost.com/media/content/20210331/c1_2092559.jpg",
+            "https://static.bangkokpost.com/media/content/20210331/c1_2092559.jpg)"
+          ],
+          "tags": [
+            "thailand",
+            "travel",
+            "visiting",
+            "expat",
+            "police",
+            "tips",
+            "driving"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 206146094427102,
+        "payout": 20.072,
+        "payout_at": "2026-04-27T12:24:09",
+        "pending_payout_value": "20.072 HBD",
+        "percent_hbd": 10000,
+        "permlink": "tips-to-handing-the-police-with-a-motorbike-in-thailand",
+        "post_id": 149871076,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 107
+        },
+        "title": "Tips to handing the police with a motorbike in Thailand ",
+        "updated": "2026-04-20T12:24:09",
+        "url": "/thailand/@jack.russelle/tips-to-handing-the-police-with-a-motorbike-in-thailand"
       },
       {
         "active_votes": [
@@ -41320,1554 +42207,6 @@
         "title": "3Speak Encoder Network Weekly Activity Report — Week 20",
         "updated": "2026-04-20T02:00:45",
         "url": "/encoding/@threespeak/3speak-encoder-network-weekly-activity-report-week-20"
-      },
-      {
-        "active_votes": [
-          {
-            "rshares": 28946221580,
-            "voter": "good-karma"
-          },
-          {
-            "rshares": 12477535424,
-            "voter": "roelandp"
-          },
-          {
-            "rshares": 870963151210,
-            "voter": "arcange"
-          },
-          {
-            "rshares": 583779899,
-            "voter": "alexbezimeni"
-          },
-          {
-            "rshares": 1085488544,
-            "voter": "kaykunoichi"
-          },
-          {
-            "rshares": 17506886489,
-            "voter": "anarcist69"
-          },
-          {
-            "rshares": 1420091100044,
-            "voter": "borran"
-          },
-          {
-            "rshares": 3660785271765,
-            "voter": "steevc"
-          },
-          {
-            "rshares": 153762571092,
-            "voter": "penguinpablo"
-          },
-          {
-            "rshares": 492571997,
-            "voter": "marina007"
-          },
-          {
-            "rshares": 553186000,
-            "voter": "sociopat"
-          },
-          {
-            "rshares": 504220403467,
-            "voter": "seckorama"
-          },
-          {
-            "rshares": 1563817529,
-            "voter": "funnyman"
-          },
-          {
-            "rshares": 610003196,
-            "voter": "stanislav1"
-          },
-          {
-            "rshares": 16071030410,
-            "voter": "clayboyn"
-          },
-          {
-            "rshares": 5258765250,
-            "voter": "discovereurovelo"
-          },
-          {
-            "rshares": 7888565301,
-            "voter": "esteemapp"
-          },
-          {
-            "rshares": 10691216938,
-            "voter": "bigtakosensei"
-          },
-          {
-            "rshares": 10456112220,
-            "voter": "walterjay"
-          },
-          {
-            "rshares": 24030610539,
-            "voter": "steemitboard"
-          },
-          {
-            "rshares": 67438427716445,
-            "voter": "ranchorelaxo"
-          },
-          {
-            "rshares": 66739327461689,
-            "voter": "trafalgar"
-          },
-          {
-            "rshares": 13471644318,
-            "voter": "ganjafarmer"
-          },
-          {
-            "rshares": 4744592424,
-            "voter": "lizanomadsoul"
-          },
-          {
-            "rshares": 1030784024391,
-            "voter": "raindrop"
-          },
-          {
-            "rshares": 25801228616,
-            "voter": "passion-fruit"
-          },
-          {
-            "rshares": 25461512081,
-            "voter": "fortune-master"
-          },
-          {
-            "rshares": 729401012545,
-            "voter": "dune69"
-          },
-          {
-            "rshares": 508486557062,
-            "voter": "mes"
-          },
-          {
-            "rshares": 159588939668,
-            "voter": "xplosive"
-          },
-          {
-            "rshares": 33055474892,
-            "voter": "samminator"
-          },
-          {
-            "rshares": 517081917,
-            "voter": "drwom"
-          },
-          {
-            "rshares": 10942885276,
-            "voter": "alphacore"
-          },
-          {
-            "rshares": 1373301887423,
-            "voter": "crimsonclad"
-          },
-          {
-            "rshares": 384578552204,
-            "voter": "chinito"
-          },
-          {
-            "rshares": 55480975232,
-            "voter": "therneau"
-          },
-          {
-            "rshares": 2786243720,
-            "voter": "princessmewmew"
-          },
-          {
-            "rshares": 930316174,
-            "voter": "joeyarnoldvn"
-          },
-          {
-            "rshares": 4522173594682,
-            "voter": "mynewlife"
-          },
-          {
-            "rshares": 1778851589,
-            "voter": "samest"
-          },
-          {
-            "rshares": 7394035676,
-            "voter": "felt.buzz"
-          },
-          {
-            "rshares": 12953954853770,
-            "voter": "haejin"
-          },
-          {
-            "rshares": 69914064674,
-            "voter": "dinsha"
-          },
-          {
-            "rshares": 2436918545,
-            "voter": "jeanlucsr"
-          },
-          {
-            "rshares": 1481990294,
-            "voter": "sunisa"
-          },
-          {
-            "rshares": 166306041499,
-            "voter": "aafeng"
-          },
-          {
-            "rshares": 460624681133,
-            "voter": "santigs"
-          },
-          {
-            "rshares": 15028541696,
-            "voter": "floatinglin"
-          },
-          {
-            "rshares": 43784963027099,
-            "voter": "stoodkev"
-          },
-          {
-            "rshares": 20180086187,
-            "voter": "kimzwarch"
-          },
-          {
-            "rshares": 31706521259,
-            "voter": "sorin.cristescu"
-          },
-          {
-            "rshares": 1391100977874,
-            "voter": "silversaver888"
-          },
-          {
-            "rshares": 14335048609269,
-            "voter": "yabapmatt"
-          },
-          {
-            "rshares": 5369706474518,
-            "voter": "meno"
-          },
-          {
-            "rshares": 2524495589,
-            "voter": "sayee"
-          },
-          {
-            "rshares": 980390731,
-            "voter": "esteem.app"
-          },
-          {
-            "rshares": 330153555987,
-            "voter": "ankapolo"
-          },
-          {
-            "rshares": 28623610679,
-            "voter": "dejan.vuckovic"
-          },
-          {
-            "rshares": 8245475942,
-            "voter": "cryptovisitor"
-          },
-          {
-            "rshares": 2674253944,
-            "voter": "xsasj"
-          },
-          {
-            "rshares": 5586552082432,
-            "voter": "traf"
-          },
-          {
-            "rshares": 7395532995,
-            "voter": "itchyfeetdonica"
-          },
-          {
-            "rshares": 640051591478,
-            "voter": "nathen007"
-          },
-          {
-            "rshares": 23507549257,
-            "voter": "funtraveller"
-          },
-          {
-            "rshares": 5788132468,
-            "voter": "knightly"
-          },
-          {
-            "rshares": 473317248,
-            "voter": "robotics101"
-          },
-          {
-            "rshares": 4823569723,
-            "voter": "ahmadmangazap"
-          },
-          {
-            "rshares": 236944677,
-            "voter": "cryptonized"
-          },
-          {
-            "rshares": 59301807223,
-            "voter": "phortun"
-          },
-          {
-            "rshares": 14984538426,
-            "voter": "adoore-eu"
-          },
-          {
-            "rshares": 1612565482,
-            "voter": "irisworld"
-          },
-          {
-            "rshares": 4145726351,
-            "voter": "manncpt"
-          },
-          {
-            "rshares": 812072679,
-            "voter": "jnmarteau"
-          },
-          {
-            "rshares": 30197842992,
-            "voter": "atongis"
-          },
-          {
-            "rshares": 1116898188,
-            "voter": "fractal-team"
-          },
-          {
-            "rshares": 2652356237,
-            "voter": "careassaktart"
-          },
-          {
-            "rshares": 30196132868,
-            "voter": "tomhall"
-          },
-          {
-            "rshares": 7369728551139,
-            "voter": "eddiespino"
-          },
-          {
-            "rshares": 36873626520,
-            "voter": "bhattg"
-          },
-          {
-            "rshares": 331437468812,
-            "voter": "onlavu"
-          },
-          {
-            "rshares": 3398154266966,
-            "voter": "samostically"
-          },
-          {
-            "rshares": 18989097104,
-            "voter": "lisfabian"
-          },
-          {
-            "rshares": 84333300158,
-            "voter": "omarmontes"
-          },
-          {
-            "rshares": 4795885543,
-            "voter": "jklio123"
-          },
-          {
-            "rshares": 1772611216,
-            "voter": "dumnebari"
-          },
-          {
-            "rshares": 5556393291,
-            "voter": "jeronimorubio"
-          },
-          {
-            "rshares": 431504539591,
-            "voter": "ravenmus1c"
-          },
-          {
-            "rshares": 128521053787,
-            "voter": "rivalzzz"
-          },
-          {
-            "rshares": 895740602,
-            "voter": "paragism"
-          },
-          {
-            "rshares": 3572969809,
-            "voter": "greddyforce"
-          },
-          {
-            "rshares": 528598597,
-            "voter": "flaxz"
-          },
-          {
-            "rshares": 544429859,
-            "voter": "dagmardeeke"
-          },
-          {
-            "rshares": 189290868865,
-            "voter": "gadrian"
-          },
-          {
-            "rshares": 62965943615,
-            "voter": "knot"
-          },
-          {
-            "rshares": 783293956,
-            "voter": "mlrequena78"
-          },
-          {
-            "rshares": 9901172424,
-            "voter": "achimmertens"
-          },
-          {
-            "rshares": 1035707689432,
-            "voter": "quochuy"
-          },
-          {
-            "rshares": 489286290700,
-            "voter": "cedricguillas"
-          },
-          {
-            "rshares": 5772328455,
-            "voter": "el-dee-are-es"
-          },
-          {
-            "rshares": 936372400,
-            "voter": "killerteesuk"
-          },
-          {
-            "rshares": 1820932833583,
-            "voter": "fw206"
-          },
-          {
-            "rshares": 3337356091,
-            "voter": "oscar21vander"
-          },
-          {
-            "rshares": 498038783,
-            "voter": "gmlgang"
-          },
-          {
-            "rshares": 1675586417,
-            "voter": "frieder"
-          },
-          {
-            "rshares": 741486921,
-            "voter": "wolfofnostreet"
-          },
-          {
-            "rshares": 10004941129,
-            "voter": "luminaryhmo"
-          },
-          {
-            "rshares": 1696607156,
-            "voter": "juliocesar7"
-          },
-          {
-            "rshares": 139796604953,
-            "voter": "digital.mine"
-          },
-          {
-            "rshares": 27806415634,
-            "voter": "purrix"
-          },
-          {
-            "rshares": 869428482017,
-            "voter": "apshamilton"
-          },
-          {
-            "rshares": 1051533079375,
-            "voter": "achim03"
-          },
-          {
-            "rshares": 7307311458,
-            "voter": "sthephany"
-          },
-          {
-            "rshares": 163788421,
-            "voter": "steemulant"
-          },
-          {
-            "rshares": 37166526792,
-            "voter": "sarunya"
-          },
-          {
-            "rshares": 271059667632,
-            "voter": "hamismsf"
-          },
-          {
-            "rshares": 10921642461,
-            "voter": "teamvn"
-          },
-          {
-            "rshares": 234374343288,
-            "voter": "smartvote"
-          },
-          {
-            "rshares": 27131743440,
-            "voter": "yaelg"
-          },
-          {
-            "rshares": 34881187535,
-            "voter": "surachai"
-          },
-          {
-            "rshares": 3400001162535,
-            "voter": "thelittlebank"
-          },
-          {
-            "rshares": 1305746824,
-            "voter": "pixiepost"
-          },
-          {
-            "rshares": 6863690176,
-            "voter": "teerawith"
-          },
-          {
-            "rshares": 458258472,
-            "voter": "steemwhalepower"
-          },
-          {
-            "rshares": 153026985,
-            "voter": "pocketjs"
-          },
-          {
-            "rshares": 26003087377,
-            "voter": "blarchive"
-          },
-          {
-            "rshares": 2576257507,
-            "voter": "thrasher666"
-          },
-          {
-            "rshares": 7981861104435,
-            "voter": "brianoflondon"
-          },
-          {
-            "rshares": 5029501270,
-            "voter": "steem-ua"
-          },
-          {
-            "rshares": 36632053976,
-            "voter": "nonsowrites"
-          },
-          {
-            "rshares": 3171415287,
-            "voter": "anarcist"
-          },
-          {
-            "rshares": 2019975446,
-            "voter": "newsposter"
-          },
-          {
-            "rshares": 23910255097,
-            "voter": "followjohngalt"
-          },
-          {
-            "rshares": 608574905,
-            "voter": "nellon"
-          },
-          {
-            "rshares": 19392039248726,
-            "voter": "theycallmedan"
-          },
-          {
-            "rshares": 891606065,
-            "voter": "jacuzzi"
-          },
-          {
-            "rshares": 3627800730,
-            "voter": "steemtelly"
-          },
-          {
-            "rshares": 1020931573,
-            "voter": "goodcontentbot"
-          },
-          {
-            "rshares": 35617293275,
-            "voter": "nataya"
-          },
-          {
-            "rshares": 625094524,
-            "voter": "hungrybear"
-          },
-          {
-            "rshares": 1847525049,
-            "voter": "goodcontentbot1"
-          },
-          {
-            "rshares": 90279891917,
-            "voter": "coolmole"
-          },
-          {
-            "rshares": 3163791677,
-            "voter": "kggymlife"
-          },
-          {
-            "rshares": 29014210142,
-            "voter": "alenox"
-          },
-          {
-            "rshares": 30857632389,
-            "voter": "maxsieg"
-          },
-          {
-            "rshares": 1356896533,
-            "voter": "photographercr"
-          },
-          {
-            "rshares": 26957161423158,
-            "voter": "curatorhulk"
-          },
-          {
-            "rshares": 20526618889,
-            "voter": "helgalubevi"
-          },
-          {
-            "rshares": 130518280909,
-            "voter": "akumagai"
-          },
-          {
-            "rshares": 1293738928,
-            "voter": "todayslight"
-          },
-          {
-            "rshares": 6772578351,
-            "voter": "leighscotford"
-          },
-          {
-            "rshares": 796028009718,
-            "voter": "ph1102"
-          },
-          {
-            "rshares": 584066434,
-            "voter": "davidtron"
-          },
-          {
-            "rshares": 4194303701,
-            "voter": "kgswallet"
-          },
-          {
-            "rshares": 613180061,
-            "voter": "kgcoin"
-          },
-          {
-            "rshares": 784646858376,
-            "voter": "tiffin"
-          },
-          {
-            "rshares": 768962613,
-            "voter": "alypanda"
-          },
-          {
-            "rshares": 12296914340,
-            "voter": "capp"
-          },
-          {
-            "rshares": 2234951847,
-            "voter": "ph1102.ctp"
-          },
-          {
-            "rshares": 2888467956,
-            "voter": "elianaicgomes"
-          },
-          {
-            "rshares": 4118448100724,
-            "voter": "urun"
-          },
-          {
-            "rshares": 754474384,
-            "voter": "madisonelizabeth"
-          },
-          {
-            "rshares": 2014350846,
-            "voter": "bilpcoinrecords"
-          },
-          {
-            "rshares": 652693448,
-            "voter": "bilpcoin.pay"
-          },
-          {
-            "rshares": 54680754683,
-            "voter": "stoodmonsters"
-          },
-          {
-            "rshares": 753962269,
-            "voter": "gmlrecordz"
-          },
-          {
-            "rshares": 71802541237,
-            "voter": "zirky"
-          },
-          {
-            "rshares": 3191147648,
-            "voter": "kgsupport"
-          },
-          {
-            "rshares": 15321173317,
-            "voter": "atma.love"
-          },
-          {
-            "rshares": 1062689467546,
-            "voter": "grindle"
-          },
-          {
-            "rshares": 1013618790,
-            "voter": "zeusflatsak"
-          },
-          {
-            "rshares": 13258970491,
-            "voter": "hivebuzz"
-          },
-          {
-            "rshares": 622879833,
-            "voter": "pinmapple"
-          },
-          {
-            "rshares": 356058406372,
-            "voter": "hive-naija"
-          },
-          {
-            "rshares": 34506052712,
-            "voter": "tht"
-          },
-          {
-            "rshares": 2289683838,
-            "voter": "laruche"
-          },
-          {
-            "rshares": 40679936582416,
-            "voter": "honey-swap"
-          },
-          {
-            "rshares": 1633032163,
-            "voter": "ykretz"
-          },
-          {
-            "rshares": 313524771228,
-            "voter": "softworld"
-          },
-          {
-            "rshares": 4934785752,
-            "voter": "holoferncro"
-          },
-          {
-            "rshares": 19726955966,
-            "voter": "hivelist"
-          },
-          {
-            "rshares": 1614527648432,
-            "voter": "ecency"
-          },
-          {
-            "rshares": 2444106068,
-            "voter": "daniky"
-          },
-          {
-            "rshares": 108867898731,
-            "voter": "archon-gov"
-          },
-          {
-            "rshares": 4919625038,
-            "voter": "jelly13"
-          },
-          {
-            "rshares": 476554582,
-            "voter": "syberia"
-          },
-          {
-            "rshares": 615635121,
-            "voter": "olaunlimited"
-          },
-          {
-            "rshares": 807745675,
-            "voter": "ksam"
-          },
-          {
-            "rshares": 5311572805,
-            "voter": "zhoten"
-          },
-          {
-            "rshares": 1017453608,
-            "voter": "ecency.stats"
-          },
-          {
-            "rshares": 33227375046,
-            "voter": "hivecoffee"
-          },
-          {
-            "rshares": 38151915331,
-            "voter": "sunitahive"
-          },
-          {
-            "rshares": 18112685112,
-            "voter": "aslehansen"
-          },
-          {
-            "rshares": 1928697823,
-            "voter": "cryptosimplify"
-          },
-          {
-            "rshares": 728260252,
-            "voter": "dragokazo"
-          },
-          {
-            "rshares": 12549522325,
-            "voter": "pbcrypto"
-          },
-          {
-            "rshares": 10101486267,
-            "voter": "khaleesii"
-          },
-          {
-            "rshares": 1153463822,
-            "voter": "kei2"
-          },
-          {
-            "rshares": 32446585284,
-            "voter": "joheredia21"
-          },
-          {
-            "rshares": 497769890695,
-            "voter": "ctpsb"
-          },
-          {
-            "rshares": 722263930,
-            "voter": "ebon123"
-          },
-          {
-            "rshares": 727861762,
-            "voter": "mattbee"
-          },
-          {
-            "rshares": 2637715489,
-            "voter": "bluepluto"
-          },
-          {
-            "rshares": 14926996486,
-            "voter": "kattycrochet"
-          },
-          {
-            "rshares": 106924066213,
-            "voter": "guitarmcy"
-          },
-          {
-            "rshares": 2003985649,
-            "voter": "sparker005"
-          },
-          {
-            "rshares": 8024148863,
-            "voter": "paultactico2"
-          },
-          {
-            "rshares": 8188982357,
-            "voter": "farleyfund"
-          },
-          {
-            "rshares": 7149260007,
-            "voter": "liotes"
-          },
-          {
-            "rshares": 20922994305,
-            "voter": "wend1go"
-          },
-          {
-            "rshares": 2642517187839,
-            "voter": "liotes.voter"
-          },
-          {
-            "rshares": 668678844,
-            "voter": "horstman5"
-          },
-          {
-            "rshares": 4648351093,
-            "voter": "imno"
-          },
-          {
-            "rshares": 12900345224,
-            "voter": "princessbusayo"
-          },
-          {
-            "rshares": 564952896,
-            "voter": "zwhammer"
-          },
-          {
-            "rshares": 2740724994,
-            "voter": "chuxter"
-          },
-          {
-            "rshares": 966807588,
-            "voter": "hive.friends"
-          },
-          {
-            "rshares": 14704831023,
-            "voter": "jemima1996"
-          },
-          {
-            "rshares": 6305421979,
-            "voter": "krrizjos18"
-          },
-          {
-            "rshares": 53279273454,
-            "voter": "ifarmgirl"
-          },
-          {
-            "rshares": 71066291126,
-            "voter": "mariaser"
-          },
-          {
-            "rshares": 457109106,
-            "voter": "memesupport"
-          },
-          {
-            "rshares": 4075793059,
-            "voter": "iamchuks"
-          },
-          {
-            "rshares": 4633832136,
-            "voter": "keithtaylor"
-          },
-          {
-            "rshares": 605650123,
-            "voter": "hivehydra"
-          },
-          {
-            "rshares": 976895800,
-            "voter": "photolovers1"
-          },
-          {
-            "rshares": 806778314093,
-            "voter": "podping"
-          },
-          {
-            "rshares": 5375715222,
-            "voter": "ferbu"
-          },
-          {
-            "rshares": 5612734970,
-            "voter": "newbies-hive"
-          },
-          {
-            "rshares": 265417272,
-            "voter": "mooontivated"
-          },
-          {
-            "rshares": 6414780794,
-            "voter": "jaydr"
-          },
-          {
-            "rshares": 965149803,
-            "voter": "cryptoccshow"
-          },
-          {
-            "rshares": 983659643,
-            "voter": "tiyumtaba"
-          },
-          {
-            "rshares": 9325962854,
-            "voter": "k5905200786"
-          },
-          {
-            "rshares": 1965576934,
-            "voter": "george-dee"
-          },
-          {
-            "rshares": 159509344140,
-            "voter": "aequi"
-          },
-          {
-            "rshares": 103512752566,
-            "voter": "adulruna"
-          },
-          {
-            "rshares": 685606421,
-            "voter": "tub3r0"
-          },
-          {
-            "rshares": 101634986638,
-            "voter": "eddie-3speak"
-          },
-          {
-            "rshares": 13178246653,
-            "voter": "suteru"
-          },
-          {
-            "rshares": 958333300,
-            "voter": "astrocat-3663"
-          },
-          {
-            "rshares": 248678340400,
-            "voter": "mimi.ruby"
-          },
-          {
-            "rshares": 20554749721,
-            "voter": "mcsherriff"
-          },
-          {
-            "rshares": 31919236788,
-            "voter": "deraaa"
-          },
-          {
-            "rshares": 1579386749,
-            "voter": "jude9"
-          },
-          {
-            "rshares": 444036424,
-            "voter": "bhardmorse"
-          },
-          {
-            "rshares": 1109150418610,
-            "voter": "mengao"
-          },
-          {
-            "rshares": 12823928630,
-            "voter": "pappyelblanco"
-          },
-          {
-            "rshares": 20164049958,
-            "voter": "tydynrain"
-          },
-          {
-            "rshares": 11116291279,
-            "voter": "gaposchkin"
-          },
-          {
-            "rshares": 163703046058,
-            "voter": "nkemakonam89"
-          },
-          {
-            "rshares": 2167615306,
-            "voter": "johnripper"
-          },
-          {
-            "rshares": 5873051354,
-            "voter": "trojan1"
-          },
-          {
-            "rshares": 115600903928,
-            "voter": "kriang3teejoe"
-          },
-          {
-            "rshares": 892415480,
-            "voter": "attentionneeded"
-          },
-          {
-            "rshares": 4284482569,
-            "voter": "kaibagt"
-          },
-          {
-            "rshares": 1625829241,
-            "voter": "vickoly"
-          },
-          {
-            "rshares": 304428617,
-            "voter": "reenave"
-          },
-          {
-            "rshares": 20127758678,
-            "voter": "hoffmeister84"
-          },
-          {
-            "rshares": 252401093767,
-            "voter": "beelzael"
-          },
-          {
-            "rshares": 710038684,
-            "voter": "woodathegsd"
-          },
-          {
-            "rshares": 1235098768,
-            "voter": "marlonfund"
-          },
-          {
-            "rshares": 14745544251,
-            "voter": "liveofdalla"
-          },
-          {
-            "rshares": 643060013,
-            "voter": "marynn"
-          },
-          {
-            "rshares": 1036068076,
-            "voter": "allentaylor"
-          },
-          {
-            "rshares": 1067247985,
-            "voter": "alex2alex"
-          },
-          {
-            "rshares": 2246442407,
-            "voter": "mypathtofire"
-          },
-          {
-            "rshares": 1147711740,
-            "voter": "jmis101"
-          },
-          {
-            "rshares": 6378033594,
-            "voter": "boeltermc"
-          },
-          {
-            "rshares": 18722609939,
-            "voter": "cajiro"
-          },
-          {
-            "rshares": 454029983,
-            "voter": "baboz"
-          },
-          {
-            "rshares": 1714700803,
-            "voter": "sperosamuel15"
-          },
-          {
-            "rshares": 52830875928,
-            "voter": "franzpaulie"
-          },
-          {
-            "rshares": 13697838361,
-            "voter": "magicfingerz"
-          },
-          {
-            "rshares": 4237361461,
-            "voter": "emreal"
-          },
-          {
-            "rshares": 6042206233,
-            "voter": "alessandrawhite"
-          },
-          {
-            "rshares": 2048769181,
-            "voter": "drstrings"
-          },
-          {
-            "rshares": 730611131,
-            "voter": "tzae"
-          },
-          {
-            "rshares": 62445705840,
-            "voter": "oasiskp2"
-          },
-          {
-            "rshares": 471209878,
-            "voter": "ifarmgirl-leo"
-          },
-          {
-            "rshares": 8570493060,
-            "voter": "hive-144838"
-          },
-          {
-            "rshares": 3056691387,
-            "voter": "artefactoestudio"
-          },
-          {
-            "rshares": 7591626686,
-            "voter": "zitalove"
-          },
-          {
-            "rshares": 40452406094,
-            "voter": "nhaji01"
-          },
-          {
-            "rshares": 486610641,
-            "voter": "psyskiff"
-          },
-          {
-            "rshares": 173205178521,
-            "voter": "sam.hangout"
-          },
-          {
-            "rshares": 312520866,
-            "voter": "saboin.ctp"
-          },
-          {
-            "rshares": 20978672862171,
-            "voter": "threespeakvoter"
-          },
-          {
-            "rshares": 1110693282,
-            "voter": "wizj"
-          },
-          {
-            "rshares": 1435677095,
-            "voter": "ngobaby"
-          },
-          {
-            "rshares": 23211190927,
-            "voter": "ecencypoints"
-          },
-          {
-            "rshares": 12460132767,
-            "voter": "gunting"
-          },
-          {
-            "rshares": 7888511327,
-            "voter": "uzoma24"
-          },
-          {
-            "rshares": 11787078109,
-            "voter": "hiveecuador"
-          },
-          {
-            "rshares": 24171949692,
-            "voter": "hikergirl"
-          },
-          {
-            "rshares": 550652263,
-            "voter": "tahastories1"
-          },
-          {
-            "rshares": 3022967000,
-            "voter": "javedkhan1989"
-          },
-          {
-            "rshares": 55274614092,
-            "voter": "yesenia.romero"
-          },
-          {
-            "rshares": 3592166641,
-            "voter": "edwincj"
-          },
-          {
-            "rshares": 42449516776,
-            "voter": "fredaa"
-          },
-          {
-            "rshares": 891871474,
-            "voter": "alliebee"
-          },
-          {
-            "rshares": 1364254301,
-            "voter": "captainman"
-          },
-          {
-            "rshares": 1566996181,
-            "voter": "mathewdaddywah"
-          },
-          {
-            "rshares": 15558819182,
-            "voter": "hiventhusiast"
-          },
-          {
-            "rshares": 595988570,
-            "voter": "bipolar95"
-          },
-          {
-            "rshares": 17516813738981,
-            "voter": "somecallmejake"
-          },
-          {
-            "rshares": 715164445544,
-            "voter": "blessskateshop"
-          },
-          {
-            "rshares": 59436859,
-            "voter": "duckmotor"
-          },
-          {
-            "rshares": 90198834875,
-            "voter": "dantrin"
-          },
-          {
-            "rshares": 28199600090,
-            "voter": "encuentro"
-          },
-          {
-            "rshares": 4073286024,
-            "voter": "medemausi"
-          },
-          {
-            "rshares": 947035228,
-            "voter": "lolz.byte"
-          },
-          {
-            "rshares": 945544787,
-            "voter": "rostik924"
-          },
-          {
-            "rshares": 10000210519,
-            "voter": "sprunk"
-          },
-          {
-            "rshares": 809157615,
-            "voter": "aistoryteller"
-          },
-          {
-            "rshares": 8969729,
-            "voter": "rernesto"
-          },
-          {
-            "rshares": 899777317,
-            "voter": "picazzy005"
-          },
-          {
-            "rshares": 2058775394,
-            "voter": "agungprasetyo"
-          },
-          {
-            "rshares": 705052809,
-            "voter": "labanlangboss"
-          },
-          {
-            "rshares": 1140621980,
-            "voter": "porqpin"
-          },
-          {
-            "rshares": 509427720,
-            "voter": "diannever"
-          },
-          {
-            "rshares": 1064815778175,
-            "voter": "joseamenac"
-          },
-          {
-            "rshares": 1055833294,
-            "voter": "wamiru"
-          },
-          {
-            "rshares": 7107771050,
-            "voter": "ecp.voter"
-          },
-          {
-            "rshares": 7108650968,
-            "voter": "ecp.curator"
-          },
-          {
-            "rshares": 7662334721,
-            "voter": "ecp.rclease"
-          },
-          {
-            "rshares": 4276851054,
-            "voter": "arshadkhan4421"
-          },
-          {
-            "rshares": 43335411824,
-            "voter": "kristabel123"
-          },
-          {
-            "rshares": 452336340,
-            "voter": "rukyig"
-          },
-          {
-            "rshares": 7799954254,
-            "voter": "barddev"
-          },
-          {
-            "rshares": 22599332293,
-            "voter": "patif2025"
-          },
-          {
-            "rshares": 8788554051,
-            "voter": "otix3340"
-          },
-          {
-            "rshares": 8520746767,
-            "voter": "lala1227"
-          },
-          {
-            "rshares": 1835111939,
-            "voter": "life7clothing"
-          },
-          {
-            "rshares": 787951905,
-            "voter": "chydolar1"
-          },
-          {
-            "rshares": 982431779,
-            "voter": "nursecommy"
-          },
-          {
-            "rshares": 7120937914,
-            "voter": "ecp.dump"
-          },
-          {
-            "rshares": 14189781227,
-            "voter": "sambapools"
-          },
-          {
-            "rshares": 6823091861,
-            "voter": "gerardosahagun"
-          },
-          {
-            "rshares": 71570098570,
-            "voter": "mcbro"
-          },
-          {
-            "rshares": 11317158966,
-            "voter": "betoman"
-          },
-          {
-            "rshares": 993298818,
-            "voter": "socraticmthd"
-          },
-          {
-            "rshares": 4310158990,
-            "voter": "edlandivar"
-          },
-          {
-            "rshares": 3948493202,
-            "voter": "andymusic"
-          },
-          {
-            "rshares": 8058384161,
-            "voter": "menoshops"
-          },
-          {
-            "rshares": 1139440831,
-            "voter": "suqueen"
-          },
-          {
-            "rshares": 26320188224,
-            "voter": "afrikens"
-          },
-          {
-            "rshares": 29807139169,
-            "voter": "emilypino"
-          },
-          {
-            "rshares": 7102700116,
-            "voter": "spoondawg"
-          },
-          {
-            "rshares": 4339338649,
-            "voter": "cguitars"
-          },
-          {
-            "rshares": 209571232991,
-            "voter": "snapie"
-          },
-          {
-            "rshares": 5017616006,
-            "voter": "therealtalkk"
-          },
-          {
-            "rshares": 362706162,
-            "voter": "sivane"
-          },
-          {
-            "rshares": 8544685700,
-            "voter": "pandalacotacachi"
-          },
-          {
-            "rshares": 28635217,
-            "voter": "moondragon.voter"
-          },
-          {
-            "rshares": 12350324109,
-            "voter": "beelshops"
-          },
-          {
-            "rshares": 1057696132,
-            "voter": "rookie2001"
-          },
-          {
-            "rshares": 345257827420,
-            "voter": "hiverewardminer"
-          },
-          {
-            "rshares": 13570542542,
-            "voter": "warcucumber"
-          },
-          {
-            "rshares": 12166832324,
-            "voter": "onee"
-          },
-          {
-            "rshares": 412683592087,
-            "voter": "mantequilla-soft"
-          },
-          {
-            "rshares": 619809815,
-            "voter": "way-big"
-          },
-          {
-            "rshares": 29550962005,
-            "voter": "yisusmario"
-          },
-          {
-            "rshares": 229872865,
-            "voter": "animek"
-          },
-          {
-            "rshares": 688004257,
-            "voter": "pressedition24"
-          },
-          {
-            "rshares": 0,
-            "voter": "trevorvan"
-          },
-          {
-            "rshares": 2844425957,
-            "voter": "magnaconsciencia"
-          },
-          {
-            "rshares": 0,
-            "voter": "cristinassweet"
-          }
-        ],
-        "author": "mantequilla-soft",
-        "author_payout_value": "0.000 HBD",
-        "author_reputation": 70.6,
-        "author_role": "guest",
-        "author_title": "",
-        "beneficiaries": [
-          {
-            "account": "snapie",
-            "weight": 300
-          },
-          {
-            "account": "threespeakfund",
-            "weight": 700
-          }
-        ],
-        "blacklists": [],
-        "body": "![cover13.jpg](https://images.hive.blog/DQmPdoRovGxr8rEjNZcHAJyMrwUaWesfQgHJXeqvr4vWTos/cover13.jpg)\n\n**Welcome to another Mantequilla-Soft Weekly Report!**\n\n<center>\n\n### Listen to the recording of the hangout:\n\nhttps://audio.3speak.tv/play?a=x20s9p70\n\n[Play on 3Speak](https://audio.3speak.tv/play?a=x20s9p70)\n\n</center>\n\n---\n\nThis week, it was just @meno and @eddiespino, but we still made solid progress. @meno has been focused on the Snapie mobile app (Android is updated, iOS coming soon) and a cool new feature called Snapie Radio for Hangouts. On the ManteCurated side, @eddiespino shipped several upgrades to the curation dashboard, including a revamped scoring system and new comparison and export tools.\n\nWe also took some time during the podcast to talk about the current state of Hive. There are positive changes happening, and we believe the status quo can change, but it takes constructive and respectful feedback from the community. Drama and toxic comments will not get us anywhere. We invite everyone to speak up and share their thoughts, but in a way that actually moves things forward.\n\nAlso, even though @eddiespino is now also working outside of Hive, 3Speak support continues. Users can tag @meno or reach out to him directly. The 3Speak system is working much better than before, though there are still some edge cases being addressed.\n\n---\n\n## Summary of updates by contributors:\n\n### @meno\n\n![](https://images.hive.blog/u/meno/avatar/)\n\n#### Snapie Mobile App\n\n@meno has been focused on the **Snapie mobile app**, specifically the **Android version** which has been updated. The **iOS version** will be updated soon. The goal continues to be making Snapie the easiest and most complete Hive app, where new users do not need to download anything else.\n\n#### Snapie Radio\n\nA new feature is being integrated into Hangouts: **Snapie Radio**. This allows users to share and listen to music together during live Hangouts sessions. For more details on this and other updates from @meno, check out his blog: https://peakd.com/@meno/posts\n\n![image.png](https://files.peakd.com/file/peakd-hive/mantequilla-soft/23wzWzK7d2ijfzeahpTq9DJJwuevejrXbg667whW1zuNLs86U1AAfXDzxUhKv6594EMXH.png)\n\n---\n\n### @eddiespino\n\n![](https://images.hive.blog/u/eddiespino/avatar)\n\n#### ManteCurated Live: Major Dashboard Upgrades\n\n@eddiespino shipped several upgrades to the **ManteCurated Live** curation dashboard at https://mantecurated.3speak.tv.\n\n![image.png](https://files.peakd.com/file/peakd-hive/mantequilla-soft/23tRvZtTCJzhvvg5urTCofGcyw4yJuX4fhP1xDEBEcNiWFdiAUMZD72Zu3VpKGUQzzZ8C.png)\n\nThe **homepage now has a proper dashboard** with a description of what the app is and how it works, making it more welcoming for first-time visitors.\n\n![image.png](https://files.peakd.com/file/peakd-hive/mantequilla-soft/23swgE78nHKVn1cY9q659RUP4sBmJudKfTTpQ4wHDJ7RWA7JKP6RnYHViRDJ4zTGVuqF7.png)\n\nThe **Curation Quality Score (CQS) was rescaled from 1 to 10 to 1 to 100**, giving more granularity and precision. Some scoring parameters were also adjusted: the **Breadth dimension** now measures up to 100 unique authors (previously 50), raising the bar for what counts as diverse curation.\n\nA new **comparison feature** was added where users can compare multiple curation accounts side by side, ranked by their CQS score. The comparison data can be **exported in multiple formats**: Markdown, custom JSON, or CSV.\n\n![image.png](https://files.peakd.com/file/peakd-hive/mantequilla-soft/23swgE7UTBJxXB18PLVWFCBdRGxpCHnRAhtUcNPFqXdVL2485LfkixE5pyLiv4PSAJ4YS.png)\n\nOn the **single curator page**, users can now see the **top 50 most voted authors** from the last week (previously limited to 10). The single-page data can also be **exported in Markdown** by copying it directly to the clipboard.\n\n![image.png](https://files.peakd.com/file/peakd-hive/mantequilla-soft/23tRvMpWya3CZwLUY2TxEqrYaDaHC4Ntcwk3PaaVJvzyB4aUdfQQYbRoV13ptD1x9p6in.png)\n\n\n**GitHub Repo**: https://github.com/Mantequilla-Soft/mantecurated-live\n\n---\n\n![MantequillaC.png](https://files.peakd.com/file/peakd-hive/mantequilla-soft/23vrrWLMfnxfJV5voLx3DrL5zT12pVmS59AapgNp5HUp4GhqRXm4yd7qmQRdWK3o1UA3s.png)\n\n---\n\n<center>Join our Discord Communities:</center>\n\n<center>[3Speak](https://discord.gg/NSFS2VGj83) • [Snapie](https://discord.gg/PgvdXSsWGV) • [Proyecto Aliento](https://discord.gg/G5DfSUJf9x)</center>\n\n---\n\n<center>Support our Witnesses:</center>\n\n<center>[Threespeak](https://witness.aliento.blog/witness/threespeak) • [Snapie](https://witness.aliento.blog/witness/snapie) • [Aliento](https://witness.aliento.blog/witness/aliento)</center>\n\n|                                                    |                                                |                                                 |\n| :------------------------------------------------: | :--------------------------------------------: | :---------------------------------------------: |\n| ![](https://images.hive.blog/u/threespeak/avatar/) | ![](https://images.hive.blog/u/snapie/avatar/) | ![](https://images.hive.blog/u/aliento/avatar/) |\n\n---\n\n### <center>[https://www.mantequilla-soft.com/](https://www.mantequilla-soft.com/)</center>\n\n### <center>[https://github.com/orgs/Mantequilla-Soft/repositories](https://github.com/orgs/Mantequilla-Soft/repositories)</center>",
-        "category": "hive-178315",
-        "children": 7,
-        "community": "hive-178315",
-        "community_title": "Snapie",
-        "created": "2026-04-19T15:38:33",
-        "curator_payout_value": "0.000 HBD",
-        "depth": 0,
-        "is_paidout": false,
-        "json_metadata": {
-          "app": "Snapie.io",
-          "format": "markdown",
-          "image": [
-            "https://images.hive.blog/DQmPdoRovGxr8rEjNZcHAJyMrwUaWesfQgHJXeqvr4vWTos/cover13.jpg",
-            "https://images.hive.blog/u/meno/avatar/",
-            "https://files.peakd.com/file/peakd-hive/mantequilla-soft/23wzWzK7d2ijfzeahpTq9DJJwuevejrXbg667whW1zuNLs86U1AAfXDzxUhKv6594EMXH.png",
-            "https://images.hive.blog/u/eddiespino/avatar",
-            "https://files.peakd.com/file/peakd-hive/mantequilla-soft/23tRvZtTCJzhvvg5urTCofGcyw4yJuX4fhP1xDEBEcNiWFdiAUMZD72Zu3VpKGUQzzZ8C.png",
-            "https://files.peakd.com/file/peakd-hive/mantequilla-soft/23swgE78nHKVn1cY9q659RUP4sBmJudKfTTpQ4wHDJ7RWA7JKP6RnYHViRDJ4zTGVuqF7.png",
-            "https://files.peakd.com/file/peakd-hive/mantequilla-soft/23swgE7UTBJxXB18PLVWFCBdRGxpCHnRAhtUcNPFqXdVL2485LfkixE5pyLiv4PSAJ4YS.png",
-            "https://files.peakd.com/file/peakd-hive/mantequilla-soft/23tRvMpWya3CZwLUY2TxEqrYaDaHC4Ntcwk3PaaVJvzyB4aUdfQQYbRoV13ptD1x9p6in.png",
-            "https://files.peakd.com/file/peakd-hive/mantequilla-soft/23vrrWLMfnxfJV5voLx3DrL5zT12pVmS59AapgNp5HUp4GhqRXm4yd7qmQRdWK3o1UA3s.png",
-            "https://images.hive.blog/u/threespeak/avatar/",
-            "https://images.hive.blog/u/snapie/avatar/",
-            "https://images.hive.blog/u/aliento/avatar/"
-          ],
-          "tags": [
-            "hangout",
-            "podcast",
-            "3speak",
-            "snapie",
-            "mantecurated",
-            "aliento",
-            "hive",
-            "development"
-          ],
-          "users": [
-            "meno",
-            "eddiespino"
-          ]
-        },
-        "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 410988372123971,
-        "payout": 39.718,
-        "payout_at": "2026-04-26T15:38:33",
-        "pending_payout_value": "39.718 HBD",
-        "percent_hbd": 10000,
-        "permlink": "20260419t153827920z",
-        "post_id": 149861903,
-        "reblogs": 9,
-        "replies": [],
-        "stats": {
-          "flag_weight": 0,
-          "gray": false,
-          "hide": false,
-          "total_votes": 369
-        },
-        "title": "Mantequilla-Soft – Weekly Progress Report #13",
-        "updated": "2026-04-19T15:54:30",
-        "url": "/hive-178315/@mantequilla-soft/20260419t153827920z"
       }
     ]
   },

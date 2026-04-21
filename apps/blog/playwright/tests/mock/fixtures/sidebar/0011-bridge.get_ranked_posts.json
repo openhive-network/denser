@@ -29,19 +29,107 @@
     "jsonrpc": "2.0",
     "result": [
       {
+        "active_votes": [],
+        "author": "birdwatcher",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 75.97,
+        "author_role": "admin",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": " | Latin name | Observation date | Location | \n| --- | --- | --- |\n|Ciconia nigra     | 14.6.2025   | Dírná, South Bohemia, Czech republic|\n https://img.leopedia.io/DQmRjRMsSzGf6BEFckBfjceN22vaLmh2qTzR3EmNjpGEFbK/st.jpg \nJust 20 years ago, black storks were rare, and white storks were the ones you saw. \nNow the situation has reversed in South Bohemia. The white storks have simply disappeared, and black storks are the ones you see.\nIt must be because they live in the forests, near streams and forest ponds. White storks mainly roam open terrain, where there are farmers, chemicals, and so on. At least, that’s how I explain it to myself.\n\n| Link to original community |\n |-|\n|  https://www.inaturalist.org/observations/303147371         |  \n\n| Latitude | Longitude |\n |-|-|\n| 49.2260433333, 14.81437665        |  \n \n\n\nPosted Using [INLEO](https://inleo.io/@birdwatcher/ciconia-nigra-p-ern-black-stork-597)",
+        "category": "hive-130906",
+        "children": 0,
+        "community": "hive-130906",
+        "community_title": "Nature Observer",
+        "created": "2026-04-21T11:20:24",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@birdwatcher/ciconia-nigra-p-ern-black-stork-597",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmRjRMsSzGf6BEFckBfjceN22vaLmh2qTzR3EmNjpGEFbK/st.jpg"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://www.inaturalist.org/observations/303147371",
+            "https://inleo.io/@birdwatcher/ciconia-nigra-p-ern-black-stork-597)"
+          ],
+          "tags": [
+            "hive-130906",
+            "nature",
+            "photography",
+            "birds",
+            "birding",
+            "pob"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "payout": 0,
+        "payout_at": "2026-04-28T11:20:24",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "ciconia-nigra-p-ern-black-stork-597",
+        "post_id": 149883539,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "Ciconia nigra Čáp Černý · Black Stork",
+        "updated": "2026-04-21T11:20:24",
+        "url": "/hive-130906/@birdwatcher/ciconia-nigra-p-ern-black-stork-597"
+      },
+      {
         "active_votes": [
           {
             "rshares": 15496854641,
             "voter": "isnochys"
           },
           {
+            "rshares": 13357889503,
+            "voter": "solarwarrior"
+          },
+          {
+            "rshares": 99017052135,
+            "voter": "jgb"
+          },
+          {
+            "rshares": 31140047615,
+            "voter": "apineda"
+          },
+          {
+            "rshares": 9969300590,
+            "voter": "nwothini335"
+          },
+          {
             "rshares": 9667263790,
             "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 3952697800809,
+            "voter": "solarisfuture"
+          },
+          {
+            "rshares": 2800416533,
+            "voter": "nahid43"
+          },
+          {
+            "rshares": 861169073,
+            "voter": "ainun37"
           }
         ],
         "author": "scifimultiverse",
         "author_payout_value": "0.000 HBD",
-        "author_reputation": 69.46,
+        "author_reputation": 69.47,
         "author_role": "admin",
         "author_title": "curator",
         "beneficiaries": [],
@@ -80,10 +168,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 25164118431,
-        "payout": 0.002,
+        "net_rshares": 4135007794689,
+        "payout": 0.402,
         "payout_at": "2026-04-28T11:17:06",
-        "pending_payout_value": "0.002 HBD",
+        "pending_payout_value": "0.402 HBD",
         "percent_hbd": 10000,
         "permlink": "scifi-ouiz-resultpost-for-new-quiz",
         "post_id": 149883524,
@@ -93,7 +181,8 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 2
+          "is_pinned": true,
+          "total_votes": 9
         },
         "title": "SCIFI OUIZ RESULT//POST FOR NEW QUIZ",
         "updated": "2026-04-21T11:17:06",
@@ -102,24 +191,116 @@
       {
         "active_votes": [
           {
+            "rshares": 886401885,
+            "voter": "fiona777"
+          },
+          {
+            "rshares": 2094999744,
+            "voter": "dolov"
+          },
+          {
+            "rshares": 1462740935,
+            "voter": "wise-elf"
+          },
+          {
+            "rshares": 2460485885,
+            "voter": "strecoza"
+          },
+          {
+            "rshares": 4727847410,
+            "voter": "vict0r"
+          },
+          {
+            "rshares": 21888381457,
+            "voter": "kobusu"
+          },
+          {
             "rshares": 410249379991,
             "voter": "teamukraine"
+          },
+          {
+            "rshares": 16139245475,
+            "voter": "hmayak"
+          },
+          {
+            "rshares": 29087851599,
+            "voter": "a-bot"
+          },
+          {
+            "rshares": 61537502897,
+            "voter": "uakulinar"
+          },
+          {
+            "rshares": 3801003801,
+            "voter": "androshchuk"
+          },
+          {
+            "rshares": 652722786,
+            "voter": "bilpcoin.pay"
           },
           {
             "rshares": 15273128197,
             "voter": "sansey"
           },
           {
+            "rshares": 3703074333,
+            "voter": "muzykasasha"
+          },
+          {
+            "rshares": 1914006764,
+            "voter": "nazavzhdy"
+          },
+          {
+            "rshares": 1385757393,
+            "voter": "minecrafter"
+          },
+          {
+            "rshares": 1770481954,
+            "voter": "chornogorsky"
+          },
+          {
             "rshares": 39144714889,
             "voter": "aeneas.fund"
+          },
+          {
+            "rshares": 991288018,
+            "voter": "fiona77"
+          },
+          {
+            "rshares": 7097653049,
+            "voter": "alesya-h9"
+          },
+          {
+            "rshares": 3233572318,
+            "voter": "detroyt31"
           },
           {
             "rshares": 9667263790,
             "voter": "glimpsytips.dex"
           },
           {
+            "rshares": 5971950206,
+            "voter": "rzity.nomad"
+          },
+          {
+            "rshares": 1013616865,
+            "voter": "yaroschain"
+          },
+          {
+            "rshares": 1931465561,
+            "voter": "successfullady"
+          },
+          {
             "rshares": 0,
             "voter": "endhivewatchers"
+          },
+          {
+            "rshares": 11111693436,
+            "voter": "discoverireland"
+          },
+          {
+            "rshares": 614757722,
+            "voter": "tenerifeapart"
           }
         ],
         "author": "infa",
@@ -172,10 +353,10 @@
           "users": []
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 474334486867,
-        "payout": 0.046,
+        "net_rshares": 659812988360,
+        "payout": 0.064,
         "payout_at": "2026-04-28T11:16:09",
-        "pending_payout_value": "0.046 HBD",
+        "pending_payout_value": "0.064 HBD",
         "percent_hbd": 10000,
         "permlink": "yak-ne-pereplachuvati-za-zhitlo",
         "post_id": 149883517,
@@ -185,7 +366,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 5
+          "total_votes": 28
         },
         "title": "Як не переплачувати за житло",
         "updated": "2026-04-21T11:17:30",
@@ -261,6 +442,10 @@
             "voter": "rok-sivante"
           },
           {
+            "rshares": 507004127423,
+            "voter": "daan"
+          },
+          {
             "rshares": 12963843525,
             "voter": "scaredycatguide"
           },
@@ -269,8 +454,16 @@
             "voter": "netaterra"
           },
           {
+            "rshares": 165001199855,
+            "voter": "enginewitty"
+          },
+          {
             "rshares": 790424508840,
             "voter": "sumatranate"
+          },
+          {
+            "rshares": 9907853874,
+            "voter": "cryptoknight12"
           },
           {
             "rshares": 2131558965183,
@@ -301,8 +494,20 @@
             "voter": "buggedout"
           },
           {
+            "rshares": 4899368113284,
+            "voter": "nuthman"
+          },
+          {
             "rshares": 4619755040,
             "voter": "ragnarokdel"
+          },
+          {
+            "rshares": 41656952112,
+            "voter": "pixresteemer"
+          },
+          {
+            "rshares": 1217367413501,
+            "voter": "thealliance"
           },
           {
             "rshares": 21867794766,
@@ -313,8 +518,20 @@
             "voter": "dbooster"
           },
           {
+            "rshares": 9818228236,
+            "voter": "coolguy123"
+          },
+          {
+            "rshares": 7929242924,
+            "voter": "hanzappedfirst"
+          },
+          {
             "rshares": 17627303699,
             "voter": "b00m"
+          },
+          {
+            "rshares": 4753476234,
+            "voter": "steemusa"
           },
           {
             "rshares": 162692398578,
@@ -327,6 +544,14 @@
           {
             "rshares": 1180147769,
             "voter": "jazzhero"
+          },
+          {
+            "rshares": 42112448541,
+            "voter": "mastergerund"
+          },
+          {
+            "rshares": 267297182910,
+            "voter": "bigtom13"
           },
           {
             "rshares": 1425469835,
@@ -361,8 +586,16 @@
             "voter": "melbourneswest"
           },
           {
+            "rshares": 3843249140,
+            "voter": "trumpman2"
+          },
+          {
             "rshares": 8092236173,
             "voter": "enforcer48"
+          },
+          {
+            "rshares": 498038783,
+            "voter": "gmlgang"
           },
           {
             "rshares": 5060468856,
@@ -373,8 +606,16 @@
             "voter": "bdmillergallery"
           },
           {
+            "rshares": 744498339,
+            "voter": "thedailysneak"
+          },
+          {
             "rshares": 32307049415,
             "voter": "sbcbot"
+          },
+          {
+            "rshares": 627666096329,
+            "voter": "goblinknackers"
           },
           {
             "rshares": 363307732096,
@@ -385,12 +626,44 @@
             "voter": "upvoteshares"
           },
           {
+            "rshares": 1167034487,
+            "voter": "babysavage"
+          },
+          {
+            "rshares": 360236154351,
+            "voter": "blanchy"
+          },
+          {
+            "rshares": 931238925019,
+            "voter": "unbiasedwriter"
+          },
+          {
             "rshares": 2587577629,
             "voter": "sepone"
           },
           {
+            "rshares": 3865061135,
+            "voter": "jacuzzi"
+          },
+          {
+            "rshares": 152919995777,
+            "voter": "victor-alexander"
+          },
+          {
             "rshares": 1808507768,
             "voter": "goodshepherd"
+          },
+          {
+            "rshares": 1020931573,
+            "voter": "goodcontentbot"
+          },
+          {
+            "rshares": 1648177849,
+            "voter": "kgswallet"
+          },
+          {
+            "rshares": 3968325392,
+            "voter": "votebetting"
           },
           {
             "rshares": 6413562972,
@@ -413,8 +686,24 @@
             "voter": "therealyme"
           },
           {
+            "rshares": 10246716000,
+            "voter": "whoreson"
+          },
+          {
             "rshares": 8825093459,
             "voter": "sumatranate.leo"
+          },
+          {
+            "rshares": 2284213067,
+            "voter": "kgsupport"
+          },
+          {
+            "rshares": 11708402996,
+            "voter": "im-ridd"
+          },
+          {
+            "rshares": 644498711,
+            "voter": "dpend.active"
           },
           {
             "rshares": 43661176077,
@@ -423,6 +712,18 @@
           {
             "rshares": 59579525482,
             "voter": "thisismylife"
+          },
+          {
+            "rshares": 1250606103,
+            "voter": "sketching"
+          },
+          {
+            "rshares": 2472265447,
+            "voter": "jilt"
+          },
+          {
+            "rshares": 34459319897,
+            "voter": "gallatin"
           },
           {
             "rshares": 659384255,
@@ -439,6 +740,10 @@
           {
             "rshares": 914960239,
             "voter": "gualteramarelo"
+          },
+          {
+            "rshares": 103183361753,
+            "voter": "lbi-token"
           },
           {
             "rshares": 572631071,
@@ -505,8 +810,20 @@
             "voter": "yeouido.park"
           },
           {
+            "rshares": 14085275657,
+            "voter": "ifarmgirl"
+          },
+          {
             "rshares": 1059755593,
             "voter": "solominer.leo"
+          },
+          {
+            "rshares": 146514486106,
+            "voter": "arc7icwolf"
+          },
+          {
+            "rshares": 73686021023,
+            "voter": "tengolotodo"
           },
           {
             "rshares": 1666601659,
@@ -517,12 +834,20 @@
             "voter": "thebighigg"
           },
           {
+            "rshares": 3506593736,
+            "voter": "shopnilhasan"
+          },
+          {
             "rshares": 1689052900,
             "voter": "day1001"
           },
           {
             "rshares": 8698092633,
             "voter": "alohaed"
+          },
+          {
+            "rshares": 1181657905,
+            "voter": "vindiesel1980"
           },
           {
             "rshares": 3704750372,
@@ -553,6 +878,14 @@
             "voter": "neal.power"
           },
           {
+            "rshares": 1361651453416,
+            "voter": "eds-vote"
+          },
+          {
+            "rshares": 124143807420,
+            "voter": "clubvote"
+          },
+          {
             "rshares": 13866821585,
             "voter": "solfart"
           },
@@ -561,8 +894,28 @@
             "voter": "vaclavs"
           },
           {
+            "rshares": 1247348971733,
+            "voter": "duo-curator"
+          },
+          {
+            "rshares": 122710130570,
+            "voter": "dab-vote"
+          },
+          {
             "rshares": 96746967744,
             "voter": "gifu"
+          },
+          {
+            "rshares": 7158476929,
+            "voter": "dook4good"
+          },
+          {
+            "rshares": 145838599704,
+            "voter": "rg2-foto"
+          },
+          {
+            "rshares": 2174840770,
+            "voter": "lavoiser"
           }
         ],
         "author": "bozz",
@@ -609,10 +962,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 17629286667921,
-        "payout": 1.716,
+        "net_rshares": 30332795078978,
+        "payout": 2.953,
         "payout_at": "2026-04-28T11:14:06",
-        "pending_payout_value": "1.716 HBD",
+        "pending_payout_value": "2.953 HBD",
         "percent_hbd": 10000,
         "permlink": "on-the-shores-of-gitche-gumee",
         "post_id": 149883505,
@@ -622,7 +975,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 79
+          "total_votes": 123
         },
         "title": "\"On the shores of Gitche Gumee\"",
         "updated": "2026-04-21T11:14:06",
@@ -643,12 +996,36 @@
             "voter": "esteemapp"
           },
           {
+            "rshares": 2018156203,
+            "voter": "nicewoody69"
+          },
+          {
+            "rshares": 2375827919,
+            "voter": "htliao"
+          },
+          {
+            "rshares": 4036965588,
+            "voter": "shikika"
+          },
+          {
+            "rshares": 21250458827,
+            "voter": "teamaustralia"
+          },
+          {
             "rshares": 930708158,
             "voter": "joeyarnoldvn"
           },
           {
+            "rshares": 7789479319192,
+            "voter": "geekgirl"
+          },
+          {
             "rshares": 7026106415,
             "voter": "travelgirl"
+          },
+          {
+            "rshares": 539987905374,
+            "voter": "catwomanteresa"
           },
           {
             "rshares": 5531899794,
@@ -663,6 +1040,22 @@
             "voter": "syedumair"
           },
           {
+            "rshares": 1167735875,
+            "voter": "sunisa"
+          },
+          {
+            "rshares": 3329762590244,
+            "voter": "aafeng"
+          },
+          {
+            "rshares": 1285523010,
+            "voter": "munawar1235"
+          },
+          {
+            "rshares": 293013506725,
+            "voter": "mrsquiggle"
+          },
+          {
             "rshares": 20184623783,
             "voter": "kimzwarch"
           },
@@ -671,12 +1064,36 @@
             "voter": "davidke20"
           },
           {
+            "rshares": 11598207077,
+            "voter": "june0620"
+          },
+          {
+            "rshares": 25203090548,
+            "voter": "sorin.cristescu"
+          },
+          {
+            "rshares": 1997336968,
+            "voter": "sayee"
+          },
+          {
             "rshares": 21867794766,
             "voter": "steemseph"
           },
           {
             "rshares": 769028530,
             "voter": "esteem.app"
+          },
+          {
+            "rshares": 6771699669,
+            "voter": "namchau"
+          },
+          {
+            "rshares": 8334777924,
+            "voter": "halleyleow"
+          },
+          {
+            "rshares": 7929242924,
+            "voter": "hanzappedfirst"
           },
           {
             "rshares": 993112153616,
@@ -691,8 +1108,40 @@
             "voter": "kamchore"
           },
           {
+            "rshares": 713858886,
+            "voter": "leynedayana"
+          },
+          {
+            "rshares": 448201038,
+            "voter": "fianna"
+          },
+          {
+            "rshares": 56120790327,
+            "voter": "mathowl"
+          },
+          {
+            "rshares": 900439595,
+            "voter": "yumisee"
+          },
+          {
+            "rshares": 5094813534,
+            "voter": "joeliew"
+          },
+          {
+            "rshares": 4663754592,
+            "voter": "uzercanan"
+          },
+          {
+            "rshares": 5050364498,
+            "voter": "vamos-amigo"
+          },
+          {
             "rshares": 2119284812286,
             "voter": "moeenali"
+          },
+          {
+            "rshares": 23354576046,
+            "voter": "bhattg"
           },
           {
             "rshares": 339052284122,
@@ -705,6 +1154,14 @@
           {
             "rshares": 26593845943,
             "voter": "melbourneswest"
+          },
+          {
+            "rshares": 8714983069,
+            "voter": "ryenneleow"
+          },
+          {
+            "rshares": 664449760,
+            "voter": "dearw"
           },
           {
             "rshares": 8092236173,
@@ -723,20 +1180,68 @@
             "voter": "smartvote"
           },
           {
+            "rshares": 621516454,
+            "voter": "santoninoatocha"
+          },
+          {
             "rshares": 3806398383,
             "voter": "julian2013"
+          },
+          {
+            "rshares": 2123737618,
+            "voter": "bichen"
+          },
+          {
+            "rshares": 397127101,
+            "voter": "crowdwitness"
+          },
+          {
+            "rshares": 24658278893,
+            "voter": "a-secondchance"
+          },
+          {
+            "rshares": 18385169302,
+            "voter": "mia-cc"
+          },
+          {
+            "rshares": 549097728,
+            "voter": "fintian"
           },
           {
             "rshares": 330875363153,
             "voter": "dfacademy"
           },
           {
+            "rshares": 891364170941,
+            "voter": "kryptodenno"
+          },
+          {
+            "rshares": 7702207274,
+            "voter": "meliamau"
+          },
+          {
+            "rshares": 3033259369,
+            "voter": "dailyke20"
+          },
+          {
             "rshares": 25154515168,
             "voter": "babytarazkp"
           },
           {
+            "rshares": 6964662082,
+            "voter": "marlian.alfa"
+          },
+          {
             "rshares": 1905578185,
             "voter": "khalstem"
+          },
+          {
+            "rshares": 167048364978,
+            "voter": "lnakuma"
+          },
+          {
+            "rshares": 1922731587,
+            "voter": "stemisaria"
           },
           {
             "rshares": 1019584738,
@@ -753,6 +1258,10 @@
           {
             "rshares": 798488765,
             "voter": "ecency.stats"
+          },
+          {
+            "rshares": 1523061503,
+            "voter": "cryptosimplify"
           },
           {
             "rshares": 9325107238,
@@ -773,6 +1282,14 @@
           {
             "rshares": 661440371,
             "voter": "thaolaven"
+          },
+          {
+            "rshares": 93809049929,
+            "voter": "okluvmee"
+          },
+          {
+            "rshares": 599594827,
+            "voter": "photolovers1"
           },
           {
             "rshares": 5505829004,
@@ -803,6 +1320,18 @@
             "voter": "crazy-bee"
           },
           {
+            "rshares": 6451146527,
+            "voter": "ericpso"
+          },
+          {
+            "rshares": 933949025,
+            "voter": "kaale"
+          },
+          {
+            "rshares": 3506593736,
+            "voter": "shopnilhasan"
+          },
+          {
             "rshares": 1824397644,
             "voter": "sunnyvo"
           },
@@ -811,16 +1340,56 @@
             "voter": "hyhy93"
           },
           {
+            "rshares": 261632701495,
+            "voter": "passenger777"
+          },
+          {
             "rshares": 2350824556,
             "voter": "theindiankid"
+          },
+          {
+            "rshares": 813602286,
+            "voter": "allentaylor"
           },
           {
             "rshares": 1310696902,
             "voter": "youdontknowme"
           },
           {
+            "rshares": 11496308934,
+            "voter": "inibless"
+          },
+          {
+            "rshares": 474868826,
+            "voter": "bgmoha"
+          },
+          {
+            "rshares": 2495771998,
+            "voter": "tekraze"
+          },
+          {
+            "rshares": 1226548799,
+            "voter": "amiegeoffrey"
+          },
+          {
+            "rshares": 88622715605,
+            "voter": "carolin77"
+          },
+          {
+            "rshares": 20668019418,
+            "voter": "sunnywu"
+          },
+          {
             "rshares": 15321590444,
             "voter": "syntax-bloom"
+          },
+          {
+            "rshares": 19759893456,
+            "voter": "rainbowzhou"
+          },
+          {
+            "rshares": 65568448430,
+            "voter": "muwangxuan"
           },
           {
             "rshares": 1488672565,
@@ -829,6 +1398,10 @@
           {
             "rshares": 31778948891,
             "voter": "snowli"
+          },
+          {
+            "rshares": 51487920923,
+            "voter": "neithya"
           }
         ],
         "author": "magicmonk",
@@ -862,10 +1435,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 19666987982970,
-        "payout": 1.915,
+        "net_rshares": 33574767077426,
+        "payout": 3.269,
         "payout_at": "2026-04-28T11:13:57",
-        "pending_payout_value": "1.915 HBD",
+        "pending_payout_value": "3.269 HBD",
         "percent_hbd": 0,
         "permlink": "6dpbsp",
         "post_id": 149883504,
@@ -875,7 +1448,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 51
+          "total_votes": 106
         },
         "title": "高爾夫球車初體驗",
         "updated": "2026-04-21T11:13:57",
@@ -952,8 +1525,16 @@
             "voter": "ratel"
           },
           {
+            "rshares": 384021970010,
+            "voter": "vortac"
+          },
+          {
             "rshares": 5141474449,
             "voter": "netaterra"
+          },
+          {
+            "rshares": 153762571092,
+            "voter": "penguinpablo"
           },
           {
             "rshares": 791014188053,
@@ -962,6 +1543,10 @@
           {
             "rshares": 5406955258054,
             "voter": "redes"
+          },
+          {
+            "rshares": 4732959650,
+            "voter": "anwarabdullah"
           },
           {
             "rshares": 74343279639,
@@ -1016,6 +1601,14 @@
             "voter": "bambukah"
           },
           {
+            "rshares": 166271580605,
+            "voter": "oneray"
+          },
+          {
+            "rshares": 44878745978,
+            "voter": "chetanpadliya"
+          },
+          {
             "rshares": 1126870311411,
             "voter": "lizelle"
           },
@@ -1030,6 +1623,10 @@
           {
             "rshares": 437381008821,
             "voter": "zirochka"
+          },
+          {
+            "rshares": 589253656843,
+            "voter": "spaminator"
           },
           {
             "rshares": 25243279728,
@@ -1054,6 +1651,18 @@
           {
             "rshares": 78488431284,
             "voter": "funtraveller"
+          },
+          {
+            "rshares": 236944677,
+            "voter": "cryptonized"
+          },
+          {
+            "rshares": 21034753470,
+            "voter": "tikatarot"
+          },
+          {
+            "rshares": 4747705829,
+            "voter": "intrepidphotos"
           },
           {
             "rshares": 406805996444,
@@ -1100,6 +1709,10 @@
             "voter": "lightflares"
           },
           {
+            "rshares": 5887474462,
+            "voter": "smawkward"
+          },
+          {
             "rshares": 263665338595,
             "voter": "vicesrus"
           },
@@ -1116,6 +1729,14 @@
             "voter": "steemlibs"
           },
           {
+            "rshares": 11471446520,
+            "voter": "dhingvimal"
+          },
+          {
+            "rshares": 471404861,
+            "voter": "vonaurolacu"
+          },
+          {
             "rshares": 12975427171,
             "voter": "cicisaja"
           },
@@ -1128,6 +1749,10 @@
             "voter": "adamada"
           },
           {
+            "rshares": 1277607723,
+            "voter": "photocircle"
+          },
+          {
             "rshares": 8414897657,
             "voter": "bdmillergallery"
           },
@@ -1138,6 +1763,10 @@
           {
             "rshares": 489067150,
             "voter": "greenunion"
+          },
+          {
+            "rshares": 1849013729,
+            "voter": "skuuun"
           },
           {
             "rshares": 363307732096,
@@ -1164,6 +1793,10 @@
             "voter": "lestrange"
           },
           {
+            "rshares": 397127101,
+            "voter": "crowdwitness"
+          },
+          {
             "rshares": 1873375826,
             "voter": "iamcyril"
           },
@@ -1178,6 +1811,10 @@
           {
             "rshares": 90916584332,
             "voter": "cryptofiloz"
+          },
+          {
+            "rshares": 14102591319,
+            "voter": "constantshots"
           },
           {
             "rshares": 80991273858,
@@ -1200,6 +1837,10 @@
             "voter": "kanibot"
           },
           {
+            "rshares": 27003056389,
+            "voter": "curatorcat.ccc"
+          },
+          {
             "rshares": 31837891154,
             "voter": "therealyme"
           },
@@ -1214,6 +1855,10 @@
           {
             "rshares": 857433583,
             "voter": "libertypal27"
+          },
+          {
+            "rshares": 3331844603968,
+            "voter": "curamax"
           },
           {
             "rshares": 5801516920,
@@ -1240,6 +1885,10 @@
             "voter": "martial.media"
           },
           {
+            "rshares": 337640770205,
+            "voter": "manuvert"
+          },
+          {
             "rshares": 929437072,
             "voter": "netaterra.leo"
           },
@@ -1250,6 +1899,10 @@
           {
             "rshares": 2003985649,
             "voter": "sparker005"
+          },
+          {
+            "rshares": 3143381791,
+            "voter": "cookaiss"
           },
           {
             "rshares": 1194953832,
@@ -1280,12 +1933,20 @@
             "voter": "kannannv"
           },
           {
+            "rshares": 32782906002,
+            "voter": "wongi"
+          },
+          {
             "rshares": 583283671,
             "voter": "we-support-hive"
           },
           {
             "rshares": 122843368371,
             "voter": "tengolotodo"
+          },
+          {
+            "rshares": 6451146527,
+            "voter": "ericpso"
           },
           {
             "rshares": 1666601659,
@@ -1320,6 +1981,14 @@
             "voter": "baluvana-galia"
           },
           {
+            "rshares": 58172195041,
+            "voter": "anna-newkey"
+          },
+          {
+            "rshares": 10009366163,
+            "voter": "isiksenpalvoja"
+          },
+          {
             "rshares": 2641137827,
             "voter": "caelum1infernum"
           },
@@ -1328,12 +1997,24 @@
             "voter": "creativepixie"
           },
           {
+            "rshares": 5140707326,
+            "voter": "quduus1"
+          },
+          {
             "rshares": 9667263790,
             "voter": "glimpsytips.dex"
           },
           {
+            "rshares": 513454225,
+            "voter": "graciousvic"
+          },
+          {
             "rshares": 3128431520,
             "voter": "hive-113967"
+          },
+          {
+            "rshares": 474868826,
+            "voter": "bgmoha"
           },
           {
             "rshares": 667211542,
@@ -1344,12 +2025,28 @@
             "voter": "trumpybear"
           },
           {
+            "rshares": 614901704,
+            "voter": "hive-189277"
+          },
+          {
+            "rshares": 2451091184,
+            "voter": "hive-100059"
+          },
+          {
             "rshares": 6695832962,
             "voter": "chidistickz"
           },
           {
             "rshares": 5118662734,
             "voter": "ganjafrmer"
+          },
+          {
+            "rshares": 10959739039,
+            "voter": "faustine.books"
+          },
+          {
+            "rshares": 1782118126,
+            "voter": "unity-freedom"
           },
           {
             "rshares": 2066351946,
@@ -1414,10 +2111,10 @@
           "users": []
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 35019424939977,
-        "payout": 3.409,
+        "net_rshares": 40252806800362,
+        "payout": 3.919,
         "payout_at": "2026-04-28T11:13:00",
-        "pending_payout_value": "3.409 HBD",
+        "pending_payout_value": "3.919 HBD",
         "percent_hbd": 0,
         "permlink": "a-juvenile-harrier-hawk-landed",
         "post_id": 149883496,
@@ -1427,7 +2124,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 105
+          "total_votes": 136
         },
         "title": "A juvenile Harrier Hawk landed.",
         "updated": "2026-04-21T11:13:00",
@@ -1575,6 +2272,10 @@
             "voter": "eds-vote"
           },
           {
+            "rshares": 73606078342,
+            "voter": "dab-vote"
+          },
+          {
             "rshares": 4360130653,
             "voter": "vote.army"
           }
@@ -1623,10 +2324,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 2359298651874,
-        "payout": 0.229,
+        "net_rshares": 2432904730216,
+        "payout": 0.236,
         "payout_at": "2026-04-28T11:11:12",
-        "pending_payout_value": "0.229 HBD",
+        "pending_payout_value": "0.236 HBD",
         "percent_hbd": 10000,
         "permlink": "music-tuesday-709761ce9b673",
         "post_id": 149883488,
@@ -1636,7 +2337,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 17
+          "total_votes": 18
         },
         "title": "Music Tuesday ",
         "updated": "2026-04-21T11:11:12",
@@ -1655,6 +2356,10 @@
           {
             "rshares": 9667263790,
             "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 8783589117,
+            "voter": "melmily249"
           },
           {
             "rshares": 145838599704,
@@ -1716,10 +2421,10 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 433669154101,
-        "payout": 0.042,
+        "net_rshares": 442452743218,
+        "payout": 0.043,
         "payout_at": "2026-04-28T11:10:27",
-        "pending_payout_value": "0.042 HBD",
+        "pending_payout_value": "0.043 HBD",
         "percent_hbd": 10000,
         "permlink": "photos-i-dont-know-where-to-put-monomad-challenge-engesp",
         "post_id": 149883485,
@@ -1729,7 +2434,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 4
+          "total_votes": 5
         },
         "title": "Photos i don't know where to put. /Monomad Challenge [Eng/Esp]",
         "updated": "2026-04-21T11:10:27",
@@ -1886,6 +2591,10 @@
             "voter": "robomode"
           },
           {
+            "rshares": 1365175000,
+            "voter": "randumb"
+          },
+          {
             "rshares": 933417612,
             "voter": "altcoinbandit"
           },
@@ -1956,6 +2665,10 @@
           {
             "rshares": 3929462839,
             "voter": "ragnar94"
+          },
+          {
+            "rshares": 1042952191,
+            "voter": "crimo"
           },
           {
             "rshares": 11730434483,
@@ -2445,7 +3158,7 @@
           "type": "post"
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 8175025067081,
+        "net_rshares": 8177433194272,
         "payout": 0.796,
         "payout_at": "2026-04-28T11:09:33",
         "pending_payout_value": "0.796 HBD",
@@ -2458,7 +3171,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 162
+          "total_votes": 164
         },
         "title": "Double Tank Strategy with Torch Myrmidon || The Fire Tank That Never Dies",
         "updated": "2026-04-21T11:09:33",
@@ -2671,6 +3384,10 @@
             "voter": "hive-154202"
           },
           {
+            "rshares": 2505439515,
+            "voter": "hivelist"
+          },
+          {
             "rshares": 918517289,
             "voter": "beebow"
           },
@@ -2833,7 +3550,7 @@
         "blacklists": [],
         "body": "![IMG_20260421_135425.jpg](https://files.peakd.com/file/peakd-hive/fieryfootprints/23t7aTBTjotmRBE2yNo3hpXgmTsqhWEbZFDW7X36ic2LDgFuWQAeP3ps5xttxbvpJgbtK.jpg)\n\nThis time I wanted to draw a castle on the mountain. In the end I think that it looks more like a fort than a true castle.",
         "category": "hive-156509",
-        "children": 1,
+        "children": 2,
         "community": "hive-156509",
         "community_title": "OnChainArt",
         "created": "2026-04-21T11:08:12",
@@ -2855,7 +3572,7 @@
           "users": []
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 2231302332299,
+        "net_rshares": 2233807771814,
         "payout": 0.217,
         "payout_at": "2026-04-28T11:08:12",
         "pending_payout_value": "0.217 HBD",
@@ -2868,7 +3585,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 88
+          "total_votes": 89
         },
         "title": "Lonely fort.",
         "updated": "2026-04-21T11:08:12",
@@ -3057,6 +3774,10 @@
             "voter": "sketching"
           },
           {
+            "rshares": 524466703,
+            "voter": "meestemboom"
+          },
+          {
             "rshares": 761571802,
             "voter": "belemo.leo"
           },
@@ -3140,7 +3861,7 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 19415307536891,
+        "net_rshares": 19415832003594,
         "payout": 1.89,
         "payout_at": "2026-04-28T11:07:21",
         "pending_payout_value": "1.890 HBD",
@@ -3153,7 +3874,7 @@
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 57
+          "total_votes": 58
         },
         "title": "BEV Adoption Trends in Germany – Quarterly Stock Shares",
         "updated": "2026-04-21T11:07:21",
@@ -3940,188 +4661,6 @@
         "title": "Monomad || Playing dominoes.",
         "updated": "2026-04-21T11:03:21",
         "url": "/hive-142159/@lindoro/monomad-or-or-playing-dominoes"
-      },
-      {
-        "active_votes": [
-          {
-            "rshares": 96950347161,
-            "voter": "pixelfan"
-          },
-          {
-            "rshares": 41656952112,
-            "voter": "pixresteemer"
-          },
-          {
-            "rshares": 8676888211,
-            "voter": "anonyvoter"
-          },
-          {
-            "rshares": 15495484994,
-            "voter": "randomvoter"
-          },
-          {
-            "rshares": 12847063811,
-            "voter": "steem-holder"
-          },
-          {
-            "rshares": 0,
-            "voter": "playagame"
-          },
-          {
-            "rshares": 106319227991,
-            "voter": "theshot2414"
-          },
-          {
-            "rshares": 9667263790,
-            "voter": "glimpsytips.dex"
-          },
-          {
-            "rshares": 81013717715,
-            "voter": "hivecurious"
-          },
-          {
-            "rshares": 1463724071,
-            "voter": "katiekate86"
-          },
-          {
-            "rshares": 199932460,
-            "voter": "sports.power.bot"
-          }
-        ],
-        "author": "gunting",
-        "author_payout_value": "0.000 HBD",
-        "author_reputation": 69.05,
-        "author_role": "guest",
-        "author_title": "",
-        "beneficiaries": [
-          {
-            "account": "actifit.pay",
-            "weight": 500
-          },
-          {
-            "account": "hiveonboard",
-            "weight": 100
-          },
-          {
-            "account": "ocdb",
-            "weight": 100
-          }
-        ],
-        "blacklists": [],
-        "body": "![](https://images.ecency.com/DQmVJQfHdhhSpRvtT26A1hftSUoV9VNRzZkb3cRjhkbuFzn/1776768668114.jpg)\n![hive dividers-04.png](https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png)\nThis morning began with a warm atmosphere at home. I enjoyed a plate of fried rice made by my wife, which was just right, simple yet meaningful. Afterward, a cup of hot coffee was the perfect way to start the day. The steam rising slowly seemed to give me extra energy before starting my day.\n\nAs usual, I continued my routine of delivering bread to my favorite shops. The sun had been shining brightly since morning, making the air feel hotter than usual. On the way, I carried many boxes of bread on my modified motorcycle to keep the load secure. Despite the scorching heat, the work must go on.\n\nOn the way, I stopped by the Bangka Jaya sea. The sea breeze provided a bit of coolness in the sweltering heat. There was also a bread vendor there, so I took a look around. The calm sea view and shady trees made for a pleasant, if only brief, stop.\n\nHowever, today's trip wasn't entirely smooth. I was stuck in a long traffic jam due to road repairs. Many vehicles, from motorcycles to large cars, piled up. This situation made the journey longer than usual. Even so, I tried to remain patient and enjoy the process.\n\nIt was a tiring, hot, and challenging day, but there were still small moments to be grateful for. From a simple breakfast at home to a short stop by the sea, everything was part of the story of the day.\n![hive dividers-04.png](https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png)\n\n![](https://images.ecency.com/DQmVjdthmDKi76yagRHAvVCiJhSpHh4BxDMrfvhbZdcdAbK/1776768667942.jpg)\n\n![](https://images.ecency.com/DQmZykN4zEDeTrGdREQNmruJRXN1U2cYGjCfqnH9EMfmoMe/1776768668307.jpg)\n\n![](https://images.ecency.com/DQmXvQdkcPPcK5HyuS73Tk3u6y7UcypSCw8WuL2xovH3cBK/1776768668483.jpg)\n\n![](https://images.ecency.com/DQmWVfGBDusa6So3GovhLy3kTGnPa2qULxKLQTjk9XuQ6hq/1776768668599.jpg)\n![hive dividers-04.png](https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png)\n<HR>\n\n##### <center>Note: I am writing in Indonesian and using the help of Google translate to translate into English.</center>\n\n#### <center>All gifts from this post will be burned and made into strength to support other hivers posts.</center>\n\n<HR>\n\nPhotographer|Smartphone used |Location \n|-|-|-|\n@gunting|Realme C53|Nanggroe Aceh Darussalam\n\n<HR>\n\n#### <center> Thank you for your visit.</center>\n\n### <center>Warm Greetings From</center>\n\n## <center>@gunting</center> <br/> _This report was published via Actifit app ([Android](https://bit.ly/actifit-app) | [iOS](https://bit.ly/actifit-ios)). Check out the original version [here on actifit.io](https://actifit.io/@gunting/actifit-gunting-20260421t110131902z)_ <br/> <br><img src=\"https://cdn.steemitimages.com/DQmXv9QWiAYiLCSr3sKxVzUJVrgin3ZZWM2CExEo3fd5GUS/sep3.png\"><br><table>\t<tr>\t\t<img src=\"https://actifit.s3.us-east-1.amazonaws.com/ACTIVITYDATE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>21/04/2026</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmRgAoqi4vUVymaro8hXdRraNX6LHkXhMRBZxEo5vVWXDN/ACTIVITYCOUNT.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>18460</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmZ6ZT8VaEpaDzB16qZzK8omffbWUpEpe4BkJkMXmN3xrF/ACTIVITYTYPE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><pre><b>Daily Activity</b></div></pre></div>\t</tr></table><div class=\"text-center\"><img src=\"https://cdn.steemitimages.com/DQmW1VsUNbEjTUKawau4KJQ6agf41p69teEvdGAj1TMXmuc/A-5.png\"><a href=\"https://bit.ly/actifit-app\"><img src=\"https://cdn.steemitimages.com/DQmQqfpSmcQtfrHAtzfBtVccXwUL9vKNgZJ2j93m8WNjizw/l5.png\"></a><a href=\"https://bit.ly/actifit-ios\"><img src=\"https://cdn.steemitimages.com/DQmbWy8KzKT1UvCvznUTaFPw6wBUcyLtBT5XL9wdbB7Hfmn/l6.png\"></a></div>",
-        "category": "hive-193552",
-        "children": 0,
-        "community": "hive-193552",
-        "community_title": "Actifit",
-        "created": "2026-04-21T11:01:33",
-        "curator_payout_value": "0.000 HBD",
-        "depth": 0,
-        "is_paidout": false,
-        "json_metadata": {
-          "actiCrVal": "20f87039c8e6f6f6a29a0c2192d82ab2ef08bfa7b49a7a0bf60778cb20844339fbfd46bc816cc17de4ec07b97f131335",
-          "actifitUserID": [
-            "e2546cd6-b3bf-4252-abe0-b35adf891636v0.13.4"
-          ],
-          "activityDate": [
-            "20260421"
-          ],
-          "activity_type": [
-            "Daily Activity"
-          ],
-          "app": "actifit/0.13.4",
-          "appType": "Android",
-          "chestUnit": [
-            "cm"
-          ],
-          "community": [
-            "hive-193552"
-          ],
-          "dataTrackingSource": [
-            "Device Tracking"
-          ],
-          "detailedActivity": [
-            "0030115|004526|05001|0645111|0700534|0715685|073097|0745146|0800189|0815713|0830332|0845968|0900991|0915486|0930505|0945661|1000456|1015445|1030481|1045411|1100399|1115385|1130304|1145363|1200339|1215285|1230501|1245183|1300223|1315472|1330918|1345462|1400553|141543|1430231|1445565|1500787|1515871|1530374|15451208|1600360|16156|16308|16458|170043|171565|1730138|174512|18001|"
-          ],
-          "heightUnit": [
-            "cm"
-          ],
-          "image": [
-            "https://images.ecency.com/DQmVJQfHdhhSpRvtT26A1hftSUoV9VNRzZkb3cRjhkbuFzn/1776768668114.jpg",
-            "https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png",
-            "https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png",
-            "https://images.ecency.com/DQmVjdthmDKi76yagRHAvVCiJhSpHh4BxDMrfvhbZdcdAbK/1776768667942.jpg",
-            "https://images.ecency.com/DQmZykN4zEDeTrGdREQNmruJRXN1U2cYGjCfqnH9EMfmoMe/1776768668307.jpg",
-            "https://images.ecency.com/DQmXvQdkcPPcK5HyuS73Tk3u6y7UcypSCw8WuL2xovH3cBK/1776768668483.jpg",
-            "https://images.ecency.com/DQmWVfGBDusa6So3GovhLy3kTGnPa2qULxKLQTjk9XuQ6hq/1776768668599.jpg",
-            "https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png",
-            "https://cdn.steemitimages.com/DQmW1VsUNbEjTUKawau4KJQ6agf41p69teEvdGAj1TMXmuc/A-5.png"
-          ],
-          "step_count": [
-            "18460"
-          ],
-          "tags": [
-            "hive-193552",
-            "actifit",
-            "aliveanddriving",
-            "iamalivechallenge",
-            "bbh",
-            "alive",
-            "waiv",
-            "neoxian",
-            "archon",
-            "pimp",
-            "pepe",
-            "ccc",
-            "cent",
-            "proofofbrain",
-            "lassecash",
-            "spt",
-            "meme",
-            "photo",
-            "ctp",
-            "stem",
-            "vyb",
-            "growth",
-            "",
-            "sportstalk",
-            "movetoearn",
-            "move2earn"
-          ],
-          "thighsUnit": [
-            "cm"
-          ],
-          "timezone": [
-            "GMT+07:00"
-          ],
-          "users": [
-            "actifit"
-          ],
-          "waistUnit": [
-            "cm"
-          ],
-          "weightUnit": [
-            "kg"
-          ]
-        },
-        "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 374290602316,
-        "payout": 0.036,
-        "payout_at": "2026-04-28T11:01:33",
-        "pending_payout_value": "0.036 HBD",
-        "percent_hbd": 10000,
-        "permlink": "actifit-gunting-20260421t110131902z",
-        "post_id": 149883445,
-        "reblogs": 0,
-        "replies": [],
-        "stats": {
-          "flag_weight": 0,
-          "gray": false,
-          "hide": false,
-          "total_votes": 11
-        },
-        "title": "My Actifit Report Card: April 21 2026",
-        "updated": "2026-04-21T11:01:33",
-        "url": "/hive-193552/@gunting/actifit-gunting-20260421t110131902z"
       }
     ]
   },

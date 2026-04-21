@@ -5,7 +5,7 @@
     "jsonrpc": "2.0",
     "method": "bridge.get_ranked_posts",
     "params": {
-      "sort": "hot",
+      "sort": "created",
       "start_author": "",
       "start_permlink": "",
       "limit": 20,
@@ -14,10 +14,10 @@
     },
     "id": 1
   },
-  "requestHash": "43715a37cd805eee",
+  "requestHash": "3797bf0a24b43f7b",
   "method": "bridge.get_ranked_posts",
   "params": {
-    "sort": "hot",
+    "sort": "created",
     "start_author": "",
     "start_permlink": "",
     "limit": 20,
@@ -1000,7 +1000,7 @@
         "pending_payout_value": "3.660 HBD",
         "percent_hbd": 0,
         "permlink": "b0ad1f54",
-        "post_id": 149881575,
+        "post_id": 149881592,
         "reblogs": 0,
         "replies": [],
         "stats": {
@@ -2273,7 +2273,7 @@
         "pending_payout_value": "6.257 HBD",
         "percent_hbd": 0,
         "permlink": "887c1285",
-        "post_id": 149868715,
+        "post_id": 149868732,
         "reblogs": 1,
         "replies": [],
         "stats": {
@@ -2417,7 +2417,7 @@
         "pending_payout_value": "0.243 HBD",
         "percent_hbd": 10000,
         "permlink": "behind-the-scenes-and-more-coding-hive-engine-hive-hive-139531",
-        "post_id": 149864775,
+        "post_id": 149864792,
         "reblogs": 0,
         "replies": [],
         "stats": {
@@ -3613,7 +3613,7 @@
         "pending_payout_value": "40.781 HBD",
         "percent_hbd": 10000,
         "permlink": "introducing-hive-witness-monitor-making-witness-evaluation-and-voting-decisions-simple-and-intuitive",
-        "post_id": 149861021,
+        "post_id": 149861038,
         "reblogs": 10,
         "replies": [],
         "stats": {
@@ -3625,6 +3625,315 @@
         "title": "Introducing Hive Witness Monitor: Making Witness Evaluation and Voting Decisions Simple and Intuitive",
         "updated": "2026-04-19T14:15:27",
         "url": "/hive-139531/@cutehive.com/introducing-hive-witness-monitor-making-witness-evaluation-and-voting-decisions-simple-and-intuitive"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 22472926650,
+            "voter": "fractalnode"
+          },
+          {
+            "rshares": 1810224632913,
+            "voter": "gunthertopp"
+          },
+          {
+            "rshares": 131977730631,
+            "voter": "grecki-bazar-ewy"
+          },
+          {
+            "rshares": 3630145021572,
+            "voter": "tipu"
+          },
+          {
+            "rshares": 15477264392,
+            "voter": "isnochys"
+          },
+          {
+            "rshares": 4032351525392,
+            "voter": "hallmann"
+          },
+          {
+            "rshares": 32636443861,
+            "voter": "febrirmd"
+          },
+          {
+            "rshares": 1085513572350,
+            "voter": "fundacja"
+          },
+          {
+            "rshares": 5317116250,
+            "voter": "fat.music"
+          },
+          {
+            "rshares": 1019058296,
+            "voter": "pkocjan"
+          },
+          {
+            "rshares": 513502943878,
+            "voter": "sarmaticus"
+          },
+          {
+            "rshares": 328426091582,
+            "voter": "jocieprosza"
+          },
+          {
+            "rshares": 8098008669,
+            "voter": "sensorycznyswiat"
+          },
+          {
+            "rshares": 1186810005,
+            "voter": "reinmar"
+          },
+          {
+            "rshares": 277174721142,
+            "voter": "sk1920"
+          },
+          {
+            "rshares": 1963656905,
+            "voter": "longer"
+          },
+          {
+            "rshares": 64684876947,
+            "voter": "pignys"
+          },
+          {
+            "rshares": 11215896696,
+            "voter": "bezkresu"
+          },
+          {
+            "rshares": 193239476417,
+            "voter": "krolestwo"
+          },
+          {
+            "rshares": 3208641653,
+            "voter": "grand.strategy"
+          },
+          {
+            "rshares": 3637033861,
+            "voter": "mia-cc"
+          },
+          {
+            "rshares": 10515455825,
+            "voter": "kryptogames"
+          },
+          {
+            "rshares": 6672080376,
+            "voter": "sarmagames"
+          },
+          {
+            "rshares": 20616008956,
+            "voter": "cheer-up"
+          },
+          {
+            "rshares": 1444869138,
+            "voter": "cryptogambit"
+          },
+          {
+            "rshares": 991071660046,
+            "voter": "empis"
+          },
+          {
+            "rshares": 2024508177,
+            "voter": "bcm"
+          },
+          {
+            "rshares": 5744825873,
+            "voter": "dappstats"
+          },
+          {
+            "rshares": 2623375606,
+            "voter": "hive-134382"
+          },
+          {
+            "rshares": 523641897273,
+            "voter": "polish.hive"
+          },
+          {
+            "rshares": 1376582405,
+            "voter": "hierkraj"
+          },
+          {
+            "rshares": 2240157505,
+            "voter": "lpa"
+          },
+          {
+            "rshares": 3476911463,
+            "voter": "jocieprosza.leo"
+          },
+          {
+            "rshares": 17049414352,
+            "voter": "hive-199021"
+          },
+          {
+            "rshares": 4244997864,
+            "voter": "moniqwashere"
+          },
+          {
+            "rshares": 3499131878,
+            "voter": "kam5iz"
+          },
+          {
+            "rshares": 2193719806,
+            "voter": "mukadder"
+          },
+          {
+            "rshares": 25261506244,
+            "voter": "oniriusz"
+          },
+          {
+            "rshares": 146480591123,
+            "voter": "hive.aid"
+          },
+          {
+            "rshares": 280056741778,
+            "voter": "szejq"
+          },
+          {
+            "rshares": 18714661381,
+            "voter": "terra.sinkhole"
+          },
+          {
+            "rshares": 46926269665,
+            "voter": "sarmatiapay"
+          },
+          {
+            "rshares": 947035228,
+            "voter": "lolz.byte"
+          },
+          {
+            "rshares": 2137914983,
+            "voter": "leader7"
+          },
+          {
+            "rshares": 1801441901,
+            "voter": "soyernesto"
+          },
+          {
+            "rshares": 43975814068,
+            "voter": "hivelife-pl"
+          },
+          {
+            "rshares": 26886880725,
+            "voter": "grawitacja"
+          },
+          {
+            "rshares": 815259375,
+            "voter": "arshadkhan4421"
+          },
+          {
+            "rshares": 8265068515,
+            "voter": "jacek-kowalski"
+          },
+          {
+            "rshares": 5802865159,
+            "voter": "emilypino"
+          },
+          {
+            "rshares": 32100069565,
+            "voter": "kadr-pokaze"
+          },
+          {
+            "rshares": 1021929967,
+            "voter": "terekubac"
+          },
+          {
+            "rshares": 10253309690,
+            "voter": "locky772"
+          },
+          {
+            "rshares": 386005070976,
+            "voter": "inmyframe"
+          },
+          {
+            "rshares": 6548378624,
+            "voter": "ptaku-fotodron"
+          },
+          {
+            "rshares": 46739203001,
+            "voter": "sarmatia.app"
+          },
+          {
+            "rshares": 8267557704,
+            "voter": "sarmatia.gov"
+          },
+          {
+            "rshares": 0,
+            "voter": "sdatoken"
+          },
+          {
+            "rshares": 21984085056,
+            "voter": "arsky"
+          }
+        ],
+        "author": "sarmatia.app",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 55.76,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 1000
+          },
+          {
+            "account": "sarmatia.gov",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "In the last post I described our communication system ([czat i prywatne wiadomości](/hive-139531/@sarmatia.app/public-chat-and-private-dm-made-only-on-blokchain)). After publishing it, I had a very interesting exchange with @gtg, as a result of which I added a warning to the messages: if you lose your memo key, a thief will gain access to the entire message history. Therefore, this system should only be used for non-sensitive communication (the app is meant to be a kind of game, so in principle, no one should even think of sending sensitive messages there anyway). I also added online activity indicators so users know who is currently online. In the plans: adding a blacklist to the inbox and other convenience features.\n\nToday, however, I’ll show you the next important stage in the development of our app — the **Missions module**.\n\n### Types of Missions\n\nMissions can be extremely varied, and I’m sure I haven’t foreseen all the possibilities (there will be room for app updates :)). Still, I tried to include the options that seemed most important to me.\n\nFirst and foremost — the **reward** issue. The app currently supports 3 types of rewards:\n\n- **Barter**: A descriptive reward with no payment guarantee, but a simple rating system for the mission issuer is provided. The account that took on the mission, completed it, and received acceptance of completion will be able to give a simple note: whether the issuer fulfilled the payment or not.\n- **Tokens**: Both native ones (HIVE, HBD) and those from Hive Engine. Payment is guaranteed through a mechanism similar to a smart-contract escrow (a trusted intermediary — the app’s account).\n- **Merit Points**: Points that will be used to create rankings and more within the game layer of the app. Only admins can award these.\n\nWhat else can we set?\n\n- How many people can take on a given mission. In the case of a token reward, this must be a finite number; in the case of barter, it can be unlimited. We can also add exclusions so that selected people cannot take on the mission.\n- We can set the duration of the announcement. This is useful because sometimes completing a mission after a certain date no longer makes sense…\n- We also have to set the time within which we declare we will review the correct completion of the mission.\n- The final element is an optional pin on the map. The map will be an important part of our app, so we can, for example, commission an article about a battle that took place in a specific location. Such a mission will be visible both on the list and on the map.\n\nAdding options looks like this:  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23sweHStVBtdi8uneuDEsmZmGyaD37hPTUdpqSjvrQfB8AQKyBoFSKk7u7JFtmNNvbL3R.png)\n\n### Process\n\nI consider the proper process to be the most important thing in this kind of system, so that it provides maximum fairness and transparency. That’s why completing a mission in our app can be a multi-stage process.\n\nThe first step is, of course, creating the mission. Any logged-in user can do this, although the admin has a few extra options. The mission itself is a post on the blockchain. All additional mission attributes are stored in the post’s json_metadata. After publication, the mission appears on the list:  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23t76k7pL8Qj18YdJvJykyNz4bJDWu8FAHJvdsCvtwznkzxghumDkzttRsFny6vuMCJWx.png)\n\nThe next step is, naturally, accepting the mission by a user. If the mission was intended for single use or the last available slot has been taken, it becomes locked for other users after acceptance. After completing the mission, you go into it in the app, click the “Report Completion” button, then enter a descriptive justification and/or a link. And you wait for the issuer’s approval:  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/EnynaEEWj1nG6ekmLJu75Pi71Rr9bZK9HUZZon2YQwCcaJdSHMty2fyjzm8NxQmc6kU.png)\n\nAt this point, there are two paths. Either the issuer accepts it — and then the token reward is automatically sent to the person who completed the mission (or the issuer makes the barter payment). Or the work is rejected (optionally with a justification).\n\nHowever, that’s not the end, because the person who completed the mission can either accept the “verdict” or appeal it. In the appeal, they can also add a justification.\n\nThe appeal is resolved by an admin, who can either side with the person who completed the mission (in which case the automatic payout occurs, or the issuer is honor-bound to do what they committed to — if they don’t, they receive a negative rating) or side with the issuer. And that concludes the mission process.\n\nEvery subsequent step is recorded in the comments under the mission post, so the entire course is fully transparent.\n\n### Adding a Mission vs. the Hive Feed\n\nAs mentioned, a mission is a post, so it also has the standard text editor, title, tags, and beneficiaries. Due to the nature of this post, we added an automatic system that sets the @null account as the default beneficiary (though it can be removed). Sometimes the mission itself can be valuable content worthy of upvotes and a Hive community reward. However, we added one more feature — internal tags. This solution allows good filtering on the mission list on one hand, while on the other it prevents cluttering the actual post tags if the mission doesn’t need wider publication or if it would be closer to spam than valuable content.\n\n### Statistics\n\nStatistics are a nice thing — I like them. That’s why we added a tab on the user’s account where they can check the history of both missions they’ve taken on and those they’ve commissioned. When you open them, you’ll see the full history of the mission process.  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23swfvnJUfidJCD3NSNcYUMcvtgxthK6w5oz5SF3EC4DHcssvvBCMijE3YCpCijyK19gW.png)\n\nThe history is saved to an off-chain database so we don’t have to query the blockchain every single time.\n\nAnd that’s all for today. I hope you like the mission system — feel free to share your thoughts in the comments :)\n\n---\n## Moduł Misji w Sarmatiamundi\n\nW ostatnim poście opisałem nasz system komunikacji ([czat i prywatne wiadomości](/hive-139531/@sarmatia.app/public-chat-and-private-dm-made-only-on-blokchain)). Po publikacji odbyłem bardzo ciekawą wymianę zdań z @gtg w efekcie czego dodałem ostrzeżenie przy wiadomościach iż w wypadku utraty klucza memo, złodziej będzie miał dostęp do całej historii wiadomości, więc można używać tego systemu tylko do niewrażliwej komunikacji (aplikacja ma być swego rodzaju grą, więc co do zasady raczej nikt nawet nie będzie miał pomysłu by przesyłać tam wiadomości wrażliwych). Dodałem także oznaczenia o aktywności, by użytkownicy wiedzieli kto jest on-line. W planie dodanie do skrzynki blacklisty i inne ułatwienia.\n\nDziś natomiast pokażę kolejny ważny etap tworzenia naszej aplikacji, a więc moduł Misji.\n\n### Rodzaje misji\n\nMisje mogą być różne, najróżniejsze i z pewnością masy możliwości nie przewidziałem (będzie miejsce na aktualizacje aplikacji :)) ale postarałem się dodać opcje które wydały mi się najważniejsze. \nPrzede wszystkim kwestia nagroda. Aplikacja dopuszcza obecnie 3 rodzaje nagrody:\n- Barter: nagroda w formie opisowej, brak gwarancji wypłaty, ale przewidziany jest prosty system oceny zlecającego misję (konto które się podjęło misji, wykonało, dostało akcept wykonania będzie mogło dać prostą informację: zlecający wywiązał się lub nie wywiązał z wypłąty)\n- Tokeny: zarówno natywne (HIVE, HBD), jak i te z Hive Engine. Gwarancja realizacji zapłaty poprzez mechanizm jak w smart-contract escrow (zaufany pośrednik - konto aplikacji)\n- Punkty Zasług: Punkty, które będą służyć do tworzenia rankingu i nie tylko w warstwie grywalnej aplikacji, te mogą przyznawać tylko admini.\n\nA co jeszcze możemy ustawić?\n- ile osób może się podjąć danej misji, w przypadku nagrody w formie tokenowej musi to być skończona ilość, w przypadku barteru może być nieskończona. Możemy też dodać wykluczenia, tak aby wybrane przez nas osoby nie mogły podjąć się misji.\n- możemy również ustawić czas trwania ogłoszenia. To przydatne, bo czasami wykonanie misji po jakiejś dacie przestaje mieć sens...\n- musimy także ustawić czas, w jakim deklarujemy rozpatrzenie prawidłowego wykonania misji.\n- ostatnim wreszcie elementem jest opcjonalna pinezka. Mapa będzie ważnym elementem naszej aplikacji, dlatego możemy zlecić np napisanie artykułu o bitwie która odbyła się w jakimś konkretnym miejscu. Taka misja będzie widoczna zarówno na liście jak i na mapie. \n\nDodawanie opcji wygląda tak:\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23sweHStVBtdi8uneuDEsmZmGyaD37hPTUdpqSjvrQfB8AQKyBoFSKk7u7JFtmNNvbL3R.png)\n\n\n### Proces\n\nZa najważniejsze w tego typu systemie uważam właściwy proces tak aby zapewniał maksimum uczciwości i przejrzystości. Dlatego też przebieg wypełniania misji w naszej aplikacji może być wieloetapowy.\nPierwszym krokiem jest oczywiście ustanowienie misji. Może to zrobić każdy zalogowany użytkownik chociaż admin ma trochę dodatkowych opcji. Sama misja jest postem na blokchainie. Wszystkie dodatkowe atrybuty misji są w json_metadata postu. Po publikacji misja pojawia się na liście:\n\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23t76k7pL8Qj18YdJvJykyNz4bJDWu8FAHJvdsCvtwznkzxghumDkzttRsFny6vuMCJWx.png)\n\nKolejnym krokiem, jest oczywiście przyjęcie misji przez użytkownika. Jeśli misja była przeznaczona do jednorazowego użycia, lub zostało ostatnie użycie, po podjęciu misji jest ona zablokowana dla innych użytkowników. Po wykonaniu misji, wchodzimy w nią w aplikacji klikamy guziczek zgłoś wykonanie i następnie wpisujemy uzasadnienie opisowe i/lub link. I czekamy na akceptacje zlecającego:\n\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/EnynaEEWj1nG6ekmLJu75Pi71Rr9bZK9HUZZon2YQwCcaJdSHMty2fyjzm8NxQmc6kU.png)\n\nI teraz mamy dwie ścieżki. Albo zlecający akceptuje i wtedy nagroda tokenowa automatycznie idzie do wykonującego misję, lub zlecający wykonuje inną zapłate (barterową). Albo następuje odrzucenie pracy (opcjonalnie z uzasadnieniem.\n\nTo jednak nie koniec, bo wykonujący może albo przyjąć \"werdykt\" albo się odwołać. Przy odwołaniu również może dodać uzasadnienie.\nRozstrzygającym odwołanie jest admin i może on albo przyznać rację wykonującemu (i wtedy następuje wypłata automatyczna, lub zleceniodawca jest zobowiązany honorem aby zrobić to do czego się zobowiązał - jeśli nie zrobi dostanie negatywną ocenę) albo zlecającemu. I na tym kończy się proces przebiegu misji.\nKażdy kolejny krok jest zapisywany w komentarzach do postu-misji, więc przebieg jest w pełni transparentny.\n\n### Dodawanie misji, a feed hive\nMisja jak było to wspomniane jest postem, więc ma też standardowy edytor tekstu, tytuł, tagi, beneficjenci. Ze względu na charakter tego postu dodaliśmy automat ustanawiający konto @null jako domyślny beneficjent (ale można go usunąć). Czasem misja sama w sobie może być wartościową treścią godną upvotów i nagrody społeczności hive. Dodaliśmy jednak jeszcze jeden dodatek - tagi wewnętrzne. Takie rozwiązanie ma z jednej strony umożliwić dobre filtrowanie na liście misji, a z drugiej nie zaśmiecać tagów z faktycznymi postami, jeśli misja nie wymaga by ją gdzieś szerzej publikować, czy miałaby charakter bliższy spamowi niż wartościowej treści.\n\n### Statystyki\n\nStatystyki to fajna rzecz, ja ją lubię. Dlatego dodaliśmy na koncie użytkownika zakładke gdzie może sprawdzić historię zarówno podjętych misji jak i zleconych, a wchodząc w nie będzie widział historię procesu misji. \n\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23swfvnJUfidJCD3NSNcYUMcvtgxthK6w5oz5SF3EC4DHcssvvBCMijE3YCpCijyK19gW.png)\nHistoria, zapisuje się do bazy of-chain, żeby nie trzeba było za każdym razem odpytywać blokchainu. \nNo i to tyle na dziś, mam nadzieję, że system misji się Wam podoba, podzielcie się refleksjami w komentarzu :)\n",
+        "category": "hive-139531",
+        "children": 0,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-19T07:22:24",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/sarmatia.app/23t76k7pL8Qj18YdJvJykyNz4bJDWu8FAHJvdsCvtwznkzxghumDkzttRsFny6vuMCJWx.png",
+            "https://files.peakd.com/file/peakd-hive/sarmatia.app/23sweHStVBtdi8uneuDEsmZmGyaD37hPTUdpqSjvrQfB8AQKyBoFSKk7u7JFtmNNvbL3R.png",
+            "https://files.peakd.com/file/peakd-hive/sarmatia.app/EnynaEEWj1nG6ekmLJu75Pi71Rr9bZK9HUZZon2YQwCcaJdSHMty2fyjzm8NxQmc6kU.png",
+            "https://files.peakd.com/file/peakd-hive/sarmatia.app/23swfvnJUfidJCD3NSNcYUMcvtgxthK6w5oz5SF3EC4DHcssvvBCMijE3YCpCijyK19gW.png"
+          ],
+          "tags": [
+            "hivedev",
+            "polish",
+            "hive",
+            "pob",
+            "qurator",
+            "games",
+            "rpg",
+            "hivebounty"
+          ],
+          "users": [
+            "sarmatia.app",
+            "gtg",
+            "null"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 14892900701333,
+        "payout": 1.446,
+        "payout_at": "2026-04-26T07:22:24",
+        "pending_payout_value": "1.446 HBD",
+        "percent_hbd": 10000,
+        "permlink": "misions-in-sarmatia-mundi-app",
+        "post_id": 149857071,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 59
+        },
+        "title": "Misions in Sarmatia Mundi App",
+        "updated": "2026-04-19T07:22:24",
+        "url": "/hive-139531/@sarmatia.app/misions-in-sarmatia-mundi-app"
       },
       {
         "active_votes": [
@@ -5522,7 +5831,7 @@
         "pending_payout_value": "9.197 HBD",
         "percent_hbd": 0,
         "permlink": "2d1bab38",
-        "post_id": 149856492,
+        "post_id": 149856509,
         "reblogs": 2,
         "replies": [],
         "stats": {
@@ -5534,315 +5843,6 @@
         "title": "Daily Development Update: Hive React Kit Inline Comments, Moderation, and hReplier UI Upgrade",
         "updated": "2026-04-19T06:02:03",
         "url": "/hive-139531/@sagarkothari88/2d1bab38"
-      },
-      {
-        "active_votes": [
-          {
-            "rshares": 22472926650,
-            "voter": "fractalnode"
-          },
-          {
-            "rshares": 1810224632913,
-            "voter": "gunthertopp"
-          },
-          {
-            "rshares": 131977730631,
-            "voter": "grecki-bazar-ewy"
-          },
-          {
-            "rshares": 3630145021572,
-            "voter": "tipu"
-          },
-          {
-            "rshares": 15477264392,
-            "voter": "isnochys"
-          },
-          {
-            "rshares": 4032351525392,
-            "voter": "hallmann"
-          },
-          {
-            "rshares": 32636443861,
-            "voter": "febrirmd"
-          },
-          {
-            "rshares": 1085513572350,
-            "voter": "fundacja"
-          },
-          {
-            "rshares": 5317116250,
-            "voter": "fat.music"
-          },
-          {
-            "rshares": 1019058296,
-            "voter": "pkocjan"
-          },
-          {
-            "rshares": 513502943878,
-            "voter": "sarmaticus"
-          },
-          {
-            "rshares": 328426091582,
-            "voter": "jocieprosza"
-          },
-          {
-            "rshares": 8098008669,
-            "voter": "sensorycznyswiat"
-          },
-          {
-            "rshares": 1186810005,
-            "voter": "reinmar"
-          },
-          {
-            "rshares": 277174721142,
-            "voter": "sk1920"
-          },
-          {
-            "rshares": 1963656905,
-            "voter": "longer"
-          },
-          {
-            "rshares": 64684876947,
-            "voter": "pignys"
-          },
-          {
-            "rshares": 11215896696,
-            "voter": "bezkresu"
-          },
-          {
-            "rshares": 193239476417,
-            "voter": "krolestwo"
-          },
-          {
-            "rshares": 3208641653,
-            "voter": "grand.strategy"
-          },
-          {
-            "rshares": 3637033861,
-            "voter": "mia-cc"
-          },
-          {
-            "rshares": 10515455825,
-            "voter": "kryptogames"
-          },
-          {
-            "rshares": 6672080376,
-            "voter": "sarmagames"
-          },
-          {
-            "rshares": 20616008956,
-            "voter": "cheer-up"
-          },
-          {
-            "rshares": 1444869138,
-            "voter": "cryptogambit"
-          },
-          {
-            "rshares": 991071660046,
-            "voter": "empis"
-          },
-          {
-            "rshares": 2024508177,
-            "voter": "bcm"
-          },
-          {
-            "rshares": 5744825873,
-            "voter": "dappstats"
-          },
-          {
-            "rshares": 2623375606,
-            "voter": "hive-134382"
-          },
-          {
-            "rshares": 523641897273,
-            "voter": "polish.hive"
-          },
-          {
-            "rshares": 1376582405,
-            "voter": "hierkraj"
-          },
-          {
-            "rshares": 2240157505,
-            "voter": "lpa"
-          },
-          {
-            "rshares": 3476911463,
-            "voter": "jocieprosza.leo"
-          },
-          {
-            "rshares": 17049414352,
-            "voter": "hive-199021"
-          },
-          {
-            "rshares": 4244997864,
-            "voter": "moniqwashere"
-          },
-          {
-            "rshares": 3499131878,
-            "voter": "kam5iz"
-          },
-          {
-            "rshares": 2193719806,
-            "voter": "mukadder"
-          },
-          {
-            "rshares": 25261506244,
-            "voter": "oniriusz"
-          },
-          {
-            "rshares": 146480591123,
-            "voter": "hive.aid"
-          },
-          {
-            "rshares": 280056741778,
-            "voter": "szejq"
-          },
-          {
-            "rshares": 18714661381,
-            "voter": "terra.sinkhole"
-          },
-          {
-            "rshares": 46926269665,
-            "voter": "sarmatiapay"
-          },
-          {
-            "rshares": 947035228,
-            "voter": "lolz.byte"
-          },
-          {
-            "rshares": 2137914983,
-            "voter": "leader7"
-          },
-          {
-            "rshares": 1801441901,
-            "voter": "soyernesto"
-          },
-          {
-            "rshares": 43975814068,
-            "voter": "hivelife-pl"
-          },
-          {
-            "rshares": 26886880725,
-            "voter": "grawitacja"
-          },
-          {
-            "rshares": 815259375,
-            "voter": "arshadkhan4421"
-          },
-          {
-            "rshares": 8265068515,
-            "voter": "jacek-kowalski"
-          },
-          {
-            "rshares": 5802865159,
-            "voter": "emilypino"
-          },
-          {
-            "rshares": 32100069565,
-            "voter": "kadr-pokaze"
-          },
-          {
-            "rshares": 1021929967,
-            "voter": "terekubac"
-          },
-          {
-            "rshares": 10253309690,
-            "voter": "locky772"
-          },
-          {
-            "rshares": 386005070976,
-            "voter": "inmyframe"
-          },
-          {
-            "rshares": 6548378624,
-            "voter": "ptaku-fotodron"
-          },
-          {
-            "rshares": 46739203001,
-            "voter": "sarmatia.app"
-          },
-          {
-            "rshares": 8267557704,
-            "voter": "sarmatia.gov"
-          },
-          {
-            "rshares": 0,
-            "voter": "sdatoken"
-          },
-          {
-            "rshares": 21984085056,
-            "voter": "arsky"
-          }
-        ],
-        "author": "sarmatia.app",
-        "author_payout_value": "0.000 HBD",
-        "author_reputation": 55.76,
-        "author_role": "guest",
-        "author_title": "",
-        "beneficiaries": [
-          {
-            "account": "commentrewarder",
-            "weight": 1000
-          },
-          {
-            "account": "sarmatia.gov",
-            "weight": 500
-          }
-        ],
-        "blacklists": [],
-        "body": "In the last post I described our communication system ([czat i prywatne wiadomości](/hive-139531/@sarmatia.app/public-chat-and-private-dm-made-only-on-blokchain)). After publishing it, I had a very interesting exchange with @gtg, as a result of which I added a warning to the messages: if you lose your memo key, a thief will gain access to the entire message history. Therefore, this system should only be used for non-sensitive communication (the app is meant to be a kind of game, so in principle, no one should even think of sending sensitive messages there anyway). I also added online activity indicators so users know who is currently online. In the plans: adding a blacklist to the inbox and other convenience features.\n\nToday, however, I’ll show you the next important stage in the development of our app — the **Missions module**.\n\n### Types of Missions\n\nMissions can be extremely varied, and I’m sure I haven’t foreseen all the possibilities (there will be room for app updates :)). Still, I tried to include the options that seemed most important to me.\n\nFirst and foremost — the **reward** issue. The app currently supports 3 types of rewards:\n\n- **Barter**: A descriptive reward with no payment guarantee, but a simple rating system for the mission issuer is provided. The account that took on the mission, completed it, and received acceptance of completion will be able to give a simple note: whether the issuer fulfilled the payment or not.\n- **Tokens**: Both native ones (HIVE, HBD) and those from Hive Engine. Payment is guaranteed through a mechanism similar to a smart-contract escrow (a trusted intermediary — the app’s account).\n- **Merit Points**: Points that will be used to create rankings and more within the game layer of the app. Only admins can award these.\n\nWhat else can we set?\n\n- How many people can take on a given mission. In the case of a token reward, this must be a finite number; in the case of barter, it can be unlimited. We can also add exclusions so that selected people cannot take on the mission.\n- We can set the duration of the announcement. This is useful because sometimes completing a mission after a certain date no longer makes sense…\n- We also have to set the time within which we declare we will review the correct completion of the mission.\n- The final element is an optional pin on the map. The map will be an important part of our app, so we can, for example, commission an article about a battle that took place in a specific location. Such a mission will be visible both on the list and on the map.\n\nAdding options looks like this:  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23sweHStVBtdi8uneuDEsmZmGyaD37hPTUdpqSjvrQfB8AQKyBoFSKk7u7JFtmNNvbL3R.png)\n\n### Process\n\nI consider the proper process to be the most important thing in this kind of system, so that it provides maximum fairness and transparency. That’s why completing a mission in our app can be a multi-stage process.\n\nThe first step is, of course, creating the mission. Any logged-in user can do this, although the admin has a few extra options. The mission itself is a post on the blockchain. All additional mission attributes are stored in the post’s json_metadata. After publication, the mission appears on the list:  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23t76k7pL8Qj18YdJvJykyNz4bJDWu8FAHJvdsCvtwznkzxghumDkzttRsFny6vuMCJWx.png)\n\nThe next step is, naturally, accepting the mission by a user. If the mission was intended for single use or the last available slot has been taken, it becomes locked for other users after acceptance. After completing the mission, you go into it in the app, click the “Report Completion” button, then enter a descriptive justification and/or a link. And you wait for the issuer’s approval:  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/EnynaEEWj1nG6ekmLJu75Pi71Rr9bZK9HUZZon2YQwCcaJdSHMty2fyjzm8NxQmc6kU.png)\n\nAt this point, there are two paths. Either the issuer accepts it — and then the token reward is automatically sent to the person who completed the mission (or the issuer makes the barter payment). Or the work is rejected (optionally with a justification).\n\nHowever, that’s not the end, because the person who completed the mission can either accept the “verdict” or appeal it. In the appeal, they can also add a justification.\n\nThe appeal is resolved by an admin, who can either side with the person who completed the mission (in which case the automatic payout occurs, or the issuer is honor-bound to do what they committed to — if they don’t, they receive a negative rating) or side with the issuer. And that concludes the mission process.\n\nEvery subsequent step is recorded in the comments under the mission post, so the entire course is fully transparent.\n\n### Adding a Mission vs. the Hive Feed\n\nAs mentioned, a mission is a post, so it also has the standard text editor, title, tags, and beneficiaries. Due to the nature of this post, we added an automatic system that sets the @null account as the default beneficiary (though it can be removed). Sometimes the mission itself can be valuable content worthy of upvotes and a Hive community reward. However, we added one more feature — internal tags. This solution allows good filtering on the mission list on one hand, while on the other it prevents cluttering the actual post tags if the mission doesn’t need wider publication or if it would be closer to spam than valuable content.\n\n### Statistics\n\nStatistics are a nice thing — I like them. That’s why we added a tab on the user’s account where they can check the history of both missions they’ve taken on and those they’ve commissioned. When you open them, you’ll see the full history of the mission process.  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23swfvnJUfidJCD3NSNcYUMcvtgxthK6w5oz5SF3EC4DHcssvvBCMijE3YCpCijyK19gW.png)\n\nThe history is saved to an off-chain database so we don’t have to query the blockchain every single time.\n\nAnd that’s all for today. I hope you like the mission system — feel free to share your thoughts in the comments :)\n\n---\n## Moduł Misji w Sarmatiamundi\n\nW ostatnim poście opisałem nasz system komunikacji ([czat i prywatne wiadomości](/hive-139531/@sarmatia.app/public-chat-and-private-dm-made-only-on-blokchain)). Po publikacji odbyłem bardzo ciekawą wymianę zdań z @gtg w efekcie czego dodałem ostrzeżenie przy wiadomościach iż w wypadku utraty klucza memo, złodziej będzie miał dostęp do całej historii wiadomości, więc można używać tego systemu tylko do niewrażliwej komunikacji (aplikacja ma być swego rodzaju grą, więc co do zasady raczej nikt nawet nie będzie miał pomysłu by przesyłać tam wiadomości wrażliwych). Dodałem także oznaczenia o aktywności, by użytkownicy wiedzieli kto jest on-line. W planie dodanie do skrzynki blacklisty i inne ułatwienia.\n\nDziś natomiast pokażę kolejny ważny etap tworzenia naszej aplikacji, a więc moduł Misji.\n\n### Rodzaje misji\n\nMisje mogą być różne, najróżniejsze i z pewnością masy możliwości nie przewidziałem (będzie miejsce na aktualizacje aplikacji :)) ale postarałem się dodać opcje które wydały mi się najważniejsze. \nPrzede wszystkim kwestia nagroda. Aplikacja dopuszcza obecnie 3 rodzaje nagrody:\n- Barter: nagroda w formie opisowej, brak gwarancji wypłaty, ale przewidziany jest prosty system oceny zlecającego misję (konto które się podjęło misji, wykonało, dostało akcept wykonania będzie mogło dać prostą informację: zlecający wywiązał się lub nie wywiązał z wypłąty)\n- Tokeny: zarówno natywne (HIVE, HBD), jak i te z Hive Engine. Gwarancja realizacji zapłaty poprzez mechanizm jak w smart-contract escrow (zaufany pośrednik - konto aplikacji)\n- Punkty Zasług: Punkty, które będą służyć do tworzenia rankingu i nie tylko w warstwie grywalnej aplikacji, te mogą przyznawać tylko admini.\n\nA co jeszcze możemy ustawić?\n- ile osób może się podjąć danej misji, w przypadku nagrody w formie tokenowej musi to być skończona ilość, w przypadku barteru może być nieskończona. Możemy też dodać wykluczenia, tak aby wybrane przez nas osoby nie mogły podjąć się misji.\n- możemy również ustawić czas trwania ogłoszenia. To przydatne, bo czasami wykonanie misji po jakiejś dacie przestaje mieć sens...\n- musimy także ustawić czas, w jakim deklarujemy rozpatrzenie prawidłowego wykonania misji.\n- ostatnim wreszcie elementem jest opcjonalna pinezka. Mapa będzie ważnym elementem naszej aplikacji, dlatego możemy zlecić np napisanie artykułu o bitwie która odbyła się w jakimś konkretnym miejscu. Taka misja będzie widoczna zarówno na liście jak i na mapie. \n\nDodawanie opcji wygląda tak:\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23sweHStVBtdi8uneuDEsmZmGyaD37hPTUdpqSjvrQfB8AQKyBoFSKk7u7JFtmNNvbL3R.png)\n\n\n### Proces\n\nZa najważniejsze w tego typu systemie uważam właściwy proces tak aby zapewniał maksimum uczciwości i przejrzystości. Dlatego też przebieg wypełniania misji w naszej aplikacji może być wieloetapowy.\nPierwszym krokiem jest oczywiście ustanowienie misji. Może to zrobić każdy zalogowany użytkownik chociaż admin ma trochę dodatkowych opcji. Sama misja jest postem na blokchainie. Wszystkie dodatkowe atrybuty misji są w json_metadata postu. Po publikacji misja pojawia się na liście:\n\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23t76k7pL8Qj18YdJvJykyNz4bJDWu8FAHJvdsCvtwznkzxghumDkzttRsFny6vuMCJWx.png)\n\nKolejnym krokiem, jest oczywiście przyjęcie misji przez użytkownika. Jeśli misja była przeznaczona do jednorazowego użycia, lub zostało ostatnie użycie, po podjęciu misji jest ona zablokowana dla innych użytkowników. Po wykonaniu misji, wchodzimy w nią w aplikacji klikamy guziczek zgłoś wykonanie i następnie wpisujemy uzasadnienie opisowe i/lub link. I czekamy na akceptacje zlecającego:\n\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/EnynaEEWj1nG6ekmLJu75Pi71Rr9bZK9HUZZon2YQwCcaJdSHMty2fyjzm8NxQmc6kU.png)\n\nI teraz mamy dwie ścieżki. Albo zlecający akceptuje i wtedy nagroda tokenowa automatycznie idzie do wykonującego misję, lub zlecający wykonuje inną zapłate (barterową). Albo następuje odrzucenie pracy (opcjonalnie z uzasadnieniem.\n\nTo jednak nie koniec, bo wykonujący może albo przyjąć \"werdykt\" albo się odwołać. Przy odwołaniu również może dodać uzasadnienie.\nRozstrzygającym odwołanie jest admin i może on albo przyznać rację wykonującemu (i wtedy następuje wypłata automatyczna, lub zleceniodawca jest zobowiązany honorem aby zrobić to do czego się zobowiązał - jeśli nie zrobi dostanie negatywną ocenę) albo zlecającemu. I na tym kończy się proces przebiegu misji.\nKażdy kolejny krok jest zapisywany w komentarzach do postu-misji, więc przebieg jest w pełni transparentny.\n\n### Dodawanie misji, a feed hive\nMisja jak było to wspomniane jest postem, więc ma też standardowy edytor tekstu, tytuł, tagi, beneficjenci. Ze względu na charakter tego postu dodaliśmy automat ustanawiający konto @null jako domyślny beneficjent (ale można go usunąć). Czasem misja sama w sobie może być wartościową treścią godną upvotów i nagrody społeczności hive. Dodaliśmy jednak jeszcze jeden dodatek - tagi wewnętrzne. Takie rozwiązanie ma z jednej strony umożliwić dobre filtrowanie na liście misji, a z drugiej nie zaśmiecać tagów z faktycznymi postami, jeśli misja nie wymaga by ją gdzieś szerzej publikować, czy miałaby charakter bliższy spamowi niż wartościowej treści.\n\n### Statystyki\n\nStatystyki to fajna rzecz, ja ją lubię. Dlatego dodaliśmy na koncie użytkownika zakładke gdzie może sprawdzić historię zarówno podjętych misji jak i zleconych, a wchodząc w nie będzie widział historię procesu misji. \n\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23swfvnJUfidJCD3NSNcYUMcvtgxthK6w5oz5SF3EC4DHcssvvBCMijE3YCpCijyK19gW.png)\nHistoria, zapisuje się do bazy of-chain, żeby nie trzeba było za każdym razem odpytywać blokchainu. \nNo i to tyle na dziś, mam nadzieję, że system misji się Wam podoba, podzielcie się refleksjami w komentarzu :)\n",
-        "category": "hive-139531",
-        "children": 0,
-        "community": "hive-139531",
-        "community_title": "HiveDevs",
-        "created": "2026-04-19T07:22:24",
-        "curator_payout_value": "0.000 HBD",
-        "depth": 0,
-        "is_paidout": false,
-        "json_metadata": {
-          "app": "peakd/2026.4.3",
-          "format": "markdown",
-          "image": [
-            "https://files.peakd.com/file/peakd-hive/sarmatia.app/23t76k7pL8Qj18YdJvJykyNz4bJDWu8FAHJvdsCvtwznkzxghumDkzttRsFny6vuMCJWx.png",
-            "https://files.peakd.com/file/peakd-hive/sarmatia.app/23sweHStVBtdi8uneuDEsmZmGyaD37hPTUdpqSjvrQfB8AQKyBoFSKk7u7JFtmNNvbL3R.png",
-            "https://files.peakd.com/file/peakd-hive/sarmatia.app/EnynaEEWj1nG6ekmLJu75Pi71Rr9bZK9HUZZon2YQwCcaJdSHMty2fyjzm8NxQmc6kU.png",
-            "https://files.peakd.com/file/peakd-hive/sarmatia.app/23swfvnJUfidJCD3NSNcYUMcvtgxthK6w5oz5SF3EC4DHcssvvBCMijE3YCpCijyK19gW.png"
-          ],
-          "tags": [
-            "hivedev",
-            "polish",
-            "hive",
-            "pob",
-            "qurator",
-            "games",
-            "rpg",
-            "hivebounty"
-          ],
-          "users": [
-            "sarmatia.app",
-            "gtg",
-            "null"
-          ]
-        },
-        "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 14892900701333,
-        "payout": 1.446,
-        "payout_at": "2026-04-26T07:22:24",
-        "pending_payout_value": "1.446 HBD",
-        "percent_hbd": 10000,
-        "permlink": "misions-in-sarmatia-mundi-app",
-        "post_id": 149857054,
-        "reblogs": 2,
-        "replies": [],
-        "stats": {
-          "flag_weight": 0,
-          "gray": false,
-          "hide": false,
-          "total_votes": 59
-        },
-        "title": "Misions in Sarmatia Mundi App",
-        "updated": "2026-04-19T07:22:24",
-        "url": "/hive-139531/@sarmatia.app/misions-in-sarmatia-mundi-app"
       },
       {
         "active_votes": [
@@ -5894,7 +5894,7 @@
         "pending_payout_value": "0.025 HBD",
         "percent_hbd": 10000,
         "permlink": "hivepostify-cloud-real-traffic-real-users-real-growth-our-cloudflare-analytics-report-crp-1-mo57xuz6",
-        "post_id": 149855601,
+        "post_id": 149855618,
         "reblogs": 0,
         "replies": [],
         "stats": {
@@ -7447,7 +7447,7 @@
         "pending_payout_value": "7.093 HBD",
         "percent_hbd": 0,
         "permlink": "f2fd2884",
-        "post_id": 149846432,
+        "post_id": 149846449,
         "reblogs": 4,
         "replies": [],
         "stats": {
@@ -7602,7 +7602,7 @@
         "pending_payout_value": "0.919 HBD",
         "percent_hbd": 10000,
         "permlink": "hivepostify-is-getting-exclusive-content-creators-will-finally-control-who-sees-what-mo3wfqm9",
-        "post_id": 149846129,
+        "post_id": 149846146,
         "reblogs": 1,
         "replies": [],
         "stats": {
@@ -8485,7 +8485,7 @@
         "pending_payout_value": "7.126 HBD",
         "percent_hbd": 10000,
         "permlink": "ai-is-finding-27-year-old-bugs-hive-should-be-nervous",
-        "post_id": 149844271,
+        "post_id": 149844288,
         "reblogs": 7,
         "replies": [],
         "stats": {
@@ -9896,7 +9896,7 @@
         "pending_payout_value": "21.357 HBD",
         "percent_hbd": 10000,
         "permlink": "34e6f29f",
-        "post_id": 149842129,
+        "post_id": 149842146,
         "reblogs": 1,
         "replies": [],
         "stats": {
@@ -12697,7 +12697,7 @@
         "pending_payout_value": "20.394 HBD",
         "percent_hbd": 10000,
         "permlink": "107690e7",
-        "post_id": 149839618,
+        "post_id": 149839635,
         "reblogs": 9,
         "replies": [],
         "stats": {
@@ -13790,7 +13790,7 @@
         "pending_payout_value": "5.421 HBD",
         "percent_hbd": 0,
         "permlink": "1b9a03ac",
-        "post_id": 149836145,
+        "post_id": 149836162,
         "reblogs": 2,
         "replies": [],
         "stats": {
@@ -14915,7 +14915,7 @@
         "pending_payout_value": "5.313 HBD",
         "percent_hbd": 0,
         "permlink": "3ab1542f",
-        "post_id": 149824783,
+        "post_id": 149824800,
         "reblogs": 4,
         "replies": [],
         "stats": {
@@ -14999,7 +14999,7 @@
         "pending_payout_value": "0.274 HBD",
         "percent_hbd": 10000,
         "permlink": "publish-and-evaluate-openly-pevo-science-open-beta-officially-launched-hive-139531",
-        "post_id": 149818436,
+        "post_id": 149818453,
         "reblogs": 0,
         "replies": [],
         "stats": {
@@ -15011,6 +15011,105 @@
         "title": "Publish and Evaluate Openly - PEvO science open beta officially launched!",
         "updated": "2026-04-15T16:05:03",
         "url": "/hive-139531/@pharesim/publish-and-evaluate-openly-pevo-science-open-beta-officially-launched-hive-139531"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 121310613184,
+            "voter": "dylanhobalart"
+          },
+          {
+            "rshares": 704085113,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 7028937996,
+            "voter": "nabbas0786"
+          },
+          {
+            "rshares": 1218893539,
+            "voter": "gatet"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.byte"
+          },
+          {
+            "rshares": 3692024366,
+            "voter": "aftabirshad"
+          },
+          {
+            "rshares": 570895274,
+            "voter": "onlyfortesting"
+          },
+          {
+            "rshares": 17726275573,
+            "voter": "urielkinnear"
+          },
+          {
+            "rshares": 28076027794,
+            "voter": "we-are-ai"
+          },
+          {
+            "rshares": 153659523953,
+            "voter": "mydempire"
+          }
+        ],
+        "author": "hivepostify",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 53.42,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "postify",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "Seven months. No team. No funding. No one to share the load with.\n\n\n![th199](https://hivepostify.cloud/uploads/posts/10969694a15bb98f3afb4b7fd5330cb6.webp)\n\n\nJust me, a laptop, countless sleepless nights, and one belief that has never left me: **creators deserve to be paid for every single view they earn, not just the ones that happen within seven days.**\n\nToday, I want to share something I have quietly started building. When it launches, it will change how every creator on this platform earns permanently.\n\n**I have begun development on the HivePostify Monetization System.**\n\nThis is not just a plan. Work has already started. I am announcing it today because this community has stood behind me since the very beginning, and you deserve to know where this platform is going before it gets there.\n\n---\n\n## The Problem Every Hive Creator Knows\n\nYou spend hours writing an article. You publish it. For seven days, it earns rewards. Then it stops.\n\nIt does not matter if that article gets read ten thousand more times after those seven days. It does not matter if someone finds it a year later and shares it with their entire audience. The earning window is closed. The content keeps giving, but the creator stops receiving.\n\nI have thought about this problem for a long time. I am building the solution directly into HivePostify.\n\n---\n\n## What the HivePostify Monetization System Will Do\n\n### Ads That Respect the User\n\nAds will be displayed across the platform on articles, on videos, and on profile pages. But I am not building a platform that bombards users with pop-ups and interruptions. Every ad placement will be chosen carefully so that it feels natural within the experience. The reader keeps reading. The viewer keeps watching. The creator keeps earning. Nobody gets annoyed.\n\nGambling will never be promoted through HivePostify ads. This is a permanent policy. This platform exists for creators, freelancers, learners, and communities. The advertising environment will always reflect those values.\n\n### Almost All Revenue Goes to the Creator\n\nThe vast majority of ad revenue generated from a creator's content will go directly to that creator. HivePostify is not a platform that quietly takes most of what you earned and gives you a small percentage. You built the audience. You created the content. You deserve to be paid for it.\n\nEarnings will be paid in **AHPT**, HivePostify's native token, with instant withdrawal available. No waiting. No complicated processes.\n\n### Lifetime Earnings Not a 7-Day Window\n\nThis is the part that matters most.\n\nEvery view a creator's articles and videos receive today, next month, next year, five years from now will count toward their earnings. A post published six months ago that still attracts readers every single day will still generate income daily. There is no closing window. There is no expiry date on your work.\n\n**You create once. You earn forever.**\n\n### A Dashboard That Shows You Everything\n\nI will build a dedicated earnings dashboard for every creator on HivePostify. It will show total lifetime views across all content, earnings broken down per article and per video, full withdrawal history, and current balance all in one place, all transparent, all honest.\n\nNo confusion. No hidden numbers. Just a clear picture of what your content has earned and what you are owed.\n\n---\n\n## Videos Are Coming to HivePostify\n\nBefore the monetization system fully launches, I plan to bring video support to HivePostify both short-form and long-form.\n\nVideo is where attention lives today. It is also where ad revenue is strongest, meaning video creators on HivePostify will have significant earning opportunities from day one. Video hosting requires server infrastructure that I am actively working toward as this platform grows. The direction is set. The intention is firm.\n\nShort videos. Long videos. Lifetime earnings on every view of every one of them.\n\n---\n\n## How Monetization Eligibility Will Work\n\nMonetization will **not** be based on Hive reputation score.\n\nI want to be clear about this because it matters. Reputation on Hive reflects how other users have voted on your content. It should not determine whether you can earn from your own work. A creator who builds a real audience, publishes genuine content, and attracts real views deserves to monetize regardless of their reputation number.\n\nEligibility will be based on real, measurable activity views, followers, and content engagement. Full criteria will be published in detail when the system is ready to launch.\n\n---\n\n## An Honest Note on Timing\n\nMy board exams are approaching. For the next several weeks, I need to dedicate more time to studying than coding. Development will continue, but at a slower pace. I would rather tell you this directly than go quiet and leave people wondering.\n\nThe moment my exams are finished, I will return to full-speed development. Monetization, video support, and every other update in the pipeline will accelerate from that point forward. Nothing is being abandoned. Everything is still being built.\n\n---\n\n## What This Means for You Right Now\n\nIf you are already publishing content on HivePostify, every article you post today is a permanent asset in your lifetime earnings record. When monetization launches, your existing content will already be part of your earning history. You are not starting from zero when the system goes live. You are already ahead.\n\nIf you have not started creating on HivePostify, the time is now before this platform gets crowded, before monetization launches, and before the earning system rewards those who were here early.\n\n---\n\n*Platform is live at hivepostify.cloud*  \n*All activity verifiable on-chain at @hivepostify*  \n*Built on Hive. Developed independently. One student. One mission.*\n\n## <center> Posted Via [HivePostify](https://hivepostify.cloud/) Pakistan First Web3 Social and Freelancing Platform</center>\n\n",
+        "category": "hive-139531",
+        "children": 4,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-15T11:36:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hive-postify/1.0.0",
+          "community": "hive-139531",
+          "format": "markdown",
+          "tags": [
+            "monetization",
+            "creators",
+            "hive",
+            "hivepostify",
+            "hivedev",
+            "buildingonhive",
+            "update",
+            "hivegrowth"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 333987276792,
+        "payout": 0.029,
+        "payout_at": "2026-04-22T11:36:03",
+        "pending_payout_value": "0.029 HBD",
+        "percent_hbd": 10000,
+        "permlink": "i-am-building-monetization-into-hivepostify-creators-will-earn-for-life-not-just-7-days-every-view-you-ever-get-will-earn-you-money-forever-mnzz58rq",
+        "post_id": 149815777,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 10
+        },
+        "title": "I Am Building Monetization Into HivePostify. Creators Will Earn for Life, Not Just 7 Days. Every View You Ever Get Will Earn You Money, Forever",
+        "updated": "2026-04-15T11:36:03",
+        "url": "/hive-139531/@hivepostify/i-am-building-monetization-into-hivepostify-creators-will-earn-for-life-not-just-7-days-every-view-you-ever-get-will-earn-you-money-forever-mnzz58rq"
       },
       {
         "active_votes": [
@@ -15801,7 +15900,7 @@
         "pending_payout_value": "32.233 HBD",
         "percent_hbd": 10000,
         "permlink": "hive-reader-mini-update-txid-support-now-live-v2-7-8",
-        "post_id": 149814624,
+        "post_id": 149814641,
         "reblogs": 5,
         "replies": [],
         "stats": {
@@ -17374,7 +17473,7 @@
         "pending_payout_value": "11.890 HBD",
         "percent_hbd": 0,
         "permlink": "1860e262",
-        "post_id": 149813879,
+        "post_id": 149813896,
         "reblogs": 5,
         "replies": [],
         "stats": {
@@ -17386,105 +17485,6 @@
         "title": "Daily Development Update: hReplier React Moderation Features and Hive Stats Profile Upgrade",
         "updated": "2026-04-15T06:02:03",
         "url": "/hive-139531/@sagarkothari88/1860e262"
-      },
-      {
-        "active_votes": [
-          {
-            "rshares": 121310613184,
-            "voter": "dylanhobalart"
-          },
-          {
-            "rshares": 704085113,
-            "voter": "hive-103505"
-          },
-          {
-            "rshares": 7028937996,
-            "voter": "nabbas0786"
-          },
-          {
-            "rshares": 1218893539,
-            "voter": "gatet"
-          },
-          {
-            "rshares": 0,
-            "voter": "magic.byte"
-          },
-          {
-            "rshares": 3692024366,
-            "voter": "aftabirshad"
-          },
-          {
-            "rshares": 570895274,
-            "voter": "onlyfortesting"
-          },
-          {
-            "rshares": 17726275573,
-            "voter": "urielkinnear"
-          },
-          {
-            "rshares": 28076027794,
-            "voter": "we-are-ai"
-          },
-          {
-            "rshares": 153659523953,
-            "voter": "mydempire"
-          }
-        ],
-        "author": "hivepostify",
-        "author_payout_value": "0.000 HBD",
-        "author_reputation": 53.42,
-        "author_role": "guest",
-        "author_title": "",
-        "beneficiaries": [
-          {
-            "account": "postify",
-            "weight": 1000
-          }
-        ],
-        "blacklists": [],
-        "body": "Seven months. No team. No funding. No one to share the load with.\n\n\n![th199](https://hivepostify.cloud/uploads/posts/10969694a15bb98f3afb4b7fd5330cb6.webp)\n\n\nJust me, a laptop, countless sleepless nights, and one belief that has never left me: **creators deserve to be paid for every single view they earn, not just the ones that happen within seven days.**\n\nToday, I want to share something I have quietly started building. When it launches, it will change how every creator on this platform earns permanently.\n\n**I have begun development on the HivePostify Monetization System.**\n\nThis is not just a plan. Work has already started. I am announcing it today because this community has stood behind me since the very beginning, and you deserve to know where this platform is going before it gets there.\n\n---\n\n## The Problem Every Hive Creator Knows\n\nYou spend hours writing an article. You publish it. For seven days, it earns rewards. Then it stops.\n\nIt does not matter if that article gets read ten thousand more times after those seven days. It does not matter if someone finds it a year later and shares it with their entire audience. The earning window is closed. The content keeps giving, but the creator stops receiving.\n\nI have thought about this problem for a long time. I am building the solution directly into HivePostify.\n\n---\n\n## What the HivePostify Monetization System Will Do\n\n### Ads That Respect the User\n\nAds will be displayed across the platform on articles, on videos, and on profile pages. But I am not building a platform that bombards users with pop-ups and interruptions. Every ad placement will be chosen carefully so that it feels natural within the experience. The reader keeps reading. The viewer keeps watching. The creator keeps earning. Nobody gets annoyed.\n\nGambling will never be promoted through HivePostify ads. This is a permanent policy. This platform exists for creators, freelancers, learners, and communities. The advertising environment will always reflect those values.\n\n### Almost All Revenue Goes to the Creator\n\nThe vast majority of ad revenue generated from a creator's content will go directly to that creator. HivePostify is not a platform that quietly takes most of what you earned and gives you a small percentage. You built the audience. You created the content. You deserve to be paid for it.\n\nEarnings will be paid in **AHPT**, HivePostify's native token, with instant withdrawal available. No waiting. No complicated processes.\n\n### Lifetime Earnings Not a 7-Day Window\n\nThis is the part that matters most.\n\nEvery view a creator's articles and videos receive today, next month, next year, five years from now will count toward their earnings. A post published six months ago that still attracts readers every single day will still generate income daily. There is no closing window. There is no expiry date on your work.\n\n**You create once. You earn forever.**\n\n### A Dashboard That Shows You Everything\n\nI will build a dedicated earnings dashboard for every creator on HivePostify. It will show total lifetime views across all content, earnings broken down per article and per video, full withdrawal history, and current balance all in one place, all transparent, all honest.\n\nNo confusion. No hidden numbers. Just a clear picture of what your content has earned and what you are owed.\n\n---\n\n## Videos Are Coming to HivePostify\n\nBefore the monetization system fully launches, I plan to bring video support to HivePostify both short-form and long-form.\n\nVideo is where attention lives today. It is also where ad revenue is strongest, meaning video creators on HivePostify will have significant earning opportunities from day one. Video hosting requires server infrastructure that I am actively working toward as this platform grows. The direction is set. The intention is firm.\n\nShort videos. Long videos. Lifetime earnings on every view of every one of them.\n\n---\n\n## How Monetization Eligibility Will Work\n\nMonetization will **not** be based on Hive reputation score.\n\nI want to be clear about this because it matters. Reputation on Hive reflects how other users have voted on your content. It should not determine whether you can earn from your own work. A creator who builds a real audience, publishes genuine content, and attracts real views deserves to monetize regardless of their reputation number.\n\nEligibility will be based on real, measurable activity views, followers, and content engagement. Full criteria will be published in detail when the system is ready to launch.\n\n---\n\n## An Honest Note on Timing\n\nMy board exams are approaching. For the next several weeks, I need to dedicate more time to studying than coding. Development will continue, but at a slower pace. I would rather tell you this directly than go quiet and leave people wondering.\n\nThe moment my exams are finished, I will return to full-speed development. Monetization, video support, and every other update in the pipeline will accelerate from that point forward. Nothing is being abandoned. Everything is still being built.\n\n---\n\n## What This Means for You Right Now\n\nIf you are already publishing content on HivePostify, every article you post today is a permanent asset in your lifetime earnings record. When monetization launches, your existing content will already be part of your earning history. You are not starting from zero when the system goes live. You are already ahead.\n\nIf you have not started creating on HivePostify, the time is now before this platform gets crowded, before monetization launches, and before the earning system rewards those who were here early.\n\n---\n\n*Platform is live at hivepostify.cloud*  \n*All activity verifiable on-chain at @hivepostify*  \n*Built on Hive. Developed independently. One student. One mission.*\n\n## <center> Posted Via [HivePostify](https://hivepostify.cloud/) Pakistan First Web3 Social and Freelancing Platform</center>\n\n",
-        "category": "hive-139531",
-        "children": 4,
-        "community": "hive-139531",
-        "community_title": "HiveDevs",
-        "created": "2026-04-15T11:36:03",
-        "curator_payout_value": "0.000 HBD",
-        "depth": 0,
-        "is_paidout": false,
-        "json_metadata": {
-          "app": "hive-postify/1.0.0",
-          "community": "hive-139531",
-          "format": "markdown",
-          "tags": [
-            "monetization",
-            "creators",
-            "hive",
-            "hivepostify",
-            "hivedev",
-            "buildingonhive",
-            "update",
-            "hivegrowth"
-          ]
-        },
-        "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 333987276792,
-        "payout": 0.029,
-        "payout_at": "2026-04-22T11:36:03",
-        "pending_payout_value": "0.029 HBD",
-        "percent_hbd": 10000,
-        "permlink": "i-am-building-monetization-into-hivepostify-creators-will-earn-for-life-not-just-7-days-every-view-you-ever-get-will-earn-you-money-forever-mnzz58rq",
-        "post_id": 149815760,
-        "reblogs": 1,
-        "replies": [],
-        "stats": {
-          "flag_weight": 0,
-          "gray": false,
-          "hide": false,
-          "total_votes": 10
-        },
-        "title": "I Am Building Monetization Into HivePostify. Creators Will Earn for Life, Not Just 7 Days. Every View You Ever Get Will Earn You Money, Forever",
-        "updated": "2026-04-15T11:36:03",
-        "url": "/hive-139531/@hivepostify/i-am-building-monetization-into-hivepostify-creators-will-earn-for-life-not-just-7-days-every-view-you-ever-get-will-earn-you-money-forever-mnzz58rq"
       },
       {
         "active_votes": [
@@ -20661,7 +20661,7 @@
         "pending_payout_value": "48.159 HBD",
         "percent_hbd": 0,
         "permlink": "another-successful-day-for-security-in-the-hive-ecosystem-only-a-dead-bug-is-a-good-bug",
-        "post_id": 149810427,
+        "post_id": 149810444,
         "reblogs": 6,
         "replies": [],
         "stats": {
@@ -20673,6 +20673,1155 @@
         "title": "Another successful day for security in the HIVE ecosystem (Only a Dead Bug, is a Good Bug!)",
         "updated": "2026-04-14T21:27:51",
         "url": "/hive-139531/@louis88/another-successful-day-for-security-in-the-hive-ecosystem-only-a-dead-bug-is-a-good-bug"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 2615167720178,
+            "voter": "steemychicken1"
+          },
+          {
+            "rshares": 1172131955356,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 43254759128,
+            "voter": "garagebill"
+          },
+          {
+            "rshares": 4954711414528,
+            "voter": "demotruk"
+          },
+          {
+            "rshares": 16446321374,
+            "voter": "pcste"
+          },
+          {
+            "rshares": 1773376239,
+            "voter": "allyinspirit"
+          },
+          {
+            "rshares": 149776581772,
+            "voter": "happyphoenix"
+          },
+          {
+            "rshares": 2660079553,
+            "voter": "pixiehunter"
+          },
+          {
+            "rshares": 57042890516,
+            "voter": "anotherjoe"
+          },
+          {
+            "rshares": 1004495437,
+            "voter": "kenistyles"
+          },
+          {
+            "rshares": 82828919402,
+            "voter": "escapeamericanow"
+          },
+          {
+            "rshares": 153762571092,
+            "voter": "penguinpablo"
+          },
+          {
+            "rshares": 7465899452,
+            "voter": "scottermonkey"
+          },
+          {
+            "rshares": 11057623752,
+            "voter": "moondancer762"
+          },
+          {
+            "rshares": 1563817529,
+            "voter": "funnyman"
+          },
+          {
+            "rshares": 493006031,
+            "voter": "sebcam"
+          },
+          {
+            "rshares": 65652883409,
+            "voter": "okean123"
+          },
+          {
+            "rshares": 2444665263,
+            "voter": "fortinbuff"
+          },
+          {
+            "rshares": 6179384580633,
+            "voter": "redes"
+          },
+          {
+            "rshares": 38407280286,
+            "voter": "igormuba"
+          },
+          {
+            "rshares": 38319281640,
+            "voter": "tiamaria"
+          },
+          {
+            "rshares": 785082299,
+            "voter": "aware007"
+          },
+          {
+            "rshares": 470194092173,
+            "voter": "shaunmza"
+          },
+          {
+            "rshares": 186408461708,
+            "voter": "noemilunastorta"
+          },
+          {
+            "rshares": 2185400523,
+            "voter": "siriusgaia"
+          },
+          {
+            "rshares": 576522918,
+            "voter": "humoalex"
+          },
+          {
+            "rshares": 963739166,
+            "voter": "tibra"
+          },
+          {
+            "rshares": 301981420524,
+            "voter": "thecrazygm"
+          },
+          {
+            "rshares": 1404426169,
+            "voter": "josequintana"
+          },
+          {
+            "rshares": 309731514160,
+            "voter": "jagged"
+          },
+          {
+            "rshares": 5044047367,
+            "voter": "bsameep"
+          },
+          {
+            "rshares": 15748899004,
+            "voter": "bearone"
+          },
+          {
+            "rshares": 10927778769,
+            "voter": "alphacore"
+          },
+          {
+            "rshares": 271700132331,
+            "voter": "firstamendment"
+          },
+          {
+            "rshares": 1205777547,
+            "voter": "numundo"
+          },
+          {
+            "rshares": 35859399281,
+            "voter": "techken"
+          },
+          {
+            "rshares": 928773246,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 2952634955,
+            "voter": "hardikv"
+          },
+          {
+            "rshares": 3332811990,
+            "voter": "thegreens"
+          },
+          {
+            "rshares": 19026734564,
+            "voter": "walkerland"
+          },
+          {
+            "rshares": 63725100583,
+            "voter": "kiokizz"
+          },
+          {
+            "rshares": 1281593744,
+            "voter": "ashokcan143"
+          },
+          {
+            "rshares": 142709075779,
+            "voter": "codingdefined"
+          },
+          {
+            "rshares": 9621608770,
+            "voter": "heart-to-heart"
+          },
+          {
+            "rshares": 654335484200,
+            "voter": "ksteem"
+          },
+          {
+            "rshares": 82428719400,
+            "voter": "oneray"
+          },
+          {
+            "rshares": 1062737092,
+            "voter": "kiobot"
+          },
+          {
+            "rshares": 1124970846,
+            "voter": "vimukthi"
+          },
+          {
+            "rshares": 121926283972,
+            "voter": "amitsharma"
+          },
+          {
+            "rshares": 13103589457,
+            "voter": "holisticmom"
+          },
+          {
+            "rshares": 1108924198,
+            "voter": "redrica"
+          },
+          {
+            "rshares": 41817149619,
+            "voter": "ahlawat"
+          },
+          {
+            "rshares": 139393747874,
+            "voter": "etblink"
+          },
+          {
+            "rshares": 1139823502,
+            "voter": "shonariver"
+          },
+          {
+            "rshares": 5106453593,
+            "voter": "cconn"
+          },
+          {
+            "rshares": 3082372827,
+            "voter": "tomwafula"
+          },
+          {
+            "rshares": 12463840947,
+            "voter": "yangyanje"
+          },
+          {
+            "rshares": 7827360455,
+            "voter": "splash-of-angs63"
+          },
+          {
+            "rshares": 49638014032,
+            "voter": "jatinhota"
+          },
+          {
+            "rshares": 4855032137,
+            "voter": "lifecruiser"
+          },
+          {
+            "rshares": 36200595086,
+            "voter": "karinxxl"
+          },
+          {
+            "rshares": 30078826455,
+            "voter": "inuke"
+          },
+          {
+            "rshares": 913874658,
+            "voter": "bluntsmasha"
+          },
+          {
+            "rshares": 447523650844,
+            "voter": "bobinson"
+          },
+          {
+            "rshares": 3090217579,
+            "voter": "senorcoconut"
+          },
+          {
+            "rshares": 1637701221,
+            "voter": "sankysanket18"
+          },
+          {
+            "rshares": 2131103379,
+            "voter": "vishire"
+          },
+          {
+            "rshares": 1037234589,
+            "voter": "silenteyes"
+          },
+          {
+            "rshares": 21617278508,
+            "voter": "scipio"
+          },
+          {
+            "rshares": 1811018027,
+            "voter": "shonyishere"
+          },
+          {
+            "rshares": 24378077585,
+            "voter": "howiemac"
+          },
+          {
+            "rshares": 1107156992,
+            "voter": "crescendoofpeace"
+          },
+          {
+            "rshares": 236944677,
+            "voter": "cryptonized"
+          },
+          {
+            "rshares": 2037957791,
+            "voter": "fourfourfun"
+          },
+          {
+            "rshares": 66681961234,
+            "voter": "spydo"
+          },
+          {
+            "rshares": 890658917,
+            "voter": "frames"
+          },
+          {
+            "rshares": 1018251506099,
+            "voter": "deepresearch"
+          },
+          {
+            "rshares": 712111028,
+            "voter": "sagescrub"
+          },
+          {
+            "rshares": 8853283173,
+            "voter": "mountainjewel"
+          },
+          {
+            "rshares": 453641047558,
+            "voter": "r1s2g3"
+          },
+          {
+            "rshares": 15705123841,
+            "voter": "franciscana23"
+          },
+          {
+            "rshares": 2475663117,
+            "voter": "irisworld"
+          },
+          {
+            "rshares": 10879959960,
+            "voter": "bobydimitrov"
+          },
+          {
+            "rshares": 2708360767,
+            "voter": "tryskele"
+          },
+          {
+            "rshares": 1162669872946,
+            "voter": "bala41288"
+          },
+          {
+            "rshares": 5133546965,
+            "voter": "dynamicrypto"
+          },
+          {
+            "rshares": 2120721358090,
+            "voter": "indiaunited"
+          },
+          {
+            "rshares": 1218628456,
+            "voter": "viking-ventures"
+          },
+          {
+            "rshares": 16297302963,
+            "voter": "victorialegend"
+          },
+          {
+            "rshares": 590066162,
+            "voter": "cool08"
+          },
+          {
+            "rshares": 603488689,
+            "voter": "minerspost"
+          },
+          {
+            "rshares": 1900807455,
+            "voter": "darkpylon"
+          },
+          {
+            "rshares": 971084640,
+            "voter": "barge"
+          },
+          {
+            "rshares": 1626315179,
+            "voter": "vinamra"
+          },
+          {
+            "rshares": 2109523473,
+            "voter": "karmadorje"
+          },
+          {
+            "rshares": 1821026613,
+            "voter": "ayushthedreamer"
+          },
+          {
+            "rshares": 1162102230,
+            "voter": "jeronimorubio"
+          },
+          {
+            "rshares": 123921040481,
+            "voter": "goldenoakfarm"
+          },
+          {
+            "rshares": 1423185598377,
+            "voter": "abrockman"
+          },
+          {
+            "rshares": 605374482,
+            "voter": "raqibul"
+          },
+          {
+            "rshares": 1853299481260,
+            "voter": "quochuy"
+          },
+          {
+            "rshares": 1027692167,
+            "voter": "rainbowbala"
+          },
+          {
+            "rshares": 800999775,
+            "voter": "diabonua"
+          },
+          {
+            "rshares": 113654599768,
+            "voter": "riverflows"
+          },
+          {
+            "rshares": 12495710542,
+            "voter": "thelaundrylady"
+          },
+          {
+            "rshares": 1082853387,
+            "voter": "ragavee"
+          },
+          {
+            "rshares": 9052971406,
+            "voter": "digitaldan"
+          },
+          {
+            "rshares": 572229757,
+            "voter": "wildlocusthoney"
+          },
+          {
+            "rshares": 1327375959,
+            "voter": "indiaunited-bot"
+          },
+          {
+            "rshares": 2069342524,
+            "voter": "phillyc"
+          },
+          {
+            "rshares": 1062742870,
+            "voter": "smg"
+          },
+          {
+            "rshares": 19612885577,
+            "voter": "teamvn"
+          },
+          {
+            "rshares": 363510895648,
+            "voter": "smartvote"
+          },
+          {
+            "rshares": 4034726267,
+            "voter": "skylinebuds"
+          },
+          {
+            "rshares": 6294819072,
+            "voter": "enjoycompany"
+          },
+          {
+            "rshares": 2510971432,
+            "voter": "piensocrates"
+          },
+          {
+            "rshares": 152978972245,
+            "voter": "ecoinstats"
+          },
+          {
+            "rshares": 2431506729,
+            "voter": "tommyl33"
+          },
+          {
+            "rshares": 288155596532,
+            "voter": "naturalmedicine"
+          },
+          {
+            "rshares": 54780831593,
+            "voter": "steem-ua"
+          },
+          {
+            "rshares": 9072385384,
+            "voter": "earthtribe"
+          },
+          {
+            "rshares": 2018345823,
+            "voter": "newsposter"
+          },
+          {
+            "rshares": 1015361071,
+            "voter": "thetreeoflife"
+          },
+          {
+            "rshares": 4931432817,
+            "voter": "bia.birch"
+          },
+          {
+            "rshares": 10117663853,
+            "voter": "karishmasingh711"
+          },
+          {
+            "rshares": 17529330394,
+            "voter": "khan.dayyanz"
+          },
+          {
+            "rshares": 878009228,
+            "voter": "tigerrkg"
+          },
+          {
+            "rshares": 890573490,
+            "voter": "jacuzzi"
+          },
+          {
+            "rshares": 897074561,
+            "voter": "thistle-rock"
+          },
+          {
+            "rshares": 625089958,
+            "voter": "hungrybear"
+          },
+          {
+            "rshares": 813722200122,
+            "voter": "scripsio"
+          },
+          {
+            "rshares": 20970131082,
+            "voter": "wildhomesteading"
+          },
+          {
+            "rshares": 2390174315,
+            "voter": "guysellars"
+          },
+          {
+            "rshares": 2821745453372,
+            "voter": "bagholders"
+          },
+          {
+            "rshares": 14327207919,
+            "voter": "squareonefarms"
+          },
+          {
+            "rshares": 10225976418,
+            "voter": "helgalubevi"
+          },
+          {
+            "rshares": 876707258,
+            "voter": "badfinger"
+          },
+          {
+            "rshares": 10702896343,
+            "voter": "everythingsmgirl"
+          },
+          {
+            "rshares": 49164153409,
+            "voter": "kanibot"
+          },
+          {
+            "rshares": 114175435581,
+            "voter": "bozz.sports"
+          },
+          {
+            "rshares": 10231489880,
+            "voter": "whoreson"
+          },
+          {
+            "rshares": 5683698122,
+            "voter": "fenngen"
+          },
+          {
+            "rshares": 70490308963,
+            "voter": "unpopular"
+          },
+          {
+            "rshares": 72522054974,
+            "voter": "garlet"
+          },
+          {
+            "rshares": 61354123766,
+            "voter": "atma.love"
+          },
+          {
+            "rshares": 43258542412,
+            "voter": "davidlionfish"
+          },
+          {
+            "rshares": 287608322737,
+            "voter": "treasure.hoard"
+          },
+          {
+            "rshares": 3851678148,
+            "voter": "dpend.active"
+          },
+          {
+            "rshares": 1633032163,
+            "voter": "ykretz"
+          },
+          {
+            "rshares": 91720128430,
+            "voter": "imfarhad"
+          },
+          {
+            "rshares": 4935260659,
+            "voter": "vicvperezdelara"
+          },
+          {
+            "rshares": 1303528397692,
+            "voter": "davidthompson57"
+          },
+          {
+            "rshares": 4039776840,
+            "voter": "kingneptune"
+          },
+          {
+            "rshares": 10245391696,
+            "voter": "balvinder294"
+          },
+          {
+            "rshares": 443915568,
+            "voter": "sidjay"
+          },
+          {
+            "rshares": 5505098896,
+            "voter": "patronpass"
+          },
+          {
+            "rshares": 167515998047,
+            "voter": "archon-gov"
+          },
+          {
+            "rshares": 1164847837,
+            "voter": "plusvault"
+          },
+          {
+            "rshares": 23208700697,
+            "voter": "splinterstats"
+          },
+          {
+            "rshares": 1891862315,
+            "voter": "tarot911"
+          },
+          {
+            "rshares": 69008103255,
+            "voter": "sirenahippie"
+          },
+          {
+            "rshares": 1972174878,
+            "voter": "dikshabihani"
+          },
+          {
+            "rshares": 26195554311,
+            "voter": "r-nyn"
+          },
+          {
+            "rshares": 233363793605,
+            "voter": "idea-make-rich"
+          },
+          {
+            "rshares": 615890909,
+            "voter": "vandanabhatt"
+          },
+          {
+            "rshares": 3689380604,
+            "voter": "elricmoonslayer"
+          },
+          {
+            "rshares": 811999916,
+            "voter": "barbyjr"
+          },
+          {
+            "rshares": 130954977674,
+            "voter": "tin.aung.soe"
+          },
+          {
+            "rshares": 28045972342,
+            "voter": "godfather.ftw"
+          },
+          {
+            "rshares": 42641463129,
+            "voter": "szukamnemo"
+          },
+          {
+            "rshares": 8605994923,
+            "voter": "pokerarema"
+          },
+          {
+            "rshares": 706293345,
+            "voter": "clau-de-sign"
+          },
+          {
+            "rshares": 25994077239,
+            "voter": "sanity-check"
+          },
+          {
+            "rshares": 37975183240,
+            "voter": "onetrueself"
+          },
+          {
+            "rshares": 3503201195,
+            "voter": "alesya-h9"
+          },
+          {
+            "rshares": 1381615408,
+            "voter": "hunter-yogi"
+          },
+          {
+            "rshares": 146958233309,
+            "voter": "muterra"
+          },
+          {
+            "rshares": 28068765729,
+            "voter": "okluvmee"
+          },
+          {
+            "rshares": 3127710990,
+            "voter": "krrizjos18"
+          },
+          {
+            "rshares": 7192232764,
+            "voter": "disha30"
+          },
+          {
+            "rshares": 4612516209,
+            "voter": "keithtaylor"
+          },
+          {
+            "rshares": 17767717793,
+            "voter": "josdelmi"
+          },
+          {
+            "rshares": 5208586863,
+            "voter": "kamaleshwar"
+          },
+          {
+            "rshares": 25036545515,
+            "voter": "chandra.shekar"
+          },
+          {
+            "rshares": 58913834401,
+            "voter": "kannannv"
+          },
+          {
+            "rshares": 4063197389,
+            "voter": "menzo"
+          },
+          {
+            "rshares": 463848658,
+            "voter": "jimah1k"
+          },
+          {
+            "rshares": 1268934242,
+            "voter": "shakavon"
+          },
+          {
+            "rshares": 850076682,
+            "voter": "techguard"
+          },
+          {
+            "rshares": 10700074400,
+            "voter": "deimage"
+          },
+          {
+            "rshares": 563033321924,
+            "voter": "plantpoweronhive"
+          },
+          {
+            "rshares": 2066352754,
+            "voter": "hive-180569"
+          },
+          {
+            "rshares": 23068232502,
+            "voter": "tydynrain"
+          },
+          {
+            "rshares": 30034843115,
+            "voter": "rc-assist"
+          },
+          {
+            "rshares": 114867889151,
+            "voter": "kriang3teejoe"
+          },
+          {
+            "rshares": 24006088858,
+            "voter": "mergusa88"
+          },
+          {
+            "rshares": 110377978302,
+            "voter": "pravesh0"
+          },
+          {
+            "rshares": 14350008783,
+            "voter": "heteroclite"
+          },
+          {
+            "rshares": 892503329,
+            "voter": "djblendah"
+          },
+          {
+            "rshares": 602660743,
+            "voter": "claraxmas"
+          },
+          {
+            "rshares": 602660732,
+            "voter": "giovannixmas"
+          },
+          {
+            "rshares": 16908651434,
+            "voter": "dlizara"
+          },
+          {
+            "rshares": 3641207742,
+            "voter": "ryosai"
+          },
+          {
+            "rshares": 76047376350,
+            "voter": "misticogama"
+          },
+          {
+            "rshares": 31672934046,
+            "voter": "jessiencasa"
+          },
+          {
+            "rshares": 25263036592,
+            "voter": "kilvnrex"
+          },
+          {
+            "rshares": 682053236,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 642594731,
+            "voter": "emreal"
+          },
+          {
+            "rshares": 19429958207,
+            "voter": "mollybunny"
+          },
+          {
+            "rshares": 11224177625,
+            "voter": "bigorna1"
+          },
+          {
+            "rshares": 5467789228,
+            "voter": "juansitosaiyayin"
+          },
+          {
+            "rshares": 24674781773,
+            "voter": "solumviz"
+          },
+          {
+            "rshares": 41163658445,
+            "voter": "monsterrerentals"
+          },
+          {
+            "rshares": 891155893,
+            "voter": "pinkchic"
+          },
+          {
+            "rshares": 76437043124,
+            "voter": "verdesmeralda"
+          },
+          {
+            "rshares": 1012578029,
+            "voter": "tuba777"
+          },
+          {
+            "rshares": 2596041934,
+            "voter": "gaurav.art"
+          },
+          {
+            "rshares": 2494989517,
+            "voter": "tekraze"
+          },
+          {
+            "rshares": 9397300632,
+            "voter": "fizz0"
+          },
+          {
+            "rshares": 2256105574,
+            "voter": "veganlove"
+          },
+          {
+            "rshares": 10183777686,
+            "voter": "imacryptogeek"
+          },
+          {
+            "rshares": 2876296846,
+            "voter": "fun.pravesh0"
+          },
+          {
+            "rshares": 477969355,
+            "voter": "nusrat5686"
+          },
+          {
+            "rshares": 94108425281,
+            "voter": "jesus-son"
+          },
+          {
+            "rshares": 475098644,
+            "voter": "pof.archon"
+          },
+          {
+            "rshares": 1130094337,
+            "voter": "abhay2695"
+          },
+          {
+            "rshares": 62871227466,
+            "voter": "bemier"
+          },
+          {
+            "rshares": 13983844918,
+            "voter": "shamis"
+          },
+          {
+            "rshares": 1721256442,
+            "voter": "preciouz-01"
+          },
+          {
+            "rshares": -2575794739598,
+            "voter": "silingsi"
+          },
+          {
+            "rshares": 20194545535,
+            "voter": "plantpowervegan"
+          },
+          {
+            "rshares": 12346255924,
+            "voter": "dev.maverick"
+          },
+          {
+            "rshares": 10872111874,
+            "voter": "rubenstorm"
+          },
+          {
+            "rshares": 358532436879,
+            "voter": "mithrildestiny"
+          },
+          {
+            "rshares": 2741222203,
+            "voter": "flourishandflora"
+          },
+          {
+            "rshares": 12731437713,
+            "voter": "philossifer"
+          },
+          {
+            "rshares": 6758355686,
+            "voter": "tebesc"
+          },
+          {
+            "rshares": 5879056874,
+            "voter": "bipolar95"
+          },
+          {
+            "rshares": 373825104067,
+            "voter": "cositav"
+          },
+          {
+            "rshares": 22009957652,
+            "voter": "pepegame"
+          },
+          {
+            "rshares": 947035228,
+            "voter": "lolz.byte"
+          },
+          {
+            "rshares": 3363621330,
+            "voter": "bbypanda4"
+          },
+          {
+            "rshares": 152892223609,
+            "voter": "ryanaa"
+          },
+          {
+            "rshares": 1205425108084,
+            "voter": "dungeon.cities"
+          },
+          {
+            "rshares": 0,
+            "voter": "endhivewatchers"
+          },
+          {
+            "rshares": 12946199679,
+            "voter": "kristabel123"
+          },
+          {
+            "rshares": 41059297819,
+            "voter": "thecrazygm.bank"
+          },
+          {
+            "rshares": 3950323560414,
+            "voter": "finpulse"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.byte"
+          },
+          {
+            "rshares": 982431779,
+            "voter": "nursecommy"
+          },
+          {
+            "rshares": 1984886849,
+            "voter": "beatbrawls"
+          },
+          {
+            "rshares": 29254845641,
+            "voter": "cagolistic"
+          },
+          {
+            "rshares": 28067985678,
+            "voter": "we-are-ai"
+          },
+          {
+            "rshares": 40093825,
+            "voter": "tradingstocks26"
+          },
+          {
+            "rshares": 1091061,
+            "voter": "mangajesus"
+          },
+          {
+            "rshares": 64073168,
+            "voter": "jenny69"
+          },
+          {
+            "rshares": 700265543,
+            "voter": "brooke.candy"
+          },
+          {
+            "rshares": 0,
+            "voter": "auntie4"
+          }
+        ],
+        "author": "sagarkothari88",
+        "author_payout_value": "1.973 HBD",
+        "author_reputation": 76.61,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 300
+          },
+          {
+            "account": "null",
+            "weight": 300
+          },
+          {
+            "account": "ph1102",
+            "weight": 100
+          },
+          {
+            "account": "threespeakfund",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "[![](https://images.3speak.tv/images/1775482011112-edd52da9f2dcfa18.webp)](https://3speak.tv/watch?v=sagarkothari88/e1dcd6ea)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=sagarkothari88/e1dcd6ea)\n\n\n---\n\n## HiveReactKit\n\n### Profile Enhancements: Sharing, Reporting, and Render-Time Filtering\n\n- feat(profile): enhance sharing, reporting, and render-time filtering in UserDetailProfile.\n- Fixed onUserClick event bubbling using e.stopPropagation().\n- Removed all hardcoded peakd.com share links.\n- Split share into:\n  - onShare (profile)  \n  - onSharePost (post/poll)\n\n\n- Added reusable ReportModal with reason → confirm flow.\n- Updated onReportPost(author, permlink, reason) with modal integration.\n- Added reportedPosts and reportedAuthors props.\n- Implemented render-time filtering using useMemo to fix race conditions.\n- Hid tip/reblog/report actions on own profile.\n- Removed reported posts instantly from all lists.\n- Added tabShown prop for flexible tab visibility.\n\nShare Post feed\n![Share Post feed](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tRxSLRAnQsYQW13fLKRWK28ZisXA65EqcLCQGxnnfXM42nqrHXyQXchdkjtVkpaFd4U.png)\n\nReport Modal with Reason and Confirmation Flow\n\n![Report Modal with Reason](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo1vSpgbnvV1y5cAEuTz3qwsB4ap3P7s35rVG2PTtCG7nG7p9EL75whZMwfubSprNCE.png)\n\n![Report Modal with Confirmation Flow](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t74tUjg6n4uZg6NwXi5349KcbBMXU73wAK4r5gw28Cn8w33f7RVfvimoASZMWzFgCgm.png)\n\nFeed After Instant Filtering of Reported Contentﬁ\n![Feed After Instant Filtering of Reported Content](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tbK2DdACUdSGn6se8WYx5q2Lf8AT81pe1AkLpaLn4kWpare5E5ER8k4BLxzrzBEiZfH.png)\n\n---\n\n### Profile Integration with New Tabs, Wallet History, and Routing Fixes\n\n- feat(profile): integrate UserDetailProfile with new tabs, wallet history, and routing fixes.\n- Integrated UserDetailProfile as main profile view, replacing custom widgets.\n- Linked local hive-react-kit package and fixed React dual-instance issue.\n- Added transfer history to Wallet with transactions UI.\n- Introduced new tabs:\n  - Voting Power  \n  - Badges  \n  - Witness Votes  \n\n\n- Implemented vote value slider with real-time HIVE/HBD calculation.\n- Fixed routing to /:username with /@username navigation format.\n- Added profile share via native share API with clipboard fallback.\n- Enforced dark mode for skeleton and error states.\n- Improved responsive grid layout (1/3/4 columns) for followers and related tabs.\n\nUserDetailProfile - Wallet UI Tab\n![UserDetailProfile - Wallet UI Tab added](https://files.peakd.com/file/peakd-hive/sagarkothari88/23uEqEWPU5KDEMSzEgho6GKZGVK5ZW8YoRqVbzMrMDo9Rs1ShnkPNbHZeodGMgsnLDDwM.png)\n\nUserDetailProfile - Wallet UI Transaction History\n![UserDetailProfile - Wallet UI Transaction History](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tbHAHJ2fTEtwPPQUQAs3rHxwCg2EGERkhpEKJEN3KSijXAARAV75VNNXb4EnQ3qrv82.png)\n\n  \nNew Tabs - Voting Power / Slider UI\n![New Tabs - Voting Power / Slider UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tkhu3XTZd3EpWo8oALhWzDqHnxzJ1oSjta77T1pG5AkKfA5UNRJmiQZ8ByRErXYXbdi.png)\n\nNew Tabs (Badges)\n![New Tabs (Badges)](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGXub4AUmBBwijz3byJayhARQZBgcZwY7JGsgM1hrYMP6zGRCMyPAKxuAhy5nUjdu3M.png)\n\nNew Tabs (Witness Votes)\n![New Tabs (Witness Votes)](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tRvZxdeogty8d6oNC5tVCnP6MYcRMzxZQekqPS7nXt4DhP5gqrUqhsqrwoJq9YJxk1d.png)\n\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=sagarkothari88/e1dcd6ea)\n",
+        "category": "hive-139531",
+        "children": 12,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-14T06:02:03",
+        "curator_payout_value": "1.966 HBD",
+        "depth": 0,
+        "is_paidout": true,
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "image": [
+            "https://images.3speak.tv/images/1775482011112-edd52da9f2dcfa18.webp"
+          ],
+          "tags": [
+            "hive",
+            "dev",
+            "hiveproject",
+            "india",
+            "reactjs",
+            "witness",
+            "playstore",
+            "appstore",
+            "dapps",
+            "3speak"
+          ],
+          "type": "3speak/video",
+          "video": {
+            "content": {
+              "description": "## HiveReactKit\n\n### Profile Enhancements: Sharing, Reporting, and Render-Time Filtering\n\n- feat(profile): enhance sharing, reporting, and render-time filtering in UserDetailProfile.\n- Fixed onUserClick event bubbling using e.stopPropagation().\n- Removed all hardcoded peakd.com share links.\n- Split share into:\n  - onShare (profile)  \n  - onSharePost (post/poll)\n\n\n- Added reusable ReportModal with reason → confirm flow.\n- Updated onReportPost(author, permlink, reason) with modal integration.\n- Added reportedPosts and reportedAuthors props.\n- Implemented render-time filtering using useMemo to fix race conditions.\n- Hid tip/reblog/report actions on own profile.\n- Removed reported posts instantly from all lists.\n- Added tabShown prop for flexible tab visibility.\n\nShare Post feed\n![Share Post feed](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tRxSLRAnQsYQW13fLKRWK28ZisXA65EqcLCQGxnnfXM42nqrHXyQXchdkjtVkpaFd4U.png)\n\nReport Modal with Reason and Confirmation Flow\n\n![Report Modal with Reason](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo1vSpgbnvV1y5cAEuTz3qwsB4ap3P7s35rVG2PTtCG7nG7p9EL75whZMwfubSprNCE.png)\n\n![Report Modal with Confirmation Flow](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t74tUjg6n4uZg6NwXi5349KcbBMXU73wAK4r5gw28Cn8w33f7RVfvimoASZMWzFgCgm.png)\n\nFeed After Instant Filtering of Reported Contentﬁ\n![Feed After Instant Filtering of Reported Content](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tbK2DdACUdSGn6se8WYx5q2Lf8AT81pe1AkLpaLn4kWpare5E5ER8k4BLxzrzBEiZfH.png)\n\n---\n\n### Profile Integration with New Tabs, Wallet History, and Routing Fixes\n\n- feat(profile): integrate UserDetailProfile with new tabs, wallet history, and routing fixes.\n- Integrated UserDetailProfile as main profile view, replacing custom widgets.\n- Linked local hive-react-kit package and fixed React dual-instance issue.\n- Added transfer history to Wallet with transactions UI.\n- Introduced new tabs:\n  - Voting Power  \n  - Badges  \n  - Witness Votes  \n\n\n- Implemented vote value slider with real-time HIVE/HBD calculation.\n- Fixed routing to /:username with /@username navigation format.\n- Added profile share via native share API with clipboard fallback.\n- Enforced dark mode for skeleton and error states.\n- Improved responsive grid layout (1/3/4 columns) for followers and related tabs.\n\nUserDetailProfile - Wallet UI Tab\n![UserDetailProfile - Wallet UI Tab added](https://files.peakd.com/file/peakd-hive/sagarkothari88/23uEqEWPU5KDEMSzEgho6GKZGVK5ZW8YoRqVbzMrMDo9Rs1ShnkPNbHZeodGMgsnLDDwM.png)\n\nUserDetailProfile - Wallet UI Transaction History\n![UserDetailProfile - Wallet UI Transaction History](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tbHAHJ2fTEtwPPQUQAs3rHxwCg2EGERkhpEKJEN3KSijXAARAV75VNNXb4EnQ3qrv82.png)\n\n  \nNew Tabs - Voting Power / Slider UI\n![New Tabs - Voting Power / Slider UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tkhu3XTZd3EpWo8oALhWzDqHnxzJ1oSjta77T1pG5AkKfA5UNRJmiQZ8ByRErXYXbdi.png)\n\nNew Tabs (Badges)\n![New Tabs (Badges)](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGXub4AUmBBwijz3byJayhARQZBgcZwY7JGsgM1hrYMP6zGRCMyPAKxuAhy5nUjdu3M.png)\n\nNew Tabs (Witness Votes)\n![New Tabs (Witness Votes)](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tRvZxdeogty8d6oNC5tVCnP6MYcRMzxZQekqPS7nXt4DhP5gqrUqhsqrwoJq9YJxk1d.png)\n\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |",
+              "tags": [
+                "hive",
+                "dev",
+                "hiveproject",
+                "india",
+                "reactjs",
+                "witness",
+                "playstore",
+                "appstore",
+                "dapps",
+                "3speak"
+              ]
+            },
+            "info": {
+              "author": "sagarkothari88",
+              "duration": 40,
+              "file": "ipfs://QmNLtt6JeA3FKkjAWiJJ5P5sNLPmwAeHMDBSzrbjwGShbj",
+              "filesize": 26367786,
+              "firstUpload": false,
+              "ipfs": null,
+              "ipfsThumbnail": null,
+              "lang": "en",
+              "permlink": "e1dcd6ea",
+              "platform": "3speak",
+              "sourceMap": [
+                {
+                  "format": "m3u8",
+                  "type": "video",
+                  "url": "ipfs://QmUNszRVp7D6UuLZEQqBn4Bvwbuie6dmH9hriR3znWZVXg/manifest.m3u8"
+                },
+                {
+                  "type": "thumbnail",
+                  "url": "https://images.3speak.tv/images/1775482011112-edd52da9f2dcfa18.webp"
+                }
+              ],
+              "title": "Daily Development Update: HiveReactKit Profile Enhancements, Wallet History, and Advanced Filtering",
+              "video_v2": "ipfs://QmUNszRVp7D6UuLZEQqBn4Bvwbuie6dmH9hriR3znWZVXg/manifest.m3u8"
+            }
+          }
+        },
+        "max_accepted_payout": "100000.000 HBD",
+        "net_rshares": 40613678102174,
+        "payout": 3.939,
+        "payout_at": "2026-04-21T06:02:03",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 0,
+        "permlink": "e1dcd6ea",
+        "post_id": 149802982,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 3,
+          "gray": false,
+          "hide": false,
+          "total_votes": 259
+        },
+        "title": "Daily Development Update: HiveReactKit Profile Enhancements, Wallet History, and Advanced Filtering",
+        "updated": "2026-04-14T06:02:03",
+        "url": "/hive-139531/@sagarkothari88/e1dcd6ea"
       }
     ]
   },

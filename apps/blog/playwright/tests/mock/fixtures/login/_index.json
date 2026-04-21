@@ -1,21 +1,21 @@
 {
   "testName": "login",
-  "recordedAt": "2026-04-21T09:25:59.229Z",
-  "totalRequests": 42,
+  "recordedAt": "2026-04-21T11:19:45.946Z",
+  "totalRequests": 49,
   "savedFixtures": 15,
-  "duplicatesSkipped": 27,
+  "duplicatesSkipped": 34,
   "methods": {
-    "bridge.list_communities": 6,
-    "GET /hivesense-api": 6,
-    "bridge.get_ranked_posts": 6,
+    "bridge.list_communities": 8,
+    "GET /hivesense-api": 7,
     "database_api.get_dynamic_global_properties": 4,
     "database_api.verify_authority": 2,
     "database_api.find_accounts": 6,
+    "bridge.get_ranked_posts": 10,
     "account_by_key_api.get_key_references": 2,
     "bridge.list_all_subscriptions": 2,
-    "bridge.get_follow_list": 2,
-    "rc_api.find_rc_accounts": 2,
     "bridge.unread_notifications": 2,
-    "bridge.get_profile": 2
+    "rc_api.find_rc_accounts": 2,
+    "bridge.get_profile": 2,
+    "bridge.get_follow_list": 2
   }
 }

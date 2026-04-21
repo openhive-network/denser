@@ -615,6 +615,10 @@
             "voter": "deimage"
           },
           {
+            "rshares": 6451146527,
+            "voter": "ericpso"
+          },
+          {
             "rshares": 4845822248,
             "voter": "kqaosphreak"
           },
@@ -829,6 +833,10 @@
           {
             "rshares": 2174840770,
             "voter": "lavoiser"
+          },
+          {
+            "rshares": -23145272,
+            "voter": "aprendeconleidy"
           }
         ],
         "author": "steemflow",
@@ -876,20 +884,20 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 56352688943979,
-        "payout": 5.487,
+        "net_rshares": 56359116945234,
+        "payout": 5.488,
         "payout_at": "2026-04-28T10:48:57",
-        "pending_payout_value": "5.487 HBD",
+        "pending_payout_value": "5.488 HBD",
         "percent_hbd": 10000,
         "permlink": "before-you-judge-before-you",
-        "post_id": 149883390,
+        "post_id": 149883373,
         "reblogs": 0,
         "replies": [],
         "stats": {
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 201
+          "total_votes": 203
         },
         "title": "Before you judge, before you post, consider the impact. ",
         "updated": "2026-04-21T10:48:57",
@@ -902,8 +910,16 @@
             "voter": "ratel"
           },
           {
+            "rshares": 384021970010,
+            "voter": "vortac"
+          },
+          {
             "rshares": 5141474449,
             "voter": "netaterra"
+          },
+          {
+            "rshares": 153762571092,
+            "voter": "penguinpablo"
           },
           {
             "rshares": 791014188053,
@@ -912,6 +928,10 @@
           {
             "rshares": 5406955258054,
             "voter": "redes"
+          },
+          {
+            "rshares": 4732959650,
+            "voter": "anwarabdullah"
           },
           {
             "rshares": 74343279639,
@@ -966,6 +986,14 @@
             "voter": "bambukah"
           },
           {
+            "rshares": 166271580605,
+            "voter": "oneray"
+          },
+          {
+            "rshares": 44878745978,
+            "voter": "chetanpadliya"
+          },
+          {
             "rshares": 1126870311411,
             "voter": "lizelle"
           },
@@ -980,6 +1008,10 @@
           {
             "rshares": 437381008821,
             "voter": "zirochka"
+          },
+          {
+            "rshares": 589253656843,
+            "voter": "spaminator"
           },
           {
             "rshares": 25243279728,
@@ -1004,6 +1036,18 @@
           {
             "rshares": 78488431284,
             "voter": "funtraveller"
+          },
+          {
+            "rshares": 236944677,
+            "voter": "cryptonized"
+          },
+          {
+            "rshares": 21034753470,
+            "voter": "tikatarot"
+          },
+          {
+            "rshares": 4747705829,
+            "voter": "intrepidphotos"
           },
           {
             "rshares": 406805996444,
@@ -1050,6 +1094,10 @@
             "voter": "lightflares"
           },
           {
+            "rshares": 5887474462,
+            "voter": "smawkward"
+          },
+          {
             "rshares": 263665338595,
             "voter": "vicesrus"
           },
@@ -1066,6 +1114,14 @@
             "voter": "steemlibs"
           },
           {
+            "rshares": 11471446520,
+            "voter": "dhingvimal"
+          },
+          {
+            "rshares": 471404861,
+            "voter": "vonaurolacu"
+          },
+          {
             "rshares": 12975427171,
             "voter": "cicisaja"
           },
@@ -1078,6 +1134,10 @@
             "voter": "adamada"
           },
           {
+            "rshares": 1277607723,
+            "voter": "photocircle"
+          },
+          {
             "rshares": 8414897657,
             "voter": "bdmillergallery"
           },
@@ -1088,6 +1148,10 @@
           {
             "rshares": 489067150,
             "voter": "greenunion"
+          },
+          {
+            "rshares": 1849013729,
+            "voter": "skuuun"
           },
           {
             "rshares": 363307732096,
@@ -1114,6 +1178,10 @@
             "voter": "lestrange"
           },
           {
+            "rshares": 397127101,
+            "voter": "crowdwitness"
+          },
+          {
             "rshares": 1873375826,
             "voter": "iamcyril"
           },
@@ -1128,6 +1196,10 @@
           {
             "rshares": 90916584332,
             "voter": "cryptofiloz"
+          },
+          {
+            "rshares": 14102591319,
+            "voter": "constantshots"
           },
           {
             "rshares": 80991273858,
@@ -1150,6 +1222,10 @@
             "voter": "kanibot"
           },
           {
+            "rshares": 27003056389,
+            "voter": "curatorcat.ccc"
+          },
+          {
             "rshares": 31837891154,
             "voter": "therealyme"
           },
@@ -1164,6 +1240,10 @@
           {
             "rshares": 857433583,
             "voter": "libertypal27"
+          },
+          {
+            "rshares": 3331844603968,
+            "voter": "curamax"
           },
           {
             "rshares": 5801516920,
@@ -1202,6 +1282,10 @@
             "voter": "sparker005"
           },
           {
+            "rshares": 3143381791,
+            "voter": "cookaiss"
+          },
+          {
             "rshares": 1194953832,
             "voter": "huzzah"
           },
@@ -1230,12 +1314,20 @@
             "voter": "kannannv"
           },
           {
+            "rshares": 32782906002,
+            "voter": "wongi"
+          },
+          {
             "rshares": 583283671,
             "voter": "we-support-hive"
           },
           {
             "rshares": 122843368371,
             "voter": "tengolotodo"
+          },
+          {
+            "rshares": 6451146527,
+            "voter": "ericpso"
           },
           {
             "rshares": 1666601659,
@@ -1270,6 +1362,14 @@
             "voter": "baluvana-galia"
           },
           {
+            "rshares": 58172195041,
+            "voter": "anna-newkey"
+          },
+          {
+            "rshares": 10009366163,
+            "voter": "isiksenpalvoja"
+          },
+          {
             "rshares": 2641137827,
             "voter": "caelum1infernum"
           },
@@ -1278,12 +1378,24 @@
             "voter": "creativepixie"
           },
           {
+            "rshares": 5140707326,
+            "voter": "quduus1"
+          },
+          {
             "rshares": 9667263790,
             "voter": "glimpsytips.dex"
           },
           {
+            "rshares": 513454225,
+            "voter": "graciousvic"
+          },
+          {
             "rshares": 3128431520,
             "voter": "hive-113967"
+          },
+          {
+            "rshares": 474868826,
+            "voter": "bgmoha"
           },
           {
             "rshares": 667211542,
@@ -1294,12 +1406,28 @@
             "voter": "trumpybear"
           },
           {
+            "rshares": 614901704,
+            "voter": "hive-189277"
+          },
+          {
+            "rshares": 2451091184,
+            "voter": "hive-100059"
+          },
+          {
             "rshares": 6695832962,
             "voter": "chidistickz"
           },
           {
             "rshares": 5118662734,
             "voter": "ganjafrmer"
+          },
+          {
+            "rshares": 10959739039,
+            "voter": "faustine.books"
+          },
+          {
+            "rshares": 1782118126,
+            "voter": "unity-freedom"
           },
           {
             "rshares": 2066351946,
@@ -1364,24 +1492,1047 @@
           "users": []
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 35019424939977,
-        "payout": 3.409,
+        "net_rshares": 39915166030157,
+        "payout": 3.919,
         "payout_at": "2026-04-28T11:13:00",
-        "pending_payout_value": "3.409 HBD",
+        "pending_payout_value": "3.919 HBD",
         "percent_hbd": 0,
         "permlink": "a-juvenile-harrier-hawk-landed",
-        "post_id": 149883513,
+        "post_id": 149883496,
         "reblogs": 0,
         "replies": [],
         "stats": {
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 105
+          "total_votes": 135
         },
         "title": "A juvenile Harrier Hawk landed.",
         "updated": "2026-04-21T11:13:00",
         "url": "/hive-194913/@papilloncharity/a-juvenile-harrier-hawk-landed"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 23461074129,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 12515092594759,
+            "voter": "deanliu"
+          },
+          {
+            "rshares": 6260141649,
+            "voter": "esteemapp"
+          },
+          {
+            "rshares": 2018156203,
+            "voter": "nicewoody69"
+          },
+          {
+            "rshares": 2375827919,
+            "voter": "htliao"
+          },
+          {
+            "rshares": 4036965588,
+            "voter": "shikika"
+          },
+          {
+            "rshares": 21250458827,
+            "voter": "teamaustralia"
+          },
+          {
+            "rshares": 930708158,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 7789479319192,
+            "voter": "geekgirl"
+          },
+          {
+            "rshares": 7026106415,
+            "voter": "travelgirl"
+          },
+          {
+            "rshares": 539987905374,
+            "voter": "catwomanteresa"
+          },
+          {
+            "rshares": 5531899794,
+            "voter": "liangfengyouren"
+          },
+          {
+            "rshares": 103832743984,
+            "voter": "horpey"
+          },
+          {
+            "rshares": 206583572353,
+            "voter": "syedumair"
+          },
+          {
+            "rshares": 1167735875,
+            "voter": "sunisa"
+          },
+          {
+            "rshares": 3329762590244,
+            "voter": "aafeng"
+          },
+          {
+            "rshares": 1285523010,
+            "voter": "munawar1235"
+          },
+          {
+            "rshares": 293013506725,
+            "voter": "mrsquiggle"
+          },
+          {
+            "rshares": 20184623783,
+            "voter": "kimzwarch"
+          },
+          {
+            "rshares": 357087831521,
+            "voter": "davidke20"
+          },
+          {
+            "rshares": 11598207077,
+            "voter": "june0620"
+          },
+          {
+            "rshares": 25203090548,
+            "voter": "sorin.cristescu"
+          },
+          {
+            "rshares": 1997336968,
+            "voter": "sayee"
+          },
+          {
+            "rshares": 21867794766,
+            "voter": "steemseph"
+          },
+          {
+            "rshares": 769028530,
+            "voter": "esteem.app"
+          },
+          {
+            "rshares": 6771699669,
+            "voter": "namchau"
+          },
+          {
+            "rshares": 8334777924,
+            "voter": "halleyleow"
+          },
+          {
+            "rshares": 7929242924,
+            "voter": "hanzappedfirst"
+          },
+          {
+            "rshares": 993112153616,
+            "voter": "itchyfeetdonica"
+          },
+          {
+            "rshares": 14953229730,
+            "voter": "yousafharoonkhan"
+          },
+          {
+            "rshares": 636146369,
+            "voter": "kamchore"
+          },
+          {
+            "rshares": 713858886,
+            "voter": "leynedayana"
+          },
+          {
+            "rshares": 448201038,
+            "voter": "fianna"
+          },
+          {
+            "rshares": 56120790327,
+            "voter": "mathowl"
+          },
+          {
+            "rshares": 900439595,
+            "voter": "yumisee"
+          },
+          {
+            "rshares": 5094813534,
+            "voter": "joeliew"
+          },
+          {
+            "rshares": 4663754592,
+            "voter": "uzercanan"
+          },
+          {
+            "rshares": 5050364498,
+            "voter": "vamos-amigo"
+          },
+          {
+            "rshares": 2119284812286,
+            "voter": "moeenali"
+          },
+          {
+            "rshares": 23354576046,
+            "voter": "bhattg"
+          },
+          {
+            "rshares": 339052284122,
+            "voter": "vcclothing"
+          },
+          {
+            "rshares": 3790907095,
+            "voter": "yameen"
+          },
+          {
+            "rshares": 26593845943,
+            "voter": "melbourneswest"
+          },
+          {
+            "rshares": 8714983069,
+            "voter": "ryenneleow"
+          },
+          {
+            "rshares": 664449760,
+            "voter": "dearw"
+          },
+          {
+            "rshares": 8092236173,
+            "voter": "enforcer48"
+          },
+          {
+            "rshares": 1286159149,
+            "voter": "archisteem"
+          },
+          {
+            "rshares": 139839471282,
+            "voter": "digital.mine"
+          },
+          {
+            "rshares": 193350083212,
+            "voter": "smartvote"
+          },
+          {
+            "rshares": 621516454,
+            "voter": "santoninoatocha"
+          },
+          {
+            "rshares": 3806398383,
+            "voter": "julian2013"
+          },
+          {
+            "rshares": 2123737618,
+            "voter": "bichen"
+          },
+          {
+            "rshares": 397127101,
+            "voter": "crowdwitness"
+          },
+          {
+            "rshares": 24658278893,
+            "voter": "a-secondchance"
+          },
+          {
+            "rshares": 18385169302,
+            "voter": "mia-cc"
+          },
+          {
+            "rshares": 549097728,
+            "voter": "fintian"
+          },
+          {
+            "rshares": 330875363153,
+            "voter": "dfacademy"
+          },
+          {
+            "rshares": 891364170941,
+            "voter": "kryptodenno"
+          },
+          {
+            "rshares": 7702207274,
+            "voter": "meliamau"
+          },
+          {
+            "rshares": 3033259369,
+            "voter": "dailyke20"
+          },
+          {
+            "rshares": 25154515168,
+            "voter": "babytarazkp"
+          },
+          {
+            "rshares": 6964662082,
+            "voter": "marlian.alfa"
+          },
+          {
+            "rshares": 1905578185,
+            "voter": "khalstem"
+          },
+          {
+            "rshares": 167048364978,
+            "voter": "lnakuma"
+          },
+          {
+            "rshares": 1922731587,
+            "voter": "stemisaria"
+          },
+          {
+            "rshares": 1019584738,
+            "voter": "bpcvoter"
+          },
+          {
+            "rshares": 1274240342952,
+            "voter": "ecency"
+          },
+          {
+            "rshares": 638424078509,
+            "voter": "hive-117778"
+          },
+          {
+            "rshares": 798488765,
+            "voter": "ecency.stats"
+          },
+          {
+            "rshares": 1523061503,
+            "voter": "cryptosimplify"
+          },
+          {
+            "rshares": 9325107238,
+            "voter": "trangbaby"
+          },
+          {
+            "rshares": 26777585652,
+            "voter": "babeltrips"
+          },
+          {
+            "rshares": 24286890765,
+            "voter": "dodovietnam"
+          },
+          {
+            "rshares": 2209888451,
+            "voter": "phuongthao98"
+          },
+          {
+            "rshares": 661440371,
+            "voter": "thaolaven"
+          },
+          {
+            "rshares": 93809049929,
+            "voter": "okluvmee"
+          },
+          {
+            "rshares": 599594827,
+            "voter": "photolovers1"
+          },
+          {
+            "rshares": 5505829004,
+            "voter": "thu172"
+          },
+          {
+            "rshares": 12909382824,
+            "voter": "lynnnguyen"
+          },
+          {
+            "rshares": 8041440723,
+            "voter": "kimloan"
+          },
+          {
+            "rshares": 8537482442,
+            "voter": "winnietran"
+          },
+          {
+            "rshares": 58651830032,
+            "voter": "sunflor"
+          },
+          {
+            "rshares": 61454641790,
+            "voter": "dora381"
+          },
+          {
+            "rshares": 681534778,
+            "voter": "crazy-bee"
+          },
+          {
+            "rshares": 6451146527,
+            "voter": "ericpso"
+          },
+          {
+            "rshares": 933949025,
+            "voter": "kaale"
+          },
+          {
+            "rshares": 3506593736,
+            "voter": "shopnilhasan"
+          },
+          {
+            "rshares": 1824397644,
+            "voter": "sunnyvo"
+          },
+          {
+            "rshares": 7891587632,
+            "voter": "hyhy93"
+          },
+          {
+            "rshares": 261632701495,
+            "voter": "passenger777"
+          },
+          {
+            "rshares": 2350824556,
+            "voter": "theindiankid"
+          },
+          {
+            "rshares": 813602286,
+            "voter": "allentaylor"
+          },
+          {
+            "rshares": 1310696902,
+            "voter": "youdontknowme"
+          },
+          {
+            "rshares": 11496308934,
+            "voter": "inibless"
+          },
+          {
+            "rshares": 474868826,
+            "voter": "bgmoha"
+          },
+          {
+            "rshares": 2495771998,
+            "voter": "tekraze"
+          },
+          {
+            "rshares": 1226548799,
+            "voter": "amiegeoffrey"
+          },
+          {
+            "rshares": 88622715605,
+            "voter": "carolin77"
+          },
+          {
+            "rshares": 20668019418,
+            "voter": "sunnywu"
+          },
+          {
+            "rshares": 15321590444,
+            "voter": "syntax-bloom"
+          },
+          {
+            "rshares": 19759893456,
+            "voter": "rainbowzhou"
+          },
+          {
+            "rshares": 65568448430,
+            "voter": "muwangxuan"
+          },
+          {
+            "rshares": 1488672565,
+            "voter": "brunotavares"
+          },
+          {
+            "rshares": 31778948891,
+            "voter": "snowli"
+          },
+          {
+            "rshares": 51487920923,
+            "voter": "neithya"
+          }
+        ],
+        "author": "magicmonk",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 79.66,
+        "author_role": "guest",
+        "author_title": "🧹僧",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "![image.png](https://images.hive.blog/DQmVuWGvKo8sTfifgTS4abUgTvM4gA5HEvgW14T1CHbBY4r/image.png)\n\n前幾次有提到，我最近開始上非常便宜的高爾夫球課，本來在練習場上課，但最後幾個禮拜到真的高爾夫球場上，然後又給我們開球車。平常租球車的錢就跟這堂課的錢差不多，所以這堂課等於免費了。\n\n這次上課還是我第一次坐並駕駛高爾夫球車。這台球車其實比想像中聰明很多，速度不是想快就快，如果開得太快，它會自動幫你降速。上下坡的時候也很穩，幾乎不會讓人感到晃或不安，對第一次開的人來說真的很安心。前方還有一個螢幕，清楚顯示整個球場的地圖，現在在哪一洞、下一個目的地在哪裡，一眼就能看懂。\n\n球具全部放在車後方，不用自己提著球桿袋在球場上走來走去，實在是太舒服了。想到上一次跟爸媽一起打高爾夫球，因為捨不得租車，幾乎整場都在走路，結束後累得不行，現在再回頭看，只能說下次再來一定會租車，完全不想再省那筆錢。\n\n這次我和一位同學一起坐同一台球車，他以前有開過，所以一開始先簡單教了我怎麼操作，之後就讓我一路開到底。有個人坐在旁邊給點提示，心裡踏實很多，也很快就上手了。\n\n打球的感覺也跟以前很不一樣。上次跟爸媽打的時候，幾乎還沒上過課，常常揮空，球也打不遠，現在因為已經上了一段時間的課，揮桿順多了。雖然談不上打得好，但至少每一顆球都打得到，而且大多都比之前更接近洞口，這種進步真的讓人很開心。\n\n我們四個人一組，用的是那種選最遠落點再繼續打的方式，所以每一洞進行得非常快，不會卡關，也沒有壓力。大家邊玩邊笑，球很快就推進下一洞，整個過程流暢又輕鬆。\n\n那天下課時，其實心裡有點捨不得離開球場。不只是因為開球車好玩，更因為真實地感覺到自己在慢慢進步。現在反而開始期待下一次上課，再一次把球車開上球道，繼續累積高爾夫回憶。",
+        "category": "hive-105017",
+        "children": 0,
+        "community": "hive-105017",
+        "community_title": "HIVE CN 中文社区",
+        "created": "2026-04-21T11:13:57",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "format": "markdown",
+          "image": [
+            "https://images.hive.blog/DQmVuWGvKo8sTfifgTS4abUgTvM4gA5HEvgW14T1CHbBY4r/image.png"
+          ],
+          "tags": [
+            "hive-105017",
+            "cn",
+            "life",
+            "blog",
+            "golf"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 33574767077426,
+        "payout": 3.269,
+        "payout_at": "2026-04-28T11:13:57",
+        "pending_payout_value": "3.269 HBD",
+        "percent_hbd": 0,
+        "permlink": "6dpbsp",
+        "post_id": 149883504,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 106
+        },
+        "title": "高爾夫球車初體驗",
+        "updated": "2026-04-21T11:13:57",
+        "url": "/hive-105017/@magicmonk/6dpbsp"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 373914473629,
+            "voter": "slickwilly"
+          },
+          {
+            "rshares": 43799556522,
+            "voter": "rok-sivante"
+          },
+          {
+            "rshares": 507004127423,
+            "voter": "daan"
+          },
+          {
+            "rshares": 12963843525,
+            "voter": "scaredycatguide"
+          },
+          {
+            "rshares": 3410982966,
+            "voter": "netaterra"
+          },
+          {
+            "rshares": 165001199855,
+            "voter": "enginewitty"
+          },
+          {
+            "rshares": 790424508840,
+            "voter": "sumatranate"
+          },
+          {
+            "rshares": 9907853874,
+            "voter": "cryptoknight12"
+          },
+          {
+            "rshares": 2131558965183,
+            "voter": "dswigle"
+          },
+          {
+            "rshares": 930708158,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 1915676180,
+            "voter": "grocko"
+          },
+          {
+            "rshares": 33226682085,
+            "voter": "fat-elvis"
+          },
+          {
+            "rshares": 705187703,
+            "voter": "dwingsworld"
+          },
+          {
+            "rshares": 843850687,
+            "voter": "bambukah"
+          },
+          {
+            "rshares": 2444362332,
+            "voter": "buggedout"
+          },
+          {
+            "rshares": 4899368113284,
+            "voter": "nuthman"
+          },
+          {
+            "rshares": 4619755040,
+            "voter": "ragnarokdel"
+          },
+          {
+            "rshares": 41656952112,
+            "voter": "pixresteemer"
+          },
+          {
+            "rshares": 1217367413501,
+            "voter": "thealliance"
+          },
+          {
+            "rshares": 21867794766,
+            "voter": "steemseph"
+          },
+          {
+            "rshares": 1427432445651,
+            "voter": "dbooster"
+          },
+          {
+            "rshares": 9818228236,
+            "voter": "coolguy123"
+          },
+          {
+            "rshares": 7929242924,
+            "voter": "hanzappedfirst"
+          },
+          {
+            "rshares": 17627303699,
+            "voter": "b00m"
+          },
+          {
+            "rshares": 4753476234,
+            "voter": "steemusa"
+          },
+          {
+            "rshares": 162692398578,
+            "voter": "epic-fail"
+          },
+          {
+            "rshares": 40026462438,
+            "voter": "vgholdingsllc"
+          },
+          {
+            "rshares": 1180147769,
+            "voter": "jazzhero"
+          },
+          {
+            "rshares": 42112448541,
+            "voter": "mastergerund"
+          },
+          {
+            "rshares": 267297182910,
+            "voter": "bigtom13"
+          },
+          {
+            "rshares": 1425469835,
+            "voter": "teutonium"
+          },
+          {
+            "rshares": 1131517833656,
+            "voter": "erikah"
+          },
+          {
+            "rshares": 24051353060,
+            "voter": "myprecious"
+          },
+          {
+            "rshares": 3414561623,
+            "voter": "ravenmus1c"
+          },
+          {
+            "rshares": 1776432441,
+            "voter": "adamada"
+          },
+          {
+            "rshares": 5117771011561,
+            "voter": "sbi2"
+          },
+          {
+            "rshares": 997976707,
+            "voter": "dixiesilverminer"
+          },
+          {
+            "rshares": 26593845943,
+            "voter": "melbourneswest"
+          },
+          {
+            "rshares": 3843249140,
+            "voter": "trumpman2"
+          },
+          {
+            "rshares": 8092236173,
+            "voter": "enforcer48"
+          },
+          {
+            "rshares": 498038783,
+            "voter": "gmlgang"
+          },
+          {
+            "rshares": 5060468856,
+            "voter": "spamfarmer"
+          },
+          {
+            "rshares": 67669181255,
+            "voter": "bdmillergallery"
+          },
+          {
+            "rshares": 744498339,
+            "voter": "thedailysneak"
+          },
+          {
+            "rshares": 32307049415,
+            "voter": "sbcbot"
+          },
+          {
+            "rshares": 627666096329,
+            "voter": "goblinknackers"
+          },
+          {
+            "rshares": 363307732096,
+            "voter": "smartvote"
+          },
+          {
+            "rshares": 106951710955,
+            "voter": "upvoteshares"
+          },
+          {
+            "rshares": 1167034487,
+            "voter": "babysavage"
+          },
+          {
+            "rshares": 360236154351,
+            "voter": "blanchy"
+          },
+          {
+            "rshares": 931238925019,
+            "voter": "unbiasedwriter"
+          },
+          {
+            "rshares": 2587577629,
+            "voter": "sepone"
+          },
+          {
+            "rshares": 3865061135,
+            "voter": "jacuzzi"
+          },
+          {
+            "rshares": 152919995777,
+            "voter": "victor-alexander"
+          },
+          {
+            "rshares": 1808507768,
+            "voter": "goodshepherd"
+          },
+          {
+            "rshares": 1020931573,
+            "voter": "goodcontentbot"
+          },
+          {
+            "rshares": 1648177849,
+            "voter": "kgswallet"
+          },
+          {
+            "rshares": 3968325392,
+            "voter": "votebetting"
+          },
+          {
+            "rshares": 6413562972,
+            "voter": "scaredycatcurate"
+          },
+          {
+            "rshares": 38267858918,
+            "voter": "sbi-tokens"
+          },
+          {
+            "rshares": 13802538359,
+            "voter": "cageon360"
+          },
+          {
+            "rshares": 1905578185,
+            "voter": "khalstem"
+          },
+          {
+            "rshares": 3138789116,
+            "voter": "therealyme"
+          },
+          {
+            "rshares": 10246716000,
+            "voter": "whoreson"
+          },
+          {
+            "rshares": 8825093459,
+            "voter": "sumatranate.leo"
+          },
+          {
+            "rshares": 2284213067,
+            "voter": "kgsupport"
+          },
+          {
+            "rshares": 11708402996,
+            "voter": "im-ridd"
+          },
+          {
+            "rshares": 644498711,
+            "voter": "dpend.active"
+          },
+          {
+            "rshares": 43661176077,
+            "voter": "hivetrending"
+          },
+          {
+            "rshares": 59579525482,
+            "voter": "thisismylife"
+          },
+          {
+            "rshares": 1250606103,
+            "voter": "sketching"
+          },
+          {
+            "rshares": 2472265447,
+            "voter": "jilt"
+          },
+          {
+            "rshares": 34459319897,
+            "voter": "gallatin"
+          },
+          {
+            "rshares": 659384255,
+            "voter": "patientgamer9"
+          },
+          {
+            "rshares": 16355863295,
+            "voter": "officialhisha"
+          },
+          {
+            "rshares": 58951091364,
+            "voter": "leoschein"
+          },
+          {
+            "rshares": 914960239,
+            "voter": "gualteramarelo"
+          },
+          {
+            "rshares": 103183361753,
+            "voter": "lbi-token"
+          },
+          {
+            "rshares": 572631071,
+            "voter": "dadspardan"
+          },
+          {
+            "rshares": 11417098502,
+            "voter": "cescajove"
+          },
+          {
+            "rshares": 54843386049,
+            "voter": "iikrypticsii"
+          },
+          {
+            "rshares": 221272455759,
+            "voter": "whywhy"
+          },
+          {
+            "rshares": 1194953832,
+            "voter": "huzzah"
+          },
+          {
+            "rshares": 557584251,
+            "voter": "megaleoschein"
+          },
+          {
+            "rshares": 898453327,
+            "voter": "dugsix"
+          },
+          {
+            "rshares": 518728079,
+            "voter": "cooperclub"
+          },
+          {
+            "rshares": 262785953710,
+            "voter": "finguru"
+          },
+          {
+            "rshares": 8684920606,
+            "voter": "phul"
+          },
+          {
+            "rshares": 1089237465,
+            "voter": "bhealy"
+          },
+          {
+            "rshares": 75339182728,
+            "voter": "drricksanchez"
+          },
+          {
+            "rshares": 156461461739,
+            "voter": "hive.pizza"
+          },
+          {
+            "rshares": 727506125,
+            "voter": "darinapogodina"
+          },
+          {
+            "rshares": 708317927,
+            "voter": "maurofolco"
+          },
+          {
+            "rshares": 3963995972110,
+            "voter": "yeouido.park"
+          },
+          {
+            "rshares": 14085275657,
+            "voter": "ifarmgirl"
+          },
+          {
+            "rshares": 1059755593,
+            "voter": "solominer.leo"
+          },
+          {
+            "rshares": 146514486106,
+            "voter": "arc7icwolf"
+          },
+          {
+            "rshares": 73686021023,
+            "voter": "tengolotodo"
+          },
+          {
+            "rshares": 1666601659,
+            "voter": "h3m4n7"
+          },
+          {
+            "rshares": 119178382138,
+            "voter": "thebighigg"
+          },
+          {
+            "rshares": 3506593736,
+            "voter": "shopnilhasan"
+          },
+          {
+            "rshares": 1689052900,
+            "voter": "day1001"
+          },
+          {
+            "rshares": 8698092633,
+            "voter": "alohaed"
+          },
+          {
+            "rshares": 1181657905,
+            "voter": "vindiesel1980"
+          },
+          {
+            "rshares": 3704750372,
+            "voter": "xurph"
+          },
+          {
+            "rshares": 1592378236,
+            "voter": "incantia"
+          },
+          {
+            "rshares": 72693648553,
+            "voter": "venarisyndicate"
+          },
+          {
+            "rshares": 42982981820,
+            "voter": "tokencav"
+          },
+          {
+            "rshares": 667211542,
+            "voter": "thoth442"
+          },
+          {
+            "rshares": 29755726982,
+            "voter": "trumpybear"
+          },
+          {
+            "rshares": 246073359932,
+            "voter": "neal.power"
+          },
+          {
+            "rshares": 1361651453416,
+            "voter": "eds-vote"
+          },
+          {
+            "rshares": 124143807420,
+            "voter": "clubvote"
+          },
+          {
+            "rshares": 13866821585,
+            "voter": "solfart"
+          },
+          {
+            "rshares": 7315204912,
+            "voter": "vaclavs"
+          },
+          {
+            "rshares": 1247348971733,
+            "voter": "duo-curator"
+          },
+          {
+            "rshares": 122710130570,
+            "voter": "dab-vote"
+          },
+          {
+            "rshares": 96746967744,
+            "voter": "gifu"
+          },
+          {
+            "rshares": 7158476929,
+            "voter": "dook4good"
+          },
+          {
+            "rshares": 145838599704,
+            "voter": "rg2-foto"
+          },
+          {
+            "rshares": 2174840770,
+            "voter": "lavoiser"
+          }
+        ],
+        "author": "bozz",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 82.27,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<center>![20230711_113158.jpg](https://files.peakd.com/file/peakd-hive/bozz/243LvvYFKSFF3ka1GDi2VngqH146a7mFTNLEUZwAuHttrzLiVQ4PE9XE7bzehv82EMEtp.jpg)</center>\n\n----------------------------\n\nIt's been a long long time since I have been to Minnesota.  I remember when I was much younger, my parents decided to do the Lake Superior circle tour.  In case you aren't familiar with the concept, it's basically just a designated route around Lake Superior (called Gitche Gumee by the Ojibwa).  Each of the Great Lakes has a circle route (at least the three main ones that touch Michigan).  In the case of Superior, it takes you through the upper peninsula of Michigan into Wisconsin, then a short jaunt along the northern shore of the lake until you get into Canada.  Eventually, you find yourself back in Sault Ste. Marie and cross back over into Michigan making the circuit complete.\n\nMore recently, I had a flight layover in Minneapolis, but since we never left the airport, I don't really count that as having visited Minnesota.  This Summer, @mrsbozz and I are planning on taking a trip to Wisconsin.  It is very possible we will be making a quick drive over to Duluth to have lunch one day, so although it will be just a taste of the state, we should still be able to count having visited it on our map.\n\n\n<center>![20230711_104853.jpg](https://files.peakd.com/file/peakd-hive/bozz/23rAtY8EB48skrEdqYXmNTsXSrkuUsnGYbFxTTtEADPDtsk58XwmnX8fwiyG7J2xiLd8R.jpg)</center>\n\n--------------------------\n\nSince I don't really have any photos of Minnesota, I am sharing photos of Lake Superior for this post.  In case you haven't guessed, this weeks #threetunetuesday sponsored by @ablaze brings us to the great state of Minnesota, land of 10,000 lakes.  When I was younger, I used to get annoyed that Minnesota was memorialized for its lakes.  I mean sure, it might have a lot of lakes, but we have the Great Lakes.  How much better is that?  It's funny the things you think are important when you are younger.\n\nIn fact, if you look at a map, Minnesota does indeed have a metric crap ton of lakes.  It's honestly no contest, but yes, Michigan still does have the Great Lakes.\n\nMinnesota was actually a bit harder than I would have expected to find songs for this post.  Sure, it's not that easy to rhyme something with Minnesota, but I think we all know by now that not every song has to rhyme, it just makes it easier and a bit more catchy when it does.  \n\nI was able to pick out three songs that I am going to share here, I hope you enjoy them.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/KwbeHSI-3Co?si=kb4MEzqR_ivlmt12\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n--------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=KwbeHSI-3Co&list=RDKwbeHSI-3Co&start_radio=1)\n\n-------------------------\n\nI know I might catch a lot of flack for this, but I am a huge Indigo Girls fan.  I understand there is this preconceived notion that only gay women like Indigo Girls music, but I think if you actually listen to them you will realize that isn't the case.  Or at least realize that shouldn't be the case.  The harmonies alone are so amazing, and then when you add in the lyrical prowess, there is just something really special about this duo.  \n\nI was going to share a more recent video of the song \"Ghost\" from them, but honestly, these days their voices aren't quite the same as they used to be, so I found an older cut of it.  You just have to get past the overly long intro because it seems like the video is broken at first.  It isn't until about ten seconds in that you really start to hear it.\n\nI really like the line in this song where they talk about the Mississippi River starting in Minnesota.  I've seen pictures of the headwaters of the Mississippi and to be honest, it's nothing special.  There is a little sign and then just a swampy area I think.  The part in the song where they say you can walk across it in five steps is just really poignant to me.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/sNh-iw7gsuI?si=WMDbvDmHQsmaDpIp\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n---------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=sNh-iw7gsuI&list=RDsNh-iw7gsuI&start_radio=1)\n\n---------------------------\n\nI'll be the first to admit, I never really got into Soundgarden when they were popular.  Yes, I knew the couple of big hits they had, but it wasn't until Chris Cornell passed away and it became more apparent just how many creative project he had his hands in and just how amazing he was.  \"Outshined\" has a reference to Minnesota if listen really closely.  I wouldn't have known it if I hadn't looked it up online, but I felt it would just be a little wrong to not include this prolific artist this week.\n\nIt doesn't take long to hear the reference to Minnesota.  It happens before we even get to the chorus in fact, but it is there.  If you watch the video with the captions on it is even easier to catch.  I don't have much else to say here.  Soundgarden kind of speaks for themself.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/bErza7LieSM?si=Xw3WUPfpIfvpKZ1A\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n---------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=bErza7LieSM&list=RDbErza7LieSM&start_radio=1)\n\n-------------------------\n\nFinally, I realized it would be an absolute crime if I didn't include one of Minnesota's favorite sons in this post.  Of course I am talking about Prince and if you know, you know.  As I was preparing for this post yesterday, I realized just how little of his music I actually know.  Yes, I know the big hits, and the smaller ones too, but he had a massive career spanning back to the late 70's and an amazing catalog of music to sift through.\n\nI've made it my mission to take a deep dive into his music on Spotify this week.  That doesn't even include the songs he wrote for so many other people.  \n\n\"Laydown\" is one of the songs that I have probably never heard in my life until now and it's quite simple, but if you listen to the whole thing you will eventually hear the reference to Minnesota. It's too bad that Prince had to be taken from us so soon. I think he really could have made so much more great music.  \n\nI remember maybe about twenty years ago he was in Michigan doing a show near where we lived.  I just kind of laughed it off and didn't have much interest in going to see him, but I really wish I had now.  Just to be able to say I saw a legend.\n\n----------\n\n<center>\n### [My Sports Account - @bozz.sports](https://www.peakd.com/@bozz.sports)\n</center>\n\n----------\n\n#### <center>Come hang out in [The Pub](https://peakd.com/c/hive-178138/created)</center>\n<center>[Find us on Discord](https://discord.gg/cCEMJXAEXk)</center>\n\n<center>Or Check out my [Grilling and Smoking Community on HIVE](https://peakd.com/c/hive-138631/created)</center>\n\n-------------\n\n<center>![TEAMUSAhive_footer_bozz.jpg](https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg)</center>\n\n----------------\n\n<center>*All pictures/screenshots taken by myself or @mrsbozz unless otherwise sourced*</center>\n\n\n\n \n\n\n\n\n",
+        "category": "hive-193212",
+        "children": 1,
+        "community": "hive-193212",
+        "community_title": "Discovery-it",
+        "created": "2026-04-21T11:14:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.7",
+          "description": "The North shore to be exact",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/bozz/243LvvYFKSFF3ka1GDi2VngqH146a7mFTNLEUZwAuHttrzLiVQ4PE9XE7bzehv82EMEtp.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/23rAtY8EB48skrEdqYXmNTsXSrkuUsnGYbFxTTtEADPDtsk58XwmnX8fwiyG7J2xiLd8R.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg"
+          ],
+          "tags": [
+            "discovery-it",
+            "threetunetuesday",
+            "pimp",
+            "tribes",
+            "bbh",
+            "gems",
+            "vibes",
+            "music4life",
+            "silverbloggers",
+            "ccc"
+          ],
+          "users": [
+            "mrsbozz",
+            "ablaze",
+            "bozz.sports"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 30332795078978,
+        "payout": 2.953,
+        "payout_at": "2026-04-28T11:14:06",
+        "pending_payout_value": "2.953 HBD",
+        "percent_hbd": 10000,
+        "permlink": "on-the-shores-of-gitche-gumee",
+        "post_id": 149883505,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 123
+        },
+        "title": "\"On the shores of Gitche Gumee\"",
+        "updated": "2026-04-21T11:14:06",
+        "url": "/hive-193212/@bozz/on-the-shores-of-gitche-gumee"
       },
       {
         "active_votes": [
@@ -1508,7 +2659,7 @@
         "pending_payout_value": "2.886 HBD",
         "percent_hbd": 10000,
         "permlink": "little-problem-with-portos",
-        "post_id": 149883437,
+        "post_id": 149883420,
         "reblogs": 0,
         "replies": [],
         "stats": {
@@ -2736,7 +3887,7 @@
         "pending_payout_value": "3.961 HBD",
         "percent_hbd": 10000,
         "permlink": "tuesday-neds-point-light",
-        "post_id": 149883282,
+        "post_id": 149883265,
         "reblogs": 2,
         "replies": [],
         "stats": {
@@ -3164,6 +4315,10 @@
             "voter": "meppij"
           },
           {
+            "rshares": 741740333554,
+            "voter": "mipiano"
+          },
+          {
             "rshares": 100197006367,
             "voter": "herz-ass"
           },
@@ -3479,277 +4634,24 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 82612556723324,
-        "payout": 8.049,
+        "net_rshares": 83354297056878,
+        "payout": 8.117,
         "payout_at": "2026-04-28T09:39:03",
-        "pending_payout_value": "8.049 HBD",
+        "pending_payout_value": "8.117 HBD",
         "percent_hbd": 10000,
         "permlink": "wiens-schonste-mullverbrennungsanlage",
-        "post_id": 149882950,
+        "post_id": 149882933,
         "reblogs": 2,
         "replies": [],
         "stats": {
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 168
+          "total_votes": 169
         },
         "title": "Wiens schönste Müllverbrennungsanlage",
         "updated": "2026-04-21T09:39:03",
         "url": "/hive-163772/@stayoutoftherz/wiens-schonste-mullverbrennungsanlage"
-      },
-      {
-        "active_votes": [
-          {
-            "rshares": 23461074129,
-            "voter": "good-karma"
-          },
-          {
-            "rshares": 12515092594759,
-            "voter": "deanliu"
-          },
-          {
-            "rshares": 6260141649,
-            "voter": "esteemapp"
-          },
-          {
-            "rshares": 930708158,
-            "voter": "joeyarnoldvn"
-          },
-          {
-            "rshares": 7026106415,
-            "voter": "travelgirl"
-          },
-          {
-            "rshares": 5531899794,
-            "voter": "liangfengyouren"
-          },
-          {
-            "rshares": 103832743984,
-            "voter": "horpey"
-          },
-          {
-            "rshares": 206583572353,
-            "voter": "syedumair"
-          },
-          {
-            "rshares": 20184623783,
-            "voter": "kimzwarch"
-          },
-          {
-            "rshares": 357087831521,
-            "voter": "davidke20"
-          },
-          {
-            "rshares": 21867794766,
-            "voter": "steemseph"
-          },
-          {
-            "rshares": 769028530,
-            "voter": "esteem.app"
-          },
-          {
-            "rshares": 993112153616,
-            "voter": "itchyfeetdonica"
-          },
-          {
-            "rshares": 14953229730,
-            "voter": "yousafharoonkhan"
-          },
-          {
-            "rshares": 636146369,
-            "voter": "kamchore"
-          },
-          {
-            "rshares": 2119284812286,
-            "voter": "moeenali"
-          },
-          {
-            "rshares": 339052284122,
-            "voter": "vcclothing"
-          },
-          {
-            "rshares": 3790907095,
-            "voter": "yameen"
-          },
-          {
-            "rshares": 26593845943,
-            "voter": "melbourneswest"
-          },
-          {
-            "rshares": 8092236173,
-            "voter": "enforcer48"
-          },
-          {
-            "rshares": 1286159149,
-            "voter": "archisteem"
-          },
-          {
-            "rshares": 139839471282,
-            "voter": "digital.mine"
-          },
-          {
-            "rshares": 193350083212,
-            "voter": "smartvote"
-          },
-          {
-            "rshares": 3806398383,
-            "voter": "julian2013"
-          },
-          {
-            "rshares": 330875363153,
-            "voter": "dfacademy"
-          },
-          {
-            "rshares": 25154515168,
-            "voter": "babytarazkp"
-          },
-          {
-            "rshares": 1905578185,
-            "voter": "khalstem"
-          },
-          {
-            "rshares": 1019584738,
-            "voter": "bpcvoter"
-          },
-          {
-            "rshares": 1274240342952,
-            "voter": "ecency"
-          },
-          {
-            "rshares": 638424078509,
-            "voter": "hive-117778"
-          },
-          {
-            "rshares": 798488765,
-            "voter": "ecency.stats"
-          },
-          {
-            "rshares": 9325107238,
-            "voter": "trangbaby"
-          },
-          {
-            "rshares": 26777585652,
-            "voter": "babeltrips"
-          },
-          {
-            "rshares": 24286890765,
-            "voter": "dodovietnam"
-          },
-          {
-            "rshares": 2209888451,
-            "voter": "phuongthao98"
-          },
-          {
-            "rshares": 661440371,
-            "voter": "thaolaven"
-          },
-          {
-            "rshares": 5505829004,
-            "voter": "thu172"
-          },
-          {
-            "rshares": 12909382824,
-            "voter": "lynnnguyen"
-          },
-          {
-            "rshares": 8041440723,
-            "voter": "kimloan"
-          },
-          {
-            "rshares": 8537482442,
-            "voter": "winnietran"
-          },
-          {
-            "rshares": 58651830032,
-            "voter": "sunflor"
-          },
-          {
-            "rshares": 61454641790,
-            "voter": "dora381"
-          },
-          {
-            "rshares": 681534778,
-            "voter": "crazy-bee"
-          },
-          {
-            "rshares": 1824397644,
-            "voter": "sunnyvo"
-          },
-          {
-            "rshares": 7891587632,
-            "voter": "hyhy93"
-          },
-          {
-            "rshares": 2350824556,
-            "voter": "theindiankid"
-          },
-          {
-            "rshares": 1310696902,
-            "voter": "youdontknowme"
-          },
-          {
-            "rshares": 15321590444,
-            "voter": "syntax-bloom"
-          },
-          {
-            "rshares": 1488672565,
-            "voter": "brunotavares"
-          },
-          {
-            "rshares": 31778948891,
-            "voter": "snowli"
-          }
-        ],
-        "author": "magicmonk",
-        "author_payout_value": "0.000 HBD",
-        "author_reputation": 79.66,
-        "author_role": "guest",
-        "author_title": "🧹僧",
-        "beneficiaries": [],
-        "blacklists": [],
-        "body": "![image.png](https://images.hive.blog/DQmVuWGvKo8sTfifgTS4abUgTvM4gA5HEvgW14T1CHbBY4r/image.png)\n\n前幾次有提到，我最近開始上非常便宜的高爾夫球課，本來在練習場上課，但最後幾個禮拜到真的高爾夫球場上，然後又給我們開球車。平常租球車的錢就跟這堂課的錢差不多，所以這堂課等於免費了。\n\n這次上課還是我第一次坐並駕駛高爾夫球車。這台球車其實比想像中聰明很多，速度不是想快就快，如果開得太快，它會自動幫你降速。上下坡的時候也很穩，幾乎不會讓人感到晃或不安，對第一次開的人來說真的很安心。前方還有一個螢幕，清楚顯示整個球場的地圖，現在在哪一洞、下一個目的地在哪裡，一眼就能看懂。\n\n球具全部放在車後方，不用自己提著球桿袋在球場上走來走去，實在是太舒服了。想到上一次跟爸媽一起打高爾夫球，因為捨不得租車，幾乎整場都在走路，結束後累得不行，現在再回頭看，只能說下次再來一定會租車，完全不想再省那筆錢。\n\n這次我和一位同學一起坐同一台球車，他以前有開過，所以一開始先簡單教了我怎麼操作，之後就讓我一路開到底。有個人坐在旁邊給點提示，心裡踏實很多，也很快就上手了。\n\n打球的感覺也跟以前很不一樣。上次跟爸媽打的時候，幾乎還沒上過課，常常揮空，球也打不遠，現在因為已經上了一段時間的課，揮桿順多了。雖然談不上打得好，但至少每一顆球都打得到，而且大多都比之前更接近洞口，這種進步真的讓人很開心。\n\n我們四個人一組，用的是那種選最遠落點再繼續打的方式，所以每一洞進行得非常快，不會卡關，也沒有壓力。大家邊玩邊笑，球很快就推進下一洞，整個過程流暢又輕鬆。\n\n那天下課時，其實心裡有點捨不得離開球場。不只是因為開球車好玩，更因為真實地感覺到自己在慢慢進步。現在反而開始期待下一次上課，再一次把球車開上球道，繼續累積高爾夫回憶。",
-        "category": "hive-105017",
-        "children": 0,
-        "community": "hive-105017",
-        "community_title": "HIVE CN 中文社区",
-        "created": "2026-04-21T11:13:57",
-        "curator_payout_value": "0.000 HBD",
-        "depth": 0,
-        "is_paidout": false,
-        "json_metadata": {
-          "app": "hiveblog/0.1",
-          "format": "markdown",
-          "image": [
-            "https://images.hive.blog/DQmVuWGvKo8sTfifgTS4abUgTvM4gA5HEvgW14T1CHbBY4r/image.png"
-          ],
-          "tags": [
-            "hive-105017",
-            "cn",
-            "life",
-            "blog",
-            "golf"
-          ]
-        },
-        "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 19666987982970,
-        "payout": 1.915,
-        "payout_at": "2026-04-28T11:13:57",
-        "pending_payout_value": "1.915 HBD",
-        "percent_hbd": 0,
-        "permlink": "6dpbsp",
-        "post_id": 149883521,
-        "reblogs": 0,
-        "replies": [],
-        "stats": {
-          "flag_weight": 0,
-          "gray": false,
-          "hide": false,
-          "total_votes": 51
-        },
-        "title": "高爾夫球車初體驗",
-        "updated": "2026-04-21T11:13:57",
-        "url": "/hive-105017/@magicmonk/6dpbsp"
       },
       {
         "active_votes": [
@@ -4663,7 +5565,7 @@
         "pending_payout_value": "3.157 HBD",
         "percent_hbd": 10000,
         "permlink": "from-a-poms-eye-view",
-        "post_id": 149883326,
+        "post_id": 149883309,
         "reblogs": 0,
         "replies": [],
         "stats": {
@@ -5027,7 +5929,7 @@
         "pending_payout_value": "3.615 HBD",
         "percent_hbd": 0,
         "permlink": "the-turmeric-plant-genesis-to-overcome-high-production-using-the-mobile-seedbed-planting-techniques-oror-the-raining-season-bles",
-        "post_id": 149883231,
+        "post_id": 149883214,
         "reblogs": 1,
         "replies": [],
         "stats": {
@@ -5039,360 +5941,6 @@
         "title": "The Turmeric Plant 🌱🌿🌱🌿 Genesis To Overcome High Production Using The Mobile Seedbed Planting Techniques || The Raining Season Blessings Over Dry Season. ",
         "updated": "2026-04-21T10:23:45",
         "url": "/hive-150280/@mattsanthonyit/the-turmeric-plant-genesis-to-overcome-high-production-using-the-mobile-seedbed-planting-techniques-oror-the-raining-season-bles"
-      },
-      {
-        "active_votes": [
-          {
-            "rshares": 373914473629,
-            "voter": "slickwilly"
-          },
-          {
-            "rshares": 43799556522,
-            "voter": "rok-sivante"
-          },
-          {
-            "rshares": 12963843525,
-            "voter": "scaredycatguide"
-          },
-          {
-            "rshares": 3410982966,
-            "voter": "netaterra"
-          },
-          {
-            "rshares": 790424508840,
-            "voter": "sumatranate"
-          },
-          {
-            "rshares": 2131558965183,
-            "voter": "dswigle"
-          },
-          {
-            "rshares": 930708158,
-            "voter": "joeyarnoldvn"
-          },
-          {
-            "rshares": 1915676180,
-            "voter": "grocko"
-          },
-          {
-            "rshares": 843850687,
-            "voter": "bambukah"
-          },
-          {
-            "rshares": 2444362332,
-            "voter": "buggedout"
-          },
-          {
-            "rshares": 4619755040,
-            "voter": "ragnarokdel"
-          },
-          {
-            "rshares": 21867794766,
-            "voter": "steemseph"
-          },
-          {
-            "rshares": 1427432445651,
-            "voter": "dbooster"
-          },
-          {
-            "rshares": 17627303699,
-            "voter": "b00m"
-          },
-          {
-            "rshares": 162692398578,
-            "voter": "epic-fail"
-          },
-          {
-            "rshares": 1180147769,
-            "voter": "jazzhero"
-          },
-          {
-            "rshares": 1425469835,
-            "voter": "teutonium"
-          },
-          {
-            "rshares": 1131517833656,
-            "voter": "erikah"
-          },
-          {
-            "rshares": 24051353060,
-            "voter": "myprecious"
-          },
-          {
-            "rshares": 3414561623,
-            "voter": "ravenmus1c"
-          },
-          {
-            "rshares": 1776432441,
-            "voter": "adamada"
-          },
-          {
-            "rshares": 5117771011561,
-            "voter": "sbi2"
-          },
-          {
-            "rshares": 26593845943,
-            "voter": "melbourneswest"
-          },
-          {
-            "rshares": 8092236173,
-            "voter": "enforcer48"
-          },
-          {
-            "rshares": 5060468856,
-            "voter": "spamfarmer"
-          },
-          {
-            "rshares": 67669181255,
-            "voter": "bdmillergallery"
-          },
-          {
-            "rshares": 32307049415,
-            "voter": "sbcbot"
-          },
-          {
-            "rshares": 363307732096,
-            "voter": "smartvote"
-          },
-          {
-            "rshares": 2587577629,
-            "voter": "sepone"
-          },
-          {
-            "rshares": 1808507768,
-            "voter": "goodshepherd"
-          },
-          {
-            "rshares": 6413562972,
-            "voter": "scaredycatcurate"
-          },
-          {
-            "rshares": 38267858918,
-            "voter": "sbi-tokens"
-          },
-          {
-            "rshares": 13802538359,
-            "voter": "cageon360"
-          },
-          {
-            "rshares": 1905578185,
-            "voter": "khalstem"
-          },
-          {
-            "rshares": 3138789116,
-            "voter": "therealyme"
-          },
-          {
-            "rshares": 8825093459,
-            "voter": "sumatranate.leo"
-          },
-          {
-            "rshares": 43661176077,
-            "voter": "hivetrending"
-          },
-          {
-            "rshares": 59579525482,
-            "voter": "thisismylife"
-          },
-          {
-            "rshares": 659384255,
-            "voter": "patientgamer9"
-          },
-          {
-            "rshares": 16355863295,
-            "voter": "officialhisha"
-          },
-          {
-            "rshares": 58951091364,
-            "voter": "leoschein"
-          },
-          {
-            "rshares": 914960239,
-            "voter": "gualteramarelo"
-          },
-          {
-            "rshares": 572631071,
-            "voter": "dadspardan"
-          },
-          {
-            "rshares": 11417098502,
-            "voter": "cescajove"
-          },
-          {
-            "rshares": 54843386049,
-            "voter": "iikrypticsii"
-          },
-          {
-            "rshares": 221272455759,
-            "voter": "whywhy"
-          },
-          {
-            "rshares": 1194953832,
-            "voter": "huzzah"
-          },
-          {
-            "rshares": 557584251,
-            "voter": "megaleoschein"
-          },
-          {
-            "rshares": 898453327,
-            "voter": "dugsix"
-          },
-          {
-            "rshares": 518728079,
-            "voter": "cooperclub"
-          },
-          {
-            "rshares": 262785953710,
-            "voter": "finguru"
-          },
-          {
-            "rshares": 8684920606,
-            "voter": "phul"
-          },
-          {
-            "rshares": 1089237465,
-            "voter": "bhealy"
-          },
-          {
-            "rshares": 75339182728,
-            "voter": "drricksanchez"
-          },
-          {
-            "rshares": 156461461739,
-            "voter": "hive.pizza"
-          },
-          {
-            "rshares": 727506125,
-            "voter": "darinapogodina"
-          },
-          {
-            "rshares": 708317927,
-            "voter": "maurofolco"
-          },
-          {
-            "rshares": 3963995972110,
-            "voter": "yeouido.park"
-          },
-          {
-            "rshares": 1059755593,
-            "voter": "solominer.leo"
-          },
-          {
-            "rshares": 1666601659,
-            "voter": "h3m4n7"
-          },
-          {
-            "rshares": 119178382138,
-            "voter": "thebighigg"
-          },
-          {
-            "rshares": 1689052900,
-            "voter": "day1001"
-          },
-          {
-            "rshares": 8698092633,
-            "voter": "alohaed"
-          },
-          {
-            "rshares": 3704750372,
-            "voter": "xurph"
-          },
-          {
-            "rshares": 1592378236,
-            "voter": "incantia"
-          },
-          {
-            "rshares": 72693648553,
-            "voter": "venarisyndicate"
-          },
-          {
-            "rshares": 667211542,
-            "voter": "thoth442"
-          },
-          {
-            "rshares": 29755726982,
-            "voter": "trumpybear"
-          },
-          {
-            "rshares": 246073359932,
-            "voter": "neal.power"
-          },
-          {
-            "rshares": 13866821585,
-            "voter": "solfart"
-          },
-          {
-            "rshares": 7315204912,
-            "voter": "vaclavs"
-          },
-          {
-            "rshares": 96746967744,
-            "voter": "gifu"
-          }
-        ],
-        "author": "bozz",
-        "author_payout_value": "0.000 HBD",
-        "author_reputation": 82.27,
-        "author_role": "guest",
-        "author_title": "",
-        "beneficiaries": [],
-        "blacklists": [],
-        "body": "<center>![20230711_113158.jpg](https://files.peakd.com/file/peakd-hive/bozz/243LvvYFKSFF3ka1GDi2VngqH146a7mFTNLEUZwAuHttrzLiVQ4PE9XE7bzehv82EMEtp.jpg)</center>\n\n----------------------------\n\nIt's been a long long time since I have been to Minnesota.  I remember when I was much younger, my parents decided to do the Lake Superior circle tour.  In case you aren't familiar with the concept, it's basically just a designated route around Lake Superior (called Gitche Gumee by the Ojibwa).  Each of the Great Lakes has a circle route (at least the three main ones that touch Michigan).  In the case of Superior, it takes you through the upper peninsula of Michigan into Wisconsin, then a short jaunt along the northern shore of the lake until you get into Canada.  Eventually, you find yourself back in Sault Ste. Marie and cross back over into Michigan making the circuit complete.\n\nMore recently, I had a flight layover in Minneapolis, but since we never left the airport, I don't really count that as having visited Minnesota.  This Summer, @mrsbozz and I are planning on taking a trip to Wisconsin.  It is very possible we will be making a quick drive over to Duluth to have lunch one day, so although it will be just a taste of the state, we should still be able to count having visited it on our map.\n\n\n<center>![20230711_104853.jpg](https://files.peakd.com/file/peakd-hive/bozz/23rAtY8EB48skrEdqYXmNTsXSrkuUsnGYbFxTTtEADPDtsk58XwmnX8fwiyG7J2xiLd8R.jpg)</center>\n\n--------------------------\n\nSince I don't really have any photos of Minnesota, I am sharing photos of Lake Superior for this post.  In case you haven't guessed, this weeks #threetunetuesday sponsored by @ablaze brings us to the great state of Minnesota, land of 10,000 lakes.  When I was younger, I used to get annoyed that Minnesota was memorialized for its lakes.  I mean sure, it might have a lot of lakes, but we have the Great Lakes.  How much better is that?  It's funny the things you think are important when you are younger.\n\nIn fact, if you look at a map, Minnesota does indeed have a metric crap ton of lakes.  It's honestly no contest, but yes, Michigan still does have the Great Lakes.\n\nMinnesota was actually a bit harder than I would have expected to find songs for this post.  Sure, it's not that easy to rhyme something with Minnesota, but I think we all know by now that not every song has to rhyme, it just makes it easier and a bit more catchy when it does.  \n\nI was able to pick out three songs that I am going to share here, I hope you enjoy them.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/KwbeHSI-3Co?si=kb4MEzqR_ivlmt12\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n--------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=KwbeHSI-3Co&list=RDKwbeHSI-3Co&start_radio=1)\n\n-------------------------\n\nI know I might catch a lot of flack for this, but I am a huge Indigo Girls fan.  I understand there is this preconceived notion that only gay women like Indigo Girls music, but I think if you actually listen to them you will realize that isn't the case.  Or at least realize that shouldn't be the case.  The harmonies alone are so amazing, and then when you add in the lyrical prowess, there is just something really special about this duo.  \n\nI was going to share a more recent video of the song \"Ghost\" from them, but honestly, these days their voices aren't quite the same as they used to be, so I found an older cut of it.  You just have to get past the overly long intro because it seems like the video is broken at first.  It isn't until about ten seconds in that you really start to hear it.\n\nI really like the line in this song where they talk about the Mississippi River starting in Minnesota.  I've seen pictures of the headwaters of the Mississippi and to be honest, it's nothing special.  There is a little sign and then just a swampy area I think.  The part in the song where they say you can walk across it in five steps is just really poignant to me.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/sNh-iw7gsuI?si=WMDbvDmHQsmaDpIp\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n---------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=sNh-iw7gsuI&list=RDsNh-iw7gsuI&start_radio=1)\n\n---------------------------\n\nI'll be the first to admit, I never really got into Soundgarden when they were popular.  Yes, I knew the couple of big hits they had, but it wasn't until Chris Cornell passed away and it became more apparent just how many creative project he had his hands in and just how amazing he was.  \"Outshined\" has a reference to Minnesota if listen really closely.  I wouldn't have known it if I hadn't looked it up online, but I felt it would just be a little wrong to not include this prolific artist this week.\n\nIt doesn't take long to hear the reference to Minnesota.  It happens before we even get to the chorus in fact, but it is there.  If you watch the video with the captions on it is even easier to catch.  I don't have much else to say here.  Soundgarden kind of speaks for themself.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/bErza7LieSM?si=Xw3WUPfpIfvpKZ1A\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n---------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=bErza7LieSM&list=RDbErza7LieSM&start_radio=1)\n\n-------------------------\n\nFinally, I realized it would be an absolute crime if I didn't include one of Minnesota's favorite sons in this post.  Of course I am talking about Prince and if you know, you know.  As I was preparing for this post yesterday, I realized just how little of his music I actually know.  Yes, I know the big hits, and the smaller ones too, but he had a massive career spanning back to the late 70's and an amazing catalog of music to sift through.\n\nI've made it my mission to take a deep dive into his music on Spotify this week.  That doesn't even include the songs he wrote for so many other people.  \n\n\"Laydown\" is one of the songs that I have probably never heard in my life until now and it's quite simple, but if you listen to the whole thing you will eventually hear the reference to Minnesota. It's too bad that Prince had to be taken from us so soon. I think he really could have made so much more great music.  \n\nI remember maybe about twenty years ago he was in Michigan doing a show near where we lived.  I just kind of laughed it off and didn't have much interest in going to see him, but I really wish I had now.  Just to be able to say I saw a legend.\n\n----------\n\n<center>\n### [My Sports Account - @bozz.sports](https://www.peakd.com/@bozz.sports)\n</center>\n\n----------\n\n#### <center>Come hang out in [The Pub](https://peakd.com/c/hive-178138/created)</center>\n<center>[Find us on Discord](https://discord.gg/cCEMJXAEXk)</center>\n\n<center>Or Check out my [Grilling and Smoking Community on HIVE](https://peakd.com/c/hive-138631/created)</center>\n\n-------------\n\n<center>![TEAMUSAhive_footer_bozz.jpg](https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg)</center>\n\n----------------\n\n<center>*All pictures/screenshots taken by myself or @mrsbozz unless otherwise sourced*</center>\n\n\n\n \n\n\n\n\n",
-        "category": "hive-193212",
-        "children": 1,
-        "community": "hive-193212",
-        "community_title": "Discovery-it",
-        "created": "2026-04-21T11:14:06",
-        "curator_payout_value": "0.000 HBD",
-        "depth": 0,
-        "is_paidout": false,
-        "json_metadata": {
-          "app": "peakd/2026.4.7",
-          "description": "The North shore to be exact",
-          "format": "markdown",
-          "image": [
-            "https://files.peakd.com/file/peakd-hive/bozz/243LvvYFKSFF3ka1GDi2VngqH146a7mFTNLEUZwAuHttrzLiVQ4PE9XE7bzehv82EMEtp.jpg",
-            "https://files.peakd.com/file/peakd-hive/bozz/23rAtY8EB48skrEdqYXmNTsXSrkuUsnGYbFxTTtEADPDtsk58XwmnX8fwiyG7J2xiLd8R.jpg",
-            "https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg"
-          ],
-          "tags": [
-            "discovery-it",
-            "threetunetuesday",
-            "pimp",
-            "tribes",
-            "bbh",
-            "gems",
-            "vibes",
-            "music4life",
-            "silverbloggers",
-            "ccc"
-          ],
-          "users": [
-            "mrsbozz",
-            "ablaze",
-            "bozz.sports"
-          ]
-        },
-        "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 17404395666213,
-        "payout": 1.694,
-        "payout_at": "2026-04-28T11:14:06",
-        "pending_payout_value": "1.694 HBD",
-        "percent_hbd": 10000,
-        "permlink": "on-the-shores-of-gitche-gumee",
-        "post_id": 149883522,
-        "reblogs": 1,
-        "replies": [],
-        "stats": {
-          "flag_weight": 0,
-          "gray": false,
-          "hide": false,
-          "total_votes": 73
-        },
-        "title": "\"On the shores of Gitche Gumee\"",
-        "updated": "2026-04-21T11:14:06",
-        "url": "/hive-193212/@bozz/on-the-shores-of-gitche-gumee"
       },
       {
         "active_votes": [
@@ -5577,6 +6125,10 @@
             "voter": "sketching"
           },
           {
+            "rshares": 524466703,
+            "voter": "meestemboom"
+          },
+          {
             "rshares": 761571802,
             "voter": "belemo.leo"
           },
@@ -5660,20 +6212,20 @@
           ]
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 19415307536891,
+        "net_rshares": 19415832003594,
         "payout": 1.89,
         "payout_at": "2026-04-28T11:07:21",
         "pending_payout_value": "1.890 HBD",
         "percent_hbd": 10000,
         "permlink": "bev-adoption-trends-in-germany-quarterly-stock-shares",
-        "post_id": 149883490,
+        "post_id": 149883473,
         "reblogs": 0,
         "replies": [],
         "stats": {
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 57
+          "total_votes": 58
         },
         "title": "BEV Adoption Trends in Germany – Quarterly Stock Shares",
         "updated": "2026-04-21T11:07:21",
@@ -6406,7 +6958,7 @@
         "pending_payout_value": "2.092 HBD",
         "percent_hbd": 10000,
         "permlink": "11-hive-money-donated-to-ankerhunde-ev-or-nft-sales-will-go-into-donation",
-        "post_id": 149883335,
+        "post_id": 149883318,
         "reblogs": 0,
         "replies": [],
         "stats": {
@@ -6769,7 +7321,7 @@
         "pending_payout_value": "1.417 HBD",
         "percent_hbd": 10000,
         "permlink": "wie-technik-und-ich-uns-entwickelten",
-        "post_id": 149883475,
+        "post_id": 149883458,
         "reblogs": 0,
         "replies": [],
         "stats": {
@@ -7117,6 +7669,10 @@
             "voter": "tub3r0"
           },
           {
+            "rshares": 6451146527,
+            "voter": "ericpso"
+          },
+          {
             "rshares": 1058242356,
             "voter": "uncorked-reality"
           },
@@ -7346,20 +7902,20 @@
           "type": "post"
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 17692200682421,
+        "net_rshares": 17698651828948,
         "payout": 1.723,
         "payout_at": "2026-04-28T10:43:12",
         "pending_payout_value": "1.723 HBD",
         "percent_hbd": 10000,
         "permlink": "mohamed-salah-pen-drawing-ba20461d85a81",
-        "post_id": 149883347,
+        "post_id": 149883330,
         "reblogs": 0,
         "replies": [],
         "stats": {
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 129
+          "total_votes": 130
         },
         "title": "Mohamed Salah - Pen Drawing",
         "updated": "2026-04-21T10:43:12",
@@ -7910,7 +8466,7 @@
         "pending_payout_value": "2.127 HBD",
         "percent_hbd": 10000,
         "permlink": "street-art-248-beautiful-portrait",
-        "post_id": 149883184,
+        "post_id": 149883167,
         "reblogs": 1,
         "replies": [],
         "stats": {
@@ -9108,7 +9664,7 @@
         "pending_payout_value": "2.372 HBD",
         "percent_hbd": 10000,
         "permlink": "big-spin-metro-skatepark-felix-primera",
-        "post_id": 149883081,
+        "post_id": 149883064,
         "reblogs": 1,
         "replies": [],
         "stats": {
@@ -9905,7 +10461,7 @@
         "pending_payout_value": "4.810 HBD",
         "percent_hbd": 10000,
         "permlink": "la-caleta-a-very-popular-beach-with-a-special-charm-malaga-spain",
-        "post_id": 149882759,
+        "post_id": 149882742,
         "reblogs": 4,
         "replies": [],
         "stats": {
@@ -10712,7 +11268,7 @@
         "pending_payout_value": "1.610 HBD",
         "percent_hbd": 0,
         "permlink": "mensaje-diario-de-5-minutos-31c3876d6d364",
-        "post_id": 149883214,
+        "post_id": 149883197,
         "reblogs": 0,
         "replies": [],
         "stats": {
@@ -11250,7 +11806,7 @@
         "pending_payout_value": "2.269 HBD",
         "percent_hbd": 10000,
         "permlink": "5-ways-governments-censor-social-media-secret-deals-are-only-one-of-them-protecting-children-is-the-cheat-code-sounds-familia",
-        "post_id": 149883056,
+        "post_id": 149883039,
         "reblogs": 1,
         "replies": [],
         "stats": {
@@ -11414,6 +11970,10 @@
             "voter": "robomode"
           },
           {
+            "rshares": 1365175000,
+            "voter": "randumb"
+          },
+          {
             "rshares": 933417612,
             "voter": "altcoinbandit"
           },
@@ -11484,6 +12044,10 @@
           {
             "rshares": 3929462839,
             "voter": "ragnar94"
+          },
+          {
+            "rshares": 1042952191,
+            "voter": "crimo"
           },
           {
             "rshares": 11730434483,
@@ -11902,6 +12466,10 @@
             "voter": "katiekate86"
           },
           {
+            "rshares": 0,
+            "voter": "sports.power.bot"
+          },
+          {
             "rshares": 2174840770,
             "voter": "lavoiser"
           },
@@ -11969,20 +12537,20 @@
           "type": "post"
         },
         "max_accepted_payout": "1000000.000 HBD",
-        "net_rshares": 8175025067081,
+        "net_rshares": 8177433194272,
         "payout": 0.796,
         "payout_at": "2026-04-28T11:09:33",
         "pending_payout_value": "0.796 HBD",
         "percent_hbd": 10000,
         "permlink": "double-tank-strategy-with-torch",
-        "post_id": 149883500,
+        "post_id": 149883483,
         "reblogs": 0,
         "replies": [],
         "stats": {
           "flag_weight": 0,
           "gray": false,
           "hide": false,
-          "total_votes": 161
+          "total_votes": 164
         },
         "title": "Double Tank Strategy with Torch Myrmidon || The Fire Tank That Never Dies",
         "updated": "2026-04-21T11:09:33",
@@ -13365,7 +13933,7 @@
         "pending_payout_value": "1.888 HBD",
         "percent_hbd": 10000,
         "permlink": "roasted-sweet-potatoes-with-palm-sugar-glaze",
-        "post_id": 149883089,
+        "post_id": 149883072,
         "reblogs": 0,
         "replies": [],
         "stats": {

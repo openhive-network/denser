@@ -22,7 +22,7 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
   });
 
   test('ANON-HOME-01 — root URL redirects to /trending and feed renders', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'commit' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await page.waitForURL('**/trending', { timeout: TIMEOUTS.HYDRATION });
     await expect(page).toHaveURL(/\/trending$/);
@@ -31,7 +31,7 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
   });
 
   test('ANON-HOME-02 — Trending feed renders header, sidebar and post cards', async ({ page }) => {
-    await page.goto('/trending', { waitUntil: 'commit' });
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
 
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     await expect(homePage.getHomeNavLink).toBeVisible();
@@ -42,28 +42,28 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
   });
 
   test('ANON-HOME-03 — Hot feed renders and "Hot" filter is active', async ({ page }) => {
-    await page.goto('/hot', { waitUntil: 'commit' });
+    await page.goto('/hot', { waitUntil: 'domcontentloaded' });
 
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     await expect(homePage.getFilterPosts).toHaveText('Hot', { timeout: TIMEOUTS.HYDRATION });
   });
 
   test('ANON-HOME-04 — Created feed renders and "New" filter is active', async ({ page }) => {
-    await page.goto('/created', { waitUntil: 'commit' });
+    await page.goto('/created', { waitUntil: 'domcontentloaded' });
 
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     await expect(homePage.getFilterPosts).toHaveText('New', { timeout: TIMEOUTS.HYDRATION });
   });
 
   test('ANON-HOME-05 — Payout feed renders and "Payouts" filter is active', async ({ page }) => {
-    await page.goto('/payout', { waitUntil: 'commit' });
+    await page.goto('/payout', { waitUntil: 'domcontentloaded' });
 
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     await expect(homePage.getFilterPosts).toHaveText('Payouts', { timeout: TIMEOUTS.HYDRATION });
   });
 
   test('ANON-HOME-06 — Muted feed page loads with "Muted" filter active', async ({ page }) => {
-    await page.goto('/muted', { waitUntil: 'commit' });
+    await page.goto('/muted', { waitUntil: 'domcontentloaded' });
 
     await expect(homePage.getFilterPosts).toHaveText('Muted', { timeout: TIMEOUTS.HYDRATION });
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
@@ -72,7 +72,7 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
   test('ANON-HOME-07 — First post card exposes title, author, timestamp, votes and payout', async ({
     page
   }) => {
-    await page.goto('/trending', { waitUntil: 'commit' });
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
 
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
 
@@ -90,7 +90,7 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
   });
 
   test('ANON-HOME-08 — Sidebar visible on desktop, hidden on mobile breakpoint', async ({ page }) => {
-    await page.goto('/trending', { waitUntil: 'commit' });
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
 
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
@@ -102,11 +102,14 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
   test('ANON-HOME-09 — Sidebar menu exposes FAQ, Privacy Policy and Terms of Service links', async ({
     page
   }) => {
-    await page.goto('/trending', { waitUntil: 'commit' });
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
 
-    await homePage.getNavSidebarMenu.click();
-    await expect(homePage.getNavSidebarMenuContent).toBeVisible();
+    await homePage.getNavSidebarMenu.waitFor({ state: 'visible' });
+    await expect(async () => {
+      await homePage.getNavSidebarMenu.click();
+      await homePage.getNavSidebarMenuContent.waitFor({ state: 'visible', timeout: 5000 });
+    }).toPass({ timeout: 20000, intervals: [1000, 2000, 3000] });
 
     const menu = homePage.getNavSidebarMenuContent;
     await expect(menu.getByRole('button', { name: 'FAQ' })).toBeVisible();
