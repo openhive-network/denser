@@ -1,7 +1,7 @@
 import { test, expect } from '../support/fixture-proxy-test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
-import { getHBAuthCredentialsFromEnv, loginViaHBAuth } from '../support/loginHelper';
+import { loginViaHBAuth, HBAuthCredentials } from '../support/loginHelper';
 
 /**
  * Login fixture tests.
@@ -16,19 +16,33 @@ import { getHBAuthCredentialsFromEnv, loginViaHBAuth } from '../support/loginHel
  *   pnpm --filter @hive/blog test:fixture
  *
  * Required env vars (apps/blog/.env.local):
- *   GUEST4TEST2_WIF_POSTING            — posting WIF private key
- *   GUEST4TEST2_SAFE_STORAGE_PASSWORD  — safe-storage password
+ *   CI_TEST_USER              — username
+ *   CI_TEST_USER_WIF_POSTING  — posting WIF private key
  */
 
 test.use({ fixtureTestName: 'login' });
 
-const USERNAME = 'guest4test';
+const SAFE_STORAGE_PASSWORD = 'testtest';
+
+function getCredentials(): HBAuthCredentials {
+  const username = process.env.CI_TEST_USER;
+  const wifPosting = process.env.CI_TEST_USER_WIF_POSTING;
+
+  if (!username || !wifPosting) {
+    throw new Error(
+      'Missing CI_TEST_USER or CI_TEST_USER_WIF_POSTING env vars. ' +
+        'Add them to apps/blog/.env.local.'
+    );
+  }
+
+  return { username, safeStoragePassword: SAFE_STORAGE_PASSWORD, wifPosting };
+}
 
 test.describe('Login', () => {
   test('AUTH-01 — Login via HBAuth with posting key', async ({ page }) => {
     const homePage = new HomePage(page);
     const profileMenu = new ProfileUserMenu(page);
-    const credentials = getHBAuthCredentialsFromEnv(USERNAME);
+    const credentials = getCredentials();
 
     await page.goto('/', { waitUntil: 'commit' });
     await loginViaHBAuth(page, credentials);
@@ -36,14 +50,14 @@ test.describe('Login', () => {
     await homePage.profileAvatarButton.click();
 
     await expect(profileMenu.profileMenuContent).toBeVisible();
-    await profileMenu.validateUserNameInProfileMenu(USERNAME);
+    await profileMenu.validateUserNameInProfileMenu(credentials.username);
     await expect(profileMenu.logoutLink).toBeVisible();
   });
 
   test('AUTH-09 — Logout from the application', async ({ page }) => {
     const homePage = new HomePage(page);
     const profileMenu = new ProfileUserMenu(page);
-    const credentials = getHBAuthCredentialsFromEnv(USERNAME);
+    const credentials = getCredentials();
 
     await page.goto('/', { waitUntil: 'commit' });
     await loginViaHBAuth(page, credentials);
@@ -51,7 +65,7 @@ test.describe('Login', () => {
     await homePage.profileAvatarButton.click();
 
     await expect(profileMenu.profileMenuContent).toBeVisible();
-    await profileMenu.validateUserNameInProfileMenu(USERNAME);
+    await profileMenu.validateUserNameInProfileMenu(credentials.username);
 
     await profileMenu.logoutLink.click();
 
