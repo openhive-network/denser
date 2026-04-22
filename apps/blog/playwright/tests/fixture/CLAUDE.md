@@ -31,6 +31,8 @@ apps/blog/
     ├── mock/fixtures/<testName>/                          # recorded JSON-RPC pairs per test
     └── support/
         ├── fixture-proxy-test.ts                          # `test` + `expect` exports, worker-scope proxy
+        ├── postVotingContext.ts                           # shared voter/post constants + hydration helpers
+        ├── pages/                                         # Page Object Models (use these, don't roll your own locators)
         ├── mock-server/fixture-proxy.ts                   # record/replay HTTP proxy on :8200
         └── fixture-auth/
             ├── constants.ts                               # shared cookie name + dummy password
@@ -120,6 +122,8 @@ Short, descriptive. No path separators. The proxy will write to
 ```ts
 import { test, expect } from '../support/fixture-proxy-test';
 import { installBroadcastInterceptor } from '../support/fixture-auth/broadcast-interceptor';
+import { HomePage } from '../support/pages/homePage';
+import { gotoTrendingLoggedIn } from '../support/postVotingContext';
 
 test.use({
   fixtureTestName: 'myNewScenario',
@@ -129,18 +133,33 @@ test.use({
 test('does the thing', async ({ page }) => {
   const broadcast = await installBroadcastInterceptor(page);
 
-  await page.goto('/trending');
+  // Goto + wait for App Router hydration to settle on logged-in state.
+  // (See "Wait for hydration" gotcha below for why this is non-optional
+  // on logged-in pages.)
+  await gotoTrendingLoggedIn(page);
 
-  // REQUIRED for logged-in specs: wait for client hydration.
-  // App Router's useUserCore flips user to defaultUser during mount,
-  // which re-renders post cards into their anonymous branch for a beat.
-  // Clicking during that window opens a login dialog instead of the
-  // real handler. Wait for the nav to settle into its logged-in state:
-  await expect(page.getByTestId('login-btn')).toBeHidden();
+  // Prefer POM locators over raw `page.getByTestId(...)` — the project
+  // convention is that all UI access goes through a Page Object Model.
+  await new HomePage(page).getFirstPostUpvoteButton.click();
 
-  // ... interactions ...
+  // ... assertions ...
 });
 ```
+
+For voting specs, prefer `postVotingContext.ts`:
+
+- `VOTER`, `FIRST_POST_AUTHOR`, `FIRST_POST_PERMLINK` — seeded user &
+  first-post identity in the committed fixtures.
+- `FULL_UPVOTE` / `FULL_DOWNVOTE` / `REMOVE_VOTE` — named weights
+  (avoid `10000` / `-10000` / `0` magic numbers).
+- `SLIDER_TARGET_PERCENT` / `SLIDER_DRAG_TOLERANCE` /
+  `BASIS_POINTS_PER_PERCENT` / `SLIDER_MIN` / `SLIDER_MAX` — slider
+  test tuning.
+- `gotoTrendingLoggedIn(page)` — see above.
+- `expectFirstPostUpvotedState(page)` /
+  `expectFirstPostDownvotedState(page)` — use in "undo" specs before
+  clicking, to wait for the filled vote icon (`bg-destructive-icon` /
+  `bg-gray-600`) to appear. See "list_votes race" gotcha below.
 
 ### 3. Record fixtures
 
@@ -167,16 +186,22 @@ import {
   installBroadcastInterceptor,
   expectVoteOperation
 } from '../support/fixture-auth/broadcast-interceptor';
+import {
+  VOTER,
+  FIRST_POST_AUTHOR,
+  FIRST_POST_PERMLINK,
+  FULL_UPVOTE
+} from '../support/postVotingContext';
 
 const broadcast = await installBroadcastInterceptor(page);
 // ... do the click ...
 await broadcast.waitForCount(1);
 
 expectVoteOperation(broadcast.calls[0], {
-  voter: 'guest4test',
-  author: 'some-author',
-  permlink: 'some-permlink',
-  weight: 10000 // 100%; negative for downvote; 0 for removal
+  voter: VOTER,
+  author: FIRST_POST_AUTHOR,
+  permlink: FIRST_POST_PERMLINK,
+  weight: FULL_UPVOTE // or FULL_DOWNVOTE, REMOVE_VOTE
 });
 ```
 
@@ -212,6 +237,12 @@ Existing flags the generator supports:
 Combine flags as needed (e.g. `highHP` + `priorVote` → slider path on
 an already-voted post).
 
+Before the first click in an "undo" spec, call
+`expectFirstPostUpvotedState(page)` or `expectFirstPostDownvotedState(page)`
+from `postVotingContext` — otherwise you race `list_votes` and the
+direct-click branch submits a fresh vote instead of opening
+VoteRemovalDialog. See the "list_votes race" gotcha below.
+
 ---
 
 ## Recipe: test the slider popover
@@ -221,17 +252,29 @@ drag snaps to integers within ±1–2 of the target, so read the achieved
 percent and feed it into TX-04:
 
 ```ts
+import { HomePage } from '../support/pages/homePage';
 import { VotingSlider } from '../support/pages/votingSlider';
+import {
+  VOTER,
+  FIRST_POST_AUTHOR,
+  FIRST_POST_PERMLINK,
+  SLIDER_MIN,
+  SLIDER_MAX,
+  SLIDER_TARGET_PERCENT,
+  SLIDER_DRAG_TOLERANCE,
+  BASIS_POINTS_PER_PERCENT
+} from '../support/postVotingContext';
 
-await page.getByTestId('upvote-button').first().click();
+await new HomePage(page).getFirstPostUpvoteButton.click();
 const slider = new VotingSlider(page);
 await expect(slider.upvoteSliderModal).toBeVisible();
 
 await slider.moveCustomSlider(
   slider.upvoteSliderTrack,
   slider.upvoteSliderThumb,
-  73, // target
-  1, 100 // min, max
+  SLIDER_TARGET_PERCENT,
+  SLIDER_MIN,
+  SLIDER_MAX
 );
 
 const displayed = await slider.upvoteSliderPercentageValue.textContent();
@@ -241,10 +284,10 @@ const percent = parseInt((displayed ?? '0').replace('%', '').trim(), 10);
 await page.getByTestId('upvote-button-slider').click();
 await broadcast.waitForCount(1);
 expectVoteOperation(broadcast.calls[0], {
-  voter: 'guest4test',
-  author: '...',
-  permlink: '...',
-  weight: percent * 100 // slider displays %, vote op uses basis points
+  voter: VOTER,
+  author: FIRST_POST_AUTHOR,
+  permlink: FIRST_POST_PERMLINK,
+  weight: percent * BASIS_POINTS_PER_PERCENT
 });
 ```
 
@@ -264,13 +307,41 @@ SSR-visible data, patch the fixture dir, not the test.
 `useUserCore` uses an `isMounted` guard that briefly resolves user to
 `defaultUser` between SSR and mount. Post cards re-render into their
 anonymous (DialogLogin-wrapped) branch for that window. Clicking mid-flight
-opens a login dialog instead of the real handler. Always:
+opens a login dialog instead of the real handler. Use the shared helper:
 
 ```ts
-await expect(page.getByTestId('login-btn')).toBeHidden();
+import { gotoTrendingLoggedIn } from '../support/postVotingContext';
+await gotoTrendingLoggedIn(page);
 ```
 
-before the first interaction.
+which does `goto` + `expect(page.getByTestId('login-btn')).toBeHidden()`.
+
+### `list_votes` race on "undo" flows — wait for the filled icon
+
+`login-btn` hides as soon as `user.isLoggedIn` is true, which does *not*
+wait for `database_api.list_votes` to resolve. In the undo specs, if you
+click before `list_votes` has come back, `userVote` is still undefined,
+`vote_upvoted` / `vote_downvoted` is still false, and the component
+renders the direct-click branch. Clicking submits a fresh vote instead
+of opening `VoteRemovalDialog` — broadcast fires with the wrong weight
+and the dialog-header assertion times out.
+
+The tell-tale sign: `[interceptor] POST network_broadcast_api.broadcast_transaction`
+appears in the log even though `vote-removal-dialog-header` never became
+visible.
+
+Fix — wait for the visual "already voted" state (icon class) before
+clicking, using the helpers from `postVotingContext`:
+
+```ts
+import { expectFirstPostUpvotedState } from '../support/postVotingContext';
+await gotoTrendingLoggedIn(page);
+await expectFirstPostUpvotedState(page); // waits for bg-destructive-icon
+await new HomePage(page).getFirstPostUpvoteButton.click();
+```
+
+Same pattern with `expectFirstPostDownvotedState` (waits for `bg-gray-600`)
+before a downvote-undo click.
 
 ### Toast text matches twice — use `{ exact: true }`
 

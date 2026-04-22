@@ -3,22 +3,23 @@ import {
   installBroadcastInterceptor,
   expectVoteOperation
 } from '../support/fixture-auth/broadcast-interceptor';
+import { HomePage } from '../support/pages/homePage';
+import {
+  VOTER,
+  FIRST_POST_AUTHOR,
+  FIRST_POST_PERMLINK,
+  REMOVE_VOTE,
+  gotoTrendingLoggedIn,
+  expectFirstPostDownvotedState
+} from '../support/postVotingContext';
 
 /**
  * Post voting — undo an existing downvote (§6.1 VOTE-04).
  *
- * Runs against `postVoting_downvoted/` — a variant generated from the base
- * `postVoting/` fixtures, with first post's active_votes + list_votes
- * patched so the UI loads in the "already downvoted by {voter}" branch
- * and clicking downvote opens the VoteRemovalDialog.
- *
- * Regenerate variants after any re-record of the base:
- *   node playwright/tests/support/fixture-auth/generate-voted-variants.mjs
+ * Runs against `postVoting_downvoted/` — first post's active_votes +
+ * list_votes are patched so the UI loads in the "already downvoted by
+ * {voter}" branch and clicking downvote opens the VoteRemovalDialog.
  */
-
-const VOTER = process.env.CI_TEST_USER || 'guest4test';
-const FIRST_POST_AUTHOR = 'angelica7';
-const FIRST_POST_PERMLINK = 'mis-8-anos-en-hive';
 
 test.use({
   fixtureTestName: 'postVoting_downvoted',
@@ -28,10 +29,10 @@ test.use({
 test.describe('Post voting — previously downvoted (§6.1)', () => {
   test('VOTE-04: undo an existing downvote', async ({ page }) => {
     const broadcast = await installBroadcastInterceptor(page);
-    await page.goto('/trending');
-    await expect(page.getByTestId('login-btn')).toBeHidden();
+    await gotoTrendingLoggedIn(page);
+    await expectFirstPostDownvotedState(page);
 
-    await page.getByTestId('downvote-button').first().click();
+    await new HomePage(page).getFirstPostDownvoteButton.click();
 
     await expect(
       page.getByTestId('vote-removal-dialog-header')
@@ -43,7 +44,7 @@ test.describe('Post voting — previously downvoted (§6.1)', () => {
       voter: VOTER,
       author: FIRST_POST_AUTHOR,
       permlink: FIRST_POST_PERMLINK,
-      weight: 0
+      weight: REMOVE_VOTE
     });
 
     await expect(

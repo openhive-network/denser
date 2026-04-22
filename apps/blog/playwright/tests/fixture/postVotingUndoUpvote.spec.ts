@@ -3,22 +3,23 @@ import {
   installBroadcastInterceptor,
   expectVoteOperation
 } from '../support/fixture-auth/broadcast-interceptor';
+import { HomePage } from '../support/pages/homePage';
+import {
+  VOTER,
+  FIRST_POST_AUTHOR,
+  FIRST_POST_PERMLINK,
+  REMOVE_VOTE,
+  gotoTrendingLoggedIn,
+  expectFirstPostUpvotedState
+} from '../support/postVotingContext';
 
 /**
  * Post voting — undo an existing upvote (§6.1 VOTE-02).
  *
- * Runs against `postVoting_upvoted/` — a variant generated from the base
- * `postVoting/` fixtures, with the first post's active_votes + list_votes
- * patched so the UI loads in the "already upvoted by {voter}" branch and
- * clicking upvote opens the VoteRemovalDialog.
- *
- * Regenerate variants after any re-record of the base:
- *   node playwright/tests/support/fixture-auth/generate-voted-variants.mjs
+ * Runs against `postVoting_upvoted/` — the first post's active_votes +
+ * list_votes are patched so the UI loads in the "already upvoted by
+ * {voter}" branch and clicking upvote opens the VoteRemovalDialog.
  */
-
-const VOTER = process.env.CI_TEST_USER || 'guest4test';
-const FIRST_POST_AUTHOR = 'angelica7';
-const FIRST_POST_PERMLINK = 'mis-8-anos-en-hive';
 
 test.use({
   fixtureTestName: 'postVoting_upvoted',
@@ -28,10 +29,13 @@ test.use({
 test.describe('Post voting — previously upvoted (§6.1)', () => {
   test('VOTE-02: undo an existing upvote', async ({ page }) => {
     const broadcast = await installBroadcastInterceptor(page);
-    await page.goto('/trending');
-    await expect(page.getByTestId('login-btn')).toBeHidden();
+    await gotoTrendingLoggedIn(page);
+    // Wait for list_votes to land before clicking — otherwise the
+    // component renders the direct-click branch and submits a fresh
+    // upvote instead of opening the removal dialog.
+    await expectFirstPostUpvotedState(page);
 
-    await page.getByTestId('upvote-button').first().click();
+    await new HomePage(page).getFirstPostUpvoteButton.click();
 
     await expect(
       page.getByTestId('vote-removal-dialog-header')
@@ -43,7 +47,7 @@ test.describe('Post voting — previously upvoted (§6.1)', () => {
       voter: VOTER,
       author: FIRST_POST_AUTHOR,
       permlink: FIRST_POST_PERMLINK,
-      weight: 0
+      weight: REMOVE_VOTE
     });
 
     await expect(

@@ -1,26 +1,28 @@
 import { test, expect } from '../support/fixture-proxy-test';
 import { installBroadcastInterceptor } from '../support/fixture-auth/broadcast-interceptor';
+import { HomePage } from '../support/pages/homePage';
 import { VotingSlider } from '../support/pages/votingSlider';
+import {
+  SLIDER_MIN,
+  SLIDER_MAX,
+  SLIDER_TARGET_PERCENT,
+  SLIDER_DRAG_TOLERANCE,
+  gotoTrendingLoggedIn
+} from '../support/postVotingContext';
 
 /**
  * Post voting — vote weight persistence (§6.1 VOTE-09).
  *
  * votes-component saves the current slider percent to
- * localStorage.votesValues (via useStorageWithTTL with StorageTTL.PERMANENT)
- * right after a vote fires, and reads it back into sliderUpvote when the
- * slider popover is mounted. This test exercises the round trip: set a
- * custom slider percent, submit, reload the page, re-open the slider, and
- * assert the slider recovers the same value.
+ * localStorage.votesValues via useStorageWithTTL with StorageTTL.PERMANENT,
+ * and reads it back into sliderUpvote when the slider popover mounts.
+ * This test exercises the round trip: set a custom percent, submit,
+ * reload, re-open the slider, assert it recovers the same value.
  *
  * Storage shape (per `@ui/lib/storage-with-ttl.setStorageItem`):
  *   { value: { post: { upvote: [N], downvote: [N] }, comment: {...} },
  *     expiresAt: null, createdAt: <ts> }
  */
-
-const TARGET_PERCENT = 73;
-const SLIDER_MIN = 1;
-const SLIDER_MAX = 100;
-const DRAG_TOLERANCE = 3;
 
 test.use({
   fixtureTestName: 'postVoting_highHP',
@@ -30,18 +32,18 @@ test.use({
 test.describe('Post voting — weight persistence (§6.1)', () => {
   test('VOTE-09: slider weight persists across reload', async ({ page }) => {
     const broadcast = await installBroadcastInterceptor(page);
-    await page.goto('/trending');
-    await expect(page.getByTestId('login-btn')).toBeHidden();
+    await gotoTrendingLoggedIn(page);
 
+    const homePage = new HomePage(page);
     const slider = new VotingSlider(page);
 
     // Step 1 — set custom slider value and submit vote.
-    await page.getByTestId('upvote-button').first().click();
+    await homePage.getFirstPostUpvoteButton.click();
     await expect(slider.upvoteSliderModal).toBeVisible();
     await slider.moveCustomSlider(
       slider.upvoteSliderTrack,
       slider.upvoteSliderThumb,
-      TARGET_PERCENT,
+      SLIDER_TARGET_PERCENT,
       SLIDER_MIN,
       SLIDER_MAX
     );
@@ -51,18 +53,17 @@ test.describe('Post voting — weight persistence (§6.1)', () => {
       10
     );
     expect(firstPercent).toBeGreaterThanOrEqual(
-      TARGET_PERCENT - DRAG_TOLERANCE
+      SLIDER_TARGET_PERCENT - SLIDER_DRAG_TOLERANCE
     );
     expect(firstPercent).toBeLessThanOrEqual(
-      TARGET_PERCENT + DRAG_TOLERANCE
+      SLIDER_TARGET_PERCENT + SLIDER_DRAG_TOLERANCE
     );
 
     await page.getByTestId('upvote-button-slider').click();
     await broadcast.waitForCount(1);
 
     // Step 2 — localStorage reflects the slider value. useStorageWithTTL
-    // wraps the value in {value, expiresAt, createdAt}, so navigate into
-    // `.value.post.upvote[0]`. Poll to allow the React effect to flush.
+    // wraps in {value, expiresAt, createdAt}; poll to let the effect flush.
     await page.waitForFunction(
       (expected) => {
         const raw = window.localStorage.getItem('votesValues');
@@ -83,9 +84,9 @@ test.describe('Post voting — weight persistence (§6.1)', () => {
     await page.reload();
     await expect(page.getByTestId('login-btn')).toBeHidden();
 
-    // Step 4 — open the slider again; it should hydrate from
-    // storedVotesValues rather than the DEFAULT_VOTES_VALUES of 100%.
-    await page.getByTestId('upvote-button').first().click();
+    // Step 4 — open the slider again; it should hydrate from stored
+    // value rather than the DEFAULT_VOTES_VALUES of 100%.
+    await homePage.getFirstPostUpvoteButton.click();
     await expect(slider.upvoteSliderModal).toBeVisible();
     await expect(slider.upvoteSliderPercentageValue).toHaveText(
       `${firstPercent}%`

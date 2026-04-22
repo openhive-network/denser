@@ -3,21 +3,25 @@ import {
   installBroadcastInterceptor,
   expectVoteOperation
 } from '../support/fixture-auth/broadcast-interceptor';
+import { HomePage } from '../support/pages/homePage';
+import {
+  VOTER,
+  FIRST_POST_AUTHOR,
+  FIRST_POST_PERMLINK,
+  REMOVE_VOTE,
+  gotoTrendingLoggedIn,
+  expectFirstPostUpvotedState
+} from '../support/postVotingContext';
 
 /**
  * Post voting — undo a slider-based upvote (§6.1 VOTE-06).
  *
- * Runs against `postVoting_highHP_upvoted/` — seeded user has high HP
- * (slider would be available for a fresh vote) AND already has a
- * slider-valued upvote (vote_percent=5000, not 10000) on the first post.
- * Clicking upvote-button therefore opens the VoteRemovalDialog (the
- * `vote_upvoted` branch wins over the `enable_slider` branch), and
- * confirming removal produces a weight=0 broadcast.
+ * Seeded user has high HP (slider would be available for a fresh vote)
+ * AND already has a slider-valued upvote (vote_percent=5000, not 10000).
+ * The "already upvoted" branch wins over the slider branch, so clicking
+ * upvote opens the VoteRemovalDialog and confirming produces a
+ * weight=0 broadcast.
  */
-
-const VOTER = process.env.CI_TEST_USER || 'guest4test';
-const FIRST_POST_AUTHOR = 'angelica7';
-const FIRST_POST_PERMLINK = 'mis-8-anos-en-hive';
 
 test.use({
   fixtureTestName: 'postVoting_highHP_upvoted',
@@ -27,10 +31,10 @@ test.use({
 test.describe('Post voting — undo slider upvote (§6.1)', () => {
   test('VOTE-06: undo an existing slider-based upvote', async ({ page }) => {
     const broadcast = await installBroadcastInterceptor(page);
-    await page.goto('/trending');
-    await expect(page.getByTestId('login-btn')).toBeHidden();
+    await gotoTrendingLoggedIn(page);
+    await expectFirstPostUpvotedState(page);
 
-    await page.getByTestId('upvote-button').first().click();
+    await new HomePage(page).getFirstPostUpvoteButton.click();
 
     await expect(
       page.getByTestId('vote-removal-dialog-header')
@@ -42,7 +46,7 @@ test.describe('Post voting — undo slider upvote (§6.1)', () => {
       voter: VOTER,
       author: FIRST_POST_AUTHOR,
       permlink: FIRST_POST_PERMLINK,
-      weight: 0
+      weight: REMOVE_VOTE
     });
 
     await expect(
