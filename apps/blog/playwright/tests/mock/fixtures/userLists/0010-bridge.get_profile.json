@@ -1,0 +1,37 @@
+{
+  "method": "bridge.get_profile",
+  "params": {
+    "account": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active": "2022-04-06T03:04:30",
+      "blacklists": [],
+      "created": "2020-03-17T14:02:30",
+      "id": 1371790,
+      "metadata": {
+        "profile": {
+          "about": "",
+          "blacklist_description": "",
+          "cover_image": "",
+          "location": "Hive",
+          "muted_list_description": "Phishing accounts",
+          "name": "Hive.Blog",
+          "profile_image": "https://images.hive.blog/DQmfHDVbumQpJaNGSNMGu922R5Hbjb4xCgDuj9NNx5bgtbj/hive_blog.png",
+          "website": "https://hive.blog"
+        }
+      },
+      "name": "hive.blog",
+      "post_count": 0,
+      "reputation": 25,
+      "stats": {
+        "followers": 73,
+        "following": 0,
+        "rank": 0
+      }
+    }
+  },
+  "paramsHash": "231cd1f94cf321ee"
+}

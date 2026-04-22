@@ -63,6 +63,7 @@ const ListItem = ({
 
   return (
     <li
+      data-testid="user-list-item"
       className={`flex items-center justify-between border-b border-border-primary/30 px-3 py-2 transition-colors last:border-b-0 odd:bg-background-tertiary/50 hover:bg-background-tertiary ${item._temporary ? 'opacity-50' : ''}`}
     >
       <span className="flex min-w-0 items-center gap-2">
@@ -74,13 +75,19 @@ const ListItem = ({
         />
         {!item._temporary ? (
           <BasePathLink
+            data-testid="user-list-item-name"
             className="truncate text-sm font-semibold text-destructive hover:underline"
             href={`/@${item.name}`}
           >
             {item.name}
           </BasePathLink>
         ) : (
-          <span className="truncate text-sm font-semibold text-primary/50">{item.name}</span>
+          <span
+            data-testid="user-list-item-name"
+            className="truncate text-sm font-semibold text-primary/50"
+          >
+            {item.name}
+          </span>
         )}
         {item.blacklist_description ? (
           <span className="hidden truncate text-xs text-primary/50 sm:inline">

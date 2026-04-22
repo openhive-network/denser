@@ -1,0 +1,13 @@
+{
+  "method": "bridge.get_follow_list",
+  "params": {
+    "observer": "hiveio",
+    "follow_type": "blacklisted"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": []
+  },
+  "paramsHash": "9c062f600e38252b"
+}

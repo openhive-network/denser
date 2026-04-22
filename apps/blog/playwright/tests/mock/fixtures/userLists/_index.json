@@ -1,0 +1,13 @@
+{
+  "testName": "userLists",
+  "recordedAt": "2026-04-21T12:24:54.127Z",
+  "totalRequests": 25,
+  "savedFixtures": 10,
+  "duplicatesSkipped": 15,
+  "methods": {
+    "bridge.get_follow_list": 5,
+    "database_api.find_accounts": 5,
+    "bridge.get_profile": 10,
+    "database_api.get_dynamic_global_properties": 5
+  }
+}
