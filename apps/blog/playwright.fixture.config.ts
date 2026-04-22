@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
+import {
+  FIXTURE_APP_NAME,
+  FIXTURE_COOKIE_PASSWORD
+} from './playwright/tests/support/fixture-auth/constants';
 require('dotenv').config({ path: './.env.local' });
 
 /**
@@ -66,11 +70,15 @@ export default defineConfig({
       REACT_APP_API_ENDPOINT: `http://localhost:${FIXTURE_PORT}`,
       HOSTNAME: '0.0.0.0',
       PORT: '3000',
-      // iron-session requires a password >= 32 chars. Fixture tests never
-      // exercise real auth, so a fixed dummy value is fine and lets SSR
-      // pages render without throwing.
-      DENSER_SERVER_SECRET_COOKIE_PASSWORD:
-        'fixture-tests-dummy-cookie-password-not-a-secret'
+      // Pin APP_NAME so iron-session's cookieName matches what the seeder
+      // (see playwright/tests/support/fixture-auth/) writes from the test
+      // side. Without this the app could default to "app_session" while
+      // the seeder targets "blog_session".
+      REACT_APP_APP_NAME: FIXTURE_APP_NAME,
+      // Shared with the seeder via fixture-auth/constants.ts — the app
+      // seals and the test seals with the same password so sessions
+      // unseal cleanly on both sides.
+      DENSER_SERVER_SECRET_COOKIE_PASSWORD: FIXTURE_COOKIE_PASSWORD
     }
   }
 });
