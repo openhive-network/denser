@@ -6,9 +6,9 @@
     "method": "database_api.verify_authority",
     "params": {
       "trx": {
-        "ref_block_num": 3341,
-        "ref_block_prefix": 2409554616,
-        "expiration": "2026-04-21T11:20:28",
+        "ref_block_num": 30686,
+        "ref_block_prefix": 3167621752,
+        "expiration": "2026-04-22T10:11:35",
         "extensions": [],
         "operations": [
           {
@@ -22,7 +22,7 @@
           }
         ],
         "signatures": [
-          "1f2098a9b7be89d82207926d3bd628f0f80d487e6f680de55b9958970c9e32f2603c40910644b579abc6403df02519ad4a25dbc568c1823b8f909195459af65c48"
+          "1f784e0944042a1193d5ed70f2a25acd73cbd2a857c6bc2bd22d6198e6a588511323f5e904b21f7212fc39c17d7c099e159a340259b7e546b94ab26f06b65af2ad"
         ]
       },
       "pack": "hf26"
@@ -33,9 +33,9 @@
   "method": "database_api.verify_authority",
   "params": {
     "trx": {
-      "ref_block_num": 3341,
-      "ref_block_prefix": 2409554616,
-      "expiration": "2026-04-21T11:20:28",
+      "ref_block_num": 30686,
+      "ref_block_prefix": 3167621752,
+      "expiration": "2026-04-22T10:11:35",
       "extensions": [],
       "operations": [
         {
@@ -49,7 +49,7 @@
         }
       ],
       "signatures": [
-        "1f2098a9b7be89d82207926d3bd628f0f80d487e6f680de55b9958970c9e32f2603c40910644b579abc6403df02519ad4a25dbc568c1823b8f909195459af65c48"
+        "1f784e0944042a1193d5ed70f2a25acd73cbd2a857c6bc2bd22d6198e6a588511323f5e904b21f7212fc39c17d7c099e159a340259b7e546b94ab26f06b65af2ad"
       ]
     },
     "pack": "hf26"
