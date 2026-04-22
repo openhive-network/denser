@@ -43,18 +43,45 @@ const FIXTURES_ROOT = path.resolve(
 const BASE_DIR = 'postVoting';
 const VOTER = process.env.CI_TEST_USER || 'guest4test';
 
+/**
+ * Variants opt in to patches via flags:
+ *   - priorVote: { votePercent, rshares } — patch active_votes +
+ *     list_votes so UI renders "already voted" state (VOTE-02, VOTE-04).
+ *   - highHP: true — bump vesting_shares on the seeded user's
+ *     find_accounts entry so `net_vests > 1M` and `enable_slider`
+ *     flips true (VOTE-05..09).
+ */
 const VARIANTS = [
   {
     name: 'postVoting_upvoted',
-    votePercent: 10000,
-    rshares: 1_000_000
+    priorVote: { votePercent: 10000, rshares: 1_000_000 }
   },
   {
     name: 'postVoting_downvoted',
-    votePercent: -10000,
-    rshares: -1_000_000
+    priorVote: { votePercent: -10000, rshares: -1_000_000 }
+  },
+  {
+    name: 'postVoting_highHP',
+    highHP: true
+  },
+  // Slider-based prior votes use non-100% vote_percent to signal the vote
+  // came from the slider flow rather than a one-click default. 5000 = 50%.
+  {
+    name: 'postVoting_highHP_upvoted',
+    highHP: true,
+    priorVote: { votePercent: 5000, rshares: 500_000 }
+  },
+  {
+    name: 'postVoting_highHP_downvoted',
+    highHP: true,
+    priorVote: { votePercent: -5000, rshares: -500_000 }
   }
 ];
+
+// 50M VESTS — comfortably above VOTE_WEIGHT_DROPDOWN_THRESHOLD (1M) and
+// well within realistic mainnet whale magnitudes, so the UI's derived
+// displays (manabar, reputation etc.) don't look absurd.
+const HIGH_HP_VESTING_AMOUNT = '50000000000000';
 
 function patchFixtureFile(filePath, transform) {
   const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -83,6 +110,38 @@ for (const variant of VARIANTS) {
   fs.rmSync(targetDir, { recursive: true, force: true });
   fs.cpSync(baseDir, targetDir, { recursive: true });
 
+  // highHP: inflate vesting_shares on the seeded user's find_accounts
+  // entry so the UI computes `net_vests > 1M` and enables the vote slider.
+  if (variant.highHP) {
+    const accountFiles = findFiles(targetDir, 'database_api.find_accounts');
+    if (accountFiles.length === 0) {
+      throw new Error(
+        `No database_api.find_accounts fixture found in ${targetDir}`
+      );
+    }
+    for (const f of accountFiles) {
+      patchFixtureFile(path.join(targetDir, f), (content) => {
+        const accounts = content.response?.result?.accounts;
+        if (!Array.isArray(accounts) || accounts.length === 0) {
+          throw new Error(`Unexpected shape in ${f}: no accounts[]`);
+        }
+        const target = accounts.find((a) => a.name === VOTER) ?? accounts[0];
+        if (!target?.vesting_shares?.amount) {
+          throw new Error(
+            `Unexpected shape in ${f}: no vesting_shares.amount for ${VOTER}`
+          );
+        }
+        target.vesting_shares.amount = HIGH_HP_VESTING_AMOUNT;
+      });
+    }
+  }
+
+  // The rest of the patches are only meaningful for priorVote variants.
+  if (!variant.priorVote) {
+    console.log(`✓ ${variant.name}: highHP=${!!variant.highHP}`);
+    continue;
+  }
+
   // Patch get_ranked_posts: add voter to first post's active_votes.
   const postsFiles = findFiles(targetDir, 'bridge.get_ranked_posts');
   if (postsFiles.length === 0) {
@@ -99,11 +158,11 @@ for (const variant of VARIANTS) {
       const already = firstPost.active_votes.find((v) => v.voter === VOTER);
       if (!already) {
         firstPost.active_votes.unshift({
-          rshares: variant.rshares,
+          rshares: variant.priorVote.rshares,
           voter: VOTER
         });
       } else {
-        already.rshares = variant.rshares;
+        already.rshares = variant.priorVote.rshares;
       }
     });
   }
@@ -133,10 +192,10 @@ for (const variant of VARIANTS) {
               last_update: '2026-04-22T10:00:00',
               num_changes: 0,
               permlink,
-              rshares: variant.rshares,
-              vote_percent: variant.votePercent,
+              rshares: variant.priorVote.rshares,
+              vote_percent: variant.priorVote.votePercent,
               voter: VOTER,
-              weight: Math.abs(variant.rshares)
+              weight: Math.abs(variant.priorVote.rshares)
             }
           ]
         }
@@ -144,7 +203,10 @@ for (const variant of VARIANTS) {
     });
   }
 
+  const priorVoteTag = variant.priorVote
+    ? `vote_percent=${variant.priorVote.votePercent}`
+    : '(no prior vote)';
   console.log(
-    `✓ ${variant.name}: voter=${VOTER}, vote_percent=${variant.votePercent}`
+    `✓ ${variant.name}: voter=${VOTER}, highHP=${!!variant.highHP}, ${priorVoteTag}`
   );
 }

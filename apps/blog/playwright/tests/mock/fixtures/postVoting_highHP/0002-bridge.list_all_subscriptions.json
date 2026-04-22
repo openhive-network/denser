@@ -1,0 +1,31 @@
+{
+  "method": "bridge.list_all_subscriptions",
+  "params": {
+    "account": "guest4test"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "hive-163772",
+        "Worldmappin",
+        "guest",
+        ""
+      ],
+      [
+        "hive-167922",
+        "LeoFinance",
+        "guest",
+        ""
+      ],
+      [
+        "hive-137823",
+        "Testing Zone",
+        "guest",
+        ""
+      ]
+    ]
+  },
+  "paramsHash": "6b9dcd6e73ce313d"
+}
