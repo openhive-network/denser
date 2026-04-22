@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 const FIXTURE_PROXY_PORT = 8200;
 
@@ -47,6 +47,60 @@ export interface BroadcastInterceptor {
   calls: InterceptedBroadcast[];
   /** Wait until at least `count` mutation calls have been intercepted. */
   waitForCount: (count: number, timeoutMs?: number) => Promise<void>;
+}
+
+/**
+ * Shape of a Hive `vote_operation` payload inside a broadcast's
+ * `params.trx.operations[0]`. Fields we actually assert on match the
+ * test plan's TX-04 requirements (voter, author, permlink, weight).
+ */
+export interface VoteOperationExpectations {
+  voter: string;
+  weight: number;
+  author?: string;
+  permlink?: string;
+}
+
+/**
+ * TX-04 validator. Pulls the single operation out of a captured broadcast
+ * and asserts it's a `vote_operation` with the expected fields. Lets tests
+ * catch regressions in the produced transaction shape (e.g. MR !1041)
+ * beyond the "some broadcast fired" level.
+ */
+export function expectVoteOperation(
+  call: InterceptedBroadcast,
+  expected: VoteOperationExpectations
+): void {
+  const trx = (call.params as { trx?: unknown } | undefined)?.trx as
+    | { operations?: unknown[] }
+    | undefined;
+  expect(trx, 'broadcast params should include trx').toBeDefined();
+
+  const operations = trx?.operations;
+  expect(operations, 'trx should include operations').toBeDefined();
+  expect(
+    operations?.length,
+    'vote broadcast should carry exactly one operation'
+  ).toBe(1);
+
+  const op = operations?.[0] as
+    | { type?: string; value?: Record<string, unknown> }
+    | undefined;
+  expect(op?.type, 'operation.type should be vote_operation').toBe(
+    'vote_operation'
+  );
+
+  const value = op?.value as
+    | { voter?: string; author?: string; permlink?: string; weight?: number }
+    | undefined;
+  expect(value?.voter, 'vote.voter').toBe(expected.voter);
+  expect(value?.weight, 'vote.weight').toBe(expected.weight);
+  if (expected.author !== undefined) {
+    expect(value?.author, 'vote.author').toBe(expected.author);
+  }
+  if (expected.permlink !== undefined) {
+    expect(value?.permlink, 'vote.permlink').toBe(expected.permlink);
+  }
 }
 
 /**
