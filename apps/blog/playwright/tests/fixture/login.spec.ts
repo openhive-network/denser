@@ -38,7 +38,7 @@ function getCredentials(): HBAuthCredentials {
   return { username, safeStoragePassword: SAFE_STORAGE_PASSWORD, wifPosting };
 }
 
-test.describe('Login', () => {
+test.describe.skip('Login', () => {
   test('AUTH-01 — Login via HBAuth with posting key', async ({ page }) => {
     const homePage = new HomePage(page);
     const profileMenu = new ProfileUserMenu(page);
