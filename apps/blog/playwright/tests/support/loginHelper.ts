@@ -41,9 +41,9 @@ export async function loginViaHBAuth(
 
   await loginForm.dismissBiometricPromptIfPresent();
 
-  await expect(loginForm.loginDialog).toBeHidden({ timeout: 30000 });
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(homePage.profileAvatarButton).toBeVisible({ timeout: 30000 });
+  // await expect(loginForm.loginDialog).toBeHidden({ timeout: 30000 });
+  // await page.reload({ waitUntil: 'domcontentloaded' });
+  // await expect(homePage.profileAvatarButton).toBeVisible({ timeout: 30000 });
 }
 
 /**

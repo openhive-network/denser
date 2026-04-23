@@ -10,11 +10,11 @@
       "start_permlink": "",
       "limit": 20,
       "tag": "",
-      "observer": "hive.blog"
+      "observer": "guest4test"
     },
     "id": 1
   },
-  "requestHash": "b4724695413bd11f",
+  "requestHash": "c8dae4654501ce7a",
   "method": "bridge.get_ranked_posts",
   "params": {
     "sort": "trending",
@@ -22,7 +22,7 @@
     "start_permlink": "",
     "limit": 20,
     "tag": "",
-    "observer": "hive.blog"
+    "observer": "guest4test"
   },
   "response": {
     "id": 1,
@@ -607,6 +607,10 @@
             "voter": "quochuy"
           },
           {
+            "rshares": 17471602847,
+            "voter": "kgakakillerg"
+          },
+          {
             "rshares": 254160203019,
             "voter": "cedricguillas"
           },
@@ -1069,6 +1073,10 @@
           {
             "rshares": 11713565816,
             "voter": "im-ridd"
+          },
+          {
+            "rshares": 1134530563,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 4893214386,
@@ -2386,6 +2394,10 @@
           {
             "rshares": 25735592674,
             "voter": "springlining"
+          },
+          {
+            "rshares": 2402534789,
+            "voter": "kgakakillerg"
           },
           {
             "rshares": 124977989203,
@@ -3918,6 +3930,10 @@
             "voter": "lastozgur"
           },
           {
+            "rshares": 728496870,
+            "voter": "oscarcede"
+          },
+          {
             "rshares": 1081808115,
             "voter": "giuato"
           },
@@ -5366,6 +5382,10 @@
             "voter": "quochuy"
           },
           {
+            "rshares": 17467597161,
+            "voter": "kgakakillerg"
+          },
+          {
             "rshares": 855829800,
             "voter": "zpedro"
           },
@@ -6590,6 +6610,10 @@
             "voter": "steemdiamond"
           },
           {
+            "rshares": 605496491,
+            "voter": "bpcvoter3"
+          },
+          {
             "rshares": 595697875,
             "voter": "hive-153503"
           },
@@ -6612,6 +6636,10 @@
           {
             "rshares": 40760572728,
             "voter": "cherokee4life"
+          },
+          {
+            "rshares": 1134480044,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 138046725937,
@@ -7364,22 +7392,6 @@
           {
             "rshares": 3041693159,
             "voter": "winnietran"
-          },
-          {
-            "rshares": 2053853311,
-            "voter": "tonmarinduque"
-          },
-          {
-            "rshares": 1030852366,
-            "voter": "rektwaffles"
-          },
-          {
-            "rshares": 1069326245,
-            "voter": "cryptopsycho21"
-          },
-          {
-            "rshares": 495743956,
-            "voter": "eudaemon"
           }
         ],
         "author": "asgarth",
@@ -8288,6 +8300,10 @@
           {
             "rshares": 54688578514,
             "voter": "stoodmonsters"
+          },
+          {
+            "rshares": 1261025574,
+            "voter": "bpcvoter3"
           },
           {
             "rshares": 12472063842,
@@ -9311,6 +9327,10 @@
             "voter": "ace69"
           },
           {
+            "rshares": 845966626,
+            "voter": "diosarich"
+          },
+          {
             "rshares": 1154925812,
             "voter": "minloulou"
           },
@@ -10037,6 +10057,10 @@
           {
             "rshares": 1355747677,
             "voter": "onestop"
+          },
+          {
+            "rshares": 1134480044,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 2585101155,
@@ -17415,6 +17439,10 @@
             "voter": "ewkaw"
           },
           {
+            "rshares": 478136459,
+            "voter": "oscarcede"
+          },
+          {
             "rshares": 704538743,
             "voter": "giuato"
           },
@@ -18847,6 +18875,10 @@
             "voter": "achimmertens"
           },
           {
+            "rshares": 17471602847,
+            "voter": "kgakakillerg"
+          },
+          {
             "rshares": 553886533,
             "voter": "zpedro"
           },
@@ -19875,6 +19907,10 @@
             "voter": "marblesz"
           },
           {
+            "rshares": 1134504489,
+            "voter": "bilpcoinbpc"
+          },
+          {
             "rshares": 92049914287,
             "voter": "hirohurl"
           },
@@ -20893,18 +20929,6 @@
           {
             "rshares": 842253777,
             "voter": "pavelmundo"
-          },
-          {
-            "rshares": 871165029,
-            "voter": "dominicano"
-          },
-          {
-            "rshares": 19829887978,
-            "voter": "kheldar1982"
-          },
-          {
-            "rshares": 3515441840,
-            "voter": "us3incanada"
           }
         ],
         "author": "inmyframe",
@@ -21860,6 +21884,10 @@
             "voter": "taldor"
           },
           {
+            "rshares": 2402534789,
+            "voter": "kgakakillerg"
+          },
+          {
             "rshares": 6071895775,
             "voter": "getron"
           },
@@ -22474,6 +22502,10 @@
           {
             "rshares": 555662543,
             "voter": "kgsupport"
+          },
+          {
+            "rshares": 1134458858,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 718528963,
@@ -24531,6 +24563,10 @@
             "voter": "arsenal4life"
           },
           {
+            "rshares": 1261025574,
+            "voter": "bpcvoter3"
+          },
+          {
             "rshares": 1354502362,
             "voter": "jeline.sports"
           },
@@ -24541,6 +24577,10 @@
           {
             "rshares": 3334164394,
             "voter": "atma.love"
+          },
+          {
+            "rshares": 1134511007,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 2365677894,
@@ -25861,6 +25901,10 @@
             "voter": "achimmertens"
           },
           {
+            "rshares": 17469145375,
+            "voter": "kgakakillerg"
+          },
+          {
             "rshares": 1228625892,
             "voter": "ybf"
           },
@@ -26235,6 +26279,10 @@
           {
             "rshares": 1887554361,
             "voter": "marblesz"
+          },
+          {
+            "rshares": 1134480044,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 4440947913,
@@ -28318,6 +28366,10 @@
             "voter": "quochuy"
           },
           {
+            "rshares": 17470276350,
+            "voter": "kgakakillerg"
+          },
+          {
             "rshares": 18258529903,
             "voter": "cristiancaicedo"
           },
@@ -28932,6 +28984,10 @@
           {
             "rshares": 957536742,
             "voter": "marblesz"
+          },
+          {
+            "rshares": 1134511007,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 5706244643,
@@ -31048,6 +31104,10 @@
             "voter": "quochuy"
           },
           {
+            "rshares": 2402534789,
+            "voter": "kgakakillerg"
+          },
+          {
             "rshares": 344442748653,
             "voter": "cedricguillas"
           },
@@ -31558,6 +31618,10 @@
           {
             "rshares": 1239991381,
             "voter": "jennyzer"
+          },
+          {
+            "rshares": 1134458858,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 2559322925,
@@ -33244,6 +33308,10 @@
             "voter": "quochuy"
           },
           {
+            "rshares": 2402534789,
+            "voter": "kgakakillerg"
+          },
+          {
             "rshares": 18258236659,
             "voter": "cristiancaicedo"
           },
@@ -33558,6 +33626,10 @@
           {
             "rshares": 3819583006,
             "voter": "jennyzer"
+          },
+          {
+            "rshares": 1134458858,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 24429272186,
@@ -34751,6 +34823,10 @@
             "voter": "sarunya"
           },
           {
+            "rshares": 67092168662,
+            "voter": "aljif7"
+          },
+          {
             "rshares": 9128071888,
             "voter": "teamvn"
           },
@@ -34987,12 +35063,20 @@
             "voter": "hive-106444"
           },
           {
+            "rshares": 1260992982,
+            "voter": "bpcvoter3"
+          },
+          {
             "rshares": 1743800766,
             "voter": "hive-153503"
           },
           {
             "rshares": 71856958572,
             "voter": "zirky"
+          },
+          {
+            "rshares": 1134480044,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 30927709245,
@@ -36432,6 +36516,10 @@
           {
             "rshares": 2617412316212,
             "voter": "quochuy"
+          },
+          {
+            "rshares": 17469751611,
+            "voter": "kgakakillerg"
           },
           {
             "rshares": 972936566,
@@ -38383,6 +38471,10 @@
             "voter": "sasaadrian"
           },
           {
+            "rshares": 535108754,
+            "voter": "dallas27"
+          },
+          {
             "rshares": 912444409,
             "voter": "aikido.hung"
           },
@@ -38489,6 +38581,10 @@
           {
             "rshares": 343816550,
             "voter": "starnote"
+          },
+          {
+            "rshares": 605496491,
+            "voter": "bpcvoter3"
           },
           {
             "rshares": 3192451504,
@@ -40192,6 +40288,10 @@
             "voter": "quochuy"
           },
           {
+            "rshares": 17471602847,
+            "voter": "kgakakillerg"
+          },
+          {
             "rshares": 24361373204,
             "voter": "cristiancaicedo"
           },
@@ -40406,6 +40506,10 @@
           {
             "rshares": 1500121710,
             "voter": "marblesz"
+          },
+          {
+            "rshares": 1134511007,
+            "voter": "bilpcoinbpc"
           },
           {
             "rshares": 6445454518,
