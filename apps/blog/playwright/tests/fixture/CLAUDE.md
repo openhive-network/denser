@@ -326,6 +326,22 @@ needed — tests only use `guest4test` for the `checkVote` lookup and don't
 assert on vote counts. After re-recording, trim again before regenerating
 variants (see workflow below).
 
+### Stale overlay detection
+
+When a variant patches a `(method + paramsHash)` that no longer exists in
+the base, the patch is a **no-op** — the overlay map just stores it under
+its old key and base serves the real response. This is the one silent-failure
+mode of the overlay approach: re-record the base without regenerating
+variants and tests still pass, but they stop exercising the pre-state they
+were meant to set up.
+
+`fixture-proxy.ts` emits `STALE OVERLAY` warnings at replay start for every
+orphan patch. If you see one, re-run the generator:
+
+```bash
+node apps/blog/playwright/tests/support/fixture-auth/generate-voted-variants.mjs
+```
+
 ---
 
 ## Gotchas
@@ -459,6 +475,13 @@ node apps/blog/playwright/tests/support/fixture-auth/generate-voted-variants.mjs
 # 4. Verify replay passes:
 pnpm --filter @hive/blog test:fixture -- postVoting
 ```
+
+**Always run step 3 after any base re-record.** Skipping it leaves variants
+pointing at old `paramsHash` values that no longer exist in the base — the
+patches silently become no-ops and tests stop exercising the pre-state they
+were meant to set up. The loader catches this at replay start with
+`STALE OVERLAY` warnings, but the test itself may still pass against the
+un-patched base response.
 
 Headed mode for debugging:
 
