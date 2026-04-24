@@ -1,0 +1,34 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "muted",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "hive-139531",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "cf0a67807f3bc6c2",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "muted",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "hive-139531",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": []
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

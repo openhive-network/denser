@@ -18,6 +18,7 @@ function UserAvatar({ username, size, className }: Props) {
         className
       )}
       style={{ backgroundImage: `url(${imageSrc})` }}
+      data-testid="user-avatar"
     />
   );
 }

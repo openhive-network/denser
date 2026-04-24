@@ -23,14 +23,14 @@ test.describe('Sidebar tests (fixture-based)', () => {
   // ── Trending communities sidebar ──────────────────────────────────────
 
   test('trending communities sidebar is visible on desktop', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'commit' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
   });
 
   test('trending communities sidebar has community links', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'commit' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
 
@@ -40,7 +40,7 @@ test.describe('Sidebar tests (fixture-based)', () => {
   });
 
   test('explore communities link is visible', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'commit' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
 
@@ -49,7 +49,7 @@ test.describe('Sidebar tests (fixture-based)', () => {
   });
 
   test('clicking community link navigates to community page', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'commit' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
 
@@ -67,7 +67,7 @@ test.describe('Sidebar tests (fixture-based)', () => {
   });
 
   test('explore communities link navigates to communities page', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'commit' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
 
@@ -85,7 +85,7 @@ test.describe('Sidebar tests (fixture-based)', () => {
   // ── Explore Hive sidebar ─────────────────────────────────────────────
 
   test('explore hive card is visible on desktop', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'commit' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
 
@@ -100,14 +100,14 @@ test.describe('Sidebar tests (fixture-based)', () => {
   // ── Sidebar on different feeds ───────────────────────────────────────
 
   test('sidebar is visible on hot feed', async ({ page }) => {
-    await page.goto('/hot', { waitUntil: 'commit' });
+    await page.goto('/hot', { waitUntil: 'domcontentloaded' });
 
     await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
   });
 
   test('sidebar is visible on created feed', async ({ page }) => {
-    await page.goto('/created', { waitUntil: 'commit' });
+    await page.goto('/created', { waitUntil: 'domcontentloaded' });
 
     await page.waitForSelector('[data-testid="post-list-item"]', { timeout: TIMEOUTS.HYDRATION });
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();

@@ -1,0 +1,40 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "gtg",
+        "does-not-exist-pending-test",
+        ""
+      ],
+      "limit": 1000,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "0576c1b4e8f5c1b9",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "gtg",
+      "does-not-exist-pending-test",
+      ""
+    ],
+    "limit": 1000,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post gtg/does-not-exist-pending-test does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

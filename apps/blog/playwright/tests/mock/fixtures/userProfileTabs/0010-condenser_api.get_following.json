@@ -1,0 +1,30 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "condenser_api.get_following",
+    "params": [
+      "hiveio",
+      "",
+      "blog",
+      50
+    ],
+    "id": 1
+  },
+  "requestHash": "729f7d454bce7c7a",
+  "method": "condenser_api.get_following",
+  "params": [
+    "hiveio",
+    "",
+    "blog",
+    50
+  ],
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": []
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

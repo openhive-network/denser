@@ -1,0 +1,19 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/posts/gtg/does-not-exist-pending-test/similar",
+  "requestQuery": {
+    "truncate": "100",
+    "result_limit": "10",
+    "full_posts": "10",
+    "observer": "hive.blog"
+  },
+  "requestHash": "a4361ebf7d314c9d",
+  "response": {
+    "code": "CEHM2",
+    "details": null,
+    "hint": null,
+    "message": "Post gtg/does-not-exist-pending-test does not exist"
+  },
+  "responseStatus": 400,
+  "responseContentType": "application/json; charset=utf-8"
+}

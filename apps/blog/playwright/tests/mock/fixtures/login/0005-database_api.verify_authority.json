@@ -1,0 +1,66 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.verify_authority",
+    "params": {
+      "trx": {
+        "ref_block_num": 53949,
+        "ref_block_prefix": 859604294,
+        "expiration": "2026-04-23T05:38:03",
+        "extensions": [],
+        "operations": [
+          {
+            "type": "vote_operation",
+            "value": {
+              "voter": "guest4test",
+              "author": "author",
+              "permlink": "permlink",
+              "weight": 10000
+            }
+          }
+        ],
+        "signatures": [
+          "20bbfa2b7eb9f6f1f29373cfb0ed281cd1c3eb28eb4681dcfa2780a759ac9aa62b685d8c2c6b4c28fcc4eff1f8076cdd70c7a2c79a4f25b5885ac52c28d07319f3"
+        ]
+      },
+      "pack": "hf26"
+    },
+    "id": 1
+  },
+  "requestHash": "86a1063e5e346bbb",
+  "method": "database_api.verify_authority",
+  "params": {
+    "trx": {
+      "ref_block_num": 53949,
+      "ref_block_prefix": 859604294,
+      "expiration": "2026-04-23T05:38:03",
+      "extensions": [],
+      "operations": [
+        {
+          "type": "vote_operation",
+          "value": {
+            "voter": "guest4test",
+            "author": "author",
+            "permlink": "permlink",
+            "weight": 10000
+          }
+        }
+      ],
+      "signatures": [
+        "20bbfa2b7eb9f6f1f29373cfb0ed281cd1c3eb28eb4681dcfa2780a759ac9aa62b685d8c2c6b4c28fcc4eff1f8076cdd70c7a2c79a4f25b5885ac52c28d07319f3"
+      ]
+    },
+    "pack": "hf26"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "valid": true
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

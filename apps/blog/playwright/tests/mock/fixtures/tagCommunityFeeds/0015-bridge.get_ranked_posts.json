@@ -1,0 +1,38 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "trending",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "hive-000000000",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "1179cf0197cf8ee8",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "trending",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "hive-000000000",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Tag hive-000000000 does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

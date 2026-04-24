@@ -1,0 +1,34 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "account_by_key_api.get_key_references",
+    "params": {
+      "keys": [
+        "STM8XQJiRBND7q6Cu1kxyRgLVLU3y1B5iGFU5VAqSpaAK38YFGZP8"
+      ]
+    },
+    "id": 1
+  },
+  "requestHash": "327e6ed772080229",
+  "method": "account_by_key_api.get_key_references",
+  "params": {
+    "keys": [
+      "STM8XQJiRBND7q6Cu1kxyRgLVLU3y1B5iGFU5VAqSpaAK38YFGZP8"
+    ]
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "accounts": [
+        [
+          "guest4test"
+        ]
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

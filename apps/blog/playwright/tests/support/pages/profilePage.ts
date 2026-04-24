@@ -204,6 +204,17 @@ export class ProfilePage {
   readonly followBtn: string;
   readonly profileStatsString: string;
 
+  readonly notFoundPage: Locator;
+  readonly notFoundHeading: Locator;
+
+  readonly followedFollowersPageHeading: Locator;
+  readonly followedFollowersList: Locator;
+  readonly followedFollowersListItems: Locator;
+
+  readonly profileNavLinks: Locator;
+  readonly postsMenuActiveTab: Locator;
+  readonly profileNavActiveLink: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.followBtn = '[data-testid="profile-follow-button"]'
@@ -446,6 +457,19 @@ export class ProfilePage {
     this.userBannerLevelLink = page.locator('[data-testid="profile-level-link"]');
     this.userBannerLevelImg = page.locator('[data-testid="profile-level-image"]');
     this.userBannerTwitterBadgeLink = page.locator('[data-testid="profile-twitter-badge"]');
+
+    this.notFoundPage = page.locator('[data-testid="not-found-page"]');
+    this.notFoundHeading = this.notFoundPage.locator('h1');
+
+    // Followed / Followers pages render an `<h1>` with the pagination label
+    // ("Followed page 1 from 46" / "Followers page 1 from 46").
+    this.followedFollowersPageHeading = page.locator('main main h1').first();
+    this.followedFollowersList = page.locator('main main ul').first();
+    this.followedFollowersListItems = this.followedFollowersList.locator('li');
+
+    this.profileNavLinks = this.profileNav.locator('ul:first-child li a');
+    this.postsMenuActiveTab = this.postsMenu.locator('[data-state="active"]');
+    this.profileNavActiveLink = this.profileNav.locator('ul:first-child li a.active');
   }
 
   async gotoProfilePage(nickName: string) {
@@ -496,6 +520,30 @@ export class ProfilePage {
     await this.page.waitForTimeout(1000);
     await this.page.waitForSelector(this.profileInfo['_selector']);
     await this.page.waitForSelector(this.socialBadgesAchievemntsMenuBar['_selector']);
+  }
+
+  async gotoCommunitiesProfilePage(nickName: string) {
+    await this.page.goto(`/${nickName}/communities`);
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(this.socialCommunitySubscriptionsLabel['_selector']);
+  }
+
+  async gotoFollowedProfilePage(nickName: string) {
+    await this.page.goto(`/@${nickName}/followed`);
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+  }
+
+  async gotoFollowersProfilePage(nickName: string) {
+    await this.page.goto(`/@${nickName}/followers`);
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+  }
+
+  async gotoNonExistentProfilePage(nickName: string) {
+    await this.page.goto(`/@${nickName}`);
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async gotoApiEndpointHealthcheckerProfilePage(nickName: string) {

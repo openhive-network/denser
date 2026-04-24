@@ -1,0 +1,17 @@
+{
+  "testName": "postDetail",
+  "recordedAt": "2026-04-21T11:20:10.354Z",
+  "totalRequests": 67,
+  "savedFixtures": 13,
+  "duplicatesSkipped": 54,
+  "methods": {
+    "bridge.get_post": 12,
+    "bridge.get_community": 7,
+    "bridge.get_discussion": 11,
+    "GET /hivesense-api": 13,
+    "bridge.list_community_roles": 6,
+    "database_api.list_votes": 9,
+    "GET /hivesense-api/posts/gtg/hive-hardfork-25-jump-starter-kit/similar": 5,
+    "GET /hivesense-api/posts/gtg/does-not-exist-pending-test/similar": 4
+  }
+}

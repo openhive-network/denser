@@ -1,0 +1,241 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_account_posts",
+    "params": {
+      "sort": "comments",
+      "account": "hiveio",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "b392ba4c146a657f",
+  "method": "bridge.get_account_posts",
+  "params": {
+    "sort": "comments",
+    "account": "hiveio",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "active_votes": [],
+        "author": "hiveio",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.35,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "We are very happy that so many people were able to make it.",
+        "category": "hive",
+        "children": 0,
+        "created": "2024-07-26T00:04:36",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 3,
+        "is_paidout": true,
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "parent_author": "vaipraonde",
+        "parent_permlink": "re-wagnertamanaha-sh5wj7",
+        "payout": 0,
+        "payout_at": "2024-08-02T00:04:36",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "sh7evp",
+        "post_id": 135593384,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "RE: Hive at Blockchain Rio",
+        "updated": "2024-07-26T00:04:36",
+        "url": "/hive/@hiveio/hive-at-blockchain-rio#@hiveio/sh7evp"
+      },
+      {
+        "active_votes": [],
+        "author": "hiveio",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.35,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "The declined post rewards are human error, to be quite honest :) When writing from the main Hive account on behalf of the whole platform, there's no need for rewards to be collected and it makes much more sense to leave that portion of the rewards pool for the rest of the userbase, or to channel it in to a slushfund to put behind more events like this one!\n\nHowever, while you will see we set a beneficiary to do just that, the UI didn't indicate setting that beneficiary would not override \"decline rewards\" which was the past default. So that one is on the poster for not catching while working on the final draft. We've made a note to always check it as when the rewards are declined the post won't trend by most front end algorithms, and that's not ideal. ",
+        "category": "hive",
+        "children": 2,
+        "created": "2023-06-04T15:40:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 2,
+        "is_paidout": true,
+        "json_metadata": {
+          "app": "peakd/2023.6.2",
+          "tags": [
+            "hive"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "parent_author": "zaibkang",
+        "parent_permlink": "re-hiveio-202364t105233901z",
+        "payout": 0,
+        "payout_at": "2023-06-11T15:40:21",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "re-zaibkang-rvqjj8",
+        "post_id": 124149492,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "RE: Join Hive at Web3 Berlin June 10-11, 2023: The Biggest Crypto Conference in Europe, Community Meetups, and more!",
+        "updated": "2023-06-04T15:40:21",
+        "url": "/hive/@hiveio/join-hive-at-web3-berlin-june-10-11-2023-the-biggest-crypto-conference-in-europe-community-meetups-and-more#@hiveio/re-zaibkang-rvqjj8"
+      },
+      {
+        "active_votes": [],
+        "author": "hiveio",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.35,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Yes, it's an online event.",
+        "category": "community",
+        "children": 0,
+        "created": "2021-11-29T02:12:24",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 2,
+        "is_paidout": true,
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "parent_author": "yehey",
+        "parent_permlink": "r3b9ei",
+        "payout": 0,
+        "payout_at": "2021-12-06T02:12:24",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "r3ba4m",
+        "post_id": 108100384,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "RE: Community Giveaway: Tickets to Enter the Metaverse",
+        "updated": "2021-11-29T02:12:24",
+        "url": "/community/@hiveio/community-giveaway-tickets-to-enter-the-metaverse#@hiveio/r3ba4m"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 18305798988,
+            "voter": "potta"
+          }
+        ],
+        "author": "hiveio",
+        "author_payout_value": "0.022 HBD",
+        "author_reputation": 74.35,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Thank you, we have added instructions now.",
+        "category": "community",
+        "children": 0,
+        "created": "2021-11-29T01:32:12",
+        "curator_payout_value": "0.021 HBD",
+        "depth": 2,
+        "is_paidout": true,
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 18305798988,
+        "parent_author": "potta",
+        "parent_permlink": "re-hiveio-r3b761",
+        "payout": 0.043,
+        "payout_at": "2021-12-06T01:32:12",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "r3b89o",
+        "post_id": 108099793,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1
+        },
+        "title": "RE: Community Giveaway: Tickets to Enter the Metaverse",
+        "updated": "2021-11-29T01:32:12",
+        "url": "/community/@hiveio/community-giveaway-tickets-to-enter-the-metaverse#@hiveio/r3b89o"
+      },
+      {
+        "active_votes": [],
+        "author": "hiveio",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.35,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "There is a five minute cool down time between top level posts. We have to wait for the same rules as everyone else when making posts! :) Please be patient.",
+        "category": "hiveblockchain",
+        "children": 1,
+        "created": "2020-05-03T19:10:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 2,
+        "is_paidout": true,
+        "json_metadata": {
+          "app": "peakd/2020.04.5",
+          "tags": [
+            "hiveblockchain"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "parent_author": "honolulu",
+        "parent_permlink": "q9rrtu",
+        "payout": 0,
+        "payout_at": "2020-05-10T19:10:21",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "re-honolulu-q9rrx7",
+        "post_id": 97165418,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Secondary Airdrop: For Proxied Voters",
+        "updated": "2020-05-03T19:10:21",
+        "url": "/hiveblockchain/@hiveio/hive-secondary-airdrop-proxied-voters#@hiveio/re-honolulu-q9rrx7"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -1,0 +1,17 @@
+{
+  "testName": "tagCommunityFeeds",
+  "recordedAt": "2026-04-21T11:20:48.766Z",
+  "totalRequests": 59,
+  "savedFixtures": 15,
+  "duplicatesSkipped": 44,
+  "methods": {
+    "bridge.get_community": 14,
+    "bridge.list_communities": 8,
+    "GET /hivesense-api": 8,
+    "bridge.get_ranked_posts": 7,
+    "bridge.get_post": 9,
+    "bridge.list_subscribers": 6,
+    "bridge.account_notifications": 6,
+    "bridge.list_community_roles": 1
+  }
+}

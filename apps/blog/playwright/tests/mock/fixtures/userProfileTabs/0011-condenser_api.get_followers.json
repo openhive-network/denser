@@ -1,0 +1,381 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "condenser_api.get_followers",
+    "params": [
+      "hiveio",
+      "",
+      "blog",
+      50
+    ],
+    "id": 1
+  },
+  "requestHash": "cdaaf1743288c976",
+  "method": "condenser_api.get_followers",
+  "params": [
+    "hiveio",
+    "",
+    "blog",
+    50
+  ],
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "follower": "a-alice",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "a942865422",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "aaa.mou",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "aaronsuncamacho",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abbak7",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abbylidosa",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abc.abc-j",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abduhawab",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abdul-moomin24",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abduljalil.mbo",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abduljawad002",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abdullahyusuf",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abgrobert5",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abh12345",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abiky",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abit",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abitcoinskeptic",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "abrockman",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "absolutfreedom",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "accumulation",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "ace108",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "aceh-media",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "achiaa19",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "acidyo",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "ackza",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "acolucky",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "acont",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "actifit-peter",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "actioncats",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "acurewa",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "adalbertus",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "adamada",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "adambarratt",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "adamdabeast",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "adcreatordesign",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "adedayoolumide",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "adityajainxds",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "admiralsp",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "adriformigo",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "adventureready",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "adwas33",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "aedena",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "aezakmi",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "afriaulia",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "afterglow",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "aggroed",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "ahlawat",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "ahmadcmk",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "ahmadturki",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      },
+      {
+        "follower": "ahmedjadan",
+        "following": "hiveio",
+        "what": [
+          "blog"
+        ]
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -1,0 +1,61 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.find_accounts",
+    "params": {
+      "accounts": [
+        "thisuserdoesnotexistxyz"
+      ],
+      "delayed_votes_active": false
+    },
+    "id": 1
+  },
+  "requestHash": "85a2b70d81924584",
+  "method": "database_api.find_accounts",
+  "params": {
+    "accounts": [
+      "thisuserdoesnotexistxyz"
+    ],
+    "delayed_votes_active": false
+  },
+  "response": {
+    "error": {
+      "code": -32003,
+      "data": {
+        "assert_hash": "15599059534279751802",
+        "code": 10,
+        "extension": {
+          "assertion_expression": "in_len <= sizeof(data)"
+        },
+        "message": "Assert Exception",
+        "name": "assert_exception",
+        "stack": [
+          {
+            "context": {
+              "file": "fixed_string.hpp",
+              "hostname": "",
+              "level": "error",
+              "line": 151,
+              "method": "assign",
+              "thread_name": "th_80",
+              "timestamp": "2026-04-21T11:21:10"
+            },
+            "data": {
+              "fs": 16,
+              "in": "thisuserdoesnotexistxyz",
+              "is": 23
+            },
+            "format": "Input too large: `${in}` (${is}) for fixed size string: (${fs})"
+          }
+        ]
+      },
+      "message": "Assert Exception:in_len <= sizeof(data): Input too large: `thisuserdoesnotexistxyz` (23) for fixed size string: (16)"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
