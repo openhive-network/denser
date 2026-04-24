@@ -221,8 +221,9 @@ responses:
 1. Record a base scenario (e.g. `postVoting/`).
 2. Extend `generate-voted-variants.mjs` — add an entry to the `VARIANTS`
    array describing what to patch.
-3. Run the generator: `node generate-voted-variants.mjs`. It copies the
-   base dir and applies patches to specific fixture files.
+3. Run the generator: `node generate-voted-variants.mjs`. It writes
+   **only the patched files** to the variant dir (overlay approach —
+   see "Overlay fixture dirs" below).
 4. Point the spec at the variant:
    `test.use({ fixtureTestName: 'postVoting_upvoted' })`.
 
@@ -290,6 +291,40 @@ expectVoteOperation(broadcast.calls[0], {
   weight: percent * BASIS_POINTS_PER_PERCENT
 });
 ```
+
+---
+
+## Overlay fixture dirs
+
+Variant dirs (e.g. `postVoting_upvoted/`) use an **overlay** pattern
+to avoid duplicating files that are identical to the base. A variant
+dir contains:
+
+- `_index.json` with a `base` field naming the parent dir
+- Only the fixture files that differ from the base
+
+At replay time, `fixture-proxy.ts` loads the base dir first, then
+overlays the variant's files — matching `method::paramsHash` keys are
+replaced. This way `postVoting_highHP/` only stores 1 patched file
+(+`_index.json`) instead of all 10.
+
+```
+mock/fixtures/
+├── postVoting/                 ← base (full set of 10 fixtures)
+├── postVoting_upvoted/         ← overlay: 0005, 0009 + _index.json
+├── postVoting_downvoted/       ← overlay: 0005, 0009 + _index.json
+├── postVoting_highHP/          ← overlay: 0003 + _index.json
+├── postVoting_highHP_upvoted/  ← overlay: 0003, 0005, 0009 + _index.json
+└── postVoting_highHP_downvoted/← overlay: 0003, 0005, 0009 + _index.json
+```
+
+### `active_votes` trimming
+
+The base `bridge.get_ranked_posts` fixture has its `active_votes` arrays
+trimmed to 5 entries per post. The full arrays (200–1000 voters) are not
+needed — tests only use `guest4test` for the `checkVote` lookup and don't
+assert on vote counts. After re-recording, trim again before regenerating
+variants (see workflow below).
 
 ---
 
@@ -407,10 +442,21 @@ fixtures:
 # 1. Re-record the base fixture dir (requires network to api.hive.blog):
 pnpm --filter @hive/blog test:fixture:record -- postVoting.spec.ts
 
-# 2. Regenerate any derived variants:
+# 2. Trim active_votes to keep fixtures small (5 voters per post):
+python3 -c "
+import json, pathlib
+p = pathlib.Path('apps/blog/playwright/tests/mock/fixtures/postVoting/0005-bridge.get_ranked_posts.json')
+data = json.loads(p.read_text())
+for post in data['response']['result']:
+    post['active_votes'] = post.get('active_votes', [])[:5]
+p.write_text(json.dumps(data, indent=2) + '\n')
+print('Trimmed active_votes')
+"
+
+# 3. Regenerate overlay variants from the trimmed base:
 node apps/blog/playwright/tests/support/fixture-auth/generate-voted-variants.mjs
 
-# 3. Verify replay passes:
+# 4. Verify replay passes:
 pnpm --filter @hive/blog test:fixture -- postVoting
 ```
 
