@@ -358,58 +358,111 @@ export async function createFixtureProxy(
 // ─── REPLAY MODE ────────────────────────────────────────────────────────────
 
 /**
+ * Read a fixture directory's `_index.json` if present. Returns an empty
+ * object when the file is missing or unparseable — the fixture dir may be
+ * a pre-record scratch dir or a hand-rolled variant.
+ */
+function readIndex(fixtureDir: string): { base?: string } & Record<string, unknown> {
+  const indexPath = path.join(fixtureDir, '_index.json');
+  if (!fs.existsSync(indexPath)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Parse one fixture file and normalize it to a current-shape IFixtureEntry
+ * (keyed by the freshly computed request hash). Migrates legacy JSON-RPC-only
+ * fixtures (which carried `paramsHash` instead of `requestHash`).
+ */
+function parseFixtureFile(absPath: string): { hash: string; entry: IFixtureEntry } {
+  const raw = JSON.parse(fs.readFileSync(absPath, 'utf-8')) as Partial<IFixtureEntry>;
+
+  let entry: IFixtureEntry;
+  if (!raw.requestHash) {
+    const method = raw.method ?? '';
+    const params = (raw.params as Record<string, unknown>) ?? {};
+    const legacyHash = raw.paramsHash ?? computeParamsHash(method, params);
+    entry = {
+      httpMethod: 'POST',
+      requestPath: '/',
+      requestBody: { jsonrpc: '2.0', method, params, id: 1 },
+      requestHash: legacyHash,
+      method,
+      params,
+      paramsHash: legacyHash,
+      response: raw.response,
+      responseStatus: 200,
+      responseContentType: 'application/json'
+    };
+  } else {
+    entry = raw as IFixtureEntry;
+  }
+
+  // Always recompute the hash from the stored request (with normalization),
+  // so fixtures recorded before id-stripping was added still match at replay.
+  const hash = computeRequestHash(
+    entry.httpMethod,
+    entry.requestPath,
+    (entry.requestQuery as Record<string, unknown>) ?? {},
+    entry.requestBody
+  );
+  return { hash, entry };
+}
+
+/**
  * Load all fixture entries from a test's fixture directory, grouped by
  * requestHash. For backward compat with older JSON-RPC-only fixtures,
  * legacy entries are keyed off their `paramsHash` and re-hashed to the new
  * (method + path + body + query) scheme at load time.
+ *
+ * Overlay resolution: if `_index.json` contains a string `base` field, that
+ * directory (resolved relative to `FIXTURES_ROOT`) is loaded first and this
+ * dir's files then replace any entries that share the same request hash.
+ * Variant dirs therefore only need to commit the fixture files whose
+ * **response** differs from the base — saving ~80% of on-disk footprint
+ * when many variants share most responses. Base chains are allowed; cycles
+ * are detected and rejected.
  */
-function loadFixtures(fixtureDir: string): Map<string, IFixtureEntry[]> {
+function loadFixtures(
+  fixtureDir: string,
+  visited: Set<string> = new Set()
+): Map<string, IFixtureEntry[]> {
+  const absDir = path.resolve(fixtureDir);
+  if (visited.has(absDir)) {
+    throw new Error(`Circular fixture base chain detected at ${absDir}`);
+  }
+  visited.add(absDir);
+
+  const index = readIndex(absDir);
+
+  // Resolve and load base first, so variant files can override by hash.
   const fixtures = new Map<string, IFixtureEntry[]>();
+  if (typeof index.base === 'string' && index.base.length > 0) {
+    const baseDir = path.resolve(FIXTURES_ROOT, index.base);
+    const baseFixtures = loadFixtures(baseDir, visited);
+    for (const [hash, entries] of baseFixtures.entries()) {
+      fixtures.set(hash, [...entries]);
+    }
+  }
 
   const files = fs
-    .readdirSync(fixtureDir)
+    .readdirSync(absDir)
     .filter((f) => f.endsWith('.json') && !f.startsWith('_'))
     .sort(); // sorted by index prefix
 
+  // Group this dir's entries by hash so that a variant with N calls to
+  // the same RPC still replaces — rather than appends to — the base array.
+  const localByHash = new Map<string, IFixtureEntry[]>();
   for (const file of files) {
-    const content = fs.readFileSync(path.join(fixtureDir, file), 'utf-8');
-    const raw = JSON.parse(content) as Partial<IFixtureEntry>;
-
-    // Migrate legacy entries (had only method/params/paramsHash/response)
-    let entry: IFixtureEntry;
-    if (!raw.requestHash) {
-      const method = raw.method ?? '';
-      const params = (raw.params as Record<string, unknown>) ?? {};
-      const legacyHash = raw.paramsHash ?? computeParamsHash(method, params);
-      entry = {
-        httpMethod: 'POST',
-        requestPath: '/',
-        requestBody: { jsonrpc: '2.0', method, params, id: 1 },
-        requestHash: legacyHash,
-        method,
-        params,
-        paramsHash: legacyHash,
-        response: raw.response,
-        responseStatus: 200,
-        responseContentType: 'application/json'
-      };
-    } else {
-      entry = raw as IFixtureEntry;
-    }
-
-    // Always recompute the hash from the stored request (with normalization),
-    // so fixtures recorded before id-stripping was added still match at replay.
-    const normalizedHash = computeRequestHash(
-      entry.httpMethod,
-      entry.requestPath,
-      (entry.requestQuery as Record<string, unknown>) ?? {},
-      entry.requestBody
-    );
-    const key = normalizedHash;
-    if (!fixtures.has(key)) {
-      fixtures.set(key, []);
-    }
-    fixtures.get(key)!.push(entry);
+    const { hash, entry } = parseFixtureFile(path.join(absDir, file));
+    if (!localByHash.has(hash)) localByHash.set(hash, []);
+    localByHash.get(hash)!.push(entry);
+  }
+  for (const [hash, entries] of localByHash.entries()) {
+    fixtures.set(hash, entries); // full replace — variant wins over base
   }
 
   return fixtures;

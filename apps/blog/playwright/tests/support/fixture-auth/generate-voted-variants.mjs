@@ -1,13 +1,29 @@
 #!/usr/bin/env node
 /**
  * Generates fixture dirs for "user has already upvoted / downvoted" test
- * preconditions by patching a freshly-recorded `postVoting/` base dir.
+ * preconditions by writing overlay variants on top of a freshly-recorded
+ * `postVoting/` base dir.
  *
  * Why this exists: SSR-rendered Next.js pages fetch chain data inside the
  * server process, so Playwright's `page.route` cannot intercept/override
  * those responses. The cleanest way to seed "user already voted" state is
  * therefore to prepare a separate fixture dir with pre-patched responses
  * and switch `fixtureTestName` per `test.describe`.
+ *
+ * Overlay layout (post-MR !1077 reduction, issue #2179)
+ * ---------------------------------------------------------
+ * Variant dirs now commit **only the fixture files whose response differs**
+ * from the base. An `_index.json` with `{ "base": "postVoting" }` tells
+ * the fixture-proxy's `loadFixtures` to pull the remaining files from the
+ * base dir and let the variant's own files override by request hash. This
+ * drops committed size from ~8 MB (6 full copies) to ~1.4 MB total.
+ *
+ * Base file `0005-bridge.get_ranked_posts.json` is additionally trimmed
+ * at generation time: each post's `active_votes` array is cut down to at
+ * most TRIMMED_VOTERS_PER_POST entries, plus the seeded voter if present.
+ * The blog's list view only consults `active_votes` via `checkVote`
+ * (`votes-component.tsx:72`) for the current user — voter counts and
+ * payouts come from `post.stats.total_votes`, which is untouched.
  *
  * Usage:
  *   1) Record base fixtures once:
@@ -18,13 +34,20 @@
  *   3) Replay all post-voting tests:
  *        pnpm --filter @hive/blog test:fixture -- postVoting
  *
- * Only two fixture files are patched:
- *   - bridge.get_ranked_posts: inject guest4test as a voter on the first
- *     post (needed for the component's `checkVote` to be truthy, which
- *     enables the `list_votes` query on initial render).
- *   - database_api.list_votes: return a single vote by guest4test with the
- *     appropriate vote_percent (±10000), so the component flips into its
- *     "already voted" branch and renders VoteRemovalDialog.
+ * The generator also applies the `active_votes` trim to the committed
+ * `postVoting/0005-bridge.get_ranked_posts.json` in-place; it is idempotent
+ * (re-running after trimming is a no-op) and safe — the trim never removes
+ * the seeded voter.
+ *
+ * Only these fixture files ever appear in a variant dir:
+ *   - bridge.get_ranked_posts: inject VOTER as a voter on the first post
+ *     (needed for the component's `checkVote` to be truthy, which enables
+ *     the `list_votes` query on initial render).
+ *   - database_api.list_votes: return a single vote by VOTER with the
+ *     appropriate vote_percent (±10000 / ±5000), so the component flips
+ *     into its "already voted" branch and renders VoteRemovalDialog.
+ *   - database_api.find_accounts (highHP only): bump `vesting_shares` so
+ *     the UI computes `net_vests > 1M` and enables the vote slider.
  */
 
 import fs from 'node:fs';
@@ -42,6 +65,16 @@ const FIXTURES_ROOT = path.resolve(
 
 const BASE_DIR = 'postVoting';
 const VOTER = process.env.CI_TEST_USER || 'guest4test';
+
+// Keep enough entries for the sort/display heuristics that show the
+// top few voters, but trim the long tail. `checkVote` only cares about
+// the seeded voter, which is always preserved when present.
+const TRIMMED_VOTERS_PER_POST = 3;
+
+// 50M VESTS — comfortably above VOTE_WEIGHT_DROPDOWN_THRESHOLD (1M) and
+// well within realistic mainnet whale magnitudes, so the UI's derived
+// displays (manabar, reputation etc.) don't look absurd.
+const HIGH_HP_VESTING_AMOUNT = '50000000000000';
 
 /**
  * Variants opt in to patches via flags:
@@ -78,108 +111,134 @@ const VARIANTS = [
   }
 ];
 
-// 50M VESTS — comfortably above VOTE_WEIGHT_DROPDOWN_THRESHOLD (1M) and
-// well within realistic mainnet whale magnitudes, so the UI's derived
-// displays (manabar, reputation etc.) don't look absurd.
-const HIGH_HP_VESTING_AMOUNT = '50000000000000';
+function readJson(filePath) {
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
 
-function patchFixtureFile(filePath, transform) {
-  const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  transform(content);
+function writeJson(filePath, content) {
+  // Trailing newline matches what the record path writes via JSON.stringify
+  // + explicit "\n" in legacy code — keep diffs stable for reviewers.
   fs.writeFileSync(filePath, JSON.stringify(content, null, 2) + '\n');
 }
 
-function findFiles(dir, matchSubstring) {
-  return fs
+function findFile(dir, matchSubstring) {
+  const matches = fs
     .readdirSync(dir)
-    .filter((f) => f.endsWith('.json') && f.includes(matchSubstring));
+    .filter((f) => f.endsWith('.json') && !f.startsWith('_') && f.includes(matchSubstring));
+  if (matches.length !== 1) {
+    throw new Error(
+      `Expected exactly one '${matchSubstring}' fixture in ${dir}, found ${matches.length}`
+    );
+  }
+  return matches[0];
 }
 
-for (const variant of VARIANTS) {
+/**
+ * Cut each post's active_votes to TRIMMED_VOTERS_PER_POST entries, pinning
+ * VOTER first if they appear anywhere in the list. Mutates in place.
+ * Idempotent — re-running on an already trimmed array is a no-op.
+ */
+function trimActiveVotes(post) {
+  if (!Array.isArray(post.active_votes)) return;
+  const seeded = post.active_votes.find((v) => v.voter === VOTER);
+  const others = post.active_votes.filter((v) => v.voter !== VOTER);
+  const head = others.slice(0, TRIMMED_VOTERS_PER_POST);
+  post.active_votes = seeded ? [seeded, ...head] : head;
+}
+
+/**
+ * Applies the active_votes trim to the committed base fixture so both the
+ * base itself and every overlay variant inherit the smaller file. Idempotent.
+ */
+function trimBaseRankedPosts(baseDir) {
+  const fileName = findFile(baseDir, 'bridge.get_ranked_posts');
+  const filePath = path.join(baseDir, fileName);
+  const content = readJson(filePath);
+  const posts = content?.response?.result;
+  if (!Array.isArray(posts)) {
+    throw new Error(`Unexpected shape in ${fileName}: no response.result[]`);
+  }
+  const before = posts.reduce((sum, p) => sum + (p.active_votes?.length ?? 0), 0);
+  posts.forEach(trimActiveVotes);
+  const after = posts.reduce((sum, p) => sum + (p.active_votes?.length ?? 0), 0);
+  writeJson(filePath, content);
+  console.log(
+    `✓ base/${fileName}: active_votes trimmed ${before} → ${after} entries (≤${TRIMMED_VOTERS_PER_POST}/post)`
+  );
+}
+
+/**
+ * Copy just a single fixture file from base → variant, then apply a patch
+ * callback. The filename (and therefore its 4-digit index prefix) is
+ * preserved so the overlay maps cleanly to the base entry by request hash.
+ */
+function overlayFile(baseDir, targetDir, matchSubstring, patch) {
+  const fileName = findFile(baseDir, matchSubstring);
+  const content = readJson(path.join(baseDir, fileName));
+  patch(content, fileName);
+  writeJson(path.join(targetDir, fileName), content);
+}
+
+function writeVariantIndex(targetDir, variant) {
+  const index = {
+    testName: variant.name,
+    base: BASE_DIR,
+    generatedAt: new Date().toISOString(),
+    generator: 'generate-voted-variants.mjs',
+    flags: {
+      highHP: !!variant.highHP,
+      priorVote: variant.priorVote ?? null
+    }
+  };
+  writeJson(path.join(targetDir, '_index.json'), index);
+}
+
+function generateVariant(variant) {
   const baseDir = path.join(FIXTURES_ROOT, BASE_DIR);
   const targetDir = path.join(FIXTURES_ROOT, variant.name);
 
-  if (!fs.existsSync(baseDir)) {
-    console.error(
-      `Base fixture dir not found: ${baseDir}\n` +
-        `Record it first with: pnpm --filter @hive/blog test:fixture:record -- postVoting`
-    );
-    process.exit(1);
-  }
-
+  // Overlay: start from empty variant dir; only patched files are written.
   fs.rmSync(targetDir, { recursive: true, force: true });
-  fs.cpSync(baseDir, targetDir, { recursive: true });
+  fs.mkdirSync(targetDir, { recursive: true });
 
-  // highHP: inflate vesting_shares on the seeded user's find_accounts
-  // entry so the UI computes `net_vests > 1M` and enables the vote slider.
   if (variant.highHP) {
-    const accountFiles = findFiles(targetDir, 'database_api.find_accounts');
-    if (accountFiles.length === 0) {
-      throw new Error(
-        `No database_api.find_accounts fixture found in ${targetDir}`
-      );
-    }
-    for (const f of accountFiles) {
-      patchFixtureFile(path.join(targetDir, f), (content) => {
-        const accounts = content.response?.result?.accounts;
-        if (!Array.isArray(accounts) || accounts.length === 0) {
-          throw new Error(`Unexpected shape in ${f}: no accounts[]`);
-        }
-        const target = accounts.find((a) => a.name === VOTER) ?? accounts[0];
-        if (!target?.vesting_shares?.amount) {
-          throw new Error(
-            `Unexpected shape in ${f}: no vesting_shares.amount for ${VOTER}`
-          );
-        }
-        target.vesting_shares.amount = HIGH_HP_VESTING_AMOUNT;
-      });
-    }
+    overlayFile(baseDir, targetDir, 'database_api.find_accounts', (content, fileName) => {
+      const accounts = content.response?.result?.accounts;
+      if (!Array.isArray(accounts) || accounts.length === 0) {
+        throw new Error(`Unexpected shape in ${fileName}: no accounts[]`);
+      }
+      const target = accounts.find((a) => a.name === VOTER) ?? accounts[0];
+      if (!target?.vesting_shares?.amount) {
+        throw new Error(
+          `Unexpected shape in ${fileName}: no vesting_shares.amount for ${VOTER}`
+        );
+      }
+      target.vesting_shares.amount = HIGH_HP_VESTING_AMOUNT;
+    });
   }
 
-  // The rest of the patches are only meaningful for priorVote variants.
-  if (!variant.priorVote) {
-    console.log(`✓ ${variant.name}: highHP=${!!variant.highHP}`);
-    continue;
-  }
-
-  // Patch get_ranked_posts: add voter to first post's active_votes.
-  const postsFiles = findFiles(targetDir, 'bridge.get_ranked_posts');
-  if (postsFiles.length === 0) {
-    throw new Error(
-      `No bridge.get_ranked_posts fixture found in ${targetDir}`
-    );
-  }
-  for (const f of postsFiles) {
-    patchFixtureFile(path.join(targetDir, f), (content) => {
+  if (variant.priorVote) {
+    overlayFile(baseDir, targetDir, 'bridge.get_ranked_posts', (content, fileName) => {
       const firstPost = content.response?.result?.[0];
       if (!firstPost?.active_votes) {
-        throw new Error(`Unexpected shape in ${f}: no first-post active_votes`);
+        throw new Error(`Unexpected shape in ${fileName}: no first-post active_votes`);
       }
       const already = firstPost.active_votes.find((v) => v.voter === VOTER);
-      if (!already) {
+      if (already) {
+        already.rshares = variant.priorVote.rshares;
+      } else {
         firstPost.active_votes.unshift({
           rshares: variant.priorVote.rshares,
           voter: VOTER
         });
-      } else {
-        already.rshares = variant.priorVote.rshares;
       }
     });
-  }
 
-  // Patch list_votes: return a single pre-existing vote by our voter.
-  const listVotesFiles = findFiles(targetDir, 'database_api.list_votes');
-  if (listVotesFiles.length === 0) {
-    throw new Error(
-      `No database_api.list_votes fixture found in ${targetDir}`
-    );
-  }
-  for (const f of listVotesFiles) {
-    patchFixtureFile(path.join(targetDir, f), (content) => {
+    overlayFile(baseDir, targetDir, 'database_api.list_votes', (content, fileName) => {
       const author = content.params?.start?.[0];
       const permlink = content.params?.start?.[1];
       if (!author || !permlink) {
-        throw new Error(`Unexpected shape in ${f}: no {author, permlink}`);
+        throw new Error(`Unexpected shape in ${fileName}: no {author, permlink}`);
       }
       content.response = {
         id: 1,
@@ -203,10 +262,29 @@ for (const variant of VARIANTS) {
     });
   }
 
+  writeVariantIndex(targetDir, variant);
+
+  const fileCount = fs.readdirSync(targetDir).length; // includes _index.json
   const priorVoteTag = variant.priorVote
     ? `vote_percent=${variant.priorVote.votePercent}`
     : '(no prior vote)';
   console.log(
-    `✓ ${variant.name}: voter=${VOTER}, highHP=${!!variant.highHP}, ${priorVoteTag}`
+    `✓ ${variant.name}: voter=${VOTER}, highHP=${!!variant.highHP}, ${priorVoteTag} — ${fileCount} files`
   );
+}
+
+// ─── Main ───────────────────────────────────────────────────────────────────
+
+const baseDir = path.join(FIXTURES_ROOT, BASE_DIR);
+if (!fs.existsSync(baseDir)) {
+  console.error(
+    `Base fixture dir not found: ${baseDir}\n` +
+      `Record it first with: pnpm --filter @hive/blog test:fixture:record -- postVoting`
+  );
+  process.exit(1);
+}
+
+trimBaseRankedPosts(baseDir);
+for (const variant of VARIANTS) {
+  generateVariant(variant);
 }

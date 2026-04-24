@@ -221,8 +221,11 @@ responses:
 1. Record a base scenario (e.g. `postVoting/`).
 2. Extend `generate-voted-variants.mjs` — add an entry to the `VARIANTS`
    array describing what to patch.
-3. Run the generator: `node generate-voted-variants.mjs`. It copies the
-   base dir and applies patches to specific fixture files.
+3. Run the generator: `node generate-voted-variants.mjs`. It trims the
+   committed base in-place (see "Overlay variants" below) and writes an
+   **overlay** directory per variant containing only the fixture files
+   whose response differs from the base, plus an `_index.json` that
+   declares `"base": "postVoting"`.
 4. Point the spec at the variant:
    `test.use({ fixtureTestName: 'postVoting_upvoted' })`.
 
@@ -236,6 +239,57 @@ Existing flags the generator supports:
 
 Combine flags as needed (e.g. `highHP` + `priorVote` → slider path on
 an already-voted post).
+
+### Overlay variants (issue #2179)
+
+Variant fixture dirs do **not** carry full copies of the base anymore.
+Each variant commits only the fixture files whose response it needs to
+override, and declares `"base": "postVoting"` in its `_index.json`.
+At replay time, `loadFixtures` in `fixture-proxy.ts` loads the base
+first and then lets the variant's files replace any entries that share
+the same request hash.
+
+Concrete footprint for the §6.1 post-voting suite (before → after):
+
+| Variant                          | Before | After |
+| -------------------------------- | ------ | ----- |
+| `postVoting/` (base, trimmed)    | 1.3 MB | 324 K |
+| `postVoting_upvoted/`            | 1.3 MB | 232 K |
+| `postVoting_downvoted/`          | 1.3 MB | 232 K |
+| `postVoting_highHP/`             | 1.3 MB |  16 K |
+| `postVoting_highHP_upvoted/`     | 1.3 MB | 240 K |
+| `postVoting_highHP_downvoted/`   | 1.3 MB | 240 K |
+| **Total**                        | 7.2 MB | 1.2 MB (~84% reduction) |
+
+Two mechanisms combine to produce the saving:
+
+1. **Overlay**: variant dirs only contain the patched files. The
+   unchanged ~95% of each variant is sourced from `postVoting/`.
+2. **Active-votes trim**: `bridge.get_ranked_posts` carried 10,344
+   voter entries across its 20 posts — 71% of the base file. The
+   generator trims each post's `active_votes` to the seeded voter
+   (when present) plus `TRIMMED_VOTERS_PER_POST` (currently 3) others.
+   The trim is in-place on the committed base and is **idempotent**;
+   re-running the generator after a fresh base record is safe. The
+   blog's list view only reads `active_votes` via
+   `votes-component.tsx:72`'s `checkVote` (which filters for the
+   current user) — total vote count and payouts come from
+   `post.stats.total_votes`, which is untouched.
+
+### Authoring new overlay variants
+
+If you add a new pre-state (e.g. `subscribedToCommunity`), follow
+the generator's shape:
+
+1. Patch only files that actually differ. Use `overlayFile` to copy
+   → patch → write under the variant's dir; never copy the whole base.
+2. Emit `_index.json` with `base: "postVoting"` (or whichever base
+   dir is appropriate). The base chain is resolved recursively, but
+   cycles are rejected.
+3. Keep the request body unchanged — the overlay matches by request
+   hash (method + path + query + body), so changing the request shape
+   would make the variant's file a *new* entry alongside the base's
+   rather than an override.
 
 Before the first click in an "undo" spec, call
 `expectFirstPostUpvotedState(page)` or `expectFirstPostDownvotedState(page)`
@@ -393,8 +447,11 @@ client would load a stale copy baked into the build.
 `createFixtureProxy` wipes `mock/fixtures/<testName>/` on record-mode
 start. If you have hand-generated variants (via
 `generate-voted-variants.mjs`), re-running record for the base will not
-touch them, but re-running the generator will wipe and regenerate them
-from the fresh base.
+touch them — but after a base re-record you **must** re-run the
+generator because the variants' fixture files are regenerated from the
+fresh base and the base's `0005-bridge.get_ranked_posts.json` also
+needs its in-place `active_votes` trim reapplied. The trim is
+idempotent, so running the generator twice is safe.
 
 ---
 
