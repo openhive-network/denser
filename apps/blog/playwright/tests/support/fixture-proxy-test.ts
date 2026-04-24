@@ -5,6 +5,8 @@ import {
   hasFixtures,
   type IFixtureProxyHandle
 } from './mock-server';
+import { seedAuthCookie } from './fixture-auth/seeder';
+import type { User } from '@smart-signer/types/common';
 
 /**
  * Playwright test extension that automatically sets up a fixture proxy
@@ -40,9 +42,19 @@ export type FixtureProxyWorkerFixtures = {
   fixtureProxy: IFixtureProxyHandle;
 };
 
+export type FixtureAuthTestFixtures = {
+  /**
+   * If set, a sealed iron-session cookie is injected into the test context
+   * before the page is given to the test. `{}` seeds the default test user
+   * (CI_TEST_USER env or "guest4test"); pass a Partial<User> to override
+   * individual fields. Leave undefined for anonymous tests.
+   */
+  authenticatedUser: Partial<User> | undefined;
+};
+
 export const isRecordMode = process.env.FIXTURE_MODE === 'record';
 
-export const test = base.extend<{}, FixtureProxyWorkerFixtures>({
+export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>({
   fixtureTestName: ['', { option: true, scope: 'worker' }],
   fixturePort: [8200, { option: true, scope: 'worker' }],
 
@@ -74,7 +86,16 @@ export const test = base.extend<{}, FixtureProxyWorkerFixtures>({
       await proxy.close();
     },
     { scope: 'worker', auto: true }
-  ]
+  ],
+
+  authenticatedUser: [undefined, { option: true }],
+
+  context: async ({ context, authenticatedUser }, use) => {
+    if (authenticatedUser !== undefined) {
+      await seedAuthCookie(context, authenticatedUser);
+    }
+    await use(context);
+  }
 });
 
 export { expect };

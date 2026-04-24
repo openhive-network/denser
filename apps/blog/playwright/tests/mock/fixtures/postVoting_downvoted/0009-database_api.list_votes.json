@@ -1,0 +1,32 @@
+{
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "angelica7",
+      "mis-8-anos-en-hive",
+      "guest4test"
+    ],
+    "limit": 1,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "angelica7",
+          "id": 1,
+          "last_update": "2026-04-22T10:00:00",
+          "num_changes": 0,
+          "permlink": "mis-8-anos-en-hive",
+          "rshares": -1000000,
+          "vote_percent": -10000,
+          "voter": "guest4test",
+          "weight": 1000000
+        }
+      ]
+    }
+  },
+  "paramsHash": "37f350984bdfd0d5"
+}

@@ -1,0 +1,15 @@
+{
+  "method": "bridge.unread_notifications",
+  "params": {
+    "account": "guest4test"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "lastread": "2026-02-09 13:44:03",
+      "unread": 3
+    }
+  },
+  "paramsHash": "019d57fb517de1d1"
+}

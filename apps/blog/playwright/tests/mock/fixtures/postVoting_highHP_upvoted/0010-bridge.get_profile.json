@@ -1,0 +1,37 @@
+{
+  "method": "bridge.get_profile",
+  "params": {
+    "account": "guest4test"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active": "2026-04-08T12:01:00",
+      "blacklists": [],
+      "created": "2020-07-13T11:25:51",
+      "id": 1398402,
+      "metadata": {
+        "profile": {
+          "about": "TestOps",
+          "blacklist_description": "",
+          "cover_image": "https://images.hive.blog/DQmeG1ftxpBkMeVT5qFsCtbzZXU2AXe2gggCdPd2RZouHmJ/ChatGPT%20Image%20Feb%2010,%202026,%2001_07_21%20PM.png",
+          "location": "KTW",
+          "muted_list_description": "",
+          "name": "guest4test",
+          "profile_image": "https://images.hive.blog/DQmet7qXQ71GGcFMi9yw9tHtjv1VTWFXGAGju15zNtiLG2B/g0-green.png",
+          "website": ""
+        }
+      },
+      "name": "guest4test",
+      "post_count": 57,
+      "reputation": 34.15,
+      "stats": {
+        "followers": 1,
+        "following": 4,
+        "rank": 0
+      }
+    }
+  },
+  "paramsHash": "5f8155337c26660b"
+}

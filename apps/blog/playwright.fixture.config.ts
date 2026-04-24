@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
+import {
+  FIXTURE_APP_NAME,
+  FIXTURE_COOKIE_PASSWORD
+} from './playwright/tests/support/fixture-auth/constants';
 require('dotenv').config({ path: './.env.local' });
 
 /**
@@ -56,7 +60,19 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: 'pnpm start:standalone',
+    // `pnpm start:standalone` bakes the build-time __ENV.js into the
+    // standalone's public/ *before* react-env has a chance to write a fresh
+    // copy, so at runtime the client bundle loads stale values (e.g. the
+    // REACT_APP_API_ENDPOINT from .env.local points at api.fake.openhive
+    // .network instead of our fixture proxy on :8200). We repeat the same
+    // steps but copy the freshly-written __ENV.js into the standalone
+    // public/ right before starting node.
+    command: [
+      'rm -rf .next/standalone/apps/blog/.next/static .next/standalone/apps/blog/public',
+      'cp -r .next/static .next/standalone/apps/blog/.next/static',
+      'cp -r public .next/standalone/apps/blog/public',
+      'react-env -- sh -c "cp -f public/__ENV.js .next/standalone/apps/blog/public/__ENV.js && node .next/standalone/apps/blog/server.js"'
+    ].join(' && '),
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
@@ -64,16 +80,23 @@ export default defineConfig({
     stderr: 'pipe',
     env: {
       REACT_APP_API_ENDPOINT: `http://localhost:${FIXTURE_PORT}`,
-      // Whitelist the fixture proxy in the CSP connect-src directive;
-      // without this the browser blocks every fetch to localhost:8200.
+      // Client-side wax picks its endpoint from ALLOWED_HIVE_API_NODES
+      // (written into __ENV.js by react-env at server startup), NOT from
+      // API_ENDPOINT. Without this override the browser posts to whatever
+      // host was baked into .env.local (api.fake.openhive.network), so
+      // neither the fixture-proxy nor the broadcast interceptor sees it.
       REACT_APP_ALLOWED_HIVE_API_NODES: `http://localhost:${FIXTURE_PORT}`,
       HOSTNAME: '0.0.0.0',
       PORT: '3000',
-      // iron-session requires a password >= 32 chars. Fixture tests never
-      // exercise real auth, so a fixed dummy value is fine and lets SSR
-      // pages render without throwing.
-      DENSER_SERVER_SECRET_COOKIE_PASSWORD:
-        'fixture-tests-dummy-cookie-password-not-a-secret'
+      // Pin APP_NAME so iron-session's cookieName matches what the seeder
+      // (see playwright/tests/support/fixture-auth/) writes from the test
+      // side. Without this the app could default to "app_session" while
+      // the seeder targets "blog_session".
+      REACT_APP_APP_NAME: FIXTURE_APP_NAME,
+      // Shared with the seeder via fixture-auth/constants.ts — the app
+      // seals and the test seals with the same password so sessions
+      // unseal cleanly on both sides.
+      DENSER_SERVER_SECRET_COOKIE_PASSWORD: FIXTURE_COOKIE_PASSWORD
     }
   }
 });

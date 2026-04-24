@@ -1,0 +1,19 @@
+{
+  "testName": "postVoting",
+  "recordedAt": "2026-04-22T11:00:00.147Z",
+  "totalRequests": 12,
+  "savedFixtures": 10,
+  "duplicatesSkipped": 2,
+  "methods": {
+    "bridge.list_communities": 1,
+    "bridge.list_all_subscriptions": 1,
+    "database_api.find_accounts": 2,
+    "bridge.unread_notifications": 1,
+    "bridge.get_ranked_posts": 1,
+    "database_api.get_dynamic_global_properties": 2,
+    "rc_api.find_rc_accounts": 1,
+    "bridge.get_follow_list": 1,
+    "database_api.list_votes": 1,
+    "bridge.get_profile": 1
+  }
+}

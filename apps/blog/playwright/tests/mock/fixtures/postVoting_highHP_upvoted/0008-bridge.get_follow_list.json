@@ -1,0 +1,13 @@
+{
+  "method": "bridge.get_follow_list",
+  "params": {
+    "observer": "guest4test",
+    "follow_type": "blacklisted"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": []
+  },
+  "paramsHash": "52d311cc3c0a239d"
+}

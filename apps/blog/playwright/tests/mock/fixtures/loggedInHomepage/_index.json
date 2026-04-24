@@ -1,0 +1,12 @@
+{
+  "testName": "loggedInHomepage",
+  "recordedAt": "2026-04-22T08:14:32.776Z",
+  "totalRequests": 6,
+  "savedFixtures": 3,
+  "duplicatesSkipped": 3,
+  "methods": {
+    "bridge.list_all_subscriptions": 2,
+    "bridge.list_communities": 2,
+    "bridge.get_ranked_posts": 2
+  }
+}
