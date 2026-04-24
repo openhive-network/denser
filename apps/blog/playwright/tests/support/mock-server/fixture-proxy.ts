@@ -214,29 +214,42 @@ export async function createFixtureProxy(
 // ─── REPLAY MODE ────────────────────────────────────────────────────────────
 
 /**
+ * Read all non-`_` JSON files from `dir` and populate `fixtures`.
+ * Entries with the same key overwrite any prior value — this is
+ * how overlay dirs replace base entries for specific methods.
+ */
+function loadFixtureFiles(dir: string, fixtures: Map<string, IFixtureEntry[]>): void {
+  const files = fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith('.json') && !f.startsWith('_'))
+    .sort();
+
+  for (const file of files) {
+    const content = fs.readFileSync(path.join(dir, file), 'utf-8');
+    const entry: IFixtureEntry = JSON.parse(content);
+    const key = `${entry.method}::${entry.paramsHash}`;
+    fixtures.set(key, [entry]);
+  }
+}
+
+/**
  * Load all fixture entries from a test's fixture directory.
- * Returns them grouped by (method + paramsHash) with a call counter
- * so that repeated identical calls return sequential responses.
+ * If `_index.json` declares a `base`, loads the base dir first
+ * then overlays variant-specific files on top.
  */
 function loadFixtures(fixtureDir: string): Map<string, IFixtureEntry[]> {
   const fixtures = new Map<string, IFixtureEntry[]>();
 
-  const files = fs
-    .readdirSync(fixtureDir)
-    .filter((f) => f.endsWith('.json') && !f.startsWith('_'))
-    .sort(); // sorted by index prefix
-
-  for (const file of files) {
-    const content = fs.readFileSync(path.join(fixtureDir, file), 'utf-8');
-    const entry: IFixtureEntry = JSON.parse(content);
-    const key = `${entry.method}::${entry.paramsHash}`;
-
-    if (!fixtures.has(key)) {
-      fixtures.set(key, []);
+  const indexPath = path.join(fixtureDir, '_index.json');
+  if (fs.existsSync(indexPath)) {
+    const index = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
+    if (index.base) {
+      const baseDir = path.join(FIXTURES_ROOT, index.base);
+      loadFixtureFiles(baseDir, fixtures);
     }
-    fixtures.get(key)!.push(entry);
   }
 
+  loadFixtureFiles(fixtureDir, fixtures);
   return fixtures;
 }
 
