@@ -7,6 +7,11 @@ describe('SyntaxHighlightPlugin', () => {
     describe('postProcess (unit)', () => {
         const plugin = new SyntaxHighlightPlugin();
 
+        before(async function () {
+            this.timeout(20000);
+            await plugin.ready();
+        });
+
         it('returns input unchanged when no fenced blocks present', () => {
             const html = '<p>hello</p>';
             expect(plugin.postProcess(html)).to.equal(html);
@@ -54,11 +59,16 @@ describe('SyntaxHighlightPlugin', () => {
 
         it('escapes script tags appearing as code content', () => {
             // Even though `<script>` would not survive the main sanitizer, defense-in-depth:
-            // if attacker text reaches Shiki, the highlighter must escape it.
+            // if attacker text reaches Shiki, the highlighter must escape angle brackets so
+            // no real <script> tag survives in the rendered HTML. Shiki may tokenize the
+            // content into multiple <span>s so the literal "&lt;script&gt;" string need not
+            // appear contiguously — the invariant is that no executable <script> reaches output.
             const html = '<pre><code class="language-js">&lt;script&gt;alert(1)&lt;/script&gt;\n</code></pre>';
             const out = plugin.postProcess(html);
-            expect(out).to.not.include('<script>');
-            expect(out).to.include('&lt;script&gt;');
+            expect(out).to.not.match(/<script[^>]*>/i);
+            expect(out).to.not.match(/<\/script>/i);
+            expect(out).to.include('&lt;');
+            expect(out).to.include('&gt;');
         });
 
         it('falls through to original when block exceeds size cap', () => {
@@ -68,11 +78,12 @@ describe('SyntaxHighlightPlugin', () => {
         });
 
         it('handles multiple blocks in one document independently', () => {
-            const html =
-                '<pre><code class="language-js">a;\n</code></pre>' +
-                '<pre><code>plain\n</code></pre>' +
-                '<pre><code class="language-cpp">int x;\n</code></pre>';
-            const out = plugin.postProcess(html);
+            const blocks = [
+                '<pre><code class="language-js">a;\n</code></pre>',
+                '<pre><code>plain\n</code></pre>',
+                '<pre><code class="language-cpp">int x;\n</code></pre>'
+            ].join('');
+            const out = plugin.postProcess(blocks);
             expect((out.match(/class="shiki/g) || []).length).to.equal(2);
             expect(out).to.include('<pre><code>plain\n</code></pre>');
         });
@@ -92,6 +103,13 @@ describe('SyntaxHighlightPlugin', () => {
     });
 
     describe('full pipeline integration', () => {
+        const sharedPlugin = new SyntaxHighlightPlugin();
+
+        before(async function () {
+            this.timeout(20000);
+            await sharedPlugin.ready();
+        });
+
         const baseOptions: RendererOptions = {
             baseUrl: 'https://hive.blog/',
             breaks: true,
@@ -109,7 +127,7 @@ describe('SyntaxHighlightPlugin', () => {
             hashtagUrlFn: (hashtag: string) => `/trending/${hashtag}`,
             isLinkSafeFn: () => true,
             addExternalCssClassToMatchingLinksFn: () => false,
-            plugins: [new SyntaxHighlightPlugin()]
+            plugins: [sharedPlugin]
         };
 
         it('renders a fenced cpp block as highlighted', () => {

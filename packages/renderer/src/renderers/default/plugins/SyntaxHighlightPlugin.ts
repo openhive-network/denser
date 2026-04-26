@@ -1,34 +1,4 @@
 import sanitize from 'sanitize-html';
-import {createHighlighterCoreSync, type HighlighterCore} from 'shiki/core';
-import {createJavaScriptRegexEngine} from 'shiki/engine/javascript';
-import langBash from 'shiki/langs/bash.mjs';
-import langC from 'shiki/langs/c.mjs';
-import langCpp from 'shiki/langs/cpp.mjs';
-import langCss from 'shiki/langs/css.mjs';
-import langDiff from 'shiki/langs/diff.mjs';
-import langDockerfile from 'shiki/langs/dockerfile.mjs';
-import langGo from 'shiki/langs/go.mjs';
-import langHtml from 'shiki/langs/html.mjs';
-import langIni from 'shiki/langs/ini.mjs';
-import langJava from 'shiki/langs/java.mjs';
-import langJs from 'shiki/langs/javascript.mjs';
-import langJson from 'shiki/langs/json.mjs';
-import langJsx from 'shiki/langs/jsx.mjs';
-import langMarkdown from 'shiki/langs/markdown.mjs';
-import langPhp from 'shiki/langs/php.mjs';
-import langPython from 'shiki/langs/python.mjs';
-import langRuby from 'shiki/langs/ruby.mjs';
-import langRust from 'shiki/langs/rust.mjs';
-import langScss from 'shiki/langs/scss.mjs';
-import langShell from 'shiki/langs/shell.mjs';
-import langSql from 'shiki/langs/sql.mjs';
-import langToml from 'shiki/langs/toml.mjs';
-import langTs from 'shiki/langs/typescript.mjs';
-import langTsx from 'shiki/langs/tsx.mjs';
-import langXml from 'shiki/langs/xml.mjs';
-import langYaml from 'shiki/langs/yaml.mjs';
-import themeDark from 'shiki/themes/github-dark.mjs';
-import themeLight from 'shiki/themes/github-light.mjs';
 import {Log} from '../../../Log';
 import type {RendererPlugin} from './RendererPlugin';
 
@@ -91,7 +61,7 @@ const HTML_ENTITY_MAP: Readonly<Record<string, string>> = Object.freeze({
     '&quot;': '"',
     '&#39;': "'",
     '&#x27;': "'",
-    '&nbsp;': ' '
+    '&nbsp;': ' '
 });
 const HTML_ENTITY_RE = /&(?:lt|gt|amp|quot|nbsp|#39|#x27);/g;
 
@@ -132,44 +102,95 @@ const SECOND_PASS_CONFIG: sanitize.IOptions = {
     allowedSchemes: []
 };
 
-let highlighterInstance: HighlighterCore | null = null;
+/**
+ * Minimal type stub for Shiki's sync highlighter. Avoids static type imports
+ * from `shiki` so the renderer's existing CommonJS test config (ts-node + mocha)
+ * can compile this file without tripping on Shiki's ESM-only `exports` map.
+ * The full instance comes from `import('shiki/core')` at runtime.
+ */
+interface ShikiLikeHighlighter {
+    codeToHtml(
+        code: string,
+        options: {
+            lang: string;
+            themes: {light: string; dark: string};
+            defaultColor: false;
+        }
+    ): string;
+}
 
-function getHighlighter(): HighlighterCore {
-    if (!highlighterInstance) {
-        highlighterInstance = createHighlighterCoreSync({
-            langs: [
-                langBash,
-                langC,
-                langCpp,
-                langCss,
-                langDiff,
-                langDockerfile,
-                langGo,
-                langHtml,
-                langIni,
-                langJava,
-                langJs,
-                langJson,
-                langJsx,
-                langMarkdown,
-                langPhp,
-                langPython,
-                langRuby,
-                langRust,
-                langScss,
-                langShell,
-                langSql,
-                langToml,
-                langTs,
-                langTsx,
-                langXml,
-                langYaml
-            ],
-            themes: [themeLight, themeDark],
-            engine: createJavaScriptRegexEngine()
+let highlighter: ShikiLikeHighlighter | null = null;
+let initPromise: Promise<void> | null = null;
+
+/**
+ * Bypass TypeScript's module-resolution check for Shiki's ESM-only subpaths.
+ * The renderer is consumed in two different module contexts:
+ * - Production: webpack bundle, ESM-aware, resolves Shiki's `exports` map fine.
+ * - Renderer's own mocha test runner: CommonJS / legacy resolution that can't
+ *   read Shiki's `exports` map and would fail to compile static imports.
+ * Wrapping `import()` in a Function constructor hides the path string from the
+ * compiler so neither context tries to statically resolve it; resolution happens
+ * at runtime where each environment handles ESM correctly.
+ */
+const dynImport: (path: string) => Promise<any> =
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    new Function('p', 'return import(p)') as (path: string) => Promise<any>;
+
+const SHIKI_LANG_PATHS = [
+    'shiki/langs/bash.mjs',
+    'shiki/langs/c.mjs',
+    'shiki/langs/cpp.mjs',
+    'shiki/langs/css.mjs',
+    'shiki/langs/diff.mjs',
+    'shiki/langs/dockerfile.mjs',
+    'shiki/langs/go.mjs',
+    'shiki/langs/html.mjs',
+    'shiki/langs/ini.mjs',
+    'shiki/langs/java.mjs',
+    'shiki/langs/javascript.mjs',
+    'shiki/langs/json.mjs',
+    'shiki/langs/jsx.mjs',
+    'shiki/langs/markdown.mjs',
+    'shiki/langs/php.mjs',
+    'shiki/langs/python.mjs',
+    'shiki/langs/ruby.mjs',
+    'shiki/langs/rust.mjs',
+    'shiki/langs/scss.mjs',
+    'shiki/langs/shell.mjs',
+    'shiki/langs/sql.mjs',
+    'shiki/langs/toml.mjs',
+    'shiki/langs/typescript.mjs',
+    'shiki/langs/tsx.mjs',
+    'shiki/langs/xml.mjs',
+    'shiki/langs/yaml.mjs'
+] as const;
+
+/**
+ * Lazily loads Shiki and builds a singleton highlighter. Uses dynamic import
+ * so this module remains loadable from CommonJS callers (the renderer's mocha
+ * test runner) while still resolving Shiki's ESM-only `exports` map at
+ * runtime in production (Node 20.x dynamic import handles ESM from CJS).
+ */
+function ensureHighlighter(): Promise<void> {
+    if (initPromise) return initPromise;
+    initPromise = (async () => {
+        const [coreMod, engineMod, lightTheme, darkTheme, ...langMods] = await Promise.all([
+            dynImport('shiki/core'),
+            dynImport('shiki/engine/javascript'),
+            dynImport('shiki/themes/github-light.mjs'),
+            dynImport('shiki/themes/github-dark.mjs'),
+            ...SHIKI_LANG_PATHS.map((p) => dynImport(p))
+        ]);
+        const langs = langMods.map((m) => m.default).filter(Boolean);
+        highlighter = coreMod.createHighlighterCoreSync({
+            langs,
+            themes: [lightTheme.default, darkTheme.default],
+            engine: engineMod.createJavaScriptRegexEngine()
         });
-    }
-    return highlighterInstance;
+    })().catch((err) => {
+        Log.log().warn({err}, 'syntax-highlight-plugin: Shiki initialization failed');
+    });
+    return initPromise;
 }
 
 /**
@@ -177,11 +198,29 @@ function getHighlighter(): HighlighterCore {
  * HTML. Runs as a postProcess plugin (after the main sanitizer), then second-pass-
  * sanitizes its own output. Only blocks with a recognized language are touched;
  * untagged blocks are left as plain `<pre><code>`.
+ *
+ * Initialization is lazy: the first instance kicks off Shiki loading in the
+ * background. Renders that occur before initialization completes are passed
+ * through unchanged. Once loaded, the singleton highlighter is reused for the
+ * lifetime of the process.
  */
 export class SyntaxHighlightPlugin implements RendererPlugin {
     public name = 'syntax-highlight-plugin';
 
+    public constructor() {
+        // Fire-and-forget: kick off Shiki load. Errors are logged inside ensureHighlighter.
+        void ensureHighlighter();
+    }
+
+    /** Resolves once Shiki is ready (or has definitively failed to load). */
+    public ready(): Promise<void> {
+        return ensureHighlighter();
+    }
+
     public postProcess(html: string): string {
+        if (!highlighter) {
+            return html;
+        }
         if (!html.includes('<pre><code class="language-')) {
             return html;
         }
@@ -195,7 +234,7 @@ export class SyntaxHighlightPlugin implements RendererPlugin {
             }
             try {
                 const code = decodeEntities(encodedText);
-                const highlighted = getHighlighter().codeToHtml(code, {
+                const highlighted = highlighter!.codeToHtml(code, {
                     lang: canonicalLang,
                     themes: {light: 'github-light', dark: 'github-dark'},
                     defaultColor: false
