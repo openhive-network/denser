@@ -123,14 +123,13 @@ let highlighter: ShikiLikeHighlighter | null = null;
 let initPromise: Promise<void> | null = null;
 
 /**
- * Bypass TypeScript's module-resolution check for Shiki's ESM-only subpaths.
- * The renderer is consumed in two different module contexts:
- * - Production: webpack bundle, ESM-aware, resolves Shiki's `exports` map fine.
- * - Renderer's own mocha test runner: CommonJS / legacy resolution that can't
- *   read Shiki's `exports` map and would fail to compile static imports.
- * Wrapping `import()` in a Function constructor hides the path string from the
- * compiler so neither context tries to statically resolve it; resolution happens
- * at runtime where each environment handles ESM correctly.
+ * Bypass TypeScript's module-resolution check and ts-node's CJS transpilation
+ * of `import()` expressions. Wrapping `import()` in a Function constructor
+ * keeps the call as a native dynamic import at runtime — works in both
+ * Node 20.x ESM-from-CJS and webpack-bundled production. The path strings
+ * are invisible to webpack's static analysis, so Next.js standalone tracing
+ * needs an explicit `outputFileTracingIncludes` entry for `shiki` (set in
+ * `apps/blog/next.config.js`).
  */
 const dynImport: (path: string) => Promise<any> =
     // eslint-disable-next-line @typescript-eslint/no-implied-eval
@@ -165,12 +164,6 @@ const SHIKI_LANG_PATHS = [
     'shiki/langs/yaml.mjs'
 ] as const;
 
-/**
- * Lazily loads Shiki and builds a singleton highlighter. Uses dynamic import
- * so this module remains loadable from CommonJS callers (the renderer's mocha
- * test runner) while still resolving Shiki's ESM-only `exports` map at
- * runtime in production (Node 20.x dynamic import handles ESM from CJS).
- */
 function ensureHighlighter(): Promise<void> {
     if (initPromise) return initPromise;
     initPromise = (async () => {
@@ -207,21 +200,20 @@ function ensureHighlighter(): Promise<void> {
 export class SyntaxHighlightPlugin implements RendererPlugin {
     public name = 'syntax-highlight-plugin';
 
-    public constructor() {
-        // Fire-and-forget: kick off Shiki load. Errors are logged inside ensureHighlighter.
-        void ensureHighlighter();
-    }
-
     /** Resolves once Shiki is ready (or has definitively failed to load). */
     public ready(): Promise<void> {
         return ensureHighlighter();
     }
 
     public postProcess(html: string): string {
-        if (!highlighter) {
+        if (!html.includes('<pre><code class="language-')) {
             return html;
         }
-        if (!html.includes('<pre><code class="language-')) {
+        // Kick off Shiki load on first post that actually contains a labeled code
+        // block. Avoids work for posts without code, and keeps server startup
+        // fast (the load is async; the first such post falls through to plain).
+        if (!highlighter) {
+            void ensureHighlighter();
             return html;
         }
         return html.replace(BLOCK_RE, (match, langTag: string, encodedText: string) => {

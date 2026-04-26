@@ -22,7 +22,15 @@ const nextConfig = {
   },
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..'),
-    instrumentationHook: true
+    instrumentationHook: true,
+    // Shiki is loaded via Function-wrapped dynamic import inside @hive/renderer's
+    // SyntaxHighlightPlugin (so the renderer's mocha test runner can compile the
+    // file). That wrapping hides the import paths from webpack's static analysis,
+    // so the standalone file tracer wouldn't otherwise include the package.
+    // Force-include the runtime files here.
+    outputFileTracingIncludes: {
+      '*': ['../../node_modules/shiki/**/*', '../../node_modules/@shikijs/**/*']
+    }
   },
   // Worker files need specific headers (security headers are applied via middleware)
   async headers() {
