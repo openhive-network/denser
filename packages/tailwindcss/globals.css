@@ -361,3 +361,36 @@ summary {
   text-align: right;
   cursor: pointer;
 }
+
+/* Shiki syntax highlighting (server-side, see @hive/renderer SyntaxHighlightPlugin).
+   Each token carries inline `--shiki-light` and `--shiki-dark` custom properties;
+   these rules pick which to display depending on the active theme. */
+.prose pre.shiki,
+pre.shiki {
+  background-color: var(--shiki-light-bg);
+  padding: 1em;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+.prose pre.shiki code,
+pre.shiki code {
+  background-color: transparent;
+  color: var(--shiki-light);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.prose pre.shiki span,
+pre.shiki span {
+  color: var(--shiki-light);
+}
+.dark .prose pre.shiki,
+.dark pre.shiki {
+  background-color: var(--shiki-dark-bg);
+}
+.dark .prose pre.shiki code,
+.dark pre.shiki code,
+.dark .prose pre.shiki span,
+.dark pre.shiki span {
+  color: var(--shiki-dark);
+}
