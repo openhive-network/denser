@@ -1,4 +1,10 @@
-import { DefaultRenderer, InstagramResizePlugin, TablePlugin, TwitterResizePlugin } from '@hive/renderer';
+import {
+  DefaultRenderer,
+  InstagramResizePlugin,
+  SyntaxHighlightPlugin,
+  TablePlugin,
+  TwitterResizePlugin
+} from '@hive/renderer';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
 
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
@@ -47,8 +53,7 @@ const renderDefaultOptions = {
   assetsWidth: 640,
   assetsHeight: 480,
   // Note: Instagram uses iframe-only resize (postMessage), Twitter loads widgets.js for native rendering
-  // SyntaxHighlightPlugin temporarily disabled while diagnosing CI smoke test interaction (see #918)
-  plugins: [new TablePlugin(), new InstagramResizePlugin(), new TwitterResizePlugin()],
+  plugins: [new TablePlugin(), new InstagramResizePlugin(), new TwitterResizePlugin(), new SyntaxHighlightPlugin()],
   imageProxyFn: (url: string) => proxifyImageSrc(url, 1536, 0),
   usertagUrlFn: (account: string) => (basePath ? `${basePath}/@${account}` : `/@${account}`),
   hashtagUrlFn: (hashtag: string) => (basePath ? `${basePath}/trending/${hashtag}` : `/trending/${hashtag}`),
