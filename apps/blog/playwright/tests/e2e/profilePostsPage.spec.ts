@@ -237,8 +237,8 @@ test.describe('Profile page of @gtg', () => {
 
     if (await profilePage.postBlogItem.first().isVisible())
       await expect(profilePage.postBlogItem.first()).toBeVisible();
-    if (await profilePage.userNoPendingPayoutsMsg.isVisible())
-      await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    if (await profilePage.userHasNotStartedBloggingYetMsg.isVisible())
+      await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
 
     console.log(postLenght);
     const url = process.env.REACT_APP_API_ENDPOINT;
@@ -272,7 +272,7 @@ test.describe('Profile page of @gtg', () => {
       await expect(profilePage.profileBlogLink).toBeVisible();
   
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
   test('Tab Payouts - Post Card Header - NickName Link', async ({ page }) => {
@@ -285,7 +285,7 @@ test.describe('Profile page of @gtg', () => {
       await expect(profilePage.profileBlogLink).toBeVisible();
   
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
   test('Tab Payouts - Post Card Header - Community Link', async ({ page }) => {
@@ -298,7 +298,7 @@ test.describe('Profile page of @gtg', () => {
       await profilePage.firstCommunityLinkPostsComments.click();
       await expect(profilePage.communityName).toBeVisible();
       await expect(profilePage.communityName).toHaveText(`${firstCommunityName}`);
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
   test('Tab Payouts - Post Card Header - Timestamp', async ({ page }) => {
@@ -321,7 +321,7 @@ test.describe('Profile page of @gtg', () => {
 
         await expect(plenght).toBeGreaterThan(1);
       }
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
   test('Tab Payouts - ReComment Card Header - Avatar', async ({ page }) => {
@@ -346,7 +346,7 @@ test.describe('Profile page of @gtg', () => {
       await page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
   
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
   test('Tab Payouts - ReComment Card Header - NickName Link', async ({ page }) => {
@@ -371,7 +371,7 @@ test.describe('Profile page of @gtg', () => {
       await page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
   
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
   test('Tab Payouts - ReComment Card Header - Timestamp', async ({ page }) => {
@@ -395,7 +395,7 @@ test.describe('Profile page of @gtg', () => {
       }
       await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
       await expect(commentViewPage.commentGreenSection).toBeVisible();
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
   test('Tab Payouts - ReComment Card - Title', async ({ page }) => {
@@ -419,7 +419,7 @@ test.describe('Profile page of @gtg', () => {
       }
       await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
       await expect(commentViewPage.commentGreenSection).toBeVisible();
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
   test('Tab Payouts - ReComment Card - Description', async ({ page }) => {
@@ -443,7 +443,7 @@ test.describe('Profile page of @gtg', () => {
       }
       await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
       await expect(commentViewPage.commentGreenSection).toBeVisible();
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
   test('Tab Payouts - ReComment Card Footer - Response', async ({ page }) => {
@@ -467,7 +467,7 @@ test.describe('Profile page of @gtg', () => {
       }
       await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
       await expect(commentViewPage.commentGreenSection).toBeVisible();
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
   test('Tab Payouts - ReComment Card Footer - Reblog', async ({ page }) => {
@@ -494,6 +494,6 @@ test.describe('Profile page of @gtg', () => {
           }
         }
       }
-    } else await expect(profilePage.userNoPendingPayoutsMsg).toHaveText('No pending payouts.');
+    } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 });

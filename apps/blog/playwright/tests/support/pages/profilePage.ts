@@ -191,10 +191,10 @@ export class ProfilePage {
   readonly communityName: Locator;
   readonly communityTimeStamp: Locator;
 
+  // Single locator covering Blog/Posts/Comments/Payouts/Replies empty states —
+  // the app emits the same `data-testid="user-has-not-started-blogging-yet"`
+  // for all of them; only the rendered text differs by translation key.
   readonly userHasNotStartedBloggingYetMsg: Locator;
-  readonly userHasNotMadeAnyPostsYetMsg: Locator;
-  readonly userNoPendingPayoutsMsg: Locator;
-  readonly userHasNotHadAnyRepliesYetMsg: Locator;
   readonly userDoesNotHaveAnySubscriptionsYetMsg: Locator;
   readonly userHasNotHadAnyNotificationsYetMsg: Locator;
   readonly userBannerLevelLink: Locator;
@@ -449,9 +449,6 @@ export class ProfilePage {
     this.communityName = page.locator('[data-testid="community-name"]');
     this.communityTimeStamp = page.locator('span.text-xs a').nth(1);
     this.userHasNotStartedBloggingYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
-    this.userHasNotMadeAnyPostsYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
-    this.userNoPendingPayoutsMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
-    this.userHasNotHadAnyRepliesYetMsg = page.locator('[data-testid="user-has-not-started-blogging-yet"]');
     this.userDoesNotHaveAnySubscriptionsYetMsg = page.locator('[data-testid="user-does-not-have-any-subscriptions-yet"]');
     this.userHasNotHadAnyNotificationsYetMsg = page.locator('[data-testid="user-has-not-had-any-notifications-yet"]');
     this.userBannerLevelLink = page.locator('[data-testid="profile-level-link"]');
@@ -497,7 +494,7 @@ export class ProfilePage {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
     // Wait for either the posts list OR the "no payouts" message to appear
-    await this.profileBlogPostsList.or(this.userNoPendingPayoutsMsg).waitFor();
+    await this.profileBlogPostsList.or(this.userHasNotStartedBloggingYetMsg).waitFor();
   }
 
   async gotoRepliesProfilePage(nickName: string) {
@@ -699,7 +696,7 @@ export class ProfilePage {
   }
 
   async profileRepliesTabIsSelected() {
-    const repliesPageListLocator = this.userHasNotHadAnyRepliesYetMsg.or(this.profileBlogPostsList);
+    const repliesPageListLocator = this.userHasNotStartedBloggingYetMsg.or(this.profileBlogPostsList);
     await repliesPageListLocator.waitFor({state: 'visible'});
     await expect(this.page).toHaveURL(/.*replies/);
   }

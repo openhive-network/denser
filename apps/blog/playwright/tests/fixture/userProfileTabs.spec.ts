@@ -95,7 +95,7 @@ test.describe('User Profile Tabs tests (fixture-based)', () => {
 
     // Either the post list or the "No pending payouts" empty state renders.
     await expect(
-      profilePage.profileBlogPostsList.or(profilePage.userNoPendingPayoutsMsg)
+      profilePage.profileBlogPostsList.or(profilePage.userHasNotStartedBloggingYetMsg)
     ).toBeVisible();
   });
 
