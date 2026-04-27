@@ -35,7 +35,8 @@
     "test:fixture:prepare": "../../scripts/write-version.sh ./version.json && pnpm build",
     "test:fixture": "pnpm run test:fixture:prepare && playwright test --config=playwright.fixture.config.ts",
     "test:fixture:headed": "pnpm run test:fixture:prepare && playwright test --config=playwright.fixture.config.ts --headed",
-    "test:fixture:record": "pnpm run test:fixture:prepare && FIXTURE_MODE=record playwright test --config=playwright.fixture.config.ts"
+    "test:fixture:record": "pnpm run test:fixture:prepare && FIXTURE_MODE=record playwright test --config=playwright.fixture.config.ts && pnpm run test:fixture:trim",
+    "test:fixture:trim": "node playwright/tests/support/fixture-auth/trim-fixtures.mjs"
   },
   "dependencies": {
     "@beam-australia/react-env": "^3.1.1",

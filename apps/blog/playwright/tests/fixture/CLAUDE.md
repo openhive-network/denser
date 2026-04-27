@@ -320,11 +320,25 @@ mock/fixtures/
 
 ### `active_votes` trimming
 
-The base `bridge.get_ranked_posts` fixture has its `active_votes` arrays
-trimmed to 5 entries per post. The full arrays (200–1000 voters) are not
-needed — tests only use `guest4test` for the `checkVote` lookup and don't
-assert on vote counts. After re-recording, trim again before regenerating
-variants (see workflow below).
+`bridge.get_ranked_posts` responses arrive with `active_votes` arrays of
+200–1000 voters per post. Tests only use the seeded user (`CI_TEST_USER`,
+default `guest4test`) for the `checkVote` lookup and don't assert on
+vote counts, so the arrays are trimmed to **5 entries + the seeded user
+if present**.
+
+Trimming runs **automatically** after every record via
+`pnpm test:fixture:trim` (chained from `test:fixture:record` in
+`package.json`). The script `support/fixture-auth/trim-fixtures.mjs`
+walks `mock/fixtures/` recursively, is idempotent, and preserves
+seeded-user entries injected by the variant generator. Run it manually
+on a specific dir:
+
+```bash
+node apps/blog/playwright/tests/support/fixture-auth/trim-fixtures.mjs
+node apps/blog/playwright/tests/support/fixture-auth/trim-fixtures.mjs path/to/dir
+```
+
+To trim a different array type, extend `processFile` in that script.
 
 ### Stale overlay detection
 
