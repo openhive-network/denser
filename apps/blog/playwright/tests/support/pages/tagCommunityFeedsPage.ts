@@ -36,6 +36,7 @@ export class TagCommunityFeedsPage {
   readonly rolesTitleHeader: Locator;
 
   readonly notFoundHeading: Locator;
+  readonly noDataError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -66,14 +67,15 @@ export class TagCommunityFeedsPage {
     this.rolesTitleHeader = this.rolesTableHeader.getByRole('columnheader', { name: 'Title' });
 
     this.notFoundHeading = page.getByRole('heading', { name: /page not found|404/i });
+    this.noDataError = page.getByTestId('no-data-error');
   }
 
   async gotoTagFeed(sort: 'trending' | 'hot' | 'created' | 'payout' | 'muted', tag: string) {
-    await this.page.goto(`/${sort}/${tag}`, { waitUntil: 'commit' });
+    await this.page.goto(`/${sort}/${tag}`, { waitUntil: 'domcontentloaded' });
   }
 
   async gotoRoles(tag: string) {
-    await this.page.goto(`/roles/${tag}`, { waitUntil: 'commit' });
+    await this.page.goto(`/roles/${tag}`, { waitUntil: 'domcontentloaded' });
   }
 
   async waitForFeedToRender() {
@@ -113,7 +115,15 @@ export class TagCommunityFeedsPage {
   }
 
   async validateEmptyOrNotFound() {
-    await this.page.waitForLoadState('domcontentloaded');
-    await expect(this.page.locator('body')).toBeVisible();
+    // For `hive-<digits>` community-tags that don't exist the API returns a
+    // JSON-RPC error; SSR catches it and renders <NoDataError/>. For plain
+    // non-existent tags the API returns an empty array and the feed renders
+    // empty. Either outcome is "didn't crash" — assert on whichever shows up.
+    await expect(this.noDataError.or(this.postListItems.first()).first()).toBeVisible({
+      timeout: TIMEOUTS.HYDRATION
+    });
+    if ((await this.postListItems.count()) === 0) {
+      await expect(this.noDataError).toBeVisible();
+    }
   }
 }

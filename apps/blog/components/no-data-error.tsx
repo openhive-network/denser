@@ -5,7 +5,7 @@ import { Activity } from 'lucide-react';
 
 const NoDataError: FC = () => {
   return (
-    <div className="mx-auto flex flex-col items-center py-8">
+    <div className="mx-auto flex flex-col items-center py-8" data-testid="no-data-error">
       <Icons.hive className="h-16 w-16" />
       <h3 className="py-4 text-lg">No Data Available</h3>
       <p className="mb-4 text-center text-muted-foreground">There was a problem fetching the data.</p>

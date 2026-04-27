@@ -35,7 +35,7 @@ test.describe('Profile page of @ganda', () => {
         await expect(profilePage.page).toHaveURL(/ *.\/@ganda$/);
         await profilePage.moveToPostsTab();
         await profilePage.profilePostsTabIsSelected();
-        await expect(profilePage.userHasNotMadeAnyPostsYetMsg).toHaveText("Looks like @ganda hasn't made any posts yet!");
+        await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText("Looks like @ganda hasn't made any posts yet!");
     });
 
     test('profile Posts - Comments tab of @ganda is empty', async ({ page }) => {
@@ -45,8 +45,8 @@ test.describe('Profile page of @ganda', () => {
         await profilePage.moveToPostsTab();
         await profilePage.profilePostsTabIsSelected();
         await profilePage.postsMenuCommentsButton.click();
-        await expect(profilePage.userHasNotMadeAnyPostsYetMsg).toBeVisible({ timeout: 15000 });
-        await expect(profilePage.userHasNotMadeAnyPostsYetMsg).toHaveText("Looks like @ganda hasn't made any posts yet!");
+        await expect(profilePage.userHasNotStartedBloggingYetMsg).toBeVisible({ timeout: 15000 });
+        await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText("Looks like @ganda hasn't made any posts yet!");
     });
 
     test('profile Posts - Payouts tab of @ganda is empty', async ({ page }) => {
@@ -56,8 +56,8 @@ test.describe('Profile page of @ganda', () => {
         await profilePage.moveToPostsTab();
         await profilePage.profilePostsTabIsSelected();
         await profilePage.postsMenuPayoutsButton.click();
-        await expect(profilePage.userNoPendingPayoutsMsg).toBeVisible({ timeout: 15000 });
-        await expect(profilePage.userNoPendingPayoutsMsg).toHaveText("No pending payouts.");
+        await expect(profilePage.userHasNotStartedBloggingYetMsg).toBeVisible({ timeout: 15000 });
+        await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText("No pending payouts.");
     });
 
     test('profile Replies tab of @ganda is empty', async ({ page }) => {
@@ -66,7 +66,7 @@ test.describe('Profile page of @ganda', () => {
         await expect(profilePage.page).toHaveURL(/ *.\/@ganda$/);
         await profilePage.moveToRepliesTab();
         await profilePage.profileRepliesTabIsSelected();
-        await expect(profilePage.userHasNotHadAnyRepliesYetMsg).toHaveText("@ganda hasn't had any replies yet.");
+        await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText("@ganda hasn't had any replies yet.");
     });
 
     test('profile Social tab of @ganda is empty', async ({ page }) => {
