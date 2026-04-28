@@ -36,7 +36,7 @@ const getDefaultClientOptions = (): IWaxOptionsChain => {
   return {
     chainId: siteConfig.chainId,
     apiEndpoint: jsonRpcNode || siteConfig.endpoint,
-    apiTimeout: 5_000, // To be adjusted
+    apiTimeout: typeof window === 'undefined' ? 30_000 : 5_000,
     restApiEndpoint: restNode || jsonRpcNode || siteConfig.endpoint,
   };
 };
