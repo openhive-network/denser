@@ -41,13 +41,13 @@ const RendererContainer = ({
 
   const handleClick = (e: Event) => {
     e.preventDefault();
-    const anchor = e.target as HTMLAnchorElement;
-    let href = anchor.href;
-    if (!href) {
-      const parent = anchor.parentElement as HTMLAnchorElement;
-      href = parent.href;
-    }
-    setLink(href);
+    // Use currentTarget (the <a> we registered the listener on) rather than
+    // target (whatever element was clicked). target can be a descendant when
+    // the link's visible text is wrapped — e.g. Google Translate injects
+    // nested <font> tags around translated text — and walking parentElement
+    // a fixed number of levels can't reliably reach the anchor.
+    const anchor = e.currentTarget as HTMLAnchorElement;
+    setLink(anchor.href);
     setOpen(true);
   };
 
