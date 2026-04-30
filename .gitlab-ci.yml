@@ -657,6 +657,9 @@ e2e-tests-blog-stable:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
     PORT: 3000
+    # api.hive.blog returns post_id: null from bridge.get_ranked_posts; use
+    # api.openhive.network which returns proper integer IDs.
+    REACT_APP_API_ENDPOINT: 'https://api.openhive.network'
 
 e2e-tests-wallet-stable:
   extends: .e2e_tests_template
