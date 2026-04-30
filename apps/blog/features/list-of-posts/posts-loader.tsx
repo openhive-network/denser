@@ -23,12 +23,12 @@ const PostList = ({
   return (
     <ul data-testid={`post-list-${testFilter}`}>
       {data
-        ?.filter((post) => post && post.post_id)
+        ?.filter((post) => post?.author && post.permlink)
         .map((post: Entry) => (
           <PostListItem
             nsfwPreferences={nsfwPreferences}
             post={post}
-            key={post.post_id}
+            key={`${post.author}/${post.permlink}`}
             isCommunityPage={isCommunityPage}
             blacklist={blacklist}
           />
