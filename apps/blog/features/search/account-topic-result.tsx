@@ -15,6 +15,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import NoDataError from '@/blog/components/no-data-error';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { StaleTime } from '@/blog/lib/react-query';
+import { useSSRObserver } from '@/blog/components/observer-provider';
 
 const AccountTopicResult = ({
   author,
@@ -29,9 +30,14 @@ const AccountTopicResult = ({
   nsfwPreferences: Preferences['nsfw'];
   initialData?: Entry[] | null;
 }) => {
-  const { user } = useUserClient();
+  const ssrObserver = useSSRObserver();
+  const { user, isHydrated } = useUserClient();
   const { ref, inView } = useInView();
-  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  // Use SSR observer (from cookie) before hydration to match the prefetched
+  // initialData and avoid sending DEFAULT_OBSERVER for a logged-in user during
+  // the brief pre-hydration window.
+  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const observer = isHydrated ? clientObserver : ssrObserver;
   const { ref: prefetchRef, inView: prefetchInView } = useInView({
     // Start prefetching when element is 1500px from entering viewport
     rootMargin: '1500px 0px',
@@ -41,7 +47,7 @@ const AccountTopicResult = ({
 
   const { t } = useTranslation('common_blog');
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({
-    queryKey: ['similarPosts', query, author, sort],
+    queryKey: ['similarPosts', query, author, sort, observer],
     queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
       return await getByText({
         pattern: query,
