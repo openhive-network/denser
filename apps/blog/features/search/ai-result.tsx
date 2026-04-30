@@ -9,8 +9,8 @@ import { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-package
 import { PER_PAGE } from './lib/utils';
 import { DEFAULT_OBSERVER, Preferences } from '@/blog/lib/utils';
 import { PostListItemSkeleton } from '@hive/ui';
-import { commonVariables } from '@ui/lib/common-variables';
 import { StaleTime } from '@/blog/lib/react-query';
+import { useSSRObserver } from '@/blog/components/observer-provider';
 
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';
@@ -25,11 +25,16 @@ const AIResult = ({
   nsfwPreferences: Preferences['nsfw'];
   initialData?: MixedPostsResponse | null;
 }) => {
-  const { user } = useUserClient();
+  const ssrObserver = useSSRObserver();
+  const { user, isHydrated } = useUserClient();
   const { ref, inView } = useInView();
   const { t } = useTranslation('common_blog');
 
-  const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  // Use SSR observer (from cookie) before hydration to match the prefetched
+  // initialData and avoid sending DEFAULT_OBSERVER for a logged-in user during
+  // the brief pre-hydration window.
+  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const observer = isHydrated ? clientObserver : ssrObserver;
   const [loadedStubPosts, setLoadedStubPosts] = useState<Entry[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -41,11 +46,11 @@ const AIResult = ({
     isFetching,
     error
   } = useQuery({
-    queryKey: ['searchPosts', query],
+    queryKey: ['searchPosts', query, observer],
     queryFn: async () => {
       return await searchPosts({
         query,
-        observer: user.username !== '' ? user.username : commonVariables.defaultObserver,
+        observer,
         result_limit: 1000, // Get up to 1000 results
         full_posts: PER_PAGE // Get first page fully expanded
       });
