@@ -13,7 +13,7 @@ export const useFollowListQuery = (
     queryFn: () => getFollowList(username, type),
     initialData: serverData ?? undefined,
     initialDataUpdatedAt: serverData ? Date.now() : undefined,
-    staleTime: StaleTime.NONE,
+    staleTime: StaleTime.MEDIUM,
     enabled: Boolean(username)
   });
 };

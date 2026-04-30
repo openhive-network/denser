@@ -65,19 +65,15 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     staleTime: StaleTime.MEDIUM
   });
 
-  // Prefetch when user is getting close to the end
+  // Auto-fetch the next page when either the prefetch sentinel (1500px ahead)
+  // or the load-more button enters view. Guard on !isFetching so a single cycle
+  // can't fire while any fetch is in flight — otherwise empty/short pages keep
+  // the sentinel in view and we'd loop until exhausting the feed.
   useEffect(() => {
-    if (prefetchInView && hasNextPage && !isFetchingNextPage) {
+    if ((prefetchInView || inView) && hasNextPage && !isFetching) {
       fetchNextPage();
     }
-  }, [prefetchInView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  // Fallback: still trigger when reaching the actual button
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [prefetchInView, inView, hasNextPage, isFetching, fetchNextPage]);
 
   // Calculate total posts to determine when to show prefetch trigger
   const totalPosts = data?.pages?.reduce((acc, page) => acc + (page?.length || 0), 0) || 0;
