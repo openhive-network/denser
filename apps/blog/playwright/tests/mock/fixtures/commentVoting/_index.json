@@ -1,0 +1,23 @@
+{
+  "testName": "commentVoting",
+  "recordedAt": "2026-05-04T09:20:26.950Z",
+  "totalRequests": 36,
+  "savedFixtures": 15,
+  "duplicatesSkipped": 21,
+  "methods": {
+    "bridge.get_follow_list": 4,
+    "bridge.get_community": 2,
+    "bridge.get_post": 2,
+    "bridge.get_discussion": 2,
+    "GET /hivesense-api": 2,
+    "database_api.find_accounts": 4,
+    "database_api.get_dynamic_global_properties": 4,
+    "bridge.unread_notifications": 2,
+    "rc_api.find_rc_accounts": 2,
+    "bridge.get_profile": 2,
+    "GET /hivesense-api/posts/gtg/hive-hardfork-25-jump-starter-kit/similar": 2,
+    "bridge.list_community_roles": 2,
+    "condenser_api.get_reblogged_by": 2,
+    "database_api.list_votes": 4
+  }
+}

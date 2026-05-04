@@ -70,7 +70,14 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
       let proxy: IFixtureProxyHandle;
 
       if (isRecordMode) {
-        proxy = await createFixtureProxy(fixtureTestName, { port: fixturePort });
+        // Allow operator to override the upstream API host. Default kept as
+        // api.hive.blog so existing record runs keep working; set
+        // FIXTURE_UPSTREAM=api.openhive.network when api.hive.blog is down.
+        const target = process.env.FIXTURE_UPSTREAM;
+        proxy = await createFixtureProxy(fixtureTestName, {
+          port: fixturePort,
+          ...(target ? { target } : {})
+        });
       } else {
         if (!hasFixtures(fixtureTestName)) {
           throw new Error(

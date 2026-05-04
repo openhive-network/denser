@@ -1,0 +1,50 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "sicarius",
+        "re-gtg-qux0er",
+        "guest4test"
+      ],
+      "limit": 1,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "96c8adbb85cd5228",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "sicarius",
+      "re-gtg-qux0er",
+      "guest4test"
+    ],
+    "limit": 1,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "sicarius",
+          "id": 1,
+          "last_update": "2026-04-22T10:00:00",
+          "num_changes": 0,
+          "permlink": "re-gtg-qux0er",
+          "rshares": -1000000,
+          "vote_percent": -10000,
+          "voter": "guest4test",
+          "weight": 1000000
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
