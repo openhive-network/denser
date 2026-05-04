@@ -104,6 +104,106 @@ export function expectVoteOperation(
 }
 
 /**
+ * Shape of a Hive `comment_operation` payload. Covers both new comments
+ * (auto-generated permlink `re-<parent>-<timestamp>`) and edits (explicit
+ * permlink supplied by caller). For new comments pass `permlinkPattern`
+ * (the timestamp suffix is non-deterministic); for edits pass `permlink`.
+ */
+export interface CommentOperationExpectations {
+  parent_author: string;
+  parent_permlink: string;
+  author: string;
+  body?: string;
+  permlink?: string;
+  permlinkPattern?: RegExp;
+}
+
+/**
+ * TX-01 / TX-03 validator. Asserts the broadcast carries a single
+ * `comment_operation` with the expected fields. Wax sometimes appends a
+ * `comment_options_operation` (for rewards != default) — we only inspect
+ * `operations[0]`, the comment itself.
+ */
+export function expectCommentOperation(
+  call: InterceptedBroadcast,
+  expected: CommentOperationExpectations
+): void {
+  const trx = (call.params as { trx?: unknown } | undefined)?.trx as
+    | { operations?: unknown[] }
+    | undefined;
+  expect(trx, 'broadcast params should include trx').toBeDefined();
+
+  const operations = trx?.operations;
+  expect(operations, 'trx should include operations').toBeDefined();
+  expect(operations?.length, 'comment broadcast should carry >=1 operation')
+    .toBeGreaterThanOrEqual(1);
+
+  const op = operations?.[0] as
+    | { type?: string; value?: Record<string, unknown> }
+    | undefined;
+  expect(op?.type, 'operation.type should be comment_operation').toBe(
+    'comment_operation'
+  );
+
+  const value = op?.value as
+    | {
+        parent_author?: string;
+        parent_permlink?: string;
+        author?: string;
+        permlink?: string;
+        body?: string;
+      }
+    | undefined;
+  expect(value?.parent_author, 'comment.parent_author').toBe(
+    expected.parent_author
+  );
+  expect(value?.parent_permlink, 'comment.parent_permlink').toBe(
+    expected.parent_permlink
+  );
+  expect(value?.author, 'comment.author').toBe(expected.author);
+  if (expected.body !== undefined) {
+    expect(value?.body, 'comment.body').toBe(expected.body);
+  }
+  if (expected.permlink !== undefined) {
+    expect(value?.permlink, 'comment.permlink').toBe(expected.permlink);
+  }
+  if (expected.permlinkPattern !== undefined) {
+    expect(value?.permlink ?? '', 'comment.permlink (pattern)').toMatch(
+      expected.permlinkPattern
+    );
+  }
+}
+
+/** TX-15: `delete_comment_operation` payload. */
+export interface DeleteCommentOperationExpectations {
+  author: string;
+  permlink: string;
+}
+
+export function expectDeleteCommentOperation(
+  call: InterceptedBroadcast,
+  expected: DeleteCommentOperationExpectations
+): void {
+  const trx = (call.params as { trx?: unknown } | undefined)?.trx as
+    | { operations?: unknown[] }
+    | undefined;
+  expect(trx, 'broadcast params should include trx').toBeDefined();
+
+  const op = trx?.operations?.[0] as
+    | { type?: string; value?: Record<string, unknown> }
+    | undefined;
+  expect(op?.type, 'operation.type should be delete_comment_operation').toBe(
+    'delete_comment_operation'
+  );
+
+  const value = op?.value as
+    | { author?: string; permlink?: string }
+    | undefined;
+  expect(value?.author, 'delete_comment.author').toBe(expected.author);
+  expect(value?.permlink, 'delete_comment.permlink').toBe(expected.permlink);
+}
+
+/**
  * Installs a `page.route` on the fixture-proxy port that intercepts
  * mutation RPCs and returns a canned success. Non-mutation POSTs fall
  * through untouched (and reach the fixture-proxy as usual).

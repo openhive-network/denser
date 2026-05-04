@@ -40,6 +40,11 @@
  *     result[`${author}/${permlink}`].active_votes) +
  *     database_api.list_votes (only the limit:1 lookup for that
  *     specific comment)
+ *   - injectComment: bridge.get_discussion (a new entry keyed by
+ *     `<author>/<permlink>` is added, cloned from an existing entry
+ *     as template and overridden with the injection's identity,
+ *     depth, body, parent — used to seed "guest4test owns this
+ *     comment" preconditions for §5 edit/delete tests)
  */
 
 import fs from 'node:fs';
@@ -78,9 +83,13 @@ const COMMENT_TARGET_PERMLINK = 're-gtg-qux0er';
 
 /**
  * Each scenario describes one base dir + the variants derived from it.
- *   target.kind === 'post'    → patch result[0] of bridge.get_ranked_posts
- *   target.kind === 'comment' → patch result[<author>/<permlink>] of
- *                               bridge.get_discussion
+ *   target.kind === 'post'             → patch result[0] of bridge.get_ranked_posts
+ *   target.kind === 'comment'          → patch result[<author>/<permlink>] of
+ *                                        bridge.get_discussion
+ *   target.kind === 'commentInjection' → no automatic active_votes /
+ *                                        list_votes patching; variants
+ *                                        carry their own injection
+ *                                        descriptors (variant.injectComment)
  */
 const SCENARIOS = [
   {
@@ -131,8 +140,97 @@ const SCENARIOS = [
         priorVote: { votePercent: -10000, rshares: -1_000_000 }
       }
     ]
+  },
+  {
+    baseName: 'commenting',
+    target: { kind: 'commentInjection' },
+    variants: [
+      {
+        // §5 CMT-03 / CMT-05 / CMT-06: guest4test owns a top-level
+        // comment on the post. Cloned shape from `sicarius/re-gtg-qux0er`
+        // (any depth=1 entry would do).
+        name: 'commenting_ownTopLevel',
+        injectComment: {
+          author: VOTER,
+          permlink: 're-gtg-test-1',
+          parent_author: 'gtg',
+          parent_permlink: 'hive-hardfork-25-jump-starter-kit',
+          depth: 1,
+          body: 'guest4test fixture-test top-level comment',
+          templateKey: 'sicarius/re-gtg-qux0er'
+        }
+      },
+      {
+        // §5 CMT-04: guest4test owns a nested reply (depth=2) under
+        // an existing top-level comment.
+        name: 'commenting_ownNested',
+        injectComment: {
+          author: VOTER,
+          permlink: 're-blocktrades-test-1',
+          parent_author: 'blocktrades',
+          parent_permlink: 'quwxu7',
+          depth: 2,
+          body: 'guest4test fixture-test nested reply',
+          templateKey: 'sicarius/re-gtg-qux0er'
+        }
+      }
+    ]
   }
 ];
+
+/**
+ * Inject a brand-new comment entry into bridge.get_discussion.result.
+ * Uses an existing entry as a structural template (so all fields the
+ * UI's Entry shape requires — url, json_metadata, stats, payouts —
+ * remain present), then overrides the identity, parent linkage,
+ * depth, body, and "fresh comment" fields (zero votes, no payout
+ * yet, payout_at far in the future so the delete-button condition
+ * `now < payout_at` holds).
+ */
+function injectComment(content, injection, file) {
+  const result = content.response?.result;
+  if (!result || typeof result !== 'object') {
+    throw new Error(`${file}: response.result missing or not an object`);
+  }
+  const template = result[injection.templateKey];
+  if (!template) {
+    throw new Error(
+      `${file}: template entry "${injection.templateKey}" not found in result`
+    );
+  }
+  const key = `${injection.author}/${injection.permlink}`;
+  if (result[key]) return; // idempotent
+
+  const entry = JSON.parse(JSON.stringify(template));
+  entry.author = injection.author;
+  entry.permlink = injection.permlink;
+  entry.parent_author = injection.parent_author;
+  entry.parent_permlink = injection.parent_permlink;
+  entry.depth = injection.depth;
+  entry.body = injection.body;
+  entry.title = '';
+  entry.json_metadata = {};
+  entry.replies = [];
+  entry.children = 0;
+  // Far-future payout so PostDeleteDialog's `now < payout_at` holds.
+  entry.payout_at = '2099-01-01T00:00:00';
+  entry.active_votes = [];
+  entry.net_rshares = 0;
+  entry.payout = 0;
+  entry.pending_payout_value = '0.000 HBD';
+  entry.author_payout_value = '0.000 HBD';
+  entry.curator_payout_value = '0.000 HBD';
+  entry.is_paidout = false;
+  entry.stats = { gray: false, hide: false, total_votes: 0 };
+  entry.post_id = injection.post_id ?? 999000000 + Math.floor(Math.random() * 1000);
+  const now = new Date().toISOString().replace(/\.\d+Z$/, '');
+  entry.created = now;
+  entry.updated = now;
+  entry.last_update = now;
+  entry.url = `/${entry.category}/@${entry.author}/${entry.permlink}#@${entry.author}/${entry.permlink}`;
+
+  result[key] = entry;
+}
 
 function readBaseFixture(baseDir, filename) {
   return JSON.parse(fs.readFileSync(path.join(baseDir, filename), 'utf8'));
@@ -262,11 +360,12 @@ function runScenario(scenario) {
     return;
   }
 
-  // The bridge call that carries active_votes for our target.
+  // The bridge call that carries active_votes for our target. Injection
+  // scenarios always patch get_discussion.
   const bridgeFileMatch =
-    scenario.target.kind === 'comment'
-      ? 'bridge.get_discussion'
-      : 'bridge.get_ranked_posts';
+    scenario.target.kind === 'post'
+      ? 'bridge.get_ranked_posts'
+      : 'bridge.get_discussion';
 
   for (const variant of scenario.variants) {
     const targetDir = path.join(FIXTURES_ROOT, variant.name);
@@ -353,6 +452,21 @@ function runScenario(scenario) {
       }
     }
 
+    if (variant.injectComment) {
+      const bridgeFiles = findFiles(baseDir, 'bridge.get_discussion');
+      if (bridgeFiles.length === 0) {
+        throw new Error(
+          `No bridge.get_discussion fixture in ${baseDir} — cannot inject`
+        );
+      }
+      for (const f of bridgeFiles) {
+        const content = readBaseFixture(baseDir, f);
+        injectComment(content, variant.injectComment, f);
+        writeFixture(targetDir, f, content);
+        overlayFiles.push(f);
+      }
+    }
+
     writeFixture(targetDir, '_index.json', {
       testName: variant.name,
       base: scenario.baseName,
@@ -360,12 +474,14 @@ function runScenario(scenario) {
       overlayFiles
     });
 
-    const priorVoteTag = variant.priorVote
+    const tag = variant.priorVote
       ? `vote_percent=${variant.priorVote.votePercent}`
-      : '(no prior vote)';
+      : variant.injectComment
+        ? `inject=${variant.injectComment.author}/${variant.injectComment.permlink} (depth=${variant.injectComment.depth})`
+        : '(no prior vote)';
     console.log(
       `✓ ${variant.name}: voter=${VOTER}, highHP=${!!variant.highHP}, ` +
-        `${priorVoteTag}, overlay=[${overlayFiles.join(', ')}]`
+        `${tag}, overlay=[${overlayFiles.join(', ')}]`
     );
   }
 }
