@@ -7,16 +7,16 @@
     "params": {
       "author": "gtg",
       "permlink": "hive-hardfork-25-jump-starter-kit",
-      "observer": "hive.blog"
+      "observer": "guest4test"
     },
     "id": 1
   },
-  "requestHash": "16c9fb672b083410",
+  "requestHash": "ca64602d4e0fa5c8",
   "method": "bridge.get_discussion",
   "params": {
     "author": "gtg",
     "permlink": "hive-hardfork-25-jump-starter-kit",
-    "observer": "hive.blog"
+    "observer": "guest4test"
   },
   "response": {
     "id": 1,
@@ -307,7 +307,7 @@
         ],
         "author": "dragokazo",
         "author_payout_value": "0.030 HBD",
-        "author_reputation": 69.18,
+        "author_reputation": 69.19,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -1239,7 +1239,7 @@
         ],
         "author": "hivebuzz",
         "author_payout_value": "0.000 HBD",
-        "author_reputation": 74.22,
+        "author_reputation": 74.26,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -1287,7 +1287,7 @@
         "active_votes": [],
         "author": "hivebuzz",
         "author_payout_value": "0.000 HBD",
-        "author_reputation": 74.22,
+        "author_reputation": 74.26,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -1337,7 +1337,7 @@
         ],
         "author": "hivetrending",
         "author_payout_value": "0.024 HBD",
-        "author_reputation": 69.34,
+        "author_reputation": 69.35,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -1494,7 +1494,7 @@
         ],
         "author": "revisesociology",
         "author_payout_value": "0.026 HBD",
-        "author_reputation": 82.07,
+        "author_reputation": 82.1,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -1542,7 +1542,7 @@
         "active_votes": [],
         "author": "revisesociology",
         "author_payout_value": "0.000 HBD",
-        "author_reputation": 82.07,
+        "author_reputation": 82.1,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -1595,7 +1595,7 @@
         ],
         "author": "revisesociology",
         "author_payout_value": "0.028 HBD",
-        "author_reputation": 82.07,
+        "author_reputation": 82.1,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -1643,7 +1643,7 @@
         "active_votes": [],
         "author": "revisesociology",
         "author_payout_value": "0.000 HBD",
-        "author_reputation": 82.07,
+        "author_reputation": 82.1,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -1742,6 +1742,10 @@
       },
       "sicarius/re-gtg-qux0er": {
         "active_votes": [
+          {
+            "rshares": -1000000,
+            "voter": "guest4test"
+          },
           {
             "rshares": 901313802403,
             "voter": "blocktrades"
@@ -1940,7 +1944,7 @@
         ],
         "author": "steevc",
         "author_payout_value": "0.025 HBD",
-        "author_reputation": 80.11,
+        "author_reputation": 80.14,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -1997,7 +2001,7 @@
         ],
         "author": "steevc",
         "author_payout_value": "0.032 HBD",
-        "author_reputation": 80.11,
+        "author_reputation": 80.14,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -2052,7 +2056,7 @@
         ],
         "author": "steevc",
         "author_payout_value": "0.034 HBD",
-        "author_reputation": 80.11,
+        "author_reputation": 80.14,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],
@@ -2119,7 +2123,7 @@
         ],
         "author": "steevc",
         "author_payout_value": "0.786 HBD",
-        "author_reputation": 80.11,
+        "author_reputation": 80.14,
         "author_role": "guest",
         "author_title": "",
         "beneficiaries": [],

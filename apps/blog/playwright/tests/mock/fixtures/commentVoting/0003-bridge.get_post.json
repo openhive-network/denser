@@ -7,16 +7,16 @@
     "params": {
       "author": "gtg",
       "permlink": "hive-hardfork-25-jump-starter-kit",
-      "observer": "hive.blog"
+      "observer": "guest4test"
     },
     "id": 1
   },
-  "requestHash": "b1010aaa86cbac79",
+  "requestHash": "928d62a79666cb5c",
   "method": "bridge.get_post",
   "params": {
     "author": "gtg",
     "permlink": "hive-hardfork-25-jump-starter-kit",
-    "observer": "hive.blog"
+    "observer": "guest4test"
   },
   "response": {
     "id": 1,

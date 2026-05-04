@@ -1,0 +1,9 @@
+{
+  "testName": "commentVoting_downvoted",
+  "base": "commentVoting",
+  "generatedAt": "2026-05-04T09:24:29.812Z",
+  "overlayFiles": [
+    "0004-bridge.get_discussion.json",
+    "0015-database_api.list_votes.json"
+  ]
+}
