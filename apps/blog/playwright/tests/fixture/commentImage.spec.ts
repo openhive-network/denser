@@ -11,6 +11,8 @@ import {
   OWN_COMMENT_TOP_LEVEL_PERMLINK,
   gotoPostLoggedIn,
   ownCommentEditButton,
+  ownCommentDescription,
+  ownCommentEditor,
   typeIntoReplyEditor,
   submitReply
 } from '../support/commentingContext';
@@ -97,5 +99,26 @@ test.describe('Comment with image — edit (§5)', () => {
       author: OWN_COMMENT_AUTHOR,
       permlink: OWN_COMMENT_TOP_LEVEL_PERMLINK
     });
+
+    // Optimistic UI (same path as CMT-03 — useUpdateCommentMutation
+    // .onMutate replaces body in the cache + onSetReply(false)
+    // closes the editor):
+    //   - the editor disappears,
+    //   - the new body's text portion ("CMT-06 edit") shows in the
+    //     description,
+    //   - the markdown image is rendered as <img src="…fixture.jpg…">
+    //     by the renderer (URL substring match — sanitization may
+    //     wrap with a proxy prefix; the unique tail is enough).
+    await expect(
+      ownCommentEditor(postPage, OWN_COMMENT_TOP_LEVEL_PERMLINK)
+    ).toBeHidden();
+    const description = ownCommentDescription(
+      postPage,
+      OWN_COMMENT_TOP_LEVEL_PERMLINK
+    );
+    await expect(description).toContainText('CMT-06 edit');
+    await expect(
+      description.locator('img[src*="cmt-06-fixture.jpg"]')
+    ).toBeAttached();
   });
 });

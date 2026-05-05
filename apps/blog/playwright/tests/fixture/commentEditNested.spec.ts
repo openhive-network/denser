@@ -10,6 +10,8 @@ import {
   OWN_COMMENT_NESTED_PERMLINK,
   gotoPostLoggedIn,
   ownCommentEditButton,
+  ownCommentDescription,
+  ownCommentEditor,
   typeIntoReplyEditor,
   submitReply
 } from '../support/commentingContext';
@@ -62,5 +64,16 @@ test.describe('Comment editing — nested reply (§5)', () => {
       trx: { operations: { value: { author: string } }[] };
     }).trx.operations[0].value;
     expect(op.author).toBe(VOTER);
+
+    // Optimistic UI (see CMT-03 for rationale). For nested replies
+    // the description selector resolves through `findCommentByIdent`
+    // (`.last()`) — necessary because the parent list-item also
+    // matches the timestamp-link filter as an ancestor.
+    await expect(
+      ownCommentEditor(postPage, OWN_COMMENT_NESTED_PERMLINK)
+    ).toBeHidden();
+    await expect(
+      ownCommentDescription(postPage, OWN_COMMENT_NESTED_PERMLINK)
+    ).toContainText(newBody);
   });
 });

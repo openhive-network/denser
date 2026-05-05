@@ -12,6 +12,8 @@ import {
   OWN_COMMENT_TOP_LEVEL_PERMLINK,
   gotoPostLoggedIn,
   ownCommentEditButton,
+  ownCommentDescription,
+  ownCommentEditor,
   typeIntoReplyEditor,
   submitReply
 } from '../support/commentingContext';
@@ -77,5 +79,18 @@ test.describe('Comment editing — own comment (§5)', () => {
       trx: { operations: { value: { author: string } }[] };
     }).trx.operations[0].value;
     expect(op.author).toBe(VOTER);
+
+    // Optimistic UI: useUpdateCommentMutation.onMutate replaces the
+    // comment's body in the React Query cache before the broadcast
+    // resolves; the success path then calls onSetReply(false) which
+    // closes the editor. So after submit:
+    //   - the editor disappears,
+    //   - the new body shows up in comment-card-description.
+    await expect(
+      ownCommentEditor(postPage, OWN_COMMENT_TOP_LEVEL_PERMLINK)
+    ).toBeHidden();
+    await expect(
+      ownCommentDescription(postPage, OWN_COMMENT_TOP_LEVEL_PERMLINK)
+    ).toContainText(newBody);
   });
 });
