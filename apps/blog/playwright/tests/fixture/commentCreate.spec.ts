@@ -11,7 +11,10 @@ import {
   gotoPostLoggedIn,
   postReplyTrigger,
   typeIntoReplyEditor,
-  submitReply
+  submitReply,
+  findCommentByIdent,
+  findCommentCardByBody,
+  findNestedReplyByBody
 } from '../support/commentingContext';
 import { readFirstCommentIdent } from '../support/commentVotingContext';
 
@@ -33,6 +36,7 @@ test.describe('Comment creation — fresh state (§5)', () => {
   test('CMT-01: comment on a post', async ({ page }) => {
     const broadcast = await installBroadcastInterceptor(page);
     await gotoPostLoggedIn(page);
+    const postPage = new PostPage(page);
 
     await postReplyTrigger(page).click();
     const body = 'CMT-01 fixture-test reply on post';
@@ -49,6 +53,14 @@ test.describe('Comment creation — fresh state (§5)', () => {
       // varies, so anchor on the prefix.
       permlinkPattern: new RegExp(`^re-${POST_AUTHOR}-\\d+$`)
     });
+
+    // Optimistic UI: useCommentMutation.onMutate inserts the new
+    // comment into the React Query cache (with `_optimistic: true`)
+    // BEFORE the broadcast resolves, so the card appears in the
+    // comment list immediately. Replay-mode bridge.get_discussion
+    // doesn't include it, so without optimistic update we'd never
+    // see the comment in DOM.
+    await expect(findCommentCardByBody(postPage, body)).toBeVisible();
   });
 
   test('CMT-02: reply to an existing comment', async ({ page }) => {
@@ -83,5 +95,13 @@ test.describe('Comment creation — fresh state (§5)', () => {
       trx: { operations: { value: { permlink: string } }[] };
     }).trx.operations[0].value;
     expect(op.permlink).not.toBe(parentPermlink);
+
+    // Optimistic UI: the new reply card appears nested inside the
+    // parent comment's list-item (comment-list filters by
+    // parent_author/parent_permlink — see comment-list.tsx L88-89).
+    const parentItem = findCommentByIdent(postPage, parentAuthor, parentPermlink);
+    await expect(
+      findNestedReplyByBody(postPage, parentItem, body)
+    ).toBeVisible();
   });
 });
