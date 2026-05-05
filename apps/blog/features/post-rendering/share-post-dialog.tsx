@@ -13,7 +13,7 @@ export function SharePost({ children, path, title }: { children: ReactNode; path
       <DialogTrigger asChild>
         <div title={t('post_content.footer.share_form.share_this_link')}>{children}</div>
       </DialogTrigger>
-      <DialogContent className="flex flex-col gap-4 sm:max-w-[600px]">
+      <DialogContent className="flex flex-col gap-4 sm:max-w-[600px]" data-testid="share-post-dialog">
         <DialogHeader>
           <DialogTitle className="border-b-2 pb-2 text-3xl">
             {t('post_content.footer.share_form.share_this_link')}
@@ -23,10 +23,12 @@ export function SharePost({ children, path, title }: { children: ReactNode; path
           <ClipboardCopy
             copyText={`https://${configuredBlogDomain}${path}`}
             label={t('post_content.footer.share_form.url_to_this_post')}
+            testId="share-dialog-copy-url"
           />
           <ClipboardCopy
             copyText={`[${title}](https://${configuredBlogDomain}${path})`}
             label={t('post_content.footer.share_form.markdown_code_for_a_link_to_this_post')}
+            testId="share-dialog-copy-markdown"
           />
         </div>
         <div>
@@ -34,17 +36,32 @@ export function SharePost({ children, path, title }: { children: ReactNode; path
             <DialogTitle className="my-2">
               {t('post_content.footer.share_form.open_in_alternative')}
             </DialogTitle>
-            <Link target="_blank" className="flex gap-2" href={`https://peakd.com${path}`}>
+            <Link
+              target="_blank"
+              className="flex gap-2"
+              href={`https://peakd.com${path}`}
+              data-testid="share-dialog-peakd"
+            >
               {'•'}
               <span className="text-destructive">https://peakd.com</span>
               <Icons.forward />
             </Link>
-            <Link target="_blank" href={`https://ecency.com${path}`} className="flex gap-2">
+            <Link
+              target="_blank"
+              href={`https://ecency.com${path}`}
+              className="flex gap-2"
+              data-testid="share-dialog-ecency"
+            >
               {'•'}
               <span className="text-destructive">https://ecency.com</span>
               <Icons.forward />
             </Link>
-            <Link target="_blank" href={`https://waivio.com${path}`} className="flex gap-2">
+            <Link
+              target="_blank"
+              href={`https://waivio.com${path}`}
+              className="flex gap-2"
+              data-testid="share-dialog-waivio"
+            >
               {'•'} <span className="text-destructive">https://waivio.com </span>
               <Icons.forward />
             </Link>

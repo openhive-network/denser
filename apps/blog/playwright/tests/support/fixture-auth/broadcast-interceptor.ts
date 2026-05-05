@@ -174,6 +174,68 @@ export function expectCommentOperation(
   }
 }
 
+/**
+ * TX-05: reblog payload — a `custom_json_operation` whose `id` is `"follow"`
+ * and whose `json` parses to `["reblog", {account, author, permlink}]`.
+ *
+ * (Wax encodes reblog through `FollowOperation.reblog(...)` — the wire form
+ * is custom_json with required_posting_auths=[account]. We don't assert on
+ * required_posting_auths separately because `account` already covers it.)
+ */
+export interface ReblogOperationExpectations {
+  account: string;
+  author: string;
+  permlink: string;
+}
+
+export function expectReblogOperation(
+  call: InterceptedBroadcast,
+  expected: ReblogOperationExpectations
+): void {
+  const trx = (call.params as { trx?: unknown } | undefined)?.trx as
+    | { operations?: unknown[] }
+    | undefined;
+  expect(trx, 'broadcast params should include trx').toBeDefined();
+
+  const op = trx?.operations?.[0] as
+    | { type?: string; value?: Record<string, unknown> }
+    | undefined;
+  expect(op?.type, 'operation.type should be custom_json_operation').toBe(
+    'custom_json_operation'
+  );
+
+  const value = op?.value as
+    | {
+        id?: string;
+        json?: string;
+        required_posting_auths?: string[];
+      }
+    | undefined;
+  expect(value?.id, 'custom_json.id').toBe('follow');
+  expect(
+    value?.required_posting_auths,
+    'custom_json.required_posting_auths'
+  ).toEqual([expected.account]);
+
+  const rawJson = value?.json ?? '';
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(rawJson);
+  } catch {
+    throw new Error(
+      `custom_json.json should be JSON-parseable; got: ${rawJson}`
+    );
+  }
+  expect(Array.isArray(parsed), 'custom_json.json should be a tuple').toBe(true);
+  const [tag, payload] = parsed as [unknown, unknown];
+  expect(tag, 'custom_json.json[0]').toBe('reblog');
+  expect(payload, 'custom_json.json[1]').toEqual({
+    account: expected.account,
+    author: expected.author,
+    permlink: expected.permlink
+  });
+}
+
 /** TX-15: `delete_comment_operation` payload. */
 export interface DeleteCommentOperationExpectations {
   author: string;
