@@ -182,13 +182,18 @@ export async function typeIntoReplyEditor(
   { clearFirst = false }: { clearFirst?: boolean } = {}
 ): Promise<void> {
   const cm = page.getByTestId('reply-editor').locator('.cm-content').first();
-  // CodeMirror is loaded via `next/dynamic({ssr: false})` — under
-  // headed Chromium the chunk fetch + EditorView mount can take many
-  // seconds, especially after a `page.reload`. Rely on Playwright's
-  // implicit auto-wait (bound by the test-level timeout) rather than
-  // a fixed waitFor budget. `force: true` skips the actionability
-  // re-check — a hover-triggered toolbar Tooltip can briefly overlay
-  // `.cm-content` and cause the click to stall.
+  // CodeMirror is loaded via `next/dynamic({ssr: false})` — under CI
+  // load the chunk fetch + EditorView mount can take many seconds,
+  // sometimes more than the per-test timeout. An explicit waitFor
+  // gives a clean diagnostic ("cm-content not visible in 30s") rather
+  // than a generic "locator.click: test timeout exceeded" — see CI
+  // job 3136334 where two specs hit exactly that failure mode under
+  // a slow runner.
+  //
+  // `force: true` then skips the post-mount actionability re-check;
+  // a hover-triggered toolbar Tooltip can briefly overlay
+  // `.cm-content` and cause an unforced click to stall.
+  await cm.waitFor({ state: 'visible', timeout: 30_000 });
   await cm.click({ force: true });
   if (clearFirst) {
     await page.keyboard.press('ControlOrMeta+A');

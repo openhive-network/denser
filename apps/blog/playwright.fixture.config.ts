@@ -38,7 +38,13 @@ export default defineConfig({
   /* Single worker — fixture proxy is shared and test-scoped */
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: 0,
+  // 1 retry under CI absorbs runner-load flakes (e.g. job 3136334
+  // where CodeMirror's `next/dynamic` chunk took >60s to mount on a
+  // saturated runner — the warm retry hits a webserver-cached chunk
+  // and finishes in seconds) without masking real regressions. The
+  // retry runs in a fresh context, so it only papers over genuinely
+  // intermittent failures. Locally we keep 0 so flakes stay loud.
+  retries: process.env.CI ? 1 : 0,
   workers: 1,
   reporter: [['list']],
   use: {
