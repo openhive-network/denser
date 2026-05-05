@@ -34,20 +34,62 @@ export async function gotoPostLoggedIn(page: Page): Promise<void> {
 }
 
 /**
- * Locate guest4test's own comment card by walking comment-list-items
- * and matching the timestamp-link's `#@<author>/<permlink>` href. The
- * variant generator injects with `payout: 0`, so the card sorts to the
- * end under default trending — locating by identity, not position.
+ * Locate any comment-list-item card by its `(author, permlink)`
+ * identity, scoped via the timestamp-link href that comment-list-item
+ * emits (`#@<a>/<p>`). Used as the building block for both "own
+ * comment" lookups (variant fixtures inject under guest4test) and
+ * "parent of a fresh nested reply" lookups (CMT-02).
+ */
+export function findCommentByIdent(
+  postPage: PostPage,
+  author: string,
+  permlink: string
+): Locator {
+  return postPage.commentListItems.filter({
+    has: postPage.page.locator(
+      `[data-testid="comment-timestamp-link"][href="#@${author}/${permlink}"]`
+    )
+  });
+}
+
+/**
+ * Locate guest4test's own comment card. Variant generator injects
+ * with `payout: 0` so the card sorts to the end under default
+ * trending — we locate by identity, not position.
  */
 export function findOwnComment(
   postPage: PostPage,
   permlink: string
 ): Locator {
-  return postPage.commentListItems.filter({
-    has: postPage.page.locator(
-      `[data-testid="comment-timestamp-link"][href="#@${OWN_COMMENT_AUTHOR}/${permlink}"]`
-    )
-  });
+  return findCommentByIdent(postPage, OWN_COMMENT_AUTHOR, permlink);
+}
+
+/**
+ * Find a comment card anywhere in the list by its body text. Used to
+ * verify optimistic-UI insertion in CMT-01 — the new comment lands in
+ * `useCommentMutation.onMutate` cache update with `_optimistic: true`
+ * before the broadcast resolves, so it appears in DOM regardless of
+ * the replay fixture's bridge.get_discussion contents.
+ */
+export function findCommentCardByBody(
+  postPage: PostPage,
+  body: string
+): Locator {
+  return postPage.commentListItems.filter({ hasText: body }).first();
+}
+
+/**
+ * Find a nested-reply card inside a given parent comment item. Used
+ * in CMT-02: the optimistic reply attaches under the comment its
+ * parent linkage points to (comment-list filters by
+ * parent_author/parent_permlink, see comment-list.tsx L88-89).
+ */
+export function findNestedReplyByBody(
+  postPage: PostPage,
+  parentItem: Locator,
+  body: string
+): Locator {
+  return parentItem.locator(postPage.commentListItem, { hasText: body }).first();
 }
 
 /** Edit button inside `findOwnComment(...)`. */
