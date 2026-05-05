@@ -8,9 +8,8 @@ import {
   VOTER,
   POST_AUTHOR,
   POST_PERMLINK,
+  POST_SHARE_PATH,
   gotoPostLoggedIn,
-  expectedShareUrl,
-  expectedShareMarkdown,
   openSharePostDialog
 } from '../support/reblogShareContext';
 
@@ -98,13 +97,23 @@ test.describe('Reblog & Share — fresh state (§7)', () => {
       await gotoPostLoggedIn(page);
       await openSharePostDialog(page);
 
+      // Source of truth = the read-only Input the dialog renders. Reading
+      // it lets the test ride out env-config differences between local and
+      // CI (REACT_APP_BLOG_DOMAIN may be set to blog.openhive.network in
+      // .env.local, but CI falls back to the public-vars default).
+      const urlInput = page.getByTestId('share-dialog-copy-url-input');
+      const displayed = await urlInput.inputValue();
+      // Sanity: the URL has to identify our post — guards against the
+      // dialog rendering some unrelated path even if the env-config flips.
+      expect(displayed).toContain(POST_SHARE_PATH);
+
       await page.getByTestId('share-dialog-copy-url-button').click();
-      // The button text flips to "Copied" for 1.5s — proves the success path
-      // ran.
+      // The button text flips to "Copied!" for 1.5s — proves the success
+      // path ran (translation literal in en/common_blog.json).
       await expect(page.getByTestId('share-dialog-copy-url-button')).toHaveText('Copied!');
 
       const clipped = await page.evaluate(() => navigator.clipboard.readText());
-      expect(clipped).toBe(expectedShareUrl());
+      expect(clipped).toBe(displayed);
     });
 
     test('SHARE-02: Copy markdown puts a [title](url) snippet on the clipboard', async ({
@@ -113,13 +122,22 @@ test.describe('Reblog & Share — fresh state (§7)', () => {
       await gotoPostLoggedIn(page);
       await openSharePostDialog(page);
 
+      const mdInput = page.getByTestId('share-dialog-copy-markdown-input');
+      const displayed = await mdInput.inputValue();
+      // Markdown form: `[<title>](<url>)` — verify both halves so a
+      // future regression that drops the title or breaks the url-formula
+      // surfaces here.
+      expect(displayed).toMatch(/^\[.+\]\(.+\)$/);
+      expect(displayed).toContain(POST_TITLE);
+      expect(displayed).toContain(POST_SHARE_PATH);
+
       await page.getByTestId('share-dialog-copy-markdown-button').click();
       await expect(
         page.getByTestId('share-dialog-copy-markdown-button')
       ).toHaveText('Copied!');
 
       const clipped = await page.evaluate(() => navigator.clipboard.readText());
-      expect(clipped).toBe(expectedShareMarkdown(POST_TITLE));
+      expect(clipped).toBe(displayed);
     });
   });
 });
