@@ -90,6 +90,10 @@ const COMMENT_TARGET_PERMLINK = 're-gtg-qux0er';
  *                                        list_votes patching; variants
  *                                        carry their own injection
  *                                        descriptors (variant.injectComment)
+ *   target.kind === 'reblog'           → variants carry priorReblog flags;
+ *                                        patches condenser_api.get_reblogged_by
+ *                                        so the seeded user appears in the
+ *                                        rebloggers list (used by §7 RBL-02)
  */
 const SCENARIOS = [
   {
@@ -138,6 +142,20 @@ const SCENARIOS = [
       {
         name: 'commentVoting_downvoted',
         priorVote: { votePercent: -10000, rshares: -1_000_000 }
+      }
+    ]
+  },
+  {
+    // §7 Reblog & Share — base dir holds an as-yet-unreblogged state for the
+    // gtg/hive-hardfork-25-jump-starter-kit post (guest4test NOT in the
+    // get_reblogged_by response). The overlay variant injects guest4test so
+    // RBL-02 sees the "already reblogged" branch on initial render.
+    baseName: 'reblogShare',
+    target: { kind: 'reblog' },
+    variants: [
+      {
+        name: 'reblogShare_alreadyReblogged',
+        priorReblog: true
       }
     ]
   },
@@ -452,6 +470,28 @@ function runScenario(scenario) {
       }
     }
 
+    if (variant.priorReblog) {
+      const reblogFiles = findFiles(baseDir, 'condenser_api.get_reblogged_by');
+      if (reblogFiles.length === 0) {
+        throw new Error(
+          `No condenser_api.get_reblogged_by fixture found in ${baseDir}. ` +
+            `Did the recording capture the reblog-status query?`
+        );
+      }
+      for (const f of reblogFiles) {
+        const content = readBaseFixture(baseDir, f);
+        const list = content.response?.result;
+        if (!Array.isArray(list)) {
+          throw new Error(
+            `Unexpected shape in ${f}: response.result should be string[]`
+          );
+        }
+        if (!list.includes(VOTER)) list.unshift(VOTER); // idempotent
+        writeFixture(targetDir, f, content);
+        overlayFiles.push(f);
+      }
+    }
+
     if (variant.injectComment) {
       const bridgeFiles = findFiles(baseDir, 'bridge.get_discussion');
       if (bridgeFiles.length === 0) {
@@ -478,7 +518,9 @@ function runScenario(scenario) {
       ? `vote_percent=${variant.priorVote.votePercent}`
       : variant.injectComment
         ? `inject=${variant.injectComment.author}/${variant.injectComment.permlink} (depth=${variant.injectComment.depth})`
-        : '(no prior vote)';
+        : variant.priorReblog
+          ? 'priorReblog=true'
+          : '(no prior vote)';
     console.log(
       `✓ ${variant.name}: voter=${VOTER}, highHP=${!!variant.highHP}, ` +
         `${tag}, overlay=[${overlayFiles.join(', ')}]`
