@@ -1,6 +1,7 @@
 import { test, expect } from '../support/fixture-proxy-test';
 import { PostPage } from '../support/pages/postPage';
 import { POST_PATH } from '../support/commentingContext';
+import { readFirstCommentIdent } from '../support/commentVotingContext';
 
 /**
  * Comment sort options (§5 CMT-08).
@@ -25,22 +26,20 @@ test.describe('Comment sort options (§5)', () => {
 
     // Default sort (trending → highest payout first).
     await page.goto(POST_PATH, { waitUntil: 'domcontentloaded' });
-    const trendingFirst = await postPage.commentListItems
-      .first()
-      .locator('[data-testid="comment-timestamp-link"]')
-      .first()
-      .getAttribute('href');
-    expect(trendingFirst).toBe('#@sicarius/re-gtg-qux0er');
+    const trendingFirst = await readFirstCommentIdent(postPage);
+    expect(trendingFirst).toEqual({
+      author: 'sicarius',
+      permlink: 're-gtg-qux0er'
+    });
 
     // Navigate to ?sort=new — the most recent top-level comment should
     // surface to the top.
     await page.goto(`${POST_PATH}?sort=new`, { waitUntil: 'domcontentloaded' });
-    const newFirst = await postPage.commentListItems
-      .first()
-      .locator('[data-testid="comment-timestamp-link"]')
-      .first()
-      .getAttribute('href');
-    expect(newFirst).toBe('#@intoy.bugoy/re-gtg-qy7ta5');
-    expect(newFirst).not.toBe(trendingFirst);
+    const newFirst = await readFirstCommentIdent(postPage);
+    expect(newFirst).toEqual({
+      author: 'intoy.bugoy',
+      permlink: 're-gtg-qy7ta5'
+    });
+    expect(newFirst).not.toEqual(trendingFirst);
   });
 });

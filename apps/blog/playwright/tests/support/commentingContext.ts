@@ -39,17 +39,26 @@ export async function gotoPostLoggedIn(page: Page): Promise<void> {
  * emits (`#@<a>/<p>`). Used as the building block for both "own
  * comment" lookups (variant fixtures inject under guest4test) and
  * "parent of a fresh nested reply" lookups (CMT-02).
+ *
+ * `.last()` is intentional: comment-list-item nests recursively
+ * (parent contains nested replies as DOM descendants), so the
+ * `filter({has: link})` predicate matches BOTH the deeper item that
+ * owns the link AND every ancestor list-item that contains it as a
+ * descendant. The deepest match comes last in document order, which
+ * is the one we want.
  */
 export function findCommentByIdent(
   postPage: PostPage,
   author: string,
   permlink: string
 ): Locator {
-  return postPage.commentListItems.filter({
-    has: postPage.page.locator(
-      `[data-testid="comment-timestamp-link"][href="#@${author}/${permlink}"]`
-    )
-  });
+  return postPage.commentListItems
+    .filter({
+      has: postPage.page.locator(
+        `[data-testid="comment-timestamp-link"][href="#@${author}/${permlink}"]`
+      )
+    })
+    .last();
 }
 
 /**
@@ -120,6 +129,32 @@ export function ownCommentDeleteButton(
   return findOwnComment(postPage, permlink).getByTestId(
     'comment-card-footer-delete'
   );
+}
+
+/**
+ * The own comment's body description — used to verify edit-flow
+ * optimistic UI: useUpdateCommentMutation.onMutate replaces the
+ * comment's `body` in the React Query cache before the broadcast
+ * resolves, so the new text surfaces in `comment-card-description`
+ * immediately after submit.
+ */
+export function ownCommentDescription(
+  postPage: PostPage,
+  permlink: string
+): Locator {
+  return findOwnComment(postPage, permlink).locator(postPage.commentCard);
+}
+
+/**
+ * The reply-editor instance scoped to the own comment card — used
+ * to verify the editor closes after a successful edit submit
+ * (`onSetReply(false)` is called in `postComment` success path).
+ */
+export function ownCommentEditor(
+  postPage: PostPage,
+  permlink: string
+): Locator {
+  return findOwnComment(postPage, permlink).getByTestId('reply-editor');
 }
 
 /**
