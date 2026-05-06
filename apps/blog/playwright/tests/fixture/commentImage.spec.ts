@@ -73,10 +73,11 @@ test.describe('Comment with image — edit (§5)', () => {
     // Replace existing body with new text + image markdown so the
     // broadcast body is deterministic.
     const newBody = `CMT-06 edit ![${IMAGE_ALT}](${IMAGE_URL})`;
-    await typeIntoReplyEditor(page, newBody, { clearFirst: true });
+    const editor = ownCommentEditor(postPage, OWN_COMMENT_TOP_LEVEL_PERMLINK);
+    await typeIntoReplyEditor(page, newBody, { clearFirst: true, editor });
 
     // Sanity: the editor surface holds the markdown we just typed.
-    const cm = page.getByTestId('reply-editor').locator('.cm-content').first();
+    const cm = editor.locator('.cm-content').first();
     await expect(cm).toContainText(IMAGE_URL);
 
     await submitReply(page);
