@@ -175,13 +175,26 @@ export function postReplyTrigger(page: Page): Locator {
  * reply-textbox.tsx `initialText = editMode ? commentBody : ''`), so
  * for edits pass `clearFirst: true` to wipe the buffer before typing,
  * otherwise the typed text appends.
+ *
+ * Pass `editor` to scope the `.cm-content` lookup to a specific
+ * `reply-editor` instance (e.g. `ownCommentEditor(postPage, permlink)`).
+ * The post-detail page can render multiple `reply-editor` elements
+ * concurrently — one per comment in edit/reply state, plus the
+ * post-level reply box — and a page-wide `.first()` may resolve to a
+ * collapsed/hidden one and never satisfy the visibility wait. Job
+ * 3138346 saw CMT-06 hit exactly that failure mode while CMT-03
+ * (identical flow, sibling worker) passed.
  */
 export async function typeIntoReplyEditor(
   page: Page,
   text: string,
-  { clearFirst = false }: { clearFirst?: boolean } = {}
+  {
+    clearFirst = false,
+    editor
+  }: { clearFirst?: boolean; editor?: Locator } = {}
 ): Promise<void> {
-  const cm = page.getByTestId('reply-editor').locator('.cm-content').first();
+  const editorScope = editor ?? page.getByTestId('reply-editor');
+  const cm = editorScope.locator('.cm-content').first();
   // CodeMirror is loaded via `next/dynamic({ssr: false})` — under CI
   // load the chunk fetch + EditorView mount can take many seconds,
   // sometimes more than the per-test timeout. An explicit waitFor
