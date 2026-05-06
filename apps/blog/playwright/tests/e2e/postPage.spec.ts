@@ -443,6 +443,13 @@ test.describe('Post page tests', () => {
   test('@flaky validate Follow button style in the popover card in dark theme by clicking the footer post author link', async ({
     page
   }) => {
+    // The footer-author popover is rendered in a Radix portal (effectively
+    // position: fixed). On the default 1280×720 CI viewport the popover content
+    // (with the Follow button at its bottom) overflows the viewport, and
+    // scrollIntoView is a no-op for fixed-position elements. Give this test a
+    // tall viewport so the popover always fits.
+    await page.setViewportSize({ width: 1280, height: 1200 });
+
     await postPage.gotoHomePage();
     await postPage.moveToTheFirstPostInHomePageByImage();
 
@@ -467,15 +474,7 @@ test.describe('Post page tests', () => {
     );
 
     // button styles when hovered over it
-    // Radix renders the popover in a portal; on small CI viewports Playwright's
-    // auto-scroll keeps reporting the button as "outside of the viewport" and
-    // hover() times out. Pull the button into view and force the hover — the
-    // CSS :hover side effect still fires and the polled color check below
-    // remains the actual regression assertion.
-    await postPage.buttonFollowPopoverCard.evaluate((el) =>
-      el.scrollIntoView({ block: 'center', inline: 'center' })
-    );
-    await postPage.buttonFollowPopoverCard.hover({ force: true });
+    await postPage.buttonFollowPopoverCard.hover();
     // Wait for hover color to change
     await expect.poll(async () => {
       return await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color');
