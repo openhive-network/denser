@@ -467,7 +467,15 @@ test.describe('Post page tests', () => {
     );
 
     // button styles when hovered over it
-    await postPage.buttonFollowPopoverCard.hover();
+    // Radix renders the popover in a portal; on small CI viewports Playwright's
+    // auto-scroll keeps reporting the button as "outside of the viewport" and
+    // hover() times out. Pull the button into view and force the hover — the
+    // CSS :hover side effect still fires and the polled color check below
+    // remains the actual regression assertion.
+    await postPage.buttonFollowPopoverCard.evaluate((el) =>
+      el.scrollIntoView({ block: 'center', inline: 'center' })
+    );
+    await postPage.buttonFollowPopoverCard.hover({ force: true });
     // Wait for hover color to change
     await expect.poll(async () => {
       return await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color');
