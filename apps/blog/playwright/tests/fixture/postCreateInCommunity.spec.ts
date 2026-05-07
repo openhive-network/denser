@@ -4,6 +4,7 @@ import {
   expectCommentOperation
 } from '../support/fixture-auth/broadcast-interceptor';
 import { PostEditorPage } from '../support/pages/postEditorPage';
+import { PostPage } from '../support/pages/postPage';
 import {
   POST_AUTHOR,
   POST_COMMUNITY,
@@ -62,18 +63,12 @@ test.describe('Post creation in community (§2.1)', () => {
       permlinkPattern: /post-03-fixture-test-community-post$/
     });
 
-    await expect(
-      page.getByText('Post submitted successfully', { exact: true })
-    ).toBeVisible();
+    await expect(editor.getPostSubmittedToast).toBeVisible();
     await page.waitForURL(
       new RegExp(
         `/${POST_COMMUNITY}/@${POST_AUTHOR}/post-03-fixture-test-community-post.*pending=1`
       )
     );
-    await expect(
-      page.locator('[data-testid="article-title"], h1')
-        .filter({ hasText: title })
-        .first()
-    ).toBeVisible();
+    await expect(new PostPage(page).articleTitle).toHaveText(title);
   });
 });

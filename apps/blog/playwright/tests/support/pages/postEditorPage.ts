@@ -36,6 +36,7 @@ export class PostEditorPage {
     readonly getPostingToListTrigger: Locator;
     readonly getSubmitPostButton: Locator;
     readonly getCleanPostButton: Locator;
+    readonly getPostSubmittedToast: Locator;
     readonly getTitleErrorMessage: Locator;
     readonly getBeneficiariesOptionsInfo: Locator;
     readonly getSyncScrollToggle: Locator;
@@ -79,6 +80,9 @@ export class PostEditorPage {
         this.getPostingToListTrigger = page.locator('[data-testid="posting-to-list-trigger"]');
         this.getSubmitPostButton = page.locator('[data-testid="submit-post-button"]');
         this.getCleanPostButton = page.locator('[data-testid="clean-post-button"]');
+        // Success toast fired by usePostMutation.onSuccess after the
+        // broadcasted comment_operation is observed in a block.
+        this.getPostSubmittedToast = page.getByText('Post submitted successfully', { exact: true });
         this.getTitleErrorMessage = page.locator('[data-testid="form-container"] p').filter( {hasText: 'String must contain at least'});
         this.getBeneficiariesOptionsInfo = page.locator('span:text("Beneficiaries:")');
         this.getSyncScrollToggle = page.getByTestId('sync-scroll-toggle');

@@ -4,6 +4,7 @@ import {
   expectCommentOperation
 } from '../support/fixture-auth/broadcast-interceptor';
 import { PostEditorPage } from '../support/pages/postEditorPage';
+import { PostPage } from '../support/pages/postPage';
 import {
   POST_AUTHOR,
   DEFAULT_TAG,
@@ -63,15 +64,9 @@ test.describe('Post creation — basic (§2.1)', () => {
 
     // confirmInBlock makes WorkerBee see the broadcast land in a
     // synthetic block; mutateAsync resolves and the success path runs.
-    await expect(
-      page.getByText('Post submitted successfully', { exact: true })
-    ).toBeVisible();
+    await expect(editor.getPostSubmittedToast).toBeVisible();
     await page.waitForURL(/post-01-fixture-test-post.*pending=1/);
-    await expect(
-      page.locator('[data-testid="article-title"], h1')
-        .filter({ hasText: title })
-        .first()
-    ).toBeVisible();
+    await expect(new PostPage(page).articleTitle).toHaveText(title);
   });
 
   test('POST-06: create post with custom summary', async ({ page }) => {
@@ -114,14 +109,8 @@ test.describe('Post creation — basic (§2.1)', () => {
     };
     expect(metadata.summary, 'json_metadata.summary').toBe(summary);
 
-    await expect(
-      page.getByText('Post submitted successfully', { exact: true })
-    ).toBeVisible();
+    await expect(editor.getPostSubmittedToast).toBeVisible();
     await page.waitForURL(/post-06-fixture-test-summary-post.*pending=1/);
-    await expect(
-      page.locator('[data-testid="article-title"], h1')
-        .filter({ hasText: title })
-        .first()
-    ).toBeVisible();
+    await expect(new PostPage(page).articleTitle).toHaveText(title);
   });
 });
