@@ -58,6 +58,17 @@ test.describe('Post creation — basic (§2.1)', () => {
       // Matching by trailing slug keeps the assert robust either way.
       permlinkPattern: /post-01-fixture-test-post$/
     });
+    // Note on UI follow-through: usePostMutation calls
+    // transactionService.post() with `observe: true`, which invokes
+    // WorkerBee to wait for block inclusion before resolving. With our
+    // canned `null` broadcast response there is no real chain producing
+    // blocks, the tx expires after 10s, mutateAsync rejects, and neither
+    // the success toast nor the router.push to /<cat>/@<user>/<permlink>
+    // ever fires. Asserting on either would require stubbing block_api
+    // and a wide set of database_api methods that WorkerBee polls — out
+    // of scope for the broadcast-shape regression target this spec is
+    // designed for. UI-level "post visible after submit" verification
+    // belongs in the live-chain E2E suite (testnet).
   });
 
   test('POST-06: create post with custom summary', async ({ page }) => {
@@ -97,5 +108,8 @@ test.describe('Post creation — basic (§2.1)', () => {
       summary?: string;
     };
     expect(metadata.summary, 'json_metadata.summary').toBe(summary);
+    // See POST-01 for why we don't assert the success toast / redirect
+    // here — observe:true + WorkerBee block-confirmation can't be
+    // simulated in fixture mode.
   });
 });

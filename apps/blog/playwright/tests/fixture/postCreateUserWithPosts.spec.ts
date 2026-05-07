@@ -62,5 +62,6 @@ test.describe('Post creation — user with posts (§2.1)', () => {
       body,
       permlinkPattern: /post-02-fixture-test-post$/
     });
+    // See POST-01 for why we don't assert the success toast / redirect.
   });
 });

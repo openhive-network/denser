@@ -59,5 +59,6 @@ test.describe('Post creation in community (§2.1)', () => {
       body,
       permlinkPattern: /post-03-fixture-test-community-post$/
     });
+    // See POST-01 for why we don't assert the success toast / redirect.
   });
 });
