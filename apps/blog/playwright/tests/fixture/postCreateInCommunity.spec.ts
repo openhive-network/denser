@@ -1,4 +1,4 @@
-import { test } from '../support/fixture-proxy-test';
+import { test, expect } from '../support/fixture-proxy-test';
 import {
   installBroadcastInterceptor,
   expectCommentOperation
@@ -38,7 +38,9 @@ test.describe('Post creation in community (§2.1)', () => {
   test('POST-03: create post via "New Post" in community', async ({
     page
   }) => {
-    const broadcast = await installBroadcastInterceptor(page);
+    const broadcast = await installBroadcastInterceptor(page, undefined, {
+      confirmInBlock: true
+    });
     await gotoCommunityNewPostLoggedIn(page);
     const editor = new PostEditorPage(page);
 
@@ -59,6 +61,19 @@ test.describe('Post creation in community (§2.1)', () => {
       body,
       permlinkPattern: /post-03-fixture-test-community-post$/
     });
-    // See POST-01 for why we don't assert the success toast / redirect.
+
+    await expect(
+      page.getByText('Post submitted successfully', { exact: true })
+    ).toBeVisible();
+    await page.waitForURL(
+      new RegExp(
+        `/${POST_COMMUNITY}/@${POST_AUTHOR}/post-03-fixture-test-community-post.*pending=1`
+      )
+    );
+    await expect(
+      page.locator('[data-testid="article-title"], h1')
+        .filter({ hasText: title })
+        .first()
+    ).toBeVisible();
   });
 });

@@ -1,4 +1,4 @@
-import { test } from '../support/fixture-proxy-test';
+import { test, expect } from '../support/fixture-proxy-test';
 import {
   installBroadcastInterceptor,
   expectCommentOperation
@@ -42,7 +42,9 @@ test.use({
 
 test.describe('Post creation — user with posts (§2.1)', () => {
   test('POST-02: create post (user already has posts)', async ({ page }) => {
-    const broadcast = await installBroadcastInterceptor(page);
+    const broadcast = await installBroadcastInterceptor(page, undefined, {
+      confirmInBlock: true
+    });
     await gotoSubmitLoggedIn(page);
     const editor = new PostEditorPage(page);
     await editor.validateDefaultPostEditorIsLoaded();
@@ -62,6 +64,15 @@ test.describe('Post creation — user with posts (§2.1)', () => {
       body,
       permlinkPattern: /post-02-fixture-test-post$/
     });
-    // See POST-01 for why we don't assert the success toast / redirect.
+
+    await expect(
+      page.getByText('Post submitted successfully', { exact: true })
+    ).toBeVisible();
+    await page.waitForURL(/post-02-fixture-test-post.*pending=1/);
+    await expect(
+      page.locator('[data-testid="article-title"], h1')
+        .filter({ hasText: title })
+        .first()
+    ).toBeVisible();
   });
 });
