@@ -15,17 +15,23 @@ import {
 /**
  * Post creation — user with existing posts (§2.1 POST-02).
  *
- * Same UX flow as POST-01; the difference is fixture state: the
- * `postCreate_userWithPosts` overlay variant patches
- * `bridge.get_account_posts` so it returns a non-empty list for
- * guest4test. The submit flow must produce an identical comment_operation
- * regardless of whether the author already has posts — this guards
- * against regressions where UI gating reads from "user has posts" cache
- * (eg. welcome-mat redirects, draft-recovery prompts, etc.).
+ * Same UX flow as POST-01; the precondition is "user already has
+ * posts". The submit flow today does not fetch `bridge.get_account_posts`
+ * for the editor surface, so the only fixture-level difference between
+ * POST-01 and POST-02 is the unique `bridge.get_post_header` lookup
+ * driven by POST-02's distinct title (used by createPermlink for slug
+ * uniqueness). The overlay variant `postCreate_userWithPosts` carries
+ * exactly that one file and inherits everything else from postCreate.
  *
- * Variant generation:
- *   node playwright/tests/support/fixture-auth/generate-user-with-posts-variant.mjs
+ * If the editor surface starts to gate on "user has posts" state in
+ * the future (welcome-mat, first-time-poster prompt, etc.), extend the
+ * overlay with a patched `bridge.get_account_posts` for guest4test.
  *
+ * Record:  FIXTURE_UPSTREAM=api.openhive.network FIXTURE_MODE=record \
+ *          pnpm --filter @hive/blog test:fixture -- postCreateUserWithPosts.spec
+ *          (writes to postCreate_userWithPosts/; afterwards trim files
+ *          identical to postCreate/ and re-add `base: 'postCreate'` +
+ *          `overlayFiles: [...]` to its _index.json)
  * Replay:  pnpm --filter @hive/blog test:fixture -- postCreateUserWithPosts.spec
  */
 

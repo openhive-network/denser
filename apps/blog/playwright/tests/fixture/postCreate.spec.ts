@@ -84,16 +84,18 @@ test.describe('Post creation — basic (§2.1)', () => {
       permlinkPattern: /post-06-fixture-test-summary-post$/
     });
 
-    // Summary travels via json_metadata.description (post-form serializes
-    // postSummary into the metadata object before broadcasting). The
-    // existing expectCommentOperation only validates the textual fields,
-    // so we reach into the captured op to assert the metadata round-trip.
+    // Summary travels via json_metadata.summary (transactionService.post
+    // builds `jsonMetadata: { summary, app: 'hive.blog/0.9' }` — the
+    // `description` field that the optimistic UI cache uses lives only
+    // in the React-Query state, never in the broadcast). The existing
+    // expectCommentOperation only validates the textual fields, so we
+    // reach into the captured op to assert the metadata round-trip.
     const op = (broadcast.calls[0].params as {
       trx: { operations: { value: { json_metadata?: string } }[] };
     }).trx.operations[0].value;
     const metadata = JSON.parse(op.json_metadata ?? '{}') as {
-      description?: string;
+      summary?: string;
     };
-    expect(metadata.description, 'json_metadata.description').toBe(summary);
+    expect(metadata.summary, 'json_metadata.summary').toBe(summary);
   });
 });

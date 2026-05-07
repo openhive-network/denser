@@ -1,0 +1,30 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post_header",
+    "params": {
+      "author": "guest4test",
+      "permlink": "post-06-fixture-test-summary-post"
+    },
+    "id": 1
+  },
+  "requestHash": "6117a0b33b4f8c0d",
+  "method": "bridge.get_post_header",
+  "params": {
+    "author": "guest4test",
+    "permlink": "post-06-fixture-test-summary-post"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post guest4test/post-06-fixture-test-summary-post does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

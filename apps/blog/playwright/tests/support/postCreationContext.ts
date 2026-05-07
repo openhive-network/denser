@@ -21,11 +21,9 @@ export const SUBMIT_PATH = '/submit.html';
 /**
  * Community used by POST-03. Same id as the one already pinned by §5/§6.2
  * fixtures so we don't grow the fixture footprint with a new community
- * registration. The trending feed is the entry point a user clicks
- * "New Post" from.
+ * registration.
  */
 export const POST_COMMUNITY = 'hive-160391';
-export const COMMUNITY_TRENDING_PATH = `/trending/${POST_COMMUNITY}`;
 
 /**
  * Default tag for non-community posts. `parent_permlink` in the produced
@@ -49,23 +47,66 @@ export async function gotoSubmitLoggedIn(page: Page): Promise<void> {
 }
 
 /**
- * Navigate to the community trending feed and click "New Post". Used
- * by POST-03. The button (community-new-post-button) is a `<Link>` to
- * `/submit.html?category=<community>`, so after the click the page
- * lands on the editor with the community pre-selected via URL param —
- * which is what we want to validate in the resulting broadcast
- * (parent_permlink === community id).
+ * Land on the post editor pre-targeted to the community used by POST-03.
+ * Reproduces the end-state of clicking "New Post" on the community page,
+ * which does two things in `new-post-button.tsx`:
+ *   1. onClick stores `postData-new-<user>` in localStorage with
+ *      `category: <community>` (TTL-wrapped via setStorageItem)
+ *   2. <Link> navigates to `/submit.html?category=<community>`
+ *
+ * We seed (1) directly via page.evaluate and then goto (2). A live
+ * click-through is layout-fragile: the button is rendered both in
+ * `community-info-sidebar` (xl+) and `community-simple-description-sidebar`
+ * (md..lg) and the visible instance depends on viewport AND
+ * `useUserClient` hydration timing — neither is worth defending in a
+ * fixture that exists to validate the broadcast, not the navigation.
+ *
+ * URL alone doesn't reach the form's category field reliably:
+ * `useSearchParams()` initial value can be undefined during the first
+ * render that `usePostFormState` memoises, so the form picks up
+ * `storedPost.category` (defaulting to 'blog') before
+ * `categoryParam='hive-160391'` arrives. Seeding storedPost first wins
+ * regardless of the timing.
  */
 export async function gotoCommunityNewPostLoggedIn(page: Page): Promise<void> {
-  await page.goto(COMMUNITY_TRENDING_PATH, { waitUntil: 'domcontentloaded' });
+  // Land on the origin once so localStorage exists for the seeded user.
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  await page.evaluate(
+    ([user, community, ttlMs]) => {
+      const key = `postData-new-${user}`;
+      const now = Date.now();
+      const draft = {
+        title: '',
+        postArea: '',
+        postSummary: '',
+        tags: '',
+        author: '',
+        category: community,
+        beneficiaries: [],
+        maxAcceptedPayout: 1000000,
+        payoutType: '50%'
+      };
+      // Mirror @ui/lib/storage-with-ttl setStorageItem layout: a wrapper
+      // with `value`, `expiresAt` (now + ttl) and `createdAt`.
+      window.localStorage.setItem(
+        key,
+        JSON.stringify({
+          value: draft,
+          expiresAt: now + ttlMs,
+          createdAt: now
+        })
+      );
+    },
+    [POST_AUTHOR, POST_COMMUNITY, 30 * 24 * 60 * 60 * 1000]
+  );
+
+  await page.goto(`${SUBMIT_PATH}?category=${POST_COMMUNITY}`, {
+    waitUntil: 'domcontentloaded'
+  });
   await expect(page.getByTestId('login-btn')).toBeHidden({
     timeout: TIMEOUTS.HYDRATION
   });
-  // Sidebar variant on desktop, simple-description on mobile/narrow — the
-  // existing communitiesPage POM scopes by parent testid; the link itself
-  // is the same testid in either layout, so a direct .first() click
-  // suffices for the desktop viewport the fixture worker runs in.
-  await page.getByTestId('community-new-post-button').first().click();
   await expect(page.getByTestId('post-title-input')).toBeVisible({
     timeout: TIMEOUTS.HYDRATION
   });

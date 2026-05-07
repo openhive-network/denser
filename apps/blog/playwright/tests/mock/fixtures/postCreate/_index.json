@@ -1,0 +1,17 @@
+{
+  "testName": "postCreate",
+  "recordedAt": "2026-05-07T09:58:55.249Z",
+  "totalRequests": 22,
+  "savedFixtures": 9,
+  "duplicatesSkipped": 13,
+  "methods": {
+    "GET /hivesense-api": 4,
+    "bridge.unread_notifications": 2,
+    "database_api.find_accounts": 4,
+    "database_api.get_dynamic_global_properties": 4,
+    "rc_api.find_rc_accounts": 2,
+    "bridge.list_all_subscriptions": 2,
+    "bridge.get_profile": 2,
+    "bridge.get_post_header": 2
+  }
+}
