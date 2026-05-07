@@ -55,9 +55,16 @@ test.describe('Profile page of @gtg', () => {
 
     const postScrolled = await profilePage.postBlogItem.all();
     const postScrolledLenght = await postScrolled.length;
+    // A 3000px scrollBy can trigger more than one infinite-scroll batch when
+    // pages render fast enough for the IntersectionObserver to fire twice
+    // (job 3140005 saw `60` here against an `expectedPostsAmount` of 40).
+    // The intent of the assertion is "scrolling fetched the next page" —
+    // expressed as "at least double the initial batch" rather than "exactly
+    // double", which doesn't break when the runner is fast enough to load
+    // page 3 too.
     const expectedPostsAmount = postAmountLenght * 2;
 
-    await expect(postScrolledLenght).toEqual(expectedPostsAmount);
+    await expect(postScrolledLenght).toBeGreaterThanOrEqual(expectedPostsAmount);
   });
 
   test('Tab Posts - Posts Card Header- Avatar', async ({ page }) => {
