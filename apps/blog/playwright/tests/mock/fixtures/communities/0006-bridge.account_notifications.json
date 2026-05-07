@@ -1,0 +1,427 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.account_notifications",
+    "params": {
+      "account": "hive-167922",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "428b5f9a0adf0227",
+  "method": "bridge.account_notifications",
+  "params": {
+    "account": "hive-167922",
+    "limit": 50
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "id": "85687196324986881",
+        "msg": "@buratus subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-06T05:21:21",
+        "type": "subscribe",
+        "score": 54
+      },
+      {
+        "id": "85679694896168961",
+        "msg": "@erinleeishere subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-05T21:35:36",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85678295273701377",
+        "msg": "@ahmedibrahem subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-05T20:08:42",
+        "type": "subscribe",
+        "score": 43
+      },
+      {
+        "id": "85676868270817281",
+        "msg": "@crypine subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-05T18:40:06",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85656640585465857",
+        "msg": "@kekita7703 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-04T21:44:12",
+        "type": "subscribe",
+        "score": 47
+      },
+      {
+        "id": "85656374834364421",
+        "msg": "@yuli8308 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-04T21:27:42",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85651925516681217",
+        "msg": "@meerfinance subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-04T16:51:27",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85646232000659457",
+        "msg": "@ahsanayub023 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-04T10:57:57",
+        "type": "subscribe",
+        "score": 40
+      },
+      {
+        "id": "85632171351474178",
+        "msg": "@william-1977 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-03T20:24:57",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85631011710304257",
+        "msg": "@dumbelth17 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-03T19:12:57",
+        "type": "subscribe",
+        "score": 57
+      },
+      {
+        "id": "85621453529022465",
+        "msg": "@lutx0 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-03T09:19:30",
+        "type": "subscribe",
+        "score": 48
+      },
+      {
+        "id": "85600803863134209",
+        "msg": "@queen88 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-02T11:57:24",
+        "type": "subscribe",
+        "score": 49
+      },
+      {
+        "id": "85595914042867713",
+        "msg": "@finarmour subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-02T06:53:48",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85592882869698561",
+        "msg": "@mastertrade subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-02T03:45:36",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85590690825764865",
+        "msg": "@shopno-raj subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-02T01:29:30",
+        "type": "subscribe",
+        "score": 55
+      },
+      {
+        "id": "85588303897690113",
+        "msg": "@hivevive subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-01T23:01:18",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85582442072637441",
+        "msg": "@chessbrotherspro subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-01T16:57:21",
+        "type": "subscribe",
+        "score": 62
+      },
+      {
+        "id": "85570834386649089",
+        "msg": "@naeeminsights subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-05-01T04:56:39",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85565968725573634",
+        "msg": "@fmsanchezart subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-30T23:54:33",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85556458862673922",
+        "msg": "@ibiba-blessing subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-30T14:04:06",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85546816124223489",
+        "msg": "@desarrollador subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-30T04:05:24",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85534784847085569",
+        "msg": "@kabirr subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-29T15:38:24",
+        "type": "subscribe",
+        "score": 30
+      },
+      {
+        "id": "85534395884109825",
+        "msg": "@anitacollins0123 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-29T15:14:15",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85533027689562116",
+        "msg": "@love-scout mentioned you and 11 others",
+        "url": "@love-scout/re-my-introduction-post-on-hive-1777470559822",
+        "date": "2026-04-29T13:49:18",
+        "type": "mention",
+        "score": 52
+      },
+      {
+        "id": "85528253812441089",
+        "msg": "@maldin subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-29T08:52:54",
+        "type": "subscribe",
+        "score": 43
+      },
+      {
+        "id": "85517721210454017",
+        "msg": "@harhike subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-28T21:58:57",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85511570280415233",
+        "msg": "@oslaikaaguilera subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-28T15:37:03",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85510886596280325",
+        "msg": "@love-scout mentioned you and 11 others",
+        "url": "@love-scout/re-introduction-phase-1777388078019",
+        "date": "2026-04-28T14:54:36",
+        "type": "mention",
+        "score": 52
+      },
+      {
+        "id": "85504469088862209",
+        "msg": "@nnuuyomadavid subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-28T08:16:09",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85494165193883649",
+        "msg": "@cabito2999 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-27T21:36:24",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85490090343661569",
+        "msg": "@hecateando subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-27T17:23:24",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85463482215956481",
+        "msg": "@akdulay0402 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-26T13:51:21",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85461255543848961",
+        "msg": "@beta-analyst subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-26T11:33:06",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85452659720454145",
+        "msg": "@bomspring followed you",
+        "url": "@bomspring",
+        "date": "2026-04-26T02:39:24",
+        "type": "follow",
+        "score": 25
+      },
+      {
+        "id": "85438744009637889",
+        "msg": "@hemel787 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-25T12:15:24",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85436292657053697",
+        "msg": "@bomspring subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-25T09:43:12",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85432630123692033",
+        "msg": "@spottrading subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-25T05:55:48",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85422616944312321",
+        "msg": "@hetrader subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-24T19:34:06",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85417890601238529",
+        "msg": "@shefaa subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-24T14:40:39",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85412991117295617",
+        "msg": "@mansoorkhan23 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-24T09:36:27",
+        "type": "subscribe",
+        "score": 45
+      },
+      {
+        "id": "85381779053084673",
+        "msg": "@ghouse25 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-23T01:18:33",
+        "type": "subscribe",
+        "score": 53
+      },
+      {
+        "id": "85380863419744257",
+        "msg": "@nasincera subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-23T00:21:42",
+        "type": "subscribe",
+        "score": 47
+      },
+      {
+        "id": "85377261284360193",
+        "msg": "@entrenalavida subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-22T20:38:03",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85370952514273281",
+        "msg": "@aarlavin subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-22T14:06:21",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85370314711629825",
+        "msg": "@chichebem subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-22T13:26:45",
+        "type": "subscribe",
+        "score": 35
+      },
+      {
+        "id": "85366640903979009",
+        "msg": "@parwaz subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-22T09:38:39",
+        "type": "subscribe",
+        "score": 38
+      },
+      {
+        "id": "85341591044096001",
+        "msg": "@nakiteu subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-21T07:43:21",
+        "type": "subscribe",
+        "score": 37
+      },
+      {
+        "id": "85341585406951425",
+        "msg": "@mikes2400 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-21T07:43:00",
+        "type": "subscribe",
+        "score": 34
+      },
+      {
+        "id": "85339659114119169",
+        "msg": "@nilesor34 subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-21T05:43:24",
+        "type": "subscribe",
+        "score": 41
+      },
+      {
+        "id": "85330560762773505",
+        "msg": "@xxuuzz13testes subscribed to LeoFinance",
+        "url": "c/hive-167922",
+        "date": "2026-04-20T20:18:30",
+        "type": "subscribe",
+        "score": 25
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -1,0 +1,15 @@
+{
+  "testName": "communities",
+  "recordedAt": "2026-05-07T07:56:02.102Z",
+  "totalRequests": 17,
+  "savedFixtures": 9,
+  "duplicatesSkipped": 8,
+  "methods": {
+    "bridge.list_communities": 4,
+    "GET /hivesense-api": 4,
+    "bridge.get_community": 2,
+    "bridge.get_ranked_posts": 5,
+    "bridge.account_notifications": 1,
+    "bridge.list_subscribers": 1
+  }
+}
