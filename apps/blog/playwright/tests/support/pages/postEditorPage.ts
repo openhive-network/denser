@@ -181,6 +181,19 @@ export class PostEditorPage {
         await this.getSubmitPostButton.click();
     }
 
+    /**
+     * Pick a community from the editor's "Posting to" dropdown. Radix
+     * Select renders a hidden native `<select>` as a sibling of the
+     * visible trigger for a11y; we drive that hidden element via
+     * `selectOption` so we don't have to dance with the popover. The
+     * value is the community id (e.g. `hive-167922`).
+     */
+    async selectPostingToCommunity(communityId: string) {
+        await this.getPostingToListTrigger
+            .locator('//following-sibling::select')
+            .selectOption(communityId);
+    }
+
     async fillInSimplePost(
         postTitle: string,
         postContentText: string,

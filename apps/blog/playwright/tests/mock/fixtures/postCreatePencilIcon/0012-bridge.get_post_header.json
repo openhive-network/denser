@@ -1,0 +1,30 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post_header",
+    "params": {
+      "author": "guest4test",
+      "permlink": "post-04-fixture-test-pencil-icon-post"
+    },
+    "id": 1
+  },
+  "requestHash": "eebe2ce402a19725",
+  "method": "bridge.get_post_header",
+  "params": {
+    "author": "guest4test",
+    "permlink": "post-04-fixture-test-pencil-icon-post"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post guest4test/post-04-fixture-test-pencil-icon-post does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
