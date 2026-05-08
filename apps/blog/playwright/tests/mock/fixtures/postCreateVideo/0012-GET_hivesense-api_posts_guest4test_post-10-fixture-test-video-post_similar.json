@@ -1,0 +1,13 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/posts/guest4test/post-10-fixture-test-video-post/similar",
+  "requestQuery": {
+    "truncate": "100",
+    "result_limit": "10",
+    "full_posts": "10",
+    "observer": "guest4test"
+  },
+  "requestHash": "ac21d34bdc0fe16c",
+  "response": "",
+  "responseStatus": 404
+}

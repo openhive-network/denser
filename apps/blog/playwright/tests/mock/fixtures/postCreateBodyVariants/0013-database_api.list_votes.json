@@ -1,0 +1,40 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "guest4test",
+        "post-11-fixture-test-mention-post",
+        ""
+      ],
+      "limit": 1000,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "31503ddc1c22721f",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "guest4test",
+      "post-11-fixture-test-mention-post",
+      ""
+    ],
+    "limit": 1000,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post guest4test/post-11-fixture-test-mention-post does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

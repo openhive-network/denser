@@ -1,0 +1,13 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/posts/guest4test/post-14-fixture-test-long-text-post/similar",
+  "requestQuery": {
+    "truncate": "100",
+    "result_limit": "10",
+    "full_posts": "10",
+    "observer": "guest4test"
+  },
+  "requestHash": "8963b85a5156ba0d",
+  "response": "",
+  "responseStatus": 404
+}

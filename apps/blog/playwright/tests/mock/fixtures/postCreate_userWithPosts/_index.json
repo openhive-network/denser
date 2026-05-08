@@ -1,0 +1,8 @@
+{
+  "testName": "postCreate_userWithPosts",
+  "base": "postCreate",
+  "generatedAt": "2026-05-07T10:21:23.000Z",
+  "overlayFiles": [
+    "0001-bridge.get_post_header.json"
+  ]
+}

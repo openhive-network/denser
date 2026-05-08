@@ -36,6 +36,10 @@ export class PostEditorPage {
     readonly getPostingToListTrigger: Locator;
     readonly getSubmitPostButton: Locator;
     readonly getCleanPostButton: Locator;
+    readonly getCleanConfirmationDialog: Locator;
+    readonly getCleanConfirmationConfirmButton: Locator;
+    readonly getPostSubmittedToast: Locator;
+    readonly getImageFileInput: Locator;
     readonly getTitleErrorMessage: Locator;
     readonly getBeneficiariesOptionsInfo: Locator;
     readonly getSyncScrollToggle: Locator;
@@ -79,6 +83,23 @@ export class PostEditorPage {
         this.getPostingToListTrigger = page.locator('[data-testid="posting-to-list-trigger"]');
         this.getSubmitPostButton = page.locator('[data-testid="submit-post-button"]');
         this.getCleanPostButton = page.locator('[data-testid="clean-post-button"]');
+        // The clean button opens a Radix AlertDialog confirming the wipe;
+        // confirming runs handleCancelConfirm → form.reset(defaultValues)
+        // + removePost(). Locate by role since the dialog has no testid.
+        this.getCleanConfirmationDialog = page.getByRole('alertdialog');
+        this.getCleanConfirmationConfirmButton = this.getCleanConfirmationDialog.getByRole(
+            'button',
+            { name: 'Confirm', exact: true }
+        );
+        // Success toast fired by usePostMutation.onSuccess after the
+        // broadcasted comment_operation is observed in a block.
+        this.getPostSubmittedToast = page.getByText('Post submitted successfully', { exact: true });
+        // Hidden file input the editor wires to its toolbar image button
+        // and to the drag&drop handler. Tests drive uploads via
+        // setInputFiles on this element directly — clicking the toolbar
+        // button opens the native file dialog, which Playwright cannot
+        // populate.
+        this.getImageFileInput = page.locator('input[type="file"][name="images"]');
         this.getTitleErrorMessage = page.locator('[data-testid="form-container"] p').filter( {hasText: 'String must contain at least'});
         this.getBeneficiariesOptionsInfo = page.locator('span:text("Beneficiaries:")');
         this.getSyncScrollToggle = page.getByTestId('sync-scroll-toggle');
@@ -165,6 +186,19 @@ export class PostEditorPage {
         await this.getPostingToListTrigger.locator('//following-sibling::select').selectOption(communitySelectOptionValue);
         // Click the submit button
         await this.getSubmitPostButton.click();
+    }
+
+    /**
+     * Pick a community from the editor's "Posting to" dropdown. Radix
+     * Select renders a hidden native `<select>` as a sibling of the
+     * visible trigger for a11y; we drive that hidden element via
+     * `selectOption` so we don't have to dance with the popover. The
+     * value is the community id (e.g. `hive-167922`).
+     */
+    async selectPostingToCommunity(communityId: string) {
+        await this.getPostingToListTrigger
+            .locator('//following-sibling::select')
+            .selectOption(communityId);
     }
 
     async fillInSimplePost(

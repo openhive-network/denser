@@ -1,0 +1,26 @@
+{
+  "testName": "postCreateBodyVariants",
+  "recordedAt": "2026-05-08T07:35:47.562Z",
+  "totalRequests": 77,
+  "savedFixtures": 32,
+  "duplicatesSkipped": 45,
+  "methods": {
+    "bridge.unread_notifications": 4,
+    "GET /hivesense-api": 13,
+    "database_api.get_dynamic_global_properties": 8,
+    "database_api.find_accounts": 8,
+    "rc_api.find_rc_accounts": 4,
+    "bridge.list_all_subscriptions": 4,
+    "bridge.get_profile": 4,
+    "bridge.get_post_header": 4,
+    "bridge.get_post": 4,
+    "bridge.get_discussion": 8,
+    "bridge.get_follow_list": 4,
+    "GET /hivesense-api/posts/guest4test/post-11-fixture-test-mention-post/similar": 1,
+    "database_api.list_votes": 4,
+    "condenser_api.get_reblogged_by": 4,
+    "GET /hivesense-api/posts/guest4test/post-12-fixture-test-html-link-post/similar": 1,
+    "GET /hivesense-api/posts/guest4test/post-13-fixture-test-emoji-post/similar": 1,
+    "GET /hivesense-api/posts/guest4test/post-14-fixture-test-long-text-post/similar": 1
+  }
+}

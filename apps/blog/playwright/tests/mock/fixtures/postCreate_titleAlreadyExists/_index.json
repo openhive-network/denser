@@ -1,0 +1,8 @@
+{
+  "testName": "postCreate_titleAlreadyExists",
+  "base": "postCreate",
+  "generatedAt": "2026-05-08T07:47:26.000Z",
+  "overlayFiles": [
+    "0001-bridge.get_post_header.json"
+  ]
+}

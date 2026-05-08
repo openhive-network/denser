@@ -1,0 +1,30 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "condenser_api.get_reblogged_by",
+    "params": [
+      "guest4test",
+      "post-14-fixture-test-long-text-post"
+    ],
+    "id": 1
+  },
+  "requestHash": "e25f4f293f0f1c32",
+  "method": "condenser_api.get_reblogged_by",
+  "params": [
+    "guest4test",
+    "post-14-fixture-test-long-text-post"
+  ],
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post guest4test/post-14-fixture-test-long-text-post does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

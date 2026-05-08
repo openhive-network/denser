@@ -1,0 +1,13 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/posts/guest4test/post-13-fixture-test-emoji-post/similar",
+  "requestQuery": {
+    "truncate": "100",
+    "result_limit": "10",
+    "full_posts": "10",
+    "observer": "guest4test"
+  },
+  "requestHash": "595629309d50004f",
+  "response": "",
+  "responseStatus": 404
+}
