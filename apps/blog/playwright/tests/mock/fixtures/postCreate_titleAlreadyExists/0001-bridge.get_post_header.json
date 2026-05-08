@@ -1,0 +1,30 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post_header",
+    "params": {
+      "author": "guest4test",
+      "permlink": "post-05-fixture-test-same-title-post"
+    },
+    "id": 1
+  },
+  "requestHash": "dfc4fa3a7b89bb26",
+  "method": "bridge.get_post_header",
+  "params": {
+    "author": "guest4test",
+    "permlink": "post-05-fixture-test-same-title-post"
+  },
+  "response": {
+    "result": {
+      "author": "guest4test",
+      "permlink": "post-05-fixture-test-same-title-post",
+      "category": "test"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

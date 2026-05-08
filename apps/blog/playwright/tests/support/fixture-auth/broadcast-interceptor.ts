@@ -3,6 +3,135 @@ import { expect, type Page } from '@playwright/test';
 const FIXTURE_PROXY_PORT = 8200;
 
 /**
+ * Methods WorkerBee polls while waiting for block inclusion after an
+ * `observe: true` broadcast. We can stub these per-test so WorkerBee
+ * sees the captured transaction land in a synthetic block, resolves
+ * its listener, and lets the app proceed to the success path
+ * (toast, router.push). See `installBroadcastInterceptor`'s
+ * `confirmInBlock` option.
+ */
+const WORKERBEE_POLL_METHODS = new Set<string>([
+  'database_api.get_dynamic_global_properties',
+  'block_api.get_block',
+  'block_api.get_block_range'
+]);
+
+interface CapturedTrxState {
+  trx: Record<string, unknown> | null;
+  txId: string | null;
+  legacyTxId: string | null;
+}
+
+interface BlockConfirmationState {
+  /** Wax chain instance used to compute trx ID from the captured signed trx. */
+  chain: unknown | null;
+  /** Most recently captured broadcast — synthetic blocks reference this. */
+  captured: CapturedTrxState;
+  /** Monotonic block number we report; increments on every dgpo poll
+   * after a broadcast is captured so WorkerBee sees a "new" block to fetch. */
+  fakeHeadBlockNum: number;
+  /** Whether we've already returned a block containing the captured trx.
+   * After delivery WorkerBee resolves and stops polling — we just keep
+   * advancing the head if it polls again to avoid stale-block errors. */
+  delivered: boolean;
+}
+
+/**
+ * Build a `database_api.get_dynamic_global_properties` response that
+ * looks healthy enough for WorkerBee's DynamicGlobalPropertiesCollector
+ * (reads current_witness, head_block_number, time, downvote_pool_percent,
+ * head_block_id).
+ */
+function synthDgpo(headBlockNum: number): Record<string, unknown> {
+  const time = new Date().toISOString().replace(/\.\d+Z$/, '');
+  return {
+    head_block_number: headBlockNum,
+    head_block_id: blockIdFromNum(headBlockNum),
+    time,
+    current_witness: 'fixture-witness',
+    downvote_pool_percent: 2500,
+    // Other fields wax/workerbee might touch — fill with realistic defaults
+    // so deserialization doesn't blow up on missing/null values.
+    current_aslot: headBlockNum * 2,
+    participation_count: 128,
+    last_irreversible_block_num: Math.max(0, headBlockNum - 20),
+    available_account_subsidies: 0,
+    hbd_interest_rate: 0,
+    maximum_block_size: 65536,
+    required_actions_partition_percent: 0,
+    delegation_return_period: 432000,
+    reverse_auction_seconds: 300,
+    early_voting_seconds: 86400,
+    mid_voting_seconds: 172800,
+    sps_fund_percent: 1000,
+    sps_interval_ledger: { amount: '0', precision: 3, nai: '@@000000013' },
+    smt_creation_fee: { amount: '0', precision: 3, nai: '@@000000013' },
+    dhf_interval_ledger: { amount: '0', precision: 3, nai: '@@000000013' },
+    total_pow: 0,
+    num_pow_witnesses: 0,
+    virtual_supply: { amount: '0', precision: 3, nai: '@@000000021' },
+    current_supply: { amount: '0', precision: 3, nai: '@@000000021' },
+    init_hbd_supply: { amount: '0', precision: 3, nai: '@@000000013' },
+    current_hbd_supply: { amount: '0', precision: 3, nai: '@@000000013' },
+    total_vesting_fund_hive: { amount: '0', precision: 3, nai: '@@000000021' },
+    total_vesting_shares: { amount: '0', precision: 6, nai: '@@000000037' },
+    total_reward_fund_hive: { amount: '0', precision: 3, nai: '@@000000021' },
+    total_reward_shares2: '0',
+    pending_rewarded_vesting_shares: { amount: '0', precision: 6, nai: '@@000000037' },
+    pending_rewarded_vesting_hive: { amount: '0', precision: 3, nai: '@@000000021' },
+    hbd_print_rate: 10000,
+    hbd_stop_percent: 1000,
+    hbd_start_percent: 900,
+    next_maintenance_time: '1970-01-01T00:00:00',
+    last_budget_time: '1970-01-01T00:00:00',
+    next_daily_maintenance_time: '1970-01-01T00:00:00',
+    content_reward_percent: 6500,
+    vesting_reward_percent: 1500,
+    proposal_fund_percent: 0,
+    dhf_interval_ledger_percent: 0,
+    sps_interval_ledger_percent: 0,
+    target_votes_per_period: 144,
+    average_block_size: 0
+  };
+}
+
+/** 40-hex deterministic block id derived from the block number. */
+function blockIdFromNum(n: number): string {
+  const head = n.toString(16).padStart(8, '0');
+  return head + 'deadbeef'.repeat(4);
+}
+
+/**
+ * Build a `block_api.get_block` response containing the captured trx.
+ * WorkerBee's BlockCollector reads `transactions[]` and `transaction_ids[]`
+ * to build a `transactionsPerId` Map; the listener then asserts the
+ * captured `txId` is in that map. Other block fields just need to
+ * satisfy createTransactionFromJson + BlockHeaderClassifier deserializers.
+ */
+function synthBlockWithTrx(
+  blockNum: number,
+  state: BlockConfirmationState
+): Record<string, unknown> {
+  const time = new Date().toISOString().replace(/\.\d+Z$/, '');
+  const transactions = state.captured.trx ? [state.captured.trx] : [];
+  const transactionIds = state.captured.txId ? [state.captured.txId] : [];
+  return {
+    previous: blockIdFromNum(blockNum - 1),
+    timestamp: time,
+    witness: 'fixture-witness',
+    transaction_merkle_root: '0'.repeat(40),
+    extensions: [],
+    witness_signature:
+      '20' + '0'.repeat(128), // 65-byte sig in hex
+    transactions,
+    block_id: blockIdFromNum(blockNum),
+    signing_key: 'STM7zmnfQpukRrPv2v3kRH7DcYPSBeUzEuzwhJBcb7P3oV1jvDEdb',
+    signatures: [],
+    transaction_ids: transactionIds
+  };
+}
+
+/**
  * JSON-RPC methods whose responses depend on a freshly-built transaction
  * (ref_block_num, expiration, signature over the posted tx). The
  * fixture-proxy keys recordings by `sha256(method + params)`, so a recorded
@@ -272,11 +401,49 @@ export function expectDeleteCommentOperation(
  *
  * Call once per test, before `page.goto(...)`.
  */
+export interface InstallBroadcastInterceptorOptions {
+  /**
+   * If true, additionally stubs the RPCs WorkerBee polls during
+   * `observe: true` block confirmation, so `transactionService.post(…,
+   * { observe: true })` resolves immediately after the broadcast is
+   * captured. This unlocks the post-creation success path (toast,
+   * router.push, post page render) for fixture specs.
+   *
+   * Mechanism: after we capture a broadcast, we use wax to compute the
+   * tx ID, then stub `database_api.get_dynamic_global_properties` to
+   * advance head_block_number on every poll, and stub `block_api.get_block`
+   * to return a synthetic block containing the captured trx + its ID.
+   * WorkerBee's `onTransactionIds(txId).onBlock()` listener finds the
+   * tx in the synthetic block and resolves bot.broadcast(...).
+   *
+   * Off by default — keeps existing fixture specs (which assert only
+   * on the captured broadcast and don't exercise the success path)
+   * unchanged.
+   */
+  confirmInBlock?: boolean;
+}
+
 export async function installBroadcastInterceptor(
   page: Page,
-  port: number = FIXTURE_PROXY_PORT
+  port: number = FIXTURE_PROXY_PORT,
+  options: InstallBroadcastInterceptorOptions = {}
 ): Promise<BroadcastInterceptor> {
   const calls: InterceptedBroadcast[] = [];
+  const confirmInBlock = options.confirmInBlock ?? false;
+
+  // Lazy-init the wax chain only when block confirmation is requested —
+  // it loads WASM and is ~hundreds of ms; not worth the overhead for
+  // specs that just want broadcast capture.
+  const blockState: BlockConfirmationState = {
+    chain: null,
+    captured: { trx: null, txId: null, legacyTxId: null },
+    fakeHeadBlockNum: 0,
+    delivered: false
+  };
+  if (confirmInBlock) {
+    const wax = await import('@hiveio/wax');
+    blockState.chain = await wax.createHiveChain();
+  }
 
   // Function matcher rather than a glob pattern: `http://localhost:8200/**`
   // did not reliably match the bare-root `http://localhost:8200/` that the
@@ -297,19 +464,77 @@ export async function installBroadcastInterceptor(
       }
 
       const method = typeof body?.method === 'string' ? body.method : '';
+      const rpcId =
+        typeof body?.id === 'number' || typeof body?.id === 'string'
+          ? body.id
+          : undefined;
 
       // Trace everything that hits the proxy port so silent failures are
       // visible in the test output.
       console.log(`[interceptor] POST ${method || '<no-method>'}`);
 
+      // WorkerBee block-confirmation stubs. Only kick in once we've
+      // captured a broadcast — beforehand let the fixture proxy serve
+      // the recorded dgpo for normal page hydration.
+      if (
+        confirmInBlock &&
+        blockState.captured.trx &&
+        WORKERBEE_POLL_METHODS.has(method)
+      ) {
+        if (method === 'database_api.get_dynamic_global_properties') {
+          // Advance head_block_number on every poll so WorkerBee's
+          // BlockCollector sees a "new" block to fetch.
+          if (blockState.fakeHeadBlockNum === 0) {
+            blockState.fakeHeadBlockNum = 100_000_000;
+          }
+          blockState.fakeHeadBlockNum++;
+          return route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              id: rpcId ?? 1,
+              result: synthDgpo(blockState.fakeHeadBlockNum)
+            })
+          });
+        }
+        if (method === 'block_api.get_block') {
+          const params = body?.params as { block_num?: number } | undefined;
+          const blockNum = params?.block_num ?? blockState.fakeHeadBlockNum;
+          const block = synthBlockWithTrx(blockNum, blockState);
+          blockState.delivered = true;
+          return route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              id: rpcId ?? 1,
+              result: { block }
+            })
+          });
+        }
+        if (method === 'block_api.get_block_range') {
+          const params = body?.params as
+            | { starting_block_num?: number; count?: number }
+            | undefined;
+          const start = params?.starting_block_num ?? blockState.fakeHeadBlockNum;
+          const block = synthBlockWithTrx(start, blockState);
+          blockState.delivered = true;
+          return route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              id: rpcId ?? 1,
+              result: { blocks: [block] }
+            })
+          });
+        }
+      }
+
       if (!(method in CANNED_RESULTS)) {
         return route.continue();
       }
-
-      const rpcId =
-        typeof body?.id === 'number' || typeof body?.id === 'string'
-          ? body.id
-          : undefined;
 
       // Only broadcast-class methods count as "mutations" for assertions.
       // verify_authority is a pre-broadcast check — important to stub but
@@ -321,6 +546,26 @@ export async function installBroadcastInterceptor(
           rpcId,
           at: Date.now()
         });
+
+        // Capture the trx and compute its ID for block confirmation.
+        if (confirmInBlock && blockState.chain) {
+          const trx = (body?.params as { trx?: Record<string, unknown> } | undefined)?.trx;
+          if (trx) {
+            try {
+              const chain = blockState.chain as {
+                createTransactionFromJson: (
+                  t: unknown
+                ) => { id: string; legacy_id?: string };
+              };
+              const apiTx = chain.createTransactionFromJson(trx);
+              blockState.captured.trx = trx;
+              blockState.captured.txId = apiTx.id;
+              blockState.captured.legacyTxId = apiTx.legacy_id ?? null;
+            } catch (err) {
+              console.warn('[interceptor] failed to compute trx ID:', err);
+            }
+          }
+        }
       }
 
       return route.fulfill({

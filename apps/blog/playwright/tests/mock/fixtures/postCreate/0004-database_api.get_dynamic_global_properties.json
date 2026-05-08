@@ -1,0 +1,106 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.get_dynamic_global_properties",
+    "params": {},
+    "id": 1
+  },
+  "requestHash": "7aa6e3d75d65a388",
+  "method": "database_api.get_dynamic_global_properties",
+  "params": {},
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "available_account_subsidies": 14364225,
+      "content_reward_percent": 6500,
+      "current_aslot": 106437577,
+      "current_hbd_supply": {
+        "amount": "33213172347",
+        "nai": "@@000000013",
+        "precision": 3
+      },
+      "current_remove_threshold": 200,
+      "current_supply": {
+        "amount": "541882152787",
+        "nai": "@@000000021",
+        "precision": 3
+      },
+      "current_witness": "stoodkev",
+      "delegation_return_period": 432000,
+      "dhf_interval_ledger": {
+        "amount": "10224",
+        "nai": "@@000000013",
+        "precision": 3
+      },
+      "downvote_pool_percent": 2500,
+      "early_voting_seconds": 86400,
+      "hbd_interest_rate": 1200,
+      "hbd_print_rate": 0,
+      "hbd_start_percent": 2000,
+      "hbd_stop_percent": 2000,
+      "head_block_id": "06540a264c2f1e9b13870a4404648ff189c26785",
+      "head_block_number": 106170918,
+      "id": 0,
+      "init_hbd_supply": {
+        "amount": "0",
+        "nai": "@@000000013",
+        "precision": 3
+      },
+      "last_budget_time": "2026-05-07T09:37:30",
+      "last_irreversible_block_num": 106170918,
+      "max_consecutive_recurrent_transfer_failures": 10,
+      "max_open_recurrent_transfers": 255,
+      "max_recurrent_transfer_end_date": 730,
+      "maximum_block_size": 65536,
+      "mid_voting_seconds": 172800,
+      "min_recurrent_transfers_recurrence": 24,
+      "next_daily_maintenance_time": "2026-05-07T19:31:33",
+      "next_maintenance_time": "2026-05-07T10:37:30",
+      "num_pow_witnesses": 172,
+      "participation_count": 128,
+      "pending_rewarded_vesting_hive": {
+        "amount": "701473141",
+        "nai": "@@000000021",
+        "precision": 3
+      },
+      "pending_rewarded_vesting_shares": {
+        "amount": "1256249390525619",
+        "nai": "@@000000037",
+        "precision": 6
+      },
+      "proposal_fund_percent": 1000,
+      "recent_slots_filled": "340282366920938463463374607431768211455",
+      "reverse_auction_seconds": 0,
+      "time": "2026-05-07T09:58:51",
+      "total_pow": 514415,
+      "total_reward_fund_hive": {
+        "amount": "0",
+        "nai": "@@000000021",
+        "precision": 3
+      },
+      "total_reward_shares2": "0",
+      "total_vesting_fund_hive": {
+        "amount": "207484287429",
+        "nai": "@@000000021",
+        "precision": 3
+      },
+      "total_vesting_shares": {
+        "amount": "337618712456614729",
+        "nai": "@@000000037",
+        "precision": 6
+      },
+      "vesting_reward_percent": 1500,
+      "virtual_supply": {
+        "amount": "1037601143040",
+        "nai": "@@000000021",
+        "precision": 3
+      },
+      "vote_power_reserve_rate": 10
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

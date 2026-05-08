@@ -1,0 +1,21 @@
+{
+  "testName": "postCreateCommunity",
+  "recordedAt": "2026-05-07T10:15:47.455Z",
+  "totalRequests": 24,
+  "savedFixtures": 13,
+  "duplicatesSkipped": 11,
+  "methods": {
+    "bridge.list_all_subscriptions": 2,
+    "bridge.list_communities": 1,
+    "bridge.get_ranked_posts": 1,
+    "GET /hivesense-api": 3,
+    "database_api.find_accounts": 4,
+    "bridge.unread_notifications": 2,
+    "bridge.get_follow_list": 1,
+    "bridge.get_profile": 2,
+    "database_api.get_dynamic_global_properties": 3,
+    "rc_api.find_rc_accounts": 2,
+    "bridge.get_community": 2,
+    "bridge.get_post_header": 1
+  }
+}
