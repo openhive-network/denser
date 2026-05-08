@@ -1,0 +1,30 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "condenser_api.get_reblogged_by",
+    "params": [
+      "guest4test",
+      "post-09-fixture-test-drag-drop-post"
+    ],
+    "id": 1
+  },
+  "requestHash": "a987b1ad392ac2a1",
+  "method": "condenser_api.get_reblogged_by",
+  "params": [
+    "guest4test",
+    "post-09-fixture-test-drag-drop-post"
+  ],
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post guest4test/post-09-fixture-test-drag-drop-post does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -1,0 +1,32 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_discussion",
+    "params": {
+      "author": "guest4test",
+      "permlink": "post-09-fixture-test-drag-drop-post",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "57bbcb3f8e237dd4",
+  "method": "bridge.get_discussion",
+  "params": {
+    "author": "guest4test",
+    "permlink": "post-09-fixture-test-drag-drop-post",
+    "observer": "guest4test"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post guest4test/post-09-fixture-test-drag-drop-post does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

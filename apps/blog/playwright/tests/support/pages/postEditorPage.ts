@@ -39,6 +39,7 @@ export class PostEditorPage {
     readonly getCleanConfirmationDialog: Locator;
     readonly getCleanConfirmationConfirmButton: Locator;
     readonly getPostSubmittedToast: Locator;
+    readonly getImageFileInput: Locator;
     readonly getTitleErrorMessage: Locator;
     readonly getBeneficiariesOptionsInfo: Locator;
     readonly getSyncScrollToggle: Locator;
@@ -93,6 +94,12 @@ export class PostEditorPage {
         // Success toast fired by usePostMutation.onSuccess after the
         // broadcasted comment_operation is observed in a block.
         this.getPostSubmittedToast = page.getByText('Post submitted successfully', { exact: true });
+        // Hidden file input the editor wires to its toolbar image button
+        // and to the drag&drop handler. Tests drive uploads via
+        // setInputFiles on this element directly — clicking the toolbar
+        // button opens the native file dialog, which Playwright cannot
+        // populate.
+        this.getImageFileInput = page.locator('input[type="file"][name="images"]');
         this.getTitleErrorMessage = page.locator('[data-testid="form-container"] p').filter( {hasText: 'String must contain at least'});
         this.getBeneficiariesOptionsInfo = page.locator('span:text("Beneficiaries:")');
         this.getSyncScrollToggle = page.getByTestId('sync-scroll-toggle');

@@ -1,0 +1,43 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_all_subscriptions",
+    "params": {
+      "account": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "df9f4e1006b25bd5",
+  "method": "bridge.list_all_subscriptions",
+  "params": {
+    "account": "guest4test"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "hive-163772",
+        "Worldmappin",
+        "guest",
+        ""
+      ],
+      [
+        "hive-167922",
+        "LeoFinance",
+        "guest",
+        ""
+      ],
+      [
+        "hive-137823",
+        "Testing Zone",
+        "guest",
+        ""
+      ]
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

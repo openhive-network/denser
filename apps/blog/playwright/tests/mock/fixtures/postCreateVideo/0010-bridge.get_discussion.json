@@ -1,0 +1,32 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_discussion",
+    "params": {
+      "author": "guest4test",
+      "permlink": "post-10-fixture-test-video-post",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "6cb79d8b4e2b489d",
+  "method": "bridge.get_discussion",
+  "params": {
+    "author": "guest4test",
+    "permlink": "post-10-fixture-test-video-post",
+    "observer": "guest4test"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post guest4test/post-10-fixture-test-video-post does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
