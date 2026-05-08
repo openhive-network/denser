@@ -1,23 +1,14 @@
 {
   "testName": "postCreateVideo",
-  "recordedAt": "2026-05-08T08:38:31.418Z",
-  "totalRequests": 19,
-  "savedFixtures": 14,
-  "duplicatesSkipped": 5,
-  "methods": {
-    "bridge.unread_notifications": 1,
-    "GET /hivesense-api": 3,
-    "database_api.get_dynamic_global_properties": 2,
-    "database_api.find_accounts": 2,
-    "bridge.list_all_subscriptions": 1,
-    "rc_api.find_rc_accounts": 1,
-    "bridge.get_profile": 1,
-    "bridge.get_post_header": 1,
-    "bridge.get_post": 1,
-    "bridge.get_discussion": 2,
-    "bridge.get_follow_list": 1,
-    "GET /hivesense-api/posts/guest4test/post-10-fixture-test-video-post/similar": 1,
-    "database_api.list_votes": 1,
-    "condenser_api.get_reblogged_by": 1
-  }
+  "base": "postCreate",
+  "generatedAt": "2026-05-08T11:35:10.000Z",
+  "overlayFiles": [
+    "0008-bridge.get_post_header.json",
+    "0009-bridge.get_post.json",
+    "0010-bridge.get_discussion.json",
+    "0011-bridge.get_follow_list.json",
+    "0012-GET_hivesense-api_posts_guest4test_post-10-fixture-test-video-post_similar.json",
+    "0013-database_api.list_votes.json",
+    "0014-condenser_api.get_reblogged_by.json"
+  ]
 }

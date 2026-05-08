@@ -1,27 +1,19 @@
 {
   "testName": "postCreatePencilIcon",
-  "recordedAt": "2026-05-08T08:29:51.769Z",
-  "totalRequests": 25,
-  "savedFixtures": 19,
-  "duplicatesSkipped": 6,
-  "methods": {
-    "bridge.list_all_subscriptions": 1,
-    "bridge.list_communities": 1,
-    "bridge.get_ranked_posts": 1,
-    "GET /hivesense-api": 3,
-    "bridge.unread_notifications": 1,
-    "database_api.find_accounts": 2,
-    "bridge.get_follow_list": 2,
-    "bridge.get_profile": 1,
-    "database_api.get_dynamic_global_properties": 2,
-    "rc_api.find_rc_accounts": 1,
-    "bridge.get_community": 2,
-    "bridge.get_post_header": 1,
-    "bridge.get_post": 1,
-    "bridge.get_discussion": 2,
-    "GET /hivesense-api/posts/guest4test/post-04-fixture-test-pencil-icon-post/similar": 1,
-    "condenser_api.get_reblogged_by": 1,
-    "bridge.list_community_roles": 1,
-    "database_api.list_votes": 1
-  }
+  "base": "postCreate",
+  "generatedAt": "2026-05-08T11:35:10.000Z",
+  "overlayFiles": [
+    "0002-bridge.list_communities.json",
+    "0003-bridge.get_ranked_posts.json",
+    "0007-bridge.get_follow_list.json",
+    "0011-bridge.get_community.json",
+    "0012-bridge.get_post_header.json",
+    "0013-bridge.get_post.json",
+    "0014-bridge.get_discussion.json",
+    "0015-bridge.get_follow_list.json",
+    "0016-GET_hivesense-api_posts_guest4test_post-04-fixture-test-pencil-icon-post_similar.json",
+    "0017-condenser_api.get_reblogged_by.json",
+    "0018-bridge.list_community_roles.json",
+    "0019-database_api.list_votes.json"
+  ]
 }
