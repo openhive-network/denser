@@ -92,6 +92,13 @@ export default defineConfig({
       // host was baked into .env.local (api.fake.openhive.network), so
       // neither the fixture-proxy nor the broadcast interceptor sees it.
       REACT_APP_ALLOWED_HIVE_API_NODES: `http://localhost:${FIXTURE_PORT}`,
+      // Pin the images endpoint so middleware/csp.ts adds
+      // images.hive.blog to `connect-src`. Locally `.env.local` already
+      // sets this, but CI runs without that file — and the editor's
+      // image-upload POST is then blocked by CSP before
+      // installImageUploadStub can intercept it (job 3142272 saw exactly
+      // this for POST-08/09/18).
+      REACT_APP_IMAGES_ENDPOINT: 'https://images.hive.blog/',
       HOSTNAME: '0.0.0.0',
       PORT: '3000',
       // Pin APP_NAME so iron-session's cookieName matches what the seeder
