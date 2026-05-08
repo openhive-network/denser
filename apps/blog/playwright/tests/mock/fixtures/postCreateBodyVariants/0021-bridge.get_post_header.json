@@ -1,0 +1,30 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post_header",
+    "params": {
+      "author": "guest4test",
+      "permlink": "post-13-fixture-test-emoji-post"
+    },
+    "id": 1
+  },
+  "requestHash": "1e78a0eff9e218c5",
+  "method": "bridge.get_post_header",
+  "params": {
+    "author": "guest4test",
+    "permlink": "post-13-fixture-test-emoji-post"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post guest4test/post-13-fixture-test-emoji-post does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
