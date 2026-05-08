@@ -36,6 +36,8 @@ export class PostEditorPage {
     readonly getPostingToListTrigger: Locator;
     readonly getSubmitPostButton: Locator;
     readonly getCleanPostButton: Locator;
+    readonly getCleanConfirmationDialog: Locator;
+    readonly getCleanConfirmationConfirmButton: Locator;
     readonly getPostSubmittedToast: Locator;
     readonly getTitleErrorMessage: Locator;
     readonly getBeneficiariesOptionsInfo: Locator;
@@ -80,6 +82,14 @@ export class PostEditorPage {
         this.getPostingToListTrigger = page.locator('[data-testid="posting-to-list-trigger"]');
         this.getSubmitPostButton = page.locator('[data-testid="submit-post-button"]');
         this.getCleanPostButton = page.locator('[data-testid="clean-post-button"]');
+        // The clean button opens a Radix AlertDialog confirming the wipe;
+        // confirming runs handleCancelConfirm → form.reset(defaultValues)
+        // + removePost(). Locate by role since the dialog has no testid.
+        this.getCleanConfirmationDialog = page.getByRole('alertdialog');
+        this.getCleanConfirmationConfirmButton = this.getCleanConfirmationDialog.getByRole(
+            'button',
+            { name: 'Confirm', exact: true }
+        );
         // Success toast fired by usePostMutation.onSuccess after the
         // broadcasted comment_operation is observed in a block.
         this.getPostSubmittedToast = page.getByText('Post submitted successfully', { exact: true });
