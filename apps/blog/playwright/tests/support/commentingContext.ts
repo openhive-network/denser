@@ -132,6 +132,45 @@ export function ownCommentDeleteButton(
 }
 
 /**
+ * Click an edit/reply trigger and wait for the resulting `reply-editor`
+ * to appear. Retries once if the first click is a no-op.
+ *
+ * Why retry: traces from job 3144190 (and the local-saved repro) show
+ * the click event lands on the right button but no React side effect
+ * follows — no `setEdit(true)` re-render, no `md-editor` chunk fetch,
+ * no further DOM mutations for the rest of the 30 s timeout. The
+ * leading hypothesis is a hydration race: the button's HTML is in the
+ * DOM (server-rendered SSR + visibility-aware re-render), but its
+ * `onClick` handler hasn't been re-attached after a Suspense/data
+ * boundary settles. `force: true` bypasses Playwright's actionability
+ * wait (hit-test, stable layout), so the click is dispatched directly
+ * into that window. A non-force click + re-click-on-no-editor recovers.
+ *
+ * Visible-state check uses the `reply-editor` testid (the wrapper div
+ * inside `ReplyTextbox`) — it only renders when the React state flip
+ * actually took effect, so its visibility is a positive signal that
+ * the click reached the handler.
+ */
+export async function openReplyEditor(
+  trigger: Locator,
+  editorScope: Locator
+): Promise<void> {
+  await trigger.scrollIntoViewIfNeeded();
+  await trigger.click();
+  try {
+    await editorScope.first().waitFor({ state: 'visible', timeout: 5_000 });
+    return;
+  } catch {
+    // First click didn't open the editor — re-click and wait again.
+    // Give React a beat to finish any pending hydration/re-render
+    // before the retry, otherwise we'd just hit the same window.
+    await trigger.page().waitForTimeout(500);
+    await trigger.click();
+    await editorScope.first().waitFor({ state: 'visible', timeout: 10_000 });
+  }
+}
+
+/**
  * The own comment's body description — used to verify edit-flow
  * optimistic UI: useUpdateCommentMutation.onMutate replaces the
  * comment's `body` in the React Query cache before the broadcast

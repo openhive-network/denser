@@ -13,6 +13,7 @@ import {
   ownCommentEditButton,
   ownCommentDescription,
   ownCommentEditor,
+  openReplyEditor,
   typeIntoReplyEditor,
   submitReply
 } from '../support/commentingContext';
@@ -67,13 +68,12 @@ test.describe('Comment with image — edit (§5)', () => {
       postPage,
       OWN_COMMENT_TOP_LEVEL_PERMLINK
     );
-    await editBtn.scrollIntoViewIfNeeded();
-    await editBtn.click({ force: true });
+    const editor = ownCommentEditor(postPage, OWN_COMMENT_TOP_LEVEL_PERMLINK);
+    await openReplyEditor(editBtn, editor);
 
     // Replace existing body with new text + image markdown so the
     // broadcast body is deterministic.
     const newBody = `CMT-06 edit ![${IMAGE_ALT}](${IMAGE_URL})`;
-    const editor = ownCommentEditor(postPage, OWN_COMMENT_TOP_LEVEL_PERMLINK);
     await typeIntoReplyEditor(page, newBody, { clearFirst: true, editor });
 
     // Sanity: the editor surface holds the markdown we just typed.
