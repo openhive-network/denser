@@ -194,19 +194,29 @@ export async function typeIntoReplyEditor(
   }: { clearFirst?: boolean; editor?: Locator } = {}
 ): Promise<void> {
   const editorScope = editor ?? page.getByTestId('reply-editor');
-  const cm = editorScope.locator('.cm-content').first();
-  // CodeMirror is loaded via `next/dynamic({ssr: false})` — under CI
-  // load the chunk fetch + EditorView mount can take many seconds,
-  // sometimes more than the per-test timeout. An explicit waitFor
-  // gives a clean diagnostic ("cm-content not visible in 30s") rather
-  // than a generic "locator.click: test timeout exceeded" — see CI
-  // job 3136334 where two specs hit exactly that failure mode under
-  // a slow runner.
+  // Two distinct failure modes — wait for them separately so the
+  // diagnostic points at the right phase.
   //
-  // `force: true` then skips the post-mount actionability re-check;
-  // a hover-triggered toolbar Tooltip can briefly overlay
-  // `.cm-content` and cause an unforced click to stall.
+  // Phase 1: the `reply-editor` wrapper must appear. If the caller
+  // just clicked an edit/reply trigger and the React state flip from
+  // setEdit/setReply hasn't taken effect, the wrapper isn't in the
+  // DOM at all. Job 3144190 hit this — `cm-content not visible in 30s`
+  // looked like a CM-mount problem, but the actual issue was that the
+  // edit-mode toggle never opened the editor frame, so cm-content
+  // could never appear. A 10s wait on the wrapper turns "30s timeout
+  // deep in CM" into "10s timeout: editor never opened" — same total
+  // budget, much clearer triage signal.
+  await editorScope.first().waitFor({ state: 'visible', timeout: 10_000 });
+  // Phase 2: CodeMirror loads via `next/dynamic({ssr: false})` — under
+  // CI load the chunk fetch + EditorView mount can take many seconds,
+  // sometimes more than the per-test timeout. The 30s budget is from
+  // CI job 3136334 where two specs hit exactly that mount-latency
+  // failure mode under a slow runner.
+  const cm = editorScope.locator('.cm-content').first();
   await cm.waitFor({ state: 'visible', timeout: 30_000 });
+  // `force: true` skips the post-mount actionability re-check; a
+  // hover-triggered toolbar Tooltip can briefly overlay `.cm-content`
+  // and cause an unforced click to stall.
   await cm.click({ force: true });
   if (clearFirst) {
     await page.keyboard.press('ControlOrMeta+A');
