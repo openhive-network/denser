@@ -1,0 +1,6 @@
+{
+  "testName": "postCreateValidation",
+  "base": "postCreate",
+  "generatedAt": "2026-05-11T10:00:00.000Z",
+  "overlayFiles": []
+}
