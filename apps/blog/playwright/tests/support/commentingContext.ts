@@ -132,42 +132,30 @@ export function ownCommentDeleteButton(
 }
 
 /**
- * Click an edit/reply trigger and wait for the resulting `reply-editor`
- * to appear. Retries once if the first click is a no-op.
+ * Click an edit/reply trigger and confirm the resulting `reply-editor`
+ * opened. The visibility check uses an attribute-based signal —
+ * `[data-testid="reply-editor"]` is rendered only inside the
+ * `edit && parent_permlink && parent_author` branch of
+ * comment-list-item, so its appearance is the positive confirmation
+ * that the React state flip took effect.
  *
- * Why retry: traces from job 3144190 (and the local-saved repro) show
- * the click event lands on the right button but no React side effect
- * follows — no `setEdit(true)` re-render, no `md-editor` chunk fetch,
- * no further DOM mutations for the rest of the 30 s timeout. The
- * leading hypothesis is a hydration race: the button's HTML is in the
- * DOM (server-rendered SSR + visibility-aware re-render), but its
- * `onClick` handler hasn't been re-attached after a Suspense/data
- * boundary settles. `force: true` bypasses Playwright's actionability
- * wait (hit-test, stable layout), so the click is dispatched directly
- * into that window. A non-force click + re-click-on-no-editor recovers.
- *
- * Visible-state check uses the `reply-editor` testid (the wrapper div
- * inside `ReplyTextbox`) — it only renders when the React state flip
- * actually took effect, so its visibility is a positive signal that
- * the click reached the handler.
+ * No `force: true`, no explicit timeouts: traces from job 3144190
+ * show the previous `force: true` clicks were dispatched into a
+ * hydration window where the button's DOM existed but its onClick
+ * hadn't been (re)attached, so the click was lost. A plain `click()`
+ * uses Playwright's auto-actionability (visible + stable layout +
+ * hit-test) which polls until those preconditions hold — by the time
+ * Playwright dispatches the click, React has settled, the handler is
+ * wired, and `setEdit(true)` actually runs. `expect.toBeVisible()`
+ * then auto-retries on the config-level `expect.timeout`, no per-call
+ * override needed.
  */
 export async function openReplyEditor(
   trigger: Locator,
   editorScope: Locator
 ): Promise<void> {
-  await trigger.scrollIntoViewIfNeeded();
   await trigger.click();
-  try {
-    await editorScope.first().waitFor({ state: 'visible', timeout: 5_000 });
-    return;
-  } catch {
-    // First click didn't open the editor — re-click and wait again.
-    // Give React a beat to finish any pending hydration/re-render
-    // before the retry, otherwise we'd just hit the same window.
-    await trigger.page().waitForTimeout(500);
-    await trigger.click();
-    await editorScope.first().waitFor({ state: 'visible', timeout: 10_000 });
-  }
+  await expect(editorScope.first()).toBeVisible();
 }
 
 /**
@@ -233,26 +221,12 @@ export async function typeIntoReplyEditor(
   }: { clearFirst?: boolean; editor?: Locator } = {}
 ): Promise<void> {
   const editorScope = editor ?? page.getByTestId('reply-editor');
-  // Two distinct failure modes — wait for them separately so the
-  // diagnostic points at the right phase.
-  //
-  // Phase 1: the `reply-editor` wrapper must appear. If the caller
-  // just clicked an edit/reply trigger and the React state flip from
-  // setEdit/setReply hasn't taken effect, the wrapper isn't in the
-  // DOM at all. Job 3144190 hit this — `cm-content not visible in 30s`
-  // looked like a CM-mount problem, but the actual issue was that the
-  // edit-mode toggle never opened the editor frame, so cm-content
-  // could never appear. A 10s wait on the wrapper turns "30s timeout
-  // deep in CM" into "10s timeout: editor never opened" — same total
-  // budget, much clearer triage signal.
-  await editorScope.first().waitFor({ state: 'visible', timeout: 10_000 });
-  // Phase 2: CodeMirror loads via `next/dynamic({ssr: false})` — under
-  // CI load the chunk fetch + EditorView mount can take many seconds,
-  // sometimes more than the per-test timeout. The 30s budget is from
-  // CI job 3136334 where two specs hit exactly that mount-latency
-  // failure mode under a slow runner.
+  // The CM6 surface is the positive signal that MdEditor (loaded via
+  // `next/dynamic({ssr: false})`) has finished its chunk fetch and
+  // EditorView mount. `expect.toBeVisible` auto-retries on the
+  // project-level `expect.timeout`, so no per-call override.
   const cm = editorScope.locator('.cm-content').first();
-  await cm.waitFor({ state: 'visible', timeout: 30_000 });
+  await expect(cm).toBeVisible();
   // `force: true` skips the post-mount actionability re-check; a
   // hover-triggered toolbar Tooltip can briefly overlay `.cm-content`
   // and cause an unforced click to stall.
