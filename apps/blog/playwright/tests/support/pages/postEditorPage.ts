@@ -41,6 +41,18 @@ export class PostEditorPage {
     readonly getPostSubmittedToast: Locator;
     readonly getImageFileInput: Locator;
     readonly getTitleErrorMessage: Locator;
+    // Inline validator outputs rendered by post-form / PostMetadataSection.
+    // Each one is a non-FormMessage <div> wired straight to the validator's
+    // return value — visible whenever the corresponding validateXxx() emits
+    // a non-null string (button-disable side-effect lives in post-form.tsx).
+    readonly getSummaryErrorMessage: Locator;
+    readonly getTagsErrorMessage: Locator;
+    readonly getAuthorErrorMessage: Locator;
+    // "Enter a title to submit" / "Enter content..." / "Enter at least one
+    // tag..." hint that replaces inline errors when the field is still empty
+    // (i.e. before the validator/Zod schema has anything to flag).
+    readonly getSubmitRequirementsHint: Locator;
+    readonly getSummaryCharCounter: Locator;
     readonly getBeneficiariesOptionsInfo: Locator;
     readonly getSyncScrollToggle: Locator;
     readonly getSyncScrollContainer: Locator;
@@ -101,6 +113,40 @@ export class PostEditorPage {
         // populate.
         this.getImageFileInput = page.locator('input[type="file"][name="images"]');
         this.getTitleErrorMessage = page.locator('[data-testid="form-container"] p').filter( {hasText: 'String must contain at least'});
+        // Inline validator messages live in <div class="text-xs text-destructive">
+        // (summary, tags) and <div class="text-xs text-red-500"> (author) inside
+        // PostMetadataSection. We anchor to the field's input, climb to its
+        // FormItem (`<div class="space-y-2">`), then pick the direct-child div
+        // carrying the validator string. The `[class~="…"]` token matcher is
+        // load-bearing: tag-chip Badges sit in the same subtree and carry
+        // `hover:text-destructive`, which a `contains()` substring match would
+        // collide with — `~=` only matches whitespace-separated tokens.
+        this.getSummaryErrorMessage = page
+            .locator('input[name="postSummary"]')
+            .locator('xpath=ancestor::*[contains(@class,"space-y-2")][1]')
+            .locator(
+                ':scope > div[class~="text-destructive"], :scope > div[class~="text-red-500"]'
+            )
+            .first();
+        this.getTagsErrorMessage = page
+            .locator('input[name="tags"]')
+            .locator('xpath=ancestor::*[contains(@class,"space-y-2")][1]')
+            .locator(
+                ':scope > div[class~="text-destructive"], :scope > div[class~="text-red-500"]'
+            )
+            .first();
+        this.getAuthorErrorMessage = page
+            .locator('input[name="author"]')
+            .locator('xpath=ancestor::*[contains(@class,"space-y-2")][1]')
+            .locator(
+                ':scope > div[class~="text-destructive"], :scope > div[class~="text-red-500"]'
+            )
+            .first();
+        this.getSubmitRequirementsHint = page.getByTestId('submit-requirements-hint');
+        // Sibling span of the summary input: shows "<len>/140", turns red >140.
+        this.getSummaryCharCounter = page
+            .locator('input[name="postSummary"]')
+            .locator('xpath=following-sibling::span[1]');
         this.getBeneficiariesOptionsInfo = page.locator('span:text("Beneficiaries:")');
         this.getSyncScrollToggle = page.getByTestId('sync-scroll-toggle');
         this.getSyncScrollContainer = page.getByTestId('sync-scroll-container');
