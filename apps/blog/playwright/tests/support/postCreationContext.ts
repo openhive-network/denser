@@ -1,5 +1,6 @@
 import { expect, type Page } from '@playwright/test';
 import { TIMEOUTS } from './constants';
+import { AdvancedSettingsModal } from './pages/advancedSettingsModal';
 
 /**
  * Shared context for §2.1 Basic Post Creation fixture specs. Mirrors the
@@ -129,7 +130,242 @@ export async function fillPostBody(page: Page, body: string): Promise<void> {
   await page.keyboard.type(body);
 }
 
-/** Click the editor's submit button. */
+/**
+ * Click the editor's submit button. Waits for the button to be enabled
+ * first — the submit gate in post-form.tsx keys off `storedPost` (the
+ * localStorage-persisted draft, debounced 500 ms behind form state), so
+ * a click immediately after a modal save can race the autosave effect
+ * that ferries form changes into storedPost. Polling for `:enabled` is
+ * event-driven (Playwright auto-retries on the project expect timeout)
+ * and beats a fixed waitForTimeout.
+ */
 export async function submitPost(page: Page): Promise<void> {
-  await page.locator('[data-testid="submit-post-button"]').click();
+  const submitButton = page.locator('[data-testid="submit-post-button"]');
+  await expect(submitButton).toBeEnabled();
+  await submitButton.click();
+}
+
+/**
+ * Advanced-settings dialog configuration used by §2.3 PAY-xx specs.
+ *
+ * - `maxPayout: 'no_max'` → `data.maxAcceptedPayout = 1000000`
+ *   (NaiAsset amount `"1000000000"` after the editor's `* 1000` step)
+ * - `maxPayout: '0'` → `data.maxAcceptedPayout = 0` (NaiAsset `"0"`).
+ *   Also auto-forces rewards to `50%` and disables the `100%` Checkbox
+ *   (advanced-settings-post-form.tsx:137-141, :349).
+ * - `maxPayout: 'custom'` → requires `customValue` (HBD whole units);
+ *   the editor multiplies it by 1000 for the broadcast NaiAsset.
+ *
+ * `payoutType` maps to broadcast `percent_hbd`:
+ *   `'50%'` → 10000 ; `'100%'` → 0.
+ *
+ * `beneficiaries[]` carry UI-percent weights (1..100). The editor
+ * multiplies each by 100 (basis points), drops zero-weights, and sorts
+ * by account before broadcast — assertions in
+ * `expectCommentOptionsOperation` expect that final, sorted shape.
+ */
+export interface AdvancedSettingsConfig {
+  maxPayout: 'no_max' | '0' | 'custom';
+  customValue?: number;
+  payoutType: '50%' | '100%';
+  beneficiaries?: { account: string; weight: number }[];
+}
+
+/**
+ * Open the Advanced settings dialog, apply the requested combination,
+ * and save. The dialog's `onSave()` calls `updateForm(...)` on the
+ * parent post form, after which the submit button broadcasts with the
+ * new payout/rewards baked in. We rely on the existing POM
+ * (`AdvancedSettingsModal`) for locators — only the orchestration is
+ * §2.3-specific.
+ *
+ * Notes on quirks the dialog adds:
+ *   - The Checkbox primitives are visually hidden (`className="hidden"`)
+ *     but their `<Label>` siblings carry `cursor-pointer` and are the
+ *     interactive surface; we click the Label-wrapping testid container
+ *     via the existing POM locators which target the (hidden) Checkbox.
+ *     Playwright dispatches a click event that bubbles through the Label
+ *     wrap, so `onCheckedChange` fires.
+ *   - When `maxPayout === '0'`, the 100% PU Checkbox is `disabled` and
+ *     rewards are forced to 50% on a `useEffect`. Callers that want
+ *     `payoutType: '100%'` together with Decline should expect that
+ *     forcing — PAY-04 asserts the disabled state instead of trying to
+ *     beat the gate.
+ */
+export async function configureAdvancedSettings(
+  page: Page,
+  config: AdvancedSettingsConfig
+): Promise<void> {
+  const modal = new AdvancedSettingsModal(page);
+
+  // Flush the 300 ms `postArea` debounce in use-post-form-actions.ts:75
+  // BEFORE opening the modal. The modal's save handler runs
+  // `handleLoadTemplate(data)` which clobbers `latestPostAreaRef.current`
+  // and `form.postArea` with the modal's `data.postArea` prop — and that
+  // prop reflects the debounced form state, not the editor's live ref.
+  // If the debounce hasn't fired yet, `data.postArea` is empty and the
+  // body gets wiped on save, leaving the submit button disabled. Sleeping
+  // 350 ms here guarantees the debounce has settled. This is the only
+  // spot in the helper where we tolerate an arbitrary wait — the rest
+  // is event-based.
+  await page.waitForTimeout(350);
+
+  await page.locator('[data-testid="advanced-settings-button"]').click();
+  // Wait on the DialogTitle (visible). We deliberately do NOT call the
+  // POM's `validateAdvancedSettingsModalIsLoaded` here because it asserts
+  // visibility on the max-payout / rewards Checkboxes — those carry
+  // `className="hidden"` (display:none), so they're never visible. The
+  // POM check would always time out on a healthy dialog.
+  await expect(modal.advancedSettingsTitleElement).toBeVisible({
+    timeout: TIMEOUTS.HYDRATION
+  });
+
+  // The Checkbox primitives carry `className="hidden"` (display:none) —
+  // they're not directly clickable in any Playwright mode. The visible
+  // interactive surface is the `<Label htmlFor>` sibling. In production
+  // the browser's native `<label for>` handler synthesizes a click on
+  // the labeled control even when it's a `<button>` (HTML5 behavior),
+  // which fires Radix's `onCheckedChange`. We replicate that by clicking
+  // the Label directly via its `for` attribute — visible, no
+  // dispatchEvent gymnastics, and exercises the same code path a real
+  // user would hit.
+  const labelFor = (id: string) => page.locator(`label[for="${id}"]`);
+
+  // Max payout: order matters — switching to '0' triggers the useEffect
+  // that resets rewards to '50%', so apply max payout before payout type
+  // and let PAY-04 assert the side effect explicitly.
+  if (config.maxPayout === 'no_max') {
+    await labelFor('no_max').click();
+  } else if (config.maxPayout === '0') {
+    await labelFor('0').click();
+  } else {
+    await labelFor('custom').click();
+    if (config.customValue === undefined) {
+      throw new Error('customValue is required when maxPayout is "custom"');
+    }
+    await modal.customValueMaximumAcceptedPayoutInput.fill(String(config.customValue));
+  }
+
+  // Rewards: when maxPayout is Decline ('0'), BOTH rewards Checkboxes
+  // carry `disabled={maxPayout === '0'}` (advanced-settings-post-form.tsx:349)
+  // and rewards is auto-forced to '50%' via a useEffect. Playwright treats
+  // a `<label for>` as disabled when its target is disabled, so any click
+  // attempt on the rewards Labels times out. Skip the click entirely —
+  // the resulting form state is correct (50% forced) for both 'payoutType'
+  // values the caller might pass, and PAY-04 asserts the disabled gate
+  // separately.
+  if (config.maxPayout !== '0') {
+    if (config.payoutType === '50%') {
+      await labelFor('50%').click();
+    } else if (config.payoutType === '100%') {
+      await labelFor('100%').click();
+    }
+  }
+
+  // Beneficiaries: each "Add account" click appends a fresh
+  // `{weight: '0', account: ''}` row rendered by the Beneficiary
+  // component. All added rows share the same testids
+  // (`beneficiary-value` / `beneficiary-name`) and are disambiguated by
+  // `.nth(i)`. The "self" row above (showing splitRewards + the logged-in
+  // user) carries no testids — it's a display-only summary, not editable.
+  const beneficiaries = config.beneficiaries ?? [];
+  for (let i = 0; i < beneficiaries.length; i++) {
+    await modal.addBeneficiarAccount.click();
+    await modal.addBeneficiarAccountNameInput.nth(i).fill(beneficiaries[i].account);
+    await modal.addBeneficiarAccountValueInput
+      .nth(i)
+      .fill(String(beneficiaries[i].weight));
+  }
+
+  await modal.saveButton.click();
+  // Dialog closes on save; wait for the title to disappear so subsequent
+  // form interactions don't race the still-open modal.
+  await expect(modal.advancedSettingsTitleElement).toBeHidden({
+    timeout: TIMEOUTS.HYDRATION
+  });
+}
+
+/**
+ * Assert the PUBLISHING > Post options panel renders the three lines
+ * consistent with the supplied advanced-settings config:
+ *
+ *   1. "Maximum Accepted Payout: <N> HBD" — only when
+ *      `0 < maxAcceptedPayout < 1000000` (i.e. custom value).
+ *      `no_max` (1_000_000) and Decline (0) both omit the line.
+ *      Source: PostPublishingSection.tsx:82-87.
+ *
+ *   2. "Beneficiaries: <N> set" — only when beneficiaries[].length > 0.
+ *      Source: PostPublishingSection.tsx:89-95.
+ *
+ *   3. "Author rewards:<X>" — always rendered, with X resolved as:
+ *        - " Decline Payout" if maxAcceptedPayout === 0
+ *        - " Power up 100%"  if payoutType === '100%'
+ *        - " 50% HBD / 50% HP" otherwise
+ *      Note the Decline branch SHORT-CIRCUITS the payoutType check, which
+ *      matches the modal's useEffect that auto-forces rewards to '50%'
+ *      when Decline is selected — the UI shows "Decline Payout" instead
+ *      of the underlying-but-irrelevant '50% HBD / 50% HP'.
+ *      Source: PostPublishingSection.tsx:97-104, with testid
+ *      `author-rewards-description`.
+ *
+ * Call this BEFORE submit — it exercises the live form/UI rendering
+ * loop independent of the broadcast assertion, so a regression that
+ * mis-renders the panel (without breaking the broadcast) still surfaces.
+ */
+export async function expectPublishingPanelOptions(
+  page: Page,
+  config: AdvancedSettingsConfig
+): Promise<void> {
+  // Author rewards: Decline trumps payoutType in the rendered line.
+  let rewardsText: string;
+  if (config.maxPayout === '0') {
+    rewardsText = 'Author rewards: Decline Payout';
+  } else if (config.payoutType === '100%') {
+    rewardsText = 'Author rewards: Power up 100%';
+  } else {
+    rewardsText = 'Author rewards: 50% HBD / 50% HP';
+  }
+  await expect(page.getByTestId('author-rewards-description')).toHaveText(rewardsText);
+
+  // Max Accepted Payout line — only when the resolved form value sits
+  // strictly between 0 and 1_000_000. The editor's `maxAcceptedPayout()`
+  // helper (`features/post-editor/lib/utils.ts:109`) maps:
+  //   - 'no_max' → 1_000_000 (line hidden, equality breaks `< 1000000`)
+  //   - '0'      → 0          (line hidden, equality breaks `> 0`)
+  //   - 'custom', customValue === '0' → 1_000_000 (defensive coercion;
+  //                                                hidden, same as no_max)
+  //   - 'custom', customValue ∈ (0, 1_000_000) → customValue (LINE SHOWN)
+  // So `custom + 0` is semantically "no limit" downstream, NOT Decline —
+  // see PAY-05b which pins that quirk. The Decline path lives behind the
+  // distinct '0' (zero) maxPayout option.
+  const isCustomLineShown =
+    config.maxPayout === 'custom' &&
+    config.customValue !== undefined &&
+    config.customValue > 0 &&
+    config.customValue < 1000000;
+
+  if (isCustomLineShown) {
+    await expect(
+      page.getByText(`Maximum Accepted Payout: ${config.customValue} HBD`, {
+        exact: true
+      })
+    ).toBeVisible();
+  } else {
+    // Assert the line is absent for no_max / Decline / custom-zero cases.
+    // The text pattern is scoped enough that we expect zero matches anywhere
+    // on the page.
+    await expect(
+      page.getByText(/^Maximum Accepted Payout:/)
+    ).toHaveCount(0);
+  }
+
+  // Beneficiaries line — only when at least one was added.
+  const beneficiariesCount = config.beneficiaries?.length ?? 0;
+  if (beneficiariesCount > 0) {
+    await expect(
+      page.getByText(`Beneficiaries: ${beneficiariesCount} set`, { exact: true })
+    ).toBeVisible();
+  } else {
+    await expect(page.getByText(/^Beneficiaries:/)).toHaveCount(0);
+  }
 }

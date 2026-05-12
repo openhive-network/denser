@@ -449,7 +449,14 @@ function loadFixtures(fixtureDir: string): Map<string, IFixtureEntry[]> {
   }
 
   if (baseDir) {
-    loadFixtureDir(baseDir, fixtures);
+    // Recursive base resolution: the base itself may declare a base
+    // (e.g. postPayoutCommunity → postCreateCommunity → postCreate).
+    // Walking back via `loadFixtures` instead of `loadFixtureDir` lets
+    // a chain of overlays compose correctly — without this, a 2-level
+    // overlay loses every fixture from the root.
+    for (const [k, v] of loadFixtures(baseDir)) {
+      fixtures.set(k, v);
+    }
     const baseKeys = new Set(fixtures.keys());
     const replacedKeys = new Set<string>();
     loadFixtureDir(fixtureDir, fixtures, (key, file) => {
