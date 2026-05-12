@@ -304,6 +304,219 @@ export function expectCommentOperation(
 }
 
 /**
+ * Shape of a Hive `comment_options_operation` payload — the second op
+ * that `BlogPostOperation` always emits alongside `comment_operation`.
+ * Covers the §2.3 Payout & Rewards combinations: max_accepted_payout
+ * (encoded as NaiAsset HBD, amount = `data.maxAcceptedPayout * 1000`),
+ * percent_hbd (0 for 100% PU, 10000 for 50/50), allow_votes /
+ * allow_curation_rewards (always true from this client), and
+ * beneficiaries (basis-point weights, sorted alphabetically by account).
+ *
+ * The `permlink` field is matched the same way as comment_operation —
+ * either pass `permlink` for edits or `permlinkPattern` for the
+ * `re-<parent>-<timestamp>` / slugified-title shapes produced on
+ * create.
+ *
+ * `beneficiaries: []` asserts the extensions array is empty. A non-empty
+ * array asserts an exact, ordered match (post-sort, so callers should
+ * supply already-sorted-by-account expectations).
+ */
+export interface CommentOptionsOperationExpectations {
+  author: string;
+  permlink?: string;
+  permlinkPattern?: RegExp;
+  max_accepted_payout: { amount: string; precision: number; nai: string };
+  percent_hbd: number;
+  allow_votes?: boolean;
+  allow_curation_rewards?: boolean;
+  beneficiaries: { account: string; weight: number }[];
+}
+
+/**
+ * Walk `extensions[0]` and extract its beneficiary list regardless of the
+ * wire form wax serializes it as. We've seen three shapes in the wild:
+ *
+ *   1. Modern wax tagged-union:
+ *        { type: 'comment_payout_beneficiaries',
+ *          value: { beneficiaries: [...] } }
+ *   2. Bare protobuf:
+ *        { comment_payout_beneficiaries: { beneficiaries: [...] } }
+ *   3. Legacy tuple:
+ *        [0, { beneficiaries: [...] }]
+ *
+ * Tests don't care which form wax happens to use — they care that the
+ * beneficiary list matches. Centralising the extraction here keeps the
+ * 15 PAY-xx specs focused on the values, not the encoding.
+ */
+function extractBeneficiariesFromExtensions(
+  extensions: unknown
+): { account: string; weight: number }[] {
+  if (!Array.isArray(extensions) || extensions.length === 0) return [];
+  const ext = extensions[0];
+
+  const fromBareOrTagged = (() => {
+    if (ext && typeof ext === 'object') {
+      const obj = ext as Record<string, unknown>;
+      // Form 1: { type, value: { beneficiaries } }
+      if (typeof obj.type === 'string' && obj.value && typeof obj.value === 'object') {
+        const v = obj.value as { beneficiaries?: unknown };
+        if (Array.isArray(v.beneficiaries)) return v.beneficiaries;
+      }
+      // Form 2: { comment_payout_beneficiaries: { beneficiaries } }
+      const wrapped = obj.comment_payout_beneficiaries as
+        | { beneficiaries?: unknown }
+        | undefined;
+      if (wrapped && Array.isArray(wrapped.beneficiaries)) {
+        return wrapped.beneficiaries;
+      }
+    }
+    return undefined;
+  })();
+  if (fromBareOrTagged) return fromBareOrTagged as { account: string; weight: number }[];
+
+  // Form 3: [0, { beneficiaries }]
+  if (Array.isArray(ext) && ext.length === 2) {
+    const payload = ext[1] as { beneficiaries?: unknown } | undefined;
+    if (payload && Array.isArray(payload.beneficiaries)) {
+      return payload.beneficiaries as { account: string; weight: number }[];
+    }
+  }
+  return [];
+}
+
+/**
+ * Default `comment_options` shape that wax's `BlogPostOperation`
+ * substitutes when the caller's settings match Hive's protocol
+ * defaults. When *every* commentOptions field equals these, wax skips
+ * emitting `comment_options_operation` entirely (see
+ * `@hiveio/wax/.../detailed/index.js` CommentOperation.finalize, which
+ * pushes `comment_options_operation` only if `!deepEqual(default, this.commentOptions)`).
+ * Note: HIVE protocol default for max_accepted_payout is `"1000000000"`
+ * (i.e. 1,000,000 HBD × 1000 milli-units), percent_hbd is 10000,
+ * both allow flags true, and no beneficiaries.
+ */
+const DEFAULT_COMMENT_OPTIONS = {
+  max_accepted_payout: { amount: '1000000000', precision: 3, nai: '@@000000013' },
+  percent_hbd: 10000,
+  allow_votes: true,
+  allow_curation_rewards: true,
+  beneficiaries: [] as { account: string; weight: number }[]
+} as const;
+
+/**
+ * TX-02 validator. `BlogPostOperation` emits two patterns:
+ *   - operations.length === 2: comment_operation + comment_options_operation
+ *     (any non-default payout/rewards/beneficiaries setting)
+ *   - operations.length === 1: comment_operation only (everything is at
+ *     Hive protocol defaults — wax optimizes out the redundant op)
+ *
+ * This validator handles both. If wax omitted op[1], the caller's
+ * `expected` must equal `DEFAULT_COMMENT_OPTIONS` — otherwise the test
+ * passes spuriously. If wax emitted op[1], we assert exactly on its
+ * fields.
+ *
+ * Use alongside `expectCommentOperation` on the same call: each §2.3
+ * spec checks TX-01 (comment_operation) for sanity (author, permlink,
+ * parent_*) and TX-02 (this) for the matrix dimension under test.
+ */
+export function expectCommentOptionsOperation(
+  call: InterceptedBroadcast,
+  expected: CommentOptionsOperationExpectations
+): void {
+  const trx = (call.params as { trx?: unknown } | undefined)?.trx as
+    | { operations?: unknown[] }
+    | undefined;
+  expect(trx, 'broadcast params should include trx').toBeDefined();
+
+  const operations = trx?.operations;
+  expect(operations, 'trx should include operations').toBeDefined();
+
+  const op = operations?.[1] as
+    | { type?: string; value?: Record<string, unknown> }
+    | undefined;
+
+  // Wax omitted comment_options_operation — only valid when the caller's
+  // expectations match the protocol defaults. If they don't, we'd be
+  // silently passing a spec that should have asserted a non-default
+  // op[1], so explicitly fail in that case.
+  if (!op || op.type !== 'comment_options_operation') {
+    expect(
+      expected.max_accepted_payout,
+      'wax omitted comment_options — expected max_accepted_payout must equal default'
+    ).toEqual(DEFAULT_COMMENT_OPTIONS.max_accepted_payout);
+    expect(
+      expected.percent_hbd,
+      'wax omitted comment_options — expected percent_hbd must equal default'
+    ).toBe(DEFAULT_COMMENT_OPTIONS.percent_hbd);
+    expect(
+      expected.allow_votes ?? true,
+      'wax omitted comment_options — allow_votes must be default true'
+    ).toBe(true);
+    expect(
+      expected.allow_curation_rewards ?? true,
+      'wax omitted comment_options — allow_curation_rewards must be default true'
+    ).toBe(true);
+    expect(
+      expected.beneficiaries,
+      'wax omitted comment_options — beneficiaries must be empty'
+    ).toEqual([]);
+    return;
+  }
+
+  const value = op?.value as
+    | {
+        author?: string;
+        permlink?: string;
+        max_accepted_payout?: { amount?: string; precision?: number; nai?: string };
+        percent_hbd?: number;
+        allow_votes?: boolean;
+        allow_curation_rewards?: boolean;
+        extensions?: unknown[];
+      }
+    | undefined;
+  expect(value?.author, 'comment_options.author').toBe(expected.author);
+  if (expected.permlink !== undefined) {
+    expect(value?.permlink, 'comment_options.permlink').toBe(expected.permlink);
+  }
+  if (expected.permlinkPattern !== undefined) {
+    expect(value?.permlink ?? '', 'comment_options.permlink (pattern)').toMatch(
+      expected.permlinkPattern
+    );
+  }
+
+  // NaiAsset shape — wax emits HBD as { amount: "<milli-HBD>", precision: 3,
+  // nai: "@@000000013" }. `data.maxAcceptedPayout * 1000` is the unit
+  // conversion the editor performs before handing the value to wax
+  // (see use-post-form-actions.ts:100).
+  expect(value?.max_accepted_payout, 'comment_options.max_accepted_payout').toEqual(
+    expected.max_accepted_payout
+  );
+  expect(value?.percent_hbd, 'comment_options.percent_hbd').toBe(expected.percent_hbd);
+  expect(value?.allow_votes, 'comment_options.allow_votes').toBe(
+    expected.allow_votes ?? true
+  );
+  expect(
+    value?.allow_curation_rewards,
+    'comment_options.allow_curation_rewards'
+  ).toBe(expected.allow_curation_rewards ?? true);
+
+  // Beneficiaries: the editor multiplies UI percent by 100 (basis points),
+  // filters out zero-weight entries, and sorts alphabetically by account
+  // (see use-post-form-actions.ts:141-149). Callers pass already-sorted
+  // expectations; we compare for exact equality.
+  const actualBeneficiaries = extractBeneficiariesFromExtensions(value?.extensions);
+  if (expected.beneficiaries.length === 0) {
+    // Empty: extensions array may be `[]` OR carry a wrapper with empty
+    // beneficiaries — both are functionally identical for §2.3 purposes.
+    expect(actualBeneficiaries, 'comment_options.beneficiaries (empty)').toEqual([]);
+  } else {
+    expect(actualBeneficiaries, 'comment_options.beneficiaries').toEqual(
+      expected.beneficiaries
+    );
+  }
+}
+
+/**
  * TX-05: reblog payload — a `custom_json_operation` whose `id` is `"follow"`
  * and whose `json` parses to `["reblog", {account, author, permlink}]`.
  *

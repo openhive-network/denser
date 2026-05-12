@@ -288,7 +288,7 @@ export function AdvancedSettingsPostForm({
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle className="text-2xl">
+          <DialogTitle className="text-2xl" data-testid="advanced-settings-title">
             {t('submit_page.advanced_settings_dialog.advanced_settings')}
           </DialogTitle>
           <Separator />
@@ -307,6 +307,7 @@ export function AdvancedSettingsPostForm({
                       id={e.value}
                       className="hidden"
                       onCheckedChange={() => setMaxPayout(e.value as 'no_max' | '0' | 'custom')}
+                      data-testid={`maximum-accepted-payout-${e.value}`}
                     />
                     <Label
                       htmlFor={e.value}
@@ -322,7 +323,12 @@ export function AdvancedSettingsPostForm({
               </div>
               {maxPayout === 'custom' ? (
                 <>
-                  <Input type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} />
+                  <Input
+                    type="number"
+                    value={customValue}
+                    onChange={(e) => setCustomValue(e.target.value)}
+                    data-testid="maximum-accepted-payout-custom-value-input"
+                  />
                   <div className="p-2 text-red-600">
                     {Number(customValue) < 0
                       ? t('submit_page.advanced_settings_dialog.cannot_be_less_than')
@@ -347,6 +353,7 @@ export function AdvancedSettingsPostForm({
                     className="hidden"
                     onCheckedChange={() => setRewards(e.value)}
                     disabled={maxPayout === '0'}
+                    data-testid={`autor-rewards-${e.value}`}
                   />
                   <Label
                     htmlFor={e.value}
@@ -402,6 +409,7 @@ export function AdvancedSettingsPostForm({
                 variant="link"
                 className="h-fit w-fit px-0 py-1 text-xs text-destructive"
                 onClick={handleAddAccount}
+                data-testid="add-beneficiar-account"
               >
                 {t('submit_page.advanced_settings_dialog.add_account')}
               </Button>
@@ -460,6 +468,7 @@ export function AdvancedSettingsPostForm({
               Boolean(smallWeight) ||
               badActor
             }
+            data-testid="advanced-settings-save-button"
           >
             {t('submit_page.advanced_settings_dialog.save')}
           </Button>
