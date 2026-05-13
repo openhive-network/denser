@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page, expect } from '@playwright/test';
 
 export class SearchPage {
   readonly page: Page;
@@ -30,6 +30,7 @@ export class SearchPage {
   // Loading and empty states
   readonly loadingSpinner: Locator;
   readonly noResultsMessage: Locator;
+  readonly searchPageNoResultsText: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -51,8 +52,8 @@ export class SearchPage {
     this.modeUserTopic = page.getByTestId('search-mode-user-topic');
     this.modeTag = page.getByTestId('search-mode-tag');
 
-    // Sort select - second combobox (visible only for classic/userTopic)
-    this.sortSelectTrigger = page.locator('button[role="combobox"]').nth(1);
+    // Sort select - stable data-testid set on the SearchSortSelect trigger
+    this.sortSelectTrigger = page.locator('[data-testid="search-sort-by-dropdown-list"]');
     this.sortRelevance = page.locator('[role="option"]').filter({ hasText: 'Relevance' });
     this.sortCreated = page.locator('[role="option"]').filter({ hasText: /Newest|Created/i });
 
@@ -62,9 +63,17 @@ export class SearchPage {
     this.firstPostTitle = page.locator('[data-testid="post-list-item"]').first().locator('h3 a');
     this.firstPostAuthor = page.locator('[data-testid="post-author"]').first();
 
-    // States
+    // States — covers all known settled-empty signals across result branches:
+    //   • "Nothing was found."     — AIResult (search_page.no_results)
+    //   • "Nothing more to load"   — AccountTopicResult bottom button after settle
+    //   • "No Data Available"      — AccountTopicResult fallback when data is undefined
+    //   • generic /no results/i    — kept for legacy compatibility
     this.loadingSpinner = page.locator('[data-testid="loading-spinner"]');
-    this.noResultsMessage = page.getByText(/no results|nothing found|no data/i);
+    this.noResultsMessage = page.getByText(
+      /no results|nothing was found|nothing more to load|no data available/i
+    );
+    // "Nothing was found." — matches the search_page.no_results i18n string used by AIResult
+    this.searchPageNoResultsText = page.getByText('Nothing was found.', { exact: true });
   }
 
   async goto() {
@@ -80,6 +89,33 @@ export class SearchPage {
   async gotoWithAiQuery(query: string) {
     await this.page.goto(`/search?ai=${encodeURIComponent(query)}`);
     await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  async gotoWithUserTopicQuery(
+    author: string,
+    topic: string,
+    sort: 'relevance' | 'created' = 'relevance'
+  ) {
+    await this.page.goto(
+      `/search?a=${encodeURIComponent(author)}&p=${encodeURIComponent(topic)}&s=${sort}`
+    );
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  /**
+   * View-level check used by Test Plan §1.7 (ANON-SEARCH-01..05):
+   * the search form (mode select, query input, search button) must be
+   * visible on every variant of /search.
+   */
+  async expectFormVisible() {
+    await expect(this.modeSelectTrigger).toBeVisible();
+    await expect(this.searchInput).toBeVisible();
+    await expect(this.searchButton).toBeVisible();
+  }
+
+  /** Mode/sort affordances available for keyword (classic) and userTopic searches. */
+  async expectSortControlVisible() {
+    await expect(this.sortSelectTrigger).toBeVisible();
   }
 
   async switchToMode(mode: 'classic' | 'ai' | 'account' | 'userTopic' | 'tag') {

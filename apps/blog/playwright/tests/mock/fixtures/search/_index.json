@@ -1,0 +1,13 @@
+{
+  "testName": "search",
+  "recordedAt": "2026-05-13T09:49:32.544Z",
+  "totalRequests": 48,
+  "savedFixtures": 33,
+  "duplicatesSkipped": 15,
+  "methods": {
+    "GET /hivesense-api": 13,
+    "search-api.find_text": 11,
+    "GET /hivesense-api/posts/search": 1,
+    "POST /hivesense-api/posts/by-ids": 23
+  }
+}

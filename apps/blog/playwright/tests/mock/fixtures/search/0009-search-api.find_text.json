@@ -1,0 +1,36 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "search-api.find_text",
+    "params": {
+      "pattern": "photography",
+      "sort": "relevance",
+      "author": "",
+      "limit": 20,
+      "observer": "hive.blog",
+      "start_author": "magazine1",
+      "start_permlink": "photography"
+    },
+    "id": 1
+  },
+  "requestHash": "a3939cb9095c1a0a",
+  "method": "search-api.find_text",
+  "params": {
+    "pattern": "photography",
+    "sort": "relevance",
+    "author": "",
+    "limit": 20,
+    "observer": "hive.blog",
+    "start_author": "magazine1",
+    "start_permlink": "photography"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
