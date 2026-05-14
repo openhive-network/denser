@@ -5,7 +5,8 @@ import { AdvancedSettingsModal } from '../support/pages/advancedSettingsModal';
 import {
   DEFAULT_TAG,
   gotoSubmitLoggedIn,
-  fillPostBody
+  fillPostBody,
+  expectNoBroadcast
 } from '../support/postCreationContext';
 
 /**
@@ -45,21 +46,6 @@ const VALID_TITLE = 'PAY-V validation fixture post';
 const VALID_BODY = 'PAY-V validation fixture body';
 
 /**
- * Settle helper mirroring §2.2 `postCreateValidation.spec.ts:58`:
- * `installBroadcastInterceptor` exposes a `calls[]` array — let the
- * page idle briefly so any late broadcast would land, then assert the
- * array is still empty. `waitForCount(0)` resolves immediately on its
- * first read, so it can't detect a late fire.
- */
-async function expectNoBroadcast(
-  page: import('@playwright/test').Page,
-  broadcast: { calls: unknown[] }
-): Promise<void> {
-  await page.waitForTimeout(300);
-  expect(broadcast.calls, 'no broadcast should have fired').toHaveLength(0);
-}
-
-/**
  * Open the Advanced settings dialog and set custom max payout (100 HBD)
  * + Power up 100% — the shared baseline both PAY-V01 and PAY-V02 build
  * on (matches the documenting screenshots). Returns the modal POM so
@@ -77,10 +63,9 @@ async function openModalWithCustomAndPowerUp(
   await page.waitForTimeout(350);
   await editor.getAdvancedSettingsButton.click();
   await expect(modal.advancedSettingsTitleElement).toBeVisible();
-  // Click visible Labels — the Checkbox primitives are `display:none`.
-  await page.locator('label[for="custom"]').click();
+  await modal.maxPayoutOptionLabel('custom').click();
   await modal.customValueMaximumAcceptedPayoutInput.fill('100');
-  await page.locator('label[for="100%"]').click();
+  await modal.payoutTypeOptionLabel('100%').click();
   return modal;
 }
 

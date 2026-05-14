@@ -14,6 +14,7 @@ import {
   submitPost,
   configureAdvancedSettings,
   expectPublishingPanelOptions,
+  hbdAsset,
   type AdvancedSettingsConfig
 } from '../support/postCreationContext';
 
@@ -46,23 +47,9 @@ import {
 
 test.use({ fixtureTestName: 'postPayout', authenticatedUser: {} });
 
-const HBD_NAI = '@@000000013';
 const DEFAULT_CUSTOM_HBD = 100;
 const BENEFICIARY_A = 'guest4test2';
 const BENEFICIARY_B = 'guest4test3';
-
-/**
- * Helper: builds a NaiAsset for `max_accepted_payout` given the UI's
- * "HBD whole units" value. Editor multiplies by 1000 before broadcast
- * (use-post-form-actions.ts:100).
- */
-function hbdAsset(hbdWholeUnits: number) {
-  return {
-    amount: String(hbdWholeUnits * 1000),
-    precision: 3,
-    nai: HBD_NAI
-  };
-}
 
 test.describe('Post creation — payout & rewards combinations (§2.3, top-level)', () => {
   test('PAY-01: no limit + 50/50 + no beneficiaries', async ({ page }) => {
@@ -211,7 +198,7 @@ test.describe('Post creation — payout & rewards combinations (§2.3, top-level
     // is the visible surface and HTML5 synthesizes a click on the
     // labeled control on Label clicks.
     await expect(modal.advancedSettingsTitleElement).toBeVisible();
-    await page.locator('label[for="0"]').click();
+    await modal.maxPayoutOptionLabel('0').click();
     // PAY-04's invariant: the 100% PU Checkbox must be disabled once
     // Decline is selected. Asserted on the testid the Checkbox carries
     // (the Label itself doesn't reflect the disabled state).

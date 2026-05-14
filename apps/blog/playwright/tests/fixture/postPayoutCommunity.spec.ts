@@ -13,6 +13,7 @@ import {
   submitPost,
   configureAdvancedSettings,
   expectPublishingPanelOptions,
+  hbdAsset,
   type AdvancedSettingsConfig
 } from '../support/postCreationContext';
 
@@ -34,17 +35,8 @@ import {
 
 test.use({ fixtureTestName: 'postPayoutCommunity', authenticatedUser: {} });
 
-const HBD_NAI = '@@000000013';
 const DEFAULT_CUSTOM_HBD = 100;
 const BENEFICIARY_A = 'guest4test2';
-
-function hbdAsset(hbdWholeUnits: number) {
-  return {
-    amount: String(hbdWholeUnits * 1000),
-    precision: 3,
-    nai: HBD_NAI
-  };
-}
 
 test.describe('Post creation — payout & rewards combinations (§2.3, community)', () => {
   test('PAY-13: no limit + 50/50 + no beneficiaries (in community)', async ({

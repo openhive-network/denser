@@ -5,7 +5,8 @@ import {
   DEFAULT_TAG,
   gotoSubmitLoggedIn,
   fillPostBody,
-  submitPost
+  submitPost,
+  expectNoBroadcast
 } from '../support/postCreationContext';
 
 /**
@@ -48,20 +49,6 @@ test.use({ fixtureTestName: 'postCreateValidation', authenticatedUser: {} });
 const VALID_TITLE = 'POST-V validation fixture title';
 const VALID_BODY = 'POST-V validation fixture body content';
 const VALID_TAG = DEFAULT_TAG;
-
-/**
- * Settle helper. `installBroadcastInterceptor` keeps a `calls[]` array
- * that this asserts stays at length 0 after a short wait. We can't use
- * `waitForCount(0)` (that would resolve immediately on its initial
- * read), so we explicitly let the page idle and then assert.
- */
-async function expectNoBroadcast(
-  page: import('@playwright/test').Page,
-  broadcast: { calls: unknown[] }
-): Promise<void> {
-  await page.waitForTimeout(300);
-  expect(broadcast.calls, 'no broadcast should have fired').toHaveLength(0);
-}
 
 test.describe('Post creation — validation (§2.2)', () => {
   test('POST-V01: empty title — submit disabled, hint visible', async ({ page }) => {
