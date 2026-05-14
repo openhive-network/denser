@@ -6,7 +6,8 @@ import {
   DEFAULT_TAG,
   gotoSubmitLoggedIn,
   fillPostBody,
-  expectNoBroadcast
+  expectNoBroadcast,
+  waitForAutosaveFlushed
 } from '../support/postCreationContext';
 
 /**
@@ -59,9 +60,9 @@ async function openModalWithCustomAndPowerUp(
   editor: PostEditorPage
 ): Promise<AdvancedSettingsModal> {
   const modal = new AdvancedSettingsModal(page);
-  // The postArea-debounce race that would clobber the body on modal-save
-  // is already flushed by `fillPostBody` above (see waitForBodyPersisted
-  // in postCreationContext.ts).
+  // Flush the postArea-debounce race before opening the modal — see
+  // waitForAutosaveFlushed in postCreationContext.ts.
+  await waitForAutosaveFlushed(page);
   await editor.getAdvancedSettingsButton.click();
   await expect(modal.advancedSettingsTitleElement).toBeVisible();
   await modal.maxPayoutOptionLabel('custom').click();

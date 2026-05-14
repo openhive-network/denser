@@ -15,6 +15,7 @@ import {
   configureAdvancedSettings,
   expectPublishingPanelOptions,
   hbdAsset,
+  waitForAutosaveFlushed,
   type AdvancedSettingsConfig
 } from '../support/postCreationContext';
 
@@ -184,11 +185,11 @@ test.describe('Post creation — payout & rewards combinations (§2.3, top-level
 
     // Drive the UI manually here (not through `configureAdvancedSettings`)
     // because we want to interpose a UI-state assertion between selecting
-    // Decline and saving. The postArea-debounce race that would clobber
-    // the body on modal-save is already handled by `fillPostBody` above
-    // (see waitForBodyPersisted in postCreationContext.ts), so no extra
-    // wait is needed here.
+    // Decline and saving. We still need the same autosave-flush guard the
+    // helper uses — open the modal too soon and `handleLoadTemplate(data)`
+    // on save will clobber the typed body (see waitForAutosaveFlushed).
     const modal = new AdvancedSettingsModal(page);
+    await waitForAutosaveFlushed(page);
     await editor.getAdvancedSettingsButton.click();
     // See `configureAdvancedSettings` for why we click the `<label for>`
     // instead of the Checkbox: the Checkbox is `display:none`. The Label
