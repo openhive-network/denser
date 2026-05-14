@@ -74,9 +74,15 @@ export default defineConfig({
     // steps but copy the freshly-written __ENV.js into the standalone
     // public/ right before starting node.
     command: [
-      'rm -rf .next/standalone/apps/blog/.next/static .next/standalone/apps/blog/public',
+      'rm -rf .next/standalone/apps/blog/.next/static .next/standalone/apps/blog/public .next/standalone/apps/blog/lib',
       'cp -r .next/static .next/standalone/apps/blog/.next/static',
       'cp -r public .next/standalone/apps/blog/public',
+      // Static pages (/welcome, /faq.html, /tos.html) read their markdown
+      // sources via `fs.readFileSync('lib/markdowns/<name>.md')` at request
+      // time. Next.js's standalone server `process.chdir`s into its own dir,
+      // so the relative path resolves under .next/standalone/apps/blog/ and
+      // misses the source `lib/` tree. Copy it next to the server.
+      'cp -r lib .next/standalone/apps/blog/lib',
       'react-env -- sh -c "cp -f public/__ENV.js .next/standalone/apps/blog/public/__ENV.js && node .next/standalone/apps/blog/server.js"'
     ].join(' && '),
     url: 'http://127.0.0.1:3000',

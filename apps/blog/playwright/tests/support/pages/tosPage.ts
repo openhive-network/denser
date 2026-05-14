@@ -23,6 +23,11 @@ export class TOSPage {
     this.navOurDappsLink = this.page.locator('[data-testid="nav-our-dapps-link"]');
   }
 
+  async goto() {
+    await this.page.goto('/tos.html', { waitUntil: 'domcontentloaded' });
+    await expect(this.mainElement).toBeVisible();
+  }
+
   async getElementCssPropertyValue(element: Locator, cssProperty: string) {
     const propertyValue = await element.evaluate((ele, css) => {
       return window.getComputedStyle(ele).getPropertyValue(css);

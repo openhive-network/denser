@@ -15,20 +15,28 @@ export class FaqPage {
   readonly canIEarnDigitalTokensOnHiveLink: Locator;
   readonly caretSignCanIEarnDigitalTokensOnHiveLink: Locator;
 
+  readonly articleBody: Locator;
+
   constructor(page: Page) {
     this.page = page;
-    this.subTopicsOfContent = this.page.locator('[id="articleBody"] h3 span');
+    this.articleBody = this.page.locator('[id="articleBody"]');
+    this.subTopicsOfContent = this.articleBody.locator('h3 span');
     this.firstSubTopicOfContent = this.subTopicsOfContent.first();
-    this.subTopicsOfContentDescription = this.page.locator('[id="articleBody"] ul + h1, [id="articleBody"] p + h1');
+    this.subTopicsOfContentDescription = this.articleBody.locator('ul + h1, p + h1');
     this.firstSubTopicsOfContentDescription = this.subTopicsOfContentDescription.first();
     this.whatIsHiveBlogLink = this.page.getByRole('link', {name: 'What is Hive.blog?'});
     this.whatIsHiveBlogContentHeader = this.page.getByRole('heading', {name: 'What is hive.blog?'});
-    this.whatIsHiveBlogContentDescription = this.page.locator('[id="articleBody"] h2 + p').first();
-    this.mainTitle = this.page.locator('[id="articleBody"] h1').first();
+    this.whatIsHiveBlogContentDescription = this.articleBody.locator('h2 + p').first();
+    this.mainTitle = this.articleBody.locator('h1').first();
     this.isThereGithubPageForHiveBlogLink = this.page.getByRole('link', {name: 'Is there a Github page for Hive.blog?'});
     this.firstCaretSign = this.page.locator('[href="#Table_of_Contents_General"]').first();
     this.canIEarnDigitalTokensOnHiveLink = this.page.getByRole('link', {name: 'Can I earn digital tokens on Hive? How?'});
     this.caretSignCanIEarnDigitalTokensOnHiveLink = this.page.locator('p:nth-child(63) > a');
+  }
+
+  async goto() {
+    await this.page.goto('/faq.html', { waitUntil: 'domcontentloaded' });
+    await expect(this.articleBody).toBeVisible();
   }
 
   async getElementCssPropertyValue(element: Locator, cssProperty: string) {

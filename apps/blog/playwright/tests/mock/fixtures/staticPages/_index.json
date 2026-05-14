@@ -1,0 +1,10 @@
+{
+  "testName": "staticPages",
+  "recordedAt": "2026-05-14T11:17:03.251Z",
+  "totalRequests": 3,
+  "savedFixtures": 1,
+  "duplicatesSkipped": 2,
+  "methods": {
+    "GET /hivesense-api": 3
+  }
+}

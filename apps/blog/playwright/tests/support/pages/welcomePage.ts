@@ -2,6 +2,8 @@ import { Locator, Page, expect } from '@playwright/test';
 
 export class WelcomePage {
   readonly page: Page;
+  readonly articleBody: Locator;
+  readonly mainHeading: Locator;
   readonly subtitles: Locator;
   readonly faqLink: Locator;
   readonly hiveWhitepaperLink: Locator;
@@ -16,7 +18,9 @@ export class WelcomePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.subtitles = this.page.locator('[id="articleBody"] h3');
+    this.articleBody = this.page.locator('[id="articleBody"]');
+    this.mainHeading = this.articleBody.getByRole('heading', { name: 'Welcome to Hive!' });
+    this.subtitles = this.articleBody.locator('h3');
     this.faqLink = this.page.getByRole('link', {name: 'FAQ'});
     this.hiveWhitepaperLink = this.page.getByRole('link', {name: 'Hive Whitepaper'});
     this.appsBuiltOnHiveLink = this.page.getByRole('link', {name: 'Apps Built on Hive'});
@@ -27,5 +31,10 @@ export class WelcomePage {
     this.hiveTelegramLink = this.page.getByRole('link', {name: 'Telegram'});
     this.hiveKeychainLink = this.page.getByRole('link', {name: 'Hive Keychain'});
     this.hiveSignerLink = this.page.getByRole('link', {name: 'Hivesigner'});
+  }
+
+  async goto() {
+    await this.page.goto('/welcome', { waitUntil: 'domcontentloaded' });
+    await expect(this.articleBody).toBeVisible();
   }
 }
