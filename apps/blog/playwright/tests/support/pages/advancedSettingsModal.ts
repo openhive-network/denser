@@ -69,4 +69,18 @@ export class AdvancedSettingsModal {
     const template = this.postTemplateItem.getByText(templateName);
     await template.click();
   }
+
+  // The Checkbox primitives carry className="hidden" (display:none), so
+  // they're not interactive. Their <Label htmlFor> siblings are the
+  // visible click surface — HTML5 synthesizes a click on the labeled
+  // control when the user clicks the label, which fires Radix's
+  // onCheckedChange. These helpers expose that surface so callers don't
+  // reach for raw page.locator('label[for="..."]').
+  maxPayoutOptionLabel(value: 'no_max' | '0' | 'custom'): Locator {
+    return this.page.locator(`label[for="${value}"]`);
+  }
+
+  payoutTypeOptionLabel(value: '50%' | '100%'): Locator {
+    return this.page.locator(`label[for="${value}"]`);
+  }
 }

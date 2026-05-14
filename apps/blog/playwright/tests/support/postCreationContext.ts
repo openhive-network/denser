@@ -3,6 +3,42 @@ import { TIMEOUTS } from './constants';
 import { AdvancedSettingsModal } from './pages/advancedSettingsModal';
 
 /**
+ * NaiAsset NAI for HBD. Wax encodes max_accepted_payout as
+ * { amount, precision: 3, nai: HBD_NAI }; the editor's `* 1000` step
+ * converts whole-HBD UI values to milli-HBD before broadcast.
+ */
+export const HBD_NAI = '@@000000013';
+
+/**
+ * Build the NaiAsset shape `comment_options.max_accepted_payout` carries
+ * on the wire, given the UI's "HBD whole units" value. Centralised so
+ * §2.3 specs don't each redefine the encoding.
+ */
+export function hbdAsset(hbdWholeUnits: number) {
+  return {
+    amount: String(hbdWholeUnits * 1000),
+    precision: 3,
+    nai: HBD_NAI
+  };
+}
+
+/**
+ * Settle helper for negative-path specs: `installBroadcastInterceptor`
+ * keeps a `calls[]` array — let the page idle briefly so any late
+ * broadcast would land, then assert the array is still empty.
+ * `waitForCount(0)` resolves immediately on its first read, so it
+ * cannot detect a late fire — only a fixed-window settle works for
+ * "absence of event" assertions.
+ */
+export async function expectNoBroadcast(
+  page: Page,
+  broadcast: { calls: unknown[] }
+): Promise<void> {
+  await page.waitForTimeout(300);
+  expect(broadcast.calls, 'no broadcast should have fired').toHaveLength(0);
+}
+
+/**
  * Shared context for §2.1 Basic Post Creation fixture specs. Mirrors the
  * structure of commentingContext.ts / postVotingContext.ts — a single
  * source of truth for the seeded user, target routes, and editor-typing
@@ -222,28 +258,20 @@ export async function configureAdvancedSettings(
 
   // The Checkbox primitives carry `className="hidden"` (display:none) —
   // they're not directly clickable in any Playwright mode. The visible
-  // interactive surface is the `<Label htmlFor>` sibling. In production
-  // the browser's native `<label for>` handler synthesizes a click on
-  // the labeled control even when it's a `<button>` (HTML5 behavior),
-  // which fires Radix's `onCheckedChange`. We replicate that by clicking
-  // the Label directly via its `for` attribute — visible, no
-  // dispatchEvent gymnastics, and exercises the same code path a real
-  // user would hit.
-  const labelFor = (id: string) => page.locator(`label[for="${id}"]`);
+  // interactive surface is the `<Label htmlFor>` sibling, exposed via
+  // POM helpers `maxPayoutOptionLabel` / `payoutTypeOptionLabel`.
 
   // Max payout: order matters — switching to '0' triggers the useEffect
   // that resets rewards to '50%', so apply max payout before payout type
   // and let PAY-04 assert the side effect explicitly.
-  if (config.maxPayout === 'no_max') {
-    await labelFor('no_max').click();
-  } else if (config.maxPayout === '0') {
-    await labelFor('0').click();
-  } else {
-    await labelFor('custom').click();
+  if (config.maxPayout === 'custom') {
+    await modal.maxPayoutOptionLabel('custom').click();
     if (config.customValue === undefined) {
       throw new Error('customValue is required when maxPayout is "custom"');
     }
     await modal.customValueMaximumAcceptedPayoutInput.fill(String(config.customValue));
+  } else {
+    await modal.maxPayoutOptionLabel(config.maxPayout).click();
   }
 
   // Rewards: when maxPayout is Decline ('0'), BOTH rewards Checkboxes
@@ -255,11 +283,7 @@ export async function configureAdvancedSettings(
   // values the caller might pass, and PAY-04 asserts the disabled gate
   // separately.
   if (config.maxPayout !== '0') {
-    if (config.payoutType === '50%') {
-      await labelFor('50%').click();
-    } else if (config.payoutType === '100%') {
-      await labelFor('100%').click();
-    }
+    await modal.payoutTypeOptionLabel(config.payoutType).click();
   }
 
   // Beneficiaries: each "Add account" click appends a fresh
