@@ -161,65 +161,87 @@ export async function gotoCommunityNewPostLoggedIn(page: Page): Promise<void> {
 }
 
 /**
- * Wait until the typed post body has reached localStorage's
- * `postData-new-{user}` draft. The editor's debounce chain is:
- *
- *   - keystroke           → `latestPostAreaRef` (immediate)
- *   - keystroke + 300 ms  → `form.setValue('postArea', body)` (postArea
- *                            debounce in use-post-form-actions.ts:75)
- *   - form change + 500 ms→ `storePost(watchedValues)` writes localStorage
- *                            (auto-save debounce, lines 83-90)
- *
- * The Advanced-settings modal's `onSave` runs `handleLoadTemplate(data)`
- * which reads the form's `data.postArea` prop snapshotted at modal-open
- * time — NOT the live editor ref. If the form hasn't synced yet, save
- * clobbers the body to '' and the submit button stays disabled.
- *
- * localStorage is downstream of form state, so a positive read here
- * guarantees `form.postArea === body` too. Slightly slower than checking
- * form state directly (~500 ms vs ~300 ms), but event-driven and
- * deterministic — replaces a magic-number `waitForTimeout(350)` that
- * the project explicitly drove out of CMT helpers (commit 0356f9).
- */
-async function waitForBodyPersisted(page: Page, body: string): Promise<void> {
-  await page.waitForFunction(
-    ({ author, expected }) => {
-      const raw = window.localStorage.getItem(`postData-new-${author}`);
-      if (!raw) return false;
-      try {
-        const wrapper = JSON.parse(raw);
-        return wrapper?.value?.postArea === expected;
-      } catch {
-        return false;
-      }
-    },
-    { author: POST_AUTHOR, expected: body }
-  );
-}
-
-/**
- * Type into the post body's CodeMirror surface and wait for the typed
- * value to settle into the form / localStorage chain. CM6 is a
- * contenteditable div, not a textarea — `.fill()` doesn't apply. Same
- * dance as typeIntoReplyEditor in commentingContext.ts, but scoped to
- * the single editor on /submit.html (no nested reply-editor instances
- * to disambiguate).
+ * Type into the post body's CodeMirror surface. CM6 is a contenteditable
+ * div, not a textarea — `.fill()` doesn't apply. Same dance as
+ * typeIntoReplyEditor in commentingContext.ts, but scoped to the single
+ * editor on /submit.html (no nested reply-editor instances to disambiguate).
  *
  * `force: true` skips the actionability re-check; toolbar tooltips can
  * briefly overlay .cm-content during hover and stall an unforced click
  * (see CMT-06 flake history).
  *
- * The trailing `waitForBodyPersisted` flushes the editor's debounce
- * chain so callers (notably the AdvancedSettingsModal flow) don't need
- * a fixed `waitForTimeout(350)` to dodge the postArea-debounce race —
- * see waitForBodyPersisted's docstring for the chain.
+ * NOTE: returns as soon as keystrokes are dispatched. The editor's
+ * 300 ms postArea debounce + 500 ms autosave debounce run in the
+ * background. Tests that open the AdvancedSettings modal afterwards
+ * MUST go through `configureAdvancedSettings` / `openAdvancedSettingsModal`
+ * — those wait for the autosave to flush before opening the dialog,
+ * dodging the modal-save / postArea race documented in
+ * `waitForAutosaveFlushed`. Tests that just inspect editor/preview
+ * output (e.g. POST-07) don't need the wait and shouldn't pay for it.
  */
 export async function fillPostBody(page: Page, body: string): Promise<void> {
   const cm = page.locator('div.cm-editor').locator('.cm-content').first();
   await cm.waitFor({ state: 'visible', timeout: 30_000 });
   await cm.click({ force: true });
   await page.keyboard.type(body);
-  await waitForBodyPersisted(page, body);
+}
+
+/**
+ * Wait until the editor's autosave has flushed at least one non-empty
+ * `postArea` write to localStorage's `postData-new-{user}` draft.
+ *
+ * Why this exists: the AdvancedSettings modal's `onSave` runs
+ * `handleLoadTemplate(data)` which reads the form's `data.postArea`
+ * snapshotted at modal-open time — NOT the editor's live ref. If the
+ * form hasn't synced yet, save clobbers the body to '' and the submit
+ * button stays disabled.
+ *
+ * The editor's debounce chain is:
+ *   - keystroke            → `latestPostAreaRef` (immediate)
+ *   - keystroke + 300 ms   → `form.setValue('postArea', body)`
+ *                            (postArea debounce, use-post-form-actions.ts:75)
+ *   - form change + 500 ms → `storePost(watchedValues)` writes localStorage
+ *                            (autosave debounce, lines 83-90)
+ *
+ * localStorage is downstream of form state, so a positive read here
+ * guarantees `form.postArea` is also synced. Replaces the previous
+ * magic-number `waitForTimeout(350)` (project commit 0356f9 explicitly
+ * drove these out of CMT helpers).
+ *
+ * Implementation: snapshot the current `postArea` BEFORE typing-then-
+ * waiting, then poll until it changes to a non-empty value. Strict
+ * equality with the typed body would be more precise but breaks for
+ * markdown-heavy input — CodeMirror's markdown mode auto-continues
+ * lists on Enter (typing `- a\n- b` becomes `- a\n- - b` in the buffer)
+ * so the buffer legitimately diverges from the keyboard input. The
+ * snapshot-and-detect-change shape is robust to any such transform —
+ * we only need to know that the autosave cycle ran for the typed body.
+ */
+export async function waitForAutosaveFlushed(page: Page): Promise<void> {
+  const before = await page.evaluate((author) => {
+    const raw = window.localStorage.getItem(`postData-new-${author}`);
+    if (!raw) return null;
+    try {
+      return (JSON.parse(raw)?.value?.postArea as string | undefined) ?? null;
+    } catch {
+      return null;
+    }
+  }, POST_AUTHOR);
+
+  await page.waitForFunction(
+    ({ author, prev }) => {
+      const raw = window.localStorage.getItem(`postData-new-${author}`);
+      if (!raw) return false;
+      try {
+        const current =
+          (JSON.parse(raw)?.value?.postArea as string | undefined) ?? null;
+        return current !== null && current.length > 0 && current !== prev;
+      } catch {
+        return false;
+      }
+    },
+    { author: POST_AUTHOR, prev: before }
+  );
 }
 
 /**
@@ -290,9 +312,11 @@ export async function configureAdvancedSettings(
 ): Promise<void> {
   const modal = new AdvancedSettingsModal(page);
 
-  // Note: the 300 ms postArea debounce that races modal-save (described
-  // in waitForBodyPersisted) is already flushed by `fillPostBody` before
-  // we land here, so we don't need a second wait — open the modal directly.
+  // Flush the postArea-debounce / modal-save race before opening the
+  // dialog (see waitForAutosaveFlushed for the chain). Doing it inline
+  // here — rather than at the end of fillPostBody — keeps the cost off
+  // tests that don't open the modal (e.g. POST-07 preview).
+  await waitForAutosaveFlushed(page);
   await page.locator('[data-testid="advanced-settings-button"]').click();
   // Wait on the DialogTitle (visible). We deliberately do NOT call the
   // POM's `validateAdvancedSettingsModalIsLoaded` here because it asserts
