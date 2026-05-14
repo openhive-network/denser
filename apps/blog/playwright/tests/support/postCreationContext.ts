@@ -1,6 +1,7 @@
 import { expect, type Page } from '@playwright/test';
 import { TIMEOUTS } from './constants';
 import { AdvancedSettingsModal } from './pages/advancedSettingsModal';
+import type { BroadcastInterceptor } from './fixture-auth/broadcast-interceptor';
 
 /**
  * NaiAsset NAI for HBD. Wax encodes max_accepted_payout as
@@ -23,18 +24,28 @@ export function hbdAsset(hbdWholeUnits: number) {
 }
 
 /**
- * Settle helper for negative-path specs: `installBroadcastInterceptor`
- * keeps a `calls[]` array — let the page idle briefly so any late
- * broadcast would land, then assert the array is still empty.
- * `waitForCount(0)` resolves immediately on its first read, so it
- * cannot detect a late fire — only a fixed-window settle works for
- * "absence of event" assertions.
+ * Settle helper for negative-path specs. Races the interceptor's existing
+ * `waitForCount(1, windowMs)` poller against an inactivity window:
+ *
+ *   - If a broadcast lands inside the window, `waitForCount` resolves
+ *     (no throw, `.catch()` does nothing), `calls.length >= 1`, and the
+ *     `toHaveLength(0)` assertion fails fast with a useful diagnostic.
+ *   - If nothing lands, `waitForCount` throws on its deadline (caught and
+ *     swallowed) and the assertion passes against the empty array.
+ *
+ * Net effect vs the old `waitForTimeout(300)`: surprise broadcasts surface
+ * within ~50 ms (the poller's tick) instead of after the full window. The
+ * window is still the upper bound on the success path — fundamentally
+ * unavoidable for a "no event will fire" assertion — but we no longer
+ * unconditionally sleep, and the wait re-uses the interceptor's existing
+ * polling infrastructure rather than carrying its own duration constant.
  */
 export async function expectNoBroadcast(
-  page: Page,
-  broadcast: { calls: unknown[] }
+  _page: Page,
+  broadcast: BroadcastInterceptor,
+  windowMs: number = 300
 ): Promise<void> {
-  await page.waitForTimeout(300);
+  await broadcast.waitForCount(1, windowMs).catch(() => {});
   expect(broadcast.calls, 'no broadcast should have fired').toHaveLength(0);
 }
 
@@ -150,20 +161,65 @@ export async function gotoCommunityNewPostLoggedIn(page: Page): Promise<void> {
 }
 
 /**
- * Type into the post body's CodeMirror surface. CM6 is a contenteditable
- * div, not a textarea — `.fill()` doesn't apply. Same dance as
- * typeIntoReplyEditor in commentingContext.ts, but scoped to the single
- * editor on /submit.html (no nested reply-editor instances to disambiguate).
+ * Wait until the typed post body has reached localStorage's
+ * `postData-new-{user}` draft. The editor's debounce chain is:
+ *
+ *   - keystroke           → `latestPostAreaRef` (immediate)
+ *   - keystroke + 300 ms  → `form.setValue('postArea', body)` (postArea
+ *                            debounce in use-post-form-actions.ts:75)
+ *   - form change + 500 ms→ `storePost(watchedValues)` writes localStorage
+ *                            (auto-save debounce, lines 83-90)
+ *
+ * The Advanced-settings modal's `onSave` runs `handleLoadTemplate(data)`
+ * which reads the form's `data.postArea` prop snapshotted at modal-open
+ * time — NOT the live editor ref. If the form hasn't synced yet, save
+ * clobbers the body to '' and the submit button stays disabled.
+ *
+ * localStorage is downstream of form state, so a positive read here
+ * guarantees `form.postArea === body` too. Slightly slower than checking
+ * form state directly (~500 ms vs ~300 ms), but event-driven and
+ * deterministic — replaces a magic-number `waitForTimeout(350)` that
+ * the project explicitly drove out of CMT helpers (commit 0356f9).
+ */
+async function waitForBodyPersisted(page: Page, body: string): Promise<void> {
+  await page.waitForFunction(
+    ({ author, expected }) => {
+      const raw = window.localStorage.getItem(`postData-new-${author}`);
+      if (!raw) return false;
+      try {
+        const wrapper = JSON.parse(raw);
+        return wrapper?.value?.postArea === expected;
+      } catch {
+        return false;
+      }
+    },
+    { author: POST_AUTHOR, expected: body }
+  );
+}
+
+/**
+ * Type into the post body's CodeMirror surface and wait for the typed
+ * value to settle into the form / localStorage chain. CM6 is a
+ * contenteditable div, not a textarea — `.fill()` doesn't apply. Same
+ * dance as typeIntoReplyEditor in commentingContext.ts, but scoped to
+ * the single editor on /submit.html (no nested reply-editor instances
+ * to disambiguate).
  *
  * `force: true` skips the actionability re-check; toolbar tooltips can
  * briefly overlay .cm-content during hover and stall an unforced click
  * (see CMT-06 flake history).
+ *
+ * The trailing `waitForBodyPersisted` flushes the editor's debounce
+ * chain so callers (notably the AdvancedSettingsModal flow) don't need
+ * a fixed `waitForTimeout(350)` to dodge the postArea-debounce race —
+ * see waitForBodyPersisted's docstring for the chain.
  */
 export async function fillPostBody(page: Page, body: string): Promise<void> {
   const cm = page.locator('div.cm-editor').locator('.cm-content').first();
   await cm.waitFor({ state: 'visible', timeout: 30_000 });
   await cm.click({ force: true });
   await page.keyboard.type(body);
+  await waitForBodyPersisted(page, body);
 }
 
 /**
@@ -234,18 +290,9 @@ export async function configureAdvancedSettings(
 ): Promise<void> {
   const modal = new AdvancedSettingsModal(page);
 
-  // Flush the 300 ms `postArea` debounce in use-post-form-actions.ts:75
-  // BEFORE opening the modal. The modal's save handler runs
-  // `handleLoadTemplate(data)` which clobbers `latestPostAreaRef.current`
-  // and `form.postArea` with the modal's `data.postArea` prop — and that
-  // prop reflects the debounced form state, not the editor's live ref.
-  // If the debounce hasn't fired yet, `data.postArea` is empty and the
-  // body gets wiped on save, leaving the submit button disabled. Sleeping
-  // 350 ms here guarantees the debounce has settled. This is the only
-  // spot in the helper where we tolerate an arbitrary wait — the rest
-  // is event-based.
-  await page.waitForTimeout(350);
-
+  // Note: the 300 ms postArea debounce that races modal-save (described
+  // in waitForBodyPersisted) is already flushed by `fillPostBody` before
+  // we land here, so we don't need a second wait — open the modal directly.
   await page.locator('[data-testid="advanced-settings-button"]').click();
   // Wait on the DialogTitle (visible). We deliberately do NOT call the
   // POM's `validateAdvancedSettingsModalIsLoaded` here because it asserts

@@ -184,14 +184,11 @@ test.describe('Post creation — payout & rewards combinations (§2.3, top-level
 
     // Drive the UI manually here (not through `configureAdvancedSettings`)
     // because we want to interpose a UI-state assertion between selecting
-    // Decline and saving.
+    // Decline and saving. The postArea-debounce race that would clobber
+    // the body on modal-save is already handled by `fillPostBody` above
+    // (see waitForBodyPersisted in postCreationContext.ts), so no extra
+    // wait is needed here.
     const modal = new AdvancedSettingsModal(page);
-    // See `configureAdvancedSettings` for the 350 ms wait rationale —
-    // flushes the postArea debounce so the modal's save doesn't clobber
-    // the typed body. We replicate it inline here because PAY-04 needs
-    // to interpose a disabled-state assertion mid-flow and so drives the
-    // dialog manually rather than via the helper.
-    await page.waitForTimeout(350);
     await editor.getAdvancedSettingsButton.click();
     // See `configureAdvancedSettings` for why we click the `<label for>`
     // instead of the Checkbox: the Checkbox is `display:none`. The Label

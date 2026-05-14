@@ -59,8 +59,9 @@ async function openModalWithCustomAndPowerUp(
   editor: PostEditorPage
 ): Promise<AdvancedSettingsModal> {
   const modal = new AdvancedSettingsModal(page);
-  // Flush postArea debounce — see `configureAdvancedSettings` comment.
-  await page.waitForTimeout(350);
+  // The postArea-debounce race that would clobber the body on modal-save
+  // is already flushed by `fillPostBody` above (see waitForBodyPersisted
+  // in postCreationContext.ts).
   await editor.getAdvancedSettingsButton.click();
   await expect(modal.advancedSettingsTitleElement).toBeVisible();
   await modal.maxPayoutOptionLabel('custom').click();
