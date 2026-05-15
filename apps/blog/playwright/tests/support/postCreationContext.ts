@@ -260,6 +260,96 @@ export async function submitPost(page: Page): Promise<void> {
 }
 
 /**
+ * Stored shape of one Post Template (§2.4). Mirrors the `Template` type
+ * in `features/post-editor/advanced-settings-post-form.tsx` — not exported
+ * from there, so we re-declare the subset tests actually drive.
+ *
+ * Notes on the field encoding (matches what `onSave` writes):
+ *   - `maxAcceptedPayout` is the *form-state* number: 1_000_000 for
+ *     "no limit", 0 for "Decline Payout", any (0, 1_000_000) for a custom
+ *     HBD-whole-unit value. `handleTemplates` reverses this when loading.
+ *   - `beneficiaries[].weight` is a UI-percent string (the dialog stores
+ *     it raw); the editor multiplies by 100 on broadcast → basis points.
+ *   - `templateTitle` is the user-facing name (also the list key + the
+ *     `data-template-name` attribute the POM matches on).
+ */
+export interface SeededPostTemplate {
+  templateTitle: string;
+  title: string;
+  postArea: string;
+  postSummary: string;
+  tags: string;
+  author: string;
+  category: string;
+  beneficiaries: { account: string; weight: string }[];
+  maxAcceptedPayout: number;
+  payoutType: string;
+}
+
+/**
+ * Pre-seed the user's `hivePostTemplates-{user}` localStorage entry
+ * before the editor mounts. Templates are PERMANENT-TTL data; the storage
+ * envelope is `{ value, expiresAt: null, createdAt: now }` — see
+ * `packages/ui/lib/storage-with-ttl.ts:90-100`. Callers MUST invoke this
+ * BEFORE `gotoSubmitLoggedIn` because `useStorageWithTTL` reads the value
+ * on mount and doesn't poll afterwards.
+ *
+ * Why we don't drive Save through the dialog for TPL-02/03/04: each of
+ * those tests starts from a pre-existing template (TPL-02 loads it,
+ * TPL-03 deletes it, TPL-04 publishes from it). Going through the UI
+ * would conflate the create-flow under test in TPL-01 with the
+ * load/delete/publish flows. Seeding storage directly keeps each spec
+ * focused on one transition.
+ */
+export async function seedPostTemplates(
+  page: Page,
+  templates: SeededPostTemplate[]
+): Promise<void> {
+  // Land on origin first so window.localStorage is reachable; same
+  // pattern as gotoCommunityNewPostLoggedIn (above).
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await page.evaluate(
+    ({ user, seedTemplates }) => {
+      const key = `hivePostTemplates-${user}`;
+      const now = Date.now();
+      window.localStorage.setItem(
+        key,
+        JSON.stringify({
+          value: seedTemplates,
+          expiresAt: null, // PERMANENT
+          createdAt: now
+        })
+      );
+    },
+    { user: POST_AUTHOR, seedTemplates: templates }
+  );
+}
+
+/**
+ * Read the current `hivePostTemplates-{user}` entry back out. Returns
+ * `[]` when the key is missing or expired (the latter shouldn't happen
+ * for PERMANENT data, but `getStorageItem` guards both). Used by §2.4
+ * specs as the source-of-truth assertion (over inspecting the modal's
+ * rendered list) — a regression that silently writes a malformed entry
+ * surfaces here even if the UI happens to look right.
+ */
+export async function readSeededPostTemplates(
+  page: Page
+): Promise<SeededPostTemplate[]> {
+  return await page.evaluate((user) => {
+    const raw = window.localStorage.getItem(`hivePostTemplates-${user}`);
+    if (!raw) return [] as unknown[];
+    try {
+      const parsed = JSON.parse(raw) as { value?: unknown };
+      const value = parsed?.value;
+      return Array.isArray(value) ? (value as unknown[]) : [];
+    } catch {
+      return [] as unknown[];
+    }
+  }, POST_AUTHOR) as Promise<SeededPostTemplate[]>;
+}
+
+/**
  * Advanced-settings dialog configuration used by §2.3 PAY-xx specs.
  *
  * - `maxPayout: 'no_max'` → `data.maxAcceptedPayout = 1000000`
