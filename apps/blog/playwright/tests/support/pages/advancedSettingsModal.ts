@@ -129,22 +129,10 @@ export class AdvancedSettingsModal {
     await expect(this.deleteTemplateButton).toBeVisible();
   }
 
-  async expectLoadButtonHidden() {
-    await expect(this.loadTemplateButton).toBeHidden();
-  }
-
-  async expectDeleteButtonHidden() {
-    await expect(this.deleteTemplateButton).toBeHidden();
-  }
-
   // Save button is disabled while a duplicate name is in the input. Useful
   // to assert from the negative path of TPL-01.
   async expectSaveDisabled() {
     await expect(this.saveButton).toBeDisabled();
-  }
-
-  async expectSaveEnabled() {
-    await expect(this.saveButton).toBeEnabled();
   }
 
   // The Checkbox primitives carry className="hidden" (display:none), so

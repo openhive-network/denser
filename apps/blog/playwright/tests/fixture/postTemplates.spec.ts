@@ -14,6 +14,7 @@ import {
   hbdAsset,
   readSeededPostTemplates,
   seedPostTemplates,
+  expectPublishingPanelOptions,
   type SeededPostTemplate
 } from '../support/postCreationContext';
 
@@ -176,11 +177,12 @@ test.describe('Post creation — post templates (§2.4)', () => {
 
     // Publishing panel — for a no-limit + 50/50 payload the only line
     // rendered is "Author rewards: 50% HBD / 50% HP" (max-payout line is
-    // hidden when value == 1_000_000; see expectPublishingPanelOptions
-    // for the full rule set).
-    await expect(editor.getAuthorRewardsDescription).toHaveText(
-      'Author rewards: 50% HBD / 50% HP'
-    );
+    // hidden when value == 1_000_000). expectPublishingPanelOptions
+    // also asserts the absent max-payout / beneficiaries lines.
+    await expectPublishingPanelOptions(page, {
+      maxPayout: 'no_max',
+      payoutType: '50%'
+    });
   });
 
   test('TPL-03: delete a seeded template', async ({ page }) => {
@@ -231,18 +233,17 @@ test.describe('Post creation — post templates (§2.4)', () => {
     await expect(page.getByText('Template loaded', { exact: true })).toBeVisible();
 
     // Pre-submit sanity: the publishing panel reflects the template's
-    // custom max + 50/50 settings before we hit Submit. Catches a
-    // regression where `loadTemplate()` correctly seeds form state but
-    // the panel reads stale values from elsewhere.
-    await expect(editor.getAuthorRewardsDescription).toHaveText(
-      'Author rewards: 50% HBD / 50% HP'
-    );
-    await expect(
-      page.getByText(`Maximum Accepted Payout: ${TPL_04_CUSTOM_HBD} HBD`, { exact: true })
-    ).toBeVisible();
-    await expect(
-      page.getByText('Beneficiaries: 1 set', { exact: true })
-    ).toBeVisible();
+    // custom max + 50/50 + 1 beneficiary settings before we hit Submit.
+    // Catches a regression where `loadTemplate()` correctly seeds form
+    // state but the panel reads stale values from elsewhere.
+    await expectPublishingPanelOptions(page, {
+      maxPayout: 'custom',
+      customValue: TPL_04_CUSTOM_HBD,
+      payoutType: '50%',
+      beneficiaries: [
+        { account: TPL_04_BENEFICIARY, weight: TPL_04_BENE_WEIGHT_PCT }
+      ]
+    });
 
     await submitPost(page);
     await broadcast.waitForCount(1);
