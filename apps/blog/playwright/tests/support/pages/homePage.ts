@@ -603,7 +603,11 @@ export class HomePage {
 
   async moveToMutedPosts() {
     await this.getFilterPosts.click();
-    await this.page.getByText('Muted').click();
+    // Scope to the open dropdown — a page-wide getByText('Muted') also
+    // matches any post-card description whose body contains the word
+    // (real Hive content occasionally surfaces such posts into trending,
+    // see e.g. @acidyo/what-the-fuck-is-up), tripping strict mode.
+    await this.getFilterPostsList.getByText('Muted').click();
     await expect(this.getFirstPostTitle).toBeVisible();
   }
 
