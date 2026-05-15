@@ -415,18 +415,23 @@ export function AdvancedSettingsPostForm({
               </Button>
             ) : null}
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3" data-testid="post-templates-box">
             <span className="text-lg font-bold">
               {t('submit_page.advanced_settings_dialog.post_templates')}
             </span>
             <span>{t('submit_page.advanced_settings_dialog.manage_your_post_templates')}</span>
             <div className="flex flex-col gap-1">
-              <ScrollArea className=" h-fit max-h-48 rounded-md border p-4">
+              <ScrollArea
+                className=" h-fit max-h-48 rounded-md border p-4"
+                data-testid="list-of-post-templates"
+              >
                 {storedTemplates && storedTemplates.length > 0
                   ? storedTemplates.map((e) => (
                       <div
                         key={e.templateTitle}
                         onClick={() => handleTemplates(e.templateTitle)}
+                        data-testid="template-list-item"
+                        data-template-name={e.templateTitle}
                         className={clsx(
                           'cursor-pointer border-b border-border p-1 text-base hover:bg-border',
                           {
@@ -437,15 +442,20 @@ export function AdvancedSettingsPostForm({
                         {e.templateTitle}
                       </div>
                     ))
-                  : t('submit_page.advanced_settings_dialog.no_templates_found')}
+                  : (
+                      <span data-testid="no-templates-message">
+                        {t('submit_page.advanced_settings_dialog.no_templates_found')}
+                      </span>
+                    )}
               </ScrollArea>
               <Input
                 placeholder={t('submit_page.advanced_settings_dialog.name_of_a_new_template')}
                 value={templateTitle}
                 onChange={(e) => handleTemplateTitle(e.target.value)}
+                data-testid="name-of-a-new-template-input"
               />
               {isTemplateStored ? (
-                <div className="p-2 text-destructive">
+                <div className="p-2 text-destructive" data-testid="template-name-taken-error">
                   {t('submit_page.advanced_settings_dialog.template_name_is_taken')}
                 </div>
               ) : null}
@@ -473,12 +483,20 @@ export function AdvancedSettingsPostForm({
             {t('submit_page.advanced_settings_dialog.save')}
           </Button>
           {currentTemplate ? (
-            <Button variant="redHover" onClick={() => loadTemplate()}>
+            <Button
+              variant="redHover"
+              onClick={() => loadTemplate()}
+              data-testid="advanced-settings-load-template-button"
+            >
               {t('submit_page.advanced_settings_dialog.load')}
             </Button>
           ) : null}
           {selectTemplate !== '/' ? (
-            <Button variant="redHover" onClick={() => deleteTemplate(selectTemplate)}>
+            <Button
+              variant="redHover"
+              onClick={() => deleteTemplate(selectTemplate)}
+              data-testid="advanced-settings-delete-template-button"
+            >
               {t('submit_page.advanced_settings_dialog.delete_template')}
             </Button>
           ) : null}

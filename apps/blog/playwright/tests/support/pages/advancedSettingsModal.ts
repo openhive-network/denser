@@ -20,7 +20,9 @@ export class AdvancedSettingsModal {
   readonly beneficiariesMessageDialog: Locator;
   readonly postTemplatesBox: Locator;
   readonly listOfPostTemplates: Locator;
+  readonly noTemplatesMessage: Locator;
   readonly nameOfNewPostTemplateInput: Locator;
+  readonly templateNameTakenError: Locator;
   readonly postTemplateItem: Locator;
   readonly saveButton: Locator;
   readonly loadTemplateButton: Locator;
@@ -48,7 +50,9 @@ export class AdvancedSettingsModal {
     this.beneficiariesMessageDialog = page.getByTestId('beneficiaries-message-dialog');
     this.postTemplatesBox = page.getByTestId('post-templates-box');
     this.listOfPostTemplates = page.getByTestId('list-of-post-templates');
+    this.noTemplatesMessage = page.getByTestId('no-templates-message');
     this.nameOfNewPostTemplateInput = page.getByTestId('name-of-a-new-template-input');
+    this.templateNameTakenError = page.getByTestId('template-name-taken-error');
     this.postTemplateItem = this.listOfPostTemplates.getByTestId('template-list-item');
     this.saveButton = page.getByTestId('advanced-settings-save-button');
     this.loadTemplateButton = page.getByTestId('advanced-settings-load-template-button');
@@ -65,9 +69,82 @@ export class AdvancedSettingsModal {
     await expect(this.postTemplatesBox).toBeVisible();
   }
 
+  // Template names can collide as substrings (e.g. "Draft" and "Draft v2"),
+  // so we match on the data-template-name attribute rather than text.
+  templateItem(templateName: string): Locator {
+    return this.listOfPostTemplates.locator(
+      `[data-testid="template-list-item"][data-template-name="${templateName}"]`
+    );
+  }
+
   async clickSpecificTemplate(templateName: string) {
-    const template = this.postTemplateItem.getByText(templateName);
-    await template.click();
+    await this.templateItem(templateName).click();
+  }
+
+  async fillTemplateName(templateName: string) {
+    await this.nameOfNewPostTemplateInput.fill(templateName);
+  }
+
+  async saveSettings() {
+    await this.saveButton.click();
+  }
+
+  // Save the current form state as a *new* template. The dialog also closes
+  // and the modal re-opens with a cleared name input — callers that need to
+  // assert on the new entry must re-open the modal first.
+  async saveAsNewTemplate(templateName: string) {
+    await this.fillTemplateName(templateName);
+    await this.saveSettings();
+  }
+
+  async loadSelectedTemplate() {
+    await this.loadTemplateButton.click();
+  }
+
+  async deleteSelectedTemplate() {
+    await this.deleteTemplateButton.click();
+  }
+
+  async expectTemplateInList(templateName: string) {
+    await expect(this.templateItem(templateName)).toBeVisible();
+  }
+
+  async expectTemplateNotInList(templateName: string) {
+    await expect(this.templateItem(templateName)).toHaveCount(0);
+  }
+
+  async expectNoTemplatesMessage() {
+    await expect(this.noTemplatesMessage).toBeVisible();
+  }
+
+  async expectTemplateNameTakenError() {
+    await expect(this.templateNameTakenError).toBeVisible();
+  }
+
+  async expectLoadButtonVisible() {
+    await expect(this.loadTemplateButton).toBeVisible();
+  }
+
+  async expectDeleteButtonVisible() {
+    await expect(this.deleteTemplateButton).toBeVisible();
+  }
+
+  async expectLoadButtonHidden() {
+    await expect(this.loadTemplateButton).toBeHidden();
+  }
+
+  async expectDeleteButtonHidden() {
+    await expect(this.deleteTemplateButton).toBeHidden();
+  }
+
+  // Save button is disabled while a duplicate name is in the input. Useful
+  // to assert from the negative path of TPL-01.
+  async expectSaveDisabled() {
+    await expect(this.saveButton).toBeDisabled();
+  }
+
+  async expectSaveEnabled() {
+    await expect(this.saveButton).toBeEnabled();
   }
 
   // The Checkbox primitives carry className="hidden" (display:none), so
