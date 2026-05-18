@@ -641,6 +641,93 @@ export interface InstallBroadcastInterceptorOptions {
    * unchanged.
    */
   confirmInBlock?: boolean;
+  /**
+   * Hot-swap subsequent `bridge.get_post` / `bridge.get_discussion` responses
+   * for the given (author, permlink) **after** a `comment_operation` or
+   * `delete_comment_operation` broadcast lands. The patch reflects the
+   * fields the broadcast carries:
+   *   - comment_operation → title, body, json_metadata (tags) on the post
+   *   - delete_comment_operation → bridge.get_post returns a JSON-RPC
+   *     error so the UI renders the "not found" branch
+   *
+   * Why: `usePostMutation.onSuccess` calls `scheduleValidatedRefetch` which
+   * re-hits `bridge.get_post`. The fixture-proxy serves the same static
+   * JSON regardless of what was broadcast, so the post-edit specs would
+   * see the **old** title/body after submit. With this swap, the refetch
+   * picks up the edited values and the UI re-renders correctly — letting
+   * specs assert on the rendered post page without re-recording fixtures.
+   *
+   * Note: comment_options_operation (payout settings) is NOT applied —
+   * those fields (`max_accepted_payout`, `percent_hbd`) are baseline
+   * properties of the post but aren't usually surfaced in the rendered
+   * detail page; broadcast-level assertion (TX-02) covers them already.
+   */
+  postEditSwap?: {
+    author: string;
+    permlink: string;
+  };
+}
+
+interface PostEditPatch {
+  title?: string;
+  body?: string;
+  json_metadata?: string;
+  deleted?: boolean;
+}
+
+function applyPostEditPatch(
+  entry: Record<string, unknown> | null | undefined,
+  patch: PostEditPatch
+): void {
+  if (!entry) return;
+  if (patch.title !== undefined) entry.title = patch.title;
+  if (patch.body !== undefined) entry.body = patch.body;
+  if (patch.json_metadata !== undefined) {
+    // The wire form is sometimes a string (Hive node) and sometimes an
+    // object (Hivemind). Mirror `generate-edit-variants.mjs` and respect
+    // whichever shape the recording captured for this entry.
+    const existing = entry.json_metadata;
+    if (typeof existing === 'object' && existing !== null) {
+      try {
+        entry.json_metadata = JSON.parse(patch.json_metadata);
+      } catch {
+        entry.json_metadata = patch.json_metadata;
+      }
+    } else {
+      entry.json_metadata = patch.json_metadata;
+    }
+  }
+}
+
+function patchPostResponse(
+  method: string,
+  responseBody: unknown,
+  target: { author: string; permlink: string },
+  patch: PostEditPatch
+): unknown {
+  if (typeof responseBody !== 'object' || responseBody === null) return responseBody;
+  const body = responseBody as { result?: unknown };
+  const result = body.result;
+  if (!result || typeof result !== 'object') return responseBody;
+
+  if (method === 'bridge.get_post') {
+    const post = result as Record<string, unknown>;
+    if (post.author === target.author && post.permlink === target.permlink) {
+      applyPostEditPatch(post, patch);
+    }
+    return responseBody;
+  }
+
+  if (method === 'bridge.get_discussion') {
+    const map = result as Record<string, Record<string, unknown>>;
+    const key = `${target.author}/${target.permlink}`;
+    if (map[key]) {
+      applyPostEditPatch(map[key], patch);
+    }
+    return responseBody;
+  }
+
+  return responseBody;
 }
 
 export async function installBroadcastInterceptor(
@@ -650,6 +737,8 @@ export async function installBroadcastInterceptor(
 ): Promise<BroadcastInterceptor> {
   const calls: InterceptedBroadcast[] = [];
   const confirmInBlock = options.confirmInBlock ?? false;
+  const postEditSwap = options.postEditSwap;
+  let postEditPatch: PostEditPatch | null = null;
 
   // Lazy-init the wax chain only when block confirmation is requested —
   // it loads WASM and is ~hundreds of ms; not worth the overhead for
@@ -692,6 +781,53 @@ export async function installBroadcastInterceptor(
       // Trace everything that hits the proxy port so silent failures are
       // visible in the test output.
       console.log(`[interceptor] POST ${method || '<no-method>'}`);
+
+      // Post-edit hot-swap. Once a comment_operation / delete_comment_operation
+      // for the configured (author, permlink) has been captured, intercept
+      // any subsequent bridge.get_post / bridge.get_discussion for the same
+      // post: fetch the recorded response from the fixture-proxy, then patch
+      // title / body / json_metadata in place (or return a JSON-RPC error
+      // for the delete path) before fulfilling. usePostMutation.onSuccess's
+      // scheduleValidatedRefetch picks up the patched data, the cache
+      // updates, and the UI re-renders with the edited content.
+      if (
+        postEditSwap &&
+        postEditPatch &&
+        (method === 'bridge.get_post' || method === 'bridge.get_discussion')
+      ) {
+        const params = body?.params as
+          | { author?: string; permlink?: string }
+          | undefined;
+        if (
+          params?.author === postEditSwap.author &&
+          params?.permlink === postEditSwap.permlink
+        ) {
+          if (postEditPatch.deleted && method === 'bridge.get_post') {
+            return route.fulfill({
+              status: 200,
+              contentType: 'application/json',
+              body: JSON.stringify({
+                jsonrpc: '2.0',
+                id: rpcId ?? 1,
+                error: { code: -32602, message: 'Post not found' }
+              })
+            });
+          }
+          const upstream = await route.fetch();
+          const upstreamBody = await upstream.json();
+          const patched = patchPostResponse(
+            method,
+            upstreamBody,
+            postEditSwap,
+            postEditPatch
+          );
+          return route.fulfill({
+            status: upstream.status(),
+            contentType: 'application/json',
+            body: JSON.stringify(patched)
+          });
+        }
+      }
 
       // WorkerBee block-confirmation stubs. Only kick in once we've
       // captured a broadcast — beforehand let the fixture proxy serve
@@ -784,6 +920,32 @@ export async function installBroadcastInterceptor(
             } catch (err) {
               console.warn('[interceptor] failed to compute trx ID:', err);
             }
+          }
+        }
+
+        // Stash the post-edit patch for later get_post / get_discussion
+        // hot-swap. Only the operation that targets the configured
+        // (author, permlink) seeds the patch — guards against accidental
+        // capture from unrelated broadcasts in the same flow.
+        if (postEditSwap) {
+          const trx = (body?.params as { trx?: { operations?: unknown[] } } | undefined)?.trx;
+          const op = trx?.operations?.[0] as
+            | { type?: string; value?: Record<string, unknown> }
+            | undefined;
+          const value = op?.value as
+            | { author?: string; permlink?: string; title?: string; body?: string; json_metadata?: string }
+            | undefined;
+          const matches =
+            value?.author === postEditSwap.author &&
+            value?.permlink === postEditSwap.permlink;
+          if (matches && op?.type === 'comment_operation') {
+            postEditPatch = {
+              title: value?.title,
+              body: value?.body,
+              json_metadata: value?.json_metadata
+            };
+          } else if (matches && op?.type === 'delete_comment_operation') {
+            postEditPatch = { deleted: true };
           }
         }
       }

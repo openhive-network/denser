@@ -8,6 +8,7 @@ import {
 import { PostEditorPage } from '../support/pages/postEditorPage';
 import { PostPage } from '../support/pages/postPage';
 import { hbdAsset } from '../support/postCreationContext';
+import { TIMEOUTS } from '../support/constants';
 import {
   OWN_POST_AUTHOR,
   OWN_POST_PERMLINK,
@@ -43,7 +44,8 @@ test.use({ fixtureTestName: 'postEditOwn', authenticatedUser: {} });
 test.describe('Post editing — content / tags / payout (§3 EDIT-01..03a)', () => {
   test('EDIT-01: edit title and body', async ({ page }) => {
     const broadcast = await installBroadcastInterceptor(page, undefined, {
-      confirmInBlock: true
+      confirmInBlock: true,
+      postEditSwap: { author: OWN_POST_AUTHOR, permlink: OWN_POST_PERMLINK }
     });
     await gotoOwnPostLoggedIn(page);
     await enterEditMode(page);
@@ -73,11 +75,25 @@ test.describe('Post editing — content / tags / payout (§3 EDIT-01..03a)', () 
       permlink: OWN_POST_PERMLINK,
       body: EDIT_NEW_BODY
     });
+
+    // Post-submit UI assertions. postEditSwap patches the next
+    // bridge.get_post refetch with the broadcast values, so the cache
+    // updates and PostBodySection re-renders with the new title/body.
+    await expect(editor.getPostSubmittedToast).toBeVisible({
+      timeout: TIMEOUTS.HYDRATION
+    });
+    await expect(editor.getSubmitPostButton).toBeHidden();
+    const post = new PostPage(page);
+    await expect(post.articleTitle).toHaveText(EDIT_NEW_TITLE, {
+      timeout: TIMEOUTS.HYDRATION
+    });
+    await expect(post.articleBody).toContainText(EDIT_NEW_BODY);
   });
 
   test('EDIT-02: edit tags (remove one chip, add new tag)', async ({ page }) => {
     const broadcast = await installBroadcastInterceptor(page, undefined, {
-      confirmInBlock: true
+      confirmInBlock: true,
+      postEditSwap: { author: OWN_POST_AUTHOR, permlink: OWN_POST_PERMLINK }
     });
     await gotoOwnPostLoggedIn(page);
     await enterEditMode(page);
@@ -102,19 +118,45 @@ test.describe('Post editing — content / tags / payout (§3 EDIT-01..03a)', () 
     expect(broadcast.calls).toHaveLength(1);
     // For top-level posts not in a community, parent_permlink is the
     // post's category (unchanged from the original record — `spam` in
-    // the neutralised base). json_metadata is encoded into the comment
-    // payload as a JSON string; expectCommentOperation does not assert
-    // on metadata, so we read the operation directly to verify tags.
-    const value = (broadcast.calls[0].params as any)?.trx?.operations?.[0]?.value;
-    expect(value?.author).toBe(OWN_POST_AUTHOR);
-    expect(value?.permlink).toBe(OWN_POST_PERMLINK);
-    const jsonMeta = JSON.parse(value?.json_metadata ?? '{}');
+    // the neutralised base).
+    expectCommentOperation(broadcast.calls[0], {
+      parent_author: '',
+      parent_permlink: 'spam',
+      author: OWN_POST_AUTHOR,
+      permlink: OWN_POST_PERMLINK
+    });
+    // json_metadata is encoded into the comment payload as a JSON string;
+    // expectCommentOperation does not assert on metadata, so read the
+    // operation directly to verify tags.
+    const op = (broadcast.calls[0].params as {
+      trx: { operations: { value: { json_metadata?: string } }[] };
+    }).trx.operations[0].value;
+    const jsonMeta = JSON.parse(op.json_metadata ?? '{}') as { tags?: string[] };
     expect(jsonMeta.tags).toEqual(['test', 'foo', 'baz']);
+
+    // Post-submit UI: editor closes and the refetched post (patched by
+    // postEditSwap) renders the new tag set. `bar` is gone, `baz` is in.
+    await expect(editor.getPostSubmittedToast).toBeVisible({
+      timeout: TIMEOUTS.HYDRATION
+    });
+    await expect(editor.getSubmitPostButton).toBeHidden();
+    const post = new PostPage(page);
+    // Tags render as `#<tag>` links inside the hashtags-post list
+    // (content.tsx:611-624). Match the hash-prefixed text exactly so we
+    // don't collide with anything else on the page that mentions the tag.
+    await expect(post.hashtagsPosts.getByText('#baz', { exact: true })).toBeVisible({
+      timeout: TIMEOUTS.HYDRATION
+    });
+    await expect(post.hashtagsPosts.getByText('#bar', { exact: true })).toHaveCount(0);
   });
 
   test('EDIT-03a: change payout (50/50 → 100% Power Up) — broadcasts comment_options', async ({ page }) => {
     const broadcast = await installBroadcastInterceptor(page, undefined, {
-      confirmInBlock: true
+      confirmInBlock: true,
+      // Even though payout fields aren't surfaced in the rendered post, we
+      // still wire postEditSwap so the no-op patch keeps the refetch shape
+      // consistent and the editor-close UI signal lands deterministically.
+      postEditSwap: { author: OWN_POST_AUTHOR, permlink: OWN_POST_PERMLINK }
     });
     await gotoOwnPostLoggedIn(page);
     await enterEditMode(page);
@@ -156,12 +198,22 @@ test.describe('Post editing — content / tags / payout (§3 EDIT-01..03a)', () 
       },
       { operationIndex: 0 }
     );
+
+    // Post-submit UI: success toast + editor closes. Payout / percent_hbd
+    // are not surfaced in the rendered detail page directly, so the broadcast
+    // assertions above cover the meaningful state change.
+    await expect(editor.getPostSubmittedToast).toBeVisible({
+      timeout: TIMEOUTS.HYDRATION
+    });
+    await expect(editor.getSubmitPostButton).toBeHidden();
   });
 });
 
 test.describe('Post deletion (§3 EDIT-05)', () => {
   test('EDIT-05: delete own post via confirmation dialog', async ({ page }) => {
-    const broadcast = await installBroadcastInterceptor(page);
+    const broadcast = await installBroadcastInterceptor(page, undefined, {
+      postEditSwap: { author: OWN_POST_AUTHOR, permlink: OWN_POST_PERMLINK }
+    });
     await gotoOwnPostLoggedIn(page);
 
     const post = new PostPage(page);
@@ -174,5 +226,15 @@ test.describe('Post deletion (§3 EDIT-05)', () => {
       author: OWN_POST_AUTHOR,
       permlink: OWN_POST_PERMLINK
     });
+
+    // Post-submit UI: useDeletePostMutation.onSuccess shows the
+    // "Post deleted successfully" toast and invalidates the postData query.
+    // The refetch hits bridge.get_post, postEditSwap.deleted makes it
+    // return a JSON-RPC error, and PostBodySection renders the not-found
+    // branch — the delete trigger disappears with it.
+    await expect(
+      page.getByText('Post deleted successfully', { exact: true })
+    ).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    await expect(post.postDeleteButton).toBeHidden();
   });
 });

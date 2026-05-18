@@ -4,6 +4,8 @@ import {
   expectCommentOperation
 } from '../support/fixture-auth/broadcast-interceptor';
 import { PostEditorPage } from '../support/pages/postEditorPage';
+import { PostPage } from '../support/pages/postPage';
+import { TIMEOUTS } from '../support/constants';
 import {
   OWN_POST_AUTHOR,
   OWN_POST_PERMLINK,
@@ -35,7 +37,8 @@ test.describe('Post editing — community post (§3 EDIT-04)', () => {
     page
   }) => {
     const broadcast = await installBroadcastInterceptor(page, undefined, {
-      confirmInBlock: true
+      confirmInBlock: true,
+      postEditSwap: { author: OWN_POST_AUTHOR, permlink: OWN_POST_PERMLINK }
     });
     await gotoOwnPostLoggedIn(page);
     await enterEditMode(page);
@@ -56,6 +59,18 @@ test.describe('Post editing — community post (§3 EDIT-04)', () => {
       author: OWN_POST_AUTHOR,
       permlink: OWN_POST_PERMLINK,
       body: EDIT_NEW_BODY
+    });
+
+    // Post-submit UI: editor closes and the refetched post (patched by
+    // postEditSwap) renders the new body. Title is unchanged here so we
+    // only assert on the body.
+    await expect(editor.getPostSubmittedToast).toBeVisible({
+      timeout: TIMEOUTS.HYDRATION
+    });
+    await expect(editor.getSubmitPostButton).toBeHidden();
+    const post = new PostPage(page);
+    await expect(post.articleBody).toContainText(EDIT_NEW_BODY, {
+      timeout: TIMEOUTS.HYDRATION
     });
   });
 });
