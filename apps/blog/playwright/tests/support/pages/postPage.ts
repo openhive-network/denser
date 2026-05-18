@@ -103,6 +103,10 @@ export class PostPage {
   readonly articleBodyParagraph: string;
   readonly postingToDropdown: Locator;
   readonly postEditButton: Locator;
+  readonly postDeleteButton: Locator;
+  readonly deleteDialogHeader: Locator;
+  readonly deleteDialogConfirm: Locator;
+  readonly deleteDialogCancel: Locator;
   readonly articleTable: Locator;
   readonly articleIframes: Locator;
   readonly twitterWrappers: Locator;
@@ -233,6 +237,13 @@ export class PostPage {
     this.firstPostAffiliationTag = page.locator('[data-testid="affiliation-tag-badge"]').first();
     this.postingToDropdown = page.locator('[data-testid="posting-to-list-trigger"]');
     this.postEditButton = page.getByTestId('post-edit');
+    this.postDeleteButton = page.getByTestId('comment-card-footer-delete');
+    // PostDeleteDialog (AlertDialog) reuses the "flag-dialog-*" testids
+    // shared with the comment flag flow — header carries `Confirm Delete Post`
+    // (label prop), `flag-dialog-ok` triggers the delete_comment_operation.
+    this.deleteDialogHeader = page.getByTestId('flag-dialog-header');
+    this.deleteDialogConfirm = page.getByTestId('flag-dialog-ok');
+    this.deleteDialogCancel = page.getByTestId('flag-dialog-cancel');
     this.articleTable = page.locator('#articleBody table');
     this.articleIframes = page.locator('#articleBody iframe');
     this.twitterWrappers = page.locator('#articleBody .twitterWrapper');
