@@ -58,6 +58,14 @@ export class PostEditorPage {
     readonly getSyncScrollContainer: Locator;
     readonly getEditorScroller: Locator;
     readonly getPreviewScroller: Locator;
+    // Edit-mode-only controls in PostPublishingSection. The advanced-settings
+    // dialog is replaced by an inline Select (`edit-reward-type-select`) when
+    // editing; if the post has already finalised payout (max_accepted_payout
+    // === 0) the Select is replaced by the read-only "Reward options are
+    // final" message — see PostPublishingSection.tsx:122-178.
+    readonly getEditRewardTypeSelect: Locator;
+    readonly getEditRewardTypeOptions: Locator;
+    readonly getRewardOptionsFinalText: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -152,6 +160,16 @@ export class PostEditorPage {
         this.getSyncScrollContainer = page.getByTestId('sync-scroll-container');
         this.getEditorScroller = this.getEditorContent.locator('.cm-scroller');
         this.getPreviewScroller = page.getByTestId('preview-scroller');
+        this.getEditRewardTypeSelect = page.getByTestId('edit-reward-type-select');
+        // Radix Select content is portaled, so options live in a sibling
+        // tree from the trigger. We anchor on role+name once the listbox
+        // opens. Use within the spec via `option.click()`.
+        this.getEditRewardTypeOptions = page.getByRole('option');
+        // Translation key `submit_page.reward_options_final` resolves to
+        // "Payout has been declined and cannot be changed". Pin the regex
+        // to the stable substring rather than the whole sentence — minor
+        // copy edits shouldn't break the locator.
+        this.getRewardOptionsFinalText = page.getByText(/payout has been declined/i);
     }
 
     async validateDefaultPostEditorIsLoaded() {
