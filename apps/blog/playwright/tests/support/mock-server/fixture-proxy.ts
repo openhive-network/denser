@@ -344,9 +344,16 @@ export async function createFixtureProxy(
         `[fixture-proxy:record] Done — ${savedCount} unique fixtures saved (${requestCount - savedCount} duplicates skipped) for "${testName}"`
       );
 
+      // server.close() waits for existing connections to drain on its own,
+      // but the next worker's createReplayProxy may try to listen on the
+      // same port before those connections (idle keep-alives from the
+      // page/SSR fetcher) actually finish — manifesting as EADDRINUSE.
+      // Drop idle sockets first, then force-close any that linger.
+      server.closeIdleConnections?.();
       await new Promise<void>((resolve, reject) => {
         server.close((err) => (err ? reject(err) : resolve()));
       });
+      server.closeAllConnections?.();
     },
     port,
     url: `http://localhost:${port}`,
@@ -606,9 +613,15 @@ export async function createReplayProxy(
       console.log(
         `[fixture-proxy:replay] Done — served ${servedCount}, misses ${missCount}`
       );
+      // See the parallel comment in createFixtureProxy.close — without
+      // these two drops, the next worker's listen() races the OS port
+      // release and intermittently throws EADDRINUSE on multi-spec
+      // replay runs that switch fixtureTestName per spec file.
+      server.closeIdleConnections?.();
       await new Promise<void>((resolve, reject) => {
         server.close((err) => (err ? reject(err) : resolve()));
       });
+      server.closeAllConnections?.();
     },
     port,
     url: `http://localhost:${port}`,

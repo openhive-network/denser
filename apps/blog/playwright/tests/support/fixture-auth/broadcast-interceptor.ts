@@ -421,7 +421,8 @@ const DEFAULT_COMMENT_OPTIONS = {
  */
 export function expectCommentOptionsOperation(
   call: InterceptedBroadcast,
-  expected: CommentOptionsOperationExpectations
+  expected: CommentOptionsOperationExpectations,
+  options: { operationIndex?: number } = {}
 ): void {
   const trx = (call.params as { trx?: unknown } | undefined)?.trx as
     | { operations?: unknown[] }
@@ -431,7 +432,13 @@ export function expectCommentOptionsOperation(
   const operations = trx?.operations;
   expect(operations, 'trx should include operations').toBeDefined();
 
-  const op = operations?.[1] as
+  // §2.3 (create) bundles comment + comment_options into one trx at
+  // operations[0] and operations[1]. §3 EDIT-03a's updatePostOptions
+  // ships as a SEPARATE transaction, so the comment_options_operation
+  // lives at operations[0] in that second trx. Callers default to
+  // index 1 (preserves §2.3 behaviour); pass 0 for edit-mode use.
+  const opIndex = options.operationIndex ?? 1;
+  const op = operations?.[opIndex] as
     | { type?: string; value?: Record<string, unknown> }
     | undefined;
 
