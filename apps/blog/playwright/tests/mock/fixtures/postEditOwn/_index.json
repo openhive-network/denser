@@ -1,0 +1,21 @@
+{
+  "testName": "postEditOwn",
+  "recordedAt": "2026-05-18T06:17:45.983Z",
+  "totalRequests": 19,
+  "savedFixtures": 12,
+  "duplicatesSkipped": 7,
+  "methods": {
+    "bridge.get_discussion": 1,
+    "bridge.get_post": 1,
+    "bridge.get_follow_list": 1,
+    "GET /hivesense-api": 4,
+    "bridge.unread_notifications": 1,
+    "GET /hivesense-api/posts/guest4test/test-post-1772011775775/similar": 4,
+    "rc_api.find_rc_accounts": 1,
+    "database_api.find_accounts": 2,
+    "condenser_api.get_reblogged_by": 1,
+    "database_api.list_votes": 1,
+    "database_api.get_dynamic_global_properties": 1,
+    "bridge.get_profile": 1
+  }
+}

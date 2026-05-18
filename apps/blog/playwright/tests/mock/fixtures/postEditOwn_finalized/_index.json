@@ -1,0 +1,9 @@
+{
+  "testName": "postEditOwn_finalized",
+  "base": "postEditOwn",
+  "generatedAt": "2026-05-18T06:29:01.021Z",
+  "overlayFiles": [
+    "0002-bridge.get_post.json",
+    "0001-bridge.get_discussion.json"
+  ]
+}

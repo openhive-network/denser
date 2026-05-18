@@ -1,0 +1,106 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.get_dynamic_global_properties",
+    "params": {},
+    "id": 1
+  },
+  "requestHash": "7aa6e3d75d65a388",
+  "method": "database_api.get_dynamic_global_properties",
+  "params": {},
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 0,
+      "head_block_number": 106482217,
+      "head_block_id": "0658ca29b7919bb72f45a668dd93c01af20626f4",
+      "time": "2026-05-18T06:17:36",
+      "current_witness": "steempeak",
+      "total_pow": 514415,
+      "num_pow_witnesses": 172,
+      "virtual_supply": {
+        "amount": "1096734581955",
+        "precision": 3,
+        "nai": "@@000000021"
+      },
+      "current_supply": {
+        "amount": "544654781839",
+        "precision": 3,
+        "nai": "@@000000021"
+      },
+      "init_hbd_supply": {
+        "amount": "0",
+        "precision": 3,
+        "nai": "@@000000013"
+      },
+      "current_hbd_supply": {
+        "amount": "33124788007",
+        "precision": 3,
+        "nai": "@@000000013"
+      },
+      "total_vesting_fund_hive": {
+        "amount": "207408942305",
+        "precision": 3,
+        "nai": "@@000000021"
+      },
+      "total_vesting_shares": {
+        "amount": "337218997281560273",
+        "precision": 6,
+        "nai": "@@000000037"
+      },
+      "total_reward_fund_hive": {
+        "amount": "0",
+        "precision": 3,
+        "nai": "@@000000021"
+      },
+      "total_reward_shares2": "0",
+      "pending_rewarded_vesting_shares": {
+        "amount": "1251988391170812",
+        "precision": 6,
+        "nai": "@@000000037"
+      },
+      "pending_rewarded_vesting_hive": {
+        "amount": "698978184",
+        "precision": 3,
+        "nai": "@@000000021"
+      },
+      "hbd_interest_rate": 1200,
+      "hbd_print_rate": 0,
+      "maximum_block_size": 65536,
+      "current_aslot": 106749952,
+      "recent_slots_filled": "340282366920938463463374607431768211455",
+      "participation_count": 128,
+      "last_irreversible_block_num": 106482217,
+      "vote_power_reserve_rate": 10,
+      "delegation_return_period": 432000,
+      "reverse_auction_seconds": 0,
+      "available_account_subsidies": 12815138,
+      "hbd_stop_percent": 2000,
+      "hbd_start_percent": 2000,
+      "next_maintenance_time": "2026-05-18T06:37:36",
+      "last_budget_time": "2026-05-18T05:37:36",
+      "next_daily_maintenance_time": "2026-05-18T19:31:33",
+      "content_reward_percent": 6500,
+      "vesting_reward_percent": 1500,
+      "proposal_fund_percent": 1000,
+      "dhf_interval_ledger": {
+        "amount": "17556",
+        "precision": 3,
+        "nai": "@@000000013"
+      },
+      "downvote_pool_percent": 2500,
+      "current_remove_threshold": 200,
+      "early_voting_seconds": 86400,
+      "mid_voting_seconds": 172800,
+      "max_consecutive_recurrent_transfer_failures": 10,
+      "max_recurrent_transfer_end_date": 730,
+      "min_recurrent_transfers_recurrence": 24,
+      "max_open_recurrent_transfers": 255
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

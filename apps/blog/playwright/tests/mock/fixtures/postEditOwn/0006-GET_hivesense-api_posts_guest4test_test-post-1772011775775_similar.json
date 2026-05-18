@@ -1,0 +1,19 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/posts/guest4test/test-post-1772011775775/similar",
+  "requestQuery": {
+    "truncate": "100",
+    "result_limit": "10",
+    "full_posts": "10",
+    "observer": "guest4test"
+  },
+  "requestHash": "af11cbad9d7982cf",
+  "response": {
+    "code": "P0001",
+    "details": null,
+    "hint": null,
+    "message": "Post @guest4test/test-post-1772011775775 has no stored embedding (too short or not yet processed)"
+  },
+  "responseStatus": 400,
+  "responseContentType": "application/json; charset=utf-8"
+}
