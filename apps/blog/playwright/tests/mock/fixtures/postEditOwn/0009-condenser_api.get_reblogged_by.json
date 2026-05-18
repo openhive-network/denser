@@ -1,0 +1,26 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "condenser_api.get_reblogged_by",
+    "params": [
+      "guest4test",
+      "test-post-1772011775775"
+    ],
+    "id": 1
+  },
+  "requestHash": "712fd6294a111bfb",
+  "method": "condenser_api.get_reblogged_by",
+  "params": [
+    "guest4test",
+    "test-post-1772011775775"
+  ],
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
