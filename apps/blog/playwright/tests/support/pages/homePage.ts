@@ -21,6 +21,8 @@ export class HomePage {
   readonly getTrendingCommunitiesSideBar: Locator;
   readonly getTrendingCommunitiesSideBarLinks: Locator;
   readonly getTrandingCommunitiesHeader: Locator;
+  readonly getMyFriendsSidebarLink: Locator;
+  readonly getMyCommunitiesSidebarLink: Locator;
   readonly getExploreCommunities: Locator;
   readonly getLeoFinanceCommunitiesLink: Locator;
   readonly getHeaderLeoCommunities: Locator;
@@ -153,6 +155,12 @@ export class HomePage {
     this.getTrandingCommunitiesHeader = this.getTrendingCommunitiesSideBar
       .locator('a')
       .getByText('All posts');
+    this.getMyFriendsSidebarLink = this.getTrendingCommunitiesSideBar
+      .locator('a')
+      .getByText('My friends');
+    this.getMyCommunitiesSidebarLink = this.getTrendingCommunitiesSideBar
+      .locator('a')
+      .getByText('My communities');
     this.getExploreCommunities = page.locator('[data-testid="explore-communities-link"]'); // page.getByText('Explore communities...');
     this.getLeoFinanceCommunitiesLink = this.getTrendingCommunitiesSideBar
       .locator('a')
