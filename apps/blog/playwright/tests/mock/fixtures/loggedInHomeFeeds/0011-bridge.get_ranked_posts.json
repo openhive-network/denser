@@ -1,0 +1,1599 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "created",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "1239669fb7232469",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "created",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/hive-132248/@harveyword/mould-on-signs",
+        "body": "\n![Mould on Arrow.jpg](https://files.peakd.com/file/peakd-hive/harveyword/23tvAaKdCXXvrm3ujvkmcuBg6eubgNemiXyyXu8KUSSCozJ5bfz8XL1iN6iSNHD9ZCNaC.jpg)\n\n\nOkay I know this is weird, why would any even slightly normal human being find this sort of thing interesting, but, and hear me out here....this is beautiful, sure it's a product of moisture and not enough sunlight,, and it may be harbouring any number of diseases, but, the colours, the shapes, the organic nature of the blooms, trust me when I say this is amazing. \n\nI mean imagine these 10 feet high in an art gallery - you would be amazed. \n\n\n![Mould on 46.jpg](https://files.peakd.com/file/peakd-hive/harveyword/AJmr5eDi2vTVLqygDBAa3wo9MRRzGbdiyXMLtzrDVhwGLer5wnUHxT4qNDwxjff.jpg)\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "Mould on Signs",
+        "author": "harveyword",
+        "payout": 0.021,
+        "created": "2026-05-19T07:13:00",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-19T07:13:00",
+        "category": "hive-132248",
+        "children": 0,
+        "permlink": "mould-on-signs",
+        "community": "hive-132248",
+        "payout_at": "2026-05-26T07:13:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 280970029199,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "scooter77",
+            "rshares": 280563015104
+          },
+          {
+            "voter": "x-tech",
+            "rshares": 407014095
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "visualshots",
+            "photography",
+            "mould",
+            "mold",
+            "weird",
+            "art",
+            "signs",
+            "colour",
+            "nature",
+            "curate"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/harveyword/23tvAaKdCXXvrm3ujvkmcuBg6eubgNemiXyyXu8KUSSCozJ5bfz8XL1iN6iSNHD9ZCNaC.jpg",
+            "https://files.peakd.com/file/peakd-hive/harveyword/AJmr5eDi2vTVLqygDBAa3wo9MRRzGbdiyXMLtzrDVhwGLer5wnUHxT4qNDwxjff.jpg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Visual Shots",
+        "author_reputation": 75.11,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.021 HBD"
+      },
+      {
+        "url": "/hive-162880/@dreamrona/fresh-farm-recipes-easy-homegrown-vegetable-meals-for-breakfast-lunch-and-dinner",
+        "body": "\n![Blue and Green Scenic Nature Photo Collage.png](https://files.peakd.com/file/peakd-hive/dreamrona/23tbsLssdGQHVyzHZEeXdLzM7jMjG9VEnfA18G4v1H3cALgiTCarUz7wKHeRqQJjxDf4C.jpg)\n\nHello everyone! I hope you’re all doing well. Living here on the farm taught me many lessons about simple living, hard work to plant, and being thankful for what we have. Honestly, life is not always easy because we live far from the market, but one thing I appreciate the most is that we always have something to cook because of our backyard garden and vegetables planted around the farm. Because of this, we only buy meat or fish, while most of our daily food comes from what we plant ourselves.\n\n![IMG_20260129_074734.jpg](https://files.peakd.com/file/peakd-hive/dreamrona/23tbnc9FeHbWaoQ3hcyzsLiUwknxaxq3Ut21wf8UwXceegFqCbkTYAarS6E79DJ7c3dCj.jpg)\n\n\n![IMG_20260129_081229.jpg](https://files.peakd.com/file/peakd-hive/dreamrona/23w2jGL8chrNufYsKAEwM25nnKuiE9TsCh8NnZ8PKqot76q51bFLju6B4fUhXUJUjvjN8.jpg)\nEvery morning, our usual breakfast is laswa, a simple vegetable soup made from whatever vegetables are available around us. Sometimes I pick squash, okra, alugbati, eggplant, and sitaw early in the morning before cooking. I realized that food does not need to be expensive to be delicious and healthy. My daughter especially loves the soup and always looks for string beans. Seeing her enjoy vegetables at a young age makes me happy because many children nowadays prefer processed food over fresh vegetables. Sometimes, if I’m so busy I already prepared it during evening so that in morning it’s already prepared. \n\n\n![IMG_20260126_180842.jpg](https://files.peakd.com/file/peakd-hive/dreamrona/23xeg3QgBfw3Lzaq82zoBNrK6Xm4cUuMmUgerpV86uibpsbPVjwG2P13jpHV2KSuZ7Yvg.jpg)\n\n![IMG_20260126_181734.jpg](https://files.peakd.com/file/peakd-hive/dreamrona/23wqdyorUmHfNNgG3JpD4d2dtATFasC7aug4dykim4kyTTkkRh2vneUXMbqTnbxpw94EL.jpg)\n\n![IMG_20260126_192222.jpg](https://files.peakd.com/file/peakd-hive/dreamrona/23vhyWLhAsm1DcW2LxUUdDgnZ5N2yRo6vfyfmKkPHs7VQ9erRwt5EVYwhZjqLMMLb6WFm.jpg)\n\nFor lunch, we usually cook pinakbet with a little meat. Since we live on a farm, fresh vegetables are always available. One thing that is also common here is paihaw. Because the market is far from us, people selling meat/food sometimes deliver directly to our house. There are even funny moments when I suddenly see meat delivered outside without knowing someone already ordered it. Usually, payment can be made after one week or bi-monthly sometimes during harvest, which is very convenient for families living in remote areas like ours.\n\n![IMG_20260126_183415.jpg](https://files.peakd.com/file/peakd-hive/dreamrona/23u65Q186nWCv7GaxZNHYv8CXAQk1wqVUmkq3K2orTc4aUK3uyWW23eTeDb3dbEDLCpbz.jpg)\n\n\n\nAt dinner, vegetables are still our main dish, but I try different recipes so we do not get tired of eating the same food every day. Through this experience, I learned that if you are hardworking and know how to plant, there will always be food on your table. Farming may not make us rich, but it helps us survive while eating healthier meals.\n\n![IMG_20260109_114724.jpg](https://files.peakd.com/file/peakd-hive/dreamrona/23wWnsrZBF4poQxcN8YYFnPPicXPLZnXhkQbZ4U1FdWiJR3PpiimvepuNc12yqcmJw74W.jpg)\n\n![IMG_20260109_114720.jpg](https://files.peakd.com/file/peakd-hive/dreamrona/23vsQXzfuAv2Uty4AKmR8XrCsJYsGVxyagb5kn8V34iLLKZiPuDSqAjc8mAwWycfTApAy.jpg)\n\n![IMG_20260109_121130.jpg](https://files.peakd.com/file/peakd-hive/dreamrona/23wWnJ1Pd2nAWAeCBwdaGrX2uAyuYWziubzFcc29GM8rFsprtKzmXe6QvEmBg7ukvK2cd.jpg)\n\nSometimes our vegetables are not perfect in size or appearance, but I know they are organic and safe for my family. This simple farm life taught me to appreciate small blessings, become resourceful, and value the importance of growing our own food.\n\nThank you for reading my story. This is my owned picture, edited in Canva. Have a nice day! \n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 4
+        },
+        "title": "Fresh Farm Recipes: Easy Homegrown Vegetable Meals for Breakfast, Lunch, and Dinner",
+        "author": "dreamrona",
+        "payout": 0.001,
+        "created": "2026-05-19T07:12:21",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:12:21",
+        "category": "hive-162880",
+        "children": 0,
+        "permlink": "fresh-farm-recipes-easy-homegrown-vegetable-meals-for-breakfast-lunch-and-dinner",
+        "community": "hive-162880",
+        "payout_at": "2026-05-26T07:12:21",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 25334843456,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "fumegi",
+            "rshares": 3201196560
+          },
+          {
+            "voter": "isnochys",
+            "rshares": 15731274990
+          },
+          {
+            "voter": "microbot",
+            "rshares": 3201199180
+          },
+          {
+            "voter": "frasier",
+            "rshares": 3201172726
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "bayanihive",
+            "food",
+            "homegrownvegetable",
+            "curangel",
+            "proofofbrain",
+            "discovery-it",
+            "palnet",
+            "archon",
+            "appreciator",
+            "hive-engine"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/dreamrona/23tbsLssdGQHVyzHZEeXdLzM7jMjG9VEnfA18G4v1H3cALgiTCarUz7wKHeRqQJjxDf4C.jpg",
+            "https://files.peakd.com/file/peakd-hive/dreamrona/23tbnc9FeHbWaoQ3hcyzsLiUwknxaxq3Ut21wf8UwXceegFqCbkTYAarS6E79DJ7c3dCj.jpg",
+            "https://files.peakd.com/file/peakd-hive/dreamrona/23w2jGL8chrNufYsKAEwM25nnKuiE9TsCh8NnZ8PKqot76q51bFLju6B4fUhXUJUjvjN8.jpg",
+            "https://files.peakd.com/file/peakd-hive/dreamrona/23xeg3QgBfw3Lzaq82zoBNrK6Xm4cUuMmUgerpV86uibpsbPVjwG2P13jpHV2KSuZ7Yvg.jpg",
+            "https://files.peakd.com/file/peakd-hive/dreamrona/23wqdyorUmHfNNgG3JpD4d2dtATFasC7aug4dykim4kyTTkkRh2vneUXMbqTnbxpw94EL.jpg",
+            "https://files.peakd.com/file/peakd-hive/dreamrona/23vhyWLhAsm1DcW2LxUUdDgnZ5N2yRo6vfyfmKkPHs7VQ9erRwt5EVYwhZjqLMMLb6WFm.jpg",
+            "https://files.peakd.com/file/peakd-hive/dreamrona/23u65Q186nWCv7GaxZNHYv8CXAQk1wqVUmkq3K2orTc4aUK3uyWW23eTeDb3dbEDLCpbz.jpg",
+            "https://files.peakd.com/file/peakd-hive/dreamrona/23wWnsrZBF4poQxcN8YYFnPPicXPLZnXhkQbZ4U1FdWiJR3PpiimvepuNc12yqcmJw74W.jpg",
+            "https://files.peakd.com/file/peakd-hive/dreamrona/23vsQXzfuAv2Uty4AKmR8XrCsJYsGVxyagb5kn8V34iLLKZiPuDSqAjc8mAwWycfTApAy.jpg",
+            "https://files.peakd.com/file/peakd-hive/dreamrona/23wWnJ1Pd2nAWAeCBwdaGrX2uAyuYWziubzFcc29GM8rFsprtKzmXe6QvEmBg7ukvK2cd.jpg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "BayaniHive",
+        "author_reputation": 72.53,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.001 HBD"
+      },
+      {
+        "url": "/hive-193084/@yagus/k9xyu3e3hcszh10u3dadqx",
+        "body": "\n\n\n<center>![image](https://pixabay.com/get/g5afa9e3e8749fcdaae50b0c56b2ad0d6d503d6b1029abd05c656c98513e0cb9e2d231f72fc5b5d7bcd0d304ab4eb7371cddb16fb72d82c8ac8eeaced7631b83c_640.jpg)</center>\n\n***\n\n¡Claro! Aquí tienes algunas ideas para publicaciones al estilo Twitter sobre viajes:\n\n1. 🌍✈️ \"La aventura comienza donde termina la zona de confort. ¿Listos para explorar? #Viajes #Aventura\"\n   \n2. 🏖️☀️ \"No hay nada como el sonido de las olas y el calor del sol. ¡Escapada a la playa, aquí voy! #Playa #Relax\"\n\n3. 🗺️🍽️ \"Descubrir el mundo a través de su comida es la mejor forma de viajar. ¿Cuál es tu plato favorito? #Gastronomía #Viajes\"\n\n4. 🏞️🚶‍♂️ \"Los mejores recuerdos se crean en la naturaleza. ¡Aventuras al aire libre, aquí vamos! #Senderismo #Naturaleza\"\n\n5. 🏙️🌆 \"Cada ciudad tiene una historia que contar. ¿Cuál es la tuya? #Ciudades #Cultura\"\n\n6. 🌌✨ \"Las estrellas brillan más en la montaña. ¡Noche de camping, aquí vamos! #Camping #Naturaleza\"\n\n7. 🚂🌍 \"Viajar en tren: la forma más romántica de ver el mundo. ¿Cuál es tu ruta soñada? #Tren #Viajes\"\n\n8. 🏰🌟 \"Explorando castillos y leyendas en cada rincón del mundo. ¡La historia nos espera! #Castillos #Historia\"\n\n9. 🏕️🔥 \"La mejor compañía es la que se comparte alrededor de una fogata. ¡A disfrutar de la naturaleza! #Camping #Aventura\"\n\n10. 🌄📸 \"Capturando momentos, creando recuerdos. ¡La fotografía de viajes es mi pasión! #Fotografía #Viajes\"\n\n¡Espero que te sirvan!\n\n***\n\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Claro, aquí tienes algunos títulos breves y llamativos que podrías usar para publicaciones en Twitter sobre",
+        "author": "yagus",
+        "payout": 0,
+        "created": "2026-05-19T07:10:18",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:10:18",
+        "category": "hive-193084",
+        "children": 0,
+        "permlink": "k9xyu3e3hcszh10u3dadqx",
+        "community": "hive-193084",
+        "payout_at": "2026-05-26T07:10:18",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "dBuzz/v3.0.0",
+          "tags": [
+            "trip",
+            "life",
+            "nature",
+            "kr",
+            "waivio",
+            "neoxian",
+            "leo",
+            "inleo",
+            "cent",
+            "oneup",
+            "pob",
+            "proofofbrain",
+            "hustler",
+            "pal",
+            "pimp"
+          ],
+          "shortForm": "true"
+        },
+        "community_title": "DBuzz",
+        "author_reputation": 6.6,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-180164/@merit.ahama/one-book-at-a-time-to-fix-my-money-mindset-g4u",
+        "body": "<div  class=text-justify>\n\nI've shared in my last post here in the community about my reading ability development, or whatever you'd call that. The point is, reading has become a part of my everyday routine. I think I've had only two days when I didn't read and they were both busy days but I thought of the books I was on at that point while I went about the day.\n\nWhat I'm saying is, I am beginning to not see a day when I won't read at least a chapter of a book and I'm loving the experience, especially the knowledge I'm gaining and mindset growth I'm experiencing. It's amazing to think that I can gather so much wisdom from people I may never meet, just by reading a few pages of their words.\n\n![file_000000000074720aa831204da7310d22.png](https://files.peakd.com/file/peakd-hive/merit.ahama/48etbRd5wUfQTTvGzsEFGXo8UQoAXM6FYtRv3k62Hdj2f2gFjZaaCXcyi9dUHt6N8a.png)\n\nPresently, I'm reading a book on the skill I'm trying to grow on. I love the writer so much but I'm keeping the review of his books that I've read for the best time to share them. For now, I just want to make sure I'm getting as much knowledge from him as I need to, no distractions.\n\nOn my quest to finish 5 books in this month of May, I have 3 left to read for the goal to be accomplished and a thought came to mind yesterday. I was seeing a video of a 29 year old guy who became a millionaire at 24 from micro habits that I had never thought of to grow money.\n\nHe said something that made me realize just why I had never thought of those... I don't learn about money. Like a skill, like a project, like a new job, one is supposed to study and learn about money for it to work for you as it should. He suggested a good number of books and he mentioned two books I've heard about countless times before.\n\n***\"The Richest Man in Babylon\"*** by **George S. Clason** and ***\"The Psychology of Money\"*** by **Morgan Housel**. I ran a quick search and they are on the list of best financial books of all time. They are definitely a must read for anyone who wants to grow their money mindset and make money work as a tool but it's all talk for me now.\n\n<div  class=text-center>\n\n![PDF-EPUB-The-Psychology-of-Money-by-Morgan-Housel-Download.jpg](https://files.peakd.com/file/peakd-hive/merit.ahama/23xpTSB69K5v5h54v8MuzyzXN5Zgx3L59r3JS5asTwzAGAkekJWfrt5h3x3Y3MiwPjLW3.jpg)\n\n</div>\n\n---\n\nI'm deciding to read one of these two books in this month, and I'm thinking I'll choose **\"The Psychology of Money\"** and that's because I have read the other book before, like 10 years ago lol. Yeah, I know I don't remember a lot from what I read back then so I'll have to read it again but reading one I've never read before is a great start.\n\nI'm off to have it downloaded and start reading tonight, I'll come back to share what I've learned from it. This is like holding myself accountable by this blog, I really need to improve my money mindset and there's no better way to start than to learn from people who have lived it and shared their wisdom. I'm excited for what I'll find in it.\n\nTell me, *which of the two books have you read?*</div>\n\n<sub>**First Image is AI generated.\nSecond image is from [here](https://oceanofpdf.com/genres/money/pdf-epub-the-psychology-of-money-download/)**</sub>\n\nPosted Using [INLEO](https://inleo.io/@merit.ahama/one-book-at-a-time-to-fix-my-money-mindset-g4u)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 41
+        },
+        "title": "One Book at a Time to Fix My Money Mindset",
+        "author": "merit.ahama",
+        "payout": 0.261,
+        "created": "2026-05-19T07:09:54",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:09:54",
+        "category": "hive-180164",
+        "children": 0,
+        "permlink": "one-book-at-a-time-to-fix-my-money-mindset-g4u",
+        "community": "hive-180164",
+        "payout_at": "2026-05-26T07:09:54",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 3442087202432,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "dreemsteem",
+            "rshares": 16137539802
+          },
+          {
+            "voter": "lebah",
+            "rshares": 406961307
+          },
+          {
+            "voter": "joeyarnoldvn",
+            "rshares": 940071409
+          },
+          {
+            "voter": "grocko",
+            "rshares": 1558280511
+          },
+          {
+            "voter": "tobias-g",
+            "rshares": 9739741512
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 1000,
+            "account": "mhizsmiler.leo"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-180164",
+            "money",
+            "book",
+            "psychology",
+            "habit",
+            "neoxian",
+            "tribes",
+            "waivio",
+            "proofofbrain"
+          ],
+          "links": [
+            "https://files.peakd.com/file/peakd-hive/merit.ahama/48etbRd5wUfQTTvGzsEFGXo8UQoAXM6FYtRv3k62Hdj2f2gFjZaaCXcyi9dUHt6N8a.png)",
+            "https://files.peakd.com/file/peakd-hive/merit.ahama/23xpTSB69K5v5h54v8MuzyzXN5Zgx3L59r3JS5asTwzAGAkekJWfrt5h3x3Y3MiwPjLW3.jpg)",
+            "https://oceanofpdf.com/genres/money/pdf-epub-the-psychology-of-money-download/)**</sub>",
+            "https://inleo.io/@merit.ahama/one-book-at-a-time-to-fix-my-money-mindset-g4u)"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@merit.ahama/one-book-at-a-time-to-fix-my-money-mindset-g4u"
+        },
+        "community_title": "Hive Book Club",
+        "author_reputation": 77.71,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.261 HBD"
+      },
+      {
+        "url": "/hive-178437/@anzaya26/hive-reachout-weekly-prompt-100the-influence-of-social-media-on-charity",
+        "body": "Social media has changed many things in our world today, and charity is one of them. In the past, helping people was not always easy because many givers did not know who truly needed help or how to reach them. Today, with just a simple post, someone in need can be seen by thousands of people within minutes. This has made it easier for help to reach people quickly, sometimes even faster than expected. Many individuals have received support for medical treatment, school fees, feeding, and other urgent needs through platforms like Facebook, WhatsApp, and Instagram. \n\n![file_00000000ad2072468b86acce5920a695.png](https://files.peakd.com/file/peakd-hive/anzaya26/23x1B6R2MHf9No4da1KbxSFi1qmCYMKaDuzzYBUxPTPpEtYvtmW5FeCoxPUHnbcamb89i.png)\n*Picture generated in chatgpt*\n\nIt has also created a strong sense of connection among people, as strangers from different locations can come together to support a common cause. Beyond financial help, social media has increased awareness about serious issues like poverty, illness, and disasters, making more people sensitive and willing to act. It has given a voice to those who might not have been heard before and created opportunities for compassion to spread across different communities.\n\nDespite these benefits, social media also comes with challenges when it comes to charity. Some people no longer give from a place of genuine concern but instead focus on recognition and public approval. They record videos or take pictures while helping others and share them online just to gain attention. This behavior can make the person receiving help feel exposed, embarrassed, or even disrespected, as their situation is turned into content for others to see. Charity is meant to restore dignity, not reduce it. Another serious issue is the rise of scams. There are individuals who create false stories or exaggerate situations just to collect money from people who truly want to help. This has made many people cautious and sometimes unwilling to support even genuine cases. Trust, which is very important in charity, is gradually being affected, and this makes it harder for real people in need to receive assistance.\n\nUsing social media for charity in the right way requires a change in mindset and responsibility from users. Helping others should come from a sincere heart, not from a desire to be praised or noticed. When there is a need to share acts of kindness online, it should be done with respect, ensuring that the dignity and privacy of the person being helped are protected. People also need to be more careful by confirming the authenticity of any request before offering support, so that their kindness is not taken advantage of. Social media platforms and users alike should encourage honesty and discourage misuse of charitable acts for selfish gain. When used properly, social media remains a powerful tool that can continue to impact lives positively, bringing hope, support, and real change to those who truly need it.\n\n*Thank you for rapt attention!*",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Hive-Reachout Weekly Prompt 100>>\"‎‎‎The Influence Of Social Media On Charity\"",
+        "author": "anzaya26",
+        "payout": 0,
+        "created": "2026-05-19T07:06:00",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-19T07:06:00",
+        "category": "hive-178437",
+        "children": 0,
+        "permlink": "hive-reachout-weekly-prompt-100the-influence-of-social-media-on-charity",
+        "community": "hive-178437",
+        "payout_at": "2026-05-26T07:06:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "hive-reachout",
+            "love",
+            "hive-promotion",
+            "bandit",
+            "support",
+            "charity"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/anzaya26/23x1B6R2MHf9No4da1KbxSFi1qmCYMKaDuzzYBUxPTPpEtYvtmW5FeCoxPUHnbcamb89i.png"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Hive Reachout",
+        "author_reputation": 47.22,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/art/@rossfletcher/unintentional-temporary-art",
+        "body": "\n![IMG_4303.jpg](https://files.peakd.com/file/peakd-hive/rossfletcher/EoEsUHQJeNCjnf8vZxYvkbRYSYSVudUJTs1QxP5UWqM23Dv1eTW5GDKRkq1Z4HDvDD9.jpg)\n\n![IMG_4306.jpg](https://files.peakd.com/file/peakd-hive/rossfletcher/Eos3CwVUsRxSVWPzyunzRFBP3JEbMGPv2wdMGiLrPPZwuZDCEApqz2aNdaiAixxVQdG.jpg)\n\n![IMG_4305.jpg](https://files.peakd.com/file/peakd-hive/rossfletcher/Eo6Mqr6QF2BKPAUyBJQei54PLgYGi5WcN36d3YqLn1vAZL31zMxu7RqLHwcy8NzEKFx.jpg)\n\n![IMG_4304.jpg](https://files.peakd.com/file/peakd-hive/rossfletcher/Eo26UNk1thEXusvhR2qTb4XJBiSfJ6RMdqYfnj9Lsf1sgtRozs2iobfGDmW86FUkuvh.jpg)\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "Unintentional temporary art ",
+        "author": "rossfletcher",
+        "payout": 0.068,
+        "created": "2026-05-19T07:04:27",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:04:27",
+        "category": "art",
+        "children": 0,
+        "permlink": "unintentional-temporary-art",
+        "payout_at": "2026-05-26T07:04:27",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 889538587123,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "cornerstone",
+            "rshares": 796117783694
+          },
+          {
+            "voter": "prydefoltz",
+            "rshares": 93420803429
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "art",
+            "texture",
+            "rossfletcherart",
+            "photography"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/rossfletcher/EoEsUHQJeNCjnf8vZxYvkbRYSYSVudUJTs1QxP5UWqM23Dv1eTW5GDKRkq1Z4HDvDD9.jpg",
+            "https://files.peakd.com/file/peakd-hive/rossfletcher/Eos3CwVUsRxSVWPzyunzRFBP3JEbMGPv2wdMGiLrPPZwuZDCEApqz2aNdaiAixxVQdG.jpg",
+            "https://files.peakd.com/file/peakd-hive/rossfletcher/Eo6Mqr6QF2BKPAUyBJQei54PLgYGi5WcN36d3YqLn1vAZL31zMxu7RqLHwcy8NzEKFx.jpg",
+            "https://files.peakd.com/file/peakd-hive/rossfletcher/Eo26UNk1thEXusvhR2qTb4XJBiSfJ6RMdqYfnj9Lsf1sgtRozs2iobfGDmW86FUkuvh.jpg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "author_reputation": 77.1,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.068 HBD"
+      },
+      {
+        "url": "/hive-161155/@corpsekaizen/no-different-7u8",
+        "body": "*\"I'm going to volunteer,\"* Sara said, sitting at the dinner table among freshly cooked meat. *\"Those kids, I can't watch them suffer like this. At least I can be of some help.\"*\n\nHarrison listened, but his attention seemed elsewhere, not quite present.\nShe knocked the table as if asking permission, though he'd heard her clearly enough. What would his answer be?\n*\"I'll have to come home late if I do that,\"* he said.\n\n https://img.leopedia.io/DQmZ1JPHpxhnsQe2x4ocDEA5y3z72hPTdypx3woLzE1PwoY/kristina-tripkovic-nwWUBsW6ud4-unsplash.jpg \nPhoto by <a href=\"https://unsplash.com/@tinamosquito?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText\">Kristina Tripkovic</a> on <a href=\"https://unsplash.com/photos/grayscale-photo-of-woman-right-hand-on-glass-nwWUBsW6ud4?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText\">Unsplash</a>\n      \nHarrison finished his plate, chunks still caught between his teeth, chewing like a grumpy old man. *\"But you're late every day already, aren't you?\"*\n\n\"*What else can I do?*\"\n\n\"*It's about conscience, you know,*\" Harrison said, the words tasting brutal on his tongue, but necessary in his mind.\n\n\"*Whatever you want, do it*,\" he continued, leaning back. \"Y*ou could volunteer to be here, like once. I'm no different from those kids.*\"\n\nSara's voice rose, sharp with fury. \"*This is not funny, Harrison. And you know it*.\"\n\n\"*Yeah, yeah. I know*,\" he said quietly, the edge already gone from him.\n\n\"*I will not go then to volunteer,*\"\n\nWhat is remorse, after all, when something tangible exists before us? And if it doesn't, we live by the same measures anyway. A volunteer for things beyond our scope, like our own lives, which we didn't choose but somehow entered. I can understand the desire to end it all. Perhaps none of us truly volunteered; we simply arrived here somehow.\n\n [18 May 2026, Freewriters Community Daily Writing Prompt Day 3107: I’m not going to volunteer](https://peakd.com/hive-161155/@daily.prompt/18-may-2026-freewriters-community-daily-writing-prompt-day-3107-im-not-going-to-volunteer) \n\nPosted Using [INLEO](https://inleo.io/@corpsekaizen/no-different-7u8)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "No Different",
+        "author": "corpsekaizen",
+        "payout": 0,
+        "created": "2026-05-19T07:04:24",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:04:24",
+        "category": "hive-161155",
+        "children": 0,
+        "permlink": "no-different-7u8",
+        "community": "hive-161155",
+        "payout_at": "2026-05-26T07:04:24",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-161155",
+            "fiction",
+            "dailyprompt",
+            "freewrite",
+            "freewriters",
+            "inleo",
+            "creativecoin",
+            "neoxian",
+            "waivio"
+          ],
+          "links": [
+            "https://unsplash.com/@tinamosquito?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText\">Kristina",
+            "https://unsplash.com/photos/grayscale-photo-of-woman-right-hand-on-glass-nwWUBsW6ud4?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText\">Unsplash</a>",
+            "https://peakd.com/hive-161155/@daily.prompt/18-may-2026-freewriters-community-daily-writing-prompt-day-3107-im-not-going-to-volunteer)",
+            "https://inleo.io/@corpsekaizen/no-different-7u8)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmZ1JPHpxhnsQe2x4ocDEA5y3z72hPTdypx3woLzE1PwoY/kristina-tripkovic-nwWUBsW6ud4-unsplash.jpg"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@corpsekaizen/no-different-7u8"
+        },
+        "community_title": "Freewriters",
+        "author_reputation": 59.32,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-105017/@zsfy001/1594cc25d48b",
+        "body": "  小腿🦵真的好痒，每次天热小腿就奇痒无比，感觉整个小腿有无数只痒虫在啃食自己的皮肤，有时时候太痒了就我有酒精喷雾，挖槽！哪个刺痛和灼热感瞬间直冲天灵盖，止痒很有效，但过几十分钟又开始痒！\n\n      同事看见我不停的在抓腿就把他的炉甘石杀菌消毒液给我用，感觉第一次听到这种杀菌液体的名字，以前都知道有双氧水和碘酒，这玩意儿涂上去就像一抹了一层石灰粉，白色粉末覆盖整个小腿，感觉没喷酒精那么刺痛，还是蛮有效果，至少没有那么大面积的恶痒了，每天涂2到3次，看看情况如何…\n\n      ，感觉是出汗导致的，真想把腿毛刮掉，但感觉太光秃很别扭，考虑中…",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "好吧，开始吧…",
+        "author": "zsfy001",
+        "payout": 0,
+        "created": "2026-05-19T07:04:00",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:04:00",
+        "category": "hive-105017",
+        "children": 0,
+        "permlink": "1594cc25d48b",
+        "community": "hive-105017",
+        "payout_at": "2026-05-26T07:04:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.5.5-mobile",
+          "tags": [
+            "hive-105017"
+          ],
+          "type": "post",
+          "links": [],
+          "format": "markdown+html"
+        },
+        "community_title": "HIVE CN 中文社区",
+        "author_reputation": 53.8,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-153850/@marsdave/own-it-dont-blame-it-e1s",
+        "body": "Hot tempered people are not even the type to be close with at all. Because they can't do and undo, and at the end of the day they blame it on their anger, mood and such. If you've worked/walked with some of them you will agree with me to how unpredictable that can be. That can just have a mood swing anytime, anything can just infuriate them and they will just burst out.\n\n\n\n![1001048777.png](https://files.peakd.com/file/peakd-hive/marsdave/23xpHL2R4rH7ZhFsVBVV9pen2JXQpc4KTp74XeCBgq6s46xvpFp2HoDefFm4QSDuMJfYW.png)\n\n\n\nAnd I'm saying this because I've come in contact with people like that, some will tell you *\"that is just me.\"* I will be like...*\"What!\"* You call this, you. How can this be you, I was even talking to a lady just few weeks ago and was telling her about the way she reacted to something, I told her if I had gave her the way she gave it to me, the back and forth of words we were having online would keep on going and might lead to something else, guess what she said... *\"You of all people should know my temper by now.\"* That was what she said.\n\n\nBut me, I wouldn't have it. Your hot temper should be tamed, you should learn to control yourself, your temper isn't a free pass to hurt or talk down on others. It is a problem, you know you have it, then work on it. Or, is having a hot temper something to glory in....I don't get it.\n\n\n\nAnd I as a person have learnt to keep my distance from such people. Because they are hard to be with nsd navigate around. And after trying my best to make them see and work on what they already know they are(hot tempered) and they refuse to change then I give my distance. And you can't tell me that I don't care, because I've already done my best, and its best for me to step back instead of always getting caught up in their angers. If a person is not showing signs and willing to change, we can't do nothing.\n\n\n\nOne of my closest pals as well have that issue, and even though it wasn't that convenient for me because of how close we are, I just had to keep my distance. Later, when someone who's way older got to know about it since she's not seeing us talk and do the way we do before, she called us both and talked to us, while talking she said something in Yoruba, she said, *\"Toyo, You should know it for her.\"* \n\n\n![1001048776.png](https://files.peakd.com/file/peakd-hive/marsdave/23zbgZjwvx2RLvXSxJgVgyDvDHUpiH87FZvhWVsvx9kzGA5GqHir7PxAgiL3CotM5QAye.png)\n\n\n\nIn short, she's telling me that its her character and I should have known it for her, and me I wouldn't even have it. I countered her respectfully. I told her if it was another character or attitude, maybe I would have looked away and not really mind, but this anger and temper of a thing, its a no-no for me. I cannot know such a character for a person, you know you have this flaws, you know how it is affecting you and people around you, you know how people might start to look you later, even you know that when it starts you can't control yourself or know the extent of the words you can say or the harm you can do, what's best for you is to take responsibility, and work on it. Be a better person and don't blame your actions on something you can work on.\n\n\n\n\nHaving hot temper isn't a normal thing, because it can damage and destroy. But as a society, we can help by providing some sort/level of support, advice and all. And such people should take responsibility for their actions, they cannot blame it on their temper, and even if they do, at the end of the day, the temper they are blaming it on is still there's, so they should take responsibility for it. \n\n\n\n\n🌹\n\n**Images are AI generated.**\n\n**Thanks a lot for taking your time to read through, kindly do well to stop by my blog @marsdave for more exclusive and amazing content.**\n\n\n❣️❣️❣️\n\nPosted Using [INLEO](https://inleo.io/@marsdave/own-it-dont-blame-it-e1s)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Own It, Don't Blame It.",
+        "author": "marsdave",
+        "payout": 0,
+        "created": "2026-05-19T07:03:45",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:03:45",
+        "category": "hive-153850",
+        "children": 0,
+        "permlink": "own-it-dont-blame-it-e1s",
+        "community": "hive-153850",
+        "payout_at": "2026-05-26T07:03:45",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "Verified | Nigeria ✅",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-153850",
+            "hl-exclusive",
+            "hl-w218e1",
+            "neoxian",
+            "tribes",
+            "appreciator",
+            "life",
+            "lifestyle",
+            "proofofbrain",
+            "vyb"
+          ],
+          "links": [
+            "https://files.peakd.com/file/peakd-hive/marsdave/23xpHL2R4rH7ZhFsVBVV9pen2JXQpc4KTp74XeCBgq6s46xvpFp2HoDefFm4QSDuMJfYW.png)",
+            "https://files.peakd.com/file/peakd-hive/marsdave/23zbgZjwvx2RLvXSxJgVgyDvDHUpiH87FZvhWVsvx9kzGA5GqHir7PxAgiL3CotM5QAye.png)",
+            "https://inleo.io/@marsdave/own-it-dont-blame-it-e1s)"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@marsdave/own-it-dont-blame-it-e1s"
+        },
+        "community_title": "Hive Learners",
+        "author_reputation": 71.31,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-109584/@twicejoy/the-one-person-i-miss-the-most-9ck",
+        "body": "‎Hi Hive,\n‎\n‎It is 43rd edition of Hive students connect prompt and I will be sharing my own thoughts about the person I really miss most just like the prompt implied.\n‎\n‎There are certain people in life whose their absence leaves a space that nothing else can truly fill. And for me, that person is my mom. No matter how busy life gets or how many people surround me, there are moments when I suddenly remember her, and everything becomes emotional again.\n https://img.leopedia.io/DQmXzoZ2zV3W3zN3fyDoZoPammTan62LwAEqGxMFw8z4ETV/file_00000000a88471f4a4b6c85826106589%201.png \n\n‎\n‎I got to know my mom not just as a parent, but also as my first friend, my biggest supporter, and the one person who always understood me even when I said nothing. Right from childhood, she was always been there, waking me up for school, encouraging me whenever I felt down, correcting me when I was wrong, and praying for me even when I didn’t even notice it. Her love was simple, pure, and constant.\n‎\n‎Her presence is what I really miss the most. I miss the way she called my name with care, the way she worried about little things concerning me, and how she could turn an ordinary day into a special one just by being around. Sometimes when I remember her sacrifices, her advice, and the countless silent battles she fought for the family, I feel emotional because I now realized that mothers carry so much love inside them.\n‎\n‎One unforgettable thing about my time with her was how she always made me believe things would get better, no matter how difficult or tough life become. There were days when I felt frustrated or discouraged, but just a simple conversation with her gave me peace and hope. And her words had a way of healing my mind. Even her smile alone could calm my worries as well.\n‎\n‎Today, I feel both gratitude and pain whenever I think about her, gratitude for having someone so loving in my life, and pain because moments with people we love never last forever and ever. But one thing is certain, and that's the memories, lessons, and love she gave me will stay forever in my heart.\n‎\n‎Some people may leave your sight, but they never truly leave your heart and mom will always be one of those people for me.\n‎\n‎**Image Edited Using AI**\n‎\n\n‎![](https://images.ecency.com/DQmYaWnApEziAtLL5Zwv3ZNbDjRfSfG6h5njgTrpyasnE6y/1775569275821.png)\n‎\n\nPosted Using [INLEO](https://inleo.io/@twicejoy/the-one-person-i-miss-the-most-9ck)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 89
+        },
+        "title": "‎THE ONE PERSON I MISS THE MOST",
+        "author": "twicejoy",
+        "payout": 0.056,
+        "created": "2026-05-19T07:02:45",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:02:45",
+        "category": "hive-109584",
+        "children": 0,
+        "permlink": "the-one-person-i-miss-the-most-9ck",
+        "community": "hive-109584",
+        "payout_at": "2026-05-26T07:02:45",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 748351822554,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "robsteady",
+            "rshares": 4633215428
+          },
+          {
+            "voter": "moretea",
+            "rshares": 1736277926
+          },
+          {
+            "voter": "bigtakosensei",
+            "rshares": 2103692826
+          },
+          {
+            "voter": "bloghound",
+            "rshares": 2314961835
+          },
+          {
+            "voter": "humoalex",
+            "rshares": 995556393
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-109584",
+            "Hivestudents",
+            "Students",
+            "‎HSCP—WK43",
+            "Neoxian",
+            "Aliveandthriving",
+            "Alive",
+            "Motherhood",
+            "India",
+            "Emotions "
+          ],
+          "links": [
+            "https://images.ecency.com/DQmYaWnApEziAtLL5Zwv3ZNbDjRfSfG6h5njgTrpyasnE6y/1775569275821.png)",
+            "https://inleo.io/@twicejoy/the-one-person-i-miss-the-most-9ck)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmXzoZ2zV3W3zN3fyDoZoPammTan62LwAEqGxMFw8z4ETV/file_00000000a88471f4a4b6c85826106589%201.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@twicejoy/the-one-person-i-miss-the-most-9ck"
+        },
+        "community_title": "Hive Student Connect",
+        "author_reputation": 73.87,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.056 HBD"
+      },
+      {
+        "url": "/lr/@ammodotcom/best-22-lr-ammo-for-competition-high-precision-match-loads",
+        "body": "![image (13).png](https://images.hive.blog/DQmSf1fTGxQE6JhYyXJ1QvgSF2KVQWKMTZb5fmmXoNSFnRw/image%20(13).png)\nTiny groups win matches.\n\nFrom Lapua Center-X to Eley and CCI Match loads, we break down the most accurate, reliable .22 LR ammo trusted by serious rimfire competitors.\n\nRead Best 22 LR Ammo for Competition: High-Precision Match Loads and tighten your next scorecard today: https://ammo.com/best/best-22lr-ammo-for-competition\n\n#22LR #Rimfire #ShootingSports",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "Best 22 LR Ammo for Competition: High-Precision Match Loads",
+        "author": "ammodotcom",
+        "payout": 0.002,
+        "created": "2026-05-19T07:01:39",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:01:39",
+        "category": "lr",
+        "children": 0,
+        "permlink": "best-22-lr-ammo-for-competition-high-precision-match-loads",
+        "payout_at": "2026-05-26T07:01:39",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 37076579314,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "freebornsociety",
+            "rshares": 23111142541
+          },
+          {
+            "voter": "newsnownorthwest",
+            "rshares": 13965436773
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "tags": [
+            "lr",
+            "rimfire",
+            "shootingsports"
+          ],
+          "image": [
+            "https://images.hive.blog/DQmSf1fTGxQE6JhYyXJ1QvgSF2KVQWKMTZb5fmmXoNSFnRw/image%20(13).png"
+          ],
+          "links": [
+            "https://ammo.com/best/best-22lr-ammo-for-competition"
+          ],
+          "format": "markdown",
+          "description": "Best 22 LR Ammo for Competition: High-Precision Match Loads"
+        },
+        "author_reputation": 64.42,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.002 HBD"
+      },
+      {
+        "url": "/fiction/@internutter/challenge-04888-m139-and-having-writ-moves-on",
+        "body": "\n![logan-weaver-lgnwvr-QfQJMlP1v6g-unsplash.jpg](https://files.peakd.com/file/peakd-hive/internutter/23xAZh1f5grz9Q8cqvyyPEwvejqrMtWeBFNKQMeXmYox7Y63MuBNj9iz1iPSyXENgs3i1.jpg)\n\n> After a bout of writer’s block, an author of some renown has the spark return. Only, the events that the author begins penning begin to happen in real life. Horrified, the author tries to abandon the work. And yet, the tickle of imagination, the curiosity of what’s happening, and even the thrill of power keep calling the author back to the paper and ink… -- [Deathshead419](https://internutter.org/bb/user/deathshead419)\n\nWriters may not live and die by the words they write, but they certainly eat and pay the rent by the sales they get. Some _have_ died because of the words they wrote, but the blame lies on an unhinged member of the audience more than the work of the author. It's when inspiration stops cold and the ideas no longer flow, that a creative soul might pay _anything_ to have one more idea.\n\nEllias Tauryn had been doing very well in speculative fiction. Their fifteen-book series had made their name, their fortune, and their fame.\n\nIt also made the most-asked question: \"What's your next book about?\"\n\nThat was the problem with an adoring audience. They wanted _more_. Yes, they loved what you made, and would continue to talk about it, but they wanted to see what happened _next_. What was the new thing.\n\nThe other problem was that Ellias didn't have one.\n\nNot a new series, a new novel, nor a new idea. Not even the vague concept of an idea. Not a glimpse of a mote of inspiration.\n\nTheir muse, in short, had bunked off to parts unknown and had not been seen since.\n\nEllias did all the things one should do to gain ideas. Long walks in the countryside. Absorbing new media. Looking through the social networks for anything that interested them. Wiki-walking from one strange historical fact to another.\n\nNo lightbulb moments. Not a single spark.\n\nThey even wandered around their town, looking for interesting places where ideas were wont to roost. Trying to find every niche, hole-in-the-wall shop where the people who ran it could take or leave customers.\n\nIn one such dusty store of Escher-esque architecture, the old man running the shop watched Ellias navigate the cramped aisles. \"You don't find what you want, here,\" he called. \"You get what you _need_.\"\n\n\"I need something to happen,\" grumbled Ellias, absently righting a dusty doll on a shelf. \"I need a story to tell. Something visceral. Something _real_.\"\n\nAlways be careful what you ask for, and be specific with _how_ you ask for it. Because what writers mean with certain phrases isn't how other people hear them.\n\n\"What you need,\" said the old man, \"is the right tool for the write job.\" He rummaged under the counter. Drawers hissed and door hinges creaked, more than would seem possible for a dinky hunchbacked shop or any counter that may fit in one. \"Yes. _This_. This is what you need.\"\n\nIt was a novelty pen, made to resemble a finger bone with unnerving anatomical accuracy. With an ink nib holding the place where a fingernail might rest. Laying in its box was a boringly dull bottle of India ink.\n\nEllias also purchased a notebook from a far more ordinary stationer's on the way home.\n\nThat evening, new pen in hand, he began to _write_. It was not fantasy, nor any kind of speculative fiction. It was a real-world drama. Set inside a nation much like his own. One about to come into the wrong side of a war.\n\nThey wrote all night, only succumbing to sleep just before dawn. The television was on, but only for the white noise.\n\nEllias thought he was dreaming when he heard the newsreader talking about the events he had just written. As consciousness crept up on him, that thought was proven false. It was real.\n\nIt was all real.\n\nCo-incidence. Ellias got a meal into themself and with a fresh cup of coffee, sat to write more. They _had_ to find out how the tale played out.\n\nThe instant they finished one page, the news began talking about those events. Okay, more than a co-incidence. Ellias' idea was on fire. They wrote as quickly as they could to get the story out of their head and onto the page.\n\n...which again matched the news. Wait. The news matched _it_.\n\nEllias put the pen down, horrified. Could they _really_ dictate real life like this? Ellias began a new page.\n\n_The president stepped up to the podium for the press conference, about to turn his entire party's policies upside-down,_ Ellias wrote. _He was fully confident that if his party did not back him, that the people would cheer his momentous decision..._\n\nThey fought to put it all in one page, but when it was done... Ellias watched agog as it all unfurled. They almost laughed themselves sick watching the toadies and lickspittles have a quiet fit in the background.\n\nIt was going to be fun watching them backpedal to the chorus of outraged people howling about the retraction.\n\nEllias contemplated the pen. It helped their ideas, but it wrote reality. On one hand, yes, they could fuck with the way the world worked. On the other... they could really fuck with the way the world worked.\n\n...and the idea they started with was gnawing at them.\n\nDid they really want to live in a world of their own making?\n\n[Photo by <a href=\"https://unsplash.com/@lgnwvr?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText\">LOGAN WEAVER | @LGNWVR</a> on <a href=\"https://unsplash.com/photos/two-white-printer-papers-QfQJMlP1v6g?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText\">Unsplash</a>]\n\nIf you like my stories, please [Check out my blog and Follow me](https://peakd.com/@internutter). Or share them with your friends! _Or_ visit my [hub site](https://www.internutter.org) to see what else I'm up to.\n\n[Send me a prompt](https://www.internutter.org/bb/category/6/prompts) [12 remaining prompts!]\n\n[Support me on Patreon](https://www.patreon.com/cmweller) / [Buy me a Ko-fi](https://ko-fi.com/cmweller)\n\n[Check out the other stuff I'm selling](https://books2read.com/ap/n7O1la/C-M-Weller)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 7
+        },
+        "title": "Challenge #04888-M139: And Having Writ, Moves On",
+        "author": "internutter",
+        "payout": 0.004,
+        "created": "2026-05-19T07:01:39",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:01:39",
+        "category": "fiction",
+        "children": 1,
+        "permlink": "challenge-04888-m139-and-having-writ-moves-on",
+        "payout_at": "2026-05-26T07:01:39",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 60690461887,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "internutter",
+            "rshares": 9309962583
+          },
+          {
+            "voter": "teamaustralia",
+            "rshares": 21309011927
+          },
+          {
+            "voter": "attention-seeker",
+            "rshares": 1894701626
+          },
+          {
+            "voter": "tech-coin",
+            "rshares": 2478417065
+          },
+          {
+            "voter": "coinmarketcal",
+            "rshares": 13299266419
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "peakd"
+          }
+        ],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "fiction",
+            "instantstory",
+            "magical-mayhem",
+            "cursed-artefact",
+            "power"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/internutter/23xAZh1f5grz9Q8cqvyyPEwvejqrMtWeBFNKQMeXmYox7Y63MuBNj9iz1iPSyXENgs3i1.jpg"
+          ],
+          "users": [
+            "lgnwvr",
+            "LGNWVR",
+            "internutter"
+          ],
+          "format": "markdown",
+          "description": "Something about tears?"
+        },
+        "author_reputation": 75.87,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.004 HBD"
+      },
+      {
+        "url": "/hive-111030/@burlarj/when-ai-becomes-your-companion-7i8",
+        "body": "<div class=\"text-justify\">\n\n<center>![](https://i.ecency.com/DQmVg4EgSEPkzDcupKv4iaWXrY3XMVSsTHsb4DZQ6VokxXQ/image.png)</center>\n[source](https://pixabay.com/illustrations/humanoid-futuristic-robot-tech-8043450/)\n\n\n*Many of us already have a bot friend that we share our feelings and inner secrets with, knowing fully well that it has no emotions… and we actually love it that way, as long as it can be a good companion whenever we need answers to questions or insight into things bothering us.*\n\n*Some people don’t even realize how attached they are to ChatGPT or Gemini based on how quickly they run to these bots whenever they need answers, advice, or someone to talk to…*\n\n*If you really want to know a person’s deepest thoughts now, don’t check their chats with friends or partners… check their ChatGPT history instead. You will probably find things that truly define them.*\n\n*The major difference between ChatGPT and a robot is physical presence. A robot would be able to walk, move around, and interact physically, unlike ChatGPT, which only exists digitally*.\n\n*Honestly, I would love to have that kind of advanced robot someday because aside from helping with questions, it could also assist with chores, errands, and daily activities*.\n\n<center>![](https://i.ecency.com/DQmagMXhrzgX8nyHkr8A29BKkta2xqAxnu5CgjreP6J22tg/image.png)</center>\n[source](https://pixabay.com/illustrations/robot-3d-robot-with-flowers-3197204/)\n\n\n*Imagine having a companion you can walk around and gist with freely without barriers… that would actually make sense, especially if the robot is highly advanced.*\n\n*The problem of robots or AI taking wrong commands is something humans can actually control. Even ChatGPT gives wrong answers sometimes, but as humans, we have intuition and reasoning to help us know what is right from wrong.*\n\n*That responsibility still falls on us.*\n\n*A robot companion should never be relied on 100 percent because no technology is perfect. It should simply be there to assist, keep us company, help with tasks, and make life easier, not replace human thinking completely.*\n\n*At the end of the day, no matter how advanced AI becomes, humans are still meant to be the ones in control.*\n\n<div class=pull-right>https://images.hive.blog/DQmYqm3H4dEWQEzhzEVJtQvgJdDfs9oHtT2zS317xwPbU7C/image.png </div>\n\n<center>https://files.peakd.com/file/peakd-hive/b0s/23xB1Qv5bDBKikqiaiUcfQtaV6mbBnVYbZhJDdQZihpL3Aia58kuMfk19qGgp5TZRu8ro.jpg</center>\n\n\n\n<div class=pull-left>https://images.hive.blog/DQmUZZuDr3arGngLn5SfCF6yHQm9yLP3Zkhzm5DodpnhqhH/imageedit_1_5025017951.jpg</div>\n\n\n\n**Just call me Burl.**\n*I am a professional gamer, motivational speaker and a crypto enthusiast*\n*Discord: burlarj*\n *Twitter id: burlarj1*\n*Telegram: burlarj*\n**God exists, I am a living testimony**\n**Giving up is not an option, every hustler has a payday**\n**Don't wish for it, Make it happen**\n**Only Love can heal a broken Heart**\n\nhttps://images.hive.blog/DQmRsJumvd4V6DGi3Pz1U4cqJmGZ6cowSrPhSqaYMnTKmVZ/3W72119s5BjW4PvRk9nXBzqrPWMsMTjNrXDPFFf11Me3xJu2FYAtZ1bFbvoF8BV4Jvf39axwiTNRZ9CsVGpdLBDvqA7jzfww3N2FxWmttUQLjn59xwxU29.gif\n\n<center><img src=\"https://images.hive.blog/DQmea91ihwnR56YMJ27ffBNBgYSfJuKfHe5bavRriEGEMW2/ComeForCrypto.png\" >\n\nPosted Using [INLEO](https://inleo.io/@burlarj/when-ai-becomes-your-companion-7i8)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 135
+        },
+        "title": "When AI Becomes Your Companion",
+        "author": "burlarj",
+        "payout": 1.623,
+        "created": "2026-05-19T07:01:12",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T07:01:12",
+        "category": "hive-111030",
+        "children": 0,
+        "permlink": "when-ai-becomes-your-companion-7i8",
+        "community": "hive-111030",
+        "payout_at": "2026-05-26T07:01:12",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 21385540460263,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gamer00",
+            "rshares": 7773186643
+          },
+          {
+            "voter": "ripperone",
+            "rshares": 4522369650516
+          },
+          {
+            "voter": "lebah",
+            "rshares": 406961307
+          },
+          {
+            "voter": "thecrazygm",
+            "rshares": 327461845433
+          },
+          {
+            "voter": "momogrow",
+            "rshares": 223747999149
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-111030",
+            "smp-w68e1",
+            "neoxian",
+            "AI",
+            "life",
+            "pimp",
+            "pob",
+            "tribes",
+            "airhawk"
+          ],
+          "links": [
+            "https://i.ecency.com/DQmVg4EgSEPkzDcupKv4iaWXrY3XMVSsTHsb4DZQ6VokxXQ/image.png)</center>",
+            "https://pixabay.com/illustrations/humanoid-futuristic-robot-tech-8043450/)",
+            "https://i.ecency.com/DQmagMXhrzgX8nyHkr8A29BKkta2xqAxnu5CgjreP6J22tg/image.png)</center>",
+            "https://pixabay.com/illustrations/robot-3d-robot-with-flowers-3197204/)",
+            "https://files.peakd.com/file/peakd-hive/b0s/23xB1Qv5bDBKikqiaiUcfQtaV6mbBnVYbZhJDdQZihpL3Aia58kuMfk19qGgp5TZRu8ro.jpg</center>",
+            "https://images.hive.blog/DQmUZZuDr3arGngLn5SfCF6yHQm9yLP3Zkhzm5DodpnhqhH/imageedit_1_5025017951.jpg</div>",
+            "https://images.hive.blog/DQmea91ihwnR56YMJ27ffBNBgYSfJuKfHe5bavRriEGEMW2/ComeForCrypto.png\"",
+            "https://inleo.io/@burlarj/when-ai-becomes-your-companion-7i8)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://images.hive.blog/DQmYqm3H4dEWQEzhzEVJtQvgJdDfs9oHtT2zS317xwPbU7C/image.png",
+            "https://images.hive.blog/DQmRsJumvd4V6DGi3Pz1U4cqJmGZ6cowSrPhSqaYMnTKmVZ/3W72119s5BjW4PvRk9nXBzqrPWMsMTjNrXDPFFf11Me3xJu2FYAtZ1bFbvoF8BV4Jvf39axwiTNRZ9CsVGpdLBDvqA7jzfww3N2FxWmttUQLjn59xwxU29.gif"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@burlarj/when-ai-becomes-your-companion-7i8"
+        },
+        "community_title": "SciFi Multiverse",
+        "author_reputation": 79.4,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.623 HBD"
+      },
+      {
+        "url": "/hive-193552/@runridefly/actifit-runridefly-20260519t065933261z",
+        "body": "The boys and I drove to the neighboring town after I could see the smoke high in the sky. \n\n\n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779171814.573458) \n\nI had heard several sirens leaving town, so I walked outside to take a look.  I could see smoke from 3 miles away so I packed up the boys.\n\n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779171801.347052) \n\nI drove through the neighborhood where I had access, and then I drove to the main road through town, and the fire was just east of the city limit sign.  \n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779171824.699812) \n\nThe volunteer patrol gave the boys sheriff badges stickers.\n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779171900.375294) \n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779171914.03611) \n\n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172022.956388) \n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172037.291408) \n\nThe youngest boy and I cycled to the same nearby town this evening.\n\n\n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172197.680789) \n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172229.447648) \n\nThe church build out of town has most roofing now.\n\n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172237.50281) \n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172244.090859) \n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172255.1729379) \n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172276.601572) \n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172359.662811) \n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172370.3648539) \n\nI walked to the grocery store this evening to secure 10,000 @actifit steps.\n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172379.168884) \n\nThe youngest boy was so excited to follow the smoke.\n\n# Thank for the support, and best wishes from @runridefly.\n\n![](https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172389.150714) \n\n\n <br/> _This report was published via Actifit app ([Android](https://bit.ly/actifit-app) | [iOS](https://bit.ly/actifit-ios)). Check out the original version [here on actifit.io](https://actifit.io/@runridefly/actifit-runridefly-20260519t065933261z)_ <br/> <br><img src=\"https://cdn.steemitimages.com/DQmXv9QWiAYiLCSr3sKxVzUJVrgin3ZZWM2CExEo3fd5GUS/sep3.png\"><br><table>\t<tr>\t\t<img src=\"https://actifit.s3.us-east-1.amazonaws.com/ACTIVITYDATE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>18/05/2026</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmRgAoqi4vUVymaro8hXdRraNX6LHkXhMRBZxEo5vVWXDN/ACTIVITYCOUNT.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>14456</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmZ6ZT8VaEpaDzB16qZzK8omffbWUpEpe4BkJkMXmN3xrF/ACTIVITYTYPE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><pre><b>Calisthenics, Cycling, Daily Activity, Gardening, House Chores, Kettlebell Training, Shoveling, Weight Lifting, Walking, Photowalking</b></div></pre></div>\t</tr></table><div class=\"text-center\"><img src=\"https://cdn.steemitimages.com/DQmNp6YwAm2qwquALZw8PdcovDorwaBSFuxQ38TrYziGT6b/A-20.png\"><a href=\"https://bit.ly/actifit-app\"><img src=\"https://cdn.steemitimages.com/DQmQqfpSmcQtfrHAtzfBtVccXwUL9vKNgZJ2j93m8WNjizw/l5.png\"></a><a href=\"https://bit.ly/actifit-ios\"><img src=\"https://cdn.steemitimages.com/DQmbWy8KzKT1UvCvznUTaFPw6wBUcyLtBT5XL9wdbB7Hfmn/l6.png\"></a></div>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 16
+        },
+        "title": "Where's the Fire? 🔥 My Actifit Report Card: May 18 2026",
+        "author": "runridefly",
+        "payout": 0.607,
+        "created": "2026-05-19T06:59:33",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T06:59:33",
+        "category": "hive-193552",
+        "children": 0,
+        "permlink": "actifit-runridefly-20260519t065933261z",
+        "community": "hive-193552",
+        "payout_at": "2026-05-26T06:59:33",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 7875795197244,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "hanshotfirst",
+            "rshares": 4474837644171
+          },
+          {
+            "voter": "techslut",
+            "rshares": 336710981163
+          },
+          {
+            "voter": "joeyarnoldvn",
+            "rshares": 1081510182
+          },
+          {
+            "voter": "emergehealthier",
+            "rshares": 126207667019
+          },
+          {
+            "voter": "minloulou",
+            "rshares": 6978733902
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "actifit.pay"
+          }
+        ],
+        "json_metadata": {
+          "app": "actifit/0.10.4",
+          "tags": [
+            "hive-193552",
+            "actifit",
+            "photography",
+            "fire",
+            "sportstalk",
+            "movetoearn",
+            "move2earn"
+          ],
+          "image": [
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779171814.573458",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779171801.347052",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779171824.699812",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779171900.375294",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779171914.03611",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172022.956388",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172037.291408",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172197.680789",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172229.447648",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172237.50281",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172244.090859",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172255.1729379",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172276.601572",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172359.662811",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172370.3648539",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172379.168884",
+            "https://usermedia.actifit.io/C36BCDB8-CAE1-42A2-BAC9-3BE3AA0527341779172389.150714",
+            "https://cdn.steemitimages.com/DQmNp6YwAm2qwquALZw8PdcovDorwaBSFuxQ38TrYziGT6b/A-20.png"
+          ],
+          "users": [
+            "actifit"
+          ],
+          "appType": "iOS",
+          "actiCrVal": "19b1dde5b488e90feedef96654357f13ec0a97d177141513bf1fb6645fc9b5b137f109c2a780a9a8e2eddb6598dced1765c5ff275ff5a1276550d7db243e713e",
+          "chestUnit": [
+            "cm"
+          ],
+          "community": [
+            "hive-193552"
+          ],
+          "waistUnit": [
+            "cm"
+          ],
+          "heightUnit": [
+            "cm"
+          ],
+          "step_count": [
+            "14456"
+          ],
+          "thighsUnit": [
+            "cm"
+          ],
+          "weightUnit": [
+            "kg"
+          ],
+          "activityDate": [
+            "20260518"
+          ],
+          "actifitUserID": [
+            "1E1313BD-15E0-442B-8503-AB5D2A4A21CC0.10.4"
+          ],
+          "activity_type": [
+            "Calisthenics, Cycling, Daily Activity, Gardening, House Chores, Kettlebell Training, Shoveling, Weight Lifting, Walking, Photowalking"
+          ],
+          "detailedActivity": [
+            "004537|0130246|103042|1045493|1100570|1115478|1130522|1145458|1200143|1215134|1230501|1245479|1300561|1315599|1330268|1345477|140036|1615296|1700582|1830656|1845369|1915136|1930669|1945149|201598|20451088|213027|2300328|2315344|2330535|001520|0030138|143073|2000173|2100551|2230406|2245429|1415160|1445143|150010|15159|153041|160070|173029|181549|1645175|171531|2345376|2030108|03008"
+          ],
+          "dataTrackingSource": [
+            "healthapp"
+          ]
+        },
+        "community_title": "Actifit",
+        "author_reputation": 76.31,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.607 HBD"
+      },
+      {
+        "url": "/hive-193552/@holovision/actifit-holovision-20260519t065741292z",
+        "body": "I've been using AI to help me make my YouTube videos. I am not sure why it took so long but after six months it finally occurred to me that I can use AI to also build my channels growth. There is a bot in YouTube Studio that answers questions and I've been using that today. Very informative and nnow I have some new direction. <br/> _This report was published via Actifit app ([Android](https://bit.ly/actifit-app) | [iOS](https://bit.ly/actifit-ios)). Check out the original version [here on actifit.io](https://actifit.io/@holovision/actifit-holovision-20260519t065741292z)_ <br/> <br><img src=\"https://cdn.steemitimages.com/DQmXv9QWiAYiLCSr3sKxVzUJVrgin3ZZWM2CExEo3fd5GUS/sep3.png\"><br><table>\t<tr>\t\t<img src=\"https://actifit.s3.us-east-1.amazonaws.com/ACTIVITYDATE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>17/05/2026</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmRgAoqi4vUVymaro8hXdRraNX6LHkXhMRBZxEo5vVWXDN/ACTIVITYCOUNT.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>11524</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmZ6ZT8VaEpaDzB16qZzK8omffbWUpEpe4BkJkMXmN3xrF/ACTIVITYTYPE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><pre><b>Daily Activity, Walking</b></div></pre></div>\t</tr></table><div class=\"text-center\"><img src=\"https://cdn.steemitimages.com/DQmNp6YwAm2qwquALZw8PdcovDorwaBSFuxQ38TrYziGT6b/A-20.png\"><a href=\"https://bit.ly/actifit-app\"><img src=\"https://cdn.steemitimages.com/DQmQqfpSmcQtfrHAtzfBtVccXwUL9vKNgZJ2j93m8WNjizw/l5.png\"></a><a href=\"https://bit.ly/actifit-ios\"><img src=\"https://cdn.steemitimages.com/DQmbWy8KzKT1UvCvznUTaFPw6wBUcyLtBT5XL9wdbB7Hfmn/l6.png\"></a></div>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 22
+        },
+        "title": "My Actifit Report Card: May 18 2026",
+        "author": "holovision",
+        "payout": 0.02,
+        "created": "2026-05-19T06:57:42",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T06:57:42",
+        "category": "hive-193552",
+        "children": 0,
+        "permlink": "actifit-holovision-20260519t065741292z",
+        "community": "hive-193552",
+        "payout_at": "2026-05-26T06:57:42",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 266277397648,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "ats-david",
+            "rshares": 3208220287
+          },
+          {
+            "voter": "supergoodliving",
+            "rshares": 586421645
+          },
+          {
+            "voter": "dyrt88",
+            "rshares": 4588726947
+          },
+          {
+            "voter": "freebornsociety",
+            "rshares": 23111142541
+          },
+          {
+            "voter": "whatamidoing",
+            "rshares": 99599928742
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "actifit.pay"
+          }
+        ],
+        "json_metadata": {
+          "app": "actifit/0.13.4",
+          "tags": [
+            "hive-193552",
+            "actifit",
+            "blurt",
+            "hive",
+            "palnet",
+            "hive-engine",
+            "cent",
+            "ecency",
+            "inleo",
+            "neoxian",
+            "virtualgrowth",
+            "",
+            "sportstalk",
+            "movetoearn",
+            "move2earn"
+          ],
+          "image": [
+            "https://cdn.steemitimages.com/DQmNp6YwAm2qwquALZw8PdcovDorwaBSFuxQ38TrYziGT6b/A-20.png"
+          ],
+          "users": [
+            "actifit"
+          ],
+          "appType": "Android",
+          "timezone": [
+            "GMT-07:00"
+          ],
+          "actiCrVal": "aa3b924c52ead574911113d29f77417bdfaeca44bb4c47dd9066165f6f3694e926f3237dca29dc088aa693d253ac0eb476d7bb65ad7b1249eb7d07917da5cc02",
+          "chestUnit": [
+            "cm"
+          ],
+          "community": [
+            "hive-193552"
+          ],
+          "waistUnit": [
+            "cm"
+          ],
+          "heightUnit": [
+            "cm"
+          ],
+          "step_count": [
+            "11524"
+          ],
+          "thighsUnit": [
+            "cm"
+          ],
+          "weightUnit": [
+            "kg"
+          ],
+          "activityDate": [
+            "20260517"
+          ],
+          "actifitUserID": [
+            "c7211bbd-4f27-4ea0-a1a0-96e715753345v0.12.4"
+          ],
+          "activity_type": [
+            "Daily Activity, Walking"
+          ],
+          "yesterdayReport": [
+            "1"
+          ],
+          "detailedActivity": [
+            "02008|0600198|0615549|0830228|0845290|1030760|10451277|1100182|1115137|11451|12003|12153|1230108|124539|1300102|131544|1330470|1345878|14001373|1415221|143049|150016|17451|1900377|19151557|19301029|1945163|2000188|20152|203013|204516|2100398|21153|21309|21456|22007|22157|22303|224512|230079|2315440|2330261|234517|"
+          ],
+          "dataTrackingSource": [
+            "Device Tracking"
+          ]
+        },
+        "community_title": "Actifit",
+        "author_reputation": 72.5,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.020 HBD"
+      },
+      {
+        "url": "/hive-115814/@twicejoy-sports/one-step-away-arsenals-dream-is-finally-within-reach--qo",
+        "body": "\n‎I truly believe that Arsenal are on the verge of bringing the Premier League trophy back home for the first time in so many years and Watching them grind out a hard-fought 1-0 victory against Burnley felt like more than just another league win. It felt like a statement. A statement that this Arsenal side is ready to end the long wait and write a new chapter in the club’s history.\n\n https://img.leopedia.io/DQmVvzvJzMfqjsbg6J3oPuLy1zzfK8kuPG9drboUhTXaX7n/london-england-kai-havertz-of-arsenal-scores-his-teams-first-goal-during-the-premier-league_nu8am2k0.jpeg \n\n‎\n‎[Source](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.arsenal.com/fixture/arsenal/2026-May-18/arsenal-1-0-burnley-match-report&ved=2ahUKEwj_9ZLr4MSUAxWbQEEAHfBEPU4Qr4kDegQIJhAA&usg=AOvVaw0osHhLjfv-W7ntLk9wYylb)\n\n‎The atmosphere at the Emirates was filled with tension, hope, and belief because everyone knew how important that match was. Arsenal needed all three points, and they delivered when it really mattered most. Kai Havertz became the hero of the night with a calm finish in the 37th minute of the first half. That goal may look simple on paper, but it could end up being one of the most important goals of Arsenal’s modern era.\n‎\n‎What even impresses me most about this Arsenal team is their mentality. In previous seasons, many people doubted whether they could handle the pressure of a title race. But this season they have really shown maturity, discipline, and hunger. Every player seems ready to fight for the badge, and the unity within the squad has been incredible to watch.\n‎\n‎All attention now shifts to the final game of the season away to Crystal Palace. Ninety minutes stand between Arsenal and Premier League glory and it will not be an easy game because Palace will want to end their season strongly in front of their fans, but I believe Arsenal have enough quality and determination to get the job done as well.\n‎\n‎Moments like this are what make the sport beautiful as a football fan. The emotions, the pressure, the hope, and the possibility of history being made. Arsenal fans have waited patiently for years, enduring disappointments and near misses, but now the dream is closer than ever.\n‎\n‎All eyes will now be on that final match. One more win, one final push, and Arsenal could finally lift the Premier League title once again after more than two decades. Personally, I believe this is their moment, and I cannot wait to see how the story ends.\n‎\n\nPosted Using [INLEO](https://inleo.io/@twicejoy-sports/one-step-away-arsenals-dream-is-finally-within-reach--qo)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 83
+        },
+        "title": "‎One Step Away: Arsenal’s Dream Is Finally Within Reach ‎",
+        "author": "twicejoy-sports",
+        "payout": 0.045,
+        "created": "2026-05-19T06:55:12",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T06:55:12",
+        "category": "hive-115814",
+        "children": 0,
+        "permlink": "one-step-away-arsenals-dream-is-finally-within-reach--qo",
+        "community": "hive-115814",
+        "payout_at": "2026-05-26T06:55:12",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 602180099541,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "robsteady",
+            "rshares": 4633215428
+          },
+          {
+            "voter": "moretea",
+            "rshares": 1736277926
+          },
+          {
+            "voter": "bigtakosensei",
+            "rshares": 2103692826
+          },
+          {
+            "voter": "bloghound",
+            "rshares": 2314961835
+          },
+          {
+            "voter": "frankydoodle",
+            "rshares": 834331782
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-115814",
+            "Neoxian",
+            "Medals",
+            "Hive-engine",
+            "Sports",
+            "Sportstalk",
+            "Aliveandthriving",
+            "Alive",
+            "Waivio"
+          ],
+          "links": [
+            "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.arsenal.com/fixture/arsenal/2026-May-18/arsenal-1-0-burnley-match-report&ved=2ahUKEwj_9ZLr4MSUAxWbQEEAHfBEPU4Qr4kDegQIJhAA&usg=AOvVaw0osHhLjfv-W7ntLk9wYylb)",
+            "https://inleo.io/@twicejoy-sports/one-step-away-arsenals-dream-is-finally-within-reach--qo)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmVvzvJzMfqjsbg6J3oPuLy1zzfK8kuPG9drboUhTXaX7n/london-england-kai-havertz-of-arsenal-scores-his-teams-first-goal-during-the-premier-league_nu8am2k0.jpeg"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@twicejoy-sports/one-step-away-arsenals-dream-is-finally-within-reach--qo"
+        },
+        "community_title": "Sportsblock",
+        "author_reputation": 57.45,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.045 HBD"
+      },
+      {
+        "url": "/hive-147010/@alesya-h9/a-room-of-light",
+        "body": "\n![image.png](https://files.peakd.com/file/peakd-hive/alesya-h9/23ynadUVwg6J6VHrujFUD53hNCzTYu1LZkczpFNxBrPgNrCG8uewHFS6txsjgbwYeCAvA.png)\n\nLight changes everything.\nIt shapes perception, reveals detail, softens reality. A room filled with the right kind of light feels different—calmer, more intentional, almost curated.\nI think people are similar. Some illuminate without effort.\nDo you bring light into a room—or do you adapt to it?\n\n\nFollow me on [Instagram](https://www.instagram.com/alesya.h9/)\nYour Alecia ❤️",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 10
+        },
+        "title": "A Room of Light",
+        "author": "alesya-h9",
+        "payout": 0.005,
+        "created": "2026-05-19T06:54:00",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T06:54:00",
+        "category": "hive-147010",
+        "children": 0,
+        "permlink": "a-room-of-light",
+        "community": "hive-147010",
+        "payout_at": "2026-05-26T06:54:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 66770700932,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "props",
+            "rshares": 789062285
+          },
+          {
+            "voter": "star-x",
+            "rshares": 22795119441
+          },
+          {
+            "voter": "superbad",
+            "rshares": 3449977928
+          },
+          {
+            "voter": "sergeyberkova",
+            "rshares": 4801074157
+          },
+          {
+            "voter": "butthugs",
+            "rshares": 15543167063
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.4.7",
+          "tags": [
+            "model",
+            "beauty",
+            "lifestyle",
+            "cent",
+            "bbh",
+            "tribes",
+            "oneup",
+            "neoxian",
+            "mancave"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/alesya-h9/23ynadUVwg6J6VHrujFUD53hNCzTYu1LZkczpFNxBrPgNrCG8uewHFS6txsjgbwYeCAvA.png"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Liketu",
+        "author_reputation": 63.31,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.005 HBD"
+      },
+      {
+        "url": "/hive-121566/@enjoyyourlifenow/berufliche-neuorientierung-mit-50",
+        "body": "# 🌻 Berufliche Neuorientierung mit 50 — Warum der erste Schritt nach innen geht\n\n---\n\nDu hast geliefert. Jahrelang. Zuverlässig. Erfolgreich.\n\nUnd trotzdem sitzt da dieses Gefühl, das sich nicht wegdenken lässt:\n\n**Das kann doch nicht alles gewesen sein.**\n\n---\n\n## 💡 Was mit 50 wirklich passiert\n\nDie Psychologie hat einen Namen dafür: die U-Kurve des Glücks.\n\nDas Wohlbefinden sinkt ab Ende dreißig — und erreicht seinen Tiefpunkt statistisch um das 46. Lebensjahr. Danach steigt es wieder.\n\nAber zwischen Tiefpunkt und Aufstieg liegt eine Phase, die viele als die ehrlichste ihres Lebens beschreiben.\n\n> *\"Ich bin dankbar für alles, was ich habe — und trotzdem stimmt irgendetwas nicht.\"*\n\nDieser Satz ist kein Widerspruch. Er ist ein Wegweiser.\n\n---\n\n## 🔍 Zwei Kerngedanken, die ich immer wieder erlebe\n\n**Erster Gedanke: Erfolg beantwortet die falsche Frage.**\n\nWir arbeiten jahrelang auf Ziele hin — Position, Gehalt, Anerkennung. Und wenn wir sie erreichen, merken wir: Diese Ziele haben die Frage \"Was will ich leisten?\" beantwortet. Aber nicht die Frage \"Wer bin ich?\"\n\nDie zweite Frage meldet sich spätestens mit 50. Laut oder leise — aber sie meldet sich.\n\n**Zweiter Gedanke: Neuorientierung beginnt nicht im Außen.**\n\nDie meisten Menschen suchen die Lösung außen. Neuer Job. Neues Unternehmen. Neue Branche.\n\nAber wenn du nicht weißt, wer du wirklich bist — welche Umgebung dir entspricht, welche Aufgaben dich antreiben, welche Werte dir wirklich wichtig sind — dann nimmst du dich selbst mit in den nächsten Job. Und das Gefühl bleibt.\n\nDer erste Schritt ist immer derselbe: **Selbsterkenntnis vor Strategiewechsel.**\n\n---\n\n## 🌿 Ein kleines Ritual für große Fragen\n\nIn meiner eigenen Praxis — wenn ich vor wichtigen Entscheidungen stehe — nehme ich mir morgens zwanzig Minuten. Kein Bildschirm. Ein Notizbuch. Und Rosmarin Cineol von Oshadhi im Diffuser.\n\nDer klare, belebende Duft hilft mir, präsent zu bleiben. Nicht als Heilmittel — sondern als sinnliche Unterstützung für einen Moment der Stille.\n\nManchmal braucht es nicht mehr als das: einen Duft, der dich erdet, und eine Frage, die du dir ehrlich stellst.\n\n---\n\n## 💬 Meine Frage an die Community\n\n**Wann hast du zuletzt gespürt, dass du gegen dich selbst lebst — und nicht mit dir?**\n\nUnd was hat dich bewegt, trotzdem weiterzumachen — oder den Mut zu finden, etwas zu ändern?\n\nIch freue mich auf eure Gedanken. 🌻\n\n---\n\n*Michael Sunshine begleitet Menschen in der Lebensmitte bei Fragen der Selbsterkenntnis und Neuorientierung — mit einem strukturierten Ansatz aus physiognomischen Naturellen, DISG und dem Reiss Motivation Profile.*\n\n*👉 enjoyyourlifenow.de*",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "Berufliche Neuorientierung mit 50",
+        "author": "enjoyyourlifenow",
+        "payout": 0.005,
+        "created": "2026-05-19T06:52:57",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-19T06:52:57",
+        "category": "hive-121566",
+        "children": 0,
+        "permlink": "berufliche-neuorientierung-mit-50",
+        "community": "hive-121566",
+        "payout_at": "2026-05-26T06:52:57",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 65649294020,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "starthilfe",
+            "rshares": 65649294020
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.5.5-mobile",
+          "tags": [
+            "hive-121566",
+            "deutsch",
+            "50",
+            "neuorientierung",
+            "beruf",
+            "scheitern"
+          ],
+          "type": "post",
+          "links": [],
+          "format": "markdown+html"
+        },
+        "community_title": "Deutsch D-A-CH",
+        "author_reputation": 56.34,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.005 HBD"
+      },
+      {
+        "url": "/hive-166847/@wongi/a-review-of-tyler-perry",
+        "body": "Last weekend was one to binge watch as many movies and read as many books as I could. The problem with trying to do so many things at once is that these things may be done haphazardly or not done to completion. This simply means that I have a couple of incomplete reads but luckily, zero in complete watches. One of the movies I so lovingly watched during the weekend was “Finding Joy”, a Tyler Perry movie. \n\n![1001412146.jpg](https://files.peakd.com/file/peakd-hive/wongi/23zGcSNYUAnMQxipuTwqvq48tFiHvcKLGDfAFFGHierzdpuYMwdhxvMqAz9AvyMg4w642.jpg)\n\n\nThis movie amongst others was given to me by my precious hairstylist and the movie came with high praises so naturally, I had high expectations. Follow along to find out if my hopes were tarnished or not. \n\n\n___\n##  About The Movie\n___\n\n\nThe story opens by introducing us to Joy, a passionate and talented fashion designer navigating the cutthroat world of New York City's industry. We see her pouring creativity into her work while dealing with professional frustrations; feeling undervalued and overlooked despite her obvious talent. \n\nEncouraged by her two best friends and fueled by her own hopes, Joy decides to take a significant step in her personal life and away from her professional life by traveling with a romantic interest to meet his family during the holidays. What Joy anticipated to be the best holiday of her life quickly shifts  as circumstances unfold, leading her into a challenging situation far from home.  \n\nAs the plot develops, we watch as Joy grapples with the realities of her choices and the emotional weight they carry. \n\n\n\nThe movie stars actors like Shannon Thornton, Tosin Morohunfola, Brittany Hall, Inayah and Aaron O'Connell. It was written, directed and produced by Tyler Perry and was officially released on the 5th of November, 2025 on Prime Videos. This movie happens to be Perry's first holiday themed movie is over a decade since *A Madea Christmas.*\n___\n\n## My Opinion\n___\n\n\n![1001412147.jpg](https://files.peakd.com/file/peakd-hive/wongi/EnYRv83NGGuBCs86D7Hms5gEacStSYeCoDiFg12w22V8M43QfTPMctr9dytX8weRYde.jpg)\n\nThis movie is quintessentially Tyler Perry. It is heartfelt, a bit predictable  but delivered with genuine warmth and performances that elevate the movie. \n\n\nI liked the chemistry between the leads and how a brief moment of isolation created a believable bubble for emotional development. Even though some parts seem forced.\n\n\nJoy's best friends were certainly another highlight of this movie. Their banters were funny, supportive and non-stereotypical. Both best friends had separate personalities  but both of them together were the most supportive duo any friend can ask for.\n\nThe movie dived into several themes but at the core was self-worth and personal rediscovery. Joy's arc highlighted learning not to settle in love or in career and also reclaiming one's value even after betrayal or professional dismissal. \n\n\nUnexpected love and second chances played out through the isolated slow burning connection that developed amid Joy's crises. Sisterhood, friendship and faith were some other themes explored in this movie. \n\n\nOn the flip side, the pacing in the early New York scenes felt rushed as everything was just happening all at once but the scenes over at the cabin  and mountains were more deliberate. \n\nhttps://youtu.be/60befdTWmG8?si=TOeavjp59lOy7z_h\n[YouTube](https://youtu.be/60befdTWmG8?si=TOeavjp59lOy7z_h) \n\n\n___\nRecommendation and Rating\n___\n\nTyler Perry's \"Finding Joy\"  is a good romance drama film that delivers feel good vibes, strong leads and inspirational undertones. I'd give the move a 7 out of 10 rating just because this isn't one of Tyler Perry's groundbreaking movies and I believe this could have been better.\n\nHowever, if you're in the mood for something light but meaningful or something to pass the time, this would be worth watching. If you also have a hopeless romantic friend then they may learn a thing or two from this movie. \n\n___\n\n</sup>**[Image 1](https://m.filmaffinity.com/us/film169312.html#&gid=1&pid=1)\n[Image 2](https://m.filmaffinity.com/us/film169312.html#&gid=1&pid=3)**<sup>\n\n\n___\n___\n\n\n## Ŀ Ī Ɛ ß Ɛ 🤍\n\n\n ",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 37
+        },
+        "title": "A Review of Tyler Perry's \"Finding Joy\".",
+        "author": "wongi",
+        "payout": 0.15,
+        "created": "2026-05-19T06:50:33",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T06:50:33",
+        "category": "hive-166847",
+        "children": 2,
+        "permlink": "a-review-of-tyler-perry",
+        "community": "hive-166847",
+        "payout_at": "2026-05-26T06:50:33",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 1983979420507,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "leprechaun",
+            "rshares": 2895236221
+          },
+          {
+            "voter": "dwinblood",
+            "rshares": 4780104749
+          },
+          {
+            "voter": "richardcrill",
+            "rshares": 24294731829
+          },
+          {
+            "voter": "gamer00",
+            "rshares": 1163942755
+          },
+          {
+            "voter": "cryptoknight12",
+            "rshares": 1537867868
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "wongi.leo"
+          }
+        ],
+        "json_metadata": {
+          "app": "ecency/3.5.5-mobile",
+          "tags": [
+            "hive-166847",
+            "moviereview",
+            "proofofbrain",
+            "vyb",
+            "neoxian",
+            "ladiesofhive",
+            "liotes",
+            "gems",
+            "palnet",
+            "vocup"
+          ],
+          "type": "post",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/wongi/23zGcSNYUAnMQxipuTwqvq48tFiHvcKLGDfAFFGHierzdpuYMwdhxvMqAz9AvyMg4w642.jpg",
+            "https://files.peakd.com/file/peakd-hive/wongi/EnYRv83NGGuBCs86D7Hms5gEacStSYeCoDiFg12w22V8M43QfTPMctr9dytX8weRYde.jpg"
+          ],
+          "links": [
+            "https://youtu.be/60befdTWmG8?si=TOeavjp59lOy7z_h",
+            "https://youtu.be/60befdTWmG8?si=TOeavjp59lOy7z_h",
+            "https://m.filmaffinity.com/us/film169312.html#&gid=1&pid=1",
+            "https://m.filmaffinity.com/us/film169312.html#&gid=1&pid=3"
+          ],
+          "format": "markdown+html",
+          "image_ratios": [
+            0.6891666666666667,
+            0.8
+          ]
+        },
+        "community_title": "Movies & TV Shows",
+        "author_reputation": 72.78,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.150 HBD"
+      },
+      {
+        "url": "/hive-127238/@abdt/my-plant-photography",
+        "body": "![IMG_20240819_101647.jpg](https://images.hive.blog/DQmerBMtXfar5FFNgJHuYqRTsHHP3WR43bATw5aR64wH5kN/IMG_20240819_101647.jpg)\n\nHi photography lovers \nHopefully you are all doing good and sharing your best photos. I want to share my beautiful plant photography. This is my favorite plant in the vase . I like when this plant leafs blooming and old leafs turning into orange and brown color . \nI hope you like it .\nThank you for visiting and reading my post. Have a great day.\nAlways smile",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 87
+        },
+        "title": "My plant photography",
+        "author": "abdt",
+        "payout": 0.385,
+        "created": "2026-05-19T06:50:24",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T06:50:24",
+        "category": "hive-127238",
+        "children": 0,
+        "permlink": "my-plant-photography",
+        "community": "hive-127238",
+        "payout_at": "2026-05-26T06:50:24",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 5074006436160,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "elevator09",
+            "rshares": 1012167373456
+          },
+          {
+            "voter": "joeyarnoldvn",
+            "rshares": 940071409
+          },
+          {
+            "voter": "yann0975",
+            "rshares": 7638691714
+          },
+          {
+            "voter": "gregan",
+            "rshares": 3711280957
+          },
+          {
+            "voter": "nazmul1996",
+            "rshares": 632057661
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "tags": [
+            "cellphone",
+            "photography",
+            "art",
+            "hivepicture",
+            "creative",
+            "nature",
+            "lifestyle"
+          ],
+          "image": [
+            "https://images.hive.blog/DQmerBMtXfar5FFNgJHuYqRTsHHP3WR43bATw5aR64wH5kN/IMG_20240819_101647.jpg"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Picture A Day",
+        "author_reputation": 65.87,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.385 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

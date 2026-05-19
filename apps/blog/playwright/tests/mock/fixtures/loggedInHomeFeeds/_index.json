@@ -1,0 +1,19 @@
+{
+  "testName": "loggedInHomeFeeds",
+  "recordedAt": "2026-05-19T07:14:45.212Z",
+  "totalRequests": 65,
+  "savedFixtures": 14,
+  "duplicatesSkipped": 51,
+  "methods": {
+    "bridge.get_ranked_posts": 6,
+    "bridge.list_communities": 7,
+    "GET /hivesense-api": 7,
+    "database_api.find_accounts": 11,
+    "database_api.get_dynamic_global_properties": 6,
+    "rc_api.find_rc_accounts": 5,
+    "bridge.list_all_subscriptions": 7,
+    "bridge.unread_notifications": 6,
+    "bridge.get_follow_list": 6,
+    "bridge.get_profile": 4
+  }
+}
