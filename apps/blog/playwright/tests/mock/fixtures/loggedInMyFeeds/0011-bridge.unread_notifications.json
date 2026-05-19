@@ -1,0 +1,24 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.unread_notifications",
+    "params": {
+      "account": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "95a7b2910818b567",
+  "method": "bridge.unread_notifications",
+  "params": {
+    "account": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": null,
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

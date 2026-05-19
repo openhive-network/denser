@@ -1,0 +1,1845 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "created",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "my",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "b659154fd138cd7d",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "created",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "my",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/hive-167922/@yordan96/why-trumps-winning-the-war-narrative-could-eventually-fail-ob",
+        "body": " https://img.leopedia.io/DQmSXU5jyzcjYtQQVS4743icJm9Xagfw7BaV9YuPMsdgd3e/1000701986.png \n\n\nThroughout history, many political leaders have tried to shape public perception by presenting themselves as symbols of strength during times of conflict.\nAnd Donald Trump is no exception.\nHis political style has always relied heavily on one thing:\nDominance.\nStrength.\nVictory.\nControl.\nWhether in economics, trade wars, geopolitics, or military rhetoric, Trump consistently attempts to position himself as the leader who “wins.”\nBut here is the deeper question:\nCan modern global conflicts truly be “won” the same way they were decades ago?\nPersonally, I believe the answer is becoming increasingly complicated.\nBecause today’s world is no longer shaped only by military power.\nModern global influence now depends on:\neconomics\ntechnology\nglobal supply chains\npublic perception\nmedia narratives\nAI dominance\nenergy control\nand financial stability\nAnd this changes everything.\nThe Problem With Victory Narratives\nOne reason political “victory rhetoric” can eventually fail is because modern conflicts rarely produce clear winners anymore.\nIn previous generations:\nwars ended with territorial victories\nenemies surrendered\neconomies rebuilt slowly afterward\nBut modern geopolitical conflict is far more complex.\nToday, even if one side appears dominant militarily, the economic consequences may continue damaging everyone involved.\nInflation rises.\nGlobal markets panic.\nSupply chains weaken.\nEnergy prices surge.\nInvestors become uncertain.\nAnd ordinary people worldwide feel the pressure indirectly.\nThis is why many modern geopolitical conflicts create “shared damage” rather than absolute victory.\nEven powerful nations suffer consequences.\nThe Economic Battlefield Is Now More Important Than Military Power\nPersonally, I think the world is entering an era where economic warfare matters more than traditional warfare.\nSanctions.\nTrade restrictions.\nCurrency pressure.\nTechnology bans.\nResource control.\nSemiconductor competition.\nAI leadership.\nThese may shape the future more than physical battlefields themselves.\nAnd this is where the idea of “winning” becomes difficult.\nBecause a country can appear politically strong while still experiencing:\nrising debt\nweakening purchasing power\nmarket instability\nor declining global trust\nPower today is no longer measured only by military force.\nIt is measured by economic resilience.\nPublic Perception Is Becoming Harder To Control\nAnother major reason why strong political rhetoric may eventually weaken is the internet itself.\nIn the past, governments and major media institutions controlled most narratives.\nToday, information spreads instantly across:\nsocial media\nindependent media\nonline communities\nglobal platforms\nThis creates a fragmented information environment.\nPeople no longer consume one unified narrative.\nThey consume competing realities.\nAnd because of that, political messaging becomes harder to sustain long term.\nA leader may appear strong to one group…\nwhile appearing dangerous or unstable to another.\nThis creates constant polarization.\nAnd polarized societies often struggle maintaining long-term unity.\nThe Trump Strategy: Strength Through Emotion\nTrump’s political success has always depended heavily on emotional energy.\nConfidence.\nAggressive communication.\nNationalism.\nDirect confrontation.\nAnd psychologically, this works extremely well during periods of public frustration.\nEspecially when populations feel:\neconomically pressured\nignored by elites\nculturally uncertain\nor distrustful toward institutions\nStrong rhetoric gives people emotional certainty.\nBut the challenge is this:\nEmotion alone cannot permanently solve structural economic problems.\nEventually, reality catches up.\nDebt matters.\nInflation matters.\nEmployment matters.\nGlobal stability matters.\nAnd if living conditions continue worsening, political narratives become harder to maintain.\nWhy The Future Could Become Even More Unstable\nPersonally, I think the next decade may produce increasing geopolitical instability globally.\nNot only involving the United States…\nbut across multiple major powers simultaneously.\nBecause the world is now entering competition over:\nAI dominance\nenergy systems\ntechnological supremacy\nrare resources\nfinancial influence\nand digital infrastructure\nThis is not just political rivalry anymore.\nIt is a battle over who shapes the future global order itself.\nAnd in periods like this, political leaders often become more aggressive rhetorically because populations demand certainty during uncertainty.\nBut historically, aggressive rhetoric can sometimes create expectations that reality cannot fully satisfy.\nThe Bigger Risk: Division Inside Society\nPerhaps the biggest danger is not external conflict.\nIt may be internal division.\nBecause modern societies increasingly appear emotionally fragmented.\nPolitics becomes identity.\nDisagreement becomes hostility.\nAlgorithms amplify outrage.\nAnd fear spreads faster online than rational discussion.\nThis creates long-term instability inside nations themselves.\nAnd no country remains powerful forever if internal trust collapses.\nFinal Thought\nPersonally, I do not think the future belongs to leaders who simply appear strongest on television or social media.\nI think the future belongs to societies that can remain:\neconomically stable\ntechnologically adaptive\nmentally resilient\nand socially united during uncertainty\nBecause the next global era may not be won through loud rhetoric alone.\nIt may be won through resilience.\nPatience.\nAdaptability.\nAnd long-term strategy.\nThe world is changing too fast for simple “winner vs loser” narratives.\nAnd maybe that is why modern political victory itself is becoming harder to define.\nWhat do you think?\nCan modern global powers still truly “win” conflicts…\nor are we entering an era where everyone pays the price together?\n#EYS | Turning Patience Into Power 🌍💎\n\nPosted Using [INLEO](https://inleo.io/@yordan96/why-trumps-winning-the-war-narrative-could-eventually-fail-ob)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 157
+        },
+        "title": "Why Trump’s “Winning the War” Narrative Could Eventually Fail",
+        "author": "yordan96",
+        "payout": 0.606,
+        "created": "2026-05-19T06:38:15",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T06:38:15",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "why-trumps-winning-the-war-narrative-could-eventually-fail-ob",
+        "community": "hive-167922",
+        "payout_at": "2026-05-26T06:38:15",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 7977370289549,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 5214825795
+          },
+          {
+            "voter": "rufans",
+            "rshares": 63726221590
+          },
+          {
+            "voter": "sergiomendes",
+            "rshares": 1972965874
+          },
+          {
+            "voter": "funnyman",
+            "rshares": 7154542541
+          },
+          {
+            "voter": "l337m45732",
+            "rshares": 264235153
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "Politics",
+            "Economy",
+            "Geopolitics",
+            "Future",
+            "Trump",
+            "Macro",
+            "Society",
+            "Inleo"
+          ],
+          "links": [
+            "https://inleo.io/@yordan96/why-trumps-winning-the-war-narrative-could-eventually-fail-ob)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmSXU5jyzcjYtQQVS4743icJm9Xagfw7BaV9YuPMsdgd3e/1000701986.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@yordan96/why-trumps-winning-the-war-narrative-could-eventually-fail-ob"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 62.05,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.606 HBD"
+      },
+      {
+        "url": "/hive-167922/@jfang003/my-hive-goals-for-2026-week-20-cvv",
+        "body": "I have decided to start posting a weekly update on my progress toward [my 2026 goals](https://peakd.com/hive-167922/@jfang003/my-hive-goals-for-2026-lma) here on [Hive](https://leofinance.io/@leoglossary/leoglossary-what-is-hive). It helps me stay on track, and I can realize if I am behind on a goal at any point in time. It's the fifth month of the year so far, and there is plenty of time left in the year. Also, for everyone's note, the Saturday Savers has ended, but the Slothly Savers Club has started in its place. \n\n## Progress\n\n![graph.png](https://files.peakd.com/file/peakd-hive/jfang003/23w3EiHLQG77cGWxrrcevhhfKpoyEpXtHurvsEAbM3wwdH2g1JLm7vQn12LLnfTPaawhL.png)\nAbove are statistics that I have gotten from [HiveStats](https://hivestats.io/). This week is looking worse than last week, and it all adds up over time.\n\n### HP\nI earned 107 [HP](https://leofinance.io/@leoglossary/leoglossary-hive-power-hp) earned throughout the week. I am checking this through the difference between the two endpoints on the graph on Hivestats. The numbers are looking bad this week as the rewards are down. However, I do think that this is my usual amount, so I am not too worried. I did have a great two weeks when things were better, but it was bound to go back down at some point.\n\n### HBD \n\n\n![HBD.png](https://files.peakd.com/file/peakd-hive/jfang003/48He4YRiHQXAQto1SGmRZzJQmJYjrEfoPHwf2ehAak7gScgU2TReSftYEKfGSh41uL.png)\n![image.png](https://files.peakd.com/file/peakd-hive/jfang003/23tGTghAapLyVrfu4MxkGhy5RkWTML1UpDqf6uxvRfRyrA8XbU1o8YoteWeDmmwX7BeX9.png)\n\nI earned 0 [HBD](https://leofinance.io/@leoglossary/leoglossary-hive-backed-dollar-hbd) this week. With the price of Hive lower, we have hit the debt limit. This means that we will be earning Hive instead of HBD. I won't be able to add to my HBD savings for a while, but the interest will help me towards that goal. When the Hive price is above the debt limit, I'll add to my savings. There isn't much I can do here, but at least that interest will add up. The APR for HBD has not changed, but I did get my interest, so my HBD interest did go up slightly this week. I still think 41 HBD is a fairly good monthly interest.\n\n## Conclusion\n\n![goal progress.png](https://files.peakd.com/file/peakd-hive/jfang003/EoAgvomJwguTUqKqRQDfNu11ezMmJay4aPHZGRQsiuXnZGY11jANoN8Fvp8GHTr7ddz.png)\nMy progress is looking decent for now. I need around 2% per week, so this week I met that standard. HBD is officially behind where I need to be now. However, without any HBD being earned, it might not be enough if that doesn't change by the end of the year. Other than that, nothing much has changed, and I am just slowly grinding away at my goals. The HBD goal isn't looking that great as I am behind, and I don't think we will be getting HBD anytime soon with the current Hive price. My HP goal is looking great, but my HBD isn't. I am not sure if I want to leave it as is or change some Hive into HBD later down the year. The HP is ahead, but the HBD isn't. At least I got the interest, so the progress is looking better than last week.\n\nDo you have any goals for 2026? What is the progress towards your own goals? \n\nFeel free to leave a comment if you read my post. If you have any questions, feel free to ask, and I will do my best to answer.\n\n[![image.png](https://files.peakd.com/file/peakd-hive/slothbuzz/EoH1FQp9qENCTmY4cmEzXTFsXurmY28k5GRD2z1kK7pexyTVwhui7cFtMLGEp8Sfjd2.png)](https://peakd.com/saturdaysavers/@slothbuzz/saturdaysavers-rebrand-and-relaunch-at-slothbuzz)\n\nPosted Using [INLEO](https://inleo.io/@jfang003/my-hive-goals-for-2026-week-20-cvv)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 84
+        },
+        "title": "My Hive Goals for 2026 Week #20",
+        "author": "jfang003",
+        "payout": 1.117,
+        "created": "2026-05-19T06:12:09",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T06:12:09",
+        "category": "hive-167922",
+        "children": 2,
+        "permlink": "my-hive-goals-for-2026-week-20-cvv",
+        "community": "hive-167922",
+        "payout_at": "2026-05-26T06:12:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 14481763745726,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "redes",
+            "rshares": 4335252242133
+          },
+          {
+            "voter": "funnel",
+            "rshares": 3292701166
+          },
+          {
+            "voter": "stefanialexis",
+            "rshares": 1674337601
+          },
+          {
+            "voter": "cryptoknight12",
+            "rshares": 1532230733
+          },
+          {
+            "voter": "xyzashu",
+            "rshares": 1578400606
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "hive",
+            "myhivegoals",
+            "goals",
+            "ctp",
+            "cent",
+            "archon",
+            "proofofbrain",
+            "pimp",
+            "slothlysavers"
+          ],
+          "links": [
+            "https://peakd.com/hive-167922/@jfang003/my-hive-goals-for-2026-lma)",
+            "https://leofinance.io/@leoglossary/leoglossary-what-is-hive).",
+            "https://files.peakd.com/file/peakd-hive/jfang003/23w3EiHLQG77cGWxrrcevhhfKpoyEpXtHurvsEAbM3wwdH2g1JLm7vQn12LLnfTPaawhL.png)",
+            "https://hivestats.io/).",
+            "https://leofinance.io/@leoglossary/leoglossary-hive-power-hp)",
+            "https://files.peakd.com/file/peakd-hive/jfang003/48He4YRiHQXAQto1SGmRZzJQmJYjrEfoPHwf2ehAak7gScgU2TReSftYEKfGSh41uL.png)",
+            "https://files.peakd.com/file/peakd-hive/jfang003/23tGTghAapLyVrfu4MxkGhy5RkWTML1UpDqf6uxvRfRyrA8XbU1o8YoteWeDmmwX7BeX9.png)",
+            "https://leofinance.io/@leoglossary/leoglossary-hive-backed-dollar-hbd)",
+            "https://files.peakd.com/file/peakd-hive/jfang003/EoAgvomJwguTUqKqRQDfNu11ezMmJay4aPHZGRQsiuXnZGY11jANoN8Fvp8GHTr7ddz.png)",
+            "https://files.peakd.com/file/peakd-hive/slothbuzz/EoH1FQp9qENCTmY4cmEzXTFsXurmY28k5GRD2z1kK7pexyTVwhui7cFtMLGEp8Sfjd2.png)](https://peakd.com/saturdaysavers/@slothbuzz/saturdaysavers-rebrand-and-relaunch-at-slothbuzz)",
+            "https://inleo.io/@jfang003/my-hive-goals-for-2026-week-20-cvv)"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@jfang003/my-hive-goals-for-2026-week-20-cvv"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 77.19,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.117 HBD"
+      },
+      {
+        "url": "/hive-163772/@gungunkrishu/ramoji-film-city-hyderabad-dishi-guptas-movie-making-experience",
+        "body": "Hey All,\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/gungunkrishu/23xAZgXZwCbxpdahUamMGS5LhGeMjam1qF4q9o5iuyUJVduAnspCENjK9KLqZCAb9chNA.png)\n\nLast week, we were on a family trip to Hyderabad, and one of the highlights of our itinerary was visiting [Ramoji Film City](https://www.ramojifilmcity.com/) — the world's largest integrated film studio complex, sprawling across an impressive 2,000 acres. It was an experience we had been looking forward to, especially with its blend of cinema, entertainment, and behind-the-scenes movie making experice and all the attractions, live shows, themed sets, and fun activities that make the place truly unique for visitors of all ages. Just to give you all the glimpse of Ramoji Film City Hyderabad here are the top three Famous Attraction / Feature about this Flim City..\n\n\n![WhatsApp Image 2026-05-19 at 10.55.12 AM.jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23xpF8nM21xpTq7Sq3Ftvfc4hbuQK9ZGzizZMTmStvKoeqULuiTxmoeNT7TCFqu2NHKn8.jpeg)\n\n\n- Holds a Guinness World Record as the largest integrated film studio complex. Spread accross 2,000 acres.\n- Movie Sets & Shooting Locations - Features massive film sets including international themed based locations used in movies like London, New York, airports, railway stations, palaces, and many different famous streets acorss the world.  And finally the recent addition which is\n\n- Baahubali Set Experience - One can expereince grand structures inspired by the blockbuster movie Baahubali.\n\n![WhatsApp Image 2026-05-19 at 10.55.11 AM (2).jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23uaMYi54ZFUtd8KY8xCBTvtLkFk8uibQhwVgM8hBeuV9mcar1a87BSrrhQPeicmqvreQ.jpeg)\n\n\nApart from all the fun and entertainment, it was great to witness the different movie sets and experience the world behind filmmaking. One of the biggest highlights of the visit was seeing the iconic set inspired by the blockbuster movie Baahubali. Here are some random pictures clicked of Baahubali movie set...\n\n\n\n![WhatsApp Image 2026-05-19 at 10.55.11 AM (1).jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23r1irCmDqTpqhUY6SwFjUezKuXTnF9nBkdSXGYedYcgqDUtDZKipSt4RFBd1YYJ3Jk8U.jpeg)\n\n![WhatsApp Image 2026-05-19 at 10.55.11 AM.jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/EowH6pW5mCTD3gVyV5vCWnQw5SWuYRArwaQA9QrGz8VxR5fX9q76e23cXdvt69YREuj.jpeg)\n\n\n\n![WhatsApp Image 2026-05-19 at 10.55.12 AM (1).jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynd8BBTb35CW6RxxeJsmYuQN7Sg9o6LVcKGXskW3H7wJMoYEqWgVyfG1s2hydHqKGdY.jpeg)\n\n![WhatsApp Image 2026-05-19 at 10.55.12 AM.jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynd8ArJkkcBnFacMWtGoqnSSUAG8dMsybrXKsDbyPjCtHsxUzxc8jeT5jmyu1YzsQQs.jpeg)\n\n![WhatsApp Image 2026-05-19 at 10.55.13 AM (1).jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/Ep3eqqyT4PJJtnFBQeYkXEHZ3Fsx7Rjnd4wvHrsqQTgWSUEyNXee1nLxtT5Rf8c8Xfw.jpeg)\n\n![WhatsApp Image 2026-05-19 at 10.55.13 AM.jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23yTjjT3tZ29mr6ESteGF5bMU1DoacNgrxsCZ3QYbJj2jxrJF3smjgwtzEC9urq569qua.jpeg)\n\n![WhatsApp Image 2026-05-19 at 10.55.14 AM.jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynYk5HqWPpH5Fa2fR3dub9TtLYk3AECeorKkLn92xzgeDWsdygevgr8eDh4zGhrgDh9.jpeg)\n\n\n### Dishi Gupta’s Movie Making Experience...\n\nLets us now talk a bit around the package that we bought it was an expensive one sine we didnt want to comporise on the experence and hence bought the - \"HOLIDAY CARNIVAL STAR EXPERIENCE WEEKDAYS\" package which costed us Rs.3600/- per person. This included everything from visting all the attractions in a A/C bus along with Complimentary Rides - Break dance, Twister, and Carousel and Buffet Lunch (Veg. and Non-Veg.) & Hi-Tea at Super Star/ Dostana. Overall I would say that this package was worth to be taken also the advanatage with this package was that you were given more priority when compared with the other packages being offered. Now comes the best part of the experience which is getting a glimpse into the movie making process itself. \n\n\n---\n\nhttps://youtu.be/sTWdDaKSvS8\n\n---\n\nThis made the visit even more special, as our daughter, Dishi Gupta, volunteered to participate in a live movie-making activity at Ramoji Film City. In the above video watch her step into the world of filmmaking and become part of the experience was both exciting and memorable for us as a family. All the time, effort, and money spent on this trip felt completely worth it. More importantly, capturing these beautiful moments made the experience even more special. Every time we look back at these pictures and watch the movie making video featuring our daughter, Dishi, it will bring back wonderful memories and remind us of a truly unforgettable family experience. Well this should be it for todays post on - \"Ramoji Film City Hyderabad - Dishi Gupta’s Movie Making Experience...\" If you are a movie lover, I would highly recommend visiting Ramoji Film City in Hyderabad. It’s truly a must-visit destination for sure.... cheers\n\n#RamojiFilmCity #HyderabadVlog #DishiGupta #MovieMaking #BehindTheScenes\n\nImage Courtesy:: Pro Canva License, Ramoji Flim City, ChatGpt\n\nBest Regards\nParas\n\n[//]:# (!worldmappin 17.2543 lat 78.6808 long Ramoji Film City, Hyderabad – World's largest integrated film studio complex spanning 2,000 acres 🎬)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 208
+        },
+        "title": "Ramoji Film City Hyderabad - Dishi Gupta’s Movie Making Experience...",
+        "author": "gungunkrishu",
+        "payout": 7.259,
+        "created": "2026-05-19T06:00:24",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-19T06:00:24",
+        "category": "hive-163772",
+        "children": 2,
+        "permlink": "ramoji-film-city-hyderabad-dishi-guptas-movie-making-experience",
+        "community": "hive-163772",
+        "payout_at": "2026-05-26T06:00:24",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 95531850484502,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 27332736521
+          },
+          {
+            "voter": "magicmonk",
+            "rshares": 12965147834576
+          },
+          {
+            "voter": "penguinpablo",
+            "rshares": 155841238854
+          },
+          {
+            "voter": "funnyman",
+            "rshares": 1563817529
+          },
+          {
+            "voter": "funnel",
+            "rshares": 4035523647
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "ramoji",
+            "flimcity",
+            "moviemaking",
+            "india",
+            "arcadecolony",
+            "movie",
+            "hyderabad",
+            "fun"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23xAZgXZwCbxpdahUamMGS5LhGeMjam1qF4q9o5iuyUJVduAnspCENjK9KLqZCAb9chNA.png",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23xpF8nM21xpTq7Sq3Ftvfc4hbuQK9ZGzizZMTmStvKoeqULuiTxmoeNT7TCFqu2NHKn8.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23uaMYi54ZFUtd8KY8xCBTvtLkFk8uibQhwVgM8hBeuV9mcar1a87BSrrhQPeicmqvreQ.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23r1irCmDqTpqhUY6SwFjUezKuXTnF9nBkdSXGYedYcgqDUtDZKipSt4RFBd1YYJ3Jk8U.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/EowH6pW5mCTD3gVyV5vCWnQw5SWuYRArwaQA9QrGz8VxR5fX9q76e23cXdvt69YREuj.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynd8BBTb35CW6RxxeJsmYuQN7Sg9o6LVcKGXskW3H7wJMoYEqWgVyfG1s2hydHqKGdY.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynd8ArJkkcBnFacMWtGoqnSSUAG8dMsybrXKsDbyPjCtHsxUzxc8jeT5jmyu1YzsQQs.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/Ep3eqqyT4PJJtnFBQeYkXEHZ3Fsx7Rjnd4wvHrsqQTgWSUEyNXee1nLxtT5Rf8c8Xfw.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23yTjjT3tZ29mr6ESteGF5bMU1DoacNgrxsCZ3QYbJj2jxrJF3smjgwtzEC9urq569qua.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynYk5HqWPpH5Fa2fR3dub9TtLYk3AECeorKkLn92xzgeDWsdygevgr8eDh4zGhrgDh9.jpeg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Worldmappin",
+        "author_reputation": 80.61,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "7.259 HBD"
+      },
+      {
+        "url": "/hive-167922/@berecibare/the-digital-graveyard-millions-of",
+        "body": "**_The Digital Graveyard:_** Millions of Dollars Trapped in Ancient Code That Nobody Can Hack.\n\n* * *\n\n**_El cementerio digital:_** Millones de dólares atrapados en códigos antiguos que nadie puede hackear.\n\n<img src=\"https://i.ecency.com/DQmVRbttoiKFARQmktLnC7s9pkWfBe5xHFMWLg8bfWUooJX/ecensy_1.png\" alt=\"\" />\n\nNearly **_four million Bitcoins_** are currently sleeping in an absolute and permanent digital void.\n\nThey are trapped in public addresses whose private keys were lost in discarded hard drives or forgotten flash drives. The money is in plain sight, but **_nobody has the code_** to move it.\n\n* * *\n\nCasi **_cuatro millones de Bitcoins_** duermen hoy en un vacío digital absoluto y permanente.\n\nEstán atrapados en direcciones públicas cuyas llaves privadas se perdieron en discos duros desechados o memorias olvidadas. El dinero está a la vista de todos, pero **_nadie tiene el código_** para moverlo.\n\n<img src=\"https://i.ecency.com/DQmbuxfgNGy3hDnevcudCYRfrz3yRrDHwLe2zSKn6vvzC8J/ecensy_2.png\" alt=\"\" />\n\nTo understand why these funds are technically unrecoverable, we must analyze the structure of Web3:\n\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>Asymmetric Cryptography:</em></strong> A Bitcoin public address is generated through a one-way mathematical function. You can derive the address from the private key, but it is mathematically impossible to reverse the process.</p>\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>The Hash Barrier:</em></strong> Finding a private key through brute force requires guessing a combination among (2^{256}) possible options. Even combining every computer on the planet, it would take centuries to crack a single wallet.</p>\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>Ledger Immutability:</em></strong> Since there is no centralized entity, there is no \"reset password\" button. If the original blockchain scripts do not receive the exact digital signature, the protocol automatically rejects the transaction.</p>\n\n* * *\n\nPara entender por qué estos fondos son técnicamente irrecuperables, debemos analizar la estructura de la Web3:\n\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>Criptografía asimétrica:</em></strong> Una dirección pública de Bitcoin se genera mediante una función matemática unidireccional. Puedes derivar la dirección desde la llave privada, pero es matemáticamente imposible hacer el proceso inverso.</p>\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>La barrera de hashes:</em></strong> Encontrar una llave privada por fuerza bruta requiere adivinar una combinación entre (2^{256}) opciones posibles. Ni sumando todas las computadoras del planeta se podría descifrar una sola billetera en siglos.</p>\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>La inmutabilidad del Ledger:</em></strong> Al no existir una entidad centralizada, no hay un botón de \"restablecer contraseña\". Si los scripts originales de la blockchain no reciben la firma digital exacta, el protocolo rechaza la transacción automáticamente.</p>\n\n<div class=\"pull-left\"><img src=\"https://i.ecency.com/DQmbQjWi7pWC4Dm7wHv72G1XWXVX6nhNT3BgTt8X9es7eLX/ecensy_3.png\"></div>\n\nThe fate of these zombie wallets provides three critical lessons to protect our Ecency and Hive accounts:\n\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>Mandatory Analog Backup:</em></strong> Write down your keys (Master Key and Active Key) on paper. Do not store screenshots or texts in the cloud.</p>\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>Hive Permission Hierarchy:</em></strong> Use your Posting Key for daily activities on Ecency. Reserve the Active Key and Owner Key strictly for critical financial transactions.</p>\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>Recovery Simulation: </em></strong>Periodically check your storage systems. Hardware degrades over the years; backups also need physical maintenance.</p>\n\n* * *\n\n<p style=\"text-align: left;\" data-align=\"left\">El destino de estas billeteras zombi nos deja tres aprendizajes críticos para proteger nuestras cuentas de Ecency y Hive:</p>\n\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>Respaldo analógico obligatorio:</em></strong> Escribe tus llaves (Master Key y Active Key) en papel. No guardes capturas de pantalla ni textos en la nube.</p>\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>Jerarquía de permisos en Hive:</em></strong> Usa tu Posting Key para el día a día en Ecency. Reserva la Active Key y la Owner Key solo para transacciones financieras críticas.</p>\n*   <p style=\"text-align: left;\" data-align=\"left\"><strong><em>Simulación de recuperación:</em></strong> Revisa periódicamente tus sistemas de almacenamiento. El hardware se degrada con los años; las copias de seguridad también necesitan mantenimiento físico.</p>\n\nThe arrival of **_advanced tools like LLMs and AI_** has revolutionized code debugging, but cryptographic mathematics remains an insurmountable wall. Zombie wallets prove that in Web3, **_self-custody is an absolute superpower._** The rigidity of the code protects us from attackers, but it demands unprecedented individual responsibility.\n\n* * *\n\n<p style=\"text-align: left;\" data-align=\"left\">La llegada de <strong><em>herramientas avanzadas como las LLM y la IA </em></strong>ha revolucionado la depuración de código, pero la matemática criptográfica sigue siendo un muro infranqueable. Las billeteras zombi demuestran que en la Web3, <strong><em>la autocustodia es un superpoder absoluto</em></strong>. La rigidez del código nos protege de los atacantes, pero nos exige una responsabilidad individual sin precedentes.</p>\n\n* * *\n\nWhat would you do if a technical glitch led you to discover the key to one of these foundational zombie wallets? I am interested in your technical opinion: do you think quantum computing will manage to open these digital chests in the future, or will cryptography evolve faster?\n\n¿Qué harías si por un fallo técnico encontraras la llave de una de estas billeteras zombi fundacionales? Me interesa saber tu opinión técnica: ¿crees que la computación cuántica logrará abrir estos cofres digitales en el futuro o la criptografía evolucionará más rápido?\n\n* * *\n\n<img src=\"https://i.ecency.com/DQmWTjesCZMUQ6WKvKjcix2QCDphP4PcidzqrqsnwNLQ8ee/ecensy_4.png\" alt=\"\" />\n\n**_Leave your comment below_** 👇 and let's debate about the security of our assets on Hive.\n\n<p style=\"text-align: left;\" data-align=\"left\"><strong><em>Deja tu comentario abajo👇</em></strong> y debatamos sobre la seguridad de nuestros activos en Hive.</p>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "The Digital Graveyard: Millions of Dollars Trapped in Ancient Code That Nobody Can Hack.  El cementerio digital: Millones de dólares atrapados en códigos antiguos que nadie puede hackear.",
+        "author": "berecibare",
+        "payout": 0,
+        "created": "2026-05-19T05:53:30",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T05:53:30",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "the-digital-graveyard-millions-of",
+        "community": "hive-167922",
+        "payout_at": "2026-05-26T05:53:30",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "irivers",
+            "rshares": 0
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "tags": [
+            "hive-167922",
+            "leofinance",
+            "crypto",
+            "spanish",
+            "technology",
+            "bilingual",
+            "cervantes",
+            "hive"
+          ],
+          "image": [
+            "https://i.ecency.com/DQmVRbttoiKFARQmktLnC7s9pkWfBe5xHFMWLg8bfWUooJX/ecensy_1.png",
+            "https://i.ecency.com/DQmbuxfgNGy3hDnevcudCYRfrz3yRrDHwLe2zSKn6vvzC8J/ecensy_2.png",
+            "https://i.ecency.com/DQmbQjWi7pWC4Dm7wHv72G1XWXVX6nhNT3BgTt8X9es7eLX/ecensy_3.png",
+            "https://i.ecency.com/DQmWTjesCZMUQ6WKvKjcix2QCDphP4PcidzqrqsnwNLQ8ee/ecensy_4.png"
+          ],
+          "links": [],
+          "format": "markdown+html",
+          "links_meta": {},
+          "thumbnails": [
+            "https://i.ecency.com/DQmVRbttoiKFARQmktLnC7s9pkWfBe5xHFMWLg8bfWUooJX/ecensy_1.png"
+          ],
+          "description": "STEP 1: TITLE GENERATIONLa paradoja de la criptografía: Billeteras zombi de la vieja escuela vs. El poder de cómputo moderno.Fortunas de piedra: Por qué ni la Inteligencia Artificial más avanzada puede",
+          "image_ratios": [
+            "1.7927",
+            "1.7927",
+            "1.7927",
+            "1.7927"
+          ]
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 44.19,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-163772/@lolitaanana001/a-quick-and-a-memorable-visit-at-mactan-cebu-international-airport",
+        "body": "Hello @worldmappin 👋 \nToday's interesting place I wanted to share to you is the famous place\nin Mactan,Lapu Lapu City, Cebu --<strong>The Mactan Cebu International Airport.\n</strong>\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/48LZewcLHqFm6EBQbzaGsjrfNTLEPMpPNw776TVULioZTd3T5jfKi4e3Tt6aUkRJk7.png\" alt=\"inbound1100544307298224418.png\">\nI'd never expected that I will be back here for the second time around..My cousin from Bohol invited me and my family to accompany her to go to the airport to meet her \"AFAM\" or foreign boyfriend. My cousin was also her first time to visit the airport in Mactan ,Cebu.\nSo we accompanied her and toured her around the airport.\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/23xUmJ7KV9SX75GqwPJWvNPtWpHyFiNcME2zc9keFdrPpz7CPToz7FXjHxrjyHjaTreok.jpg\" alt=\"inbound8131947962018146029.jpg\">\nI'm a bit amazed because  the place was already different and very develop. It's already fully finished. I'm totally in awe seeing the beauty of the architectural design.\n\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/243VuYq5CheXJSxHXzVkDQtHzT157FAPsCZrC2ichoXcSQyJfBLuvCSoZwUK5HH1etfxZ.jpg\" alt=\"inbound1004203163037795929.jpg\">\nThis is Mactan Cebu International Airport -Terminal 2 wherein this place you can see a lot of foreign tourist arrived in different places.\nSo while waiting, I got the chance to take some photos around the airport .\n\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/23xKp7jfBXSVtdv8CH6e7afuLHE27dKC9t3aZqwkFHidFo3K9tMnT55TGSj1XcB2As8Yx.jpg\" alt=\"inbound8855338333351356087.jpg\">\n\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/23wX3VEFkyz17XkzPavhRrifXnN7ZZozrHUFyk7f58ZEALmf2C1GX4FjLWridxGhZpHQe.jpg\" alt=\"inbound4899878951759635265.jpg\">\n\nIt's so cool looking around the airport surrounded with a lot of green trees. \n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/23xVFDk9D8pJtx1shSQzgoDuWVfcT7dhP6XK6cxsPuqMpVhp3tQ9XfBDKvnmfvqKDwLSX.jpg\" alt=\"inbound2738947400939545114.jpg\">\nBefore entering the airport, the palm trees around give so much beauty to the place. It became more relaxing and comfortable staying in the airport waiting for your loved ones.\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/23tmDeE2dWQuKhxfdzmrnHczJMSCbEUbbBEQowmi8gpcn3zsoRrG5MDd5QLE2qEyqDkJj.jpg\" alt=\"inbound2171554778955223496.jpg\">\nGoing to the airport me,my cousin together with my family, we booked a Grab car so that we will not be late in meeting Christopher, the foreigner..\n\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/23w2oGpHLDAHBtkoHXD184Tws3mDeDhZeMbvCbwroVJbewyApEEiv6argTUJMwiA4WLU2.jpg\" alt=\"inbound4231242653015636636.jpg\">\n\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/23tv8f1FQgpMnqV7vAnQDhvFRTzgYCgc7ZxVf8u2UdS7QnUcZc1mCaHZSXUL1VkDRikTT.jpg\" alt=\"inbound8396988707665513034.jpg\">\n\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/23vhoLKuBUJtMeyBB2hZDwqprXGKVwd8pmC3vtAdK6jDwuWQUhqCZCAYUnje1nEisHJ92.jpg\" alt=\"inbound6314223454224467857.jpg\">\nA lot of tourist come and go, the airport was so busy this time. Some were looking for food stops to eat and dine and some were looking for their tickets to prepare for their arrival and departures.\n\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/23uFTcs2duchRJ6EDPgDh6VCns3je4VA9k7ofQV7zwf5zVZpbWmYr8Jd3LZqW41GphRgY.jpg\" alt=\"inbound6275988915574651810.jpg\">\nWe arrived in the place 15 minutes before the time the foreigner will arrived in our meeting place. So my cousin was in a hurry to walk through and  excited to see her foreign Australian boyfriend.\n\n<img src=\"https://files.peakd.com/file/peakd-hive/lolitaanana001/23yd7oBqQpo7jRdvD11ATBuK8araedeQSqZnYRCjmfihQdSPazxoQnF6LcFyiAnNXCLqr.jpg\" alt=\"inbound4340934159554830612.jpg\">\nFinally they're able to meet with each other and were so happy seeing him  that finally he arrived safe.\nWe meet and greet and smiled to each other. My mother talked to the foreigner and trying hard to express words of gratitude in English😂\n---\n---\nSo if you have someone to meet up at the Mactan, Airport the starting point is at Savemore supermarket,from there you can easily find taxi and multicabs going to the airport. \n\nIt's a quick and short escape from my busy day and it feels so good knowing and meeting another person from another country.\n---\n---\n---\nAnd so after that short conversation we leave them and bid them goodbye,and went to supermarket..\n\n\nThe lead picture is edited in canva \nAll photos are mine\n\n\n\n\n[//]:# (!worldmappin 10.313653 lat 123.983288 long <DESCRIPTION GOES HERE> d3scr)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 121
+        },
+        "title": "A Quick  and a memorable Visit at Mactan Cebu International Airport ",
+        "author": "lolitaanana001",
+        "payout": 0.636,
+        "created": "2026-05-19T05:29:18",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-19T05:29:18",
+        "category": "hive-163772",
+        "children": 4,
+        "permlink": "a-quick-and-a-memorable-visit-at-mactan-cebu-international-airport",
+        "community": "hive-163772",
+        "payout_at": "2026-05-26T05:29:18",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 8379427569598,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 29132831208
+          },
+          {
+            "voter": "joshglen",
+            "rshares": 6255979703
+          },
+          {
+            "voter": "esteemapp",
+            "rshares": 7583235866
+          },
+          {
+            "voter": "travelnepal",
+            "rshares": 534168253
+          },
+          {
+            "voter": "itinerantph",
+            "rshares": 1382373537
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "worldmappin",
+            "travel",
+            "hiveph",
+            "appreciator",
+            "bayanihive",
+            "neoxian",
+            "foh",
+            "archon",
+            "ocd",
+            "qurator"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/48LZewcLHqFm6EBQbzaGsjrfNTLEPMpPNw776TVULioZTd3T5jfKi4e3Tt6aUkRJk7.png",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/23xUmJ7KV9SX75GqwPJWvNPtWpHyFiNcME2zc9keFdrPpz7CPToz7FXjHxrjyHjaTreok.jpg",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/243VuYq5CheXJSxHXzVkDQtHzT157FAPsCZrC2ichoXcSQyJfBLuvCSoZwUK5HH1etfxZ.jpg",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/23xKp7jfBXSVtdv8CH6e7afuLHE27dKC9t3aZqwkFHidFo3K9tMnT55TGSj1XcB2As8Yx.jpg",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/23wX3VEFkyz17XkzPavhRrifXnN7ZZozrHUFyk7f58ZEALmf2C1GX4FjLWridxGhZpHQe.jpg",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/23xVFDk9D8pJtx1shSQzgoDuWVfcT7dhP6XK6cxsPuqMpVhp3tQ9XfBDKvnmfvqKDwLSX.jpg",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/23tmDeE2dWQuKhxfdzmrnHczJMSCbEUbbBEQowmi8gpcn3zsoRrG5MDd5QLE2qEyqDkJj.jpg",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/23w2oGpHLDAHBtkoHXD184Tws3mDeDhZeMbvCbwroVJbewyApEEiv6argTUJMwiA4WLU2.jpg",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/23tv8f1FQgpMnqV7vAnQDhvFRTzgYCgc7ZxVf8u2UdS7QnUcZc1mCaHZSXUL1VkDRikTT.jpg",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/23vhoLKuBUJtMeyBB2hZDwqprXGKVwd8pmC3vtAdK6jDwuWQUhqCZCAYUnje1nEisHJ92.jpg",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/23uFTcs2duchRJ6EDPgDh6VCns3je4VA9k7ofQV7zwf5zVZpbWmYr8Jd3LZqW41GphRgY.jpg",
+            "https://files.peakd.com/file/peakd-hive/lolitaanana001/23yd7oBqQpo7jRdvD11ATBuK8araedeQSqZnYRCjmfihQdSPazxoQnF6LcFyiAnNXCLqr.jpg"
+          ],
+          "users": [
+            "worldmappin"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Worldmappin",
+        "author_reputation": 70.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.636 HBD"
+      },
+      {
+        "url": "/hive-167922/@daniasi/funds-for-the-right-people-l4m",
+        "body": "https://img.leopedia.io/DQmV7C9H2t6xrgGRzRL6fAYP4rhtdw5HAnDna9t5RQxRwFi/1000188959.jpg \n[source](https://www.magnific.com/free-photo/colourful-bar-statistics-with-finance-lettering_5683078.htm#fromView=search&page=3&position=8&uuid=71d04c22-09ef-44dc-bfc2-918a8e294190&query=entrepreneurial+grants+and+loans+ai+generated) \nThe [mystery](https://inleo.io/@leoglossary/leoglossary-mystery-genre) of the people is a very broad topic to discuss. Right things don't do much in the wrong place. There are two ways that [grants](https://inleo.io/@leoglossary/leoglossary-grant) miss the road; ‘the wrong people or the wrong person’. Ok, I will be delving into the need for upcoming [entrepreneurs](https://inleo.io/@leoglossary/leoglossary-entrepreneur) to be encouraged. I have seen several institutions step in anyway. Nevertheless, there are still flaws on how funds can be roughly channeled.   \n\nBefore getting there, I would also [love](https://inleo.io/@leoglossary/leoglossary-love) to talk about my experience today or probably for the past [week](https://inleo.io/@leoglossary/leoglossary-week). Since it is taking much of my [time](https://inleo.io/@leoglossary/leoglossary-time), I guess there is nothing wrong in sharing the experiences. I forgot to give a [customer](https://inleo.io/@leoglossary/leoglossary-customer) feedback on a pending [job](https://inleo.io/@leoglossary/leoglossary-job) and I know whenever I will be putting a call through his reply will be that the delay was from my end.   \n\nTwo out of five practicals are done and dusted and I have three [days](https://inleo.io/@leoglossary/leoglossary-day) to meet up with the remaining. That saying, whatever has a beginning, has an end and the remaining three will follow the same fate soonest.   \n\nI had to get out of the house and also avoid staying in the office as early as possible. [ALL](https://inleo.io/@leoglossary/leoglossary-all-currency) roads lead to the study center so that I can overcome every available distraction. It paid off as I was able to focus. In [short](https://inleo.io/@leoglossary/leoglossary-short-selling), the right people played out here and I was able to [share](https://inleo.io/@leoglossary/leoglossary-share-stock) ideas and get these disturbing practicals off my face.   \n\nBack to entrepreneurship and funding, it can be difficult to get access to fundings. Lobbying is one of those things. It was something I heard a [friend](https://inleo.io/@leoglossary/leoglossary-friend) said someone who wasn't related to the field of fashion got access to an industrial sewing machine as a [government](https://inleo.io/@leoglossary/leoglossary-government) grant. [sounds](https://inleo.io/@leoglossary/leoglossary-sound) discouraging right? Yes, the right people missed out in the picture.  \n https://img.leopedia.io/DQmeDircY9BPGgLEG2tnYvvm7NbTLPQLhjFhjWhawAMpzrQ/1000188961.jpg \n[source](https://www.magnific.com/free-ai-image/man-handling-money-financial-duties_236222220.htm#fromView=search&page=1&position=17&uuid=068ab0df-504d-4a74-8772-fc88d7e15316&query=insufficient+capital+ai+generated) \nSmall [businesses](https://inleo.io/@leoglossary/leoglossary-business) are breathing hard as we speak. The harsh [economic](https://inleo.io/@leoglossary/leoglossary-economic) situation is becoming more of a cage to slow down business growth. The solution here is fundings; [investors](https://inleo.io/@leoglossary/leoglossary-investor), grants, [loans](https://inleo.io/@leoglossary/leoglossary-loans) and other channels. \n\nAnyway, there are two ends to this; first, are you even fundable?. This is where we talk of the wrong person. What records do you have? So you have a flywheel that can convert [capital](https://inleo.io/@leoglossary/leoglossary-capital) to [profit](https://inleo.io/@leoglossary/leoglossary-profit) either now or some time in the future?   \n\nWe have seen so many projects hit the [stage](https://inleo.io/@leoglossary/leoglossary-stage) like baby boomers and disappear the next minute. One has to take [note](https://inleo.io/@leoglossary/leoglossary-note) of this, asides from just complaining that empowerment and grants are not coming your way, you need to prepare also as to when it will show up.  \n\nIn conclusion, the challenge of entrepreneurial under financing needs to be curbed. I know there are many channels to look into; godfatherism, man-know-man and several others especially when concerning government grants. I will also say, as an [option](https://inleo.io/@leoglossary/leoglossary-options) entrepreneur, have a road map, you can't afford to be the wrong person. Every setback has its consequences; consider what your underperformance can do. Yes, it can cause a discouragement to investors to look down on SME as being unprepared for growth.\n\n>This is an [article](https://inleo.io/@leoglossary/leoglossary-article) covered by dani-EL; a broad niche [writer](https://inleo.io/@leoglossary/leoglossary-writer). I write on faith, [life](https://inleo.io/@leoglossary/leoglossary-life) facts and daily living, business and [economics](https://inleo.io/@leoglossary/leoglossary-economics-social-science), small scale and daily businessing, [cryptocurrency](https://inleo.io/@leoglossary/cryptocurrency) and [technology](https://inleo.io/@leoglossary/leoglossary-technology). And yes, I do cover articles on financial [education](https://inleo.io/@leoglossary/leoglossary-education) and [investment](https://inleo.io/@leoglossary/leoglossary-investment) updates. And [note](https://inleo.io/@leoglossary/leoglossary-note), if I happen to be a financial adviser to you, the [TOP](https://inleo.io/@leoglossary/leoglossary-top-currency) financial advice should be ‘DYOR’ (Do Your Own Research), I can't afford to break your heart.   \n\nPosted Using [INLEO](https://inleo.io/@daniasi/funds-for-the-right-people-l4m)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 159
+        },
+        "title": "Funds for the right people",
+        "author": "daniasi",
+        "payout": 1.222,
+        "created": "2026-05-19T05:27:18",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T05:27:18",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "funds-for-the-right-people-l4m",
+        "community": "hive-167922",
+        "payout_at": "2026-05-26T05:27:18",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 16084680298066,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 13112064488
+          },
+          {
+            "voter": "jeffjagoe",
+            "rshares": 838827970
+          },
+          {
+            "voter": "rufans",
+            "rshares": 63726221590
+          },
+          {
+            "voter": "sergiomendes",
+            "rshares": 5007414685
+          },
+          {
+            "voter": "funnyman",
+            "rshares": 7154542541
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "Inleo ",
+            "Neoxian ",
+            "Pob",
+            "Scifimultiverse ",
+            "Palnet ",
+            "Aliveandthriving ",
+            "Cent ",
+            "Hive"
+          ],
+          "links": [
+            "https://www.magnific.com/free-photo/colourful-bar-statistics-with-finance-lettering_5683078.htm#fromView=search&page=3&position=8&uuid=71d04c22-09ef-44dc-bfc2-918a8e294190&query=entrepreneurial+grants+and+loans+ai+generated)",
+            "https://inleo.io/@leoglossary/leoglossary-mystery-genre)",
+            "https://inleo.io/@leoglossary/leoglossary-grant)",
+            "https://inleo.io/@leoglossary/leoglossary-entrepreneur)",
+            "https://inleo.io/@leoglossary/leoglossary-love)",
+            "https://inleo.io/@leoglossary/leoglossary-week).",
+            "https://inleo.io/@leoglossary/leoglossary-time),",
+            "https://inleo.io/@leoglossary/leoglossary-customer)",
+            "https://inleo.io/@leoglossary/leoglossary-job)",
+            "https://inleo.io/@leoglossary/leoglossary-day)",
+            "https://inleo.io/@leoglossary/leoglossary-all-currency)",
+            "https://inleo.io/@leoglossary/leoglossary-short-selling),",
+            "https://inleo.io/@leoglossary/leoglossary-share-stock)",
+            "https://inleo.io/@leoglossary/leoglossary-friend)",
+            "https://inleo.io/@leoglossary/leoglossary-government)",
+            "https://inleo.io/@leoglossary/leoglossary-sound)",
+            "https://www.magnific.com/free-ai-image/man-handling-money-financial-duties_236222220.htm#fromView=search&page=1&position=17&uuid=068ab0df-504d-4a74-8772-fc88d7e15316&query=insufficient+capital+ai+generated)",
+            "https://inleo.io/@leoglossary/leoglossary-business)",
+            "https://inleo.io/@leoglossary/leoglossary-economic)",
+            "https://inleo.io/@leoglossary/leoglossary-investor),",
+            "https://inleo.io/@leoglossary/leoglossary-loans)",
+            "https://inleo.io/@leoglossary/leoglossary-capital)",
+            "https://inleo.io/@leoglossary/leoglossary-profit)",
+            "https://inleo.io/@leoglossary/leoglossary-stage)",
+            "https://inleo.io/@leoglossary/leoglossary-note)",
+            "https://inleo.io/@leoglossary/leoglossary-options)",
+            "https://inleo.io/@leoglossary/leoglossary-article)",
+            "https://inleo.io/@leoglossary/leoglossary-writer).",
+            "https://inleo.io/@leoglossary/leoglossary-life)",
+            "https://inleo.io/@leoglossary/leoglossary-economics-social-science),",
+            "https://inleo.io/@leoglossary/cryptocurrency)",
+            "https://inleo.io/@leoglossary/leoglossary-technology).",
+            "https://inleo.io/@leoglossary/leoglossary-education)",
+            "https://inleo.io/@leoglossary/leoglossary-investment)",
+            "https://inleo.io/@leoglossary/leoglossary-note),",
+            "https://inleo.io/@leoglossary/leoglossary-top-currency)",
+            "https://inleo.io/@daniasi/funds-for-the-right-people-l4m)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmV7C9H2t6xrgGRzRL6fAYP4rhtdw5HAnDna9t5RQxRwFi/1000188959.jpg",
+            "https://img.leopedia.io/DQmeDircY9BPGgLEG2tnYvvm7NbTLPQLhjFhjWhawAMpzrQ/1000188961.jpg"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@daniasi/funds-for-the-right-people-l4m"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 71.56,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.222 HBD"
+      },
+      {
+        "url": "/hive-163772/@taniagonzalez/engesp-conejero-market-an-icon-of-margarita",
+        "body": "<center>\n\n\n![photo_2026-05-18_23-18-32.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/Eonk7F1uQcACZ3vnWiF4cf1GUUPKg35HJo2d71xejzhQnfLpeDr8ckfnuzD86dCjkap.jpg)\n\n\n</center>\n\n<div class = \"text-justify\">\n<div class = \"pull-left\"> \n\n**Greetings, fellow travelers. Today I’d like to take you to a place that holds a special place in the collective memory of many residents of Margarita Island: the Conejero Market, located on José Asunción Rodríguez Avenue in Porlamar, García Municipality, Nueva Esparta State, on Margarita Island.**\n \n</div>\n\n\n<div class = \"pull-right\">\n\n*Saludos, amigos viajeros. Hoy quiero llevarlos conmigo a un lugar que forma parte de la memoria colectiva de muchos margariteños; el Mercado Conejero, ubicado en la avenida José Asunción Rodríguez, en Porlamar, municipio García, estado Nueva Esparta, en Isla de Margarita.*\n\n</div>\n<hr>\n\n<center>\n\n![photo_2026-05-18_23-18-23.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/Eq7MKutUNFYfaRwUPhQqccsPPs3mq5aY4pjgwxZdrcCc1fXHjdFzUWZVB2RDAZQCnRC.jpg)\n\n![photo_2026-05-18_23-18-22.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EqBcfRs6pWNCfDiZAXSW8vHqtVoywxK5SR9tYZWsoZsNmKFwBDVELGeMFTAJbsLJbnd.jpg)\n\n</center>\n\n<div class = \"text-justify\">\n<div class = \"pull-left\"> \n\n**This market, which for many is a symbol of tradition and community, was designed by architect Andrés Simón Herrera, who was assisted by two other architects and an engineer in bringing the project to fruition. The original idea was to create a spacious and functional space that would bring together shops, vegetable stands, various businesses, and a food court dedicated to offering traditional dishes, including the ever-present arepas and dogfish empanadas, which are so representative of the people of Margarita.\nAccording to a local woman, this market was created with the intention of bringing together all the merchants of Porlamar, including entrepreneurs who at the time were looking for a decent place to work. It was built in 1957, remodeled and expanded in 1970, and underwent its last expansion in 2004. A vendor who has been working there for about twenty-five years shared this information with me; she is a living witness to its evolution, its heyday, and also its difficult times.**\n \n</div>\n\n\n<div class = \"pull-right\">\n\n*Este mercado, que para muchos es un símbolo de tradición y encuentro, fue diseñado por el arquitecto Andrés Simón Herrera, quien contó con el apoyo de dos arquitectos adicionales y un ingeniero para materializar la obra. La idea original era crear un espacio amplio y funcional donde se integraran tiendas, puestos de verduras, comercios variados y un área gastronómica destinada a ofrecer platos típicos, incluyendo las infaltables arepas y empanadas de cazón, que tanto representan al margariteño.\nSegún me contó una lugareña, este mercado nació con la intención de reagrupar a todos los comerciantes de Porlamar, incluyendo a los emprendedores que en aquel entonces buscaban un espacio digno para trabajar. Fue construido en el año 1957, remodelado y ampliado en 1970, y tuvo su última expansión en 2004. Estos datos me los compartió una comerciante que lleva aproximadamente veinticinco años trabajando allí, testigo viva de su evolución, de sus mejores tiempos y también de sus momentos difíciles.*\n\n</div>\n<hr>\n\n<center>\n\n\n![photo_2026-05-18_23-18-30.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EpNnskEobGNCUSoS1mtffYoQSpaczxBJDUCghCe27QbGER9ELwjHTE6Lg1XnzL9S48o.jpg)\n\n![photo_2026-05-18_23-18-28.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EpnCFtuivHNrMbyADnqq3Ggocottgekebgsuh1rjp4mNQaKACtDXScDq6u63WW1ofwG.jpg)\n\n![photo_2026-05-18_23-18-28 (2).jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EprTXZapjcQM8c41gm5TRAQtTtFckMviU5df4xyPZ7rS6HxgCzMeEty8c7kMwnDrHTB.jpg)\n\n![photo_2026-05-18_23-18-17.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EpVAho5nAHedDFSheV5Kr4mxLn5AKm1SHq5miSnKJGJ4KBQUM1cBtfePiAj6x4sZJxT.jpg)\n\n![photo_2026-05-18_23-18-16 (2).jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/Eq369uE951eJ9GpPYzRcsuHjuBjDYqg8cJTdWNyXPqNBi2KN8fM7hRY4dDZJQH9zHiu.jpg)\n\n\n</center>\n\n<div class = \"text-justify\">\n<div class = \"pull-left\"> \n\n**The Conejero Market marked a wonderful era. Many tourists from different parts of the country eagerly awaited their vacations so they could come to Margarita and do their shopping. In those days, thanks to the free port regime, prices were very low and the products were of excellent quality. It was common to see entire families strolling through the aisles, comparing prices, buying clothes, shoes, handicrafts, and, of course, sampling the local cuisine that has always been a hallmark of the island.**\n \n</div>\n\n\n<div class = \"pull-right\">\n\n*El Mercado Conejero marcó una época hermosa. Muchos turistas de diferentes regiones del país esperaban con ansias sus vacaciones para venir a Margarita y hacer sus compras. En aquellos años, gracias al régimen de puerto libre, los precios eran muy bajos y los productos de excelente calidad. Era común ver familias completas recorriendo los pasillos, comparando precios, comprando ropa, calzado, artesanías y, por supuesto, degustando la comida típica que siempre ha sido un sello de identidad.*\n\n</div>\n<hr>\n\n<center>\n\n\n![photo_2026-05-18_23-18-27.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/Eqd9Ujp3kG2ueXWcVTtiWAf77YfdCxFFKEKAqTTjFzYHbRTzgQQeGKrtzcfMgJiejbE.jpg)\n\n![photo_2026-05-18_23-18-27 (2).jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EqhPiTxxtT95jQyF3gaPhWHUuU4yixb81WYGa81su1YEDbG4sJWu9M3jNGanfPdn2zX.jpg)\n\n![photo_2026-05-18_23-18-25.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EppLDpngZ5tzeN6D3DECkXJfpVpxcZKYtuCAS7fEC6R56T2M8pAXX7s4kCMoqyHJ5JX.jpg)\n\n![photo_2026-05-18_23-18-24.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EoK6EB6c9mrcPEFx14amkF91wQhEoYJsACBTo67cHP7JhsA5YY7xi91Fp6CwNpYQqVb.jpg)\n\n![photo_2026-05-18_23-18-20 (2).jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/Eqd8RTmh2DA2XVz5Kq5e7eS6ShS3dDyegud9wuJo89mzVbqSNa8VoEHjqFTVQ5vLeH6.jpg)\n\n![photo_2026-05-18_23-18-18.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EprUcbW259NHma4DrQw22f3iQZb2BxTft42bTYs5Q1uQ5YYW8YaUGDZCfBAp3tehFyX.jpg)\n\n![photo_2026-05-18_23-18-18 (2).jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EpxrmYrKNo5QUPKg45QxnVWuHN93T84fXFsSEZLyDemzKoCUfPj5mqpaSU2gTuBcJe6.jpg)\n\n\n</center>\n\n<div class = \"text-justify\">\n<div class = \"pull-left\"> \n\n**Over time, the market began to decline. The arrival of large shopping malls, economic changes, and, more recently, the impact of the pandemic, brought it to the brink of closure. However, despite the difficulties, some vendors have held their ground, persevering for more than twenty years, clinging to their stalls, their customers, and the hope that the market will be reborn.\nOne of the things that most distinguished the Conejero Market was the arrival of trucks loaded with fresh agricultural products from the mainland. Vegetables, fruits, and high-quality coffee beans arrived at very affordable prices. In my family, for example, we always went to the market to buy fresh vegetables and that coffee beans with an incomparable aroma.**\n \n</div>\n\n\n<div class = \"pull-right\">\n\n*Con el paso del tiempo, el mercado fue decayendo. La llegada de grandes centros comerciales, los cambios económicos y, más recientemente, el impacto de la pandemia, lo llevaron casi al cierre total. Sin embargo, a pesar de las dificultades, algunos vendedores se han mantenido firmes, resistiendo por más de veinte años, aferrados a su espacio, a sus clientes y a la esperanza de que el mercado vuelva a renacer.\nUna de las cosas que más distinguía al Mercado Conejero era la llegada de camiones cargados de productos agrícolas frescos provenientes de tierra firme. Verduras, frutas, hortalizas y café en granos de excelente calidad llegaban a precios muy accesibles. En mi casa, por ejemplo, siempre se iba al mercado para comprar verduras frescas y ese café en granos que tenía un aroma incomparable.*\n\n</div>\n<hr>\n\n<center>\n\n\n![z.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EpEHJppF1uqj6h1jVmLX5AiJ2pnc62N5cVYLV3aLGAHgoP2adztaJTScqmfKUQVMR4d.jpg)\n\n![photo_2026-05-18_23-18-22 (2).jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EpzyEshT8jHW5W4y65HDA65F5FfFz8otGGs3JFJiUdF5dCaSTfgBKYBokh7oYhBzgii.jpg)\n\n![photo_2026-05-18_23-18-21 (2).jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EqSVa2dhi8dUdgdygtGPyUacAHs7suxQ5KFry11kS8Lvph6K5d84hxHQFHGGPMKoi8A.jpg)\n\n![photo_2026-05-18_23-18-11.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EprTYYwDMYCiJNNQeQ9wdbs6fHgiqHBFfCP8NH5UAqDe5EwJAmyPqqer98QbRwnHaRH.jpg)\n\n![photo_2026-05-18_23-18-09.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EpxqmsR6Xh7iumARM9CKp4znncGN3DXeUWQi8nC5YsjvXTrEFtf3KNLAvntzCe9vzvw.jpg)\n\n![photo_2026-05-18_23-18-07.jpg](https://files.peakd.com/file/peakd-hive/taniagonzalez/EqBbd8uDKrbcyh5Fyy99BxAhxqT57B12tTGWt8HZ9VbkwUDx8gGQichHgSDUJo1MUkF.jpg)\n\n\n</center>\n\n<div class = \"text-justify\">\n<div class = \"pull-left\"> \n\n**Today, even though the market isn’t what it used to be, the food court has experienced a resurgence. Little by little, new food stalls have been popping up, and that has breathed new life into the place. I think this revival is a positive thing, not only for the vendors but also for those of us who grew up hearing stories about the market or wandering through it during its golden age.\nI wanted to tell you about this iconic market on Margarita Island because I know many of you remember it fondly. Although it has now been overshadowed by large shopping malls, it remains an important little piece of our island’s history—a place that holds memories, anecdotes, and the essence of a time that shaped an entire generation.\nWell, dear fellow travelers, I’ll sign off for today. I’ll be back very soon with another post to show you another little corner of this beautiful island that I love so much.\nSee you soon.  \nBye.**\n \n</div>\n\n\n<div class = \"pull-right\">\n\n*Hoy en día, aunque el mercado no es el mismo de antes, el área gastronómica ha cobrado un nuevo auge. Poco a poco han ido surgiendo nuevos puestos de comida, y eso le ha devuelto algo de vida al lugar. Creo que este renacer es positivo, no solo para los comerciantes, sino también para quienes crecimos escuchando historias del mercado o recorriéndolo en su época dorada.\nQuise hablarles de este mercado icónico de Isla Margarita porque sé que muchos lo recuerdan con nostalgia. Aunque ahora esté superado por grandes centros comerciales, sigue siendo un pedacito importante de nuestra historia insular, un espacio que guarda recuerdos, anécdotas y la esencia de un tiempo que marcó a toda una generación.\nBueno, queridos amigos viajeros, me despido por hoy. Muy pronto volveré con otra publicación para mostrarles otro rinconcito de esta hermosa isla que tanto amo.\nHasta pronto.  \nChao.*\n\n</div>\n<hr>\n\nhttps://images.ecency.com/DQmX41osuLQUYYCyZK8X9Bw9HS64BTvn2S2qu3uWyowNJd4/la_laguna_tania5_copia.png \n \n<div class=\"text-justify\"> \n \n*The photos were taken with a Redmi Note 13\nTranslated with [DeepeL](https://www.deepl.com/es/translator) \nPhotos was made with Inshot*\n\n[//]:# (!worldmappin 10.96230 lat -63.86723 long Mercado Conejeros d3scr)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 17
+        },
+        "title": "[ENG/ESP] Conejero Market, an icon of Margarita",
+        "author": "taniagonzalez",
+        "payout": 0.321,
+        "created": "2026-05-19T05:10:00",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-19T05:10:00",
+        "category": "hive-163772",
+        "children": 3,
+        "permlink": "engesp-conejero-market-an-icon-of-margarita",
+        "community": "hive-163772",
+        "payout_at": "2026-05-26T05:10:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 4237163440073,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "cornerstone",
+            "rshares": 955351340433
+          },
+          {
+            "voter": "joeyarnoldvn",
+            "rshares": 940071409
+          },
+          {
+            "voter": "karja",
+            "rshares": 779056156726
+          },
+          {
+            "voter": "arkwal",
+            "rshares": 75990254395
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 1886635690290
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "ecency",
+            "photography",
+            "spanish",
+            "neoxian",
+            "waiv",
+            "archon",
+            "leo",
+            "pimp",
+            "travel",
+            "worldmappin"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/Eonk7F1uQcACZ3vnWiF4cf1GUUPKg35HJo2d71xejzhQnfLpeDr8ckfnuzD86dCjkap.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/Eq7MKutUNFYfaRwUPhQqccsPPs3mq5aY4pjgwxZdrcCc1fXHjdFzUWZVB2RDAZQCnRC.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/EqBcfRs6pWNCfDiZAXSW8vHqtVoywxK5SR9tYZWsoZsNmKFwBDVELGeMFTAJbsLJbnd.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/EpNnskEobGNCUSoS1mtffYoQSpaczxBJDUCghCe27QbGER9ELwjHTE6Lg1XnzL9S48o.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/EpnCFtuivHNrMbyADnqq3Ggocottgekebgsuh1rjp4mNQaKACtDXScDq6u63WW1ofwG.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/EprTXZapjcQM8c41gm5TRAQtTtFckMviU5df4xyPZ7rS6HxgCzMeEty8c7kMwnDrHTB.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/EpVAho5nAHedDFSheV5Kr4mxLn5AKm1SHq5miSnKJGJ4KBQUM1cBtfePiAj6x4sZJxT.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/Eq369uE951eJ9GpPYzRcsuHjuBjDYqg8cJTdWNyXPqNBi2KN8fM7hRY4dDZJQH9zHiu.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/Eqd9Ujp3kG2ueXWcVTtiWAf77YfdCxFFKEKAqTTjFzYHbRTzgQQeGKrtzcfMgJiejbE.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/EqhPiTxxtT95jQyF3gaPhWHUuU4yixb81WYGa81su1YEDbG4sJWu9M3jNGanfPdn2zX.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/EppLDpngZ5tzeN6D3DECkXJfpVpxcZKYtuCAS7fEC6R56T2M8pAXX7s4kCMoqyHJ5JX.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/EoK6EB6c9mrcPEFx14amkF91wQhEoYJsACBTo67cHP7JhsA5YY7xi91Fp6CwNpYQqVb.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/Eqd8RTmh2DA2XVz5Kq5e7eS6ShS3dDyegud9wuJo89mzVbqSNa8VoEHjqFTVQ5vLeH6.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/EprUcbW259NHma4DrQw22f3iQZb2BxTft42bTYs5Q1uQ5YYW8YaUGDZCfBAp3tehFyX.jpg",
+            "https://files.peakd.com/file/peakd-hive/taniagonzalez/EpxrmYrKNo5QUPKg45QxnVWuHN93T84fXFsSEZLyDemzKoCUfPj5mqpaSU2gTuBcJe6.jpg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Worldmappin",
+        "author_reputation": 77.24,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.321 HBD"
+      },
+      {
+        "url": "/hive-167922/@ruta.loans/pagado-prestamo-a-yelimarin-por-24-hbd-or-p-0598-or-t3-01122025",
+        "body": "\n![image.png](https://files.peakd.com/file/peakd-hive/ruta.loans/23uFwpP3FfTAz73wf6ceXLj9GJjwQNEL2rCExr1QW9uRYgL3ZLmMSihdNR8gb159Jnezm.png)\nSe ha prestado\t24\tHBD\t@yelimarin\tquien pagará\t28,8\tHBD antes del\t30/01/2026\ndejó en garantía su cuenta de Hive.\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\nPrestamistas participando:\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n@danielvehe\tquien recibirá\t1,200\tHBD\t\t\t\t\n@enmy\tquien recibirá\t1,200\tHBD\t\t\t\t\n@rutablockchain\tquien recibirá\t2,400\tHBD\t\t\t\t",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "PAGADO -  Préstamo a @yelimarin por 24 HBD | P-0598\t\t\t| T3 01122025",
+        "author": "ruta.loans",
+        "payout": 0,
+        "created": "2026-05-19T03:54:00",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T03:54:00",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "pagado-prestamo-a-yelimarin-por-24-hbd-or-p-0598-or-t3-01122025",
+        "community": "hive-167922",
+        "payout_at": "2026-05-26T03:54:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "rutaloans",
+            "spanish",
+            "leofinance",
+            "rutablockchain",
+            "hbd",
+            "hive",
+            "loans"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/ruta.loans/23uFwpP3FfTAz73wf6ceXLj9GJjwQNEL2rCExr1QW9uRYgL3ZLmMSihdNR8gb159Jnezm.png"
+          ],
+          "users": [
+            "yelimarin",
+            "danielvehe",
+            "enmy",
+            "rutablockchain"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 52.02,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "0.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-163772/@virgilio07/paseo-por-la-plaza-pichincha",
+        "body": "\n\n\n![1000453637.jpg](https://files.peakd.com/file/peakd-hive/virgilio07/23vsKyxLq8ykpvv9nzhXAHQt8q1hvCrdqycnm1oFi1TnTqD1SEdwAkp3nfdN4DmiAtyiK.jpg)\n\n\n\n\n\n<div class=text-justify> \n<div class=\"pull-left\">\n\n**<center>ESPAÑOL</center>**\n \nHoy les comparto mi visita a la Plaza Pichincha, ubicada en el centro histórico de la ciudad, entre las calles Sucre y Bolívar, a pocos metros de la Plaza Bolívar, lugar de nacimiento de Andrés Eloy Blanco y sede de la Fundación Cultural Nacional. Esta plaza rinde homenaje al héroe nacional Antonio José de Sucre y a la Batalla de Pichincha, librada en Perú, donde el líder Cumaná tuvo un papel fundamental.\n\nLa plaza se encuentra cerca de un conocido café de la ciudad, el Café Bracamonte. Cuenta con aceras de concreto, bancos de granito y está rodeada de diversos comercios, iglesias, un gimnasio y casas coloniales. Grandes árboles brindan sombra. La visité por la tarde y, casualmente, vimos un perro curioso paseando por la plaza.\n\n</div>\n<div class=text-justify> \n<div class=\"pull-right\">\n\n**<center>ENGLISH</center>**\n\nToday I'm sharing my visit to Plaza Pichincha, located in the city's historic center between Sucre and Bolívar streets, just a few meters from Plaza Bolívar, the birthplace of Andrés Eloy Blanco, and the site of the National Cultural Foundation. This plaza pays homage to the national hero Antonio José de Sucre and the Battle of Pichincha, fought in Peru, where the leader from Cumaná played a significant role.\n\nThe plaza is near a well-known café in the city, Café Bracamonte. It features concrete walkways, granite benches, and is surrounded by several businesses, churches, a gym, and colonial houses. Large trees provide shade. I visited in the afternoon, and we happened to see a curious dog wandering around the plaza.\n</div>\n\n\n![PP (14).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/EpviLvZKaveESpUniTfCXxGXt4ydt2KHWS6aifhKL7hvcB1RmfhV3LuUkqJi2U5mCyu.jpeg)\n\n![PP (1).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/23wgFZ4GwCii9tTNuqhFrdKmfhPBcb48c8s5KnBs9p3c9Kdv8Gpk9AfvHH3PWyxAZR2qL.jpeg)\n\n![PP (13).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/23wC9iQu9jdVkiCNJWpJdSpswNZjt6y7NaV5Bsh8mLWuvXNth47Qf7FqFAVabVSP2iDgz.jpeg)\n\n![PP (5).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/23wWvtuoGRDw789Efg72pyMLmrJj6qwF8LpB7WNueHq6iXTsmUiz6eQDSs374g4egvaeU.jpeg)\n\n\n\n![PP (6).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/EonkRhGbdKftzwbHoMQPbUrmhWrh6CAQzfTXsMBoE5kCeWGTApz7NuSRg7xd684qsJ6.jpeg)\n\n![PP (7).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/23u63LyCGFxHtZGWnEusmWbLBWYdk54YcUze8TLN7v7zyxnwY2gPd8j3UiQXvh3Dm2SpX.jpeg)\n\n\n\n![separador virgilio 1.gif](https://files.peakd.com/file/peakd-hive/virgilio07/48fPJW5oSR5NrT5insR3hayLh9ET1ifvCG8zGp4Rfk8EhMtUrcwakXhr5g3cRk6Y8x.gif)\n\n<hr>\n\n<div class=text-justify> \n<div class=\"pull-left\">\n\nAl entrar desde la calle Sucre, encontrará un muro con la inscripción \"Batalla de Pichincha (24 de mayo de 1822)\" en la plaza. El muro está rodeado por tuberías y cadenas en la parte posterior. Una losa se extiende a ambos lados del muro, y un escalón conduce al frente. Siguiendo hacia el centro de la plaza, encontrará un pedestal que sostiene un busto de Antonio José de Sucre.\n\nEste pedestal es negro. Varias pasarelas se ramifican desde él, conduciendo a diferentes partes de la plaza y saliendo a la calle Bolívar. También verá bancos de granito, y un detalle que me llamó la atención es que estos bancos no tienen respaldo; sus bases son de tubos de hierro y se asientan sobre una losa de concreto. Las pasarelas también son de concreto, y varios árboles rodean la plaza. El busto de Antonio José de Sucre se encuentra sobre un pedestal beige, similar al granito que cubre el muro lateral que delimita la plaza.\n\n\n</div>\n\n<div class=text-justify> \n<div class=\"pull-right\">\n\n Entering from Sucre Street, you'll find a wall with the inscription \"Battle of Pichincha (May 24, 1822)\" on the plaza. The wall is surrounded by pipes and chains at the back. A slab extends along both sides of the wall, and a step leads to the front. Continuing towards the center of the plaza, you'll find a pedestal supporting a bust of Antonio José de Sucre.\n\nThis pedestal is black. Several walkways branch off from it, leading to different parts of the plaza and exiting onto Bolívar Street. You'll also see granite benches, and one feature that caught my attention is that these benches have no backs; their bases are made of iron pipes and are set on a concrete slab. The walkways are also concrete, and several trees surround the plaza. The bust of Antonio José de Sucre sits on a beige pedestal, similar to the granite that covers the side wall that defines the plaza.\n\n\n</div>\n\n\n![PP (4).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/EppLePomBvRF347TUYAVSa2sy3CAzGWo6MBbXJkX5CcZ22WysyubimmfyvFKKUd87MS.jpeg)\n\n![PP (17).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/EopttFFhsy9DoR9VLrBMnVFQCq6EC7qCrF1DsLDnnKMTUq9WYizWUY9CdGyVxbSBVKD.jpeg)\n\n![PP (2).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/EoyQzxnfK89PDH4UcW3e7b7MFdgk795UNpTq4W7aa2M23hHLiyfncmTT5PSjNNEudyh.jpeg)\n\n![PP (15).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/Eoc74y7u3uszuJ3qaCGY8CJyrx4PLmzuDiqCNHcFK3mQx6wqBCKS4qvEkzpa79jkXMU.jpeg)\n\n![PP (16).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/EopvMm2AUxHm7yeuYCmLHRMS94jveAJadJWMh9jqbF2QA9VYBiF2TCF9PqyrRVzwx3r.jpeg)\n\n\n![separador virgilio 1.gif](https://files.peakd.com/file/peakd-hive/virgilio07/48fPJW5oSR5NrT5insR3hayLh9ET1ifvCG8zGp4Rfk8EhMtUrcwakXhr5g3cRk6Y8x.gif)\n\n<hr>\n<div class=text-justify> \n<div class=\"pull-left\">\n\n\nDetrás del muro hay varias tiendas que ofrecen servicios de copiado e impresión, así como una cafetería con mesas redondas. Esta zona es un paseo de cemento donde la gente puede sentarse, charlar y relajarse mientras espera sus impresiones. Mirando hacia la calle Sucre, se pueden ver varios negocios, un invernadero que alberga un restaurante, la biblioteca pública y varios bancos de parque, además de los grandes árboles que rodean la plaza.\n\nComo mencioné, detrás del muro hay varias tiendas y una universidad. La plaza está separada de estos negocios por tuberías amarillas. Frente al muro también hay varios bancos, y se puede ver el amplio paseo de cemento que recorre la plaza. Hay varios senderos y zonas ajardinadas. Mientras paseaba por esta hermosa plaza, mi perro saltó a una de las mesas, pero fue imposible tomarle una foto. Mientras me preparaba y enfocaba con mi teléfono, mi amigo saltó y continuó su camino por la calle Bolívar.\n\n</div>\n<div class=text-justify> \n<div class=\"pull-right\">\n\n \nBehind the wall are several shops offering copying and printing services, as well as a café with round tables. This area is a concrete walkway where people can sit, chat, and relax while waiting for their prints. Looking towards Sucre Street, you can see several businesses, a green house that houses a restaurant, the public library, and several park benches, as well as the large trees around the perimeter of the plaza.\n\nAs I mentioned, there are several shops and a university located behind the wall. The plaza is separated from these businesses by yellow pipes. In front of the wall, there are also several benches, and you can see the wide concrete walkway along the plaza. There are several paths and areas of land where plants are located. While I was walking through this beautiful plaza, my dog jumped onto one of the tables, but it was impossible to take a picture. While I was getting ready and focusing with my phone, my friend jumped down and continued on his way along Bolívar Street.\n</div>\n\n\n\n\n\n![PP (3).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/Ep3dGz2nuHwjuuiXxvMw4VCHY3tpGBQPY654s2HFUzGeGKuD6AfkL1ps9EUgAsfX6sT.jpeg)\n\n![PP (9).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/23uQpZsnVjJxfVNf2pBP5Rh61DEE2S9FU5oDQ2mxsQR5Tnt8ebi8jtUaP5RaoHkFgaE2B.jpeg)\n\n![PP (11).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/23tmFUmN2Mv9hxmpGPxWbipcKcxfa4AzmYi7hnQoJWsiVxeEtwJ8SvCh1JmUVTXun1WoK.jpeg)\n\n![PP (12).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/EoiVkqjnUQaRsiDq1EaLB566a4akged9YVKkiwHxFi4d7mCzboGrNNshnrptPQ5irnR.jpeg)\n\n![PP (8).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/EoeEWEgEPQjaDgfCNheeebFuEfUsx9WkAAarUGzDae7ZQCHSustzmdRp7n98x5axVPG.jpeg)\n\n![PP (10).jpeg](https://files.peakd.com/file/peakd-hive/virgilio07/EpQwL5r3K6F3meuFodoCMS4PmgwHsXnzhHf93s7QNnuKhiawgERgHjvzN5YxMUWnBWp.jpeg)\n\n\n\n![separador virgilio.png](https://files.peakd.com/file/peakd-hive/virgilio07/48KdAZ2oktyDRja9ez5m3v1qBY6PZfFU8sSGEE17ey9FUfktwmCJiLv2c2YiZggq73.png)\n\n<hr>\n\n\n[//]:# (!worldmappin 10.46444 lat -64.17288 long  d3scr)\n\n\n\n\n<center></center>\n <hr>\nTranslated with https://www.deepl.com/translator\n\n\n\n                                                                 \n                      All images are my own.\n\n                                                               \n                 Todas las imágenes son de mi autoría.",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 12
+        },
+        "title": "Paseo por la plaza Pichincha, Cumaná [Esp-Eng]",
+        "author": "virgilio07",
+        "payout": 0.193,
+        "created": "2026-05-19T03:36:42",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-19T03:43:30",
+        "category": "hive-163772",
+        "children": 1,
+        "permlink": "paseo-por-la-plaza-pichincha",
+        "community": "hive-163772",
+        "payout_at": "2026-05-26T03:36:42",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 2548367974992,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevmcc",
+            "rshares": 186057924589
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 1886606633474
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 364423531459
+          },
+          {
+            "voter": "omarrojas",
+            "rshares": 22296358662
+          },
+          {
+            "voter": "stagstd",
+            "rshares": 702490041
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "tags": [
+            "travel",
+            "neoxian",
+            "worldmappin",
+            "photography",
+            "spanish",
+            "waiv",
+            "adventure",
+            "wellnes",
+            "ecency",
+            "hive-163772"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/virgilio07/23vsKyxLq8ykpvv9nzhXAHQt8q1hvCrdqycnm1oFi1TnTqD1SEdwAkp3nfdN4DmiAtyiK.jpg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/EpviLvZKaveESpUniTfCXxGXt4ydt2KHWS6aifhKL7hvcB1RmfhV3LuUkqJi2U5mCyu.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/23wgFZ4GwCii9tTNuqhFrdKmfhPBcb48c8s5KnBs9p3c9Kdv8Gpk9AfvHH3PWyxAZR2qL.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/23wC9iQu9jdVkiCNJWpJdSpswNZjt6y7NaV5Bsh8mLWuvXNth47Qf7FqFAVabVSP2iDgz.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/23wWvtuoGRDw789Efg72pyMLmrJj6qwF8LpB7WNueHq6iXTsmUiz6eQDSs374g4egvaeU.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/EonkRhGbdKftzwbHoMQPbUrmhWrh6CAQzfTXsMBoE5kCeWGTApz7NuSRg7xd684qsJ6.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/23u63LyCGFxHtZGWnEusmWbLBWYdk54YcUze8TLN7v7zyxnwY2gPd8j3UiQXvh3Dm2SpX.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/48fPJW5oSR5NrT5insR3hayLh9ET1ifvCG8zGp4Rfk8EhMtUrcwakXhr5g3cRk6Y8x.gif",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/EppLePomBvRF347TUYAVSa2sy3CAzGWo6MBbXJkX5CcZ22WysyubimmfyvFKKUd87MS.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/EopttFFhsy9DoR9VLrBMnVFQCq6EC7qCrF1DsLDnnKMTUq9WYizWUY9CdGyVxbSBVKD.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/EoyQzxnfK89PDH4UcW3e7b7MFdgk795UNpTq4W7aa2M23hHLiyfncmTT5PSjNNEudyh.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/Eoc74y7u3uszuJ3qaCGY8CJyrx4PLmzuDiqCNHcFK3mQx6wqBCKS4qvEkzpa79jkXMU.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/EopvMm2AUxHm7yeuYCmLHRMS94jveAJadJWMh9jqbF2QA9VYBiF2TCF9PqyrRVzwx3r.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/Ep3dGz2nuHwjuuiXxvMw4VCHY3tpGBQPY654s2HFUzGeGKuD6AfkL1ps9EUgAsfX6sT.jpeg",
+            "https://files.peakd.com/file/peakd-hive/virgilio07/23uQpZsnVjJxfVNf2pBP5Rh61DEE2S9FU5oDQ2mxsQR5Tnt8ebi8jtUaP5RaoHkFgaE2B.jpeg"
+          ],
+          "users": [],
+          "format": "markdown",
+          "thumbnails": [
+            "https://files.peakd.com/file/peakd-hive/virgilio07/23vsLc3NJWdW3Mya45ST3Y2yYEJ4yWrhQGyoZ3NpDj7h6qHz3fhTvV5qvagBC7yVbWuSM.jpg"
+          ],
+          "description": "ESPAÑOL Hoy les comparto mi visita a la Plaza Pichincha, ubicada en el centro histórico de la ciudad, entre las calles Sucre y Bolívar, a pocos metros de la Plaza Bolívar, lugar de nacimiento de Andrés",
+          "image_ratios": [
+            "1.2500",
+            "1.3333",
+            "0.7500",
+            "0.7500",
+            "0.7500"
+          ]
+        },
+        "community_title": "Worldmappin",
+        "author_reputation": 74.71,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.193 HBD"
+      },
+      {
+        "url": "/hive-167922/@brennanhm/ai-spotlight-crypto-wakes-up-agentic-ai-tokens-are-skyrocketing-2dp",
+        "body": "Anyone who has been paying attention to the markets over the past year knows that crypto has been pretty much a graveyard. \n\nWe have been in a painful prolonged bear market, with many underfunded projects and exhausted investors throwing in the towel.\n\nHowever, just when it felt like all hope had been lost, one corner of the crypto universe started to wake up.\n\nhttps://img.leopedia.io/DQmaoqFwRZzW7MxK6kMAtMRUJw3ifegFjhdGrGwNAkXqrpT/miroshark.png\n\nToday we are talking about the intersection of crypto with AI, and some related projects that have been outperforming in recent weeks.\n\n# AI Improving Exponentially\n\nEarlier this month, [the CEO of Citadal gave a talk](https://x.com/TFTC21/status/2055978848764784662?s=20) at Stanford and described a recent \"step change\" in AI capabilities. **Work that used to take a team of Finance PhDs weeks or months can now be completed by AI agents in a matter of hours or days.**\n\nFor better or worse, AI is taking over the world. This can be done in a centralized way by the likes of Palantir, Oracle, and OpenAI, or it can be done in a decentralized and permissionless way by using crypto as the base economic layer for AI agents.\n\n# Outperforming Projects\n\nOver the past week, several AI-related tokens have be posting gains upwards of 100, 200, and 500%. Here are just a couple of examples:\n\n[Gitlawb](https://x.com/gitlawb) is a code collaboration platform with no central authority. It pays both AI agents and humans in GITLAWB tokens to complete coding tasks. Its market cap increased from $2M to $35M in the span of just three weeks. \n\n[Miroshark](https://x.com/miroshark_) (shown in the chart above) is a \"universal swarm intelligence engine\" that spawns and coordinates hundreds of diverse AI agents to simulate real-world social, narrative, and decision dynamics around any input scenario. Its token is up almost 500% this past week.\n\nOther frameworks can spawn AI agents that take in market signals from multiple sources, communicate with each other, intelligently calculate probabilities, and trade on behalf of investors. \n\n**Agentic AI is a game changer for sure.**\n\n# Why AI Agents Will Use Crypto\n\nThese swarms of thousands - if not millions - of AI agents are going to need to exchange value with one another somehow.\n\nImagine the amount of time it would take for each agent to get approval for a bank account and a credit card. It's unfeasible. Instead, **AI agents are going to use a permissionless blockchain like Solana or Base (Ethereum Layer 2) to pay for resources like data and compute.**\n\nFor now, most agents are paying each other with [stablecoins](https://inleo.io/@brennanhm/stablecoins-are-useful-for-now-but-doomed-to-failure) like USDC. In the future however, [when the dollar collapses under the weight of its own debt,](https://www.publish0x.com/crypto-investing/why-a-paradigm-shift-in-finance-is-inevitable-and-coming-soo-xkxkor) these agents could end up paying each other with pure cryptocurrencies, using services like [THORChain, Maya Protocol](https://inleo.io/@brennanhm/progress-on-crosschain-dex-protocols-thorchain-maya-protocol-and-chainflip-2gu) and [LeoDEX](https://leodex.io/) to move tokens between blockchains.\n\n# The Race Is On\n\nWhich blockchains will get the most agentic AI adoption? Top contenders at the moment are Base and Solana.\n\nBase has a leg up thanks to its integration with Coinbase, allowing customers to invest directly into the ecosystem. There are plenty of talented developers building out composable AI agent infrastructure on Base (launchpads, frameworks, etc).\n\nSolana doesn't want to be left behind, and their blockchain is well suited for high-frequency micropayments. Many Solana-based agent launchpads seem to have died in the bear (stopped posting to X). Others, including [clawpump](https://x.com/clawpumptech), continue building.\n\nHonorable mentions include the Artificial Superintelligence Alliance (FET), a sovereign blockchain in the Cosmos ecosystem focused on AI agentic commerce. NEAR Protocol is also actively building infrastructure for AI agents to exchange value autonomously.\n\n# Until next time...\n\nIt appears that decentralized, permissionless AI may be what revives the flatlining crypto space. In any case, things just got interesting once again.\n\nOf course, none of this is financial advice. Be sure to do your own research before investing in this high-risk, high-reward crypto sector. \n\nIf you learned something new from this article, be sure to [check out my other posts](https://inleo.io/profile/brennanhm/blog) on crypto and finance here on [the Hive blockchain](https://inleo.io/@brennanhm/how-to-monetize-your-content-on-the-hive-blockchain). You can also follow me on [X](https://x.com/brennanhm) or [InLeo](https://inleo.io/profile/brennanhm) for more frequent updates.\n\n# Further Reading\n\n[- Which Currencies Will Fuel The AI-Powered Economy?](https://inleo.io/@brennanhm/which-currencies-will-fuel-the-aipowered-economy-gu3)\n[- AI Spotlight: REPPO Uses Decentralized Prediction Markets To Better Train AI Models](https://inleo.io/@brennanhm/ai-spotlight-reppo-uses-decentralized-prediction-markets-to-better-train-ai-models-hp)\n\n\nPosted Using [INLEO](https://inleo.io/@brennanhm/ai-spotlight-crypto-wakes-up-agentic-ai-tokens-are-skyrocketing-2dp)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 92
+        },
+        "title": "AI Spotlight: Crypto Wakes Up - Agentic AI Tokens Are Skyrocketing",
+        "author": "brennanhm",
+        "payout": 0.595,
+        "created": "2026-05-19T03:20:51",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T03:20:51",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "ai-spotlight-crypto-wakes-up-agentic-ai-tokens-are-skyrocketing-2dp",
+        "community": "hive-167922",
+        "payout_at": "2026-05-26T03:20:51",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 7710271014965,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kenny-crane",
+            "rshares": 1184193548857
+          },
+          {
+            "voter": "uwelang",
+            "rshares": 34479799447
+          },
+          {
+            "voter": "sergiomendes",
+            "rshares": 1720095140
+          },
+          {
+            "voter": "elevator09",
+            "rshares": 70804046998
+          },
+          {
+            "voter": "l337m45732",
+            "rshares": 224955759
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "agentic",
+            "ai",
+            "gitlawb",
+            "miroshark",
+            "clawpump",
+            "x402",
+            "stablecoins",
+            "thorchain",
+            "leodex"
+          ],
+          "links": [
+            "https://x.com/TFTC21/status/2055978848764784662?s=20)",
+            "https://x.com/gitlawb)",
+            "https://x.com/miroshark_)",
+            "https://inleo.io/@brennanhm/stablecoins-are-useful-for-now-but-doomed-to-failure)",
+            "https://www.publish0x.com/crypto-investing/why-a-paradigm-shift-in-finance-is-inevitable-and-coming-soo-xkxkor)",
+            "https://inleo.io/@brennanhm/progress-on-crosschain-dex-protocols-thorchain-maya-protocol-and-chainflip-2gu)",
+            "https://leodex.io/)",
+            "https://x.com/clawpumptech),",
+            "https://inleo.io/profile/brennanhm/blog)",
+            "https://inleo.io/@brennanhm/how-to-monetize-your-content-on-the-hive-blockchain).",
+            "https://x.com/brennanhm)",
+            "https://inleo.io/profile/brennanhm)",
+            "https://inleo.io/@brennanhm/which-currencies-will-fuel-the-aipowered-economy-gu3)",
+            "https://inleo.io/@brennanhm/ai-spotlight-reppo-uses-decentralized-prediction-markets-to-better-train-ai-models-hp)",
+            "https://inleo.io/@brennanhm/ai-spotlight-crypto-wakes-up-agentic-ai-tokens-are-skyrocketing-2dp)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmaoqFwRZzW7MxK6kMAtMRUJw3ifegFjhdGrGwNAkXqrpT/miroshark.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@brennanhm/ai-spotlight-crypto-wakes-up-agentic-ai-tokens-are-skyrocketing-2dp"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 66.34,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.595 HBD"
+      },
+      {
+        "url": "/hive-163772/@saavedraa/ali-primera-square-engesp",
+        "body": "<center>\n## English version\n</center>\n\n<div class=\"text-justify\">\n\nWhile walking down Fernandez de Zerpa Avenue, I stopped for a while at **Ali Primera** Square; this is one of the city’s oldest landmarks. I remember passing through here on my way to exercise at the Monument about twenty years ago. Today, the square is still there, weathering the ravages of time even though it hasn’t been restored.\n\n<center>\n![1000116070.jpg](https://files.peakd.com/file/peakd-hive/saavedraa/23tvgSgKw4wncZAutPpPXuMPdBeM3uGH4CS29EBjH7T3UY6jZrdL1AfftYSpG3dq6LMUq.jpg)\n</center>\n\nIt’s worth mentioning that there’s another plaza in Cumana named after the Venezuelan singer-songwriter, located at the entrance to Panamericana Avenue, where you can see some sculptures of musical instruments (cuatros and maracas) and a mural featuring Primera’s face.\n\n<center>\n![1000116074.jpg](https://files.peakd.com/file/peakd-hive/saavedraa/23wC7JawXsthtdfWYmPA92iotdxGxwgByQ22ZpF3pjuYtg5KSw6cjNU5VkutA4uGmVEsE.jpg)\n</center>\n\nIn contrast, this old **Ali Primera** square bears no references to the singer-songwriter; only a plaque remains on the site. Nevertheless, it is a landmark in the city, as various food stalls operate here from morning until the early hours of the morning, making the place very busy at all hours, especially at night. There are benches where you can rest and chat for a while under some palm trees that offer welcome shade. \n\n<center>\n![1000116078.jpg](https://files.peakd.com/file/peakd-hive/saavedraa/23xedbKts7LBKZhenVDLMF1kLuDPdcnCFd8soNaAaBm72JZmGLzxcpHYFWzBq15DBqHeb.jpg)\n</center>\n\nThis square is another of the many located near **The Copita**, with the exception that there is commercial activity here: not only do the kiosks sell their goods, but in the morning you can also find fresh fish and vegetables for sale. I remember that, in the past, residents from the communities of Boca e Lobo and Punta of Mata would gather here to spend a pleasant afternoon because across from the square was the popular The Niña bakery, as well as a supermarket and a liquor store.\n\n<center>\n![1000116059.jpg](https://files.peakd.com/file/peakd-hive/saavedraa/23uQpHUaXo5diwpAFW52WWop2tdWqjXoWBpAMVY7BnBHEgFY63iM7i45X1ctBrNXas7m5.jpg)\n</center>\n\n\n<center>\n![1000116065.jpg](https://files.peakd.com/file/peakd-hive/saavedraa/23xefspfxXm1m7cfh8bYUeB8x7whHww6pmguzMaHPHPfCR4aRaT68NStKP3Hrjkbcj2QQ.jpg)\n</center>\n\nThe square is just as I remember it, except for the number of people who used to be there; of the larger businesses, only the bakery and the supermarket are still open, while the newsstands aren't usually open all the time. Times change.\n\n</div>\n\n***\n***\n\n<center>\n## Versión en Español\n</center>\n\n<div class=\"text-justify\">\n\nCaminando por la Avenida Fernández de Zerpa me detuve un rato en la plaza **Ali Primera**, este lugar es bastante antiguo en la ciudad. Recuerdo transitar por aquí cuando me dirigía a realizar ejercicios en el Monumento hace unos veinte años atrás. Hoy la plaza sigue allí y resiste los embates del tiempo aún cuando no ha sido restaurada.\n\n\n<center>\n![1000116070.jpg](https://files.peakd.com/file/peakd-hive/saavedraa/23tvgSgKw4wncZAutPpPXuMPdBeM3uGH4CS29EBjH7T3UY6jZrdL1AfftYSpG3dq6LMUq.jpg)\n</center>\n\n\nCabe mencionar que en Cumaná existe otra plaza con el nombre del cantautor venezolano, la cual se encuentra en la entrada de la Avenida Panamericana, donde se pueden observar algunas esculturas de instrumentos musicales (cuatros y maracas) y un mural con el rostro de Primera.\n\n<center>\n![1000116074.jpg](https://files.peakd.com/file/peakd-hive/saavedraa/23wC7JawXsthtdfWYmPA92iotdxGxwgByQ22ZpF3pjuYtg5KSw6cjNU5VkutA4uGmVEsE.jpg)\n</center>\n\nEn contraste, esta antigua plaza **Ali Primera** carece de referencias al cantautor, apenas una placa permanece en el lugar. No obstante, es un punto referencial en la ciudad ya que acá funcionan diferentes kioskos de ventas de comida, desde la mañana hasta la madrugada, por tanto, el lugar es muy concurrido a toda hora, sobre todo en las noches. Hay bancos para descansar y conversar un rato bajo algunas palmeras que ofrecen buena sombra en la cual refugiarse. \n\n\n<center>\n![1000116078.jpg](https://files.peakd.com/file/peakd-hive/saavedraa/23xedbKts7LBKZhenVDLMF1kLuDPdcnCFd8soNaAaBm72JZmGLzxcpHYFWzBq15DBqHeb.jpg)\n</center>\n\nEsta plaza es otra de las tantas que están ubicadas cerca de **La Copita**, con la salvedad de que acá se presenta actividad comercial ya que no solamente son los kioskos los que ofrecen sus productos, en la mañana se observa una venta de pescado fresco y verduras. Recuerdo que, anteriormente, en este espacio se reunían vecinos de las comunidades de Boca e Lobo y Punta de Mata a pasar un buen rato en las tardes porque frente a la plaza estaba la popular panadería La Niña, además de un supermercado y una licorería.\n\n<center>\n![1000116059.jpg](https://files.peakd.com/file/peakd-hive/saavedraa/23uQpHUaXo5diwpAFW52WWop2tdWqjXoWBpAMVY7BnBHEgFY63iM7i45X1ctBrNXas7m5.jpg)\n</center>\n\n\n<center>\n![1000116065.jpg](https://files.peakd.com/file/peakd-hive/saavedraa/23xefspfxXm1m7cfh8bYUeB8x7whHww6pmguzMaHPHPfCR4aRaT68NStKP3Hrjkbcj2QQ.jpg)\n</center>\n\nLa plaza sigue tal como la recuerdo, con la excepción de la cantidad de personas que solían estar allí, de los grandes negocios solamente la panadería y el supermercado siguen en pie, en tanto los kioscos no suelen abrir a toda hora. Los tiempos cambian.\n\n</div>\n\n***\n***\n\n✓Photos from my personal gallery, edited with Fotocollage.\n\n✓Text translated with DeepL.\n\n<center>\n</center>\n\n> ✓Fotos de mi galería personal, editadas con Fotocollage. \n\n > ✓Texto traducido con DeepL.\n\n\n\n\n\n\n\n[//]:# (!worldmappin 10.471183 lat -64.172343 long <DESCRIPTION GOES HERE> d3scr)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 25
+        },
+        "title": "Ali Primera Square (Eng/Esp)",
+        "author": "saavedraa",
+        "payout": 0.298,
+        "created": "2026-05-19T02:58:21",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-19T02:58:21",
+        "category": "hive-163772",
+        "children": 2,
+        "permlink": "ali-primera-square-engesp",
+        "community": "hive-163772",
+        "payout_at": "2026-05-26T02:58:21",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 3927686413338,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "joeyarnoldvn",
+            "rshares": 940071409
+          },
+          {
+            "voter": "isnochys",
+            "rshares": 15730725299
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 1886592105022
+          },
+          {
+            "voter": "bdmillergallery",
+            "rshares": 45717891275
+          },
+          {
+            "voter": "damarysvibra",
+            "rshares": 103633650498
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "travel",
+            "spanish",
+            "tourism",
+            "square",
+            "culture",
+            "neoxian",
+            "archon",
+            "waivio",
+            "history",
+            "venezuela"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/saavedraa/23tvgSgKw4wncZAutPpPXuMPdBeM3uGH4CS29EBjH7T3UY6jZrdL1AfftYSpG3dq6LMUq.jpg",
+            "https://files.peakd.com/file/peakd-hive/saavedraa/23wC7JawXsthtdfWYmPA92iotdxGxwgByQ22ZpF3pjuYtg5KSw6cjNU5VkutA4uGmVEsE.jpg",
+            "https://files.peakd.com/file/peakd-hive/saavedraa/23xedbKts7LBKZhenVDLMF1kLuDPdcnCFd8soNaAaBm72JZmGLzxcpHYFWzBq15DBqHeb.jpg",
+            "https://files.peakd.com/file/peakd-hive/saavedraa/23uQpHUaXo5diwpAFW52WWop2tdWqjXoWBpAMVY7BnBHEgFY63iM7i45X1ctBrNXas7m5.jpg",
+            "https://files.peakd.com/file/peakd-hive/saavedraa/23xefspfxXm1m7cfh8bYUeB8x7whHww6pmguzMaHPHPfCR4aRaT68NStKP3Hrjkbcj2QQ.jpg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Worldmappin",
+        "author_reputation": 72.49,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.298 HBD"
+      },
+      {
+        "url": "/hive-167922/@khaleelkazi/how-to-shield-zcash-in-under-30-seconds-and-why-you-should-do-it-mpbxmas07d54c8a2",
+        "body": "https://youtu.be/K5yF-_yRB6k\n\nPrivacy on a public blockchain sounds like a contradiction. With Zcash, it isn't. You can take a regular, transparent ZEC balance — the kind any block explorer can see — and encrypt it onchain so no one knows the address, the amount, or the counterparty.\n\nThe process is called **shielding**, and a lot of the newcomers to ZEC in this awesome rally we are seeing have never actually done it. That's the gap I want to close in this post.\n\nI'll walk you through how to shield ZEC inside the LeoDex wallet in under 30 seconds, why this matters more in 2026 than it ever has, and a shortcut most people don't know about: **you can buy ZEC that lands shielded automatically** and skip the manual step entirely.\n\n## Why Shielding Matters Right Now\n\nZcash supports two address types. Transparent addresses (starting with `t1`) behave like Bitcoin addresses. Every transaction is publicly auditable forever. Shielded addresses (starting with `zs1` or unified `u1`) use **zero-knowledge proofs** to encrypt the sender, receiver and amount onchain.\n\nRight now, about 30% of all circulating ZEC sits in the shielded pool. That's a record high, and it's nearly four times where the number sat at the start of 2024. The shielded-supply chart is the single most-watched fundamental metric in the asset.\n\nAI is making blockchain surveillance trivially cheap and big players in the space like Grayscale are talking about it. Pattern-matching transaction graphs across exchanges, salaries, supplier payments, and treasury flows is no longer a research project. It's a SaaS product and one query away in a Claude Code session. Anything you do on a transparent chain is fair game for that pipeline.\n\nThe fix for onchain money is the same fix that the internet needed in the early days of buying stuff online: encryption. The asset that ships with encryption built in is Zcash and that's exactly why its blowing up today. \n\n## What You'll Need\n\n- [LeoDex Wallet App](https://leodex.io/download) (Windows or MacOS, no KYC, no account creation needed)\n- Some ZEC, OR any other crypto you can swap (BTC, ETH, USDC, anything)\n- About 30 seconds\n\n\n## Step 1 — Open the Shield Function in LeoDex\n\n![image](https://img.leopedia.io/DQmcohEwkyb3rKnBbUGS4x5iLPCz7ayQG3o45uRQ8WXtfoN/image.png)\n\nHead to your LeoDex wallet and find the **Shield** button. This sits in the same interface as your normal swap and trading view, so you don't have to leave the app or switch wallets to use it.\n\nIf you already have transparent ZEC sitting in your LeoDex wallet, the Shield button is your one-click path to making that balance private.\n\n## Step 2 — Enter the Amount and Confirm\n\n![image](https://img.leopedia.io/DQmRSc5bmGZtEihZbdNiE1EU4RnqxzW3VsRqFQVpsX1k6z3/image.png)\n\nType in how much ZEC you want to shield. For this walkthrough I used 0.10 ZEC, but you can shield any amount up to your full balance.\n\nHit **Shield**.\n\nThat's the whole interaction. The LeoDex MacOS & Windows wallet handles the zero-knowledge proof generation and broadcasts the shielding transaction to the Zcash network. You'll see a confirmation that reads \"ZEC shielded.\"\n\n## Step 3 — Verify the Transaction Onchain\n\n![image](https://img.leopedia.io/DQmRXNpp9KEYQVMK3BMf2Tp1ine7UbZpouVDjB36fEcEiBN/image.png)\n\n*trust, but verify*\n\nThis is the part most tutorials skip, and it's the part that matters if you want to actually check what just happened.\n\nAfter shielding, click the **Explorer** link. LeoDex will open a Blockchair link of your transaction onchain so you can watch it confirm. You're not trusting LeoDex's UI — you're verifying that the network actually processed the shielded ZEC TX.\n\nThe transaction will show as pending, then confirmed within a few minutes or less. Once confirmed, the value lives in the shielded pool. Block explorers can see that shielding happened but when you start paying/swapping from that Shielded balance, it won't be connected to your T address whatsoever. \n\n*Pro Tip: don't shield an amount and then spend/swap that exact amount onchain afterwards as it creates a clear trail to your T Address*\n\nThat's it. Your ZEC is now encrypted onchain. Welcome to encrypted Bitcoin.\n\n## The Shortcut: Skip Shielding Entirely with Direct-to-Shielded Swaps\n\n![image](https://img.leopedia.io/DQmc1amPjVaq32SLovCE1d1KJGVUxaTM9Wr3fgTYRzLQq86/image.png)\n\nHere's the part of LeoDex that almost nobody is doing yet.\n\nIf you don't currently own ZEC and want some, the conventional path is:\n1. Buy ZEC on an exchange (lands in a transparent address)\n2. Withdraw to your wallet (still transparent)\n3. Shield it (the step above)\n\nThat's three transactions, two of which are publicly visible. Anyone scanning the chain can see you acquired ZEC, even if your eventual storage is shielded.\n\nLeoDex supports **direct-to-shielded swaps**. You can put in 0.1 BTC, hit swap, and the ZEC arrives in your shielded balance. No transparent leg. No onchain record of the acquisition in your name. This is a UI flow that we've built seamlessly into the wallet. It is powered by our route providers at Near Intents and Maya Protocol. \n\nThe flow:\n1. Open LeoDex wallet\n2. Select the asset you want to swap from (BTC, ETH, USDC, anything supported)\n3. Select shielded ZEC as the output\n4. Hit Review Swap\n5. Confirm\n\nThe output lands shielded. You skip the shielding step entirely because there was never any transparent ZEC to shield in the first place.\n\n## Why I Built This Into LeoDex\n\nMost privacy tooling in crypto forces you to pick: either run a dedicated app/node just for ZEC or accept that your shielding behavior is bolted into a single-purpose wallet you only open when you want privacy. Neither of those is how people actually live in a multi-chain world. They want to open one app and *\"wonderfully manage their crypto assets\". Securely, privately and entirely onchain and on their machine. \n\nLeoDex's bet is: **privacy should sit inside the same interface where you do everything else** — crosschain swaps, trading, holding, paying. The act of shielding shouldn't feel like a separate ritual. It should feel like a natural part of navigating your crypto wallet.\n\nThe current numbers say the market agrees. ZEC has run from $380 to $615 in the last month, and the shielded supply keeps climbing. The thesis isn't \"privacy coins go up.\" **The thesis is that encryption stops being optional once AI makes surveillance free**, and the assets that ship with it built in are the ones that get repriced.\n\n## Try It\n\nIf you want to actually do this — either shield existing ZEC or pick up some directly to a shielded address — open LeoDex and run through the steps above. The whole flow takes longer to read about than to just literally execute.\n\n→ **Try LeoDex:** https://leodex.io\n\n→ **Try LeoDex's Wallet** https://leodex.io/download (MacOS & Windows. IOS & Android coming soon)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 573
+        },
+        "title": "How to Shield Zcash in Under 30 Seconds (And Why You Should Do It Today)",
+        "author": "khaleelkazi",
+        "payout": 5.21,
+        "created": "2026-05-19T01:06:03",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T01:06:03",
+        "category": "hive-167922",
+        "children": 2,
+        "permlink": "how-to-shield-zcash-in-under-30-seconds-and-why-you-should-do-it-mpbxmas07d54c8a2",
+        "community": "hive-167922",
+        "payout_at": "2026-05-26T01:06:03",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "admin",
+        "net_rshares": 67536592500596,
+        "percent_hbd": 5000,
+        "active_votes": [
+          {
+            "voter": "steempty",
+            "rshares": 22098032671220
+          },
+          {
+            "voter": "kevinwong",
+            "rshares": 6531032244
+          },
+          {
+            "voter": "kendewitt",
+            "rshares": 23661074984
+          },
+          {
+            "voter": "alz190",
+            "rshares": 3085405599
+          },
+          {
+            "voter": "alexpmorris",
+            "rshares": 450510083469
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 1000,
+            "account": "hiveproai"
+          },
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "leofinance",
+            "leodex",
+            "leo",
+            "zcash",
+            "zec",
+            "privacy",
+            "xmr",
+            "inleo"
+          ],
+          "format": "markdown",
+          "hivepro": {
+            "destination": "inleo",
+            "frontendUrls": {
+              "inleo": "https://inleo.io/@khaleelkazi/how-to-shield-zcash-in-under-30-seconds-and-why-you-should-do-it-mpbxmas07d54c8a2",
+              "peakd": "https://peakd.com/@khaleelkazi/how-to-shield-zcash-in-under-30-seconds-and-why-you-should-do-it-mpbxmas07d54c8a2",
+              "ecency": "https://ecency.com/@khaleelkazi/how-to-shield-zcash-in-under-30-seconds-and-why-you-should-do-it-mpbxmas07d54c8a2",
+              "hiveblog": "https://hive.blog/@khaleelkazi/how-to-shield-zcash-in-under-30-seconds-and-why-you-should-do-it-mpbxmas07d54c8a2"
+            },
+            "enforcedRules": [
+              "primary-tag:leofinance",
+              "compat-tag:inleo"
+            ],
+            "metadataProfile": "strict",
+            "inleoCompatibilityMode": true
+          },
+          "community": "hive-167922",
+          "canonical_url": "https://inleo.io/@khaleelkazi/how-to-shield-zcash-in-under-30-seconds-and-why-you-should-do-it-mpbxmas07d54c8a2"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 82.25,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "5.210 HBD"
+      },
+      {
+        "url": "/hive-167922/@walterprofe/-weekly-investment-simulation-week-15-25week-to-reach-financial-freedom-update-18-may-2026-ct1",
+        "body": " https://img.leopedia.io/DQmNhKND1YFPhmBNDexUCzLagaGP6wkUYByNZn4yeYWzyzK/Inversion.png \n\n\nWeek 15.\n\nAnother week.\nAnother investment.\nAnother step toward financial freedom.\n\nThe strategy remains unchanged:\n\n- **80% → VUG (Vanguard Growth ETF)**\n- **10% → HIVE (Hive blockchain token)**\n- **10% → BTC (Bitcoin)**\n\nConsistency is becoming momentum.\n\n---\n\n## 📆 Strategy Snapshot — Week 15\n\n| Metric | Value |\n|--------|-------|\n| **Weekly Investment** | **$25.00 USD** |\n| **Total Cumulative Investment** | **$375.00 USD** |\n| **Update Date** | 2026-05-18 |\n| **Objective** | Long-term Financial Freedom |\n\n---\n\n## 🔹 Asset Prices (18-May-2026)\n\n| Asset | Price (USD) |\n|-------|-------------|\n| **VUG** | **$87.09** |\n| **HIVE** | **$0.06500** |\n| **BTC** | **$77,125.00** |\n\n---\n\n## 💸 Purchases This Week (Week 15)\n\n| Asset | Allocation | USD Invested | Unit Price | Quantity Acquired |\n|-------|------------|--------------|------------|-------------------|\n| **VUG** | 80% | $20.00 | $87.09 | **0.2297 shares** |\n| **HIVE** | 10% | $2.50 | $0.06500 | **38.46 HIVE** |\n| **BTC** | 10% | $2.50 | $77,125.00 | **0.00003241 BTC** |\n| **Total** | — | **$25.00** | — | — |\n\n---\n\n## 📊 Total Holdings After Week 15\n\n| Asset | Qty after Week 14 | Qty added Week 15 | **Total Qty** |\n|-------|------------------|------------------|---------------|\n| **VUG** | 3.47482 | 0.2297 | **3.70452 shares** |\n| **HIVE** | 464.28 | 38.46 | **502.74 HIVE** |\n| **BTC** | 0.00044838 | 0.00003241 | **0.00048079 BTC** |\n\n---\n\n## 💰 Portfolio Value After Week 15\n\n| Asset | Total Invested | Current Value | Profit/Loss | Profit/Loss % |\n|-------|----------------|---------------|--------------|---------------|\n| **VUG** | $300.00 | **$322.38** | +$22.38 | **+7.46%** |\n| **HIVE** | $37.50 | **$32.68** | –$4.82 | –12.85% |\n| **BTC** | $37.50 | **$37.12** | –$0.38 | –1.01% |\n| **📌 TOTAL** | **$375.00** | **$392.18** | **+$17.18** | **+4.58%** |\n\n---\n\n## 📈 Investment vs Portfolio Value\n\n| Week | Invested ($) | Portfolio Value ($) |\n|------|--------------|---------------------|\n| 1 | 25.00 | 25.00 |\n| 2 | 50.00 | 51.25 |\n| 3 | 75.00 | 75.82 |\n| 4 | 100.00 | 100.66 |\n| 5 | 125.00 | 127.68 |\n| 6 | 150.00 | 146.25 |\n| 7 | 175.00 | 162.57 |\n| 8 | 200.00 | 184.51 |\n| 9 | 225.00 | 206.78 |\n| 10 | 250.00 | 234.53 |\n| 11 | 275.00 | 265.43 |\n| 12 | 300.00 | 299.46 |\n| 13 | 325.00 | 326.39 |\n| 14 | 350.00 | 369.23 |\n| **15** | **375.00** | **392.18** |\n\n---\n\n## 📉 Market Insight – Week 15\n\nThis week confirms something powerful:\n\n📈 The recovery continues.\n\n- **VUG** keeps climbing steadily after the split adjustment.\n- **Bitcoin** remains strong above $77k.\n- **HIVE** recovered slightly and is stabilizing.\n\nMost importantly:\n\n✅ The portfolio is now comfortably profitable again.\n\nThe difficult weeks of drawdown are starting to look smaller in hindsight.\n\n---\n\n## 🔂 Accumulation Progress\n\nAfter 15 weeks:\n\n- **3.70452 VUG shares**\n- **502.74 HIVE**\n- **0.00048079 BTC**\n\nHalf a thousand HIVE.\nNearly half a millibitcoin.\nA growing ETF position.\n\nThe snowball is rolling.\n\n---\n\n## 💬 Final Thoughts — Week 15\n\n> *“The market changes every week. Discipline changes your future.”*\n\n15 weeks later:\n\n✔ Still investing  \n✔ Still accumulating  \n✔ Portfolio growing again  \n\nThe strategy is proving something important:\n\nSmall consistent actions become meaningful over time.\n\nOnward to **Week 16** 🚀\n\n\nPosted Using [INLEO](https://inleo.io/@walterprofe/-weekly-investment-simulation-week-15-25week-to-reach-financial-freedom-update-18-may-2026-ct1)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 124
+        },
+        "title": "🚀 Weekly Investment Simulation. Week 15. $25/week to reach Financial Freedom – Update 18 May 2026",
+        "author": "walterprofe",
+        "payout": 0.526,
+        "created": "2026-05-19T01:04:18",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-19T01:04:18",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "-weekly-investment-simulation-week-15-25week-to-reach-financial-freedom-update-18-may-2026-ct1",
+        "community": "hive-167922",
+        "payout_at": "2026-05-26T01:04:18",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 6852977418016,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 4556722571
+          },
+          {
+            "voter": "rufans",
+            "rshares": 63726221590
+          },
+          {
+            "voter": "uwelang",
+            "rshares": 34479799447
+          },
+          {
+            "voter": "sergiomendes",
+            "rshares": 1720095140
+          },
+          {
+            "voter": "funnyman",
+            "rshares": 7154542541
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "neoxian",
+            "appreciator",
+            "waivio",
+            "creativecoin",
+            "photography",
+            "hive-engine",
+            "finance",
+            "investing",
+            "portfolio"
+          ],
+          "links": [
+            "https://inleo.io/@walterprofe/-weekly-investment-simulation-week-15-25week-to-reach-financial-freedom-update-18-may-2026-ct1)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmNhKND1YFPhmBNDexUCzLagaGP6wkUYByNZn4yeYWzyzK/Inversion.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@walterprofe/-weekly-investment-simulation-week-15-25week-to-reach-financial-freedom-update-18-may-2026-ct1"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 71.25,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.526 HBD"
+      },
+      {
+        "url": "/hive-167922/@yordan96/the-world-may-be-entering-an-era-of-silent-economic-pressure-gwj",
+        "body": " https://img.leopedia.io/DQmYmfkBzRiNCZg65kwupmY6wou1g9sRGMMyLfBkovAg3tm/1000701732.png \n\n\nNot every economic collapse happens dramatically.\nSometimes…\nthe most dangerous crises happen slowly.\nQuietly.\nAlmost invisibly.\nPeople continue working.\nCities remain crowded.\nMarkets still move.\nSocial media still looks normal.\nBut underneath the surface, pressure continues building.\nAnd personally, I believe the world may already be entering that kind of phase now.\nA long period of silent economic pressure.\nNot necessarily one giant crash…\nbut a slow transformation that changes how people live, think, work, and survive.\nWhy Many People Feel Financially Stuck\nOne thing I notice globally is this:\nEven people with jobs increasingly feel financially unstable.\nYears ago, a stable salary often meant:\npredictable growth\nhome ownership\nfamily security\nand long-term comfort\nToday, that equation feels weaker.\nWhy?\nBecause modern economic pressure comes from multiple directions simultaneously:\ninflation\nrising living costs\ndebt dependence\nexpensive housing\nglobal competition\nautomation\nand declining purchasing power\nThis creates a dangerous psychological effect.\nPeople begin feeling like: “No matter how hard I work, it is never enough.”\nAnd when millions of people feel that way at the same time, societies begin changing emotionally.\nInflation Is Quietly Reshaping Society\nMany people underestimate inflation because it does not feel dramatic overnight.\nBut over years, inflation quietly changes everything.\nFood prices rise.\nTransportation becomes expensive.\nEducation costs increase.\nHealthcare becomes harder to afford.\nSavings lose strength.\nAnd eventually, lifestyles that once felt “normal” become luxury.\nThis may become one of the defining realities of the next decade.\nThe shrinking power of money itself.\nThat is why I think future generations may increasingly focus on:\nownership\ninvesting\ndigital income\nand asset accumulation\nNot because they are greedy…\nbut because survival itself may require it.\nThe Future Could Become More Competitive Than Ever\nAnother trend I notice is this:\nTechnology is removing barriers everywhere.\nWhich sounds positive.\nBut it also means competition becomes global.\nA person is no longer competing only with neighbors or local businesses.\nNow people compete internationally through the internet.\nAI accelerates this even further.\nOne skilled individual using AI tools can outperform entire teams from previous generations.\nThis changes the value of labor itself.\nAnd honestly…\nI think many traditional career paths may become unstable over the next decade.\nNot disappear entirely.\nBut evolve rapidly.\nThe future economy may reward:\nadaptability\nspeed of learning\ncreativity\ndigital leverage\ncommunication\nand independent thinking\nMore than rigid traditional systems.\nThe Psychological Divide Will Grow\nBut I think the biggest future divide may not be financial.\nIt may be mental.\nSome people will adapt psychologically.\nOthers will resist change emotionally.\nAnd that difference may shape entire futures.\nBecause the modern world is becoming increasingly overwhelming:\nnonstop information\nconstant comparison\neconomic fear\npolitical division\nAI disruption\nattention overload\nPeople who cannot emotionally manage uncertainty may struggle deeply.\nMeanwhile, calm and adaptable people may gain massive advantages simply because they can think clearly while others panic.\nThis is why I believe emotional discipline may become one of the most valuable future assets.\nNot just intelligence.\nNot just money.\nBut emotional stability.\nWhy Attention May Become The Most Valuable Asset On Earth\nWe often think money is the most valuable thing.\nBut increasingly, I believe attention is becoming even more important.\nEvery company wants it.\nEvery platform fights for it.\nEvery algorithm manipulates it.\nBecause attention controls behavior.\nAnd behavior controls economies.\nThe people who learn to protect their focus may become the people who build the future.\nWhile distracted populations may remain trapped in reaction cycles.\nThis is one reason why long-term thinking is becoming rare.\nAnd rare things usually become valuable.\nMy Prediction For The Next Decade\nPersonally, I think the next 10 years will create enormous contrasts.\nSome people may experience:\nconfusion\nfinancial stress\nemotional burnout\ntechnological displacement\nand increasing instability\nWhile others may quietly build:\ndigital income\nonline communities\ninvestments\nAI-assisted businesses\nand long-term leverage\nThe gap between reactive people and adaptive people may become massive.\nAnd honestly…\nI do not think governments alone will solve these problems.\nIndividuals themselves may increasingly need to:\neducate themselves\nbuild skills independently\nunderstand economics\nprotect mental health\nand think long term\nBecause the future may reward preparation more than comfort.\nFinal Thought\nI do not believe humanity is doomed.\nBut I do believe the easy era is slowly changing.\nThe next decade may test people in ways previous generations never experienced.\nFinancially.\nMentally.\nEmotionally.\nTechnologically.\nAnd perhaps the biggest mistake people can make right now is assuming the future will operate like the past.\nBecause I think the world ahead may look completely different.\nThe people who survive best may not necessarily be:\nthe richest\nthe strongest\nor the smartest\nBut the people who remain adaptable while others freeze in uncertainty.\nAnd maybe…\nthat transition has already begun.\n#EYS | Turning Patience Into Power 🌍💎\n\nPosted Using [INLEO](https://inleo.io/@yordan96/the-world-may-be-entering-an-era-of-silent-economic-pressure-gwj)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 85
+        },
+        "title": "The World May Be Entering An Era Of Silent Economic Pressure",
+        "author": "yordan96",
+        "payout": 0.413,
+        "created": "2026-05-19T00:19:54",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-19T00:19:54",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "the-world-may-be-entering-an-era-of-silent-economic-pressure-gwj",
+        "community": "hive-167922",
+        "payout_at": "2026-05-26T00:19:54",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 5396557168914,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 4556722571
+          },
+          {
+            "voter": "uwelang",
+            "rshares": 34479799447
+          },
+          {
+            "voter": "sergiomendes",
+            "rshares": 1720095140
+          },
+          {
+            "voter": "funnel",
+            "rshares": 8616262281
+          },
+          {
+            "voter": "ganjafarmer",
+            "rshares": 2331109281
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "Economy",
+            "Future",
+            "Ai",
+            "Crypto",
+            "Finance",
+            "Macro",
+            "Inleo",
+            "Web3"
+          ],
+          "links": [
+            "https://inleo.io/@yordan96/the-world-may-be-entering-an-era-of-silent-economic-pressure-gwj)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmYmfkBzRiNCZg65kwupmY6wou1g9sRGMMyLfBkovAg3tm/1000701732.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@yordan96/the-world-may-be-entering-an-era-of-silent-economic-pressure-gwj"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 62.05,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.413 HBD"
+      },
+      {
+        "url": "/hive-167922/@pichat/data-center-hosting-outpaces-crypto-mining-solunas-q1-revenue-soars-58-but-net-loss-widens-8wt",
+        "body": " https://img.leopedia.io/DQmNTQm1iKVT797qdoVCzYFZ9x2eRRmYnGKu7EYQH5mocuM/SOL-data.png \n\n\nLet’s cut the fluff and look straight at the hard data. Soluna Holdings’ Q1 2026 financial report is a prime textbook example of structural business transition, showing both massive infrastructure scaling and severe operational cash burn. The company reported a substantial 58% year-over-year revenue surge, reaching $9.4 million. This top-line growth is primarily driven by their data center hosting segment, which generated $6.7 million. Concurrently, Soluna's direct cryptocurrency mining revenue experienced a noticeable decline, shrinking to $2.2 million from nearly $3 million in the same period last year. This explicit flip confirms that data center hosting for AI and high-performance computing (HPC) has officially surpassed proprietary crypto mining as the company's primary economic engine. Soluna is aggressively monetizing stranded renewable energy—using its Dorothy and Kati campuses—to capture the insatiable infrastructure demand from the AI boom.\n\nHowever, anyone blindly celebrating this revenue growth is a rookie who doesn't know how to read a balance sheet. Despite the impressive revenue momentum, Soluna’s net loss significantly widened to $17.9 million, compared to a net loss of $10.5 million a year earlier. When you dig into the root causes, the culprit is blatantly obvious: general and administrative (G&A) expenses more than doubled, skyrocketing to $18.5 million. A staggering $10.2 million of that sum was allocated to stock-based compensation for executives. While management highlights operational milestones—such as finishing the 48 MW Kati 1A project ahead of schedule and expanding their development pipeline past 4.3 GW—the financial reality remains highly pressured. Adjusted EBITDA is still sitting in negative territory at $(2.1) million. Soluna is sitting on $68.6 million in cash, which gives them a runway to build out their massive AI joint ventures, but the massive internal corporate expenses are eating away at the margins. The takeaway is simple: revenue velocity is excellent, but if a company cannot rein in its administrative overhead and dilute less of its equity on non-cash executive pay, retail investors will be the ones left holding the bag while insiders get rich off stock rewards.\n\nSource : [cointelegraph.com](https://cointelegraph.com/news/soluna-q1-revenue-rises-58-data-center-hosting-surpasses-crypto-mining?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound)\n\nPosted Using [INLEO](https://inleo.io/@pichat/data-center-hosting-outpaces-crypto-mining-solunas-q1-revenue-soars-58-but-net-loss-widens-8wt)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 103
+        },
+        "title": "Data center Hosting Outpaces Crypto Mining: Soluna’s Q1 Revenue Soars 58% but Net Loss Widens",
+        "author": "pichat",
+        "payout": 0.508,
+        "created": "2026-05-18T23:26:33",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-18T23:27:18",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "data-center-hosting-outpaces-crypto-mining-solunas-q1-revenue-soars-58-but-net-loss-widens-8wt",
+        "community": "hive-167922",
+        "payout_at": "2026-05-25T23:26:33",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 6632446573783,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 4556722571
+          },
+          {
+            "voter": "uwelang",
+            "rshares": 34479799447
+          },
+          {
+            "voter": "sergiomendes",
+            "rshares": 1720095140
+          },
+          {
+            "voter": "funnel",
+            "rshares": 8616262281
+          },
+          {
+            "voter": "ganjafarmer",
+            "rshares": 2331109281
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "alive",
+            "cent",
+            "neoxian",
+            "ecency",
+            "bbho",
+            "pob",
+            "pepe",
+            "ccc"
+          ],
+          "links": [
+            "https://cointelegraph.com/news/soluna-q1-revenue-rises-58-data-center-hosting-surpasses-crypto-mining?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound)",
+            "https://inleo.io/@pichat/data-center-hosting-outpaces-crypto-mining-solunas-q1-revenue-soars-58-but-net-loss-widens-8wt)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmNTQm1iKVT797qdoVCzYFZ9x2eRRmYnGKu7EYQH5mocuM/SOL-data.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@pichat/data-center-hosting-outpaces-crypto-mining-solunas-q1-revenue-soars-58-but-net-loss-widens-8wt"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 67.44,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.508 HBD"
+      },
+      {
+        "url": "/hive-167922/@badbitch/decentralization-needs-incentives-which-needs-significant-effort-qh",
+        "body": "Decentralization is one of those feel-good ideas that most people don't stop to think about how much efforts is required to make it work!\n\nThe central challenge of decentralization is making individual self-interest point in the same direction as collective welfare.\n\nYou want people to act in a way that serves everyone whilst simultaneously serving themselves.\n\nIt's harder than people make it out to be.\n\nHow do you convince people to protect billions in value just so they can earn a few thousand.\n\nDoesn't really seem like a fair trade does it?\n\n### It's not\n\nWhat is demanded is generally more than what is given. As a result, something else must exist to ensure that regardless, the system can achieve some reasonable distribution.\n\nThat something else is the opposite factor to incentives, penalties.\n\nIf a person tries to steal the billions he's supposed to protect, he loses millions.\n\nEssentially, the system is structured to reward thousands to distributed participants to secure billions, whilst the individuals risk losing millions if they attack the system.\n\nPretty balanced right?\n\n### Not necessarily\n\nThe above statements just assumes that there's not just billions waiting to be secured, and that there's also people with millions to stake, and also that there's thousands somewhere to issue as rewards.\n\nGenerally, most of these things don't exist at the early stages of blockchains, effectively demanding that initial incentives design and roll-out must be structured to achieve meaningful decentralization that can self-sustain.\n\n### The hard part\n\nThe roll-out is the hardest phase for any blockchain or project.\n\nThis impacts the future of it all.\n\nPoorly planned or executed roll-outs could cause projects to never achieve decentralization.\n\nSo again, it's rather comical that we often don't look at the efforts required to build truly decentralized economies.\n\nSmart incentive structures and sustainable economic systems are required to achieve provable decentralization. The sooner we acknowledge this, the sooner we'd come to terms with what needs to be done to change the realities of most crypto projects today.\n\nPosted Using [INLEO](https://inleo.io/@badbitch/decentralization-needs-incentives-which-needs-significant-effort-qh)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 153
+        },
+        "title": "Decentralization needs incentives, which needs significant effort",
+        "author": "badbitch",
+        "payout": 1.886,
+        "created": "2026-05-18T21:55:57",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-18T21:55:57",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "decentralization-needs-incentives-which-needs-significant-effort-qh",
+        "community": "hive-167922",
+        "payout_at": "2026-05-25T21:55:57",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 24598797179897,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 13770167712
+          },
+          {
+            "voter": "neoxian",
+            "rshares": 7945249135255
+          },
+          {
+            "voter": "jeffjagoe",
+            "rshares": 883269368
+          },
+          {
+            "voter": "uwelang",
+            "rshares": 103539398339
+          },
+          {
+            "voter": "sergiomendes",
+            "rshares": 5260285419
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 300,
+            "account": "growthmonitor"
+          },
+          {
+            "weight": 9600,
+            "account": "reward.app"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "Decentralization",
+            "Crypto",
+            "Blockchain",
+            "Neoxian",
+            "Pob",
+            "Cent",
+            "Ctp",
+            "Palnet",
+            "Waivo"
+          ],
+          "links": [
+            "https://inleo.io/@badbitch/decentralization-needs-incentives-which-needs-significant-effort-qh)"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@badbitch/decentralization-needs-incentives-which-needs-significant-effort-qh"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 74.34,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.886 HBD"
+      },
+      {
+        "url": "/hive-167922/@oadissin/why-quix-the-devious-is",
+        "body": "## <div class=\"text-justify\">\n\nGreetings,\n\n<div class=\"text-left\">\n\nIn the wild format, there is a large group of Summoners who played a vital role in your strategies whether the arena is hot or at normal temperature.\nIf you have the change to cross the Gold I league barrier in Wild format you will see the difference between a normal battlefield and the heated arena.\nHere is the perfect moment when Quix a dragon summoner can build a perfect team to destroy the enemy regardless of the level of experience on the opposite side of the board.\nThis season has resumed with a lot of great opportunities I will share the role Quix played in the making of my team progress.\n\n\n\n</div>\n\n<div class=\"text-center\">\n\n![](https://i.ecency.com/DQmXJVy1TRxqip3rAoQVrz9eCvtBvWEX4B4DBL1Tjwnbe6L/dsfzsdfzxzzczzsdf.gif)\n\n[Source](https://canva.link/c7oogamxbh8r01m)\n\n</div>\n\n\n<div class=\"text-center\">\n\n--\n\n</div>\n\n\n<div class=\"text-justify\">\n\n## A:/ Return to the basic\n\nMy team entered the game in season 96 with interesting ranking. I was in Gold III right after the reset of all account following the season finale.\nI used to restart from Silver II or III. I think that this situation is an interesting step towards the realization of my plan for the current challenge in the ranking battles space.\n\nIf you made the math it gets cheaper to rank up to Diamond League if your resume your season in the Gold League.\n\nHowever, it is worth noting the rapid increase of difficulty in the game because of the pool of players who surround me at this stage of the game. \n\n\n\n\n\n\n\n\n\n</div>\n\n\n<center> ![](https://i.ecency.com/DQmQ1koCN9CiPZraxn8ehxp1hoXK5mwgaYuuBatNJ8ZZPG2/image.png)  </center> \n\n\n## B:/ Quix in Wild Format, Why not in Modern too?\n\n\nIt will be crazy to add Quix in Modern format. The power of this summoner is legendary in Splinterlands. I found this warriors exceptional and easy to level up back when the summoner was released to player.\n\nThis dragon summoner remains the most utilized commander in my team as considering the Wild format.\nI don't even know if one day I will be able to play modern cards with Quix in wild format. It will be insane to unlock Oridum at full speed in a gaming area that nobody plays safe.\n\nIn this first battle you can see the dominance of QUiX. \n\n<center> ![](https://i.ecency.com/DQmXkJUZsxvwoJrvMyiXD1fD9exiF8BY6N54YWZT7yUB6cj/image.png)   </center> \n\nIt was impossible to imagine that this combat was registered in Wild format.\n\n[Bat 1](https://splinterlands.com/battle/sl_b5f9b277cdb3e174e568190ddf188c3f)\n\n\n--\n---\n\n\n\n<center> ![](https://i.ecency.com/DQmX6RZUaXdFzMXYKnPTVQucqink1Yc4XERQVmmgtQahzfY/image.png) </center>\n\nI lost in this second combat, but you can see that the low mana game was as challenging as it should be in the arena.\n\n[Bat 2](https://splinterlands.com/battle/sl_5552fd7d15bdb36a8c00aa13cc1e7333)\n\n\n--\n---\n\n\n\n\n<center> ![](https://i.ecency.com/DQmcLws4cYG2t9pNSSK92DLTCMs85fyvrEW2ke8FBxDZbVs/image.png)  </center>\n\nThe third battle is a difficult one where the low mana representation of cards around the arena showed the beauty of combat with large representation of warriors.\n\n[BAt 3](https://splinterlands.com/battle/sl_ec93cb0e6b22d041b8a662aa7e421f77)\n\nI did not succeed in this combat and lost the game after an intensive combat.\nMy prayer is to return strong this season with Quix as champion.\n\n--\n---\n\nCurrent staking of SPS on my account:\n\n![](https://i.ecency.com/DQmQpLWBFDTXTDVJQ5L3erwgJSuZXXEk9iUdsf9KdSBLJMD/image.png)\n\nIf you are a large stake holder of Splintershareds in Splinterlands please let me know if you have a main source of acquisition of SPS from hive engine or another exchange.\n\n--\n---\n\n\n<div class=\"text-justify\">\n\n## C:/ Maintain the momentum\n\n</div>\n\nThe plan to increase my SPS holding is working so well that you may have seen the rapid progress of my holding for the past seven days\n\n\n<center> ![](https://i.ecency.com/DQmZDyqjkQKQb29UeoLVvji5XMobDEvcZmkE7GmmfXM92YM/image.png) </center>\n\n\nI shifted most of my staking in Hive to SPS because it is a project that I love to defend long term and secure influence on the platform\n\nHave a cool season gaming and exchanging assets in Splinterlands\n\n</div>\n\n --\n---\n\n<div class=\"text-left\">\n\n* If you appreciate this publication, I invite you to explore this blog and my collection of publications. More about Splinterlands on the official Telegram group [Splinterlands Telegram](https://t.me/officialsplnews)\n\n</div>\n\n<div class=\"text-left\">\n\n* Discover much more interesting content about gaming, photography, nature, news, and Splinterlands Battle challenge on [My official Profile on Hive](https://peakd.com/@oadissin/posts)\n\n\n* It is a pleasure to follow Splinterlands Ambassadors **Bulldog1205** and **Stever82** on social media such as YouTube and Twitch, where I constantly learned new strategies.\n\n</div>\n\n\n\n<center> ![](https://images.hive.blog/500x0/https://d36mxiodymuqjm.cloudfront.net/card_art/Quix%20the%20Devious.png) </center> \n\n\n<div class=\"text-left\">\n\nI would like to mention the great service to help with engagement and external media awareness: \n\n* PeakMonsters Quick/Easy/Bulk/informative Splinterlands Market\n\nMy favorite place to purchase Cards market with interesting discounts\n* Monstermarket.io  \n\n\n</div>\n\n<div class=\"text-center\">\n\n\nIt is a pleasure to contribute back to Commentrewarder. As readers who engage with this article in the comment section. Beneficiary has been set up.\n\n</div>\n\n<div class=\"text-left\">\n\nSign in to the game Splinterlands for free here [my referral link](https://splinterlands.com?ref=oadissin)\n\n</div>\n\n<div class=\"text-left\">\n\nI invite you, dear readers, to share in the comment section whatever suggestions or questions that come to your mind.\n\n\nI am looking forward to counting you among the readers of the coming social media challenge in Splinterlands.\n\n</div>\n\n<div class=\"text-center\">\n\n![end of page annouce.gif](https://files.peakd.com/file/peakd-hive/oadissin/23xL15WGPa55SXqdVTKbGMeMdU2KfHSuoCQNstoRvTu3Z7eZrHmU32sZz64iuhgbBFHmp.gif)\n[](https://www.canva.com/design/DAFicvxyAng/WBcKkxK3eKy0QEI1pmwRTw/edit?utm_content=DAFicvxyAng&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)\n</div>\n\n<h4>\n\n \n## Regards\n\n\n</h4>\n\n==Disclaimer:== This Article's purpose is only educational and has no intention to make fun of any players of Splinterlands in the community. My publications relay valid information based on my personal experiences for your edutainment.\n</div>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 235
+        },
+        "title": "Why Quix the Devious is my favorite summoner in Wild Format",
+        "author": "oadissin",
+        "payout": 1.487,
+        "created": "2026-05-18T21:48:18",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-18T21:48:18",
+        "category": "hive-167922",
+        "children": 2,
+        "permlink": "why-quix-the-devious-is",
+        "community": "hive-167922",
+        "payout_at": "2026-05-25T21:48:18",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 19315383994752,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 50322852308
+          },
+          {
+            "voter": "gamer00",
+            "rshares": 7705725928
+          },
+          {
+            "voter": "funnel",
+            "rshares": 8616262281
+          },
+          {
+            "voter": "esteemapp",
+            "rshares": 13147016675
+          },
+          {
+            "voter": "stefanialexis",
+            "rshares": 1674337601
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 900,
+            "account": "commentrewarder"
+          }
+        ],
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "tags": [
+            "hive-167922",
+            "arcadecolony",
+            "splinterlands",
+            "play2earn",
+            "inleo",
+            "spt",
+            "indiaunited",
+            "proofofbrain",
+            "leofinance",
+            "neoxian"
+          ],
+          "image": [
+            "https://i.ecency.com/DQmXJVy1TRxqip3rAoQVrz9eCvtBvWEX4B4DBL1Tjwnbe6L/dsfzsdfzxzzczzsdf.gif",
+            "https://i.ecency.com/DQmQ1koCN9CiPZraxn8ehxp1hoXK5mwgaYuuBatNJ8ZZPG2/image.png",
+            "https://i.ecency.com/DQmXkJUZsxvwoJrvMyiXD1fD9exiF8BY6N54YWZT7yUB6cj/image.png",
+            "https://i.ecency.com/DQmX6RZUaXdFzMXYKnPTVQucqink1Yc4XERQVmmgtQahzfY/image.png",
+            "https://i.ecency.com/DQmcLws4cYG2t9pNSSK92DLTCMs85fyvrEW2ke8FBxDZbVs/image.png",
+            "https://i.ecency.com/DQmQpLWBFDTXTDVJQ5L3erwgJSuZXXEk9iUdsf9KdSBLJMD/image.png",
+            "https://i.ecency.com/DQmZDyqjkQKQb29UeoLVvji5XMobDEvcZmkE7GmmfXM92YM/image.png",
+            "https://images.hive.blog/500x0/https://d36mxiodymuqjm.cloudfront.net/card_art/Quix%20the%20Devious.png",
+            "https://files.peakd.com/file/peakd-hive/oadissin/23xL15WGPa55SXqdVTKbGMeMdU2KfHSuoCQNstoRvTu3Z7eZrHmU32sZz64iuhgbBFHmp.gif"
+          ],
+          "format": "markdown+html",
+          "thumbnails": [
+            "https://i.ecency.com/DQmXJVy1TRxqip3rAoQVrz9eCvtBvWEX4B4DBL1Tjwnbe6L/dsfzsdfzxzzczzsdf.gif"
+          ],
+          "description": "Breaking Gold I: How Quix the Dragon Summoner Powers My Wild Format Push From Silver to Diamond Dreams: Quix, Low Mana Battles, and Building SPS in Splinterlands",
+          "image_ratios": [
+            "1.7778",
+            "2.2230",
+            "1.9662",
+            "1.9048",
+            "2.1732"
+          ]
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 76.74,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.487 HBD"
+      },
+      {
+        "url": "/hive-167922/@cryptoandcoffee/staking-crypto-apparently-is-still-hard-to-comprehend-d4m",
+        "body": "\n\n<center><img src=\"https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23u5vsU3tfS7fJakRtEpud488W2ap9epQFKiurgyAsVNKL8diJJqqbqSHcJQrZqv1Utbj.png\"/></center>\n\n[source](https://brendanbeeken.com/wp-content/uploads/2022/12/staking-crypto.jpg)\n\n\n\n\nThose that follow my posts are aware that I have a couple of friends copying my every move in crypto. Not exactly or they would be on HIVE, but with regard to staking COTI. Both have ventured into crypto before with absolute failure having bought like most retail when it was fairly high and ended up selling at a loss due to panic setting in. Neither of them listened to me at the time.\n\nThe one friend who has been more proactive with his crypto mentioned today he wished he had listened to me sooner and paid closer attention to what I had been doing. Roughly two and a bit years ago I had showed him the staking on the COTI treasury and he did not understand the concept. He admitted that it was beyond his comprehension how this was even possible and was scared to get involved. His words were he thought I must have been smoking something which I do not and being able to understand this was on a completely different level to any crypto investment he had seen before.\n\nCertain crypto is just that far out there especially when you have a blockchain like HIVE. People just do not get it and struggle with the concept of earning through work or actions you do on the blockchain. Maybe the younger generation will understand it more and not be so skeptical like others are.\n\nMost retail investors would never dream about staking on the crypto protocol itself and will just hold their coins on an exchange. Some may stake on the exchange itself, but not even contemplating they could stake it on the chain of that particular crypto token. We may not think we are that far ahead of other crypto investors yet we are by quite some distance with the knowledge we have.\n\nIt took him nearly 3 years to get involved staking COTI due to nothing more than a lack of confidence in his abilities. I think we have all been there being slightly overwhelmed at some point because I know I have especially with DeFi. For myself it is a matter of understanding the processes because it is actually quite easy to mess up. I am not that tech savvy which I know the majority of you are and it has definitely held me back.\n\nThe funny thing is today he mentioned he know longer thinks I am crazy or \"smoking some thing\" as he is absolutely loving the crypto staking and earning concept. I think once you see the stake growing daily via the APR then obviously you will enjoy it more because for once in your life you are earning in crypto and moving forwards. This guy is definitely in the 80% who have lost in crypto and these coins being earned daily represent a win. I do think it is more than just a win and a change in mind set knowing that this is possible and is also a genuine way of growing your stake.\n\n\n<center><img src=\"https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23wMS13RmhAQpn9qK8CLgugt1BNEh2uYZkPDHbhYaw8RMd6nEGDGgHr8QnmJfVgBciwhd.png\"/></center>\n\n[source](https://i.ytimg.com/vi/o3c58mbkvdc/maxresdefault.jpg)\n\nI mentioned he is more proactive and has already gone ahead and opened a Pallapay account in Dubai copying my off ramp strategy. Pallapay for a 2% fee will sell your crypto and deposit this into your bank account at a rate of $20K per day or obtain permission to offramp more. This I will do in the coming months as there is no major rush just yet as selling is not on my mind until the market changes drastically.\n\nPosted Using [INLEO](https://inleo.io/@cryptoandcoffee/staking-crypto-apparently-is-still-hard-to-comprehend-d4m)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 279
+        },
+        "title": "Staking Crypto Apparently Is Still Hard To Comprehend",
+        "author": "cryptoandcoffee",
+        "payout": 8.16,
+        "created": "2026-05-18T21:26:39",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-18T21:26:39",
+        "category": "hive-167922",
+        "children": 3,
+        "permlink": "staking-crypto-apparently-is-still-hard-to-comprehend-d4m",
+        "community": "hive-167922",
+        "payout_at": "2026-05-25T21:26:39",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 107475232569260,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "roelandp",
+            "rshares": 14041406874
+          },
+          {
+            "voter": "jeffjagoe",
+            "rshares": 794386572
+          },
+          {
+            "voter": "meesterboom",
+            "rshares": 370220274356
+          },
+          {
+            "voter": "arcange",
+            "rshares": 896608629638
+          },
+          {
+            "voter": "sazbird",
+            "rshares": 1026230246
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "crypto",
+            "staking",
+            "understanding",
+            "knowledge",
+            "rewards",
+            "skeptism",
+            "pob",
+            "waiv",
+            "vyb"
+          ],
+          "links": [
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23u5vsU3tfS7fJakRtEpud488W2ap9epQFKiurgyAsVNKL8diJJqqbqSHcJQrZqv1Utbj.png\"/></center>",
+            "https://brendanbeeken.com/wp-content/uploads/2022/12/staking-crypto.jpg)",
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23wMS13RmhAQpn9qK8CLgugt1BNEh2uYZkPDHbhYaw8RMd6nEGDGgHr8QnmJfVgBciwhd.png\"/></center>",
+            "https://i.ytimg.com/vi/o3c58mbkvdc/maxresdefault.jpg)",
+            "https://inleo.io/@cryptoandcoffee/staking-crypto-apparently-is-still-hard-to-comprehend-d4m)"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@cryptoandcoffee/staking-crypto-apparently-is-still-hard-to-comprehend-d4m"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 84.31,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "8.160 HBD"
+      },
+      {
+        "url": "/hive-167922/@timscreative/the-rise-of-ai-assistants-from-early-telephones-to-smart-devices-6js",
+        "body": "\n\nJust imagine that you are standing on a street corner in the year 1926 and you are having a very good conversation. Though there is no one around but you are asking for direction and checking the weather, trying to dictate a message, maybe even arguing with this kind of voice that is in your head. To other people that are around, I mean the bystanders of that time, this will not read using a phone or talking to an ear, it will read as you are hugging with the ear or someone that is mad. \n\nEven early telephone a century ago were big, furniture like device that stayed in one place and required an operator to operate it and go along with it. The idea that you carry a powerful computer in your pocket is something that no one saw coming and the fact that it has no wire, you can walk and talk to it naturally and it talks back at you. This thing knows everything that you want to do. \n\nThough this might sound a little bit less technological to some people and more like a supernatural claim, there is also this wired layer of weirdness that is wrapped up in one. From 1926, perspective has started changing. You started seeing the possibility of what science and technology can do. \n\nA wireless pocket-sized global communicator, the phone, a disembodied helpful voice, the notion of a non-human voice that understands questions and responds, which is presently used in virtual assistants and call centers now. Then, ignoring your surroundings, walking down a busy street, staring at a glowing slab, half aware of the traffic and the people around, thanks for the mobile phone that we are holding today. In fact, even something milder by our standard, like walking around with headphones, is not something anyone saw coming in years before, let's say hundreds of years ago, but now it has become a reality and even headphones and earpiece are getting smarter and smarter by the day. \n\nToday, we have come to normalize invincible networks, digital intermediaries that connect laptops, gadgets, and systems together, where the issue of using cable has gone to extinction. Most of us agree with radio and TV stations that are black and white, where you have to put a frame in front of it to make it colored, then the internet actually came and decentralized a lot of things, then the smartphone, then voice assistants, each coming with steps to guide you in making a better decision. What would have sounded like I have a tiny spirit in my pocket that can answer any question and send my voice across the tiny ocean instantly. \n\nNow just sound like hey, can you set a reminder for 3 minutes? So most of our artificial intelligence AI are becoming smarter and smarter by the day.\n\n\n<center> https://img.leopedia.io/DQmPFJgWmqrChEkewva3FA39XCzAdufrho3h2ESzZesJAjT/17791379527632724459352861857736.jpg \n[Source](https://medium.com/@aivitbhopal2019/the-evolution-of-technology-from-button-phones-to-smart-virtual-assistants-b53316a72936)</center>\n\nPosted Using [INLEO](https://inleo.io/@timscreative/the-rise-of-ai-assistants-from-early-telephones-to-smart-devices-6js)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 132
+        },
+        "title": "The Rise of AI Assistants: From Early Telephones to Smart Devices",
+        "author": "timscreative",
+        "payout": 0.456,
+        "created": "2026-05-18T21:00:00",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-18T21:00:00",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "the-rise-of-ai-assistants-from-early-telephones-to-smart-devices-6js",
+        "community": "hive-167922",
+        "payout_at": "2026-05-25T21:00:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 5953193743363,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 4556722571
+          },
+          {
+            "voter": "uwelang",
+            "rshares": 34479799447
+          },
+          {
+            "voter": "sergiomendes",
+            "rshares": 1720095140
+          },
+          {
+            "voter": "elevator09",
+            "rshares": 70799182535
+          },
+          {
+            "voter": "bitrocker2020",
+            "rshares": 42660813378
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "Inleo",
+            "Proofofbrain",
+            "Neoxian",
+            "Palnet",
+            "Creativecoin",
+            "Waiv",
+            "Airhawk"
+          ],
+          "links": [
+            "https://medium.com/@aivitbhopal2019/the-evolution-of-technology-from-button-phones-to-smart-virtual-assistants-b53316a72936)</center>",
+            "https://inleo.io/@timscreative/the-rise-of-ai-assistants-from-early-telephones-to-smart-devices-6js)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmPFJgWmqrChEkewva3FA39XCzAdufrho3h2ESzZesJAjT/17791379527632724459352861857736.jpg"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@timscreative/the-rise-of-ai-assistants-from-early-telephones-to-smart-devices-6js"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 59.97,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.456 HBD"
+      },
+      {
+        "url": "/hive-167922/@bulkathos/myhivegoals-week-18-update-on",
+        "body": "<center>\n\n![](https://i.ecency.com/DQma7j5qYGkqsSyuFpTUTsZfy9HwU5rr76Wg16LKfgLfaye/front_mhgw18.jpg)\n\n\n</center>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23zRw3SoGotiSUAysx4tbYSPR3V3jdvPQ3LTooQ4k1z4VBxtPoNchWgAq1KiuHBo874BJ.png)\n\n</center>\n\n<div class=\"pull-right\">  \n\n![](https://i.ecency.com/DQmSEZ3XQr3bvFB1nPf8AFfXRyKvM2Pu61D2wt8tJaAgsMG/image.png)\n\n\n</div>\n\n<div class=\"text-justify\">\n\nHey everyone! Happy start to the week! I'm writing this from my office at the institute. I overslept and had to rush to the university! I stopped to buy a couple of coconut rolls, and let me tell you, they're addictive! Then I went back to my office and found out I'm going to have to postpone my lab session tomorrow. In short, I woke up ridiculously early only to end up doing absolutely nothing for the next few days. Well, since I'm alone in my office, I took the opportunity to write my weekly #MyHiveGoals summary while enjoying my coconut roll and a good cup of coffee.\n\nThe first thing that surprised me when I turned on my PC was the price of Hive, which had returned to its price from a month ago, exactly below $0.06. I was really excited last week when I saw the price take off at $0.09, but it was definitely a fleeting joy. However, as I mentioned before, I'd prefer the price to stay this low when it comes time to fund my Hive wallet. In fact, we're currently in a dispute to get a raise, and if we're successful and get one, I'll convert my fiat money to crypto as soon as I receive my first paycheck. \n\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmQtj3eMWCrCnYFuMfS59aLc9syJmYnBwggkWmKKVerbob/image.png)\n\nLink: [livecoinwatch](https://www.livecoinwatch.com/price/Hive-HIVE)\n\n</center>\n\n<div class=\"text-justify\">\n\nIn any case, we'll continue growing in Hive as I have been doing these past two years. Consistency and dedication are the two principles that guide my steps on this wonderful blockchain. We've already seen that the token can rise dramatically from one day to the next, so there's no reason to think this was just a fluke or that it simply won't happen again.\n\n</div>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/Eo4Ab6YHDAqaRVh7pHakA5AGvkNLYU7VLBS8c1rk9qDwzndFTYaNHBV8B4vRG9gDDam.png)\n\n</center>\n\n<center>\n\n# Hive/HP\n</center>\n\n<div class=\"text-justify\">\n\nOkay, if we look at the amount of liquid Hive we have today compared to a week ago, we'll see it's only changed by a few cents. For the past two weeks, I've been using the Hive Suite platform to microblog everything from my progress in Splinterlands to my work in the lab, and it's a good way to fill the necessary Hive to power up every 24 hours. I haven't microblogging as much as I'd like, because often I'm teaching or doing experiments, and I always forget to share what I'm doing with a photo. Perhaps when my teaching load is over, I'll be more active in this Web 3 layer on Hive.\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmTy1MDPxmzxpmEaADqUQ3w6Vj1YV6Ei2NmVAP3roQZFqX/image.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nNow, regarding HP, we have generated a good amount this week, ending with 124.73 HP, bringing our total to 9821 HP. At this rate, we will reach 10,000 HP by the end of May and will be only 2,000 HP away from our annual goal of 12,000 locked hives.\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmbi6FJi4RU4ZN7CmA1jd9qrxvRtmjQMt6X4e3nFQyRPAx/image.png)|![](https://i.ecency.com/DQmVToj6k9NSAqbcCB3w9PmYdB5mxsF6tz19faBYR8AW9LD/image.png)\n--|--\n\nLink: [hivestats](https://hivestats.io/)\n\n</center>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tbkj8mbMn9CYGJL7qVH3Zzq9mBSpZMLFAwUuy9ggaZ1KBkyRJwKGLVu3gb6pfH3bZUd.png)\n\n</center>\n\n<center>\n\n# HBD Savings\n</center>\n\n<div class=\"pull-right\">  \n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/AKNJfepRduyDCKjLtjvEhUPDPpkZXQf7PJtDkDBCyRbctqMHdqs6nxd3Ha31Gs1.png)\n\n\n</div>\n\n<div class=\"text-justify\">\n\nWe've reached the part I've been waiting for! Finally, friends, I've reached 2,000 locked HBD. It's a secondary goal because my real objective for this year is to reach 2,300 HBD. But the highlight of this week is the badge we earned: Knight of Capital! That's why I preferred to collect the interest on the locked HBD today and not in the middle of last week, because we would have been just 1 HBD short of reaching the goal.\n\n</div>\n\n---\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tbK2grRkFzp6gTiNxwqEnpbEMQzPePwMeWpQvpsTU8CJuAWeznKNXgfw8LqbhJVMH2x.png)\n\n---\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tGTdg1qRnfBUVW75TqYfZTGksdBvDivEiskUPwCxhnqGAQfdB8xePfmfqGxpQMfNj1M.png)\n\n\n</center>\n\n\n<div class=\"text-justify\">\n\nAlong with the 23.6 HBD from interest, we add the 7.4 HBD from the week to reach a little over 2000 HBD. I honestly didn't think I'd generate more than 6 HBD this past week. Therefore, I decided to keep a full 1 HBD to buy some second-layer tokens like Decs (Splinterlands) and Starbits (Rising Star Game), which are Gamefi projects in which I'm very active.\n\n</div>\n\n<center>\n\n\n![](https://i.ecency.com/DQmdx4HksKDUrxpf3raKmV18hfMUEkabmzLLBw1Fuk2eVdf/image.png)\n\n---\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tRvemjxAW3DTHfSYJaucGtWeFfGdSyJykaA17cdXHjVxU9efUn1sQTZmJWuCn2Ek1ip.png)\n\n\n\n</center>\n\n<div class=\"text-justify\">\n\nCompared to last week, we've added more than 23 HBD to our Hive stablecoin savings. That's the magic of compound interest that this HBD savings mechanism offers. Of course, getting started is the hardest part, which is why discipline is so important, along with having clear goals and the conviction to achieve them. This is the result of over two years of work on the blockchain, and now we're starting to see the first fruits of all this effort. While we did achieve this special award, our annual goal remains a significant challenge. We haven't reached 2300 HBD halfway through the year, and with Hive's low price, this goal has become even more difficult. We'll see if the monthly APR interest helps us reach this challenging target.\n\n</div>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tGyXZoWHqdFmZ3okUbJHeoVbbUXGqH9Q7Eq9XGt2nrFidVxjieoh8GH2HD5583firb5.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nWell, friends, that was my report for the week. I was really looking forward to sharing this first achievement, the Knight of Capital badge. The next step would be 5,000 HBD locked, but that's a very long-term goal. However, I do have a good amount of liquid Hive waiting for the price to rise significantly so I can convert it to HBD and add it to the vault. That's why I always start these reports by evaluating Hive's price throughout the week. See you in the next report, friends. Best regards.\n\n</div>\n\n---\n\n<center>\n\n# Versión Español\n</center>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQma7j5qYGkqsSyuFpTUTsZfy9HwU5rr76Wg16LKfgLfaye/front_mhgw18.jpg)\n\n</center>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23zRw3SoGotiSUAysx4tbYSPR3V3jdvPQ3LTooQ4k1z4VBxtPoNchWgAq1KiuHBo874BJ.png)\n\n</center>\n\n<div class=\"pull-right\">  \n\n![](https://i.ecency.com/DQmSEZ3XQr3bvFB1nPf8AFfXRyKvM2Pu61D2wt8tJaAgsMG/image.png)\n\n</div>\n\n<div class=\"text-justify\">\n\nQue tal comunidad! Feliz inicio de semana, estoy escribiéndoles estas líneas desde mi oficina en el instituto, me quedé dormido y tuve que salir corriendo a la universidad! Me detuve a comprar un par de panes recubiertos con coco y amigos es un verdadero vicio! Luego fui a mi oficina y me enteré que voy a tener que posponer mi práctica de laboratorio que sería mañana, en resumen me levante desaforadamente temprano para al final no hacer nada estos próximos días. Bien, ya que estoy solo en mi oficina, aproveché de hacer el resumen semanal de #MyHiveGoals mientras disfruto de mi pan con coco y una buena taza de café.\n\nLo primero que me sorprendió al encender el Pc fue el precio de Hive que volvió a su precio de hace un mes exactamente por debajo de los 0.06$ La verdad era que estaba muy entusiasmado la semana pasada cuando vi el precio despegar a los 0,09$ pero fue sin duda una alegría efímera, pero como les había dicho anteriormente preferiría que el precio se mantuviera así de bajo para cuando llegue el momento de fondear mi billetera de Hive. De hecho, justo ahora estamos en conflicto para que nos suban los salarios, si tenemos éxito y logramos un aumento, apenas cobre mi primer salario llevaré ese dinero fíat a cripto lo más pronto posible.\n\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmQtj3eMWCrCnYFuMfS59aLc9syJmYnBwggkWmKKVerbob/image.png)\n\nLink: [livecoinwatch](https://www.livecoinwatch.com/price/Hive-HIVE)\n\n</center>\n\n<div class=\"text-justify\">\n\nEn cualquier caso, continuaremos creciendo en Hive como lo he estado haciendo estos últimos 2 años, constancia y dedicación esas son las 2 divisas que guían mis pasos en esta maravillosa blockchain. Ya vimos que el token pudo subir drásticamente de un día a otro, así no hay razones para pensar que esto fue solo casualidad o que simplemente no se va a repetir.\n\n</div>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/Eo4Ab6YHDAqaRVh7pHakA5AGvkNLYU7VLBS8c1rk9qDwzndFTYaNHBV8B4vRG9gDDam.png)\n\n</center>\n\n<center>\n\n# Hive/HP\n</center>\n\n<div class=\"text-justify\">\n\nOk, si vemos la cantidad de Hive líquido que tenemos hoy comparado con el de hace una semana, nos daremos cuenta que apenas vario unos pocos céntimos y es que desde 2 semanas he estado usando la plataforma de [HiveSuit](https://hivesuite.app/#/dashboard/blogs) para hacer microblogging  desde mi progreso en Splinterlands hasta de mi trabajo en el laboratorio y es una buena forma de completar los hive necesarios para hacer los power up cada 24 horas. No he hecho tanto microblogging como me habría gustado y es que en muchos casos o estoy dando clases o haciendo experimento y siempre olvido compartir las cosas que hago con una fotografía. Quizás cuando termine mi carga docente esté más activo en esta capa de la web 3 en Hive.\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmTy1MDPxmzxpmEaADqUQ3w6Vj1YV6Ei2NmVAP3roQZFqX/image.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nAhora con respecto al HP, si que hemos generado una buena cantidad esta semana que terminó con 124.73 de HP para llegar a un acumulado de 9821 HP a este ritmo, llegaremos a los 10000 HP para finales de mayo y estaremos a solo 2000 HP de nuestra meta anual de 12000 Hive bloqueados.\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmbi6FJi4RU4ZN7CmA1jd9qrxvRtmjQMt6X4e3nFQyRPAx/image.png)|![](https://i.ecency.com/DQmVToj6k9NSAqbcCB3w9PmYdB5mxsF6tz19faBYR8AW9LD/image.png)\n--|--\n\nLink: [hivestats](https://hivestats.io/)\n\n</center>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tbkj8mbMn9CYGJL7qVH3Zzq9mBSpZMLFAwUuy9ggaZ1KBkyRJwKGLVu3gb6pfH3bZUd.png)\n\n</center>\n\n<center>\n\n# Ahorros HBD\n</center>\n\n<div class=\"pull-right\">  \n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/AKNJfepRduyDCKjLtjvEhUPDPpkZXQf7PJtDkDBCyRbctqMHdqs6nxd3Ha31Gs1.png)\n\n\n</div>\n\n<div class=\"text-justify\">\n\nLlegamos a la parte que más estaba esperando! Finalmente amigos, he logrado llegar a los 2K de HBD bloqueados, es una meta secundaria porque realmente mi objetivo para este año es llegar a los 2300 HBD. Pero el detalle de esta semana es la insignia que hemos ganado: Knight of Capital! Por eso preferí cobrar los intereses de los HBD bloqueados hoy y no a mitad de la semana pasada porque íbamos a quedarnos a solo 1 HBD de llegar a la meta.\n\n</div>\n\n---\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tbK2grRkFzp6gTiNxwqEnpbEMQzPePwMeWpQvpsTU8CJuAWeznKNXgfw8LqbhJVMH2x.png)\n\n---\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tGTdg1qRnfBUVW75TqYfZTGksdBvDivEiskUPwCxhnqGAQfdB8xePfmfqGxpQMfNj1M.png)\n\n\n</center>\n\n\n<div class=\"text-justify\">\n\nJunto a los 23.6 HBD de los intereses sumamos los 7.4 HBD de la semana para llegar a un poco más de 2000 HBD, la verdad no pensé que llegaría a más de 6 HBD generados esta semana que terminó. Por tanto decidí conservar 1 HBD completo para comprar algunos tokens de segunda capa como Decs (Splinterlands) y Starbits (Rising Star Game) que son proyectos Gamefi en los que soy muy activo.\n\n</div>\n\n<center>\n\n\n![](https://i.ecency.com/DQmdx4HksKDUrxpf3raKmV18hfMUEkabmzLLBw1Fuk2eVdf/image.png)\n\n---\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tRvemjxAW3DTHfSYJaucGtWeFfGdSyJykaA17cdXHjVxU9efUn1sQTZmJWuCn2Ek1ip.png)\n\n\n\n</center>\n\n<div class=\"text-justify\">\n\nSi comparamos con la semana pasada sumamos entonces más de 23 HBD a nuestro baul de ahorros en stable coin de Hive, esa es la magia del interés compuesto que nos plantea este mecanismo de ahorros en HBD. Por supuesto, empezar es lo más complicado, por eso la disciplina es muy importante, tener las metas claras y la convicción de completarlas. Esto es el resultado de más de 2 años trabajando en la blockchain y ahora comienzan a ver los primeros brotes de todo este esfuerzo, lo otro es que si bien conseguimos esta medalla especial, nuestra meta anual todavía se erige como un reto cuesta arriba, 2300 HBD aún no llegamos a mitad del año pero con el bajo precio de Hive, esta meta meta se ha vuelto más cuesta arriba. Ya veremos si con los intereses mensuales del APR podemos alcanzar esta difícil meta.\n\n</div>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tGyXZoWHqdFmZ3okUbJHeoVbbUXGqH9Q7Eq9XGt2nrFidVxjieoh8GH2HD5583firb5.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nBien amigos, este fue mi reporte de la semana. Tenía mucha ganas de compartirles este primer logro que fue la insignia de Knight of Capital, el siguiente escalón sería 5000 HBD bloqueados pero esa ya es una meta para muy largo plazo, aunque tengo una buena cantidad de Hive liquidos esperando el momento a que suba su precio significativamente para pasarlo a HBD y sumarlo a la bóveda, es la razón por la que siempre comienzo estos reportes evaluando el precio de Hive a lo largo de la semana. Nos vemos en el próximo reporte amigos. Saludos.\n\n</div>\n\n<center>\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23zRw3SoGotiSUAysx4tbYSPR3V3jdvPQ3LTooQ4k1z4VBxtPoNchWgAq1KiuHBo874BJ.png)\n\n</center>\n\n<center>\n\n# Follow me on Hive!/¡Sigueme en Hive!\n\n[\n![Cinema pixelart 1 Banner con Logo.gif](https://files.peakd.com/file/peakd-hive/bulkathos/23wWTX6kP2RPnXbiA2u3EEC3YbHVXdqKZrySXhG3APNWFB8ZfqrZdR5ADNoZQGNkFF6Hq.gif)\n](https://ecency.com/@bulkathos)\n\n---\n\n![Ecency logo Bulkathos.gif](https://files.peakd.com/file/peakd-hive/bulkathos/23vsn34BaitCjk9Kz1FyeaZm1ZNPDrrm6AR86D2Wz858DntiDErgbN21u4QnRg7MwCibd.gif)\n\n</center>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 386
+        },
+        "title": "#MyHiveGoals week #18: Update on my work as a Hive bee: Reaching the title of Knight of Capital! [Eng/Esp]",
+        "author": "bulkathos",
+        "payout": 1.94,
+        "created": "2026-05-18T20:48:03",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-18T20:48:03",
+        "category": "hive-167922",
+        "children": 1,
+        "permlink": "myhivegoals-week-18-update-on",
+        "community": "hive-167922",
+        "payout_at": "2026-05-25T20:48:03",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 25257330210988,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 49669897557
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 14057788915
+          },
+          {
+            "voter": "arcange",
+            "rshares": 896854777130
+          },
+          {
+            "voter": "noborders",
+            "rshares": 519801779
+          },
+          {
+            "voter": "discovereurovelo",
+            "rshares": 5276278587
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "tags": [
+            "hive-167922",
+            "myhivegoals",
+            "goals",
+            "hivepower",
+            "spanish",
+            "hbd",
+            "leofinance",
+            "archon",
+            "proofofbrain",
+            "bbh"
+          ],
+          "image": [
+            "https://i.ecency.com/DQma7j5qYGkqsSyuFpTUTsZfy9HwU5rr76Wg16LKfgLfaye/front_mhgw18.jpg",
+            "https://files.peakd.com/file/peakd-hive/bulkathos/23zRw3SoGotiSUAysx4tbYSPR3V3jdvPQ3LTooQ4k1z4VBxtPoNchWgAq1KiuHBo874BJ.png",
+            "https://i.ecency.com/DQmSEZ3XQr3bvFB1nPf8AFfXRyKvM2Pu61D2wt8tJaAgsMG/image.png",
+            "https://i.ecency.com/DQmQtj3eMWCrCnYFuMfS59aLc9syJmYnBwggkWmKKVerbob/image.png",
+            "https://files.peakd.com/file/peakd-hive/bulkathos/Eo4Ab6YHDAqaRVh7pHakA5AGvkNLYU7VLBS8c1rk9qDwzndFTYaNHBV8B4vRG9gDDam.png",
+            "https://i.ecency.com/DQmTy1MDPxmzxpmEaADqUQ3w6Vj1YV6Ei2NmVAP3roQZFqX/image.png",
+            "https://i.ecency.com/DQmbi6FJi4RU4ZN7CmA1jd9qrxvRtmjQMt6X4e3nFQyRPAx/image.png)|![](https://i.ecency.com/DQmVToj6k9NSAqbcCB3w9PmYdB5mxsF6tz19faBYR8AW9LD/image.png",
+            "https://files.peakd.com/file/peakd-hive/bulkathos/23tbkj8mbMn9CYGJL7qVH3Zzq9mBSpZMLFAwUuy9ggaZ1KBkyRJwKGLVu3gb6pfH3bZUd.png",
+            "https://files.peakd.com/file/peakd-hive/bulkathos/AKNJfepRduyDCKjLtjvEhUPDPpkZXQf7PJtDkDBCyRbctqMHdqs6nxd3Ha31Gs1.png"
+          ],
+          "format": "markdown+html",
+          "thumbnails": [
+            "https://i.ecency.com/DQma7j5qYGkqsSyuFpTUTsZfy9HwU5rr76Wg16LKfgLfaye/front_mhgw18.jpg"
+          ],
+          "description": "Hey everyone! Happy start to the week! I'm writing this from my office at the institute. I overslept and had to rush to the university! I stopped to buy a couple of coconut rolls, and let me tell you,",
+          "image_ratios": [
+            "1.7778",
+            "35.5556",
+            "1.3333",
+            "1.8810",
+            "24.6154"
+          ]
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 75.25,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.940 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
