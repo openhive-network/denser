@@ -1,0 +1,945 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_account_posts",
+    "params": {
+      "sort": "replies",
+      "account": "hiveio",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "207cfe8744fbe667",
+  "method": "bridge.get_account_posts",
+  "params": {
+    "sort": "replies",
+    "account": "hiveio",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@kgakakillerg/t8ag4l",
+        "body": "🤣😂😂😂😂😂😂🤣🤣🤣🤣🤣🤣🤣🤣",
+        "depth": 1,
+        "stats": {
+          "gray": true,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0,
+          "muted_reasons": [
+            3
+          ]
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "kgakakillerg",
+        "payout": 0,
+        "created": "2026-01-03T12:31:39",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-03T12:31:39",
+        "category": "happynewyear2026",
+        "children": 0,
+        "permlink": "t8ag4l",
+        "payout_at": "2026-01-10T12:31:39",
+        "blacklists": [
+          "reputation-0"
+        ],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": -14.83,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@calebmarvel24/re-hiveio-202613t91440256z",
+        "body": "Happy New Year to each and everyone on Hive, we pray for more blessings and for our goal in 2026 to come to fulfillment before it's end. Let's keep on building and let love and unity be our carriage... ✌️🕊️💓💓",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "calebmarvel24",
+        "payout": 0,
+        "created": "2026-01-03T08:14:42",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-03T08:14:42",
+        "category": "happynewyear2026",
+        "children": 0,
+        "permlink": "re-hiveio-202613t91440256z",
+        "payout_at": "2026-01-10T08:14:42",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "endhivewatchers",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.3.8-mobile",
+          "tags": [
+            "happynewyear2026",
+            "hive",
+            "ecosystem"
+          ],
+          "type": "comment",
+          "links": [],
+          "format": "markdown+html"
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 69.75,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@sw-juanpedro/t8912y",
+        "body": "Happy new year ✨🎉",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "sw-juanpedro",
+        "payout": 0,
+        "created": "2026-01-02T18:09:00",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-02T18:09:00",
+        "category": "happynewyear2026",
+        "children": 0,
+        "permlink": "t8912y",
+        "payout_at": "2026-01-09T18:09:00",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 59.12,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@careassaktart/re-hiveio-t890wt",
+        "body": "WoW! This is so nice! Thank you all! =D",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "careassaktart",
+        "payout": 0,
+        "created": "2026-01-02T18:05:18",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-02T18:05:18",
+        "category": "happynewyear2026",
+        "children": 0,
+        "permlink": "re-hiveio-t890wt",
+        "payout_at": "2026-01-09T18:05:18",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2025.12.9",
+          "tags": [
+            "happynewyear2026"
+          ],
+          "image": [],
+          "users": []
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 69.7,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@hivebuzz/notify-1767354844",
+        "body": "Congratulations @hiveio! You have completed the following achievement on the Hive blockchain And have been rewarded with New badge(s)\n\n<table><tr><td><img src=\"https://images.hive.blog/60x70/https://hivebuzz.me/@hiveio/upvoted.png?202601021147\"></td><td>You received more than 30000 upvotes.<br>Your next target is to reach 35000 upvotes.</td></tr>\n</table>\n\n<sub>_You can view your badges on [your board](https://hivebuzz.me/@hiveio) and compare yourself to others in the [Ranking](https://hivebuzz.me/ranking)_</sub>\n<sub>_If you no longer want to receive notifications, reply to this comment with the word_ `STOP`</sub>\n\n\n\n**Check out our last posts:**\n<table><tr><td><a href=\"/hive-122221/@hivebuzz/pud-202601-feedback\"><img src=\"https://images.hive.blog/64x128/https://i.imgur.com/zHjYI1k.jpg\"></a></td><td><a href=\"/hive-122221/@hivebuzz/pud-202601-feedback\">Feedback from the January Hive Power Up Day</a></td></tr><tr><td><a href=\"/hive-122221/@hivebuzz/pum-202512-result\"><img src=\"https://images.hive.blog/64x128/https://i.imgur.com/mzwqdSL.png\"></a></td><td><a href=\"/hive-122221/@hivebuzz/pum-202512-result\">Hive Power Up Month Challenge - December 2025 Winners List</a></td></tr><tr><td><a href=\"/hive-122221/@hivebuzz/pum-202601\"><img src=\"https://images.hive.blog/64x128/https://i.imgur.com/M9RD8KS.png\"></a></td><td><a href=\"/hive-122221/@hivebuzz/pum-202601\">Be ready for the January edition of the Hive Power Up Month!</a></td></tr></table>",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "hivebuzz",
+        "payout": 0,
+        "created": "2026-01-02T11:54:03",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-02T11:54:03",
+        "category": "happynewyear2026",
+        "children": 0,
+        "permlink": "notify-1767354844",
+        "payout_at": "2026-01-09T11:54:03",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "image": [
+            "https://hivebuzz.me/notify.t6.png"
+          ]
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 74.23,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@mariajasmin/re-hiveio-t884ge",
+        "body": "Happy New Year! 🎉🎉🎉",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "mariajasmin",
+        "payout": 0,
+        "created": "2026-01-02T06:24:18",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-02T06:24:18",
+        "category": "happynewyear2026",
+        "children": 0,
+        "permlink": "re-hiveio-t884ge",
+        "payout_at": "2026-01-09T06:24:18",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2025.12.9",
+          "tags": [
+            "happynewyear2026"
+          ],
+          "image": [],
+          "users": []
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 65.48,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@bpcvoter1/t87hm2",
+        "body": "#bilpcoin exposed #buildawhalescam #buildawhalefarm #themarkymarkscam #themarkymarkfarm #hurtlockerscam #hurtlockerfarm #acidyoscam #acidyofarm #jacobtothescam #hivepopescam #solominerscam #solominerfarm\n\nhttps://youtu.be/hwn7H9noMP4\n\nhttps://youtu.be/8q3phtmG-Bo\n\nBPC Locked On Mc Franko & The Franko\n\nhttps://youtu.be/x8mDpyvIFqg\n\n**Blurt Stands — While Hive Stumbles Under the Weight of Its Own Shadows**\n\n\n<a href=\"https://imgflip.com/i/adk0tv\"><img src=\"https://i.imgflip.com/adk0tv.jpg\" title=\"made at imgflip.com\"/></a><div><a href=\"https://imgflip.com/memegenerator\">from Imgflip Meme Generator</a></div>\n\n<a href=\"https://imgflip.com/i/adk0qt\"><img src=\"https://i.imgflip.com/adk0qt.jpg\" title=\"made at imgflip.com\"/></a><div><a href=\"https://imgflip.com/memegenerator\">from Imgflip Meme Generator</a></div>\n\nFriends, creators, truth-tellers—\n\nLet us not whisper this truth, but proclaim it with the clarity of dawn breaking over a weary land: **Blurt.blog is not just another platform. It is a refuge. A rebellion. A return to what Hive.blog was always meant to be.**\n\nThere is no downvote button on Blurt.  \nNot because we fear dissent—but because we honor creation.  \nBecause we understand that a voice, once raised in sincerity, deserves space—not sabotage.  \n\nOn Blurt, your words are your words.  \nThey are not hunted by algorithmic hounds or shadow armies masquerading as “curators.”  \nHere, you are not judged by the grudges of gatekeepers, but met with the quiet dignity of a community that believes expression should be encouraged—*especially* when it is bold, raw, or inconvenient.\n\nContrast this with what festers elsewhere.\n\nOn Hive.blog—a place once brimming with promise—a rot has taken root. Not in its code, but in its culture. A handful of self-anointed enforcers—@themarkymark, @Buildawhale, @Hurtlocker, and their legion of coordinated puppets—have turned the downvote into a weapon of mass discouragement. They strike not at “low-quality content,” but at *independent thought*, at *rising voices*, at *anyone who dares thrive outside their narrow corridors of control*.\n\nAnd when confronted, they shrug.  \n“Oh, it’s not censorship,” they say, as if semantics could scrub the stain of suppression from their hands.  \n\nBut let us be unequivocal:  \n**When a system allows a few to systematically silence many—under the guise of “community standards” or “curation”—that is not moderation. That is censorship by another name.**  \n\nIt is the velvet glove over the iron fist.  \nIt is exclusion dressed as discernment.  \nIt is power pretending to be principle.\n\nMeanwhile, Blurt stands clean-handed and open-hearted.  \nNo downvotes.  \nNo hidden juries.  \nNo farms of phantom accounts casting ballots in the dark.  \n\nJust you.  \nYour words.  \nAnd a community that meets you not with suspicion, but with solidarity.\n\nSo let us carry this truth far and wide—not with bitterness, but with quiet certainty:\n\n**If you seek a place where your voice is not a target—but a gift—come to Blurt.**  \nIf you are tired of building on ground that shifts with every whim of a whale or warlord of votes—lay your bricks here.  \nIf you believe the future of free expression must be *free*—not just from corporations, but from the petty tyrants who replace them—then stand with us.\n\nThe world needs to know.  \nNot because Blurt is perfect—but because it is *principled*.  \nNot because it is loud—but because it *listens*.\n\nAnd in an age where so many platforms echo with the clatter of control,  \nBlurt offers something radical:  \n**Silence for the bullies.  \nSpace for the rest of us.**\n\nKeep speaking.  \nKeep sharing.  \nKeep building.\n\nFreedom doesn’t advertise itself—  \nit is passed, person to person, like a torch in the night.  \n\nAnd tonight, the torch burns bright on Blurt.\n\n@themarkymark, @buildawhale, @usainvote, and associated accounts:  \n\nRepeated downvotes targeting transparency efforts raise urgent questions about Hive’s governance. Automated tactics, coordinated curation trails, and alt-account farming undermine trust in the platform. When truth is silenced without dialogue, it erodes Hive’s decentralized ethos.  \n\n**Key Concerns:**  \n1. **Systemic Manipulation**:  \n   - Coordinated downvotes from high-HP accounts suppress dissent, creating a chilling effect on free expression.  \n   - Automation and alt-account networks allegedly exploit rewards, distorting organic curation.  \n\n2. **Community Exodus**:  \n   - Creators flee to platforms like Blurt, where downvotes don’t exist, fearing punitive curation over engagement.  \n\n3. **Governance Crisis**:  \n   - Hive’s credibility hinges on accountability. Who decides what content thrives? How do we audit power structures?  \n\n**Solutions Needed:**  \n- **Curation Transparency**: Publish clear rationales for downvotes to foster trust.  \n- **Community Audits**: Leverage blockchain data (e.g., Bilpcoin’s analyses) to identify abusive patterns.  \n- **Reward Reform**: Adjust algorithms to penalize manipulation and reward authentic engagement.  \n\nThe Bilpcoin team advocates for open dialogue, not division. Hive’s future depends on collaboration—not coercion. Let’s rebuild a platform where truth isn’t buried but debated, strengthened, and celebrated.  \n\n*Transparency isn’t optional—it’s the foundation of trust.*  \n\n#HiveTransparency #BilpcoinExposed #DecentralizePower\"  \n\n<a href=\"https://imgflip.com/i/9ys0m8\"><img src=\"https://i.imgflip.com/9ys0m8.jpg\" title=\"made at imgflip.com\"/></a><div><a href=\"https://imgflip.com/memegenerator\">from Imgflip Meme Generator</a></div>\n\n\n\nA Message to @themarkymark, @buildawhale, and Associates  \n \n\nEvery downvote cast in shadow, every silence imposed without dialogue, is not a victory—it is a confession. A confession that truth cannot be stifled, only delayed. With each punitive click, you dig deeper into the bedrock of credibility, crafting a chasm between your actions and the community’s trust.\n\n<a href=\"https://imgflip.com/i/9ypi3u\"><img src=\"https://i.imgflip.com/9ypi3u.jpg\" title=\"made at imgflip.com\"/></a><div><a href=\"https://imgflip.com/memegenerator\">from Imgflip Meme Generator</a></div>\n\n\n@themarkymark, @buildawhale & Co,  \n\nHow can you continue to downvote the truth, LOL? It’s almost comical how blatantly you attempt to suppress what cannot be hidden. The blockchain records everything—every action, every transaction, every move you make. Yet still, you persist in this futile game of trying to silence what is undeniable.  \n\n<a href=\"https://imgflip.com/i/9ykhrj\"><img src=\"https://i.imgflip.com/9ykhrj.jpg\" title=\"made at imgflip.com\"/></a><div><a href=\"https://imgflip.com/memegenerator\">from Imgflip Meme Generator</a></div>\n\n\n@themarkymark, @buildawhale, and Co: While our opinions may differ, on-chain transparency reveals repeated patterns of concern. Coordinated downvotes without explanation, 'farming' schemes (e.g., #buildawhalefarm), and adversarial engagement harm Hive’s community-driven ethos.  \n\n**Key Issues to Address:**  \n1. **Downvote Practices**: Silencing dissent erodes trust. Constructive dialogue, not punitive curation, fosters growth.  \n2. **Accountability**: Transactions and curation trails are public. Scrutiny is inevitable—integrity demands addressing concerns openly.  \n3. **Community Impact**: Driving users to platforms like Blurt/Steemit weakens Hive. Creators seek ecosystems that value collaboration over conflict.  \n\n**A Path Forward:**  \n- Engage in open discussions about governance and fairness.  \n- Audit curation practices to align with Hive’s decentralized values.  \n- Prioritize transparency—publish explanations for downvotes or collaborative reforms.  \n\nThe Bilpcoin team remains committed to exposing truth *and* advocating for solutions. Let’s work toward healing, not division.  \n\n*Note: All claims are based on publicly verifiable blockchain data. Constructive dialogue is encouraged.*  \n\n#HiveTransparency #CommunityFirst #BilpcoinSupport\" \n\n<a href=\"https://imgflip.com/i/9ygose\"><img src=\"https://i.imgflip.com/9ygose.jpg\" title=\"made at imgflip.com\"/></a><div><a href=\"https://imgflip.com/memegenerator\">from Imgflip Meme Generator</a></div>\n\n@themarkymark & Co, the choice is yours. Stop the bad downvotes. Turn off the BuildaWhale scam farm. Cease playing with people’s livelihoods. Let Hive thrive as it was meant to—as a beacon of hope, creativity, and collaboration.  \n\nOr step aside and let those who truly care take the reins.  \n\nBecause the truth won’t disappear. No amount of lies can change it.  \n\nIt’s over.\n\n<a href=\"https://imgflip.com/i/9ydeh5\"><img src=\"https://i.imgflip.com/9ydeh5.jpg\" title=\"made at imgflip.com\"/></a><div><a href=\"https://imgflip.com/memegenerator\">from Imgflip Meme Generator</a></div>\n\n\nThe Bilpcoin team brings these truths not out of malice but necessity. We have no need to fabricate lies or cloak our intentions CALL US WHAT YOU LIKE —for the facts speak loudly enough on their own. What we present here is not conjecture but reality, laid bare for anyone willing to see. \n\n<a href=\"https://imgflip.com/i/9y9ntr\"><img src=\"https://i.imgflip.com/9y9ntr.jpg\" title=\"made at imgflip.com\"/></a><div><a href=\"https://imgflip.com/memegenerator\">from Imgflip Meme Generator</a></div>\n\n@themarkymark & Co we urge you once more: **STOP**. Stop hiding behind tactics that harm others. Stop clinging to practices that erode trust within the Hive community. Let the truth stand—not because we proclaim it, but because it exists independent of any one person’s approval or disdain.  \n\n\n<a href=\"https://imgflip.com/i/9x8g1h\"><img src=\"https://i.imgflip.com/9x8g1h.jpg\" title=\"made at imgflip.com\"/></a><div><a href=\"https://imgflip.com/memegenerator\">from Imgflip Meme Generator</a></div>\n\n**TURN OFF THE BUILDAWHALE SCAM FARM**  \n- **STOP THE BAD DOWNVOTES**  \n- **STOP PLAYING WITH PEOPLE’S LIVELIHOODS**  \n\n\n### Key Issues That Demand Immediate Attention:  \nThe problems are glaring, undeniable, and corrosive to the Hive ecosystem. They must be addressed without delay:  \n- **Downvote abuse**  \n- **Farming schemes**  \n- **Speaking disrespectfully to others**  \n- **Encouraging people to avoid certain users out of personal dislike**  \n- **Self-voting with alt accounts**  \n- **Self-funding projects through self-votes**  \n- **Promoting games that don’t even exist** (LOL)  \n\nThese practices harm not just individual users—they undermine the very foundation of Hive, eroding trust and poisoning the community. Such actions are unethical and outright destructive.  \n\n---\n\n### @buildawhale Wallet:  \n- **HIVE (Primary Token):** 0.012  \n- **Staked HIVE (HP):** 66,400.611  \n- **Total HP:** 2,421,539.226  \n- **Delegated HIVE:** +2,355,138.615 HP  \n  - Received: **2,355,080 HP from @blocktrades** (Aug 16, 2020)  \n\n### @usainvote Wallet:  \n- **HIVE (Primary Token):** 0.066  \n- **Staked HIVE (HP):** 138,123.296  \n- **Total HP:** 715,745.407  \n- **Delegated HIVE:** +577,622.111 HP  \n  - Received: **577,622 HP from @blocktrades** (Aug 16, 2020)  \n\n[@buildawhale/wallet](https://peakd.com/@buildawhale/wallet) | [@usainvote/wallet](https://peakd.com/@usainvote/wallet)  \n\n---\n\n### @ipromote Wallet:  \n- **Author Rewards:** 2,181.16  \n- **Curation Rewards:** 4,015.61  \n- **Staked HIVE (HP):** 0.00  \n- **Rewards/Stake Co-efficient (KE):** NaN  \n\n- **HIVE:** 25,203.749  \n- **Staked HIVE (HP):** 0.000  \n- **Delegated HIVE:** 0.000  \n- **Estimated Account Value:** $6,946.68  \n\n**Recent Activity:**  \n- Sent to alpha-5,196.000 HIVE (21 hours ago)  \n- Sent to hiveswap-1,000.000 HIVE (2 days ago)  \n- Withdraw vesting from @proposalalert to @ipromote 0.447 HIVE (3 days ago)  \n- Received from proposalalert 4.003 HIVE (5 days ago)  \n- Received from themarkymark 1,775.684 HIVE (9 days ago)  \n- Sent to alpha-4,245.000 HIVE (9 days ago)  \n- Received from themarkymark 4,280.527 HIVE (17 days ago)  \n\n---\n\n### @leovoter Wallet:  \n- **Author Rewards:** 194.75  \n- **Curation Rewards:** 193.88  \n- **Staked HIVE (HP):** 0.00  \n- **Rewards/Stake Co-efficient (KE):** **388,632.00** *(Suspiciously High)*  \n\n- **HIVE:** 0.000  \n- **Staked HIVE (HP):** 0.001  \n- **Total:** 16.551  \n- **Delegated HIVE:** +16.550  \n\n**Recent Activity:**  \n- Withdraw vesting from @leovoter to @ipromote 0.053 HIVE (Sep 29, 2024)  \n- Withdraw vesting from @leovoter to @ipromote 0.053 HIVE (Sep 22, 2024)  \n- Withdraw vesting from @leovoter to @ipromote 0.053 HIVE (Sep 15, 2024)  \n- Withdraw vesting from @leovoter to @ipromote 0.053 HIVE (Sep 8, 2024)  \n- Withdraw vesting from @leovoter to @ipromote 0.053 HIVE (Sep 1, 2024)  \n\n---\n\n### @abide Wallet:  \n**Recent Activity:**  \n- Sent to ipromote -2,459.000 HIVE (22 days ago)  \n- Sent to ipromote -2,486.200 HIVE (Apr 1, 2025)  \n- Received from yabapmatt 20,000.000 HIVE (Apr 1, 2025)  \n- Sent to ipromote -2,130.400 HIVE (Mar 8, 2025)  \n- Sent to ipromote -2,248.000 HIVE (Feb 2, 2025)  \n- Sent to yabapmatt -5,000.000 HIVE (Jan 25, 2025)  \n\n---\n\n### @proposalalert Wallet:  \n- **Author Rewards:** 639.99  \n- **Curation Rewards:** 0.00  \n- **Staked HIVE (HP):** 6.03  \n- **Rewards/Stake Co-efficient (KE):** 106.12  \n\n**Recent Activity:**  \n- Withdraw vesting from @proposalalert to @ipromote 0.447 HIVE (3 days ago)  \n- Sent to ipromote -4.003 HIVE (5 days ago)  \n- Sent to themarkymark -0.012 HBD (5 days ago)  \n- Withdraw vesting from @proposalalert to @ipromote 0.447 HIVE (10 days ago)  \n- Withdraw vesting from @proposalalert to @ipromote 0.446 HIVE (17 days ago)  \n\n---\n\n### @stemgeeks Wallet:  \n- **Author Rewards:** 4,391.77  \n- **Curation Rewards:** 304.26  \n- **Staked HIVE (HP):** 0.00  \n- **Rewards/Stake Co-efficient (KE):** **4,696,032.00** *(Extremely Suspicious)*  \n\n**Recent Activity:**  \n- Sent to themarkymark -1.556 HBD (Jun 14, 2024)  \n- Claim rewards: 1.556 HBD, 5.912 HP (Jun 14, 2024)  \n- Withdraw vesting from @stemgeeks to @ipromote 6.160 HIVE (Jun 8, 2024)  \n- Sent to themarkymark -1.601 HBD (Jun 7, 2024)  \n- Withdraw vesting from @stemgeeks to @ipromote 6.157 HIVE (Jun 1, 2024)  \n- Sent to ipromote -1.618 HBD (May 31, 2024)  \n\n---\n\n### @theycallmemarky Wallet:  \n- **Author Rewards:** 458.89  \n- **Curation Rewards:** 0.00  \n- **Staked HIVE (HP):** 0.00  \n- **Rewards/Stake Co-efficient (KE):** **458,886.00** *(Highly Suspicious)*  \n\n**Recent Activity:**  \n- Withdraw vesting from @theycallmemarky to @ipromote 0.728 HIVE (Jan 12, 2025)  \n- Withdraw vesting from @theycallmemarky to @ipromote 0.727 HIVE (Jan 5, 2025)  \n- Withdraw vesting from @theycallmemarky to @ipromote 0.727 HIVE (Dec 29, 2024)  \n- Withdraw vesting from @theycallmemarky to @ipromote 0.727 HIVE (Dec 22, 2024)  \n- Withdraw vesting from @theycallmemarky to @ipromote 0.726 HIVE (Dec 15, 2024)  \n- Withdraw vesting from @theycallmemarky to @ipromote 0.726 HIVE (Dec 8, 2024)  \n- Withdraw vesting from @theycallmemarky to @ipromote 0.725 HIVE (Dec 1, 2024)  \n- Sent to ipromote -9.202 HIVE (Oct 17, 2024)  \n\n---\n\n### @apeminingclub Wallet:  \n- **Author Rewards:** 432.57  \n- **Curation Rewards:** 2,829.11  \n- **Staked HIVE (HP):** 30.51  \n- **Rewards/Stake Co-efficient (KE):** 106.90  \n\n**Recent Activity:**  \n- Scheduled unstake (power down): ~2.351 HIVE (in 4 days, remaining 7 weeks)  \n- Total Staked HIVE: 1,292.019  \n- Delegated HIVE: +1,261.508  \n  - Received delegations:  \n    - @xykorlz: 624 HP (Jan 26, 2024)  \n    - @bashadow: 111 HP (Sep 20, 2021)  \n    - @dechuck: 104 HP (Mar 10, 2024)  \n    - @hironakamura: 76 HP (Aug 23, 2022)  \n\n- Withdraw vesting from @apeminingclub to @blockheadgames 2.348 HIVE (10 days ago)  \n- Claim rewards: 0.290 HP (10 days ago)\n\n\nhttps://www.publish0x.com/the-dark-side-of-hive\n\n\nhttps://www.publish0x.com/the-dark-side-of-hive/the-cabal-of-hive-a-plutocracy-in-plain-sight-xkdpvmp",
+        "depth": 1,
+        "stats": {
+          "gray": true,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0,
+          "muted_reasons": [
+            3
+          ]
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "bpcvoter1",
+        "payout": 0,
+        "created": "2026-01-01T22:03:33",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T22:03:33",
+        "category": "happynewyear2026",
+        "children": 0,
+        "permlink": "t87hm2",
+        "payout_at": "2026-01-08T22:03:33",
+        "blacklists": [
+          "reputation-0"
+        ],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "tags": [
+            "bilpcoin",
+            "buildawhalescam",
+            "buildawhalefarm",
+            "themarkymarkscam",
+            "themarkymarkfarm",
+            "hurtlockerscam",
+            "hurtlockerfarm",
+            "acidyoscam"
+          ],
+          "image": [
+            "https://img.youtube.com/vi/hwn7H9noMP4/0.jpg",
+            "https://i.imgflip.com/adk0tv.jpg",
+            "https://i.imgflip.com/adk0qt.jpg",
+            "https://i.imgflip.com/9ys0m8.jpg",
+            "https://i.imgflip.com/9ypi3u.jpg",
+            "https://i.imgflip.com/9ykhrj.jpg",
+            "https://i.imgflip.com/9ygose.jpg",
+            "https://i.imgflip.com/9ydeh5.jpg",
+            "https://i.imgflip.com/9y9ntr.jpg",
+            "https://i.imgflip.com/9x8g1h.jpg"
+          ],
+          "links": [
+            "https://youtu.be/hwn7H9noMP4\n<p>https://youtu.be/8q3phtmG-Bo\n<p>BPC"
+          ],
+          "users": [
+            "themarkymark",
+            "buildawhale",
+            "hurtlocker",
+            "usainvote",
+            "blocktrades",
+            "ipromote",
+            "proposalalert",
+            "leovoter",
+            "abide",
+            "stemgeeks",
+            "theycallmemarky",
+            "apeminingclub",
+            "xykorlz",
+            "bashadow",
+            "dechuck",
+            "hironakamura",
+            "blockheadgames"
+          ]
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": -12.75,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@sgt-dan/re-hiveio-t87dnm",
+        "body": "Great recap of 2025. Looking forward to what 2026 has in store for our blockchain. Happy new year!",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "sgt-dan",
+        "payout": 0,
+        "created": "2026-01-01T20:45:24",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T20:45:24",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "re-hiveio-t87dnm",
+        "payout_at": "2026-01-08T20:45:24",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2025.12.9",
+          "tags": [
+            "happynewyear2026"
+          ],
+          "image": [],
+          "users": []
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 65.66,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@naath/re-hiveio-t879ts",
+        "body": "Happy New Year, filled with success and high expectations for growth as a community on Hive. Congratulations on all your hard work and achievements.  Best wishes 🤗❤️",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "naath",
+        "payout": 0,
+        "created": "2026-01-01T19:22:42",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T19:22:42",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "re-hiveio-t879ts",
+        "payout_at": "2026-01-08T19:22:42",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2025.12.9",
+          "tags": [
+            "happynewyear2026"
+          ],
+          "image": [],
+          "users": []
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 74.36,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@junaidahmed/t8744r",
+        "body": "Love this blockchain ❤️",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "junaidahmed",
+        "payout": 0,
+        "created": "2026-01-01T17:19:39",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T17:19:39",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "t8744r",
+        "payout_at": "2026-01-08T17:19:39",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 49.69,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@enraizar/re-hiveio-202611t172349754z",
+        "body": "![Happy New Year GIF by Vinnie Camilleri](https://media1.giphy.com/media/v1.Y2lkPTRmYTg2NzQzMnlmNXJ0dmFnb2F1d2JzeWZydWZvNmJpdjcxY2N1dXI2ejllZjcwNiZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/8VlHDlVE7XFkmhSJzZ/200.gif)",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "enraizar",
+        "payout": 0,
+        "created": "2026-01-01T16:23:48",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T16:23:48",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "re-hiveio-202611t172349754z",
+        "payout_at": "2026-01-08T16:23:48",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/4.3.4-vision",
+          "tags": [
+            "happynewyear2026",
+            "hive",
+            "ecosystem"
+          ],
+          "format": "markdown+html"
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 70.21,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@tesmoforia/re-hiveio-t86w8q",
+        "body": "Happy New Year, everyone! Congratulations on so many wonderful projects. May your success continue and may 2026 be filled with prosperity and an abundance of good things 🐝 🥂 🎊\n\nhttps://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGJnZzBhYjRzamdlbDc0NTZ3cmhweDB0YXkzOHNubzdyNDg2MDYxayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/bOaaSaE2Tkn1UnJAVc/giphy.gif",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "tesmoforia",
+        "payout": 0,
+        "created": "2026-01-01T14:29:15",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T14:29:15",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "re-hiveio-t86w8q",
+        "payout_at": "2026-01-08T14:29:15",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2025.12.9",
+          "tags": [
+            "happynewyear2026"
+          ],
+          "image": [
+            "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGJnZzBhYjRzamdlbDc0NTZ3cmhweDB0YXkzOHNubzdyNDg2MDYxayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/bOaaSaE2Tkn1UnJAVc/giphy.gif"
+          ],
+          "users": []
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 75.18,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@thetroublenotes/re-hiveio-t86oei",
+        "body": "Happy New Year Hivers! Another great year together and the building continues. Looking forward to what 2026 brings. Hive on!",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "thetroublenotes",
+        "payout": 0.021,
+        "created": "2026-01-01T11:39:57",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T11:39:57",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "re-hiveio-t86oei",
+        "payout_at": "2026-01-08T11:39:57",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 184095454798,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "steevc",
+            "rshares": 184095454798
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2025.12.9",
+          "tags": [
+            "happynewyear2026"
+          ],
+          "image": [],
+          "users": []
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 73.03,
+        "author_payout_value": "0.010 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.011 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@gabrielatravels/re-hiveio-t86m0x",
+        "body": "It’s impressive to see how much ground Hive covered in 2025. Between the tech upgrades, HiveFest, and the growing ecosystem of dApps, the platform really showed what community-driven development can achieve. Ending the year with that kind of momentum makes Hive feel less like just a blockchain and more like a living, evolving ecosystem shaped by the people building on it.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "gabrielatravels",
+        "payout": 0,
+        "created": "2026-01-01T10:48:33",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T10:48:33",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "re-hiveio-t86m0x",
+        "payout_at": "2026-01-08T10:48:33",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2025.12.9",
+          "tags": [
+            "happynewyear2026"
+          ],
+          "image": [],
+          "users": []
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 78.6,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@snowli/t86le7",
+        "body": "happy new year💐",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "snowli",
+        "payout": 0,
+        "created": "2026-01-01T10:34:57",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T10:34:57",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "t86le7",
+        "payout_at": "2026-01-08T10:34:57",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 70.41,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@arlettemsalase/re-hiveio-t86k4m",
+        "body": "This year has been amazing for Hive, and I am confident that with all these incredible projects + those yet to come, Hive will continue to reach wonderful places in 2026.\n\nHappy New Year, dear blockchain, to you and all the users who make life here possible.\n\n![untitled.gif](https://media.tenor.com/gxRI3X6AIWgAAAAC/new-year-happy-new-year.gif)",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "arlettemsalase",
+        "payout": 0,
+        "created": "2026-01-01T10:07:36",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T10:07:36",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "re-hiveio-t86k4m",
+        "payout_at": "2026-01-08T10:07:36",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2025.12.9",
+          "tags": [
+            "happynewyear2026"
+          ],
+          "image": [
+            "https://media.tenor.com/gxRI3X6AIWgAAAAC/new-year-happy-new-year.gif"
+          ],
+          "users": []
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 71.95,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@annepink/t86fae",
+        "body": "Happy New Year 2026🥳🍾\nWishing our HIVE community continued success and prosperity💪🏻",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "annepink",
+        "payout": 0,
+        "created": "2026-01-01T08:23:03",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T08:23:03",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "t86fae",
+        "payout_at": "2026-01-08T08:23:03",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 78.47,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@cryptoshots.nft/re-hiveio-t86efu",
+        "body": "# CRYPTO SHOTS\n\n[Crypto Shots](https://crypto-shots.com) had a huge year of development. A **massive wave of bug fixes, tweaks, and gameplay improvements** was shipped across the entire PvP Shooter experience.\n**Four new game modes** were introduced: **Elimination**, **Covert Point**, **Kill Confirmed**, and **Gun Race**, alongside better onboarding with **Web2 login**, a balanced **life boost for struggling players**, a stronger **anti-cheat detection system**, and the release of the **PC build**.\n\nCompetitive play was expanded with **daily themed tournaments**, a **fairer Tournament Rewards System**, and **full match customization** — letting streamers and hosts control formats like **shields on/off**, **life recharge on/off**, **healthshot-only modes**, and much more.\n**UI/UX improvements** were delivered in key areas like the **Lobby**, **Match Details**, and **Scoreboards** — with more upgrades coming in the future.\n\nBeyond the PvP shooter, the Crypto Shots ecosystem continued to grow: ongoing development of a new game mode for **PvE**, improving the **NFT Marketplace** (**stability, security, UX**), shipping updates for **Crypto Chess** and the **Karina tipping bot**, releasing **automated earning reports** as **open-source**, and making cross-chain integrations easier — with the **ImmutableX integration** **now live**. Efforts also went into **infrastructure**, **DePIN adoption**, and the adoption of **agentic AI workflows** to speed up development.\n\nOn the growth side, Crypto Shots represented Hive through initiatives like **NFtopia**, the **SPS Burnathon Marathon**, and a new **partnership with Splinterlands** and the **SPS DAO** to onboard players from defunct web3 games onto Hive.\nThank you to our community for the support — **the next two years are going to be fire!** 😎\n\nhttps://files.peakd.com/file/peakd-hive/cryptoshots.nft/23tkhyuBqjqNxLsVajAKP33EtRiE9PK6VPLXqParEGJrbxfxtfyU9wCBFdpn2MY45ijgt.png 😎",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 1,
+          "total_votes": 5
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "cryptoshots.nft",
+        "payout": 0.384,
+        "created": "2026-01-01T08:04:42",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-03T20:50:45",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "re-hiveio-t86efu",
+        "payout_at": "2026-01-08T08:04:42",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 3074703326742,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "firstamendment",
+            "rshares": -133570487578
+          },
+          {
+            "voter": "niallon11",
+            "rshares": 2453514035223
+          },
+          {
+            "voter": "marcocasario",
+            "rshares": 672494128582
+          },
+          {
+            "voter": "keys-defender",
+            "rshares": 82265650515
+          },
+          {
+            "voter": "endhivewatchers",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "tags": "happynewyear2026"
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 64.64,
+        "author_payout_value": "0.192 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.192 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@kgakakillerg/t86dwr",
+        "body": "Happy new year everyone 🥂 I really hope that we can all come together to deal with all the real problems that need fixed on Hive 🥂🥂🥂🍻🥂🥂🥂🥂🥂🥂🥂🥂🥂🥂🥂🎊🎊🎊🎊🎊🎉🎉🎉🎉🎉🎉",
+        "depth": 1,
+        "stats": {
+          "gray": true,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0,
+          "muted_reasons": [
+            3
+          ]
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "kgakakillerg",
+        "payout": 0,
+        "created": "2026-01-01T07:53:18",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T07:53:18",
+        "category": "happynewyear2026",
+        "children": 2,
+        "permlink": "t86dwr",
+        "payout_at": "2026-01-08T07:53:18",
+        "blacklists": [
+          "reputation-0"
+        ],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": -14.83,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building#@love5200/t86bzi",
+        "body": "Happy New Year and best wishes to all!",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Reflects on 2025: A Year of Relentless Building",
+        "author": "love5200",
+        "payout": 0,
+        "created": "2026-01-01T07:13:27",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-01T07:13:27",
+        "category": "happynewyear2026",
+        "children": 1,
+        "permlink": "t86bzi",
+        "payout_at": "2026-01-08T07:13:27",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "hiveio",
+        "parent_permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "author_reputation": 76.23,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

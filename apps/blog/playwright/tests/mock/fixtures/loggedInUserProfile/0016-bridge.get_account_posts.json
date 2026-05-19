@@ -1,0 +1,34 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_account_posts",
+    "params": {
+      "sort": "payout",
+      "account": "hiveio",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "0e794d76c775f457",
+  "method": "bridge.get_account_posts",
+  "params": {
+    "sort": "payout",
+    "account": "hiveio",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

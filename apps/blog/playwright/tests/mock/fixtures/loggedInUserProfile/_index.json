@@ -1,0 +1,19 @@
+{
+  "testName": "loggedInUserProfile",
+  "recordedAt": "2026-05-19T07:43:27.139Z",
+  "totalRequests": 116,
+  "savedFixtures": 29,
+  "duplicatesSkipped": 87,
+  "methods": {
+    "database_api.find_accounts": 21,
+    "bridge.get_profile": 21,
+    "database_api.get_dynamic_global_properties": 14,
+    "GET /hivesense-api": 7,
+    "bridge.unread_notifications": 7,
+    "rc_api.find_rc_accounts": 7,
+    "condenser_api.get_following": 14,
+    "bridge.get_account_posts": 7,
+    "bridge.get_follow_list": 6,
+    "database_api.list_votes": 12
+  }
+}
