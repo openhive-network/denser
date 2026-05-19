@@ -1,0 +1,20 @@
+{
+  "testName": "loggedInMyFeeds",
+  "recordedAt": "2026-05-19T07:30:02.110Z",
+  "totalRequests": 66,
+  "savedFixtures": 15,
+  "duplicatesSkipped": 51,
+  "methods": {
+    "bridge.list_communities": 8,
+    "bridge.get_ranked_posts": 6,
+    "bridge.list_all_subscriptions": 9,
+    "GET /hivesense-api": 7,
+    "database_api.find_accounts": 10,
+    "rc_api.find_rc_accounts": 5,
+    "database_api.get_dynamic_global_properties": 6,
+    "bridge.get_profile": 3,
+    "bridge.get_follow_list": 5,
+    "bridge.unread_notifications": 6,
+    "bridge.get_account_posts": 1
+  }
+}
