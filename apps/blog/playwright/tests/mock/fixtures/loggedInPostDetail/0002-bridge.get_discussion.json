@@ -1,0 +1,2311 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_discussion",
+    "params": {
+      "author": "gtg",
+      "permlink": "hive-hardfork-25-jump-starter-kit",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "ca64602d4e0fa5c8",
+  "method": "bridge.get_discussion",
+  "params": {
+    "author": "gtg",
+    "permlink": "hive-hardfork-25-jump-starter-kit",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "gtg/qux3zv": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/qux3zv",
+        "body": "```\naccount-history-rocksdb-track-account-range = [\"binance-hot\",\"binance-hot\"]\naccount-history-rocksdb-track-account-range = [\"bittrex\",\"bittrex\"]\naccount-history-rocksdb-track-account-range = [\"blocktrades\",\"blocktrades\"]\naccount-history-rocksdb-track-account-range = [\"deepcrypto8\",\"deepcrypto8\"]\naccount-history-rocksdb-track-account-range = [\"huobi-pro\",\"huobi-pro\"]\n```",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0,
+        "created": "2021-06-18T22:04:48",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-18T22:04:48",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "qux3zv",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T22:04:48",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "blocktrades",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "quwxu7",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/qux42q": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/qux42q",
+        "body": "Thank you! :-)",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0,
+        "created": "2021-06-18T22:06:33",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-18T22:06:33",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "qux42q",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T22:06:33",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "hivetrending",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-quwzj1",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/qux44c": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/qux44c",
+        "body": "Great to hear, thank you! :-)",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0,
+        "created": "2021-06-18T22:07:33",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-18T22:07:33",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "qux44c",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T22:07:33",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "sicarius",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-qux0er",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/qux45m": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/qux45m",
+        "body": "Python skills are enough to write HAF dApps :-) Soon in your blockchain.",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0,
+        "created": "2021-06-18T22:08:12",
+        "reblogs": 0,
+        "replies": [
+          "steevc/re-gtg-quy8ps",
+          "beerlover/re-gtg-qux45m-20210619t124539250z"
+        ],
+        "updated": "2021-06-18T22:08:12",
+        "category": "hive-160391",
+        "children": 2,
+        "permlink": "qux45m",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T22:08:12",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "steevc",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-quwy4z",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/quy0j6": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/quy0j6",
+        "body": "> Currently this platform is very disappointing in the social aspect. \n\nSounds like you are talking about the Earth. True, true. ;-)\n\nWhile HF25 improves Hive a lot, including better incentives for interaction, there's nothing that code could change a lot when it comes to human behavior, in the end it's our - users - job.",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0.024,
+        "created": "2021-06-19T09:47:30",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-19T09:47:30",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "quy0j6",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T09:47:30",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 110058564238,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gamer00",
+            "rshares": 48467578657
+          },
+          {
+            "voter": "dustbunny",
+            "rshares": 61590985581
+          }
+        ],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "xplosive",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-2021618t2145822z",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.012 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.012 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/quy0mk": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/quy0mk",
+        "body": "Nothing was stopping users before from voting on comments, other than maybe greed or sloth.",
+        "depth": 4,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 5
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 1.517,
+        "created": "2021-06-19T09:49:39",
+        "reblogs": 0,
+        "replies": [
+          "sn0n/re-gtg-quy0sn",
+          "steevc/re-gtg-quy6ft"
+        ],
+        "updated": "2021-06-19T09:49:39",
+        "category": "hive-160391",
+        "children": 3,
+        "permlink": "quy0mk",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T09:49:39",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 4729164141338,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "roelandp",
+            "rshares": 4383767257430
+          },
+          {
+            "voter": "steevc",
+            "rshares": 85932638234
+          },
+          {
+            "voter": "gamer00",
+            "rshares": 48770231829
+          },
+          {
+            "voter": "sn0n",
+            "rshares": 163998465874
+          },
+          {
+            "voter": "ryzeonline",
+            "rshares": 46695547971
+          }
+        ],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "sn0n",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-steevc-quxgea",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.764 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.753 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/quy0qj": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/quy0qj",
+        "body": "Depends on naming convention, nonetheless cat's words still holds :-)",
+        "depth": 3,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0,
+        "created": "2021-06-19T09:51:54",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-19T09:51:54",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "quy0qj",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T09:51:54",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "xplosive",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-ciarascat-2021619t05248186z",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/quy0tw": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/quy0tw",
+        "body": "It will be (hopefully) executed ;-)",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0,
+        "created": "2021-06-19T09:53:57",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-19T09:53:57",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "quy0tw",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T09:53:57",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 64783938993,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "deepresearch",
+            "rshares": 63626516447
+          },
+          {
+            "voter": "chunchun123",
+            "rshares": 1157422546
+          }
+        ],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "chunchun123",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "quxsi8",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/quy1c3": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/quy1c3",
+        "body": "IK,R?\n\n<center>https://media.giphy.com/media/1xkMJIvxeKiDS/giphy.gif\n<sup>- Sloth voting for comments, Hive, 2021, zootopizied.</sup></center>",
+        "depth": 6,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0.024,
+        "created": "2021-06-19T10:04:57",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-19T10:04:57",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "quy1c3",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T10:04:57",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 109953134650,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gamer00",
+            "rshares": 48617582868
+          },
+          {
+            "voter": "dustbunny",
+            "rshares": 61335551782
+          }
+        ],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "image": [
+            "https://media.giphy.com/media/1xkMJIvxeKiDS/giphy.gif"
+          ]
+        },
+        "parent_author": "sn0n",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-quy0sn",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.012 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.012 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/quy9va": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/quy9va",
+        "body": "30th Jun, 14:00 UTC",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0,
+        "created": "2021-06-19T13:09:09",
+        "reblogs": 0,
+        "replies": [
+          "revisesociology/re-gtg-quyqvx"
+        ],
+        "updated": "2021-06-19T13:09:09",
+        "category": "hive-160391",
+        "children": 5,
+        "permlink": "quy9va",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T13:09:09",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "revisesociology",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-quy684",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/quyxws": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/quyxws",
+        "body": "No, there's no change in power down time lock in the upcoming HF.",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0.06,
+        "created": "2021-06-19T21:48:30",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-19T21:48:30",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "quyxws",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T21:48:30",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 253891351314,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gamer00",
+            "rshares": 253891351314
+          }
+        ],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "tcpaikano",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "quydvi",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.030 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.030 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/quyyiu": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/quyyiu",
+        "body": "Well, if everything will go as planned, assuming that all witnesses will vote for approving it.",
+        "depth": 4,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0,
+        "created": "2021-06-19T22:01:42",
+        "reblogs": 0,
+        "replies": [
+          "revisesociology/re-gtg-quzszz"
+        ],
+        "updated": "2021-06-19T22:01:42",
+        "category": "hive-160391",
+        "children": 3,
+        "permlink": "quyyiu",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T22:01:42",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "revisesociology",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-quyqvx",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/qv2pwb": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/qv2pwb",
+        "body": "Well...\nhttps://media.giphy.com/media/WPtzThAErhBG5oXLeS/giphy.gif\nI can think of a few things...\n;-)",
+        "depth": 6,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0,
+        "created": "2021-06-21T22:45:48",
+        "reblogs": 0,
+        "replies": [
+          "revisesociology/re-gtg-qv3dif"
+        ],
+        "updated": "2021-06-21T22:45:48",
+        "category": "hive-160391",
+        "children": 1,
+        "permlink": "qv2pwb",
+        "community": "hive-160391",
+        "payout_at": "2021-06-28T22:45:48",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "image": [
+            "https://media.giphy.com/media/WPtzThAErhBG5oXLeS/giphy.gif"
+          ]
+        },
+        "parent_author": "revisesociology",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-quzszz",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/qvipmy": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/qvipmy",
+        "body": "So far so good...",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0.097,
+        "created": "2021-06-30T14:01:48",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-30T14:01:48",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "qvipmy",
+        "community": "hive-160391",
+        "payout_at": "2021-07-07T14:01:48",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 198100454876,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 198100454876
+          }
+        ],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.048 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.049 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/qvkgxv": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@gtg/qvkgxv",
+        "body": "HF25 changed some rules regarding reward algorithms so I guess people might be trying to benefit from a transition period (pre HF-post with post-HF rules), it might look way off if there are posts with their curation windows where just one or few people voted for, but it will smooth out  when more peopl e cast their votes.",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 0.077,
+        "created": "2021-07-01T12:49:09",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-07-01T12:49:09",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "qvkgxv",
+        "community": "hive-160391",
+        "payout_at": "2021-07-08T12:49:09",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 160155952881,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "moemanmoesly",
+            "rshares": 160155952881
+          }
+        ],
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "moemanmoesly",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-qvkdc5",
+        "author_reputation": 76.01,
+        "author_payout_value": "0.038 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.039 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "tcpaikano/quydvi": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@tcpaikano/quydvi",
+        "body": "I hope that this HF25 brings with it the reduction of the powerdown from 13 to 4 weeks, as it is difficult to wait long to withdraw some credit in an emergency and for investors to keep an eye on the HIVE community in general, so they look more on investing some of your money in the community.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "tcpaikano",
+        "payout": 0.08,
+        "created": "2021-06-19T14:37:06",
+        "reblogs": 0,
+        "replies": [
+          "gtg/quyxws"
+        ],
+        "updated": "2021-06-19T14:37:06",
+        "category": "hive-160391",
+        "children": 1,
+        "permlink": "quydvi",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T14:37:06",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 330675431803,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 233795479681
+          },
+          {
+            "voter": "tcpaikano",
+            "rshares": 96879952122
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 64.27,
+        "author_payout_value": "0.040 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.040 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "blocktrades/quwxu7": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@blocktrades/quwxu7",
+        "body": "What's the list of exchange accounts currently tracked by the exchange snapshot?",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "blocktrades",
+        "payout": 0.052,
+        "created": "2021-06-18T19:51:42",
+        "reblogs": 0,
+        "replies": [
+          "gtg/qux3zv"
+        ],
+        "updated": "2021-06-18T19:51:42",
+        "category": "hive-160391",
+        "children": 1,
+        "permlink": "quwxu7",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T19:51:42",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 225807187950,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 203631275914
+          },
+          {
+            "voter": "denisdenis",
+            "rshares": 22175912036
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 79.79,
+        "author_payout_value": "0.026 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.026 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "chunchun123/quxsi8": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@chunchun123/quxsi8",
+        "body": "What will happen to the hive hardfork? Thx",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "chunchun123",
+        "payout": 0.054,
+        "created": "2021-06-19T06:54:15",
+        "reblogs": 0,
+        "replies": [
+          "gtg/quy0tw"
+        ],
+        "updated": "2021-06-19T06:54:15",
+        "category": "hive-160391",
+        "children": 1,
+        "permlink": "quxsi8",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T06:54:15",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 228079424589,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 228079424589
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 300,
+            "account": "cryptobrewmaster"
+          },
+          {
+            "weight": 100,
+            "account": "hiveonboard"
+          },
+          {
+            "weight": 100,
+            "account": "theycallmedan"
+          }
+        ],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 41.26,
+        "author_payout_value": "0.027 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.027 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "sn0n/re-gtg-quy0sn": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@sn0n/re-gtg-quy0sn",
+        "body": "Those damn greedy sloths!!! ",
+        "depth": 5,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "sn0n",
+        "payout": 0.065,
+        "created": "2021-06-19T09:53:12",
+        "reblogs": 0,
+        "replies": [
+          "gtg/quy1c3"
+        ],
+        "updated": "2021-06-19T09:53:12",
+        "category": "hive-160391",
+        "children": 1,
+        "permlink": "re-gtg-quy0sn",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T09:53:12",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 276958341497,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 228416468716
+          },
+          {
+            "voter": "gamer00",
+            "rshares": 48541872781
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "quy0mk",
+        "author_reputation": 64.74,
+        "author_payout_value": "0.032 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.033 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "steevc/re-gtg-quwy4z": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@steevc/re-gtg-quwy4z",
+        "body": "Added a couple of stars on Github for what difference it makes. I'm having fun with some Python scripts around Hive, but not really up to working on the core system. Respect for those who can.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 3
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "steevc",
+        "payout": 0.05,
+        "created": "2021-06-18T19:58:12",
+        "reblogs": 0,
+        "replies": [
+          "gtg/qux45m"
+        ],
+        "updated": "2021-06-18T19:58:12",
+        "category": "hive-160391",
+        "children": 3,
+        "permlink": "re-gtg-quwy4z",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T19:58:12",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 213953293510,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 203552813210
+          },
+          {
+            "voter": "xplosive",
+            "rshares": 8645609063
+          },
+          {
+            "voter": "chunchun123",
+            "rshares": 1754871237
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 80.18,
+        "author_payout_value": "0.025 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.025 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "steevc/re-gtg-quy6ft": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@steevc/re-gtg-quy6ft",
+        "body": "Well I've done it all along since my vote was worth something. Hive should be social, so I will encourage engagement.",
+        "depth": 5,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "steevc",
+        "payout": 0.064,
+        "created": "2021-06-19T11:55:06",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-19T11:55:06",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "re-gtg-quy6ft",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T11:55:06",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 269669064077,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 220975649792
+          },
+          {
+            "voter": "gamer00",
+            "rshares": 48693414285
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "quy0mk",
+        "author_reputation": 80.18,
+        "author_payout_value": "0.032 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.032 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "steevc/re-gtg-quy8ps": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@steevc/re-gtg-quy8ps",
+        "body": "I shall HAF to try that. Been having fun with Beem and HiveSQL.\n\n!BEER",
+        "depth": 3,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "steevc",
+        "payout": 0.069,
+        "created": "2021-06-19T12:44:15",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-19T12:44:15",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "re-gtg-quy8ps",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T12:44:15",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 292888832737,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 220938415577
+          },
+          {
+            "voter": "skepticology",
+            "rshares": 71950417160
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "qux45m",
+        "author_reputation": 80.18,
+        "author_payout_value": "0.034 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.035 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "erialos/re-gtg-qxzw2i": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@erialos/re-gtg-qxzw2i",
+        "body": "Hello GTG, I've been hanging out in the HIVE discord asking some questions about setting up a witness and ah api and seed node.  All though I am a little confused on a few things and I was hoping you might be able to clear them up for me?  I do have a few questions sitting in the discord when/if you have time as well.\n\nSo I was going to have my witness p2p-seed connect to the AH API node that I will also setup.  I understand that with a pure witness node, you don't want the p2p endpoint active.  On the AH API node, I guess the way how I undertood it is that it would be viewed as a standalone public api node?  Would you just put in your uri for the API node in it's own config like: \np2p-seed-node = api.erialos.me\n?\n\nMy intentions are to help the hive network by adding a US based API public node and help with splinterlands api calls in the US.  Splinterlands has motivated me to change quite a bit actually.  I am currently a 8GPU miner and would like to stop doing that in favor of completely supporting HIVE.  The coin i mine, the community is lacking and the dev team has yet to respond to my github inquires about issues I am faced with.  My view of the hive community and it's involvement has shown me what I am missing out on.  I'd much rather be a part of an active community than an inactive one.\n\nLooking forward to hearing from you sir!  Thank you.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "erialos",
+        "payout": 0,
+        "created": "2021-08-17T17:47:15",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-08-17T17:47:15",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "re-gtg-qxzw2i",
+        "community": "hive-160391",
+        "payout_at": "2021-08-24T17:47:15",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.07.5",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 37.35,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "sn0n/re-steevc-quxgea": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@sn0n/re-steevc-quxgea",
+        "body": "Voting on comments... Now that's a goal worth pursuing! ",
+        "depth": 3,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 3
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "sn0n",
+        "payout": 0.096,
+        "created": "2021-06-19T02:32:33",
+        "reblogs": 0,
+        "replies": [
+          "gtg/quy0mk"
+        ],
+        "updated": "2021-06-19T02:32:33",
+        "category": "hive-160391",
+        "children": 4,
+        "permlink": "re-steevc-quxgea",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T02:32:33",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 397389212143,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 228064313011
+          },
+          {
+            "voter": "steevc",
+            "rshares": 120478591256
+          },
+          {
+            "voter": "gamer00",
+            "rshares": 48846307876
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "steevc",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-xplosive-2021618t205459739z",
+        "author_reputation": 64.74,
+        "author_payout_value": "0.048 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.048 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "roelandp/re-gtg-qv66u2": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@roelandp/re-gtg-qv66u2",
+        "body": "thanks!",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "roelandp",
+        "payout": 0.117,
+        "created": "2021-06-23T19:44:27",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-23T19:44:27",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "re-gtg-qv66u2",
+        "community": "hive-160391",
+        "payout_at": "2021-06-30T19:44:27",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 223504766152,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 223504766152
+          },
+          {
+            "voter": "ordosjc",
+            "rshares": 0
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 77.72,
+        "author_payout_value": "0.058 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.059 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "sicarius/re-gtg-qux0er": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@sicarius/re-gtg-qux0er",
+        "body": "Did my 'ol due diligence and threw a star and fork at the openhive repo. I am excited for HF25 and I'm prepped to upgrade the sicarius witness (https://vote.hive.uno/@sicarius) just about as soon as it rolls out! \n\nAlso added support for some of the new ops and features to beempy in a pending merge request so that the library can be used to interact with some of the new features right away for those who prefer to interact with hive via python. A couple of people also added support in the hive-js library as well from the looks of it. Shaping up to be a pretty smooth rollout!",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 4
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "sicarius",
+        "payout": 0.293,
+        "created": "2021-06-18T20:47:27",
+        "reblogs": 0,
+        "replies": [
+          "gtg/qux44c"
+        ],
+        "updated": "2021-06-18T20:47:27",
+        "category": "hive-160391",
+        "children": 1,
+        "permlink": "re-gtg-qux0er",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T20:47:27",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 1115503279791,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "blocktrades",
+            "rshares": 901313802403
+          },
+          {
+            "voter": "gtg",
+            "rshares": 203499247410
+          },
+          {
+            "voter": "xplosive",
+            "rshares": 8822779787
+          },
+          {
+            "voter": "chunchun123",
+            "rshares": 1867450191
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 53.09,
+        "author_payout_value": "0.146 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.147 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "ciarascat/re-gtg-qux5kb": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@ciarascat/re-gtg-qux5kb",
+        "body": "Hive hard forks are the best hard forks!",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "ciarascat",
+        "payout": 0.053,
+        "created": "2021-06-18T22:38:39",
+        "reblogs": 0,
+        "replies": [
+          "xplosive/re-ciarascat-2021619t05248186z"
+        ],
+        "updated": "2021-06-18T22:38:39",
+        "category": "hive-160391",
+        "children": 2,
+        "permlink": "re-gtg-qux5kb",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T22:38:39",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 228095647955,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 228095647955
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 43.77,
+        "author_payout_value": "0.026 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.027 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "intoy.bugoy/re-gtg-qy7ta5": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@intoy.bugoy/re-gtg-qy7ta5",
+        "body": "I know its too late to comment. But I can't help because its really an informative.thank you for sharing",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "intoy.bugoy",
+        "payout": 0.201,
+        "created": "2021-08-22T00:18:33",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-08-22T00:18:33",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "re-gtg-qy7ta5",
+        "community": "hive-160391",
+        "payout_at": "2021-08-29T00:18:33",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 257442625221,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 257442625221
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.07.5",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 72.51,
+        "author_payout_value": "0.100 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.101 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "hivetrending/re-gtg-quwzj1": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@hivetrending/re-gtg-quwzj1",
+        "body": "Starred and Forked both GitHub repos. :)",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "hivetrending",
+        "payout": 0.048,
+        "created": "2021-06-18T20:28:15",
+        "reblogs": 0,
+        "replies": [
+          "gtg/qux42q"
+        ],
+        "updated": "2021-06-18T20:28:15",
+        "category": "hive-160391",
+        "children": 1,
+        "permlink": "re-gtg-quwzj1",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T20:28:15",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 203519059791,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 203519059791
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 69.4,
+        "author_payout_value": "0.024 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.024 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "moemanmoesly/re-gtg-qvkdc5": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@moemanmoesly/re-gtg-qvkdc5",
+        "body": "This account was created today how is it earning so much in curation rewrds?!? https://hiveblocks.com/@derbauarbeiter?page=10",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "moemanmoesly",
+        "payout": 0.096,
+        "created": "2021-07-01T11:31:15",
+        "reblogs": 0,
+        "replies": [
+          "gtg/qvkgxv"
+        ],
+        "updated": "2021-07-01T11:31:15",
+        "category": "hive-160391",
+        "children": 1,
+        "permlink": "re-gtg-qvkdc5",
+        "community": "hive-160391",
+        "payout_at": "2021-07-08T11:31:15",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 198718010456,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 198718010456
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.5",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 69.88,
+        "author_payout_value": "0.048 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.048 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "revisesociology/re-gtg-quy684": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@revisesociology/re-gtg-quy684",
+        "body": "Cheers! Any idea when the Fork will be complete?!?\n\n",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "revisesociology",
+        "payout": 0.052,
+        "created": "2021-06-19T11:50:30",
+        "reblogs": 0,
+        "replies": [
+          "gtg/quy9va"
+        ],
+        "updated": "2021-06-19T11:50:30",
+        "category": "hive-160391",
+        "children": 6,
+        "permlink": "re-gtg-quy684",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T11:50:30",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 220909997228,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 220909997228
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 82.14,
+        "author_payout_value": "0.026 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.026 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "revisesociology/re-gtg-quyqvx": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@revisesociology/re-gtg-quyqvx",
+        "body": "Hey thanks, very exact!",
+        "depth": 3,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "revisesociology",
+        "payout": 0,
+        "created": "2021-06-19T19:16:48",
+        "reblogs": 0,
+        "replies": [
+          "gtg/quyyiu"
+        ],
+        "updated": "2021-06-19T19:16:48",
+        "category": "hive-160391",
+        "children": 4,
+        "permlink": "re-gtg-quyqvx",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T19:16:48",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "quy9va",
+        "author_reputation": 82.14,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "revisesociology/re-gtg-quzszz": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@revisesociology/re-gtg-quzszz",
+        "body": "Oh I'm sure everything. will go to plan! \n\nI mean what could Possibly go wrong?!?",
+        "depth": 5,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "revisesociology",
+        "payout": 0.056,
+        "created": "2021-06-20T09:00:03",
+        "reblogs": 0,
+        "replies": [
+          "gtg/qv2pwb"
+        ],
+        "updated": "2021-06-20T09:00:03",
+        "category": "hive-160391",
+        "children": 2,
+        "permlink": "re-gtg-quzszz",
+        "community": "hive-160391",
+        "payout_at": "2021-06-27T09:00:03",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 228825702142,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 228825702142
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "quyyiu",
+        "author_reputation": 82.14,
+        "author_payout_value": "0.028 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.028 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "revisesociology/re-gtg-qv3dif": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@revisesociology/re-gtg-qv3dif",
+        "body": "All part of the fun, it'll get there in the end! ",
+        "depth": 7,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "revisesociology",
+        "payout": 0,
+        "created": "2021-06-22T07:15:54",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-22T07:15:54",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "re-gtg-qv3dif",
+        "community": "hive-160391",
+        "payout_at": "2021-06-29T07:15:54",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2021.06.2",
+          "tags": [
+            "hive-160391"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "qv2pwb",
+        "author_reputation": 82.14,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "xplosive/re-gtg-2021618t2145822z": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@xplosive/re-gtg-2021618t2145822z",
+        "body": "Hopefully HF25 will increase the real human interaction.\nCurrently this platform is very disappointing in the social aspect. The average number of comments per post is 2-3, and most of those comments are bot comments.\n\n",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 6
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "xplosive",
+        "payout": 0.132,
+        "created": "2021-06-18T19:45:09",
+        "reblogs": 0,
+        "replies": [
+          "steevc/re-xplosive-2021618t205459739z",
+          "gtg/quy0j6"
+        ],
+        "updated": "2021-06-18T19:45:09",
+        "category": "hive-160391",
+        "children": 7,
+        "permlink": "re-gtg-2021618t2145822z",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T19:45:09",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 533400402874,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 203616666428
+          },
+          {
+            "voter": "steevc",
+            "rshares": 155218231870
+          },
+          {
+            "voter": "gamer00",
+            "rshares": 48391676968
+          },
+          {
+            "voter": "sn0n",
+            "rshares": 124254090350
+          },
+          {
+            "voter": "chunchun123",
+            "rshares": 1829181081
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.0.17-mobile",
+          "tags": [
+            "witness-category",
+            "witness-update",
+            "hf25",
+            "hive",
+            "dev"
+          ],
+          "format": "markdown+html"
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 72.21,
+        "author_payout_value": "0.066 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.066 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "dragokazo/re-gtg-2021620t24432547z": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@dragokazo/re-gtg-2021620t24432547z",
+        "body": "Nice and hard work I see.😉",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "dragokazo",
+        "payout": 0.06,
+        "created": "2021-06-20T00:44:30",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-20T00:44:30",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "re-gtg-2021620t24432547z",
+        "community": "hive-160391",
+        "payout_at": "2021-06-27T00:44:30",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 250019123649,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 250019123649
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.0.18-mobile",
+          "tags": [
+            "witness-category",
+            "witness-update",
+            "hf25",
+            "hive",
+            "dev"
+          ],
+          "format": "markdown+html"
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 69.19,
+        "author_payout_value": "0.030 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.030 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "denisdenis/re-gtg-2021620t95730545z": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@denisdenis/re-gtg-2021620t95730545z",
+        "body": "Nice ;))",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 2
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "denisdenis",
+        "payout": 0.052,
+        "created": "2021-06-20T07:57:30",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-20T07:57:30",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "re-gtg-2021620t95730545z",
+        "community": "hive-160391",
+        "payout_at": "2021-06-27T07:57:30",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 219289253613,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 208257347101
+          },
+          {
+            "voter": "denisdenis",
+            "rshares": 11031906512
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.0.18-mobile",
+          "tags": [
+            "witness-category",
+            "witness-update",
+            "hf25",
+            "hive",
+            "dev"
+          ],
+          "format": "markdown+html"
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 68.59,
+        "author_payout_value": "0.026 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.026 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "gtg/hive-hardfork-25-jump-starter-kit": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit",
+        "body": "Intended for the Hive API node operators, witnesses, and developers.\n\nAt the time of Eclipse release I made a similar post that saved many (hours) of lives, so I’m creating an updated one for the upcoming Hard Fork 25.\n\n<center>https://www.youtube.com/watch?v=mrwgrOhl7Yw</center><sup>Yes, new Hive Hard Fork, new fancy logo reveal.</sup>\n\n# Code\n## GitLab\nhttps://gitlab.syncad.com/hive/hive\nOur core development efforts takes place in a community hosted GitLab repository (thanks @blocktrades). There's Hive core itself, but also many other Hive related software repositories.\n\n## GitHub\nhttps://github.com/openhive-network/hive\nWe use it as a push mirror for GitLab repository, mostly for visibility and decentralization - if you have an account on GitHub please fork at least [hive](https://github.com/openhive-network/hive) and [hivemind](https://github.com/openhive-network/hivemind) and star them if you haven’t done so yet. We haven't paid much attention to it but apparently it's important for some outside metrics.\n\n<center>![star_fork.png](https://images.hive.blog/DQmQbRRrtoTFPZA9QmDRjvswPtaGuXrWXje1WHp9CeeGbV2/star_fork.png)\n<sup>Please click both buttons</sup></center>\n\n# Services\n## API node\nhttps://api.openhive.network\nSoon to be switched to `v1.25.0` but because it’s heavily used in Hive related R&D it might not be your best choice if you are looking for a fast API node without any rate limiting. During the maintenance mode, it will fall back to https://api.hive.blog \n\n## Seed node\n`hived` `v1.25.0` listens on `gtg.openhive.network:2001`\nto use it in your `config.ini` file just add the line:\n```\np2p-seed-node = gtg.openhive.network:2001\n```\nIf you don't have any `p2p-seed-node = ` entries in your config file, built-in defaults will be used (which contains my node too).\n\n# Stuff for download\nTL;DR https://gtg.openhive.network/get\n\n## Binaries\n`./get/bin`contains `hived` and `cli_wallet` binaries built on `Ubuntu 18.04 LTS` which should also run fine on `Ubuntu 20.04 LTS`\n\n## Blocks\n`./get/blockchain`\nAs usual, the `block_log` file, roughly 350GB and counting.\nFor testing needs there's also `block_log.5M` that is limited to first 5 million blocks.\n\n## Snapshots\n\n### API\n`./get/snapshot/api/` contains a relatively recent snapshot of the API node with all the fancy plugins.\nThere’s a snapshot for the upcoming version `v1.25.0` but also for the old one `v1.24.8` if you need to switch back.\nUncompressed snapshot takes roughly 480GB\nThere’s also the `example-api-config.ini` file out there that contains settings compatible with the snapshot.\n\nTo decompress, you can use simply run it through something like: `lbzip2 -dc | tar xv`\n(Using parallel bzip2 on multi-threaded systems might save you a lot of time)\n\nTo use snapshot you need:\n- A `block_log` file, not smaller than the one used when the snapshot was made.\n- A `config.ini` file, compatible with the snapshot (see above), adjusted to your needs, without changes that could affect it in a way that changes the state.\n- A `hived` binary compatible with the snapshot\n\nAll of that you can find above.\n\n Run `hived` with `--load-snapshot name`, assuming the snapshot is stored in `snapshot/name`\n\n`hived` API node runtime currently takes 823GB (incl. shm 19GB, excl. snapshot)\n\n### Exchanges\nThere’s also a snapshot meant for exchanges in `./get/snapshot/exchange/`  that allows them to quickly get up and running, it requires a compatible configuration and that exchange account is one of those who are tracked by my node. If you run an exchange and want to be on that list to use a snapshot, just please let me know.\n\n## Hivemind database dump\n`./get/hivemind/` contains a relatively recent dump of the Hivemind database.\nI use self-describing file names such as:\n`hivemind-20210616-47a41c96.dump`\nDate when dump was taken, revision of `hivemind` that was running it.\nYou need at least that version, remember about `intarray` extension\nConsider running `pg_restore` with at least `-j 6` to run long running tasks in parallel\nAfter restoring the database, make sure to run the `db_upgrade` script.\n\nEven though during full sync database size peaks easily over 750GB, when restored from dump it takes roughly 500GB. Dump file itself is just 53GB.\n\n### All resources are offered AS IS.",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 589
+        },
+        "title": "Hive HardFork 25 Jump Starter Kit",
+        "author": "gtg",
+        "payout": 148.904,
+        "created": "2021-06-18T19:31:45",
+        "reblogs": 24,
+        "replies": [
+          "xplosive/re-gtg-2021618t2145822z",
+          "blocktrades/quwxu7",
+          "steevc/re-gtg-quwy4z",
+          "hivetrending/re-gtg-quwzj1",
+          "sicarius/re-gtg-qux0er",
+          "ciarascat/re-gtg-qux5kb",
+          "hivebuzz/hivebuzz-notify-gtg-20210619t052026000z",
+          "chunchun123/quxsi8",
+          "revisesociology/re-gtg-quy684",
+          "tcpaikano/quydvi",
+          "dragokazo/re-gtg-2021620t24432547z",
+          "denisdenis/re-gtg-2021620t95730545z",
+          "roelandp/re-gtg-qv66u2",
+          "gtg/qvipmy",
+          "hivebuzz/hivebuzz-notify-gtg-20210630t180220000z",
+          "moemanmoesly/re-gtg-qvkdc5",
+          "erialos/re-gtg-qxzw2i",
+          "intoy.bugoy/re-gtg-qy7ta5"
+        ],
+        "updated": "2021-06-19T18:35:03",
+        "category": "hive-160391",
+        "children": 42,
+        "permlink": "hive-hardfork-25-jump-starter-kit",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T19:31:45",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 348638098345947,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 116811864870173
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 89884759872097
+          },
+          {
+            "voter": "tombstone",
+            "rshares": 32524787102
+          },
+          {
+            "voter": "boatymcboatface",
+            "rshares": 980700706346
+          },
+          {
+            "voter": "onealfa",
+            "rshares": 1887000376559
+          }
+        ],
+        "author_title": "Wizard",
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "gandalf"
+          }
+        ],
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "tags": [
+            "witness-category",
+            "witness-update",
+            "hf25",
+            "hive",
+            "dev"
+          ],
+          "image": [
+            "https://img.youtube.com/vi/mrwgrOhl7Yw/0.jpg",
+            "https://images.hive.blog/DQmQbRRrtoTFPZA9QmDRjvswPtaGuXrWXje1WHp9CeeGbV2/star_fork.png"
+          ],
+          "links": [
+            "https://www.youtube.com/watch?v=mrwgrOhl7Yw"
+          ],
+          "users": [
+            "blocktrades"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Blockchain Wizardry",
+        "author_reputation": 76.01,
+        "author_payout_value": "81.341 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "67.563 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "steevc/re-xplosive-2021618t205459739z": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@steevc/re-xplosive-2021618t205459739z",
+        "body": "Should be more worth voting on comments, so there's hope of more engagement. Let's make it social. ",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 5
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "steevc",
+        "payout": 1.573,
+        "created": "2021-06-18T19:55:03",
+        "reblogs": 0,
+        "replies": [
+          "sn0n/re-steevc-quxgea"
+        ],
+        "updated": "2021-06-18T19:55:03",
+        "category": "hive-160391",
+        "children": 5,
+        "permlink": "re-xplosive-2021618t205459739z",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T19:55:03",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 4851811621753,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 203586478584
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 4473026128130
+          },
+          {
+            "voter": "gamer00",
+            "rshares": 48923370441
+          },
+          {
+            "voter": "sn0n",
+            "rshares": 124484007191
+          },
+          {
+            "voter": "chunchun123",
+            "rshares": 1791637407
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.0.18-mobile",
+          "tags": [
+            "ecency"
+          ],
+          "format": "markdown+html"
+        },
+        "parent_author": "xplosive",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-2021618t2145822z",
+        "author_reputation": 80.18,
+        "author_payout_value": "0.786 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.787 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "xplosive/re-ciarascat-2021619t05248186z": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@xplosive/re-ciarascat-2021619t05248186z",
+        "body": "Hive hardforks? As far as I know, there was only one ([HF24](https://hive.blog/hiveblockchain/@hiveio/hive-first-community-hardfork-complete)) so far. Someone will correct me, if I am wrong.",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "xplosive",
+        "payout": 0.053,
+        "created": "2021-06-18T22:52:51",
+        "reblogs": 0,
+        "replies": [
+          "gtg/quy0qj"
+        ],
+        "updated": "2021-06-18T22:52:51",
+        "category": "hive-160391",
+        "children": 1,
+        "permlink": "re-ciarascat-2021619t05248186z",
+        "community": "hive-160391",
+        "payout_at": "2021-06-25T22:52:51",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 228053504037,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "gtg",
+            "rshares": 228053504037
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.0.17-mobile",
+          "tags": [
+            "ecency"
+          ],
+          "format": "markdown+html"
+        },
+        "parent_author": "ciarascat",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "re-gtg-qux5kb",
+        "author_reputation": 72.21,
+        "author_payout_value": "0.026 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.027 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "beerlover/re-gtg-qux45m-20210619t124539250z": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@beerlover/re-gtg-qux45m-20210619t124539250z",
+        "body": "<div class='pull-right'>https://files.peakd.com/file/peakd-hive/beerlover/yiuU6bdf-beerlover20gives20BEER.gif<p><sup><a href='https://hive-engine.com/?p=market&t=BEER'>View or trade </a> <code>BEER</code>.</sup></p></div><center><br> <p>Hey @gtg, here is a little bit of <code>BEER</code> from @steevc for you. Enjoy it!</p> <p>Do you want to <a href='https://friends.beersaturday.com/'>win <b>SOME BEER</b> together with your friends </a> and draw the <code>BEERKING</code>.</p> </center><div></div>\n",
+        "depth": 3,
+        "stats": {
+          "gray": true,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0,
+          "muted_reasons": [
+            0
+          ]
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "beerlover",
+        "payout": 0,
+        "created": "2021-06-19T12:45:39",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-19T12:45:39",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "re-gtg-qux45m-20210619t124539250z",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T12:45:39",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "beerlover/2.0"
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "qux45m",
+        "author_reputation": 64.65,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "hivebuzz/hivebuzz-notify-gtg-20210619t052026000z": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@hivebuzz/hivebuzz-notify-gtg-20210619t052026000z",
+        "body": "Congratulations @gtg! You have completed the following achievement on the Hive blockchain and have been rewarded with new badge(s) :\n\n<table><tr><td><img src=\"https://images.hive.blog/60x70/http://hivebuzz.me/@gtg/replies.png?202106190504\"></td><td>You got more than 6750 replies.<br>Your next target is to reach 7000 replies.</td></tr>\n</table>\n\n<sub>_You can view your badges on [your board](https://hivebuzz.me/@gtg) and compare yourself to others in the [Ranking](https://hivebuzz.me/ranking)_</sub>\n<sub>_If you no longer want to receive notifications, reply to this comment with the word_ `STOP`</sub>\n\n",
+        "depth": 1,
+        "stats": {
+          "gray": true,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1,
+          "muted_reasons": [
+            0
+          ]
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "hivebuzz",
+        "payout": 0,
+        "created": "2021-06-19T05:20:27",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-19T05:20:27",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "hivebuzz-notify-gtg-20210619t052026000z",
+        "community": "hive-160391",
+        "payout_at": "2021-06-26T05:20:27",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 21732457727,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "denisdenis",
+            "rshares": 21732457727
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "image": [
+            "http://hivebuzz.me/notify.t6.png"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 74.23,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "hivebuzz/hivebuzz-notify-gtg-20210630t180220000z": {
+        "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit#@hivebuzz/hivebuzz-notify-gtg-20210630t180220000z",
+        "body": "Congratulations @gtg! You received a personal badge!\n\n<table><tr><td>https://images.hive.blog/70x70/http://hivebuzz.me/badges/birthday-5.png</td><td>Happy Hive Birthday! You are on the Hive blockchain for 5 years!</td></tr></table>\n\n<sub>_You can view your badges on [your board](https://hivebuzz.me/@gtg) and compare yourself to others in the [Ranking](https://hivebuzz.me/ranking)_</sub>\n\n\n**Check out the last post from @hivebuzz:**\n<table><tr><td><a href=\"/hivebuzz/@hivebuzz/pud-202107\"><img src=\"https://images.hive.blog/64x128/https://i.imgur.com/805FIIt.jpg\"></a></td><td><a href=\"/hivebuzz/@hivebuzz/pud-202107\">Hive Power Up Day - July 1st 2021 - Hive Power Delegation</a></td></tr></table>",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive HardFork 25 Jump Starter Kit",
+        "author": "hivebuzz",
+        "payout": 0,
+        "created": "2021-06-30T18:02:21",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2021-06-30T18:02:21",
+        "category": "hive-160391",
+        "children": 0,
+        "permlink": "hivebuzz-notify-gtg-20210630t180220000z",
+        "community": "hive-160391",
+        "payout_at": "2021-07-07T18:02:21",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "image": [
+            "http://hivebuzz.me/notify.t6.png"
+          ]
+        },
+        "parent_author": "gtg",
+        "community_title": "Blockchain Wizardry",
+        "parent_permlink": "hive-hardfork-25-jump-starter-kit",
+        "author_reputation": 74.23,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
