@@ -1,0 +1,16 @@
+{
+  "testName": "loggedInCommunitiesExplorer",
+  "recordedAt": "2026-05-19T07:43:17.074Z",
+  "totalRequests": 8,
+  "savedFixtures": 7,
+  "duplicatesSkipped": 1,
+  "methods": {
+    "bridge.list_communities": 1,
+    "bridge.list_all_subscriptions": 1,
+    "GET /hivesense-api": 1,
+    "bridge.unread_notifications": 1,
+    "database_api.find_accounts": 2,
+    "database_api.get_dynamic_global_properties": 1,
+    "rc_api.find_rc_accounts": 1
+  }
+}

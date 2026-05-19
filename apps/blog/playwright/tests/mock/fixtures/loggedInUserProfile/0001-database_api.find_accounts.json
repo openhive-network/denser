@@ -1,0 +1,200 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.find_accounts",
+    "params": {
+      "accounts": [
+        "hiveio"
+      ],
+      "delayed_votes_active": false
+    },
+    "id": 1
+  },
+  "requestHash": "a760390544eb01d7",
+  "method": "database_api.find_accounts",
+  "params": {
+    "accounts": [
+      "hiveio"
+    ],
+    "delayed_votes_active": false
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "accounts": [
+        {
+          "id": 1370484,
+          "name": "hiveio",
+          "owner": {
+            "weight_threshold": 1,
+            "account_auths": [],
+            "key_auths": [
+              [
+                "STM65PUAPA4yC4RgPtGgsPupxT6yJtMhmT5JHFdsT3uoCbR8WJ25s",
+                1
+              ]
+            ]
+          },
+          "active": {
+            "weight_threshold": 1,
+            "account_auths": [
+              [
+                "pettycash",
+                1
+              ]
+            ],
+            "key_auths": [
+              [
+                "STM69zfrFGnZtU3gWFWpQJ6GhND1nz7TJsKBTjcWfebS1JzBEweQy",
+                1
+              ]
+            ]
+          },
+          "posting": {
+            "weight_threshold": 1,
+            "account_auths": [
+              [
+                "threespeak",
+                1
+              ],
+              [
+                "vimm.app",
+                1
+              ]
+            ],
+            "key_auths": [
+              [
+                "STM6vJmrwaX5TjgTS9dPH8KsArso5m91fVodJvv91j7G765wqcNM9",
+                1
+              ]
+            ]
+          },
+          "memo_key": "STM7wrsg1BZogeK7X3eG4ivxmLaH69FomR8rLkBbepb3z3hm5SbXu",
+          "json_metadata": "",
+          "posting_json_metadata": "{\"profile\":{\"pinned\":\"none\",\"version\":2,\"website\":\"hive.io\",\"profile_image\":\"https://files.peakd.com/file/peakd-hive/hiveio/Jp2YHc6Q-hive-logo.png\",\"cover_image\":\"https://files.peakd.com/file/peakd-hive/hiveio/Xe1TcEBi-hive-banner.png\"}}",
+          "proxy": "",
+          "previous_owner_update": "1970-01-01T00:00:00",
+          "last_owner_update": "1970-01-01T00:00:00",
+          "last_account_update": "2021-11-09T21:56:27",
+          "created": "2020-03-06T12:22:51",
+          "mined": false,
+          "recovery_account": "steempeak",
+          "last_account_recovery": "1970-01-01T00:00:00",
+          "reset_account": "null",
+          "comment_count": 0,
+          "lifetime_vote_count": 0,
+          "post_count": 81,
+          "can_vote": true,
+          "voting_manabar": {
+            "current_mana": 314566314850,
+            "last_update_time": 1754586540
+          },
+          "downvote_manabar": {
+            "current_mana": 78641578712,
+            "last_update_time": 1754586540
+          },
+          "balance": {
+            "amount": "283442",
+            "precision": 3,
+            "nai": "@@000000021"
+          },
+          "savings_balance": {
+            "amount": "0",
+            "precision": 3,
+            "nai": "@@000000021"
+          },
+          "hbd_balance": {
+            "amount": "50418",
+            "precision": 3,
+            "nai": "@@000000013"
+          },
+          "hbd_seconds": "0",
+          "hbd_seconds_last_update": "2020-10-21T02:45:12",
+          "hbd_last_interest_payment": "2020-10-21T02:45:12",
+          "savings_hbd_balance": {
+            "amount": "0",
+            "precision": 3,
+            "nai": "@@000000013"
+          },
+          "savings_hbd_seconds": "0",
+          "savings_hbd_seconds_last_update": "1970-01-01T00:00:00",
+          "savings_hbd_last_interest_payment": "1970-01-01T00:00:00",
+          "savings_withdraw_requests": 0,
+          "reward_hbd_balance": {
+            "amount": "76",
+            "precision": 3,
+            "nai": "@@000000013"
+          },
+          "reward_hive_balance": {
+            "amount": "0",
+            "precision": 3,
+            "nai": "@@000000021"
+          },
+          "reward_vesting_balance": {
+            "amount": "1210467281",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "reward_vesting_hive": {
+            "amount": "737",
+            "precision": 3,
+            "nai": "@@000000021"
+          },
+          "vesting_shares": {
+            "amount": "314566314850",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "delegated_vesting_shares": {
+            "amount": "0",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "received_vesting_shares": {
+            "amount": "0",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "vesting_withdraw_rate": {
+            "amount": "0",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "post_voting_power": {
+            "amount": "314566314850",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "next_vesting_withdrawal": "1969-12-31T23:59:59",
+          "withdrawn": 0,
+          "to_withdraw": 0,
+          "withdraw_routes": 0,
+          "pending_transfers": 0,
+          "curation_rewards": 20,
+          "posting_rewards": 1919844,
+          "proxied_vsf_votes": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "witnesses_voted_for": 0,
+          "last_post": "2025-12-31T19:41:36",
+          "last_root_post": "2025-12-31T19:41:36",
+          "last_post_edit": "2026-01-01T05:46:06",
+          "last_vote_time": "2025-01-01T06:03:33",
+          "post_bandwidth": 0,
+          "pending_claimed_accounts": 0,
+          "open_recurrent_transfers": 0,
+          "is_smt": false,
+          "governance_vote_expiration_ts": "1969-12-31T23:59:59"
+        }
+      ]
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

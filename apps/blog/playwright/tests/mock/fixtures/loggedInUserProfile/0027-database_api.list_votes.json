@@ -1,0 +1,49 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "astralwars",
+        "2024-review-and-2025-roadmap",
+        "guest4test"
+      ],
+      "limit": 1,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "b20fd7194f7e26cb",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "astralwars",
+      "2024-review-and-2025-roadmap",
+      "guest4test"
+    ],
+    "limit": 1,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "voter": "guest4test",
+          "author": "astralwars",
+          "weight": 0,
+          "rshares": 0,
+          "permlink": "2024-review-and-2025-roadmap",
+          "last_update": "2025-03-13T07:38:42",
+          "num_changes": 3,
+          "vote_percent": 0
+        }
+      ]
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
