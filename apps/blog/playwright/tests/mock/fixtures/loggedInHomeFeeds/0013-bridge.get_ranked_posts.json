@@ -1,0 +1,1587 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "payout",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "88e6c9ac2c6107c7",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "payout",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045701z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 37
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 128.192,
+        "created": "2026-05-13T04:57:00",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:57:00",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045701z",
+        "payout_at": "2026-05-20T04:57:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 1424814096618045,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 383445838226757
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "gtg",
+            "rshares": 67180480820784
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567255692998
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "128.192 HBD"
+      },
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045648z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 37
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 127.434,
+        "created": "2026-05-13T04:56:48",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:56:48",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045648z",
+        "payout_at": "2026-05-20T04:56:48",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 1433875025883696,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 383445838226757
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "gtg",
+            "rshares": 67177753563500
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567255692998
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "127.434 HBD"
+      },
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045654z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 38
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 127.203,
+        "created": "2026-05-13T04:56:54",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:56:54",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045654z",
+        "payout_at": "2026-05-20T04:56:54",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 1425613988871205,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 383445838226757
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "gtg",
+            "rshares": 67179117197279
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567255692998
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "127.203 HBD"
+      },
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045628z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 36
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 126.518,
+        "created": "2026-05-13T04:56:27",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:56:27",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045628z",
+        "payout_at": "2026-05-20T04:56:27",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 1433843510326853,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 383445858133597
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "gtg",
+            "rshares": 67173642692750
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567255692998
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "126.518 HBD"
+      },
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045641z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 37
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 126.188,
+        "created": "2026-05-13T04:56:42",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:56:42",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045641z",
+        "payout_at": "2026-05-20T04:56:42",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 1433874086478168,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 383445848180177
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "gtg",
+            "rshares": 67176389919420
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567255692998
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "126.188 HBD"
+      },
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045635z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 35
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 125.639,
+        "created": "2026-05-13T04:56:36",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:56:36",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045635z",
+        "payout_at": "2026-05-20T04:56:36",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 1433300590164745,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 383445858133597
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "gtg",
+            "rshares": 67175016311298
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567255692998
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "125.639 HBD"
+      },
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045621z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 37
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 125.316,
+        "created": "2026-05-13T04:56:21",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:56:21",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045621z",
+        "payout_at": "2026-05-20T04:56:21",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 1426739446039621,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 383445858133597
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "gtg",
+            "rshares": 67172259109912
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567255692998
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "125.316 HBD"
+      },
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045615z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 32
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 120.425,
+        "created": "2026-05-13T04:56:15",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:56:15",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045615z",
+        "payout_at": "2026-05-20T04:56:15",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 1377252406669902,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 383445858133597
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "gtg",
+            "rshares": 67170905378409
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567255692998
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "120.425 HBD"
+      },
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045707z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 31
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 111.851,
+        "created": "2026-05-13T04:57:06",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:57:06",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045707z",
+        "payout_at": "2026-05-20T04:57:06",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 1243189677805064,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 383445828273337
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567255692998
+          },
+          {
+            "voter": "timcliff",
+            "rshares": 164026028568
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "111.851 HBD"
+      },
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045608z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 27
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 89.266,
+        "created": "2026-05-13T04:56:09",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:56:09",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045608z",
+        "payout_at": "2026-05-20T04:56:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 992825506394570,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "gtg",
+            "rshares": 67169541682709
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567253702172
+          },
+          {
+            "voter": "timcliff",
+            "rshares": 164026028568
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "89.266 HBD"
+      },
+      {
+        "url": "/hbd/@hbd.funder/upvote-this-post-to-fund-hbdstabilizer#@hbd.funder/re-upvote-this-post-to-fund-hbdstabilizer-20260513t045602z",
+        "body": "The rewards for this comment are set to 100% beneficiary going to the @hbdstabilizer account.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 25
+        },
+        "title": "RE: Upvote this post to fund @hbdstabilizer",
+        "author": "hbd.funder",
+        "payout": 88.848,
+        "created": "2026-05-13T04:56:03",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T04:56:03",
+        "category": "hbd",
+        "children": 0,
+        "permlink": "re-upvote-this-post-to-fund-hbdstabilizer-20260513t045602z",
+        "payout_at": "2026-05-20T04:56:03",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 988185976564090,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": 216650607586614
+          },
+          {
+            "voter": "alpha",
+            "rshares": 373816338491472
+          },
+          {
+            "voter": "gtg",
+            "rshares": 67168177976681
+          },
+          {
+            "voter": "arcange",
+            "rshares": 3567253702172
+          },
+          {
+            "voter": "timcliff",
+            "rshares": 164026028568
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "hbdstabilizer"
+          }
+        ],
+        "json_metadata": {
+          "app": "beem/0.24.26",
+          "tags": [
+            "hbd"
+          ]
+        },
+        "parent_author": "hbd.funder",
+        "parent_permlink": "upvote-this-post-to-fund-hbdstabilizer",
+        "author_reputation": 101.01,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "88.848 HBD"
+      },
+      {
+        "url": "/hive-148309/@palomap3/hive-open-days-el-viaje-de-regreso-a-casa-hive-open-days-the-journey-home",
+        "body": "![IMG_2547.JPG](https://files.peakd.com/file/peakd-hive/palomap3/Ep3foEthWCcyvC8DYDNeKudq6qWrB86tbRhUjj2ht2o4rYgsxe2FZxBJrhAiM2Ha1zt.JPG)\n\n[Click here to read this post in **English**](#english)\n\n<img src=\"https://images.hive.blog/DQmeL6nS5tVdW3yAg896jjF7qwgqV3Bbowtank5sARnQSNN/ENES--Spanish.png\"> \n\nHola querido hiver.\n\nLos viajes de regreso a casa siempre parecen más cortos. Cuando salí de mi casa iba con la maleta llena de expectativas, soñando con esos encuentros tan deseados y esperando pasarlo fenomenal en compañía de personas a las que considero amigos. Todo eso se cumplió y hoy me apetece escribir cómo fue el regreso para poner el broche final a la loca aventura que ha sido preparar y disfrutar de los Hive Open Days en Alicante.\n\n![IMG_2536.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EoiY7FSGbQuaGw64DSEt9EAa5fjxYBjQvjmxmys6RwnzSvrE1wNuAS4XrMP6ZPsUwAk.JPG)\n\nDe camino a la estación de tren tomé un desayuno clásico de café con leche y tostada con mantequilla y mermelada. Madrugué con tiempo suficiente para disfrutarlo de forma lenta, saboreando cada bocado como tratando de aferrarme a lo que acababa de vivir en los días previos.\n\n![IMG_2538.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EoGyx5K94p5oS6cKWnw3Cb3PVJhS31g3QHtngUzDY2txZnWTTpW3hjERt1brQrw2uar.JPG)\n\n![IMG_2537.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EoptwyoRbvRWdCTSqEB5XPKQ93FF2sJzZC9F4mpyB6oCAUtnFcfGMditpy3EH31QEUQ.JPG)\n\nMe despedí de Alicante con la satisfacción de cumplir con mis propias expectativas, algo que mi autoexigencia siempre me pone difícil. Sin embargo, esta vez ha sido diferente y mucho más positivo. Hablar en público de nuevo tras varios años apartada de este tipo de eventos me daba algo de miedo por no saber si sería capaz. Lo fui, y lo mejor es que han sido más de una y de dos las personas que me han dicho que les gustó mi intervención. \n\n![IMG_2539.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EoiY7M6xKbmKpUatbnKafFySLBAGsfCnhCqsuHdE19x1TFmdyyGvKxfkxP2LCeKFu6M.JPG)\n\n![IMG_2541.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EqDhaTjKPuxzHgri4PykqPoZoao6ZLSpEXpYdLZDrp9YTw9SMQktr1E6hPr4L5Go87o.JPG)\n\nEn este viaje no hubo incidencias, todo salió como estaba previsto y fue mucho más tranquilo que a la ida. La experiencia fue tan dulce como los bombones que viajaron desde las islas británicas y que me acompañaron en el bolso de mano durante el trayecto de regreso. Me hizo muchísima ilusión recibirlos de una hiver que me inspira cada día. ¡Gracias infinitas!\n\n![IMG_2543.JPG](https://files.peakd.com/file/peakd-hive/palomap3/Eq9TnGpTXfN77JmwVvpZQzgyH2wHfUNgKhRQWuFrVHVUqjJTYV8jGkLLeX1orZeD4ss.JPG)\n\n![IMG_2544.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EpnAuhdj1e63P6VNFm7eecksvnTFGinKyU8KSZUU9dQofgKymBXb5wQj4Qoe6aqk25H.JPG)\n\nConforme el tren del segundo tramo se acercaba a Zaragoza aumentaban las nubes y la luz del sol anunciaba la tormenta que se estaba desatando en la ciudad. La foto de abajo está tomada unos diez minutos antes de mi llegada, cuando mi marido me decía por WhatsApp que me esperaba en el coche y con el paraguas preparado porque llovía a cántaros. Es increíble cómo puede cambiar el tiempo tan rápido. Cuando bajé del tren el agua y los truenos habían cesado e incluso volvía a salir el sol.\n\n![IMG_2549.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EokeWDTPAn6Kav8iqWpqFZgWazXiZS47mLeezt3HsorbGqQWTRbo1KVxh2ZmajFUuUk.JPG)\n\n![IMG_2550.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EoyQTwuUDqr2zLRYcChBn2qxch4YUWzu6EmPiz1ixa539FQgjVxQPqh4crvbVa1qWKS.JPG)\n\nLlegué a mi casa agotada, feliz y con la motivación renovada para seguir aportando mi granito de arena en esta increíble comunidad. En la maleta traje recuerdos de estos días, ¡me costó cerrarla! Contaba con una bolsa de merchandising pero no con la que gané en el concurso de Worldmappin.\n\n![d03070b9-097d-4569-aa1c-710ba42f0a53.jpg](https://files.peakd.com/file/peakd-hive/palomap3/23wCJEYuscZcCg2gHitvtMyAWsvFt9V2FmkQEpdZipbYYBZyLUoK4Vp89wdUxaiYf4se3.jpg)\n\n![IMG_2551.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EopukpRYzQu5rYzSeM4YEuw9SmGEf7HCrVGsUjS1tN2yKsaiC8zCtef3VrCZ3KaVxro.JPG)\n\nHive es como esa caja de bombones: cada uno somos diferentes pero todos aportamos nuestro sabor. Gracias @ninaeatshere por la foto que nos hiciste a @livinguktaiwan y a mí, ese fue uno de los momentos más bonitos y dulces de estos días.\n\nEsta es la última publicación de la serie de posts que he escrito sobre los Hive Open Days celebrados en Alicante del 30 de abril al 3 de mayo de 2026, estos son el resto de enlaces:\n\n[¿Qué lleva una hiver en la maleta? // What does a hiver pack in their suitcase?](https://peakd.com/hive-148309/@palomap3/que-lleva-una-hiver-en-la-maleta-what-does-a-hiver-pack-in-their-suitcase)\n[Hive Open Days: Día 1 // Hive Open Days: Day 1](https://peakd.com/hive-148309/@palomap3/hive-open-days-dia-1-hive-open-days-day-1)\n[Hive Open Days: Día 2 // Hive Open Days: Day 2](https://peakd.com/hive-148309/@palomap3/hive-open-days-dia-2-hive-open-days-day-2)\n[Hive Open Days: Día 3 // Hive Open Days: Day 3](https://peakd.com/hive-148309/@palomap3/hive-open-days-dia-3-hive-open-days-day-3)\n[Hive Open Days: Día 4 // Hive Open Days: Day 4](https://peakd.com/hive-148309/@palomap3/hive-open-days-dia-4-hive-open-days-day-4)\n\nGracias a todos los que habéis hecho realidad mi sueño en estos días maravillosos. \n\nY ahora, ¡a por el [HiveFest en Barcelona](https://hivefe.st)!\n\nHasta la próxima publicación. Mientras tanto, ¡cuídate! \n\n<center><img src=\"https://images.hive.blog/DQmfDaSmTz3y8oavngRrr5mmVhrTXheYoEU4qhGUS7pq3xh/HiveDivider.png\"></center>\n\nHerramientas: Cámara iPhone 13 Pro, editor de fotos Mac. \nMis publicaciones en [Worldmappin pinchando aquí](https://worldmappin.com/@palomap3)\nSi te gusta lo que publico, únete a mi [Fanbase pinchando aquí](https://hive.vote/dash.php?fan=palomap3&i=2)\n\n![B67FB7A6-2E4B-43FD-BE20-57543B8993A2_4_5005_c.jpeg](https://files.peakd.com/file/peakd-hive/palomap3/23tmerjFT3bacskjaLCHwJcKiNucG1oEiEzj9BNLMfBBevvri9W4G7eDRveawxvcGY472.jpeg)\n\n©️Copyright 2026 Paloma Peña Pérez. Todos los derechos reservados. \n\n<center><img src=\"https://images.hive.blog/DQmfDaSmTz3y8oavngRrr5mmVhrTXheYoEU4qhGUS7pq3xh/HiveDivider.png\"></center>\n\n![IMG_2547.JPG](https://files.peakd.com/file/peakd-hive/palomap3/Ep3foEthWCcyvC8DYDNeKudq6qWrB86tbRhUjj2ht2o4rYgsxe2FZxBJrhAiM2Ha1zt.JPG)\n\n**English** <a id=\"english\"></a>\n\n<img src=\"https://images.hive.blog/DQmaZM4tL8n3UjZ9YvYNmEQ1oAvfm6QJzMBHuMtr9JqdVS2/ENES--English.png\">\n\nHi, dear hiver.\n\nThe journey home always seems shorter. When I left home, my suitcase was full of expectations; I was dreaming of those long-awaited reunions and looking forward to having a brilliant time in the company of people I consider friends. All that came true, and today I feel like writing about how the return journey went, to put the finishing touch to the crazy adventure that was organising and enjoying the Hive Open Days in Alicante.\n\n![IMG_2536.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EoiY7FSGbQuaGw64DSEt9EAa5fjxYBjQvjmxmys6RwnzSvrE1wNuAS4XrMP6ZPsUwAk.JPG)\n\nOn my way to the train station, I had a classic breakfast of coffee with milk and toast with butter and jam. I got up early enough to enjoy it at a leisurely pace, savouring every bite as if trying to hold on to what I had just experienced in the days before.\n\n![IMG_2538.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EoGyx5K94p5oS6cKWnw3Cb3PVJhS31g3QHtngUzDY2txZnWTTpW3hjERt1brQrw2uar.JPG)\n\n![IMG_2537.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EoptwyoRbvRWdCTSqEB5XPKQ93FF2sJzZC9F4mpyB6oCAUtnFcfGMditpy3EH31QEUQ.JPG)\n\nI said goodbye to Alicante with the satisfaction of having met my own expectations, something my high standards always make difficult for me. However, this time it was different and much more positive. Speaking in public again after several years away from this sort of event made me a bit nervous, as I didn’t know if I’d be up to it. I was, and the best thing is that more than one and two people have told me they enjoyed it. \n\n![IMG_2539.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EoiY7M6xKbmKpUatbnKafFySLBAGsfCnhCqsuHdE19x1TFmdyyGvKxfkxP2LCeKFu6M.JPG)\n\n![IMG_2541.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EqDhaTjKPuxzHgri4PykqPoZoao6ZLSpEXpYdLZDrp9YTw9SMQktr1E6hPr4L5Go87o.JPG)\n\nThere were no incidents on this trip; everything went according to plan and it was much more peaceful than the outward journey. The experience was as sweet as the chocolates that had travelled all the way from the British Isles and kept me company in my handbag on the return journey. I was absolutely delighted to receive them from a fellow hiver who inspires me every day. Thank you so much!\n\n![IMG_2543.JPG](https://files.peakd.com/file/peakd-hive/palomap3/Eq9TnGpTXfN77JmwVvpZQzgyH2wHfUNgKhRQWuFrVHVUqjJTYV8jGkLLeX1orZeD4ss.JPG)\n\n![IMG_2544.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EpnAuhdj1e63P6VNFm7eecksvnTFGinKyU8KSZUU9dQofgKymBXb5wQj4Qoe6aqk25H.JPG)\n\nAs the train on the second leg of the journey approached Zaragoza, the clouds thickened and the sunlight foreshadowed the storm that was brewing over the city. The photo below was taken about ten minutes before I arrived, when my husband messaged me on WhatsApp to say he was waiting for me in the car with an umbrella at the ready because it was pouring with rain. It’s incredible how quickly the weather can change. By the time I got off the train, the rain and thunder had stopped and the sun was even coming out again.\n\n![IMG_2549.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EokeWDTPAn6Kav8iqWpqFZgWazXiZS47mLeezt3HsorbGqQWTRbo1KVxh2ZmajFUuUk.JPG)\n\n![IMG_2550.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EoyQTwuUDqr2zLRYcChBn2qxch4YUWzu6EmPiz1ixa539FQgjVxQPqh4crvbVa1qWKS.JPG)\n\nI arrived home exhausted, happy and with renewed motivation to keep doing my bit for this incredible community. I brought back souvenirs from these days in my suitcase – I struggled to close it! I waited a goody bag, but not the one I won in the Worldmappin competition.\n\n![d03070b9-097d-4569-aa1c-710ba42f0a53.jpg](https://files.peakd.com/file/peakd-hive/palomap3/23wCJEYuscZcCg2gHitvtMyAWsvFt9V2FmkQEpdZipbYYBZyLUoK4Vp89wdUxaiYf4se3.jpg)\n\n![IMG_2551.JPG](https://files.peakd.com/file/peakd-hive/palomap3/EopukpRYzQu5rYzSeM4YEuw9SmGEf7HCrVGsUjS1tN2yKsaiC8zCtef3VrCZ3KaVxro.JPG)\n\nHive is like that box of chocolates: we’re all different, but we all bring our own flavour to the mix. Thanks @ninaeatshere for the photo you took of @livinguktaiwan and me – that was one of the loveliest and sweetest moments of the event.\n\nThis is the final post in the series I’ve written about the Hive Open Days held in Alicante from 30 April to 3 May 2026. Here are the other links:\n\n[¿Qué lleva una hiver en la maleta? // What does a hiver pack in their suitcase?](https://peakd.com/hive-148309/@palomap3/que-lleva-una-hiver-en-la-maleta-what-does-a-hiver-pack-in-their-suitcase)\n[Hive Open Days: Día 1 // Hive Open Days: Day 1](https://peakd.com/hive-148309/@palomap3/hive-open-days-dia-1-hive-open-days-day-1)\n[Hive Open Days: Día 2 // Hive Open Days: Day 2](https://peakd.com/hive-148309/@palomap3/hive-open-days-dia-2-hive-open-days-day-2)\n[Hive Open Days: Día 3 // Hive Open Days: Day 3](https://peakd.com/hive-148309/@palomap3/hive-open-days-dia-3-hive-open-days-day-3)\n[Hive Open Days: Día 4 // Hive Open Days: Day 4](https://peakd.com/hive-148309/@palomap3/hive-open-days-dia-4-hive-open-days-day-4)\n\nThank you to everyone who has made my dream come true during these wonderful days. \n\nAnd now, let’s get ready for [HiveFest in Barcelona](https://hivefe.st)!\n\nUntil the next post. In the meantime, take care! \n\n[//]:# (!worldmappin 38.34490 lat -0.49531 long  d3scr)\n\n<center><img src=\"https://images.hive.blog/DQmfDaSmTz3y8oavngRrr5mmVhrTXheYoEU4qhGUS7pq3xh/HiveDivider.png\"></center>\n\nTools: iPhone 13 Pro camera, Mac photo editor.\nTranslated with [DeepL](https://www.deepl.com/)\nMy publications in [Worldmappin by clicking here](https://worldmappin.com/@palomap3)\nIf you like my content, join my [Fanbase clicking here](https://hive.vote/dash.php?fan=palomap3&i=2)\n\n![B67FB7A6-2E4B-43FD-BE20-57543B8993A2_4_5005_c.jpeg](https://files.peakd.com/file/peakd-hive/palomap3/23tmerjFT3bacskjaLCHwJcKiNucG1oEiEzj9BNLMfBBevvri9W4G7eDRveawxvcGY472.jpeg)\n\n©️Copyright 2026 Paloma Peña Pérez. All rights reserved.",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1258
+        },
+        "title": "Hive Open Days: El viaje de regreso a casa // Hive Open Days: The Journey Home",
+        "author": "palomap3",
+        "payout": 36.639,
+        "created": "2026-05-13T13:44:06",
+        "reblogs": 17,
+        "replies": [],
+        "updated": "2026-05-13T13:44:06",
+        "category": "hive-148309",
+        "children": 52,
+        "permlink": "hive-open-days-el-viaje-de-regreso-a-casa-hive-open-days-the-journey-home",
+        "community": "hive-148309",
+        "payout_at": "2026-05-20T13:44:06",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 467687286306029,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "drifter1",
+            "rshares": 2208369853
+          },
+          {
+            "voter": "team",
+            "rshares": 153858368539
+          },
+          {
+            "voter": "kevinwong",
+            "rshares": 11137754815
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 2404363518
+          },
+          {
+            "voter": "eric-boucher",
+            "rshares": 26268392804
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "hive-148309"
+          }
+        ],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "spanish",
+            "hiveopendays",
+            "hodalicante",
+            "spain",
+            "buzzparty",
+            "meetup",
+            "travel",
+            "thealliance",
+            "pimp",
+            "tribes"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/palomap3/Ep3foEthWCcyvC8DYDNeKudq6qWrB86tbRhUjj2ht2o4rYgsxe2FZxBJrhAiM2Ha1zt.JPG",
+            "https://images.hive.blog/DQmeL6nS5tVdW3yAg896jjF7qwgqV3Bbowtank5sARnQSNN/ENES--Spanish.png",
+            "https://files.peakd.com/file/peakd-hive/palomap3/EoiY7FSGbQuaGw64DSEt9EAa5fjxYBjQvjmxmys6RwnzSvrE1wNuAS4XrMP6ZPsUwAk.JPG",
+            "https://files.peakd.com/file/peakd-hive/palomap3/EoGyx5K94p5oS6cKWnw3Cb3PVJhS31g3QHtngUzDY2txZnWTTpW3hjERt1brQrw2uar.JPG",
+            "https://files.peakd.com/file/peakd-hive/palomap3/EoptwyoRbvRWdCTSqEB5XPKQ93FF2sJzZC9F4mpyB6oCAUtnFcfGMditpy3EH31QEUQ.JPG",
+            "https://files.peakd.com/file/peakd-hive/palomap3/EoiY7M6xKbmKpUatbnKafFySLBAGsfCnhCqsuHdE19x1TFmdyyGvKxfkxP2LCeKFu6M.JPG",
+            "https://files.peakd.com/file/peakd-hive/palomap3/EqDhaTjKPuxzHgri4PykqPoZoao6ZLSpEXpYdLZDrp9YTw9SMQktr1E6hPr4L5Go87o.JPG",
+            "https://files.peakd.com/file/peakd-hive/palomap3/Eq9TnGpTXfN77JmwVvpZQzgyH2wHfUNgKhRQWuFrVHVUqjJTYV8jGkLLeX1orZeD4ss.JPG",
+            "https://files.peakd.com/file/peakd-hive/palomap3/EpnAuhdj1e63P6VNFm7eecksvnTFGinKyU8KSZUU9dQofgKymBXb5wQj4Qoe6aqk25H.JPG",
+            "https://files.peakd.com/file/peakd-hive/palomap3/EokeWDTPAn6Kav8iqWpqFZgWazXiZS47mLeezt3HsorbGqQWTRbo1KVxh2ZmajFUuUk.JPG",
+            "https://files.peakd.com/file/peakd-hive/palomap3/EoyQTwuUDqr2zLRYcChBn2qxch4YUWzu6EmPiz1ixa539FQgjVxQPqh4crvbVa1qWKS.JPG",
+            "https://files.peakd.com/file/peakd-hive/palomap3/23wCJEYuscZcCg2gHitvtMyAWsvFt9V2FmkQEpdZipbYYBZyLUoK4Vp89wdUxaiYf4se3.jpg",
+            "https://files.peakd.com/file/peakd-hive/palomap3/EopukpRYzQu5rYzSeM4YEuw9SmGEf7HCrVGsUjS1tN2yKsaiC8zCtef3VrCZ3KaVxro.JPG",
+            "https://images.hive.blog/DQmfDaSmTz3y8oavngRrr5mmVhrTXheYoEU4qhGUS7pq3xh/HiveDivider.png",
+            "https://files.peakd.com/file/peakd-hive/palomap3/23tmerjFT3bacskjaLCHwJcKiNucG1oEiEzj9BNLMfBBevvri9W4G7eDRveawxvcGY472.jpeg"
+          ],
+          "users": [
+            "ninaeatshere",
+            "livinguktaiwan",
+            "palomap3"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "BuzzParty Meet Hive!",
+        "author_reputation": 75.26,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "36.639 HBD"
+      },
+      {
+        "url": "/hive-193816/@slobberchops/three-tune-tuesday-tales-from-1990",
+        "body": "<center>\n![Three-Tune-Tuesday.jpg](https://files.peakd.com/file/peakd-hive/slobberchops/AKuv6ZNeF18TCqWHp5NS7WaVTPwgskV62ZgkPYRyBnqw3gc7YUfPvRAg291ezXA.jpg)\n</center>\n\n![RedLine.png](https://files.peakd.com/file/peakd-hive/slobberchops/BqIuXs6C-RedLine.png)\n\n1990, a time I remember only too well… and a time I was not very happy. I had just bought a house for the pricey sum of £32,000. I didn’t haggle, just paid the asking price. Fucking idiot, that’s naivety for you.\n\nThree years later, I was to discover a hole in the roof, and water was being collected by a well-placed bucket in the attic. The surveyor had not picked it up, probably because I paid for the *basic* survey, which meant the surveyor visited the outside with a pad and paper and said to himself, *yeah, it’s fine*.\n\nWhen the wallpaper on the ceiling started sagging, I knew otherwise. It was too late.\n\n![image.png](https://files.peakd.com/file/peakd-hive/slobberchops/23tcLiZk5sPGybkUeSY4fvXixLk9DgLpxMRKFjCN5auouCUj3YPj7XXszAwiJmSEgAeNw.png) - [Source](AI)\n\nThe interest rate was 15%, but I could manage coughing up £300 a month on an endowment mortgage I was talked into buying. Scammers were prevalent then, just not so anonymous. The endowment was never going to polish off the debt.\n\nI was in an on-off explosive relationship with a divorcee, 13 years my senior, with two kids; a veritable old lady, albeit a good-looking, shapely one. Then, I was the epitome of shallowness. Too fat, not a chance, average looking, I would need 6 pints before contemplation.\n\nShe wasn’t a bad shag, but did grumble when I didn’t wait for her. What, girls… errr old ladies orgasm too? The young ones didn’t seem to care, were ignorant, feigned ignorance, but my cougar did; ridiculous.\n\n… and then there was the music. I bet you want me to go on with my vintage personal life, don’t you? It was only 36 years ago, just yesterday.\n\n![RedLine.png](https://files.peakd.com/file/peakd-hive/slobberchops/BqIuXs6C-RedLine.png)\n\n<center>\n<H4>The KLF – Last Train to Transcentral (Single – 1990)</H4>\n![smal_16642illustrationofanelectricguitarpv.jpg](https://files.peakd.com/file/peakd-hive/slobberchops/K8FtI6SX-smal_16642-illustration-of-an-electric-guitar-pv.jpg)\n</center>\n\nThe KLF had been around for a while and had a couple of big scores with \"3 a.m. Eternal\" and \"What Time Is Love?\" They had my attention, and I was quite into this house music with its piano music with one finger statement that seemed to be everywhere at the time.\n\nIt was a 15-minute journey to work by car in 1990, and I tended to listen to the radio then. The alternative was a cassette with your own music, as CD players had not made it past the living room.\n\n‘*Last Train to Transcentral*’ made me sit up and was instant gratification, something very unusual for me, even then. The energy, the synthesisers, not so much the rap crap, but it was tolerable. Lyrically, it was basic, close to non-existent, the KLF telling us that they were the ‘*Justified Ancients of Moo-Moo*‘. It’s little wonder the Americans didn’t fall for this nonsensical, ludicrous crap.\n\nI was content with the wall of sound it created, though today it does sound like a relic that sits firmly in the year it was created.\n\nhttps://www.youtube.com/watch?v=pC_zffOenk8\n\n![RedLine.png](https://files.peakd.com/file/peakd-hive/slobberchops/BqIuXs6C-RedLine.png)\n\n<center>\n<H4>Snoop Doggy Dogg – What’s My Name? (Doggystyle - 1993)</H4>\n![smal_16642illustrationofanelectricguitarpv.jpg](https://files.peakd.com/file/peakd-hive/slobberchops/K8FtI6SX-smal_16642-illustration-of-an-electric-guitar-pv.jpg)\n</center>\n\nThis was a little later than I remember it, but three years later, I was in the same job, which had gotten significantly worse. In 1990, the company I worked for provided free lunches… can you believe that?\n\nHard times had rolled by, and the canteen had become subsidised, but worse still, the IT department had been moved along sales so we couldn’t arse around any longer and had to look like we were actually working; preposterous.\n\nSnoop Dog entered by ears one day, again on the radio on my way to this depressing job. I am not a rap fan, but there was something there that ticked my boxes. Subsequent tracks of ‘*Gin and Juice*’ and particularly the Dr Dre track, ‘*Nuthin' but a 'G' Thang*’ also hit the spot.\n\nWas it that laid-back West Coast sound? I reckon so.\n\nhttps://www.youtube.com/watch?v=2soGJXQAQec\n\n![RedLine.png](https://files.peakd.com/file/peakd-hive/slobberchops/BqIuXs6C-RedLine.png)\n\n<center>\n<H4>Tanita Tikaram - Twist in My Sobriety (Ancient Heart – 1988)</H4>\n![smal_16642illustrationofanelectricguitarpv.jpg](https://files.peakd.com/file/peakd-hive/slobberchops/K8FtI6SX-smal_16642-illustration-of-an-electric-guitar-pv.jpg)\n</center>\n\nA couple of years earlier, this strange one entered the UK charts and did just enough to gain my attention. I distinctly remember @steddyman mentioning this to me and that he was intrigued by its dark, brooding sound.\n\nA few days later, he must have analysed it and summarily dismissed it as arty crap! ‘The lyrics make no sense', he proclaimed. I didn’t see it that way, and fuck knows what he would make of the lyrical content of the ‘*Cocteau Twins*’ if he thought this was junk.\n\nLooking at the lyrics [here](https://genius.com/Tanita-tikaram-twist-in-my-sobriety-lyrics), I wouldn’t call them out to be more gibberish than many other songs.\n\nAs for the song itself, it’s not something I listen to now, but takes me back to that time of stagnation, unfulfilment and poking old hole. If only I could have seen what was coming, the internet, the future, the shameless act of dating sites. \n\nhttps://www.youtube.com/watch?v=7s8glZ-efMg\n\n<center>\n![smal_16642illustrationofanelectricguitarpv.jpg](https://files.peakd.com/file/peakd-hive/slobberchops/K8FtI6SX-smal_16642-illustration-of-an-electric-guitar-pv.jpg)\n</center>\n\nGuitar Image - [Source](http://www.freestockphotos.biz/stockphoto/16642)\nThree-Tune Tuesday logo was created by AI. Feel free to use it in your own 'Three-Tune Tuesday' posts.\n\n![RedLine.png](https://files.peakd.com/file/peakd-hive/slobberchops/BqIuXs6C-RedLine.png)\n\nDo you like posting your Urbex content and photography for **FREE** on Facebook and YouTube? I like to get some form of reward for my work and every time I create I do just that. Take a look at **[The Urbex Community on HIVE](https://peakd.com/c/hive-104387/created)**.\n\nIf you want to keep creating for **FREE** then ignore what you are reading. If you want to be like me and gain something other than **BUGGER ALL** for your work then click **[here](https://youtu.be/0pnFg4igYuY)** and learn about posting on the HIVE blockchain.\n\n<center>\nMy Urban Exploration Tales can be found directly on the internet via my\nWebsite: '[Tales of the Urban Explorer](https://talesoftheurbanexplorer.co.uk/)'.\n</center>\n\n![RedLine.png](https://files.peakd.com/file/peakd-hive/slobberchops/BqIuXs6C-RedLine.png)\n\n![TalesLogo.JPG](https://files.peakd.com/file/peakd-hive/slobberchops/23tbkz42cJ8HwULaL9SPMgb78qc5GL7ZBfC4nrsp2sk8ytmsQa4NJAhupa8zpu19gUgZ1.JPG)\n\n![RedLine.png](https://files.peakd.com/file/peakd-hive/slobberchops/BqIuXs6C-RedLine.png)\n\n<center>\n![CurieCurator.jpg](https://files.peakd.com/file/peakd-hive/slobberchops/f5zec6UG-CurieCurator.jpg)\n</center>\n\n![RedLine.png](https://files.peakd.com/file/peakd-hive/slobberchops/BqIuXs6C-RedLine.png)\n\n<div class=\"pull-left\">\n\n![Drooling Maniac.JPG](https://steemitimages.com/DQmNfnfWNzzjZDZ7b1PukhSHLgL5g55apzyDpT4Jp7dP2CH/Drooling%20Maniac.JPG)\n\n</div>\n\n<div class=\"pull-right\">\n\nIf you found this article so invigorating that you are now a positively googly-eyed, drooling lunatic with dripping saliva or even if you liked it just a bit, then please upvote, comment, rehive, engage me or all of these things.\n\n</div>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 802
+        },
+        "title": "Three-Tune Tuesday: Tales from 1990...",
+        "author": "slobberchops",
+        "payout": 30.053,
+        "created": "2026-05-13T09:15:33",
+        "reblogs": 7,
+        "replies": [],
+        "updated": "2026-05-13T10:31:12",
+        "category": "hive-193816",
+        "children": 32,
+        "permlink": "three-tune-tuesday-tales-from-1990",
+        "community": "hive-193816",
+        "payout_at": "2026-05-20T09:15:33",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 373156220954017,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "pharesim",
+            "rshares": 122353180761
+          },
+          {
+            "voter": "flemingfarm",
+            "rshares": 302159744317
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 3778807087
+          },
+          {
+            "voter": "ericvancewalton",
+            "rshares": 801808614366
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 16340850123
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "ttt",
+            "proofofbrain",
+            "palnet",
+            "creativecoin",
+            "neoxian",
+            "archon",
+            "musicforlife",
+            "vibes"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/slobberchops/AKuv6ZNeF18TCqWHp5NS7WaVTPwgskV62ZgkPYRyBnqw3gc7YUfPvRAg291ezXA.jpg",
+            "https://files.peakd.com/file/peakd-hive/slobberchops/BqIuXs6C-RedLine.png",
+            "https://files.peakd.com/file/peakd-hive/slobberchops/23tcLiZk5sPGybkUeSY4fvXixLk9DgLpxMRKFjCN5auouCUj3YPj7XXszAwiJmSEgAeNw.png",
+            "https://files.peakd.com/file/peakd-hive/slobberchops/K8FtI6SX-smal_16642-illustration-of-an-electric-guitar-pv.jpg",
+            "https://files.peakd.com/file/peakd-hive/slobberchops/23tbkz42cJ8HwULaL9SPMgb78qc5GL7ZBfC4nrsp2sk8ytmsQa4NJAhupa8zpu19gUgZ1.JPG",
+            "https://files.peakd.com/file/peakd-hive/slobberchops/f5zec6UG-CurieCurator.jpg",
+            "https://steemitimages.com/DQmNfnfWNzzjZDZ7b1PukhSHLgL5g55apzyDpT4Jp7dP2CH/Drooling%20Maniac.JPG"
+          ],
+          "links": [
+            "https://www.youtube.com/watch?v=pC_zffOenk8",
+            "https://www.youtube.com/watch?v=2soGJXQAQec",
+            "https://www.youtube.com/watch?v=7s8glZ-efMg"
+          ],
+          "users": [
+            "steddyman"
+          ],
+          "format": "markdown",
+          "description": "...'too fat?... not a chance, average looking?... I would need 6 pints before contemplation'..."
+        },
+        "community_title": "Music",
+        "author_reputation": 81.92,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "30.053 HBD"
+      },
+      {
+        "url": "/hive-181335/@acidyo/ba0edabd",
+        "body": "[![](https://images.3speak.tv/images/1778697323380-f0a2e932944fe8b7.webp)](https://3speak.tv/watch?v=acidyo/ba0edabd)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=acidyo/ba0edabd)\n\n\n---\n\n### First off, EPILEPSY warning in the video (no joke)\n\nSo I was gonna chill today and take it easy, but guess I lied. \n\nGot the idea that we should add 3speak videos to scrobble.life, meaning, when you watch videos on 3speak, it should credit you a scrobble! \n\nSo I went to work (put claude to work).\n\nAfter a few testing back and forth we finally got it working! \n\nI picked out a video that wasn't too short nor too long to demonstrate, it was one by @laurapalmerr\n\nEnjoy scrobbling 3speak videos!\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=acidyo/ba0edabd)\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 556
+        },
+        "title": "A 3speak video about 3speak",
+        "author": "acidyo",
+        "payout": 28.456,
+        "created": "2026-05-13T18:40:09",
+        "reblogs": 6,
+        "replies": [],
+        "updated": "2026-05-13T18:40:09",
+        "category": "hive-181335",
+        "children": 35,
+        "permlink": "ba0edabd",
+        "community": "hive-181335",
+        "payout_at": "2026-05-20T18:40:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 358086249755462,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "steempty",
+            "rshares": 9575785824196
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 153416401939806
+          },
+          {
+            "voter": "nanzo-scoop",
+            "rshares": 445120487
+          },
+          {
+            "voter": "ak2020",
+            "rshares": 14128592713
+          },
+          {
+            "voter": "emily-cook",
+            "rshares": 819186899
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 100,
+            "account": "harvestmoon299"
+          },
+          {
+            "weight": 1000,
+            "account": "threespeakfund"
+          }
+        ],
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "tags": [
+            "3crobble",
+            "3speak",
+            "video",
+            "scrobbling"
+          ],
+          "type": "3speak/video",
+          "image": [
+            "https://images.3speak.tv/images/1778697323380-f0a2e932944fe8b7.webp"
+          ],
+          "video": {
+            "info": {
+              "file": "ipfs://QmUSmQ8jQsdcFoHsByVws8g8LCoiHkMpNvt7zC2ZzoQwT8",
+              "ipfs": null,
+              "lang": "en",
+              "title": "A 3speak video about 3speak",
+              "author": "acidyo",
+              "duration": 122,
+              "filesize": 123561873,
+              "permlink": "ba0edabd",
+              "platform": "3speak",
+              "video_v2": "ipfs://QmYp2YT8jQ62JK81TLTA9W3mgcyu8cxtk984bPPXpBezW1/manifest.m3u8",
+              "sourceMap": [
+                {
+                  "url": "ipfs://QmYp2YT8jQ62JK81TLTA9W3mgcyu8cxtk984bPPXpBezW1/manifest.m3u8",
+                  "type": "video",
+                  "format": "m3u8"
+                },
+                {
+                  "url": "https://images.3speak.tv/images/1778697323380-f0a2e932944fe8b7.webp",
+                  "type": "thumbnail"
+                }
+              ],
+              "firstUpload": false,
+              "ipfsThumbnail": null
+            },
+            "content": {
+              "tags": [
+                "3crobble",
+                "3speak",
+                "video",
+                "scrobbling"
+              ],
+              "description": "### First off, EPILEPSY warning in the video (no joke)\n\nSo I was gonna chill today and take it easy, but guess I lied. \n\nGot the idea that we should add 3speak videos to scrobble.life, meaning, when you watch videos on 3speak, it should credit you a scrobble! \n\nSo I went to work (put claude to work).\n\nAfter a few testing back and forth we finally got it working! \n\nI picked out a video that wasn't too short nor too long to demonstrate, it was one by @laurapalmerr\n\nEnjoy scrobbling 3speak videos!"
+            }
+          }
+        },
+        "community_title": "Threespeak",
+        "author_reputation": 84.07,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "100000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "28.456 HBD"
+      },
+      {
+        "url": "/hive-163772/@jelenaa/drina-cruise-between-bosnia-and-serbia",
+        "body": "For my mother's birthday, she gave our whole family, my sisters and mine, a truly special gift: a cruise along the beautiful Drina River, which forms the natural border between Serbia and Bosnia and Herzegovina.\n\n![3791.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EpJW95kYkNVxYYgzD7VKUVFKNy2Z2ohuQm5dsuEmm2LSGxfMY2XRDQ5DKVNKTt9uHgZ.jpg)\n\nWe spent several wonderful days on Tara National Park, surrounded by forests, fresh mountain air, and breathtaking viewpoints. Our Drina cruise started at the stunning and calm Perućac Lake.\n\n![3591.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EqYrmQ4dsgb6euCTvdC7SfQ37THeVMQdrKRff3KnZBqVEp6JhX37JK7EoKH6ZmmfPjP.jpg)\n\n![3588.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/Ep7t5Q8RYC67jw7KvLEwY75wws7FmdDpVLPNyrm739ZK6HQXTjEc8jKguKzJA3MWfvF.jpg)\n\n![3592.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EnWG8nSFwqbbzggLLCGwukQQu6yGGYGYctqeSQAF6T1ibx1QFDmyRBA2e7CLfpuxZap.jpg)\n\n![3589.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/Ep3cLjT5UKrFRJn9xynrjUtBkTZ62CuNjHVVtoLXRpnWvt3tAft5LQSYhfuczfHYnWd.jpg)\n\nFrom the lake, we boarded a charming boat called Grizzly and took our seats on the upper deck, ready to enjoy the scenery.\n\n![3617.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EqL5tcHxyycdzhtL4UBi2UFZAVk7qqakhfU8idNUs2PZnkztnbhFkxx6gUctoMYG7pX.jpg)\n\n![3595.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EpnALam6ptQBmcDF3qTNmgP4cu8CyUPtsyfVvAu6hejnmvQnZrLpf9yhhZkf4fbiw3Y.jpg)\n\n![3601.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EpQtPq86EvjqHxQy4am8iXChMCAg4njJqoZPSRs9KG2XieqdpSG8NkdqyTdBg4zSdJs.jpg)\n\n![3710.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EqDiZuYC73uRY249UozN9cddGeaGyVggxCeqToFvjrJcfAZkQfuUrnMWUcaE6Ph8eqB.jpg)\n\nAs we set off, we were immediately captivated by the emerald-green river winding through dramatic cliffs and dense forests.\n\n![3699.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EppHjoBRXLC9ekqgKv4cG9ttG9sAAek939E63ibMwcJdPZWR1kPNv8xRh7iPeiHm2BD.jpg)\n\n![3719.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EpJX7dG23RbeyN9GGwndCxsXTkRgXxv3uT2uogrGJ4xbP2wH27M3wPyedd639junxcs.jpg)\n\n![3712.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EokbjMoCuvxaatpQPkr9RsbcwPEGjdSaaDBRqMtcsj94aLMHxE9z5rJvPTQRZdACcji.jpg)\n\n![3729.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EoEpY1yiWjJpNSVxnk8UdC61LLRCxAfpjRyHqGf9uQj8pqrE15ugx2C2qYvgdFp1sUH.jpg)\n\nTrees seemed to grow straight out of the rocks.\n\n![3723.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EpQutKMDCHdBs6Z88kSCGjKfdv11iFscsQga2g83uz2XtMZppLBJDiPoKzWurG16YRr.jpg)\n\n![3724.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EpnBtFkRV2jVHZUZuT28DSj1HCmKTxFtr28j6daJpng9yPZ6HHwKuhXku5AhphcxmCp.jpg)\n\n![3803.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/Eo8SPFxo55ji8wdTW7rsV6R3TMM4AqKbGp28DZVxSE5bVpzTKznovT8cv7dHi9T2Azn.jpg)\n\nAnd wooden cottages and small riverside camps added a sense of warmth and tranquility.\n\n![3806.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EoprzwE4eF3BVmBFHAveH9a7hMG1cngmEJMfooej651yeebZUv5WNxjBZnCtb5KUCEH.jpg)\n\n![3810.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EoGwxJshKNjNXtsfs9H4KG3sSXVqHWQY25K5JY8HWsvqcAxpSf5KrTS2mrUqsSik5sQ.jpg)\n\n![3858.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/Eq9SviBhJqEoBaHAbRNTUm9UwM1hgr7ePLdyfxJ5TA7w8DgoBEQJHcgeR6cxkNLDx1x.jpg)\n\n![3861.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EpJXAomGkD5LjwGvtNqhNHMFj1krCAGFRJRLxcHwaHpFdaQzaP3X7n3Jdf7b54wfnb1.jpg)\n\n![3799.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EpQvGvFgSyW2em6o3ZL2mAhofQmqiz4qRE8NfUxqdx2Q1UHuayve6YCEC4z93DbdFVe.jpg)\n\n![3883.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EoCh5ZHz9BAEM3WzQm93qKLKTGBwxa5wuRYi5MreoAwT3jFoXTrJnVWVKxYATpYUA3b.jpg)\n\nDuring the cruise, our guide shared fascinating stories about the places we passed. He even told us to pay close attention, because on the way back there would be a quiz to test what we had learned.\n\n![4010.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EppHKmDa5p719X2tGV8Qb6fUdVLVY1nCRH9mitq68aLohPQEGEijYgHfJKiBQ6vfGEt.jpg)\n\n![4009.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EogMP4EZ74p4hFRti48EeZhyKSwdSLRjYUtNos7ePhSZyKVoKCnhX6AYmZUaKAuNr2U.jpg)\n\nFor about three hours, we sailed between Serbia and Bosnia, following the majestic Drina River towards Višegrad, the town closely associated with the Nobel Prize-winning writer Ivo Andrić. Along the way, we passed a very impressive monument: an old ship raised in memory of those who lost their lives during World War II.\n\n![3873.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EpnBKBA8sYAT28znAyABzKSFhjf3yBqMtjfYvWVe1GZzHJQqpth9YkjPrnpmfyAsZ97.jpg)\n\n![3876.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/Eo8SH8oQ4Nwj2CDV2qjZ7VVZZ7SgKxNdFigw4i2HNGiwSYD72dUzBRyWac2nPVDFx1z.jpg)\n\n![3881.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EoGxUCwDtRYxQwmsuaqY1qDsSjpDaJ4x2VHUTst1ugLqNP7EeGFaCiYxGeAKsYDL61P.jpg)\n\nMy children especially loved exploring the lower deck, where some of our most exciting moments happened as we passed through the narrowest part of the canyon.\n\n![3657.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/23xyR81DwHnkMjcixRX8YPgYacgddxVjz1VXegCJDuMuYkHDMfTHem4ss5UH9rKs3V4ER.jpg)\n\n![3690.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/EoniyvvYHeh6Wmv4pd3DjbBWdDaDrr5sqzNmyASZGHQTHHvhu7G5FcojfG6oQVCwD1g.jpg)\n\n![3787.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/23xyQv1mEwEZvkkpc5nPvUaUeuF1Hb59VgbdX21FBxtzWCspkxUJjuQEe4tyn7dh8tbEJ.jpg)\n\nAfter three unforgettable hours, we arrived in Višegrad. And that memorable stop deserves a story of its own in my next post.\n\n![3745.jpg](https://files.peakd.com/file/peakd-hive/jelenaa/23xKqyh8ew3HcTPjT5X4z3JSBhHmTtWfg5H75fmMfR8GHA9TBgypB9EbJXNCc1wiSaYmA.jpg)\n\nThank you for reading.\n\nJelena\n\n[//]:# (!worldmappin 43.96304 lat 19.39777 long  d3scr)\n\n[//]:# (!worldmappin 43.96304 lat 19.39777 long  d3scr)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1068
+        },
+        "title": "Drina cruise between Bosnia and Serbia",
+        "author": "jelenaa",
+        "payout": 27.714,
+        "created": "2026-05-13T15:45:36",
+        "reblogs": 10,
+        "replies": [],
+        "updated": "2026-05-13T15:45:36",
+        "category": "hive-163772",
+        "children": 20,
+        "permlink": "drina-cruise-between-bosnia-and-serbia",
+        "community": "hive-163772",
+        "payout_at": "2026-05-20T15:45:36",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 333474574654727,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "blocktrades",
+            "rshares": 19177417848529
+          },
+          {
+            "voter": "pharesim",
+            "rshares": 106801848551
+          },
+          {
+            "voter": "tuck-fheman",
+            "rshares": 888850804
+          },
+          {
+            "voter": "drifter1",
+            "rshares": 6326222281
+          },
+          {
+            "voter": "kevinwong",
+            "rshares": 31538954770
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "worldmappin",
+            "travel",
+            "serbia",
+            "bosnia",
+            "photographylovers",
+            "photography",
+            "amazingnature",
+            "ocd"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EpJW95kYkNVxYYgzD7VKUVFKNy2Z2ohuQm5dsuEmm2LSGxfMY2XRDQ5DKVNKTt9uHgZ.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EqYrmQ4dsgb6euCTvdC7SfQ37THeVMQdrKRff3KnZBqVEp6JhX37JK7EoKH6ZmmfPjP.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/Ep7t5Q8RYC67jw7KvLEwY75wws7FmdDpVLPNyrm739ZK6HQXTjEc8jKguKzJA3MWfvF.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EnWG8nSFwqbbzggLLCGwukQQu6yGGYGYctqeSQAF6T1ibx1QFDmyRBA2e7CLfpuxZap.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/Ep3cLjT5UKrFRJn9xynrjUtBkTZ62CuNjHVVtoLXRpnWvt3tAft5LQSYhfuczfHYnWd.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EqL5tcHxyycdzhtL4UBi2UFZAVk7qqakhfU8idNUs2PZnkztnbhFkxx6gUctoMYG7pX.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EpnALam6ptQBmcDF3qTNmgP4cu8CyUPtsyfVvAu6hejnmvQnZrLpf9yhhZkf4fbiw3Y.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EpQtPq86EvjqHxQy4am8iXChMCAg4njJqoZPSRs9KG2XieqdpSG8NkdqyTdBg4zSdJs.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EqDiZuYC73uRY249UozN9cddGeaGyVggxCeqToFvjrJcfAZkQfuUrnMWUcaE6Ph8eqB.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EppHjoBRXLC9ekqgKv4cG9ttG9sAAek939E63ibMwcJdPZWR1kPNv8xRh7iPeiHm2BD.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EpJX7dG23RbeyN9GGwndCxsXTkRgXxv3uT2uogrGJ4xbP2wH27M3wPyedd639junxcs.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EokbjMoCuvxaatpQPkr9RsbcwPEGjdSaaDBRqMtcsj94aLMHxE9z5rJvPTQRZdACcji.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EoEpY1yiWjJpNSVxnk8UdC61LLRCxAfpjRyHqGf9uQj8pqrE15ugx2C2qYvgdFp1sUH.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EpQutKMDCHdBs6Z88kSCGjKfdv11iFscsQga2g83uz2XtMZppLBJDiPoKzWurG16YRr.jpg",
+            "https://files.peakd.com/file/peakd-hive/jelenaa/EpnBtFkRV2jVHZUZuT28DSj1HCmKTxFtr28j6daJpng9yPZ6HHwKuhXku5AhphcxmCp.jpg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Worldmappin",
+        "author_reputation": 76.21,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "27.714 HBD"
+      },
+      {
+        "url": "/posh/@poshtoken/posh-1778631530663#@poshtoken/re-poshtoken-tez17g",
+        "body": "Comment for additional funding of POSH activities.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 18
+        },
+        "title": "RE: Posh Delegation Stats For 2026-05-13",
+        "author": "poshtoken",
+        "payout": 26.182,
+        "created": "2026-05-13T10:30:54",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T10:30:54",
+        "category": "posh",
+        "children": 0,
+        "permlink": "re-poshtoken-tez17g",
+        "payout_at": "2026-05-20T10:30:54",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 296033005601118,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "justinw",
+            "rshares": 150164170437
+          },
+          {
+            "voter": "ady-was-here",
+            "rshares": 524508642
+          },
+          {
+            "voter": "ocd-witness",
+            "rshares": 307124770210
+          },
+          {
+            "voter": "royaleagle",
+            "rshares": 25794148878
+          },
+          {
+            "voter": "ltcij",
+            "rshares": 1682660004
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "posh"
+          ],
+          "image": [],
+          "users": []
+        },
+        "parent_author": "poshtoken",
+        "parent_permlink": "posh-1778631530663",
+        "author_reputation": 87.24,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "26.182 HBD"
+      },
+      {
+        "url": "/hive-105017/@davidke20/6cae71b2f997",
+        "body": "公司近年來開始引進國際化的國際水平產品。與其說新產品，不如說是將國際市場的產品本土化，然後在當地發售。\n\n能將國際產品帶入並且本土化是一件非常了不起的事。當然，這也必須是國際公司才有這樣的潛力。首先，必須有本地分公司在當地有強大的銷售單位，這樣才有資格說將本公司在外的國際產品帶進來。不然，如果是一家本土公司，貿然引進外國產品，後果只有一個，買了兵器但不懂得使用。開槍也可能會後坐力太猛，未殺敵先傷己。\n\n保險產品本來就不是一勞永逸的“成品”。當中涉及的非常廣泛。首先就是要本土的市場調查，有了市場資訊才容易找到突破口。然後就是將產品根據本土的法律規範進行調整。法律不~~外乎~~包括人情，每當遇到理賠的時候，受害人總是千方百計想要多一些理賠，反之保險公司永遠會在保單範圍裡給予“適當”的財務損失的理賠；當客戶與保險公司理賠範圍無法達成共同的理賠金額，而金額又巨大就肯定會走法律渠道，打官司。\n\n說了這麼久，你該不會是以為你們拉叔我改過自新，開始做一個正兒八經的技術分析博主吧？大家好，我是拉叔🤪現實生活中，拉叔是一名保險公司行政人猿，區塊鏈浮沉……等……好像一開始玩就沉，沒有浮過😂OK，換個角度說，區塊鏈愛好有時個十幾年經驗的小白。目前是Hive的小博主，主打自由話題。所以，今天的話題是，一次hotel推介禮的經驗。\n\n話說，咱們公司籌備這個推介禮籌備了好久，而且代理猿也設定只邀請高效能的合作夥伴，少點業績都不受邀請。公司非常看重這一次的“新”產品，這次推介禮還特地邀請（其實是內部分配外勤）香港的醫療保險權威，新加坡的科技保險權威，還有印度來的能源管理科技保險權威……還有我們本土文化科技保險拳威😅\n\n![](https://images.ecency.com/DQmSpsR3zDvwaHCv1WQdwwwv49x5rUGUeAoJpGGDQCH19Zw/1778601031428.jpg)\n\n總裁是個年輕的老外，操著一口澳洲腔，其實我們不知道他說了什麼。只知道每一句話一開口就是“矮”-I，後面就是“油”-You。他說完五秒後，有人鼓掌，我們大家看到又跟著鼓掌就是了。然後他在補充幾句再3Q，就下來了。\n\n![](https://images.ecency.com/DQmdiJPQPqFdwy4rG4F7v7T95Yeiks7B2jfPd5524gEfZnS/1778601031573.jpg)\n\n蠢材致詞過後不久就響鐘下課了，我大家可以移動到課堂外去享用茶點。茶點有著幾個不同的項目，由於拉叔吃過了早餐還沒餓，所以炒米粉就沒拿了，只是隨便拈了幾片三明治、甜點和餅乾，連咖啡都沒喝上。\n\n![](https://images.ecency.com/DQmSbyC74u5gifykbeGfQnLm6TNZyE2TV4uUMhepENWp1vb/1778601031648.jpg)\n\n推介禮完畢後，就是分組活動。咱們出席者都被安排到不同的組別去了解本產品的不同層次和階段，設定目標來解決各種\n\n客戶不同的需要。\n\n![](https://images.ecency.com/DQmaGdKu7YY25mmnRh2YEVA2Jo6DUFzMG5ReK54WwYKMzU2/1778601031781.jpg)\n\n香港代表講解的生化科學課題更是廣泛受到大家關注。尤其是關於幹細胞技術這一類敏感話題，一直都是大家關注的。除了負擔不起生活，誰不想健健康康的“遲點死”？\n\n![](https://images.ecency.com/DQmbfaWHnwjG2372LhijYfe9JoiMVHQjcxsPSy9m3mxeHKY/1778601031891.jpg)\n\n印度的代表是個男生，講解關於新能源相關的科技保險。你們拉叔我雖然對於這一塊相當有興趣，不過奈何代表來自印度，而且是個男的，你們看看寥寥可數的分組活動就知道反應有多劇烈了。\n\n![](https://images.ecency.com/DQmP36K691kADvhQwZ35SpB9HqjwfsEw896iQPcqqmgVn5x/1778601059869.jpg)\n\n分組活動完畢，公司還提供了酒店安排的自助餐午餐。老實說嘛，這是我來過這一家酒店這麼多次之最難吃一次。就這麼一碟，勉強吃完了沒有回去排隊，來圓滿結束了這一次新產品推介禮。\n\n![](https://images.ecency.com/DQmQSvyGtmXwzqViiBiRvpQSvhVGHm5i34FA3Gx1Epo2xZT/1778636537034.jpg)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 806
+        },
+        "title": "新產品推介禮",
+        "author": "davidke20",
+        "payout": 24.439,
+        "created": "2026-05-12T23:36:33",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-13T01:42:39",
+        "category": "hive-105017",
+        "children": 12,
+        "permlink": "6cae71b2f997",
+        "community": "hive-105017",
+        "payout_at": "2026-05-19T23:36:33",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 283272284950630,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "abit",
+            "rshares": 32770522664744
+          },
+          {
+            "voter": "drifter1",
+            "rshares": 1278148605
+          },
+          {
+            "voter": "kevinwong",
+            "rshares": 6531032244
+          },
+          {
+            "voter": "eric-boucher",
+            "rshares": 15429276167
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 120798309404
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.5.5-mobile",
+          "tags": [
+            "hive-105017",
+            "cn",
+            "cn-reader",
+            "teammalaysia",
+            "cn-malaysia",
+            "blog",
+            "life",
+            "palnet",
+            "neoxian",
+            "ecency"
+          ],
+          "type": "post",
+          "image": [
+            "https://images.ecency.com/DQmSpsR3zDvwaHCv1WQdwwwv49x5rUGUeAoJpGGDQCH19Zw/1778601031428.jpg",
+            "https://images.ecency.com/DQmdiJPQPqFdwy4rG4F7v7T95Yeiks7B2jfPd5524gEfZnS/1778601031573.jpg",
+            "https://images.ecency.com/DQmSbyC74u5gifykbeGfQnLm6TNZyE2TV4uUMhepENWp1vb/1778601031648.jpg",
+            "https://images.ecency.com/DQmaGdKu7YY25mmnRh2YEVA2Jo6DUFzMG5ReK54WwYKMzU2/1778601031781.jpg",
+            "https://images.ecency.com/DQmbfaWHnwjG2372LhijYfe9JoiMVHQjcxsPSy9m3mxeHKY/1778601031891.jpg",
+            "https://images.ecency.com/DQmP36K691kADvhQwZ35SpB9HqjwfsEw896iQPcqqmgVn5x/1778601059869.jpg",
+            "https://images.ecency.com/DQmQSvyGtmXwzqViiBiRvpQSvhVGHm5i34FA3Gx1Epo2xZT/1778636537034.jpg"
+          ],
+          "links": [],
+          "format": "markdown+html",
+          "image_ratios": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "community_title": "HIVE CN 中文社区",
+        "author_reputation": 79.19,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "24.439 HBD"
+      },
+      {
+        "url": "/hive-115814/@cryptoandcoffee/agents-ready-to-swoop-33b",
+        "body": "\n<center><img src=\"https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23tvD6RgXQ4uVFkttTNWZbwQWJwpf6LUYoaab543ScLqhsMmm8SeY15fkoFCuycSzzcwr.png\"/></center>\n\n[source](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjjIOOCshyGpVu76b6C670x2exuVfn3PYa_A&s)\n\n\n\n\n\nThe top schoolboy tournament in the country being Craven Week is set for 5th -11th July and the provincial teams are busy having their under 18 trials. The only problem is that the quality of players coming through the school system is on mass so many are going to miss out. 16 teams of 23 players each sounds like a lot of players which it is and would expect the top 50-80 have already got contracts for next year. Many of the teams could play 3 teams without the standards dropping such is the abundance of talent.\n\n\n<center><img src=\"https://files.peakd.com/file/peakd-hive/cryptoandcoffee/EoJyzmZmF9dLX4KUjvYcFRYfkBm1G6dNRQbgjBrZTdFpq1gC3LGGWZ8YnhucfeZSzs4.png\"/></center>\n\n[source](https://media.licdn.com/dms/image/v2/C4E03AQEEfbZJPeiclA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1652441001926?e=2147483647&v=beta&t=FeBNNr2uvLLvs9McaN59bgOTipenglq0JfstgqNrvbc)\n\n\nI was reading a report last weekend that highlighted one of the provinces facing a dilemma having 10 world class players fighting for 3 positions with possibly one more as a substitute. This will leave 6 players out in the cold except this will present an opportunity for agents from abroad looking for new recruits. These players would be considered over flow and is no fault of their own. \n\nI knew a few people who turned to becoming rugby agents back in 1996 when rugby turned professional and the ones i knew represented some of the top players in South Africa. Totally different these days from back then as there is so much more money involved due to the size of the players contracts.\n\nIn the last World Cup back in 2023 27 ex South African players were playing for other countries and this number in the future is expected to rise significantly. Players are able to play for another country through birthright or grandparents after a 36 month period even if they have played for another country. This is a once off in your career move, but a player having just left school would need a few years anyway to settle in. Any other player who does not have family connections can gain residency status after 5 years. A player who is 18 or 19 could in theory be playing for another country when he is 24 which is still very young offering a good 7 year international career.\n\nProfessional rugby clubs from the likes of Japan and France are expected to be attending these events with many agents already having made contact with certain players. There is also an under 16 provincial rugby week which will also attract agents not only from overseas, but locally as the local provinces sign up the talent. The under 13 provincial tournament will be more about  school agents offering scholarships so they can guarantee in 4 years time the school can be challenging for the top spot. \n\nHow times have changed since I played as many top players back then were lost through the system and were never seen again. These days if you are excluded from provincial selection there is still opportunities elsewhere especially over seas. Many of my rugby team mates from the army left to play in Wales, Scotland, England and even Italy. The sport was not \"professional\" back then, but found out later they got paid a decent wage through club sponsors and some went on to represent those countries.\n\nA young talented rugby player leaving school today has the world at his feet due to the high performance programs offered at school level. Other players of their age group from other countries do not have this opportunity and this is like a continuous production line of top players coming off the conveyor belt each year. A club or country developing their youth teams would be crazy to ignore as the players are not necessarily the finished article, but at least two or three years ahead of other players their age. Professional rugby teams should decrease in average age as 20 or 21 year old's make the step up.\n\nPosted Using [INLEO](https://inleo.io/@cryptoandcoffee/agents-ready-to-swoop-33b)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 282
+        },
+        "title": "Agents Ready To Swoop",
+        "author": "cryptoandcoffee",
+        "payout": 24.228,
+        "created": "2026-05-12T20:19:51",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-12T20:19:51",
+        "category": "hive-115814",
+        "children": 9,
+        "permlink": "agents-ready-to-swoop-33b",
+        "community": "hive-115814",
+        "payout_at": "2026-05-19T20:19:51",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 275470384791828,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "roelandp",
+            "rshares": 13731413696
+          },
+          {
+            "voter": "jeffjagoe",
+            "rshares": 874891448
+          },
+          {
+            "voter": "arcange",
+            "rshares": 891474891733
+          },
+          {
+            "voter": "kaykunoichi",
+            "rshares": 1085488544
+          },
+          {
+            "voter": "anarcist69",
+            "rshares": 17712544167
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "sportsblock"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-115814",
+            "rugby",
+            "schoolboys",
+            "agents",
+            "contracts",
+            "scouting",
+            "professionals",
+            "pob",
+            "waiv",
+            "vyb"
+          ],
+          "links": [
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23tvD6RgXQ4uVFkttTNWZbwQWJwpf6LUYoaab543ScLqhsMmm8SeY15fkoFCuycSzzcwr.png\"/></center>",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjjIOOCshyGpVu76b6C670x2exuVfn3PYa_A&s)",
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/EoJyzmZmF9dLX4KUjvYcFRYfkBm1G6dNRQbgjBrZTdFpq1gC3LGGWZ8YnhucfeZSzs4.png\"/></center>",
+            "https://media.licdn.com/dms/image/v2/C4E03AQEEfbZJPeiclA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1652441001926?e=2147483647&v=beta&t=FeBNNr2uvLLvs9McaN59bgOTipenglq0JfstgqNrvbc)",
+            "https://inleo.io/@cryptoandcoffee/agents-ready-to-swoop-33b)"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@cryptoandcoffee/agents-ready-to-swoop-33b"
+        },
+        "community_title": "Sportsblock",
+        "author_reputation": 84.31,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "24.228 HBD"
+      },
+      {
+        "url": "/hive-155530/@x-rain/a-hike-from-pokhara-to-sarangkot",
+        "body": "\n![77788hhggtt.jpg](https://files.peakd.com/file/peakd-hive/x-rain/EpA25xwx2rgvybTTF9ARNPrBMDpVAJ4BrXacwfSPxjcFt33JDjjeJuFdzQ9Gg2if5rh.jpg)\n\n\nAround 2:30, after pondering where to go for a walk, I decided to explore an area over Sedi (a neighborhood where I have been staying since the end of March 2026). It was too late for a serious adventure, and I wanted only to spend some time with nature, observing plants and trees, maybe some cool birds... On my way, a local man started asking questions, including where I was heading, and I repeated: \"*I know, it is too late for going to Sarangkot, better to start in the morning*.\"\n\nSarangkot is a village at the top of a mountain over Sedi and the entire Pokhara City. It's known to have a stunning vista of snow-covered peaks of the Himalayas, standing together like actors on the stage after a play, receiving applause. And as everyone says, these rocky actors do deserve that recognition - each glorious and resplendent in their snowy, heavenly beauty.\n\nHowever, to reach them on foot, as I knew from Google, you need something between 2 and 3 hours, and, secondly, those celebrities - continuing the silly analogy, lol - normally disappear behind the curtain of clouds at noon or so... Moreover, it often starts raining around 4 p.m... Thus, 2:30 was obviously too late for anything except for visiting the nearest shrubs or stuff...\n\nBut I  thought: nobody makes me walk all the way to Sarangkot viewpoint, I can just have a stroll up the slope, nothing serious...\n\nThe pathway, crossing the woody slope, was very steep but equipped with stairs made of rocks, so the ascent was tiring but not difficult. The sweat quickly paid off with a beautiful view through the gap between trees:\n\n![DSC_6565.JPG](https://files.peakd.com/file/peakd-hive/x-rain/242XuQDqQreEZEnGotgDP8wnk81XUx5SaEijeUkpn7dSUNDCNQSX6kiyicLGUJDMv7SRs.JPG)\n\nWhen the forest came to an end,\n\n![DSC_6575.JPG](https://files.peakd.com/file/peakd-hive/x-rain/2423yioZEBwy7cawbKyEXCWhQrnSRKhpMmb7ZFqNxUVM9EpNZwU2fByoVFu2Rr3eZposa.JPG)\n\nthe panorama became even more breathtaking:\n\n![DSC_6582-2.JPG](https://files.peakd.com/file/peakd-hive/x-rain/243zZnuFW2cD94VEntoQ3ok7AJDZ8p6qt7s4PFLfYj1Qnkr8kwVXBQGQSbHpMWh2W6uBQ.JPG)\n\nAnd even slightly dizzying.\n\n![DSC_6608.JPG](https://files.peakd.com/file/peakd-hive/x-rain/242NYNPVpJin6Wy6SmCGC5yW6RZHqnQnnutfQtdcHwZHPPfLEfDoQb2Qa4ggpuiHvWcZb.JPG)\n\nThe forest then gave way to a steep meadow with farm constructions, that was the very bottom of Sarangkot village:\n\n![DSC_6595.JPG](https://files.peakd.com/file/peakd-hive/x-rain/23zGaNHnM6cCZjxZpuCj5uZ2sMbmxqCP2cFrioG1dtELMQ4fa41dzGcaWYhhmLSJtXFXn.JPG)\n\nI was celebrating the victory - I needed only 45 minutes of intense hiking to reach the village.\n\n\"*Is that all?*\" I thought. \"*And where are the promised 2–3 hours of walking?*\"\n\n![DSC_6613.JPG](https://files.peakd.com/file/peakd-hive/x-rain/23z79qtqP8ErdyeWhzWFZXCcSS8RtkNYU72FP8cfyE7DWSUNPgPwr3o9t8zjZujjF5y2C.JPG)\n\nI kept walking up the mountain, photographing views opening up behind me.\n\n![DSC_6615.JPG](https://files.peakd.com/file/peakd-hive/x-rain/243zZnxHy7XuZKi1dXTU2vRCqyKWQCVWhF8Ftb6v6CQmSuQHwjqYKvSmVPYnx8ynjL9uN.JPG)\n\nThis is Phewa Lake and semi-rural Sedi, where I am staying.\n\n![DSC_6626.JPG](https://files.peakd.com/file/peakd-hive/x-rain/2449scKuBqoAJUxLJaZD2d2y4B6q9hYJUefPhw2Hru7byUQ3enLKC9s8eqzXe8E1md2r9.JPG)\n\nAnd this is a lowland to the west of the lake.\n\n![DSC_6627.JPG](https://files.peakd.com/file/peakd-hive/x-rain/23wC7QPWokGBaX6cQNsVT9SYCVZ6aUVvSJQK2R3EB7AWS1GmQDqjVe2zsNq1vbR4YFM2o.JPG)\n\nThe village turned out to be a quite developed touristy area, with decent houses (maybe many owned by outsiders from Pokhara?) and with locals living a simple life, carrying water in giant bottles on their shoulders and herding goats...\n\n![DSC_6630.JPG](https://files.peakd.com/file/peakd-hive/x-rain/23r1sNoWPadvMCNrsJiHSLVEekivf6ZVJMdY8PQF75RVEP6eWchLHgdpAfF4rhVuyPBV7.JPG)\n\nLocals...\n\nOf course, a big camera was an attraction for kids.\n\n![DSC_6639.JPG](https://files.peakd.com/file/peakd-hive/x-rain/23tbwUwBYYroyZ5GjR1ywm3dYmLPSjUKrrXahg6fHcqFVMUTordgQ8LEGPuGPmKv19R5B.JPG)\n\nThe shot was taken by a lil boy with tiny monkey fingers, I was helping... That's his elder sista, watching him as a strict teacher.\n\nI didn't mind except for the fact that it was 4 pm, and I was still far from Sarangkot's top. Yes, after I entered the lower part of the village, I thought, \"*That wasn't tough, I should reach the Sarangkot View tower with the famous view of the Himalayas*.\"\n\n![DSC_6681.JPG](https://files.peakd.com/file/peakd-hive/x-rain/244KTHJyYP7hD8WJcS9qiFsGPf4ceFeuZDn2jkdJm1JmgoDPJzryaWx7FGH5dyy3YsmKY.JPG)\n\nThat ambitious plan also meant I had to hurry up 'cause I didn't want to walk the forest rocky stairs at night, really didn't want... Especially because my phone's battery was low and I couldn't rely on it as a torch.\n\n![DSC_6618.JPG](https://files.peakd.com/file/peakd-hive/x-rain/242DJ5rdjFnqvXm4JwW4TG9ZQKVQYJXuyTn2B7p7LMogAxusBeoiVmNbwd4pG5eTs1AxD.JPG)\n\nHigher and higher but the ascent didn't end.\n\n![DSC_6649.JPG](https://files.peakd.com/file/peakd-hive/x-rain/244UfPyU319dQJNQ1bM65ZsuKyHUjfHh9zPHnL3rjzy4MFERhnsoxijDxnnDQZbavPCN4.JPG)\n\nMost of the way, I followed a pathway between houses and it wasn't easy to find where to go. I asked people, once lost the way and found myself at someone's garden...\n\n![DSC_6652.JPG](https://files.peakd.com/file/peakd-hive/x-rain/245HkmLN88TevbRohSBWG8gWQ75DYNDq95iJ4Sr8D4TM3rsjFJNtfRfD8Li58VATy139R.JPG)\n\nThe dramatic part was that my legs got very tired, and my initial fast pace turned into a hobble powered by the last of my strength.\n\n![DSC_6656.JPG](https://files.peakd.com/file/peakd-hive/x-rain/23yJGPCQRHFZHDe8DZn7A9JHrdPEk4SbywcLyrSfpQPBgJCEUVFJNKKwvnn59yCXn6n4P.JPG)\n\nThis damned village didn't want to end... Higher, higher, and higher.\n\n![DSC_6678.JPG](https://files.peakd.com/file/peakd-hive/x-rain/23s9R7PKRhRDQscm9AvpDGGz1pcbnAVRfGu17aNJPvmVFwtZQAQ8hzqJ1kYeg1FtGNhhV.JPG)\n\nBut eventually I reached the natural citadel of Sarangkot. It was like a small town with the dense development and paved/cobbled streets, full of tiny souvenir shops - \"sale, sale, sale!!!\"\n\nI didn't expect to see those huge mountains as it was late afternoon, and a local on my way told there would be no mountains seen from the viewpoint. However:\n\n![DSC_6664.JPG](https://files.peakd.com/file/peakd-hive/x-rain/2449xNUT2R8GpqkebMSmsbuax8AVscSuxnBv6RANYkV2VuAffcWaK6qXwqy3FpK2KSZJx.JPG)\n\nI was truly blessed by this beauty, a Himalayan celebrity, called Annapurna South with an elevation 7,219 meters (23,684 ft). It was a stunning spectacle - high in the sky where, all my life, I  could see only clouds... there was this miracle, a flying mountain, like if it was there all the time but opened to me only when I came to Nepal and made this hard walk...\n\n...Despite pain in my legs, I was jogging down along the pathways and roads back to the forest trail, to be there before the dark. And I did it. \n\n5:31 pm:\n\n![DSC_6687.JPG](https://files.peakd.com/file/peakd-hive/x-rain/242rkjMhF2HeyphABXqPNa8CciToajKJ5Em5TC6C9zzoLZpe2zie3KNS64Vir6FjhfdZr.JPG)\n\nSince I was already safe, I let myself give in to exhaustion - I barely managed to hobble my way down through the shady forest, and had a rest every now and then.\n\nWhen I finally got back to the guesthouse, I promised myself I'd never do it again. But the very next day, I thought, well, maybe I should make the climb to the lower part of Sarangkot my \"gym\" twice a week?..\n\nWe'll see.\n\n*The photos were taken with a Nikkor 50mm f/1.8G on a full-frame DSLR Nikon D750 on May 10, 2026, in Sarangkot, Nepal*\n\n[//]:# (!pinmapple 28.24596 lat 83.94862 long  d3scr)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 3,
+          "total_votes": 1236
+        },
+        "title": "A Light Stroll That Turned Into a 5-Hour Mountain Hike: From Pokhara to Sarangkot (Nepal)",
+        "author": "x-rain",
+        "payout": 23.906,
+        "created": "2026-05-13T17:46:09",
+        "reblogs": 9,
+        "replies": [],
+        "updated": "2026-05-13T17:46:09",
+        "category": "hive-155530",
+        "children": 30,
+        "permlink": "a-hike-from-pokhara-to-sarangkot",
+        "community": "hive-155530",
+        "payout_at": "2026-05-20T17:46:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 277313686960613,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "smooth",
+            "rshares": -10832482879331
+          },
+          {
+            "voter": "blocktrades",
+            "rshares": 57532350559699
+          },
+          {
+            "voter": "tuck-fheman",
+            "rshares": 1358276206
+          },
+          {
+            "voter": "drifter1",
+            "rshares": 9514860550
+          },
+          {
+            "voter": "acidyo",
+            "rshares": 35176370544361
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "nepal",
+            "travel",
+            "wednesdaywalk",
+            "photography"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/x-rain/EpA25xwx2rgvybTTF9ARNPrBMDpVAJ4BrXacwfSPxjcFt33JDjjeJuFdzQ9Gg2if5rh.jpg",
+            "https://files.peakd.com/file/peakd-hive/x-rain/242XuQDqQreEZEnGotgDP8wnk81XUx5SaEijeUkpn7dSUNDCNQSX6kiyicLGUJDMv7SRs.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/2423yioZEBwy7cawbKyEXCWhQrnSRKhpMmb7ZFqNxUVM9EpNZwU2fByoVFu2Rr3eZposa.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/243zZnuFW2cD94VEntoQ3ok7AJDZ8p6qt7s4PFLfYj1Qnkr8kwVXBQGQSbHpMWh2W6uBQ.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/242NYNPVpJin6Wy6SmCGC5yW6RZHqnQnnutfQtdcHwZHPPfLEfDoQb2Qa4ggpuiHvWcZb.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/23zGaNHnM6cCZjxZpuCj5uZ2sMbmxqCP2cFrioG1dtELMQ4fa41dzGcaWYhhmLSJtXFXn.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/23z79qtqP8ErdyeWhzWFZXCcSS8RtkNYU72FP8cfyE7DWSUNPgPwr3o9t8zjZujjF5y2C.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/243zZnxHy7XuZKi1dXTU2vRCqyKWQCVWhF8Ftb6v6CQmSuQHwjqYKvSmVPYnx8ynjL9uN.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/2449scKuBqoAJUxLJaZD2d2y4B6q9hYJUefPhw2Hru7byUQ3enLKC9s8eqzXe8E1md2r9.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/23wC7QPWokGBaX6cQNsVT9SYCVZ6aUVvSJQK2R3EB7AWS1GmQDqjVe2zsNq1vbR4YFM2o.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/23r1sNoWPadvMCNrsJiHSLVEekivf6ZVJMdY8PQF75RVEP6eWchLHgdpAfF4rhVuyPBV7.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/23tbwUwBYYroyZ5GjR1ywm3dYmLPSjUKrrXahg6fHcqFVMUTordgQ8LEGPuGPmKv19R5B.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/244KTHJyYP7hD8WJcS9qiFsGPf4ceFeuZDn2jkdJm1JmgoDPJzryaWx7FGH5dyy3YsmKY.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/242DJ5rdjFnqvXm4JwW4TG9ZQKVQYJXuyTn2B7p7LMogAxusBeoiVmNbwd4pG5eTs1AxD.JPG",
+            "https://files.peakd.com/file/peakd-hive/x-rain/244UfPyU319dQJNQ1bM65ZsuKyHUjfHh9zPHnL3rjzy4MFERhnsoxijDxnnDQZbavPCN4.JPG"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Wednesday Walk",
+        "author_reputation": 78.49,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "23.906 HBD"
+      },
+      {
+        "url": "/hive-124452/@thekittygirl/fudgy-brownies-recipe",
+        "body": "<div class=\"text-justify\"><p>I've tried several from-scratch brownie recipes, but this one seems to be the easiest, with a simple list of ingredients and excellent raves from the chocoholics I know! I usually keep a bag of chocolate chips on hand for a quick treat.</p>\n\n<p>My late-husband (R.I.P.) loved these. He was diagnosed with diabetes, although his pancreas <em>might</em> have been working fine, had a tumor not started growing there; we'll never know. But, he could eat these, in moderation, if I used 100% Whole Wheat flour and a sugar substitute, instead. Using 100% Whole Wheat flour is considered healthier, generally, than bleached white flour <em>(which has all the healthy stuff sucked out of it, bleached to make it white, and then some \"enrichment\" put back into it later)</em>.</p>\n\n![Brownies--01.png](https://files.peakd.com/file/peakd-hive/thekittygirl/23ynfH4DAEqNn2GwUHYjCZTsVTTsYSwURdrgnQ8yodXKfbRdE18gV6u2ABasFRtemMrjJ.png)\n\n\n<h2>Ingredients</h2>\n\n1/2 cup butter or margarine (1 stick)\n1 bag chocolate chips (8&ndash;10 ounce size, 226&ndash;283 grams)\n3/4 cups sugar (or substitute)\n2 large eggs (or substitute)\n1/2 cup all-purpose flour\ngenerous pinch of salt\nvanilla extract, 1 teaspoon (more/less, according to taste)\n<br>\n\n<p>I use raw cane sugar in all my baking. I believe it to be healthier than refined white sugar. But you can use whatever you wish as a sweetener; most anything will work fine: white sugar, cane sugar, Splenda™, Stevia™, agave nectar, <em>etc.</em></p>\n\n<p>When it comes to the \"chocolate chips\" mentioned in the recipe, there is quite a bit of wiggle room. The amount of chips you use is entirely up to you&nbsp;&mdash; a little more, or less, won't hurt the recipe unless you go extremely overboard with the proportion. If you're \"old school\" in the kitchen, using Baker's Chocolate is fine, too, and you can chop it until you have a comparable amount; perhaps consider adding a little more sugar if your Baker's Chocolate is unsweetened.</p>\n\n<p>Also, you can use Milk Chocolate chips or Dark Chocolate, whichever you prefer. OR... I have experimented with other choices and found that Heath™ Toffee chips are <b>heavenly</b> in these brownies instead of chocolate chips! 😋</p>\n\n![Brownies--04.png](https://files.peakd.com/file/peakd-hive/thekittygirl/23yJTMVSCWRQcKw7XVHWhXaMYxKueUx29zMdqsEY6YptYdH4tGjyN47vszWArkgvhMU2j.png)\n\n<p>As heavenly as the Heath™ Toffee chips are, though, I think my favorite substitution for chocolate chips are <b>Peanut Butter</b> chips! OMG, Peanut Butter Brownies made with the Reese's™ chips are awesome! Depending on your market, you might find other varieties of \"chips\" available besides chocolate, toffee, and peanut butter... don't hesitate to experiment if you like trying new ideas!</p>\n\n![Brownies--05.png](https://files.peakd.com/file/peakd-hive/thekittygirl/242s5d6THqWqwLmNsUDx8Yw3PY1KwCemYmCAcv1r1oSLD1eG9VePWys2cTXUiiEdUNs9e.png)\n\n<h2>Directions</h2>\n\n<p>Preheat oven to 350°F (180°C). Lightly grease 8\" x 8\" (20 x 20 cm) baking pan. In a small saucepan over low heat, melt butter and chocolate. Remove from heat, then whisk or stir in sugar, eggs, and vanilla extract. Stir in flour and a generous pinch of salt. Be sure the mixture is thoroughly blended together and smooth. Spread batter in prepared pan and bake for 24&ndash;27 minutes, or until brownies test moist. Lightly dust with powdered sugar while warm, if desired. Top with crushed nuts, if that's your thing. Cool on wire rack before cutting and serving. I usually cut my 8\" x 8\" pan into 9 pieces like a Tic-Tac-Toe game board.</p>\n\n![Brownies--02.png](https://files.peakd.com/file/peakd-hive/thekittygirl/23x1L4c4LB2fPaTmxVJEFNmmGe94FjXcaRXmwCchWWBSnzjx22SMtM7PeQUWwmMMoiSzk.png)\n\n<p>These brownies are perfectly good as they are. But, you can serve them so many ways&nbsp;&mdash; with decadent chocolate sauce drizzled on top, or with ice cream, pudding, yoghurt, fruit, whipped cream, or whatever your tongue fancies. You can also spread a layer of cake icing or cream cheese on them. Be creative!</p>\n\n<center><div class=\"pull-left\"><img src=\"https://files.peakd.com/file/peakd-hive/thekittygirl/23uQrHCQznbRsXWQR77P1BL9tDDkqcbrXk8YnzD46tc6shPUPS7wznp3KgJD4NHps72vV.png\"><br><sup>Chocolate Brownie</sup></div><div class=\"pull-right\"><img src=\"https://files.peakd.com/file/peakd-hive/thekittygirl/23vi7tDuKMMRLbHS5ZHNUfPorHpAm6UEEyKquz5JRP3hmqCoDEnuFkJCqKxKmpyBRmAcK.png\"><br><sup>Peanut Butter Brownie</sup></div></center>\n\n<p>Now I will share an amusing anecdote, which will add one more layer of variation to the recipe. I normally cook with plain (\"all purpose\") flour, but a few years ago I also had a bag of \"self-rising\" flour on hand and accidentally grabbed it when making the brownies. The baking powder in the self-rising flour made the brownies rise to the height of a sheet-cake, and they definitely had a fluffy, cake-like consistency because of it. So, I dubbed the creation \"Brownie Cake\" and it was quite good, too. So, there's another tweak that can be made to the recipe if you wanna try it sometime! 😁</p>\n\n<p>The crowing glory of this recipe is that it's best shared with friends!</p>\n\n<center><img src=\"https://files.peakd.com/file/peakd-hive/thekittygirl/23xAkeiCAiuExxkseUhdusVRFEftnQxawzhB9nQbfVGvBy99U2FYL948W6ZaBktDkpjec.png\"><br><sup>~ super-fun Shōjo‑style Brownie Party scene by Copilot™ AI ~</sup></center>\n\n</div>\n\n<center><h4>𝕋𝕙𝕒𝕟𝕜𝕤 𝕗𝕠𝕣 𝕣𝕖𝕒𝕕𝕚𝕟𝕘! 😊</h4></center>\n<br>\n\n* All writing is always by me with <b><u>NO</u> AI used</b>, not even for proofreading.\n* Photos by me, with enhancement by Copilot™ AI\n* Shōjo‑style illustration by Copilot™ AI\n<br>\n\n<center><a href=\"https://peakd.com/@thekittygirl\"><img src=\"https://images.hive.blog/DQmWEw61UwJW4CorDEPiSogLwTL52yWFRYdkkMbFest8CwW/TKG-Alliance.png\"></a></center>\n\n<center><img src=\"https://images.hive.blog/DQmSLbtHJfiUN2a1TFhgCQaNPK4GAiyA1mUnppWrjH1dtr7/__pearls.png\"><br><sup><sub>13-May-2026</sub></sup></center>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 653
+        },
+        "title": "Fudgy Brownies [Recipe]",
+        "author": "thekittygirl",
+        "payout": 23.844,
+        "created": "2026-05-13T15:39:45",
+        "reblogs": 5,
+        "replies": [],
+        "updated": "2026-05-13T15:39:45",
+        "category": "hive-124452",
+        "children": 21,
+        "permlink": "fudgy-brownies-recipe",
+        "community": "hive-124452",
+        "payout_at": "2026-05-20T15:39:45",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "admin",
+        "net_rshares": 303638327279737,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 17611565008
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 13776341904
+          },
+          {
+            "voter": "arcange",
+            "rshares": 892233959752
+          },
+          {
+            "voter": "sharker",
+            "rshares": 18390179231
+          },
+          {
+            "voter": "kibela",
+            "rshares": 2750760076
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "brownies",
+            "food",
+            "sweets",
+            "ladiesofhive",
+            "ladiesofsgs4eva",
+            "pimp",
+            "sgslife",
+            "thealliance"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/thekittygirl/23uQrHCQznbRsXWQR77P1BL9tDDkqcbrXk8YnzD46tc6shPUPS7wznp3KgJD4NHps72vV.png",
+            "https://files.peakd.com/file/peakd-hive/thekittygirl/23ynfH4DAEqNn2GwUHYjCZTsVTTsYSwURdrgnQ8yodXKfbRdE18gV6u2ABasFRtemMrjJ.png",
+            "https://files.peakd.com/file/peakd-hive/thekittygirl/23yJTMVSCWRQcKw7XVHWhXaMYxKueUx29zMdqsEY6YptYdH4tGjyN47vszWArkgvhMU2j.png",
+            "https://files.peakd.com/file/peakd-hive/thekittygirl/242s5d6THqWqwLmNsUDx8Yw3PY1KwCemYmCAcv1r1oSLD1eG9VePWys2cTXUiiEdUNs9e.png",
+            "https://files.peakd.com/file/peakd-hive/thekittygirl/23x1L4c4LB2fPaTmxVJEFNmmGe94FjXcaRXmwCchWWBSnzjx22SMtM7PeQUWwmMMoiSzk.png",
+            "https://files.peakd.com/file/peakd-hive/thekittygirl/23vi7tDuKMMRLbHS5ZHNUfPorHpAm6UEEyKquz5JRP3hmqCoDEnuFkJCqKxKmpyBRmAcK.png",
+            "https://files.peakd.com/file/peakd-hive/thekittygirl/23xAkeiCAiuExxkseUhdusVRFEftnQxawzhB9nQbfVGvBy99U2FYL948W6ZaBktDkpjec.png",
+            "https://images.hive.blog/DQmWEw61UwJW4CorDEPiSogLwTL52yWFRYdkkMbFest8CwW/TKG-Alliance.png",
+            "https://images.hive.blog/DQmSLbtHJfiUN2a1TFhgCQaNPK4GAiyA1mUnppWrjH1dtr7/__pearls.png"
+          ],
+          "users": [
+            "thekittygirl"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Ladies of Hive",
+        "author_reputation": 73.38,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "23.844 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

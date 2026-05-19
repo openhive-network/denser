@@ -1,0 +1,1950 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "trending",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "c8dae4654501ce7a",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "trending",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/hive-178315/@mantequilla-soft/mantequilla-soft-weekly-progress-report--mpbrnf74",
+        "body": "![](https://images.3speak.tv/images/1779142287116-7f442c0b176fbfc1.webp)\n\n**Welcome to another Mantequilla-Soft Weekly Report!**\n\nThis week @tibfox joined the hangout alongside @meno and @eddiespino, and the core topic of the episode was the **3Speak Premium features**. We went into detail about what the subscription will include, how it will work, and the value it will bring to creators on the platform. Instead of summarizing everything here, we invite you to **listen to the full episode** to get all the details and context. We think it is an important conversation and we would love to hear your thoughts.\n\n---\n\nhttps://audio.3speak.tv/play?a=i1eyjwr8\n\n---\n\n![MantequillaC.png](https://files.peakd.com/file/peakd-hive/mantequilla-soft/23vrrWLMfnxfJV5voLx3DrL5zT12pVmS59AapgNp5HUp4GhqRXm4yd7qmQRdWK3o1UA3s.png)\n\n---\n\n<center>Join our Discord Communities:</center>\n\n<center>[3Speak](https://discord.gg/NSFS2VGj83) • [Snapie](https://discord.gg/PgvdXSsWGV) • [Proyecto Aliento](https://discord.gg/G5DfSUJf9x)</center>\n\n---\n\n<center>Support our Witnesses:</center>\n\n<center>[Threespeak](https://witness.aliento.blog/witness/threespeak) • [Snapie](https://witness.aliento.blog/witness/snapie) • [Aliento](https://witness.aliento.blog/witness/aliento)</center>\n\n|                                                    |                                                |                                                 |\n| :------------------------------------------------: | :--------------------------------------------: | :---------------------------------------------: |\n| ![](https://images.hive.blog/u/threespeak/avatar/) | ![](https://images.hive.blog/u/snapie/avatar/) | ![](https://images.hive.blog/u/aliento/avatar/) |\n\n---\n\n### <center>[https://www.mantequilla-soft.com/](https://www.mantequilla-soft.com/)</center>\n\n### <center>[https://github.com/orgs/Mantequilla-Soft/repositories](https://github.com/orgs/Mantequilla-Soft/repositories)</center>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 403
+        },
+        "title": "Mantequilla-Soft – Weekly Progress Report #17",
+        "author": "mantequilla-soft",
+        "payout": 21.205,
+        "created": "2026-05-18T22:19:09",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-18T22:20:00",
+        "category": "hive-178315",
+        "children": 2,
+        "permlink": "mantequilla-soft-weekly-progress-report--mpbrnf74",
+        "community": "hive-178315",
+        "payout_at": "2026-05-25T22:19:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 274831602848823,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "netaterra",
+            "rshares": 34749766321
+          },
+          {
+            "voter": "gduran",
+            "rshares": 5422940138
+          },
+          {
+            "voter": "penguinpablo",
+            "rshares": 155841238854
+          },
+          {
+            "voter": "funnyman",
+            "rshares": 1563817529
+          },
+          {
+            "voter": "clayboyn",
+            "rshares": 25907565737
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "new-3speak-tv",
+          "tags": [
+            "podcast",
+            "mantequilla-soft",
+            "hive",
+            "development",
+            "update",
+            "snapie",
+            "btrauth"
+          ],
+          "audio": {
+            "type": "podcast"
+          },
+          "image": [
+            "https://images.3speak.tv/images/1779142287116-7f442c0b176fbfc1.webp",
+            "https://files.peakd.com/file/peakd-hive/mantequilla-soft/23vrrWLMfnxfJV5voLx3DrL5zT12pVmS59AapgNp5HUp4GhqRXm4yd7qmQRdWK3o1UA3s.png",
+            "https://images.hive.blog/u/threespeak/avatar/",
+            "https://images.hive.blog/u/snapie/avatar/",
+            "https://images.hive.blog/u/aliento/avatar/"
+          ],
+          "users": [
+            "tibfox",
+            "meno",
+            "eddiespino"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Snapie",
+        "author_reputation": 71.33,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "21.205 HBD"
+      },
+      {
+        "url": "/hive-163772/@worldmappin/worldmappin-at-hive-open-days-alicante-engesp",
+        "body": " ![IMG_0597.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/242rwANfanKquNCJzy2jQ1gmvJxZkDPrUrCiiRP97QvVeW2JrcfWGqK1iWKHdtsMvxCdU.jpeg)\n\n<div class=text-right>  \n \n[Léelo en **español** aquí](#spanish)  \n \n</div>  \n\n<br>\n\nOh my god - did you see that the next Hivefest has been announced? It will be in Barcelona, Spain - and we are already so excited to join the party. But first things first - to get a little taste of what it may be like, we went to The Hive Open Days in Alicante two weeks ago.\n\nYes - As you may know, the Hive Community came back together on a big event already this year. And as always, it was a great pleasure, very interesting, and so much fun to meet Hiveans from all over the world, sharing and exchanging thoughts and ideas about the ecosystem and its initiatives. \n\nEvery single time the Hive Community comes together in person, feeling the spirit is so special. Here you can truly feel what Hive is about (at least for us) - and of course what Worldmappin is about. -> bringing people from all over the world together to talk about the future! \n\nSo here is a little report about what happened that days for those of you that couldn´t join:\n\n\n# Day 1 - Waterproof stickers for everyone!\n\n![IMG_9657.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23xKxvXLX2WNfSJJTXN61rJn7hoViGpT4fMSMD32RAUShs8pqqK62oZDmA4LD3LaHMCLD.jpeg)|![IMG_0758.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23wC9iMVbV9SeWMetZM6WzNJWWUSVQkGHSinqPeJ6g1k2MHuQPztSpcV9apFHupDkbEPg.jpeg)\n--|--\n\n![IMG_9822.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23vi62BL7bC2CspiLUmCFhtWsCieoLKsa9MvtCDhnMNk2R6rCdGUpcaT718b6g4ZWoWTk.jpeg)|![IMG_9846.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23u65K3zjk5PK99ybg9amYX9bKEtZySPJ3H78MACfscqG7CX6UXa97jdwYy6tSAiyJChH.jpeg)| ![IMG_9717.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23uFc5xsvmXgiAKvSX11N1eDBFDHn5MybfuzH8S6V2khLMCUuWegKNyKdqmigbdzMQqqa.jpeg)\n---|---|---\n\nWe were there from the very first day of #HODAlicante, greeting and welcoming both Hive users and attendees from outside the ecosystem. For some Hivians, it was even their first time experiencing an event of this kind, so #worldmappin was there representing one of Hive’s largest and most active communities—one that strives to engage with its users and make them feel connected.\n\nWe came to this event packed with new features, one of which was handing out hundreds of waterproof #worldmappin pin stickers. We’d done some tests beforehand that showed good results, and now we’ve brought this version for everyone—in two sizes—which is even more weather-resistant and ensures greater longevity for users who mark locations on our map to document their visits.\n\nThe feedback was incredible, as many users mentioned that they had thought about durability when leaving the #worldmappin stamp around the world. So, after the official presentations, we went out with several users around the city, stamping the badge in various places for testing!\n\n\n\n*Thanks @honeydue for helping us out with that!\n\n# Day 2 - New version of WMP and upcoming goals\n\n![IMG_0570.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23w2oVKKsbNoswCPk5Ex8ae79WH1LBwetA7a8K1AqafGEHYHhsQE5W1E7AGQ2kvi6JVT9.jpeg)\n\nThe second day of the event was dedicated to official presentations about the Hive ecosystem:\n\nhttps://www.youtube.com/watch?v=P6I4M0ap6vA\n\nWe had the great responsibility of closing the event, so we decided to focus on two main aspects: welcoming the new Hivians who created their accounts the day before the event, introducing them to the project as a useful tool for their new journey within Hive, and devoting a large part of the presentation to a tour of all the new features we’ve been working on lately.\n\nWe showcased all the new features of the recently launched [WorldMappin V2](https://peakd.com/hive-163772/@worldmappin/exciting-news-worldmappin-v2-is-live), the project’s new face. We thanked all the users who have helped us so much with their feedback, showing how we’ve incorporated into our interface the details and tools that users care about most, letting them know that this is just the beginning of the new phase of #WorldMappin and that we’ll keep working to bring improvements for everyone.\n\nSo now you know—don’t hesitate to support our proposal ([Peakd.com](https://peakd.com/proposals/348) / [Ecency](https://ecency.com/proposals/348) / [Hive.blog](https://wallet.hive.blog/proposals/348) / [HiveSigner](https://hivesigner.com/sign/update_proposal_votes?proposal_ids=%5B%22348%22%5D&approve=true)) to help us keep working on this wonderful project.\n\n![](https://files.peakd.com/file/peakd-hive/ninaeatshere/23vsb96t8FUyD4PHBgWGgVsiRcVRhGcysGhssvSeWsT3UdBacjsKqKNUsasCyuFsFzf2S.jpeg)\n\n![](https://files.peakd.com/file/peakd-hive/ninaeatshere/23tvsFr9j1Xcf1cfv9XSXsZZjcidKUhBdEod6FjUYSV8qP1XmQTP2FhfcGtVGr3k3ghLn.jpeg)\n\n![](https://files.peakd.com/file/peakd-hive/ninaeatshere/23xpAnfLHxz3NWN1WkoszCo4niSbU1apobHUwiA6MTkWjZU4VJFbPvVTx3egajonM2JE4.jpeg)\n\nAnother highlight of the day, which we joined in celebrating with the @mantequilla-soft team, was putting into practice the wonderful real-time translation tool that @tibfox brought to the event and made available to all speakers, thereby helping everyone understand the information being shared even if they didn’t speak the language.\n\nThe mobile app also provided access to many more languages to facilitate live translation for each user and, to allow them to have private conversations in different languages, breaking down that barrier that can sometimes be so frustrating.  On our side, @ninaeatshere put it to the test by presenting our talk in Spanish, to make the information accessible to new Spanish-speaking users and, of course, to honor the place where we were, as we know that the Spanish-speaking community is a major part of our HIVE ecosystem and also of our Worldmappin Community.\n\n\n![](https://files.peakd.com/file/peakd-hive/ninaeatshere/Ep5mHUbDd3Ezbng5Z5FvU8ro9ioGtm4PsfHu7H8L2pXczpxU3o8oZF8a6y24Rj63su3.jpeg)|![IMG_0599.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23yTji5XrrfTaYmqBTuauKZD4hX89iGrhG24wRUXGgabw9E8v8EqtYMGmwVfpvKJsQaUT.jpeg)\n--|--\n\n![IMG_0565.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23xAgVEX4cDLxh9tceSAKZcP8rvmELVWLuKGJAkTQcHCuWBCWEycyFoTuxUMdxPMf6DSt.jpeg)\n\n![](https://files.peakd.com/file/peakd-hive/ninaeatshere/242DdHTEeAUveRsP2jhbSGqUgN2MCSgcgYweSimVrZrswdEqT1ZJnJrytzAQ4RXx3AGWW.jpeg)\n\n# Day 3 - Sponsoring the Clean Planet Challenge prizes!\n\n![IMG_0087.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23zS5cQx5t1QrU8aesdsJc4dobjET49MBVkLLTzwVZNWGqBPsbBMXgdzuRE28d2kWwoLC.jpeg)\n\nJust like every year, during the #BuzzParty events organized by @tibfox, the wonderful #CleanPlanetChallenge took place, and of course, we were there to explore the island where it was held, plant a few pins in the surrounding area, and also motivate the participants with some backpacks full of Hive goodies for the challenge winners.\n\nOur team was there for the challenge, helping to clean up Tabarca Island, but, above all, encouraging participants to compete in a healthy spirit. That day, after @ninaeatshere took the pin out to eat, the team made sure to be present throughout the challenge so we could ultimately reward those who put in the most effort that afternoon. The keeper of the prizes was @godfish, who kept a watchful eye on everyone involved and presented the prizes to that day’s winning team.\n\nWe handed out backpacks filled with goodies to the team of @gissse and @juanmatrader, two of the new users who fully immersed themselves in the Hive experience!\n\n\n![IMG_0011.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/Eoc8QckLcLNQCYJFG5eT1HmKrBND8PwapeoGr5V9SK7gtmZC2iSgdJBhkAMeG9gDig9.jpeg)\n\n\n![IMG_0029.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/EoEtN2zHRJ11zVJ5s2Jv8j1r5MuV6wi38tiBPqh6hsVqqLpiyX7U8VAwNXr3fSmANqT.jpeg)\n\n![IMG_0595.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23yThC4RP9VMjYMWEQsS75TqvcoWbAoeJDsYnAEGfJSXZ2bctiwLe7Q66BDa75pPcECqH.jpeg)|![IMG_0117.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23y8zTpy6DdrCB1C66dLv9yLcaWbNop1QeY9nM5d7WD2brADsrcNYPpqw37QDSkHvRaUg.jpeg)\n--|--\n\n![IMG_0105.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23yd85xf1MTamt39PatWojHu7XVXU8PW8qGniSoHiUd8bBDA2tHiT8pJot6QJrSkeCqTS.jpeg)\n\n\n# Day 4 - Exploring the city with riddles!\n\n![IMG_0249.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/Eoke1Pn2xPKfhG6DYsrhQueoi6MoTb1VvcjQBLMLSvmob8Q8dnmVkGpirywauFZFZrh.jpeg)\n\nFor our final day at #HODAlicante, we wanted to take event attendees on a tour of part of the city, immerse them in Alicante’s culture, and encourage them to post their travel content in the [WorldMAppin community](https://peakd.com/c/hive-163772/created).\n\nThe goal of the tour was to visit some of Alicante’s landmarks while @ninaeatshere quizzed our dear Hivians with some travel riddles. It was the last day of the event, and attendees were really exhausted from the previous days; plus, there were local festivities in the city that limited our schedule and access to certain places, so we decided to take it easy, scale back the itinerary a bit, and ask very simple questions for the challenge.\n\nWe met at the entrance to Ulab, the convention center where the talks took place, and headed out to visit three nearby spots:\n\n<center> **The Basilica of Santa María** </center>\n\n![IMG_0253.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/EprV5sqGSt9pYQYvNrFmVgBg5dxUBoLv3gkQopS7mPkqHTjCzmSjDmQYY3KzPP2Knrh.jpeg)\n\n<center> **The Alicante Museum of Contemporary Art** </center>\n\n![IMG_0267.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/EouBcgcUNP56YECZEydKKTsweNhz4bNfSnuwC7su4hr9p26tRrMwDx4J2Bz16BYx4qG.jpeg)\n\n<center> **Santa Cruz Cultural District** </center>\n\n![IMG_0303.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/Ep7s6UvvnDYqqizYxFMbxZaC6wSfQLfotftCJn1LKuVKvffB1Pi55HSQsc6thmgJ1nU.jpeg)\n\n<center> 😃 **The Santa Cruz Viewpoint is labeled with a WorldMappin pin** </center>\n\n![IMG_0298.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23x1DBQZdwN3VBYtEa9VqiyJz98W9nEPwwjAJ1PxzqmZkPrMSKUnp4iKxm5nMnmB3JaUT.jpeg)\n\nSince the end of the walk involved carrying our bags, we stopped to rest outside one of the picturesque little houses in the Santa Cruz neighborhood, where @godfish—the keeper of the prizes—was conveniently staying, and we settled in to share some snacks and hand out prizes to the three winners of the riddles we’d posed along the way.\n\nThis time, another new user emerged as a winner: @anamz took home one of our backpacks full of prizes, accompanied by the victorious @edje and @palomap3 for being the fastest at solving the riddles that day. Here’s a photo of the scene where we raided @godfish’s place to award the three winners on the final leg of the journey. Some winners enthusiastically shared the contents of the famous backpack, so here’s a glimpse of what was inside.\n\nIn the backpack, we included a couple of T-shirts: one from the previous HiveFest we sponsored and our nice black T-shirt. The winners also took home a good batch of Hive stickers, a water bottle, a small wallet (the **cold wallet**), and a couple of packets of **summer flower seeds**—a nice promotional initiative with a real purpose ( [click here](https://peakd.com/hive-121566/@detlev/hive-merch-with-results-smart-seed-marketing) if you’re interested in learning more about **Hive Seeds** or if you’re one of the winners and want to find out how to plant them)\n\n![IMG_0282.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/EoGyrB1vUGaXZCWmkedUj9MFSrBLt23FHxiitcm9quYrz3zd8QwnpW71dABNtuVdofq.jpeg)\n\n![4e179531-2ae5-4ccf-a3f7-90d594b4477c.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23w2eJgxLW3SpsJcUSkaaJRRLXnCuBUNpFgAwtUsQxEpXPDmD1iX9cdQ26cfeTs4HCyUb.jpeg)| ![77e48ea0-b9c8-4a07-af1c-6b36393790f5.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23w2ktvC2bvrftTrUvWbu4wXgUARuALsamMPYJFM6fCSrsxRhkThRSA88sAqX8vtuD4cR.jpeg)\n--|--\n\n(Photos by winners Ana and Paloma)\n\nThe WorldMAppin team is extremely grateful and proud to be able to participate in events like this one, which are full of initiatives that encourage users of our ecosystem to engage more deeply with the blockchain in various ways. We are pleased to say that we thoroughly enjoyed sharing this experience once again with the event organizers and all the users who attended. We want the users to feel close to us and to know that they can reach out to the team with any questions, suggestions, or feedback.\n\nIt was a pleasure to be in Alicante, and we can’t wait to see you all again at the upcoming [HiveFest XI – Barcelona, the Heart of Catalonia! September 17–20, 2026](https://peakd.com/hive-106258/@hivefest/save-the-date-hivefest-xi-barcelona-the-heart-of-catalonia-17-20-sept-2026). Until then, travelers!\n\n— **The Worldmappin Team**\n\n![IMG_0525.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/EpxqFqjZsep8TjMMivRoVu33HCzReFCLxkd8yybw3GS6RK1LnXfGb7AoLx9B9CZqbgu.jpeg)\n*Photo credits: We would like to thank @ninaeatshere, @gisse, @schmidi, @haastrecht, @palomap3, and @anamz for sharing the photos featured in this post.*\n\n</ul><hr><br>\n\n<h2>Support WorldMappin and join the <a href='https://peakd.com/c/hive-163772'>Worldmappin community</a></h2>\n\n# Let's thrive together and bring this community to the next level!\n\n<center>\n![image.png](https://images.hive.blog/300x300/https://files.peakd.com/file/peakd-hive/ninaeatshere/23y8jLbHi6piMyFwrKKDtgLGVRPwi5rutakVicvaqyRU68xc97ynx4vL6nYYdjXoWEBq3.png)\n</center>\n\n<strong>The more support we get, the more we can give back! Want to help?</strong><br> <a href='https://hive.vote/dash.php?fan=worldmappin&i=2'>Upvote the daily Traveldigest post</a> <br>\n\n|||\n|-|-|\n|<br><a href='https://peakd.com/wallet'>Delegate </a> to WorldMappin!| <a href='https://hive.vote/dash.php?i=1&trail=worldmappin'>Follow </a>our curation trail|\n|Join our discussions - <a href='https://discord.gg/EGtBvSM'>Join our Discord</a>|Vote for this proposal (#348) <br> [Peakd.com](https://peakd.com/proposals/348) / [Ecency](https://ecency.com/proposals/348) / [Hive.blog](https://wallet.hive.blog/proposals/348) / [HiveSigner](https://hivesigner.com/sign/update_proposal_votes?proposal_ids=%5B%22348%22%5D&approve=true)|\n\n\n##### Let's have more Pins of the world with Worldmappin!<br>\n\n\nThank you for your support!\n\n---\n\n<br> \n \n**Español** <a id=\"spanish\"></a> \n\n![IMG_0597.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/242rwANfanKquNCJzy2jQ1gmvJxZkDPrUrCiiRP97QvVeW2JrcfWGqK1iWKHdtsMvxCdU.jpeg)\n\n¡Dios mío! ¿Ya vieron que se ha anunciado el próximo Hivefest? Se celebrará en Barcelona, ​​España, ¡y ya estamos sumamente emocionados por unirnos a la fiesta! Pero lo primero primero: para hacernos una idea de cómo podría ser, asistimos a los *Hive Open Days* en Alicante hace dos semanas.\n\nSí; como tal vez ya sepan, la comunidad de Hive volvió a reunirse en un gran evento este mismo año. Y, como siempre, fue un inmenso placer —además de una experiencia muy interesante y tremendamente divertida— conocer a *Hiveans* de todas partes del mundo, compartiendo e intercambiando pensamientos e ideas sobre el ecosistema y sus iniciativas.\n\nCada vez que la comunidad de Hive se reúne en persona, resulta verdaderamente especial sentir ese espíritu. Aquí es donde realmente se puede percibir la esencia de Hive (al menos para nosotros) y, por supuesto, la esencia de Worldmappin: ¡unir a personas de todo el mundo para conversar sobre el futuro!\n\nAsí que, aquí les dejamos un breve resumen de lo que pasó durante esos días, pensado especialmente para aquellos de ustedes que no pudieron asistir:\n\n# Día 1: ¡Pegatinas resistentes al agua para todos!\n\n\n![IMG_9657.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23xKxvXLX2WNfSJJTXN61rJn7hoViGpT4fMSMD32RAUShs8pqqK62oZDmA4LD3LaHMCLD.jpeg)|![IMG_0758.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23wC9iMVbV9SeWMetZM6WzNJWWUSVQkGHSinqPeJ6g1k2MHuQPztSpcV9apFHupDkbEPg.jpeg)\n--|--\n\n\n![IMG_9822.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23vi62BL7bC2CspiLUmCFhtWsCieoLKsa9MvtCDhnMNk2R6rCdGUpcaT718b6g4ZWoWTk.jpeg)|![IMG_9846.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23u65K3zjk5PK99ybg9amYX9bKEtZySPJ3H78MACfscqG7CX6UXa97jdwYy6tSAiyJChH.jpeg)| ![IMG_9717.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23uFc5xsvmXgiAKvSX11N1eDBFDHn5MybfuzH8S6V2khLMCUuWegKNyKdqmigbdzMQqqa.jpeg)\n---|---|---\n\nEstuvimos presentes desde el primer día del #HODAlicante saludando y dando la bienvenida tanto a usuarios de Hive como a las personas externas al ecosistema que asistieron a las jornadas. Incluso para algunos Hivians era la primera vez que experimentaban un encuentro de este estilo, asi que #worldmappin estuvo allí representando a una de las comunidades mas grandes y activas de Hive que mas intenta involucrarse con sus usuarios y hacerse sentir cercana.\n\nPara este evento vinimos full de novedades, siendo una de ellas el reparto de cientos de pegatinas resistentes al agua del pin de #worldmappin, habiamos hecho algunas pruebas antes mostrando buenos resultados y ahora hemos traido esta version para todos, en dos tamaños, que es mucho mas resistente a la intemperie y le asegura mas longevidad a los usuarios que registran lugares en nuestro mapa reseñando sus visitas.\n\nEl feedback fue increible, pues muchos usuarios manifestaron haber pensado en el aspecto de la durabilidad cuando dejaban la estampa de #worldmappin por el mundo, así que después de las presentaciones oficiales, nos fuimos junto a varios usuarios por la ciudad estampando el sello en varios lugares para hacer las pruebas correspondientes!\n\n\n\n# Día 2: Nueva versión y próximos objetivos\n\n![IMG_0570.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23w2oVKKsbNoswCPk5Ex8ae79WH1LBwetA7a8K1AqafGEHYHhsQE5W1E7AGQ2kvi6JVT9.jpeg)\n\nEl segundo día del evento estuvo dedicado a presentaciones oficiales sobre el ecosistema de Hive y nosotros tuvimos la gran responsabilidad de cerrar el evento, por lo que decidimos enfocarnos en dos aspectos principales, dar la bienvenida a los nuevos Hivians que crearon su nueva cuenta el día anterior del evento, presentandoles el proyecto como una herramienta util para su nuevo viaje dentro de Hive y, además, dedicamos gran parte del discurso a hacer un tour por todas las novedades en las que hemos estado trabajando ultimamente.\n\nhttps://www.youtube.com/watch?v=P6I4M0ap6vA\n\nMostramos todas las nuevas caracteristicas de la recien lanzada [WorldMappin V2](https://peakd.com/hive-163772/@worldmappin/exciting-news-worldmappin-v2-is-live), la nueva cara del proyecto. Agradecimos a todos los usuarios que tanto nos han ayudado con su feedback, mostrando como hemos incluido a nuestra interfaz esos detalles y herramientas que tanto interesan a los usuarios, dejandoles saber que esto es solo el comienzo de la nueva etapa de #WorldMappin y que vamos a seguir trabajando en traer mejoras para todos.\n\nAsi que ya lo sabes, no dudes en apoyar nuestra propuesta ([Peakd.com](https://peakd.com/proposals/348) / [Ecency](https://ecency.com/proposals/348) / [Hive.blog](https://wallet.hive.blog/proposals/348) / [HiveSigner](https://hivesigner.com/sign/update_proposal_votes?proposal_ids=%5B%22348%22%5D&approve=true)) para ayudarnos a seguir trabajando en este proyecto tan bonito.\n\n![](https://files.peakd.com/file/peakd-hive/ninaeatshere/23vsb96t8FUyD4PHBgWGgVsiRcVRhGcysGhssvSeWsT3UdBacjsKqKNUsasCyuFsFzf2S.jpeg)\n\n![](https://files.peakd.com/file/peakd-hive/ninaeatshere/23tvsFr9j1Xcf1cfv9XSXsZZjcidKUhBdEod6FjUYSV8qP1XmQTP2FhfcGtVGr3k3ghLn.jpeg)\n\n![](https://files.peakd.com/file/peakd-hive/ninaeatshere/23xpAnfLHxz3NWN1WkoszCo4niSbU1apobHUwiA6MTkWjZU4VJFbPvVTx3egajonM2JE4.jpeg)\n\nOtro aspecto en el que nos involucramos ese dia y celebramos junto al equipo de @mantequilla-soft fue poner en practica el uso de la maravillosa herramienta de traducción directa que nos trajo @tibfox al evento y a disposición de todos los oradores, para facilitar asi la comprensión de la información transmitida a pesar de no hablar el idioma.\n\nLa aaplicación movil además permitía acceso a muchos mas idiomas para facilitar la traducción en vivo a cada usuario y, además, para que estos mantuvieran conversaciones particulares en distintos idiomas rompiendo esa barrera que a veces resulta tan molesta.  Por nuestra parte @ninaeatshere hizo el test presentando nunestra charla en español, para facilitar la información a los nuevos usuarios españoles y, por supuesto, para honrar el lugar en donde estamos, pues sabemos que la comunidad hispanoablante es gran parte de nuestro ecosistema.\n\n\n![](https://files.peakd.com/file/peakd-hive/ninaeatshere/Ep5mHUbDd3Ezbng5Z5FvU8ro9ioGtm4PsfHu7H8L2pXczpxU3o8oZF8a6y24Rj63su3.jpeg)|![IMG_0599.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23yTji5XrrfTaYmqBTuauKZD4hX89iGrhG24wRUXGgabw9E8v8EqtYMGmwVfpvKJsQaUT.jpeg)\n--|--\n\n![IMG_0565.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23xAgVEX4cDLxh9tceSAKZcP8rvmELVWLuKGJAkTQcHCuWBCWEycyFoTuxUMdxPMf6DSt.jpeg)\n\n![](https://files.peakd.com/file/peakd-hive/ninaeatshere/242DdHTEeAUveRsP2jhbSGqUgN2MCSgcgYweSimVrZrswdEqT1ZJnJrytzAQ4RXx3AGWW.jpeg)\n\n# Día 3: ¡Patrocinando los premios del «Clean Planet Challenge»!\n\n![IMG_0087.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23zS5cQx5t1QrU8aesdsJc4dobjET49MBVkLLTzwVZNWGqBPsbBMXgdzuRE28d2kWwoLC.jpeg)\n\nComo cada año, durante las #BuzzParty organizadas por @tibfox, se llevó a cabo el maravilloso reto #CleanPlanetChallenge y, por supuesto, estuvimos allí para recorrer juntos la isla en que este se llevo a cabo, anclar unos cuantos pines en los alrededores y además motivar a los participantes con unas mochilas llenas de Hive goodies para los ganadores del reto.\n\nNuestro equipo estuvo presente en el reto, ayudando a limpiar la Isla de Tabarca pero sobre todo, motivando a los participantes a competir sanamente entre ellos. Ese día luego de que @ninaeatshere llevara nuestro pin a comer, el equipo se encargó de estar presente durante todo el reto para al final premiar a los que más se esforzaron esa tarde. El guardían de los premios fue @godfish, nuestro responsable de apoyo al Modelo de Negocio, quien mantuvo ojo avisor sobre cada involucrado y facilitó los pemios a la familia ganadora de ese día.\n\nHicimos entrega de mochilas con regalitos a la familia de @gissse y @juanmatrader, dos de los nuevos usuarios que se involucraron totalmente en la experiencia Hive!\n\n\n![IMG_0011.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/Eoc8QckLcLNQCYJFG5eT1HmKrBND8PwapeoGr5V9SK7gtmZC2iSgdJBhkAMeG9gDig9.jpeg)\n\n\n![IMG_0029.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/EoEtN2zHRJ11zVJ5s2Jv8j1r5MuV6wi38tiBPqh6hsVqqLpiyX7U8VAwNXr3fSmANqT.jpeg)\n\n![IMG_0595.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23yThC4RP9VMjYMWEQsS75TqvcoWbAoeJDsYnAEGfJSXZ2bctiwLe7Q66BDa75pPcECqH.jpeg)|![IMG_0117.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23y8zTpy6DdrCB1C66dLv9yLcaWbNop1QeY9nM5d7WD2brADsrcNYPpqw37QDSkHvRaUg.jpeg)\n--|--\n\n![IMG_0105.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23yd85xf1MTamt39PatWojHu7XVXU8PW8qGniSoHiUd8bBDA2tHiT8pJot6QJrSkeCqTS.jpeg)\n\n\n# Día 4: ¡Explora la ciudad resolviendo acertijos!\n\n![IMG_0249.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/Eoke1Pn2xPKfhG6DYsrhQueoi6MoTb1VvcjQBLMLSvmob8Q8dnmVkGpirywauFZFZrh.jpeg)\n\nPara nuestro último día presentes en el #HODAlicante quisimos llevar a los asistentes del evento a recorrer parte de la ciudad, adentranos en la cultura alicantina y motivarles a publicar su contenido viajero en la [comunidad de WorldMAppin](https://peakd.com/c/hive-163772/created).\n\nLa intención del recorrido era visitar algunos lugares de interés en Alicante mientras @ninaeatshere iba cuestionando a nuestros queridos Hivians con algunos acertijos viajeros. Era el último día del evento y los asistentes estaban realmente agotados de los días anteriores, además había festividades locales en la ciudad que limitaban el horario y acceso a ciertos lugares, así que decidimos tomarnoslo con calma, reducir unpoco el itinerario y hacer preguntas muy sencillas para el reto.\n\nNos encontramos en la entrada de Ulab, el centro de convenciones en el que se desarrollaron las charlas y nos dirigimos a visitar tres puntos cercanos:\n\n<center> **La Básilica de Santa María** </center>\n\n![IMG_0253.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/EprV5sqGSt9pYQYvNrFmVgBg5dxUBoLv3gkQopS7mPkqHTjCzmSjDmQYY3KzPP2Knrh.jpeg)\n\n<center> **El Museo de Arte Contemporáneo de Alicante** </center>\n\n![IMG_0267.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/EouBcgcUNP56YECZEydKKTsweNhz4bNfSnuwC7su4hr9p26tRrMwDx4J2Bz16BYx4qG.jpeg)\n\n<center> **Barrio de Santa Cruz** </center>\n\n![IMG_0303.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/Ep7s6UvvnDYqqizYxFMbxZaC6wSfQLfotftCJn1LKuVKvffB1Pi55HSQsc6thmgJ1nU.jpeg)\n\n<center> 😃 **El Mirador de Santa Cruz está marcado con el pin de WorldMappin** </center>\n\n![IMG_0298.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23x1DBQZdwN3VBYtEa9VqiyJz98W9nEPwwjAJ1PxzqmZkPrMSKUnp4iKxm5nMnmB3JaUT.jpeg)\n\nComo el final de la caminata era a cuestas, nos detuvimos a descansar a las afueras de una de las pintorescas casitas del Barrio de Santa Cruz, en donde convenientemente se alojaba @godfish, el guardian de los premios, y nos dispusimos a compartir algunos snacks y hacer entrega de premios a los tres ganadores de los acertijos hechos por el camino.\n\nEn esta oportunidad otra de los nuevos usuarios resultó ganadora @anamz se llevó una de nuestras mochilas llena de premios y la acompañaron los victoriosos @edje y @palomap3 por ser los más rápidos adivinando acertijos ese día. Aquí podemos ver una foto de la escena en la que allanamos la morada de @godfish para hacer la entrega de premio a los tres ganadores de esa jornada final. Algunos ganadores compartieron con entusiasmo el contenido de la famosa mochila, así que aquí tienen una muestra del contenido.\n\nEn la mochila incluímos un par de camisetas, la del anterior HiveFest que patrocinamos y la bonita camiseta negra de nuestro equipo. Los ganadores tambien se llevaron una buena tanda de stickers de Hive, una botella de agua, una pequeña cartera **la billetera fria** y un par de sobres de **semillas de flores de verano**, una bonita iniciativa promocional con propósito real ( [accede aquí](https://peakd.com/hive-121566/@detlev/hive-merch-with-results-smart-seed-marketing) si te interesa conocer más sobre las **Semillas de Hive** o eres uno de los ganadores y quieres enterarte de como plantarlas)\n\n![IMG_0282.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/EoGyrB1vUGaXZCWmkedUj9MFSrBLt23FHxiitcm9quYrz3zd8QwnpW71dABNtuVdofq.jpeg)\n\n![4e179531-2ae5-4ccf-a3f7-90d594b4477c.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23w2eJgxLW3SpsJcUSkaaJRRLXnCuBUNpFgAwtUsQxEpXPDmD1iX9cdQ26cfeTs4HCyUb.jpeg)| ![77e48ea0-b9c8-4a07-af1c-6b36393790f5.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/23w2ktvC2bvrftTrUvWbu4wXgUARuALsamMPYJFM6fCSrsxRhkThRSA88sAqX8vtuD4cR.jpeg)\n--|--\n(Fotos de las ganadoras  Ana y Paloma)\n\nEl equipo de WorldMAppin está sumamente agradecido y orgulloso al poder participar en eventos como este, lleno de iniciativas que motiven a los usuarios de nuestro ecosistema a estar más presentes en la blockchain de distintas maneras. Nos complace decir que disfrutamos mucho de compartir esta experiencia una vez más junto a los organizadores del evento y todos los usuarios que asistieron a él, queremos que los usuarios delproyecto nos sientas cercanos y tengan la seguridad que puedan acudir al equipo ante cualquier, duda, sugerencia o aporte.\n\nFue un gusto estar presentes en Alicante y ya no podemos esperar para verlos a todos nuevamente en el próximo [HiveFest XI – Barcelona, the Heart of Catalonia! 17-20 SEPT 2026](https://peakd.com/hive-106258/@hivefest/save-the-date-hivefest-xi-barcelona-the-heart-of-catalonia-17-20-sept-2026) hasta entonces viajeros!\n\n**-El equipo de WorldMappin**\n\n![IMG_0525.jpeg](https://files.peakd.com/file/peakd-hive/ninaeatshere/EpxqFqjZsep8TjMMivRoVu33HCzReFCLxkd8yybw3GS6RK1LnXfGb7AoLx9B9CZqbgu.jpeg)\n*Crédito de fotos: Agradecemos a @ninaeatshere, @gisse, @schmidi, @haastrecht, @palomap3 & @anamz por compartir las fotos que ilustran esta publicación.*\n\n</ul><hr><br>\n\n<h2>Apoya a WorldMappin y úneta a la <a href='https://peakd.com/c/hive-163772'>Comunidad Worldmappin</a></h2>\n<br>\n\n<h2>Apoya a WorldMappin y únete a la <a href=“https://peakd.com/c/hive-163772”>comunidad de WorldMappin</a></h2>\n\n# ¡Prosperemos juntos y llevemos esta comunidad al siguiente nivel!\n\n<center>\n![image.png](https://images.hive.blog/300x300/https://files.peakd.com/file/peakd-hive/ninaeatshere/23y8jLbHi6piMyFwrKKDtgLGVRPwi5rutakVicvaqyRU68xc97ynx4vL6nYYdjXoWEBq3.png)\n</center>\n\n<strong>¡Cuanto más apoyo recibamos, más podremos devolver! ¿Quieres ayudar?</strong><br> <a href='https://hive.vote/dash.php?fan=worldmappin&i=2'>Vota los posts diarios de Travel Digest</a> <br>\n\n|||\n|-|-|\n|<br><a href='https://peakd.com/wallet'>Delega </a> a WorldMappin!| <a href='https://hive.vote/dash.php?i=1&trail=worldmappin'>Sigue </a>nuestro trail de curación|\n|Únete a nuestras charlas - <a href='https://discord.gg/EGtBvSM'>Únete a nuestro Discord</a>|Vota por nuestra propuesta (#348) <br> [Peakd.com](https://peakd.com/proposals/348) / [Ecency](https://ecency.com/proposals/348) / [Hive.blog](https://wallet.hive.blog/proposals/348) / [HiveSigner](https://hivesigner.com/sign/update_proposal_votes?proposal_ids=%5B%22348%22%5D&approve=true)|\n\n##### ¡Pongamos más pines en el mundo con Worldmappin!<br>\n\n¡Muchas gracias por tu apoyo!\n\n\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 535
+        },
+        "title": "WorldMappin at Hive Open Days Alicante [Eng][Esp]",
+        "author": "worldmappin",
+        "payout": 32.74,
+        "created": "2026-05-18T08:30:48",
+        "reblogs": 13,
+        "replies": [],
+        "updated": "2026-05-18T08:30:48",
+        "category": "hive-163772",
+        "children": 15,
+        "permlink": "worldmappin-at-hive-open-days-alicante-engesp",
+        "community": "hive-163772",
+        "payout_at": "2026-05-25T08:30:48",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "admin",
+        "net_rshares": 424974526653222,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "blocktrades",
+            "rshares": 115175087012681
+          },
+          {
+            "voter": "adm",
+            "rshares": 27092777610478
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 951001867457
+          },
+          {
+            "voter": "sharker",
+            "rshares": 46095106992
+          },
+          {
+            "voter": "joshglen",
+            "rshares": 12561959405
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "hodalicante",
+            "travel",
+            "spanish",
+            "meetup",
+            "worldmappin",
+            "buzzparty",
+            "challenge"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/242rwANfanKquNCJzy2jQ1gmvJxZkDPrUrCiiRP97QvVeW2JrcfWGqK1iWKHdtsMvxCdU.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23xKxvXLX2WNfSJJTXN61rJn7hoViGpT4fMSMD32RAUShs8pqqK62oZDmA4LD3LaHMCLD.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23wC9iMVbV9SeWMetZM6WzNJWWUSVQkGHSinqPeJ6g1k2MHuQPztSpcV9apFHupDkbEPg.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23vi62BL7bC2CspiLUmCFhtWsCieoLKsa9MvtCDhnMNk2R6rCdGUpcaT718b6g4ZWoWTk.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23u65K3zjk5PK99ybg9amYX9bKEtZySPJ3H78MACfscqG7CX6UXa97jdwYy6tSAiyJChH.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23uFc5xsvmXgiAKvSX11N1eDBFDHn5MybfuzH8S6V2khLMCUuWegKNyKdqmigbdzMQqqa.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23w2oVKKsbNoswCPk5Ex8ae79WH1LBwetA7a8K1AqafGEHYHhsQE5W1E7AGQ2kvi6JVT9.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23vsb96t8FUyD4PHBgWGgVsiRcVRhGcysGhssvSeWsT3UdBacjsKqKNUsasCyuFsFzf2S.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23tvsFr9j1Xcf1cfv9XSXsZZjcidKUhBdEod6FjUYSV8qP1XmQTP2FhfcGtVGr3k3ghLn.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23xpAnfLHxz3NWN1WkoszCo4niSbU1apobHUwiA6MTkWjZU4VJFbPvVTx3egajonM2JE4.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/Ep5mHUbDd3Ezbng5Z5FvU8ro9ioGtm4PsfHu7H8L2pXczpxU3o8oZF8a6y24Rj63su3.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23yTji5XrrfTaYmqBTuauKZD4hX89iGrhG24wRUXGgabw9E8v8EqtYMGmwVfpvKJsQaUT.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23xAgVEX4cDLxh9tceSAKZcP8rvmELVWLuKGJAkTQcHCuWBCWEycyFoTuxUMdxPMf6DSt.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/242DdHTEeAUveRsP2jhbSGqUgN2MCSgcgYweSimVrZrswdEqT1ZJnJrytzAQ4RXx3AGWW.jpeg",
+            "https://files.peakd.com/file/peakd-hive/ninaeatshere/23zS5cQx5t1QrU8aesdsJc4dobjET49MBVkLLTzwVZNWGqBPsbBMXgdzuRE28d2kWwoLC.jpeg"
+          ],
+          "users": [
+            "honeydue",
+            "worldmappin",
+            "mantequilla-soft",
+            "tibfox",
+            "ninaeatshere",
+            "godfish",
+            "gissse",
+            "juanmatrader",
+            "anamz",
+            "edje"
+          ],
+          "format": "markdown",
+          "description": "El equipo presente en los HODAlicante 2026"
+        },
+        "community_title": "Worldmappin",
+        "author_reputation": 80.41,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "32.740 HBD"
+      },
+      {
+        "url": "/hive-139531/@cutehive.com/hive-top-holders-1-3-0-update-small-changes-much-better-experience",
+        "body": "Since the release of **Hive Top Holders v1.2**, it has gradually become one of the tools I personally use the most.\n\nWhenever I have some free time, I often open it just to check my HP ranking. Watching the numbers slowly climb gives me that strange feeling of grinding levels in a game 😳\n\n![image.png](https://images.hive.blog/DQmNSNbxpoNyH37tpXCZa5MFYmEhLdCD2awKdgnpxeDtDd2/image.png)\n\n## The More I Used It, the More Issues I Noticed\n\nAs I started using it more frequently, I gradually noticed some small usability issues.\n\nFor example, I often browse in:\n\n**VESTS → Show as HP**\n\nBut every time I refreshed the page, I had to:\n\n- Click VESTS\n- Turn on the Show as HP toggle again\n\nAfter repeating this over and over, I realized I was doing the exact same actions way too often...\n\nThe same applies to people who mainly follow:\n\n**HBD Savings rankings**\n\nThey also have to repeat the same series of steps every time.\n\nThese are tiny issues on their own, but once repeated frequently, they start affecting the overall experience.\n\n> Often, what hurts user experience isn't the big problems — it's the tiny actions repeated every single day.\n\n\n\n## Adding Route Support\n\nSo I started thinking:\n\nMaybe adding route support would make more sense.\n\nThat way, refreshing the page would no longer reset everything back to the default view, and users could directly jump into their preferred section through URLs.\n\n\nFor example:\n\n![4f3a93776ad321688cf28b405041642a.png](https://images.hive.blog/DQmUpHmYihv81R4fPccULB1Xe2kWieTftpLxqc7T1tED5ej/4f3a93776ad321688cf28b405041642a.png)\n\nNow you can go there directly in one step.\n\n## HP Ranking Is Now the Default View\n\nAfter AI helped me implement the routing feature, another thought came to mind:\n\nMost people are probably more interested in the **HP rankings** anyway.\n\nSo I made two additional changes:\n\n✅ Moved VESTS to the first asset category\n\n✅ Enabled HP display by default\n\nNow when you open the tool, the first thing you see is HP Rankings:\n\n![f3ca5d70cd4e5346d6fbaab8c1a35a1b.png](https://images.hive.blog/DQmWWaqXN8Pp1fUzcKpYMva7f49tHWwmbjFfSW41ik5QMVn/f3ca5d70cd4e5346d6fbaab8c1a35a1b.png)\n\nNo extra clicks needed anymore.\n\n\n## URL Pagination Support\n\nLater, while continuing to tweak things, another issue crossed my mind:\n\nWhat if your ranking isn't on the first page?\n\nSo I also added pagination support to URLs.\n\nFor example:\n\n\n![ef560b199f1337440140677834f34369.png](https://images.hive.blog/DQmUqYgdnKbHz6xE5UHVTBB5GPLA2KqZ8TTNbjz7vjv9RnY/ef560b199f1337440140677834f34369.png)\n![74d2f9b18eb6092d4f573f4e2587e561.png](https://images.hive.blog/DQmfQuWk6zHFHAGs4bEpezzytnDNerRPNAY3x79maCwBtyT/74d2f9b18eb6092d4f573f4e2587e561.png)\n\n\nNow you can jump directly to a specific page.\n\nThis should be especially useful for users whose rankings are a bit further down the list.\n\n\n\n## What's Included in This Update\n\nHive Top Holders 1.3.0 mainly includes:\n\n- Added route support\n- Page refresh now preserves current state\n- URLs can directly access specific sections\n- HP rankings are now the default view\n- Moved VESTS to the first position\n- Added pagination support in URLs\n\nThese all seem like small changes, but together they noticeably improve the overall user experience.\n\n\nHope you'll enjoy this update. And I wish everyone bigger assets, higher HP, and rankings that keep climbing 🚀\n\n\n\n## 🔗 Try It Now\n\n👉 https://top-holders.cutehive.com/\n\nFeel free to try it out and share your feedback.",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 202
+        },
+        "title": "Hive Top Holders 1.3.0 Update: Small Changes, Much Better Experience",
+        "author": "cutehive.com",
+        "payout": 23.821,
+        "created": "2026-05-18T09:15:54",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-18T09:15:54",
+        "category": "hive-139531",
+        "children": 12,
+        "permlink": "hive-top-holders-1-3-0-update-small-changes-much-better-experience",
+        "community": "hive-139531",
+        "payout_at": "2026-05-25T09:15:54",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 308951670905676,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "abit",
+            "rshares": 32839947144673
+          },
+          {
+            "voter": "adm",
+            "rshares": 27092777610478
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 29514078950
+          },
+          {
+            "voter": "magicmonk",
+            "rshares": 21598940267733
+          },
+          {
+            "voter": "laoyao",
+            "rshares": 80717318476
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "tags": [
+            "hive",
+            "blockchain",
+            "development",
+            "cutehive",
+            "richman",
+            "holders",
+            "tool"
+          ],
+          "image": [
+            "https://images.hive.blog/DQmNSNbxpoNyH37tpXCZa5MFYmEhLdCD2awKdgnpxeDtDd2/image.png",
+            "https://images.hive.blog/DQmUpHmYihv81R4fPccULB1Xe2kWieTftpLxqc7T1tED5ej/4f3a93776ad321688cf28b405041642a.png",
+            "https://images.hive.blog/DQmWWaqXN8Pp1fUzcKpYMva7f49tHWwmbjFfSW41ik5QMVn/f3ca5d70cd4e5346d6fbaab8c1a35a1b.png",
+            "https://images.hive.blog/DQmUqYgdnKbHz6xE5UHVTBB5GPLA2KqZ8TTNbjz7vjv9RnY/ef560b199f1337440140677834f34369.png",
+            "https://images.hive.blog/DQmfQuWk6zHFHAGs4bEpezzytnDNerRPNAY3x79maCwBtyT/74d2f9b18eb6092d4f573f4e2587e561.png"
+          ],
+          "links": [
+            "https://top-holders.cutehive.com/"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "HiveDevs",
+        "author_reputation": 70.5,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "23.821 HBD"
+      },
+      {
+        "url": "/hive-139531/@ecency/how-ecency-is-approaching-seo",
+        "body": "_A transparency post on the technical SEO work we've shipped, the reasoning and evidence behind the choices, and the limits of what any single frontend can do._\n\nWhy we dug into this\n--------------------\n\nEvery year we analyze traffic and performance of website. Ecency's organic search traffic declined slightly over the past year. The instinctive fix people reach for is \"submit a sitemap.\" Before doing that, we measured - and the data reframed the problem.\n\nThe most important distinction up front: **discovery is not indexing.** In recent discussions by @pharesim @louis88 and @asgarth sitemap came up again and we shared our thoughts on this topic but we thought dedicated post is essential for transparency not only about sitemaps but our recent changes.\n\nHere is the decisive fact: ecency.com has **never had a sitemap**, and Google has still _discovered_ the vast majority of its URLs - millions of them. That's proof, not theory - discovery was never the bottleneck. The problem is that Google _chooses not to index_ most of what it found - the \"Discovered/Crawled – currently not indexed\" buckets in Search Console - because it judges much of that content as low demand or low quality. A sitemap does not change that judgment; it would only restate URLs Google already found and already declined.\n\n<img src=\"https://i.ecency.com/DQmURbRLDUFbsrJCs7kHcjmeNQVBVK6zmhKwtK3UnhLKsHe/8257d31b_e41a_434a_b56e_68d129132321.jpeg\" alt=\"\" />\n\nWhat a sitemap does and doesn't do\n----------------------------------\n\nThis is well documented by Google and stated repeatedly by their Search team:\n\n*   Sitemaps help with **change signaling** (`lastmod`) and **crawl prioritization on very large sites**.\n    \n*   The crawler **discovers linked URLs on its own** perfectly well - a sitemap is not how Google finds content on a well-linked site.\n    \n*   A sitemap does **not** make Google index pages it has decided aren't worth indexing.\n    \n\nPer Google's own SEO documentation, duplicate or thin content \"is not a violation of our spam policies … \\[but it's\\] not something that will cause a manual action\" - it's simply not indexed or consolidated away. The lever is the content/quality signal, not the URL list.\n\nIncluding millions of URLs in a sitemap when most are thin posts, auto-generated reports, or duplicate comment pages would make our signal to Google **worse, not better** - it would spend crawl budget reaffirming low-value pages.\n\nWe _did_ ship dynamic sitemap support into Web (Vision) - but for the one reason it genuinely helps: `lastmod`\\-driven revalidation of **edited** posts. It is deliberately scoped (recent + traffic-bearing + curated, not the whole corpus) and is hygiene, not a ranking fix. We want to be clear about that so expectations are calibrated.\n\nThe actual lever: indexing quality\n----------------------------------\n\nThe thing that meaningfully changes how Hive content shows up in Google is **reducing the low-quality footprint** so Google's site-level quality assessment isn't dragged down. What we shipped:\n\n*   **NSFW / adult content** `noindex` - via tags, known adult communities, and conservative title heuristics (it catches legacy posts that deliberately omit the `nsfw` tag).\n    \n*   **Abuse-blacklist + effectively-empty content** `noindex` - folded into one shared indexability decision so it's consistent everywhere.\n    \n*   **Comment / short-form canonical consolidation** - adopting the model Reddit, Stack Overflow and Quora use: a reply is not its own indexable page; it canonicalizes to the root of its discussion thread. Short-form microblog container anchor posts are `noindex`; an individual short post is indexed only if it clears a content + engagement bar. This stops thin comment pages from diluting the domain.\n    \n\nThese remove drag. They don't manufacture rankings - we want to be honest that no technical change does.\n\nThe canonical change - and the cross-frontend convention\n--------------------------------------------------------\n\nThis is the change most relevant to other frontends, so we want to explain it openly.\n\nHistorically, Hive frontends follow a convention: point `rel=canonical` at the frontend a post was first published from. Ecency followed this for years. The intent is good - consolidate signals so the ecosystem isn't fragmented.\n\nWe tested whether it actually does that. **It does not.** On real ecency.com post pages where our HTML declared a cross-domain canonical to another frontend, Google Search Console's URL Inspection showed **no user-declared canonical recorded** and Google selecting **its own** representative URL (an ecency.com one). Google's documentation is explicit that a declared canonical \"is a hint, not a rule,\" and that Google picks the version it judges \"objectively the most complete and useful for search users.\"\n\nA second, measurable factor: rendering. Fetched as a crawler with no JavaScript, some Hive frontends are client-side rendered - the initial HTML is a near-empty application shell with the article body absent until scripts execute - while Ecency server-renders the full article in the initial response. This isn't a criticism; client-side rendering is a legitimate architecture with its own benefits. But it has a concrete SEO consequence: when Google chooses among duplicate copies, it favors the version it can parse immediately.\n\nNet effect of the old convention for Ecency: we were declining our own indexable, server-rendered content in favor of a canonical Google was ignoring anyway. So we changed it:\n\n*   Ecency now **self-canonicalizes** to a single clean URL per post.\n    \n*   We still **fully honor an explicit author-declared** `canonical_url` in post metadata - that is genuine syndication intent and is respected first.\n    \n*   We only stopped the **inferred, app-based** cross-frontend canonical - which was a frontend's guess, not the author's declaration, and which Google treated accordingly.\n    \n\n**Does this hurt other frontends?** Based on the evidence and Google's documentation, **no**:\n\n*   There is no cross-domain \"duplicate content penalty.\" Google clusters copies and picks one per query; the others aren't penalized, they're just not the one shown for that query.\n    \n*   The old convention wasn't actually consolidating signals (Google ignored it), so abandoning it doesn't remove protection that was working.\n    \n*   Nothing we changed affects another frontend's inbound links, crawlability, or how Google treats its pages. Google was already choosing per query regardless of the declarations.\n    \n\nWe'd genuinely encourage other frontend teams to look at their own Search Console URL-Inspection data on shared posts - the cross-domain canonical behavior is observable, and an honest ecosystem-wide picture helps everyone. We're happy to share our methodology.\n\nWhat's upstream of any frontend\n-------------------------------\n\nThe largest Hive SEO gaps are not in frontend code:\n\n*   **External backlink authority.** Hive content has comparatively little inbound link equity from high-authority sites. No canonical or sitemap change fixes this.\n    \n*   **Brand disambiguation.** \"HIVE Digital Technologies\" (publicly traded, NASDAQ/TSXV) dominates branded search for the term \"hive,\" crowding out the blockchain ecosystem. It did improve over last couple years but still requires attention/effort. This is anentity/brand-SEO problem - consistent naming (\"Hive blockchain\"), entity signals, Wikipedia/Wikidata presence - and it needs ecosystem-level effort, not a single app.\n    \n\nThese are worth tackling together, alongside the technical hygiene.\n\nAn open invitation: compare notes every 3-6 months\n--------------------------------------------------\n\nSEO on a platform like Hive is a long game, not a one-time fix. Google's systems change, re-crawl of large sites takes months, and - crucially - the frontends are a **natural experiment**: the same underlying content, rendered by different architectures (server- vs client-side), with different community mixes and technical choices. None of us sees the full picture alone; together the signal is strong.\n\nSo we'd like to propose a lightweight, recurring practice: **each frontend runs its own measurements and shares findings every 3–6 months.** Nothing heavy - from your own Search Console:\n\n*   indexed vs. discovered counts, and the top \"not indexed\" reasons;\n    \n*   canonical behavior on a handful of shared sample posts (URL Inspection);\n    \n*   any structural change you shipped, and what you observed afterward.\n    \n\nPost it on-chain under a common tag - we'll use #hiveseo **\\-** so it's discoverable and durable. **Ecency will go first and keep to this cadence publicly; this post is our first entry.** There's no competition on this layer: if Hive content ranks well on _any_ frontend, the whole ecosystem benefits. We're also happy to share the scripts and methodology we used so comparisons are apples-to-apples.\n\nWhat we're watching, honestly\n-----------------------------\n\n*   Search Console convergence after canonical/redirect changes is **per-URL on re-crawl** - realistically weeks to months for very large URL buckets. We've set up weekly monitoring and will report back rather than declare victory early.\n    \n*   The short-form quality thresholds are deliberately conservative starting points; we'll tune them from real data and have a contingency checkpoint if they're too strict or too loose.\n    \n*   If our self-canonical choice turns out to be rejected by Google at scale (a metric we're tracking), we'll revisit.\n    \n\nWe'd rather be transparent about the uncertainty than overstate the impact. The technical work removes drag and stops us handicapping ourselves; sustained improvement still depends on content quality and the upstream ecosystem factors above.\n\nReferences\n----------\n\n*   [Google Search Central - SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide) - duplicate content is \"not a violation of our spam policies\" and \"not something that will cause a manual action.\"\n    \n*   [Google Search Central - Canonicalization](https://developers.google.com/search/docs/crawling-indexing/canonicalization) - a declared canonical \"is a hint, not a rule\"; Google picks the version \"objectively the most complete and useful for search users.\"\n    \n*   [Google Search Central - Consolidate duplicate URLs](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls) - Google consolidates link signals onto a single preferred URL.\n    \n*   [Google Search Central Blog (2008) - \"Demystifying the duplicate content penalty\"](https://developers.google.com/search/blog/2008/09/demystifying-duplicate-content-penalty) - the original public statement that there is no duplicate-content penalty.\n    \n\n_Questions and corrections welcome - especially from other frontend teams. The goal is Hive content ranking well, on whichever frontend Google can best serve it. We'll publish updated findings in 3–6 months under_ #hiveseo _- and we hope you'll share yours too._\n\n<h2 style=\"text-align: left;\" data-align=\"left\">Support us</h2>\n\n[https://ecency.com/proposals?filter=ecency](https://ecency.com/proposals?filter=ecency)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 477
+        },
+        "title": "How Ecency is approaching SEO - what we changed, why, and what a sitemap can't fix",
+        "author": "ecency",
+        "payout": 16.767,
+        "created": "2026-05-18T18:13:27",
+        "reblogs": 9,
+        "replies": [],
+        "updated": "2026-05-18T18:13:27",
+        "category": "hive-139531",
+        "children": 7,
+        "permlink": "how-ecency-is-approaching-seo",
+        "community": "hive-139531",
+        "payout_at": "2026-05-25T18:13:27",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 220858203989662,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "jeffjagoe",
+            "rshares": 690689975
+          },
+          {
+            "voter": "diana.catherine",
+            "rshares": 6388239870
+          },
+          {
+            "voter": "bustillo",
+            "rshares": 5096458508
+          },
+          {
+            "voter": "timcliff",
+            "rshares": 172768622595
+          },
+          {
+            "voter": "gduran",
+            "rshares": 5422940138
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "tags": [
+            "hive-139531",
+            "hiveseo",
+            "hive",
+            "seo",
+            "sitemap",
+            "ecency",
+            "frontends",
+            "dapps",
+            "content",
+            "indexing"
+          ],
+          "image": [
+            "https://i.ecency.com/DQmURbRLDUFbsrJCs7kHcjmeNQVBVK6zmhKwtK3UnhLKsHe/8257d31b_e41a_434a_b56e_68d129132321.jpeg"
+          ],
+          "links": [],
+          "format": "markdown+html",
+          "links_meta": {},
+          "thumbnails": [
+            "https://i.ecency.com/DQmURbRLDUFbsrJCs7kHcjmeNQVBVK6zmhKwtK3UnhLKsHe/8257d31b_e41a_434a_b56e_68d129132321.jpeg"
+          ],
+          "description": "A transparency post on the technical SEO work we've shipped, the reasoning and evidence behind the choices, and the limits of what any single frontend can do. Why we dug into this Ecency's organic search",
+          "image_ratios": [
+            "1.7927"
+          ]
+        },
+        "community_title": "HiveDevs",
+        "author_reputation": 77.92,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "16.767 HBD"
+      },
+      {
+        "url": "/hive-163106/@lauramica/nomad-hive-my-experience-staying-at-a-hostel-in-the-city-of-buenos-aires-essential-for-enjoying-its-nightlife-mi-experiencia-e",
+        "body": "<div class=\"text-justify\"> \n\n\nThe first time I went to the <strong>City of Buenos Aires</strong> at night, I was 16 years old, and it became one of those unforgettable teenage experiences. A group of friends and I had gotten together to go dancing at a club where we spent the entire night, and the next morning around 7 AM, we returned home by public transportation, traveling the 30 km that separated us from our neighborhood. After that, nights out like those happened countless times, until reaching the present day, now that I’m over 30 and can no longer handle outings that long because I get sleepy. Of course, <strong>I still visit the city at night, but I found a much more comfortable way to do it 😃.</strong>\n\n<blockquote>La primera vez que fui a la <strong>Ciudad de Buenos Aires</strong> de noche tenía 16 años y fue toda una experiencia adolescente memorable. Nos habíamos juntado con un grupo de amigos para ir a bailar un club en el que pasamos toda la noche, y volvimos al otro día en transporte público alrededor de las 7 AM, haciendo el viaje de 30 km que nos separaba de casa. Después, salidas como esas se repitieron innumerables veces, hasta llegar al día de hoy, que tengo +30 y ya no aguanto una salida tan larga como esas porque me da sueño. Por supuesto que sigo visitando la ciudad de noche, <strong>pero encontré una forma más cómoda para hacerlo 😃.</strong></blockquote>\n\n\n---\n---\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23tmJ4knucX5QSPieVjXLkoNe4V9DYCnDQ3KnoZPQBf2gz4hdvcPtyPLZQ6qGSRGZ3efw.png\" alt=\"$1\">\n</center>\n\n---\n---\n\nOf course, there’s nightlife where I live too, but nothing compares to going to THE city. There, the variety of things to do is always much greater, so whenever there’s an interesting event, I make sure not to miss it. The problem is that, living 30 km south of the city, public transportation stops running very early, and getting back home always turns into an odyssey. Until one day, while visiting some traveler friends, it occurred to me that I could simply stay at the same hostel as them — after all, this kind of accommodation was nothing new to me.\n\n<blockquote>Por supuesto que donde yo vivo también hay vida nocturna, pero nada se compara con ir a LA ciudad. Ahí, la oferta de cosas para hacer siempre es muchísimo más variada, por lo que cada vez que hay un evento interesante, no me lo pierdo. El asunto es que, viviendo a 30 km al sur de la ciudad, el transporte público termina muy temprano, y tener que volver a casa siempre resulta una odisea. Hasta que un día, cuando estaba visitando a algunos amigos viajeros, se me ocurrió que podía hospedarme en el mismo hostel que ellos: después de todo, este tipo de alojamientos no era nada nuevo para mí.</blockquote>\n\n---\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/2458LHUVQMtnaQkvRVkN7oL1qSQzjd5mF9tRxEz2H8aK6GtVtB81Yug5fDPNN3kvniR4B.jpg\" alt=\"$1\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23u5ztFv2p9MoYxoYq47ChxbXhSrfyciBRT2Jq8zEUZALPN8iPJ7WRAvY6mdqzXu46Sra.jpg\" alt=\"$1\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23tva9mqcvkLw8VcPu5oRgBvJ9t81eQvMmaEMgGgE1cyWftNHkFcYRU5njS3d5p58jDo9.jpg\" alt=\"$1\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wMRrMXjcDq1o83iadGndZjrD82Y5rh2foSWTsRGf9kbt46MYnYdGre41bhb84D5ZWQQ.jpg\" alt=\"$1\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23w2esoY2e5jEzvsde9ZM1vWMTHHNcUPtohLZGNkGboXRk7bvrp2RaWkcngHXTNPfEskv.jpg\" alt=\"$1\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23vsHwpBQ8NB2xxcaHG53nBPwmsuqTHUgXrxXz3zXEPFFgfNvrmGPxdH7pDt4zn8VymsN.jpg\" alt=\"$1\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wC5cNKTaATKL29AcfANBhu4i62JS61x98YRUMRo1vdpxKJxh7tPM9sQ7JD4wCvUCrhg.jpg\" alt=\"$1\">\n</center>\n\n---\n\nMy original idea was just to spend the afternoon there, but since the outing had become so entertaining, the hours went by almost without us noticing. Later on, the group wanted to go out for dinner together, and that’s when the idea of their hostel came up. Now that I’m working and my outings come with a different budget, the idea of spending the night in the city didn’t seem bad at all. Besides, they took me to their accommodation and the night only cost $15, which was actually cheaper than taking an Uber back home. It was an absolute yes from every angle.\n\n<blockquote>Mi idea original era solo ir a pasar la tarde, pero como el paseo se había vuelto tan entretenido, las horas pasaron casi sin darnos cuenta. Más tarde, los chicos tenían la idea de ir a cenar juntos, entonces ahí surgió la idea de su hostel. Ahora que trabajo y mis salidas tienen otro presupuesto, la idea de pasar la noche en la ciudad no me pareció tan mala. Además, ellos me llevaron a su hospedaje y la noche solo costaba $15, un precio que incluso era más económico que un Uber hasta mi casa. Fue un absoluto sí por todos lados.</blockquote>\n\n\n---\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wqgQhbnESqgn6Xni8uyx1bQduMcEvKxWMNRhkVRxya7DNhoaP4amigijxEu6wg2j1Qn.jpg\" alt=\"$1\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23xebeWESzNA2GGkPrvoNB9VErukiagpsQWviz9pHY69bdCyVFCHPQg2ZJqNAZcAPWt56.jpg\" alt=\"$1\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23w2o7bwwUSRUJL4mJybSAg36ndnCb8JVRLXbx2R7mrauQ5NZhSf1kwJ12s1GHidqNZjg.jpg\" alt=\"$1\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23xANwA9rcdKmd2qtFUyKPhF6bobJPc3V8fkNGnufnSRJczJpS8ecoUyD8t2WA962eiqP.jpg\" alt=\"$1\">\n</center>\n\n---\n\nDuring all the trips I made, 90% of the time I stayed in places like this. In case you don’t know what a hostel is, it’s a type of budget accommodation, generally aimed at solo travelers, where everything is shared. Guests share the bedroom, bathroom, kitchen, and recreational spaces. Of course, there are hostels that offer private double rooms with private bathrooms, but in their simplest and cheapest version, everything is shared. They can cost several times less than a hotel, which is why they are such a popular choice among backpackers traveling on a low budget.\n\n<blockquote>Durante todos los viajes que hice, el 90% de las veces me hospedé en este tipo de lugares. Por si no sabes lo que es un hostel, se trata de un tipo de alojamiento económico, generalmente para viajeros solitarios, en donde todo es compartido. Se comparte habitación, baño, cocina y espacios de recreación. Por supuesto hay hosteles que ofrecen habitaciones dobles privadas con baño privado, pero en su versión más sencilla y barata, todo se comparte. En precio puede valer varias veces menos que un hotel, y es por eso que es tan elegido por mochileros con bajo presupuesto.</blockquote>\n\n\n---\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wC9nm9rSLqtXyhgfi3kcpMpRb42A5ncmiqXUFS6Rf8DT8EJvPQRg9ztQwMijcwY5fqW.jpg\" alt=\"$1\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23w2ekc2F8mzJHF8sSNTFwffFX976eUrbV7Tdi5rSuvprzmj2Q7DCaKwn44UkX88nV24L.jpg\" alt=\"$1\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23xKp2vCCGCoSMwJefBVHpFGmyk55p9BtVjqWEHAyoZum16GNimYEEGkr6EHUshfwXV3q.jpg\" alt=\"$1\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23vi3sR4tAtcJviTgogLUU9hQYEgEpGbVX9e74LHWvcNXN1obC3XzeyhZe8j4ebZnkdCW.jpg\" alt=\"$1\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wMYkvtizC16wp2SAcqnchqgqo7ZnxuQ1WvHXHBvKxoywKa9Pzhagsr8fxmaW7XLZcV2.jpg\" alt=\"$1\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wC7Uo4rMjk3XFcxW9uDZ8KHTprmZemwNsMUPRjnQQo2bfzvUWPvUzETsNEpxdWiM7rd.jpg\" alt=\"$1\">\n</center>\n\n---\n\nHowever, it’s not all about saving money at a hostel. Since these places are mostly chosen by solo travelers, they naturally end up becoming spaces with a lot of social activity. Most of the friends I made during my travels were people I met in hostels (in fact, the friends I was visiting at that moment were people I had met at a hostel in Paraguay), so if you enjoy cultural exchanges, this is definitely the right place for you.\n\n<blockquote>Sin embargo, no todo pasa por el dinero en el hostel. Al ser un lugar elegido en su mayoría por viajeros solitarios, siempre se termina transformando en un espacio con mucha actividad social. La mayoría de los amigos que hice en mis viajes los conocí en hosteles (de hecho, a los que estaba visitando en ese momento los conocí en un hostel de Paraguay), así que si te gustan los intercambios culturales, este es el lugar indicado.</blockquote>\n\n\n---\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23uQkSFHrK53RYoxzMELUogsciWzvKJGx5CmGqM4hzimc7yppzcLJshypv37LrrGHVGon.jpg\" alt=\"$1\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wMW99ZARxVMGrijWVZRmd8TzTnXrCqSkABKn2ENYikuXNDLA3toeueoPCQUqvRFcZzr.jpg\" alt=\"$1\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23xebeXZcyXR4SGjhjQaosoZqZJXjfKYV1uzibzPJVjeXzEfN9D1v6k2ucjB8FpvL4At9.jpg\" alt=\"$1\">\n</center>\n\n---\n\nIn the end, my Saturday in the city turned into a full weekend over there. Once I knew I had a safe bed to stay the night, I was able to continue enjoying my outing peacefully and, of course, go out to dinner with my traveler friends, which was exactly what I wanted to stay for. Ever since I discovered how convenient it is to rent a hostel in the city, I now do it every time I want to attend an event there that involves staying out late. The place in the photos is called Parla Hostel and it’s located very close to the tourist area, so I definitely recommend it for your trips to the City of Buenos Aires, <strong>and I hope your experience there is as good as mine was ❤️.</strong>\n\n<blockquote>Al final, mi sábado en la ciudad se terminó transformando en un fin de semana completo por aquellos lados. Una vez que supe que tenía una cama segura para quedarme a dormir, pude continuar con mi paseo tranquila, y por supuesto ir a cenar con mis amigos viajeros, que es lo que quería quedarme a hacer. Desde que descubrí lo cómodo que es rentarme un hostel en la ciudad, ahora lo hago cada vez que quiero ir a algún evento allá que implique quedarse hasta tarde. El lugar de las fotos se llama Parla Hostel y está ubicado muy cerca de la zona turística, por lo que lo recomiendo en sus viajes por la Ciudad de Buenos Aires <strong>y espero que su experiencia ahí sea tan buena como lo fue la mía ❤️.</strong></blockquote>\n\n\n---\n---\n\n<center><h4>❤️ Hope you liked this post! Thanks for reading. ❤️</h4><h5>❤️¡Espero que les haya gustado este post! Gracias por leer. ❤️</h5></center>\n\n---\n\n\n---\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23tvkt7kUQsrDyBG3eT6buXxNumGb1XF4ExGEv4Erg4qDsDjkHSk66n3aptnNdKSjdgC8.jpg\" alt=\"$1\"></center>\n\n---\n\n<center>With lots of love. / Con mucho amor.\n<strong>Lau</strong> 💕. </center>\n \n---\n<center><sub>📸 Cover created with Canva. All the images are my property 💕.\n📸 Portada creada en Canva. Todas las imágenes son de mi propiedad 💕.</sub></center>\n---\n\n</div>\n\n[//]:# (!worldmappin -34.609374 lat -58.378346 long <DESCRIPTION GOES HERE> d3scr)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 533
+        },
+        "title": "Nomad Hive - My experience staying at a hostel in the City of Buenos Aires: essential for enjoying its nightlife. / Mi experiencia en un hostel de Ciudad de Buenos Aires: necesaria para disfrutar de su vida nocturna. 😃❤️",
+        "author": "lauramica",
+        "payout": 19.278,
+        "created": "2026-05-18T13:47:48",
+        "reblogs": 4,
+        "replies": [],
+        "updated": "2026-05-18T13:47:48",
+        "category": "hive-163106",
+        "children": 4,
+        "permlink": "nomad-hive-my-experience-staying-at-a-hostel-in-the-city-of-buenos-aires-essential-for-enjoying-its-nightlife-mi-experiencia-e",
+        "community": "hive-163106",
+        "payout_at": "2026-05-25T13:47:48",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 250231561452577,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "team",
+            "rshares": 205375213145
+          },
+          {
+            "voter": "kevinwong",
+            "rshares": 52598257950
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 14039930811
+          },
+          {
+            "voter": "matt-a",
+            "rshares": 456439152
+          },
+          {
+            "voter": "jacor",
+            "rshares": 7981792632
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 300,
+            "account": "commentrewarder"
+          }
+        ],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "spanish",
+            "argentina",
+            "worldmappin",
+            "travel",
+            "city",
+            "nomadhive",
+            "nighout"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/lauramica/23tmJ4knucX5QSPieVjXLkoNe4V9DYCnDQ3KnoZPQBf2gz4hdvcPtyPLZQ6qGSRGZ3efw.png",
+            "https://files.peakd.com/file/peakd-hive/lauramica/2458LHUVQMtnaQkvRVkN7oL1qSQzjd5mF9tRxEz2H8aK6GtVtB81Yug5fDPNN3kvniR4B.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23u5ztFv2p9MoYxoYq47ChxbXhSrfyciBRT2Jq8zEUZALPN8iPJ7WRAvY6mdqzXu46Sra.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23tva9mqcvkLw8VcPu5oRgBvJ9t81eQvMmaEMgGgE1cyWftNHkFcYRU5njS3d5p58jDo9.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23wMRrMXjcDq1o83iadGndZjrD82Y5rh2foSWTsRGf9kbt46MYnYdGre41bhb84D5ZWQQ.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23w2esoY2e5jEzvsde9ZM1vWMTHHNcUPtohLZGNkGboXRk7bvrp2RaWkcngHXTNPfEskv.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23vsHwpBQ8NB2xxcaHG53nBPwmsuqTHUgXrxXz3zXEPFFgfNvrmGPxdH7pDt4zn8VymsN.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23wC5cNKTaATKL29AcfANBhu4i62JS61x98YRUMRo1vdpxKJxh7tPM9sQ7JD4wCvUCrhg.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23wqgQhbnESqgn6Xni8uyx1bQduMcEvKxWMNRhkVRxya7DNhoaP4amigijxEu6wg2j1Qn.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23xebeWESzNA2GGkPrvoNB9VErukiagpsQWviz9pHY69bdCyVFCHPQg2ZJqNAZcAPWt56.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23w2o7bwwUSRUJL4mJybSAg36ndnCb8JVRLXbx2R7mrauQ5NZhSf1kwJ12s1GHidqNZjg.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23xANwA9rcdKmd2qtFUyKPhF6bobJPc3V8fkNGnufnSRJczJpS8ecoUyD8t2WA962eiqP.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23wC9nm9rSLqtXyhgfi3kcpMpRb42A5ncmiqXUFS6Rf8DT8EJvPQRg9ztQwMijcwY5fqW.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23w2ekc2F8mzJHF8sSNTFwffFX976eUrbV7Tdi5rSuvprzmj2Q7DCaKwn44UkX88nV24L.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23xKp2vCCGCoSMwJefBVHpFGmyk55p9BtVjqWEHAyoZum16GNimYEEGkr6EHUshfwXV3q.jpg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "NOMAD HIVE",
+        "author_reputation": 80.21,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "19.278 HBD"
+      },
+      {
+        "url": "/hive-193552/@zekepickleman/actifit-zekepickleman-20260518t142208322z",
+        "body": "\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779112541.934043) \n\nThose of my legion of followers who have been paying attention for the last month know I have been procrastinating my yard work. Winter is long and so is the mess to clean up each year if I am to have a nice yard and veggie-producing garden. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779112717.524204) \n\nThis is what it looked like a couple long months ago. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779112814.848005) \n\nWell, it is a long weekend up here and the temperatures are warm so that means PLANTING DAY!\n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779112880.063706) \n\nI spent Mother’s Day weekend cleaning up and preparing by tilling black earth, manure and compost into the garden. This week, we discovered the local dump was giving away free composts so we mixed in a yard of that as well. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779112972.899431) \n\nAfter a visit to the garden store, we came home with some tomatoes, peppers and cucumbers that needed to be planted in the ground asap. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113052.185853) \n\nMy not-so-little-one helped me plan where everything will go this year and made this trellise for the cucumbers. \n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113124.973531) \n\nFewer tomato plants this year so there is more air flow and it isn’t so crowded. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113196.2959418) \n\nIn the greens bed, horseradish at this end, snow peas at the other and lettuce, spinach and mescaline mix in between. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113275.528847) \n\nDespite my namesake, I am better known for growing peppers than pickles. They range from sweet to murderously-hot every year. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113341.0710468) \n\nThis season, the hot ones are the habaneros as usual, and Trinidad scorpion peppers for the ridiculously hot. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113406.2953691) \n\nIt wouldn’t be a garden post without including some of the early season perennial flowers that pop up each spring. Like my @lynds Lupins!\n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113499.113317) \n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113530.609618) \n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113541.528994) \n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113550.0138478) \n\nThose last two are special because my daughter picked them out and we planted them a couple years ago. Fringed or Parrot tulips are starting to appear every year with some exotic colours. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113680.203837) \n\nBy the end of the day, I had all the plants in the ground with a little light dog-proofing and the lawn all mowed with a late night watering from the rain water we collect. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113765.8654509) \n\nThat and all the signs of spring as I step tirelessly toward the top 200 @actifit users of all time and launch the Pickleman Family Garden. \n\n\n![](https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779114078.962822) \n <br/> _This report was published via Actifit app ([Android](https://bit.ly/actifit-app) | [iOS](https://bit.ly/actifit-ios)). Check out the original version [here on actifit.io](https://actifit.io/@zekepickleman/actifit-zekepickleman-20260518t142208322z)_ <br/> <br><img src=\"https://cdn.steemitimages.com/DQmXv9QWiAYiLCSr3sKxVzUJVrgin3ZZWM2CExEo3fd5GUS/sep3.png\"><br><table>\t<tr>\t\t<img src=\"https://actifit.s3.us-east-1.amazonaws.com/ACTIVITYDATE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>18/05/2026</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmRgAoqi4vUVymaro8hXdRraNX6LHkXhMRBZxEo5vVWXDN/ACTIVITYCOUNT.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>11293</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmZ6ZT8VaEpaDzB16qZzK8omffbWUpEpe4BkJkMXmN3xrF/ACTIVITYTYPE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><pre><b>Gardening</b></div></pre></div>\t</tr></table><div class=\"text-center\"><img src=\"https://cdn.steemitimages.com/DQmY5UUP99u5ob3D8MA9JJW23zXLjHXHSRofSH3jLGEG1Yr/A-10.png\"><a href=\"https://bit.ly/actifit-app\"><img src=\"https://cdn.steemitimages.com/DQmQqfpSmcQtfrHAtzfBtVccXwUL9vKNgZJ2j93m8WNjizw/l5.png\"></a><a href=\"https://bit.ly/actifit-ios\"><img src=\"https://cdn.steemitimages.com/DQmbWy8KzKT1UvCvznUTaFPw6wBUcyLtBT5XL9wdbB7Hfmn/l6.png\"></a></div>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 328
+        },
+        "title": "The Pickleman Family Garden",
+        "author": "zekepickleman",
+        "payout": 18.003,
+        "created": "2026-05-18T14:22:09",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-18T14:22:09",
+        "category": "hive-193552",
+        "children": 9,
+        "permlink": "actifit-zekepickleman-20260518t142208322z",
+        "community": "hive-193552",
+        "payout_at": "2026-05-25T14:22:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 233626371677617,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kaylinart",
+            "rshares": 17981597616
+          },
+          {
+            "voter": "ericvancewalton",
+            "rshares": 968318495869
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 14026060312
+          },
+          {
+            "voter": "arcange",
+            "rshares": 896367314167
+          },
+          {
+            "voter": "netaterra",
+            "rshares": 5169584381
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "actifit.pay"
+          }
+        ],
+        "json_metadata": {
+          "app": "actifit/0.10.4",
+          "tags": [
+            "hive-193552",
+            "actifit",
+            "Hivegarden",
+            "gardenhive",
+            "abundancetribe",
+            "ocd",
+            "curangel",
+            "qurator",
+            "waiv",
+            "iamalive",
+            "sportstalk",
+            "movetoearn",
+            "move2earn"
+          ],
+          "image": [
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779112541.934043",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779112717.524204",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779112814.848005",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779112880.063706",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779112972.899431",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113052.185853",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113124.973531",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113196.2959418",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113275.528847",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113341.0710468",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113406.2953691",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113499.113317",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113530.609618",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113541.528994",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113550.0138478",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113680.203837",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779113765.8654509",
+            "https://usermedia.actifit.io/74D50CD4-9F8A-4430-B7A4-4FA6EDD9FD901779114078.962822",
+            "https://cdn.steemitimages.com/DQmY5UUP99u5ob3D8MA9JJW23zXLjHXHSRofSH3jLGEG1Yr/A-10.png"
+          ],
+          "users": [
+            "actifit"
+          ],
+          "appType": "iOS",
+          "actiCrVal": "f9479cbae1cac5820e1d3733641371e8e486dcf1e697134549e696bb00acbb5deae0c1e612848a02392f93ba71f1a893417880e072a624ad008602aabac6dc4e",
+          "chestUnit": [
+            "cm"
+          ],
+          "community": [
+            "hive-193552"
+          ],
+          "waistUnit": [
+            "cm"
+          ],
+          "heightUnit": [
+            "cm"
+          ],
+          "step_count": [
+            "11293"
+          ],
+          "thighsUnit": [
+            "cm"
+          ],
+          "weightUnit": [
+            "kg"
+          ],
+          "activityDate": [
+            "20260518"
+          ],
+          "actifitUserID": [
+            "54F2DAA9-84A3-4B0E-A313-EB490C3029AF0.5.4"
+          ],
+          "activity_type": [
+            "Gardening"
+          ],
+          "detailedActivity": [
+            "003089|1000101"
+          ],
+          "dataTrackingSource": [
+            "healthapp"
+          ]
+        },
+        "community_title": "Actifit",
+        "author_reputation": 78.27,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "18.003 HBD"
+      },
+      {
+        "url": "/hive-194913/@papilloncharity/an-amazing-discovery",
+        "body": "...as apparently a manager told us that it is a Harry Potter theme.\n![049.jpg](https://files.peakd.com/file/peakd-hive/papilloncharity/Ep5p9GCzdAin2UKdjNvd7NQCn4t9nzywHuEfNDA8YvNgQBDY6zLk3bQr84fPpyZ8ngt.jpg)\n\nNo, we have not seen the Harry Potter movie, but I know that it was very popular according to the reviews in the media.\n\nThis is a two-part post, as the first half consists of the Potter theme, and then in the second half, I will show you a use for another ingenious homemade car. We saw the Harry Potter car in a favourite sports bar, and I was so impressed that I almost immediately asked for permission to take shots of the scene. We were welcomed and after I had taken the shots we sat to have some coffee. They make great cafe latte coffees. \n\nIn the second part I will show you how some wooden planks can be used to build something extraordinary. It was on display in a parking bay next to the road in front of a local nursery, and I just had to take some shots of it. People can get up to all wonderful things here, in order to attract clients and word of mouth is a very effective sales promoter. \nSo come and see. \n\nI love old cars, but I have never seen one driven by a skeleton :)\n![043.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EoiUg9Ng2JuYSv89D6xUxUZP8u6xaA1KroCNTDUzR9PBDcve8pSioQPi5GA5mRUMGZE.JPG)\n\nI don't know if that guy was panicking or if he was happy. \n![050.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23wC7Z5DXgCqotuTYAcwjEvspzL28eqkfnHMri4qwMxhWmWnEte6RW4W2DysnLA3LsKg4.JPG)\n\nNo, this one below shows that he has a happy face. I would also have a happy face if I was a skeleton that could drive an old car. Maybe one day :)\n![046.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EoiUmNH96bb8q7xV5Xa1CoaKr6XVJ9ng7zA8hgcvgW6Jc8s9yBrDS6GothaT8RkDMEf.JPG)\n\nThe car is a genuine old Packard. \n![042.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/Eops1v1USJxbPnpeeSzEA2PJKDXzrUhoY3YGpou576ECHPewLYhNfj494EjtRYyQbse.JPG)\n\n**Now for the second part below.** \n\nEver seen a homemade VW (Volkswagen) van that consists of wooden planks?\n![045.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xejpECUTUsncSyiY1mmoF7ScbwQH63bbdYu6p8KaKGqrcbWCYBGE71Qp8pXzsjviBTb.JPG)\n\n![044.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23zkpaEoEVHxJspP9AczHzxSbWdWJ8fidZib8RkqoPJbCvvGAMDx2XK4VQRUYFFXBbhQr.JPG)\n\n![046.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23yJGPCk6LM1yunQ3PtSHtPdX4zaEZERjoybTAKwsvrBQA237xTj4AdgKjXsdYhPKuFNh.JPG)\n\n![047.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/242hU9LjQWLzYjz4siTpRdpAm7tX5hNSpsJCs3asWdjuzmhrBfrLFsKQU6fsfZzL3BgmZ.JPG)\n\nYeah! That's certainly a very lovely artwork and a great way to advertise the sales of succulents. Low maintenance and all, and that's why I called it a silent salesman. \n![049.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EpA34RtoDqEAwmnbrvhxWn3pce1zGFXEwHUPCTGpdAZDJvyvEXkPASqYwoWsfhdk1Wo.JPG)\n\nA long time ago I showed you a car, that was covered with green artificial grass to advertise a company that sells the things, and in other areas the same company even had grass covered elephants and rhinos with their brand name on it. No, the elephants and the rhinos were not real, as they were artificial figures, but it also drew a lot of attention. Salespeople can certainly find new avenues to advertise their products, and I wonder what they would come up with next. \n\nThat's what I love about the world of photography, especially when one never knows what one can find as subjects on any given day. It is a very relaxing hobby, and at times it could also get very trying, as so many issues such as the weather, the lighting, and a host of other small things can make things difficult. But I love challenges and most times I will be able to overcome it. It all just takes constant practice. \nSuch is life.\n\n**Note:** For those that stay in the Cape Town areas, DM me for their locations if you want to visit these places.\n\nI hope you enjoyed the pictures and the story.\n\nPhotos by Zac Smith. All-Rights-Reserved.\n\nCamera: Canon PowershotSX70HS Bridge camera.\n\nUntil next time, cheers!",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 507
+        },
+        "title": "An amazing discovery...",
+        "author": "papilloncharity",
+        "payout": 19.529,
+        "created": "2026-05-18T11:12:09",
+        "reblogs": 4,
+        "replies": [],
+        "updated": "2026-05-18T20:14:27",
+        "category": "hive-194913",
+        "children": 8,
+        "permlink": "an-amazing-discovery",
+        "community": "hive-194913",
+        "payout_at": "2026-05-25T11:12:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 253488364672539,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "steemychicken1",
+            "rshares": 5047444421266
+          },
+          {
+            "voter": "copychicken1",
+            "rshares": 823684207
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 2895236221
+          },
+          {
+            "voter": "ratel",
+            "rshares": 56653746535
+          },
+          {
+            "voter": "ericvancewalton",
+            "rshares": 968346234881
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "photographylovers",
+            "photography",
+            "cars",
+            "popularity",
+            "ingenuity",
+            "proofofbrain",
+            "creativecoin",
+            "neoxian",
+            "vyb",
+            "silverbloggers"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/Ep5p9GCzdAin2UKdjNvd7NQCn4t9nzywHuEfNDA8YvNgQBDY6zLk3bQr84fPpyZ8ngt.jpg",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EoiUg9Ng2JuYSv89D6xUxUZP8u6xaA1KroCNTDUzR9PBDcve8pSioQPi5GA5mRUMGZE.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23wC7Z5DXgCqotuTYAcwjEvspzL28eqkfnHMri4qwMxhWmWnEte6RW4W2DysnLA3LsKg4.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EoiUmNH96bb8q7xV5Xa1CoaKr6XVJ9ng7zA8hgcvgW6Jc8s9yBrDS6GothaT8RkDMEf.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/Eops1v1USJxbPnpeeSzEA2PJKDXzrUhoY3YGpou576ECHPewLYhNfj494EjtRYyQbse.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xejpECUTUsncSyiY1mmoF7ScbwQH63bbdYu6p8KaKGqrcbWCYBGE71Qp8pXzsjviBTb.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23zkpaEoEVHxJspP9AczHzxSbWdWJ8fidZib8RkqoPJbCvvGAMDx2XK4VQRUYFFXBbhQr.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23yJGPCk6LM1yunQ3PtSHtPdX4zaEZERjoybTAKwsvrBQA237xTj4AdgKjXsdYhPKuFNh.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/242hU9LjQWLzYjz4siTpRdpAm7tX5hNSpsJCs3asWdjuzmhrBfrLFsKQU6fsfZzL3BgmZ.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EpA34RtoDqEAwmnbrvhxWn3pce1zGFXEwHUPCTGpdAZDJvyvEXkPASqYwoWsfhdk1Wo.JPG"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.65,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "19.529 HBD"
+      },
+      {
+        "url": "/hive-178138/@bozz/better-safe-than-sorry",
+        "body": "<center>![PXL_20260508_220848064.jpg](https://files.peakd.com/file/peakd-hive/bozz/23xL2eaj2o3GitQBSFEGNZqoRc2tXn1ZTvoycYPaYUTsWHMxCzMjbS4aLRnA1nkqij5x1.jpg)</center>\n\n----------------------------\n\nIt's been a crazy couple of weeks.  Between all the fun stuff that @mrsbozz and I have been doing, we also have a lot of prep work to get our travel trailer ready for the summer camping season.  On top of that we have been helping her parents move and it's amazing how much stuff people can acquire over a 45 year period.  \n\nLet's get back to the trailer though.  During the Winter we store our trailer at my parents house.  They have a nice little spot on the side of their garage where their trailer used to sit when they weren't using it.  Now that they no longer have one, we have taken over the parking spot. The ground tends to get a little mushy over there with the Spring rain though, so I usually have to wait a little bit before I can get it home.\n\nOnce I get the trailer home, the first order of business is pulling the wheels apart to clean the bearings, inspect them for damage, and then re-grease them and put it all back together.  I've written posts about it in the past if you are interested in going back and looking for them.\n\n\n<center>![PXL_20260508_220851648.jpg](https://files.peakd.com/file/peakd-hive/bozz/23wX1dEkgRyQUZWirvQmUp5wmJr2v2X91EZAEy4NwXrgYVTmbhVcr5kfs9yFwmzPR7W9K.jpg)</center>\n\n---------------------------\n\nUsually things go pretty smoothly and I have the process down to the point where I can do a wheel in about twenty to thirty minutes.  On a two axle trailer that means it takes me about two hours to get the job done.  This year, as I was pulling apart the second to the last wheel, I noticed this little mark on the bearing you see in the photos.  At first I thought it was just some extra grease that I didn't get cleaned off with the diesel fuel.  \n\nI rubbed it a few more times and used my old toothbrush to scrub away at it, but the mark wasn't coming off.\n\n\n<center>![PXL_20260508_220851648~2.jpg](https://files.peakd.com/file/peakd-hive/bozz/23wgPfQy998m8GEEUoxoYihmyhFfP3rmczjYyW6SW7RcF5dTb5pWD8BWkJ4sG9qumck3k.jpg)</center>\n\n---------------------------\n\nYou might think it doesn't look like much, but as I was looking at it I remembered that I have a couple spare bearings that I keep in my truck just in case, so out of an abundance of caution, I decided to replace it.  With the new bearing in place, I just had to do the last wheel and I was finished up.  Bearings aren't that expensive, so as long as you don't have to replace the race that it sets into, it's not too big of a deal to swap them out.  \n\nHowever, things like this are the main reason that I do this each year.  A lot of newer trailers have an EZ Lube feature where you just pull a cap off and you squirt some grease into the hub and you go about your merry way.  If you aren't pulling them apart and inspecting them, things like this can get missed and cause you bigger headaches down the road (pun intended).\n\n\n<center>![PXL_20260508_221106684.jpg](https://files.peakd.com/file/peakd-hive/bozz/23tbpxysr5MfxTRF8zuuSwGSwshvzh7KNM6NAfNAYHxfDSef5vGtqRoEadXJtfoC1PWL8.jpg)</center>\n\n-----------------------------\n\nFor a job well done, I decided to treat myself, so right before I started the last wheel I fired up the Weber Kettle and threw some wings on.\n\n\n<center>![PXL_20260508_222310513.NIGHT.jpg](https://files.peakd.com/file/peakd-hive/bozz/23w2kgQgv2j6RhFHBWW8SPG1y9aNt91z15j3BU5cN9GPayGNps7Nhr1eAWyLZFAz6MycR.jpg)</center>\n\n\n<center>![PXL_20260508_222313705.NIGHT.jpg](https://files.peakd.com/file/peakd-hive/bozz/23tvkSeLiAimTxCrBZspp8f5KFBVp5PBqUTatAwhKrrqM1RVZ7ZHH2g7WZCELwAJS9GjN.jpg)</center>\n\n--------------------------------\n\nThey turned out fantastic, probably one of my best cooks yet with wings.  The skin was nice and crispy without being deep fried and the flavor was totally on point.  I have been buying some rubs from Dizzy Pig seasonings lately and this one in particular was called [Tsunami Spin](https://dizzypigbbq.com/product/tsunami-spin/).  It's an Asian inspired rub that has a nice sweet and savory flavor with just a bit of heat.  \n\nWhen you take away the cost of the rub, the wings were less than $3 per pound, so when you figure I bought about 2.5 pounds of wings the total cost for this cook was about $10.  I should also point out, those 2.5 pounds of wings were enough for me to get three meals out of it.  Yes, I could have eaten them all in one night, but I tried to exert a bit of self control.  It was hard given how amazing they were.\n\nIf @mrsbozz ate chicken on the bone, I'd be cooking a batch of these once a week for us.\n\n\n<center>![PXL_20260508_232621237.jpg](https://files.peakd.com/file/peakd-hive/bozz/23xVEmhKdat654YLg7QxaierANnyvDGjzDrg7JtfqbdDD78tKEcMFhmfUp78FRQ5VoASS.jpg)</center>\n\n\n<center>![PXL_20260508_232630525.jpg](https://files.peakd.com/file/peakd-hive/bozz/23xVCz8FUjaQcKPn7kQMV6ZAxQ7yPf7T8AApKJEG9PhXnCm46PPyzDSwUfVvgHus9e8ys.jpg)</center>\n\n\n--------------------------\n\nAlong with my wings, I cracked open this bottle of bourbon that I picked up when we were over in Grand Rapids the weekend before.  I've seen ads for [Wilderness Trail](https://www.wildernesstraildistillery.com/en-us/) in the past, but I have never tried it before now.  It was deliciously smokey and for the $50 to $60 USD price point it is a really good bourbon.  I'd totally buy a bottle of this again.  If I were the sort of person who kept a constant stock of specific brands, this would probably be one of them.\n\nIf you ever get the chance to try it out, I highly recommend it.  If I ever make it back down to Kentucky, I am going to make a point of visiting their facility.\n\nBelieve it or not, that's only a fraction of the stuff we have been doing lately.  Check back for more excitement and fun with my wife and I!\n\n----------\n\n<center>\n### [My Sports Account - @bozz.sports](https://www.peakd.com/@bozz.sports)\n</center>\n\n----------\n\n#### <center>Come hang out in [The Pub](https://peakd.com/c/hive-178138/created)</center>\n<center>[Find us on Discord](https://discord.gg/cCEMJXAEXk)</center>\n\n<center>Or Check out my [Grilling and Smoking Community on HIVE](https://peakd.com/c/hive-138631/created)</center>\n\n-------------\n\n<center>![TEAMUSAhive_footer_bozz.jpg](https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg)</center>\n\n----------------\n\n<center>*All pictures/screenshots taken by myself or @mrsbozz unless otherwise sourced*</center>\n\n\n\n\n\n\n\n\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 583
+        },
+        "title": "Better safe than sorry",
+        "author": "bozz",
+        "payout": 19.266,
+        "created": "2026-05-18T11:19:54",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-18T11:19:54",
+        "category": "hive-178138",
+        "children": 27,
+        "permlink": "better-safe-than-sorry",
+        "community": "hive-178138",
+        "payout_at": "2026-05-25T11:19:54",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "admin",
+        "net_rshares": 249888967932146,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "slickwilly",
+            "rshares": 373914473629
+          },
+          {
+            "voter": "rok-sivante",
+            "rshares": 43799556522
+          },
+          {
+            "voter": "ericvancewalton",
+            "rshares": 968318495869
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 34048789851
+          },
+          {
+            "voter": "daan",
+            "rshares": 507253040354
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "thepub",
+            "bbh",
+            "pimp",
+            "ccc",
+            "diy",
+            "tribes",
+            "gems",
+            "thealliance",
+            "weekend",
+            "discovery-it"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/bozz/23xL2eaj2o3GitQBSFEGNZqoRc2tXn1ZTvoycYPaYUTsWHMxCzMjbS4aLRnA1nkqij5x1.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/23wX1dEkgRyQUZWirvQmUp5wmJr2v2X91EZAEy4NwXrgYVTmbhVcr5kfs9yFwmzPR7W9K.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/23wgPfQy998m8GEEUoxoYihmyhFfP3rmczjYyW6SW7RcF5dTb5pWD8BWkJ4sG9qumck3k.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/23tbpxysr5MfxTRF8zuuSwGSwshvzh7KNM6NAfNAYHxfDSef5vGtqRoEadXJtfoC1PWL8.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/23w2kgQgv2j6RhFHBWW8SPG1y9aNt91z15j3BU5cN9GPayGNps7Nhr1eAWyLZFAz6MycR.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/23tvkSeLiAimTxCrBZspp8f5KFBVp5PBqUTatAwhKrrqM1RVZ7ZHH2g7WZCELwAJS9GjN.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/23xVEmhKdat654YLg7QxaierANnyvDGjzDrg7JtfqbdDD78tKEcMFhmfUp78FRQ5VoASS.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/23xVCz8FUjaQcKPn7kQMV6ZAxQ7yPf7T8AApKJEG9PhXnCm46PPyzDSwUfVvgHus9e8ys.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg"
+          ],
+          "users": [
+            "mrsbozz",
+            "bozz.sports"
+          ],
+          "format": "markdown",
+          "description": "There's a reason I do what I do"
+        },
+        "community_title": "The Pub",
+        "author_reputation": 82.4,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "19.266 HBD"
+      },
+      {
+        "url": "/hive-105017/@oflyhigh/3kq838",
+        "body": "大半个月前突然注意到还有京东PLUS会员积分没使用呢，去年我的积分都到期清零，这次可不能再犯同样的错误了。\n\n\n![image.png](https://images.hive.blog/DQmccPYwM48EdfqhqXypbdmuAuxtLAdgEQ4Y3gZ6bFU3HED/image.png)\n(图源 ：[pixabay](https://pixabay.com/illustrations/cleaning-service-cleaner-hand-3934664/))\n\n兑点什么呢？翻看了半天后，用5积分兑换了一个两小时的家政保洁服务，打算让保洁人员来帮我给房间做一下卫生。\n\n兑完之后我才发现，原来这服务有户型限制，比如我兑换的是50多平以下的户型，晕了，没法用在我们这个房子啦。\n\n突然想起我当前买的那个学区房，自从买来后就一直闲置，也没正经八百地做过保洁，那就让保洁人员给我清理那个房子好啦。\n\n于是前几天在京东上约了那个房子第二天九点半的保洁服务。发起预约不久之后，就有一位女士给我打电话，确定时间地点是否有误，确定无误后她说自己会准时到达。\n\n因为那个学区房小区没法随意停车，所以第二天我提前一些坐公交到了小区，到了楼门口时发现一个30多岁穿带有京东家政字样的服饰，还带着一个大包的女士在单元门口整理物品呢。\n\n莫非这就是我约的保洁员？我试着问了一下，果然是她，没想到她竟然提前了半个多小时到达，还好我也提前出发，不然岂不是让她白等好久。\n\n\n![image.png](https://images.hive.blog/DQmNorUkiyA4vR6mSBHg3asKspG72oVJnFinFo6L1BpSBxm/image.png)\n(图源 ：[pixabay](https://pixabay.com/photos/woman-window-cleaning-person-5928694/))\n\n到了楼上，进屋后，我给她看我这个小房子，跟她说这房子就这么大一丁点，应该很快弄完吧？她说那要看我都想让她清理房间的哪些部位啦。\n\n我说你看着弄吧，把窗户擦一下，地面清理一下，桌子柜子大概擦一下，卫生间清理一下，大概就这些啦。她说这么多活可未必能干完，我说那就看着弄呗。\n\n于是她开始工作，一工作上，我才发现这个保洁员真的是一点也不偷懒，全程都在高效地工作，把我的小房间打扫的窗明几净啊。\n\n若不是她努力清理，我还真不知道这小房间这么埋汰呢，就是清理过程中倒掉的洗抹布的污水都有二三十桶呢！\n\n\n![image.png](https://images.hive.blog/DQmXcRa23uUajk1FWfXYFjkR7wRaiq5Jkt6rjguej6LzfZB/image.png)\n(图源 ：[pixabay](https://pixabay.com/photos/soap-dispenser-soap-liquid-soap-2337697/))\n\n到了清理卫生间，更是吃力，虽然我这小房子一直没住过，这期间卫生间也没用过，但是买来的时候卫生间地面墙角就有厚厚的水垢之类的。\n\n她拿了一个小戗子，卡卡在那清理，一点细节也不放过，搞得我都有些不好意思啦。\n\n用这个保洁员的话说，她们正常做的都是日常保洁，像我这个小房子这种算得上是深度清洁了，原则上都不是一个价位的产品，囧。\n\n原本以为这小房间清理两个小时足够了，但在这个保洁员高强度的清理下，还是足足用了两个半小时才初见眉目。\n\n话说我在那坐着玩手机都觉得累，这个保洁员高强度工作了两个多小时该有多辛苦就可想而知啦。\n\n我跟她说差不多就行啦，不用太辛苦太完美，她才开始收尾结束战斗。\n\n等都处理好了之后，我去京东给她点完成订单，并给了好评，然后又额外给这个保洁员打赏了50元，毕竟她那么努力又多工作了那么长时间，不能让人家白白辛苦不是？保洁员看我给她打赏也非常开心，连连对我说谢谢。\n\n\n![image.png](https://images.hive.blog/DQmWwdhA9xJanXrifjMspdDRKny6ipGph1apdWN3N9zHMV3/image.png)\n(图源 ：[pixabay](https://pixabay.com/illustrations/window-cleaning-cleaning-services-7778841/))\n\n没想到这次京东家政的保洁服务这么让我满意。想起以前家里雇过的那几个保姆，一个个的就在那磨洋工，卫生做得也不彻底，后来都被我给辞退啦。\n\n如果之前的保姆工作态度和效率能有京东家政这个保洁员一半努力的话，大概我也没法狠心辞退吧。",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 295
+        },
+        "title": "体验了一下京东家政的保洁服务",
+        "author": "oflyhigh",
+        "payout": 20.063,
+        "created": "2026-05-18T09:01:51",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-18T09:01:51",
+        "category": "hive-105017",
+        "children": 8,
+        "permlink": "3kq838",
+        "community": "hive-105017",
+        "payout_at": "2026-05-25T09:01:51",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "mod",
+        "net_rshares": 260330731780390,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "abit",
+            "rshares": 32839947144673
+          },
+          {
+            "voter": "adm",
+            "rshares": 27092777610478
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 28484853596
+          },
+          {
+            "voter": "deanliu",
+            "rshares": 12361967910949
+          },
+          {
+            "voter": "logic",
+            "rshares": 129096238627
+          }
+        ],
+        "author_title": "O哥🐱",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "cutehive.com"
+          }
+        ],
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "tags": [
+            "cn",
+            "life",
+            "blog"
+          ],
+          "image": [
+            "https://images.hive.blog/DQmccPYwM48EdfqhqXypbdmuAuxtLAdgEQ4Y3gZ6bFU3HED/image.png",
+            "https://images.hive.blog/DQmNorUkiyA4vR6mSBHg3asKspG72oVJnFinFo6L1BpSBxm/image.png",
+            "https://images.hive.blog/DQmXcRa23uUajk1FWfXYFjkR7wRaiq5Jkt6rjguej6LzfZB/image.png",
+            "https://images.hive.blog/DQmWwdhA9xJanXrifjMspdDRKny6ipGph1apdWN3N9zHMV3/image.png"
+          ],
+          "links": [
+            "https://pixabay.com/illustrations/cleaning-service-cleaner-hand-3934664/"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "HIVE CN 中文社区",
+        "author_reputation": 86.19,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "20.063 HBD"
+      },
+      {
+        "url": "/hive-139531/@asgarth/proposals-code-blocks-hive-projects-page-and-a-sitemap-revamp-on-peakd",
+        "body": "This was one of those PeakD release batches where work landed in a few different areas at once.\n\nSome of it is the kind of thing you notice immediately when opening a page, some of it is more in the category of \"this is less annoying now\" 😄\n\n![image.png](https://files.peakd.com/file/peakd-hive/asgarth/23vhwMQN449L6baSbbHX6f4shchh7ETGiUrdpFGXoDK1jSaR3A8uNMV7nBkEwmh39HGpo.jpg)\n\n### DHF Proposal details page got an usability upgrade\n\nThe proposal details page has been reworked quite a bit.\n\nThe layout is now cleaner and easier to read, with a better split between the proposal post and the governance details around it. Payment info, support level, creator/receiver details and vote-related actions are all presented in a more practical way instead of feeling like pieces bolted together over time.\n\nMobile got some attention too. On smaller screens the proposal view now behaves much better, with a tabbed split between the post content and the proposal details instead of trying to force everything into one awkward long layout.\n\nAlso we have better vote visibility around proposals now:\n\n- a clearer **all votes** modal\n- a separate **recent vote activity** modal\n- fixed an old bug that could lead to some inconsistency in reported support level target\n\nThat makes the DHF section a lot more useful if you actually follow proposal activity instead of just occasionally clicking into it. \n\nUsing Hive Keychain new proposal to showcase the new page layout as the rework on this page sparked from a bug report by @stoodkev 🙏\n\n![image.png](https://files.peakd.com/file/peakd-hive/asgarth/2424Aha81knvRP87V5eESMfVxjrzpXL4qwEAUh81STUdXL21g6Kc2hpfUUXSjqyeWDHcx.png)\n\n### The old Services page is now a much better Tools page\n\nThe old Services page has been redesigned and renamed to **Tools**. Not sure how many users were aware of that old page, but @friendlymoose suggested to add \"Hive project showcase\" section and I decided to revamp the old list.\n\nThe page is now much closer to what it should have been in the first place: a curated directory of Hive tools, apps and games that is easier to browse and less like a forgotten utility page.\n\n![image.png](https://files.peakd.com/file/peakd-hive/asgarth/48SKX3Vw8kjagf7yucerd1pKU8qvJNZym27mp5owhRhyNrtZUmY2dtbAsuMLJAZRbn.png)\n\nOf course it's pretty difficult to be sure we have everything listed there right from the start (and I expect a few typos as well). Please reach out with feedback and suggestions on what should be added.\n\n### Code blocks are much easier to deal with now\n\nThis is mostly tuning on the new code blocks introduced last week. You can now collapse and expand oversized blocks, and you can also switch wrapping on and off when a long line would otherwise blow up the layout.\n\nThe result is that technical content feels a lot less clumsy to read, especially when the alternative is either horizontal overflow everywhere or giant code walls taking over the whole post.\n\n![image.png](https://files.peakd.com/file/peakd-hive/asgarth/23vsp77xhQFkrhdpQaSxckM9VT7bTPaMgekJJTLMBFUtqFcgMWmkVw5Q6b2shqy6Jwedy.png)\n\n### PeakD now has a proper sitemap setup\n\nThis one is less visible in the UI, but it still matters. Kudos to @louis88 and @pharesim for brainstorming about this.\n\nPeakD now exposes dedicated sitemap XML endpoints for the main site, communities, user pages and posts, with a sitemap index tying them together: https://peakd.com/sitemap.xml\n\nThe practical goal here is straightforward: make it easier for search engines to understand what should be crawled on PeakD, and give them cleaner signals around important public pages instead of leaving discovery too implicit.\n\nThere is also some filtering and structure behind it, but I don't expect it to be perfect right away. This is the kind of groundwork that we can use as a starting point and improve over time.\n\n### A few smaller updates that still matter\n\nA bunch of smaller changes landed too. If you want you can review the full changelog for the current month here: https://peakd.com/about/changelog\n\n![image.png](https://files.peakd.com/file/peakd-hive/asgarth/23tmmEVjnpfRNLq4cbojL4DcUBSGBBkX54v9tFSwBwJxVJLydGa7zkfWxzLJ85qJuRRF5.png)\n\n\n---\n\nAs always if something feels better, worse, confusing, or broken on your side after this update, let me know.\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 239
+        },
+        "title": "Proposals, code blocks, Hive projects page and a sitemap revamp on PeakD",
+        "author": "asgarth",
+        "payout": 16.23,
+        "created": "2026-05-18T14:40:09",
+        "reblogs": 5,
+        "replies": [],
+        "updated": "2026-05-18T14:42:39",
+        "category": "hive-139531",
+        "children": 6,
+        "permlink": "proposals-code-blocks-hive-projects-page-and-a-sitemap-revamp-on-peakd",
+        "community": "hive-139531",
+        "payout_at": "2026-05-25T14:40:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "mod",
+        "net_rshares": 210509127904534,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "pharesim",
+            "rshares": 1387748987431
+          },
+          {
+            "voter": "meesterboom",
+            "rshares": 370194570151
+          },
+          {
+            "voter": "sazbird",
+            "rshares": 1026230246
+          },
+          {
+            "voter": "anarcist69",
+            "rshares": 88762720834
+          },
+          {
+            "voter": "elamental",
+            "rshares": 4843102043
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "friendlymoose"
+          },
+          {
+            "weight": 500,
+            "account": "louis88"
+          },
+          {
+            "weight": 500,
+            "account": "pharesim"
+          },
+          {
+            "weight": 500,
+            "account": "stoodkev"
+          }
+        ],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "peakd",
+            "hive",
+            "development",
+            "devs",
+            "updates"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/asgarth/23vhwMQN449L6baSbbHX6f4shchh7ETGiUrdpFGXoDK1jSaR3A8uNMV7nBkEwmh39HGpo.jpg",
+            "https://files.peakd.com/file/peakd-hive/asgarth/2424Aha81knvRP87V5eESMfVxjrzpXL4qwEAUh81STUdXL21g6Kc2hpfUUXSjqyeWDHcx.png",
+            "https://files.peakd.com/file/peakd-hive/asgarth/48SKX3Vw8kjagf7yucerd1pKU8qvJNZym27mp5owhRhyNrtZUmY2dtbAsuMLJAZRbn.png",
+            "https://files.peakd.com/file/peakd-hive/asgarth/23vsp77xhQFkrhdpQaSxckM9VT7bTPaMgekJJTLMBFUtqFcgMWmkVw5Q6b2shqy6Jwedy.png",
+            "https://files.peakd.com/file/peakd-hive/asgarth/23tmmEVjnpfRNLq4cbojL4DcUBSGBBkX54v9tFSwBwJxVJLydGa7zkfWxzLJ85qJuRRF5.png"
+          ],
+          "users": [
+            "stoodkev",
+            "friendlymoose",
+            "louis88",
+            "pharesim"
+          ],
+          "format": "markdown",
+          "ai_tools": {
+            "writing_edit": true,
+            "media_generation": true
+          },
+          "description": "Proposal details page upgrades, a new Tools page and better code blocks in latest PeakD release."
+        },
+        "community_title": "HiveDevs",
+        "author_reputation": 70.5,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "16.230 HBD"
+      },
+      {
+        "url": "/hive-127911/@erikah/another-monday-another-bag",
+        "body": "Sounds a bit funny, but lately, that's how it is. I'm doing my best to make a bag per week and post it on Monday. Normally I could make more than one bag, but the limited time I have for creative works, this is the best I can do. \n\n![Another Monday, Another Bag.jpg](https://files.peakd.com/file/peakd-hive/erikah/48bX7Ysv7FNPgDBPFq9tJrEbPvUDM3RMP82WNLZYiSQw23JG5omGeGCJvpirLFDny2.jpg)\n\nToday's bag is a very unusual one, but before you jump to any conclusion, let me tell you the whole story so you can see the big picture. \n\nWould I wear this bag? No, I wouldn't. It's not my style, I'm way past of this *ripped* or *distressed* fashion phase of life, but that's beside the point.\n\nWhen I'm designing a bad, I don't have my taste and preference on first place. (It's a bit strange to use the word design as I don't consider myself a designer, I'll let this word for those who are into designing and live off of what they create, but I don't know another word that would describe the process.) When I want to make a bag, my taste in fashion doesn't count. I'm not the one who's going to wear it, so I'm looking at what it could sell and obviously, what I find interesting. This is how this bag was born. \n\nIt's been ages since I wanted to try out this *distressed, ripped design*. It's a very out of the box style and has other advantages as well and I'll tell you what it is. \n\n![20260514_133022a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23t7qX3LRP9rzJH1A2sYKLHZgDRmAZveTHDALX8qbjFY5XmHq3TkHqv3EkLenbmNfY9yJ.JPG)\n\nUsually interfacing comes applied when the front and the back is done, but in this case, I needed as a base as the design is not a usual one, so I cut out a 40cm x 40cm piece. \n\n![20260504_191046a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23wMcWtif8D2jeAepBNa4TmiCaLWunMiG5CrVwHJ5RUDyi65vz7hr4WVxKzwBZ4yvXBhi.JPG)\n \n... and this is where the fun begins. You have a big pile of off cuts, leftover jeans fabrics, whatever you want to call it and what you literally do is pull out one piece of the pile and see if it fits, where you want it. Then you pull out another random one and so on, till you find the pieces you need. \n\n![20260514_134830a.JPG](https://files.peakd.com/file/peakd-hive/erikah/Ep3fkchMPnAXXFZF9V7SNuz52grdpEwoXPxhchy2GcQgg94bFSTrqx1L43tk3h1RZ59.JPG)\n\n![20260514_193333a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23yTj8pENK7j45vkXZ5Wvc4k9JrfNdv6HDWG3o6yTvQhHq3C6fy4LvK2LmCtQAeyvvHGu.JPG)\n\n![20260514_142418a.jpg](https://files.peakd.com/file/peakd-hive/erikah/23w2sDA5dE1RF8YBRx53gnS6DhXTgiNZNgYvKCHS5UkjT3z1mrSdAkwmZVTL8TbqhY9o3.jpg)\n\nAfter finishing the bag, I can honestly say, it was a nice experience. when I started it, I thought I'd make the front first, as that's always the main focus and many times it's more stylish, than the back, but here, where you don't have a script, a predefined design, you don't know what you get and this is how, in my mind, the front became the back. \n\nIt also showed me what is working, what is not and how I can change the process to make the work more efficient and my life easier. When I started the front, I thought pinning every piece to the interfacing is the best idea, but after some time I had to realize that sewing piece by piece gives you a better result. \n\n![20260514_194634a.JPG](https://files.peakd.com/file/peakd-hive/erikah/242Y5yzQWGEAGfiWLj79f3r3Ry1z8BhsFAtJFCWgq71MnG4zKyzzacGK2W8H7W3GktXKF.JPG)\n\n![20260516_113139a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23wMcfvHk15552pniDsUzY7377Dxh79RJynZRvUvkSGG5W1PXSG2Cu5R4323f3WrrcPSE.JPG)\n\nThis meant to be the front, but somehow it became the back. \n\n![20260516_113159a.JPG](https://files.peakd.com/file/peakd-hive/erikah/AK56CtwHswyTo6ytiDUM7jdoFuYdsV3SHh2bw6nLeU5gsifoXYoRu9zpmxXoSDz.JPG)\n\nI like this one better, has more personality in my opinion, but at the end of the day, it doesn't matter as the new owner is to decide what they like, which one to be the front and which one the back, not me. \n\n![20260516_202218a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23xVPEQon6z96rWsRpy7M8WJ823RZdQpcacyFtyo6Fd7Jmppe8WC8yQgPjdLEDfcw28Fe.JPG)\n\n![20260516_202236a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23u6BZZF8NVZWhsCqFaB4qB6dGvoqVSnrQSJz6CdwwDwbNvwgKndZgK6yhnEH2wVXm7vS.JPG)\n\nI made the lining a bit funny, by adding four pockets and a label as well. \n\n![20260517_161441a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23xAcMCrvdDP1h2LVijN8bca8BbHfW9U8KJSxzXK6QCFixiA6FPUrmwA3Sa821QbCDkab.JPG)\n\nThis time instead of a magnet, I decided to go with a zipper. Not everyone prefers an open bag, so you have more chances with a zipper and it's safer too. This is how you hide the end of the zipper. \n\n![20260517_165533a.jpg](https://files.peakd.com/file/peakd-hive/erikah/EogPjbFs4ucSRCphKkMdiMY8CAjKKjcKC12bx7CHkFr4peQzf7NfZjySPubpwKiem2q.jpg)\n\n![20260517_170518a.jpg](https://files.peakd.com/file/peakd-hive/erikah/23yd866sGQypueVGJZDnbY4v3Wya8cc6G3KYACjxLKiNmq4MiiBUxdRj8qgf3YtEJczx3.jpg)\n\nIt's been ages since I worked with a zipper, so I had to look up how it's done. It's not rocket science though, so here it is.  \n\n![20260517_185516a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23xKvmgNp61wFgpUEbGF28HXJxCg11PfhVHvY6oXtRmNWrdB5pAHPtspWgdtcXMYvKtju.JPG)\n\n![20260517_185458a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23y8unXDQrifG1czjnGzLnyn6S5U93Lx18mC4PALphh29RXqGyFJfT1Bi6RAP5Rd6aEZi.JPG)\n\n![20260517_185805a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23vsQcHzigTmTShHmCuioJYJ4vGybV67rjL3SwS9mZKSjEQuqKmX4JFzoAdRpujA46Err.JPG)\n\n![20260517_185835a.JPG](https://files.peakd.com/file/peakd-hive/erikah/23wCDiksmFbccy3UV29JcJjvZoD8QD5Qg5xMzCTNZa4TSQam7ioTFCezmBREszuEqbBkY.JPG)\n\nAnd voilà! Here it is. Ready to be listed for sale.\n\nWhat motivated me to create such a bag, apart from wanting to use all the leftovers I have is curiosity. For me, this was a test to see if I can \"*create something from nothing*\", in a way that someone pays money for it. I've seen several bags with similar style, made of pieces, even coats and vests and some got sold. Who is wearing such items? I don't know, but it turns out it's a thing, so why not see what I can do, right? \n\nThis is not the last one, I want to create more bags, but a bit differently. I liked the process and the off cut pile is getting smaller as well, so it's win-win. \n\nNow let's see if there will be someone interested to buy it 😬😆\n\nAll the materials used, except the zipper, the interfacing and the thread, are recycled. \n\n<center><img src=\"https://images.hive.blog/DQmfDaSmTz3y8oavngRrr5mmVhrTXheYoEU4qhGUS7pq3xh/HiveDivider.png\"></center>\n\nIf you're a newbie, you may want to check out these guides:\n- [Communities Explained - Newbie Guide](https://peakd.com/hive-174578/@erikah/communities-explained-newbie-guide)\n- [Cross Posting And Reposting Explained, Using PeakD](https://peakd.com/hive-174578/@erikah/cross-posting-and-reposting-explained-using-peakd)\n- [Hive Is Not For Me](https://peakd.com/hive-150329/@erikah/hive-is-not-for-me)\n- [How To Pump Your Reputation Fast - Newbie Guide](https://peakd.com/hive-150329/@erikah/how-to-pump-your-reputation-fast-newbie-guide)\n- [Tips And Tricks & Useful Hive Tools For Newbies](https://peakd.com/hive-150329/@erikah/tips-and-tricks-and-useful-hive-tools-for-newbies)\n- [More Useful Tools On Hive - Newbie Guide](https://peakd.com/hive-150329/@erikah/more-useful-tools-on-hive-newbie-guide)\n- [Community List And Why It Is Important To Post In The Right Community](https://peakd.com/hive-174578/@erikah/community-list-and-why-it-is-important-to-post-in-the-right-community)\n- [Witnesses And Proposals Explained - Newbie Guide](https://peakd.com/hive-150329/@erikah/wintesses-and-proposals-explained-newbie-guide)\n- [To Stake, Or Not To Stake - Newbie Guide](https://peakd.com/hive-150329/@erikah/to-stake-or-not-to-stake-newbie-guide)\n- [Tags And Tagging - Newbie Guide](https://peakd.com/hive-150329/@erikah/tags-and-tagging-newbie-guide)\n- [Newbie Expectations And Reality](https://peakd.com/hive-166408/@erikah/newbie-expectations-and-reality)\n- [About Dust Vote And Hive Reward Pool](https://peakd.com/hive-153850/@libertycrypto27/discover-hive-focus-on-dust-vote-hive-reward-pool-advices-for-new-users-cosa-sono-i-dust-vote-consigli-per-nuovi-utenti-engita), by libertycrypto27\n\n<center><a href=\"https://www.presearch.org/signup?rid=2058286\" target=\"_blank\">\n  <img src=\"https://presearch.org/images/rf/ban-4.jpg\" title=\"Presearch\" alt=\"presearch\" />\n</a></center> ",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 703
+        },
+        "title": "Another Monday, Another Bag",
+        "author": "erikah",
+        "payout": 17.727,
+        "created": "2026-05-18T11:36:57",
+        "reblogs": 3,
+        "replies": [],
+        "updated": "2026-05-18T11:36:57",
+        "category": "hive-127911",
+        "children": 14,
+        "permlink": "another-monday-another-bag",
+        "community": "hive-127911",
+        "payout_at": "2026-05-25T11:36:57",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 233458414746760,
+        "percent_hbd": 5000,
+        "active_votes": [
+          {
+            "voter": "pharesim",
+            "rshares": 259909674860
+          },
+          {
+            "voter": "drifter1",
+            "rshares": 11382080827
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 4416941601
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 177775817276
+          },
+          {
+            "voter": "gikitiki",
+            "rshares": 7773714802
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "sewing",
+            "needlework",
+            "upcycling",
+            "recycling",
+            "proofofbrain",
+            "vyb",
+            "cent",
+            "archon",
+            "waiv",
+            "neoxian"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/erikah/48bX7Ysv7FNPgDBPFq9tJrEbPvUDM3RMP82WNLZYiSQw23JG5omGeGCJvpirLFDny2.jpg",
+            "https://files.peakd.com/file/peakd-hive/erikah/23t7qX3LRP9rzJH1A2sYKLHZgDRmAZveTHDALX8qbjFY5XmHq3TkHqv3EkLenbmNfY9yJ.JPG",
+            "https://files.peakd.com/file/peakd-hive/erikah/23wMcWtif8D2jeAepBNa4TmiCaLWunMiG5CrVwHJ5RUDyi65vz7hr4WVxKzwBZ4yvXBhi.JPG",
+            "https://files.peakd.com/file/peakd-hive/erikah/Ep3fkchMPnAXXFZF9V7SNuz52grdpEwoXPxhchy2GcQgg94bFSTrqx1L43tk3h1RZ59.JPG",
+            "https://files.peakd.com/file/peakd-hive/erikah/23yTj8pENK7j45vkXZ5Wvc4k9JrfNdv6HDWG3o6yTvQhHq3C6fy4LvK2LmCtQAeyvvHGu.JPG",
+            "https://files.peakd.com/file/peakd-hive/erikah/23w2sDA5dE1RF8YBRx53gnS6DhXTgiNZNgYvKCHS5UkjT3z1mrSdAkwmZVTL8TbqhY9o3.jpg",
+            "https://files.peakd.com/file/peakd-hive/erikah/242Y5yzQWGEAGfiWLj79f3r3Ry1z8BhsFAtJFCWgq71MnG4zKyzzacGK2W8H7W3GktXKF.JPG",
+            "https://files.peakd.com/file/peakd-hive/erikah/23wMcfvHk15552pniDsUzY7377Dxh79RJynZRvUvkSGG5W1PXSG2Cu5R4323f3WrrcPSE.JPG",
+            "https://files.peakd.com/file/peakd-hive/erikah/AK56CtwHswyTo6ytiDUM7jdoFuYdsV3SHh2bw6nLeU5gsifoXYoRu9zpmxXoSDz.JPG",
+            "https://files.peakd.com/file/peakd-hive/erikah/23xVPEQon6z96rWsRpy7M8WJ823RZdQpcacyFtyo6Fd7Jmppe8WC8yQgPjdLEDfcw28Fe.JPG",
+            "https://files.peakd.com/file/peakd-hive/erikah/23u6BZZF8NVZWhsCqFaB4qB6dGvoqVSnrQSJz6CdwwDwbNvwgKndZgK6yhnEH2wVXm7vS.JPG",
+            "https://files.peakd.com/file/peakd-hive/erikah/23xAcMCrvdDP1h2LVijN8bca8BbHfW9U8KJSxzXK6QCFixiA6FPUrmwA3Sa821QbCDkab.JPG",
+            "https://files.peakd.com/file/peakd-hive/erikah/EogPjbFs4ucSRCphKkMdiMY8CAjKKjcKC12bx7CHkFr4peQzf7NfZjySPubpwKiem2q.jpg",
+            "https://files.peakd.com/file/peakd-hive/erikah/23yd866sGQypueVGJZDnbY4v3Wya8cc6G3KYACjxLKiNmq4MiiBUxdRj8qgf3YtEJczx3.jpg",
+            "https://files.peakd.com/file/peakd-hive/erikah/23xKvmgNp61wFgpUEbGF28HXJxCg11PfhVHvY6oXtRmNWrdB5pAHPtspWgdtcXMYvKtju.JPG"
+          ],
+          "users": [
+            "erikah",
+            "libertycrypto27"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "NeedleWorkMonday",
+        "author_reputation": 82.76,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "17.727 HBD"
+      },
+      {
+        "url": "/hive-140635/@anggreklestari/morning-harvest-green-beans-baby-cabbages-curly-green-chilies",
+        "body": "<div class=\"text-justify\">\n\n\nAnother harvest, yay! Even though I only have a mini garden in my rented house, I'm grateful that I can still harvest. Sometimes it's just a little. But more often, the harvest is so abundant that I have to share it with my neighbors.\n\n![IMG_5831.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/23u657Z3tPJgPi5iYKYcKSFztuNP14yJpwqZtJ86FvwDqza6gSZR7ScLbHUdrCi94RCc9.jpeg)\n![IMG_5790.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/242hixoGDPJDYqy54F3t6puSgpeFLSD4Dp98eqjTU2mCqKaAiANchrjtXdFRERxBKjFRW.jpeg)\n\n---\n---\n---\n\n\nI opened the door, walking to mini garden before sunrise. Then, I enjoy the sunrise while talking to my plants. This encourages them to thrive and resist disease.\n\nBefore harvesting, I enjoy the beauty of my garden. Several flowers are blooming beautifully.\n\n---\n\n![IMG_5817.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/AKDiEzsFHPt68YL8eMW5tqiw3fh7kTxuWGJnKKTP962r9VoV3wjnA6DVXqEWRrG.jpeg)\nThere's a purple rose that has adapted to be more fragrant. Because my area is very hot, the petals of this rose didn't initially release their fragrance. But after several flowering phases, the petals have finally become more fragrant and have a more beautiful petal shape than before.\n\n---\n\n![IMG_5822.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/AK2D4JBWvWZa5ama7WHd6niqPnw3XKwFTiTFwjBAziEWJt85SSH5Co4GLMQS1dd.jpeg)\n\nThere's also a new flower collection in my garden: a bright red hibiscus. This type of hibiscus blooms in a mound. It looks fluffy!\n\n---\n---\n---\n\n*Baby Cabbages*\n\n![IMG_5833.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/23u67UTAdP4LpFPapf6qddRBmPUBy1KV9uz37Qj3R4krBuEQ242sw5fq6Une3VDCWkhPs.jpeg)\n\nFirst, I'll take you to harvest cabbage shoots/baby cabbages. I harvested one cabbage plant earlier. This cabbage plant has produced new shoots, also known as baby cabbages.\n\n\n![IMG_5834.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/23w2ktu6KE5Sxuq4TVnaKC9vESrjQQrsjoGqxUJsUuWBfnVQwv61XRfhhj2eEjGiVMeHX.jpeg)\nLocal farmers here call them baby cabbages, and they're usually sold in the markets. So, after harvesting the cabbage, I don't pull the plants out; I let them produce new shoots, which can eventually be harvested as baby cabbages.\n\n\n![IMG_5835.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/EoEqRnTXs2wtubXkVggZ9VNMG1eCUWPpj4kYqT7jXfbZo8e7DgtPX6EuLXubBDbBhJF.jpeg)\n\nI also let some of the cabbage plants grow so I can harvest the pups to grow the cabbage plants I'm growing. This way, I don't have to grow cabbage from seed.\n\n![IMG_5836.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/Eo8TKy7UCLjbAnHsdw2RtHj5WHCWTSXRJTyfEdbzoAUYDB4zwDaXnNJB3EJqkUgaXbL.jpeg)\nOne cabbage plant actually produces many baby cabbages to harvest. I can already imagine how delicious these baby cabbages will be when sautéed with coconut oil. Hmm, yummy!\n\n---\n---\n\n*Green Beans*\n\n![IMG_5777.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/AK9NcKxEhVbGnW5K4msU2XFiZD8Qwmp9MfmtfCSLtfCMeWBtopLzD11vp6feLzR.jpeg)\n\n\n\n![IMG_5775.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/AJmrPd9X3fX1x6prkeYsB5kVoZYKEU4mWZDPcg2wiSUUhnXyeVPKyx92m5yxVwY.jpeg)\n\nAfter harvesting the young cabbage, I'll take you to harvest green beans with me. Well, this is actually the first time I've ever harvested this type of bush bean. These green beans look perfectly grown. In fact, these green beans are growing well without any pests at all.\n\n\n![IMG_5774.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/AK2Ck24ncHYSea5DtdkbVzpwADoTCAvZjAmdchFcSa6Y2BUpK3e33ZCCnyJLkFy.jpeg)\nI intercropped the green beans with bitter melon. Meanwhile, the bitter melon fruit I pollinated was already growing, but it wasn't ready to be harvested yet.\n\n\n![IMG_5837.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/23wWuBDTnsyQZiBoRvBxcnSdn2Qv8YvBNHn32C2BYzp2krNJZyW6T3BQ5Z7KatSgawKrb.jpeg)\n\nThese green beans were ready to be harvested before the bitter melon. I was quite surprised. I thought the green beans would be few in number. It turned out they actually produced a lot of green beans.\n\n\n\nFor me, this small plot of land could be used to grow some vegetables, rather than just letting it become a place for inedible weeds.\n\nYep, I got a quarter of a kilogram of green beans today. Wow, I'm so happy.\n\n---\n---\n---\n\n*Curly green chilies*\n\nAfter the green bean harvest, I also harvested curly green chilies. Curly green chilies aren't as spicy as red green chilies, but I love the flavor of curly green chilies.\n\nI planted a lot of curly chili plants in grow bags at once so I could have a daily supply for cooking.\n\nThese curly chili plants are actually quite productive, although they didn't perform particularly well due to the continuous rain during their generative phase.\n\n---\n---\n\n*Local Basil*\n\nAt the end of the harvest, I also harvested local basil. I plan to make stir-fried green beans with spicy curly green chilies, also with basil. I'll share the recipe in my next blog post.\n\n![IMG_5794.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/244ACvVkL4FgEgU2ozRUzdvCMJjEVGNUzKgXzd4fZGRqZNeMPej4Re9GugYtQjNE2hzCu.jpeg)\n\n---\n---\n\n\n![IMG_5832.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/23wgKcfXwfXL25p1GyqyDnqAY2EEKbMajUyxWtq7eAV2TDQwi2xYU6RBEojgMYi3VLEfB.jpeg)\nSee you again in my next gardening activity. I hope you have a great day. Don't forget to make time for gardening if you have a little space to plant.\n\n\n![IMG_5815.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/23w2mSAWieBS1c3xxRsA4TVyU75E4ozj5g3Goxs9yaBPVAGyHE6wWHNYMCPPM2D2DQoFT.jpeg)\n\n---\n---\n---\n\n\n>Best Regards,\nAnggrek Lestari\n\n\n---\n\n<div class=\"pull-left\">\n\n\n![NTy4GV6ooFRmaCXZ8UYgPhoud1kjiNX8QokLEZtbBKLuLWQ9yt7K3o4C4j5vC2vk2uJ4Ce3ZW7RSFBfmitJmuVFT1QCYmVLpawTfSY3HS1gZCRiBptCGHhNDsn1N9bGDBZoDnVDbc5YJ9E1PMWXkcAYGpHQF9USeGeqKxUrA.jpeg](https://files.peakd.com/file/peakd-hive/anggreklestari/AK55a8uYYG9Mb3nTdjRBqirT6pfruvygW8nSZgLFnkUr8xn5MuXJdAzxvKxFGan.jpeg)\n</div>\n\n<div class=\"text-justify\">\n<b>Who is Anggrek Lestari?</b>\n\n<sub>Anggrek Lestari is an Indonesian fiction writer who has published two major books. Now She is a full-time content creator. She has a goal to share life, poem, and food content that makes others happy and can get inspiration.</sub> \n\n---\n\n\n<sub>Contact Person: authoranggreklestari@gmail.com\nDiscord: anggreklestari#3009</sub>\n</div>\n\n\n</div>\n\n---\n\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 582
+        },
+        "title": "Morning Harvest: Green Beans, Baby Cabbages, Curly Green Chilies",
+        "author": "anggreklestari",
+        "payout": 24.921,
+        "created": "2026-05-18T00:11:57",
+        "reblogs": 4,
+        "replies": [],
+        "updated": "2026-05-18T00:11:57",
+        "category": "hive-140635",
+        "children": 11,
+        "permlink": "morning-harvest-green-beans-baby-cabbages-curly-green-chilies",
+        "community": "hive-140635",
+        "payout_at": "2026-05-25T00:11:57",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 323466109424830,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "pharesim",
+            "rshares": 224763272114
+          },
+          {
+            "voter": "steemychicken1",
+            "rshares": 5047048190205
+          },
+          {
+            "voter": "copychicken1",
+            "rshares": 823684207
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 29772086049
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 154245708380
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "gardening",
+            "neoxian",
+            "waiv",
+            "food",
+            "palnet",
+            "foodies"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/23u657Z3tPJgPi5iYKYcKSFztuNP14yJpwqZtJ86FvwDqza6gSZR7ScLbHUdrCi94RCc9.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/242hixoGDPJDYqy54F3t6puSgpeFLSD4Dp98eqjTU2mCqKaAiANchrjtXdFRERxBKjFRW.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/AKDiEzsFHPt68YL8eMW5tqiw3fh7kTxuWGJnKKTP962r9VoV3wjnA6DVXqEWRrG.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/AK2D4JBWvWZa5ama7WHd6niqPnw3XKwFTiTFwjBAziEWJt85SSH5Co4GLMQS1dd.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/23u67UTAdP4LpFPapf6qddRBmPUBy1KV9uz37Qj3R4krBuEQ242sw5fq6Une3VDCWkhPs.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/23w2ktu6KE5Sxuq4TVnaKC9vESrjQQrsjoGqxUJsUuWBfnVQwv61XRfhhj2eEjGiVMeHX.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/EoEqRnTXs2wtubXkVggZ9VNMG1eCUWPpj4kYqT7jXfbZo8e7DgtPX6EuLXubBDbBhJF.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/Eo8TKy7UCLjbAnHsdw2RtHj5WHCWTSXRJTyfEdbzoAUYDB4zwDaXnNJB3EJqkUgaXbL.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/AK9NcKxEhVbGnW5K4msU2XFiZD8Qwmp9MfmtfCSLtfCMeWBtopLzD11vp6feLzR.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/AJmrPd9X3fX1x6prkeYsB5kVoZYKEU4mWZDPcg2wiSUUhnXyeVPKyx92m5yxVwY.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/AK2Ck24ncHYSea5DtdkbVzpwADoTCAvZjAmdchFcSa6Y2BUpK3e33ZCCnyJLkFy.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/23wWuBDTnsyQZiBoRvBxcnSdn2Qv8YvBNHn32C2BYzp2krNJZyW6T3BQ5Z7KatSgawKrb.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/244ACvVkL4FgEgU2ozRUzdvCMJjEVGNUzKgXzd4fZGRqZNeMPej4Re9GugYtQjNE2hzCu.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/23wgKcfXwfXL25p1GyqyDnqAY2EEKbMajUyxWtq7eAV2TDQwi2xYU6RBEojgMYi3VLEfB.jpeg",
+            "https://files.peakd.com/file/peakd-hive/anggreklestari/23w2mSAWieBS1c3xxRsA4TVyU75E4ozj5g3Goxs9yaBPVAGyHE6wWHNYMCPPM2D2DQoFT.jpeg"
+          ],
+          "users": [
+            "gmail.com"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "HiveGarden",
+        "author_reputation": 81.11,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "24.921 HBD"
+      },
+      {
+        "url": "/encoding/@threespeak/3speak-encoder-network-weekly-activity-report-week-24",
+        "body": "![image.png](https://files.peakd.com/file/peakd-hive/eddie-3speak/Eo6DF1G75FXBGvGKkKoSBHKeXSKLQaW5riEfLNkqktVRVi4WR9kETH9Mqve3jg8PVpD.png)\n\nThis is the weekly activity report for the 3Speak decentralized encoding network. The report covers encoder node activity, aggregated output per Hive account, and reward distribution based on work completed during the week.\n\nThis week, **289 encoding jobs** were processed across 8 active encoder nodes operated by 7 Hive accounts, with an average encoding time of **4 minutes** and a total encoding time of **18 hours**. All nodes maintained a **100% success rate**.\n\n---\n\n## Encoder Activity\n\n| Encoder Node | Hive Account | Jobs | Success |\n|---|---|---|---|\n| 3speak-snapie-encoder | @snapie | 51 | 100% |\n| 3speak-encoder-node | @rishi556.lambo | 46 | 100% |\n| Butter-Node | @joseamenac | 43 | 100% |\n| 3speak-encoder-node | @harvestmoon299 | 42 | 100% |\n| 3speak-ph1102-node | @ph1102 | 37 | 100% |\n| atexoras-3speak-encoder | @forkyishere | 31 | 100% |\n| ph1102-mac-node | @ph1102 | 24 | 100% |\n| eddie-3speak-encoder | @eddie-3speak | 15 | 100% |\n\n---\n\n## Aggregated Jobs by Hive Account\n\n| Hive Account | Total Jobs |\n|---|---|\n| @ph1102 | 61 |\n| @snapie | 51 |\n| @rishi556.lambo | 46 |\n| @joseamenac | 43 |\n| @harvestmoon299 | 42 |\n| @forkyishere | 31 |\n| @eddie-3speak | 15 |\n\n**Total: 289 jobs**\n\n---\n\n## Reward Distribution (7 Beneficiaries)\n\nOnly 7 accounts were active this week, so all are included as beneficiaries.\n\n| Hive Account | Jobs | Percentage |\n|---|---|---|\n| @ph1102 | 61 | 21% |\n| @snapie | 51 | 18% |\n| @rishi556.lambo | 46 | 16% |\n| @joseamenac | 43 | 15% |\n| @harvestmoon299 | 42 | 14% |\n| @forkyishere | 31 | 11% |\n| @eddie-3speak | 15 | 5% |\n| **Total** | **289** | **100%** |\n\n---\n\n## Notes\n\n- **@harvestmoon299** — rejoins the network, contributing 42 jobs with a perfect success rate. Great to see the network growing.\n- **@ph1102** leads again with 61 aggregated jobs across two nodes.\n- **@eddie-3speak** had a quieter week with 15 jobs, down from 54 last week.\n- **@forkyishere** bounced back to 31 jobs after fluctuating between 8 and 25 in recent weeks.\n- **100% success rate** across all nodes — a clean week.\n\n---\n\n## Get Involved\n\nWant to help power decentralized video encoding on 3Speak? Running an encoder node is a great way to contribute to the network and earn rewards for your work.\n\nReach out to **@eddiespino** on the 3Speak Discord for more info:\nhttps://discord.gg/NSFS2VGj83\n\n**Useful links:**\n- [Gateway Monitor](https://gateway-monitor.3speak.tv)\n- [Direct Encoding Monitor](https://gateway-monitor.3speak.tv/direct-encoding)\n- [Analytics](https://monitor.3speak.tv/analytics)\n- [Preview Frontend](https://preview.3speak.tv)\n\n---\n\n*Thank you to all encoder operators for keeping the 3Speak network decentralized and running strong.*",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 438
+        },
+        "title": "3Speak Encoder Network Weekly Activity Report — Week 24",
+        "author": "threespeak",
+        "payout": 21.755,
+        "created": "2026-05-18T03:53:12",
+        "reblogs": 5,
+        "replies": [],
+        "updated": "2026-05-18T03:53:12",
+        "category": "encoding",
+        "children": 1,
+        "permlink": "3speak-encoder-network-weekly-activity-report-week-24",
+        "payout_at": "2026-05-25T03:53:12",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 282373442968005,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "simba",
+            "rshares": 167292484037
+          },
+          {
+            "voter": "fractalnode",
+            "rshares": 45138196663
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 28348621740
+          },
+          {
+            "voter": "nascimentoab",
+            "rshares": 29481590108
+          },
+          {
+            "voter": "kendewitt",
+            "rshares": 41496332844
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "eddie-3speak"
+          },
+          {
+            "weight": 1100,
+            "account": "forkyishere"
+          },
+          {
+            "weight": 1400,
+            "account": "harvestmoon299"
+          },
+          {
+            "weight": 1500,
+            "account": "joseamenac"
+          },
+          {
+            "weight": 2100,
+            "account": "ph1102"
+          },
+          {
+            "weight": 1600,
+            "account": "rishi556.lambo"
+          },
+          {
+            "weight": 1800,
+            "account": "snapie"
+          }
+        ],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "encoding",
+            "infrastructure",
+            "threespeak",
+            "3speak",
+            "videos",
+            "hive"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/eddie-3speak/Eo6DF1G75FXBGvGKkKoSBHKeXSKLQaW5riEfLNkqktVRVi4WR9kETH9Mqve3jg8PVpD.png"
+          ],
+          "users": [
+            "snapie",
+            "rishi556.lambo",
+            "joseamenac",
+            "harvestmoon299",
+            "ph1102",
+            "forkyishere",
+            "eddie-3speak",
+            "eddiespino"
+          ],
+          "format": "markdown"
+        },
+        "author_reputation": 76.26,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "21.755 HBD"
+      },
+      {
+        "url": "/hive-105017/@jychbetter/3co7pt",
+        "body": "<liketuimages>\n<center>\n![FbLeuTRjeyuqoZCu__20260518144659_391_279.webp](https://cdn.liketu.com/media/jychbetter/images/FbLeuTRjeyuqoZCu__20260518144659_391_279/FbLeuTRjeyuqoZCu__20260518144659_391_279.webp)\n![6xIfXffxvbXUz53R__20260518144700_392_279.webp](https://cdn.liketu.com/media/jychbetter/images/6xIfXffxvbXUz53R__20260518144700_392_279/6xIfXffxvbXUz53R__20260518144700_392_279.webp)\n![Q6Y2rENLVRbO7Hoz__20260518151507_465_16.webp](https://cdn.liketu.com/media/jychbetter/images/Q6Y2rENLVRbO7Hoz__20260518151507_465_16/Q6Y2rENLVRbO7Hoz__20260518151507_465_16.webp)\n![vTvdBm7TseJk7D3e__20260518151509_466_16.webp](https://cdn.liketu.com/media/jychbetter/images/vTvdBm7TseJk7D3e__20260518151509_466_16/vTvdBm7TseJk7D3e__20260518151509_466_16.webp)\n![CkbjYbYR2I404F9g__20260518151510_467_16.webp](https://cdn.liketu.com/media/jychbetter/images/CkbjYbYR2I404F9g__20260518151510_467_16/CkbjYbYR2I404F9g__20260518151510_467_16.webp)\n![MWtgXo38rLIPcdpo__20260518151511_468_16.webp](https://cdn.liketu.com/media/jychbetter/images/MWtgXo38rLIPcdpo__20260518151511_468_16/MWtgXo38rLIPcdpo__20260518151511_468_16.webp)\n![aKy8UzQmFqHjWlJo__20260518151512_469_16.webp](https://cdn.liketu.com/media/jychbetter/images/aKy8UzQmFqHjWlJo__20260518151512_469_16/aKy8UzQmFqHjWlJo__20260518151512_469_16.webp)\n</center>\n</liketuimages>\n\n各位小伙伴们好！友哥今天来分享，老家的雨天。友哥遇到了燕子，就是那个穿花衣的、年年春天来这里的小燕子。欢迎继续阅读了解！\n\n友哥现在也是一名农民。下雨天，就是我们农民的礼拜天，室外农业作业，基本不能进行。不过，雨后的小山村，景色是真美啊，像仙境一样呢。\n\n下雨天，无法做农活，但是可以买农资。友哥开车带父亲去农资售卖点，买农药。友哥在他们仓库，发现一个燕子窝，里面小燕子正在等着燕子妈妈喂食呢。燕子妈妈很警觉，飞来飞去的。\n\n这是友哥家地里的一根木棍棒，上面长出了木耳，父亲说这种木耳可以吃，晒干之后再烹饪，和买的木耳味道差不多，就是比买的木耳薄一些。友哥友情提醒，野外菌类采摘，请慎重，请确保可食用。\n![微信图片_20260518151504_462_16.jpg](https://files.peakd.com/file/peakd-hive/jychbetter/23wgMWdPFZvQTRd2vrr7EbWZcL7oK1j3E75jB9yYfbSYGMrDQm2toUs8GC7Bu5Nx5Q7uZ.jpg)\n\n![微信图片_20260518151507_464_16.jpg](https://files.peakd.com/file/peakd-hive/jychbetter/EoEsryQCiwm4ZqmmxFWMztDtfAhcvqjwXE57eHGBEmMi27oiWAnfJ6cGKVm1xKdoALq.jpg)\n\n![微信图片_20260518151505_463_16.jpg](https://files.peakd.com/file/peakd-hive/jychbetter/23xVPTWmyDLLxbToJkqK34vp4oBM7QQZJED5A31UotMpDfdyH4oHf8Azdj1t6F76HJMdf.jpg)\n\n欢迎小伙伴们，来秦皇岛农村旅游，呼吸新鲜空气！\n\n\n![dividers-04.png](https://images.hive.blog/p/qjrE4yyfw5pJD9LKQ1BG3NbSyKTowh8wnMyt99dK65jb9EyRiDqdkR63HQ91ZqnuFHTiEML7JsCGppcMeUsSg6BbKH3QeuVfMQwWygfDgJTnhE1wD53KXCSa?format=match&mode=fit)\n\n好了，各位小伙伴们，友哥今天就分享到这里吧！明天见！祝各位小伙伴们天天快乐，天天好心情！\n\n![20211009_165535.gif](https://images.hive.blog/DQmfWgSbRteTDHxwpzbACT5mzPaT7ZwiEWXikwRthBXjBB5/20211009_165535.gif)\n\n---\n\nFor the best experience view this post on [Liketu](https://liketu.com/@jychbetter/3co7pt)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 219
+        },
+        "title": "下雨天，农民们的礼拜天",
+        "author": "jychbetter",
+        "payout": 18.43,
+        "created": "2026-05-18T07:33:09",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-18T07:33:09",
+        "category": "hive-105017",
+        "children": 4,
+        "permlink": "3co7pt",
+        "community": "hive-105017",
+        "payout_at": "2026-05-25T07:33:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "mod",
+        "net_rshares": 239152678250805,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "abit",
+            "rshares": 24629970904683
+          },
+          {
+            "voter": "deanliu",
+            "rshares": 8653362537664
+          },
+          {
+            "voter": "joshglen",
+            "rshares": 3102989852
+          },
+          {
+            "voter": "lemooljiang",
+            "rshares": 343329598642
+          },
+          {
+            "voter": "kaykunoichi",
+            "rshares": 1085488544
+          }
+        ],
+        "author_title": "有個友哥",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "hive-105017"
+          },
+          {
+            "weight": 300,
+            "account": "liketu"
+          }
+        ],
+        "json_metadata": {
+          "app": "liketu",
+          "flow": {
+            "tags": [
+              "cn",
+              "cn-reader",
+              "qhdlife",
+              "hive",
+              "onlyhive",
+              "photography",
+              "travel",
+              "waivio"
+            ],
+            "pictures": [
+              {
+                "id": 1548868,
+                "url": "https://cdn.liketu.com/media/jychbetter/images/FbLeuTRjeyuqoZCu__20260518144659_391_279/FbLeuTRjeyuqoZCu__20260518144659_391_279.webp",
+                "mime": "image/webp",
+                "name": "FbLeuTRjeyuqoZCu__20260518144659_391_279.webp",
+                "tags": [],
+                "caption": ""
+              },
+              {
+                "id": 1548869,
+                "url": "https://cdn.liketu.com/media/jychbetter/images/6xIfXffxvbXUz53R__20260518144700_392_279/6xIfXffxvbXUz53R__20260518144700_392_279.webp",
+                "mime": "image/webp",
+                "name": "6xIfXffxvbXUz53R__20260518144700_392_279.webp",
+                "tags": [],
+                "caption": ""
+              },
+              {
+                "id": 1548870,
+                "url": "https://cdn.liketu.com/media/jychbetter/images/Q6Y2rENLVRbO7Hoz__20260518151507_465_16/Q6Y2rENLVRbO7Hoz__20260518151507_465_16.webp",
+                "mime": "image/webp",
+                "name": "Q6Y2rENLVRbO7Hoz__20260518151507_465_16.webp",
+                "tags": [],
+                "caption": ""
+              },
+              {
+                "id": 1548871,
+                "url": "https://cdn.liketu.com/media/jychbetter/images/vTvdBm7TseJk7D3e__20260518151509_466_16/vTvdBm7TseJk7D3e__20260518151509_466_16.webp",
+                "mime": "image/webp",
+                "name": "vTvdBm7TseJk7D3e__20260518151509_466_16.webp",
+                "tags": [],
+                "caption": ""
+              },
+              {
+                "id": 1548872,
+                "url": "https://cdn.liketu.com/media/jychbetter/images/CkbjYbYR2I404F9g__20260518151510_467_16/CkbjYbYR2I404F9g__20260518151510_467_16.webp",
+                "mime": "image/webp",
+                "name": "CkbjYbYR2I404F9g__20260518151510_467_16.webp",
+                "tags": [],
+                "caption": ""
+              },
+              {
+                "id": 1548873,
+                "url": "https://cdn.liketu.com/media/jychbetter/images/MWtgXo38rLIPcdpo__20260518151511_468_16/MWtgXo38rLIPcdpo__20260518151511_468_16.webp",
+                "mime": "image/webp",
+                "name": "MWtgXo38rLIPcdpo__20260518151511_468_16.webp",
+                "tags": [],
+                "caption": ""
+              },
+              {
+                "id": 1548874,
+                "url": "https://cdn.liketu.com/media/jychbetter/images/aKy8UzQmFqHjWlJo__20260518151512_469_16/aKy8UzQmFqHjWlJo__20260518151512_469_16.webp",
+                "mime": "image/webp",
+                "name": "aKy8UzQmFqHjWlJo__20260518151512_469_16.webp",
+                "tags": [],
+                "caption": ""
+              }
+            ]
+          },
+          "tags": [
+            "cn",
+            "cn-reader",
+            "qhdlife",
+            "hive",
+            "onlyhive",
+            "photography",
+            "travel",
+            "waivio"
+          ],
+          "image": "",
+          "links": "",
+          "users": "",
+          "format": "markdown",
+          "community": "liketu"
+        },
+        "community_title": "HIVE CN 中文社区",
+        "author_reputation": 80.09,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "18.430 HBD"
+      },
+      {
+        "url": "/hive-194913/@daveks/lower-rowe-lake",
+        "body": "\n### <center>![DSC09966.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23wqfzbPrwKpg1BcapG9AZoMXQjEVCizAwDLYjVkBS8HMh48pRDRLr1TnrV2EZDWdbcoi.jpeg)</center> ###\n\n##### <center>After I was able to calm down from seeing them bears swim across the lake, I sat down and soaked in the gorgeous scenery around me. Had a few cool sips of water and a light lunch. Wow this was great! Serenity in the mountains. Then a thought occurred to me, those bears were headed in the same direction as the trail back…was going to be a fun trip back — must be extra cautious on the way back. As of now, luckily, I have never had to deploy my bear spray even once! Thanks for stopping by.</center> ##### \n![DSC09962.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23z7BUtoThDAyT3JFeApGbQChFnFbq3zYsktVS6kziXJaNU9edgohtxkSL3x4sTxsCeGJ.jpeg)\n***\n### <center>![DSC09965.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23zS1Dz8v6ZjAo4HYNJVeZD7GVuiyBjdHL1GsRswbYnQ8E8HwSp3jszdcCo29DsD8ySy3.jpeg)</center> ###\n***\n\n### <center>![DSC09964.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23ywnkCG6JjEDPePLSjMoRohpJa9bLc5H8nwDiQSCJF8hu7HhrGEkDewh1Ey3ZSkCDUSD.jpeg)</center> ###\n\n\n\n###### <center>Camera: Sony A7R III</center> ######\n###### <center>Lens: Sony 24-105mm f4 G OSS</center> ######\n###### <center>Editing: Lightroom</center> ######\n\n### <center>![DSC09966.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23wWpWpTXXrYKszeTFRHChR6te4kL5QH1Ze1Q5Lre12GCRuwhk3Jy3zCD4Pz4CqhbpKNZ.jpeg)</center> ###\n***\n\n![DSC09962.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23xVEdyfVGVHXEABs7j1texSZxdxw9bD1Zdr3VXiWGEicjQgXdmrYQAhQA18a7AVxTEzu.jpeg)\n***\n\n\n### <center>![DSC09965.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23wC5mxsm2TSsGbGfsY37ybdB13MiyWYcZ48PjJrvAnp45cc7DPAruJxVg7chSnEwho2u.jpeg)</center> ###\n***\n### <center>![DSC09964.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23wgDQB8zzZRNc285jJbeeCJNkExZwEtVmBEcTjnkkZCcW86qQ1WgAzArQ8QwNAAnLXkP.jpeg)</center> ###\n\n##### <center>Do you like Black and White photography? Do you like Colour photography? If you answered yes to both questions, then you are a perfect candidate for the “Colour / Black & White” photography community. Created specifically for that purpose. I will be personally curating qualifying posts. Join now.</center> #####\n\n### <center>![image.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EowFatU7MVBYcD8QWT1xrvgVkoMGb6G1h4h9KQxwM4JnGdwzLzQTjZAfpJm8SswSEZB.jpeg)</center> ###\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 422
+        },
+        "title": "Lower Rowe Lake",
+        "author": "daveks",
+        "payout": 19.995,
+        "created": "2026-05-18T03:40:09",
+        "reblogs": 4,
+        "replies": [],
+        "updated": "2026-05-18T03:40:09",
+        "category": "hive-194913",
+        "children": 15,
+        "permlink": "lower-rowe-lake",
+        "community": "hive-194913",
+        "payout_at": "2026-05-25T03:40:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 259262564536750,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "steemychicken1",
+            "rshares": 5047048190205
+          },
+          {
+            "voter": "copychicken1",
+            "rshares": 823684207
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 28029483876
+          },
+          {
+            "voter": "sharker",
+            "rshares": 20715298147
+          },
+          {
+            "voter": "kibela",
+            "rshares": 3100855086
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "photography",
+            "art",
+            "colourblackandwhite",
+            "canadianrockies",
+            "neoxian",
+            "sgslife",
+            "hikingadventures"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/daveks/23wqfzbPrwKpg1BcapG9AZoMXQjEVCizAwDLYjVkBS8HMh48pRDRLr1TnrV2EZDWdbcoi.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23z7BUtoThDAyT3JFeApGbQChFnFbq3zYsktVS6kziXJaNU9edgohtxkSL3x4sTxsCeGJ.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23zS1Dz8v6ZjAo4HYNJVeZD7GVuiyBjdHL1GsRswbYnQ8E8HwSp3jszdcCo29DsD8ySy3.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23ywnkCG6JjEDPePLSjMoRohpJa9bLc5H8nwDiQSCJF8hu7HhrGEkDewh1Ey3ZSkCDUSD.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23wWpWpTXXrYKszeTFRHChR6te4kL5QH1Ze1Q5Lre12GCRuwhk3Jy3zCD4Pz4CqhbpKNZ.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23xVEdyfVGVHXEABs7j1texSZxdxw9bD1Zdr3VXiWGEicjQgXdmrYQAhQA18a7AVxTEzu.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23wC5mxsm2TSsGbGfsY37ybdB13MiyWYcZ48PjJrvAnp45cc7DPAruJxVg7chSnEwho2u.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23wgDQB8zzZRNc285jJbeeCJNkExZwEtVmBEcTjnkkZCcW86qQ1WgAzArQ8QwNAAnLXkP.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EowFatU7MVBYcD8QWT1xrvgVkoMGb6G1h4h9KQxwM4JnGdwzLzQTjZAfpJm8SswSEZB.jpeg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.32,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "19.995 HBD"
+      },
+      {
+        "url": "/hive-105017/@davidke20/e67d7cc27c804",
+        "body": "工作單位裡面的挑戰，我們大家都心知肚明。公司對面就已經是我們的死對頭公司，現在我們這裡每個星期都收到對面員工寄過來的簡歷徵聘，加上現在全球化的經濟衰退現象，這些大型企業也開始逐漸受到影響，砂鍋往地上一摔，大家都沒有好日子過。\n\n大家好，我是拉叔。身為一名十幾年經驗的保險從業猿，我自己心裡清楚知道保險這條鏈本來就是一個“黑項目”。賣保險的，本著就是用消費人對於死亡、生病的恐懼、失去的自由，把一張紙，我們成為合約，用高價賣給消費人。而消費人，本著就是放手一搏，反正遲早都得死。先買個保險，早點死早點賠；晚了死，我算賺到了，活過了。\n\n根據以上解釋，我們換一個角度來看，賣保險的就是五花八門的賭廳。你想玩百家樂也有，要去賭螺旋盤也有，撲克牌、打麻將、老虎機，各式各樣的~~保險~~賭檯任君選。而買保險的，就是去賭廳花大錢的人。我沒說買保險是壞事，多少人明明買個15、16、17，然後再補上買“小”。萬一開了個17，全都轉回來了。萬一都不開大，至少有個“小”保險🤣\n\n現在的局勢，保險公司拿到手的籌碼，幾乎都賠出去了。目前的醫藥保險已經走到了提高自負額來減免公司的理賠負擔。這麼一來，受保人就不會隨隨便便濫用醫保。以前什麼大小事，便秘、大小眼、奶疼、失戀都不放過直接去找護士小姐姐。現在不同了，你要啟動醫保，前面那五千你自己先自負，後面不夠的才由保險公司賠償。以賭廳來形容，如果你下注了100元籌碼買“大”，開了有1賠2的賠率，本該領回200。可是，荷官只給回你150元。你問他為什麼？他說，另外50你已經在大腦激素上升那一瞬間花掉了🤣\n\n我不是教你買保險，不過以我在保險公司當荷官當了這麼久，我終於知道連賭廳的賭檯都比保險公司更講~~武~~賭德。我個人覺得，保險是在不用買太大，畢竟到最後如果是人壽保險，就算是死了，賠的還不是給母老虎？醫藥保險也是一樣，買得再大的保額，自負額都付不起，還怎麼搞理賠？還不如實實際際的自己囤一筆備用的醫藥基金，我再一次強調不是不讓你買醫保，我是說要先有一筆醫藥基金來準備付自負額。自負額越高的保單，保費越便宜。\n\n沒有人願意生病，最好是不用啟動到保單。囤起來的那一筆醫藥基金，就是你的隱形翅膀。沒有用到還能收利息。萬一真的有用到，便宜醫保已經在位，隱形翅膀就可以攢開給你渡過難關。\n\n\n![](https://i.ecency.com/DQmbEyeF6d8ANELr4N3wVQS6gJZebgfWx1aKrZePPjDMxr8/1779015803603.jpg)\n\n![](https://i.ecency.com/DQmUFMQnXKfo91SHiRgeX4tUecUjQLj6rfaUxdTTyh2Wvbn/1779015803695.jpg)\n\n![](https://i.ecency.com/DQmPh8trUcDbk6kaCRQDLQKo4eqtaLFa1XbtGuUdiYB5mhn/1779015803751.jpg)\n\n![](https://i.ecency.com/DQmQEEZC8U9PgbvN5XBegtt3dZdEDRurpKNyJYMagjwNcbz/1779015803874.jpg)\n\n![](https://i.ecency.com/DQmQNA2V2tdh82FGtXCGWW2cipHVobLRyCmFiKs4y6VZiPT/1779015803948.jpg)\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 866
+        },
+        "title": "有隱形翅膀的賭徒",
+        "author": "davidke20",
+        "payout": 21.912,
+        "created": "2026-05-17T23:55:27",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-17T23:55:27",
+        "category": "hive-105017",
+        "children": 8,
+        "permlink": "e67d7cc27c804",
+        "community": "hive-105017",
+        "payout_at": "2026-05-24T23:55:27",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 284399461177694,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "abit",
+            "rshares": 32839957387419
+          },
+          {
+            "voter": "drifter1",
+            "rshares": 1279242601
+          },
+          {
+            "voter": "kevinwong",
+            "rshares": 6531032244
+          },
+          {
+            "voter": "eric-boucher",
+            "rshares": 15435680016
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 127922447187
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.5.5-mobile",
+          "tags": [
+            "hive-105017",
+            "cn",
+            "cn-reader",
+            "teammalaysia",
+            "cn-malaysiq",
+            "blog",
+            "life",
+            "palnet",
+            "neoxian",
+            "ecency"
+          ],
+          "type": "post",
+          "image": [
+            "https://i.ecency.com/DQmbEyeF6d8ANELr4N3wVQS6gJZebgfWx1aKrZePPjDMxr8/1779015803603.jpg",
+            "https://i.ecency.com/DQmUFMQnXKfo91SHiRgeX4tUecUjQLj6rfaUxdTTyh2Wvbn/1779015803695.jpg",
+            "https://i.ecency.com/DQmPh8trUcDbk6kaCRQDLQKo4eqtaLFa1XbtGuUdiYB5mhn/1779015803751.jpg",
+            "https://i.ecency.com/DQmQEEZC8U9PgbvN5XBegtt3dZdEDRurpKNyJYMagjwNcbz/1779015803874.jpg",
+            "https://i.ecency.com/DQmQNA2V2tdh82FGtXCGWW2cipHVobLRyCmFiKs4y6VZiPT/1779015803948.jpg"
+          ],
+          "links": [],
+          "format": "markdown+html",
+          "image_ratios": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "community_title": "HIVE CN 中文社区",
+        "author_reputation": 79.19,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "21.912 HBD"
+      },
+      {
+        "url": "/hive-163772/@gungunkrishu/ramoji-film-city-hyderabad-dishi-guptas-movie-making-experience",
+        "body": "Hey All,\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/gungunkrishu/23xAZgXZwCbxpdahUamMGS5LhGeMjam1qF4q9o5iuyUJVduAnspCENjK9KLqZCAb9chNA.png)\n\nLast week, we were on a family trip to Hyderabad, and one of the highlights of our itinerary was visiting [Ramoji Film City](https://www.ramojifilmcity.com/) — the world's largest integrated film studio complex, sprawling across an impressive 2,000 acres. It was an experience we had been looking forward to, especially with its blend of cinema, entertainment, and behind-the-scenes movie making experice and all the attractions, live shows, themed sets, and fun activities that make the place truly unique for visitors of all ages. Just to give you all the glimpse of Ramoji Film City Hyderabad here are the top three Famous Attraction / Feature about this Flim City..\n\n\n![WhatsApp Image 2026-05-19 at 10.55.12 AM.jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23xpF8nM21xpTq7Sq3Ftvfc4hbuQK9ZGzizZMTmStvKoeqULuiTxmoeNT7TCFqu2NHKn8.jpeg)\n\n\n- Holds a Guinness World Record as the largest integrated film studio complex. Spread accross 2,000 acres.\n- Movie Sets & Shooting Locations - Features massive film sets including international themed based locations used in movies like London, New York, airports, railway stations, palaces, and many different famous streets acorss the world.  And finally the recent addition which is\n\n- Baahubali Set Experience - One can expereince grand structures inspired by the blockbuster movie Baahubali.\n\n![WhatsApp Image 2026-05-19 at 10.55.11 AM (2).jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23uaMYi54ZFUtd8KY8xCBTvtLkFk8uibQhwVgM8hBeuV9mcar1a87BSrrhQPeicmqvreQ.jpeg)\n\n\nApart from all the fun and entertainment, it was great to witness the different movie sets and experience the world behind filmmaking. One of the biggest highlights of the visit was seeing the iconic set inspired by the blockbuster movie Baahubali. Here are some random pictures clicked of Baahubali movie set...\n\n\n\n![WhatsApp Image 2026-05-19 at 10.55.11 AM (1).jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23r1irCmDqTpqhUY6SwFjUezKuXTnF9nBkdSXGYedYcgqDUtDZKipSt4RFBd1YYJ3Jk8U.jpeg)\n\n![WhatsApp Image 2026-05-19 at 10.55.11 AM.jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/EowH6pW5mCTD3gVyV5vCWnQw5SWuYRArwaQA9QrGz8VxR5fX9q76e23cXdvt69YREuj.jpeg)\n\n\n\n![WhatsApp Image 2026-05-19 at 10.55.12 AM (1).jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynd8BBTb35CW6RxxeJsmYuQN7Sg9o6LVcKGXskW3H7wJMoYEqWgVyfG1s2hydHqKGdY.jpeg)\n\n![WhatsApp Image 2026-05-19 at 10.55.12 AM.jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynd8ArJkkcBnFacMWtGoqnSSUAG8dMsybrXKsDbyPjCtHsxUzxc8jeT5jmyu1YzsQQs.jpeg)\n\n![WhatsApp Image 2026-05-19 at 10.55.13 AM (1).jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/Ep3eqqyT4PJJtnFBQeYkXEHZ3Fsx7Rjnd4wvHrsqQTgWSUEyNXee1nLxtT5Rf8c8Xfw.jpeg)\n\n![WhatsApp Image 2026-05-19 at 10.55.13 AM.jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23yTjjT3tZ29mr6ESteGF5bMU1DoacNgrxsCZ3QYbJj2jxrJF3smjgwtzEC9urq569qua.jpeg)\n\n![WhatsApp Image 2026-05-19 at 10.55.14 AM.jpeg](https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynYk5HqWPpH5Fa2fR3dub9TtLYk3AECeorKkLn92xzgeDWsdygevgr8eDh4zGhrgDh9.jpeg)\n\n\n### Dishi Gupta’s Movie Making Experience...\n\nLets us now talk a bit around the package that we bought it was an expensive one sine we didnt want to comporise on the experence and hence bought the - \"HOLIDAY CARNIVAL STAR EXPERIENCE WEEKDAYS\" package which costed us Rs.3600/- per person. This included everything from visting all the attractions in a A/C bus along with Complimentary Rides - Break dance, Twister, and Carousel and Buffet Lunch (Veg. and Non-Veg.) & Hi-Tea at Super Star/ Dostana. Overall I would say that this package was worth to be taken also the advanatage with this package was that you were given more priority when compared with the other packages being offered. Now comes the best part of the experience which is getting a glimpse into the movie making process itself. \n\n\n---\n\nhttps://youtu.be/sTWdDaKSvS8\n\n---\n\nThis made the visit even more special, as our daughter, Dishi Gupta, volunteered to participate in a live movie-making activity at Ramoji Film City. In the above video watch her step into the world of filmmaking and become part of the experience was both exciting and memorable for us as a family. All the time, effort, and money spent on this trip felt completely worth it. More importantly, capturing these beautiful moments made the experience even more special. Every time we look back at these pictures and watch the movie making video featuring our daughter, Dishi, it will bring back wonderful memories and remind us of a truly unforgettable family experience. Well this should be it for todays post on - \"Ramoji Film City Hyderabad - Dishi Gupta’s Movie Making Experience...\" If you are a movie lover, I would highly recommend visiting Ramoji Film City in Hyderabad. It’s truly a must-visit destination for sure.... cheers\n\n#RamojiFilmCity #HyderabadVlog #DishiGupta #MovieMaking #BehindTheScenes\n\nImage Courtesy:: Pro Canva License, Ramoji Flim City, ChatGpt\n\nBest Regards\nParas\n\n[//]:# (!worldmappin 17.2543 lat 78.6808 long Ramoji Film City, Hyderabad – World's largest integrated film studio complex spanning 2,000 acres 🎬)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 206
+        },
+        "title": "Ramoji Film City Hyderabad - Dishi Gupta’s Movie Making Experience...",
+        "author": "gungunkrishu",
+        "payout": 7.366,
+        "created": "2026-05-19T06:00:24",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-19T06:00:24",
+        "category": "hive-163772",
+        "children": 1,
+        "permlink": "ramoji-film-city-hyderabad-dishi-guptas-movie-making-experience",
+        "community": "hive-163772",
+        "payout_at": "2026-05-26T06:00:24",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 95464995944060,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 27332736521
+          },
+          {
+            "voter": "magicmonk",
+            "rshares": 12965147834576
+          },
+          {
+            "voter": "penguinpablo",
+            "rshares": 155841238854
+          },
+          {
+            "voter": "funnyman",
+            "rshares": 1563817529
+          },
+          {
+            "voter": "funnel",
+            "rshares": 4035523647
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "ramoji",
+            "flimcity",
+            "moviemaking",
+            "india",
+            "arcadecolony",
+            "movie",
+            "hyderabad",
+            "fun"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23xAZgXZwCbxpdahUamMGS5LhGeMjam1qF4q9o5iuyUJVduAnspCENjK9KLqZCAb9chNA.png",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23xpF8nM21xpTq7Sq3Ftvfc4hbuQK9ZGzizZMTmStvKoeqULuiTxmoeNT7TCFqu2NHKn8.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23uaMYi54ZFUtd8KY8xCBTvtLkFk8uibQhwVgM8hBeuV9mcar1a87BSrrhQPeicmqvreQ.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23r1irCmDqTpqhUY6SwFjUezKuXTnF9nBkdSXGYedYcgqDUtDZKipSt4RFBd1YYJ3Jk8U.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/EowH6pW5mCTD3gVyV5vCWnQw5SWuYRArwaQA9QrGz8VxR5fX9q76e23cXdvt69YREuj.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynd8BBTb35CW6RxxeJsmYuQN7Sg9o6LVcKGXskW3H7wJMoYEqWgVyfG1s2hydHqKGdY.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynd8ArJkkcBnFacMWtGoqnSSUAG8dMsybrXKsDbyPjCtHsxUzxc8jeT5jmyu1YzsQQs.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/Ep3eqqyT4PJJtnFBQeYkXEHZ3Fsx7Rjnd4wvHrsqQTgWSUEyNXee1nLxtT5Rf8c8Xfw.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23yTjjT3tZ29mr6ESteGF5bMU1DoacNgrxsCZ3QYbJj2jxrJF3smjgwtzEC9urq569qua.jpeg",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23ynYk5HqWPpH5Fa2fR3dub9TtLYk3AECeorKkLn92xzgeDWsdygevgr8eDh4zGhrgDh9.jpeg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Worldmappin",
+        "author_reputation": 80.61,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "7.366 HBD"
+      },
+      {
+        "url": "/hive-194913/@stayoutoftherz/photodump-attika-2026",
+        "body": "Liebe Leser,\nhier eine bunte Mischung von Fotos aus dem letzten Griechenlandurlaub (Bericht dazu [hier](https://peakd.com/hive-163772/@stayoutoftherz/fruhling-am-peloponnes)), in dem diese Fotos keinen Platz mehr gefunden haben, auch weil die meisten davon gar nicht im Peloponnes aufgenommen wurden, sondern in [Attika](https://de.wikipedia.org/wiki/Attika_(griechische_Region)) (die Gegend rund um Athen), also dort, wohin sich normalerweise kaum ein Tourist verirrt.\n\nWenn immer wir in Kifissia sind (ein Vorort nördlich von Athen), ist ein Besuch des [Varsos](https://peakd.com/food/@stayoutoftherz/patisserie-varsos-near-athens-awesome-food-and-great-tradition) Pflichtprogramm. In diesem Traditionskaffeehaus, das berühmt ist für seine Strudel und süßen Köstlichkeiten, scheint die Zeit stehengeblieben zu sein.\n![IMG_4945.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23z7BphNvCRqLhTV5AD26pAofnLcJeXL2kyyL7Mjetw6BH794m6ZG9KiFLQkL7kXU8RVt.jpg)\n![IMG_4948.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/Eoc8W5oVDYbwN5ygscEJkMrrxqtFR2NagK5c3fKjzmaisc6ZckTZsPRSfPdj2JVH1Eg.jpg)\n\nKaffee und [Galaktoboureko](https://de.wikipedia.org/wiki/Galaktoboureko).\n![IMG_4952.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23u6BZceJbU15PLRBUJu5RTiVRopBxoUvVYU814aPVqCD3yFgXwhu9tJvrPSuAkqkdCr1.jpg)\n\nUnsere Schidkröte (\"Susi\") bei ihrer Lieblingsbeschäftigung.\n![IMG_4998.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23uQnVRWoyt2iNp5vziHRNEtJKS56cZsirfFFSJDy9K4dLWRbTvwST1WnW1KGwDf1w63D.jpg)\nWenn wir nicht im Haus sind und über den Winter kümmern sich Nachbarn um sie und werfen ihr ab und zu was Grünen über den Gartenzaun. Ansonsten ist sie aber sehr selbstständig und lebt seit mindestens 20 Jahren in unserem Garten.\n![IMG_5005.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wMgp86m8aYeY2kcYPkYJy9ayeEZCiAgPyUx19AwwbzT4Ecwd9a4CC4mMXQVEBWMrGdT.jpg)\n\nErdbeerzeit! Diese Erdbeeren aus der Gegend schmeckten phantastisch!\n![IMG_4874.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23uQrW7bPck5UE7JijeJxkN4Z6buHgf83P643ZtYS7u1MUdViMoFa2mgpauAUC1wMhXra.jpg)\n\nHonigverkauf mit echten Bienenwaben als Hingucker. Ich würde dort nichts kaufen, da diese Bienen kein Ausflugloch haben und de facto eingesperrt sind. Angeblich nur für einen Tag, laut Verkäufer. Ist das gängige Praxis oder nur Tierquälerei? @beesmartblog, was meinst Du dazu?\n![IMG_4962.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23u69FdaZVm3zQK6nVRuec9kRfK9f5VD7XTfvdkf81sLnwkN2LpE5aVPhrksC3duRGMEP.jpg)\n\nEin [Gewöhnlicher Judasbaum](https://de.wikipedia.org/wiki/Gew%C3%B6hnlicher_Judasbaum) (*Cercis siliquastrum*) in voller Blüte.\n![IMG_4939.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23xyLuEzVVQBtj7VeiCvFd9LEJLi9Z3t8zw41pYqZ3Rz6yw296Kat383Hiyfk2G3MzQi5.jpg)\nEr ist einer der wenigen Pflanzen in Europa, bei denen die Blütenstände direkt aus dem Stamm wachsen, **Kauliflorie** genannt.\nDetail der Rinde mit Blüten und Besuchern.\n![IMG_4932.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23vsWpTZjgd5G9bSn82pUoRXkjixyxFBcfnBm6GfYM3mmW7UDX8fe1ysCGcPJTMuoSD7F.jpg)\n\nMalereien im Inneren einer der Kirchen im Penteli-Kloster ([Koimisi tis Theotokou](https://www.religiousgreece.gr/de/sehensw%C3%BCrdigkeiten/kloster-koimisi-tis-theotokou-mariae-himmelfahrt-von-penteli-kloster-von-penteli) (Mariä Himmelfahrt) von Penteli).\n![IMG_4842.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23tm9BP8rZ6ZL4U73zjQpErTb1ZQ2fb4eKsE9qLGcLvMZCzWEbVovhRUMAd9DgYSDUhfa.jpg)\n\nAm Fuß des Hymettos, eines anderen Berges in/um Athen, mit Aussicht auf das Häusermeer.\n![IMG_4908.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23zv6hpezusptScyUf6tUT4xWL77Xk4SfhGGFbTSddkVdg22wAVehZrDs5rA1kUUaqqkC.jpg)\n\nApropos Häusermeer, hier ein nächtlicher Ausblick auf Athen vom Fuß der Akropolis.\n![IMG_8567.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/241tJb1ZDwwCCYdGTUtqhX6J9hSj7ZNaS2BWZkUCDXBEvz29H7ag7jwgu2qWKzhEFXCGL.jpg)\n\nEine Gazanienart. Sie  muß eine verwilderte Zierpflanze sein, denn Gazanien kommen nur in Südafrika vor. Diese rubusten, trockenheitsverträglichen Korbblütler sind hier daher typische Neophyten.\n![IMG_4942.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wgUMEJpPvqCFiqs37u8FZgghXJLa5fYXoG6CKXZukSgKt3Ddj16bmp6w5HxaGPN9VpD.jpg)\n\n\nFarbenpracht in einer Blumenhandlung.\n![IMG_4960.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wWw7XcSbk4PQ91pYvMNQKoCaExewqiA74PnbUHr3eYZ4r4q1VXEdtF1T7vzrSNDhafS.jpg)\n\n![IMG_4969.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wgHkHVnjzmZvKF5Xkxzm6vatorKEh5yzpApURWBoNQAZwjRedtp4Tf498NRqDXam2Fv.jpg)\n\nEin altes Auto erfüllt noch einen Zweck als kreativer Blumentopf.\n![IMG_4977.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23vsFw9jTk93rubP9Uha2ZhyGDW6rBJLhoHf22bZaZfcTiwBST2yuSJtFkz2nfUs2ghVK.jpg)\n\nWas wäre Griechenland ohne Oliven?\n![IMG_8656.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23x12iWPXgk3t2A3vFiwPsMSdHRVCM2ZN6yTRmXvpLdi2ZZk53VNvq4q1wphajK2MkZbR.jpg)\n\nIn einer Fischtaverne in Loutraki, einem Kurort nahe Korinth, wo wir noch kurz Halt gemacht hatten.\n![IMG_5415.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/243qKNDxPmceSp7kM2kvcjih66XUM4BL5aKrLgkJ9k3ywNNmeBEqF7EiCC3gcp3V5NreQ.jpg)\nDie kleinen, (in Mehl und Olivenöl) frittierten Fische im Vordergrund werden „Marides“ (μαρίδες) genannt und als Ganzes gegessen, also mit Kopf und Gräten - die \"Pommes der Griechen\"\n\n\nDie letzten Fotos sind nicht aus Attika, sondern aus Nafplio.\n\nKatze mit einer (noch lebenden) Maus als \"Spielzeug\". Als die Maus schliesslich einen Fluchtversuch unternahm, war die Katze sofort hinterher und hat sie gepackt.\n![IMG_5081.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23z7QfQBuokUyXtch3kKapgqYwYGoFoU6QtcnBi25bXx1D4ci1EaqLk3ziRRKbMCLVtbK.jpg)\n\nKatzenversorgungs- und Wohlfühlstation, Hunde müssen draußen bleiben 😆\n![IMG_5171.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23yThVJMAmPBtm7FN6DzMBqY7VDg5s3Ds4ZYgRn6SLLPxdjaXSRpqng6K51opk1f1Bk6v.jpg)\n\nEin Sandschurfüßer? @jaki01, eventuell kennst Du Dich da auch aus?\n![IMG_5344.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23tSU4KPt6R8WqrfkdJZxndAicjwRgsxUdKhnvAwnFwq9i3oXEygAK8CuMmtBHQVUGBaD.jpg)\n\n\nAbendstimmung in Nafplio\n![IMG_5184.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23ywry5MfyXf3ihi7HZ332Qxu3JqNjnFEaeCEvSbjRACfPvsAukdnVqbgqdiSr5N1WyYe.jpg)\n\nAussicht auf Wien beim Rückflug. Man sieht die komplette Innenstadt vom Südwesten! Der seltsame Turm vorne in der Mitte ist der Flakturm (mehr dazu [hier](https://peakd.com/deutsch/@stayoutoftherz/about-the-flak-towers-in-vienna-die-flak-tuerme-in-wien)), in dem heute das Haus des Meeres untergebracht ist.\n![IMG_5457.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/Ep1WQGBncrLr1a3Bt3AraZig9mvoEZZHCZpcPfuJnKaXuPQpmRR8m8seNwRmg2XrcRX.jpg)\n\nall pics by @stayoutoftherz\n\n--- \n<center>\n[**❤️If you like what you read, please vote for me as a witness ❤️**](https://vote.hive.uno/@stayoutoftherz)\n</center> \n--- \n\n\n![image.png](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23uQp4RQT9epmy7AheHWyLJuXn5XputDaiYEST4S6y9v9htbXZmZyjFkMKr9ZwqqNXywM.png)\n\n\n\n\n\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 409
+        },
+        "title": "Photodump Attika 2026",
+        "author": "stayoutoftherz",
+        "payout": 14.845,
+        "created": "2026-05-18T08:51:57",
+        "reblogs": 5,
+        "replies": [],
+        "updated": "2026-05-18T08:51:57",
+        "category": "hive-194913",
+        "children": 5,
+        "permlink": "photodump-attika-2026",
+        "community": "hive-194913",
+        "payout_at": "2026-05-25T08:51:57",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 192674767817558,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 29644274691
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 14015789895
+          },
+          {
+            "voter": "fabio",
+            "rshares": 652348724607
+          },
+          {
+            "voter": "arcange",
+            "rshares": 896201559232
+          },
+          {
+            "voter": "kaykunoichi",
+            "rshares": 1085488544
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.2",
+          "tags": [
+            "deutsch",
+            "photo",
+            "travel",
+            "greece",
+            "nature",
+            "amazingnature",
+            "leofinance",
+            "ocd",
+            "pimp",
+            "worldmappin"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23uQp4RQT9epmy7AheHWyLJuXn5XputDaiYEST4S6y9v9htbXZmZyjFkMKr9ZwqqNXywM.png",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23z7BphNvCRqLhTV5AD26pAofnLcJeXL2kyyL7Mjetw6BH794m6ZG9KiFLQkL7kXU8RVt.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/Eoc8W5oVDYbwN5ygscEJkMrrxqtFR2NagK5c3fKjzmaisc6ZckTZsPRSfPdj2JVH1Eg.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23u6BZceJbU15PLRBUJu5RTiVRopBxoUvVYU814aPVqCD3yFgXwhu9tJvrPSuAkqkdCr1.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23uQnVRWoyt2iNp5vziHRNEtJKS56cZsirfFFSJDy9K4dLWRbTvwST1WnW1KGwDf1w63D.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wMgp86m8aYeY2kcYPkYJy9ayeEZCiAgPyUx19AwwbzT4Ecwd9a4CC4mMXQVEBWMrGdT.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23uQrW7bPck5UE7JijeJxkN4Z6buHgf83P643ZtYS7u1MUdViMoFa2mgpauAUC1wMhXra.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23u69FdaZVm3zQK6nVRuec9kRfK9f5VD7XTfvdkf81sLnwkN2LpE5aVPhrksC3duRGMEP.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23xyLuEzVVQBtj7VeiCvFd9LEJLi9Z3t8zw41pYqZ3Rz6yw296Kat383Hiyfk2G3MzQi5.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23vsWpTZjgd5G9bSn82pUoRXkjixyxFBcfnBm6GfYM3mmW7UDX8fe1ysCGcPJTMuoSD7F.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23tm9BP8rZ6ZL4U73zjQpErTb1ZQ2fb4eKsE9qLGcLvMZCzWEbVovhRUMAd9DgYSDUhfa.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23zv6hpezusptScyUf6tUT4xWL77Xk4SfhGGFbTSddkVdg22wAVehZrDs5rA1kUUaqqkC.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/241tJb1ZDwwCCYdGTUtqhX6J9hSj7ZNaS2BWZkUCDXBEvz29H7ag7jwgu2qWKzhEFXCGL.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wgUMEJpPvqCFiqs37u8FZgghXJLa5fYXoG6CKXZukSgKt3Ddj16bmp6w5HxaGPN9VpD.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wWw7XcSbk4PQ91pYvMNQKoCaExewqiA74PnbUHr3eYZ4r4q1VXEdtF1T7vzrSNDhafS.jpg"
+          ],
+          "users": [
+            "stayoutoftherz",
+            "beesmartblog",
+            "jaki01"
+          ],
+          "format": "markdown",
+          "portfolio": true,
+          "description": "Impressions from Attika, Greece"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 80.09,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "14.845 HBD"
+      },
+      {
+        "url": "/hive-124838/@peak.snaps/snap-container-1779083280",
+        "body": "This post is a container for short content comments published on the Hive blockchain as Snaps on 5/18/2026, 5:48:00 AM.",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 546
+        },
+        "title": "Snaps Container // 5/18/2026, 5:48:00 AM",
+        "author": "peak.snaps",
+        "payout": 16.703,
+        "created": "2026-05-18T05:48:00",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-18T05:48:00",
+        "category": "hive-124838",
+        "children": 570,
+        "permlink": "snap-container-1779083280",
+        "community": "hive-124838",
+        "payout_at": "2026-05-25T05:48:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "admin",
+        "net_rshares": 209375514168472,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 131570644874
+          },
+          {
+            "voter": "robsteady",
+            "rshares": 117019033757
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 666211496877
+          },
+          {
+            "voter": "matt-a",
+            "rshares": 1216097880
+          },
+          {
+            "voter": "jacor",
+            "rshares": 20029481580
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 9900,
+            "account": "commentrewarder"
+          }
+        ],
+        "json_metadata": {
+          "app": "peakd",
+          "tags": [
+            "snaps",
+            "peakd"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/asgarth/23uEuydxLvvfujbQLwu3JSU3n61GoSAwpXQKKzMouNbj2iAi9piwNNsRRrQ4Thn9uwC8X.jpeg"
+          ]
+        },
+        "community_title": "Snaps",
+        "author_reputation": 78.94,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "16.703 HBD"
+      },
+      {
+        "url": "/hive-194913/@daveks/around-rowe-lake",
+        "body": "\n![DSC09968.jpeg](https://files.peakd.com/file/peakd-hive/daveks/242NetMSHDodDdPz2f96a2mFrzzxNk7GTLrk6Jpfh4e571UyzUMNRAXX6m3btuzcCLUX5.jpeg)\n##### <center>Ok, after a light lunch by the lakeshore, thought I’d grab a few pics of the surrounding area. The lake itself (lower Rowe lake) is nestled snugly amidst the subalpine cirques of mount Rowe. Unfortunately there was no lakeshore perimetre trail to check out. So not much for photo ops around here, except the lake itself mainly. According to others, the premier lake to go to is the upper Rowe lake (dang, I should have went…will have to be next time around). Stay tuned for a future hike to upper Rowe lake someday. Thanks for stopping by.</center> #####\n![DSC09969.jpeg](https://files.peakd.com/file/peakd-hive/daveks/244KVUzw1tZqaHhboTd3ijwSqb1pvtusr66jMZ224h4eayK2vxGP7G512MaZcg2yPJbNH.jpeg)\n***\n### <center>![DSC09970.jpeg](https://files.peakd.com/file/peakd-hive/daveks/242hYVuqvyfU5NQess8zzHC1xth2pSNuYCzLbvZ7EBhSmd3dXQVMh95j83Scp8HZHkrYK.jpeg)</center> ###\n***\n![DSC09972.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23uFRykobyLb7B5LV9EioC3NvRwzhsjen9hdJ48fSMMFWvCE6fJ5TK6YrnkFLobe5pkU3.jpeg)\n***\n![DSC09974.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23tveJKk5V3j2wq7jdfLVgh2Gbu1pg34ga8m9NKMBwcHHXt4RWL6Mb77risnJsLXNVTBP.jpeg)\n\n\n###### <center>Camera: Sony A7R III</center> ######\n###### <center>Lens: Sony 24-105mm f4 G OSS</center> ######\n###### <center>Editing: Lightroom</center> ######\n\n\n![DSC09968.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23wWrjTNvsYPgYbvfu9odZp9rTiopX1CS13Ysn19mNVnVKtsNzY7UHPK8JVyJBKUaRSCp.jpeg)\n***\n\n\n![DSC09969.jpeg](https://files.peakd.com/file/peakd-hive/daveks/242hYfYLZf2a33ZJCYx42P54CfGfL4yaGGKbb4wU23nzq7duak1kKti2q3VQtwLfBizje.jpeg)\n\n***\n\n### <center>![DSC09970.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23vsQcPEuWTABQALStxDpENZUohWKTQ3d4wNAGosarwEBVrn1jTXRdEMhwmxFhe3it4fg.jpeg)</center> ###\n***\n![DSC09972.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23u5zZN1mRJva4q9yWvRmC6pVpiBtF6Pju4d3udjD2agMuxUyUXq5BKXc73gDbnEEFHex.jpeg)\n***\n![DSC09974.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23tSMmwwqeQ6o7nPFtz1BLWtxV4tXfdxJuCVuzYZ9fzGZ5FWgxMnak2bpkfJwchYtRD4t.jpeg)\n\n##### <center>Do you like Black and White photography? Do you like Colour photography? If you answered yes to both questions, then you are a perfect candidate for the “Colour / Black & White” photography community. Created specifically for that purpose. I will be personally curating qualifying posts. Join now.</center> #####\n\n### <center>![image.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EowFatU7MVBYcD8QWT1xrvgVkoMGb6G1h4h9KQxwM4JnGdwzLzQTjZAfpJm8SswSEZB.jpeg)</center> ###\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 302
+        },
+        "title": "Around Rowe Lake",
+        "author": "daveks",
+        "payout": 6.879,
+        "created": "2026-05-19T03:18:00",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-19T03:18:00",
+        "category": "hive-194913",
+        "children": 1,
+        "permlink": "around-rowe-lake",
+        "community": "hive-194913",
+        "payout_at": "2026-05-26T03:18:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 89365074095690,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "steemychicken1",
+            "rshares": 5047972862425
+          },
+          {
+            "voter": "copychicken1",
+            "rshares": 823684207
+          },
+          {
+            "voter": "robsteady",
+            "rshares": 4633188106
+          },
+          {
+            "voter": "sharker",
+            "rshares": 20715298147
+          },
+          {
+            "voter": "kibela",
+            "rshares": 3100855086
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "art",
+            "colourblackandwhite",
+            "canadianrockies",
+            "neoxian",
+            "sgslife",
+            "hikingadventures"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/daveks/242NetMSHDodDdPz2f96a2mFrzzxNk7GTLrk6Jpfh4e571UyzUMNRAXX6m3btuzcCLUX5.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/244KVUzw1tZqaHhboTd3ijwSqb1pvtusr66jMZ224h4eayK2vxGP7G512MaZcg2yPJbNH.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/242hYVuqvyfU5NQess8zzHC1xth2pSNuYCzLbvZ7EBhSmd3dXQVMh95j83Scp8HZHkrYK.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23uFRykobyLb7B5LV9EioC3NvRwzhsjen9hdJ48fSMMFWvCE6fJ5TK6YrnkFLobe5pkU3.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23tveJKk5V3j2wq7jdfLVgh2Gbu1pg34ga8m9NKMBwcHHXt4RWL6Mb77risnJsLXNVTBP.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23wWrjTNvsYPgYbvfu9odZp9rTiopX1CS13Ysn19mNVnVKtsNzY7UHPK8JVyJBKUaRSCp.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/242hYfYLZf2a33ZJCYx42P54CfGfL4yaGGKbb4wU23nzq7duak1kKti2q3VQtwLfBizje.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23vsQcPEuWTABQALStxDpENZUohWKTQ3d4wNAGosarwEBVrn1jTXRdEMhwmxFhe3it4fg.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23u5zZN1mRJva4q9yWvRmC6pVpiBtF6Pju4d3udjD2agMuxUyUXq5BKXc73gDbnEEFHex.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23tSMmwwqeQ6o7nPFtz1BLWtxV4tXfdxJuCVuzYZ9fzGZ5FWgxMnak2bpkfJwchYtRD4t.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EowFatU7MVBYcD8QWT1xrvgVkoMGb6G1h4h9KQxwM4JnGdwzLzQTjZAfpJm8SswSEZB.jpeg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.32,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "6.879 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
