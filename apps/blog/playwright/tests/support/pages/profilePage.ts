@@ -256,9 +256,16 @@ export class ProfilePage {
     this.profileWalletLink = page
       .locator('[data-testid="profile-navigation"] ul:last-child')
       .getByText('Wallet');
+    // Match by `href$="/settings"` scoped to the profile-navigation
+    // container — `ul:last-child` stopped matching after the mobile
+    // dropdown `<div>` was appended after the secondary `<ul>` in
+    // `profile-layout.tsx`. The desktop secondary `<ul>` is no longer
+    // the last child of the flex row. Href-based matching also matches
+    // exactly the Settings link regardless of which `<ul>` it lives in.
     this.profileSettingsLink = page
-      .locator('[data-testid="profile-navigation"] ul:last-child')
-      .getByText('Settings');
+      .locator('[data-testid="profile-navigation"]')
+      .locator('a[href$="/settings"]')
+      .first();
 
     this.postBlogItem = page.locator('[data-testid="post-list-item"]');
     this.postsMenu = page.locator('[data-testid="user-post-menu"]');
@@ -564,6 +571,20 @@ export class ProfilePage {
 
   async profileNameIsEqual(authorName: string) {
     expect(await this.profileName.textContent()).toMatch(authorName);
+  }
+
+  /**
+   * Settings link pinned to a specific username's settings route. Use
+   * when you need to assert that the Settings tab is gated on
+   * observer-vs-username identity (own-profile differential), not just
+   * on "any settings link is visible". `profileSettingsLink` is the
+   * generic locator and is enough for tab-selection assertions on the
+   * observer's own profile.
+   */
+  profileSettingsLinkFor(username: string): Locator {
+    return this.page
+      .locator('[data-testid="profile-navigation"]')
+      .locator(`a[href="/@${username}/settings"]`);
   }
 
   async profileInfoIsVisible(

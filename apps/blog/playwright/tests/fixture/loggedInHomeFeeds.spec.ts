@@ -49,8 +49,8 @@ test.describe('§4 Post Display & Views — main feeds (logged-in observer)', ()
     // Logged-in header — login/signup affordances gone, pencil is a link
     // (parity with loggedInHomepage.spec.ts but on /trending so the same
     // fixture exercises both the auth-state assertions and the feed render).
-    await expect(page.getByTestId('login-btn')).toBeHidden();
-    await expect(page.getByTestId('signup-btn')).toBeHidden();
+    await expect(homePage.loginBtn).toBeHidden();
+    await expect(homePage.signupBtn).toBeHidden();
   });
 
   // ── VIEW-02: Hot feed ────────────────────────────────────────────────

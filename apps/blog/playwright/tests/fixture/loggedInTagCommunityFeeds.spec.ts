@@ -73,7 +73,7 @@ test.describe('§4 Post Display & Views — tag/community feed (logged-in observ
     // bridge.list_community_roles response landed and rendered.
     await expect(pom.rolesHeading).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     await expect(pom.rolesTable).toBeVisible();
-    expect(await pom.rolesTableRows.count()).toBeGreaterThan(0);
+    await expect(pom.rolesTableRows).not.toHaveCount(0);
     await expect(page).toHaveURL(new RegExp(`/roles/${SAMPLE_COMMUNITY_TAG}$`));
   });
 });
