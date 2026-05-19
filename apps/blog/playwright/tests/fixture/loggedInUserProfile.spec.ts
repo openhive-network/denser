@@ -113,33 +113,24 @@ test.describe('§4 Post Display & Views — user profile (logged-in observer)', 
   // ── VIEW-13b: own-profile affordance differential ─────────────────────
 
   test('VIEW-13b — Settings nav link is visible only on own profile', async ({ page }) => {
-    // Match by href instead of the POM's `profileSettingsLink` — that
-    // locator scopes via `ul:last-child` and is broken since the mobile
-    // dropdown `<div>` was added after the secondary `<ul>` in
-    // profile-layout.tsx, leaving no ul as a last-child of the flex row.
-    // Href-based matching is also self-documenting: it pins which
-    // username's settings route we expect.
-    const ownSettingsHref = `/@${OBSERVER}/settings`;
-    const settingsLink = (username: string) =>
-      page
-        .locator('[data-testid="profile-navigation"]')
-        .locator(`a[href="/@${username}/settings"]`);
-
     // On the observer's own profile, the Settings link shows in the
     // desktop nav (profile-layout.tsx:471 gates it on
     // `user.isLoggedIn && username === user.username`).
     await gotoLoggedIn(page, `/@${OBSERVER}`);
     await expect(profilePage.profileNav).toBeVisible();
-    await expect(settingsLink(OBSERVER).first()).toBeVisible({
+    await expect(profilePage.profileSettingsLinkFor(OBSERVER)).toBeVisible({
       timeout: TIMEOUTS.HYDRATION
     });
-    await expect(settingsLink(OBSERVER).first()).toHaveAttribute('href', ownSettingsHref);
+    await expect(profilePage.profileSettingsLinkFor(OBSERVER)).toHaveAttribute(
+      'href',
+      `/@${OBSERVER}/settings`
+    );
 
     // On a different user's profile, the same link must not render — that
     // proves the gate fires on observer-vs-username identity, not just on
     // login state.
     await gotoLoggedIn(page, `/@${OTHER_USER}`);
     await expect(profilePage.profileNav).toBeVisible();
-    await expect(settingsLink(OTHER_USER)).toHaveCount(0);
+    await expect(profilePage.profileSettingsLinkFor(OTHER_USER)).toHaveCount(0);
   });
 });
