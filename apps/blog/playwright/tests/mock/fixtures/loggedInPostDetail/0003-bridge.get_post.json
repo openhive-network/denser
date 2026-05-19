@@ -1,0 +1,111 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post",
+    "params": {
+      "author": "gtg",
+      "permlink": "hive-hardfork-25-jump-starter-kit",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "928d62a79666cb5c",
+  "method": "bridge.get_post",
+  "params": {
+    "author": "gtg",
+    "permlink": "hive-hardfork-25-jump-starter-kit",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "url": "/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit",
+      "body": "Intended for the Hive API node operators, witnesses, and developers.\n\nAt the time of Eclipse release I made a similar post that saved many (hours) of lives, so I’m creating an updated one for the upcoming Hard Fork 25.\n\n<center>https://www.youtube.com/watch?v=mrwgrOhl7Yw</center><sup>Yes, new Hive Hard Fork, new fancy logo reveal.</sup>\n\n# Code\n## GitLab\nhttps://gitlab.syncad.com/hive/hive\nOur core development efforts takes place in a community hosted GitLab repository (thanks @blocktrades). There's Hive core itself, but also many other Hive related software repositories.\n\n## GitHub\nhttps://github.com/openhive-network/hive\nWe use it as a push mirror for GitLab repository, mostly for visibility and decentralization - if you have an account on GitHub please fork at least [hive](https://github.com/openhive-network/hive) and [hivemind](https://github.com/openhive-network/hivemind) and star them if you haven’t done so yet. We haven't paid much attention to it but apparently it's important for some outside metrics.\n\n<center>![star_fork.png](https://images.hive.blog/DQmQbRRrtoTFPZA9QmDRjvswPtaGuXrWXje1WHp9CeeGbV2/star_fork.png)\n<sup>Please click both buttons</sup></center>\n\n# Services\n## API node\nhttps://api.openhive.network\nSoon to be switched to `v1.25.0` but because it’s heavily used in Hive related R&D it might not be your best choice if you are looking for a fast API node without any rate limiting. During the maintenance mode, it will fall back to https://api.hive.blog \n\n## Seed node\n`hived` `v1.25.0` listens on `gtg.openhive.network:2001`\nto use it in your `config.ini` file just add the line:\n```\np2p-seed-node = gtg.openhive.network:2001\n```\nIf you don't have any `p2p-seed-node = ` entries in your config file, built-in defaults will be used (which contains my node too).\n\n# Stuff for download\nTL;DR https://gtg.openhive.network/get\n\n## Binaries\n`./get/bin`contains `hived` and `cli_wallet` binaries built on `Ubuntu 18.04 LTS` which should also run fine on `Ubuntu 20.04 LTS`\n\n## Blocks\n`./get/blockchain`\nAs usual, the `block_log` file, roughly 350GB and counting.\nFor testing needs there's also `block_log.5M` that is limited to first 5 million blocks.\n\n## Snapshots\n\n### API\n`./get/snapshot/api/` contains a relatively recent snapshot of the API node with all the fancy plugins.\nThere’s a snapshot for the upcoming version `v1.25.0` but also for the old one `v1.24.8` if you need to switch back.\nUncompressed snapshot takes roughly 480GB\nThere’s also the `example-api-config.ini` file out there that contains settings compatible with the snapshot.\n\nTo decompress, you can use simply run it through something like: `lbzip2 -dc | tar xv`\n(Using parallel bzip2 on multi-threaded systems might save you a lot of time)\n\nTo use snapshot you need:\n- A `block_log` file, not smaller than the one used when the snapshot was made.\n- A `config.ini` file, compatible with the snapshot (see above), adjusted to your needs, without changes that could affect it in a way that changes the state.\n- A `hived` binary compatible with the snapshot\n\nAll of that you can find above.\n\n Run `hived` with `--load-snapshot name`, assuming the snapshot is stored in `snapshot/name`\n\n`hived` API node runtime currently takes 823GB (incl. shm 19GB, excl. snapshot)\n\n### Exchanges\nThere’s also a snapshot meant for exchanges in `./get/snapshot/exchange/`  that allows them to quickly get up and running, it requires a compatible configuration and that exchange account is one of those who are tracked by my node. If you run an exchange and want to be on that list to use a snapshot, just please let me know.\n\n## Hivemind database dump\n`./get/hivemind/` contains a relatively recent dump of the Hivemind database.\nI use self-describing file names such as:\n`hivemind-20210616-47a41c96.dump`\nDate when dump was taken, revision of `hivemind` that was running it.\nYou need at least that version, remember about `intarray` extension\nConsider running `pg_restore` with at least `-j 6` to run long running tasks in parallel\nAfter restoring the database, make sure to run the `db_upgrade` script.\n\nEven though during full sync database size peaks easily over 750GB, when restored from dump it takes roughly 500GB. Dump file itself is just 53GB.\n\n### All resources are offered AS IS.",
+      "depth": 0,
+      "stats": {
+        "gray": false,
+        "hide": false,
+        "flag_weight": 0,
+        "total_votes": 589
+      },
+      "title": "Hive HardFork 25 Jump Starter Kit",
+      "author": "gtg",
+      "payout": 148.904,
+      "created": "2021-06-18T19:31:45",
+      "reblogs": 24,
+      "replies": [],
+      "updated": "2021-06-19T18:35:03",
+      "category": "hive-160391",
+      "children": 42,
+      "permlink": "hive-hardfork-25-jump-starter-kit",
+      "community": "hive-160391",
+      "payout_at": "2021-06-25T19:31:45",
+      "blacklists": [],
+      "is_paidout": true,
+      "author_role": "mod",
+      "net_rshares": 348638098345947,
+      "percent_hbd": 10000,
+      "active_votes": [
+        {
+          "voter": "smooth",
+          "rshares": 116811864870173
+        },
+        {
+          "voter": "blocktrades",
+          "rshares": 89884759872097
+        },
+        {
+          "voter": "tombstone",
+          "rshares": 32524787102
+        },
+        {
+          "voter": "boatymcboatface",
+          "rshares": 980700706346
+        },
+        {
+          "voter": "onealfa",
+          "rshares": 1887000376559
+        }
+      ],
+      "author_title": "Wizard",
+      "beneficiaries": [
+        {
+          "weight": 10000,
+          "account": "gandalf"
+        }
+      ],
+      "json_metadata": {
+        "app": "hiveblog/0.1",
+        "tags": [
+          "witness-category",
+          "witness-update",
+          "hf25",
+          "hive",
+          "dev"
+        ],
+        "image": [
+          "https://img.youtube.com/vi/mrwgrOhl7Yw/0.jpg",
+          "https://images.hive.blog/DQmQbRRrtoTFPZA9QmDRjvswPtaGuXrWXje1WHp9CeeGbV2/star_fork.png"
+        ],
+        "links": [
+          "https://www.youtube.com/watch?v=mrwgrOhl7Yw"
+        ],
+        "users": [
+          "blocktrades"
+        ],
+        "format": "markdown"
+      },
+      "community_title": "Blockchain Wizardry",
+      "author_reputation": 76.01,
+      "author_payout_value": "81.341 HBD",
+      "max_accepted_payout": "1000000.000 HBD",
+      "curator_payout_value": "67.563 HBD",
+      "pending_payout_value": "0.000 HBD"
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

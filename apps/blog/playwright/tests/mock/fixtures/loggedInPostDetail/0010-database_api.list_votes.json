@@ -1,0 +1,89 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "gtg",
+        "hive-hardfork-25-jump-starter-kit",
+        ""
+      ],
+      "limit": 1000,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "8a24c5b00ea2c6ba",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "gtg",
+      "hive-hardfork-25-jump-starter-kit",
+      ""
+    ],
+    "limit": 1000,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "voter": "smooth",
+          "author": "gtg",
+          "weight": 3470293,
+          "rshares": 116811864870173,
+          "permlink": "hive-hardfork-25-jump-starter-kit",
+          "last_update": "2021-06-20T21:29:36",
+          "num_changes": 0,
+          "vote_percent": 10000
+        },
+        {
+          "voter": "blocktrades",
+          "author": "gtg",
+          "weight": 3975546,
+          "rshares": 89884759872097,
+          "permlink": "hive-hardfork-25-jump-starter-kit",
+          "last_update": "2021-06-18T19:40:57",
+          "num_changes": 0,
+          "vote_percent": 10000
+        },
+        {
+          "voter": "tombstone",
+          "author": "gtg",
+          "weight": 2328,
+          "rshares": 32524787102,
+          "permlink": "hive-hardfork-25-jump-starter-kit",
+          "last_update": "2021-06-18T19:35:30",
+          "num_changes": 0,
+          "vote_percent": 150
+        },
+        {
+          "voter": "boatymcboatface",
+          "author": "gtg",
+          "weight": 67963,
+          "rshares": 980700706346,
+          "permlink": "hive-hardfork-25-jump-starter-kit",
+          "last_update": "2021-06-18T19:36:09",
+          "num_changes": 0,
+          "vote_percent": 6000
+        },
+        {
+          "voter": "onealfa",
+          "author": "gtg",
+          "weight": 107279,
+          "rshares": 1887000376559,
+          "permlink": "hive-hardfork-25-jump-starter-kit",
+          "last_update": "2021-06-18T19:34:42",
+          "num_changes": 0,
+          "vote_percent": 2178
+        }
+      ]
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

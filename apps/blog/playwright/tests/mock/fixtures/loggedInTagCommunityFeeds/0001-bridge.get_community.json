@@ -1,0 +1,174 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_community",
+    "params": {
+      "name": "hive-139531",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "c09a1cd308fe9f33",
+  "method": "bridge.get_community",
+  "params": {
+    "name": "hive-139531",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 1357761,
+      "lang": "en",
+      "name": "hive-139531",
+      "team": [
+        [
+          "hive-139531",
+          "owner",
+          "HiveDevs"
+        ],
+        [
+          "netuoso",
+          "admin",
+          ""
+        ],
+        [
+          "crimsonclad",
+          "admin",
+          ""
+        ],
+        [
+          "gtg",
+          "admin",
+          "Wizard"
+        ],
+        [
+          "acidyo",
+          "admin",
+          ""
+        ],
+        [
+          "abit",
+          "admin",
+          ""
+        ],
+        [
+          "quochuy",
+          "mod",
+          "Witness"
+        ],
+        [
+          "asgarth",
+          "mod",
+          ""
+        ],
+        [
+          "bobinson",
+          "mod",
+          ""
+        ],
+        [
+          "emrebeyler",
+          "mod",
+          ""
+        ],
+        [
+          "eonwarped",
+          "mod",
+          ""
+        ],
+        [
+          "yabapmatt",
+          "mod",
+          ""
+        ],
+        [
+          "therealwolf",
+          "mod",
+          ""
+        ],
+        [
+          "stoodkev",
+          "mod",
+          ""
+        ],
+        [
+          "themarkymark",
+          "mod",
+          ""
+        ],
+        [
+          "drakos",
+          "mod",
+          "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]"
+        ],
+        [
+          "mahdiyari",
+          "mod",
+          "Testing...does it work?"
+        ],
+        [
+          "someguy123",
+          "mod",
+          ""
+        ],
+        [
+          "arcange",
+          "mod",
+          ""
+        ],
+        [
+          "inertia",
+          "mod",
+          "#1138"
+        ],
+        [
+          "jesta",
+          "mod",
+          ""
+        ],
+        [
+          "good-karma",
+          "mod",
+          ""
+        ],
+        [
+          "roadscape",
+          "mod",
+          ""
+        ],
+        [
+          "pharesim",
+          "mod",
+          ""
+        ],
+        [
+          "blocktrades",
+          "mod",
+          ""
+        ]
+      ],
+      "about": "HiveDevs - A community of developers working on Hive related projects. Visit our Discord at https://discord.gg/cvnByhu",
+      "title": "HiveDevs",
+      "context": {
+        "role": "guest",
+        "title": "",
+        "subscribed": false
+      },
+      "is_nsfw": false,
+      "type_id": 1,
+      "settings": {},
+      "flag_text": "",
+      "created_at": "2020-01-23 16:27:36",
+      "description": "",
+      "num_authors": 117,
+      "num_pending": 432,
+      "subscribers": 3550,
+      "sum_pending": 318
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
