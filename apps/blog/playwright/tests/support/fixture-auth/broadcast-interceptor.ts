@@ -615,6 +615,85 @@ export function expectDeleteCommentOperation(
 }
 
 /**
+ * TX-10: profile update payload — an `account_update2_operation` whose
+ * `posting_json_metadata` is a JSON string of `{ profile: { ... } }`.
+ *
+ * Wire shape (from `transactionService.updateProfile`):
+ *
+ *   account_update2_operation:
+ *     account: <username>
+ *     json_metadata: ""
+ *     posting_json_metadata: JSON.stringify({
+ *       profile: {
+ *         profile_image, cover_image, name, about, location, website,
+ *         witness_owner, witness_description, blacklist_description,
+ *         muted_list_description, version: 2
+ *       }
+ *     })
+ *     extensions: []
+ *
+ * The settings form preloads ALL fields from `getAccountFull(username)`
+ * and re-sends them on every save — so a "change only display name"
+ * broadcast still carries every other profile field at its previous
+ * value. Tests therefore assert a **subset match** on `profile`: only
+ * the keys present in `expected.profile` are checked; other keys are
+ * ignored. Pass `version: 2` explicitly when the upgrade flag matters.
+ */
+export interface AccountUpdate2OperationExpectations {
+  account: string;
+  profile: Partial<{
+    name: string;
+    about: string;
+    location: string;
+    website: string;
+    profile_image: string;
+    cover_image: string;
+    blacklist_description: string;
+    muted_list_description: string;
+    witness_owner: string;
+    witness_description: string;
+    version: number;
+  }>;
+}
+
+export function expectAccountUpdate2Operation(
+  call: InterceptedBroadcast,
+  expected: AccountUpdate2OperationExpectations
+): void {
+  const trx = (call.params as { trx?: unknown } | undefined)?.trx as
+    | { operations?: unknown[] }
+    | undefined;
+  expect(trx, 'broadcast params should include trx').toBeDefined();
+
+  const op = trx?.operations?.[0] as
+    | { type?: string; value?: Record<string, unknown> }
+    | undefined;
+  expect(op?.type, 'operation.type should be account_update2_operation').toBe(
+    'account_update2_operation'
+  );
+
+  const value = op?.value as
+    | { account?: string; posting_json_metadata?: string; json_metadata?: string }
+    | undefined;
+  expect(value?.account, 'account_update2.account').toBe(expected.account);
+
+  const rawMeta = value?.posting_json_metadata ?? '';
+  let parsed: { profile?: Record<string, unknown> };
+  try {
+    parsed = JSON.parse(rawMeta) as { profile?: Record<string, unknown> };
+  } catch {
+    throw new Error(
+      `posting_json_metadata should be JSON-parseable; got: ${rawMeta}`
+    );
+  }
+
+  expect(parsed.profile, 'posting_json_metadata.profile').toBeDefined();
+  for (const [key, expectedValue] of Object.entries(expected.profile)) {
+    expect(parsed.profile?.[key], `profile.${key}`).toBe(expectedValue);
+  }
+}
+
+/**
  * Installs a `page.route` on the fixture-proxy port that intercepts
  * mutation RPCs and returns a canned success. Non-mutation POSTs fall
  * through untouched (and reach the fixture-proxy as usual).
@@ -666,6 +745,29 @@ export interface InstallBroadcastInterceptorOptions {
     author: string;
     permlink: string;
   };
+  /**
+   * Hot-swap subsequent `database_api.find_accounts` responses for the
+   * given `account` **after** an `account_update2_operation` broadcast
+   * lands. The patch overwrites `accounts[i].posting_json_metadata` (the
+   * JSON string `getAccountFull` parses to derive `profile.*`) with the
+   * exact bytes the broadcast carried.
+   *
+   * Why: `useUpdateProfileMutation.onSuccess` schedules
+   * `queryClient.invalidateQueries(['profileData', user.username])` 4
+   * seconds after a successful broadcast. The invalidation triggers a
+   * refetch of `getAccountFull`, which re-issues `database_api.find_accounts`.
+   * Without this swap, the refetch returns the stale fixture and the
+   * profile header reverts to its pre-submit values — masking whether
+   * the chain actually accepted our update.
+   *
+   * `onSettled` also writes the cache optimistically (without going
+   * through the API) before the refetch — so the swap is what keeps the
+   * profile header consistent past the 4-second invalidation timer, not
+   * what makes it update in the first place.
+   */
+  profileUpdateSwap?: {
+    account: string;
+  };
 }
 
 interface PostEditPatch {
@@ -697,6 +799,23 @@ function applyPostEditPatch(
       entry.json_metadata = patch.json_metadata;
     }
   }
+}
+
+function patchFindAccountsResponse(
+  responseBody: unknown,
+  account: string,
+  patch: { posting_json_metadata: string }
+): unknown {
+  if (typeof responseBody !== 'object' || responseBody === null) return responseBody;
+  const root = responseBody as { result?: { accounts?: Array<Record<string, unknown>> } };
+  const accounts = root.result?.accounts;
+  if (!Array.isArray(accounts)) return responseBody;
+  for (const acc of accounts) {
+    if (acc.name === account) {
+      acc.posting_json_metadata = patch.posting_json_metadata;
+    }
+  }
+  return responseBody;
 }
 
 function patchPostResponse(
@@ -739,6 +858,8 @@ export async function installBroadcastInterceptor(
   const confirmInBlock = options.confirmInBlock ?? false;
   const postEditSwap = options.postEditSwap;
   let postEditPatch: PostEditPatch | null = null;
+  const profileUpdateSwap = options.profileUpdateSwap;
+  let profileUpdatePatch: { posting_json_metadata: string } | null = null;
 
   // Lazy-init the wax chain only when block confirmation is requested —
   // it loads WASM and is ~hundreds of ms; not worth the overhead for
@@ -820,6 +941,36 @@ export async function installBroadcastInterceptor(
             upstreamBody,
             postEditSwap,
             postEditPatch
+          );
+          return route.fulfill({
+            status: upstream.status(),
+            contentType: 'application/json',
+            body: JSON.stringify(patched)
+          });
+        }
+      }
+
+      // Profile-update hot-swap. After we've captured an
+      // account_update2_operation for `profileUpdateSwap.account`, patch
+      // subsequent `database_api.find_accounts` responses targeting the
+      // same account so `getAccountFull → posting_json_metadata` reflects
+      // the broadcast values. Keeps the profile-layout header consistent
+      // past the 4-second invalidation+refetch in
+      // `useUpdateProfileMutation.onSuccess`.
+      if (
+        profileUpdateSwap &&
+        profileUpdatePatch &&
+        method === 'database_api.find_accounts'
+      ) {
+        const params = body?.params as { accounts?: unknown } | undefined;
+        const requested = Array.isArray(params?.accounts) ? params?.accounts : [];
+        if (requested.includes(profileUpdateSwap.account)) {
+          const upstream = await route.fetch();
+          const upstreamBody = await upstream.json();
+          const patched = patchFindAccountsResponse(
+            upstreamBody,
+            profileUpdateSwap.account,
+            profileUpdatePatch
           );
           return route.fulfill({
             status: upstream.status(),
@@ -946,6 +1097,28 @@ export async function installBroadcastInterceptor(
             };
           } else if (matches && op?.type === 'delete_comment_operation') {
             postEditPatch = { deleted: true };
+          }
+        }
+
+        // Stash the profile-update patch for later database_api.find_accounts
+        // hot-swap. The wire value is already the exact JSON string the
+        // chain would persist, so we can pass it through verbatim.
+        if (profileUpdateSwap) {
+          const trx = (body?.params as { trx?: { operations?: unknown[] } } | undefined)?.trx;
+          const op = trx?.operations?.[0] as
+            | { type?: string; value?: Record<string, unknown> }
+            | undefined;
+          const value = op?.value as
+            | { account?: string; posting_json_metadata?: string }
+            | undefined;
+          if (
+            op?.type === 'account_update2_operation' &&
+            value?.account === profileUpdateSwap.account &&
+            typeof value?.posting_json_metadata === 'string'
+          ) {
+            profileUpdatePatch = {
+              posting_json_metadata: value.posting_json_metadata
+            };
           }
         }
       }
