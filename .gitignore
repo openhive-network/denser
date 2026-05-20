@@ -30,3 +30,4 @@ Close
 docker/.env
 NOTES/
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
