@@ -1,0 +1,27 @@
+{
+  "testName": "loggedInUserSettings",
+  "recordedAt": "2026-05-20T08:39:47.332Z",
+  "totalRequests": 236,
+  "savedFixtures": 21,
+  "duplicatesSkipped": 215,
+  "methods": {
+    "bridge.get_follow_list": 15,
+    "database_api.find_accounts": 45,
+    "bridge.get_profile": 39,
+    "database_api.get_dynamic_global_properties": 32,
+    "GET /hivesense-api": 26,
+    "bridge.unread_notifications": 17,
+    "rc_api.find_rc_accounts": 17,
+    "condenser_api.get_following": 22,
+    "bridge.list_all_subscriptions": 4,
+    "bridge.get_community": 2,
+    "bridge.get_post": 2,
+    "bridge.get_discussion": 2,
+    "bridge.list_community_roles": 2,
+    "condenser_api.get_reblogged_by": 2,
+    "database_api.list_votes": 2,
+    "GET /hivesense-api/posts/gtg/hive-hardfork-25-jump-starter-kit/similar": 2,
+    "bridge.list_communities": 2,
+    "bridge.get_ranked_posts": 3
+  }
+}

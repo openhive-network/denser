@@ -1,0 +1,59 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "condenser_api.get_following",
+    "params": [
+      "guest4test",
+      "",
+      "blog",
+      1000
+    ],
+    "id": 1
+  },
+  "requestHash": "ff22f37c1a6ae080",
+  "method": "condenser_api.get_following",
+  "params": [
+    "guest4test",
+    "",
+    "blog",
+    1000
+  ],
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "guest4test",
+        "following": "anandkj611"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "guest4test",
+        "following": "astralwars"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "guest4test",
+        "following": "fwaszkiewicz"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "guest4test",
+        "following": "gtg"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

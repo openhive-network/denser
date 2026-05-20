@@ -1,0 +1,64 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_community",
+    "params": {
+      "name": "hive-160391",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "210cfca2635ee965",
+  "method": "bridge.get_community",
+  "params": {
+    "name": "hive-160391",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 1331990,
+      "lang": "en",
+      "name": "hive-160391",
+      "team": [
+        [
+          "hive-160391",
+          "owner",
+          ""
+        ],
+        [
+          "gandalf",
+          "admin",
+          ""
+        ],
+        [
+          "gtg",
+          "mod",
+          "Wizard"
+        ]
+      ],
+      "about": "Magic the Forkening, BlockCraft, Hashes of Creation, etc.",
+      "title": "Blockchain Wizardry",
+      "context": {
+        "role": "guest",
+        "title": "",
+        "subscribed": false
+      },
+      "is_nsfw": false,
+      "type_id": 1,
+      "settings": {},
+      "flag_text": "Don't post here unless you know what you are doing.",
+      "created_at": "2019-10-26 15:19:33",
+      "description": "Blockchain technology and beyond. Placeholder for Hive Pressure series.",
+      "num_authors": 0,
+      "num_pending": 0,
+      "subscribers": 302,
+      "sum_pending": 0
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
