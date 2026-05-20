@@ -4,10 +4,12 @@ import {
   expectAccountUpdate2Operation
 } from '../support/fixture-auth/broadcast-interceptor';
 import { AdvancedSettingsModal } from '../support/pages/advancedSettingsModal';
+import { CommentEditorPage } from '../support/pages/commentEditorPage';
 import { PostEditorPage } from '../support/pages/postEditorPage';
 import { PostPage } from '../support/pages/postPage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { SettingsPage } from '../support/pages/settingsPage';
+import { TagCommunityFeedsPage } from '../support/pages/tagCommunityFeedsPage';
 import { gotoLoggedIn } from '../support/postDisplayContext';
 import { TIMEOUTS } from '../support/constants';
 import {
@@ -94,7 +96,7 @@ test.describe('§8 User Profile & Settings', () => {
       profile: { name: TEST_DISPLAY_NAME, version: 2 }
     });
 
-    await expect(page.getByText('Changes saved', { exact: true })).toBeVisible();
+    await expect(settings.changesSavedToast).toBeVisible();
     await expect(profilePage.profileName).toHaveText(TEST_DISPLAY_NAME);
   });
 
@@ -115,7 +117,7 @@ test.describe('§8 User Profile & Settings', () => {
       profile: { about: TEST_ABOUT, version: 2 }
     });
 
-    await expect(page.getByText('Changes saved', { exact: true })).toBeVisible();
+    await expect(settings.changesSavedToast).toBeVisible();
     // profile-about renders the first 157 chars; TEST_ABOUT is well under that.
     await expect(profilePage.profileAbout).toHaveText(TEST_ABOUT);
   });
@@ -137,7 +139,7 @@ test.describe('§8 User Profile & Settings', () => {
       profile: { location: TEST_LOCATION, version: 2 }
     });
 
-    await expect(page.getByText('Changes saved', { exact: true })).toBeVisible();
+    await expect(settings.changesSavedToast).toBeVisible();
     await expect(profilePage.profileLocation).toHaveText(TEST_LOCATION);
   });
 
@@ -158,10 +160,8 @@ test.describe('§8 User Profile & Settings', () => {
       profile: { website: TEST_WEBSITE, version: 2 }
     });
 
-    await expect(page.getByText('Changes saved', { exact: true })).toBeVisible();
-    // Profile layout renders the website inside a Link with the URL as
-    // visible text (no dedicated testid); match by accessible-name.
-    await expect(page.getByRole('link', { name: TEST_WEBSITE })).toBeVisible();
+    await expect(settings.changesSavedToast).toBeVisible();
+    await expect(profilePage.profileWebsiteLink(TEST_WEBSITE)).toBeVisible();
   });
 
   // ── §8.2 Preferences (localStorage + downstream consumer) ─────────────
@@ -192,7 +192,7 @@ test.describe('§8 User Profile & Settings', () => {
     await editor.getAdvancedSettingsButton.click();
     const advanced = new AdvancedSettingsModal(page);
     await expect(advanced.advancedSettingsTitleElement).toBeVisible();
-    await expect(page.getByText(/Default:.*Decline Payout/)).toBeVisible();
+    await expect(advanced.defaultPayoutText('Decline Payout')).toBeVisible();
     // Radix Checkbox primitives are `className="hidden"` (display:none) so
     // `data-state="checked"` isn't a usable signal. The active radio shows
     // visually via a `border-destructive bg-border` class on the sibling
@@ -218,7 +218,7 @@ test.describe('§8 User Profile & Settings', () => {
     await editor.getAdvancedSettingsButton.click();
     const advanced = new AdvancedSettingsModal(page);
     await expect(advanced.advancedSettingsTitleElement).toBeVisible();
-    await expect(page.getByText(/Default:.*Power Up 100%/)).toBeVisible();
+    await expect(advanced.defaultPayoutText('Power Up 100%')).toBeVisible();
     await expect(advanced.maxPayoutOptionLabel('no_max')).toHaveClass(/border-destructive/);
     await expect(advanced.payoutTypeOptionLabel('100%')).toHaveClass(/border-destructive/);
 
@@ -241,9 +241,9 @@ test.describe('§8 User Profile & Settings', () => {
     const postPage = new PostPage(page);
     await expect(postPage.commentReplay).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     await postPage.commentReplay.click();
-    const replyEditor = page.getByTestId('reply-editor');
-    await expect(replyEditor).toBeVisible();
-    await expect(replyEditor.getByText(/Rewards:\s*Decline Payout/)).toBeVisible();
+    const commentEditor = new CommentEditorPage(page);
+    await expect(commentEditor.getReplayEditorElement).toBeVisible();
+    await expect(commentEditor.rewardsNotice('Decline Payout')).toBeVisible();
 
     expect(broadcast.calls).toHaveLength(0);
   });
@@ -260,12 +260,12 @@ test.describe('§8 User Profile & Settings', () => {
     const postPage = new PostPage(page);
     await expect(postPage.commentReplay).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     await postPage.commentReplay.click();
-    const replyEditor = page.getByTestId('reply-editor');
-    await expect(replyEditor).toBeVisible();
+    const commentEditor = new CommentEditorPage(page);
+    await expect(commentEditor.getReplayEditorElement).toBeVisible();
     // Note: lowercase 'up' in the comment-footer translation
     // (post_content.footer.comment.power_up: 'Power up 100%') vs the
     // capitalized one in settings_page.power_up.
-    await expect(replyEditor.getByText(/Rewards:\s*Power up 100%/)).toBeVisible();
+    await expect(commentEditor.rewardsNotice('Power up 100%')).toBeVisible();
 
     expect(broadcast.calls).toHaveLength(0);
   });
@@ -285,10 +285,11 @@ test.describe('§8 User Profile & Settings', () => {
     // it has 0 height (empty content), so `toBeVisible` fails. Wait on
     // count instead, then assert no post-author renders inside.
     await gotoLoggedIn(page, NSFW_FEED_URL);
-    await expect(page.getByTestId('post-list-item')).not.toHaveCount(0, {
+    const nsfwFeed = new TagCommunityFeedsPage(page);
+    await expect(nsfwFeed.postListItems).not.toHaveCount(0, {
       timeout: TIMEOUTS.HYDRATION
     });
-    await expect(page.getByTestId('post-author')).toHaveCount(0);
+    await expect(nsfwFeed.postAuthors).toHaveCount(0);
 
     expect(broadcast.calls).toHaveLength(0);
   });
@@ -307,10 +308,11 @@ test.describe('§8 User Profile & Settings', () => {
     // avatar are present (post-list-item.tsx:152, 163), so the wrapping
     // <li> has actual content and is visible.
     await gotoLoggedIn(page, NSFW_FEED_URL);
-    await expect(page.getByTestId('post-list-item').first()).toBeVisible({
+    const nsfwFeed = new TagCommunityFeedsPage(page);
+    await expect(nsfwFeed.postListItems.first()).toBeVisible({
       timeout: TIMEOUTS.HYDRATION
     });
-    await expect(page.getByTestId('post-author').first()).toBeVisible();
+    await expect(nsfwFeed.postAuthors.first()).toBeVisible();
 
     expect(broadcast.calls).toHaveLength(0);
   });

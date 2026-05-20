@@ -587,6 +587,15 @@ export class ProfilePage {
       .locator(`a[href="/@${username}/settings"]`);
   }
 
+  /**
+   * Website link in the metadata row of the profile header. The website
+   * value is rendered as the link's visible text (no dedicated testid,
+   * see `profile-layout.tsx:357-363`), so we match by accessible name.
+   */
+  profileWebsiteLink(website: string): Locator {
+    return this.page.getByRole('link', { name: website });
+  }
+
   async profileInfoIsVisible(
     nickName: string,
     profileName: string,

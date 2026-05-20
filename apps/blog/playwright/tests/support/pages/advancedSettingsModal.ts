@@ -148,4 +148,13 @@ export class AdvancedSettingsModal {
   payoutTypeOptionLabel(value: '50%' | '100%'): Locator {
     return this.page.locator(`label[for="${value}"]`);
   }
+
+  /**
+   * "Default: <label>" text under the Author Rewards section. The label is
+   * sourced from `authorRewardsText(preferences.blog_rewards)`, so it
+   * tracks the user-preferences-{username} blog_rewards value.
+   */
+  defaultPayoutText(label: 'Decline Payout' | 'Power Up 100%' | '50% HBD / 50% HP'): Locator {
+    return this.page.getByText(new RegExp(`Default:.*${label}`));
+  }
 }
