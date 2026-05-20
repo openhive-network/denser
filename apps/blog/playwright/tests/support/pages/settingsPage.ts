@@ -39,6 +39,10 @@ export class SettingsPage {
   readonly commentRewardsSelectTrigger: Locator;
   readonly referralSelectTrigger: Locator;
 
+  // Post-save toast (SET-01..04) — Radix renders the description into both
+  // a visible <div> and an `aria-live` <span>, hence `exact: true`.
+  readonly changesSavedToast: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.publicProfileSettingsContainer = page.getByTestId('public-profile-settings');
@@ -66,6 +70,8 @@ export class SettingsPage {
     this.referralSelectTrigger = page
       .getByTestId('referral-system')
       .getByRole('combobox');
+
+    this.changesSavedToast = page.getByText('Changes saved', { exact: true });
   }
 
   async waitForReady(): Promise<void> {

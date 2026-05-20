@@ -69,4 +69,14 @@ export class CommentEditorPage {
     async findCreatedCommentContentByText(commentContent: string) {
         return this.getCreatedCommentContent.getByText(commentContent);
     }
+
+    /**
+     * "Rewards: <label>" notice rendered in the reply-box footer whenever
+     * `preferences.comment_rewards !== '50%'` (reply-textbox.tsx:408-417).
+     * Note the lowercase 'up' in the comment-footer translation
+     * (`post_content.footer.comment.power_up: 'Power up 100%'`).
+     */
+    rewardsNotice(label: 'Decline Payout' | 'Power up 100%'): Locator {
+        return this.getReplayEditorElement.getByText(new RegExp(`Rewards:\\s*${label}`));
+    }
 }

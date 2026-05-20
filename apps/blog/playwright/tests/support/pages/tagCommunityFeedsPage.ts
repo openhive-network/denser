@@ -13,6 +13,7 @@ export class TagCommunityFeedsPage {
   readonly page: Page;
 
   readonly postListItems: Locator;
+  readonly postAuthors: Locator;
   readonly firstPostTitle: Locator;
 
   readonly communityInfoSidebar: Locator;
@@ -42,6 +43,7 @@ export class TagCommunityFeedsPage {
     this.page = page;
 
     this.postListItems = page.locator('[data-testid="post-list-item"]');
+    this.postAuthors = page.locator('[data-testid="post-author"]');
     this.firstPostTitle = this.postListItems.first().locator('[data-testid="post-title"]');
 
     this.communityInfoSidebar = page.locator('[data-testid="community-info-sidebar"]');
