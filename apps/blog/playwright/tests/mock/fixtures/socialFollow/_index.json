@@ -1,0 +1,18 @@
+{
+  "testName": "socialFollow",
+  "recordedAt": "2026-05-22T10:41:03.304Z",
+  "totalRequests": 18,
+  "savedFixtures": 12,
+  "duplicatesSkipped": 6,
+  "methods": {
+    "database_api.find_accounts": 3,
+    "bridge.get_profile": 3,
+    "database_api.get_dynamic_global_properties": 3,
+    "bridge.get_account_posts": 1,
+    "GET /hivesense-api": 3,
+    "bridge.unread_notifications": 1,
+    "condenser_api.get_following": 2,
+    "rc_api.find_rc_accounts": 1,
+    "bridge.get_follow_list": 1
+  }
+}

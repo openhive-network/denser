@@ -1,0 +1,9 @@
+{
+  "testName": "socialFollow_followed",
+  "base": "socialFollow",
+  "generatedAt": "2026-05-22T11:17:10.958Z",
+  "overlayFiles": [
+    "0002-bridge.get_profile.json",
+    "0010-condenser_api.get_following.json"
+  ]
+}

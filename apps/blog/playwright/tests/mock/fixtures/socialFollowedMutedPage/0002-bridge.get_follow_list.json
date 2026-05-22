@@ -1,0 +1,26 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_follow_list",
+    "params": {
+      "observer": "guest4test",
+      "follow_type": "follow_muted"
+    },
+    "id": 1
+  },
+  "requestHash": "406a8529935e85ec",
+  "method": "bridge.get_follow_list",
+  "params": {
+    "observer": "guest4test",
+    "follow_type": "follow_muted"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": []
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

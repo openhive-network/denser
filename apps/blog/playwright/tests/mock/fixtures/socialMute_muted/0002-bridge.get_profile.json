@@ -1,0 +1,52 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_profile",
+    "params": {
+      "account": "hiveio"
+    },
+    "id": 1
+  },
+  "requestHash": "9d7bc79679edbf16",
+  "method": "bridge.get_profile",
+  "params": {
+    "account": "hiveio"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active": "2025-12-31T19:41:36",
+      "blacklists": [],
+      "created": "2020-03-06T12:22:48",
+      "id": 1370485,
+      "metadata": {
+        "profile": {
+          "about": "",
+          "blacklist_description": "",
+          "cover_image": "https://files.peakd.com/file/peakd-hive/hiveio/Xe1TcEBi-hive-banner.png",
+          "location": "",
+          "muted_list_description": "",
+          "name": "",
+          "profile_image": "https://files.peakd.com/file/peakd-hive/hiveio/Jp2YHc6Q-hive-logo.png",
+          "website": "http://hive.io"
+        }
+      },
+      "name": "hiveio",
+      "post_count": 80,
+      "reputation": 74.35,
+      "stats": {
+        "followers": 2263,
+        "following": 0,
+        "rank": 0
+      },
+      "context": {
+        "muted": true
+      }
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

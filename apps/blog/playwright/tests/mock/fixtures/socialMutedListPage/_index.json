@@ -1,0 +1,17 @@
+{
+  "testName": "socialMutedListPage",
+  "recordedAt": "2026-05-22T10:41:30.854Z",
+  "totalRequests": 32,
+  "savedFixtures": 9,
+  "duplicatesSkipped": 23,
+  "methods": {
+    "database_api.find_accounts": 6,
+    "bridge.get_follow_list": 2,
+    "bridge.get_profile": 6,
+    "database_api.get_dynamic_global_properties": 6,
+    "GET /hivesense-api": 4,
+    "bridge.unread_notifications": 2,
+    "rc_api.find_rc_accounts": 2,
+    "condenser_api.get_following": 4
+  }
+}
