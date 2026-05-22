@@ -448,10 +448,23 @@ function loadFixtures(fixtureDir: string): Map<string, IFixtureEntry[]> {
 
   const indexPath = path.join(fixtureDir, '_index.json');
   let baseDir: string | null = null;
+  // `additive: true` in _index.json marks a variant whose unique files
+  // are intended to ADD new (method, paramsHash) pairs to the chain
+  // rather than patch existing ones. Used by shared-base setups where
+  // siblings (e.g. socialBlacklistListPage, socialFollowedBlacklistsPage)
+  // chain to a common base for read-only RPCs but each carries its own
+  // `bridge.get_follow_list` recording with a distinct `follow_type`.
+  // Suppresses the STALE OVERLAY warning, which is meant to flag patch
+  // drift — irrelevant when the missing key was never expected to exist
+  // in the base.
+  let additive = false;
   if (fs.existsSync(indexPath)) {
     const index = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
     if (typeof index.base === 'string' && index.base.length > 0) {
       baseDir = path.join(FIXTURES_ROOT, index.base);
+    }
+    if (index.additive === true) {
+      additive = true;
     }
   }
 
@@ -472,7 +485,7 @@ function loadFixtures(fixtureDir: string): Map<string, IFixtureEntry[]> {
         // Variant's entries for this key fully replace the base's.
         fixtures.set(key, []);
       }
-      if (!baseKeys.has(key)) {
+      if (!baseKeys.has(key) && !additive) {
         console.warn(
           `[fixture-proxy:replay] STALE OVERLAY — ${file} (hash=${key}) ` +
             `in ${path.basename(fixtureDir)} has no matching entry in base "${path.basename(baseDir!)}". ` +

@@ -1,0 +1,6 @@
+{
+  "testName": "socialBlacklistListPage",
+  "base": "socialMutedListPage",
+  "additive": true,
+  "note": "Shares read-only RPCs with socialMutedListPage; adds a bridge.get_follow_list recording with follow_type='blacklisted'. The unique file was reconstructed manually (matches a fresh empty-blacklist recording, result: []). `additive: true` suppresses the STALE OVERLAY warning since the unique key is intentionally new, not a patch."
+}

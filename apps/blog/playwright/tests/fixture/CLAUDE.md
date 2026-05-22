@@ -211,6 +211,112 @@ operation types (`custom_json`, `comment`, etc.), inspect `broadcast.calls[i].pa
 
 ---
 
+## Recipe: assert a follow / mute / blacklist broadcast (§9)
+
+All social-graph operations (follow, unfollow, mute, unmute, blacklist,
+follow-blacklist, follow-muted-list, the four reset variants, plus the
+per-row remove operations) flow through wax's `FollowOperation` and
+emit ONE `custom_json_operation` with `id: "follow"` and a JSON tuple
+of shape `["follow", { follower, following, what }]`.
+
+Use `expectFollowCustomJson` to assert the payload:
+
+```ts
+import {
+  installBroadcastInterceptor,
+  expectFollowCustomJson
+} from '../support/fixture-auth/broadcast-interceptor';
+import {
+  FOLLOWER,
+  FOLLOW_TARGET_USER,
+  WHAT_FOLLOW,            // ['blog']      | follow
+  WHAT_UNFOLLOW,          // [''] (UNFOLLOW action)
+  WHAT_MUTE,              // ['ignore']
+  WHAT_UNMUTE,            // ['']  unmute aliases to unfollow in wax
+  WHAT_BLACKLIST,         // ['blacklist']
+  WHAT_UNBLACKLIST,       // ['unblacklist']
+  WHAT_FOLLOW_BLACKLIST,  // ['follow_blacklist']
+  WHAT_FOLLOW_MUTED,      // ['follow_muted']
+  WHAT_RESET_MUTED_LIST,  // ['reset_muted_list']  ← what resetBlogList() emits
+  WHAT_RESET_BLACKLIST,   // ['reset_blacklist']
+  followingFromOtherBlogs,// (target) => ['', target]
+  RESET_FOLLOWING_TARGET, // 'all'
+  gotoProfileLoggedIn,
+  gotoOwnList
+} from '../support/followMuteContext';
+
+// confirmInBlock IS MANDATORY here: every §9 mutation uses
+// transactionService.X({ observe: true }), so WorkerBee needs the
+// captured trx delivered in a synthetic block before the React Query
+// onSuccess fires the toast and invalidates the cache.
+const broadcast = await installBroadcastInterceptor(page, undefined, {
+  confirmInBlock: true
+});
+await gotoProfileLoggedIn(page);                       // /@hiveio
+await page.getByTestId('profile-follow-button').click();
+await broadcast.waitForCount(1);
+
+expectFollowCustomJson(broadcast.calls[0], {
+  follower: FOLLOWER,
+  following: FOLLOW_TARGET_USER,    // single string for follow/unfollow/unmute
+  what: WHAT_FOLLOW
+});
+```
+
+### `following` shape depends on the wax invocation
+
+`followBodyBuilder` outputs `following: blog` (single string) when
+called with no rest args and `following: [blog, ...otherBlogs]` (array)
+when there are rest args. The `transactionService` wrappers determine
+which shape applies:
+
+| Wrapper                                  | wax call                       | `following`    |
+|------------------------------------------|--------------------------------|----------------|
+| `follow(name)` / `unfollow(name)`        | `(self, name)`                 | `'name'`       |
+| `unmute(blog)` / `unblacklistBlog(blog)` | `(self, blog)`                 | `'blog'`       |
+| `unfollowBlacklistBlog(blog)`            | `(self, blog)`                 | `'blog'`       |
+| `unfollowMutedBlog(blog)`                | `(self, blog)`                 | `'blog'`       |
+| `mute(otherBlogs, '')`                   | `(self, '', ...otherBlogs)`    | `['', 'name']` |
+| `blacklistBlog(otherBlogs, '')`          | `(self, '', ...otherBlogs)`    | `['', 'name']` |
+| `followBlacklistBlog(otherBlogs, '')`    | `(self, '', ...otherBlogs)`    | `['', 'name']` |
+| `followMutedBlog(otherBlogs, '')`        | `(self, '', ...otherBlogs)`    | `['', 'name']` |
+| `resetBlogList()`                        | `(MUTE_BLOG, self, 'all')`     | `'all'`        |
+| `resetBlacklistBlog()`                   | `(self, 'all')`                | `'all'`        |
+| `resetFollowBlacklistBlog()`             | `(self, 'all')`                | `'all'`        |
+| `resetFollowMutedBlog()`                 | `(self, 'all')`                | `'all'`        |
+
+`followingFromOtherBlogs(target)` builds the `['', target]` shape so
+specs read symbolically; `RESET_FOLLOWING_TARGET` exposes `'all'`.
+
+`what` is ALWAYS a 1-element array — wax wraps the action string in
+`[what]` unconditionally. `unmute` and `unfollow` both produce
+`what: ['']` (empty UNFOLLOW action), not `what: []`.
+
+### Pre-state via the social variant generator
+
+"Undo" tests (FOL-02 unfollow, MUTE-02 unmute, BL-02 remove, FBL-02,
+FML-02, the 4 reset tests) need fixtures recorded against state where
+the seeded user is already in the relation. The chain doesn't move in
+fixture mode, so we generate overlays instead of recording real
+pre-state.
+
+1. Record the base scenarios in record mode.
+2. Add an entry to `VARIANTS` in
+   `support/fixture-auth/generate-social-variants.mjs` describing the
+   patch (`addFollowing` + `profileContext` for profile-button overlays,
+   `populateFollowList` for `/lists/*` page overlays).
+3. Run the generator:
+   `node playwright/tests/support/fixture-auth/generate-social-variants.mjs`
+4. Point the spec at the variant:
+   `test.use({ fixtureTestName: 'socialFollow_followed' })`.
+
+The generator throws if any declared op matches zero base files —
+catches recordings that lost an expected RPC (e.g. a method rename or
+positional vs. object param change) before they produce a silent
+empty overlay.
+
+---
+
 ## Recipe: the user should see a "previously voted" post
 
 SSR fetches post data server-side, so `page.route` cannot override
@@ -318,6 +424,37 @@ mock/fixtures/
 └── postVoting_highHP_downvoted/← overlay: 0003, 0005, 0009 + _index.json
 ```
 
+### Additive overlays (shared-base bases)
+
+Sometimes two recordings share most of their read-only RPCs but each
+needs one unique entry — e.g. the four §9 list-page bases share
+`find_accounts` / `get_profile` / `get_following` and differ only in a
+single `bridge.get_follow_list` call whose `follow_type` is variant-
+specific. Modelling them as standalone bases duplicates ~36 KB per dir
+of byte-identical recordings.
+
+The fix: pick one as the canonical base (e.g. `socialMutedListPage`),
+make the others overlays containing only their unique file, and add
+`additive: true` to their `_index.json`:
+
+```json
+{
+  "testName": "socialBlacklistListPage",
+  "base": "socialMutedListPage",
+  "additive": true
+}
+```
+
+`additive: true` tells `fixture-proxy.ts` that the overlay's keys are
+intentionally NEW (not patches), so it skips the STALE OVERLAY warning
+that would otherwise fire on every replay. The drift signal still
+works for normal overlays — only this dir is exempt.
+
+Same chain rule applies to additive overlays: a sibling can itself
+have an overlay (e.g. `socialBlacklistListPage_populated` extends
+`socialBlacklistListPage` extends `socialMutedListPage`), and the
+proxy walks the full chain.
+
 ### `active_votes` trimming
 
 `bridge.get_ranked_posts` responses arrive with `active_votes` arrays of
@@ -355,6 +492,10 @@ orphan patch. If you see one, re-run the generator:
 ```bash
 node apps/blog/playwright/tests/support/fixture-auth/generate-voted-variants.mjs
 ```
+
+If your variant intentionally adds new keys (rather than patching
+existing ones — see "Additive overlays" above), set `additive: true`
+in its `_index.json` to suppress the warning.
 
 ---
 

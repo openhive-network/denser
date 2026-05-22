@@ -1,0 +1,5 @@
+{
+  "testName": "socialMute",
+  "base": "socialFollow",
+  "note": "Pure overlay: socialMute uses the same RPCs as socialFollow with only block-state timestamps differing. Content lives in socialFollow/."
+}

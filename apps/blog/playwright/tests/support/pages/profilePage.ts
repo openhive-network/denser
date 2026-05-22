@@ -11,6 +11,7 @@ export class ProfilePage {
   readonly profileLocation: Locator;
   readonly profileStats: Locator;
   readonly followButton: Locator;
+  readonly muteButton: Locator;
   readonly userLinks: Locator;
   readonly profileBlogPostsList: Locator;
 
@@ -234,6 +235,7 @@ export class ProfilePage {
     this.profileFollowing = this.profileStats.locator('> a').nth(2);
     this.profileHP = this.profileStats.locator('> div').first();
     this.followButton = page.locator('[data-testid="profile-follow-button"]');
+    this.muteButton = page.locator('[data-testid="profile-mute-button"]');
     this.userLinks = page.locator('[data-testid="user-links"]');
     this.profileBlogPostsList = page.getByTestId('post-list-profile-blog-list');
 

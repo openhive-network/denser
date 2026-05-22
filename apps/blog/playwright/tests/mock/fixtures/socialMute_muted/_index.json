@@ -1,0 +1,9 @@
+{
+  "testName": "socialMute_muted",
+  "base": "socialMute",
+  "generatedAt": "2026-05-22T11:17:10.969Z",
+  "overlayFiles": [
+    "0002-bridge.get_profile.json",
+    "0007-condenser_api.get_following.json"
+  ]
+}

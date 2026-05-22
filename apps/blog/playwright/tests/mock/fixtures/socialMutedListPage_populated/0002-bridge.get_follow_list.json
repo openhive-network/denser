@@ -1,0 +1,42 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_follow_list",
+    "params": {
+      "observer": "guest4test",
+      "follow_type": "muted"
+    },
+    "id": 1
+  },
+  "requestHash": "23c8aaf1693ef1a4",
+  "method": "bridge.get_follow_list",
+  "params": {
+    "observer": "guest4test",
+    "follow_type": "muted"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "name": "hiveio",
+        "blacklist_description": "",
+        "muted_list_description": ""
+      },
+      {
+        "name": "ned",
+        "blacklist_description": "",
+        "muted_list_description": ""
+      },
+      {
+        "name": "dan",
+        "blacklist_description": "",
+        "muted_list_description": ""
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

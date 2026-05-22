@@ -585,6 +585,86 @@ export function expectReblogOperation(
   });
 }
 
+/**
+ * TX-04 (custom_json id="follow"): follow / unfollow / mute / unmute /
+ * blacklist / unblacklist / follow_blacklist / follow_muted / reset_*.
+ *
+ * All social-graph operations go through `FollowOperation.*` in
+ * `@hiveio/wax` and emit a single `custom_json_operation` whose `id`
+ * is `"follow"` and whose `json` parses to
+ * `["follow", { follower, following, what }]`.
+ *
+ * Wax `followBodyBuilder` shapes `following` two ways:
+ *   - **single string** when called with NO `...otherBlogs` rest args
+ *     (e.g. `follow`, `unfollow`, `unmute`, all per-row remove
+ *     operations, and the reset operations which pin `'all'`)
+ *   - **array `[blog, ...otherBlogs]`** when called with rest args
+ *     (e.g. `mute`/`blacklistBlog`/`followBlacklistBlog`/`followMutedBlog`
+ *     wrappers in `transactionService` split their `otherBlogs` arg and
+ *     pass them on, so even a single-account add produces `['', 'name']`)
+ *
+ * `what` is always a 1-element array — wax wraps the action string in
+ * `[what]` unconditionally. Values come from `EFollowActions` in wax:
+ * `'blog'`, `''` (unfollow / unmute), `'ignore'`, `'blacklist'`,
+ * `'unblacklist'`, `'follow_blacklist'`, `'unfollow_blacklist'`,
+ * `'follow_muted'`, `'unfollow_muted'`, `'reset_muted_list'`,
+ * `'reset_blacklist'`, `'reset_follow_blacklist'`,
+ * `'reset_follow_muted_list'`.
+ */
+export interface FollowCustomJsonExpectations {
+  follower: string;
+  following: string | string[];
+  what: string[];
+}
+
+export function expectFollowCustomJson(
+  call: InterceptedBroadcast,
+  expected: FollowCustomJsonExpectations
+): void {
+  const trx = (call.params as { trx?: unknown } | undefined)?.trx as
+    | { operations?: unknown[] }
+    | undefined;
+  expect(trx, 'broadcast params should include trx').toBeDefined();
+
+  const op = trx?.operations?.[0] as
+    | { type?: string; value?: Record<string, unknown> }
+    | undefined;
+  expect(op?.type, 'operation.type should be custom_json_operation').toBe(
+    'custom_json_operation'
+  );
+
+  const value = op?.value as
+    | {
+        id?: string;
+        json?: string;
+        required_posting_auths?: string[];
+      }
+    | undefined;
+  expect(value?.id, 'custom_json.id').toBe('follow');
+  expect(
+    value?.required_posting_auths,
+    'custom_json.required_posting_auths'
+  ).toEqual([expected.follower]);
+
+  const rawJson = value?.json ?? '';
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(rawJson);
+  } catch {
+    throw new Error(
+      `custom_json.json should be JSON-parseable; got: ${rawJson}`
+    );
+  }
+  expect(Array.isArray(parsed), 'custom_json.json should be a tuple').toBe(true);
+  const [tag, payload] = parsed as [unknown, unknown];
+  expect(tag, 'custom_json.json[0]').toBe('follow');
+  expect(payload, 'custom_json.json[1]').toEqual({
+    follower: expected.follower,
+    following: expected.following,
+    what: expected.what
+  });
+}
+
 /** TX-15: `delete_comment_operation` payload. */
 export interface DeleteCommentOperationExpectations {
   author: string;
