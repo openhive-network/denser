@@ -3,14 +3,15 @@
  * Trim long arrays in recorded fixtures to keep committed size small.
  *
  * Trims, by file kind:
- *   - bridge.get_ranked_posts → each post's `active_votes` (post lists)
- *   - bridge.get_post         → the single post's `active_votes`
- *   - bridge.get_discussion   → each comment entry's `active_votes`
- *                               (entries are keyed by `<author>/<permlink>`)
- *   - database_api.list_votes → top-level `result.votes` (the SSR limit:1000
- *                               full-vote list for a post). The limit:1
- *                               look-up by votes-component already returns
- *                               <= 5 votes so it isn't touched.
+ *   - bridge.get_ranked_posts  → each post's `active_votes` (post lists)
+ *   - bridge.get_account_posts → each post's `active_votes` (profile blog feed)
+ *   - bridge.get_post          → the single post's `active_votes`
+ *   - bridge.get_discussion    → each comment entry's `active_votes`
+ *                                (entries are keyed by `<author>/<permlink>`)
+ *   - database_api.list_votes  → top-level `result.votes` (the SSR limit:1000
+ *                                full-vote list for a post). The limit:1
+ *                                look-up by votes-component already returns
+ *                                <= 5 votes so it isn't touched.
  *
  * The seeded test user (CI_TEST_USER, default "guest4test") is preserved
  * if present in the head being trimmed — so variant fixtures with
@@ -86,6 +87,17 @@ const HANDLERS = [
   {
     label: 'bridge.get_ranked_posts',
     matches: (name) => name.includes('bridge.get_ranked_posts'),
+    process: (raw) => {
+      const posts = raw?.response?.result;
+      if (!Array.isArray(posts)) return 0;
+      let removed = 0;
+      for (const post of posts) removed += trimActiveVotes(post);
+      return removed;
+    }
+  },
+  {
+    label: 'bridge.get_account_posts',
+    matches: (name) => name.includes('bridge.get_account_posts'),
     process: (raw) => {
       const posts = raw?.response?.result;
       if (!Array.isArray(posts)) return 0;
