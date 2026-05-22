@@ -543,6 +543,12 @@ export class ProfilePage {
     await this.page.waitForLoadState('domcontentloaded');
   }
 
+  async gotoSettingsProfilePageAnonymous(nickName: string) {
+    await this.page.goto(`/${nickName}/settings`, { waitUntil: 'domcontentloaded' });
+    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await expect(this.publicProfileSettings).toBeVisible();
+  }
+
   async gotoApiEndpointHealthcheckerProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/settings`);
     await this.page.waitForLoadState('domcontentloaded');

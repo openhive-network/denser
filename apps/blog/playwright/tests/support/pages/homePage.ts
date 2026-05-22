@@ -103,6 +103,8 @@ export class HomePage {
   readonly postDescription: Locator;
   readonly loginBtn: Locator;
   readonly signupBtn: Locator;
+  readonly signupLink: Locator;
+  readonly myFeedEmptyStateAnonymous: Locator;
   readonly loginModal: Locator;
   readonly loginModalHeader: Locator;
   readonly loginModalUsernameInput: Locator;
@@ -253,6 +255,10 @@ export class HomePage {
     this.postDescription = page.locator('[data-testid="post-description"]');
     this.loginBtn = page.locator('[data-testid="login-btn"]');
     this.signupBtn = page.locator('[data-testid="signup-btn"]');
+    this.signupLink = page.locator('a:has([data-testid="signup-btn"])');
+    this.myFeedEmptyStateAnonymous = page
+      .locator('main')
+      .getByText(/haven't followed anyone yet/i);
     this.loginModal = page.locator('[role="dialog"]');
     this.loginModalHeader = page.locator('h2');
     this.loginModalUsernameInput = page.locator('[name="username"]');
@@ -294,6 +300,11 @@ export class HomePage {
   async gotoSpecificUrl(url: string) {
     await this.page.goto(`${url}`);
     await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  async gotoTrendingMyAnonymous() {
+    await this.page.goto('/trending/my', { waitUntil: 'domcontentloaded' });
+    await expect(this.myFeedEmptyStateAnonymous).toBeVisible();
   }
 
   async moveToHomePage() {

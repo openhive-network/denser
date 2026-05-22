@@ -1,0 +1,26 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_follow_list",
+    "params": {
+      "observer": "hiveio",
+      "follow_type": "muted"
+    },
+    "id": 1
+  },
+  "requestHash": "0df0e60504a92709",
+  "method": "bridge.get_follow_list",
+  "params": {
+    "observer": "hiveio",
+    "follow_type": "muted"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

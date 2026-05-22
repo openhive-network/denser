@@ -1,0 +1,17 @@
+{
+  "testName": "authGated",
+  "recordedAt": "2026-05-22T10:23:44.801Z",
+  "totalRequests": 28,
+  "savedFixtures": 8,
+  "duplicatesSkipped": 20,
+  "methods": {
+    "bridge.list_communities": 4,
+    "GET /hivesense-api": 9,
+    "bridge.account_notifications": 2,
+    "database_api.find_accounts": 3,
+    "bridge.get_profile": 4,
+    "database_api.get_dynamic_global_properties": 2,
+    "bridge.get_follow_list": 1,
+    "bridge.get_ranked_posts": 3
+  }
+}
