@@ -44,6 +44,8 @@ test('FML-01 — Add single account to followed muted lists', async ({ page }) =
   });
 
   await expect(userList.itemRow(FOLLOW_TARGET_USER)).toBeVisible();
+  await expect(userList.emptyState).toBeHidden();
+  await expect(userList.items).toHaveCount(1);
 });
 
 test('FML-03 — Add multiple accounts to followed muted lists', async ({ page }) => {
@@ -69,4 +71,5 @@ test('FML-03 — Add multiple accounts to followed muted lists', async ({ page }
   for (const target of BLACKLIST_TARGETS) {
     await expect(userList.itemRow(target)).toBeVisible();
   }
+  await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length);
 });

@@ -49,6 +49,10 @@ test('BL-02 — Remove account from blacklist via row button', async ({ page }) 
   });
 
   await expect(userList.itemRow(target)).toHaveCount(0);
+  // Removing one leaves the rest; the optimistic cache drop in
+  // useUnblacklistBlogMutation.onSettled is the only source of truth
+  // here, so this is the assertion that catches a stale list re-render.
+  await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length - 1);
 });
 
 test('BL-04 — Reset blacklist clears all entries with one broadcast', async ({ page }) => {

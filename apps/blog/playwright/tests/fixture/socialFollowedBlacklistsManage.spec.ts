@@ -48,6 +48,7 @@ test('FBL-02 — Remove account from followed blacklists via row button', async 
   });
 
   await expect(userList.itemRow(target)).toHaveCount(0);
+  await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length - 1);
 });
 
 test('FBL-04 — Reset followed blacklists with one broadcast', async ({ page }) => {
