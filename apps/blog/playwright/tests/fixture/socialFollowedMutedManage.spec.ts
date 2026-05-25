@@ -47,6 +47,7 @@ test('FML-02 — Remove account from followed muted lists via row button', async
   });
 
   await expect(userList.itemRow(target)).toHaveCount(0);
+  await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length - 1);
 });
 
 test('FML-04 — Reset followed muted lists with one broadcast', async ({ page }) => {

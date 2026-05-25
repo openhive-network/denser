@@ -54,6 +54,10 @@ test('MUTE-03 — Add single account to muted list from /lists/muted', async ({ 
   // to ['muted', guest4test] (use-mute-mutations.ts:22-32), so the row
   // is visible immediately after the click — no wait on broadcast.
   await expect(userList.itemRow(FOLLOW_TARGET_USER)).toBeVisible();
+  // Empty-state disappears and the list now has exactly one row — the
+  // ListArea re-renders from the patched query cache, not a refetch.
+  await expect(userList.emptyState).toBeHidden();
+  await expect(userList.items).toHaveCount(1);
 });
 
 test('MUTE-04 — Add multiple accounts from /lists/muted (one broadcast each)', async ({ page }) => {
@@ -81,4 +85,5 @@ test('MUTE-04 — Add multiple accounts from /lists/muted (one broadcast each)',
   for (const target of BLACKLIST_TARGETS) {
     await expect(userList.itemRow(target)).toBeVisible();
   }
+  await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length);
 });

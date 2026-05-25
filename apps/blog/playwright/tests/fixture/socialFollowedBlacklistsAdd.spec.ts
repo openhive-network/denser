@@ -44,6 +44,8 @@ test('FBL-01 — Add single account to followed blacklists', async ({ page }) =>
   });
 
   await expect(userList.itemRow(FOLLOW_TARGET_USER)).toBeVisible();
+  await expect(userList.emptyState).toBeHidden();
+  await expect(userList.items).toHaveCount(1);
 });
 
 test('FBL-03 — Add multiple accounts to followed blacklists', async ({ page }) => {
@@ -69,4 +71,5 @@ test('FBL-03 — Add multiple accounts to followed blacklists', async ({ page })
   for (const target of BLACKLIST_TARGETS) {
     await expect(userList.itemRow(target)).toBeVisible();
   }
+  await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length);
 });

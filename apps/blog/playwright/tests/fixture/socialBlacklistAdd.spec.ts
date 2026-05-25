@@ -44,6 +44,8 @@ test('BL-01 — Add single account to blacklist from /lists/blacklisted', async 
   });
 
   await expect(userList.itemRow(FOLLOW_TARGET_USER)).toBeVisible();
+  await expect(userList.emptyState).toBeHidden();
+  await expect(userList.items).toHaveCount(1);
 });
 
 test('BL-03 — Add multiple accounts to blacklist (one broadcast each)', async ({ page }) => {
@@ -69,4 +71,5 @@ test('BL-03 — Add multiple accounts to blacklist (one broadcast each)', async 
   for (const target of BLACKLIST_TARGETS) {
     await expect(userList.itemRow(target)).toBeVisible();
   }
+  await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length);
 });
