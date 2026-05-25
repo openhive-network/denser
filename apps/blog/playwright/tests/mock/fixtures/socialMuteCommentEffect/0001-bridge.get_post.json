@@ -1,0 +1,110 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post",
+    "params": {
+      "author": "hiveio",
+      "permlink": "hive-at-blockchain-rio",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "6513c3d9bcda9a6e",
+  "method": "bridge.get_post",
+  "params": {
+    "author": "hiveio",
+    "permlink": "hive-at-blockchain-rio",
+    "observer": "guest4test"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active_votes": [
+        {
+          "rshares": 161503589110,
+          "voter": "boatymcboatface"
+        },
+        {
+          "rshares": 817822454,
+          "voter": "konelectric"
+        },
+        {
+          "rshares": 1023642304,
+          "voter": "kingscrown"
+        },
+        {
+          "rshares": 10736113495702,
+          "voter": "acidyo"
+        },
+        {
+          "rshares": 43202561773,
+          "voter": "theshell"
+        }
+      ],
+      "author": "hiveio",
+      "author_payout_value": "8.766 HBD",
+      "author_reputation": 74.35,
+      "beneficiaries": [
+        {
+          "account": "pettycash",
+          "weight": 10000
+        }
+      ],
+      "blacklists": [],
+      "body": "![image.png](https://images.hive.blog/DQmWzkxrGSCPyPwhsviH4Qz8TL3RkX8DN1jy7rLjWWvn8QQ/image.png)\n\n\nToday will mark opening day of the [Blockchain Rio](https://blockchainrio.com.br/) conference, held at the Expo Mag Convention Center in beautiful Rio de Janeiro, Brazil. Our team of community members @arlettemsalase, @jonsnow1983, @starkerz, @edmundochauran and @disregardfiat are there on site representing Hive. \n\nThis is a one-of-a-kind conference which boasts 300+ speakers and a unique Leaders special event. It's a great networking and outreach opportunity for Hive and we are thrilled to be a part of it.\n\nArlette will deliver a keynote presentation, **\"Introducción al Protocolo Hive, ¿por qué Hive y qué soluciona?\"** | *Introduction to the Hive protocol, why Hive and what does it solve?* on the 25th. She and Starkerz will speak on two panels during the conference, times TBD.\n\nThe event schedule can be found at: https://app.blockchainrio.com.br/agenda \n\n![image.png](https://images.hive.blog/DQmbtDXEZi2bMwJMtGRHdMs1aDA3XfHJ1cU1CL61cjErAHH/image.png)\n<sup>A great networking evening.</sup>\n\nIf you're in the area and want to drop by, let us know here!",
+      "category": "hive",
+      "children": 12,
+      "created": "2024-07-24T05:40:15",
+      "curator_payout_value": "8.740 HBD",
+      "depth": 0,
+      "is_paidout": true,
+      "json_metadata": {
+        "app": "hiveblog/0.1",
+        "format": "markdown",
+        "image": [
+          "https://images.hive.blog/DQmWzkxrGSCPyPwhsviH4Qz8TL3RkX8DN1jy7rLjWWvn8QQ/image.png",
+          "https://images.hive.blog/DQmbtDXEZi2bMwJMtGRHdMs1aDA3XfHJ1cU1CL61cjErAHH/image.png"
+        ],
+        "links": [
+          "https://blockchainrio.com.br/"
+        ],
+        "tags": [
+          "conference",
+          "brazil",
+          "community"
+        ],
+        "users": [
+          "arlettemsalase",
+          "jonsnow1983",
+          "starkerz",
+          "edmundochauran",
+          "disregardfiat"
+        ]
+      },
+      "max_accepted_payout": "1000000.000 HBD",
+      "net_rshares": 54416559256447,
+      "payout": 17.506,
+      "payout_at": "2024-07-31T05:40:15",
+      "pending_payout_value": "0.000 HBD",
+      "percent_hbd": 10000,
+      "permlink": "hive-at-blockchain-rio",
+      "post_id": 135530739,
+      "reblogs": 8,
+      "replies": [],
+      "stats": {
+        "flag_weight": 0,
+        "gray": false,
+        "hide": false,
+        "total_votes": 230
+      },
+      "title": "Hive at Blockchain Rio",
+      "updated": "2024-07-24T05:42:00",
+      "url": "/hive/@hiveio/hive-at-blockchain-rio"
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

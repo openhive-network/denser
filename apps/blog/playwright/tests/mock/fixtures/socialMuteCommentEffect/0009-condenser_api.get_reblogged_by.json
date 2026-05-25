@@ -1,0 +1,35 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "condenser_api.get_reblogged_by",
+    "params": [
+      "hiveio",
+      "hive-at-blockchain-rio"
+    ],
+    "id": 1
+  },
+  "requestHash": "0459a7d1c7eed40e",
+  "method": "condenser_api.get_reblogged_by",
+  "params": [
+    "hiveio",
+    "hive-at-blockchain-rio"
+  ],
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      "arlettemsalase",
+      "hattaarshavin",
+      "hivetoday",
+      "jonsnow1983",
+      "shmoogleosukami",
+      "ssekulji",
+      "steevc",
+      "wagnertamanaha"
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -1,0 +1,22 @@
+{
+  "testName": "socialMuteCommentEffect",
+  "recordedAt": "2026-05-25T08:47:53.269Z",
+  "totalRequests": 22,
+  "savedFixtures": 16,
+  "duplicatesSkipped": 6,
+  "methods": {
+    "bridge.get_post": 2,
+    "bridge.get_follow_list": 1,
+    "bridge.get_discussion": 1,
+    "GET /hivesense-api": 2,
+    "GET /hivesense-api/posts/hiveio/hive-at-blockchain-rio/similar": 2,
+    "bridge.unread_notifications": 1,
+    "database_api.find_accounts": 3,
+    "rc_api.find_rc_accounts": 1,
+    "condenser_api.get_reblogged_by": 1,
+    "database_api.get_dynamic_global_properties": 3,
+    "condenser_api.get_following": 2,
+    "database_api.list_votes": 1,
+    "bridge.get_profile": 2
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "testName": "socialFollowFeedEffect",
+  "recordedAt": "2026-05-25T08:52:56.710Z",
+  "totalRequests": 42,
+  "savedFixtures": 15,
+  "duplicatesSkipped": 27,
+  "methods": {
+    "bridge.list_all_subscriptions": 2,
+    "bridge.list_communities": 2,
+    "bridge.get_ranked_posts": 2,
+    "GET /hivesense-api": 8,
+    "bridge.unread_notifications": 3,
+    "bridge.get_follow_list": 3,
+    "rc_api.find_rc_accounts": 3,
+    "database_api.get_dynamic_global_properties": 4,
+    "database_api.find_accounts": 7,
+    "bridge.get_profile": 5,
+    "condenser_api.get_following": 2,
+    "bridge.get_account_posts": 1
+  }
+}

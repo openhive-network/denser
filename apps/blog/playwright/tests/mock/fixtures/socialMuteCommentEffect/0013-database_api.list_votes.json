@@ -1,0 +1,94 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "hiveio",
+        "hive-at-blockchain-rio",
+        ""
+      ],
+      "limit": 1000,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "f1e085afcbcc41b0",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "hiveio",
+      "hive-at-blockchain-rio",
+      ""
+    ],
+    "limit": 1000,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "hiveio",
+          "id": 994946703,
+          "last_update": "2024-07-24T07:02:18",
+          "num_changes": 0,
+          "permlink": "hive-at-blockchain-rio",
+          "rshares": 161503589110,
+          "vote_percent": 800,
+          "voter": "boatymcboatface",
+          "weight": 161503589110
+        },
+        {
+          "author": "hiveio",
+          "id": 994936076,
+          "last_update": "2024-07-24T05:40:36",
+          "num_changes": 0,
+          "permlink": "hive-at-blockchain-rio",
+          "rshares": 817822454,
+          "vote_percent": 10000,
+          "voter": "konelectric",
+          "weight": 817822454
+        },
+        {
+          "author": "hiveio",
+          "id": 994946583,
+          "last_update": "2024-07-24T07:02:06",
+          "num_changes": 0,
+          "permlink": "hive-at-blockchain-rio",
+          "rshares": 1023642304,
+          "vote_percent": 800,
+          "voter": "kingscrown",
+          "weight": 1023642304
+        },
+        {
+          "author": "hiveio",
+          "id": 994988745,
+          "last_update": "2024-07-24T11:28:03",
+          "num_changes": 0,
+          "permlink": "hive-at-blockchain-rio",
+          "rshares": 10736113495702,
+          "vote_percent": 10000,
+          "voter": "acidyo",
+          "weight": 10736113495702
+        },
+        {
+          "author": "hiveio",
+          "id": 994946701,
+          "last_update": "2024-07-24T07:02:18",
+          "num_changes": 0,
+          "permlink": "hive-at-blockchain-rio",
+          "rshares": 43202561773,
+          "vote_percent": 800,
+          "voter": "theshell",
+          "weight": 43202561773
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
