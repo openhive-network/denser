@@ -1,0 +1,203 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.find_accounts",
+    "params": {
+      "accounts": [
+        "steevc"
+      ],
+      "delayed_votes_active": false
+    },
+    "id": 1
+  },
+  "requestHash": "db2759bb0115bbc4",
+  "method": "database_api.find_accounts",
+  "params": {
+    "accounts": [
+      "steevc"
+    ],
+    "delayed_votes_active": false
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "accounts": [
+        {
+          "active": {
+            "account_auths": [],
+            "key_auths": [
+              [
+                "STM6RFA7NBWtfkJmLLA3EjaFsQuV6C1hjzWRSi5UPSgEHdhiBhdn9",
+                1
+              ]
+            ],
+            "weight_threshold": 1
+          },
+          "balance": {
+            "amount": "1338",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "can_vote": true,
+          "comment_count": 0,
+          "created": "2016-08-02T19:28:48",
+          "curation_rewards": 47576180,
+          "delegated_vesting_shares": {
+            "amount": "36835756018168",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "downvote_manabar": {
+            "current_mana": 59053982439693,
+            "last_update_time": 1779698187
+          },
+          "governance_vote_expiration_ts": "2027-05-15T07:37:30",
+          "hbd_balance": {
+            "amount": "195",
+            "nai": "@@000000013",
+            "precision": 3
+          },
+          "hbd_last_interest_payment": "2021-06-25T17:50:24",
+          "hbd_seconds": "32974764",
+          "hbd_seconds_last_update": "2021-06-30T12:36:21",
+          "id": 44459,
+          "is_smt": false,
+          "json_metadata": "{\"profile\":{\"name\":\"Steve Clark\",\"about\":\"Geeky guitarist and not the only Steemian in the village\",\"website\":\"http://bagofspoons.net/\",\"location\":\"Arlesey, Beds, UK\",\"cover_image\":\"https://steevc.keybase.pub/steemit/gordonsmith.jpg\",\"profile_image\":\"https://steevc.keybase.pub/pictures/skyleap.jpg\",\"dtube_pub\":\"hH5H8yL1Unbqcm8Lo1Sq2Le2563gdc7kwqnUSftfZQNq\"},\"beneficiaries\":[{\"name\":\"commentrewarder\",\"weight\":500,\"label\":\"custom\"}]}",
+          "last_account_recovery": "1970-01-01T00:00:00",
+          "last_account_update": "2026-04-08T13:35:00",
+          "last_owner_update": "2022-12-29T22:01:03",
+          "last_post": "2026-05-24T17:34:09",
+          "last_post_edit": "2026-05-24T17:34:09",
+          "last_root_post": "2026-05-24T10:35:42",
+          "last_vote_time": "2026-05-25T08:36:27",
+          "lifetime_vote_count": 0,
+          "memo_key": "STM7MByt2bYDUdjPkSoWRyXDKFLqxEj5C6b2qPvi7iZfyLWGBhHrP",
+          "mined": false,
+          "name": "steevc",
+          "next_vesting_withdrawal": "1969-12-31T23:59:59",
+          "open_recurrent_transfers": 0,
+          "owner": {
+            "account_auths": [],
+            "key_auths": [
+              [
+                "STM8Hgx5FQk69r5bVg1SyyExhTho6DCwzu8bZUQCWK8zVLjnR4MEo",
+                1
+              ]
+            ],
+            "weight_threshold": 1
+          },
+          "pending_claimed_accounts": 1182,
+          "pending_transfers": 0,
+          "post_bandwidth": 31441,
+          "post_count": 82697,
+          "post_voting_power": {
+            "amount": "236215929758774",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "posting": {
+            "account_auths": [
+              [
+                "ecency.app",
+                1
+              ],
+              [
+                "peakd.app",
+                1
+              ],
+              [
+                "strava2hive",
+                1
+              ],
+              [
+                "threespeak",
+                1
+              ]
+            ],
+            "key_auths": [
+              [
+                "STM4v6NXdkbim2YuGcE9deJc1Wsb42hcan9Y5wY7V6vU59jZtkp9m",
+                1
+              ]
+            ],
+            "weight_threshold": 1
+          },
+          "posting_json_metadata": "{\"profile\":{\"name\":\"Steve Clark\",\"about\":\"Geeky guitarist, drummer, runner and not the only Hivian in the village\",\"website\":\"https://linktr.ee/steevc\",\"location\":\"Arlesey, Beds, UK\",\"cover_image\":\"https://steevc.keybase.pub/steemit/gordonsmith.jpg\",\"profile_image\":\"https://files.peakd.com/file/peakd-hive/steevc/N3YewKHO-stevehive.png\",\"dtube_pub\":\"hH5H8yL1Unbqcm8Lo1Sq2Le2563gdc7kwqnUSftfZQNq\",\"version\":2,\"pinned\":null,\"tokens\":[{\"symbol\":\"SWAP.HIVE\",\"type\":\"ENGINE\",\"meta\":{\"show\":true}},{\"symbol\":\"STARBITS\",\"type\":\"ENGINE\",\"meta\":{\"show\":true}},{\"symbol\":\"STARPRO\",\"type\":\"ENGINE\",\"meta\":{\"show\":true}},{\"symbol\":\"LGN\",\"type\":\"ENGINE\",\"meta\":{\"show\":true}},{\"symbol\":\"LEO\",\"type\":\"ENGINE\",\"meta\":{\"show\":true}},{\"symbol\":\"BEER\",\"type\":\"ENGINE\",\"meta\":{\"show\":true}}],\"badges\":{\"highlighted\":[\"badge-800008\",\"badge-654321\",\"badge-100001\",\"badge-731831\",\"badge-333999\",\"badge-912244\",\"badge-181335\",\"badge-534654\"],\"hidden\":[]}}}",
+          "posting_rewards": 65010398,
+          "previous_owner_update": "2020-09-16T11:37:33",
+          "proxied_vsf_votes": [
+            3890685394150,
+            0,
+            0,
+            0
+          ],
+          "proxy": "",
+          "received_vesting_shares": {
+            "amount": "20910658381",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "recovery_account": "tenkminnows",
+          "reset_account": "null",
+          "reward_hbd_balance": {
+            "amount": "0",
+            "nai": "@@000000013",
+            "precision": 3
+          },
+          "reward_hive_balance": {
+            "amount": "187",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "reward_vesting_balance": {
+            "amount": "689226134",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "reward_vesting_hive": {
+            "amount": "424",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "savings_balance": {
+            "amount": "0",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "savings_hbd_balance": {
+            "amount": "421578",
+            "nai": "@@000000013",
+            "precision": 3
+          },
+          "savings_hbd_last_interest_payment": "2026-05-03T12:06:18",
+          "savings_hbd_seconds": "578523537459",
+          "savings_hbd_seconds_last_update": "2026-05-19T09:38:30",
+          "savings_withdraw_requests": 0,
+          "to_withdraw": 0,
+          "vesting_shares": {
+            "amount": "273030775118561",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "vesting_withdraw_rate": {
+            "amount": "0",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "voting_manabar": {
+            "current_mana": 206639816815723,
+            "last_update_time": 1779698187
+          },
+          "withdraw_routes": 0,
+          "withdrawn": 0,
+          "witnesses_voted_for": 30
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

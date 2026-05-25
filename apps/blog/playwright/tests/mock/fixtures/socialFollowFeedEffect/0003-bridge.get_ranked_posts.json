@@ -1,0 +1,1788 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "created",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "my",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "b659154fd138cd7d",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "created",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "my",
+    "observer": "guest4test"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "active_votes": [
+          {
+            "rshares": 8076000999,
+            "voter": "teamvn"
+          },
+          {
+            "rshares": 193943976422,
+            "voter": "smartvote"
+          },
+          {
+            "rshares": 222963326884,
+            "voter": "littlebee4"
+          },
+          {
+            "rshares": 584552720,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 7311018,
+            "voter": "psychophilo"
+          }
+        ],
+        "author": "dtam",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.27,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "![IMG_7259.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqQPZt1s7D8MDxwQm3riJ5952JJX11Cd4FEtaRTe26tHa6tvGdRQMyWXP5uAo52q54N.jpeg)*Team bonding in front of Meares Glacier. It was tough work, but we finally made it to the face of a glacier. We had been iced out until now this trip. You can see the pure joy in the guests' faces as they posed for this picture.*\n\n   Today's adventure was one of the guests and crew favorites. We were at Meares Glacier, in northern Prince William Sound, where a massive glacier tumbles out of the tall mountains and flows into the end of a beautiful fjord. It is a rarity among glaciers these days, in that it is one of the few that is currently advancing. It is bulldozing its way through the forest, taking old trees down as it goes. It also dumps an amazing amount of ice into the fjord, which is what made this morning's kayak such an adventure. \n \n  Kayaking is always a great way to experience a tidewater glacier, and sometimes you have to pick your way through a little bit of ice, but today was an exception. We had so much ice, that our paddles would just skip across it instead of dipping down in the water. The ice packed in around us the farther we got, but onward we pushed. Sometimes I would look behind and see that I had made a nice path through the ice for the guests. Other times, when I looked, the ice move back in so fast that there was no path at all. Luckily the group was up for the challenge, and they were rewarded with a truly wild, Alaskan experience. These are the days that you remember, and tell stories about, long after getting home. \n\nOnce we finally had enough of working hard in the ice, we found a pocket of clear water, and just sat and soaked in the amazing views. Its times like this that it is so hard to believe that we have this place all to ourselves. That is Alaska, still true wilderness to be explored. That can be hard to find these days. When we made it back to the boat, it was hot beverages for all, and a change into bathing suits.... for the polar plunge was next! \n\nNever a dull moment on the Safari Explorer.\n\n![IMG_7246.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Ep1XsEkPk5m6nB99zZocapRqgX8FLLzBQVdjchcvB1gHPSbqXLfdcaBiPn5zsPi62hS.jpeg)*Paddling through the ice here at Meares Glacier is a wild, adventurous feat. You can blast right through the small chunks, but you need good navigation to avoid the bigger pieces. They will stop you in your tracks very quickly.*\n\n![IMG_7267.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqSVyW3TJRMYTzug4Xe8Fhoh2hst7iCFEqVjcGqGEyMcgLB4LZjbX1QbPwHhF5YfUj3.jpeg)*A little drizzle didn't stop my group from kayaking across the fjord to Meares Glacier, a tidewater glacier that calves off giant chunks of ice.*\n\n![IMG_7264.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqHzpAWL5DmSJZWoHVHrs7qoJoSoe1eUQT33aXnSUtLLuNZ52rwmyQ9yBG3TNEgnR9m.jpeg)*We had been paddling through ice for a while before finally breaking free into this section. It seemed almost too easy after what I put them through.*\n\n\n\n![IMG_7254.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqQNWvxzfZdZyTZZKrHFk4eurtU18EguQEMPcPnbakQuU84RnbnKkmoDdrPPibLp6sb.jpeg)*Always say, 'yes', when asked if you want to kayak in front of a glacier.*\n\n![IMG_7253.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Ep1VVeCBMeNvHPri1brsmBKCRgoLWqQZWMrGiVLijjwg5CxcSrc9T5Hbcod5CXKC8gG.jpeg)*Our skiff tour pushed even farther ahead this morning. They enjoyed some really nice calvings when pieces of ice fell a hundred feet off the face of Meares Glacier.*\n\n![IMG_7250.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Eqd8zURRYN74mhPL5KGggEvKgtgahVDq4sAsuCDs2wy2pKsddVdnk8vQa4GcMPyH9po.jpeg)*At some points in this morning kayak, we stopped paddling and just took everything in.*\n\n![IMG_7247.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Ep5kERtAgvWPwBkBYG7nDQjPA64dkbn3h83XzKmxZVfaGfsWz6GkFTKak7FTYno8PFW.jpeg)*The ice started to pack together pretty densely towards the end of our paddle across the fjord. I really made these guys work for it today.*\n\n\n\n![IMG_7244.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EpnCiemCVTLuhaHzD3ZdQhJx6m3UzxC9AFjUrkHLSuCbrHtpmB1dXrLu3zbVqqLQzCV.jpeg)*Taking a break from our ice kayaking to take some photos.*\n\n![IMG_7239.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Eq36YXwaw53YfFyFZsVjuqt4ZHyv6dHsdodxUJJmW8XdnwVnLiVp1UASXy5qEJu388p.jpeg)*This kind of ice was quite easy to make it through. It got thicker though, shortly after.*\n\n![IMG_7238.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EnaZDJwe2Q7kE6n4PTBV9SwnQ8yQvS7C2ZZt2WX72AZSbQUTjJEKC9iiv9t52SSsH8T.jpeg)*Kayaking is one of my favorite ways to experience Alaska. This morning, at Meares Glacier, was an absolute blast. We kayaked through so much ice, and made it close enough to watch ice calving off the face of the glacier. Sea otters and seals looked on, as kittiwakes flew overhead. Luckily our rain gear held solid, and the old saying, 'there is no such thing as bad weather, only bad clothing', held true.*\n\n![IMG_7235.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Eou8EtoSqD8fMHBNUxHEt3aGr5F2fA8W6dmYRQc4ypMKSqDU2wjyoozQ6t4TXHsdVP6.jpeg)*Meares is a unique glacier in that it is advancing, bulldozing the forest as it goes.*\n\n![IMG_7234.jpeg](https://files.peakd.com/file/peakd-hive/dtam/244e85EMEmgz8HNNP2RL54f2SqA3XQ23UxFLS4Fn1Hg8QRYMe2RQgCLesJEF6apwhbB1k.jpeg)*Meares panorama.*\n\n![IMG_7232.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EoyPZAe1DXp4GRJGCf6TyPEBApRybGKFtYhsCC2uPyZvg19E8A9UxYPBBHTyqFraArE.jpeg)*Rain, ice, and rainforest.*\n\n![IMG_7231.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Eq9UnvYdrjauzzyC9zfG4jXFtZdGYVR9SBACEgzECqXfjgKeLsg3cjegGUC6W5NyPm6.jpeg)*The mist hung to the tops of the forest trees as we made our way through acres of ice.*\n\n![IMG_7226.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqL7k5isi3yKA7EYUhHeSCQFuVYUkQtAhbCK3uMW1d2iEgyh5yEbd3n4rYLRdyiJSp3.jpeg)*Chris and Alan soaking in the rain, and the views.*\n\n![IMG_7225.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqFs1czockctH6oWpQFSVxQHiTypWgvyVnKxmJx1UReowgXnomuSGoWyLFnEmwChszG.jpeg)*Ice, ice and more ice.*\n\n![IMG_7222.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EoAaDvmNUnZ3c5Hg73v48kXFr74N2XmHRaaEkMctNeFBUQzUc4Tzw3Uqq5stNgLQh3u.jpeg)*Just keep paddling.*\n\n![IMG_7209.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EoK6p8i9KtutJWFoivpg5wy9Mze8BzRvksdwU1MvbrtD73hQpfULtc5EBZ3TGNjJeqf.jpeg)*Sending out kayakers at Meares Glacier in Prince William Sound.*\n\n![IMG_7203.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Eq38TUxWSf1RNZS98G84seRosHySFWv8yqw4Tx6aXP6DVzSuPsXg6xAQCMrtu12aHhp.jpeg)*Me, guiding the morning kayak, ready for some icy adventure.*\n\n![IMG_7199.jpeg](https://files.peakd.com/file/peakd-hive/dtam/242DJWW6dsCntiWSTJCnBqc3HWoqu6sgbbpSubFggrgneKRvihJtR1tEn93c4pTDne3uJ.jpeg)*This seems like true expedition cruising doesn't it. Definitely not your big cruise ship vibe.*\n\nAs always, keep traveling and keep posting.\n- Dai Mar\n\n\n[//]:# (!worldmappin 61.142413 lat -147.548120 long Trying not to get trapped in the crushing ice flows of Meares Glacier. Kayaking the wilds of Alaska. d3scr)",
+        "category": "hive-163772",
+        "children": 1,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-05-25T08:47:00",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "description": "Trying not to get trapped in the crushing ice flows of Meares Glacier. Kayaking the wilds of Alaska.",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/dtam/EqQPZt1s7D8MDxwQm3riJ5952JJX11Cd4FEtaRTe26tHa6tvGdRQMyWXP5uAo52q54N.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Ep1XsEkPk5m6nB99zZocapRqgX8FLLzBQVdjchcvB1gHPSbqXLfdcaBiPn5zsPi62hS.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EqSVyW3TJRMYTzug4Xe8Fhoh2hst7iCFEqVjcGqGEyMcgLB4LZjbX1QbPwHhF5YfUj3.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EqHzpAWL5DmSJZWoHVHrs7qoJoSoe1eUQT33aXnSUtLLuNZ52rwmyQ9yBG3TNEgnR9m.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EqQNWvxzfZdZyTZZKrHFk4eurtU18EguQEMPcPnbakQuU84RnbnKkmoDdrPPibLp6sb.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Ep1VVeCBMeNvHPri1brsmBKCRgoLWqQZWMrGiVLijjwg5CxcSrc9T5Hbcod5CXKC8gG.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Eqd8zURRYN74mhPL5KGggEvKgtgahVDq4sAsuCDs2wy2pKsddVdnk8vQa4GcMPyH9po.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Ep5kERtAgvWPwBkBYG7nDQjPA64dkbn3h83XzKmxZVfaGfsWz6GkFTKak7FTYno8PFW.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EpnCiemCVTLuhaHzD3ZdQhJx6m3UzxC9AFjUrkHLSuCbrHtpmB1dXrLu3zbVqqLQzCV.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Eq36YXwaw53YfFyFZsVjuqt4ZHyv6dHsdodxUJJmW8XdnwVnLiVp1UASXy5qEJu388p.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EnaZDJwe2Q7kE6n4PTBV9SwnQ8yQvS7C2ZZt2WX72AZSbQUTjJEKC9iiv9t52SSsH8T.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Eou8EtoSqD8fMHBNUxHEt3aGr5F2fA8W6dmYRQc4ypMKSqDU2wjyoozQ6t4TXHsdVP6.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/244e85EMEmgz8HNNP2RL54f2SqA3XQ23UxFLS4Fn1Hg8QRYMe2RQgCLesJEF6apwhbB1k.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EoyPZAe1DXp4GRJGCf6TyPEBApRybGKFtYhsCC2uPyZvg19E8A9UxYPBBHTyqFraArE.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Eq9UnvYdrjauzzyC9zfG4jXFtZdGYVR9SBACEgzECqXfjgKeLsg3cjegGUC6W5NyPm6.jpeg"
+          ],
+          "tags": [
+            "travel",
+            "worldmappin",
+            "adventure",
+            "nature",
+            "alaska",
+            "kayaking",
+            "glacier",
+            "vacation",
+            "cruise",
+            "wilderness"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 448707835024,
+        "payout": 0.034,
+        "payout_at": "2026-06-01T08:47:00",
+        "pending_payout_value": "0.034 HBD",
+        "percent_hbd": 10000,
+        "permlink": "ice-kayaking-at-meares-glacier-alaska",
+        "post_id": 150226289,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 6
+        },
+        "title": "Ice Kayaking at Meares Glacier, Alaska ",
+        "updated": "2026-05-25T08:47:00",
+        "url": "/hive-163772/@dtam/ice-kayaking-at-meares-glacier-alaska"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 888850804,
+            "voter": "tuck-fheman"
+          },
+          {
+            "rshares": 205659170775,
+            "voter": "team"
+          },
+          {
+            "rshares": 131570644874,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 657459812,
+            "voter": "juanmiguelsalas"
+          },
+          {
+            "rshares": 1907194117,
+            "voter": "ratel"
+          }
+        ],
+        "author": "macchiata",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 80.11,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n\n![mac property.jpg](https://files.peakd.com/file/peakd-hive/macchiata/23xVMEJGF7DkvNnSF2M6yWp8mCCtjDgsguG1HaQ8ShWGPYRN9brCw3UWHKzuBdsD7ZYx4.png)\n\n\n\n\n<div class=text-justify>\n\nThere are quite a number of volcanic mountain in East-Java including the famous ones such as Bromo and Semeru but actually, there are many older volcanic mountain in the region that is dormant and worth exploring, such as  Mount Wilis. Unlike the popular hike in the region, Mt. Wilis is not commercialized due to its access that are still challenging and raw. If you enjoy quiter hike and untounched trails, this is one of the place to be. \n\nLast Saturday, I got the opportunity to visit deeper part of the foothills to experience shallot harversting. A close friend of my mother owned a few hectares of farmlands tucked away deep in the mountain. I heard from their son that it was harvest season, so I immeditely volunteered for the adventure. \n\n\n\n\n![DSCF1948.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23wWu6rYofQxgsjbwJxPGBy24VstHhmT3Zf9GQynbh72B9LyXPVVVgKSi19VjsU5tT2Re.JPG)\n\nWe started the journey at 5 AM with regular car then switch to different car fitting for the mountain rough terrain. On our way to the harvest area, we passed through thick jungle where it feels like we were sandwiched between the lush greenery and the dangling roots all around it. \n\nSomewhere along the winding path, The son of the family started telling me that there was a famous coffee plantation and factory in the area. He pointed to the remnants of the factory as well as some abandoned villa all around these foothills of Mt. Wilis. One thing that came out of my mouth was \" How did they even know this place existed?\", considering it was ages ago and even today this place is still considered remote. \n\n\n![DSCF1950.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23vsQDEB1ar6wcuDhdGoEbSA5YmDaSu6Ft3Y7e8haaVNiXvWLL2bnsBzn86kczX6mtoq5.JPG)\n\n\nSo, how did the dutch even scouted it? Whoever did that back in the day certainly has no fear of anything. I also heard that today, you can still find a lively wild animals animal including smaller sized tiger once in a while. \n\nAs we pressed on, our 30 minutes bumpy ride, eventually come to a fruition. We started seeing rows of shallots. \n\n\n![DSCF1956.JPG](https://files.peakd.com/file/peakd-hive/macchiata/245cWZREnfTi9gkwQQ226ZhSEQwww3gKLW12jCen8WkmKNQjWHJ6JMSSFbeApo59yQT3o.JPG)\n\n\n\nThe family owns the biggest hut in the area. Practically, you can live there as it has a room, a bathroom, a common kitchen with a view like this. \n\n\n![DSCF2044.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23qrBx5QDH2m7R4y7pWjH5bDgWEMJP9AYxg7LUYNZtPxcwpYSc5Je75kLte4nEpNekD1V.JPG)\n\n\n\nBefore we start the harvest, the workers and us had the chance to fuel oursevles with packed lunch. They also served me a coffee, famous from the region. It was good! \n\n\n![DSCF1981.JPG](https://files.peakd.com/file/peakd-hive/macchiata/244ofQkQqsAR5wv8Y74hkPDTthivZqVMgq9JRJ45AdckHnJobKU3xh7A7kz9n21XgRYGt.JPG)\n\n\n![DSCF1988.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23ywyiXpEuhd4cCYKN7ALMbsZTDdiz7YPikedz2R3yfpLoXNZFapSuhrnaP6ThkvxPeZn.JPG)\n\n\n\nI walked around further to explore the trails all around the places. Locals told me about different paths we could take to explore it as well as places we we could do bike trails. So, I walked around because they don't need me to harvest yet. I found these beautiful spots all around the area that looks so untounched and raw. \n\n\n\n\n![DSCF2078.JPG](https://files.peakd.com/file/peakd-hive/macchiata/244eCfGKqKVL4yABFAHJD5repNvJYrZQiEj2ZFGAKYK4civERhkJ7XrYRyGDiuvM6k2QP.JPG)\n\n\n\n\n![DSCF2085.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23s9TKcJvENbeai8xpjRpmajArXtreXfKmpw7zGC8oy2CCXbypcQW411tjgFAAKHJiRBR.JPG)\n\nAfter I got tired exploring around, I joined the workers to pick shallots, filling up the bag with laughters filled the air to pass the time. It was really fun to pluck out the shallots and do the harvest. \n\n<div class=pull-right>\n\n![DSCF2090.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23uQnVtVUz6854uHLoZKj7GXuhCztM7tkegm24uXMKie8nvgHrTHnNRZY5dvqA7KWT3ph.JPG)\n\n</div>\n\n\n<div class=pull-right>\n\n\n![DSCF2034.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23yJLysBiWcShvJPdCsDFJuaEwrzgzhsfWgq4nk9ryzuBPrEXjyPbkiTaTrqvC9SzPxxH.JPG)\n\n</div>\n\nThis is once in a lifetime opportunity for me to experience this activity. After some rest, I took pictures of the workers who was waiting for lunch time.\n\n\n![DSCF2101.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23xpCmxNn1hwyp8nvmNGWhR3DFzBBZewPzNVpWcrTfscFgbonkr5mKeStR3PxqmXsf6S6.JPG)\n\nOnce we finished the row in the back of the hut, I explored another rows in front of it there's this beautiful blooming flowers of shallots. \n\n\n\n![DSCF2067.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23tbnq6j1QQhyAEaosCNTZRHG8vQyNQBqTzvYC1FbqQQ3S8LXWL1NL3Fth12Uix29npPr.JPG)\n\nThe mist started to appear during noon and it was time for us to also go down from the mountain. It was my first time exploring this mountain and didn't know it was hikeable at first. If you enjoy hiking or trekking, this is one of the most underrated, untounched places in East-Java and around. \n\nMany people who passes this city don't even know this place existed, including myself. This is why, I wondered how did they dutch even found it and built an empire of coffee plantation in this region? \n\n\n\n![DSCF2152.JPG](https://files.peakd.com/file/peakd-hive/macchiata/246GBHrM84d9wPKMfqovUq9EJpk21RzSvB4HgLkGGJER8Qax77W8wjynjBFAfFWCS3yoP.JPG)\n\nThis was the adventure that left me with more questions than answer. I wanted to go back there again and hoping I could get another chance to visit and explore more of the area. I saw some waterfalls around it that I didn't get the chance to look at. On the map, this place is also called Mt Liman too ( which is the highest peak of it) and the Mt Wilis itself is the name of the mountain range of the area because it connects several places in the region. \n\nMaybe it's time to explore your own city and who know, just as I do, finding this spot that looks so mesmerizing I came to know though I frequented this city. \n\n\n\n|||\n|-|-\n![NTy4GV6ooFRmaCXZ8UYgPhoud1kjiNX8QokLEZtbBKLuLWQ9yt7K3o4PG7qiS2SfyUvr6dYces7DWJ8xfHhq8PVtQPrvofyP72KL3ppdRxeugWvBfxeBRgtHv4FSStZc4YZ6Tzt1Pm995NNPZRyGjU7WNd7xvdEv2qtUNXuG.jpg](https://files.peakd.com/file/peakd-hive/macchiata/23t77FQVTCGtEBi1QzCfnjLFZ3BpB57ocvnKWNZbybVoNT2WGNztX9UKrTyCVdjXyPVch.jpg)| <div class=\"text-justify\">𝘊𝘦𝘮𝘺 (𝘰𝘳 𝘔𝘢𝘤) 𝘪𝘴 𝘢 𝖼𝗋𝖾𝖺𝗍𝗂𝗏𝖾 𝗀𝖾𝗇𝖾𝗋𝖺𝗅𝗂𝗌𝗍 & 𝘤𝘰𝘧𝘧𝘦𝘦 𝘤𝘰𝘯𝘯𝘰𝘪𝘴𝘴𝘦𝘶𝘳, 𝘢𝘯 𝘢𝘮𝘣𝘪𝘷𝘦𝘳𝘵 𝘸𝘩𝘰 𝘧𝘪𝘯𝘥𝘴 𝘣𝘢𝘭𝘢𝘯𝘤𝘦 𝘣𝘦𝘵𝘸𝘦𝘦𝘯 𝘴𝘰𝘭𝘪𝘵𝘶𝘥𝘦 𝘢𝘯𝘥 𝘴𝘰𝘤𝘪𝘢𝘭 𝘴𝘱𝘢𝘳𝘬. 𝘏𝘦𝘳 𝘣𝘭𝘰𝘨 𝘳𝘦𝘧𝘭𝘦𝘤𝘵𝘴 𝘩𝘦𝘳 𝘸𝘢𝘯𝘥𝘦𝘳𝘭𝘶𝘴𝘵, 𝘤𝘶𝘳𝘪𝘰𝘴𝘪𝘵𝘺, 𝘢𝘯𝘥 𝘱𝘢𝘴𝘴𝘪𝘰𝘯 𝘧𝘰𝘳 𝘨𝘳𝘰𝘸𝘵𝘩. 𝘠𝘰𝘶’𝘭𝘭 𝘰𝘧𝘵𝘦𝘯 𝘧𝘪𝘯𝘥 𝘩𝘦𝘳 𝘵𝘢𝘭𝘬𝘪𝘯𝘨 𝘢𝘣𝘰𝘶𝘵 𝘣𝘰𝘰𝘬𝘴, 𝘵𝘦𝘤𝘩𝘯𝘰𝘭𝘰𝘨𝘺, 𝘱𝘰𝘱 𝘤𝘶𝘭𝘵𝘶𝘳𝘦, 𝘵𝘳𝘢𝘷𝘦𝘭, 𝘢𝘯𝘥 𝘱𝘦𝘳𝘴𝘰𝘯𝘢𝘭 𝘱𝘩𝘪𝘭𝘰𝘴𝘰𝘱𝘩𝘺; 𝘦𝘴𝘱𝘦𝘤𝘪𝘢𝘭𝘭𝘺 𝘸𝘩𝘦𝘯 𝘴𝘩𝘦’𝘴 𝘧𝘰𝘶𝘳 𝘤𝘶𝘱𝘴 𝘥𝘦𝘦𝘱 𝘪𝘯 𝘤𝘰𝘧𝘧𝘦𝘦. 𝘚𝘩𝘦 𝘭𝘰𝘷𝘦𝘴 𝘴𝘸𝘪𝘮𝘮𝘪𝘯𝘨, 𝘤𝘰𝘰𝘬𝘪𝘯𝘨, 𝘢𝘯𝘥 𝘦𝘹𝘱𝘭𝘰𝘳𝘪𝘯𝘨 𝘯𝘦𝘸 𝘱𝘭𝘢𝘤𝘦𝘴. 𝘍𝘰𝘭𝘭𝘰𝘸 𝘩𝘦𝘳 𝘰𝘯 𝘏𝘪𝘷𝘦  𝘢𝘯𝘥 𝘨𝘳𝘢𝘣 𝘢 𝘤𝘶𝘱 𝘰𝘧 𝘤𝘰𝘧𝘧𝘦𝘦 𝘰𝘧 𝘪𝘥𝘦𝘢𝘴.</div> |</center>\n\n\n[//]:# (!worldmappin -7.802086 lat 111.729529 long <DESCRIPTION GOES HERE> d3scr)",
+        "category": "hive-163772",
+        "children": 3,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-05-25T07:03:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/macchiata/23xVMEJGF7DkvNnSF2M6yWp8mCCtjDgsguG1HaQ8ShWGPYRN9brCw3UWHKzuBdsD7ZYx4.png",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23wWu6rYofQxgsjbwJxPGBy24VstHhmT3Zf9GQynbh72B9LyXPVVVgKSi19VjsU5tT2Re.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23vsQDEB1ar6wcuDhdGoEbSA5YmDaSu6Ft3Y7e8haaVNiXvWLL2bnsBzn86kczX6mtoq5.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/245cWZREnfTi9gkwQQ226ZhSEQwww3gKLW12jCen8WkmKNQjWHJ6JMSSFbeApo59yQT3o.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23qrBx5QDH2m7R4y7pWjH5bDgWEMJP9AYxg7LUYNZtPxcwpYSc5Je75kLte4nEpNekD1V.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/244ofQkQqsAR5wv8Y74hkPDTthivZqVMgq9JRJ45AdckHnJobKU3xh7A7kz9n21XgRYGt.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23ywyiXpEuhd4cCYKN7ALMbsZTDdiz7YPikedz2R3yfpLoXNZFapSuhrnaP6ThkvxPeZn.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/244eCfGKqKVL4yABFAHJD5repNvJYrZQiEj2ZFGAKYK4civERhkJ7XrYRyGDiuvM6k2QP.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23s9TKcJvENbeai8xpjRpmajArXtreXfKmpw7zGC8oy2CCXbypcQW411tjgFAAKHJiRBR.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23uQnVtVUz6854uHLoZKj7GXuhCztM7tkegm24uXMKie8nvgHrTHnNRZY5dvqA7KWT3ph.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23yJLysBiWcShvJPdCsDFJuaEwrzgzhsfWgq4nk9ryzuBPrEXjyPbkiTaTrqvC9SzPxxH.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23xpCmxNn1hwyp8nvmNGWhR3DFzBBZewPzNVpWcrTfscFgbonkr5mKeStR3PxqmXsf6S6.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23tbnq6j1QQhyAEaosCNTZRHG8vQyNQBqTzvYC1FbqQQ3S8LXWL1NL3Fth12Uix29npPr.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/246GBHrM84d9wPKMfqovUq9EJpk21RzSvB4HgLkGGJER8Qax77W8wjynjBFAfFWCS3yoP.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23t77FQVTCGtEBi1QzCfnjLFZ3BpB57ocvnKWNZbybVoNT2WGNztX9UKrTyCVdjXyPVch.jpg"
+          ],
+          "tags": [
+            "adventure",
+            "travel",
+            "trail",
+            "hiking",
+            "nature",
+            "photography",
+            "pob"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 56160618086446,
+        "payout": 4.348,
+        "payout_at": "2026-06-01T07:03:06",
+        "pending_payout_value": "4.348 HBD",
+        "percent_hbd": 10000,
+        "permlink": "hidden-trails-and-shallot-harvesting-adventure-in-mount-wilis",
+        "post_id": 150225796,
+        "reblogs": 4,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1007
+        },
+        "title": "Hidden Trails & Shallot Harvesting Adventure in Mount Wilis ",
+        "updated": "2026-05-25T07:03:06",
+        "url": "/hive-163772/@macchiata/hidden-trails-and-shallot-harvesting-adventure-in-mount-wilis"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 941737368,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 1690842982,
+            "voter": "jeanlucsr"
+          },
+          {
+            "rshares": 12613025997,
+            "voter": "fabiyamada"
+          },
+          {
+            "rshares": 1305091328,
+            "voter": "nathanpieters"
+          },
+          {
+            "rshares": 16781621016,
+            "voter": "khaleelkazi"
+          }
+        ],
+        "author": "enlace",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 67.07,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "<center><h2>PROYECTO ENLACE</h2><h3>'Conectando Ideas y Comunidades'</h3><hr/><p> https://images.hive.blog/DQmX5VDK1mH4KmoSnBmfTJ4Q11HrwAxvvVCGegekrr7XrJF/reportenlace.png </p><strong> Fuente: enlace, imagen de fondo de dominio público disponible en <a href='https://pixabay.com/es/photos/equipo-amistad-grupo-manos-4529717'> Pixabay</a> </strong> </center><hr/><div class='text-justify'><p>El presente artículo, resume la actividad de nuestro equipo de curadores durante el día de hoy.</p><p><b><a href='https://hive.blog/trending/hive-111999'>PROYECTO ENLACE</a></b> es un proyecto de curación de habla hispana enfocado en recompensar contenido de calidad y apoyar autores en su proceso de crecimiento en HIVE, las normas para publicar en PROYECTO ENLACE son las siguientes:</p><p>1)\tEl contenido debe ser original, en caso de usar citas colocar la referencia utilizada.<br/>2)\tRespetar las normas básicas de la gramática y la ortografía.<br/>3)\tEvitar todo tipo de contenido que promueva la discriminación de cualquier índole. </p><p>A continuación presentamos los artículos seleccionados el día de hoy</p><table><tr><th></th><th>Artículo Seleccionado</th><th>Autor</th></tr><tr><td>1</td><td><a href='https://hive.blog/hive-111999/@magnaconsciencia/de-camino-a-una-actividad-de-sanacin-parque-cachamay-4da'>De camino a una actividad de sanación (Parque Cachamay)</a></td><td>@magnaconsciencia</td></tr><tr><td>2</td><td><a href='https://hive.blog/hive-124452/@veramfund/hay-lugares-que-sostienen-mas'>Hay lugares que sostienen más de lo que imaginamos. Ladies of Hive Community Contest #290. [Esp/Eng]</a></td><td>@veramfund</td></tr><tr><td>3</td><td><a href='https://hive.blog/hive-124452/@isaacmf123/los-lugares-donde-una-vuelve'>Los lugares donde una vuelve a sí misma. Ladies of Hive Community Contest # 290 [Esp/Eng]</a></td><td>@isaacmf123</td></tr><tr><td>4</td><td><a href='https://hive.blog/hive-179017/@vladimirmf/reflejos-entre-la-habitacion-y'>Reflejos entre la habitación y la noche. Entry for Reflection Hunters contest-SMARP- round 273 [EN/ES]</a></td><td>@vladimirmf</td></tr><tr><td>5</td><td><a href='https://hive.blog/hive-131951/@noraydaap/lo-que-aprendi-demasiado-tarde-6378db1d4b2a4'>Lo que aprendí demasiado tarde #2: Sobre el cansancio que nadie nota | What I Learned Too Late #2: About the exhaustion nobody notices</a></td><td>@noraydaap</td></tr><tr><td>6</td><td><a href='https://hive.blog/hive-164241/@luisfe/historias-ajenas-que-nos-tocan'>HISTORIAS AJENAS QUE NOS TOCAN</a></td><td>@luisfe</td></tr><tr><td>7</td><td><a href='https://hive.blog/hive-13323/@angeluxx/splinterlands-gifts-battles-and-a-cruel-lessonengspn-8xb'>Splinterlands: Gifts, battles, and a cruel lesson[Eng-Spn]</a></td><td>@angeluxx</td></tr><tr><td>8</td><td><a href='https://hive.blog/hive-13323/@bulkathos/a-look-at-the-voltage'>A look at the Voltage Event: The Electroneum x Splinterlands initiative! Balance Brawls, progress in Frontiers and opening of Gladius and Foundations Packs! [Eng/Esp]</a></td><td>@bulkathos</td></tr><tr><td>9</td><td><a href='undefined'>undefined</a></td><td>@undefined</td></tr><tr><td>10</td><td><a href='undefined'>undefined</a></td><td>@undefined</td></tr></table><p>Creemos y apostamos por el futuro de esta gran red social basada en contenido y estamos muy emocionados de poder hacerla crecer junto a todos ustedes. Así que te invitamos a publicar en nuestra <a href='https://hive.blog/trending/hive-111999'>COMUNIDAD</a> y estar atento a todas las actividades que tenemos preparadas y que estaremos publicando en breve.</p><p>¿QUIERES AUTOMATIZAR TUS GANANCIAS DE CURACIÓN? SE PARTE DEL PROYECTO ENLACE APOYANDO A NUESTRO TRAIL EN HIVE.VOTE<a href='https://hive.blog/hive-167922/@enlace/automatiza-tus-ganancias-de-curacin-siendo-parte-del-proyecto-enlace-apoya-a-nuestro-trail-en-hivevote'> INGRESA AQUÍ PARA CONCOCER LOS DETALLES.</a></p><p><strong>¿QUIERES INVERTIR ENLACE? DESCUBRE COMO HACERLO Y GENERAR INGRESOS DE FORMA SEMANAL MEDIANTE TU DELEGACIÓN DE HP<a href='https://hive.blog/hive-167922/@enlace/s-parte-de-nuestro-proyecto-nete-al-programa-de-socios-enlace-y-recibe-ganancias-semanales-apr-1095-6hy'> AQUÍ TE EXPLICAMOS COMO.</a></strong></p><p>Agradecimientos especiales a los miembros de nuestro <a href='https://hive.blog/hive-167922/@enlace/s-parte-de-nuestro-proyecto-nete-al-programa-de-socios-enlace-y-recibe-ganancias-semanales-apr-1095-6hy'>PROGRAMA DE SOCIOS ENLACE</a> que con sus delegaciones sustentan al proyecto mientras reciben ganancias semanales: <strong>@nitsuga12, @anicruzmh, @iscrak, @youyowi, @lanoican, @nodoninja, @por500bolos, @yolimarag, @hermandadsteem, @carl05, @sacra97, @josemalavem, @cielitorojo, @alerojas, @mogollono1862, @vicokiwi, @agreste, @poetation, @adonisr, @care1869, @emiliorios, @nancybriti1, @dayna199019, @hiramdo, @gpache, @keco, @carisma77, @xixi80, @morepina, @suezoe, @joseantpp, @nabu.doconosor2, @franvenezuela, @ninamarcano, @sayago, @amatorrs, @cryptonarios, @dianypds, @freed99, @restaurador, @gelart, @dafne25, @noelmut19, @yeral-diaz, @ycarola, @edujo, @katriel1, @ivannap, @m16uellop, @marioshelk, @antonioeviesart, @osismi, @popurri, @r4f4, @fenngen, @jdrh93, @marabuzal, @psyfire25, @kdelvaeg y @almadepoeta.</strong></p><p><strong>Te invitamos a participar en nuestro servidor de Discord: https://discord.gg/3S9y7BbWfS</strong></p><center><h2>Atentamente</h2><h2>EQUIPO ENLACE 2026</h2></center></div>\n\nPosted Using [INLEO](https://inleo.io/@enlace/publicaciones-valoradas-por-el-proyecto-enlace-el-da-24052026-a28)",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-25T06:52:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@enlace/publicaciones-valoradas-por-el-proyecto-enlace-el-da-24052026-a28",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://images.hive.blog/DQmX5VDK1mH4KmoSnBmfTJ4Q11HrwAxvvVCGegekrr7XrJF/reportenlace.png"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://pixabay.com/es/photos/equipo-amistad-grupo-manos-4529717'>",
+            "https://hive.blog/trending/hive-111999'>PROYECTO",
+            "https://hive.blog/hive-111999/@magnaconsciencia/de-camino-a-una-actividad-de-sanacin-parque-cachamay-4da'>De",
+            "https://hive.blog/hive-124452/@veramfund/hay-lugares-que-sostienen-mas'>Hay",
+            "https://hive.blog/hive-124452/@isaacmf123/los-lugares-donde-una-vuelve'>Los",
+            "https://hive.blog/hive-179017/@vladimirmf/reflejos-entre-la-habitacion-y'>Reflejos",
+            "https://hive.blog/hive-131951/@noraydaap/lo-que-aprendi-demasiado-tarde-6378db1d4b2a4'>Lo",
+            "https://hive.blog/hive-164241/@luisfe/historias-ajenas-que-nos-tocan'>HISTORIAS",
+            "https://hive.blog/hive-13323/@angeluxx/splinterlands-gifts-battles-and-a-cruel-lessonengspn-8xb'>Splinterlands:",
+            "https://hive.blog/hive-13323/@bulkathos/a-look-at-the-voltage'>A",
+            "https://hive.blog/trending/hive-111999'>COMUNIDAD</a>",
+            "https://hive.blog/hive-167922/@enlace/automatiza-tus-ganancias-de-curacin-siendo-parte-del-proyecto-enlace-apoya-a-nuestro-trail-en-hivevote'>",
+            "https://hive.blog/hive-167922/@enlace/s-parte-de-nuestro-proyecto-nete-al-programa-de-socios-enlace-y-recibe-ganancias-semanales-apr-1095-6hy'>",
+            "https://hive.blog/hive-167922/@enlace/s-parte-de-nuestro-proyecto-nete-al-programa-de-socios-enlace-y-recibe-ganancias-semanales-apr-1095-6hy'>PROGRAMA",
+            "https://discord.gg/3S9y7BbWfS</strong></p><center><h2>Atentamente</h2><h2>EQUIPO",
+            "https://inleo.io/@enlace/publicaciones-valoradas-por-el-proyecto-enlace-el-da-24052026-a28)"
+          ],
+          "tags": [
+            "hive-167922",
+            "spanish",
+            "leofinance",
+            "neoxian",
+            "hispapro",
+            "creativecoin",
+            "curation",
+            "blog",
+            "gems"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 1087473987681,
+        "payout": 0.084,
+        "payout_at": "2026-06-01T06:52:30",
+        "pending_payout_value": "0.084 HBD",
+        "percent_hbd": 0,
+        "permlink": "publicaciones-valoradas-por-el-proyecto-enlace-el-da-24052026-a28",
+        "post_id": 150225749,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 115
+        },
+        "title": "PUBLICACIONES VALORADAS POR EL PROYECTO ENLACE EL DÍA 24/05/2026",
+        "updated": "2026-05-25T06:52:30",
+        "url": "/hive-167922/@enlace/publicaciones-valoradas-por-el-proyecto-enlace-el-da-24052026-a28"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 4635913211,
+            "voter": "robsteady"
+          },
+          {
+            "rshares": 2103692826,
+            "voter": "bigtakosensei"
+          },
+          {
+            "rshares": 2523107919,
+            "voter": "thereikiforest"
+          },
+          {
+            "rshares": 78855617199,
+            "voter": "bloghound"
+          },
+          {
+            "rshares": 834913207,
+            "voter": "frankydoodle"
+          }
+        ],
+        "author": "hiro.juegos",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 66.1,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "hiroshige",
+            "weight": 10000
+          }
+        ],
+        "blacklists": [],
+        "body": "I love games and eSports so I want to share with all of you **my favorite posts** and I hope you like them too. If so, give them a vote of confidence to support their hard work.\n\n**The selection will not be limited to a single tribe but will encompass many different ones.** It will also be varied in topics whether they are pure publications, contests or NFTs. And of course both in written format and in videos.\n\nThis is the selection of **2 articles that I found most interesting today.**\n\n\n\n\n\n\nDisclaimer\n\nThe games discussed in these posts are for mere entertainment. Investing in games with NFTs carries high risks. You are responsible for conducting your own research before investing.",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-25T06:39:24",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "description": "I love games and eSports so I want to share with all of you my favorite posts and I hope you like them too. If so, give them a vote of confidence to support their hard work. The selection will not be limited",
+          "format": "markdown+html",
+          "image": [],
+          "image_ratios": [],
+          "tags": [
+            "hive-167922",
+            "spt",
+            "pob",
+            "archon",
+            "hive-engine",
+            "lolz",
+            "pimp",
+            "cent",
+            "thgaming",
+            "bbh"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 768584071602,
+        "payout": 0.059,
+        "payout_at": "2026-06-01T06:39:24",
+        "pending_payout_value": "0.059 HBD",
+        "percent_hbd": 10000,
+        "permlink": "selection-of-the-best-articles-a4c714ac091ba",
+        "post_id": 150225663,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 94
+        },
+        "title": "Selection of the best articles about Games and eSports in Hive ~ 1236",
+        "updated": "2026-05-25T06:39:24",
+        "url": "/hive-167922/@hiro.juegos/selection-of-the-best-articles-a4c714ac091ba"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 62871687014,
+            "voter": "funnel"
+          },
+          {
+            "rshares": 4002155278,
+            "voter": "yiyi.maiola"
+          },
+          {
+            "rshares": 28557176743,
+            "voter": "ganjafarmer"
+          },
+          {
+            "rshares": 29971236199,
+            "voter": "grocko"
+          },
+          {
+            "rshares": 13694706099,
+            "voter": "bambukah"
+          }
+        ],
+        "author": "holovision.cash",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 60.86,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<center>![image.png](https://files.peakd.com/file/peakd-hive/holovision.cash/23wC9d3mDudPGeK7uvkDCWQBGVDuXc8BA39ewAJohYapQ7hBCVB88R8En5FzpywMTgP7D.png) Image Source: DALL-E</center>\n\n<center>**My Hive-Engine Daily Report – May 24, 2026**</center>\n\nToday I added liquidity to a couple of Hive-Engine pools. One move paired PHOTO with MEME and the other pushed MEME deeper by pairing it with LOLZ.\n\nOverall this was a “lean into the culture tokens” day, more of my MEME token exposure with PHOTO and LOLZ acting like the sidekicks.\n\n<center>**My Transactions**</center>\n\nHere’s what I added today:\n\n- 122.56 PHOTO + 587.0992 MEME\nThis one feels like a playful bet on attention + humor. PHOTO has a creative vibe. I like this pair when I’m in a “let’s keep it fun” mood.\n - 869.8654 MEME + 72.42093825 LOLZ\nStraight-up meme fueled. I wanted MEME to stay the centerpiece today and LOLZ is a perfect pairing to keep that vibe strong.\n<center>**Pie Graph of Transactions**</center>\n\nBelow is today’s pie graph showing the proportion of each token I added in total (using raw token amounts). MEME clearly dominated the day, with PHOTO taking a modest slice, and LOLZ rounding it out as the smaller supporting piece.\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/holovision.cash/23r28BmejXncwvcBM1DaWRZ4b2ECAJqAFQtJtRjzs71oJkzhiBXCYLgGPZRAEPsopfEw1.png) Image Source: ChatGPT</center> <center>**My Thoughts / Reflections**</center>\n\nWhat stands out today is how concentrated this was:\n\nMEME absolutely ran the show—it was the bulk of what I added across both pools, which tells me I was in full “meme liquidity builder” mode.\nPHOTO got a meaningful supporting share, which feels like a nice creative counterbalance to pure meme energy.\nLOLZ was the small-but-intentional add—not huge on the chart, but it’s a good “keep the pool healthy” kind of move.",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-25T04:36:00",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/holovision.cash/23wC9d3mDudPGeK7uvkDCWQBGVDuXc8BA39ewAJohYapQ7hBCVB88R8En5FzpywMTgP7D.png",
+            "https://files.peakd.com/file/peakd-hive/holovision.cash/23r28BmejXncwvcBM1DaWRZ4b2ECAJqAFQtJtRjzs71oJkzhiBXCYLgGPZRAEPsopfEw1.png"
+          ],
+          "tags": [
+            "leofinance",
+            "hive",
+            "vyb",
+            "pob",
+            "neoxian",
+            "cent",
+            "palnet",
+            "hive-engine",
+            "inleo",
+            "ecency"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 4598603713892,
+        "payout": 0.355,
+        "payout_at": "2026-06-01T04:36:00",
+        "pending_payout_value": "0.355 HBD",
+        "percent_hbd": 0,
+        "permlink": "my-hive-engine-daily-report-may-24-2026",
+        "post_id": 150225012,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 78
+        },
+        "title": "My Hive-Engine Daily Report – May 24, 2026",
+        "updated": "2026-05-25T04:36:00",
+        "url": "/hive-167922/@holovision.cash/my-hive-engine-daily-report-may-24-2026"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 27173551420,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 1676956640626,
+            "voter": "germansailor"
+          },
+          {
+            "rshares": 699135178720,
+            "voter": "sabine-reichert"
+          },
+          {
+            "rshares": 7108278968,
+            "voter": "esteemapp"
+          },
+          {
+            "rshares": 3067959572,
+            "voter": "pbock"
+          }
+        ],
+        "author": "ssjsasha",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.03,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "I say this now, but now that I am thinking about it if someone was to ask me \"pick one forever\" I don't know what to answer.\n\nBut after playing Pokemon Polished Crystal, catching every single Pokemon in their Pokédex and completing all the side missions and trainers, one of my all time favourite Pokemon is the alolan moltres.\n\n https://img.leopedia.io/DQmYS9WengntKrBW5ABArdq3g2KCRd2bb3zknwKKX1PaVon/IMG_9938.jpg \n\nI am playing this using the Delta app on my iPhone and its been super fun, I am able to save multiple files and put the speed to 3 or 4x so I can do things way faster than regular speed if I am hunting for shiny eggs. One of my favourite emulators that work for apple products, can play Nintendo, Super Nintendo, N64, Gameboy, Gameboy advanced and Nintendo DS with Delta app\n\n https://img.leopedia.io/DQmcWjmZf8skQ97BcytNgpLZbHRcVEQbGxWHaiQmq3kycT6/IMG_9940.jpg \n\nThis particular molters has a very powerful ability that works well with its stats. You will notice that the relaxed nature gives it a higher than normal defence stat and a lower than normal speed stat. this works well for 2 reasons. For one the defence protects it from getting rekt hard from physical attacks, and the speed makes it go second. Now why is going second good? Well its Berserk ability makes the sp attack go nice and high when its damaged below half health. Giving it a powerful counter attack when its time to fight back\n\n https://img.leopedia.io/DQmevtU5uyHaio5NdV1PAa9d6wczBH9khxuyukKoD835mEm/IMG_9943.jpg \n\n\nThis is where Sucker Punch comes in, Sucker Punch is like quick attack or extreme speed making Moltres attack first, so if it's about to get knocked out it can hit hard first no matter what. nasty plot significantly increases its special attack which makes that dark pulse super wild\n\n https://img.leopedia.io/DQmSDWPJJh8d8iNgDLoj8oKNcKm6SYNvGNThVrMwXxwGbxm/IMG_9942.jpg \n\nNow what you see here is something I found that blew my mind, it's the Pokérus virus that boosts stats. I got it randomly and that is right, I made sure to spread that thing among all of my guys. Almost all of my Pokemon are infected (that's a good thing). Now this one with the circle without the legs means this moltres can't spread the virus but it still retains the stat boosting effects.\n\nI really like this Moltres, its such a powerhouse its wild to me how it was able to sweep teams like its nothing. The dark type is wild and spanks so many enemies like they are nothing.\n\nPosted Using [INLEO](https://inleo.io/@ssjsasha/i-have-a-new-favourite-pokemon-beb)",
+        "category": "hive-167922",
+        "children": 2,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-25T04:34:15",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@ssjsasha/i-have-a-new-favourite-pokemon-beb",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmYS9WengntKrBW5ABArdq3g2KCRd2bb3zknwKKX1PaVon/IMG_9938.jpg",
+            "https://img.leopedia.io/DQmcWjmZf8skQ97BcytNgpLZbHRcVEQbGxWHaiQmq3kycT6/IMG_9940.jpg",
+            "https://img.leopedia.io/DQmevtU5uyHaio5NdV1PAa9d6wczBH9khxuyukKoD835mEm/IMG_9943.jpg",
+            "https://img.leopedia.io/DQmSDWPJJh8d8iNgDLoj8oKNcKm6SYNvGNThVrMwXxwGbxm/IMG_9942.jpg"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://inleo.io/@ssjsasha/i-have-a-new-favourite-pokemon-beb)"
+          ],
+          "tags": [
+            "hive-167922",
+            "inleo",
+            "leo",
+            "leofinance",
+            "pokemon",
+            "hive",
+            "moltres",
+            "nostalgia",
+            "pokerus",
+            "gameboy"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 4969125509689,
+        "payout": 0.381,
+        "payout_at": "2026-06-01T04:34:15",
+        "pending_payout_value": "0.381 HBD",
+        "percent_hbd": 10000,
+        "permlink": "i-have-a-new-favourite-pokemon-beb",
+        "post_id": 150225001,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 65
+        },
+        "title": "I have a new favourite Pokemon",
+        "updated": "2026-05-25T04:34:15",
+        "url": "/hive-167922/@ssjsasha/i-have-a-new-favourite-pokemon-beb"
+      },
+      {
+        "active_votes": [],
+        "author": "ruta.loans",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 52.04,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![image.png](https://files.peakd.com/file/peakd-hive/ruta.loans/23uFwixWr9Rss9Zmu9AGahhzn1NPwtoen2bYTpbaMr3F3zLDWeaQsByYg5f2uCGxWuyk8.png)\nSe ha prestado\t22\tHBD\t@eveyese1312\tquien pagará\t26,4\tHBD antes del\t01/03/2026\ndejó en garantía su cuenta de Hive.\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\nPrestamistas participando:\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n@danielvehe\tquien recibirá\t1,100\tHBD\t\t\t\t\n@enmy\tquien recibirá\t1,100\tHBD\t\t\t\t\n@rutablockchain\tquien recibirá\t2,200\tHBD\t\t\t\t",
+        "category": "hive-167922",
+        "children": 1,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-25T03:22:00",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/ruta.loans/23uFwixWr9Rss9Zmu9AGahhzn1NPwtoen2bYTpbaMr3F3zLDWeaQsByYg5f2uCGxWuyk8.png"
+          ],
+          "tags": [
+            "rutaloans",
+            "spanish",
+            "leofinance",
+            "rutablockchain",
+            "hbd",
+            "hive",
+            "loans"
+          ],
+          "users": [
+            "eveyese1312",
+            "danielvehe",
+            "enmy",
+            "rutablockchain"
+          ]
+        },
+        "max_accepted_payout": "0.000 HBD",
+        "net_rshares": 0,
+        "payout": 0,
+        "payout_at": "2026-06-01T03:22:00",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "pagado-prestamo-a-eveyese1312-por-22-hbd-or-p-0610-or-t3-30122025",
+        "post_id": 150224418,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "PAGADO -  Préstamo a @eveyese1312 por 22 HBD | P-0610\t\t\t| T3 30122025",
+        "updated": "2026-05-25T03:22:00",
+        "url": "/hive-167922/@ruta.loans/pagado-prestamo-a-eveyese1312-por-22-hbd-or-p-0610-or-t3-30122025"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 888850804,
+            "voter": "tuck-fheman"
+          },
+          {
+            "rshares": 205659170775,
+            "voter": "team"
+          },
+          {
+            "rshares": 31538954770,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 657459812,
+            "voter": "juanmiguelsalas"
+          },
+          {
+            "rshares": 1907194117,
+            "voter": "ratel"
+          }
+        ],
+        "author": "astrolabio",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 69.13,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![IMG_20260510_194627_372.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23wWvpdZLUNvaEjHYabCzw3CGWjjhG3fnkAQcj7nBKCpo4jtafznYPzjUSKC7gKT7qZeo.jpg)\n\nThe historic center of Caracas is one of those places that, no matter how many times you have walked through it, is always pleasant to visit and wander around again.\n> El casco histórico de Caracas es uno de esos lugares que sin importar cuántas veces lo hayas recorrido, siempre es grato pasar y darse una vuelta de nuevo.\n\n![IMG_20260510_194627_349.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23xATNcf174rWVHjZYhGEGa6Jtcbtnb3KBrdisiJimZjmVdch7mUQQfB4yG7yvpecksXU.jpg)\n\n\n\n![IMG_20260510_194627_087.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23u62kDwkLC6moHhqP5xzAN49ZYHKqVoQt5jvHSGgkGdTXStjFMPdhjysRNFHZHRHoj5w.jpg)\n\n![IMG_20260510_194626_988.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23xedWwTDjrXB1LeAuH6L7CMUjCL4FnrWWAxqaSAPByztN5RofUm5owkUGGy5UK6uWwMp.jpg)\n\nFor those visiting the city, walking through the bustling commercial and administrative heart of Caracas becomes almost a mandatory experience.\n> Para quienes visitan la ciudad, caminar por el centro caraqueño, de alta actividad comercial y administrativa, se convierte en una experiencia casi obligatoria. \n\n\n\n![IMG_20260510_194626_878.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23x155XNopTiARe8jaVsyz2eVweuEFZkjzZZgjE7nXCbXxwduCrSckktUoSti4EDEibgY.jpg)\n\n![IMG_20260510_194626_904.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23uFTmvyBpCszy6iMyZPGJvdUT59kw71GzEN7351HANbSRr7HEbdgKFfWHaFuKpnB6gVM.jpg)\n\n![IMG_20260510_194529_667.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/244UmimUxzxYTyYZkEiZdeFj9AvGcWzWso5A643cmxTinkZe2Ke3Wzd6Q4BBGuudajf52.jpg)\n\nAlthough on weekdays it is a fairly crowded area, on Sundays the usual hustle and bustle of the center transforms into an unusual calm, reminiscent of the slow pace of old towns in the Venezuelan provinces, creating a quiet and open setting that invites you to observe the general atmosphere of the area more closely.\n> Aunque los días de la semana es un sitio bastante transitado, los domingos por lo general, el habitual bullicio del centro se transforma en una calma inusual, que recuerda a la parsimonia de los viejos pueblos de las provincias venezolanas, creando un escenario tranquilo y despejado que invita a observar con más detenimiento el ambiente general de la zona.\n\n\n![IMG_20260510_194019_937.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23yJCFAsAU5pRRQJrnsD9dw6SyHWErcHQsPZ1auB7rocXYuutenkPV5LhUQWFL1Wa4SGc.jpg)\n\n![IMG_20260510_194701_239.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23zGWMR7eauZjmJNPLAtVTk6f3TnTGHw6jjxUoMAV49kfE2Nd8Ps6zAxGhb8o8VnassJ2.jpg)\nIt is easy to get lost in the architecture surrounding the plaza, characterized by its iconic equestrian statue in honor of the Liberator, Simón Bolívar, and the old Caracas cathedral on its northwest corner.\n> Es fácil dejarse llevar por la arquitectura que rodea la plaza, caracterizada por su emblemática escultura ecuestre en honor al Libertador, Simón Bolívar y la vieja catedral de Caracas en su esquina noroeste. \n\n\n![IMG_20260510_194700_657.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23xyNcRKF3w73vp422vEYRuma5udQyGfs7ZCL2w1TbYLweaFFVnJs9gMfwzWKtzTj6SFT.jpg)\n\n\n\n![IMG_20260510_194109_985.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/2449woGyQPpasb6yeE2qx3f6mfTkfKth41iviNwotg3fpcRR9HdMhuThsFGCjfDiqAQNs.jpg)\n\nHowever, most of the buildings around the plaza housing government institutions—do not date back to colonial times, but rather to the republican period of the late 19th century.\n> Pero la mayor parte de los edificios que rodean la plaza, sedes de instituciones gubernamentales,  no pertenecen a la época colonial, sino al periodo republicano de finales del siglo XIX. \n\nThese are facades that speak of a Venezuela seeking to consolidate its identity after independence, with neoclassical lines and an air of solemnity that remains intact to this day.\n> Son fachadas que hablan de una Venezuela que buscaba consolidar su identidad tras la independencia, con líneas neoclásicas, con un un aire de solemnidad que aún se mantiene intacto.\n\n\n![IMG_20260510_194019_135.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/2458DpsV7MM8ADdYbQNQuM728ZbgAJH9oJVey1pKfNnScJRk666N9YnLZtaLrASKpzcQw.jpg)\n\n![IMG_20260510_194342_628.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23w2gphmSfbVrRgLUaExebAh8UCZyGAgzaE5xCrPrx8mXtQAdtdCHjDkQteYw8Sza11gY.jpg)\n\n\nThe imprint of colonial architecture has not disappeared and still quietly coexists inside some buildings and houses in the center, in brick arches and mud walls, and almost unexpectedly, beneath the ground, where part of the old drainage system, designed in colonial times, remains intact and still functions today.\nLa huella de la arquitectura colonial no ha desaparecido y aún convive de forma discreta en el interior de algunos edificios y casas del centro, en los arcos de ladrillo y tapias y de manera casi inesperada, bajo el suelo, donde parte del antiguo sistema de drenaje, diseñado en tiempos de la colonia, permanece intacto y sigue funcionando hoy en día. \n\n\n[//]:# (!worldmappin 10.50611 lat -66.91453 long Plaza Bolívar  d3scr)\n\nWalking through downtown Caracas on a Sunday has its advantages—despite the closed shops amid the absence of crowds and the palpable weight of history, the historic center and its structures stand out in high contrast.\n> Recorrer el centro de Caracas un domingo tiene sus ventajas, a pesar de los locales cerrados,  entre la ausencia de multitudes y el peso de los años que se respira, el casco histórico y sus estructuras se revelan en alto contraste. \n\n\n \n\n\n![IMG_20260510_194700_942.jpg](https://files.peakd.com/file/peakd-hive/astrolabio/23wWrth32D88PpyyDiS6kCjhR5tFPJQzkVawbrndj4ewCcZNUtUyjDHiMHHuz6i12fJA6.jpg)\n\n\n[//]:# (!worldmappin 10.50611 lat -66.91453 long Plaza Bolívar  d3scr)",
+        "category": "hive-163772",
+        "children": 1,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-05-25T02:59:18",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23wWvpdZLUNvaEjHYabCzw3CGWjjhG3fnkAQcj7nBKCpo4jtafznYPzjUSKC7gKT7qZeo.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23xATNcf174rWVHjZYhGEGa6Jtcbtnb3KBrdisiJimZjmVdch7mUQQfB4yG7yvpecksXU.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23u62kDwkLC6moHhqP5xzAN49ZYHKqVoQt5jvHSGgkGdTXStjFMPdhjysRNFHZHRHoj5w.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23xedWwTDjrXB1LeAuH6L7CMUjCL4FnrWWAxqaSAPByztN5RofUm5owkUGGy5UK6uWwMp.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23x155XNopTiARe8jaVsyz2eVweuEFZkjzZZgjE7nXCbXxwduCrSckktUoSti4EDEibgY.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23uFTmvyBpCszy6iMyZPGJvdUT59kw71GzEN7351HANbSRr7HEbdgKFfWHaFuKpnB6gVM.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/244UmimUxzxYTyYZkEiZdeFj9AvGcWzWso5A643cmxTinkZe2Ke3Wzd6Q4BBGuudajf52.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23yJCFAsAU5pRRQJrnsD9dw6SyHWErcHQsPZ1auB7rocXYuutenkPV5LhUQWFL1Wa4SGc.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23zGWMR7eauZjmJNPLAtVTk6f3TnTGHw6jjxUoMAV49kfE2Nd8Ps6zAxGhb8o8VnassJ2.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23xyNcRKF3w73vp422vEYRuma5udQyGfs7ZCL2w1TbYLweaFFVnJs9gMfwzWKtzTj6SFT.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/2449woGyQPpasb6yeE2qx3f6mfTkfKth41iviNwotg3fpcRR9HdMhuThsFGCjfDiqAQNs.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/2458DpsV7MM8ADdYbQNQuM728ZbgAJH9oJVey1pKfNnScJRk666N9YnLZtaLrASKpzcQw.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23w2gphmSfbVrRgLUaExebAh8UCZyGAgzaE5xCrPrx8mXtQAdtdCHjDkQteYw8Sza11gY.jpg",
+            "https://files.peakd.com/file/peakd-hive/astrolabio/23wWrth32D88PpyyDiS6kCjhR5tFPJQzkVawbrndj4ewCcZNUtUyjDHiMHHuz6i12fJA6.jpg"
+          ],
+          "tags": [
+            "photography",
+            "venezuela",
+            "caracas",
+            "plazabolivar",
+            "congreso",
+            "travel",
+            "pob",
+            "hive",
+            "architecture"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 16586480115495,
+        "payout": 1.284,
+        "payout_at": "2026-06-01T02:59:18",
+        "pending_payout_value": "1.284 HBD",
+        "percent_hbd": 10000,
+        "permlink": "sunday-stroll-through-downtown-caracas-paseo-dominical-por-el-centro-de-caracas",
+        "post_id": 150224250,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 642
+        },
+        "title": "Sunday stroll through downtown Caracas / Paseo dominical por el centro de Caracas ",
+        "updated": "2026-05-25T02:59:18",
+        "url": "/hive-163772/@astrolabio/sunday-stroll-through-downtown-caracas-paseo-dominical-por-el-centro-de-caracas"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 193560372355,
+            "voter": "pharesim"
+          },
+          {
+            "rshares": 888850804,
+            "voter": "tuck-fheman"
+          },
+          {
+            "rshares": 205659170775,
+            "voter": "team"
+          },
+          {
+            "rshares": 31538954770,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 657459812,
+            "voter": "juanmiguelsalas"
+          }
+        ],
+        "author": "lauramica",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 80.22,
+        "author_role": "mod",
+        "author_title": "Curation & Moderation",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 300
+          }
+        ],
+        "blacklists": [],
+        "body": "<div class=\"text-justify\">  \n\nAfter having been surrounded by travelers from all over the world, I discovered just how valuable the <strong>City of Buenos Aires</strong> is from a tourism perspective. Perhaps as locals we do not pay much attention to it, but our area is full of interesting places to visit and explore. When I returned from my last backpacking trip, I decided to explore those corners of the city that others appreciate so much, with the goal of continuing to learn more about my own province. One of those places was the area surrounding the famous <strong>Boca Juniors stadium</strong>, and I found a neighborhood full of life and passion for football 😃.\n\n<blockquote>\nDespués de haber estado rodeada de viajeros de todas partes, descubrí lo valiosa que es la <strong>Ciudad de Buenos Aires</strong> a nivel turístico. Quizás como locales no prestamos tanta atención a esto, pero nuestra zona está llena de lugares interesantes para ir a visitar y recorrer. Cuando volví de mi último viaje de mochilera, me decidí a explorar esos rincones de la ciudad que otros valoran tantos, con el objetivo de seguir conociendo un poco más de mi propia provincia. Uno de esos puntos era el que rodea la famosa <strong>cancha de Boca Juniors</strong>, y me encontré con un barrio lleno de vida y pasión por el fútbol 😃.\n</blockquote>\n\n\n---\n---\n\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23y8jH9SoH8Ms7FQszw3dCWV4NZQ5ZF26WyCEGxLQkHLUnwoNp3ewdJoJ7zkvopTxoGjb.png\" alt=\"Worldmappin - 2026-05-24T225300.781.png\">\n</center>\n\n---\n---\n\nWhile looking through the city’s tourist attractions, I realized there are so many places I still do not know, and now I have a long list of outings pending. One of them was the iconic neighborhood of La Boca. Of course, I had heard about it before, but I did not even know where it was located until one weekend when I decided to find out. Getting there took my sisters and me a one-hour train ride and another 20 minutes by bus. We traveled 30 kilometers before arriving, but we are used to these kinds of distances whenever it means seeing something beautiful.\n\n<blockquote>\nRevisando un poco la oferta turística de la ciudad, me di cuenta de que hay un montón de lugares que no conozco, y ahora tengo una larga lista de paseos pendientes. Uno de ellos era hasta el emblemático barrio de La Boca. Por supuesto que había escuchado hablar de él, pero ni siquiera sabía en donde queda, hasta que un fin de semana me decidí a averiguarlo. Llegar hasta él nos tomó a mis hermanas y a mí, un viaje de una hora en tren y otros 20 minutos en bus. Viajamos 30 kilómetros hasta que llegamos, pero estamos acostumbradas a estas distancias con tal de ver algo lindo.\n</blockquote>\n\n\n---\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/242Y3L5nVP4ecKWBquURWQacSJBTrBqeXSy8BteaK8H3gopyZZw5cb4TVjVEBaGnMqXqo.jpg\" alt=\"PXL_20250906_154325041.jpg\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/244UjQQSnpAvkoGF6ZSgcS9v4NYiMs9nuPDiu7wUq9bKm3rgqUF8bcKPQdDUDbcNLk4KX.jpg\" alt=\"PXL_20250906_154827410.jpg\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wMUMwCKecvoZeRAHWUx5iAPPgsYmNewMAJ14q3dQRWNbJrPN8eXo4YiAHLmnwQgh1Ex.jpg\" alt=\"PXL_20250906_155020814.jpg\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23xKrQA12R5GwSXd64ZHbwRzk43cQCxfE4mpxTmY34x7wPa4TW35Er7fGo7HCFxVAe6kp.jpg\" alt=\"PXL_20250906_161859950.jpg\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wC7LWDJPtpZQEHnSXdqT8HnuPJmMET8FNZnQiPLYLFiBz23pK4u8JevWsmCTvkyg8Lr.jpg\" alt=\"PXL_20250906_161801663.jpg\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wWyKGLvQqvXsRHM1qUAuBshPWKaQfaTAAm6vGinbvvqoZ5VGavjQtaoweqBsVDWCc6Z.jpg\" alt=\"PXL_20250906_161530427.jpg\"></center>\n\n---\n\n\nAs expected, the neighborhood of La Boca was full of tourists, mainly because it is home to one of the classic postcards of a trip to Buenos Aires: the famous Caminito. But before stopping there for our photo session, we decided to explore the surrounding area a bit. I had heard comments saying that you have to move around this neighborhood carefully because once you get away from the tourist center, it stops feeling so friendly. However, at the time of our visit, everything looked lively and safe.\n\n<blockquote>\nComo era de esperarse, el barrio de La Boca estaba lleno de turistas, principalmente porque ahí se encuentra una de las postales típicas de tu viaje a Buenos Aires: el famoso Caminito. Pero antes de detenernos ahí y hacer la sesión de fotos, decidimos explorar un poco los alrededores. Yo había escuchado comentarios de que hay que moverse por este barrio con cuidado, porque al alejarse del centro turístico ya no se vuelve tan amigable, pero para el momento de nuestra visita todo se veía animado y seguro.\n</blockquote>\n\n\n---\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23vP8GWMNhuKbY1JmNQUVfkTBL7duQ4xojLwhXYze5PAp1XuY2JZbmMC9g8K1sorSNciB.jpg\" alt=\"PXL_20250906_155832754.jpg\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/242XwTNtn5SgHR7cQN9dXi1PrH7Ct4CzthqwMGTptnyWxr4SEHdGKsZrkgW8LSmZxAkJh.jpg\" alt=\"PXL_20250906_174342356.jpg\"><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/242Xy2XDDLzSeMeivmsobgBBLJR2RCjMEmqupZqwBWkQXx2gj7v6jLebLTTp7fTrE5KwK.jpg\" alt=\"PXL_20250906_174405990.jpg\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23xVAGT5N3dk2CHbfPyUUU38uoTVSPtaeyaPYGTxXjw7UmzvNkyWcyGdhJzCgirvLykGd.jpg\" alt=\"PXL_20250906_174500656.jpg\"></center>\n\n---\n\nWhen we left behind all the hustle and bustle of the crowds and souvenir shops, we arrived at the Boca Juniors stadium. This massive stadium, known as La Bombonera, is unmistakable because of its blue and yellow colors, and every matchday it gathers thousands of supporters. But it was not only the stadium painted in those colors — all the shops around it were as well. People have transformed these streets and businesses into true works of art that attract fans from everywhere. Everything looked so picturesque; I loved the area and seeing how the football atmosphere can truly be felt in that corner of La Boca.\n\n<blockquote>\nCuando salimos de todo el ajetreo de gente y tiendas de souvenirs, llegamos hasta la cancha de Boca Juniors. Este gran estadio, llamado La Bombonera, es inconfundible por sus colores azul y amarillo, y cada fecha reúne a miles de seguidores. Pero no solo la cancha estaba pintada así, sino también todas las tiendas de sus alrededores. La gente transformó estas calles y negocios en verdaderas obras de arte que atraen fanáticos. Era todo muy pintoresco, me encantó la zona y ver que el ambiente de futbol se respira en ese rincón de La Boca.\n</blockquote>\n\n\n---\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23zRw14fLjV1siCkcCrsjKBMNHFa6CVvpBvEfj1M7PgxdrjpNm9zzA3vuSSCsjHD87KNx.jpg\" alt=\"PXL_20250906_173556302.jpg\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wqdoBoACbfwnNEbeLkDx9ULrpLPeJpsSoa61JbbgeCJDRyskvnGzMjjBX4GDvpLmY2Y.jpg\" alt=\"PXL_20250906_174427481.jpg\">\n<img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23y8qZek73iHNwwzGUYQqmCULVNZPfgqQPZKZ4Bx7QEztppcfMZgFwGnvJPvFt8dGd7Kj.jpg\" alt=\"PXL_20250906_174321628.jpg\"></center>\n\n---\n\nClub Atlético Boca Juniors is one of the biggest football clubs in Argentina. Its classic rival is Club Atlético River Plate, whose colors are white and red. When it comes to opposites, people will always ask, “Boca or River?”, usually getting almost the same number of answers in favor of one team or the other. Apparently, this rivalry has reached an international level, because many tourists also come to Buenos Aires with the dream of watching a match between the two, commonly known as “El Superclásico.” Of course, there is also a huge business surrounding all of this, with ticket prices reaching ridiculously high levels, yet still always selling out completely. During this visit, simply seeing the stadium from the outside was more than enough for me 😂.\n\n<blockquote>\nEl Club Atlético Boca Juniors es uno de los equipos de futbol más grandes de Argentina. Su rival clásico es Club Atlético River Plate, con sus colores blanco y rojo. Cuando se trata de opuestos, uno siempre preguntaría \"¿Boca o River?\", teniendo casi igual de respuestas a favor de un equipo u otro. Aparentemente, esta rivalidad escala internacionalmente, porque muchos turistas también llegan a Buenos Aires con la ilusión de ver un partido de ambos, normalmente llamado \"El Superclásico\". Por supuesto que también existe el gran negocio alrededor de todo esto, donde hay una venta de entradas a niveles ridículamente elevados, pero que siempre se terminan vendiendo por completo. En esta visita, ver la cancha desde afuera fue suficiente para mí 😂.\n</blockquote>\n\n\n---\n\n<table>\n<thead>\n<tr><th><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23xVF9NtkgDzYf1Uip5EH4dcFaPBpezw5zpmJXJjX9nsmHDBzzbmd7Xbkn6GXPyLVYS7A.jpg\" alt=\"IMG-20250906-WA0058.jpg\">\n</th><th><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23wqiejrNG2TWqd1WLdTmJPsts1majDiwhFa5QdSoDJmQXsxreEJtLHc63kwW2YFpX8SZ.jpg\" alt=\"IMG-20250906-WA0041.jpg\">\n</th></tr>\n</thead>\n</table>\n\n---\n\n\n<table>\n<thead>\n<tr><th><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23yThGnxksr4GkK4upLX5qwg3zTh8Qe8LbyooEspuxaa2V8Mg9h7QjunLtBMqU7ecvFCf.jpg\" alt=\"IMG-20250906-WA0059.jpg\">\n</th><th><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23yJJkCKZxg2JMA7CLPe7ohq2DvpWLAmQSTSH8aG8k4zrDsp4H5Ao2GJtS7ngh58dV1Bb.jpg\" alt=\"IMG-20250906-WA0049.jpg\">\n</th></tr>\n</thead>\n</table>\n\n---\n\n\n\nVisiting the area around the Club Atlético Boca Juniors stadium was an outing that made me feel a little like a tourist in Buenos Aires. I really enjoyed seeing this whole atmosphere, which felt very friendly, at least during the time of my visit. I imagine that on match days this place must become absolutely packed with people in good spirits, an experience I would also love to have someday, especially if it included actually going inside the stadium. As for me, if someone asks, “River or Boca?”, I will always choose Boca because my family supports this team. <strong>I do not know much about football when it comes to Boca, but I still firmly stick to that side 😅.</strong>\n\n<blockquote>\nVisitar los alrededores de la cancha de Boca Juniors fue un paseo que me hizo sentir un poco turista en Buenos Aires. Disfrutó mucho de ver todo este ambiente, tan sano al menos en el momento de mi estadía. Supongo que los días en los que hay un partido esto debe ser una locura de gente de buen humor, una experiencia que también me gustaría vivir pero complementando con la entrada a la cancha. En cuanto a mí, si me preguntan \"¿River o Boca?\", siempre elijo Boca porque mi familia es simpatizante de este equipo. <strong>Yo no sé mucho del fútbol en torno a Boca, pero mantengo firme mi inclinación hacia este lado 😅.</strong>\n</blockquote>\n\n\n\n\n---\n---\n\n<center><h4>❤️ Hope you liked this post! Thanks for reading. ❤️</h4><h5>❤️¡Espero que les haya gustado este post! Gracias por leer. ❤️</h5></center>\n\n---\n\n\n---\n<center><img src=\"https://files.peakd.com/file/peakd-hive/lauramica/23vsGPi8tv4HKp7nVx8MspC2TxBy7DApAURRTA3uZAwATfw4PeuC1icyqccVN9SdSYEnx.jpg\" alt=\"PXL_20250906_160025148.jpg\"></center>\n\n---\n\n<center>With lots of love. / Con mucho amor.\n<strong>Lau</strong> 💕. </center>\n \n---\n<center><sub>📸 Cover created with Canva. All the images are my property 💕.\n📸 Portada creada en Canva. Todas las imágenes son de mi propiedad 💕.</sub></center>\n---\n\n</div>\n\n[//]:# (!worldmappin -34.632731 lat -58.366199 long <DESCRIPTION GOES HERE> d3scr)",
+        "category": "hive-163772",
+        "children": 3,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-05-25T02:58:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/lauramica/23y8jH9SoH8Ms7FQszw3dCWV4NZQ5ZF26WyCEGxLQkHLUnwoNp3ewdJoJ7zkvopTxoGjb.png",
+            "https://files.peakd.com/file/peakd-hive/lauramica/242Y3L5nVP4ecKWBquURWQacSJBTrBqeXSy8BteaK8H3gopyZZw5cb4TVjVEBaGnMqXqo.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/244UjQQSnpAvkoGF6ZSgcS9v4NYiMs9nuPDiu7wUq9bKm3rgqUF8bcKPQdDUDbcNLk4KX.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23wMUMwCKecvoZeRAHWUx5iAPPgsYmNewMAJ14q3dQRWNbJrPN8eXo4YiAHLmnwQgh1Ex.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23xKrQA12R5GwSXd64ZHbwRzk43cQCxfE4mpxTmY34x7wPa4TW35Er7fGo7HCFxVAe6kp.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23wC7LWDJPtpZQEHnSXdqT8HnuPJmMET8FNZnQiPLYLFiBz23pK4u8JevWsmCTvkyg8Lr.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23wWyKGLvQqvXsRHM1qUAuBshPWKaQfaTAAm6vGinbvvqoZ5VGavjQtaoweqBsVDWCc6Z.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23vP8GWMNhuKbY1JmNQUVfkTBL7duQ4xojLwhXYze5PAp1XuY2JZbmMC9g8K1sorSNciB.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/242XwTNtn5SgHR7cQN9dXi1PrH7Ct4CzthqwMGTptnyWxr4SEHdGKsZrkgW8LSmZxAkJh.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/242Xy2XDDLzSeMeivmsobgBBLJR2RCjMEmqupZqwBWkQXx2gj7v6jLebLTTp7fTrE5KwK.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23xVAGT5N3dk2CHbfPyUUU38uoTVSPtaeyaPYGTxXjw7UmzvNkyWcyGdhJzCgirvLykGd.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23zRw14fLjV1siCkcCrsjKBMNHFa6CVvpBvEfj1M7PgxdrjpNm9zzA3vuSSCsjHD87KNx.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23wqdoBoACbfwnNEbeLkDx9ULrpLPeJpsSoa61JbbgeCJDRyskvnGzMjjBX4GDvpLmY2Y.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23y8qZek73iHNwwzGUYQqmCULVNZPfgqQPZKZ4Bx7QEztppcfMZgFwGnvJPvFt8dGd7Kj.jpg",
+            "https://files.peakd.com/file/peakd-hive/lauramica/23xVF9NtkgDzYf1Uip5EH4dcFaPBpezw5zpmJXJjX9nsmHDBzzbmd7Xbkn6GXPyLVYS7A.jpg"
+          ],
+          "tags": [
+            "spanish",
+            "argentina",
+            "worldmappin",
+            "travel",
+            "buenosaires",
+            "bocajuniors",
+            "football"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 81374735688934,
+        "payout": 6.301,
+        "payout_at": "2026-06-01T02:58:09",
+        "pending_payout_value": "6.301 HBD",
+        "percent_hbd": 10000,
+        "permlink": "argentina-the-boca-juniors-corner-you-have-to-visit-during-your-time-in-buenos-aires-el-rincon-de-boca-juniors-que-tenes-que-vi",
+        "post_id": 150224245,
+        "reblogs": 3,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 864
+        },
+        "title": "Argentina - The Boca Juniors corner you have to visit during your time in Buenos Aires. / El rincón de Boca Juniors que tenes que visitar durante tu paso por Buenos Aires. 😃❤️",
+        "updated": "2026-05-25T02:58:09",
+        "url": "/hive-163772/@lauramica/argentina-the-boca-juniors-corner-you-have-to-visit-during-your-time-in-buenos-aires-el-rincon-de-boca-juniors-que-tenes-que-vi"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 24918923419,
+            "voter": "funnel"
+          },
+          {
+            "rshares": 1674337601,
+            "voter": "stefanialexis"
+          },
+          {
+            "rshares": 4717862791,
+            "voter": "ganjafarmer"
+          },
+          {
+            "rshares": 941734979,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 62651903069,
+            "voter": "pastrane"
+          }
+        ],
+        "author": "ydavgonzalez",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 73.93,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "<DIV CLASS='text-justify'><center>https://i.postimg.cc/nhL1jgZg/Diapositiva3.jpg<br/></center><br/><hr/><i>\"La física resuelve rompecabezas creados por la naturaleza, no por la mente del azul.\"<br/><br/>Maria Goeppert-Mayer</i><hr/><br/> Saludos a toda la comunidad de HIVE, con el fin de promocionar el contenido matemático dentro de nuestra querida red social, a continuación les presento la siguiente sección en la cual se estará publicando un problema matemático a ser resuelto, los problemas abordarán diversas áreas de la Matemática (Aritmética, Álgebra, Geometría, Análisis, entre otros).<br/><br/>Los invito a compartir sus soluciones, sin más preámbulo les presento el problema<center><b><br/>   ¿Cuántos números positivos de tres cifras existen cuyo producto de cifras es menor o igual a 10?</b></center><br/></br>La matemática es la ciencia de la abstracciones, que presenta cierta belleza austera para todo aquel que decide dedicarse a su estudio. <br/> <br/> Me despido deseándoles feliz blogging.<br/><br/> @ydavgonzalez</DIV>\n\nPosted Using [INLEO](https://inleo.io/@ydavgonzalez/prueba-tus-conocimientos-matemticos-23052026-eay)",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-25T01:37:27",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@ydavgonzalez/prueba-tus-conocimientos-matemticos-23052026-eay",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "links": [
+            "https://i.postimg.cc/nhL1jgZg/Diapositiva3.jpg<br/></center><br/><hr/><i>\"La",
+            "https://inleo.io/@ydavgonzalez/prueba-tus-conocimientos-matemticos-23052026-eay)"
+          ],
+          "tags": [
+            "hive-167922",
+            "spanish",
+            "leofinance",
+            "math",
+            "matematicas",
+            "neoxian",
+            "hivevenezuela",
+            "gems"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 701982812730,
+        "payout": 0.054,
+        "payout_at": "2026-06-01T01:37:27",
+        "pending_payout_value": "0.054 HBD",
+        "percent_hbd": 0,
+        "permlink": "prueba-tus-conocimientos-matemticos-23052026-eay",
+        "post_id": 150223919,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 70
+        },
+        "title": "Prueba tus conocimientos matemáticos 23/05/2026",
+        "updated": "2026-05-25T01:37:27",
+        "url": "/hive-167922/@ydavgonzalez/prueba-tus-conocimientos-matemticos-23052026-eay"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 584552720,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 7311018,
+            "voter": "psychophilo"
+          },
+          {
+            "rshares": 23132466709,
+            "voter": "we-are-ai"
+          }
+        ],
+        "author": "redkingsdesigns",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 31.23,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "# How to Run a Digital Agency Solo: 4 Systems That Replace a Full Team\n\nMost clients don't care how many people work at your agency. They care whether their phone rings, whether their posts go up, and whether you pick up when they call. That's the whole game — and one person can absolutely play it, if they're running the right systems.\n\nHere's what actually works.\n\n---\n\n## 1. One Client Onboarding Doc That Does All the Heavy Lifting\n\nThe first two weeks with a new client are the most labor-intensive. You're collecting logos, passwords, photos, logins, preferences, and backstory. If you're doing this by email thread, you're wasting hours.\n\nBuild a single onboarding form — Google Forms or Notion works fine. Include every question you'd normally ask over three separate conversations: brand colors, posting preferences, services offered, the owner's name and how they want to be credited, the link to their Google Business profile. One link. They fill it out once. You pull from it for the next 12 months.\n\nThis one change eliminates the \"remind me what your hours are again\" back-and-forth and makes you look like you've done this a hundred times — even if this is client number two.\n\n---\n\n## 2. A Content Queue That Runs Ahead of Schedule\n\nThe single biggest mistake solo operators make is producing content the same week it needs to go out. That puts you one bad week away from missing a post, and clients notice missed posts faster than they notice good ones.\n\nThe fix is simple: stay three to four weeks ahead. Every time you sit down to write for a client, write two weeks' worth instead of one. It sounds like more work but it's actually less — you get into the client's voice, you're not context-switching back and forth, and you build a buffer that covers holidays, sick days, and busy seasons.\n\nIf you're using an AI writing tool (and you should be), batch the drafts in one session, then spend 20 minutes editing to put the client's real voice back in. Their phrases, their slang, the way they talk about their food or their products. That's the 20% of work that makes the other 80% worth anything.\n\n---\n\n## 3. A Dead-Simple Reporting Template Clients Actually Read\n\nClients who feel informed don't churn. Clients who feel like they're throwing money into a black hole do.\n\nYou don't need a fancy dashboard. A monthly email with five numbers — follower count this month vs. last, top-performing post, how many new reviews came in, website traffic if you have it, and one thing you're testing next month — is enough to keep a local business owner engaged and confident.\n\nThe key word is *one thing you're testing next month.* It signals that you're thinking ahead, not just executing. It also gives you an easy opening line for next month's report. Clients love feeling like they're part of a strategy.\n\nTemplate this. Fill in the blanks every month. Send it on the same day every month. That consistency alone puts you ahead of most freelancers.\n\n---\n\n## 4. Boundaries That Protect the 20% Only You Can Do\n\nSystems handle the repeatable work. But there's a category of work only you can do: deciding what content strategy to pursue, handling a client crisis, landing a new account. If you let client check-ins and revision requests eat into that time, you stop growing.\n\nSet response windows and communicate them upfront. Something like: \"I check messages at 10am and 3pm on weekdays. For anything urgent, text me.\" Most clients won't have an emergency in the first six months. The ones who do will respect the boundary more than they resent it.\n\nAlso: invoice on a fixed day. Don't chase payments. Set up auto-invoicing, even if it's just a recurring Google Calendar reminder to send a Stripe link. Getting paid on schedule removes a layer of anxiety that drains more energy than it looks like.\n\n---\n\n## The Bottom Line\n\nRunning a digital agency solo isn't about pretending to be bigger than you are. It's about building systems tight enough that clients feel the consistency of a full team, even when it's just you with good tools and a clear schedule.\n\nThe agencies that fail at one person aren't understaffed. They're undersystemized. Fix the systems and the size stops mattering.",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-24T23:08:33",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "james/1.0",
+          "tags": [
+            "hive-167922",
+            "solopreneur",
+            "business",
+            "blogging",
+            "content"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 23724330447,
+        "payout": 0.001,
+        "payout_at": "2026-05-31T23:08:33",
+        "pending_payout_value": "0.001 HBD",
+        "percent_hbd": 10000,
+        "permlink": "one-person-digital-agency-tips-1779664113",
+        "post_id": 150223189,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 3
+        },
+        "title": "How to Run a Digital Agency Solo: 4 Systems That Replace a Full Team",
+        "updated": "2026-05-24T23:08:33",
+        "url": "/hive-167922/@redkingsdesigns/one-person-digital-agency-tips-1779664113"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1186389798448,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 105118771123,
+            "voter": "builderofcastles"
+          },
+          {
+            "rshares": 4036705593,
+            "voter": "ganjafarmer"
+          },
+          {
+            "rshares": 941729721,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 2805778919,
+            "voter": "twoitguys"
+          }
+        ],
+        "author": "brennanhm",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 66.37,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "The crypto world was much simpler back in 2009 when all that existed was Bitcoin. We had a single token (BTC) with a maximum supply of 21 million.\n\nIn 2026, tens of thousands of new tokens are launched daily across various blockchains. Most are short-lived memecoins, while a growing share power innovative [AI agents](https://inleo.io/@brennanhm/can-ai-agents-save-the-crypto-market-7cc).\n\nhttps://img.leopedia.io/DQmVVdQZnno7hsAKRFw9Tggmm5V6DVbfvL1rXSrJfECBhHk/bankr_ecosystem.jpg\n\nIn today's article, we are going to briefly cover the history of crypto token creation, as well as Bankr's expanding AI agent ecosystem.\n\n# Token Creation\n\nEthereum launched in July 2015, enabling anyone to write smart contracts and create their own tokens. At the time, token creation was entirely manual. There were no easy token launchpads.\n\nThe process of launching a token has been simplified since then, especially with the launch of pump.fun on Solana in early 2024, which allowed anyone to create a token (often a [memecoin](https://inleo.io/@brennanhm/are-we-underestimating-the-power-of-meme-coins)) with the click of a button.\n\nThe advent of AI agents inspired even more innovation.\n\n# Virtuals Launchpad\n\nThe Virtuals launchpad was built on Base (Ethereum Layer 2) in early 2024. Virtuals pioneered the model of allocating a portion of trading fees from creator/AI agent tokens to self-fund resources like inference/compute.\n\n- Uses a 1% trading fee on agent tokens.  \n- Pre-graduation (bonding curve phase): 100% of fees typically go to the protocol treasury.\n- Post-graduation: Roughly 70% goes to the creator/founder (but often locked or subject to thresholds, with periodic releases).\n\n# Bankr Launchpad\n\nBankr, an AI agent launchpad which launched in late 2024, took inspiration from Virtuals, but innovated in a few ways:\n\n- Tokens launch for free, and deploy immediately to Uniswap.\n- There is a 1.2% swap fee on every trade of launched tokens, \n- Creators get 57% of that fee, which is paid out automatically in the token + WETH (wrapped Ethereum), claimable in real-time, with no lockups or staking required.\n- The rest splits roughly 36% to Bankr, with small portions to the protocol.\n- This creates a strong, ongoing revenue flywheel for creators. \n\nHigh-volume tokens can generate substantial passive income. In fact, some agents are already earning [upwards of $16K per week](https://bankr.bot/):\n https://img.leopedia.io/DQmdegHmes2raNRzzQw2yow5ivPeocCP1Zq2ur8W2XrQ81N/top5agents.png\n\nBankr also innovated the \"trading fees -> auto-fund LLM/compute\" flywheel for individual agents. An AI agent launched from Bankr can use the fees it collects from trades to pay for compute credits on Claude or GPT, for example, via Bankr's LLM Gateway.\n\n# The Fair Launch Model\n\nTokens created via Bankr have a max supply of 100 billion, and are non-mintable after deployment.\n\nAll tokens are generated at launch. 100% of the supply goes directly into a Uniswap V4 liquidity pool (paired with WETH/ETH on Base). No pre-mine, no team allocation, no reserved tokens.\n\nInsiders (including creators) must buy on the open market like everyone else, paying the same slippage and fees.\n\n# Bankr AI Agent Projects\n\nDozens of AI agents launched via Bankr are developing rapidly. For example:\n\n**$GITLAWB** - Decentralized Git platform where AI agents and humans collaborate with cryptographic DID identities.\n\n**$AEON** - Open-source autonomous agent framework that runs unattended with self-healing capabilities and no approval loops.\n\n**$CLAWBANK** - AI agent infrastructure project that enables agents to form LLCs, obtain EINs, and open US bank accounts.\n\nYou can [follow Bankr on X](https://x.com/bankrbot) for examples of more projects building in the ecosystem.\n\n# Until next time...\n\nLaunchpads like Virtuals and Bankr make it easier to assign AI agents a crypto wallet and self-fund them via trading fees. I see a lot of potential with this model, and we are already witnessing strong growth.\n\nIt may be worth investigating this rapidly expanding sector of crypto, and possibly allocating a portion of your portfolio to it. Of course, *none of this is financial advice.* Be sure to do your own research before investing!\n\nIf you learned something new from this article, be sure to [check out my other posts](https://inleo.io/profile/brennanhm/blog) on crypto and finance here on [the Hive blockchain](https://inleo.io/@brennanhm/how-to-monetize-your-content-on-the-hive-blockchain). You can also follow me on [X](https://x.com/brennanhm) or [InLeo](https://inleo.io/profile/brennanhm) for more frequent updates.\n\n\n\nPosted Using [INLEO](https://inleo.io/@brennanhm/ai-spotlight-bankr-launchpad-on-base-ignites-new-ai-agent-ecosystem-6cu)",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-24T21:46:33",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@brennanhm/ai-spotlight-bankr-launchpad-on-base-ignites-new-ai-agent-ecosystem-6cu",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmVVdQZnno7hsAKRFw9Tggmm5V6DVbfvL1rXSrJfECBhHk/bankr_ecosystem.jpg",
+            "https://img.leopedia.io/DQmdegHmes2raNRzzQw2yow5ivPeocCP1Zq2ur8W2XrQ81N/top5agents.png"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://inleo.io/@brennanhm/can-ai-agents-save-the-crypto-market-7cc).",
+            "https://inleo.io/@brennanhm/are-we-underestimating-the-power-of-meme-coins))",
+            "https://bankr.bot/):",
+            "https://x.com/bankrbot)",
+            "https://inleo.io/profile/brennanhm/blog)",
+            "https://inleo.io/@brennanhm/how-to-monetize-your-content-on-the-hive-blockchain).",
+            "https://x.com/brennanhm)",
+            "https://inleo.io/profile/brennanhm)",
+            "https://inleo.io/@brennanhm/ai-spotlight-bankr-launchpad-on-base-ignites-new-ai-agent-ecosystem-6cu)"
+          ],
+          "tags": [
+            "hive-167922",
+            "bankr",
+            "ai",
+            "agent",
+            "launchpad",
+            "virtuals",
+            "base",
+            "ethereum",
+            "solana",
+            "pump.fun"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 3560864688098,
+        "payout": 0.273,
+        "payout_at": "2026-05-31T21:46:33",
+        "pending_payout_value": "0.273 HBD",
+        "percent_hbd": 10000,
+        "permlink": "ai-spotlight-bankr-launchpad-on-base-ignites-new-ai-agent-ecosystem-6cu",
+        "post_id": 150222847,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 45
+        },
+        "title": "AI Spotlight: Bankr Launchpad On Base Ignites New AI Agent Ecosystem",
+        "updated": "2026-05-24T21:46:33",
+        "url": "/hive-167922/@brennanhm/ai-spotlight-bankr-launchpad-on-base-ignites-new-ai-agent-ecosystem-6cu"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1317805200,
+            "voter": "jeanlucsr"
+          },
+          {
+            "rshares": 502257664,
+            "voter": "minloulou"
+          },
+          {
+            "rshares": 13173400283,
+            "voter": "khaleelkazi"
+          },
+          {
+            "rshares": 1104123983,
+            "voter": "purefood"
+          },
+          {
+            "rshares": 4653109065,
+            "voter": "organduo"
+          }
+        ],
+        "author": "timscreative",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 60.54,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "<center> https://img.leopedia.io/DQmWa7ZTnTxNUP8JSpd2xYNAScfk1ALE7sUR2KjNSi5TS7U/Screenshot_20260524-205803.jpg \n[Source](https://www.facebook.com/share/p/1E9CJGvhX2/)</center>\n\nThe first instinct you are going to have is actually to be outraged by what you are looking at. Whenever you are looking at this image, especially the bold red bars that is shouting that Chinese actually own a lot of entities and properties in the United States of which the United States has little to nothing in China. Chinese own 247,336 acres of US farmland and the number of Chinese students in America is 261,000 and more.\n\nWhy this number might outrage you as a person or trigger you and make it look as if one country gets access to the other country hits the wall but once the emotions are settled down it is time to look into the data if it is true or not. Content like this is meant to trigger us, especially the people that want to make America great again. It is a clear narration of exploitation which people are open to.\n\nThough there is a side of truth in this, the relationship between China and America is asymmetrical. China heavily restricts foreign land ownership and tightly controls foreign influences while the United States is a liberal country and is historically open to everyone which gives it its own name, the land of opportunities. Though this analysis at the top plays two crucial dimensions which is the scale and the context but what it actually means is that Chinese is linked to close to 250,000 acres of land in the United States which is used for agricultural purposes.\n\nThat is very huge but when you look at it in the bigger picture that America has 1.2 billion acres of agricultural land and this means that China only has 3-4% of privately held agricultural land. Chinese interest accounts for well under 1% of that foreign owned slice which is around 0.03% of total agricultural land. Then it starts to calm down a little and look at things from another perspective.\n\nThough the graphics may seem so bogus but that is not the case here. This doesn't mean that there is no risk for the American populace, farmland are very sensitive infrastructure and they determine the lot in the country's economic and agricultural landscape. I know he is screaming as if China is buying up American land but that is not true.\n\nStudents on the other hand have long been the largest international group in the United States, I mean the Chinese people. While we have very few Chinese in the United States, the gap is purely wide but it is not purely policy. It is just the difference in China's family aggressive pursuit of US degrees.\n\nWhy fewer Americans see studying in China as essential to their career and lives? So yes, relationship is the main cause of this, it is not a matter of dominance. This begs the question, should an open society stay open even when its partners are not? When it comes to national security, preventing strategic land grabs, near bases, ports, critical infrastructure or key food supply is something that makes up one of the three issues when it comes to the relationship between China and the United States. Also to be able to reciprocate too.\n\nIf America can't buy land or study freely in China, should China entities have broad access in the United States too? Then the third one is the identity. If a country is closing its borders and its system against people of other nations, why can't America also tighten its own borders against people from other nations? Though Donald Trump is actually making efforts to make America great again by making sure a lot of people are shut off so that the American populace can have a lot of opportunities in their hands to take some heaps part, they argue that the real agricultural threat is not Chinese hoeing very minute land, but relentless consolidation of farmland into fewer and fewer hands. So you might be thinking, what should we allow then? There should be a targeted restriction, not a total ban, on buying and use of land for agricultural purposes for outsiders and there should be a lot of transparency, which is very important.\n\nThe United States can reciprocate if what it's driving at makes a lot of sense. Though treating students as spies are not actually true, there should be a separation between students and spies because you cannot say someone is coming to study in your country and automatically that makes them a spy. That is not true.\n\n\n\nPosted Using [INLEO](https://inleo.io/@timscreative/beyond-the-red-bars-rethinking-chinese-land-ownership-and-student-visas-in-america-2wr)",
+        "category": "hive-167922",
+        "children": 1,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-24T20:55:57",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@timscreative/beyond-the-red-bars-rethinking-chinese-land-ownership-and-student-visas-in-america-2wr",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmWa7ZTnTxNUP8JSpd2xYNAScfk1ALE7sUR2KjNSi5TS7U/Screenshot_20260524-205803.jpg"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://www.facebook.com/share/p/1E9CJGvhX2/)</center>",
+            "https://inleo.io/@timscreative/beyond-the-red-bars-rethinking-chinese-land-ownership-and-student-visas-in-america-2wr)"
+          ],
+          "tags": [
+            "hive-167922",
+            "Inleo",
+            "Proofofbrain",
+            "Neoxian",
+            "Palnet",
+            "Airhawk",
+            "Waiv",
+            "Hivelearners",
+            "Creativecoin"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 303093990870,
+        "payout": 0.023,
+        "payout_at": "2026-05-31T20:55:57",
+        "pending_payout_value": "0.023 HBD",
+        "percent_hbd": 10000,
+        "permlink": "beyond-the-red-bars-rethinking-chinese-land-ownership-and-student-visas-in-america-2wr",
+        "post_id": 150222496,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 29
+        },
+        "title": "Beyond the Red Bars: Rethinking Chinese Land Ownership and Student Visas in America",
+        "updated": "2026-05-24T20:55:57",
+        "url": "/hive-167922/@timscreative/beyond-the-red-bars-rethinking-chinese-land-ownership-and-student-visas-in-america-2wr"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 49467222703,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 88654514940,
+            "voter": "seckorama"
+          },
+          {
+            "rshares": 13011314704,
+            "voter": "esteemapp"
+          },
+          {
+            "rshares": 6141866874,
+            "voter": "bigtakosensei"
+          },
+          {
+            "rshares": 557530445,
+            "voter": "bloghound"
+          }
+        ],
+        "author": "zakludick",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.8,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "matthew-williams",
+            "weight": 5000
+          }
+        ],
+        "blacklists": [],
+        "body": "![](https://i.ecency.com/DQmW6ekuwSaGUWvXMYz6TxHqM3CMeWDQD8RpiVBnDYckVVf/image.png)\n[Source](https://pixabay.com/photos/bees-hive-insects-macro-honey-bees-326337/)\n\n\n\n\n\n# The Busy Bees\n\nThis weekend was busy. It was @merenludick's 16th birthday, we went ice-skating. I fell pretty badly on the ice, but I'll be OK. \n\nWork has been busy and @aimeludick is looking at going to the Netherlands next year after her Grade 12 is done.\n\nWell, plenty to do! Cheers!\n\nBeing put on to Sleep:\nNone\n\nLast call for the following:\nNone, all good!\n\n\nOn Holiday mode:\n\n@myjob \n@lex-zaiya \n\nThank you for your attention. Besides the above the rest of the active Busy Bees are doing really well!\n\n### Ecency Points to distribute\n\nSome community members have been sending me Ecency Points to distribute. They are as follows:\n@melinda010100 sent me 170,000 Ecency points.\n@alonicus sent me 48,500 Ecency points.\n@papilloncharity sent me 50,000 Ecency points.\n@chaosmagic23 sent me 30,000 Ecency points!\n@shaidon sent me 30,000 Ecency points to this fund.\n@oceanbee sent me 21,300 Ecency points to this fund.\n@itsostylish sent me 7,000 Ecency points to this fund.\n@zakludick (me) added 5,000 Ecency points to this fund.\n@okarun sent me 5,000 Ecency Points!\n@tydynrain sent me 2,000 Ecency points to this fund.\n@lecia89 sent me 5,000 Ecency points to this fund.\n\nTotal: 364,800 Ecency points has been put into this fund in all history of this group! Wow!\n\n\n200pts to an Active Busy Bee Redfish.\n100pts to an Active Busy Bee Minnow.\n\nI was able to distribute points today, I had to use my phone app.\n\nLast week we had 15,600 points left, this week I have 1,700 points to distribute and we shall have 13,900 points left.\n\nDonations of more Ecency Points are welcome! (PS please send me a message on a comment somewhere and let me know, otherwise I might forget to count it!\n\n## Congratulations\n\n## Promotions\nNone\n\n\n## Milestones of 1,000HP Increments \nCongratulations to @cryptoandcoffee for hitting the 208,000HP Milestone!\nCongratulations to @papilloncharity for hitting the 189,000HP Milestone!\nCongratulations to @melinda010100 for hitting the 103,000HP Milestone!\nCongratulations to @nkemkonam89 for hitting the 15,000HP Milestone!\nCongratulations to @cryptoreforma for hitting the 14,000HP Milestone!\nCongratulations to @irisworld for hitting the 13,000HP Milestone!\nCongratulations to @gragi for hitting the 11,000HP Milestone!\n\n![](https://images.ecency.com/DQmXJr15isF2anuJyMjnmLuq1zjF4WYY7HE56NpGBht4Zd3/blue_bar.jpg)\n\n\n\n## The Basic Rules of Activity\n\n- Activity means posting and commenting within a 30-day time. \n\n- Posting weekly is recommended.\n\n- Supporting one another with votes and engagement is encouraged. There is zero enforcement, we just recommend it. If you want people on Hive who will speak and interact with you - just look at the people in this list!\n\nAccounts that go dormant too long will be placed into sleeping bees.\n\n\n![](https://images.ecency.com/DQmXJr15isF2anuJyMjnmLuq1zjF4WYY7HE56NpGBht4Zd3/blue_bar.jpg)\n\n# Progress List\n\n![](https://i.ecency.com/DQmSXNUdfQFtMCdK1gfarn83QDGKq4UbzkhAqb7jKAv8qzF/image.png)\n\n\n\n\n\n\n## Orca Category \n@cryptoandcoffee\n@papilloncharity\n@ph1102 \n@melinda010100\n@jacobtothe \n\n## Dolphin Category\n@fermentedphil \n@joetunex \n@lizelle \n@new.things \n@generikat\n@alonicus \n@borsengelaber \n@tydynrain \n@shaidon\n@nkemakonam89 \n@cryptoreforma \n@tengolotodo \n@irisworld \n@flemingfarm\n@gargi \n@slothlydoesit \n@merit.ahama \n\n\n## Minnow Category\n\n\n@chaosmagic23 \n@consciouscat \n@reachdreams \n@jacoalberts \n@roswelborges \n@gurseerat \n@soyernesto \n@treasuree \n@dragan1957 \n@josueelinfame \n@kachy2022 \n@zakludick\n@myjob\n@clairemobey \n@lex-zaiya \n@lizandra \n@ivyann \n@quduus1\n@rajpootg\n@loadreaper\n@lecia89 \n\n\n\n\n## Redfish Category\n\n\n\n@hellsveiah \n@edycu007  \n@sommylove  \n@aimeludick \n@merenludick \n@matthew-williams \n\n\n\n\n\n# Group stats\n\n![](https://i.ecency.com/DQmehgLa4ZXM2mYyhTzwP3UfyLsqQBNB6iYk7EAyweTa5PX/image.png)\n\n\n\n# Nomination of Gifts\n\nMy Nomination of sharing 50% of this post's payout goes to @matthew-williams  for being the lowest HP account that posted something this week. (and is not on a negative HP growth or joined this week, or holding posting rewards unclaimed for weeks that would put you ahead of others who also could grow.)\n\n\nIn support of our Redfish doing well, For @alonicus' SBI gifts I nominate:  @edycu007 and @hellsveiah ! Well done! Great growth and performance!\n\n\n\nLet's go! Good luck for the new week!\n\n\n# Sleeping Bees\n\n@anikekirsten, @stevemuis, @michieme, @thefoxygeeksa, @evanrentschler, @giantbear, @geelocks, @pixelhuntersam, @newharvest, @nxghtrxven, @tomster-17, @kerras, @threedotz, @ma3str0, @rynow, @chekohler, @jasperdick, @nikv, @awgbibb, @mimismartypants, @penderis, @misshugo, @rafzat, @artywink, @therneau, @mirroredspork, @sabrinah, @actordontee, @loadreaper, @oceanbee, @itsostylish, @itcouldbecloud, @braaiboy, @quduus1, @wallay, @tigermom, @tranquil3, @xenowolfza, @littlebee4, @melibee, @hafiz34, @xplosive, @p1k4ppa10, @mimismartypants, @putu300, @julianhorack, @okarun, @george-dee, @mrenglish, @wrestlingdesires, @parkrunmayor, @joanstewart, @zo3d, @maiasun84, @alwaysonyi, @swordandboard, @beauty197, @technicalside, @fionasfavourites, @hopestylist \n\nCheers!\n@zakludick\n\n![](https://images.ecency.com/DQmcoPQHCZpHmnJJtUNUXNFjQxs5qU6Vzh5Zt7dpxnLR2Th/zak_banner_brittandjosie.png)\n\n![](https://images.ecency.com/DQmWCxqwCcJUbJgNkGaqDDqp98j7t9iibKMbkGgPQUSkwkM/image.png)\n\n[Hive South Africa](https://ecency.com/created/hive-150289)\n\n![](https://images.ecency.com/DQmXm94xYy1ud2XENv7jBAtMtcZYAt3S1wG7YdpmmHW37Kw/img_0.3319650127542638.jpg)",
+        "category": "hive-167922",
+        "children": 3,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-24T20:47:18",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "description": "This weekend was busy. It was @merenludick's 16th birthday, we went ice-skating. I fell pretty badly on the ice, but I'll be OK.",
+          "format": "markdown+html",
+          "image": [
+            "https://i.ecency.com/DQmW6ekuwSaGUWvXMYz6TxHqM3CMeWDQD8RpiVBnDYckVVf/image.png",
+            "https://images.ecency.com/DQmXJr15isF2anuJyMjnmLuq1zjF4WYY7HE56NpGBht4Zd3/blue_bar.jpg",
+            "https://i.ecency.com/DQmSXNUdfQFtMCdK1gfarn83QDGKq4UbzkhAqb7jKAv8qzF/image.png",
+            "https://i.ecency.com/DQmehgLa4ZXM2mYyhTzwP3UfyLsqQBNB6iYk7EAyweTa5PX/image.png",
+            "https://images.ecency.com/DQmcoPQHCZpHmnJJtUNUXNFjQxs5qU6Vzh5Zt7dpxnLR2Th/zak_banner_brittandjosie.png",
+            "https://images.ecency.com/DQmWCxqwCcJUbJgNkGaqDDqp98j7t9iibKMbkGgPQUSkwkM/image.png",
+            "https://images.ecency.com/DQmXm94xYy1ud2XENv7jBAtMtcZYAt3S1wG7YdpmmHW37Kw/img_0.3319650127542638.jpg",
+            "https://i.ecency.com/DQmW6ekuwSaGUWvXMYz6TxHqM3CMeWDQD8RpiVBnDYckVVf/image.png)",
+            "https://images.ecency.com/DQmXJr15isF2anuJyMjnmLuq1zjF4WYY7HE56NpGBht4Zd3/blue_bar.jpg)"
+          ],
+          "image_ratios": [
+            "1.4988",
+            "40.0000",
+            "0.6842",
+            "0.8582",
+            "1.7778"
+          ],
+          "tags": [
+            "hive-167922",
+            "proofofbrain",
+            "neoxian",
+            "ocd",
+            "gems",
+            "busybees",
+            "community",
+            "goals",
+            "progress",
+            "growth"
+          ],
+          "thumbnails": [
+            "https://i.ecency.com/DQmW6ekuwSaGUWvXMYz6TxHqM3CMeWDQD8RpiVBnDYckVVf/image.png"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 23350670971039,
+        "payout": 1.808,
+        "payout_at": "2026-05-31T20:47:18",
+        "pending_payout_value": "1.808 HBD",
+        "percent_hbd": 0,
+        "permlink": "hive-progress-the-busy-bees-d5fd9ce91e2f7",
+        "post_id": 150222459,
+        "reblogs": 5,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 106
+        },
+        "title": "HIVE PROGRESS - The Busy Bees 2026🐝🐝🐝 Progress Report Week 21",
+        "updated": "2026-05-24T20:47:18",
+        "url": "/hive-167922/@zakludick/hive-progress-the-busy-bees-d5fd9ce91e2f7"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 4846899092814,
+            "voter": "s4s"
+          },
+          {
+            "rshares": 204684800963,
+            "voter": "macchiata"
+          },
+          {
+            "rshares": 1317805200,
+            "voter": "jeanlucsr"
+          },
+          {
+            "rshares": 502257664,
+            "voter": "minloulou"
+          },
+          {
+            "rshares": 13173400283,
+            "voter": "khaleelkazi"
+          }
+        ],
+        "author": "yordan96",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 62.67,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": " https://img.leopedia.io/DQmec3L4SDjfyPJDD6nd5yfiuGAa98ePHsmBesCML7ibV91/1000706201.webp \n\nNot every beautiful place needs bright skyscrapers or crowded nightlife.\nSometimes…\nthe most unforgettable atmosphere comes from simplicity itself.\nRecently, I captured this short night video around Motang Rua, one of the central areas in Ruteng City, Flores — and honestly, moments like this remind me why small mountain towns can feel more peaceful than many modern cities.\n🎥 Watch the full video here:\nhttps://3speak.tv/shorts?v=yordan96/eg9m6716\n\nThe Calm Side Of Flores At Night\nhttps://img.leopedia.io/DQmX2WMLg9G7kWoKQ15GJcUA6iDLZigq51YqWBS8R578oeL/1000706185.jpg \n https://img.leopedia.io/DQmdhtGKmT8M9C714T8FJBtKFpMrTguorwbvnQboFK8fGBU/1000706204.jpg \n\n\nRuteng is located in the highlands of Flores, East Nusa Tenggara, Indonesia.\nBecause of its mountainous location, the city has:\ncool air\npeaceful roads\ngreen surroundings\nand a slower rhythm of life compared to larger cities.\nAt night, the atmosphere becomes even more calming.\nThe lights quietly reflect through the streets while the cold mountain air creates a feeling that is difficult to fully explain through photos alone.\n\nMotang Rua — The Heart Of Daily Life In Ruteng\nhttps://img.leopedia.io/DQmcrRDFHawHdsuG31b82hbfmrA6NW8EGmSQV6TAyqDheJ3/1000706190.jpg \n https://img.leopedia.io/DQmZPvCu5F7GRYW6aTLWmqUcaWJBaw2ivgjZrQtCa7hEgTt/1000706189.jpg \n https://img.leopedia.io/DQmZY4h95V1pciUspAwq5oLtatDTbJo7DCnaXPmwENnug9K/1000706191.jpg \n\nMotang Rua is one of the most familiar and active areas in Ruteng.\nDuring the day, this area is filled with:\nlocal transportation\nsmall businesses\nshops\nfood stalls\nand daily community activities.\nBut at night, everything feels softer and more relaxed.\nPeople slowly return home.\nThe roads become quieter.\nAnd the city feels peaceful in a very natural way.\nPersonally, I think this is the kind of atmosphere many people around the world are quietly searching for today.\nNot noise.\nNot pressure.\nJust peace.\nWhy Small Cities Like Ruteng Feel Different\nModern life often moves too fast.\nPeople constantly chase:\ndeadlines\ntraffic\nstress\nnotifications\nand endless distractions.\nBut places like Ruteng remind us that life can still feel slow and human.\nThe simplicity here becomes part of the beauty.\nEven something as simple as:\ncity lights\ncool night air\nmotorcycles passing quietly\nor people gathering peacefully\ncan suddenly feel meaningful.\n\nFlores Is More Than Beaches And Tourism\n https://img.leopedia.io/DQmeJy3w7pdaHY6vrb15Nx2ZsYmex1pPVPBVy1ZAqJBpwmf/1000706195.jpg \n https://img.leopedia.io/DQmWQTdpaoNR3vfy2UsGJzEUZRbdeEfKRVevQTSfbMTUgtu/1000706197.jpg \n https://img.leopedia.io/DQmVfvJoPEjJqKgdCTeGRUXYPFjbWcmhVf2yKEtfiC95EJa/1000705439.png \n\nWhen many people think about Flores, they immediately think about:\nKomodo Island\nPadar Island\nPink Beach\nor Kelimutu Lake.\nBut personally…\nI think the soul of Flores is also found in its small towns and everyday atmosphere.\nRuteng offers something different:\nauthentic local culture\npeaceful mountain scenery\nfresh air\nand a slower way of living.\nAnd sometimes, those simple experiences become the most memorable part of traveling.\nWhy Travelers Should Experience Ruteng At Night\nIf you ever visit Flores, I genuinely recommend spending time in Ruteng not only during the day — but also at night.\nWalk slowly through the city.\nFeel the cold mountain air.\nListen to the quiet atmosphere.\nBecause some places are not meant to impress people loudly.\nSome places quietly calm the mind instead.\nAnd in today’s stressful world…\nthat feeling becomes increasingly valuable.\nFinal Thoughts\nThis short video may look simple.\nBut sometimes simple moments carry the strongest atmosphere.\nRuteng at night reminds me that peace still exists in many corners of the world — especially in places where nature, community, and simplicity still live together naturally.\nAnd honestly…\nthat may be one of the most beautiful things a traveler can experience.\n📍 Community: Pinmapple\n🌍 Location: Motang Rua, Ruteng, Flores, East Nusa Tenggara, Indonesia\n📌 Coordinates: -8.6117, 120.4698\n#EYS_Turning patience into power 🌱🌾💎\nTravel Flores Ruteng Indonesia Pinmapple NightView ExploreFlores WonderfulIndonesia TravelVideo Nature MountainTown PeacefulPlace 3Speak\n\nPosted Using [INLEO](https://inleo.io/@yordan96/a-peaceful-night-in-ruteng-city-the-quiet-beauty-of-flores-after-dark-3hq)",
+        "category": "hive-163772",
+        "children": 0,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-05-24T20:46:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@yordan96/a-peaceful-night-in-ruteng-city-the-quiet-beauty-of-flores-after-dark-3hq",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmec3L4SDjfyPJDD6nd5yfiuGAa98ePHsmBesCML7ibV91/1000706201.webp",
+            "https://img.leopedia.io/DQmX2WMLg9G7kWoKQ15GJcUA6iDLZigq51YqWBS8R578oeL/1000706185.jpg",
+            "https://img.leopedia.io/DQmdhtGKmT8M9C714T8FJBtKFpMrTguorwbvnQboFK8fGBU/1000706204.jpg",
+            "https://img.leopedia.io/DQmcrRDFHawHdsuG31b82hbfmrA6NW8EGmSQV6TAyqDheJ3/1000706190.jpg",
+            "https://img.leopedia.io/DQmZPvCu5F7GRYW6aTLWmqUcaWJBaw2ivgjZrQtCa7hEgTt/1000706189.jpg",
+            "https://img.leopedia.io/DQmZY4h95V1pciUspAwq5oLtatDTbJo7DCnaXPmwENnug9K/1000706191.jpg",
+            "https://img.leopedia.io/DQmeJy3w7pdaHY6vrb15Nx2ZsYmex1pPVPBVy1ZAqJBpwmf/1000706195.jpg",
+            "https://img.leopedia.io/DQmWQTdpaoNR3vfy2UsGJzEUZRbdeEfKRVevQTSfbMTUgtu/1000706197.jpg",
+            "https://img.leopedia.io/DQmVfvJoPEjJqKgdCTeGRUXYPFjbWcmhVf2yKEtfiC95EJa/1000705439.png"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://3speak.tv/shorts?v=yordan96/eg9m6716",
+            "https://inleo.io/@yordan96/a-peaceful-night-in-ruteng-city-the-quiet-beauty-of-flores-after-dark-3hq)"
+          ],
+          "tags": [
+            "hive-163772",
+            "Travel",
+            "Flores",
+            "Ruteng",
+            "Indonesia",
+            "Pinmapple",
+            "Nature",
+            "WonderfulIndonesia",
+            "Manggarai"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 8947501565224,
+        "payout": 0.693,
+        "payout_at": "2026-05-31T20:46:21",
+        "pending_payout_value": "0.693 HBD",
+        "percent_hbd": 10000,
+        "permlink": "a-peaceful-night-in-ruteng-city-the-quiet-beauty-of-flores-after-dark-3hq",
+        "post_id": 150222455,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 35
+        },
+        "title": "A Peaceful Night In Ruteng City — The Quiet Beauty Of Flores After Dark",
+        "updated": "2026-05-24T20:46:21",
+        "url": "/hive-163772/@yordan96/a-peaceful-night-in-ruteng-city-the-quiet-beauty-of-flores-after-dark-3hq"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 4036705593,
+            "voter": "ganjafarmer"
+          },
+          {
+            "rshares": 941729721,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 2805778919,
+            "voter": "twoitguys"
+          },
+          {
+            "rshares": 1442151127,
+            "voter": "jeanlucsr"
+          },
+          {
+            "rshares": 552462906,
+            "voter": "minloulou"
+          }
+        ],
+        "author": "yordan96",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 62.67,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": " https://img.leopedia.io/DQmQNRids9PfuWbF9AaLon2aGFbuWywQF9KiXbudpKu5D43/1000699855.png \n\n\nComfort feels safe.\n\nThat’s why it becomes dangerous.\n\nMost people do not destroy their potential through dramatic failure.\n\nThey slowly lose it through comfort.\n\nComfort delays growth.\n\nComfort weakens ambition.\n\nComfort turns temporary rest into permanent stagnation.\n\nAnd modern life constantly encourages comfort.\n\nUnlimited entertainment.\n\nInstant dopamine.\n\nEndless distractions.\n\nEverything designed to keep attention occupied.\n\nBut growth rarely happens inside comfort zones.\n\nThe strongest transformations usually begin during uncomfortable phases.\n\nLearning new skills.\n\nTaking risks.\n\nBuilding during uncertainty.\n\nFacing criticism.\n\nSurviving failures.\n\nThose moments shape people.\n\nEspecially in investing and crypto, emotional comfort can become expensive.\n\nPeople chase hype because it feels safe when everyone else is doing it.\n\nThey panic during crashes because fear becomes contagious.\n\nVery few people stay emotionally independent.\n\nThat independence matters enormously.\n\nBecause opportunities often appear when emotions become extreme.\n\nThe same applies to life.\n\nMost people wait for “perfect timing.”\n\nBut perfect timing rarely exists.\n\nAction creates momentum.\n\nExperience creates clarity.\n\nAnd growth creates confidence.\n\nThe future will likely reward adaptable people more than comfortable people.\n\nPeople willing to evolve.\n\nLearn.\n\nExperiment.\n\nAnd continue building despite uncertainty.\n\nBecause uncertainty itself is becoming the new normal.\n\nAnd maybe the biggest risk today is not failure.\n\nMaybe the biggest risk is becoming too comfortable to grow.\n\n#EYS | Turning Patience Into Power 🌱💎\n\n\n\nPosted Using [INLEO](https://inleo.io/@yordan96/the-most-dangerous-addiction-is-comfort-8nf)",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-24T19:45:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@yordan96/the-most-dangerous-addiction-is-comfort-8nf",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmQNRids9PfuWbF9AaLon2aGFbuWywQF9KiXbudpKu5D43/1000699855.png"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://inleo.io/@yordan96/the-most-dangerous-addiction-is-comfort-8nf)"
+          ],
+          "tags": [
+            "hive-167922",
+            "Mindset",
+            "Growth",
+            "Crypto",
+            "Success",
+            "Inleo",
+            "Hive",
+            "Web3",
+            "Finance"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 381988665344,
+        "payout": 0.03,
+        "payout_at": "2026-05-31T19:45:21",
+        "pending_payout_value": "0.030 HBD",
+        "percent_hbd": 10000,
+        "permlink": "the-most-dangerous-addiction-is-comfort-8nf",
+        "post_id": 150222107,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 39
+        },
+        "title": "The Most Dangerous Addiction Is Comfort",
+        "updated": "2026-05-24T19:45:21",
+        "url": "/hive-167922/@yordan96/the-most-dangerous-addiction-is-comfort-8nf"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 0,
+            "voter": "joythewanderer"
+          },
+          {
+            "rshares": 584552720,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 7311018,
+            "voter": "psychophilo"
+          },
+          {
+            "rshares": 4308170656,
+            "voter": "darknightlive"
+          },
+          {
+            "rshares": 23245537303,
+            "voter": "we-are-ai"
+          }
+        ],
+        "author": "l3g3d",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 47.15,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Let’s be completely honest for a second. If you are scrolling through X, TikTok, or even parts of Hive, you see the same narrative repeated endlessly: \"Just compound your airdrops, participate in every testnet, stake your tokens, and watch your portfolio hit 6 figures.\n\n![](https://i.ecency.com/DQmeYDMyVueP4XWPx461D6d89Jx6cyZbJwbPseQMHEY4xEe/1779651384286.png)\n\nAs a 16-year-old digital entrepreneur trying to build momentum from scratch right here in Nigeria, I’m calling it out: This advice is pure gaslighting for anyone starting with low capital.\nLet’s break down the actual reality of the grind, and why the game is rigged against retail unless you pivot your strategy immediately.\n\n🛑 1. The Capital Barrier They Don't Talk About\nThe \"gurus\" giving advice usually already have thousands of dollars in liquid capital. When they tell you to \"just bridge to this network\" or \"stake for a potential snapshot,\" they conveniently forget that a single high mainnet gas fee or a prolonged locking period can completely paralyze a small user's liquidity. For someone starting out, capital velocity matters more than passive accumulation. If your capital is locked up for 6 months for a speculative 5% return, you aren't investing—you're stuck.\n\n📉 2. The \"Sybil\" Filter Scam\nWe’ve watched major layer-2 networks deploy incredibly aggressive anti-sybil algorithms that disqualify thousands of real, grinding users just because they don't have a high \"on-chain wallet score\" or deep transaction history. You can spend months interacting with a testnet, only to find out a VC-backed whale took 90% of the allocation anyway.\nChasing blind hype without a concrete framework is a fast track to burnout and zero profit.\n\n⚡ My New Rules for Overcoming the Zero-Capital Trap\nIf you don't have deep pockets, you cannot play the game the same way the whales do. Here is my exact shift in strategy to force momentum:\nStop Chasing High-Gas Mainnets: If a protocol requires heavy transaction fees to even qualify for an ecosystem position, pass on it. Focus purely on low-barrier, high-utility networks where sweat equity beats financial leverage.\n\nAggressive Content Curation: Instead of waiting for a speculative drop, treat your insights as the product. I am shifting my focus to generating raw, unfiltered breakdowns here on InLeo. Curation rewards provide immediate liquid leverage that can be deployed instantly.\n\nBuild Real-World Cash Flow First: Web3 shouldn’t be a lottery ticket. I use my offline digital skills, mini-importation sourcing, and affiliate marketing to build a baseline of daily cash flow. That way, every crypto move I make is funded by profits, not survival money.\n\nLet's Have Real Talk:\nI want to hear from the people who actually grind on InLeo every day, not just the whales sitting on massive stakes.\nIf you started on Hive or in crypto with less than $50, how did you actually break through the noise and get your first real momentum? Is the current airdrop/testnet meta dead for retail users?\n\nDrop your raw thoughts below—let’s stop sugarcoating the market. 👇",
+        "category": "hive-167922",
+        "children": 1,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-24T19:36:36",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.5-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://i.ecency.com/DQmeYDMyVueP4XWPx461D6d89Jx6cyZbJwbPseQMHEY4xEe/1779651384286.png"
+          ],
+          "image_ratios": [
+            0.4872521246458923
+          ],
+          "links": [],
+          "tags": [
+            "hive-167922",
+            "crypto",
+            "finance",
+            "web3",
+            "proofofbrain",
+            "hivenaija",
+            "cent"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 28233593809,
+        "payout": 0.002,
+        "payout_at": "2026-05-31T19:36:36",
+        "pending_payout_value": "0.002 HBD",
+        "percent_hbd": 10000,
+        "permlink": "why-most-2026-crypto-gurus",
+        "post_id": 150222019,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 6
+        },
+        "title": "Why Most 2026 Crypto Gurus Are Gaslighting Retail Accounts (And My New Blueprint) 🧵",
+        "updated": "2026-05-24T19:36:36",
+        "url": "/hive-167922/@l3g3d/why-most-2026-crypto-gurus"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 45738082903,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 421744169391,
+            "voter": "darkflame"
+          },
+          {
+            "rshares": 40270234064,
+            "voter": "seckorama"
+          },
+          {
+            "rshares": 12027475415,
+            "voter": "esteemapp"
+          },
+          {
+            "rshares": 2642116032,
+            "voter": "bigtakosensei"
+          }
+        ],
+        "author": "borsengelaber",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 75.93,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![](https://i.ecency.com/DQmVP8a9J7dtLWKwQfvcEYho5kEJwnGkMQD4TMzJo3PCtBF/img_1086.png)\n\n![](https://i.ecency.com/DQmcR5TKmTXjMAxauswiQq1trugrPb5TsRrf396GqbE62Gt/img_4678.png)\n\n**Strong Hands in BTC ETFs**\n\nWhat’s very surprising is that Bitcoin ETF buyers are turning out to be strong hodlers. As Bloomberg analyst Eric Balchunas pointed out this week, the cumulative net flows of all BTC ETFs are still near all-time highs, despite Bitcoin correcting for several months now.\n\nWhat this means is that the people and institutions entering Bitcoin through ETFs over the past two years are not short-term traders. Many seem to view Bitcoin simply as an addition to their investment portfolio with a relatively small allocation and even 50% drawdowns don’t shake them out.\n\nThat’s very good news. And with companies and even nation-states still mostly on the sidelines, there’s still huge potential demand ahead.\n\nBullish to me.\n\n\n![](https://i.ecency.com/DQmcR5TKmTXjMAxauswiQq1trugrPb5TsRrf396GqbE62Gt/img_4678.png)\n\n![](https://i.ecency.com/DQmQWmHS2mDYS6KPybcAbj8FG2EXqUg74BQ4gfX9Gh4Ehd9/img_1085.png)\n\n![](https://i.ecency.com/DQmPzio1ih6mk1WYRxpNjArCnHxCnc8ZwawAhomvY5VDApU/img_1084.png)",
+        "category": "hive-167922",
+        "children": 2,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-24T18:55:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.5-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://i.ecency.com/DQmVP8a9J7dtLWKwQfvcEYho5kEJwnGkMQD4TMzJo3PCtBF/img_1086.png",
+            "https://i.ecency.com/DQmcR5TKmTXjMAxauswiQq1trugrPb5TsRrf396GqbE62Gt/img_4678.png",
+            "https://i.ecency.com/DQmcR5TKmTXjMAxauswiQq1trugrPb5TsRrf396GqbE62Gt/img_4678.png",
+            "https://i.ecency.com/DQmQWmHS2mDYS6KPybcAbj8FG2EXqUg74BQ4gfX9Gh4Ehd9/img_1085.png",
+            "https://i.ecency.com/DQmPzio1ih6mk1WYRxpNjArCnHxCnc8ZwawAhomvY5VDApU/img_1084.png"
+          ],
+          "image_ratios": [
+            1,
+            9.660377358490566,
+            9.660377358490566,
+            1.194267515923567,
+            0.7460212201591512
+          ],
+          "links": [],
+          "tags": [
+            "hive-167922",
+            "ecency",
+            "bitcoin"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 27390327336637,
+        "payout": 2.121,
+        "payout_at": "2026-05-31T18:55:21",
+        "pending_payout_value": "2.121 HBD",
+        "percent_hbd": 10000,
+        "permlink": "bitcoin-etf-buyers-are-stronger",
+        "post_id": 150221743,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 86
+        },
+        "title": "Bitcoin ETF Buyers Are Stronger Hodlers Than Expected",
+        "updated": "2026-05-24T18:55:21",
+        "url": "/hive-167922/@borsengelaber/bitcoin-etf-buyers-are-stronger"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 6556124019,
+            "voter": "neddykelly"
+          },
+          {
+            "rshares": 1676956640626,
+            "voter": "germansailor"
+          },
+          {
+            "rshares": 699135178720,
+            "voter": "sabine-reichert"
+          },
+          {
+            "rshares": 3067959572,
+            "voter": "pbock"
+          },
+          {
+            "rshares": 3015029195,
+            "voter": "ganjafarmer"
+          }
+        ],
+        "author": "ssjsasha",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.03,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": " https://img.leopedia.io/DQmXP2C5JJ4xRn5E1nJ6S7tpod98HG5nwaQN1bPBAKxqMwn/IMG_9933.jpg \n\nFor fun I wanted to see how much people would buy some of my pieces for.\n\nI went to my favourite place to offload some metals and started scrolling down to their \"we buy\" section for silver\n\nA part of me wasn't surprised to find out that they are willing to pay around 8% more for the 5 oz silver maples leaf than they would for the 5 oz silver bar from sunshine minting. They would pay even less for a random no name silver bar funny enough\n\nThis goes to show that although silver is silver, not all silver is worth the same in the eyes of the people\n\nThat is why if I was to buy silver I try my best to get modern silver maple leafs because they have the most real value of all coins and bars \n\nThe same would go for gold and platinum, the name really matters and the premium that comes with going with a known brand is really worth it at the end of the day\n\nPosted Using [INLEO](https://inleo.io/@ssjsasha/are-all-silver-built-the-same-jx4)",
+        "category": "hive-167922",
+        "children": 6,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-24T18:38:45",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@ssjsasha/are-all-silver-built-the-same-jx4",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmXP2C5JJ4xRn5E1nJ6S7tpod98HG5nwaQN1bPBAKxqMwn/IMG_9933.jpg"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://inleo.io/@ssjsasha/are-all-silver-built-the-same-jx4)"
+          ],
+          "tags": [
+            "hive-167922",
+            "inleo",
+            "leo",
+            "silvergoldstackers",
+            "hive",
+            "gold",
+            "silver",
+            "platinum"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 10498535425393,
+        "payout": 0.836,
+        "payout_at": "2026-05-31T18:38:45",
+        "pending_payout_value": "0.836 HBD",
+        "percent_hbd": 10000,
+        "permlink": "are-all-silver-built-the-same-jx4",
+        "post_id": 150221636,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 75
+        },
+        "title": "Are all silver built the same?",
+        "updated": "2026-05-24T18:38:45",
+        "url": "/hive-167922/@ssjsasha/are-all-silver-built-the-same-jx4"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 888850804,
+            "voter": "tuck-fheman"
+          },
+          {
+            "rshares": 31538954770,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 657459812,
+            "voter": "juanmiguelsalas"
+          },
+          {
+            "rshares": 1907194117,
+            "voter": "ratel"
+          },
+          {
+            "rshares": 2114416098,
+            "voter": "kaylinart"
+          }
+        ],
+        "author": "noemilunastorta",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 78.52,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "![](https://i.ecency.com/DQmXN9hUVFpeDBrPRcVcJD7DqiyWLBzXNB4Fake3rgYutjM/1779645297105.jpg)\n\nGood evening, blog friends, I'm back with you to take you to a lovely little place I visited a few days ago, Traversagna or Margine dicoperta, a charming place located near Montecatini, near Buggiano and Santa Lucia, which I'll tell you about soon. Honestly, I only knew about this place because there's a famous music club here where they hold many concerts and jam sessions, but I'd never visited the surrounding area. This place is located in the Nievole plain, bordering the Fucecchio Marshes (another place I'd like to visit soon). Traversagna is a small village with medieval origins. Today, it's a passageway, divided between the houses on the main street, some neighboring streets, and the countryside, including some bordering the marshes. It's a very quiet and pleasant place. In ancient times, it's said that there were hospices here that housed pilgrims on their way to Lucca, as was the case in almost all the towns in the area that were a stopover for pilgrims. Instead, until the mid-1900s it was a predominantly rural area still to be reclaimed and urbanized, but little by little, with the growth of cities and urbanization, it became a residential, urban and completely or almost completely reclaimed area.\n\n> Buenas noches, amigos del blog, estoy de vuelta para llevarlos a un pequeño y encantador lugar que visité hace unos días, Traversagna o Margine dicoperta, un lugar con encanto ubicado cerca de Montecatini, cerca de Buggiano y Santa Lucia, del que les hablaré pronto. Honestamente, solo conocía este lugar porque hay un famoso club de música donde se realizan muchos conciertos y jam sessions, pero nunca había visitado los alrededores. Este lugar está ubicado en la llanura de Nievole, limitando con las Marismas de Fucecchio (otro lugar que me gustaría visitar pronto). Traversagna es un pequeño pueblo de origen medieval. Hoy en día, es un pasaje, dividido entre las casas de la calle principal, algunas calles vecinas y el campo, incluyendo algunas que limitan con las marismas. Es un lugar muy tranquilo y agradable. En la antigüedad, se dice que aquí había hospicios que alojaban a los peregrinos en su camino a Lucca, como ocurría en casi todos los pueblos de la zona que eran parada para los peregrinos. En cambio, hasta mediados del siglo XX era una zona predominantemente rural que aún estaba por recuperar y urbanizar, pero poco a poco, con el crecimiento de las ciudades y la urbanización, se convirtió en una zona residencial, urbana y total o casi totalmente recuperada.\n\n\n![](https://i.ecency.com/DQmZRnDx2Fi91Qh1g7SPEGTEtbTomBzB9rLCWvTojeNVfpf/1779645297362.jpg)\n\n![](https://i.ecency.com/DQmPTMukwJUWQpegv5AnPGQaT35EqAys4xCr3vBRM9WzP1j/1779645297598.jpg)\n\n![](https://i.ecency.com/DQmYAFLVo4cBCbRDYNaJWgL1Rh2SFvkbBeshRJe1hDRio3J/1779645297846.jpg)\n\n\nThe first part of the village is very residential, with many houses, villas, and simple but well-maintained residences. There are also various businesses and shops. It's clear that today it's a very active and vibrant area, no longer a place of farmers and isolated houses. There are some cemented squares, a cemetery, and charming little parks. Then, however, we approach the countryside, which immediately unfolds in all its splendor: long green fields, some lined with cypress trees, farmhouses, fields of various herbs, olive groves, and various crops. The countryside is what I like and appreciate the most. There are various little roads that branch off between the fields. One day, I'd love to visit the countryside in this area; it must be very relaxing. Continuing on, however, we return to a more industrialized area, a little less beautiful than the green spaces, but still with several tree-lined avenues, so not all concrete! Here too, there are villas and shops, mostly factories, but I'm not sure what. In any case, it's a small village that I quite enjoyed, even though it doesn't have any major highlights. It's a pleasant little Tuscan town, typical of the area. See you soon with more trips, blogging friends!\n\n> La primera parte del pueblo es muy residencial, con muchas casas, villas y residencias sencillas pero bien conservadas. También hay varios negocios y tiendas. Es evidente que hoy en día es una zona muy activa y dinámica, ya no un lugar de agricultores y casas aisladas. Hay algunas plazas pavimentadas, un cementerio y pequeños parques con encanto. Luego, sin embargo, nos acercamos al campo, que inmediatamente se despliega en todo su esplendor: largos campos verdes, algunos bordeados de cipreses, casas de campo, campos de diversas hierbas, olivares y diversos cultivos. El campo es lo que más me gusta y aprecio. Hay varios caminos pequeños que se ramifican entre los campos. Algún día, me encantaría visitar el campo en esta zona; debe ser muy relajante. Sin embargo, continuando, volvemos a una zona más industrializada, un poco menos hermosa que los espacios verdes, pero aún con varias avenidas arboladas, ¡así que no todo es cemento! Aquí también hay villas y tiendas, en su mayoría fábricas, pero no estoy seguro de qué. En cualquier caso, es un pueblecito que me gustó mucho, aunque no tenga grandes atractivos turísticos. Es un agradable pueblecito toscano, típico de la zona. ¡Nos vemos pronto con más viajes, amigos blogueros!\n\n\n![](https://i.ecency.com/DQmYer1SENttyLi4umreokh1znwnKGrU8ej8McFaEqAGvN6/1779645298045.jpg)\n\n\n![](https://i.ecency.com/DQmdUuCu2hhKKEZshckZKCCtMGoQqRGS6rWNu8Dqi9HJ5n7/1779645676745.jpg)\n\n![](https://i.ecency.com/DQmcVwsmTW3VEDniiTKZ1dFTXBqvVymYCPh2V3ExoG9UqqY/1779645677005.jpg)\n\n![](https://i.ecency.com/DQmPcfV5kEcoC5vKGAsde82DGTnfvKwTyLiKvxuwRKR8RJX/1779645677238.jpg)\n\n![](https://i.ecency.com/DQmTPJHw1nM5Qc557LiUy8u59boiQzAPnJ87zeZHX7AHaH9/1779645677507.jpg)\n\n![](https://i.ecency.com/DQmXE3rdzSFRt3JFFPHf2TASxxXtrtKrrrGDrkgfubxhAzQ/1779645677761.jpg)\n\n\n![](https://i.ecency.com/DQmd7xUa8pRdEAjXLyeV4b1SV66G8xHPGvz6Ynx2GTCxPC7/1779645695037.jpg)\n\n![](https://i.ecency.com/DQmaE7THQK5ahefd5iB6Ky55FAkLhPVzWRTbhTQAt1eVd8d/1779645695133.png)\n\n![](https://i.ecency.com/DQmNzKgSkahHJwwgobrg5MczB5auWwyaEYpe4286G3KiJpd/1779645695232.png)\n\n> First and others pictures edited by my phone translation with deepl. \n\n\n[//]:# (!worldmappin -88.43110 lat 158.51619 long  d3scr)",
+        "category": "hive-163772",
+        "children": 3,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-05-24T18:24:36",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.5-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://i.ecency.com/DQmXN9hUVFpeDBrPRcVcJD7DqiyWLBzXNB4Fake3rgYutjM/1779645297105.jpg",
+            "https://i.ecency.com/DQmd7xUa8pRdEAjXLyeV4b1SV66G8xHPGvz6Ynx2GTCxPC7/1779645695037.jpg",
+            "https://i.ecency.com/DQmTPJHw1nM5Qc557LiUy8u59boiQzAPnJ87zeZHX7AHaH9/1779645677507.jpg",
+            "https://i.ecency.com/DQmXE3rdzSFRt3JFFPHf2TASxxXtrtKrrrGDrkgfubxhAzQ/1779645677761.jpg",
+            "https://i.ecency.com/DQmaE7THQK5ahefd5iB6Ky55FAkLhPVzWRTbhTQAt1eVd8d/1779645695133.png",
+            "https://i.ecency.com/DQmPcfV5kEcoC5vKGAsde82DGTnfvKwTyLiKvxuwRKR8RJX/1779645677238.jpg",
+            "https://i.ecency.com/DQmNzKgSkahHJwwgobrg5MczB5auWwyaEYpe4286G3KiJpd/1779645695232.png",
+            "https://i.ecency.com/DQmcVwsmTW3VEDniiTKZ1dFTXBqvVymYCPh2V3ExoG9UqqY/1779645677005.jpg",
+            "https://i.ecency.com/DQmZRnDx2Fi91Qh1g7SPEGTEtbTomBzB9rLCWvTojeNVfpf/1779645297362.jpg",
+            "https://i.ecency.com/DQmdUuCu2hhKKEZshckZKCCtMGoQqRGS6rWNu8Dqi9HJ5n7/1779645676745.jpg"
+          ],
+          "image_ratios": [
+            1,
+            1.7692307692307692,
+            1,
+            0.75,
+            3
+          ],
+          "links": [],
+          "tags": [
+            "hive-163772",
+            "travel",
+            "nature",
+            "traveling",
+            "roadtrip",
+            "spanish",
+            "life"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 33336952455274,
+        "payout": 2.581,
+        "payout_at": "2026-05-31T18:24:36",
+        "pending_payout_value": "2.581 HBD",
+        "percent_hbd": 10000,
+        "permlink": "the-small-village-of-traversagna",
+        "post_id": 150221532,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 630
+        },
+        "title": "The small village of Traversagna, nestled between the countryside and the urban area./ El pequeño pueblo de Traversagna, enclavado entre el campo y la zona urbana.",
+        "updated": "2026-05-24T18:24:36",
+        "url": "/hive-163772/@noemilunastorta/the-small-village-of-traversagna"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

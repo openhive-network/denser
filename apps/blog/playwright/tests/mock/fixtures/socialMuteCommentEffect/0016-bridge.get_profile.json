@@ -1,0 +1,49 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_profile",
+    "params": {
+      "account": "steevc"
+    },
+    "id": 1
+  },
+  "requestHash": "64c804e9777b3dd6",
+  "method": "bridge.get_profile",
+  "params": {
+    "account": "steevc"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active": "2026-05-25T08:36:27",
+      "blacklists": [],
+      "created": "2016-08-02T19:28:45",
+      "id": 44460,
+      "metadata": {
+        "profile": {
+          "about": "Geeky guitarist, drummer, runner and not the only Hivian in the village",
+          "blacklist_description": "",
+          "cover_image": "https://steevc.keybase.pub/steemit/gordonsmith.jpg",
+          "location": "Arlesey, Beds, UK",
+          "muted_list_description": "",
+          "name": "Steve Clark",
+          "profile_image": "https://files.peakd.com/file/peakd-hive/steevc/N3YewKHO-stevehive.png",
+          "website": "https://linktr.ee/steevc"
+        }
+      },
+      "name": "steevc",
+      "post_count": 82611,
+      "reputation": 80.2,
+      "stats": {
+        "followers": 7302,
+        "following": 556,
+        "rank": 0
+      }
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

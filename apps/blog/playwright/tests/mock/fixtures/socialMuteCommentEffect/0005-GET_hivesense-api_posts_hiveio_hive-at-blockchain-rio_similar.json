@@ -1,0 +1,13 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/posts/hiveio/hive-at-blockchain-rio/similar",
+  "requestQuery": {
+    "truncate": "100",
+    "result_limit": "10",
+    "full_posts": "10",
+    "observer": "guest4test"
+  },
+  "requestHash": "402f3421206e0c2a",
+  "response": "",
+  "responseStatus": 404
+}

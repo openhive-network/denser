@@ -1,0 +1,504 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "created",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "my",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "b659154fd138cd7d",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "created",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "my",
+    "observer": "guest4test"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "active_votes": [
+          {
+            "rshares": 184082573269364,
+            "voter": "blocktrades"
+          },
+          {
+            "rshares": 2643233622181,
+            "voter": "adm"
+          },
+          {
+            "rshares": 817822454,
+            "voter": "konelectric"
+          },
+          {
+            "rshares": 716514689466,
+            "voter": "ervin-lemark"
+          },
+          {
+            "rshares": 1136187976971,
+            "voter": "kenny-crane"
+          }
+        ],
+        "author": "hiveio",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.35,
+        "beneficiaries": [
+          {
+            "account": "pettycash",
+            "weight": 10000
+          }
+        ],
+        "blacklists": [],
+        "body": "![image.png](https://images.hive.blog/DQmefPVpvA4a5U2vN8K6JmYFnv7QKfnH98XwSn7zxqMtcJZ/image.png)\n\n2025 has been a busy year for Hive, the blockchain that never stops innovating, marked by major developments that kept the community and developers moving at full speed.\n\n[HiveFest](https://hivefe.st)<sup>10</sup> (@hivefest) took place in sunny Kuala Lumpur, Malaysia and went exceptionally well. This was the first year it included [Chainculture](https://chainculture.cc) - a day for all web3 innovators and blockchains to share their journeys and celebrate along with the Hive community. The inspirational event was such a hit that we'll definitely see it again in the future! \n\n\"Lightweight\" is the name of the Hive development game. Hard Fork 28 took place on November 19th, with its focus being optimization and utility. Tightened key management tiers and an expanded multisig signing window were among other instrumental protocol additions. Hived (aka witness nodes) now requires far less memory than before. *Interested in witnesses? Check out their rankings via [Cute Hive](https://cutehive.com) by @oflyhigh.*\n\nStrengthening layer 1 capability and expanding the flexibility of layer 2 are pivotal focal points for Hive technology. Don't need the dev talk? No problem. Just be sure to get a nice case for your cellphone; @blocktrades aims to have nodes run on phones in 2026. Hive is aligned with the global shift towards sustainability and sees efficiency as critical. \n\nThe creative juices of Hive community members remained at the forefront of activity with consistent participation in Hive Power-Up Days and the Hive Creators Awards 2025, a community-driven celebration of .. you. It saw a growth in participation and new categories reflective of Hive's creative evolution. The Hive.io website also got a facelift thanks to the efforts of @therealwolf and other contributors.\n\nWant to see your 2025 Hive journey? [Hive Wrapped 2025](https://hive-wrapped.com) by @emrebeyler grants you a slide by slide reflection. Find your top buddies and check your posting streaks. Your [Hive Recap 2025](https://recap.hivecreators.co/login) is also now out courtesy of the Hive Creators team. They've outdone themselves for yet another year. \n\n![image.png](https://images.hive.blog/768x0/https://files.peakd.com/file/peakd-hive/roelandp/23uFRu2bHMFCguS6hzGmL6ANTmKPkK7j3vKk9jedQxZgctPwNyWtNCNX3sKH1g851ZVj4.jpg)\n\nAs it approaches 2026, Hive remains at the forefront of web3 development as a beacon of decentralization and blockchain evolution. It looks out at the crypto horizon, remaining steady and committed to its vision - to the vision of the Hive community as it overcomes all obstacles and continues to challenge new technologies and break through social constructs. Hive is the Hive community and the Hive community is Hive. \n\n# Hive Dapps\n\nAs we're preparing to say goodbye to 2025 we're taking some time to chat with our wide ranging Hive dapps and have them share their achievements with all of you. These teams never stop working and building! \n\nWhat's your favorite Hive dapp, tool or project? Why do you love it? \n\n## Actifit\n\nThroughout 2025, the [Actifit](https://actifit.io/) Team delivered a wide range of improvements and new functionality across the platform\u2019s frontend, mobile application, and API infrastructure. The year saw a major upgrade to the web experience with enhanced UX/UI, offering users a more intuitive and streamlined interface. Actifit also expanded into AI-driven features, including the launch of the in-app AI Workout Generator, the addition of predefined exercises with visual illustrations, an improved content editor, expanded translation support, and several other quality-of-life enhancements aimed at strengthening user engagement.\n\nThe initial release of AI-powered workouts laid the foundation for a broader roadmap of fitness customization. Upcoming improvements include support for user-curated and manually adjusted workouts, exercise search capabilities, refined suggestions, and more dynamic workout tracking tools\u2014each designed to offer a more personalized and adaptive fitness experience.\n\nA key milestone for 2025 is the finalization of Actifit\u2019s HealthConnect integration, expected before the end of the year. This feature will enable seamless data syncing from thousands of supported devices and sensors on Android, significantly improving activity tracking and accessibility for a global audience.\n\nLooking ahead to 2026, the Actifit Team is committed to expanding its reach and delivering greater value to both existing users and newcomers beyond the Hive ecosystem.\n\n> \"We're excited to drive broader user adoption and growth for Actifit and Hive as we roll out new features tailored to both health-focused and crypto-savvy audiences beyond our current ecosystem in the new year!\"\n\n## Astral Wars\n\n[Astral Wars](https://play.google.com/store/apps/details?id=com.SurgentGaming.AstralWars) continued its steady journey through 2025 as [Surgent Gaming](http://www.surgentgaming.com/) refined and expanded its vision for a competitive, skill-driven digital trading card game. Over the year, the team successfully launched Astral Wars on Google Play, marking a major milestone in bringing the game to a broader mobile audience. This release validated months of work across game design, backend systems, and live infrastructure, transforming Astral Wars from an experimental concept into a live, playable product.\n\n\n![image.png](https://images.hive.blog/DQmRt1JBrEGYPqx5kU63dsMHw356N6iYP1AoBDMn7g9pViv/image.png)\n\nThroughout 2025, development focused on strengthening the game\u2019s core systems rather than chasing short-term hype. Key improvements were made to combat depth, progression, deck-building, and overall game stability. The team also introduced early live-ops foundations, backend analytics, and ongoing balance adjustments based on real player behavior. Alongside gameplay, Astral Wars continued integrating blockchain elements in a subtle, player-first way, using decentralized infrastructure for ownership and transparency without compromising accessibility or gameplay flow.\n\nCommunity engagement remained central to the project. Feedback from early players helped guide feature prioritization, tutorial improvements, and onboarding clarity. By the end of the year, Astral Wars had established a solid foundation: a live mobile card game, an engaged early community, and a clearer understanding of what drives retention and long-term depth in competitive card gameplay.\n\nLooking ahead, the focus remains on refinement, sustainability, and thoughtful growth rather than aggressive expansion. As the team reflects on 2025\u2019s progress, they remain committed to building something enduring.\n\n> \u201cWe\u2019re excited to deepen Astral Wars in 2026 by focusing on meaningful progression, competitive play, and systems that reward mastery over time. This through the upcoming nexus systems and rogulike tower of trials along with many other planned features.\u201d\n\n## Beat Brawls\n\nIn 2025, the [BeatBrawls](https://beatbrawls.com) team successfully launched its Web3 multiplayer game in the third week of October, marking a major milestone after months of focused development, internal testing, and iteration. This alpha release represented the first live deployment of BeatBrawls\u2019 hybrid architecture, combining off-chain gameplay logic with carefully designed on-chain components. This approach ensured smooth, responsive gameplay while preserving decentralization and true digital asset ownership where it mattered most.\n\nA key achievement during the alpha phase was the successful integration with the Hive ecosystem, leveraging Hive\u2019s gas-free blockchain model to significantly lower the barrier to entry for players. The team introduced two core in-game assets: Beat, an on-chain token built on Hive Engine and earned through Hive Power delegation, and Brawl, a stable in-game token pegged 1:1 to HBD. During the alpha, players were able to deposit and withdraw both assets, allowing the team to validate wallet flows, economic mechanics, and real-world token interactions in a live environment.\n\n![image.png](https://images.hive.blog/DQmWkLZ4fiR9yt55G7wVRhR4vQLjNCCmj9stvSKcDGbDS1s/image.png)\n\nCommunity growth and engagement were another major focus in 2025. Alongside the alpha launch, BeatBrawls conducted multiple community giveaways to reward early testers, encourage participation, and onboard new players. These initiatives helped build early traction, gather valuable gameplay feedback, and stress-test reward distribution systems under real usage conditions.\n\nIn parallel, the team formed early partnerships beyond Hive, including collaborations with Push testnet and Skale, reinforcing BeatBrawls\u2019 multi-chain vision and technical flexibility. By the end of 2025, BeatBrawls had transitioned from development into a live alpha product with an engaged early community and a solid technical foundation.\n\n> \"We\u2019re excited to deepen gameplay, expand chain integrations, and grow a truly player-owned competitive ecosystem in the new year!\"\n\n## Dungeon Cities\n\n[Dungeon Cities](https://dungeoncities.com/) made significant strides in 2025, marking the year as a foundational milestone for the project\u2019s long-term vision. Built on the Hive blockchain, Dungeon Cities is a Web3 P2E dungeon crawler inspired by the narrative depth and progression style of Solo Leveling. \n\n![image.png](https://images.hive.blog/DQmSFZbfVcS2RrHsa4m8y4CbKtRkFr6HWrkjn2q1RcqZF66/image.png)\n\nThroughout the year, the project focused on building a complete, stable and engaging gameplay ecosystem. Major systems were successfully introduced which included a fully functional PvE and PvP battle system, a P2P marketplace, a referral system and HP delegation rewards that strengthened player-driven economics. \n\nContent expansion was a central achievement, with over 1,000 items and gear pieces, 100+ unique skills, extensive crafting recipes and more than 200 unique monsters populating the world of Dungeon Cities. \n\nThe game world itself grew substantially, now featuring five distinct cities with a total of 60 dungeon floors, each designed to encourage strategic and balanced gameplay. Player progression was enhanced through a robust leveling system, VIP tiers, daily login rewards and a comprehensive quest system that deepened long-term engagement. \n\nBy the end of 2025, Dungeon Cities had evolved into a feature-complete experience. With the core systems firmly in place, the project is now positioned to shift focus outward. As the team looks ahead, one sentiment captures the vision clearly: \n\n> \u201cWe\u2019re excited to bring Dungeon Cities to a wider audience and finally focus on marketing and growth in the new year.\u201d\n\n## Exode\n\n[EXODE](https://exode.io) used 2025 to turn years of world building into a living and repeatable game loop.\n\nEXODE started proposing food crafting mechanics and a new \"Next Day\" presentation and is now advancing on a colonization 2.5 gameplay prototype, a concept making the bridge between 2.0 and 3.0.\n\nOn the gameplay side the main achievement is Colonization Challenges: a weekly repeatable game loop. Procedurally generated planetary scenarios where players assemble teams from their entire collection to face environmental hazards, risks, comfort constraints and \"mystery\" objectives.\n\n![image.png](https://images.hive.blog/DQmQTyZe2Cqjn2txqTkP78DiWLQ4zKWJp9KAMNs5EYYK19f/image.png)\n\nChallenges now run in waves with weekly content. Players tackle problems raised on several planets and compete on a leaderboard for rewards. Next upgrades are card cool-downs, level-ups, strategic resources and rewards.\n\nEXODE reports a big increase in utility from this, to all 500+ card models and > 1 million card assets. \n\nUX was strengthened through manager interface. EXODE deployed new explanatory videos and tested new visitors. Using this experience the studio is working on improved  versions for 2026. \n\nThe game also lately demonstrated features for Aramea player owned space station and announced a new objective about its novel series, with a \"Book One\" Contract Pack introducing playable cards directly tied to the upcoming EXODE novel ; with named Origins like Nimodia Galatan and key characters such as Sigis Astona and Siren. It will give ongoing chapter access in a fun and innovative \"WEB3 way\". This merges world, writing, gameplay and WEB3 together, and proves how WEB3 can support it.\n\nWith one developer EXODE weights over 800k lines of self-written code and over 100 000 words in blog articles.\n\n> \"We're proud of carrying our vision forward of the vibrant world of 2325 supported now by a weekly game loop, and to bring the EXODE novel's characters into player hands!\" \n\n## Hdev Team\n\nThroughout 2025, the Hdev Team delivered substantial growth across many HAF-based projects, expanding the ecosystem with numerous new endpoints and deploying advanced frontend utilities. Their work strengthened core infrastructure, particularly through major enhancements to the HAF Block Explorer and the Balance Tracker. Key achievements included the development of proxied accounts APIs, multi-tier witness proxy support, richlist and wallet market order endpoints, balance-under-conversion data, and many other additions that broadened HAF\u2019s analytical and operational capabilities.\n\nA significant portion of the team\u2019s focus went into elevating the HAF Block Explorer (as seen on https://hivescan.info). In 2025 it underwent extensive upgrades: refined layouts, richer datasets, new screens, expanded community and proposal support, aggregated insights, analytics dashboards, searchable voter lists, historical views, new charting features throughout the interface and much more. These improvements greatly enhanced usability and provided a more complete and accessible window into Hive\u2019s on-chain activity.\n\nLooking ahead, and pending proposal funding, the Hdev Team is preparing several new HAF applications designed to advance the ecosystem further. Planned initiatives include HAF Stats (powering a next-generation Hive Stats experience), HAF FYP (a \u201cFor You Page\u201d system enabling algorithmic content delivery), and HAF Chat (supporting on-chain encrypted chat queries \u2013 Discord style).\n\n> \"We\u2019re excited to continue building powerful tools that help drive Hive\u2019s growth and adoption in the new year!\" \n\n## Hive Open Market\n\n[Hive Open Market](https://peakd.com/hive-139531/@borislavzlatanov/hive-open-market-buy-and-sell-products-and-services-with-crypto) has been released, allowing buying and selling of products/services with crypto payments. This functions as a decentralized marketplace with transparent operations and community moderation. The underlying open protocol makes this marketplace very integrated with the rest of the Hive ecosystem and potentially other ecosystems. \n\nEach account is now empowered to have its own webstore, integrated directly with their blog. New use cases for HBD can be created by accounts that list products/services.\n\n\n## PeakD\n\nPeakD is introducing a new suite of transparency tools for AI, designed to give users clearer insight into how generated content is produced. These tools will help creators as AI becomes more deeply integrated into the platform. The frontend is also expanding its creative capabilities with advanced video and photo generation and editing features. Combined with support for private browser-based storage, users will be able to create, modify, and manage rich media securely and directly within their own browsing environment.\n\nA major enhancement to user experience comes with the integration of Peak Open, a state-of-the-art, fully customizable notification system. This system will allow individuals and communities to tailor alerts, ensuring that important updates are surfaced and unnecessary noise is filtered out.\n\nPeakD is also upgrading its publishing interface with a powerful visual text editor, providing a smoother, more intuitive writing experience. This editor aims to streamline the creation process while supporting the rich formatting options users expect. Backend development is preparing for HF28 infrastructure upgrades and moving toward full support for HafSQL, which will allow for improved performance and future scalability. As part of this modernization, legacy HiveSQL support will be phased out.\n\nBut that's not all! PeakD will also include an integrated VSC wallet, enabling seamless interaction with blockchain features directly from the platform. This integration will simplify transactions and improve overall usability for both new and experienced users.\n\n## Snapie\n\nSnapie is a mobile-first Hive frontend inspired by PeakD Snaps, built around one core idea: onboarding should feel effortless. The project was created to lower the cognitive and emotional barrier that often comes with Web3 by intentionally hiding complexity. Snapie does not ask users to understand keys, wallets, or blockchain mechanics upfront. Instead, it focuses on \u201cproof of fun.\u201d Share photos, short videos, memes, or audio clips\u2014post first, learn later, if at all.\n\nIn 2025, Snapie successfully launched as a functional mobile application, marking a major milestone for the project. Beyond the initial release, significant progress was made in bridging familiar Web2 behaviors into Hive. Support was added for sharing content from major platforms such as Twitter/X, Instagram, and YouTube, allowing users to bring existing content and habits with them rather than starting from zero. This helped Snapie feel less like a \u201ccrypto app\u201d and more like something people already know how to use.\n\nA web-based version of Snapie was also launched at snapie.io, expanding accessibility beyond mobile and making it easier for curious users to explore the platform without installing an app. Additional features rolled out throughout the year included direct video uploads and audio snaps, further broadening the ways users can express themselves on Hive without friction.\n\nSnapie\u2019s progress in 2025 demonstrates that onboarding doesn\u2019t need to be instructional or ideological\u2014it can simply be enjoyable.\n\n> \u201cWe\u2019re excited to keep stripping away friction in 2026 and let people discover Hive by using it, not studying it.\u201d\n\n## Splinterlands \n\nIn 2025, Splinterlands delivered one of its strongest and most innovative years, marked by major content releases, ecosystem growth, and industry recognition. The introduction of new foil types and the launch of the Conclave Arcana set generated over $3.75 million in pack sales, while the Splinterlands secondary market averaged more than $200,000 in monthly volume, demonstrating a healthy and active player-driven economy. The release of Land cards, which fully sold out, further expanded long-term strategy and progression within the game.\n\nA key focus throughout the year was improving accessibility without sacrificing depth. Splinterlands introduced a new Campaign Mode, designed as an engaging entry point that teaches core mechanics and serves as a foundation for future expansion. Alongside this, the all-new Frontier format was launched, allowing players to play completely free while still experiencing the full strategic fun of Splinterlands. Frontier has become both a stepping stone for new players and a format many choose to stay in for daily entertainment.\n\nFor existing players, excitement remained high with the addition of Jackpot cards in reward chests, giving all players the chance to pull powerful, high-value cards. Weekly Fortune Draws became a community highlight, regularly rewarding max-level Gold Foil Arcanes, Black Foils, and Black Foil Arcanes.\n\n![image.png](https://images.hive.blog/DQmNPHXScphPaBy3FzwdLvDVRMHw1MyNJLczbLBZjGFcp3r/image.png)\n\nThese achievements culminated in Splinterlands being named Best Card Game at the Blockchain Game Awards 2025. Looking ahead, the team shared: \n> \u201cWe\u2019re excited to expand on these systems and deliver even more meaningful gameplay and rewards for our players in the new year.\u201d\n\n## Travelfeed\n\n[TravelFeed](https://travelfeed.com) continued to enhance its ecosystem of travel blogging tools throughout 2025, delivering meaningful improvements across its iOS app, truvvl stories app, and hosted blog service.\n\nTravelFeed Hosting, the service that lets travel bloggers run their travel blog on a custom domain, introduced its biggest feature yet: an AI-powered HTML Assistant that lets you vibe code widgets on your site without writing actual code. Just describe what you want: a dreamy photo header, a bucket list for your sidebar, a custom about section - and the assistant builds it for you. It's blog customization through conversation, making personal travel sites truly personal for everyone regardless of technical background. The hosted blogs also gained contact forms with custom dropdown fields and additional flexibility for those who want to add their own touches.\n\nTruvvl, TravelFeed's mobile stories app for travel creators, saw substantial feature additions based on community feedback. Users can now select multiple photos from their gallery at once, with each image automatically added as a separate slide\u2014streamlining the creation process significantly. The team also removed the rigid 9:16 aspect ratio constraint, introducing custom cropping so creators can showcase landscape shots and other compositions as intended. New photo filters round out the Truvvl updates, giving travel moments extra visual polish.\n\n> \"We're excited to keep building tools that make sharing travel stories easier and more beautiful in the new year!\" said the TravelFeed team.\n\n## Worldmappin \n\nIn 2025, Project [Worldmappin](https://worldmappin.com/) achieved a significant milestone by completely rebuilding its platform from the ground up, transforming the experience for its vibrant community of 18,000 travelers. \n\nThe team of 15 people focused on creating a clear, clean, and user-centric design that prioritizes mobile functionality, making the platform accessible and intuitive for a mass market audience. \n\nThe team still does its Travel Digest curation work of around 150 post per day and users enjoy the delegation reward program. \n\nKey features introduced this year include personalized profile pages that allow users to showcase their travel journeys, a \u201cplaces visited\u201d tracker to document their adventures, and enhanced community support tools that strengthen connections between travelers worldwide. \n\nThe platform also integrated comprehensive statistics, giving users valuable insights into their travel patterns and community engagement. \n\nA state-of-the-art login system was implemented to ensure seamless and secure access across all devices. \n\nLooking ahead to 2026, the team is already developing an innovative journeys feature that will enable users to create multi-pin travel routes, further enriching the storytelling experience. \n\nAs the number one community on Hive, Worldmappin has successfully evolved from a functional tool into a sleek, modern application that combines powerful features with an elegant interface. \n\nWith its fresh design and expanded capabilities, Worldmappin.com is now positioned to welcome travelers and new Hivians from around the globe, making it easier than ever to share, discover, and connect through the universal language of exploration.\n\n> \u201c2026 is Worldmappin\u2019s breakthrough year. Our rebuilt app brings the power of Hive blockchain to millions of travelers worldwide. With sleek design, new journey features, and true content ownership, we\u2019re proving decentralized platforms can lead the future of travel storytelling.\u201d\n\n# Everything but the Dapps\n\nBut that's not all, we also given the opportunity for all sorts of Hive projects to put a word in. This is just the tip of the iceberg when it comes to the efforts of the busy Hive community. We've left it up to themselves to outline their own contributions and accolades. \n\nSupporting Hive means showing how multifaceted Hive is - showing its many sides to the world, showing what Hive stands for. Even AI knows what's important to Hive, with ChatGPT describing it as \"a community-governed, scalable, feeless blockchain suitable for social, gaming, and financial Web3 interactions\". Through creativity and perseverance, Hive social activities continue to shine the global spotlight on Hive as the truly decentralized and transparent portal to digital freedom.\n\n## Delta Squad\n\nThe Delta-Squad is a team that was formed in May 2025 out of the love that its members had for the Hive blockchain and different systems that are built on it. They decided to come together to form the Delta-Squad team which the aim is to be running different promotional activities that will attract builders and other content creators to the Hive blockchain.\n\nThey started promoting the @distriator project which is called \"spendhbd\". They visited different schools and gave students scholarships in the name of the Hive blockchain and the Distriator system because their intentions was for schools to adopt the system system as a payment method. Their activities are outlined in blog posts [here](https://hive.blog/hive-181335/@delta-squad/xjdnkrrx), [here](https://hive.blog/hive-106130/@delta-squad/report-of-the-scholarship-program), and [here](https://hive.blog/hive-106130/@delta-squad/report-of-our-first-mega). They were able to achieve results with the rewards they get from each post they made. As time goes one, they got some support from the Distriator team, @starkerz and other friends too.\n\n![image.png](https://images.hive.blog/DQmfUxMERiWRvW5pgoc89vm6i1kQnjr587cF4VSuyvmgvYv/image.png)\n\nA few months ago, they were pleased to be able to carry out more  promotional activities at Warri Delta State, Nigeria which is very far from the location where they are located. They visited Kids Town (a toy store) and promoted the Hive blockchain and the \"spendhbd\" system as a payment method. Some relevant posts can be found [here](https://hive.blog/hive-106130/@delta-squad/report-for-the-spendhbd-workshop), [here](https://hive.blog/hive-106130/@delta-squad/hive-meetup-and-onboarding-section), and [here](https://hive.blog/hive-106130/@delta-squad/sunday-onboarding-check-in-and).\n\n> \"We're excited to see Hive Blockchain and different systems and community in it grow more stronger and bringing builders to Hive through our promotional activities in the new year!\"\n\n## FinFarm\n\nIn 2025, FinFarm propelled Hive Blockchain onto the global stage and into the spotlight of developer, student, and trading communities. The team conducted three major events, including two hackathons and a meetup during ETH Global in New Delhi, where founders and venture capitalists engaged directly with Hive. These efforts helped Hive become a buzzword across developer circles. \n\nFinFarm also launched Chain Chapter, a college student-driven DAO, and hosted an introductory Hive session at VIPS College, further strengthening grassroots adoption. Educational resources were expanded with tutorials, resulting in over 500 unique signups. \n\nFrom hackathons, standout projects such as Dungeon Cities and Beat Brawls were onboarded and have since gone live, showcasing Hive\u2019s potential as a platform for innovation. Hive branding gained visibility through FinFarm\u2019s podcast series Koffee with Krypto, while more than 50 trading calls and live technical analysis sessions amplified Hive\u2019s presence in trading communities. \n\n![image.png](https://images.hive.blog/DQmYN6VaAuqogTqmQHArrkZG1rQVvYn4Vmo7NjajctXXaJq/image.png)\n\nMost notably, Hive was represented on a global stage at TEDx and FinFarm successfully negotiated this landmark opportunity at no cost, underscoring both strategic vision and resourcefulness. Collectively, these achievements positioned Hive as a credible, innovative, and community-driven ecosystem.\n\n> \"We\u2019re excited to scale Hive\u2019s ecosystem further, onboard groundbreaking projects, and deepen community engagement in the new year!\" \n\n## Hive at the Museum of Fine Arts (MBA)\n\nDuring 2025, the Web3 integration project at the Museum of Fine Arts in Caracas (MBA) consolidated fundamental milestones that laid the foundations for an unprecedented technological transformation. Among its most significant achievements was the successful relaunch of training classes on the Hive ecosystem, where a new cohort of users was trained in the use of blockchain tools and the digital economy. Likewise, the execution of the NFT contest \u201cTurn your crypto art into art history\u201d allowed for the identification and promotion of talented creators who are now an active part of the community. The project also managed to strengthen its social impact through a strategic link with the Vida Verde community, integrating principles of sustainability with technological innovation.\n\nAfter a year of preparation and constant growth, all efforts are now focused on the major milestone in its schedule: the realization of the institution's first large-scale digital art exhibition. The highly anticipated \u201cHive Crypto Exhibition\u201d is scheduled to take place in 2026, representing the culmination of the educational and curatorial work carried out previously. This exhibition promises to transform the visitor experience by integrating tokenized works into a traditional museum setting. More can be learned [here](https://peakd.com/hive-113774/@mba.ccs/resumen-de-actividades-del-2025-en-el-museo-de-bellas-artesespeng).\n\n## Hive Creators\n\nIn 2025, [Hive Creators](https://hivecreators.co/) consolidated its strategic foundations across Latin America, deliberately focusing on sustainability, efficiency, and preparation for its next phase of growth. In a challenging macroeconomic environment, the project executed a strategic shift toward operational efficiency, optimizing its allocation plan and extending its runway to 12 months, while developing educational and multimedia assets with a projected lifespan of up to 15 months within the ecosystem.\n\nRather than prioritizing immediate acquisition spend, Hive Creators dedicated the year to building a strong, reusable regional marketing infrastructure. This included narrative validation, deep cultural analysis, and the systematization of key learnings to clearly understand how Hive\u2019s value proposition connects with diverse LATAM communities. This approach transformed 2025 into a year of strategic validation, reducing uncertainty and preparing a scalable adoption model.\n\nOn the operational side, the team strengthened internal and community cohesion through initiatives such as Hive Power Up Day, while also developing community marketing tools designed to connect and empower creators. By the end of the year, [Hive Creators](https://holahive.com/) had established a clear, efficient, and aligned marketing foundation, ready to meet its acquisition goals by March 2026.\n\n[Looking ahead to 2026](https://peakd.com/hive/@hivecreators/a-year-of-foundations-in-latam-hive-creators-2025), the project enters a phase of focused and measurable execution.\n\n> \"We\u2019re excited to turn everything we\u2019ve learned into tangible growth, deploying clear and measurable actions that drive a new, sustained wave of creator adoption across Latin America.\"\n\n## Hive Goes to School\n\nHive Goes to School represents a pedagogical innovation that transcends traditional education. The team has designed a curriculum full of practical and useful knowledge, developing students' personal, economic, and digital skills so that they can thrive in the global Web3 ecosystem.\n\n![image.png](https://images.hive.blog/DQmeCLA386HNuLZzXn9uLW4qHiJ8PxsV4vPnjdVqMC7NeyX/image.png)\n\n[Hive Goes to School](https://peakd.com/hive-189306/@rutablockchain/informe-final-de-la-fase-4-de-hive-va-a-la-escuela-eng-esp) turns the classroom into an engine of ideas that flow through Hive. This year, more than 250 students learned about the potential of our blockchain. They experienced the Web3 world firsthand with Hive, earning their first cryptocurrencies through their tasks and discovering talents they didn't know they had. Notably, they got the first two schools to accept HBD for student tuition payments.\n\nThe team also created the first game on Hive where you can learn about blockchain and finance. This will be a tool that enhances onboarding and was born from the iteration in \u201cHive Goes to School.\u201d They are excited about this game for 2026, which will help many people join Hive in an easy and fun way. They are also working to develop activities for students and their parents with a major global exchange that already lists Hive. Although they are in the early stages of negotiations, they are confident that it will be a success.\n\n# Hive Rally\n\nThe Hive Rally project continued building visibility for Hive another year in a row in the World Rally Championship. The season opened with a strong result at the iconic and so loved Rallye Monte Carlo, where unpredictable roads and winter conditions didn\u2019t stop the team from taking 7th place in WRC3 category and earning six championship points and valuable momentum for future events! This result showed clear potential and strengthened the project\u2019s visibility within the community.\n\n\n![image.png](https://images.hive.blog/DQmVHZ5MCoNc7pVm895kG8BvXH7HMnDK6s1yqSioa73kdg8/image.png)\n\nSardinia brought a different kind of challenge. The rally began with confidence, but one of the toughest WRC stages in recent history forced the crew to stop early, the same stage that caught out more than ten other crews. Instead of letting the setback define the season, the team used the experience to guide focused testing sessions afterwards, applying everything learned to improve pace, consistency, and communication. That work paid off in stronger preparation and renewed motivation. Later, although a technical issue prevented the start at the Central European Rally, the progress made during testing became a foundation the team will carry into the new season.\n\nIt achieved major success in community outreach and Hive promotion. We focused on again, outreach, education, and engagement. The service park and special stages became a booth where spectators, volunteers, marshals, sponsors and rally fans were introduced to Hive for the very first time right there and then, leading to a notable number of new registrations and long term connections that will support the ecosystem\u2019s growth. Just what we strive towards. \n\n![image.png](https://images.hive.blog/DQmQ4bqLGTEUUwfGEwPvqS41NhzhJXGSZwkTQ6RnL6qeyci/image.png)\n\nBeing part of the global WRC community once again proved to be a worthy and valuable experience and a privileged opportunity to represent Hive in an authentic way.\n\n> \"We\u2019re excited to return in 2026 for an even stronger season with  WRC events, more points, more impact on the stages and even more people discovering Hive!\"\n\n## Hive Students Hub\n\nThe year 2025 came with hope for students to be freed. Freed from centralization and to enjoy decentralization with Hive. This purpose birthed [Hive Empower](https://peakd.com/hive-144782/@hivestudentshub/hive-summit-in-tamale) projects which brought a sibling as Web3 and Blockchain tech summit in Tamale, Ghana. This was to unite students under the umbrella of decentralization to feel that the future is moving and web3 is the gamechanger. \n\n![image.png](https://images.hive.blog/DQmbsihBunitN7w1ZCsRcLa6zv4srekduHyXFPy8QVr2FpV/image.png)\n\nWeb3 comes with many and Hive is the savior of them all. They brought about 200 people to the event and 160 individuals left with proud Hive accounts. It was a great moment for the team and heartwarming seeing more intentional people joining the Hive blockchain. \n\n> \"We are excited for 2026 as we will do more not only to spread the good name of hive but to bring intentional individuals to the Hive Blockchain.\"\n\n## Hive Talk Project\n\nHiveTalkProject is a project focused on education and financial technology in Web3, promoting the development of blockchain. It is dedicated to spreading awareness of Hive and its ecosystem, with the aim of achieving understanding and promoting its use among small and medium-sized merchants, professionals, and university students in technical or related fields.\n\n![image.png](https://images.hive.blog/DQmTB1TRd61LodbKQPrQVj2UAaUo3wE69KvYAy2nQn9RvCm/image.png)\n\nBy 2025, it has established itself in universities in the region. An important achievement at the National Polytechnic University \"Antonio Jos\u00e9 de Sucre\" (UNEXPO) was the holding of ongoing training meetings, hybrid training sessions (Building Day), with a clear methodology that enabled participants to obtain the necessary knowledge to train as Hive-based blockchain developers, achieving not only a general understanding of Hive at a technical level, but also managing to build an application to facilitate payment management for university events within our ecosystem, replicable for other institutions, being the first Hive Daap developed by and for students in the state of Lara, Venezuela.\n\nThe project has continued its program of workshops for entrepreneurs, prioritizing financial education and promoting the integration of $HBD into business models and important companies in the central-western region of the country. In partnership with CEDETAHU, a company focused on professional training, workshops (\"Fundamentals of Blockchain and Crypto Assets\") have been held, providing participants with a certification endorsed by the Ministry of Education for the first time. This regional outreach strengthened connections with institutions such as the Lara State Chamber of Commerce, private banks, media outlets, and national companies interested in innovation, creating collaborative environments. \n\nHiveTalkProject ended the year with a stronger community, young university students with blockchain development skills who want to continue their Web3 training, and, last but not least, a clearer educational path for the future.\n\n## Street Workout Community (SWC)\n\n[SWC](https://hive.blog/created/hive-108943) is a project that began as an idea and, through the interaction of its members, followers, and users, has become a sports community, a large family where ideas, projections, and achievements are the result of the passion and love for the sport that SWC promotes and the athletes' deep connection to the technological ecosystem. 2025 was a year of great achievements for SWC as a bimodal sports community within the Hive ecosystem, as it managed to capture the attention of world-class athletes who came to Venezuela thanks to SWC and the sponsorship of the Hive blockchain.\n\n![image.png](https://images.hive.blog/DQmSH6Je4wRUNkNTEZq4zWWfATGApszd7F7bVzNjXLWMGqu/image.png)\n\nSWC continues to promote Street Workout and boost the sport nationally and internationally, giving visibility to the ecosystem through initiatives that involve organizing events with large-scale logistical deployments, showcasing athletes, and providing massive exposure for brands within the Hive ecosystem. The year 2025 saw several major initiatives; World-class street workout athletes were brought to Venezuela, including Tony Gaste and V\u00edctor Allendes, five-time and two-time world champions, respectively, who both performed exceptionally well in the events organized by SWC. V\u00edctor Allendes is now an SWC athlete.\n\nAnother achievement in 2025 was the high level of interaction on Web 2 and Web 3, making it one of the most engaged communities in terms of publications within the Hive ecosystem.\n\nFor 2026, SWC will continue to promote Street Workout and Calisthenics on a larger scale, given that world-class athletes are now paying more attention to SWC-organized events, due to the presence of high-level competitive athletes within this niche and partnerships with new organizations. The challenges continue, bringing with them new challenges, a new projection of objectives and goals to achieve. New aspects of organizing events will be explored in 2026. SWC anticipates a year full of great challenges and extraordinary experiences. \n\n> \"The SWC family wishes the entire Hive blockchain ecosystem a Merry Christmas and a prosperous 2026. Thank you! Let's go for more!!!\"\n\n![image.png](https://images.hive.blog/DQmXjXuS9HQZV5mgZTiHUHcvMxkTD5bYyNUvi719sdUHJrR/image.png)\n\nWhat a crazy busy year! Looking back, it\u2019s clear that 2025 was one of the busiest and most exciting years yet for the Hive community and ecosystem. We can't wait to see what 2026 holds!\n\n",
+        "category": "happynewyear2026",
+        "children": 95,
+        "created": "2025-12-31T19:41:36",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": true,
+        "json_metadata": {
+          "app": "peakd/2025.12.9",
+          "description": "As Hive enters 2026, our journey of 2025 reflects continuous development, global collaboration, and ecosystem growth.",
+          "format": "markdown",
+          "image": [
+            "https://images.hive.blog/DQmefPVpvA4a5U2vN8K6JmYFnv7QKfnH98XwSn7zxqMtcJZ/image.png",
+            "https://images.hive.blog/768x0/https://files.peakd.com/file/peakd-hive/roelandp/23uFRu2bHMFCguS6hzGmL6ANTmKPkK7j3vKk9jedQxZgctPwNyWtNCNX3sKH1g851ZVj4.jpg",
+            "https://images.hive.blog/DQmRt1JBrEGYPqx5kU63dsMHw356N6iYP1AoBDMn7g9pViv/image.png",
+            "https://images.hive.blog/DQmWkLZ4fiR9yt55G7wVRhR4vQLjNCCmj9stvSKcDGbDS1s/image.png",
+            "https://images.hive.blog/DQmSFZbfVcS2RrHsa4m8y4CbKtRkFr6HWrkjn2q1RcqZF66/image.png",
+            "https://images.hive.blog/DQmQTyZe2Cqjn2txqTkP78DiWLQ4zKWJp9KAMNs5EYYK19f/image.png",
+            "https://images.hive.blog/DQmNPHXScphPaBy3FzwdLvDVRMHw1MyNJLczbLBZjGFcp3r/image.png",
+            "https://images.hive.blog/DQmfUxMERiWRvW5pgoc89vm6i1kQnjr587cF4VSuyvmgvYv/image.png",
+            "https://images.hive.blog/DQmYN6VaAuqogTqmQHArrkZG1rQVvYn4Vmo7NjajctXXaJq/image.png",
+            "https://images.hive.blog/DQmeCLA386HNuLZzXn9uLW4qHiJ8PxsV4vPnjdVqMC7NeyX/image.png",
+            "https://images.hive.blog/DQmVHZ5MCoNc7pVm895kG8BvXH7HMnDK6s1yqSioa73kdg8/image.png",
+            "https://images.hive.blog/DQmQ4bqLGTEUUwfGEwPvqS41NhzhJXGSZwkTQ6RnL6qeyci/image.png",
+            "https://images.hive.blog/DQmbsihBunitN7w1ZCsRcLa6zv4srekduHyXFPy8QVr2FpV/image.png",
+            "https://images.hive.blog/DQmTB1TRd61LodbKQPrQVj2UAaUo3wE69KvYAy2nQn9RvCm/image.png",
+            "https://images.hive.blog/DQmSH6Je4wRUNkNTEZq4zWWfATGApszd7F7bVzNjXLWMGqu/image.png"
+          ],
+          "tags": [
+            "happynewyear2026",
+            "hive",
+            "ecosystem"
+          ],
+          "users": [
+            "hivefest",
+            "oflyhigh.",
+            "blocktrades",
+            "therealwolf",
+            "emrebeyler",
+            "borislavzlatanov",
+            "distriator",
+            "delta-squad",
+            "starkerz",
+            "mba.ccs"
+          ]
+        },
+        "max_accepted_payout": "0.000 HBD",
+        "net_rshares": 338142259487950,
+        "payout": 0,
+        "payout_at": "2026-01-07T19:41:36",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "hive-reflects-on-2025-a-year-of-relentless-building",
+        "post_id": 148057847,
+        "reblogs": 55,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 369
+        },
+        "title": "Hive Reflects on 2025: A Year of Relentless Building",
+        "updated": "2026-01-01T05:46:06",
+        "url": "/happynewyear2026/@hiveio/hive-reflects-on-2025-a-year-of-relentless-building"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 8076000999,
+            "voter": "teamvn"
+          },
+          {
+            "rshares": 193943976422,
+            "voter": "smartvote"
+          },
+          {
+            "rshares": 222963326884,
+            "voter": "littlebee4"
+          },
+          {
+            "rshares": 584552720,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 7311018,
+            "voter": "psychophilo"
+          }
+        ],
+        "author": "dtam",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.27,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "![IMG_7259.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqQPZt1s7D8MDxwQm3riJ5952JJX11Cd4FEtaRTe26tHa6tvGdRQMyWXP5uAo52q54N.jpeg)*Team bonding in front of Meares Glacier. It was tough work, but we finally made it to the face of a glacier. We had been iced out until now this trip. You can see the pure joy in the guests' faces as they posed for this picture.*\n\n   Today's adventure was one of the guests and crew favorites. We were at Meares Glacier, in northern Prince William Sound, where a massive glacier tumbles out of the tall mountains and flows into the end of a beautiful fjord. It is a rarity among glaciers these days, in that it is one of the few that is currently advancing. It is bulldozing its way through the forest, taking old trees down as it goes. It also dumps an amazing amount of ice into the fjord, which is what made this morning's kayak such an adventure. \n \n  Kayaking is always a great way to experience a tidewater glacier, and sometimes you have to pick your way through a little bit of ice, but today was an exception. We had so much ice, that our paddles would just skip across it instead of dipping down in the water. The ice packed in around us the farther we got, but onward we pushed. Sometimes I would look behind and see that I had made a nice path through the ice for the guests. Other times, when I looked, the ice move back in so fast that there was no path at all. Luckily the group was up for the challenge, and they were rewarded with a truly wild, Alaskan experience. These are the days that you remember, and tell stories about, long after getting home. \n\nOnce we finally had enough of working hard in the ice, we found a pocket of clear water, and just sat and soaked in the amazing views. Its times like this that it is so hard to believe that we have this place all to ourselves. That is Alaska, still true wilderness to be explored. That can be hard to find these days. When we made it back to the boat, it was hot beverages for all, and a change into bathing suits.... for the polar plunge was next! \n\nNever a dull moment on the Safari Explorer.\n\n![IMG_7246.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Ep1XsEkPk5m6nB99zZocapRqgX8FLLzBQVdjchcvB1gHPSbqXLfdcaBiPn5zsPi62hS.jpeg)*Paddling through the ice here at Meares Glacier is a wild, adventurous feat. You can blast right through the small chunks, but you need good navigation to avoid the bigger pieces. They will stop you in your tracks very quickly.*\n\n![IMG_7267.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqSVyW3TJRMYTzug4Xe8Fhoh2hst7iCFEqVjcGqGEyMcgLB4LZjbX1QbPwHhF5YfUj3.jpeg)*A little drizzle didn't stop my group from kayaking across the fjord to Meares Glacier, a tidewater glacier that calves off giant chunks of ice.*\n\n![IMG_7264.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqHzpAWL5DmSJZWoHVHrs7qoJoSoe1eUQT33aXnSUtLLuNZ52rwmyQ9yBG3TNEgnR9m.jpeg)*We had been paddling through ice for a while before finally breaking free into this section. It seemed almost too easy after what I put them through.*\n\n\n\n![IMG_7254.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqQNWvxzfZdZyTZZKrHFk4eurtU18EguQEMPcPnbakQuU84RnbnKkmoDdrPPibLp6sb.jpeg)*Always say, 'yes', when asked if you want to kayak in front of a glacier.*\n\n![IMG_7253.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Ep1VVeCBMeNvHPri1brsmBKCRgoLWqQZWMrGiVLijjwg5CxcSrc9T5Hbcod5CXKC8gG.jpeg)*Our skiff tour pushed even farther ahead this morning. They enjoyed some really nice calvings when pieces of ice fell a hundred feet off the face of Meares Glacier.*\n\n![IMG_7250.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Eqd8zURRYN74mhPL5KGggEvKgtgahVDq4sAsuCDs2wy2pKsddVdnk8vQa4GcMPyH9po.jpeg)*At some points in this morning kayak, we stopped paddling and just took everything in.*\n\n![IMG_7247.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Ep5kERtAgvWPwBkBYG7nDQjPA64dkbn3h83XzKmxZVfaGfsWz6GkFTKak7FTYno8PFW.jpeg)*The ice started to pack together pretty densely towards the end of our paddle across the fjord. I really made these guys work for it today.*\n\n\n\n![IMG_7244.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EpnCiemCVTLuhaHzD3ZdQhJx6m3UzxC9AFjUrkHLSuCbrHtpmB1dXrLu3zbVqqLQzCV.jpeg)*Taking a break from our ice kayaking to take some photos.*\n\n![IMG_7239.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Eq36YXwaw53YfFyFZsVjuqt4ZHyv6dHsdodxUJJmW8XdnwVnLiVp1UASXy5qEJu388p.jpeg)*This kind of ice was quite easy to make it through. It got thicker though, shortly after.*\n\n![IMG_7238.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EnaZDJwe2Q7kE6n4PTBV9SwnQ8yQvS7C2ZZt2WX72AZSbQUTjJEKC9iiv9t52SSsH8T.jpeg)*Kayaking is one of my favorite ways to experience Alaska. This morning, at Meares Glacier, was an absolute blast. We kayaked through so much ice, and made it close enough to watch ice calving off the face of the glacier. Sea otters and seals looked on, as kittiwakes flew overhead. Luckily our rain gear held solid, and the old saying, 'there is no such thing as bad weather, only bad clothing', held true.*\n\n![IMG_7235.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Eou8EtoSqD8fMHBNUxHEt3aGr5F2fA8W6dmYRQc4ypMKSqDU2wjyoozQ6t4TXHsdVP6.jpeg)*Meares is a unique glacier in that it is advancing, bulldozing the forest as it goes.*\n\n![IMG_7234.jpeg](https://files.peakd.com/file/peakd-hive/dtam/244e85EMEmgz8HNNP2RL54f2SqA3XQ23UxFLS4Fn1Hg8QRYMe2RQgCLesJEF6apwhbB1k.jpeg)*Meares panorama.*\n\n![IMG_7232.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EoyPZAe1DXp4GRJGCf6TyPEBApRybGKFtYhsCC2uPyZvg19E8A9UxYPBBHTyqFraArE.jpeg)*Rain, ice, and rainforest.*\n\n![IMG_7231.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Eq9UnvYdrjauzzyC9zfG4jXFtZdGYVR9SBACEgzECqXfjgKeLsg3cjegGUC6W5NyPm6.jpeg)*The mist hung to the tops of the forest trees as we made our way through acres of ice.*\n\n![IMG_7226.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqL7k5isi3yKA7EYUhHeSCQFuVYUkQtAhbCK3uMW1d2iEgyh5yEbd3n4rYLRdyiJSp3.jpeg)*Chris and Alan soaking in the rain, and the views.*\n\n![IMG_7225.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EqFs1czockctH6oWpQFSVxQHiTypWgvyVnKxmJx1UReowgXnomuSGoWyLFnEmwChszG.jpeg)*Ice, ice and more ice.*\n\n![IMG_7222.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EoAaDvmNUnZ3c5Hg73v48kXFr74N2XmHRaaEkMctNeFBUQzUc4Tzw3Uqq5stNgLQh3u.jpeg)*Just keep paddling.*\n\n![IMG_7209.jpeg](https://files.peakd.com/file/peakd-hive/dtam/EoK6p8i9KtutJWFoivpg5wy9Mze8BzRvksdwU1MvbrtD73hQpfULtc5EBZ3TGNjJeqf.jpeg)*Sending out kayakers at Meares Glacier in Prince William Sound.*\n\n![IMG_7203.jpeg](https://files.peakd.com/file/peakd-hive/dtam/Eq38TUxWSf1RNZS98G84seRosHySFWv8yqw4Tx6aXP6DVzSuPsXg6xAQCMrtu12aHhp.jpeg)*Me, guiding the morning kayak, ready for some icy adventure.*\n\n![IMG_7199.jpeg](https://files.peakd.com/file/peakd-hive/dtam/242DJWW6dsCntiWSTJCnBqc3HWoqu6sgbbpSubFggrgneKRvihJtR1tEn93c4pTDne3uJ.jpeg)*This seems like true expedition cruising doesn't it. Definitely not your big cruise ship vibe.*\n\nAs always, keep traveling and keep posting.\n- Dai Mar\n\n\n[//]:# (!worldmappin 61.142413 lat -147.548120 long Trying not to get trapped in the crushing ice flows of Meares Glacier. Kayaking the wilds of Alaska. d3scr)",
+        "category": "hive-163772",
+        "children": 1,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-05-25T08:47:00",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "description": "Trying not to get trapped in the crushing ice flows of Meares Glacier. Kayaking the wilds of Alaska.",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/dtam/EqQPZt1s7D8MDxwQm3riJ5952JJX11Cd4FEtaRTe26tHa6tvGdRQMyWXP5uAo52q54N.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Ep1XsEkPk5m6nB99zZocapRqgX8FLLzBQVdjchcvB1gHPSbqXLfdcaBiPn5zsPi62hS.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EqSVyW3TJRMYTzug4Xe8Fhoh2hst7iCFEqVjcGqGEyMcgLB4LZjbX1QbPwHhF5YfUj3.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EqHzpAWL5DmSJZWoHVHrs7qoJoSoe1eUQT33aXnSUtLLuNZ52rwmyQ9yBG3TNEgnR9m.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EqQNWvxzfZdZyTZZKrHFk4eurtU18EguQEMPcPnbakQuU84RnbnKkmoDdrPPibLp6sb.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Ep1VVeCBMeNvHPri1brsmBKCRgoLWqQZWMrGiVLijjwg5CxcSrc9T5Hbcod5CXKC8gG.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Eqd8zURRYN74mhPL5KGggEvKgtgahVDq4sAsuCDs2wy2pKsddVdnk8vQa4GcMPyH9po.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Ep5kERtAgvWPwBkBYG7nDQjPA64dkbn3h83XzKmxZVfaGfsWz6GkFTKak7FTYno8PFW.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EpnCiemCVTLuhaHzD3ZdQhJx6m3UzxC9AFjUrkHLSuCbrHtpmB1dXrLu3zbVqqLQzCV.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Eq36YXwaw53YfFyFZsVjuqt4ZHyv6dHsdodxUJJmW8XdnwVnLiVp1UASXy5qEJu388p.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EnaZDJwe2Q7kE6n4PTBV9SwnQ8yQvS7C2ZZt2WX72AZSbQUTjJEKC9iiv9t52SSsH8T.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Eou8EtoSqD8fMHBNUxHEt3aGr5F2fA8W6dmYRQc4ypMKSqDU2wjyoozQ6t4TXHsdVP6.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/244e85EMEmgz8HNNP2RL54f2SqA3XQ23UxFLS4Fn1Hg8QRYMe2RQgCLesJEF6apwhbB1k.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/EoyPZAe1DXp4GRJGCf6TyPEBApRybGKFtYhsCC2uPyZvg19E8A9UxYPBBHTyqFraArE.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dtam/Eq9UnvYdrjauzzyC9zfG4jXFtZdGYVR9SBACEgzECqXfjgKeLsg3cjegGUC6W5NyPm6.jpeg"
+          ],
+          "tags": [
+            "travel",
+            "worldmappin",
+            "adventure",
+            "nature",
+            "alaska",
+            "kayaking",
+            "glacier",
+            "vacation",
+            "cruise",
+            "wilderness"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 448707835024,
+        "payout": 0.034,
+        "payout_at": "2026-06-01T08:47:00",
+        "pending_payout_value": "0.034 HBD",
+        "percent_hbd": 10000,
+        "permlink": "ice-kayaking-at-meares-glacier-alaska",
+        "post_id": 150226289,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 6
+        },
+        "title": "Ice Kayaking at Meares Glacier, Alaska ",
+        "updated": "2026-05-25T08:47:00",
+        "url": "/hive-163772/@dtam/ice-kayaking-at-meares-glacier-alaska"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 888850804,
+            "voter": "tuck-fheman"
+          },
+          {
+            "rshares": 205659170775,
+            "voter": "team"
+          },
+          {
+            "rshares": 131570644874,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 657459812,
+            "voter": "juanmiguelsalas"
+          },
+          {
+            "rshares": 1907194117,
+            "voter": "ratel"
+          }
+        ],
+        "author": "macchiata",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 80.11,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n\n![mac property.jpg](https://files.peakd.com/file/peakd-hive/macchiata/23xVMEJGF7DkvNnSF2M6yWp8mCCtjDgsguG1HaQ8ShWGPYRN9brCw3UWHKzuBdsD7ZYx4.png)\n\n\n\n\n<div class=text-justify>\n\nThere are quite a number of volcanic mountain in East-Java including the famous ones such as Bromo and Semeru but actually, there are many older volcanic mountain in the region that is dormant and worth exploring, such as  Mount Wilis. Unlike the popular hike in the region, Mt. Wilis is not commercialized due to its access that are still challenging and raw. If you enjoy quiter hike and untounched trails, this is one of the place to be. \n\nLast Saturday, I got the opportunity to visit deeper part of the foothills to experience shallot harversting. A close friend of my mother owned a few hectares of farmlands tucked away deep in the mountain. I heard from their son that it was harvest season, so I immeditely volunteered for the adventure. \n\n\n\n\n![DSCF1948.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23wWu6rYofQxgsjbwJxPGBy24VstHhmT3Zf9GQynbh72B9LyXPVVVgKSi19VjsU5tT2Re.JPG)\n\nWe started the journey at 5 AM with regular car then switch to different car fitting for the mountain rough terrain. On our way to the harvest area, we passed through thick jungle where it feels like we were sandwiched between the lush greenery and the dangling roots all around it. \n\nSomewhere along the winding path, The son of the family started telling me that there was a famous coffee plantation and factory in the area. He pointed to the remnants of the factory as well as some abandoned villa all around these foothills of Mt. Wilis. One thing that came out of my mouth was \" How did they even know this place existed?\", considering it was ages ago and even today this place is still considered remote. \n\n\n![DSCF1950.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23vsQDEB1ar6wcuDhdGoEbSA5YmDaSu6Ft3Y7e8haaVNiXvWLL2bnsBzn86kczX6mtoq5.JPG)\n\n\nSo, how did the dutch even scouted it? Whoever did that back in the day certainly has no fear of anything. I also heard that today, you can still find a lively wild animals animal including smaller sized tiger once in a while. \n\nAs we pressed on, our 30 minutes bumpy ride, eventually come to a fruition. We started seeing rows of shallots. \n\n\n![DSCF1956.JPG](https://files.peakd.com/file/peakd-hive/macchiata/245cWZREnfTi9gkwQQ226ZhSEQwww3gKLW12jCen8WkmKNQjWHJ6JMSSFbeApo59yQT3o.JPG)\n\n\n\nThe family owns the biggest hut in the area. Practically, you can live there as it has a room, a bathroom, a common kitchen with a view like this. \n\n\n![DSCF2044.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23qrBx5QDH2m7R4y7pWjH5bDgWEMJP9AYxg7LUYNZtPxcwpYSc5Je75kLte4nEpNekD1V.JPG)\n\n\n\nBefore we start the harvest, the workers and us had the chance to fuel oursevles with packed lunch. They also served me a coffee, famous from the region. It was good! \n\n\n![DSCF1981.JPG](https://files.peakd.com/file/peakd-hive/macchiata/244ofQkQqsAR5wv8Y74hkPDTthivZqVMgq9JRJ45AdckHnJobKU3xh7A7kz9n21XgRYGt.JPG)\n\n\n![DSCF1988.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23ywyiXpEuhd4cCYKN7ALMbsZTDdiz7YPikedz2R3yfpLoXNZFapSuhrnaP6ThkvxPeZn.JPG)\n\n\n\nI walked around further to explore the trails all around the places. Locals told me about different paths we could take to explore it as well as places we we could do bike trails. So, I walked around because they don't need me to harvest yet. I found these beautiful spots all around the area that looks so untounched and raw. \n\n\n\n\n![DSCF2078.JPG](https://files.peakd.com/file/peakd-hive/macchiata/244eCfGKqKVL4yABFAHJD5repNvJYrZQiEj2ZFGAKYK4civERhkJ7XrYRyGDiuvM6k2QP.JPG)\n\n\n\n\n![DSCF2085.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23s9TKcJvENbeai8xpjRpmajArXtreXfKmpw7zGC8oy2CCXbypcQW411tjgFAAKHJiRBR.JPG)\n\nAfter I got tired exploring around, I joined the workers to pick shallots, filling up the bag with laughters filled the air to pass the time. It was really fun to pluck out the shallots and do the harvest. \n\n<div class=pull-right>\n\n![DSCF2090.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23uQnVtVUz6854uHLoZKj7GXuhCztM7tkegm24uXMKie8nvgHrTHnNRZY5dvqA7KWT3ph.JPG)\n\n</div>\n\n\n<div class=pull-right>\n\n\n![DSCF2034.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23yJLysBiWcShvJPdCsDFJuaEwrzgzhsfWgq4nk9ryzuBPrEXjyPbkiTaTrqvC9SzPxxH.JPG)\n\n</div>\n\nThis is once in a lifetime opportunity for me to experience this activity. After some rest, I took pictures of the workers who was waiting for lunch time.\n\n\n![DSCF2101.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23xpCmxNn1hwyp8nvmNGWhR3DFzBBZewPzNVpWcrTfscFgbonkr5mKeStR3PxqmXsf6S6.JPG)\n\nOnce we finished the row in the back of the hut, I explored another rows in front of it there's this beautiful blooming flowers of shallots. \n\n\n\n![DSCF2067.JPG](https://files.peakd.com/file/peakd-hive/macchiata/23tbnq6j1QQhyAEaosCNTZRHG8vQyNQBqTzvYC1FbqQQ3S8LXWL1NL3Fth12Uix29npPr.JPG)\n\nThe mist started to appear during noon and it was time for us to also go down from the mountain. It was my first time exploring this mountain and didn't know it was hikeable at first. If you enjoy hiking or trekking, this is one of the most underrated, untounched places in East-Java and around. \n\nMany people who passes this city don't even know this place existed, including myself. This is why, I wondered how did they dutch even found it and built an empire of coffee plantation in this region? \n\n\n\n![DSCF2152.JPG](https://files.peakd.com/file/peakd-hive/macchiata/246GBHrM84d9wPKMfqovUq9EJpk21RzSvB4HgLkGGJER8Qax77W8wjynjBFAfFWCS3yoP.JPG)\n\nThis was the adventure that left me with more questions than answer. I wanted to go back there again and hoping I could get another chance to visit and explore more of the area. I saw some waterfalls around it that I didn't get the chance to look at. On the map, this place is also called Mt Liman too ( which is the highest peak of it) and the Mt Wilis itself is the name of the mountain range of the area because it connects several places in the region. \n\nMaybe it's time to explore your own city and who know, just as I do, finding this spot that looks so mesmerizing I came to know though I frequented this city. \n\n\n\n|||\n|-|-\n![NTy4GV6ooFRmaCXZ8UYgPhoud1kjiNX8QokLEZtbBKLuLWQ9yt7K3o4PG7qiS2SfyUvr6dYces7DWJ8xfHhq8PVtQPrvofyP72KL3ppdRxeugWvBfxeBRgtHv4FSStZc4YZ6Tzt1Pm995NNPZRyGjU7WNd7xvdEv2qtUNXuG.jpg](https://files.peakd.com/file/peakd-hive/macchiata/23t77FQVTCGtEBi1QzCfnjLFZ3BpB57ocvnKWNZbybVoNT2WGNztX9UKrTyCVdjXyPVch.jpg)| <div class=\"text-justify\">\ud835\ude0a\ud835\ude26\ud835\ude2e\ud835\ude3a (\ud835\ude30\ud835\ude33 \ud835\ude14\ud835\ude22\ud835\ude24) \ud835\ude2a\ud835\ude34 \ud835\ude22 \ud835\uddbc\ud835\uddcb\ud835\uddbe\ud835\uddba\ud835\uddcd\ud835\uddc2\ud835\uddcf\ud835\uddbe \ud835\uddc0\ud835\uddbe\ud835\uddc7\ud835\uddbe\ud835\uddcb\ud835\uddba\ud835\uddc5\ud835\uddc2\ud835\uddcc\ud835\uddcd & \ud835\ude24\ud835\ude30\ud835\ude27\ud835\ude27\ud835\ude26\ud835\ude26 \ud835\ude24\ud835\ude30\ud835\ude2f\ud835\ude2f\ud835\ude30\ud835\ude2a\ud835\ude34\ud835\ude34\ud835\ude26\ud835\ude36\ud835\ude33, \ud835\ude22\ud835\ude2f \ud835\ude22\ud835\ude2e\ud835\ude23\ud835\ude2a\ud835\ude37\ud835\ude26\ud835\ude33\ud835\ude35 \ud835\ude38\ud835\ude29\ud835\ude30 \ud835\ude27\ud835\ude2a\ud835\ude2f\ud835\ude25\ud835\ude34 \ud835\ude23\ud835\ude22\ud835\ude2d\ud835\ude22\ud835\ude2f\ud835\ude24\ud835\ude26 \ud835\ude23\ud835\ude26\ud835\ude35\ud835\ude38\ud835\ude26\ud835\ude26\ud835\ude2f \ud835\ude34\ud835\ude30\ud835\ude2d\ud835\ude2a\ud835\ude35\ud835\ude36\ud835\ude25\ud835\ude26 \ud835\ude22\ud835\ude2f\ud835\ude25 \ud835\ude34\ud835\ude30\ud835\ude24\ud835\ude2a\ud835\ude22\ud835\ude2d \ud835\ude34\ud835\ude31\ud835\ude22\ud835\ude33\ud835\ude2c. \ud835\ude0f\ud835\ude26\ud835\ude33 \ud835\ude23\ud835\ude2d\ud835\ude30\ud835\ude28 \ud835\ude33\ud835\ude26\ud835\ude27\ud835\ude2d\ud835\ude26\ud835\ude24\ud835\ude35\ud835\ude34 \ud835\ude29\ud835\ude26\ud835\ude33 \ud835\ude38\ud835\ude22\ud835\ude2f\ud835\ude25\ud835\ude26\ud835\ude33\ud835\ude2d\ud835\ude36\ud835\ude34\ud835\ude35, \ud835\ude24\ud835\ude36\ud835\ude33\ud835\ude2a\ud835\ude30\ud835\ude34\ud835\ude2a\ud835\ude35\ud835\ude3a, \ud835\ude22\ud835\ude2f\ud835\ude25 \ud835\ude31\ud835\ude22\ud835\ude34\ud835\ude34\ud835\ude2a\ud835\ude30\ud835\ude2f \ud835\ude27\ud835\ude30\ud835\ude33 \ud835\ude28\ud835\ude33\ud835\ude30\ud835\ude38\ud835\ude35\ud835\ude29. \ud835\ude20\ud835\ude30\ud835\ude36\u2019\ud835\ude2d\ud835\ude2d \ud835\ude30\ud835\ude27\ud835\ude35\ud835\ude26\ud835\ude2f \ud835\ude27\ud835\ude2a\ud835\ude2f\ud835\ude25 \ud835\ude29\ud835\ude26\ud835\ude33 \ud835\ude35\ud835\ude22\ud835\ude2d\ud835\ude2c\ud835\ude2a\ud835\ude2f\ud835\ude28 \ud835\ude22\ud835\ude23\ud835\ude30\ud835\ude36\ud835\ude35 \ud835\ude23\ud835\ude30\ud835\ude30\ud835\ude2c\ud835\ude34, \ud835\ude35\ud835\ude26\ud835\ude24\ud835\ude29\ud835\ude2f\ud835\ude30\ud835\ude2d\ud835\ude30\ud835\ude28\ud835\ude3a, \ud835\ude31\ud835\ude30\ud835\ude31 \ud835\ude24\ud835\ude36\ud835\ude2d\ud835\ude35\ud835\ude36\ud835\ude33\ud835\ude26, \ud835\ude35\ud835\ude33\ud835\ude22\ud835\ude37\ud835\ude26\ud835\ude2d, \ud835\ude22\ud835\ude2f\ud835\ude25 \ud835\ude31\ud835\ude26\ud835\ude33\ud835\ude34\ud835\ude30\ud835\ude2f\ud835\ude22\ud835\ude2d \ud835\ude31\ud835\ude29\ud835\ude2a\ud835\ude2d\ud835\ude30\ud835\ude34\ud835\ude30\ud835\ude31\ud835\ude29\ud835\ude3a; \ud835\ude26\ud835\ude34\ud835\ude31\ud835\ude26\ud835\ude24\ud835\ude2a\ud835\ude22\ud835\ude2d\ud835\ude2d\ud835\ude3a \ud835\ude38\ud835\ude29\ud835\ude26\ud835\ude2f \ud835\ude34\ud835\ude29\ud835\ude26\u2019\ud835\ude34 \ud835\ude27\ud835\ude30\ud835\ude36\ud835\ude33 \ud835\ude24\ud835\ude36\ud835\ude31\ud835\ude34 \ud835\ude25\ud835\ude26\ud835\ude26\ud835\ude31 \ud835\ude2a\ud835\ude2f \ud835\ude24\ud835\ude30\ud835\ude27\ud835\ude27\ud835\ude26\ud835\ude26. \ud835\ude1a\ud835\ude29\ud835\ude26 \ud835\ude2d\ud835\ude30\ud835\ude37\ud835\ude26\ud835\ude34 \ud835\ude34\ud835\ude38\ud835\ude2a\ud835\ude2e\ud835\ude2e\ud835\ude2a\ud835\ude2f\ud835\ude28, \ud835\ude24\ud835\ude30\ud835\ude30\ud835\ude2c\ud835\ude2a\ud835\ude2f\ud835\ude28, \ud835\ude22\ud835\ude2f\ud835\ude25 \ud835\ude26\ud835\ude39\ud835\ude31\ud835\ude2d\ud835\ude30\ud835\ude33\ud835\ude2a\ud835\ude2f\ud835\ude28 \ud835\ude2f\ud835\ude26\ud835\ude38 \ud835\ude31\ud835\ude2d\ud835\ude22\ud835\ude24\ud835\ude26\ud835\ude34. \ud835\ude0d\ud835\ude30\ud835\ude2d\ud835\ude2d\ud835\ude30\ud835\ude38 \ud835\ude29\ud835\ude26\ud835\ude33 \ud835\ude30\ud835\ude2f \ud835\ude0f\ud835\ude2a\ud835\ude37\ud835\ude26  \ud835\ude22\ud835\ude2f\ud835\ude25 \ud835\ude28\ud835\ude33\ud835\ude22\ud835\ude23 \ud835\ude22 \ud835\ude24\ud835\ude36\ud835\ude31 \ud835\ude30\ud835\ude27 \ud835\ude24\ud835\ude30\ud835\ude27\ud835\ude27\ud835\ude26\ud835\ude26 \ud835\ude30\ud835\ude27 \ud835\ude2a\ud835\ude25\ud835\ude26\ud835\ude22\ud835\ude34.</div> |</center>\n\n\n[//]:# (!worldmappin -7.802086 lat 111.729529 long <DESCRIPTION GOES HERE> d3scr)",
+        "category": "hive-163772",
+        "children": 3,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-05-25T07:03:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/macchiata/23xVMEJGF7DkvNnSF2M6yWp8mCCtjDgsguG1HaQ8ShWGPYRN9brCw3UWHKzuBdsD7ZYx4.png",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23wWu6rYofQxgsjbwJxPGBy24VstHhmT3Zf9GQynbh72B9LyXPVVVgKSi19VjsU5tT2Re.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23vsQDEB1ar6wcuDhdGoEbSA5YmDaSu6Ft3Y7e8haaVNiXvWLL2bnsBzn86kczX6mtoq5.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/245cWZREnfTi9gkwQQ226ZhSEQwww3gKLW12jCen8WkmKNQjWHJ6JMSSFbeApo59yQT3o.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23qrBx5QDH2m7R4y7pWjH5bDgWEMJP9AYxg7LUYNZtPxcwpYSc5Je75kLte4nEpNekD1V.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/244ofQkQqsAR5wv8Y74hkPDTthivZqVMgq9JRJ45AdckHnJobKU3xh7A7kz9n21XgRYGt.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23ywyiXpEuhd4cCYKN7ALMbsZTDdiz7YPikedz2R3yfpLoXNZFapSuhrnaP6ThkvxPeZn.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/244eCfGKqKVL4yABFAHJD5repNvJYrZQiEj2ZFGAKYK4civERhkJ7XrYRyGDiuvM6k2QP.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23s9TKcJvENbeai8xpjRpmajArXtreXfKmpw7zGC8oy2CCXbypcQW411tjgFAAKHJiRBR.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23uQnVtVUz6854uHLoZKj7GXuhCztM7tkegm24uXMKie8nvgHrTHnNRZY5dvqA7KWT3ph.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23yJLysBiWcShvJPdCsDFJuaEwrzgzhsfWgq4nk9ryzuBPrEXjyPbkiTaTrqvC9SzPxxH.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23xpCmxNn1hwyp8nvmNGWhR3DFzBBZewPzNVpWcrTfscFgbonkr5mKeStR3PxqmXsf6S6.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23tbnq6j1QQhyAEaosCNTZRHG8vQyNQBqTzvYC1FbqQQ3S8LXWL1NL3Fth12Uix29npPr.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/246GBHrM84d9wPKMfqovUq9EJpk21RzSvB4HgLkGGJER8Qax77W8wjynjBFAfFWCS3yoP.JPG",
+            "https://files.peakd.com/file/peakd-hive/macchiata/23t77FQVTCGtEBi1QzCfnjLFZ3BpB57ocvnKWNZbybVoNT2WGNztX9UKrTyCVdjXyPVch.jpg"
+          ],
+          "tags": [
+            "adventure",
+            "travel",
+            "trail",
+            "hiking",
+            "nature",
+            "photography",
+            "pob"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 56160618086446,
+        "payout": 4.348,
+        "payout_at": "2026-06-01T07:03:06",
+        "pending_payout_value": "4.348 HBD",
+        "percent_hbd": 10000,
+        "permlink": "hidden-trails-and-shallot-harvesting-adventure-in-mount-wilis",
+        "post_id": 150225796,
+        "reblogs": 4,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1007
+        },
+        "title": "Hidden Trails & Shallot Harvesting Adventure in Mount Wilis ",
+        "updated": "2026-05-25T07:03:06",
+        "url": "/hive-163772/@macchiata/hidden-trails-and-shallot-harvesting-adventure-in-mount-wilis"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 941737368,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 1690842982,
+            "voter": "jeanlucsr"
+          },
+          {
+            "rshares": 12613025997,
+            "voter": "fabiyamada"
+          },
+          {
+            "rshares": 1305091328,
+            "voter": "nathanpieters"
+          },
+          {
+            "rshares": 16781621016,
+            "voter": "khaleelkazi"
+          }
+        ],
+        "author": "enlace",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 67.07,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "<center><h2>PROYECTO ENLACE</h2><h3>'Conectando Ideas y Comunidades'</h3><hr/><p> https://images.hive.blog/DQmX5VDK1mH4KmoSnBmfTJ4Q11HrwAxvvVCGegekrr7XrJF/reportenlace.png </p><strong> Fuente: enlace, imagen de fondo de dominio p\u00fablico disponible en <a href='https://pixabay.com/es/photos/equipo-amistad-grupo-manos-4529717'> Pixabay</a> </strong> </center><hr/><div class='text-justify'><p>El presente art\u00edculo, resume la actividad de nuestro equipo de curadores durante el d\u00eda de hoy.</p><p><b><a href='https://hive.blog/trending/hive-111999'>PROYECTO ENLACE</a></b> es un proyecto de curaci\u00f3n de habla hispana enfocado en recompensar contenido de calidad y apoyar autores en su proceso de crecimiento en HIVE, las normas para publicar en PROYECTO ENLACE son las siguientes:</p><p>1)\tEl contenido debe ser original, en caso de usar citas colocar la referencia utilizada.<br/>2)\tRespetar las normas b\u00e1sicas de la gram\u00e1tica y la ortograf\u00eda.<br/>3)\tEvitar todo tipo de contenido que promueva la discriminaci\u00f3n de cualquier \u00edndole. </p><p>A continuaci\u00f3n presentamos los art\u00edculos seleccionados el d\u00eda de hoy</p><table><tr><th></th><th>Art\u00edculo Seleccionado</th><th>Autor</th></tr><tr><td>1</td><td><a href='https://hive.blog/hive-111999/@magnaconsciencia/de-camino-a-una-actividad-de-sanacin-parque-cachamay-4da'>De camino a una actividad de sanaci\u00f3n (Parque Cachamay)</a></td><td>@magnaconsciencia</td></tr><tr><td>2</td><td><a href='https://hive.blog/hive-124452/@veramfund/hay-lugares-que-sostienen-mas'>Hay lugares que sostienen m\u00e1s de lo que imaginamos. Ladies of Hive Community Contest #290. [Esp/Eng]</a></td><td>@veramfund</td></tr><tr><td>3</td><td><a href='https://hive.blog/hive-124452/@isaacmf123/los-lugares-donde-una-vuelve'>Los lugares donde una vuelve a s\u00ed misma. Ladies of Hive Community Contest # 290 [Esp/Eng]</a></td><td>@isaacmf123</td></tr><tr><td>4</td><td><a href='https://hive.blog/hive-179017/@vladimirmf/reflejos-entre-la-habitacion-y'>Reflejos entre la habitaci\u00f3n y la noche. Entry for Reflection Hunters contest-SMARP- round 273 [EN/ES]</a></td><td>@vladimirmf</td></tr><tr><td>5</td><td><a href='https://hive.blog/hive-131951/@noraydaap/lo-que-aprendi-demasiado-tarde-6378db1d4b2a4'>Lo que aprend\u00ed demasiado tarde #2: Sobre el cansancio que nadie nota | What I Learned Too Late #2: About the exhaustion nobody notices</a></td><td>@noraydaap</td></tr><tr><td>6</td><td><a href='https://hive.blog/hive-164241/@luisfe/historias-ajenas-que-nos-tocan'>HISTORIAS AJENAS QUE NOS TOCAN</a></td><td>@luisfe</td></tr><tr><td>7</td><td><a href='https://hive.blog/hive-13323/@angeluxx/splinterlands-gifts-battles-and-a-cruel-lessonengspn-8xb'>Splinterlands: Gifts, battles, and a cruel lesson[Eng-Spn]</a></td><td>@angeluxx</td></tr><tr><td>8</td><td><a href='https://hive.blog/hive-13323/@bulkathos/a-look-at-the-voltage'>A look at the Voltage Event: The Electroneum x Splinterlands initiative! Balance Brawls, progress in Frontiers and opening of Gladius and Foundations Packs! [Eng/Esp]</a></td><td>@bulkathos</td></tr><tr><td>9</td><td><a href='undefined'>undefined</a></td><td>@undefined</td></tr><tr><td>10</td><td><a href='undefined'>undefined</a></td><td>@undefined</td></tr></table><p>Creemos y apostamos por el futuro de esta gran red social basada en contenido y estamos muy emocionados de poder hacerla crecer junto a todos ustedes. As\u00ed que te invitamos a publicar en nuestra <a href='https://hive.blog/trending/hive-111999'>COMUNIDAD</a> y estar atento a todas las actividades que tenemos preparadas y que estaremos publicando en breve.</p><p>\u00bfQUIERES AUTOMATIZAR TUS GANANCIAS DE CURACI\u00d3N? SE PARTE DEL PROYECTO ENLACE APOYANDO A NUESTRO TRAIL EN HIVE.VOTE<a href='https://hive.blog/hive-167922/@enlace/automatiza-tus-ganancias-de-curacin-siendo-parte-del-proyecto-enlace-apoya-a-nuestro-trail-en-hivevote'> INGRESA AQU\u00cd PARA CONCOCER LOS DETALLES.</a></p><p><strong>\u00bfQUIERES INVERTIR ENLACE? DESCUBRE COMO HACERLO Y GENERAR INGRESOS DE FORMA SEMANAL MEDIANTE TU DELEGACI\u00d3N DE HP<a href='https://hive.blog/hive-167922/@enlace/s-parte-de-nuestro-proyecto-nete-al-programa-de-socios-enlace-y-recibe-ganancias-semanales-apr-1095-6hy'> AQU\u00cd TE EXPLICAMOS COMO.</a></strong></p><p>Agradecimientos especiales a los miembros de nuestro <a href='https://hive.blog/hive-167922/@enlace/s-parte-de-nuestro-proyecto-nete-al-programa-de-socios-enlace-y-recibe-ganancias-semanales-apr-1095-6hy'>PROGRAMA DE SOCIOS ENLACE</a> que con sus delegaciones sustentan al proyecto mientras reciben ganancias semanales: <strong>@nitsuga12, @anicruzmh, @iscrak, @youyowi, @lanoican, @nodoninja, @por500bolos, @yolimarag, @hermandadsteem, @carl05, @sacra97, @josemalavem, @cielitorojo, @alerojas, @mogollono1862, @vicokiwi, @agreste, @poetation, @adonisr, @care1869, @emiliorios, @nancybriti1, @dayna199019, @hiramdo, @gpache, @keco, @carisma77, @xixi80, @morepina, @suezoe, @joseantpp, @nabu.doconosor2, @franvenezuela, @ninamarcano, @sayago, @amatorrs, @cryptonarios, @dianypds, @freed99, @restaurador, @gelart, @dafne25, @noelmut19, @yeral-diaz, @ycarola, @edujo, @katriel1, @ivannap, @m16uellop, @marioshelk, @antonioeviesart, @osismi, @popurri, @r4f4, @fenngen, @jdrh93, @marabuzal, @psyfire25, @kdelvaeg y @almadepoeta.</strong></p><p><strong>Te invitamos a participar en nuestro servidor de Discord: https://discord.gg/3S9y7BbWfS</strong></p><center><h2>Atentamente</h2><h2>EQUIPO ENLACE 2026</h2></center></div>\n\nPosted Using [INLEO](https://inleo.io/@enlace/publicaciones-valoradas-por-el-proyecto-enlace-el-da-24052026-a28)",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-25T06:52:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@enlace/publicaciones-valoradas-por-el-proyecto-enlace-el-da-24052026-a28",
+          "dimensions": {},
+          "format": "markdown",
+          "images": [
+            "https://images.hive.blog/DQmX5VDK1mH4KmoSnBmfTJ4Q11HrwAxvvVCGegekrr7XrJF/reportenlace.png"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://pixabay.com/es/photos/equipo-amistad-grupo-manos-4529717'>",
+            "https://hive.blog/trending/hive-111999'>PROYECTO",
+            "https://hive.blog/hive-111999/@magnaconsciencia/de-camino-a-una-actividad-de-sanacin-parque-cachamay-4da'>De",
+            "https://hive.blog/hive-124452/@veramfund/hay-lugares-que-sostienen-mas'>Hay",
+            "https://hive.blog/hive-124452/@isaacmf123/los-lugares-donde-una-vuelve'>Los",
+            "https://hive.blog/hive-179017/@vladimirmf/reflejos-entre-la-habitacion-y'>Reflejos",
+            "https://hive.blog/hive-131951/@noraydaap/lo-que-aprendi-demasiado-tarde-6378db1d4b2a4'>Lo",
+            "https://hive.blog/hive-164241/@luisfe/historias-ajenas-que-nos-tocan'>HISTORIAS",
+            "https://hive.blog/hive-13323/@angeluxx/splinterlands-gifts-battles-and-a-cruel-lessonengspn-8xb'>Splinterlands:",
+            "https://hive.blog/hive-13323/@bulkathos/a-look-at-the-voltage'>A",
+            "https://hive.blog/trending/hive-111999'>COMUNIDAD</a>",
+            "https://hive.blog/hive-167922/@enlace/automatiza-tus-ganancias-de-curacin-siendo-parte-del-proyecto-enlace-apoya-a-nuestro-trail-en-hivevote'>",
+            "https://hive.blog/hive-167922/@enlace/s-parte-de-nuestro-proyecto-nete-al-programa-de-socios-enlace-y-recibe-ganancias-semanales-apr-1095-6hy'>",
+            "https://hive.blog/hive-167922/@enlace/s-parte-de-nuestro-proyecto-nete-al-programa-de-socios-enlace-y-recibe-ganancias-semanales-apr-1095-6hy'>PROGRAMA",
+            "https://discord.gg/3S9y7BbWfS</strong></p><center><h2>Atentamente</h2><h2>EQUIPO",
+            "https://inleo.io/@enlace/publicaciones-valoradas-por-el-proyecto-enlace-el-da-24052026-a28)"
+          ],
+          "tags": [
+            "hive-167922",
+            "spanish",
+            "leofinance",
+            "neoxian",
+            "hispapro",
+            "creativecoin",
+            "curation",
+            "blog",
+            "gems"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 1087473987681,
+        "payout": 0.084,
+        "payout_at": "2026-06-01T06:52:30",
+        "pending_payout_value": "0.084 HBD",
+        "percent_hbd": 0,
+        "permlink": "publicaciones-valoradas-por-el-proyecto-enlace-el-da-24052026-a28",
+        "post_id": 150225749,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 115
+        },
+        "title": "PUBLICACIONES VALORADAS POR EL PROYECTO ENLACE EL D\u00cdA 24/05/2026",
+        "updated": "2026-05-25T06:52:30",
+        "url": "/hive-167922/@enlace/publicaciones-valoradas-por-el-proyecto-enlace-el-da-24052026-a28"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 4635913211,
+            "voter": "robsteady"
+          },
+          {
+            "rshares": 2103692826,
+            "voter": "bigtakosensei"
+          },
+          {
+            "rshares": 2523107919,
+            "voter": "thereikiforest"
+          },
+          {
+            "rshares": 78855617199,
+            "voter": "bloghound"
+          },
+          {
+            "rshares": 834913207,
+            "voter": "frankydoodle"
+          }
+        ],
+        "author": "hiro.juegos",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 66.1,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "hiroshige",
+            "weight": 10000
+          }
+        ],
+        "blacklists": [],
+        "body": "I love games and eSports so I want to share with all of you **my favorite posts** and I hope you like them too. If so, give them a vote of confidence to support their hard work.\n\n**The selection will not be limited to a single tribe but will encompass many different ones.** It will also be varied in topics whether they are pure publications, contests or NFTs. And of course both in written format and in videos.\n\nThis is the selection of **2 articles that I found most interesting today.**\n\n\n\n\n\n\nDisclaimer\n\nThe games discussed in these posts are for mere entertainment. Investing in games with NFTs carries high risks. You are responsible for conducting your own research before investing.",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-05-25T06:39:24",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "description": "I love games and eSports so I want to share with all of you my favorite posts and I hope you like them too. If so, give them a vote of confidence to support their hard work. The selection will not be limited",
+          "format": "markdown+html",
+          "image": [],
+          "image_ratios": [],
+          "tags": [
+            "hive-167922",
+            "spt",
+            "pob",
+            "archon",
+            "hive-engine",
+            "lolz",
+            "pimp",
+            "cent",
+            "thgaming",
+            "bbh"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 768584071602,
+        "payout": 0.059,
+        "payout_at": "2026-06-01T06:39:24",
+        "pending_payout_value": "0.059 HBD",
+        "percent_hbd": 10000,
+        "permlink": "selection-of-the-best-articles-a4c714ac091ba",
+        "post_id": 150225663,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 94
+        },
+        "title": "Selection of the best articles about Games and eSports in Hive ~ 1236",
+        "updated": "2026-05-25T06:39:24",
+        "url": "/hive-167922/@hiro.juegos/selection-of-the-best-articles-a4c714ac091ba"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
